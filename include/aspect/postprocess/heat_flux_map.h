@@ -30,6 +30,12 @@ namespace aspect
 {
   namespace Postprocess
   {
+    namespace internal
+    {
+      template <int dim>
+      std::vector<std::vector<std::pair<double, double> > >
+      compute_heat_flux_through_boundary_faces (const SimulatorAccess<dim> &simulator_access);
+    }
 
     /**
      * A postprocessor that computes the point-wise heat flux density through the boundaries.
