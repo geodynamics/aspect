@@ -21,6 +21,7 @@
 
 #include <aspect/postprocess/heat_flux_map.h>
 #include <aspect/geometry_model/interface.h>
+#include <aspect/adiabatic_conditions/interface.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
@@ -74,6 +75,15 @@ namespace aspect
               // Set use_strain_rates to false since we don't need viscosity
               in.reinit(fe_values, cell, simulator_access.introspection(), simulator_access.get_solution(), false);
               simulator_access.get_material_model().evaluate(in, out);
+
+              // If we use a reference density for the temperature equation, use it to compute the heat flux
+              // otherwise use full density.
+              if (simulator_access.get_parameters().formulation_temperature_equation ==
+                  Parameters<dim>::Formulation::TemperatureEquation::reference_density_profile)
+                {
+                  for (unsigned int q=0; q<fe_values.n_quadrature_points; ++q)
+                    out.densities[q] = simulator_access.get_adiabatic_conditions().density(in.position[q]);
+                }
 
               // Get the temperature gradients from the solution.
               fe_values[simulator_access.introspection().extractors.temperature].get_function_gradients (simulator_access.get_solution(), temperature_gradients);
