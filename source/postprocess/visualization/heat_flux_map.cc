@@ -61,7 +61,7 @@ namespace aspect
                   {
                     // add heatflow for this face
                     (*return_value.second)(cell->active_cell_index()) += heat_flux_and_area[cell->active_cell_index()][f].first /
-                        heat_flux_and_area[cell->active_cell_index()][f].second;
+                                                                         heat_flux_and_area[cell->active_cell_index()][f].second;
                   }
             }
 
