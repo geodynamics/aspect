@@ -99,8 +99,8 @@ namespace aspect
               for (unsigned int q=0; q<fe_values.n_quadrature_points; ++q)
                 {
                   heat_flux += (-out.thermal_conductivities[q] * temperature_gradients[q] +
-                      in.velocity[q] * out.densities[q] * out.specific_heat[q] * in.temperature[q]) *
-                      fe_values.JxW(q);
+                                in.velocity[q] * out.densities[q] * out.specific_heat[q] * in.temperature[q]) *
+                               fe_values.JxW(q);
 
                   cell_volume += fe_values.JxW(q);
                 }
@@ -116,7 +116,7 @@ namespace aspect
                     for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)
                       {
                         face_normal_vector += fe_face_values.normal_vector(q) *
-                                               fe_face_values.JxW(q);
+                                              fe_face_values.JxW(q);
 
                         face_area += fe_face_values.JxW(q);
                       }
@@ -124,7 +124,7 @@ namespace aspect
                     face_normal_vector /= face_normal_vector.norm();
 
                     heat_flux_and_area[cell->active_cell_index()][f].first = ((heat_flux * face_normal_vector)) * face_area /
-                        cell_volume;
+                                                                             cell_volume;
                     heat_flux_and_area[cell->active_cell_index()][f].second = face_area;
                   }
             }
