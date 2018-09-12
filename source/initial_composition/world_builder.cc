@@ -52,8 +52,8 @@ namespace aspect
                                               "Specify the composition in through the World Buider. "
                                               "More information on the World Builder can be found at "
                                               "https://geodynamicworldbuilder.github.io ."
-											  "Make sure to specify the location of the World Builder file "
-											  "in the parameter 'World builder file'.")
+                                              "Make sure to specify the location of the World Builder file "
+                                              "in the parameter 'World builder file'.")
   }
 }
 #endif
