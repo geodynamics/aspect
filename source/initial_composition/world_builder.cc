@@ -36,20 +36,8 @@ namespace aspect
     {
       return this->get_world_builder().composition(Utilities::convert_point_to_array(position),
                                                    this->get_geometry_model().depth(position),
-                                                   n_comp) ? 1.0 : 0.0;
+                                                   n_comp);
     }
-
-
-    template <int dim>
-    void
-    WorldBuilder<dim>::declare_parameters (ParameterHandler &/*prm*/)
-    {}
-
-
-    template <int dim>
-    void
-    WorldBuilder<dim>::parse_parameters (ParameterHandler &/*prm*/)
-    {}
 
   }
 }
@@ -61,9 +49,11 @@ namespace aspect
   {
     ASPECT_REGISTER_INITIAL_COMPOSITION_MODEL(WorldBuilder,
                                               "world builder",
-                                              "Specify the composition in through the World Buider located"
-                                              "in the ASPECT contrib directory. Make sure to specify the "
-                                              "location of the World Builder file.")
+                                              "Specify the composition in through the World Buider. "
+                                              "More information on the World Builder can be found at "
+                                              "https://geodynamicworldbuilder.github.io ."
+											  "Make sure to specify the location of the World Builder file "
+											  "in the parameter 'World builder file'.")
   }
 }
 #endif

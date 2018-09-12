@@ -43,17 +43,6 @@ namespace aspect
                                                    this->get_gravity_model().gravity_vector(position).norm());
     }
 
-    template <int dim>
-    void
-    WorldBuilder<dim>::declare_parameters (ParameterHandler &/*prm*/)
-    {}
-
-
-    template <int dim>
-    void
-    WorldBuilder<dim>::parse_parameters (ParameterHandler &/*prm*/)
-    {}
-
   }
 }
 
@@ -64,9 +53,11 @@ namespace aspect
   {
     ASPECT_REGISTER_INITIAL_TEMPERATURE_MODEL(WorldBuilder,
                                               "world builder",
-                                              "Specify the initial temperature in through the World Buider located"
-                                              "in the ASPECT contrib directory. Make sure to specify the "
-                                              "location of the World Builder file.")
+                                              "Specify the initial temperature in through the World Buider."
+	                                            "More information on the World Builder can be found at "
+	                                              "https://geodynamicworldbuilder.github.io."
+												  "Make sure to specify the location of the World Builder file "
+												  "in the parameter 'World builder file'.")
   }
 }
 #endif

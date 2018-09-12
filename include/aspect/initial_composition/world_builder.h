@@ -33,8 +33,8 @@ namespace aspect
 
     /**
      * A class that implements initial conditions for the compositional fields
-     * based on a functional description provided in the input filethrough the
-     * World builder, currently located in the ASPECT contrib directory.
+     * based on a functional description provided in the input file through the
+     * World builder.
      *
      * @ingroup InitialCompositionModels
      */
@@ -50,27 +50,6 @@ namespace aspect
         virtual
         double initial_composition (const Point<dim> &position, const unsigned int n_comp) const;
 
-        /**
-         * Declare the parameters this class takes through input files. The
-         * default implementation of this function does not describe any
-         * parameters. Consequently, derived classes do not have to overload
-         * this function if they do not take any runtime parameters.
-         */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
-
-        /**
-         * Read the parameters this class declares from the parameter file.
-         * The default implementation of this function does not read any
-         * parameters. Consequently, derived classes do not have to overload
-         * this function if they do not take any runtime parameters.
-         */
-        virtual
-        void
-        parse_parameters (ParameterHandler &prm);
-
-      private:
     };
   }
 }
