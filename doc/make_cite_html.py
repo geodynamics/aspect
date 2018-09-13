@@ -96,7 +96,7 @@ print()
 
 f=open("database.js", "w+")
 
-f.write("// Auto-generated file by https://github.com/geodynamics/aspect/doc/make_cite_html.py\n")
+f.write("// Auto-generated file by doc/make_cite_html.py from https://github.com/geodynamics/aspect\n")
 f.write("// Do not edit!\n\n")
 f.write("var papers = {")
 
