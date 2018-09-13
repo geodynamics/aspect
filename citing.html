@@ -161,17 +161,15 @@
                     continue;
 
                 txt += paper.text + "<br/><br/>";
-                bibtxt += paper.bibtex + "<br/><br/>";
+                bibtxt += paper.bibtex + "\n\n";
                 keys.push(paper.bibtexkey);
                 }
             }
 
             document.getElementById('intext').innerHTML = intext.replace("CITEKEYS", keys.join(",")).replace("VERSION",version);
             document.getElementById('thanks').innerHTML = thanks;
+            document.getElementById('bibtex').innerHTML = "<pre><code>"+bibtxt+"</code></pre>";
 
-            document.getElementById('paper').innerHTML = txt.replace(/\n/g, "\n<br/>");
-            document.getElementById('bibtex').innerHTML = bibtxt.replace(/\n/g, "\n<br/>");
-            
             var params = urlstuff.join('&');
             if (params.length>0) params="?"+params;
             var url = "https://aspect.geodynamics.org/citing.html" + params;
