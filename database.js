@@ -1,4 +1,4 @@
-// Auto-generated file by https://github.com/geodynamics/aspect/doc/make_cite_html.py
+// Auto-generated file by doc/make_cite_html.py from https://github.com/geodynamics/aspect
 // Do not edit!
 
 var papers = {entry1:{
