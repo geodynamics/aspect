@@ -175,6 +175,14 @@ if(ASPECT_WITH_WORLD_BUILDER)
 ENDIF()
 
 
+# Pass down the current directory to the binary. This can be used
+# to hard-code the location of the build directory, for use by for
+# example the run time compilation of the cpp material model.
+FOREACH(_source_file ${TARGET_SRC})
+  SET_PROPERTY(SOURCE ${_source_file}
+    APPEND PROPERTY COMPILE_DEFINITIONS ASPECT_CURRENT_BINARY_DIR="${CMAKE_CURRENT_BINARY_DIR}")
+ENDFOREACH()
+
 
 # load in version info and export it
 FILE(STRINGS "${CMAKE_SOURCE_DIR}/VERSION" ASPECT_PACKAGE_VERSION LIMIT_COUNT 1)
@@ -416,6 +424,8 @@ IF (DEAL_II_STATIC_EXECUTABLE STREQUAL "ON")
   SET(ASPECT_USE_SHARED_LIBS OFF CACHE BOOL "" FORCE)
 ENDIF()
 
+SET(ASPECT_SAFE OFF CACHE BOOL "If ON, we disable code that exposes system resources via user parameters.")
+
 INCLUDE (CheckCXXSourceCompiles)
 
 SET(_backup_libs ${CMAKE_REQUIRED_LIBRARIES})
@@ -455,6 +465,38 @@ IF (ASPECT_HAVE_LINK_H)
   MESSAGE(STATUS "Enabling checking of compatible deal.II library when loading plugins")
 ENDIF()
 
+IF (ASPECT_SAFE)
+  MESSAGE(STATUS "Disabling features that expose system resources via user parameters")
+  FOREACH(_source_file ${TARGET_SRC})
+    SET_PROPERTY(SOURCE ${_source_file}
+      APPEND PROPERTY COMPILE_DEFINITIONS ASPECT_SAFE=1)
+  ENDFOREACH()
+ELSE()
+  MESSAGE(STATUS "Enabling features that expose system resources via user parameters")
+  FOREACH(_source_file ${TARGET_SRC})
+    SET_PROPERTY(SOURCE ${_source_file}
+      APPEND PROPERTY COMPILE_DEFINITIONS ASPECT_SAFE=0)
+  ENDFOREACH()
+ENDIF()
+
+IF (ASPECT_SAFE)
+  MESSAGE(STATUS "Disabling features that expose system resources via user parameters")
+  FOREACH(_source_file ${TARGET_SRC})
+    SET_PROPERTY(SOURCE ${_source_file}
+      APPEND PROPERTY COMPILE_DEFINITIONS ASPECT_SAFE=1)
+  ENDFOREACH()
+ELSE()
+  MESSAGE(STATUS "Enabling features that expose system resources via user parameters")
+  FOREACH(_source_file ${TARGET_SRC})
+    SET_PROPERTY(SOURCE ${_source_file}
+      APPEND PROPERTY COMPILE_DEFINITIONS ASPECT_SAFE=0)
+  ENDFOREACH()
+ENDIF()
+
+# Check if we want to use cotire to precompile header files and prepare a
+# unity build target. This speeds up compile time, but can fail on some
+# machines, therefore it is disabled by default.
+SET(ASPECT_PRECOMPILE_HEADERS OFF CACHE BOOL "Precompile external header files using cotire to speedup compile time.")
 SET(ASPECT_ADDITIONAL_CXX_FLAGS "" CACHE STRING "Additional CMAKE_CXX_FLAGS applied after the deal.II options.")
 
 IF(NOT ASPECT_ADDITIONAL_CXX_FLAGS STREQUAL "")
