@@ -19,20 +19,20 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
      Writing graphical output:           output-stokes_residual/solution/solution-00000
      RMS, max velocity:                  1.24e-08 m/s, 4.85e-08 m/s
      Temperature min/avg/max:            0 K, 1.03 K, 1.1 K
-     Heat fluxes through boundary parts: 1.672e-07 W, 4.017e-05 W, 2.408e-07 W, 2.408e-07 W
+     Heat fluxes through boundary parts: 1.656e-07 W, 1.35e-05 W, 1.77e-07 W, 2.999e-07 W
      Writing stokes residuals            output-stokes_residual/stokes_residuals.txt
 
 *** Timestep 1:  t=0.1 seconds
    Solving temperature system... 4 iterations.
-   Solving Stokes system... 6+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.44841e-08, 2.41617e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 2.41617e-07
+   Solving Stokes system... 5+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.24912e-08, 2.10523e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 2.10523e-07
 
 
    Postprocessing:
      RMS, max velocity:                  1.24e-08 m/s, 4.85e-08 m/s
      Temperature min/avg/max:            0 K, 1.03 K, 1.1 K
-     Heat fluxes through boundary parts: 1.672e-07 W, 4.017e-05 W, 2.408e-07 W, 2.408e-07 W
+     Heat fluxes through boundary parts: 1.656e-07 W, 1.35e-05 W, 1.77e-07 W, 2.999e-07 W
      Writing stokes residuals            output-stokes_residual/stokes_residuals.txt
 
 Termination requested by criterion: end time

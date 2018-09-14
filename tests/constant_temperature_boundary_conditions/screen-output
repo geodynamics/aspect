@@ -10,7 +10,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
    Postprocessing:
      Writing graphical output:           output-constant_temperature_boundary_conditions/solution/solution-00000
      Temperature min/avg/max:            -2.201e-16 K, 0.03098 K, 3 K
-     Heat fluxes through boundary parts: 2.083e-06 W, -7.792e-05 W, -0.000228 W, -0.000342 W
+     Heat fluxes through boundary parts: 6.963e-07 W, -2.599e-05 W, -7.604e-05 W, -0.0001139 W
 
 Termination requested by criterion: end time
 

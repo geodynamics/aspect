@@ -1,5 +1,3 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
 Number of active cells: 100 (on 1 levels)
 Number of degrees of freedom: 1,885 (882+121+441+441)
@@ -11,7 +9,7 @@ Number of degrees of freedom: 1,885 (882+121+441+441)
    Solving Stokes system... 12+0 iterations.
 
    Postprocessing:
-     Heat fluxes through boundary parts: 1.43e-11 W, 1.262e-11 W, -2723 W, 7625 W
+     Heat fluxes through boundary parts: -1.569e-12 W, 1.21e-12 W, -2723 W, 6808 W
      Temperature min/avg/max:            273 K, 1016 K, 1543 K
      Heating rate (average/total):       2.273e-10 W/kg, 7500 W
 
@@ -28,7 +26,7 @@ Number of degrees of freedom: 1,885 (882+121+441+441)
    Solving Stokes system... 15+0 iterations.
 
    Postprocessing:
-     Heat fluxes through boundary parts: -1.937e-09 W, -1.135e-09 W, 236 W, 7171 W
+     Heat fluxes through boundary parts: -1.745e-09 W, -4.34e-09 W, -137 W, 6796 W
      Temperature min/avg/max:            273 K, 1134 K, 1544 K
      Heating rate (average/total):       2.273e-10 W/kg, 7500 W
 

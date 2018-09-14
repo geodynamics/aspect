@@ -11,7 +11,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
    Postprocessing:
      RMS, max velocity:                  1.79 m/s, 2.51 m/s
      Temperature min/avg/max:            0 K, 0.5 K, 1 K
-     Heat fluxes through boundary parts: 0.0002951 W, -0.0002951 W, -1 W, 1 W
+     Heat fluxes through boundary parts: -0.1838 W, 0.1838 W, -1.002 W, 1.002 W
      Writing graphical output:           output-refinement_switch/solution/solution-00000
 
 Number of active cells: 28 (on 4 levels)
@@ -26,7 +26,7 @@ Number of degrees of freedom: 639 (298+43+149+149)
    Postprocessing:
      RMS, max velocity:                  1.79 m/s, 2.55 m/s
      Temperature min/avg/max:            0 K, 0.5 K, 1 K
-     Heat fluxes through boundary parts: 0.000125 W, -0.000125 W, -1 W, 1 W
+     Heat fluxes through boundary parts: -0.1642 W, 0.181 W, -1.006 W, 1.006 W
      Writing graphical output:           output-refinement_switch/solution/solution-00001
 
 Number of active cells: 64 (on 4 levels)
@@ -41,18 +41,18 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
    Postprocessing:
      RMS, max velocity:                  1.79 m/s, 2.53 m/s
      Temperature min/avg/max:            0 K, 0.5 K, 1 K
-     Heat fluxes through boundary parts: 3.761e-05 W, -3.761e-05 W, -1 W, 1 W
+     Heat fluxes through boundary parts: -0.09565 W, 0.09564 W, -1.001 W, 1.001 W
      Writing graphical output:           output-refinement_switch/solution/solution-00002
 
 *** Timestep 1:  t=0.0246638 seconds
-   Solving temperature system... 20 iterations.
+   Solving temperature system... 19 iterations.
    Solving heat system ... 15 iterations.
-   Solving Stokes system... 11+0 iterations.
+   Solving Stokes system... 10+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  8.64 m/s, 12.2 m/s
+     RMS, max velocity:                  8.67 m/s, 12.2 m/s
      Temperature min/avg/max:            0 K, 0.5 K, 1 K
-     Heat fluxes through boundary parts: 0.000187 W, -0.0001861 W, -1.016 W, 1.016 W
+     Heat fluxes through boundary parts: -0.4607 W, 0.4607 W, -1.029 W, 1.029 W
      Writing graphical output:           output-refinement_switch/solution/solution-00003
 
 Termination requested by criterion: end step

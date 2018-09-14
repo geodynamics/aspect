@@ -1,5 +1,3 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
 Loading shared library <./libfind_postprocess.so>
 
@@ -20,7 +18,7 @@ HeatFluxStatistics is found!
    Solving Stokes system... 22+0 iterations.
 
    Postprocessing:
-     Heat fluxes through boundary parts: 1.688e-07 W, 2.017e-05 W, 2.43e-07 W, 2.43e-07 W
+     Heat fluxes through boundary parts: 1.624e-07 W, 6.829e-06 W, -2.198e-07 W, 6.875e-07 W
 
 Termination requested by criterion: end time
 

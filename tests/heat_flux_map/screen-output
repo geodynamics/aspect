@@ -9,15 +9,15 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
    Postprocessing:
      Writing heat flux map:              output-heat_flux_map/heat_flux.00000
-     Heat fluxes through boundary parts: 4.724e-06 W, -4.724e-06 W, -1 W, 1 W
+     Heat fluxes through boundary parts: -0.04829 W, 0.04828 W, -1 W, 1 W
 
 *** Timestep 1:  t=0.01 seconds
-   Solving temperature system... 38 iterations.
+   Solving temperature system... 37 iterations.
    Solving Stokes system... 33+0 iterations.
 
    Postprocessing:
      Writing heat flux map:              output-heat_flux_map/heat_flux.00001
-     Heat fluxes through boundary parts: 1.48e-05 W, -1.445e-05 W, -1.005 W, 1.005 W
+     Heat fluxes through boundary parts: -0.1419 W, 0.1419 W, -1.007 W, 1.007 W
 
 Termination requested by criterion: end time
 

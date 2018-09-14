@@ -19,7 +19,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
 
    Postprocessing:
      Writing graphical output:  output-refinement_artificial_viscosity_1/solution/solution-00001
-     Temperature min/avg/max:   0.07517 K, 0.1773 K, 0.5337 K
+     Temperature min/avg/max:   0.07516 K, 0.1773 K, 0.5338 K
      Compositions min/max/mass: 0.06713/1.053/0.1693 // -6.407/102.3/79.27
 
 *** Timestep 2:  t=0.0441942 seconds
@@ -29,11 +29,11 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
 
    Postprocessing:
      Writing graphical output:  output-refinement_artificial_viscosity_1/solution/solution-00002
-     Temperature min/avg/max:   0.081 K, 0.1773 K, 0.5329 K
+     Temperature min/avg/max:   0.08098 K, 0.1773 K, 0.5329 K
      Compositions min/max/mass: 0.04618/1.053/0.1693 // -4.878/100.5/78.14
 
-Number of active cells: 313 (on 6 levels)
-Number of degrees of freedom: 7,225 (2,746+360+1,373+1,373+1,373)
+Number of active cells: 316 (on 6 levels)
+Number of degrees of freedom: 7,288 (2,770+363+1,385+1,385+1,385)
 
 *** Timestep 3:  t=0.0662913 seconds
    Solving temperature system... 15 iterations.
@@ -42,7 +42,7 @@ Number of degrees of freedom: 7,225 (2,746+360+1,373+1,373+1,373)
 
    Postprocessing:
      Writing graphical output:  output-refinement_artificial_viscosity_1/solution/solution-00003
-     Temperature min/avg/max:   0.09119 K, 0.1773 K, 0.5186 K
+     Temperature min/avg/max:   0.09119 K, 0.1773 K, 0.5187 K
      Compositions min/max/mass: 0.03884/1.05/0.1695 // -3.664/100.1/77
 
 *** Timestep 4:  t=0.08 seconds
@@ -52,8 +52,8 @@ Number of degrees of freedom: 7,225 (2,746+360+1,373+1,373+1,373)
 
    Postprocessing:
      Writing graphical output:  output-refinement_artificial_viscosity_1/solution/solution-00004
-     Temperature min/avg/max:   0.09234 K, 0.1773 K, 0.5151 K
-     Compositions min/max/mass: 0.04131/1.041/0.1696 // -3.303/100.2/76.28
+     Temperature min/avg/max:   0.09233 K, 0.1773 K, 0.5151 K
+     Compositions min/max/mass: 0.04131/1.041/0.1696 // -3.531/100.2/76.28
 
 Termination requested by criterion: end time
 

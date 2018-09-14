@@ -11,7 +11,7 @@ Number of degrees of freedom: 948 (578+81+289)
      Writing graphical output:           output-minimum_refinement_function/solution/solution-00000
      RMS, max velocity:                  3.8e-06 m/year, 5.98e-06 m/year
      Temperature min/avg/max:            1623 K, 1743 K, 1873 K
-     Heat fluxes through boundary parts: 4.53e-12 W, -1.812e-11 W, -6.794e-12 W, -1.699e-12 W
+     Heat fluxes through boundary parts: 1.421e-14 W, -1.066e-14 W, -5.633 W, 5.633 W
      Writing depth average:              output-minimum_refinement_function/depth_average.gnuplot
 
 Number of active cells: 214 (on 5 levels)
@@ -26,7 +26,7 @@ Number of degrees of freedom: 3,113 (1,906+254+953)
      Writing graphical output:           output-minimum_refinement_function/solution/solution-00001
      RMS, max velocity:                  3.8e-06 m/year, 6.03e-06 m/year
      Temperature min/avg/max:            1623 K, 1745 K, 1873 K
-     Heat fluxes through boundary parts: 7.927e-12 W, -3.171e-11 W, -1.132e-11 W, -3.963e-12 W
+     Heat fluxes through boundary parts: 9.59 W, -8.086 W, -2.866 W, 2.866 W
      Writing depth average:              output-minimum_refinement_function/depth_average.gnuplot
 
 Number of active cells: 628 (on 6 levels)
@@ -41,7 +41,7 @@ Number of degrees of freedom: 8,799 (5,400+699+2,700)
      Writing graphical output:           output-minimum_refinement_function/solution/solution-00002
      RMS, max velocity:                  3.8e-06 m/year, 6.04e-06 m/year
      Temperature min/avg/max:            1623 K, 1747 K, 1873 K
-     Heat fluxes through boundary parts: 1.246e-11 W, -4.983e-11 W, -1.019e-11 W, -8.493e-12 W
+     Heat fluxes through boundary parts: 18.45 W, -15.8 W, -2.483 W, 1.44 W
      Writing depth average:              output-minimum_refinement_function/depth_average.gnuplot
 
 Number of active cells: 1,492 (on 7 levels)
@@ -71,7 +71,7 @@ Number of degrees of freedom: 20,806 (12,786+1,627+6,393)
      Writing graphical output:           output-minimum_refinement_function/solution/solution-00003
      RMS, max velocity:                  3.8e-06 m/year, 6.04e-06 m/year
      Temperature min/avg/max:            1623 K, 1747 K, 1873 K
-     Heat fluxes through boundary parts: 1.699e-11 W, -6.794e-11 W, -1.132e-11 W, -8.493e-12 W
+     Heat fluxes through boundary parts: 20.77 W, -17.94 W, -2.791 W, 1.382 W
      Writing depth average:              output-minimum_refinement_function/depth_average.gnuplot
 
 Number of active cells: 1,564 (on 7 levels)

@@ -1,17 +1,10 @@
------------------------------------------------------------------------------
--- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
---     . version 2.0.0-pre
---     . running in DEBUG mode
---     . running with 1 MPI process
---     . using Trilinos
------------------------------------------------------------------------------
 
 *** Resuming from snapshot!
 
 Number of active cells: 1,024 (on 6 levels)
 Number of degrees of freedom: 13,764 (9,539+4,225)
 
-*** Timestep 8:  t=9.64864e+06 seconds
+*** Timestep 8:  t=9.63611e+06 seconds
    Solving temperature system... 20 iterations.
    Solving Stokes system... done.
 
@@ -26,30 +19,13 @@ Number of degrees of freedom: 13,764 (9,539+4,225)
 
    Postprocessing:
      Temperature min/avg/max: 1.007 K, 1.041 K, 1.087 K
-     RMS, max velocity:       4.4e-09 m/s, 1.04e-08 m/s
+     RMS, max velocity:       4.41e-09 m/s, 1.05e-08 m/s
      Writing particle output: output2.tmp/particles/particle-00009
 
 Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |     0.914s |            |
-|                                             |            |            |
-| Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         2 |     0.135s |        15% |
-| Assemble temperature system     |         2 |     0.212s |        23% |
-| Build temperature preconditioner|         2 |   0.00947s |         1% |
-| Solve Stokes system             |         2 |     0.294s |        32% |
-| Solve temperature system        |         2 |    0.0111s |       1.2% |
-| Initialization                  |         1 |    0.0302s |       3.3% |
-| Particles: Advect               |         4 |   0.00966s |       1.1% |
-| Particles: Initialization       |         1 |  0.000267s |         0% |
-| Particles: Output               |         2 |   0.00693s |      0.76% |
-| Particles: Refine mesh, load    |         1 |  0.000821s |         0% |
-| Particles: Sort                 |         4 |   0.00829s |      0.91% |
-| Particles: Update properties    |         2 |    0.0376s |       4.1% |
-| Postprocessing                  |         2 |     0.095s |        10% |
-| Setup dof systems               |         1 |    0.0547s |         6% |
 +---------------------------------+-----------+------------+------------+
 

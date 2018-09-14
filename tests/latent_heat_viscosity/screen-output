@@ -39,7 +39,7 @@ Number of degrees of freedom: 38,784 (23,808+3,072+11,904)
      Writing graphical output:           output-latent_heat_viscosity/solution/solution-00000
      RMS, max velocity:                  0.0168 m/year, 0.078 m/year
      Temperature min/avg/max:            273 K, 1587 K, 2600 K
-     Heat fluxes through boundary parts: -8.752e+05 W, 1.997e+06 W
+     Heat fluxes through boundary parts: -3.036e+05 W, 1.084e+06 W
      Writing depth average:              output-latent_heat_viscosity/depth_average.gnuplot
 
 *** Timestep 1:  t=1.15653e+06 years
@@ -51,7 +51,7 @@ Number of degrees of freedom: 38,784 (23,808+3,072+11,904)
      Writing graphical output:           output-latent_heat_viscosity/solution/solution-00001
      RMS, max velocity:                  0.0192 m/year, 0.0775 m/year
      Temperature min/avg/max:            273 K, 1583 K, 2600 K
-     Heat fluxes through boundary parts: -8.559e+05 W, 1.81e+06 W
+     Heat fluxes through boundary parts: -3.097e+05 W, 1.188e+06 W
      Writing depth average:              output-latent_heat_viscosity/depth_average.gnuplot
 
 Termination requested by criterion: end step
