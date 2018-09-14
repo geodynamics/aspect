@@ -990,6 +990,16 @@ namespace aspect
                 material_model->evaluate(scratch.face_material_model_inputs,
                                          scratch.face_material_model_outputs);
 
+                if (parameters.formulation_temperature_equation ==
+                    Parameters<dim>::Formulation::TemperatureEquation::reference_density_profile)
+                  {
+                    const unsigned int n_q_points = scratch.face_finite_element_values->n_quadrature_points;
+                    for (unsigned int q=0; q<n_q_points; ++q)
+                      {
+                        scratch.face_material_model_outputs.densities[q] = adiabatic_conditions->density(scratch.face_material_model_inputs.position[q]);
+                      }
+                  }
+
                 heating_model_manager.evaluate(scratch.face_material_model_inputs,
                                                scratch.face_material_model_outputs,
                                                scratch.face_heating_model_outputs);

@@ -1,0 +1,9 @@
+Fixed: In case of combining reference profile formulations of the equations
+(ALA, Boussinesq) with discontinuous temperature elements the face terms
+in the assembly were incorrectly assembled with the full, instead of the
+reference density. The volume terms were correct. The result were temperature
+overshoots and possible crashes if the face terms dominate and create densities
+smaller than zero. This is fixed now, the face terms are now correctly computed
+with the reference density.
+<br>
+(Rene Gassmoeller, 2018/09/15)
