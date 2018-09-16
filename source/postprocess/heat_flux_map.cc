@@ -29,25 +29,70 @@ namespace aspect
 {
   namespace Postprocess
   {
+    namespace internal
+    {
+      template <int dim>
+      std::vector<std::vector<std::pair<double, double> > >
+      compute_heat_flux_through_boundary_faces (const SimulatorAccess<dim> &simulator_access)
+      {
+        std::vector<std::vector<std::pair<double, double> > > heat_flux_and_area(simulator_access.get_triangulation().n_active_cells(),
+                                                                                 std::vector<std::pair<double, double> >(GeometryInfo<dim>::faces_per_cell,
+                                                                                     std::pair<double,double>()));
+
+        // create a quadrature formula based on the temperature element alone.
+        const QGauss<dim-1> quadrature_formula (simulator_access.get_fe().base_element(simulator_access.introspection().base_elements.temperature).degree+1);
+        FEFaceValues<dim> fe_face_values (simulator_access.get_mapping(),
+                                          simulator_access.get_fe(),
+                                          quadrature_formula,
+                                          update_gradients      | update_values |
+                                          update_normal_vectors |
+                                          update_q_points       | update_JxW_values);
+
+        typename MaterialModel::Interface<dim>::MaterialModelInputs in(fe_face_values.n_quadrature_points, simulator_access.n_compositional_fields());
+        typename MaterialModel::Interface<dim>::MaterialModelOutputs out(fe_face_values.n_quadrature_points, simulator_access.n_compositional_fields());
+
+        std::vector<Tensor<1,dim> > temperature_gradients (quadrature_formula.size());
+
+        // loop over all of the surface cells and evaluate the heat flux
+        typename DoFHandler<dim>::active_cell_iterator
+        cell = simulator_access.get_dof_handler().begin_active(),
+        endc = simulator_access.get_dof_handler().end();
+
+        for (; cell!=endc; ++cell)
+          if (cell->is_locally_owned())
+            for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+              if (cell->at_boundary(f))
+                {
+                  fe_face_values.reinit (cell, f);
+                  in.reinit(fe_face_values, cell, simulator_access.introspection(), simulator_access.get_solution(), false);
+                  simulator_access.get_material_model().evaluate(in, out);
+
+                  fe_face_values[simulator_access.introspection().extractors.temperature].get_function_gradients (simulator_access.get_solution(),
+                      temperature_gradients);
+
+                  // Calculate the normal conductive heat flux given by the formula
+                  //   j = - k * n . grad T
+                  for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)
+                    {
+                      const double thermal_conductivity
+                        = out.thermal_conductivities[q];
+
+                      heat_flux_and_area[cell->active_cell_index()][f].first += -thermal_conductivity *
+                                                                                (temperature_gradients[q] * fe_face_values.normal_vector(q)) *
+                                                                                fe_face_values.JxW(q);
+                      heat_flux_and_area[cell->active_cell_index()][f].second += fe_face_values.JxW(q);
+                    }
+                }
+        return heat_flux_and_area;
+      }
+    }
+
     template <int dim>
     std::pair<std::string,std::string>
     HeatFluxMap<dim>::execute (TableHandler &)
     {
-      // create a quadrature formula based on the temperature element alone.
-      const QGauss<dim-1> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.temperature).degree+1);
-
-      FEFaceValues<dim> fe_face_values (this->get_mapping(),
-                                        this->get_fe(),
-                                        quadrature_formula,
-                                        update_gradients      | update_values |
-                                        update_normal_vectors |
-                                        update_q_points       | update_JxW_values);
-
-      typename MaterialModel::Interface<dim>::MaterialModelInputs in(fe_face_values.n_quadrature_points, this->n_compositional_fields());
-      typename MaterialModel::Interface<dim>::MaterialModelOutputs out(fe_face_values.n_quadrature_points, this->n_compositional_fields());
-
-      std::vector<Tensor<1,dim> > temperature_gradients (quadrature_formula.size());
-      std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (quadrature_formula.size()));
+      std::vector<std::vector<std::pair<double, double> > > heat_flux_and_area =
+        internal::compute_heat_flux_through_boundary_faces (*this);
 
       // have a stream into which we write the data. the text stream is then
       // later sent to processor 0
@@ -66,62 +111,14 @@ namespace aspect
                 (this->get_geometry_model().translate_id_to_symbol_name (cell->face(f)->boundary_id()) == "top" ||
                  this->get_geometry_model().translate_id_to_symbol_name (cell->face(f)->boundary_id()) == "bottom"))
               {
-                fe_face_values.reinit (cell, f);
-
                 // evaluate position of heat flow to write into output file
                 const Point<dim> midpoint_at_surface = cell->face(f)->center();
 
-                // get the various components of the solution, then
-                // evaluate the material properties there
-                fe_face_values[this->introspection().extractors.temperature].get_function_gradients (this->get_solution(),
-                    temperature_gradients);
-                fe_face_values[this->introspection().extractors.temperature].get_function_values (this->get_solution(), in.temperature);
-                fe_face_values[this->introspection().extractors.pressure].get_function_values (this->get_solution(), in.pressure);
-
-                for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-                  fe_face_values[this->introspection().extractors.compositional_fields[c]].get_function_values(this->get_solution(), composition_values[c]);
-
-                in.position = fe_face_values.get_quadrature_points();
-
-                // since we are not reading the viscosity and the viscosity
-                // is the only coefficient that depends on the strain rate,
-                // we need not compute the strain rate. set the corresponding
-                // array to empty, to prevent accidental use and skip the
-                // evaluation of the strain rate in evaluate().
-                in.strain_rate.resize(0);
-
-
-                for (unsigned int i=0; i<fe_face_values.n_quadrature_points; ++i)
-                  {
-                    for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-                      in.composition[i][c] = composition_values[c][i];
-                  }
-
-                this->get_material_model().evaluate(in, out);
-
-
-                // Calculate the normal conductive heat flux given by the formula
-                //   j = - k * n . grad T
-
-                double normal_flux = 0;
-                double face_area = 0;
-                for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)
-                  {
-                    const double thermal_conductivity
-                      = out.thermal_conductivities[q];
-
-                    normal_flux += -thermal_conductivity *
-                                   (temperature_gradients[q] * fe_face_values.normal_vector(q)) *
-                                   fe_face_values.JxW(q);
-                    face_area += fe_face_values.JxW(q);
-
-                  }
-
-                const double flux_density = normal_flux / face_area;
+                const double flux_density = heat_flux_and_area[cell->active_cell_index()][f].first /
+                                            heat_flux_and_area[cell->active_cell_index()][f].second;
 
                 // store final position and heat flow
                 stored_values.push_back (std::make_pair(midpoint_at_surface, flux_density));
-
               }
 
 
