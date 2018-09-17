@@ -168,11 +168,11 @@ namespace aspect
                                    "Maximum radial coordinate for the region of particles. "
                                    "Measured from the center position.");
                 prm.declare_entry ("Minimum longitude", "0",
-                                   Patterns::Double (0,360),
+                                   Patterns::Double (-180,360),
                                    "Minimum longitude coordinate for the region of particles "
                                    "in degrees. Measured from the center position.");
                 prm.declare_entry ("Maximum longitude", "360",
-                                   Patterns::Double (0,360),
+                                   Patterns::Double (-180,360),
                                    "Maximum longitude coordinate for the region of particles "
                                    "in degrees. Measured from the center position.");
                 prm.declare_entry ("Minimum latitude", "0",
@@ -225,6 +225,10 @@ namespace aspect
                 AssertThrow(P_max[1] > P_min[1],
                             ExcMessage("The maximum longitude you prescribed in the uniform radial"
                                        "particle generator has to be higher than the minimum longitude."));
+                AssertThrow(P_max[1] - P_min[1] <= 2.0 * numbers::PI,
+                            ExcMessage("The difference between the maximum and minimum longitude you "
+                                       "prescribed in the uniform radial particle generator has to be "
+                                       "less than 360 degrees."));
 
                 if (dim ==3)
                   {
