@@ -1452,19 +1452,19 @@ namespace aspect
                 if (std::abs(max_solution_local-local_solution_average) > std::numeric_limits<double>::min())
                   {
                     theta = std::min(theta, (max_solution_exact_global-local_solution_average)
-                                                     / (max_solution_local-local_solution_average));
+                                     / (max_solution_local-local_solution_average));
                   }
                 if (std::abs(min_solution_local-local_solution_average) > std::numeric_limits<double>::min())
                   {
                     theta = std::min(theta, (min_solution_exact_global-local_solution_average)
-                                                     / (min_solution_local-local_solution_average));
+                                     / (min_solution_local-local_solution_average));
                   }
 
                 AssertThrow(theta>=0.0,ExcMessage("The bound preserving factor is smaller than zero. "
-                    "This should not happen, please contact the developers. "
-                    "Minimum solution in cell is: " + Utilities::to_string(min_solution_local) +
-                    ". Maximum solution in cell is: " + Utilities::to_string(max_solution_local) +
-                    ". Average solution in cell is: " + Utilities::to_string(local_solution_average)));
+                                                  "This should not happen, please contact the developers. "
+                                                  "Minimum solution in cell is: " + Utilities::to_string(min_solution_local) +
+                                                  ". Maximum solution in cell is: " + Utilities::to_string(max_solution_local) +
+                                                  ". Average solution in cell is: " + Utilities::to_string(local_solution_average)));
 
 
                 /* Modify the advection degrees of freedom of the numerical solution.
