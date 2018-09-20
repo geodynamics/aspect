@@ -1277,31 +1277,31 @@ namespace aspect
     const unsigned int n_q_points_2 = quadrature_formula_2.size();
     const unsigned int n_q_points   = dim * n_q_points_2 *std::pow(n_q_points_1, dim-1) ;
 
-    std::vector< Point <dim> > quadrature_points (n_q_points);
+    std::vector< Point <dim> > quadrature_points;
+    quadrature_points.reserve(n_q_points);
 
     switch (dim)
       {
         case 2:
         {
           // append quadrature points combination 12
-          for ( unsigned int i=0; i < n_q_points_1 ; i++)
+          for (unsigned int i=0; i < n_q_points_1 ; ++i)
             {
               const double  x = quadrature_formula_1.point(i)(0);
-              for ( unsigned int j=0; j < n_q_points_2 ; j++)
+              for (unsigned int j=0; j < n_q_points_2 ; ++j)
                 {
-                  const double  y = quadrature_formula_2.point(j)(0);
-                  quadrature_points[i * n_q_points_2+j] = Point<dim>(x,y);
+                  const double y = quadrature_formula_2.point(j)(0);
+                  quadrature_points.push_back(Point<dim>(x,y));
                 }
             }
-          const unsigned int n_q_points_12 = n_q_points_1 * n_q_points_2;
           // append quadrature points combination 21
-          for ( unsigned int i=0; i < n_q_points_2 ; i++)
+          for (unsigned int i=0; i < n_q_points_2 ; ++i)
             {
               const double  x = quadrature_formula_2.point(i)(0);
-              for ( unsigned int j=0; j < n_q_points_1 ; j++)
+              for (unsigned int j=0; j < n_q_points_1 ; ++j)
                 {
-                  const double  y = quadrature_formula_1.point(j)(0);
-                  quadrature_points[n_q_points_12 + i * n_q_points_1+j ] = Point<dim>(x,y);
+                  const double y = quadrature_formula_1.point(j)(0);
+                  quadrature_points.push_back(Point<dim>(x,y));
                 }
             }
           break;
@@ -1310,50 +1310,44 @@ namespace aspect
         case 3:
         {
           // append quadrature points combination 121
-          for ( unsigned int i=0; i < n_q_points_1 ; i++)
+          for ( unsigned int i=0; i < n_q_points_1 ; ++i)
             {
-              const double  x = quadrature_formula_1.point(i)(0);
-              for ( unsigned int j=0; j < n_q_points_2 ; j++)
+              const double x = quadrature_formula_1.point(i)(0);
+              for ( unsigned int j=0; j < n_q_points_2 ; ++j)
                 {
-                  const double  y = quadrature_formula_2.point(j)(0);
-                  for ( unsigned int k=0; k < n_q_points_1 ; k++)
+                  const double y = quadrature_formula_2.point(j)(0);
+                  for ( unsigned int k=0; k < n_q_points_1 ; ++k)
                     {
-                      const unsigned int k_index = i * n_q_points_2 * n_q_points_1 + j * n_q_points_1 + k;
-                      const double  z = quadrature_formula_1.point(k)(0);
-                      quadrature_points[k_index] = Point<dim>(x,y,z);
+                      const double z = quadrature_formula_1.point(k)(0);
+                      quadrature_points.push_back(Point<dim>(x,y,z));
                     }
                 }
             }
-          const unsigned int n_q_points_121 = n_q_points_1 * n_q_points_2 * n_q_points_1;
           // append quadrature points combination 112
-          for ( unsigned int i=0; i < n_q_points_1 ; i++)
+          for (unsigned int i=0; i < n_q_points_1 ; ++i)
             {
-              const double  x = quadrature_formula_1.point(i)(0);
-              for ( unsigned int j=0; j < n_q_points_1 ; j++)
+              const double x = quadrature_formula_1.point(i)(0);
+              for (unsigned int j=0; j < n_q_points_1 ; ++j)
                 {
                   const double y = quadrature_formula_1.point(j)(0);
-                  for ( unsigned int k=0; k < n_q_points_2 ; k++)
+                  for (unsigned int k=0; k < n_q_points_2 ; ++k)
                     {
-                      const unsigned int k_index =
-                        n_q_points_121 + i * n_q_points_1 * n_q_points_2 + j * n_q_points_2 + k;
-                      const double  z = quadrature_formula_2.point(k)(0);
-                      quadrature_points[k_index] = Point<dim>(x,y,z);
+                      const double z = quadrature_formula_2.point(k)(0);
+                      quadrature_points.push_back(Point<dim>(x,y,z));
                     }
                 }
             }
           // append quadrature points combination 211
-          for ( unsigned int i=0; i < n_q_points_2 ; i++)
+          for (unsigned int i=0; i < n_q_points_2 ; ++i)
             {
-              const double  x = quadrature_formula_2.point(i)(0);
-              for ( unsigned int j=0; j < n_q_points_1 ; j++)
+              const double x = quadrature_formula_2.point(i)(0);
+              for ( unsigned int j=0; j < n_q_points_1 ; ++j)
                 {
-                  const double  y = quadrature_formula_1.point(j)(0);
-                  for ( unsigned int k=0; k < n_q_points_1 ; k++)
+                  const double y = quadrature_formula_1.point(j)(0);
+                  for ( unsigned int k=0; k < n_q_points_1 ; ++k)
                     {
-                      const unsigned int k_index =
-                        2 * n_q_points_121 + i * n_q_points_1 * n_q_points_1 + j * n_q_points_1 + k;
-                      const double  z = quadrature_formula_1.point(k)(0);
-                      quadrature_points[k_index] = Point<dim>(x,y,z);
+                      const double z = quadrature_formula_1.point(k)(0);
+                      quadrature_points.push_back(Point<dim>(x,y,z));
                     }
                 }
             }
@@ -1466,11 +1460,11 @@ namespace aspect
                                                      / (min_solution_local-local_solution_average));
                   }
 
-                AssertThrow(theta>0.0,ExcMessage("The bound preserving factor is smaller than zero. "
+                AssertThrow(theta>=0.0,ExcMessage("The bound preserving factor is smaller than zero. "
                     "This should not happen, please contact the developers. "
-                    "Minimum solution in cell is: " + Utilities::int_to_string(min_solution_local) +
-                    ". Maximum solution in cell is: " + Utilities::int_to_string(max_solution_local) +
-                    ". Average solution in cell is: " + Utilities::int_to_string(local_solution_average)));
+                    "Minimum solution in cell is: " + Utilities::to_string(min_solution_local) +
+                    ". Maximum solution in cell is: " + Utilities::to_string(max_solution_local) +
+                    ". Average solution in cell is: " + Utilities::to_string(local_solution_average)));
 
 
                 /* Modify the advection degrees of freedom of the numerical solution.
