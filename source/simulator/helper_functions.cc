@@ -1318,7 +1318,7 @@ namespace aspect
                   const double  y = quadrature_formula_2.point(j)(0);
                   for ( unsigned int k=0; k < n_q_points_1 ; k++)
                     {
-                      const unsigned int k_index = i * n_q_points_2 * n_q_points_1 + j * n_q_points_2 + k;
+                      const unsigned int k_index = i * n_q_points_2 * n_q_points_1 + j * n_q_points_1 + k;
                       const double  z = quadrature_formula_1.point(k)(0);
                       quadrature_points[k_index] = Point<dim>(x,y,z);
                     }
@@ -1351,7 +1351,7 @@ namespace aspect
                   for ( unsigned int k=0; k < n_q_points_1 ; k++)
                     {
                       const unsigned int k_index =
-                        2 * n_q_points_121 + i * n_q_points_2 * n_q_points_1 + j * n_q_points_1 + k;
+                        2 * n_q_points_121 + i * n_q_points_1 * n_q_points_1 + j * n_q_points_1 + k;
                       const double  z = quadrature_formula_1.point(k)(0);
                       quadrature_points[k_index] = Point<dim>(x,y,z);
                     }
@@ -1457,19 +1457,26 @@ namespace aspect
                 double theta = 1.0;
                 if (std::abs(max_solution_local-local_solution_average) > std::numeric_limits<double>::min())
                   {
-                    theta = std::min(theta, std::abs((max_solution_exact_global-local_solution_average)
-                                                     / (max_solution_local-local_solution_average)));
+                    theta = std::min(theta, (max_solution_exact_global-local_solution_average)
+                                                     / (max_solution_local-local_solution_average));
                   }
                 if (std::abs(min_solution_local-local_solution_average) > std::numeric_limits<double>::min())
                   {
-                    theta = std::min(theta, std::abs((min_solution_exact_global-local_solution_average)
-                                                     / (min_solution_local-local_solution_average)));
+                    theta = std::min(theta, (min_solution_exact_global-local_solution_average)
+                                                     / (min_solution_local-local_solution_average));
                   }
 
+                AssertThrow(theta>0.0,ExcMessage("The bound preserving factor is smaller than zero. "
+                    "This should not happen, please contact the developers. "
+                    "Minimum solution in cell is: " + Utilities::int_to_string(min_solution_local) +
+                    ". Maximum solution in cell is: " + Utilities::int_to_string(max_solution_local) +
+                    ". Average solution in cell is: " + Utilities::int_to_string(local_solution_average)));
+
+
                 /* Modify the advection degrees of freedom of the numerical solution.
-                 * note that we are using DG elements, so every DoF on a locally owned cell is locally owned;
+                 * Note that we are using DG elements, so every DoF on a locally owned cell is locally owned;
                  * this means that we do not need to check whether the 'distributed_solution' vector actually
-                 *  stores the element we read from/write to here.
+                 * stores the element we read from/write to here.
                  */
                 for (unsigned int j = 0;
                      j < finite_element.base_element(advection_field.base_element(introspection)).dofs_per_cell;
