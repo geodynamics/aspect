@@ -1480,8 +1480,7 @@ namespace aspect
 
       // global_composition_max_preset.size() and global_composition_min_preset.size() are obtained early than
       // n_compositional_fields. Therefore, we can only check if their sizes are the same here.
-      if (use_limiter_for_discontinuous_temperature_solution
-          || use_limiter_for_discontinuous_composition_solution)
+      if (use_limiter_for_discontinuous_composition_solution)
         AssertThrow ((global_composition_max_preset.size() == (n_compositional_fields)
                       && global_composition_min_preset.size() == (n_compositional_fields)),
                      ExcMessage ("The number of multiple 'Global composition maximum' values "
