@@ -22,8 +22,8 @@ entry = []
 name = ""
 openbraces = 0
 for line in content:
-    line = line.strip('\n').strip(' ')
-    if len(line)==0:
+    line = line.strip('\n')
+    if len(line.strip(' '))==0:
         continue
 
     if openbraces == 0:
@@ -96,7 +96,8 @@ print()
 
 f=open("database.js", "w+")
 
-f.write("// Auto-generated file by https://github.com/geodynamics/aspect/doc/make_cite_html.py\n\n")
+f.write("// Auto-generated file by doc/make_cite_html.py from https://github.com/geodynamics/aspect\n")
+f.write("// Do not edit!\n\n")
 f.write("var papers = {")
 
 id=0
@@ -104,11 +105,14 @@ for w in want:
     id += 1
     f.write("entry{}:".format(id))
     f.write("{\n")
-    bibtex=escape("\\n".join(bibitems[w])).replace("'","\\'")
+    x="\\n".join(bibitems[w])
+    x=escape(x)
+    x=x.replace("\\","\\\\").replace("'","\\'").replace("\\\\n","\\n");
+    bibtex=x;
+
     group=want_groups[w]
     f.write("text: \"{}\",\nbibtexkey: \"{}\",\nbibtex: '{}',\ngroup: '{}'".format(escape(bibformated[w]), w, bibtex, group))
     f.write("},\n")
-    #print (biburls[w])
 
 f.write("}")
 f.close()
