@@ -105,6 +105,17 @@ namespace aspect
                   cell_volume += fe_values.JxW(q);
                 }
 
+              /**
+               * We compute the heat flux that crosses a boundary face as volume averaged
+               * heat flux density times face normal vector times face area.
+               * For that we need to know the (average) orientation of the face, and
+               * the average size of this face. The average size needs to be calculated
+               * at the midpoint of the cell (as this is where we average the heat flux).
+               * Since we do not have a cell face at this location we compute the area
+               * of the boundary face and the face that is opposite to the boundary
+               * face and average the two areas. For boxes and spherical shells this
+               * method is exact, but it might be inaccurate for more complicated geometries.
+               */
               for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
                 if (cell->at_boundary(f))
                   {
@@ -120,6 +131,22 @@ namespace aspect
 
                         face_area += fe_face_values.JxW(q);
                       }
+
+                    // The opposite face according to the deal.II face indexing
+                    // is always the next or previous face index.
+                    unsigned int opposite_face_index = f;
+                    if (f%2 == 0)
+                      opposite_face_index += 1;
+                    else
+                      opposite_face_index -= 1;
+
+                    fe_face_values.reinit (cell, f);
+                    double opposite_face_area = 0;
+
+                    for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)
+                      opposite_face_area += fe_face_values.JxW(q);
+
+                    face_area = (face_area + opposite_face_area) / 2;
 
                     face_normal_vector /= face_normal_vector.norm();
 
