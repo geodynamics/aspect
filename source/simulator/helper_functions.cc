@@ -1357,6 +1357,8 @@ namespace aspect
         default:
           Assert (false, ExcNotImplemented());
       }
+
+    Assert (quadrature_points.size() == n_q_points, ExcInternalError());
     Quadrature<dim> quadrature_formula(quadrature_points);
 
     // Quadrature rules only used for the numerical integration for better accuracy
@@ -1440,6 +1442,7 @@ namespace aspect
                     local_solution_average += values_0[q]*fe_values_0.JxW(q);
                   }
                 local_solution_average /= local_area;
+
                 /*
                  * Define theta: a scaling constant used to correct the old solution by the formula
                  *   new_value = theta * (old_value-old_solution_cell_average)+old_solution_cell_average
@@ -1460,12 +1463,12 @@ namespace aspect
                                      / (min_solution_local-local_solution_average));
                   }
 
-                AssertThrow(theta>=0.0,ExcMessage("The bound preserving factor is smaller than zero. "
-                                                  "This should not happen, please contact the developers. "
-                                                  "Minimum solution in cell is: " + Utilities::to_string(min_solution_local) +
-                                                  ". Maximum solution in cell is: " + Utilities::to_string(max_solution_local) +
-                                                  ". Average solution in cell is: " + Utilities::to_string(local_solution_average)));
-
+                Assert(theta >= 0.0,
+                       ExcMessage("The bound preserving factor is smaller than zero. "
+                                  "This should not happen, please contact the developers. "
+                                  "Minimum solution in cell is: " + Utilities::to_string(min_solution_local) +
+                                  ". Maximum solution in cell is: " + Utilities::to_string(max_solution_local) +
+                                  ". Average solution in cell is: " + Utilities::to_string(local_solution_average)));
 
                 /* Modify the advection degrees of freedom of the numerical solution.
                  * Note that we are using DG elements, so every DoF on a locally owned cell is locally owned;
