@@ -286,7 +286,7 @@ namespace aspect
                                                   "a given location simply because the hydrostatic pressure "
                                                   "is the largest component of the overall stress. On the other "
                                                   "hand, the hydrostatic pressure does not determine any "
-                                                  "principle direction because it is an isotropic, anti-compressive "
+                                                  "principal direction because it is an isotropic, anti-compressive "
                                                   "force. As a consequence, there are often points in simulations "
                                                   "(e.g., at the center of convection rolls) where the stress has "
                                                   "no dominant horizontal direction, and the algorithm above will "
