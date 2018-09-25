@@ -140,7 +140,7 @@ namespace aspect
                     else
                       opposite_face_index -= 1;
 
-                    fe_face_values.reinit (cell, f);
+                    fe_face_values.reinit (cell, opposite_face_index);
                     double opposite_face_area = 0;
 
                     for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)
