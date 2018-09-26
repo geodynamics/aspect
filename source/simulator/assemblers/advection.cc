@@ -567,6 +567,8 @@ namespace aspect
       Assert (advection_dofs_per_cell < scratch.face_finite_element_values->get_fe().dofs_per_cell, ExcInternalError());
       Assert (scratch.face_grad_phi_field.size() == advection_dofs_per_cell, ExcInternalError());
       Assert (scratch.face_phi_field.size() == advection_dofs_per_cell, ExcInternalError());
+      Assert (n_q_points == scratch.subface_finite_element_values->n_quadrature_points, ExcInternalError());
+      Assert (n_q_points == scratch.neighbor_face_finite_element_values->n_quadrature_points, ExcInternalError());
 
       const unsigned int solution_component = advection_field.component_index(introspection);
 
@@ -612,6 +614,15 @@ namespace aspect
                                                          scratch.neighbor_face_material_model_inputs);
               this->get_material_model().evaluate(scratch.neighbor_face_material_model_inputs,
                                                   scratch.neighbor_face_material_model_outputs);
+
+              if (parameters.formulation_temperature_equation ==
+                  Parameters<dim>::Formulation::TemperatureEquation::reference_density_profile)
+                {
+                  for (unsigned int q=0; q<n_q_points; ++q)
+                    {
+                      scratch.neighbor_face_material_model_outputs.densities[q] = this->get_adiabatic_conditions().density(scratch.neighbor_face_material_model_inputs.position[q]);
+                    }
+                }
 
               this->get_heating_model_manager().evaluate(scratch.neighbor_face_material_model_inputs,
                                                          scratch.neighbor_face_material_model_outputs,
@@ -936,6 +947,15 @@ namespace aspect
               this->get_material_model().evaluate(scratch.face_material_model_inputs,
                                                   scratch.face_material_model_outputs);
 
+              if (parameters.formulation_temperature_equation ==
+                  Parameters<dim>::Formulation::TemperatureEquation::reference_density_profile)
+                {
+                  for (unsigned int q=0; q<n_q_points; ++q)
+                    {
+                      scratch.face_material_model_outputs.densities[q] = this->get_adiabatic_conditions().density(scratch.face_material_model_inputs.position[q]);
+                    }
+                }
+
               this->get_heating_model_manager().evaluate(scratch.face_material_model_inputs,
                                                          scratch.face_material_model_outputs,
                                                          scratch.face_heating_model_outputs);
@@ -950,6 +970,15 @@ namespace aspect
                                                          scratch.neighbor_face_material_model_inputs);
               this->get_material_model().evaluate(scratch.neighbor_face_material_model_inputs,
                                                   scratch.neighbor_face_material_model_outputs);
+
+              if (parameters.formulation_temperature_equation ==
+                  Parameters<dim>::Formulation::TemperatureEquation::reference_density_profile)
+                {
+                  for (unsigned int q=0; q<n_q_points; ++q)
+                    {
+                      scratch.neighbor_face_material_model_outputs.densities[q] = this->get_adiabatic_conditions().density(scratch.neighbor_face_material_model_inputs.position[q]);
+                    }
+                }
 
               this->get_heating_model_manager().evaluate(scratch.neighbor_face_material_model_inputs,
                                                          scratch.neighbor_face_material_model_outputs,
