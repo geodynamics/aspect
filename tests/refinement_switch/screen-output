@@ -45,14 +45,14 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Writing graphical output:           output-refinement_switch/solution/solution-00002
 
 *** Timestep 1:  t=0.0246638 seconds
-   Solving temperature system... 20 iterations.
+   Solving temperature system... 19 iterations.
    Solving heat system ... 15 iterations.
-   Solving Stokes system... 11+0 iterations.
+   Solving Stokes system... 10+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  8.64 m/s, 12.2 m/s
+     RMS, max velocity:                  8.67 m/s, 12.2 m/s
      Temperature min/avg/max:            0 K, 0.5 K, 1 K
-     Heat fluxes through boundary parts: 0.000187 W, -0.0001861 W, -1.016 W, 1.016 W
+     Heat fluxes through boundary parts: 0.0001945 W, -0.0001937 W, -1.016 W, 1.016 W
      Writing graphical output:           output-refinement_switch/solution/solution-00003
 
 Termination requested by criterion: end step

@@ -20,98 +20,98 @@ Number of degrees of freedom: 3,556 (2,467+1,089)
    Postprocessing:
      RMS, max velocity:                  18.6 m/s, 26.6 m/s
      Temperature min/avg/max:            0.091 K, 0.5904 K, 1.091 K
-     Heat fluxes through boundary parts: -4.522e-05 W, 4.771e-05 W, -1.064 W, 1.056 W
-     Heating rate (average/total):       3.027e-05 W/kg, 3.439e-05 W
+     Heat fluxes through boundary parts: -4.533e-05 W, 4.787e-05 W, -1.064 W, 1.056 W
+     Heating rate (average/total):       3.028e-05 W/kg, 3.441e-05 W
 
-*** Timestep 2:  t=0.118916 seconds
+*** Timestep 2:  t=0.118913 seconds
    Solving temperature system... 64 iterations.
    Solving Stokes system... done.
 
    Postprocessing:
      RMS, max velocity:                  47.6 m/s, 68.2 m/s
      Temperature min/avg/max:            0.091 K, 0.5892 K, 1.091 K
-     Heat fluxes through boundary parts: -0.0004045 W, 0.0003746 W, -1.647 W, 1.664 W
-     Heating rate (average/total):       0.0009918 W/kg, 0.001127 W
+     Heat fluxes through boundary parts: -0.0004071 W, 0.0003756 W, -1.647 W, 1.664 W
+     Heating rate (average/total):       0.0009923 W/kg, 0.001127 W
 
-*** Timestep 3:  t=0.1235 seconds
+*** Timestep 3:  t=0.123495 seconds
    Solving temperature system... 61 iterations.
    Solving Stokes system... done.
 
    Postprocessing:
      RMS, max velocity:                  64.1 m/s, 94.5 m/s
      Temperature min/avg/max:            0.091 K, 0.5896 K, 1.091 K
-     Heat fluxes through boundary parts: -0.003407 W, 0.002529 W, -2.886 W, 3.1 W
-     Heating rate (average/total):       0.004535 W/kg, 0.005152 W
+     Heat fluxes through boundary parts: -0.003429 W, 0.002541 W, -2.888 W, 3.103 W
+     Heating rate (average/total):       0.004537 W/kg, 0.005154 W
 
-*** Timestep 4:  t=0.126808 seconds
+*** Timestep 4:  t=0.126803 seconds
    Solving temperature system... 55 iterations.
    Solving Stokes system... done.
 
    Postprocessing:
      RMS, max velocity:                  66.7 m/s, 102 m/s
      Temperature min/avg/max:            0.091 K, 0.5931 K, 1.091 K
-     Heat fluxes through boundary parts: -0.01117 W, 0.009439 W, -4.494 W, 4.79 W
-     Heating rate (average/total):       0.002424 W/kg, 0.002754 W
+     Heat fluxes through boundary parts: -0.01124 W, 0.009484 W, -4.504 W, 4.798 W
+     Heating rate (average/total):       0.002425 W/kg, 0.002755 W
 
-*** Timestep 5:  t=0.12987 seconds
+*** Timestep 5:  t=0.129864 seconds
    Solving temperature system... 46 iterations.
    Solving Stokes system... done.
 
    Postprocessing:
      RMS, max velocity:                  60 m/s, 95.2 m/s
      Temperature min/avg/max:            0.091 K, 0.597 K, 1.092 K
-     Heat fluxes through boundary parts: -0.02199 W, 0.02084 W, -5.887 W, 5.922 W
-     Heating rate (average/total):       -7.045e-08 W/kg, -8.004e-08 W
+     Heat fluxes through boundary parts: -0.02214 W, 0.02099 W, -5.916 W, 5.947 W
+     Heating rate (average/total):       -2.18e-06 W/kg, -2.476e-06 W
 
-*** Timestep 6:  t=0.133149 seconds
+*** Timestep 6:  t=0.133143 seconds
    Solving temperature system... 42 iterations.
    Solving Stokes system... done.
 
    Postprocessing:
      RMS, max velocity:                  49.6 m/s, 81.7 m/s
      Temperature min/avg/max:            0.091 K, 0.5997 K, 1.091 K
-     Heat fluxes through boundary parts: -0.03114 W, 0.03048 W, -6.553 W, 6.183 W
-     Heating rate (average/total):       -0.0003034 W/kg, -0.0003447 W
+     Heat fluxes through boundary parts: -0.03139 W, 0.03072 W, -6.605 W, 6.227 W
+     Heating rate (average/total):       -0.0003042 W/kg, -0.0003456 W
 
-*** Timestep 7:  t=0.136974 seconds
+*** Timestep 7:  t=0.136969 seconds
    Solving temperature system... 38 iterations.
    Solving Stokes system... done.
 
    Postprocessing:
      RMS, max velocity:                  39.2 m/s, 67.5 m/s
-     Temperature min/avg/max:            0.091 K, 0.6012 K, 1.091 K
-     Heat fluxes through boundary parts: -0.03342 W, 0.03187 W, -6.34 W, 5.734 W
-     Heating rate (average/total):       0.0001037 W/kg, 0.0001178 W
+     Temperature min/avg/max:            0.091 K, 0.6011 K, 1.091 K
+     Heat fluxes through boundary parts: -0.03373 W, 0.0321 W, -6.403 W, 5.784 W
+     Heating rate (average/total):       0.0001029 W/kg, 0.0001169 W
 
-*** Timestep 8:  t=0.141601 seconds
+*** Timestep 8:  t=0.141597 seconds
    Solving temperature system... 35 iterations.
    Solving Stokes system... done.
 
    Postprocessing:
-     RMS, max velocity:                  31.1 m/s, 54.6 m/s
-     Temperature min/avg/max:            0.091 K, 0.6015 K, 1.091 K
-     Heat fluxes through boundary parts: -0.02823 W, 0.02545 W, -5.514 W, 4.947 W
-     Heating rate (average/total):       0.0004829 W/kg, 0.0005486 W
+     RMS, max velocity:                  31.1 m/s, 54.5 m/s
+     Temperature min/avg/max:            0.091 K, 0.6014 K, 1.091 K
+     Heat fluxes through boundary parts: -0.02855 W, 0.02565 W, -5.574 W, 4.991 W
+     Heating rate (average/total):       0.0004811 W/kg, 0.0005466 W
 
-*** Timestep 9:  t=0.147323 seconds
+*** Timestep 9:  t=0.147324 seconds
    Solving temperature system... 35 iterations.
    Solving Stokes system... done.
 
    Postprocessing:
-     RMS, max velocity:                  26.4 m/s, 46.2 m/s
+     RMS, max velocity:                  26.3 m/s, 46.1 m/s
      Temperature min/avg/max:            0.091 K, 0.6008 K, 1.091 K
-     Heat fluxes through boundary parts: -0.01984 W, 0.01701 W, -4.498 W, 4.145 W
-     Heating rate (average/total):       0.0006011 W/kg, 0.000683 W
+     Heat fluxes through boundary parts: -0.02005 W, 0.01712 W, -4.544 W, 4.176 W
+     Heating rate (average/total):       0.0005981 W/kg, 0.0006795 W
 
 *** Timestep 10:  t=0.15 seconds
    Solving temperature system... 23 iterations.
    Solving Stokes system... done.
 
    Postprocessing:
-     RMS, max velocity:                  25.8 m/s, 45.4 m/s
+     RMS, max velocity:                  25.7 m/s, 45.2 m/s
      Temperature min/avg/max:            0.091 K, 0.6003 K, 1.091 K
-     Heat fluxes through boundary parts: -0.01725 W, 0.01487 W, -4.153 W, 3.919 W
-     Heating rate (average/total):       0.0004458 W/kg, 0.0005064 W
+     Heat fluxes through boundary parts: -0.01741 W, 0.01495 W, -4.191 W, 3.944 W
+     Heating rate (average/total):       0.0004423 W/kg, 0.0005025 W
 
 Termination requested by criterion: end time
 

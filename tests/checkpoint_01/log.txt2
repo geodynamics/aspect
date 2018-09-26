@@ -4,7 +4,7 @@
 Number of active cells: 1,024 (on 6 levels)
 Number of degrees of freedom: 13,764 (9,539+4,225)
 
-*** Timestep 8:  t=9.64864e+06 seconds
+*** Timestep 8:  t=9.63611e+06 seconds
    Solving temperature system... 20 iterations.
    Solving Stokes system... done.
 
@@ -22,7 +22,7 @@ Number of degrees of freedom: 13,764 (9,539+4,225)
      Writing depth average:    output2.tmp/depth_average.gnuplot
      Writing graphical output: output2.tmp/solution/solution-00009
      Temperature min/avg/max:  1.007 K, 1.041 K, 1.087 K
-     RMS, max velocity:        4.4e-09 m/s, 1.04e-08 m/s
+     RMS, max velocity:        4.41e-09 m/s, 1.05e-08 m/s
 
 Termination requested by criterion: end time
 

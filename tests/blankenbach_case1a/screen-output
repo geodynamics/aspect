@@ -15,58 +15,58 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
      Heating rate (average/total):       0 W/kg, 0 W
 
 *** Timestep 1:  t=0.00616847 seconds
-   Solving temperature system... 58 iterations.
+   Solving temperature system... 57 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 32+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  21.1 m/s, 30.8 m/s
+     RMS, max velocity:                  20.9 m/s, 30.7 m/s
      Temperature min/avg/max:            0 K, 0.5 K, 1 K
-     Heat fluxes through boundary parts: -0.0001275 W, 0.0001275 W, -3.827 W, 3.827 W
+     Heat fluxes through boundary parts: -0.0002275 W, 0.0002275 W, -3.885 W, 3.885 W
      Heating rate (average/total):       0 W/kg, 0 W
 
-*** Timestep 2:  t=0.011235 seconds
+*** Timestep 2:  t=0.0112603 seconds
    Solving temperature system... 44 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 31+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  26.5 m/s, 39.4 m/s
+     RMS, max velocity:                  26.2 m/s, 38.9 m/s
      Temperature min/avg/max:            0 K, 0.5 K, 1 K
-     Heat fluxes through boundary parts: -0.0004767 W, 0.0004767 W, -3.234 W, 3.234 W
+     Heat fluxes through boundary parts: -0.0006832 W, 0.0006832 W, -3.282 W, 3.282 W
      Heating rate (average/total):       0 W/kg, 0 W
 
-*** Timestep 3:  t=0.0152015 seconds
+*** Timestep 3:  t=0.015271 seconds
    Solving temperature system... 43 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 31+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  33.7 m/s, 49.7 m/s
+     RMS, max velocity:                  33.1 m/s, 48.9 m/s
      Temperature min/avg/max:            0 K, 0.5 K, 1 K
-     Heat fluxes through boundary parts: -0.001505 W, 0.001505 W, -3.127 W, 3.127 W
+     Heat fluxes through boundary parts: -0.001681 W, 0.001681 W, -3.199 W, 3.199 W
      Heating rate (average/total):       0 W/kg, 0 W
 
-*** Timestep 4:  t=0.0183426 seconds
+*** Timestep 4:  t=0.0184637 seconds
    Solving temperature system... 41 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 30+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  41.1 m/s, 61.3 m/s
+     RMS, max velocity:                  40.4 m/s, 60.4 m/s
      Temperature min/avg/max:            0 K, 0.5 K, 1 K
-     Heat fluxes through boundary parts: -0.003223 W, 0.003223 W, -3.323 W, 3.323 W
+     Heat fluxes through boundary parts: -0.003518 W, 0.003518 W, -3.417 W, 3.417 W
      Heating rate (average/total):       0 W/kg, 0 W
 
 *** Timestep 5:  t=0.02 seconds
-   Solving temperature system... 28 iterations.
+   Solving temperature system... 26 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 28+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  45.4 m/s, 68.7 m/s
+     RMS, max velocity:                  44.3 m/s, 67.1 m/s
      Temperature min/avg/max:            0 K, 0.5 K, 1 K
-     Heat fluxes through boundary parts: -0.004847 W, 0.004847 W, -3.536 W, 3.536 W
+     Heat fluxes through boundary parts: -0.005065 W, 0.005065 W, -3.616 W, 3.616 W
      Heating rate (average/total):       0 W/kg, 0 W
 
 Termination requested by criterion: end time

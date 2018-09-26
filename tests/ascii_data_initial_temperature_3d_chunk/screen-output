@@ -22,8 +22,8 @@ Number of degrees of freedom: 527 (375+27+125)
 
    Postprocessing:
      RMS, max velocity:                  1 m/year, 1.03 m/year
-     Temperature min/avg/max:            0.8374 K, 72.72 K, 99.89 K
-     Heat fluxes through boundary parts: 3.887e+09 W, 8.54e+09 W, 8.911e+08 W, 8.366e+08 W, -3.67e+08 W, -2.01e+08 W
+     Temperature min/avg/max:            0.8366 K, 72.72 K, 99.89 K
+     Heat fluxes through boundary parts: 3.887e+09 W, 8.54e+09 W, 8.911e+08 W, 8.366e+08 W, -3.671e+08 W, -2.01e+08 W
 
 Termination requested by criterion: end time
 

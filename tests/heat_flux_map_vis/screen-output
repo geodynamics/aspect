@@ -11,7 +11,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
      Writing graphical output: output-heat_flux_map_vis/solution/solution-00000
 
 *** Timestep 1:  t=0.01 seconds
-   Solving temperature system... 38 iterations.
+   Solving temperature system... 37 iterations.
    Solving Stokes system... 33+0 iterations.
 
    Postprocessing:
