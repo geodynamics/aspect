@@ -38,9 +38,14 @@ pipeline {
 	    }
       }
       steps {
+        // For /rebuild to work you need to:
+        // 1) select "issue comment" to be delivered in the github webhook setting
+        // 2) install "GitHub PR Comment Build Plugin" on Jenkins
+        // 3) in project settings select "add property" "Trigger build on pr comment" with
+        //    the phrase ".*/rebuild.*" (without quotes)
         sh '''
           wget -q -O - https://api.github.com/repos/geodynamics/aspect/issues/${CHANGE_ID}/labels | grep 'ready to test' || \
-          { echo "This commit will only be tested when it has the label 'ready to test'"; exit 1; }
+          { echo "This commit will only be tested when it has the label 'ready to test'. Trigger a rebuild by adding a comment that contains '/rebuild'..."; exit 1; }
         '''
       }
     }
