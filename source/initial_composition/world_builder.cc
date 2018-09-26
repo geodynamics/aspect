@@ -49,9 +49,9 @@ namespace aspect
   {
     ASPECT_REGISTER_INITIAL_COMPOSITION_MODEL(WorldBuilder,
                                               "world builder",
-                                              "Specify the composition in through the World Buider. "
+                                              "Specify the initial composition through the World Builder. "
                                               "More information on the World Builder can be found at "
-                                              "https://geodynamicworldbuilder.github.io ."
+                                              "https://geodynamicworldbuilder.github.io. "
                                               "Make sure to specify the location of the World Builder file "
                                               "in the parameter 'World builder file'.")
   }
