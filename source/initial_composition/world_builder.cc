@@ -51,7 +51,7 @@ namespace aspect
                                               "world builder",
                                               "Specify the initial composition through the World Builder. "
                                               "More information on the World Builder can be found at "
-                                              "https://geodynamicworldbuilder.github.io. "
+                                              "\\url{https://geodynamicworldbuilder.github.io}. "
                                               "Make sure to specify the location of the World Builder file "
                                               "in the parameter 'World builder file'.")
   }
