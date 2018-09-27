@@ -10,24 +10,24 @@ Number of degrees of freedom: 84 (50+9+25)
 
    Postprocessing:
      RMS, max velocity:                  40.8 m/s, 88.7 m/s
-     Temperature min/avg/max:            -2.954e-17 K, 0.08333 K, 1 K
-     Heat fluxes through boundary parts: 4.99e-17 W, -7.469e-19 W, -6 W, -4.619e-17 W
+     Temperature min/avg/max:            -8.538e-18 K, 0.08333 K, 1 K
+     Heat fluxes through boundary parts: -7.618e-17 W, -5.729e-17 W, -6 W, -6.765e-17 W
 
 *** Timestep 1:  t=0.0025 seconds
    Solving temperature system... 8 iterations.
 
    Postprocessing:
      RMS, max velocity:                  40.8 m/s, 88.7 m/s
-     Temperature min/avg/max:            -0.01746 K, 0.1543 K, 1 K
-     Heat fluxes through boundary parts: -0.2538 W, -0.1126 W, -4.441 W, 0.04543 W
+     Temperature min/avg/max:            -0.02269 K, 0.1508 K, 1 K
+     Heat fluxes through boundary parts: -0.3004 W, -0.07331 W, -4.481 W, 0.04644 W
 
 *** Timestep 2:  t=0.005 seconds
    Solving temperature system... 7 iterations.
 
    Postprocessing:
      RMS, max velocity:                  40.8 m/s, 88.7 m/s
-     Temperature min/avg/max:            -0.03235 K, 0.2263 K, 1 K
-     Heat fluxes through boundary parts: -0.3839 W, -0.3172 W, -3.388 W, 0.1008 W
+     Temperature min/avg/max:            -0.0307 K, 0.2209 K, 1 K
+     Heat fluxes through boundary parts: -0.4488 W, -0.2494 W, -3.429 W, 0.08965 W
 
 Termination requested by criterion: end time
 

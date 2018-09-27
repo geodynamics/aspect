@@ -17,13 +17,13 @@ Number of degrees of freedom: 2,724 (1,666+225+833)
 *** Timestep 1:  t=100000 years
    Solving temperature system... 9 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+225 iterations.
+   Solving Stokes system... 200+218 iterations.
 
    Postprocessing:
      Writing graphical output:           output-steinberger_seismic_velocities/solution/solution-00001
      RMS, max velocity:                  0.13 m/year, 0.519 m/year
      Temperature min/avg/max:            273 K, 2061 K, 4250 K
-     Heat fluxes through boundary parts: -3.68e+05 W, 5.284e+05 W, 2030 W, 2029 W
+     Heat fluxes through boundary parts: -3.68e+05 W, 5.285e+05 W, 2031 W, 2031 W
      Writing depth average:              output-steinberger_seismic_velocities/depth_average.gnuplot
 
 Termination requested by criterion: end time

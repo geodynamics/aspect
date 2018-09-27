@@ -25,7 +25,7 @@ Number of degrees of freedom: 3,557 (1,666+225+833+833)
      Writing graphical output:           output-steinberger_single_field/solution/solution-00001
      RMS, max velocity:                  0.575 m/year, 1.11 m/year
      Temperature min/avg/max:            273 K, 2252 K, 4250 K
-     Heat fluxes through boundary parts: -7.044e+04 W, 1.642e+05 W, 616.2 W, 616.2 W
+     Heat fluxes through boundary parts: -7.044e+04 W, 1.643e+05 W, 616.4 W, 616.4 W
      Writing depth average:              output-steinberger_single_field/depth_average.gnuplot
 
 Termination requested by criterion: end time

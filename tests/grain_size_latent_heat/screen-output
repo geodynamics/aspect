@@ -1,5 +1,3 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
 Loading shared library <./libgrain_size_latent_heat.so>
 
@@ -27,7 +25,7 @@ Number of degrees of freedom: 6,201 (2,898+405+1,449+1,449)
      Compositions min/max/mass: 8e-05/8e-05/4e+06
 
 *** Timestep 2:  t=5.8334e+14 seconds
-   Solving temperature system... 25 iterations.
+   Solving temperature system... 24 iterations.
    Solving grain_size system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 18+0 iterations.
@@ -36,7 +34,7 @@ Number of degrees of freedom: 6,201 (2,898+405+1,449+1,449)
      Temperature min/avg/max:   999 K, 1001 K, 1010 K
      Compositions min/max/mass: 8e-05/8e-05/4e+06
 
-*** Timestep 3:  t=8.75002e+14 seconds
+*** Timestep 3:  t=8.75001e+14 seconds
    Solving temperature system... 25 iterations.
    Solving grain_size system ... 0 iterations.
    Rebuilding Stokes preconditioner...
@@ -53,7 +51,7 @@ Number of degrees of freedom: 6,201 (2,898+405+1,449+1,449)
    Solving Stokes system... 14+0 iterations.
 
    Postprocessing:
-     Temperature min/avg/max:   999 K, 1001 K, 1016 K
+     Temperature min/avg/max:   999 K, 1001 K, 1017 K
      Compositions min/max/mass: 8e-05/8e-05/4e+06
 
 Termination requested by criterion: end time

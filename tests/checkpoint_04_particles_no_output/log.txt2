@@ -1,17 +1,10 @@
------------------------------------------------------------------------------
--- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
---     . version 2.0.0-pre
---     . running in DEBUG mode
---     . running with 1 MPI process
---     . using Trilinos
------------------------------------------------------------------------------
 
 *** Resuming from snapshot!
 
 Number of active cells: 1,024 (on 6 levels)
 Number of degrees of freedom: 13,764 (9,539+4,225)
 
-*** Timestep 8:  t=9.64864e+06 seconds
+*** Timestep 8:  t=9.63611e+06 seconds
    Solving temperature system... 20 iterations.
    Solving Stokes system... done.
 
@@ -26,28 +19,13 @@ Number of degrees of freedom: 13,764 (9,539+4,225)
 
    Postprocessing:
      Temperature min/avg/max:      1.007 K, 1.041 K, 1.087 K
-     RMS, max velocity:            4.4e-09 m/s, 1.04e-08 m/s
+     RMS, max velocity:            4.41e-09 m/s, 1.05e-08 m/s
      Number of advected particles: 1000
 
 Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |       1.1s |            |
-|                                             |            |            |
-| Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         2 |     0.165s |        15% |
-| Assemble temperature system     |         2 |      0.25s |        23% |
-| Build temperature preconditioner|         2 |    0.0114s |         1% |
-| Solve Stokes system             |         2 |     0.358s |        33% |
-| Solve temperature system        |         2 |    0.0138s |       1.3% |
-| Initialization                  |         1 |    0.0381s |       3.5% |
-| Particles: Advect               |         4 |    0.0119s |       1.1% |
-| Particles: Initialization       |         1 |  0.000283s |         0% |
-| Particles: Sort                 |         4 |    0.0101s |      0.92% |
-| Particles: Update properties    |         2 |    0.0464s |       4.2% |
-| Postprocessing                  |         2 |     0.106s |       9.7% |
-| Setup dof systems               |         1 |    0.0673s |       6.1% |
 +---------------------------------+-----------+------------+------------+
 

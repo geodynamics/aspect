@@ -34,11 +34,11 @@ Number of degrees of freedom: 3,557 (1,666+225+833+833)
      Writing graphical output:           output-update_script_2/solution/solution-00001
      RMS, max velocity:                  0.606 m/year, 1.17 m/year
      Temperature min/avg/max:            273 K, 2292 K, 4250 K
-     Heat fluxes through boundary parts: -1.963e+05 W, 5.186e+05 W, 1925 W, 1925 W
+     Heat fluxes through boundary parts: -1.963e+05 W, 5.187e+05 W, 1927 W, 1927 W
      Writing depth average:              output-update_script_2/depth_average.gnuplot
      Number of advected particles:       50
      Heating rate (average/total):       -3.748e-10 W/kg, -3.165e+07 W
-     Pressure at top/bottom of domain:   7.299e-08 Pa, 1.136e+11 Pa
+     Pressure at top/bottom of domain:   5.816e-08 Pa, 1.136e+11 Pa
      Computing dynamic topography        
 
 Termination requested by criterion: end time

@@ -1,5 +1,3 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
 
    Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/box_2d_left.0.txt.
@@ -33,8 +31,8 @@ Number of degrees of freedom: 1,212 (738+105+369)
    Solving Stokes system... 16+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  0.0162 m/year, 0.0347 m/year
-     Heat fluxes through boundary parts: -165.3 W, 67.6 W, 4.423e+05 W, 4.285e+05 W
+     RMS, max velocity:                  0.0162 m/year, 0.0348 m/year
+     Heat fluxes through boundary parts: -172.9 W, 68.56 W, 4.463e+05 W, 4.324e+05 W
 
 Termination requested by criterion: end time
 

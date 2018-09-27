@@ -26,7 +26,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
    Postprocessing:
      RMS, max velocity:                  1 m/year, 1.01 m/year
      Temperature min/avg/max:            1594 K, 1671 K, 1926 K
-     Heat fluxes through boundary parts: -322.7 W, 1340 W, -5023 W, 1.773 W
+     Heat fluxes through boundary parts: -325.1 W, 1341 W, -5026 W, 1.795 W
      Compositions min/max/mass:          0/1/3.21e+11
 
 *** Timestep 2:  t=164099 years
@@ -38,7 +38,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
    Postprocessing:
      RMS, max velocity:                  1 m/year, 1.01 m/year
      Temperature min/avg/max:            1604 K, 1669 K, 1913 K
-     Heat fluxes through boundary parts: 328.9 W, 1524 W, -4904 W, -15.84 W
+     Heat fluxes through boundary parts: 326.8 W, 1525 W, -4907 W, -15.83 W
      Compositions min/max/mass:          0/1/3.125e+11
 
 *** Timestep 3:  t=246075 years
@@ -50,7 +50,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
    Postprocessing:
      RMS, max velocity:                  1 m/year, 1.01 m/year
      Temperature min/avg/max:            1594 K, 1665 K, 1913 K
-     Heat fluxes through boundary parts: 719 W, 1166 W, -5499 W, -22.07 W
+     Heat fluxes through boundary parts: 717.8 W, 1166 W, -5503 W, -22.18 W
      Compositions min/max/mass:          0/1/3.003e+11
 
 *** Timestep 4:  t=328082 years
@@ -62,10 +62,10 @@ Number of degrees of freedom: 349 (162+25+81+81)
    Postprocessing:
      RMS, max velocity:                  1 m/year, 1.01 m/year
      Temperature min/avg/max:            1601 K, 1660 K, 1913 K
-     Heat fluxes through boundary parts: 864.1 W, 814.2 W, -6304 W, -11.01 W
+     Heat fluxes through boundary parts: 863.4 W, 814.2 W, -6308 W, -11.11 W
      Compositions min/max/mass:          0/1/2.851e+11
 
-*** Timestep 5:  t=410154 years
+*** Timestep 5:  t=410153 years
    Solving temperature system... 11 iterations.
    Solving C_1 system ... 11 iterations.
    Rebuilding Stokes preconditioner...
@@ -74,10 +74,10 @@ Number of degrees of freedom: 349 (162+25+81+81)
    Postprocessing:
      RMS, max velocity:                  1 m/year, 1 m/year
      Temperature min/avg/max:            1610 K, 1655 K, 1913 K
-     Heat fluxes through boundary parts: 891.9 W, 558 W, -7057 W, -4.777 W
+     Heat fluxes through boundary parts: 891.4 W, 557.5 W, -7062 W, -4.82 W
      Compositions min/max/mass:          0/1/2.685e+11
 
-*** Timestep 6:  t=492321 years
+*** Timestep 6:  t=492320 years
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 11 iterations.
    Rebuilding Stokes preconditioner...
@@ -86,10 +86,10 @@ Number of degrees of freedom: 349 (162+25+81+81)
    Postprocessing:
      RMS, max velocity:                  1 m/year, 1 m/year
      Temperature min/avg/max:            1612 K, 1651 K, 1913 K
-     Heat fluxes through boundary parts: 879.2 W, 376.1 W, -7577 W, -2.244 W
+     Heat fluxes through boundary parts: 878.7 W, 375.2 W, -7583 W, -2.235 W
      Compositions min/max/mass:          0/1/2.521e+11
 
-*** Timestep 7:  t=574600 years
+*** Timestep 7:  t=574599 years
    Solving temperature system... 11 iterations.
    Solving C_1 system ... 11 iterations.
    Rebuilding Stokes preconditioner...
@@ -98,10 +98,10 @@ Number of degrees of freedom: 349 (162+25+81+81)
    Postprocessing:
      RMS, max velocity:                  1 m/year, 1 m/year
      Temperature min/avg/max:            1612 K, 1648 K, 1913 K
-     Heat fluxes through boundary parts: 863.5 W, 353.3 W, -7801 W, -2.738 W
+     Heat fluxes through boundary parts: 862.9 W, 352.2 W, -7807 W, -2.699 W
      Compositions min/max/mass:          0/1/2.378e+11
 
-*** Timestep 8:  t=656958 years
+*** Timestep 8:  t=656957 years
    Solving temperature system... 11 iterations.
    Solving C_1 system ... 11 iterations.
    Rebuilding Stokes preconditioner...
@@ -110,10 +110,10 @@ Number of degrees of freedom: 349 (162+25+81+81)
    Postprocessing:
      RMS, max velocity:                  1 m/year, 1 m/year
      Temperature min/avg/max:            1613 K, 1647 K, 1913 K
-     Heat fluxes through boundary parts: 855.1 W, 448.5 W, -7858 W, -3.884 W
+     Heat fluxes through boundary parts: 854.5 W, 447.6 W, -7865 W, -3.847 W
      Compositions min/max/mass:          0/1/2.267e+11
 
-*** Timestep 9:  t=739339 years
+*** Timestep 9:  t=739338 years
    Solving temperature system... 11 iterations.
    Solving C_1 system ... 11 iterations.
    Rebuilding Stokes preconditioner...
@@ -122,10 +122,10 @@ Number of degrees of freedom: 349 (162+25+81+81)
    Postprocessing:
      RMS, max velocity:                  1 m/year, 1 m/year
      Temperature min/avg/max:            1613 K, 1647 K, 1913 K
-     Heat fluxes through boundary parts: 852.3 W, 572.5 W, -7829 W, -5.044 W
+     Heat fluxes through boundary parts: 851.7 W, 572 W, -7836 W, -5.031 W
      Compositions min/max/mass:          0/1/2.198e+11
 
-*** Timestep 10:  t=821712 years
+*** Timestep 10:  t=821711 years
    Solving temperature system... 11 iterations.
    Solving C_1 system ... 11 iterations.
    Rebuilding Stokes preconditioner...
@@ -134,7 +134,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
    Postprocessing:
      RMS, max velocity:                  1 m/year, 1 m/year
      Temperature min/avg/max:            1613 K, 1648 K, 1913 K
-     Heat fluxes through boundary parts: 851.6 W, 664.5 W, -7771 W, -6.241 W
+     Heat fluxes through boundary parts: 851 W, 664.3 W, -7778 W, -6.264 W
      Compositions min/max/mass:          0/1/2.165e+11
 
 *** Timestep 11:  t=904075 years
@@ -146,7 +146,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
    Postprocessing:
      RMS, max velocity:                  1 m/year, 1 m/year
      Temperature min/avg/max:            1613 K, 1648 K, 1913 K
-     Heat fluxes through boundary parts: 851 W, 707.8 W, -7718 W, -7.493 W
+     Heat fluxes through boundary parts: 850.4 W, 707.7 W, -7725 W, -7.552 W
      Compositions min/max/mass:          0/1/2.157e+11
 
 *** Timestep 12:  t=986433 years
@@ -158,7 +158,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
    Postprocessing:
      RMS, max velocity:                  1 m/year, 1 m/year
      Temperature min/avg/max:            1613 K, 1648 K, 1913 K
-     Heat fluxes through boundary parts: 850.1 W, 713.5 W, -7684 W, -8.566 W
+     Heat fluxes through boundary parts: 849.5 W, 713.5 W, -7690 W, -8.656 W
      Compositions min/max/mass:          0/1/2.161e+11
 
 *** Timestep 13:  t=1e+06 years
@@ -170,7 +170,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
    Postprocessing:
      RMS, max velocity:                  1 m/year, 1 m/year
      Temperature min/avg/max:            1613 K, 1648 K, 1913 K
-     Heat fluxes through boundary parts: 850 W, 711.4 W, -7680 W, -8.711 W
+     Heat fluxes through boundary parts: 849.3 W, 711.3 W, -7687 W, -8.805 W
      Compositions min/max/mass:          0/1/2.163e+11
 
 Termination requested by criterion: end time

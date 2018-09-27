@@ -19,7 +19,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
 
    Postprocessing:
      Writing graphical output:  output-refinement_composition_threshold/solution/solution-00001
-     Temperature min/avg/max:   0.07517 K, 0.1773 K, 0.5337 K
+     Temperature min/avg/max:   0.07516 K, 0.1773 K, 0.5338 K
      Compositions min/max/mass: 0.06713/1.053/0.1693 // 1/1.99/1.156
 
 Number of active cells: 463 (on 6 levels)
@@ -32,7 +32,7 @@ Number of degrees of freedom: 10,599 (4,030+524+2,015+2,015+2,015)
 
    Postprocessing:
      Writing graphical output:  output-refinement_composition_threshold/solution/solution-00002
-     Temperature min/avg/max:   0.07118 K, 0.1773 K, 0.5413 K
+     Temperature min/avg/max:   0.07117 K, 0.1773 K, 0.5413 K
      Compositions min/max/mass: 0.0349/1.087/0.1693 // 1/1.988/1.156
 
 Number of active cells: 1,213 (on 7 levels)
@@ -45,7 +45,7 @@ Number of degrees of freedom: 27,211 (10,356+1,321+5,178+5,178+5,178)
 
    Postprocessing:
      Writing graphical output:  output-refinement_composition_threshold/solution/solution-00003
-     Temperature min/avg/max:   0.07074 K, 0.1773 K, 0.5316 K
+     Temperature min/avg/max:   0.07072 K, 0.1773 K, 0.5316 K
      Compositions min/max/mass: 0.04309/1.082/0.1694 // 1/1.987/1.156
 
 *** Timestep 4:  t=0.07 seconds
@@ -55,7 +55,7 @@ Number of degrees of freedom: 27,211 (10,356+1,321+5,178+5,178+5,178)
 
    Postprocessing:
      Writing graphical output:  output-refinement_composition_threshold/solution/solution-00004
-     Temperature min/avg/max:   0.07269 K, 0.1773 K, 0.5264 K
+     Temperature min/avg/max:   0.07267 K, 0.1773 K, 0.5264 K
      Compositions min/max/mass: 0.03914/1.079/0.1695 // 1/1.988/1.156
 
 Termination requested by criterion: end time

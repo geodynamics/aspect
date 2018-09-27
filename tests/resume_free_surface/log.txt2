@@ -31,7 +31,7 @@ Number of free surface degrees of freedom: 5346
 
 *** Timestep 1:  t=3917.03 years
    Solving mesh velocity system... 7 iterations.
-   Solving temperature system... 8 iterations.
+   Solving temperature system... 9 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 46+0 iterations.
 
@@ -42,39 +42,39 @@ Number of free surface degrees of freedom: 5346
 
 *** Snapshot created!
 
-*** Timestep 2:  t=9717.25 years
+*** Timestep 2:  t=9717.42 years
    Solving mesh velocity system... 7 iterations.
-   Solving temperature system... 19 iterations.
+   Solving temperature system... 20 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 44+0 iterations.
 
    Postprocessing:
-     Topography min/max:       -127.5 m, 226.8 m
+     Topography min/max:       -127.5 m, 226.9 m
      RMS, max velocity:        0.0465 m/year, 0.189 m/year
      Writing graphical output: output1.tmp/solution/solution-00002
 
-*** Timestep 3:  t=17969.8 years
+*** Timestep 3:  t=17963.9 years
    Solving mesh velocity system... 7 iterations.
-   Solving temperature system... 17 iterations.
+   Solving temperature system... 18 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 44+0 iterations.
 
    Postprocessing:
-     Topography min/max:       -330.7 m, 82.32 m
+     Topography min/max:       -330.5 m, 82.17 m
      RMS, max velocity:        0.035 m/year, 0.139 m/year
      Writing graphical output: output1.tmp/solution/solution-00003
 
 *** Snapshot created!
 
-*** Timestep 4:  t=29233.8 years
+*** Timestep 4:  t=29206.3 years
    Solving mesh velocity system... 7 iterations.
-   Solving temperature system... 9 iterations.
+   Solving temperature system... 10 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 45+0 iterations.
 
    Postprocessing:
-     Topography min/max:       -162.1 m, 28.84 m
-     RMS, max velocity:        0.0372 m/year, 0.153 m/year
+     Topography min/max:       -162.8 m, 28.8 m
+     RMS, max velocity:        0.0373 m/year, 0.153 m/year
      Writing graphical output: output1.tmp/solution/solution-00004
 
 Termination requested by criterion: end step
