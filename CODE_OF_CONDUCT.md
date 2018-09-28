@@ -4,8 +4,7 @@
 
 In the interest of fostering an open and welcoming environment, we as contributors and maintainers pledge to 
 making participation in our project and our community a harassment-free experience for everyone, 
-regardless of age, body size, disability, ethnicity, gender identity and expression, technology choices and 
-level of experience, nationality, personal appearance, race, religion (or lack thereof), or sexual identity and orientation.
+regardless of age, body size, disability, ethnicity, gender identity and expression, level of experience, nationality, personal appearance, race, religion (or lack thereof), sexual identity and orientation, or technology choices.
 
 ## Our Standards
 
@@ -23,13 +22,21 @@ Examples of unacceptable behavior by participants include:
 * Trolling, insulting/derogatory comments, and personal or political attacks
 * Public or private harassment
 * Publishing others' private information, such as a physical or electronic address, without explicit permission
-* Other conduct which could reasonably be considered inappropriate in a professional setting
+* Conduct which could reasonably be considered inappropriate in a professional setting
 
 ## Our Responsibilities
 
 Project maintainers are responsible for clarifying the standards of acceptable behavior and are expected to take appropriate and fair corrective action in response to any instances of unacceptable behavior.
 
-Project maintainers have the right and responsibility to remove, edit, or reject comments, commits, code, wiki edits, issues, and other contributions that are not aligned to this Code of Conduct, or to ban temporarily or permanently any contributor for other behaviors that they deem inappropriate, threatening, offensive, or harmful.
+Project maintainers have the right and responsibility to remove, edit, or
+reject comments, commits, code, wiki edits, issues, and other contributions
+that are not aligned to this Code of Conduct, or to ban temporarily or
+permanently any contributor for other behaviors that they deem inappropriate,
+threatening, offensive, or harmful. We see all of these actions as last
+resorts. Our goal is to maintain a friendly and inclusive community where
+everyone feels welcome to participate and express themselves, but conduct by
+individuals that jeopardizes the harmony of the project will need to be
+addressed.
 
 ## Scope
 
@@ -43,7 +50,4 @@ Project maintainers who do not follow or enforce the Code of Conduct in good fai
 
 ## Attribution
 
-This Code of Conduct is adapted from the [Contributor Covenant][homepage], version 1.4, available at [http://contributor-covenant.org/version/1/4][version] and draws on Community Code of Conduct of the Computational Infrastructure for Geodynamics, available at [https://geodynamics.org/cig/about/code-conduct/].
-
-[homepage]: http://contributor-covenant.org
-[version]: http://contributor-covenant.org/version/1/4/
+This Code of Conduct is adapted from the [Contributor Covenant homepage](http://contributor-covenant.org), version 1.4, available [here](http://contributor-covenant.org/version/1/4) and draws on the Community Code of Conduct of the Computational Infrastructure for Geodynamics, available [here](https://geodynamics.org/cig/about/code-conduct/).
