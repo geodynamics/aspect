@@ -51,6 +51,9 @@ namespace aspect
       for (unsigned int d=0; d<dim; ++d)
         velocity[d] = boundary_velocity_function.value(Utilities::convert_array_to_point<dim>(point.get_coordinates()), d);
 
+      if (use_spherical_unit_vectors)
+        velocity = Utilities::Coordinates::spherical_to_cartesian_vector(velocity, position);
+
       // Aspect always wants things in MKS system. however, as described
       // in the documentation of this class, we interpret the formulas
       // given to this plugin as meters per year if the global flag
@@ -59,9 +62,6 @@ namespace aspect
       // means "5 meters/year" and we need to convert it to the Aspect
       // time system by dividing by the number of seconds per year
       // to get MKS units
-      if (use_spherical_unit_vectors)
-        velocity = Utilities::Coordinates::spherical_to_cartesian_vector(velocity, position);
-
       if (this->convert_output_to_years())
         return velocity / year_in_seconds;
       else
