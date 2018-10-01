@@ -1,0 +1,50 @@
+\documentclass[draft, linenumbers]{article}
+
+\usepackage{hyperref}
+\usepackage{times}
+\usepackage{amsmath,amsfonts}
+\usepackage{graphicx,color}
+\usepackage{comment}
+%
+
+\begin{document}
+
+\title{Inverting Gyspum for grain size}
+\author{Paul, Rene, Juliane}
+
+\maketitle
+
+
+\begin{abstract}
+
+\end{abstract}
+
+\section{Introduction}
+\label{sec:introduction}
+
+
+\section{Workflow}
+
+Steps:
+
+\begin{enumerate}
+\item Read in Gypsum as velocity + density
+\item Convert to temperature in ASPECT
+\item Run forward model to determine equilibrium grain size
+
+\begin{enumerate}
+\item Define an equilibrium grain size for the lower mantle based on material residence time see Section \ref{sec:lower_mantle_grain_size}
+\end{enumerate}
+
+\item Convert grain size and temperature to velocity
+\item Compute update for temperature (keep density and velocity the same)
+\item Iterate step 3-5 until convergence
+\end{enumerate}
+
+
+
+\section{Handling the lower mantle}
+\label{sec:lower_mantle_grain_size}
+
+\end{document}
+

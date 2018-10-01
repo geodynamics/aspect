@@ -1,0 +1,116 @@
+set Dimension                              = 2
+set Use years in output instead of seconds = true
+set Start time                             = 0
+set End time                               = 0
+set Nonlinear solver scheme                = no Advection, iterated Stokes
+
+subsection Compositional fields
+  set Number of fields = 1
+  set Names of fields = grain_size
+end
+
+subsection Material model
+  set Model name = grain size
+
+  subsection Grain size model
+    set Average specific grain boundary energy      = 1.0,1.0,1.0,1.0
+    #set Corresponding phase for transition          = olivine_grain_size,olivine_grain_size,olivine_grain_size
+
+    set Diffusion activation energy                 = 375000,231000,270000,299000
+    set Diffusion activation volume                 = 6e-6,6e-6,6e-6,1.5e-6
+    set Diffusion creep exponent                    = 1.0,1.0,1.0,1.0
+    set Diffusion creep grain size exponent         = 3,3,3,3
+    set Diffusion creep prefactor                   = 1.25E-015,6.12E-022,2.94E-022,5.4E-025
+
+    set Dislocation activation energy               = 530000,530000,530000,530000
+    set Dislocation activation volume               = 1.40E-005,1.70E-005,1.70E-005,0.0
+    set Dislocation creep exponent                  = 3.5,3.5,3.5,3.5
+    set Dislocation creep prefactor                 = 8.33E-017,2.05e-12,2.05e-19,1.e-40
+
+    set Geometric constant                          = 3,3,3,3
+    set Grain growth activation energy              = 400000,662000,414000,299000
+    set Grain growth activation volume              = 0.0,0.0,0.0,1.5e-6
+    set Grain growth exponent                       = 3,3,4.5,5.0
+    set Grain growth rate constant                  = 1.92e-10,3.02e-4,7.63e-22,5.00E-026
+    set Work fraction for boundary area change      = 0.1,0.1,0.1,0.1
+
+    set Maximum temperature dependence of viscosity = 1e6
+    set Phase transition Clapeyron slopes           = 2.6e6,5.7e6,-1.1e6
+    set Phase transition depths                     = 417000,559000,656000
+    set Phase transition temperatures               = 1950,1950,1950
+    set Phase transition widths                     = 0,0,30000.0
+    set Reciprocal required strain                  = 10
+    set Recrystallized grain size                   = 0.0,0.0,1e-4
+
+    set Reference compressibility                   = 4e-12
+    set Reference density                           = 3400
+    set Reference specific heat                     = 1250
+    set Reference temperature                       = 1600
+    set Thermal conductivity                        = 4
+    set Thermal expansion coefficient               = 2e-5
+    set Use paleowattmeter                          = true
+    set Viscosity                                   = 1e22
+  end
+end
+
+
+subsection Geometry model
+  set Model name = spherical shell
+
+  subsection Spherical shell
+    set Inner radius  = 3481000
+    set Outer radius  = 6336000
+  end
+end
+
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = top, bottom
+end
+
+
+subsection Nullspace removal
+  set Remove nullspace = angular momentum
+end
+
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = top, bottom
+  set List of model names = spherical constant
+  subsection Spherical constant
+    set Inner temperature = 3700
+    set Outer temperature = 273
+  end
+end
+
+
+subsection Initial temperature model
+  set Model name = ascii data
+  subsection Ascii data model
+  end
+end
+
+
+subsection Gravity model
+  set Model name = ascii data
+end
+
+
+subsection Mesh refinement
+  set Initial global refinement          = 0
+  set Initial adaptive refinement        = 0
+  set Strategy                           = temperature
+  set Time steps between mesh refinement = 0
+end
+
+
+subsection Postprocess
+  set List of postprocessors = visualization, temperature statistics
+
+  subsection Visualization
+    set Output format                 = vtu
+    set Time between graphical output = 0
+    set List of output variables = material properties #, Vs anomaly, Vp anomaly
+  end
+end
+
