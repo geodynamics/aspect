@@ -110,5 +110,6 @@ cookbooks/kinematically_driven_subduction_2d/doc/kinematically_driven_subduction
 cookbooks/inclusions/doc/inclusions.md
 cookbooks/subduction_initiation/doc/subduction_initiation.md
 cookbooks/vankeken_subduction/doc/vankeken_subduction.md
+cookbooks/equilibrium_grain_size/doc/tomography_based_model.md
 cookbooks/future/README.md
 :::

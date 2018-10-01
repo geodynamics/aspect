@@ -1,0 +1,31 @@
+README contains the description of the files within the folder. Each text file represents a depth point 
+and a corresponding viscosity value such that the viscosity is constant between the top depth point and 
+the next depth point when the profile is used for lateral averaging. This also implies that the last value of 
+the viscosity is not used.
+We define asthenospheric viscosity as the second layer in viscosity profiles based on Steinberger and 
+Calderwood (2006).
+
+steinberger_visc.txt   : Contains smooth viscosity profile from Steinberger and Calderwood (2006). Created using 
+    radial-visc.txt in $ASPECT_SOURCE_DIR/data/material-model/steinberger. 
+
+stein_smooth.txt       : Contains smooth version of the profile steinberger_visc.txt file. The profile goes 
+    through the mid-points rather than the points given in the radial-visc.txt, which are the bottom points 
+    of each layer.
+
+stein_smooth_phase.txt : Similar to above but contains the depths at phase transitions 410km, 520km, and 660 km
+    present in our material. The viscosity is set based on the profile and this file was only created to align
+    the depth layers with the phase boundaries to check for any convergence improvements.
+
+steinberger_source.txt : Similar to stein_smooth.txt but contains the surface point so that the profile is shifted
+    up by one point. We do this because in our lateral viscosity averaging scheme, we choose the viscosity value at the 
+    top of a layer for averaging.
+
+steinberger_source-1.txt :  Same as above except for the second depth point, which is modified from ~214 km to 300 km. This 
+    is done so that we are consistent with the definition of asthenosphere in our material model.
+
+becker_viscosity.txt : Depth-dependent viscosity structure based on Becker 2006.
+
+radial-visc-simple-3.txt, radial-visc-simple-2.txt, rad_viscosity-source-data.txt : These are the source files 
+   using the radius fraction (rather than depth) to set the viscosity based on Steinberger and Calderwood (2006), and were  
+   used to generate the depth-dependent viscosity  profiles.  
+
