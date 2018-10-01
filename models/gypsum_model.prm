@@ -1,16 +1,35 @@
-set Dimension                              = 2
+set Additional shared libraries            = ../plugins/libequilibrium_grain_size.so
+
+set Dimension                              = 3
 set Use years in output instead of seconds = true
 set Start time                             = 0
 set End time                               = 0
 set Nonlinear solver scheme                = no Advection, iterated Stokes
+set Max nonlinear iterations               = 0
 
 subsection Compositional fields
-  set Number of fields = 1
-  set Names of fields = grain_size
+  set Number of fields = 4
+  set Names of fields = grain_size, gypsum_density, gypsum_vs, gypsum_vp
+  set Compositional field methods = static
 end
 
+
+subsection Initial composition model
+  set List of model names = function #ascii data
+
+  subsection Function
+    set Function expression = 0.0;0.0;0.0;0.0
+  end
+
+  subsection Ascii data model
+    set Data directory = ../input_data/
+    set Data file name = GyPSuM_midrad_lon_lat_density_vp_vs.dat
+  end
+end
+
+
 subsection Material model
-  set Model name = grain size
+  set Model name = simple #grain size
 
   subsection Grain size model
     set Average specific grain boundary energy      = 1.0,1.0,1.0,1.0
@@ -85,8 +104,15 @@ end
 
 
 subsection Initial temperature model
-  set Model name = ascii data
+  set List of model names = harmonic perturbation #ascii data
+
+  subsection Harmonic perturbation
+    set Magnitude = 150.0
+  end
+
   subsection Ascii data model
+    set Data directory = ../input_data/
+    set Data file name = shell_3d_temperature.txt
   end
 end
 
@@ -97,7 +123,7 @@ end
 
 
 subsection Mesh refinement
-  set Initial global refinement          = 0
+  set Initial global refinement          = 1
   set Initial adaptive refinement        = 0
   set Strategy                           = temperature
   set Time steps between mesh refinement = 0
@@ -105,12 +131,12 @@ end
 
 
 subsection Postprocess
-  set List of postprocessors = visualization, temperature statistics
+  set List of postprocessors = visualization, temperature statistics, velocity statistics, material statistics
 
   subsection Visualization
     set Output format                 = vtu
     set Time between graphical output = 0
-    set List of output variables = material properties #, Vs anomaly, Vp anomaly
+    set List of output variables = material properties, strain rate #, Vs anomaly, Vp anomaly
   end
 end
 

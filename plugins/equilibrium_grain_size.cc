@@ -19,7 +19,7 @@
 */
 
 
-#include <aspect/material_model/grain_size.h>
+#include "equilibrium_grain_size.h"
 #include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/gravity_model/interface.h>
 #include <aspect/utilities.h>
@@ -36,585 +36,9 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    namespace
-    {
-      std::vector<std::string> make_dislocation_viscosity_outputs_names()
-      {
-        std::vector<std::string> names;
-        names.emplace_back("dislocation_viscosity");
-        names.emplace_back("boundary_area_change_work_fraction");
-        return names;
-      }
-    }
-
-
-
-    template <int dim>
-    DislocationViscosityOutputs<dim>::DislocationViscosityOutputs (const unsigned int n_points)
-      :
-      NamedAdditionalMaterialOutputs<dim>(make_dislocation_viscosity_outputs_names()),
-      dislocation_viscosities(n_points, numbers::signaling_nan<double>()),
-      boundary_area_change_work_fractions(n_points, numbers::signaling_nan<double>())
-    {}
-
-
-
-    template <int dim>
-    std::vector<double>
-    DislocationViscosityOutputs<dim>::get_nth_output(const unsigned int idx) const
-    {
-      AssertIndexRange (idx, 2);
-      switch (idx)
-        {
-          case 0:
-            return dislocation_viscosities;
-
-          case 1:
-            return boundary_area_change_work_fractions;
-
-          default:
-            AssertThrow(false, ExcInternalError());
-        }
-      // we will never get here, so just return something
-      return dislocation_viscosities;
-    }
-
-
-
-    namespace Lookup
-    {
-      double
-      MaterialLookup::specific_heat(double temperature,
-                                    double pressure) const
-      {
-        return value(temperature,pressure,specific_heat_values,interpolation);
-      }
-
-      double
-      MaterialLookup::density(double temperature,
-                              double pressure) const
-      {
-        return value(temperature,pressure,density_values,interpolation);
-      }
-
-      double
-      MaterialLookup::thermal_expansivity(const double temperature,
-                                          const double pressure) const
-      {
-        return value(temperature,pressure,thermal_expansivity_values,interpolation);
-      }
-
-      double
-      MaterialLookup::seismic_Vp(const double temperature,
-                                 const double pressure) const
-      {
-        return value(temperature,pressure,vp_values,false);
-      }
-
-      double
-      MaterialLookup::seismic_Vs(const double temperature,
-                                 const double pressure) const
-      {
-        return value(temperature,pressure,vs_values,false);
-      }
-
-      double
-      MaterialLookup::enthalpy(const double temperature,
-                               const double pressure) const
-      {
-        return value(temperature,pressure,enthalpy_values,true);
-      }
-
-      double
-      MaterialLookup::dHdT (const double temperature,
-                            const double pressure) const
-      {
-        const double h = value(temperature,pressure,enthalpy_values,interpolation);
-        const double dh = value(temperature+delta_temp,pressure,enthalpy_values,interpolation);
-        return (dh - h) / delta_temp;
-      }
-
-      double
-      MaterialLookup::dHdp (const double temperature,
-                            const double pressure) const
-      {
-        const double h = value(temperature,pressure,enthalpy_values,interpolation);
-        const double dh = value(temperature,pressure+delta_press,enthalpy_values,interpolation);
-        return (dh - h) / delta_press;
-      }
-
-      std::array<std::pair<double, unsigned int>,2>
-      MaterialLookup::enthalpy_derivatives(const std::vector<double> &temperatures,
-                                           const std::vector<double> &pressures,
-                                           const unsigned int n_substeps) const
-      {
-        Assert(temperatures.size() == pressures.size(),ExcInternalError());
-        const unsigned int n_q_points = temperatures.size();
-        unsigned int n_T(0), n_p(0);
-        double dHdT(0.0), dHdp(0.0);
-
-        for (unsigned int q=0; q<n_q_points; ++q)
-          {
-            for (unsigned int p=0; p<n_q_points; ++p)
-              {
-                if (std::fabs(temperatures[q] - temperatures[p]) > 100.0 * std::numeric_limits<double>::epsilon() * std::fabs(temperatures[q] + std::numeric_limits<double>::epsilon()))
-                  {
-                    for (unsigned int substep = 0; substep < n_substeps; ++substep)
-                      {
-                        const double current_pressure = pressures[q]
-                                                        + ((double)(substep)/(double)(n_substeps))
-                                                        * (pressures[p]-pressures[q]);
-                        const double T1_substep = temperatures[q]
-                                                  + ((double)(substep)/(double)(n_substeps))
-                                                  * (temperatures[p]-temperatures[q]);
-                        const double T2_substep = temperatures[q]
-                                                  + ((double)(substep+1)/(double)(n_substeps))
-                                                  * (temperatures[p]-temperatures[q]);
-                        const double enthalpy2 = enthalpy(T2_substep,current_pressure);
-                        const double enthalpy1 = enthalpy(T1_substep,current_pressure);
-                        dHdT += (enthalpy2-enthalpy1)/(T2_substep-T1_substep);
-                        ++n_T;
-                      }
-                  }
-                if (std::fabs(pressures[q] - pressures[p]) > 100.0 * std::numeric_limits<double>::epsilon() * std::fabs(pressures[q] + std::numeric_limits<double>::epsilon()))
-                  {
-                    for (unsigned int substep = 0; substep < n_substeps; ++substep)
-                      {
-                        const double current_temperature = temperatures[q]
-                                                           + ((double)(substep)/(double)(n_substeps))
-                                                           * (temperatures[p]-temperatures[q]);
-                        const double p1_substep = pressures[q]
-                                                  + ((double)(substep)/(double)(n_substeps))
-                                                  * (pressures[p]-pressures[q]);
-                        const double p2_substep = pressures[q]
-                                                  + ((double)(substep+1)/(double)(n_substeps))
-                                                  * (pressures[p]-pressures[q]);
-                        const double enthalpy2 = enthalpy(current_temperature,p2_substep);
-                        const double enthalpy1 = enthalpy(current_temperature,p1_substep);
-                        dHdp += (enthalpy2-enthalpy1)/(p2_substep-p1_substep);
-                        ++n_p;
-                      }
-                  }
-              }
-          }
-
-        if ((n_T > 0)
-            && (n_p > 0))
-          {
-            dHdT /= n_T;
-            dHdp /= n_p;
-          }
-
-        std::array<std::pair<double, unsigned int>,2> derivatives;
-        derivatives[0] = std::make_pair(dHdT,n_T);
-        derivatives[1] = std::make_pair(dHdp,n_p);
-        return derivatives;
-      }
-
-      double
-      MaterialLookup::dRhodp (const double temperature,
-                              const double pressure) const
-      {
-        const double rho = value(temperature,pressure,density_values,interpolation);
-        const double drho = value(temperature,pressure+delta_press,density_values,interpolation);
-        return (drho - rho) / delta_press;
-      }
-
-      double
-      MaterialLookup::value (const double temperature,
-                             const double pressure,
-                             const Table<2, double> &values,
-                             const bool interpol) const
-      {
-        const double nT = get_nT(temperature);
-        const unsigned int inT = static_cast<unsigned int>(nT);
-
-        const double np = get_np(pressure);
-        const unsigned int inp = static_cast<unsigned int>(np);
-
-        Assert(inT<values.n_rows(), ExcMessage("Attempting to look up a temperature value with index greater than the number of rows."));
-        Assert(inp<values.n_cols(), ExcMessage("Attempting to look up a pressure value with index greater than the number of columns."));
-
-        if (!interpol)
-          return values[inT][inp];
-        else
-          {
-            // compute the coordinates of this point in the
-            // reference cell between the data points
-            const double xi = nT-inT;
-            const double eta = np-inp;
-
-            Assert ((0 <= xi) && (xi <= 1), ExcInternalError());
-            Assert ((0 <= eta) && (eta <= 1), ExcInternalError());
-
-            // use these coordinates for a bilinear interpolation
-            return ((1-xi)*(1-eta)*values[inT][inp] +
-                    xi    *(1-eta)*values[inT+1][inp] +
-                    (1-xi)*eta    *values[inT][inp+1] +
-                    xi    *eta    *values[inT+1][inp+1]);
-          }
-      }
-
-      std::array<double,2>
-      MaterialLookup::get_pT_steps() const
-      {
-        std::array<double,2> pt_steps;
-        pt_steps[0] = delta_press;
-        pt_steps[1] = delta_temp;
-        return pt_steps;
-      }
-
-      double
-      MaterialLookup::get_nT(const double temperature) const
-      {
-        double bounded_temperature=std::max(min_temp, temperature);
-        bounded_temperature=std::min(bounded_temperature, max_temp-delta_temp);
-
-        return (bounded_temperature-min_temp)/delta_temp;
-      }
-
-      double
-      MaterialLookup::get_np(const double pressure) const
-      {
-        double bounded_pressure=std::max(min_press, pressure);
-        bounded_pressure=std::min(bounded_pressure, max_press-delta_press);
-
-        return (bounded_pressure-min_press)/delta_press;
-      }
-
-      HeFESToReader::HeFESToReader(const std::string &material_filename,
-                                   const std::string &derivatives_filename,
-                                   const bool interpol,
-                                   const MPI_Comm &comm)
-      {
-        /* Initializing variables */
-        interpolation = interpol;
-        delta_press=numbers::signaling_nan<double>();
-        min_press=std::numeric_limits<double>::max();
-        max_press=-std::numeric_limits<double>::max();
-        delta_temp=numbers::signaling_nan<double>();
-        min_temp=std::numeric_limits<double>::max();
-        max_temp=-std::numeric_limits<double>::max();
-        n_temperature=0;
-        n_pressure=0;
-
-        std::string temp;
-
-        // Read material data
-        {
-          // Read data from disk and distribute among processes
-          std::istringstream in(Utilities::read_and_distribute_file_content(material_filename, comm));
-
-          bool parsed_first_column = false;
-          unsigned int i = 0;
-          double current_pressure = 0.0;
-          double old_pressure = -1.0;
-          while (!in.eof())
-            {
-              in >> current_pressure;
-              if (in.fail())
-                {
-                  in.clear();
-                }
-
-              if (!parsed_first_column)
-                {
-                  if (current_pressure > old_pressure)
-                    old_pressure = current_pressure;
-                  else if (current_pressure <= old_pressure)
-                    {
-                      n_pressure = i;
-                      parsed_first_column = true;
-                    }
-                }
-
-              getline(in, temp);
-              if (in.eof())
-                break;
-              i++;
-            }
-
-          in.clear();
-          in.seekg (0, in.beg);
-
-          n_temperature = i / n_pressure;
-
-          Assert(i == n_temperature * n_pressure,
-                 ExcMessage("Material table size not consistent."));
-
-          density_values.reinit(n_temperature,n_pressure);
-          thermal_expansivity_values.reinit(n_temperature,n_pressure);
-          specific_heat_values.reinit(n_temperature,n_pressure);
-          vp_values.reinit(n_temperature,n_pressure);
-          vs_values.reinit(n_temperature,n_pressure);
-          enthalpy_values.reinit(n_temperature,n_pressure);
-
-          i = 0;
-          while (!in.eof())
-            {
-              double P = 0.0;
-              double depth,T;
-              double rho,vb,vs,vp,vsq,vpq,h;
-              std::string code;
-              double alpha = 0.0;
-              double cp = 0.0;
-
-              in >> P >> depth >> T;
-              if (in.fail())
-                in.clear();
-              // conversion from [GPa] to [Pa]
-              P *= 1e9;
-
-              min_press=std::min(P,min_press);
-              min_temp=std::min(T,min_temp);
-              max_temp = std::max(T,max_temp);
-              max_press = std::max(P,max_press);
-
-              in >> rho;
-              if (in.fail())
-                {
-                  in.clear();
-                  rho = density_values[(i-1)%n_temperature][(i-1)/n_temperature];
-                }
-              else
-                rho *= 1e3; // conversion from [g/cm^3] to [kg/m^3]
-
-              in >> vb;
-              if (in.fail())
-                in.clear();
-
-              in >> vs;
-              if (in.fail())
-                {
-                  in.clear();
-                  vs = vs_values[(i-1)%n_temperature][(i-1)/n_temperature];
-                }
-              in >> vp;
-              if (in.fail())
-                {
-                  in.clear();
-                  vp = vp_values[(i-1)%n_temperature][(i-1)/n_temperature];
-                }
-              in >> vsq >> vpq;
-
-              in >> h;
-              if (in.fail())
-                {
-                  in.clear();
-                  h = enthalpy_values[(i-1)%n_temperature][(i-1)/n_temperature];
-                }
-              else
-                h *= 1e6; // conversion from [kJ/g] to [J/kg]
-
-              getline(in, temp);
-              if (in.eof())
-                break;
-
-              density_values[i/n_pressure][i%n_pressure]=rho;
-              thermal_expansivity_values[i/n_pressure][i%n_pressure]=alpha;
-              specific_heat_values[i/n_pressure][i%n_pressure]=cp;
-              vp_values[i/n_pressure][i%n_pressure]=vp;
-              vs_values[i/n_pressure][i%n_pressure]=vs;
-              enthalpy_values[i/n_pressure][i%n_pressure]=h;
-
-              i++;
-            }
-
-          delta_temp = (max_temp - min_temp) / (n_temperature - 1);
-          delta_press = (max_press - min_press) / (n_pressure - 1);
-
-          AssertThrow(max_temp >= 0.0, ExcMessage("Read in of Material header failed (max_temp)."));
-          AssertThrow(delta_temp > 0, ExcMessage("Read in of Material header failed (delta_temp)."));
-          AssertThrow(n_temperature > 0, ExcMessage("Read in of Material header failed (numtemp)."));
-          AssertThrow(max_press >= 0, ExcMessage("Read in of Material header failed (max_press)."));
-          AssertThrow(delta_press > 0, ExcMessage("Read in of Material header failed (delta_press)."));
-          AssertThrow(n_pressure > 0, ExcMessage("Read in of Material header failed (numpress)."));
-        }
-
-        // If requested read derivative data
-        if (derivatives_filename != "")
-          {
-            std::string temp;
-            // Read data from disk and distribute among processes
-            std::istringstream in(Utilities::read_and_distribute_file_content(derivatives_filename, comm));
-
-            int i = 0;
-            while (!in.eof())
-              {
-                double P = 0.0;
-                double depth,T;
-                double cp,alpha,alpha_eff;
-                double temp1,temp2;
-
-                in >> P >> depth >> T;
-                if (in.fail())
-                  in.clear();
-
-
-                in >> cp;
-                if (in.fail() || (cp <= std::numeric_limits<double>::min()))
-                  {
-                    in.clear();
-                    cp = specific_heat_values[(i-1)%n_temperature][(i-1)/n_temperature];
-                  }
-                else
-                  cp *= 1e3; // conversion from [J/g/K] to [J/kg/K]
-
-                in >> alpha >> alpha_eff;
-                if (in.fail() || (alpha_eff <= std::numeric_limits<double>::min()))
-                  {
-                    in.clear();
-                    alpha_eff = thermal_expansivity_values[(i-1)%n_temperature][(i-1)/n_temperature];
-                  }
-                else
-                  {
-                    alpha *= 1e-5;
-                    alpha_eff *= 1e-5;
-                  }
-
-                in >> temp1 >> temp2;
-                if (in.fail())
-                  in.clear();
-
-
-                getline(in, temp);
-                if (in.eof())
-                  break;
-
-                specific_heat_values[i/n_pressure][i%n_pressure]=cp;
-                thermal_expansivity_values[i/n_pressure][i%n_pressure]=alpha_eff;
-
-                i++;
-              }
-          }
-      }
-
-      PerplexReader::PerplexReader(const std::string &filename,
-                                   const bool interpol,
-                                   const MPI_Comm &comm)
-      {
-        /* Initializing variables */
-        interpolation = interpol;
-        delta_press=numbers::signaling_nan<double>();
-        min_press=std::numeric_limits<double>::max();
-        max_press=-std::numeric_limits<double>::max();
-        delta_temp=numbers::signaling_nan<double>();
-        min_temp=std::numeric_limits<double>::max();
-        max_temp=-std::numeric_limits<double>::max();
-        n_temperature=0;
-        n_pressure=0;
-
-        std::string temp;
-        // Read data from disk and distribute among processes
-        std::istringstream in(Utilities::read_and_distribute_file_content(filename, comm));
-
-        getline(in, temp); // eat first line
-        getline(in, temp); // eat next line
-        getline(in, temp); // eat next line
-        getline(in, temp); // eat next line
-
-        in >> min_temp;
-        getline(in, temp);
-        in >> delta_temp;
-        getline(in, temp);
-        in >> n_temperature;
-        getline(in, temp);
-        getline(in, temp);
-        in >> min_press;
-        min_press *= 1e5;  // conversion from [bar] to [Pa]
-        getline(in, temp);
-        in >> delta_press;
-        delta_press *= 1e5; // conversion from [bar] to [Pa]
-        getline(in, temp);
-        in >> n_pressure;
-        getline(in, temp);
-        getline(in, temp);
-        getline(in, temp);
-
-        AssertThrow(min_temp >= 0.0, ExcMessage("Read in of Material header failed (mintemp)."));
-        AssertThrow(delta_temp > 0, ExcMessage("Read in of Material header failed (delta_temp)."));
-        AssertThrow(n_temperature > 0, ExcMessage("Read in of Material header failed (numtemp)."));
-        AssertThrow(min_press >= 0, ExcMessage("Read in of Material header failed (min_press)."));
-        AssertThrow(delta_press > 0, ExcMessage("Read in of Material header failed (delta_press)."));
-        AssertThrow(n_pressure > 0, ExcMessage("Read in of Material header failed (numpress)."));
-
-
-        max_temp = min_temp + (n_temperature-1) * delta_temp;
-        max_press = min_press + (n_pressure-1) * delta_press;
-
-        density_values.reinit(n_temperature,n_pressure);
-        thermal_expansivity_values.reinit(n_temperature,n_pressure);
-        specific_heat_values.reinit(n_temperature,n_pressure);
-        vp_values.reinit(n_temperature,n_pressure);
-        vs_values.reinit(n_temperature,n_pressure);
-        enthalpy_values.reinit(n_temperature,n_pressure);
-
-        unsigned int i = 0;
-        while (!in.eof())
-          {
-            double temp1,temp2;
-            double rho,alpha,cp,vp,vs,h;
-            in >> temp1 >> temp2;
-            in >> rho;
-            if (in.fail())
-              {
-                in.clear();
-                rho = density_values[(i-1)%n_temperature][(i-1)/n_temperature];
-              }
-            in >> alpha;
-            if (in.fail())
-              {
-                in.clear();
-                alpha = thermal_expansivity_values[(i-1)%n_temperature][(i-1)/n_temperature];
-              }
-            in >> cp;
-            if (in.fail())
-              {
-                in.clear();
-                cp = specific_heat_values[(i-1)%n_temperature][(i-1)/n_temperature];
-              }
-            in >> vp;
-            if (in.fail())
-              {
-                in.clear();
-                vp = vp_values[(i-1)%n_temperature][(i-1)/n_temperature];
-              }
-            in >> vs;
-            if (in.fail())
-              {
-                in.clear();
-                vs = vs_values[(i-1)%n_temperature][(i-1)/n_temperature];
-              }
-            in >> h;
-            if (in.fail())
-              {
-                in.clear();
-                h = enthalpy_values[(i-1)%n_temperature][(i-1)/n_temperature];
-              }
-
-            getline(in, temp);
-            if (in.eof())
-              break;
-
-            density_values[i%n_temperature][i/n_temperature]=rho;
-            thermal_expansivity_values[i%n_temperature][i/n_temperature]=alpha;
-            specific_heat_values[i%n_temperature][i/n_temperature]=cp;
-            vp_values[i%n_temperature][i/n_temperature]=vp;
-            vs_values[i%n_temperature][i/n_temperature]=vs;
-            enthalpy_values[i%n_temperature][i/n_temperature]=h;
-
-            i++;
-          }
-        AssertThrow(i == n_temperature*n_pressure, ExcMessage("Material table size not consistent with header."));
-
-      }
-    }
-
-
-
     template <int dim>
     void
-    GrainSize<dim>::initialize()
+    EquilibriumGrainSize<dim>::initialize()
     {
       n_material_data = material_file_names.size();
       for (unsigned i = 0; i < n_material_data; i++)
@@ -636,10 +60,22 @@ namespace aspect
     }
 
 
+    template <int dim>
+    double
+    EquilibriumGrainSize<dim>::equilibrium_grain_size(const double      temperature,
+        const double      pressure,
+        const std::vector<double>    &compositional_fields,
+        const SymmetricTensor<2,dim> &strain_rate,
+        const Point<dim> &position) const
+    {
+      return 0.0;
+    }
+
+
 
     template <int dim>
     double
-    GrainSize<dim>::
+    EquilibriumGrainSize<dim>::
     phase_function (const Point<dim> &position,
                     const double temperature,
                     const double pressure,
@@ -687,7 +123,7 @@ namespace aspect
 
     template <int dim>
     unsigned int
-    GrainSize<dim>::
+    EquilibriumGrainSize<dim>::
     get_phase_index (const Point<dim> &position,
                      const double temperature,
                      const double pressure) const
@@ -711,7 +147,7 @@ namespace aspect
 
     template <int dim>
     double
-    GrainSize<dim>::
+    EquilibriumGrainSize<dim>::
     grain_size_change (const double                  temperature,
                        const double                  pressure,
                        const std::vector<double>    &compositional_fields,
@@ -846,7 +282,7 @@ namespace aspect
 
     template <int dim>
     double
-    GrainSize<dim>::
+    EquilibriumGrainSize<dim>::
     diffusion_viscosity (const double                  temperature,
                          const double                  pressure,
                          const std::vector<double>    &composition,
@@ -898,7 +334,7 @@ namespace aspect
 
     template <int dim>
     double
-    GrainSize<dim>::
+    EquilibriumGrainSize<dim>::
     dislocation_viscosity (const double      temperature,
                            const double      pressure,
                            const std::vector<double> &composition,
@@ -940,7 +376,7 @@ namespace aspect
 
     template <int dim>
     double
-    GrainSize<dim>::
+    EquilibriumGrainSize<dim>::
     dislocation_viscosity_fixed_strain_rate (const double      temperature,
                                              const double      pressure,
                                              const std::vector<double> &,
@@ -989,7 +425,7 @@ namespace aspect
 
     template <int dim>
     double
-    GrainSize<dim>::
+    EquilibriumGrainSize<dim>::
     viscosity (const double temperature,
                const double pressure,
                const std::vector<double> &composition,
@@ -1017,7 +453,7 @@ namespace aspect
 
     template <int dim>
     double
-    GrainSize<dim>::
+    EquilibriumGrainSize<dim>::
     enthalpy (const double      temperature,
               const double      pressure,
               const std::vector<double> &compositional_fields,
@@ -1041,7 +477,7 @@ namespace aspect
 
     template <int dim>
     double
-    GrainSize<dim>::
+    EquilibriumGrainSize<dim>::
     seismic_Vp (const double      temperature,
                 const double      pressure,
                 const std::vector<double> &compositional_fields,
@@ -1065,7 +501,7 @@ namespace aspect
 
     template <int dim>
     double
-    GrainSize<dim>::
+    EquilibriumGrainSize<dim>::
     seismic_Vs (const double      temperature,
                 const double      pressure,
                 const std::vector<double> &compositional_fields,
@@ -1089,7 +525,7 @@ namespace aspect
 
     template <int dim>
     double
-    GrainSize<dim>::
+    EquilibriumGrainSize<dim>::
     reference_viscosity () const
     {
       return eta;
@@ -1099,7 +535,7 @@ namespace aspect
 
     template <int dim>
     double
-    GrainSize<dim>::
+    EquilibriumGrainSize<dim>::
     density (const double temperature,
              const double pressure,
              const std::vector<double> &compositional_fields, /*composition*/
@@ -1131,7 +567,7 @@ namespace aspect
 
     template <int dim>
     bool
-    GrainSize<dim>::
+    EquilibriumGrainSize<dim>::
     is_compressible () const
     {
       return (reference_compressibility != 0)
@@ -1142,7 +578,7 @@ namespace aspect
 
     template <int dim>
     double
-    GrainSize<dim>::
+    EquilibriumGrainSize<dim>::
     compressibility (const double temperature,
                      const double pressure,
                      const std::vector<double> &compositional_fields,
@@ -1167,7 +603,7 @@ namespace aspect
 
     template <int dim>
     double
-    GrainSize<dim>::
+    EquilibriumGrainSize<dim>::
     thermal_expansion_coefficient (const double      temperature,
                                    const double      pressure,
                                    const std::vector<double> &compositional_fields,
@@ -1194,7 +630,7 @@ namespace aspect
 
     template <int dim>
     double
-    GrainSize<dim>::
+    EquilibriumGrainSize<dim>::
     specific_heat (const double temperature,
                    const double pressure,
                    const std::vector<double> &compositional_fields,
@@ -1221,7 +657,7 @@ namespace aspect
 
     template <int dim>
     std::array<std::pair<double, unsigned int>,2>
-    GrainSize<dim>::
+    EquilibriumGrainSize<dim>::
     enthalpy_derivative (const typename Interface<dim>::MaterialModelInputs &in) const
     {
       std::array<std::pair<double, unsigned int>,2> derivative;
@@ -1264,7 +700,7 @@ namespace aspect
 
     template <int dim>
     void
-    GrainSize<dim>::
+    EquilibriumGrainSize<dim>::
     evaluate(const typename Interface<dim>::MaterialModelInputs &in, typename Interface<dim>::MaterialModelOutputs &out) const
     {
       for (unsigned int i=0; i<in.position.size(); ++i)
@@ -1367,8 +803,6 @@ namespace aspect
                   {
                     out.reaction_terms[i][c] = grain_size_change(in.temperature[i], pressure, composition,
                                                                  in.strain_rate[i], in.velocity[i], in.position[i], c, crossed_transition);
-                    if (advect_log_grainsize)
-                      out.reaction_terms[i][c] = - out.reaction_terms[i][c] / composition[c];
                   }
                 else
                   out.reaction_terms[i][c] = 0.0;
@@ -1454,11 +888,11 @@ namespace aspect
 
     template <int dim>
     void
-    GrainSize<dim>::declare_parameters (ParameterHandler &prm)
+    EquilibriumGrainSize<dim>::declare_parameters (ParameterHandler &prm)
     {
       prm.enter_subsection("Material model");
       {
-        prm.enter_subsection("Grain size model");
+        prm.enter_subsection("Equilibrium grain size model");
         {
           prm.declare_entry ("Reference density", "3300",
                              Patterns::Double (0),
@@ -1728,7 +1162,7 @@ namespace aspect
 
     template <int dim>
     void
-    GrainSize<dim>::parse_parameters (ParameterHandler &prm)
+    EquilibriumGrainSize<dim>::parse_parameters (ParameterHandler &prm)
     {
       AssertThrow (this->introspection().compositional_name_exists("grain_size"),
                    ExcMessage("The 'grain size' material model only works if a compositional "
@@ -1737,7 +1171,7 @@ namespace aspect
 
       prm.enter_subsection("Material model");
       {
-        prm.enter_subsection("Grain size model");
+        prm.enter_subsection("Equilibrium grain size model");
         {
           reference_rho              = prm.get_double ("Reference density");
           reference_T                = prm.get_double ("Reference temperature");
@@ -1834,8 +1268,6 @@ namespace aspect
             boundary_area_change_work_fraction[boundary_area_change_work_fraction.size()-1] /= pv_grain_size_scaling;
 
 
-
-          advect_log_grainsize                   = prm.get_bool ("Advect logarithm of grain size");
 
           if (grain_growth_activation_energy.size() != grain_growth_activation_volume.size() ||
               grain_growth_activation_energy.size() != grain_growth_rate_constant.size() ||
@@ -1952,7 +1384,7 @@ namespace aspect
 
     template <int dim>
     void
-    GrainSize<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
+    EquilibriumGrainSize<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {
       // These properties are useful as output, but will also be used by the
       // heating model to reduce shear heating by the amount of work done to
@@ -1982,8 +1414,8 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    ASPECT_REGISTER_MATERIAL_MODEL(GrainSize,
-                                   "grain size",
+    ASPECT_REGISTER_MATERIAL_MODEL(EquilibriumGrainSize,
+                                   "equilibrium grain size",
                                    "A material model that relies on compositional "
                                    "fields that correspond to the average grain sizes of a "
                                    "mineral phase and source terms that determine the grain "
