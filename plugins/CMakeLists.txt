@@ -43,7 +43,7 @@ ENDIF ()
 
 DEAL_II_INITIALIZE_CACHED_VARIABLES()
 
-SET(TARGET "my_plugin")
+SET(TARGET "equilibrium_grain_size")
 PROJECT(${TARGET})
 
 ADD_LIBRARY(${TARGET} SHARED equilibrium_grain_size.cc equilibrium_grain_size.h)

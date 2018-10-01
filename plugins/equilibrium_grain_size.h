@@ -19,10 +19,11 @@
 */
 
 
-#ifndef __aspect__model_grain_size_h
-#define __aspect__model_grain_size_h
+#ifndef _aspect_model_equilibrium_grain_size_h
+#define _aspect_model_equilibrium_grain_size_h
 
 #include <aspect/material_model/interface.h>
+#include <aspect/material_model/grain_size.h>
 #include <aspect/simulator_access.h>
 #include <array>
 
@@ -32,184 +33,6 @@ namespace aspect
   {
     using namespace dealii;
 
-    /**
-     * Additional output fields for the dislocation viscosity parameters
-     * to be added to the MaterialModel::MaterialModelOutputs structure
-     * and filled in the MaterialModel::GrainSize::evaluate() function.
-     */
-    template <int dim>
-    class DislocationViscosityOutputs : public NamedAdditionalMaterialOutputs<dim>
-    {
-      public:
-        DislocationViscosityOutputs(const unsigned int n_points);
-
-        virtual std::vector<double> get_nth_output(const unsigned int idx) const;
-
-        /**
-         * Dislocation viscosities at the evaluation points passed to
-         * the instance of MaterialModel::Interface::evaluate() that fills
-         * the current object.
-         */
-        std::vector<double> dislocation_viscosities;
-
-        /**
-         * This contains the fraction of the deformation work that is
-         * converted to surface energy of grains instead of thermal energy.
-         * It is used to reduce the shear heating by this fraction. If it
-         * is set to 0.0 it will not change the shear heating.
-         */
-        std::vector<double> boundary_area_change_work_fractions;
-    };
-
-    namespace Lookup
-    {
-      /**
-       * A base class that can be used to look up material data from an external
-       * data source (e.g. a table in a file). The class consists of data members
-       * and functions to access this data, but it does not contain the functions
-       * to read this data, which has to be implemented in a derived class.
-       */
-      class MaterialLookup
-      {
-        public:
-
-          double
-          specific_heat(double temperature,
-                        double pressure) const;
-
-          double
-          density(double temperature,
-                  double pressure) const;
-
-          double
-          thermal_expansivity(const double temperature,
-                              const double pressure) const;
-
-          double
-          seismic_Vp(const double temperature,
-                     const double pressure) const;
-
-          double
-          seismic_Vs(const double temperature,
-                     const double pressure) const;
-
-          double
-          enthalpy(const double temperature,
-                   const double pressure) const;
-
-          /**
-           * Computes the derivative of enthalpy for temperature, using the
-           * resolution of the read-in table to compute a finite-difference
-           * approximation of the derivative.
-           */
-          double
-          dHdT (const double temperature,
-                const double pressure) const;
-
-          /**
-           * Computes the derivative of enthalpy for pressure, using the
-           * resolution of the read-in table to compute a finite-difference
-           * approximation of the derivative.
-           */
-          double
-          dHdp (const double temperature,
-                const double pressure) const;
-
-          /**
-           * Compute the enthalpy derivatives for temperature and pressure
-           * given a set of temperature and pressure points, which will be
-           * used as support points for the finite difference scheme. This
-           * is useful to not 'miss' phase transitions that are not resolved in
-           * the dHdT and dHdp functions. The third argument represents
-           * the number of substeps taken to compute this average. A number
-           * larger than one means the temperature-pressure range that is spanned
-           * by the first two input arguments is seperated into @p n_substeps
-           * equally spaced pressure-temperature steps, the derivatives are
-           * computed for each substep and then averaged.
-           */
-          std::array<std::pair<double, unsigned int>,2>
-          enthalpy_derivatives(const std::vector<double> &temperatures,
-                               const std::vector<double> &pressures,
-                               const unsigned int n_substeps = 1) const;
-
-          double
-          dRhodp (const double temperature,
-                  const double pressure) const;
-
-          /**
-           * Returns the size of the data tables in pressure (first entry)
-           * and temperature (second entry) dimensions.
-           */
-          std::array<double,2>
-          get_pT_steps() const;
-
-        protected:
-          /**
-           * Access that data value of the property that is stored in table
-           * @p values at pressure @p pressure and temperature @p temperature.
-           * @p interpol controls whether to perform linear interpolation
-           * between the closest data points, or simply use the closest point
-           * value.
-           */
-          double
-          value (const double temperature,
-                 const double pressure,
-                 const Table<2, double> &values,
-                 const bool interpol) const;
-
-          /**
-           * Find the position in a data table given a temperature.
-           */
-          double get_nT(const double temperature) const;
-
-          /**
-           * Find the position in a data table given a pressure.
-           */
-          double get_np(const double pressure) const;
-
-          dealii::Table<2,double> density_values;
-          dealii::Table<2,double> thermal_expansivity_values;
-          dealii::Table<2,double> specific_heat_values;
-          dealii::Table<2,double> vp_values;
-          dealii::Table<2,double> vs_values;
-          dealii::Table<2,double> enthalpy_values;
-
-          double delta_press;
-          double min_press;
-          double max_press;
-          double delta_temp;
-          double min_temp;
-          double max_temp;
-          unsigned int n_temperature;
-          unsigned int n_pressure;
-          bool interpolation;
-      };
-
-      /**
-       * An implementation of the above base class that reads in files created
-       * by the HeFESTo software.
-       */
-      class HeFESToReader : public MaterialLookup
-      {
-        public:
-          HeFESToReader(const std::string &material_filename,
-                        const std::string &derivatives_filename,
-                        const bool interpol,
-                        const MPI_Comm &comm);
-      };
-
-      /**
-       * An implementation of the above base class that reads in files created
-       * by the Perplex software.
-       */
-      class PerplexReader : public MaterialLookup
-      {
-        public:
-          PerplexReader(const std::string &filename,
-                        const bool interpol,
-                        const MPI_Comm &comm);
-      };
-    }
 
     /**
      * A material model that relies on compositional fields that stand for
@@ -233,7 +56,7 @@ namespace aspect
      * @ingroup MaterialModels
      */
     template <int dim>
-    class GrainSize : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
+    class EquilibriumGrainSize : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
         /**
@@ -380,13 +203,6 @@ namespace aspect
         double min_grain_size;
         double pv_grain_size_scaling;
 
-        /**
-         * Whether to advect the real grain size, or the logarithm of the
-         * grain size. The logarithm reduces jumps.
-         */
-        bool advect_log_grainsize;
-
-
         double viscosity (const double                  temperature,
                           const double                  pressure,
                           const std::vector<double>    &compositional_fields,
@@ -397,6 +213,12 @@ namespace aspect
                                     const double      pressure,
                                     const std::vector<double>    &compositional_fields,
                                     const SymmetricTensor<2,dim> &,
+                                    const Point<dim> &position) const;
+
+        double equilibrium_grain_size (const double      temperature,
+                                    const double      pressure,
+                                    const std::vector<double>    &compositional_fields,
+                                    const SymmetricTensor<2,dim> &strain_rate,
                                     const Point<dim> &position) const;
 
         /**
