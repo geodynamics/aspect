@@ -203,23 +203,31 @@ namespace aspect
         double min_grain_size;
         double pv_grain_size_scaling;
 
-        double viscosity (const double                  temperature,
-                          const double                  pressure,
-                          const std::vector<double>    &compositional_fields,
-                          const SymmetricTensor<2,dim> &strain_rate,
-                          const Point<dim>             &position) const;
-
         double diffusion_viscosity (const double      temperature,
                                     const double      pressure,
                                     const std::vector<double>    &compositional_fields,
                                     const SymmetricTensor<2,dim> &,
                                     const Point<dim> &position) const;
 
-        double equilibrium_grain_size (const double      temperature,
-                                    const double      pressure,
-                                    const std::vector<double>    &compositional_fields,
-                                    const SymmetricTensor<2,dim> &strain_rate,
-                                    const Point<dim> &position) const;
+       /**
+        * Compute the equilibrium grain size for a given temperature and
+        * pressure.
+        * This computation is based on the rate of grain size growth
+        * (Ostwald ripening) or reduction(due to dynamic recrystallization
+        * and phase transformations) in dependence on temperature, pressure,
+        * strain rate, mineral phase and creep regime.
+        * We use the grain size growth laws as for example described
+        * in Behn, M. D., Hirth, G., & Elsenbeck, J. R. (2009). Implications
+        * of grain size evolution on the seismic structure of the oceanic
+        * upper mantle. Earth and Planetary Science Letters, 282(1), 178-189.
+        *
+        * For the rate of grain size reduction due to dynamic crystallization
+        * there is the choice between the paleowattmeter (Austins and
+        * Evans, 2007) and the paleopiezometer (Hall and Parmentier, 2003)
+        * as described in the parameter use_paleowattmeter.
+        */
+        void compute_equilibrium_grain_size (const typename Interface<dim>::MaterialModelInputs &in,
+                                             typename Interface<dim>::MaterialModelOutputs      &out) const;
 
         /**
          * This function calculates the dislocation viscosity. For this purpose
@@ -237,7 +245,7 @@ namespace aspect
                                       const std::vector<double>    &compositional_fields,
                                       const SymmetricTensor<2,dim> &strain_rate,
                                       const Point<dim> &position,
-                                      const double viscosity_guess = 0) const;
+                                      const double      viscosity_guess = 0) const;
 
         /**
          * This function calculates the dislocation viscosity for a given
@@ -245,8 +253,7 @@ namespace aspect
          */
         double dislocation_viscosity_fixed_strain_rate (const double      temperature,
                                                         const double      pressure,
-                                                        const std::vector<double> &,
-                                                        const SymmetricTensor<2,dim> &dislocation_strain_rate,
+                                                        const double      second_strain_rate_invariant,
                                                         const Point<dim> &position) const;
 
         double density (const double temperature,
@@ -284,31 +291,6 @@ namespace aspect
                            const double      pressure,
                            const std::vector<double> &compositional_fields,
                            const Point<dim> &position) const;
-
-        /**
-         * Rate of grain size growth (Ostwald ripening) or reduction
-         * (due to dynamic recrystallization and phase transformations)
-         * in dependence on temperature, pressure, strain rate, mineral
-         * phase and creep regime.
-         * We use the grain size growth laws as for example described
-         * in Behn, M. D., Hirth, G., & Elsenbeck, J. R. (2009). Implications
-         * of grain size evolution on the seismic structure of the oceanic
-         * upper mantle. Earth and Planetary Science Letters, 282(1), 178-189.
-         *
-         * For the rate of grain size reduction due to dynamic crystallization
-         * there is the choice between the paleowattmeter (Austins and
-         * Evans, 2007) and the paleopiezometer (Hall and Parmentier, 2003)
-         * as described in the parameter use_paleowattmeter.
-         */
-        double
-        grain_size_change (const double                  temperature,
-                           const double                  pressure,
-                           const std::vector<double>    &compositional_fields,
-                           const SymmetricTensor<2,dim> &strain_rate,
-                           const Tensor<1,dim>          &velocity,
-                           const Point<dim>             &position,
-                           const unsigned int            phase_index,
-                           const int                     crossed_transition) const;
 
         /**
          * Function that defines the phase transition interface
@@ -353,6 +335,13 @@ namespace aspect
         bool use_table_properties;
         bool use_enthalpy;
         bool use_bilinear_interpolation;
+
+        /**
+         * A flag indicating whether ASPECT computes the density, or whether
+         * we require a compositional field called 'gypsum_density' and use it
+         * as density field.
+         */
+        bool use_gypsum_density;
 
 
         /**
