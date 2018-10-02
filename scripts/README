@@ -1,0 +1,43 @@
+README containing the workflow to take an ASPECT model output and:
+	- convert P,T,d,f to Vs, Q
+	- write a world.dat file with P,T,d,Vp,Vs,Q,eta specified at each point
+	- construct a relevant 1D profile (radial average, sectoral average, or local around raypath)
+	- compute travel times, t* and eigenfrequencies
+	
+Inputs/choices:
+a) Geodynamic model result
+b) Mineral physics parameterisation
+c) frequency
+
+Step-by-step guide
+
+1. Get aspect output file, .csv format. Put in aspect_output folder.
+
+2. Edit MAKE_ALL file, specifying
+	- aspect_output file name
+	- translation MODEL to be used ('JF10_eBurg' or 'M11')
+	- frequency, in Hz, MAKE SURE YOU SPECIFY AS A FLOAT
+	also make sure all the other inputs in the file are correct, like run#, Ndo, and crust and core and Qk files
+	
+3. Run ./MAKE_ALL   - this will take a while
+	 first, opens matlab and downsamples the aspect output to a much smaller random mesh
+	 then, computes a processed ("translated") aspect output file, with all the anelastic velocities calculated. This script also corrects the pressures, by adding the minimum negative pressure to all P values. This script also deletes any points with negative grainsizes.
+	 	> this will be named trans_run#_MODEL_freq
+	 finally, opens matlab, reads this translated file, and performs the 1D averaging, producing a MINEOS-ready card file, as well as a pdf of the 1D model. 
+	 	> these will be named 1D_rundescrip_MODEL_freq.model
+	 this is performed by the make_1Dav.m script, which can also be run manually in matlab, to change the options or to make the additional plots that include 2D slices of velocity and grainsize, and a comparison of the raw aspect output model (with anharmonic velocities) with the processed model (with anelastic effects included).
+	 
+3.5. The above steps should be performed for all the different frequencies that you want to compare. You'll end up with a bunch of .model files, and pdf files showing the V and Q of these 1D models
+
+3.6 Manually, compute the values for 1hz
+
+4. Copy the model files into a folder on povel, and run the following script:
+
+
+
+5. You will end up with files in the following directory tree:
+
+	MODEL/
+		  freq/
+		  	   phase/	
+		which contains path_STA# and ttandtstar.txt

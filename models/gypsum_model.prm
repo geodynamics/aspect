@@ -4,34 +4,54 @@ set Dimension                              = 3
 set Use years in output instead of seconds = true
 set Start time                             = 0
 set End time                               = 0
-set Nonlinear solver scheme                = no Advection, iterated Stokes
-set Max nonlinear iterations               = 0
+set Nonlinear solver scheme                = iterated Advection and Stokes
+set Max nonlinear iterations               = 10
+set Adiabatic surface temperature          = 1600.0
+
+subsection Prescribed Stokes solution
+#  set Model name = function
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-5
+#    set Number of cheap Stokes solver steps = 0
+    set GMRES solver restart length = 200
+    set Maximum number of expensive Stokes solver steps = 200
+  end
+end
+
 
 subsection Compositional fields
   set Number of fields = 4
-  set Names of fields = grain_size, gypsum_density, gypsum_vs, gypsum_vp
-  set Compositional field methods = static
+  set Names of fields = grain_size, gypsum_density, gypsum_vp, gypsum_vs
+  set Compositional field methods = prescribed field, static, static, static
 end
 
 
 subsection Initial composition model
-  set List of model names = function #ascii data
+  set List of model names = ascii data
 
   subsection Function
-    set Function expression = 0.0;0.0;0.0;0.0
+    set Function expression = 1e-4;0.0;0.0;0.0
   end
 
   subsection Ascii data model
     set Data directory = ../input_data/
-    set Data file name = GyPSuM_midrad_lon_lat_density_vp_vs.dat
+    set Data file name = GyPSuM_midrad_lon_lat_density_vp_vs.txt
   end
 end
 
 
-subsection Material model
-  set Model name = simple #grain size
+subsection Heating model
+  set List of model names = adiabatic heating, shear heating
+end
 
-  subsection Grain size model
+
+subsection Material model
+  set Model name = equilibrium grain size
+
+  subsection Equilibrium grain size model
     set Average specific grain boundary energy      = 1.0,1.0,1.0,1.0
     #set Corresponding phase for transition          = olivine_grain_size,olivine_grain_size,olivine_grain_size
 
@@ -61,14 +81,17 @@ subsection Material model
     set Reciprocal required strain                  = 10
     set Recrystallized grain size                   = 0.0,0.0,1e-4
 
+    set Minimum viscosity                           = 1e23
+    set Maximum viscosity                           = 1e24
     set Reference compressibility                   = 4e-12
     set Reference density                           = 3400
     set Reference specific heat                     = 1250
     set Reference temperature                       = 1600
     set Thermal conductivity                        = 4
-    set Thermal expansion coefficient               = 2e-5
+    set Thermal expansion coefficient               = 2.5e-5
     set Use paleowattmeter                          = true
-    set Viscosity                                   = 1e22
+    set Viscosity                                   = 1e26
+    set Use GyPSuM density                          = true
   end
 end
 
@@ -84,7 +107,7 @@ end
 
 
 subsection Boundary velocity model
-  set Tangential velocity boundary indicators = top, bottom
+   set Tangential velocity boundary indicators = top, bottom
 end
 
 
@@ -123,7 +146,7 @@ end
 
 
 subsection Mesh refinement
-  set Initial global refinement          = 1
+  set Initial global refinement          = 2
   set Initial adaptive refinement        = 0
   set Strategy                           = temperature
   set Time steps between mesh refinement = 0
@@ -131,12 +154,13 @@ end
 
 
 subsection Postprocess
-  set List of postprocessors = visualization, temperature statistics, velocity statistics, material statistics
+  set List of postprocessors = visualization, temperature statistics, velocity statistics, composition statistics, Stokes residual
+  set Run postprocessors on nonlinear iterations = true
 
   subsection Visualization
     set Output format                 = vtu
     set Time between graphical output = 0
-    set List of output variables = material properties, strain rate #, Vs anomaly, Vp anomaly
+    set List of output variables = material properties, strain rate, named additional outputs
   end
 end
 
