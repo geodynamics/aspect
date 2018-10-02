@@ -64,11 +64,52 @@ namespace aspect
     double
     EquilibriumGrainSize<dim>::equilibrium_grain_size(const double      temperature,
         const double      pressure,
-        const std::vector<double>    &compositional_fields,
+        const std::vector<double>    &composition,
         const SymmetricTensor<2,dim> &strain_rate,
         const Point<dim> &position) const
     {
-      return 0.0;
+      // Computed according to equation (7) in Dannberg et al., 2016, using the paleowattmeter grain size.
+  	  // Austin and Evans (2007): Paleowattmeters: A scaling relation for dynamically recrystallized grain size. Geology 35, 343-346.
+      const unsigned int phase_index = get_phase_index(position, temperature, pressure);
+      const double prefactor = geometric_constant[phase_index] * grain_boundary_energy[phase_index] * grain_growth_rate_constant[phase_index]
+							   / (boundary_area_change_work_fraction[phase_index] * grain_growth_exponent[phase_index]);
+      const double exponential = std::exp(- (grain_growth_activation_energy[phase_index] + pressure * grain_growth_activation_volume[phase_index])
+                                 / (constants::gas_constant * temperature));
+
+      // get the dislocation viscosity to compute the dislocation strain rate
+      const SymmetricTensor<2,dim> shear_strain_rate = strain_rate - 1./dim * trace(strain_rate) * unit_symmetric_tensor<dim>();
+      const double second_strain_rate_invariant = std::sqrt(std::abs(second_invariant(shear_strain_rate)));
+
+      double diff_viscosity;
+      double disl_viscosity = dislocation_viscosity_fixed_strain_rate(temperature, pressure, composition, strain_rate, position);
+
+      unsigned int i = 0;
+      double old_grain_size = 0.0;
+      double grain_size = composition[this->introspection().compositional_index_for_name("grain_size")];
+
+      // because the diffusion viscosity depends on the grain size itself, and we need it to compute the dislocation strain rate,
+      // we have to iterate in the computation of the eqilibrium grain size
+      while ((std::abs((grain_size-old_grain_size) / grain_size) > dislocation_viscosity_iteration_threshold)
+             && (i < dislocation_viscosity_iteration_number))
+        {
+    	  diff_viscosity = diffusion_viscosity(temperature, pressure, composition, strain_rate, position);
+    	  disl_viscosity = dislocation_viscosity(temperature, pressure, composition, strain_rate, position, disl_viscosity);
+
+          double effective_viscosity = diff_viscosity;
+          if (std::abs(second_strain_rate_invariant) > 1e-30)
+        	  effective_viscosity = diff_viscosity * disl_viscosity / (disl_viscosity + diff_viscosity);
+
+          // This follows from Equation (S25 - S30)
+          const double dislocation_strain_rate_invariant = second_strain_rate_invariant
+                                                           * effective_viscosity / disl_viscosity;
+          const double stress_term = 4.0 * effective_viscosity * second_strain_rate_invariant * dislocation_strain_rate_invariant;
+
+          old_grain_size = grain_size;
+          grain_size = pow(prefactor/stress_term * exponential,1./(1+grain_growth_exponent[phase_index]));
+
+          ++i;
+        }
+      return grain_size;
     }
 
 
