@@ -143,6 +143,22 @@ namespace aspect
                        "Units: Years or seconds, depending on the ``Use years "
                        "in output instead of seconds'' parameter.");
 
+    prm.declare_entry ("Maximum first time step",
+                       /* boost::lexical_cast<std::string>(std::numeric_limits<double>::max() /
+                                                           year_in_seconds) = */ "5.69e+300",
+                       Patterns::Double (0),
+                       "Set a maximum time step size for only the first timestep. Generally the time step "
+                       "based on the CFL number should be sufficient, but for complicated models "
+                       "or benchmarking it may be useful to limit the first time step to some value, "
+                       "especially when using the free surface, which needs to settle to prevent "
+                       "instabilities. This should in that case be combined with a value set for "
+                       "``Maximum relative increase in time step''."
+                       "The default value is a value so that when converted from years into seconds "
+                       "it equals the largest number representable by a floating "
+                       "point number, implying an unlimited time step."
+                       "Units: Years or seconds, depending on the ``Use years "
+                       "in output instead of seconds'' parameter.");
+
     prm.declare_entry ("Maximum relative increase in time step", boost::lexical_cast<std::string>(std::numeric_limits<int>::max()),
                        Patterns::Double (0),
                        "Set a percentage with which the the time step is limited to increase. Generally the "
@@ -1096,6 +1112,9 @@ namespace aspect
       maximum_time_step *= year_in_seconds;
 
     maximum_relative_increase_time_step = prm.get_double("Maximum relative increase in time step") * 0.01;
+    maximum_first_time_step = prm.get_double("Maximum first time step");
+    if (convert_to_years == true)
+      maximum_first_time_step *= year_in_seconds;
 
     {
       const std::string solver_scheme = prm.get ("Nonlinear solver scheme");
