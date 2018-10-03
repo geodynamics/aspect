@@ -647,7 +647,6 @@ namespace aspect
       // Prepare the output data
       if (output_in_lat_lon == true)
         {
-          std::vector<std::pair<std::pair<double,double>,double> > stored_values_lon_lat;
           double lon, lat;
           for (unsigned int i=0; i<surface_cell_spherical_coordinates.size(); ++i)
             {
@@ -659,32 +658,24 @@ namespace aspect
                      :
                      surface_cell_spherical_coordinates.at(i).second*(180./numbers::PI) - 360.);
 
-              stored_values_lon_lat.emplace_back(std::make_pair(lon,lat),geoid_anomaly.at(i));
-            }
-          // Write the solution to the stream output
-          for (unsigned int i=0; i<stored_values_lon_lat.size(); ++i)
-            {
-              output << stored_values_lon_lat.at(i).first.first
+              // Write the solution to the stream output
+              output << lon
                      << ' '
-                     << stored_values_lon_lat.at(i).first.second
+                     << lat
                      << ' '
-                     << stored_values_lon_lat.at(i).second
+                     << geoid_anomaly.at(i)
                      << std::endl;
+
             }
         }
       else
         {
-          std::vector<std::pair<Point<dim>,double> > stored_values_xyz;
           for (unsigned int i=0; i<surface_cell_locations.size(); ++i)
             {
-              stored_values_xyz.push_back(std::make_pair(surface_cell_locations.at(i),geoid_anomaly.at(i)));
-            }
-          // Write the solution to the stream output
-          for (unsigned int i=0; i<stored_values_xyz.size(); ++i)
-            {
-              output << stored_values_xyz.at(i).first
+              // Write the solution to the stream output
+              output << surface_cell_locations.at(i)
                      << ' '
-                     << stored_values_xyz.at(i).second
+                     << geoid_anomaly.at(i)
                      << std::endl;
             }
         }
@@ -747,13 +738,15 @@ namespace aspect
           std::ostringstream output_gravity_anomaly;
           // Compute the grid gravity anomaly based on spherical harmonics
           std::vector<double> gravity_anomaly;
+          gravity_anomaly.reserve(surface_cell_spherical_coordinates.size());
+
           for (unsigned int i=0; i<surface_cell_spherical_coordinates.size(); ++i)
             {
               int ind = 0;
               double gravity_value = 0;
-              for (signed int ideg =  min_degree; ideg < max_degree+1; ideg++)
+              for (unsigned int ideg =  min_degree; ideg < max_degree+1; ++ideg)
                 {
-                  for (unsigned int iord = 0; iord < ideg+1; iord++)
+                  for (unsigned int iord = 0; iord < ideg+1; ++iord)
                     {
                       // normalization after Dahlen and Tromp, 1986, Appendix B.6
                       const std::pair<double,double> sph_harm_vals = aspect::Utilities::real_spherical_harmonic(ideg,iord,surface_cell_spherical_coordinates.at(i).first,surface_cell_spherical_coordinates.at(i).second);
@@ -762,7 +755,7 @@ namespace aspect
 
                       // the conversion from geoid to gravity anomaly is given by gravity_anomaly = (l-1)*g/R_surface * geoid_anomaly
                       // based on Forte (2007) equation [97]
-                      gravity_value += (geoid_coecos.at(ind)*cos_component+geoid_coesin.at(ind)*sin_component) * (ideg - 1) * surface_gravity / outer_radius * 1e5; // conversion to mgal
+                      gravity_value += (geoid_coecos.at(ind)*cos_component+geoid_coesin.at(ind)*sin_component) * (ideg - 1) * surface_gravity / outer_radius;
                       ++ind;
                     }
                 }
@@ -772,7 +765,6 @@ namespace aspect
           // Prepare the output data
           if (output_in_lat_lon == true)
             {
-              std::vector<std::pair<std::pair<double,double>,double> > stored_values_lon_lat;
               double lon, lat;
               for (unsigned int i=0; i<surface_cell_spherical_coordinates.size(); ++i)
                 {
@@ -783,35 +775,29 @@ namespace aspect
                          surface_cell_spherical_coordinates.at(i).second*(180./numbers::PI)
                          :
                          surface_cell_spherical_coordinates.at(i).second*(180./numbers::PI) - 360.);
-                  stored_values_lon_lat.emplace_back(std::make_pair(lon,lat),gravity_anomaly.at(i));
-                }
-              // Write the solution to the stream output
-              for (unsigned int i=0; i<stored_values_lon_lat.size(); ++i)
-                {
-                  output_gravity_anomaly << stored_values_lon_lat.at(i).first.first
+
+                  // Write the solution to the stream output
+                  output_gravity_anomaly << lon
                                          << ' '
-                                         << stored_values_lon_lat.at(i).first.second
+                                         << lat
                                          << ' '
-                                         << stored_values_lon_lat.at(i).second
+                                         << gravity_anomaly.at(i)
                                          << std::endl;
+
                 }
             }
           else
             {
-              std::vector<std::pair<Point<dim>,double> > stored_values_xyz;
               for (unsigned int i=0; i<surface_cell_locations.size(); ++i)
                 {
-                  stored_values_xyz.push_back(std::make_pair(surface_cell_locations.at(i),gravity_anomaly.at(i)));
-                }
-              // Write the solution to the stream output
-              for (unsigned int i=0; i<stored_values_xyz.size(); ++i)
-                {
-                  output_gravity_anomaly << stored_values_xyz.at(i).first
+                  // Write the solution to the stream output
+                  output_gravity_anomaly << surface_cell_locations.at(i)
                                          << ' '
-                                         << stored_values_xyz.at(i).second
+                                         << gravity_anomaly.at(i)
                                          << std::endl;
                 }
             }
+
           const std::string filename = this->get_output_directory() +
                                        "gravity_anomaly." +
                                        dealii::Utilities::int_to_string(this->get_timestep_number(), 5);
@@ -939,7 +925,7 @@ namespace aspect
           prm.declare_entry("Also output the gravity anomaly", "false",
                             Patterns::Bool(),
                             "Option to also output the free-air gravity anomaly up to the maximum degree. "
-                            "The unit of the output will be mgal (which is not SI). The default is false. ");
+                            "The unit of the output is in SI, hence m/s^2 (1mgal = 10^-5 m/s^2). The default is false. ");
         }
         prm.leave_subsection ();
       }
