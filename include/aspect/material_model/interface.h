@@ -822,7 +822,7 @@ namespace aspect
          * copy_properties[q][c] is the prescribed field output at the evaluation point q
          * for the compositional field with the index c.
          */
-        std::vector<std::vector<double> > copy_properties;
+        std::vector<std::vector<double> > prescribed_field_outputs;
     };
 
 

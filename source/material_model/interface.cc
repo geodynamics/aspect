@@ -856,6 +856,7 @@ namespace aspect
       }
 
 
+
       std::vector<std::string> make_prescribed_field_output_names(const unsigned int n_comp)
       {
         std::vector<std::string> names;
@@ -899,7 +900,7 @@ namespace aspect
                                                          const unsigned int n_comp)
       :
       NamedAdditionalMaterialOutputs<dim>(make_prescribed_field_output_names(n_comp)),
-      copy_properties(n_points, std::vector<double>(n_comp, std::numeric_limits<double>::quiet_NaN()))
+      prescribed_field_outputs(n_points, std::vector<double>(n_comp, std::numeric_limits<double>::quiet_NaN()))
     {}
 
 
@@ -912,10 +913,10 @@ namespace aspect
       // field, but the vector in the material model outputs is sorted so that the
       // number of evaluation points (and not the compositional fields) is the outer
       // vector
-      std::vector<double> prescribed_field_outputs(copy_properties.size());
-      for (unsigned int q=0; q<copy_properties.size(); ++q)
-        prescribed_field_outputs[q] = copy_properties[q][idx];
-      return prescribed_field_outputs;
+      std::vector<double> nth_prescribed_field_output(prescribed_field_outputs.size());
+      for (unsigned int q=0; q<prescribed_field_outputs.size(); ++q)
+        nth_prescribed_field_output[q] = prescribed_field_outputs[q][idx];
+      return nth_prescribed_field_output;
     }
   }
 }

@@ -36,12 +36,12 @@ namespace aspect
     {
       Simple<dim>::evaluate(in, out);
 
-      // set up variable to copy outputs
+      // set up variable to interpolate prescribed field outputs onto compositional fields
       PrescribedFieldOutputs<dim> *prescribed_field_out = out.template get_additional_output<PrescribedFieldOutputs<dim> >();
 
       if (prescribed_field_out != NULL)
         for (unsigned int i=0; i < in.position.size(); ++i)
-          prescribed_field_out->copy_properties[i][1] = out.densities[i];
+          prescribed_field_out->prescribed_field_outputs[i][1] = out.densities[i];
     }
 
 

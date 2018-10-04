@@ -1733,7 +1733,7 @@ namespace aspect
     LinearAlgebra::BlockVector distributed_vector (introspection.index_sets.system_partitioning,
                                                    mpi_communicator);
 
-    pcout << "   Copying material properties into prescribed compositional fields."
+    pcout << "   Copying properties into prescribed compositional fields."
           << std::endl;
 
     // make an fevalues object that allows us to interpolate onto the solution vector
@@ -1751,13 +1751,13 @@ namespace aspect
     // add the prescribed field outputs that will be used for interpolating
     material_model->create_additional_named_outputs(out);
 
-    MaterialModel::PrescribedFieldOutputs<dim> *prescribed_field_outputs
+    MaterialModel::PrescribedFieldOutputs<dim> *prescribed_field_out
       = out.template get_additional_output<MaterialModel::PrescribedFieldOutputs<dim> >();
 
     // check if the material model computes prescribed field outputs
-    AssertThrow(prescribed_field_outputs != NULL,
+    AssertThrow(prescribed_field_out != NULL,
                 ExcMessage("You are trying to use the a prescribed advection field, "
-                           "but the material model you use does not support interpolating material properties "
+                           "but the material model you use does not support interpolating properties "
                            "(it does not create PrescribedFieldOutputs, which are required for this "
                            "advection field type)."));
 
@@ -1792,7 +1792,7 @@ namespace aspect
                   // skip entries that are not locally owned:
                   if (dof_handler.locally_owned_dofs().is_element(local_dof_indices[composition_idx]))
                     {
-                      distributed_vector(local_dof_indices[composition_idx]) = prescribed_field_outputs->copy_properties[j][c];;
+                      distributed_vector(local_dof_indices[composition_idx]) = prescribed_field_out->prescribed_field_outputs[j][c];;
                     }
                 }
         }
