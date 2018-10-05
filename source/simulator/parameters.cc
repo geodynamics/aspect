@@ -1005,8 +1005,9 @@ namespace aspect
                          "This method can only be chosen if melt transport is active in the "
                          "model."
                          "\n"
-                         "\\item ``prescribed field'': If a compositional field is marked "
-                         "with this method, then the value of a specific additional material "
+                         "\\item ``prescribed field'': The value of these fields is determined "
+                         "in each time step from the material model. If a compositional field is "
+                         "marked with this method, then the value of a specific additional material "
                          "model output, called the `PrescribedFieldOutputs' is interpolated "
                          "onto the field. This field does not change otherwise, it is not "
                          "advected with the flow."
@@ -1539,6 +1540,12 @@ namespace aspect
         AssertThrow (this->include_melt_transport,
                      ExcMessage ("The advection method 'melt field' can only be selected if melt "
                                  "transport is used in the simulation."));
+
+      if (std::find(compositional_field_methods.begin(), compositional_field_methods.end(), AdvectionFieldMethod::prescribed_field)
+          != compositional_field_methods.end())
+        AssertThrow (!this->use_discontinuous_composition_discretization,
+                     ExcMessage ("The advection method 'prescribed field' has not yet been tested with "
+                                 "a discontinuous composition discretization."));
 
       const std::vector<std::string> x_mapped_particle_properties
         = Utilities::split_string_list

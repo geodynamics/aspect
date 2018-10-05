@@ -1583,7 +1583,7 @@ namespace aspect
     // on every cell, compute the update, and then on every cell put the result into the
     // distributed_vector vector. Only after the loop over all cells do we copy distributed_vector
     // back onto the solution vector.
-    // So even though we touch some DoF twice, we always start from the same value, compute the
+    // So even though we touch some DoF more than once, we always start from the same value, compute the
     // same value, and then overwrite the same value in distributed_vector.
     // TODO: make this more effective
     typename DoFHandler<dim>::active_cell_iterator cell = dof_handler.begin_active(),
@@ -1726,8 +1726,15 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::interpolate_material_output_into_field ()
+  void Simulator<dim>::interpolate_material_output_into_fields ()
   {
+    // find out if we have any prescribed fields
+    if (std::find(parameters.compositional_field_methods.begin(),
+                  parameters.compositional_field_methods.end(),
+                  Parameters<dim>::AdvectionFieldMethod::prescribed_field)
+        == parameters.compositional_field_methods.end())
+      return;
+
     // we need some temporary vectors to store our updates to composition in
     // before we copy them over to the solution vector in the end
     LinearAlgebra::BlockVector distributed_vector (introspection.index_sets.system_partitioning,
@@ -1758,7 +1765,7 @@ namespace aspect
     AssertThrow(prescribed_field_out != NULL,
                 ExcMessage("You are trying to use the a prescribed advection field, "
                            "but the material model you use does not support interpolating properties "
-                           "(it does not create PrescribedFieldOutputs, which are required for this "
+                           "(it does not create PrescribedFieldOutputs, which is required for this "
                            "advection field type)."));
 
     // Make a loop first over all cells, and then over all degrees of freedom in each element
@@ -1767,7 +1774,7 @@ namespace aspect
     // Note that the values for some degrees of freedom are set more than once in the loop
     // below where we assign the new values to distributed_vector (if they are located on the
     // interface between cells), as we loop over all cells, and then over all degrees of freedom
-    // on each cell. But even though we touch some DoF twice, we always compute the same value,
+    // on each cell. But even though we touch some DoF more than once, we always compute the same value,
     // and then overwrite the same value in distributed_vector.
     typename DoFHandler<dim>::active_cell_iterator cell = dof_handler.begin_active(),
                                                    endc = dof_handler.end();
@@ -1792,7 +1799,7 @@ namespace aspect
                   // skip entries that are not locally owned:
                   if (dof_handler.locally_owned_dofs().is_element(local_dof_indices[composition_idx]))
                     {
-                      distributed_vector(local_dof_indices[composition_idx]) = prescribed_field_out->prescribed_field_outputs[j][c];;
+                      distributed_vector(local_dof_indices[composition_idx]) = prescribed_field_out->prescribed_field_outputs[j][c];
                     }
                 }
         }
@@ -2265,7 +2272,7 @@ namespace aspect
   template void Simulator<dim>::interpolate_onto_velocity_system(const TensorFunction<1,dim> &func, LinearAlgebra::Vector &vec);\
   template void Simulator<dim>::apply_limiter_to_dg_solutions(const AdvectionField &advection_field); \
   template void Simulator<dim>::compute_reactions(); \
-  template void Simulator<dim>::interpolate_material_output_into_field(); \
+  template void Simulator<dim>::interpolate_material_output_into_fields(); \
   template void Simulator<dim>::check_consistency_of_formulation(); \
   template void Simulator<dim>::check_consistency_of_boundary_conditions() const; \
   template double Simulator<dim>::compute_initial_newton_residual(const LinearAlgebra::BlockVector &linearized_stokes_initial_guess); \

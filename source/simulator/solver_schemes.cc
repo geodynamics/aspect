@@ -215,13 +215,8 @@ namespace aspect
           }
       }
 
-    // Update the copy fields *after* we have solved all the other fields
-    for (unsigned int c=0; c < introspection.n_compositional_fields; ++c)
-      {
-        const AdvectionField adv_field (AdvectionField::composition(c));
-        if (adv_field.advection_method(introspection) == Parameters<dim>::AdvectionFieldMethod::prescribed_field)
-          interpolate_material_output_into_field();
-      }
+    // Update the prescribed fields *after* we have solved all the other fields
+    interpolate_material_output_into_fields();
 
     // for consistency we update the current linearization point only after we have solved
     // all fields, so that we use the same point in time for every field when solving

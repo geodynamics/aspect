@@ -819,7 +819,7 @@ namespace aspect
          * Prescribed field outputs for all compositional fields at the evaluation points
          * that are passed to the instance of MaterialModel::Interface::evaluate()
          * that fills the current object.
-         * copy_properties[q][c] is the prescribed field output at the evaluation point q
+         * prescribed_field_outputs[q][c] is the prescribed field output at the evaluation point q
          * for the compositional field with the index c.
          */
         std::vector<std::vector<double> > prescribed_field_outputs;
