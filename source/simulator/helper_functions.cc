@@ -1830,9 +1830,8 @@ namespace aspect
     FEFaceValues<dim> fe_face_values (*mapping,
                                       finite_element,
                                       quadrature_formula,
-                                      update_gradients      | update_values |
-                                      update_normal_vectors |
-                                      update_q_points       | update_JxW_values);
+                                      update_values   | update_normal_vectors |
+                                      update_q_points | update_JxW_values);
 
     std::vector<Tensor<1,dim> > face_current_velocity_values (fe_face_values.n_quadrature_points);
 
@@ -1849,7 +1848,8 @@ namespace aspect
             if (face->at_boundary())
               {
                 Assert(face->boundary_id() <= offset,
-                       ExcMessage("You can not use more than 10000 boundary indicators!"));
+                       ExcMessage("If you do not 'Allow fixed temperature/composition on outflow boundaries', "
+                                  "you are only allowed to use boundary ids between 0 and 128."));
 
                 fe_face_values.reinit (cell, face_number);
                 fe_face_values[introspection.extractors.velocities].get_function_values(current_linearization_point,

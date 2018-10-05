@@ -823,32 +823,38 @@ namespace aspect
 
     if (!mesh_has_changed)
       {
-        bool constraints_changed = false;
+        bool constrained_dofs_set_changed = false;
 
 #if DEAL_II_VERSION_GTE(9,0,0)
         for (auto &row: current_constraints.get_lines())
           {
             if (!new_current_constraints.is_constrained(row.index))
               {
-                constraints_changed = true;
+                constrained_dofs_set_changed = true;
                 break;
               }
           }
 #else
         for (const auto row: current_constraints.get_local_lines())
           {
+            // Decide if we need to construct a new sparsity pattern.
+            // This is only necessary if at least one of the DoFs that were
+            // constrained in the previous time step are not constrained any more,
+            // because in this case we will need additionl matrix entries.
+            // The matrices will be reassembled in each timestep regardless,
+            // so the values of the constraints do not matter for the sparsity pattern.
             if (current_constraints.is_constrained(row)
                 != new_current_constraints.is_constrained(row))
               {
-                constraints_changed = true;
+                constrained_dofs_set_changed = true;
                 break;
               }
           }
 #endif
 
-        const bool any_constraints_changed = Utilities::MPI::sum(constraints_changed ? 1 : 0,
-                                                                 mpi_communicator) > 0;
-        if (any_constraints_changed)
+        const bool any_constrained_dofs_set_changed = Utilities::MPI::sum(constrained_dofs_set_changed ? 1 : 0,
+                                                                          mpi_communicator) > 0;
+        if (any_constrained_dofs_set_changed)
           rebuild_sparsity_and_matrices = true;
       }
 
@@ -860,8 +866,6 @@ namespace aspect
     current_constraints.merge (new_current_constraints);
     current_constraints.close();
 #endif
-
-    // let the melt handler add its constraints once before we solve the porosity system for the first time
   }
 
 

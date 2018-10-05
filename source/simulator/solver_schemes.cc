@@ -247,7 +247,7 @@ namespace aspect
     // set constraints for p_c if porosity is below a threshold
     if (nonlinear_iteration == 0 && parameters.include_melt_transport)
       {
-        this->compute_current_constraints();
+        compute_current_constraints();
         if (rebuild_sparsity_and_matrices)
           {
             setup_system_matrix (introspection.index_sets.system_partitioning);

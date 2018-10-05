@@ -1,7 +1,7 @@
 # This test checks if fixed composition boundary conditions are only 
 # prescribed on outflow boundaries (if this option is activated in 
-# the input file), and in particular if this also works foe time-
-# dependent in- and outflow, and in a case where we prescibe the 
+# the input file), and in particular if this also works for time-
+# dependent in- and outflow, and in a case where we prescribe the 
 # temperature for both inflow and outflow. 
 
 
