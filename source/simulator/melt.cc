@@ -1511,12 +1511,6 @@ namespace aspect
   MeltHandler<dim>::
   add_current_constraints(ConstraintMatrix &constraints)
   {
-    // First, fill the constraints matrix with the current constraints from the beginning
-    // of the time step (that do not include the "melt cell" contributions).
-    constraints.clear ();
-    constraints.reinit (this->introspection().index_sets.system_relevant_set);
-    constraints.merge (current_constraints);
-
     IndexSet nonzero_pc_dofs(this->introspection().index_sets.system_relevant_set.size());
 
     const QTrapez<dim> quadrature_formula;
@@ -1613,19 +1607,6 @@ namespace aspect
 
     // and constrain the remaining dofs (that are not in melt cells).
     constraints.add_lines(for_constraints);
-    constraints.close();
-  }
-
-
-  template <int dim>
-  void
-  MeltHandler<dim>::
-  save_constraints(ConstraintMatrix &constraints)
-  {
-    current_constraints.clear ();
-    current_constraints.reinit (this->introspection().index_sets.system_relevant_set);
-    current_constraints.merge (constraints);
-    current_constraints.close();
   }
 
 

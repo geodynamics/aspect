@@ -1818,6 +1818,80 @@ namespace aspect
   }
 
 
+  template <int dim>
+  void
+  Simulator<dim>::replace_outflow_boundary_ids(const unsigned int offset)
+  {
+    const QGauss<dim-1> quadrature_formula (finite_element.base_element(introspection.base_elements.temperature).degree+1);
+
+    FEFaceValues<dim> fe_face_values (*mapping,
+                                      finite_element,
+                                      quadrature_formula,
+                                      update_values   | update_normal_vectors |
+                                      update_q_points | update_JxW_values);
+
+    std::vector<Tensor<1,dim> > face_current_velocity_values (fe_face_values.n_quadrature_points);
+
+    // Loop over all of the boundary faces, ...
+    typename DoFHandler<dim>::active_cell_iterator
+    cell = dof_handler.begin_active(),
+    endc = dof_handler.end();
+
+    for (; cell!=endc; ++cell)
+      if (!cell->is_artificial())
+        for (unsigned int face_number=0; face_number<GeometryInfo<dim>::faces_per_cell; ++face_number)
+          {
+            typename DoFHandler<dim>::face_iterator face = cell->face(face_number);
+            if (face->at_boundary())
+              {
+                Assert(face->boundary_id() <= offset,
+                       ExcMessage("If you do not 'Allow fixed temperature/composition on outflow boundaries', "
+                                  "you are only allowed to use boundary ids between 0 and 128."));
+
+                fe_face_values.reinit (cell, face_number);
+                fe_face_values[introspection.extractors.velocities].get_function_values(current_linearization_point,
+                                                                                        face_current_velocity_values);
+
+                // ... check if the face is an outflow boundary by integrating the normal velocities
+                // (flux through the boundary) as: int u*n ds = Sum_q u(x_q)*n(x_q) JxW(x_q)...
+                double integrated_flow = 0;
+                for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)
+                  {
+                    integrated_flow += (face_current_velocity_values[q] * fe_face_values.normal_vector(q)) *
+                                       fe_face_values.JxW(q);
+                  }
+
+                // ... and change the boundary id of any outflow boundary faces.
+                if (integrated_flow > 0)
+                  face->set_boundary_id(face->boundary_id() + offset);
+              }
+          }
+  }
+
+
+  template <int dim>
+  void
+  Simulator<dim>::restore_outflow_boundary_ids(const unsigned int offset)
+  {
+    // Loop over all of the boundary faces...
+    typename DoFHandler<dim>::active_cell_iterator
+    cell = dof_handler.begin_active(),
+    endc = dof_handler.end();
+
+    for (; cell!=endc; ++cell)
+      if (!cell->is_artificial())
+        for (unsigned int face_number=0; face_number<GeometryInfo<dim>::faces_per_cell; ++face_number)
+          {
+            typename DoFHandler<dim>::face_iterator face = cell->face(face_number);
+            if (face->at_boundary())
+              {
+                // ... and reset all of the boundary ids we changed in replace_outflow_boundary_ids above.
+                if (face->boundary_id() >= offset)
+                  face->set_boundary_id(face->boundary_id() - offset);
+              }
+          }
+  }
+
 
   namespace
   {
@@ -2179,6 +2253,8 @@ namespace aspect
   template void Simulator<dim>::apply_limiter_to_dg_solutions(const AdvectionField &advection_field); \
   template void Simulator<dim>::compute_reactions(); \
   template void Simulator<dim>::check_consistency_of_formulation(); \
+  template void Simulator<dim>::replace_outflow_boundary_ids(const unsigned int boundary_id_offset); \
+  template void Simulator<dim>::restore_outflow_boundary_ids(const unsigned int boundary_id_offset); \
   template void Simulator<dim>::check_consistency_of_boundary_conditions() const; \
   template double Simulator<dim>::compute_initial_newton_residual(const LinearAlgebra::BlockVector &linearized_stokes_initial_guess); \
   template double Simulator<dim>::compute_Eisenstat_Walker_linear_tolerance(const bool EisenstatWalkerChoiceOne, \

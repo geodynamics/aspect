@@ -650,9 +650,12 @@ namespace aspect
   Simulator<dim>::
   compute_current_constraints ()
   {
-    current_constraints.clear ();
-    current_constraints.reinit (introspection.index_sets.system_relevant_set);
-    current_constraints.merge (constraints);
+    // We put the constraints we compute into a separate ConstraintMatrix so we can check
+    // if the set of constraints has changed. If it did, we need to update the sparsity patterns.
+    ConstraintMatrix new_current_constraints;
+    new_current_constraints.clear ();
+    new_current_constraints.reinit (introspection.index_sets.system_relevant_set);
+    new_current_constraints.merge (constraints);
     {
       // set the current time and do the interpolation
       // for the prescribed velocity fields
@@ -708,7 +711,7 @@ namespace aspect
                                                         dof_handler,
                                                         p->first,
                                                         vel,
-                                                        current_constraints,
+                                                        new_current_constraints,
                                                         mask);
             }
           else
@@ -717,7 +720,7 @@ namespace aspect
                                                         dof_handler,
                                                         p->first,
                                                         ZeroFunction<dim>(introspection.n_components),
-                                                        current_constraints,
+                                                        new_current_constraints,
                                                         mask);
             }
         }
@@ -727,6 +730,16 @@ namespace aspect
     // update the temperature boundary condition.
     boundary_temperature_manager.update();
     boundary_heat_flux->update();
+
+    // If we do not want to prescribe Dirichlet boundary conditions on outflow boundaries,
+    // we update the boundary indicators of all faces that belong to ouflow boundaries
+    // so that they are not in the list of fixed temperature boundary indicators any more.
+    // We will undo this change in a later step, after the constraints have been set.
+    // As long as we allow deal.II 8.5, we can not have boundary ids of more than 256,
+    // so we want to offset them by 128 and not allow more than 128 boundary ids.
+    const unsigned int boundary_id_offset = 128;
+    if (!boundary_temperature_manager.allows_fixed_temperature_on_outflow_boundaries())
+      replace_outflow_boundary_ids(boundary_id_offset);
 
     // if using continuous temperature FE, do the same for the temperature variable:
     // evaluate the current boundary temperature and add these constraints as well
@@ -753,14 +766,23 @@ namespace aspect
                                                       dof_handler,
                                                       *p,
                                                       vector_function_object,
-                                                      current_constraints,
+                                                      new_current_constraints,
                                                       introspection.component_masks.temperature);
           }
       }
 
+    if (!boundary_temperature_manager.allows_fixed_temperature_on_outflow_boundaries())
+      restore_outflow_boundary_ids(boundary_id_offset);
+
     // If there are fixed boundary compositions,
     // update the composition boundary condition.
     boundary_composition_manager.update();
+
+    // If we do not want to prescribe Dirichlet boundary conditions on outflow boundaries,
+    // use the same trick for marking up outflow boundary conditions for compositional fields
+    // as we did above already for the temperature.
+    if (!boundary_composition_manager.allows_fixed_composition_on_outflow_boundaries())
+      replace_outflow_boundary_ids(boundary_id_offset);
 
     // now do the same for the composition variable:
     if (!parameters.use_discontinuous_composition_discretization)
@@ -787,23 +809,81 @@ namespace aspect
                                                         dof_handler,
                                                         *p,
                                                         vector_function_object,
-                                                        current_constraints,
+                                                        new_current_constraints,
                                                         introspection.component_masks.compositional_fields[c]);
             }
       }
 
+    if (!boundary_composition_manager.allows_fixed_composition_on_outflow_boundaries())
+      restore_outflow_boundary_ids(boundary_id_offset);
+
+    if (parameters.include_melt_transport)
+      melt_handler->add_current_constraints (new_current_constraints);
+
     // let plugins add more constraints if they so choose, then close the
     // constraints object
-    signals.post_constraints_creation(*this, current_constraints);
+    signals.post_constraints_creation(*this, new_current_constraints);
 
+    new_current_constraints.close();
+
+    // Now check if the current_constraints we just computed changed from before. Do this before the melt handler
+    // adds constraints for the melt cells, because they are allowed to change (and often do) without us having
+    // to reinit the sparsity pattern.
+    // If the mesh got refined and the size of the linear system changed, the old and new constraint
+    // matrices will have different entries, and we can not easily compare them.
+    // However, in case of mesh refinement we have to rebuild the matrix anyway, so we can skip the
+    // step that checks if constraints have changed.
+    bool mesh_has_changed = (current_constraints.get_local_lines().size()
+                             != new_current_constraints.get_local_lines().size())
+                            ||
+                            (current_constraints.get_local_lines()
+                             != new_current_constraints.get_local_lines());
+
+    if (!mesh_has_changed)
+      {
+        bool constrained_dofs_set_changed = false;
+
+#if DEAL_II_VERSION_GTE(9,0,0)
+        for (auto &row: current_constraints.get_lines())
+          {
+            if (!new_current_constraints.is_constrained(row.index))
+              {
+                constrained_dofs_set_changed = true;
+                break;
+              }
+          }
+#else
+        for (const auto row: current_constraints.get_local_lines())
+          {
+            // Decide if we need to construct a new sparsity pattern.
+            // This is only necessary if at least one of the DoFs that were
+            // constrained in the previous time step are not constrained any more,
+            // because in this case we will need additionl matrix entries.
+            // The matrices will be reassembled in each timestep regardless,
+            // so the values of the constraints do not matter for the sparsity pattern.
+            if (current_constraints.is_constrained(row)
+                != new_current_constraints.is_constrained(row))
+              {
+                constrained_dofs_set_changed = true;
+                break;
+              }
+          }
+#endif
+
+        const bool any_constrained_dofs_set_changed = Utilities::MPI::sum(constrained_dofs_set_changed ? 1 : 0,
+                                                                          mpi_communicator) > 0;
+        if (any_constrained_dofs_set_changed)
+          rebuild_sparsity_and_matrices = true;
+      }
+
+#if DEAL_II_VERSION_GTE(9,0,0)
+    current_constraints.copy_from(new_current_constraints);
+#else
+    current_constraints.clear ();
+    current_constraints.reinit (introspection.index_sets.system_relevant_set);
+    current_constraints.merge (new_current_constraints);
     current_constraints.close();
-
-    // let the melt handler add its constraints once before we solve the porosity system for the first time
-    if (parameters.include_melt_transport)
-      melt_handler->save_constraints (current_constraints);
-
-    if (time_step == 0 && parameters.include_melt_transport)
-      melt_handler->add_current_constraints (current_constraints);
+#endif
   }
 
 

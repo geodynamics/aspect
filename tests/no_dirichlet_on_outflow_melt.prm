@@ -1,0 +1,148 @@
+# This test checks if fixed composition boundary conditions are only 
+# prescribed on outflow boundaries (if this option is activated in 
+# the input file), and in particular if this also works in a model
+# with melt transport. 
+
+
+set Dimension                              = 2
+set End time                               = 500
+
+set Pressure normalization                 = surface
+set Surface pressure                       = 0
+
+set Nonlinear solver scheme                = iterated Advection and Stokes
+set Max nonlinear iterations               = 50  
+#set CFL number                             = 0.1
+
+subsection Melt settings
+  set Include melt transport = true
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 100000
+    set Y extent = 100000
+  end
+end
+
+
+# The next section deals with the initial conditions for the
+# temperature (there are no initial conditions for the
+# velocity variable since the velocity is assumed to always
+# be in a static equilibrium with the temperature field).
+# There are a number of models with the 'function' model
+# a generic one that allows us to enter the actual initial
+# conditions in the form of a formula that can contain
+# constants. We choose a linear temperature profile that
+# matches the boundary conditions defined below plus
+# a small perturbation:
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,z
+    set Function constants  = p=0.01, L=100000, pi=3.1415926536, k=1
+    set Function expression = 1600
+  end
+end
+
+subsection Compositional fields
+  set Number of fields = 2
+  set Names of fields = porosity, peridotite
+end
+
+subsection Material model
+  set Model name = melting rate
+end
+
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,y
+    set Function constants  = pi=3.1415926,x0=50000,y0=50000,c=10000
+    set Function expression = 0.2 * exp(-((x-x0)*(x-x0)+(y-y0)*(y-y0))/(2*c*c)); 0.2 * exp(-((x-x0)*(x-x0)+(y-y0)*(y-y0))/(2*c*c))
+  end
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = bottom, top
+  set Allow fixed temperature on outflow boundaries = false
+  set List of model names = box
+
+  subsection Box
+    set Bottom temperature = 1600
+    set Left temperature   = 0
+    set Right temperature  = 0
+    set Top temperature    = 0
+  end
+end
+
+subsection Boundary composition model
+  set Fixed composition boundary indicators = bottom, top
+  set Allow fixed composition on outflow boundaries = false
+  set List of model names = initial composition
+end
+
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = left, right
+  set Prescribed velocity boundary indicators = top:function, bottom:function
+
+  subsection Function
+    set Variable names      = x,y,t
+    set Function expression = 0;(x/10000-0.5)*sin(t/30)
+  end
+end
+
+# The following two sections describe first the
+# direction (vertical) and magnitude of gravity and the
+# material model (i.e., density, viscosity, etc). We have
+# discussed the settings used here in the introduction to
+# this cookbook in the manual already.
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 1e4   # = Ra 
+  end
+end
+
+
+# The settings above all pertain to the description of the
+# continuous partial differential equations we want to solve.
+# The following section deals with the discretization of
+# this problem, namely the kind of mesh we want to compute
+# on. We here use a globally refined mesh without
+# adaptive mesh refinement.
+subsection Mesh refinement
+  set Initial global refinement                = 3
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 0
+  set Strategy = temperature
+end
+
+
+# The final part is to specify what ASPECT should do with the
+# solution once computed at the end of every time step. The
+# process of evaluating the solution is called `postprocessing'
+# and we choose to compute velocity and temperature statistics,
+# statistics about the heat flux through the boundaries of the
+# domain, and to generate graphical output files for later
+# visualization. These output files are created every time
+# a time step crosses time points separated by 0.01. Given
+# our start time (zero) and final time (0.5) this means that
+# we will obtain 50 output files.
+subsection Postprocess
+  set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, visualization
+
+  subsection Visualization
+    set Time between graphical output = 0.01
+  end
+end
+
+subsection Solver parameters
+  set Temperature solver tolerance = 1e-10
+end

@@ -183,6 +183,8 @@ namespace aspect
                                             "the conversion function complained as follows: "
                                             + error));
           }
+
+        allow_fixed_temperature_on_outflow_boundaries = prm.get_bool ("Allow fixed temperature on outflow boundaries");
       }
       prm.leave_subsection ();
 
@@ -278,6 +280,16 @@ namespace aspect
     }
 
 
+
+    template <int dim>
+    bool
+    Manager<dim>::allows_fixed_temperature_on_outflow_boundaries() const
+    {
+      return allow_fixed_temperature_on_outflow_boundaries;
+    }
+
+
+
     template <int dim>
     void
     Manager<dim>::declare_parameters (ParameterHandler &prm)
@@ -343,6 +355,33 @@ namespace aspect
                            "implemented in a plugin in the BoundaryTemperature "
                            "group, unless an existing implementation in this group "
                            "already provides what you want.");
+        prm.declare_entry ("Allow fixed temperature on outflow boundaries", "true",
+                           Patterns::Bool (),
+                           "When the temperature is fixed on a given boundary as determined "
+                           "by the list of 'Fixed temperature boundary indicators', there "
+                           "might be parts of the boundary where material flows out and "
+                           "one may want to prescribe the temperature only on the parts of "
+                           "the boundary where there is inflow. This parameter determines "
+                           "if temperatures are only prescribed at these inflow parts of the "
+                           "boundary (if false) or everywhere on a given boundary, independent "
+                           "of the flow direction (if true)."
+                           "Note that in this context, `fixed' refers to the fact that these "
+                           "are the boundary indicators where Dirichlet boundary conditions are "
+                           "applied, and does not imply that the boundary temperature is "
+                           "time-independent. "
+                           "\n\n"
+                           "Mathematically speaking, the temperature satisfies an "
+                           "advection-diffusion equation. For this type of equation, one can "
+                           "prescribe the temperature even on outflow boundaries as long as the "
+                           "diffusion coefficient is nonzero. This would correspond to the "
+                           "``true'' setting of this parameter, which is correspondingly the "
+                           "default. In practice, however, this would only make physical sense "
+                           "if the diffusion coefficient is actually quite large to prevent "
+                           "the creation of a boundary layer. "
+                           "In addition, if there is no diffusion, one can only impose "
+                           "Dirichlet boundary conditions (i.e., prescribe a fixed temperature "
+                           "value at the boundary) at those boundaries where material flows in. "
+                           "This would correspond to the ``false'' setting of this parameter.");
       }
       prm.leave_subsection ();
 
