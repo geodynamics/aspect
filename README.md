@@ -69,7 +69,7 @@ For more information see:
      - Wolfgang Bangerth: bangerth@math.colostate.edu
      - Juliane Dannberg: judannberg@gmail.com
      - Rene Gassmoeller: rene.gassmoeller@mailbox.org
-     - Timo Heister: heister@clemson.edu
+     - Timo Heister: heister@sci.utah.edu
 
  - The following people have significantly contributed and furthered ASPECT's goals and are therefore Principal Developers:
 
