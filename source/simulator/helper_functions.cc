@@ -1763,7 +1763,7 @@ namespace aspect
 
     // check if the material model computes prescribed field outputs
     AssertThrow(prescribed_field_out != NULL,
-                ExcMessage("You are trying to use the a prescribed advection field, "
+                ExcMessage("You are trying to use a prescribed advection field, "
                            "but the material model you use does not support interpolating properties "
                            "(it does not create PrescribedFieldOutputs, which is required for this "
                            "advection field type)."));
@@ -1799,6 +1799,11 @@ namespace aspect
                   // skip entries that are not locally owned:
                   if (dof_handler.locally_owned_dofs().is_element(local_dof_indices[composition_idx]))
                     {
+                      Assert(numbers::is_finite(prescribed_field_out->prescribed_field_outputs[j][c]),
+                             ExcMessage("You are trying to use a prescribed advection field, "
+                                        "but the material model you use does not fill the PrescribedFieldOutputs "
+                                        "for your prescribed field, which is required for this method."));
+
                       distributed_vector(local_dof_indices[composition_idx]) = prescribed_field_out->prescribed_field_outputs[j][c];
                     }
                 }

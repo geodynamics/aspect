@@ -805,6 +805,11 @@ namespace aspect
      * If the advection scheme "prescribed field" is selected, then these
      * material model outputs will be interpolated onto the corresponding
      * compositional field.
+     *
+     * However, note that this structure always has as many prescribed field
+     * outputs as there are compositional fields, even if not all of them
+     * are using the "prescribed field" method. It is the responsibility
+     * of the individual material models to fill the correct entries.
      */
     template <int dim>
     class PrescribedFieldOutputs : public NamedAdditionalMaterialOutputs<dim>
