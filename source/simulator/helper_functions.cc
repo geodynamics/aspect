@@ -1583,7 +1583,7 @@ namespace aspect
     // on every cell, compute the update, and then on every cell put the result into the
     // distributed_vector vector. Only after the loop over all cells do we copy distributed_vector
     // back onto the solution vector.
-    // So even though we touch some DoF twice, we always start from the same value, compute the
+    // So even though we touch some DoF more than once, we always start from the same value, compute the
     // same value, and then overwrite the same value in distributed_vector.
     // TODO: make this more effective
     typename DoFHandler<dim>::active_cell_iterator cell = dof_handler.begin_active(),
@@ -1722,6 +1722,105 @@ namespace aspect
 
     operator_split_reaction_vector.block(block_T) = distributed_reaction_vector.block(block_T);
     current_linearization_point = old_solution;
+  }
+
+
+  template <int dim>
+  void Simulator<dim>::interpolate_material_output_into_fields ()
+  {
+    // find out if we have any prescribed fields
+    if (std::find(parameters.compositional_field_methods.begin(),
+                  parameters.compositional_field_methods.end(),
+                  Parameters<dim>::AdvectionFieldMethod::prescribed_field)
+        == parameters.compositional_field_methods.end())
+      return;
+
+    // we need some temporary vectors to store our updates to composition in
+    // before we copy them over to the solution vector in the end
+    LinearAlgebra::BlockVector distributed_vector (introspection.index_sets.system_partitioning,
+                                                   mpi_communicator);
+
+    pcout << "   Copying properties into prescribed compositional fields."
+          << std::endl;
+
+    // make an fevalues object that allows us to interpolate onto the solution vector
+    const Quadrature<dim> quadrature(dof_handler.get_fe().base_element(introspection.base_elements.compositional_fields).get_unit_support_points());
+
+    FEValues<dim> fe_values (*mapping,
+                             dof_handler.get_fe(),
+                             quadrature,
+                             update_quadrature_points | update_values | update_gradients);
+
+    std::vector<types::global_dof_index> local_dof_indices (dof_handler.get_fe().dofs_per_cell);
+    MaterialModel::MaterialModelInputs<dim> in(quadrature.size(), introspection.n_compositional_fields);
+    MaterialModel::MaterialModelOutputs<dim> out(quadrature.size(), introspection.n_compositional_fields);
+
+    // add the prescribed field outputs that will be used for interpolating
+    material_model->create_additional_named_outputs(out);
+
+    MaterialModel::PrescribedFieldOutputs<dim> *prescribed_field_out
+      = out.template get_additional_output<MaterialModel::PrescribedFieldOutputs<dim> >();
+
+    // check if the material model computes prescribed field outputs
+    AssertThrow(prescribed_field_out != NULL,
+                ExcMessage("You are trying to use a prescribed advection field, "
+                           "but the material model you use does not support interpolating properties "
+                           "(it does not create PrescribedFieldOutputs, which is required for this "
+                           "advection field type)."));
+
+    // Make a loop first over all cells, and then over all degrees of freedom in each element
+    // to interpolate material properties onto a solution vector.
+
+    // Note that the values for some degrees of freedom are set more than once in the loop
+    // below where we assign the new values to distributed_vector (if they are located on the
+    // interface between cells), as we loop over all cells, and then over all degrees of freedom
+    // on each cell. But even though we touch some DoF more than once, we always compute the same value,
+    // and then overwrite the same value in distributed_vector.
+    typename DoFHandler<dim>::active_cell_iterator cell = dof_handler.begin_active(),
+                                                   endc = dof_handler.end();
+    for (; cell!=endc; ++cell)
+      if (cell->is_locally_owned())
+        {
+          fe_values.reinit (cell);
+          cell->get_dof_indices (local_dof_indices);
+          in.reinit(fe_values, cell, introspection, solution);
+
+          material_model->evaluate(in, out);
+
+          // interpolate material properties onto the compositional fields
+          for (unsigned int j=0; j<dof_handler.get_fe().base_element(introspection.base_elements.compositional_fields).dofs_per_cell; ++j)
+            for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
+              if (parameters.compositional_field_methods[c] == Parameters<dim>::AdvectionFieldMethod::prescribed_field)
+                {
+                  const unsigned int composition_idx
+                    = dof_handler.get_fe().component_to_system_index(introspection.component_indices.compositional_fields[c],
+                                                                     /*dof index within component=*/ j);
+
+                  // skip entries that are not locally owned:
+                  if (dof_handler.locally_owned_dofs().is_element(local_dof_indices[composition_idx]))
+                    {
+                      Assert(numbers::is_finite(prescribed_field_out->prescribed_field_outputs[j][c]),
+                             ExcMessage("You are trying to use a prescribed advection field, "
+                                        "but the material model you use does not fill the PrescribedFieldOutputs "
+                                        "for your prescribed field, which is required for this method."));
+
+                      distributed_vector(local_dof_indices[composition_idx]) = prescribed_field_out->prescribed_field_outputs[j][c];
+                    }
+                }
+        }
+
+    // put the final values into the solution vector
+    for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
+      if (parameters.compositional_field_methods[c] == Parameters<dim>::AdvectionFieldMethod::prescribed_field)
+        {
+          const unsigned int block_c = introspection.block_indices.compositional_fields[c];
+          distributed_vector.block(block_c).compress(VectorOperation::insert);
+          solution.block(block_c) = distributed_vector.block(block_c);
+
+          // We also want to copy the values into the old solution, because it might
+          // be used in other parts of the code
+          old_solution.block(block_c) = distributed_vector.block(block_c);
+        }
   }
 
 
@@ -2252,6 +2351,7 @@ namespace aspect
   template void Simulator<dim>::interpolate_onto_velocity_system(const TensorFunction<1,dim> &func, LinearAlgebra::Vector &vec);\
   template void Simulator<dim>::apply_limiter_to_dg_solutions(const AdvectionField &advection_field); \
   template void Simulator<dim>::compute_reactions(); \
+  template void Simulator<dim>::interpolate_material_output_into_fields(); \
   template void Simulator<dim>::check_consistency_of_formulation(); \
   template void Simulator<dim>::replace_outflow_boundary_ids(const unsigned int boundary_id_offset); \
   template void Simulator<dim>::restore_outflow_boundary_ids(const unsigned int boundary_id_offset); \

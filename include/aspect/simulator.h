@@ -1149,6 +1149,22 @@ namespace aspect
 
 
       /**
+       * Interpolate material model outputs onto compositional fields in case the
+       * 'prescribed field' compositional field method is used. For every field that
+       * uses this method, this function interpolates additional material model outputs
+       * called 'PrescribedFieldOutputs' and copies these values into the solution vector.
+       *
+       * This function also updates the old solution vectors with these interpolated
+       * values so that this compositional field method can be combined with time-dependent
+       * problems like advection or diffusion of the field.
+       *
+       * This function is implemented in
+       * <code>source/simulator/helper_functions.cc</code>.
+       */
+      void interpolate_material_output_into_fields ();
+
+
+      /**
        * Interpolate the given function onto the velocity FE space and write
        * it into the given vector.
        *

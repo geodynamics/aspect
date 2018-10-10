@@ -198,6 +198,7 @@ namespace aspect
               break;
 
             case Parameters<dim>::AdvectionFieldMethod::static_field:
+            case Parameters<dim>::AdvectionFieldMethod::prescribed_field:
             {
               // Do nothing here, but at least call the signal in case the
               // user wants to do something with the variable:
@@ -213,6 +214,9 @@ namespace aspect
               AssertThrow(false,ExcNotImplemented());
           }
       }
+
+    // Update the prescribed fields *after* we have solved all the other fields
+    interpolate_material_output_into_fields();
 
     // for consistency we update the current linearization point only after we have solved
     // all fields, so that we use the same point in time for every field when solving

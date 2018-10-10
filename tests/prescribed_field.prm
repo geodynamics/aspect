@@ -1,0 +1,103 @@
+# A testcase that demonstrates that interpolating material model
+# outputs into compositional fields works.
+#
+# The density is chosen as rho = 1 + 0.1*sin(2*pi*x)*sin(2*pi*y) 
+# and is copied into the compositional field 'prescribed field', 
+# so the minimum and maximum composition should be 0.9 at 1.1, 
+# respecively.
+# The test also contains another compositional field that does
+# not use this method, so it should remain zero everywhere
+# (which is what the initial condition is).
+
+set Dimension = 2
+set End time                               = 0
+set Start time                             = 0
+set Adiabatic surface temperature          = 0
+set Surface pressure                       = 0
+set Use years in output instead of seconds = false
+
+subsection Boundary temperature model
+  set List of model names = box
+end
+
+subsection Gravity model
+  set Model name = vertical
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1
+    set Y extent = 1
+  end
+end
+
+subsection Compositional fields
+  set Number of fields = 2
+  set Names of fields  = normal_field, prescribed_field
+  set Compositional field methods = field, prescribed field
+end
+
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Function expression = 0.1 * sin(2*3.1416*x) * sin(2*3.1416*y)
+  end
+end
+
+subsection Initial composition model
+  set Model name = function
+  subsection Function
+    set Function expression = 0.0; 0.0
+  end
+end
+
+
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 1.0
+  end
+end
+
+
+subsection Material model
+  set Model name = prescribed field material
+
+  subsection Simple model
+    set Reference density             = 1    # default: 3300
+    set Reference specific heat       = 1250
+    set Reference temperature         = 0    # default: 293
+    set Thermal conductivity          = 1e-6 # default: 4.7
+    set Thermal expansion coefficient = 1
+    set Viscosity                     = 1    # default: 5e24
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 4
+end
+
+
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = 0, 1, 2, 3
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, composition statistics
+
+  subsection Visualization
+
+    set List of output variables      = density
+    set Number of grouped files       = 0
+    set Output format                 = vtu
+    set Time between graphical output = 0                                                                                # default: 1e8
+  end
+end
