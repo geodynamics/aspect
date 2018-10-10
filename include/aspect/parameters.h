@@ -308,6 +308,7 @@ namespace aspect
      */
     typename NonlinearSolver::Kind nonlinear_solver;
 
+    bool							  read_from_url;
     double                         nonlinear_tolerance;
     double                         nonlinear_switch_tolerance;
     bool                           resume_computation;
