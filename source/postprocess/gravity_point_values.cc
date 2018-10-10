@@ -90,21 +90,24 @@ namespace aspect
       // explains the meaning of the various fields
       const std::string filename = (this->get_output_directory() +
                                     "output_gravity");
-      std::ofstream f (filename.c_str());
-      f << "# 1: position_satellite_r" << '\n'
-        << "# 2: position_satellite_phi" << '\n'
-        << "# 3: position_satellite_theta" << '\n'
-        << "# 4: position_satellite_x" << '\n'
-        << "# 5: position_satellite_y" << '\n'
-        << "# 6: position_satellite_z" << '\n'
-        << "# 7: gravity_x" << '\n'
-        << "# 8: gravity_y" << '\n'
-        << "# 9: gravity_z" << '\n'
-        << "# 10: gravity_norm" << '\n'
-        << "# 11: gravity_theory" << '\n'
-        << "# 12: gravity_diff (theoric-norm)" << '\n'
-        << "# 13: gravity potential" << '\n'
-        << '\n';
+      std::ofstream output (filename.c_str());
+      output << "# 1: position_satellite_r" << '\n'
+             << "# 2: position_satellite_phi" << '\n'
+             << "# 3: position_satellite_theta" << '\n'
+             << "# 4: position_satellite_x" << '\n'
+             << "# 5: position_satellite_y" << '\n'
+             << "# 6: position_satellite_z" << '\n'
+             << "# 7: gravity_x" << '\n'
+             << "# 8: gravity_y" << '\n'
+             << "# 9: gravity_z" << '\n'
+             << "# 10: gravity_norm" << '\n'
+             << "# 11: gravity_theory" << '\n'
+             << "# 12: gravity potential" << '\n'
+             << "# 13: gravity_anomaly_x" << '\n'
+             << "# 14: gravity_anomaly_y" << '\n'
+             << "# 15: gravity_anomaly_z" << '\n'
+             << "# 16: gravity_anomaly_norm" << '\n'
+             << '\n';
 
       // Storing cartesian coordinate, density and JxW at local quadrature points in a vector
       // avoids to use MaterialModel and fe_values within the loops. Because postprocessor
@@ -116,6 +119,7 @@ namespace aspect
       // density and the JxW are here together for simplicity in the equation (both variables
       // only appear together):
       std::vector<double> density_JxW (n_locally_owned_cells * n_quadrature_points_per_cell);
+      std::vector<double> relative_density_JxW (n_locally_owned_cells * n_quadrature_points_per_cell);
 
       // Declare the vector 'position_point' to store the position of quadrature points:
       std::vector<Point<dim> > position_point (n_locally_owned_cells * n_quadrature_points_per_cell);
@@ -139,6 +143,7 @@ namespace aspect
               for (unsigned int q = 0; q < n_quadrature_points_per_cell; ++q)
                 {
                   density_JxW[local_cell_number * n_quadrature_points_per_cell + q] = out.densities[q] * fe_values.JxW(q);
+                  relative_density_JxW[local_cell_number * n_quadrature_points_per_cell + q] = (out.densities[q]-reference_density) * fe_values.JxW(q);
                   position_point[local_cell_number * n_quadrature_points_per_cell + q] = position_point_cell[q];
                 }
               ++local_cell_number;
@@ -170,7 +175,8 @@ namespace aspect
                   // points to get the unique distance between those, indispensable to calculate
                   // gravity vector components x,y,z (in tensor), and potential.
                   Tensor<1,dim> local_g;
-                  double local_gravity_potential = 0;
+                  Tensor<1,dim> local_g_anomaly;
+                  double local_g_potential = 0;
                   cell = this->get_dof_handler().begin_active();
                   local_cell_number = 0;
                   for (; cell!=endc; ++cell)
@@ -181,8 +187,10 @@ namespace aspect
                             {
                               const double dist = (position_satellite - position_point[local_cell_number * n_quadrature_points_per_cell + q]).norm();
                               const double KK = G * density_JxW[local_cell_number * n_quadrature_points_per_cell + q] / pow(dist,3);
+                              const double relative_KK = G * relative_density_JxW[local_cell_number * n_quadrature_points_per_cell + q] / pow(dist,3);
                               local_g += KK * (position_satellite - position_point[local_cell_number * n_quadrature_points_per_cell + q]);
-                              local_gravity_potential -= G * density_JxW[local_cell_number * n_quadrature_points_per_cell + q] / dist;
+                              local_g_anomaly += relative_KK * (position_satellite - position_point[local_cell_number * n_quadrature_points_per_cell + q]);
+                              local_g_potential -= G * density_JxW[local_cell_number * n_quadrature_points_per_cell + q] / dist;
                             }
                           ++local_cell_number;
                         }
@@ -191,46 +199,46 @@ namespace aspect
                   // Sum local gravity components over global domain
                   const Tensor<1,dim> g
                     = Utilities::MPI::sum (local_g, this->get_mpi_communicator());
-                  const double gravity_potential
-                    = Utilities::MPI::sum (local_gravity_potential, this->get_mpi_communicator());
+                  const double g_potential
+                    = Utilities::MPI::sum (local_g_potential, this->get_mpi_communicator());
+                  const Tensor<1,dim> g_anomaly
+                    = Utilities::MPI::sum (local_g_anomaly, this->get_mpi_communicator());
 
                   // analytical solution to calculate the theoretical gravity from a uniform density model.
                   // can only be used if concentric density profile
-                  const double reference_density = (this->get_adiabatic_conditions().density(in.position[0]));
                   double g_theory = 0;
-                  double g_diff = 0;
                   if (satellite_coordinate[0] <= model_inner_radius)
                     {
                       g_theory = 0;
-                      g_diff = -g.norm();
                     }
                   else if ((satellite_coordinate[0] > model_inner_radius) && (satellite_coordinate[0] < model_outer_radius))
                     {
                       g_theory = (G * numbers::PI * 4/3 * reference_density * (satellite_coordinate[0] -
                                                                                (pow(model_inner_radius,3) / pow(satellite_coordinate[0],2))));
-                      g_diff = (g_theory - g.norm());
                     }
                   else
                     {
                       g_theory = (G * numbers::PI * 4/3 * reference_density * (pow(model_outer_radius,3) -
                                                                                pow(model_inner_radius,3)) / pow(satellite_coordinate[0],2));
-                      g_diff = (g_theory - g.norm());
                     }
 
                   // write output
-                  f << satellite_coordinate[0] << ' '
-                    << satellite_coordinate[1] *180. / numbers::PI << ' '
-                    << satellite_coordinate[2] *180. / numbers::PI << ' '
-                    << position_satellite[0] << ' '
-                    << position_satellite[1] << ' '
-                    << position_satellite[2] << ' '
-                    << g << ' '
-                    << g.norm() << ' '
-                    << g_theory << ' '
-                    << g_diff << ' '
-                    << gravity_potential
-                    << '\n';
-
+                  if (dealii::Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
+                    {
+                      output << satellite_coordinate[0] << ' '
+                             << satellite_coordinate[1] *180. / numbers::PI << ' '
+                             << satellite_coordinate[2] *180. / numbers::PI << ' '
+                             << position_satellite[0] << ' '
+                             << position_satellite[1] << ' '
+                             << position_satellite[2] << ' '
+                             << g << ' '
+                             << g.norm() << ' '
+                             << g_theory << ' '
+                             << g_potential
+                             << g_anomaly << ' '
+                             << g_anomaly.norm() << ' '
+                             << '\n';
+                    }
                 }
             }
         }
@@ -290,6 +298,10 @@ namespace aspect
                              Patterns::Double (0.0,180.0),
                              "Gravity may be calculated for a sets of points along "
                              "the latitude between a minimum and maximum latitude.");
+          prm.declare_entry ("Reference density", "3300",
+                             Patterns::Double (0.0),
+                             "Gravity anomalies are computed using densities anomalies "
+                             "relative to a reference density.");
         }
         prm.leave_subsection();
       }
@@ -314,6 +326,7 @@ namespace aspect
           maximum_longitude = prm.get_double ("Maximum longitude");
           minimum_latitude  = prm.get_double ("Minimum latitude");
           maximum_latitude  = prm.get_double ("Maximum latitude");
+          reference_density  = prm.get_double ("Reference density");
           AssertThrow (dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()) != nullptr ||
                        dynamic_cast<const GeometryModel::Sphere<dim>*> (&this->get_geometry_model()) != nullptr ||
                        dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model()) != nullptr,

@@ -128,6 +128,12 @@ namespace aspect
          */
         double maximum_latitude;
 
+        /**
+         * A reference density is required to obtained relative density to calculate
+         * gravity anomalies;
+         */
+        double reference_density;
+
     };
   }
 }
