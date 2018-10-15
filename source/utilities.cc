@@ -21,7 +21,8 @@
 #include <aspect/utilities.h>
 #include <aspect/simulator_access.h>
 
-#include </hyrax/libdap4/Connect.h>
+#include <Connect.h>
+#include <Response.h>
 
 #include <array>
 #include <deal.II/base/point.h>
@@ -882,6 +883,20 @@ namespace aspect
           // set file size to an invalid size (signaling an error if we can not read it)
           unsigned int filesize = numbers::invalid_unsigned_int;
 
+
+          //Check to see if the prm file will be reading data from the disk or
+		// from a provided URL
+		if (readUrl) {
+			std::cout << "TESTING THE READ FROM URL == true";
+
+			Connect url(filename);
+			url.request_data;
+
+		}
+		else
+		{
+		  std::cout << "TESTING THE READ FROM URL == false";
+
           std::ifstream filestream(filename.c_str());
 
           if (!filestream)
@@ -892,15 +907,6 @@ namespace aspect
                            ExcMessage (std::string("Could not open file <") + filename + ">."));
               return data_string; // never reached
             }
-
-          //Check to see if the prm file will be reading data from the disk or
-          // from a provided URL
-          if (readUrl)
-          {
-        	  std::cout << "TESTING THE READ FROM URL = true";
-
-        	  Connect *url = 0;
-        	  url = new Connect(filename);
 
 
           // Read data from disk
@@ -924,11 +930,7 @@ namespace aspect
           // Distribute data_size and data across processes
           MPI_Bcast(&filesize,1,MPI_UNSIGNED,0,comm);
           MPI_Bcast(&data_string[0],filesize,MPI_CHAR,0,comm);
-          }
 
-          else
-          {
-        	  	  std::cout << "TESTING THE READ FROM URL = false";
           }
         }
       else
