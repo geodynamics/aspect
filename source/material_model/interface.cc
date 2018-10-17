@@ -868,7 +868,8 @@ namespace aspect
     std::vector<double>
     PlasticAdditionalOutputs<dim>::get_nth_output(const unsigned int idx) const
     {
-      AssertIndexRange (idx, 3);
+      AssertIndexRange (0, 3);
+
       switch (idx)
         {
           case 0:
@@ -879,6 +880,7 @@ namespace aspect
 
           case 2:
             return yielding;
+
 
           default:
             AssertThrow(false, ExcInternalError());
@@ -907,6 +909,7 @@ namespace aspect
           names.push_back("copy_output_C" + Utilities::int_to_string(c));
 
         return names;
+
       }
     }
 

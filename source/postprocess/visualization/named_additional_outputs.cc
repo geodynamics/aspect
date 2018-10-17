@@ -59,7 +59,10 @@ namespace aspect
                 std::vector<std::string> names = result->get_names();
 
                 for (unsigned int i=0; i<names.size(); ++i)
+                {
+//                  std::cout << names[i] << " " ;
                   property_names.push_back(names[i]);
+                }
               }
           }
 
@@ -138,6 +141,7 @@ namespace aspect
                 std::vector<double> outputs(n_quadrature_points);
                 for (unsigned int i=0; i<get_names().size(); ++i)
                   {
+//                	std::cout << property_names[i] << " " << k;
                     outputs = result->get_nth_output(i);
 
                     for (unsigned int q=0; q<n_quadrature_points; ++q)

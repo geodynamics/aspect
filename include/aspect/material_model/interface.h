@@ -713,7 +713,7 @@ namespace aspect
         const std::vector<std::string> &get_names() const;
 
         /**
-         * Given an index as input argument, return a reference the to vector of
+         * Given an index as input argument, return a reference to the vector of
          * values of the additional output with that index.
          */
         virtual std::vector<double> get_nth_output(const unsigned int idx) const = 0;
@@ -815,6 +815,8 @@ namespace aspect
          * the instance of MaterialModel::Interface::evaluate() that fills
          * the current object.
          */
+        //std::vector<double> cohesions;
+
         std::vector<double> cohesions;
 
         /**
@@ -829,8 +831,6 @@ namespace aspect
          * and viscosity is rescaled back to the yield envelope.
          */
         std::vector<double> yielding;
-
-        std::vector<std::vector<double> > copy_properties;
 
     };
 

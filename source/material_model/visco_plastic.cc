@@ -1097,15 +1097,6 @@ namespace aspect
             std::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
             (new MaterialModel::PlasticAdditionalOutputs<dim> (n_points)));
         }
-      // We want to diffuse the damage field after copy.
-//      if (out.template get_additional_output<CopyOutputs<dim> >() == NULL)
-//        {
-//          const unsigned int n_points = out.viscosities.size();
-//          out.additional_outputs.push_back(
-//            std::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
-//            (new MaterialModel::CopyOutputs<dim> (n_points, this->n_compositional_fields())));
-//        }
-
     }
 
   }

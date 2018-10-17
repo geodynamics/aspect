@@ -535,70 +535,67 @@ namespace aspect
                 out.reaction_terms[i][this->introspection().compositional_index_for_name("total_strain")] = e_ii;
             }
 
+//          PlasticAdditionalOutputs<dim> *plastic_out = out.template get_additional_output<PlasticAdditionalOutputs<dim> >();
+//          if (copy_out != NULL)
+//            {
+              double C = 0.;
+              double phi = 0.;
+              double sf = 0;
 
-          double C = 0.;
-          double phi = 0.;
-          double sf = 0;
-
-          // set to weakened values, or unweakened values when strain weakening is not used
-          for (unsigned int j=0; j < volume_fractions.size(); ++j)
-            {
-              // the first compositional field contains the total strain or the plastic strain or, in case only viscous strain
-              // weakening is applied, the viscous strain.
-              if (use_strain_weakening == true )
+              // set to weakened values, or unweakened values when strain weakening is not used
+              for (unsigned int j=0; j < volume_fractions.size(); ++j)
                 {
-                  double strain_invariant = 0.;
-                  if (use_plastic_strain_weakening)
-                    strain_invariant = composition[this->introspection().compositional_index_for_name("plastic_strain")];
-                  else if (!use_viscous_strain_weakening && !use_finite_strain_tensor)
-                    strain_invariant = composition[this->introspection().compositional_index_for_name("total_strain")];
-                  else if (use_finite_strain_tensor)
+                  // the first compositional field contains the total strain or the plastic strain or, in case only viscous strain
+                  // weakening is applied, the viscous strain.
+                  if (use_strain_weakening == true )
                     {
-                      // Calculate second invariant of left stretching tensor "L"
-                      Tensor<2,dim> strain;
-                      const unsigned int n_first = this->introspection().compositional_index_for_name("s11");
-                      for (unsigned int q = n_first; q < n_first + Tensor<2,dim>::n_independent_components ; ++q)
-                        strain[Tensor<2,dim>::unrolled_to_component_indices(q)] = composition[q];
-                      const SymmetricTensor<2,dim> L = symmetrize( strain * transpose(strain) );
-                      strain_invariant = std::fabs(second_invariant(L));
-                    }
-
-                  std::tuple<double, double, double> weakening = calculate_plastic_weakening(strain_invariant, j);
-                  C   += volume_fractions[j] * std::get<0> (weakening);
-                  phi += volume_fractions[j] * std::get<1> (weakening);
-
-//                  if (in.position[i][0] < 20.4e3 && in.position[i][0] >= 19.6e3 && in.position[i][1] < 0.4e3)
-//                    {
-//                      out.viscosities[i] = 1.e21;
-//                      C = 1.e20;
-//                      phi = 0;
-//                      sf = 0;
-//                    }
-
-                  // add copy fields here
-                  if (copy_out != NULL)
-                    {
-                      if (this->get_timestep_number() > 0)
+                      double strain_invariant = 0.;
+                      if (use_plastic_strain_weakening)
+                        strain_invariant = composition[this->introspection().compositional_index_for_name("plastic_strain")];
+                      else if (!use_viscous_strain_weakening && !use_finite_strain_tensor)
+                        strain_invariant = composition[this->introspection().compositional_index_for_name("total_strain")];
+                      else if (use_finite_strain_tensor)
                         {
-                          sf  = std::get<2> (weakening); // strain fraction at each point and composition
-                          copy_out-> copy_properties[i][j] = (sf)/(this->get_timestep());
+                          // Calculate second invariant of left stretching tensor "L"
+                          Tensor<2,dim> strain;
+                          const unsigned int n_first = this->introspection().compositional_index_for_name("s11");
+                          for (unsigned int q = n_first; q < n_first + Tensor<2,dim>::n_independent_components ; ++q)
+                            strain[Tensor<2,dim>::unrolled_to_component_indices(q)] = composition[q];
+                          const SymmetricTensor<2,dim> L = symmetrize( strain * transpose(strain) );
+                          strain_invariant = std::fabs(second_invariant(L));
                         }
-                      else
-                        copy_out-> copy_properties[i][j] = 0;
+
+                      std::tuple<double, double, double> weakening = calculate_plastic_weakening(strain_invariant, j);
+                      C   += volume_fractions[j] * std::get<0> (weakening);
+                      phi += volume_fractions[j] * std::get<1> (weakening);
+                      sf += volume_fractions[j] * std::get<2> (weakening);
+
+                      // add copy fields here HARD CODED FOR THE LAST COMPOSITION
+                      if (copy_out != NULL)
+                      {
+                          if (this->get_timestep_number() > 0)
+                            {
+//                              sf  = std::get<2> (weakening); // strain fraction at each point and composition
+                             copy_out-> copy_properties[i][2] =  strain_invariant/(this->get_timestep()); // (sf) /(this->get_timestep());
+                            }
+                          else
+                            copy_out-> copy_properties[i][2] = 0;
+                        }
+                   }
+
+                  else
+                    {
+                      C   += volume_fractions[j] * cohesions[j];
+                      phi += volume_fractions[j] * angles_internal_friction[j];
                     }
-                }
-              else
-                {
-                  C   += volume_fractions[j] * cohesions[j];
-                  phi += volume_fractions[j] * angles_internal_friction[j];
+
+              // convert radians to degrees
+//              plastic_out->cohesions[i] = C;
+//              plastic_out->friction_angles[i] = phi * 180. / numbers::PI;
+//              plastic_out->yielding[i] = plastic_yielding ? 1 : 0;
                 }
             }
-
-
-//          if (plastic_out != NULL
-//          plastic_out->cohesions[i] = C;
-        }
-
+//        }
 
 
       // We need the velocity gradient for the finite strain (they are not included in material model inputs),
@@ -1117,6 +1114,14 @@ namespace aspect
             std::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
             (new MaterialModel::CopyOutputs<dim> (n_points, this->n_compositional_fields())));
         }
+
+//      if (out.template get_additional_output<PlasticAdditionalOutputs<dim> >() == NULL)
+//        {
+//          const unsigned int n_points = out.viscosities.size();
+//          out.additional_outputs.push_back(
+//            std::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
+//            (new MaterialModel::PlasticAdditionalOutputs<dim> (n_points)));
+//        }
 
     }
 
