@@ -887,7 +887,7 @@ namespace aspect
           //Check to see if the prm file will be reading data from the disk or
 		// from a provided URL
 		if (readUrl) {
-			std::cout << "TESTING THE READ FROM URL == true";
+			std::cout << "TESTING THE READ FROM URL == true" << std::endl;
 
 			Connect url(filename);
 			url.request_data;
@@ -895,7 +895,7 @@ namespace aspect
 		}
 		else
 		{
-		  std::cout << "TESTING THE READ FROM URL == false";
+		  std::cout << "TESTING THE READ FROM URL == false" << std::endl;
 
           std::ifstream filestream(filename.c_str());
 

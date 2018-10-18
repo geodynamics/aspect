@@ -281,6 +281,7 @@ CHECK_CXX_SOURCE_COMPILES("
 #include <cstddef>
 #include <dlfcn.h>
 
+
 int main()
 {
   void *handle = dlopen (\"somelib.so\", RTLD_LAZY);
@@ -352,6 +353,25 @@ IF(${PerpleX_FOUND})
   ENDFOREACH()
 ELSE()
   SET(ASPECT_WITH_PERPLEX OFF)
+ENDIF()
+
+# Find the libdap package so that Aspect can connect to the OPeNDAP servers
+# Author: Kodi Neumiller
+# Added: 10/16/18
+LIST(APPEND CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}/cmake/modules")
+MESSAGE(STATUS "cmake module path = ${CMAKE_MODULE_PATH}")
+FIND_PACKAGE(LIBDAP)
+IF(${LIBDAP_FOUND})
+  MESSAGE(STATUS "libdap found at ${LIBDAP_INCLUDE_DIR}")
+  #EXECUTE_PROCESS(COMMAND dap-config --libs OUTPUT_VARIABLE result)
+  #LINK_DIRECTORIES(${result})
+  FIND_PACKAGE(LibXml2)
+  INCLUDE_DIRECTORIES(${LIBDAP_INCLUDE_DIR} ${LIBXML2_INCLUDE_DIR})
+  TARGET_LINK_LIBRARIES(${TARGET} ${LIBDAP_LIBRARIES} ${LIBXML2_LIBRARIES})
+  #SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -L/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.14.sdk/usr/lib")
+  #SET(CMAKE_CXX_STANDARD_LIBRARIES "-lxml2")
+ELSE()
+  MESSAGE(STATUS "libdap package not found")
 ENDIF()
 
 
@@ -455,6 +475,7 @@ ELSE()
   ${CMAKE_BINARY_DIR}/aspect-gui
   @ONLY
   )
+  
 INSTALL(FILES ${CMAKE_BINARY_DIR}/aspect-gui
         DESTINATION bin
         PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
