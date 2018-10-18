@@ -25,7 +25,7 @@
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Info<b class="caret"></b></a>
               <ul class="dropdown-menu">
                 <li><a href="http://www.math.clemson.edu/~heister/manual.pdf">Manual</a></li>
-                <li><a href="http://lists.geodynamics.org/cgi-bin/mailman/listinfo/aspect-devel">Mailing lists</a></li>
+                <li><a href="index.html#contact">Forum and Contact</a></li>
                 <li><a href="citing.html?src=www&ver=release">How to cite?</a></li>
                 <li><a href="publications.html">Publications</a></li>
                 <li><a href="https://github.com/geodynamics/aspect/blob/master/LICENSE">License</a></li>
