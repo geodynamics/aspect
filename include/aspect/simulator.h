@@ -1225,8 +1225,7 @@ namespace aspect
 
       /**
        * Offset the boundary id of all faces located on an outflow boundary
-       * by a fixed value given by the input parameter
-       * @param boundary_id_offset.
+       * by a fixed value given by the input parameter @p boundary_id_offset.
        *
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
