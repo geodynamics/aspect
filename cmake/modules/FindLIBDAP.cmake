@@ -28,28 +28,12 @@ FIND_PATH(LIBDAP_INCLUDE_DIR
   HINTS ${LIBDAP_DIR}
   PATHS /Users/kodi/src/hyrax/build/include/libdap
   )
-MESSAGE(STATUS "libdap include dir = ${LIBDAP_INCLUDE_DIR}")
-
-# Get the remaining libraries necesary for libdap to run.
-# Do this by executing a command line command and storing the result
-EXECUTE_PROCESS(COMMAND dap-config --libs OUTPUT_VARIABLE result)
-MESSAGE(STATUS "testing the dap-config ----- ${result}")
 
 FIND_LIBRARY(LIBDAP_LIBRARY 
   NAMES libdap.a
   HINTS ${LIBDAP_DIR}
   PATHS /Users/kodi/src/hyrax/build/lib64 /Users/kodi/src/hyrax/build/lib
   )
-MESSAGE(STATUS "libdap lib = ${LIBDAP_LIBRARY}")
-
-#FIND_LIBRARY(LIBXML_INCLUDE_DIR
-#  NAMES xlink.h
-#  PATHS /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.14.sdk/usr/include/libxml2/libxml
-#  )
-#MESSAGE(STATUS "libxml lib = ${LIBXML_INCLUDE_DIR}")
-
-#SET(TESTVAR -L/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.13.sdk/usr/lib -lxml2 -lz -lpthread -licucore -lm -lpthread)
-#MESSAGE(STATUS "TESTVAR = ${TESTVAR}")
 
 SET(LIBDAP_FOUND TRUE)
 SET(LIBDAP_INCLUDE_DIRS ${LIBDAP_INCLUDE_DIR})
