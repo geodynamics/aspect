@@ -14,7 +14,6 @@
 ## ---------------------------------------------------------------------
 
 # Try to find the Libdap library
-MESSAGE(STATUS "Testing the FindLIBDAP.cmake")
 SET(LIBDAP_DIR "" CACHE PATH "An optional hint to a libdap directory")
 SET_IF_EMPTY(LIBDAP_DIR "$ENV{LIBDAP_DIR}")
 

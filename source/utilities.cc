@@ -21,6 +21,7 @@
 #include <aspect/utilities.h>
 #include <aspect/simulator_access.h>
 
+#include <D4Connect.h>
 #include <Connect.h>
 #include <Response.h>
 
@@ -889,8 +890,10 @@ namespace aspect
 		if (readUrl) {
 			std::cout << "TESTING THE READ FROM URL == true" << std::endl;
 
-			Connect url(filename);
-			url.request_data;
+			//libdap::Connect url = new libdap::Connect(filename);
+			libdap::Connect *url = 0;
+			url = new libdap::Connect(filename);
+			//url->request_data();
 
 		}
 		else
