@@ -14,9 +14,7 @@ guide on the process of contributing to an open-source project
 [here](https://opensource.guide/how-to-contribute/).
 
 ## Asking and answering questions about ASPECT
-The ASPECT community maintains an active mailing list hosted by CIG
-[here](https://lists.geodynamics.org/cgi-bin/mailman/listinfo/aspect-devel). The
-mailing list is for questions about ASPECT at all levels.
+For questiontions about ASPECT on all levels, please use the [ASPECT](https://community.geodynamics.org/c/aspect) discussion forum. Archived discussions from the inactive aspect-devel mailing list can be downloaded at [aspect-devel archives](http://lists.geodynamics.org/pipermail/aspect-devel).
 
 ## Bug reports
 It is a great help to the community if you report any bugs that you
