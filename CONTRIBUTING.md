@@ -14,7 +14,10 @@ guide on the process of contributing to an open-source project
 [here](https://opensource.guide/how-to-contribute/).
 
 ## Asking and answering questions about ASPECT
-For questiontions about ASPECT on all levels, please use the [ASPECT](https://community.geodynamics.org/c/aspect) discussion forum. Archived discussions from the inactive aspect-devel mailing list can be downloaded at [aspect-devel archives](http://lists.geodynamics.org/pipermail/aspect-devel).
+For questions about ASPECT on all levels, please use the 
+[ASPECT forum](https://community.geodynamics.org/c/aspect). 
+Archived discussions from the inactive aspect-devel mailing list can be downloaded 
+at [aspect-devel archives](http://lists.geodynamics.org/pipermail/aspect-devel).
 
 ## Bug reports
 It is a great help to the community if you report any bugs that you
