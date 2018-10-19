@@ -890,7 +890,6 @@ namespace aspect
 		if (readUrl) {
 			std::cout << "TESTING THE READ FROM URL == true" << std::endl;
 
-			//libdap::Connect url = new libdap::Connect(filename);
 			libdap::Connect *url = 0;
 			url = new libdap::Connect(filename);
 			//url->request_data();
