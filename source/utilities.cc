@@ -894,6 +894,8 @@ namespace aspect
 			url = new libdap::Connect(filename);
 			//url->request_data();
 
+			cout << "Data gathered from the url:";
+
 		}
 		else
 		{
