@@ -152,7 +152,7 @@ namespace aspect
                        "or benchmarking it may be useful to limit the first time step to some value, "
                        "especially when using the free surface, which needs to settle to prevent "
                        "instabilities. This should in that case be combined with a value set for "
-                       "``Maximum relative increase in time step''."
+                       "``Maximum relative increase in time step''. "
                        "The default value is a value so that when converted from years into seconds "
                        "it equals the largest number representable by a floating "
                        "point number, implying an unlimited time step. "
