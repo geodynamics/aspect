@@ -155,7 +155,7 @@ namespace aspect
                        "``Maximum relative increase in time step''."
                        "The default value is a value so that when converted from years into seconds "
                        "it equals the largest number representable by a floating "
-                       "point number, implying an unlimited time step."
+                       "point number, implying an unlimited time step. "
                        "Units: Years or seconds, depending on the ``Use years "
                        "in output instead of seconds'' parameter.");
 
