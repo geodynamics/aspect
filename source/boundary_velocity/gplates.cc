@@ -145,11 +145,12 @@ namespace aspect
       template <int dim>
       void
       GPlatesLookup<dim>::load_file(const std::string &filename,
-                                    const MPI_Comm &comm)
+                                    const MPI_Comm &comm,
+									bool readUrl)
       {
         // Read data from disk and distribute among processes
         std::istringstream filecontent(
-          Utilities::read_and_distribute_file_content(filename, comm));
+          Utilities::read_and_distribute_file_content(filename, comm, readUrl));
 
         boost::property_tree::ptree pt;
 
@@ -587,7 +588,7 @@ namespace aspect
 
       const std::string filename (create_filename (current_file_number));
       if (Utilities::fexists(filename))
-        lookup->load_file(filename,this->get_mpi_communicator());
+        lookup->load_file(filename,this->get_mpi_communicator(), this->get_parameters().read_from_url);
       else
         AssertThrow(false,
                     ExcMessage (std::string("GPlates data file <")
@@ -612,7 +613,7 @@ namespace aspect
           if (Utilities::fexists(filename))
             {
               lookup.swap(old_lookup);
-              lookup->load_file(filename,this->get_mpi_communicator());
+              lookup->load_file(filename,this->get_mpi_communicator(), this->get_parameters().read_from_url);
             }
           else
             end_time_dependence ();
@@ -699,7 +700,7 @@ namespace aspect
           if (Utilities::fexists(filename))
             {
               lookup.swap(old_lookup);
-              lookup->load_file(filename,this->get_mpi_communicator());
+              lookup->load_file(filename,this->get_mpi_communicator(), this->get_parameters().read_from_url);
             }
 
           // If loading current_time_step failed, end time dependent part with old_file_number.
@@ -720,7 +721,7 @@ namespace aspect
       if (Utilities::fexists(filename))
         {
           lookup.swap(old_lookup);
-          lookup->load_file(filename,this->get_mpi_communicator());
+          lookup->load_file(filename,this->get_mpi_communicator(), this->get_parameters().read_from_url);
         }
 
       // If next file does not exist, end time dependent part with current_time_step.

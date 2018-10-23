@@ -369,11 +369,14 @@ namespace aspect
      * @param [in] filename The name of the ascii file to load.
      * @param [in] comm The MPI communicator in which the content is
      * distributed.
+     * @param [in] readUrl Determines if the file to load is local
+     * or accessed through a URL
      * @return A string which contains the data in @p filename.
      */
     std::string
     read_and_distribute_file_content(const std::string &filename,
-                                     const MPI_Comm &comm);
+                                     const MPI_Comm &comm,
+									 bool readUrl = false);
 
     /**
      * Creates a path as if created by the shell command "mkdir -p", therefore
@@ -571,7 +574,8 @@ namespace aspect
          */
         void
         load_file(const std::string &filename,
-                  const MPI_Comm &communicator);
+                  const MPI_Comm &communicator,
+				  bool readUrl);
 
         /**
          * Returns the computed data (velocity, temperature, etc. - according

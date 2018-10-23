@@ -130,10 +130,10 @@ namespace aspect
       }
       prm.leave_subsection();
 
-      AssertThrow ((dynamic_cast<const GeometryModel::EllipsoidalChunk<dim>*>
-                    (&this->get_geometry_model()) != 0),
-                   ExcMessage ("This initial condition can only be used if the geometry "
-                               "is an ellipsoidal chunk."));
+//      AssertThrow ((dynamic_cast<const GeometryModel::EllipsoidalChunk<dim>*>
+//                    (&this->get_geometry_model()) != 0),
+//                   ExcMessage ("This initial condition can only be used if the geometry "
+//                               "is an ellipsoidal chunk."));
 
       const std::string filename = data_directory+isotherm_file_name;
 

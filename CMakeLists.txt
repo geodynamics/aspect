@@ -281,6 +281,7 @@ CHECK_CXX_SOURCE_COMPILES("
 #include <cstddef>
 #include <dlfcn.h>
 
+
 int main()
 {
   void *handle = dlopen (\"somelib.so\", RTLD_LAZY);
@@ -352,6 +353,23 @@ IF(${PerpleX_FOUND})
   ENDFOREACH()
 ELSE()
   SET(ASPECT_WITH_PERPLEX OFF)
+ENDIF()
+
+# Find the libdap package so that Aspect can connect to the OPeNDAP servers
+# Author: Kodi Neumiller
+# Added: 10/16/18
+LIST(APPEND CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}/cmake/modules")
+MESSAGE(STATUS "cmake module path = ${CMAKE_MODULE_PATH}")
+FIND_PACKAGE(LIBDAP)
+IF(${LIBDAP_FOUND})
+  FIND_PACKAGE(LibXml2)
+  FIND_PACKAGE(CURL)
+  INCLUDE_DIRECTORIES(${LIBDAP_INCLUDE_DIR} ${LIBXML2_INCLUDE_DIR} ${CURL_INCLUDE_DIR})
+  TARGET_LINK_LIBRARIES(${TARGET} ${LIBDAP_LIBRARIES} ${LIBXML2_LIBRARIES} ${CURL_LIBRARIES})
+    MESSAGE(STATUS "libdap found at ${LIBDAP_LIBRARIES}")
+  
+ELSE()
+  MESSAGE(STATUS "libdap package not found")
 ENDIF()
 
 
@@ -455,6 +473,7 @@ ELSE()
   ${CMAKE_BINARY_DIR}/aspect-gui
   @ONLY
   )
+  
 INSTALL(FILES ${CMAKE_BINARY_DIR}/aspect-gui
         DESTINATION bin
         PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
