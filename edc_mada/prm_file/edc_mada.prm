@@ -1,5 +1,5 @@
 set Dimension                              = 3
-set Additional shared libraries =  /Users/kodi/src/Aspect/aspect_opendap/edc_mada/edc_plugins/libedc_plugin.so
+set Additional shared libraries =  $ASPECT_SOURCE_DIR/edc_mada/edc_plugins/libedc_plugin.so
 set Use years in output instead of seconds = true
 set CFL number = 0.25
 set End time                               = 0
@@ -38,7 +38,7 @@ end
 subsection Initial temperature model
   set Model name = adiabatic boundary
   subsection Adiabatic boundary
-    set Data directory           = /Users/kodi/src/Aspect/aspect_opendap/edc_mada/input_files/
+    set Data directory           = $ASPECT_SOURCE_DIR/edc_mada/input_files/
     set Isotherm depth filename  = litho.africa.txt
   end
 end
