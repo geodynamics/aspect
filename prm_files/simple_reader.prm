@@ -1,0 +1,14 @@
+#This file is meant to simply test the ability to read from a url
+# it should access the url and display the output
+
+set Output directory			= output-simple_reader
+set Read from url			= true
+
+
+subsection Initial temperature model
+  set Model name = adiabatic boundary
+  subsection Adiabatic boundary
+    set Data directory           = /work/newriver/trajaona/project/input_files/
+    set Isotherm depth filename  = litho.africa.txt
+  end
+end
