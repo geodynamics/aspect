@@ -130,17 +130,17 @@ namespace aspect
       }
       prm.leave_subsection();
 
-      AssertThrow ((dynamic_cast<const GeometryModel::EllipsoidalChunk<dim>*>
-                    (&this->get_geometry_model()) != 0),
-                   ExcMessage ("This initial condition can only be used if the geometry "
-                               "is an ellipsoidal chunk."));
+//      AssertThrow ((dynamic_cast<const GeometryModel::EllipsoidalChunk<dim>*>
+//                    (&this->get_geometry_model()) != 0),
+//                   ExcMessage ("This initial condition can only be used if the geometry "
+//                               "is an ellipsoidal chunk."));
 
       const std::string filename = data_directory+isotherm_file_name;
 
       /**
        * Read data from disk and distribute among processes
        */
-      std::istringstream in(Utilities::read_and_distribute_file_content(filename, this->get_mpi_communicator(), this->get_parameters().read_from_url));
+      std::istringstream in(Utilities::read_and_distribute_file_content(filename, this->get_mpi_communicator()));
 
       /**
        * Reading data lines.
