@@ -385,10 +385,7 @@ namespace aspect
     // We have to compute the constraints here because the vector that tells
     // us if a cell is a melt cell is not saved between restarts.
     if (parameters.include_melt_transport)
-      {
-        compute_current_constraints ();
-        melt_handler->add_current_constraints (current_constraints);
-      }
+      compute_current_constraints ();
   }
 
 }

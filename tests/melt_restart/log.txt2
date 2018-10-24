@@ -1,0 +1,100 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 2.1.0-pre (master, f534df314)
+--     . using deal.II 9.0.0
+--     . using Trilinos 12.10.1
+--     . using p4est 2.0.0
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+-- For information on how to cite ASPECT, see:
+--   https://aspect.geodynamics.org/citing.html?ver=2.1.0-pre&melt=1&sha=f534df314&src=code
+-----------------------------------------------------------------------------
+*** Resuming from snapshot!
+
+Number of active cells: 192 (on 4 levels)
+Number of degrees of freedom: 5,641 (1,666+801+1,666+225+833+225+225)
+
+*** Timestep 2:  t=1.001e+06 years
+   Solving temperature system... 10 iterations.
+   Skipping porosity composition solve because RHS is zero.
+   Skipping peridotite composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+10 iterations.
+   Solving for u_f in 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 9.96125e-05, 0, 0, 0.018036
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.018036
+
+   Solving temperature system... 8 iterations.
+   Skipping porosity composition solve because RHS is zero.
+   Skipping peridotite composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+7 iterations.
+   Solving for u_f in 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.62333e-06, 0, 0, 0.000847176
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000847176
+
+   Solving temperature system... 7 iterations.
+   Skipping porosity composition solve because RHS is zero.
+   Skipping peridotite composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+5 iterations.
+   Solving for u_f in 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.56731e-07, 0, 0, 4.65358e-05
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 4.65358e-05
+
+   Solving temperature system... 6 iterations.
+   Skipping porosity composition solve because RHS is zero.
+   Skipping peridotite composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+4 iterations.
+   Solving for u_f in 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 9.43913e-09, 0, 0, 1.06786e-05
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 1.06786e-05
+
+   Solving temperature system... 4 iterations.
+   Skipping porosity composition solve because RHS is zero.
+   Skipping peridotite composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+4 iterations.
+   Solving for u_f in 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.88827e-10, 0, 0, 1.60715e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 5: 1.60715e-06
+
+
+   Postprocessing:
+     Writing graphical output:  output2.tmp/solution/solution-00002
+     Compositions min/max/mass: 0/0/0 // 0/0/0
+     RMS, max velocity:         0.00111 m/year, 0.00303 m/year
+     Temperature min/avg/max:   293 K, 2023 K, 3700 K
+     Writing depth average:     output2.tmp/depth_average.gnuplot
+
+Termination requested by criterion: end time
+*** Snapshot created!
+
+
+
++---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |      8.53s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
++---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |         5 |     0.897s |        11% |
+| Assemble composition system     |        10 |      2.28s |        27% |
+| Assemble temperature system     |         5 |      1.21s |        14% |
+| Build Stokes preconditioner     |         5 |      0.71s |       8.3% |
+| Build temperature preconditioner|         5 |   0.00357s |         0% |
+| Solve Stokes system             |         5 |       1.8s |        21% |
+| Solve temperature system        |         5 |   0.00341s |         0% |
+| Create snapshot                 |         1 |     0.022s |      0.26% |
+| Initialization                  |         1 |     0.018s |      0.21% |
+| Postprocessing                  |         1 |     0.868s |        10% |
+| Setup dof systems               |         1 |   0.00945s |      0.11% |
++---------------------------------+-----------+------------+------------+
+
+-----------------------------------------------------------------------------
+-- For information on how to cite ASPECT, see:
+--   https://aspect.geodynamics.org/citing.html?ver=2.1.0-pre&melt=1&sha=f534df314&src=code
+-----------------------------------------------------------------------------
