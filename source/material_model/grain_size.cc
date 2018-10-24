@@ -2025,5 +2025,10 @@ namespace aspect
                                    "The importance of grain size to mantle dynamics and "
                                    "seismological observations, Geochem. Geophys. Geosyst., "
                                    "18, 3034–3061, doi:10.1002/2017GC006944.")
+
+#define INSTANTIATE(dim) \
+  template class DislocationViscosityOutputs<dim>;
+
+    ASPECT_INSTANTIATE(INSTANTIATE)
   }
 }
