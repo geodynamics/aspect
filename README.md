@@ -2,7 +2,6 @@ ASPECT - Advanced Solver for Problems in Earth's ConvecTion
 ===========================================================
 [![License GPL2:](https://img.shields.io/aur/license/yaourt.svg)](https://github.com/geodynamics/aspect/blob/master/LICENSE)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1297145.svg)](https://doi.org/10.5281/zenodo.1297145)
-[![Build Status](https://jenkins.tjhei.info/job/aspect/job/master/badge/icon)](https://jenkins.tjhei.info/job/aspect/job/master/)
 
 
 About
