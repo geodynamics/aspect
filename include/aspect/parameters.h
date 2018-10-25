@@ -316,6 +316,7 @@ namespace aspect
     double                         CFL_number;
     double                         maximum_time_step;
     double                         maximum_relative_increase_time_step;
+    double                         maximum_first_time_step;
     double                         reaction_time_step;
     unsigned int                   reaction_steps_per_advection_step;
     bool                           use_artificial_viscosity_smoothing;

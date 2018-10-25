@@ -613,6 +613,8 @@ namespace aspect
     // make sure that the timestep doesn't increase too fast
     if (time_step != 0)
       new_time_step = std::min(new_time_step, time_step + time_step * parameters.maximum_relative_increase_time_step);
+    else
+      new_time_step = std::min(new_time_step, parameters.maximum_first_time_step);
 
     new_time_step = termination_manager.check_for_last_time_step(std::min(new_time_step,
                                                                           parameters.maximum_time_step));
