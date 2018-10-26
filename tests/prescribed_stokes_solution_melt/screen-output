@@ -10,7 +10,7 @@ Number of degrees of freedom: 2,058 (578+162+578+81+81+289+289)
    Postprocessing:
      RMS, max velocity:                  0.816 m/s, 1.39 m/s
      Temperature min/avg/max:            0 K, 0.5 K, 1 K
-     Heat fluxes through boundary parts: 0.003827 W, -0.003827 W, -1 W, 1 W
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.348 W, 1.411 W
 
 *** Timestep 1:  t=0.0883883 seconds
    Solving composition reactions in 1 substep(s).
@@ -21,7 +21,7 @@ Number of degrees of freedom: 2,058 (578+162+578+81+81+289+289)
    Postprocessing:
      RMS, max velocity:                  0.816 m/s, 1.39 m/s
      Temperature min/avg/max:            0 K, 0.5198 K, 1 K
-     Heat fluxes through boundary parts: 0.01118 W, -0.01035 W, -0.8935 W, 1.121 W
+     Heat fluxes through boundary parts: 0 W, 0 W, -0.8696 W, 1.154 W
 
 *** Timestep 2:  t=0.176777 seconds
    Solving composition reactions in 1 substep(s).
@@ -32,7 +32,7 @@ Number of degrees of freedom: 2,058 (578+162+578+81+81+289+289)
    Postprocessing:
      RMS, max velocity:                  0.816 m/s, 1.39 m/s
      Temperature min/avg/max:            0 K, 0.532 K, 1 K
-     Heat fluxes through boundary parts: 0.01327 W, -0.0122 W, -0.8353 W, 1.185 W
+     Heat fluxes through boundary parts: 0 W, 0 W, -0.8112 W, 1.222 W
 
 *** Timestep 3:  t=0.265165 seconds
    Solving composition reactions in 1 substep(s).
@@ -43,7 +43,7 @@ Number of degrees of freedom: 2,058 (578+162+578+81+81+289+289)
    Postprocessing:
      RMS, max velocity:                  0.816 m/s, 1.39 m/s
      Temperature min/avg/max:            0 K, 0.5382 K, 1 K
-     Heat fluxes through boundary parts: 0.01367 W, -0.01256 W, -0.8079 W, 1.216 W
+     Heat fluxes through boundary parts: 0 W, 0 W, -0.784 W, 1.256 W
 
 *** Timestep 4:  t=0.353553 seconds
    Solving composition reactions in 1 substep(s).
@@ -54,7 +54,7 @@ Number of degrees of freedom: 2,058 (578+162+578+81+81+289+289)
    Postprocessing:
      RMS, max velocity:                  0.816 m/s, 1.39 m/s
      Temperature min/avg/max:            0 K, 0.5408 K, 1 K
-     Heat fluxes through boundary parts: 0.01365 W, -0.01254 W, -0.7969 W, 1.23 W
+     Heat fluxes through boundary parts: 0 W, 0 W, -0.7731 W, 1.271 W
 
 *** Timestep 5:  t=0.441942 seconds
    Solving composition reactions in 1 substep(s).
@@ -65,7 +65,7 @@ Number of degrees of freedom: 2,058 (578+162+578+81+81+289+289)
    Postprocessing:
      RMS, max velocity:                  0.816 m/s, 1.39 m/s
      Temperature min/avg/max:            0 K, 0.5416 K, 1 K
-     Heat fluxes through boundary parts: 0.01357 W, -0.01247 W, -0.7934 W, 1.235 W
+     Heat fluxes through boundary parts: 0 W, 0 W, -0.7696 W, 1.276 W
 
 *** Timestep 6:  t=0.5 seconds
    Solving composition reactions in 1 substep(s).
@@ -76,7 +76,7 @@ Number of degrees of freedom: 2,058 (578+162+578+81+81+289+289)
    Postprocessing:
      RMS, max velocity:                  0.816 m/s, 1.39 m/s
      Temperature min/avg/max:            0 K, 0.5417 K, 1 K
-     Heat fluxes through boundary parts: 0.01352 W, -0.01244 W, -0.7931 W, 1.236 W
+     Heat fluxes through boundary parts: 0 W, 0 W, -0.7693 W, 1.277 W
 
 Termination requested by criterion: end time
 

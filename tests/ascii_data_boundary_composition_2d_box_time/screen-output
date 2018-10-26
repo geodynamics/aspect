@@ -17,7 +17,7 @@ Number of degrees of freedom: 1,581 (738+105+369+369)
    Postprocessing:
      RMS, max velocity:                  1 m/year, 1.01 m/year
      Temperature min/avg/max:            0 K, 1488 K, 1913 K
-     Heat fluxes through boundary parts: 7.474e-12 W, 4.484e-12 W, 4.647e+05 W, 4.549e+05 W
+     Heat fluxes through boundary parts: 0 W, 0 W, 5.606e+05 W, 1.661e+05 W
      Compositions min/max/mass:          0/0.033/3.594e+10
 
 *** Timestep 1:  t=81806.7 years
@@ -29,7 +29,7 @@ Number of degrees of freedom: 1,581 (738+105+369+369)
    Postprocessing:
      RMS, max velocity:                  1 m/year, 1.01 m/year
      Temperature min/avg/max:            0 K, 1435 K, 1926 K
-     Heat fluxes through boundary parts: -0.761 W, 0.007051 W, 3.945e+05 W, 3.853e+05 W
+     Heat fluxes through boundary parts: 0 W, 0 W, 9.111e+07 W, 8.88e+07 W
      Compositions min/max/mass:          0/0.0321/3.42e+10
 
 *** Timestep 2:  t=163720 years
@@ -41,7 +41,7 @@ Number of degrees of freedom: 1,581 (738+105+369+369)
    Postprocessing:
      RMS, max velocity:                  1 m/year, 1.01 m/year
      Temperature min/avg/max:            0 K, 1362 K, 1853 K
-     Heat fluxes through boundary parts: -2.702 W, 0.0215 W, 3.168e+05 W, 3.09e+05 W
+     Heat fluxes through boundary parts: 0 W, 0 W, 1.446e+08 W, 1.409e+08 W
      Compositions min/max/mass:          0/0.3186/3.939e+10
 
 *** Timestep 3:  t=245671 years
@@ -53,7 +53,7 @@ Number of degrees of freedom: 1,581 (738+105+369+369)
    Postprocessing:
      RMS, max velocity:                  1 m/year, 1.01 m/year
      Temperature min/avg/max:            0 K, 1292 K, 1736 K
-     Heat fluxes through boundary parts: -8.025 W, 0.029 W, 2.601e+05 W, 2.538e+05 W
+     Heat fluxes through boundary parts: 0 W, 0 W, 1.181e+08 W, 1.149e+08 W
      Compositions min/max/mass:          0/0.7284/5.479e+10
 
 *** Timestep 4:  t=327697 years
@@ -68,7 +68,7 @@ Number of degrees of freedom: 1,581 (738+105+369+369)
    Postprocessing:
      RMS, max velocity:                  1 m/year, 1.01 m/year
      Temperature min/avg/max:            0 K, 1229 K, 1693 K
-     Heat fluxes through boundary parts: -5.178 W, 0.06131 W, 2.194e+05 W, 2.141e+05 W
+     Heat fluxes through boundary parts: 0 W, 0 W, 1.014e+08 W, 9.902e+07 W
      Compositions min/max/mass:          0/0.8615/7.415e+10
 
 *** Timestep 5:  t=409751 years
@@ -80,7 +80,7 @@ Number of degrees of freedom: 1,581 (738+105+369+369)
    Postprocessing:
      RMS, max velocity:                  1 m/year, 1 m/year
      Temperature min/avg/max:            0 K, 1174 K, 1662 K
-     Heat fluxes through boundary parts: -1.89 W, 0.08152 W, 1.913e+05 W, 1.869e+05 W
+     Heat fluxes through boundary parts: 0 W, 0 W, 8.9e+07 W, 8.694e+07 W
      Compositions min/max/mass:          0/0.5756/8.507e+10
 
 *** Timestep 6:  t=491865 years
@@ -92,7 +92,7 @@ Number of degrees of freedom: 1,581 (738+105+369+369)
    Postprocessing:
      RMS, max velocity:                  1 m/year, 1 m/year
      Temperature min/avg/max:            0 K, 1125 K, 1631 K
-     Heat fluxes through boundary parts: -0.1066 W, 0.1091 W, 1.713e+05 W, 1.676e+05 W
+     Heat fluxes through boundary parts: 0 W, 0 W, 8.028e+07 W, 7.857e+07 W
      Compositions min/max/mass:          0/0.4997/8.695e+10
 
 *** Timestep 7:  t=574009 years
@@ -111,7 +111,7 @@ Number of degrees of freedom: 1,581 (738+105+369+369)
    Postprocessing:
      RMS, max velocity:                  1 m/year, 1 m/year
      Temperature min/avg/max:            0 K, 1079 K, 1610 K
-     Heat fluxes through boundary parts: 0.4167 W, 0.1954 W, 1.561e+05 W, 1.532e+05 W
+     Heat fluxes through boundary parts: 0 W, 0 W, 7.372e+07 W, 7.233e+07 W
      Compositions min/max/mass:          0/0.4221/8.724e+10
 
 *** Timestep 8:  t=600000 years
@@ -123,7 +123,7 @@ Number of degrees of freedom: 1,581 (738+105+369+369)
    Postprocessing:
      RMS, max velocity:                  1 m/year, 1 m/year
      Temperature min/avg/max:            0 K, 1068 K, 1602 K
-     Heat fluxes through boundary parts: -0.3041 W, 0.06561 W, 1.521e+05 W, 1.493e+05 W
+     Heat fluxes through boundary parts: 0 W, 0 W, 6.047e+07 W, 5.634e+07 W
      Compositions min/max/mass:          0/0.4/8.688e+10
 
 Termination requested by criterion: end time

@@ -12,7 +12,7 @@ Number of degrees of freedom: 1,032 (480+72+240+240)
      Writing graphical output:           output-artificial_viscosity_list/solution/solution-00000
      RMS, max velocity:                  0.0184 m/year, 0.0311 m/year
      Temperature min/avg/max:            973 K, 1449 K, 1973 K
-     Heat fluxes through boundary parts: -1.08e+05 W, 1.966e+05 W
+     Heat fluxes through boundary parts: -6.418e+06 W, -9.555e+06 W
 
 *** Timestep 1:  t=1e+06 years
    Solving temperature system... 8 iterations.
@@ -23,7 +23,7 @@ Number of degrees of freedom: 1,032 (480+72+240+240)
      Writing graphical output:           output-artificial_viscosity_list/solution/solution-00001
      RMS, max velocity:                  0.0184 m/year, 0.0311 m/year
      Temperature min/avg/max:            973 K, 1444 K, 1973 K
-     Heat fluxes through boundary parts: -1.097e+05 W, 1.941e+05 W
+     Heat fluxes through boundary parts: -5.308e+06 W, -7.459e+06 W
 
 Termination requested by criterion: end time
 

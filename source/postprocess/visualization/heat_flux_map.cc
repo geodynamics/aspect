@@ -79,23 +79,15 @@ namespace aspect
   {
     namespace VisualizationPostprocessors
     {
-
       ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(HeatFluxMap,
                                                   "heat flux map",
                                                   "A visualization output object that generates output for "
-                                                  "the heat flux density across each boundary. The heat flux density "
+                                                  "the heat flux density across the top and bottom boundary. The heat flux density "
                                                   "is computed in outward direction, i.e., from the domain to the "
-                                                  "outside, using the formula $-k \\nabla T \\cdot \\mathbf n$, where "
-                                                  "$k$ is the thermal conductivity as reported by the material "
-                                                  "model, $T$ is the temperature, and $\\mathbf n$ is the outward "
-                                                  "normal. Note that the quantity so computed does not include "
-                                                  "any energy transported across the boundary by material "
-                                                  "transport in cases where $\\mathbf u \\cdot \\mathbf n \\neq 0$."
-                                                  "At the edge of the domain (e.g. top left corner) the heat flux "
-                                                  "density is calculated as the sum of the heat flux across both "
-                                                  "boundaries of the cell (e.g. top and left boundary) divided "
-                                                  "by the sum of both face areas. The integrated heatflux for each "
-                                                  "boundary can be obtained from the heat flux statistics postprocessor.")
+                                                  "outside, using the consistent boundary flux method as described in "
+                                                  "Gresho, P. M., Lee, R. L., Sani, R. L., Maslanik, M. K., & Eaton, B. E. (1987). "
+                                                  "The consistent Galerkin FEM for computing derived boundary quantities in thermal and or fluids "
+                                                  "problems. International Journal for Numerical Methods in Fluids, 7(4), 371-394.")
     }
   }
 }

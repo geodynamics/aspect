@@ -11,7 +11,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
      Writing graphical output:           output-blankenbach_case1a/solution/solution-00000
      RMS, max velocity:                  17.9 m/s, 25.3 m/s
      Temperature min/avg/max:            0 K, 0.5 K, 1 K
-     Heat fluxes through boundary parts: -4.724e-05 W, 4.724e-05 W, -4.884 W, 4.884 W
+     Heat fluxes through boundary parts: 0 W, 0 W, -4.884 W, 4.884 W
      Heating rate (average/total):       0 W/kg, 0 W
 
 *** Timestep 1:  t=0.00616847 seconds
@@ -22,7 +22,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Postprocessing:
      RMS, max velocity:                  20.9 m/s, 30.7 m/s
      Temperature min/avg/max:            0 K, 0.5 K, 1 K
-     Heat fluxes through boundary parts: -0.0002275 W, 0.0002275 W, -3.885 W, 3.885 W
+     Heat fluxes through boundary parts: 0 W, 0 W, -3.798 W, 3.798 W
      Heating rate (average/total):       0 W/kg, 0 W
 
 *** Timestep 2:  t=0.0112603 seconds
@@ -33,7 +33,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Postprocessing:
      RMS, max velocity:                  26.2 m/s, 38.9 m/s
      Temperature min/avg/max:            0 K, 0.5 K, 1 K
-     Heat fluxes through boundary parts: -0.0006832 W, 0.0006832 W, -3.282 W, 3.282 W
+     Heat fluxes through boundary parts: 0 W, 0 W, -3.208 W, 3.208 W
      Heating rate (average/total):       0 W/kg, 0 W
 
 *** Timestep 3:  t=0.015271 seconds
@@ -44,7 +44,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Postprocessing:
      RMS, max velocity:                  33.1 m/s, 48.9 m/s
      Temperature min/avg/max:            0 K, 0.5 K, 1 K
-     Heat fluxes through boundary parts: -0.001681 W, 0.001681 W, -3.199 W, 3.199 W
+     Heat fluxes through boundary parts: 0 W, 0 W, -3.129 W, 3.129 W
      Heating rate (average/total):       0 W/kg, 0 W
 
 *** Timestep 4:  t=0.0184637 seconds
@@ -55,7 +55,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Postprocessing:
      RMS, max velocity:                  40.4 m/s, 60.4 m/s
      Temperature min/avg/max:            0 K, 0.5 K, 1 K
-     Heat fluxes through boundary parts: -0.003518 W, 0.003518 W, -3.417 W, 3.417 W
+     Heat fluxes through boundary parts: 0 W, 0 W, -3.331 W, 3.331 W
      Heating rate (average/total):       0 W/kg, 0 W
 
 *** Timestep 5:  t=0.02 seconds
@@ -66,7 +66,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Postprocessing:
      RMS, max velocity:                  44.3 m/s, 67.1 m/s
      Temperature min/avg/max:            0 K, 0.5 K, 1 K
-     Heat fluxes through boundary parts: -0.005065 W, 0.005065 W, -3.616 W, 3.616 W
+     Heat fluxes through boundary parts: 0 W, 0 W, -3.516 W, 3.516 W
      Heating rate (average/total):       0 W/kg, 0 W
 
 Termination requested by criterion: end time

@@ -988,10 +988,13 @@ namespace aspect
        * @param viscosity_per_cell Output vector
        * @param advection_field Determines whether this variable should select
        * the temperature field or a compositional field.
+       * @param skip_interior_cells A boolean flag. If set to true the function
+       * will only compute the artificial viscosity in cells at boundaries.
        */
       template <typename T>
       void get_artificial_viscosity (Vector<T> &viscosity_per_cell,
-                                     const AdvectionField &advection_field) const;
+                                     const AdvectionField &advection_field,
+                                     const bool skip_interior_cells = false) const;
 
       /**
        * Compute the seismic shear wave speed, Vs anomaly per element. we

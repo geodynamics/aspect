@@ -255,10 +255,11 @@ namespace aspect
 
   template <int dim>
   void
-  SimulatorAccess<dim>::get_artificial_viscosity (Vector<float> &viscosity_per_cell) const
+  SimulatorAccess<dim>::get_artificial_viscosity (Vector<float> &viscosity_per_cell,
+                                                  const bool skip_interior_cells) const
   {
     const typename Simulator<dim>::AdvectionField advection_field = Simulator<dim>::AdvectionField::temperature();
-    simulator->get_artificial_viscosity(viscosity_per_cell, advection_field);
+    simulator->get_artificial_viscosity(viscosity_per_cell, advection_field, skip_interior_cells);
   }
 
   template <int dim>
