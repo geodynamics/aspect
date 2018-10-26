@@ -18,9 +18,10 @@
    <http://www.gnu.org/licenses/>.
  */
 
+#ifndef _aspect_initial_temperature_adiabatic_boundary_h
+#define _aspect_initial_temperature_adiabatic_boundary_h
 
 #include <aspect/initial_temperature/interface.h>
-#include <aspect/geometry_model/ellipsoidal_chunk.h>
 #include <aspect/simulator_access.h>
 #include <aspect/utilities.h>
 
@@ -49,9 +50,21 @@ namespace aspect
      * This plugin is developed by Tahiry Rajaonarison and D. Sarah Stamps.
      */
     template <int dim>
-    class AdiabaticBoundary : public Interface<dim>, public SimulatorAccess<dim>
+    class AdiabaticBoundary : public Interface<dim>,  public Utilities::AsciiDataBoundary<dim>
     {
       public:
+
+        /**
+         * Constructor.
+         */
+        AdiabaticBoundary ();
+
+        void
+        initialize ();
+
+        // avoid -Woverloaded-virtual:
+        using Utilities::AsciiDataBoundary<dim>::initialize;
+
         /**
          * Return the initial temperature as a function of position.
          */
@@ -71,23 +84,14 @@ namespace aspect
         void parse_parameters (ParameterHandler &prm);
 
       private:
-        std::vector<double>  latitudes_iso;
-        std::vector<double>  longitudes_iso;
-        std::vector<double>  depths_iso;
-        std::string isotherm_file_name;
-        std::string data_directory;
+
         double isotherm_temperature;
         double surface_temperature;
         double temperature_gradient;
-        double delta;
+        types::boundary_id surface_boundary_id;
 
-        /**
-         * A function that returns the isotherm depth for a given position.
-         */
-        double
-        get_isotherm_depth (const double latitude,
-                            const double longitude) const;
     };
   }
 }
+#endif
 
