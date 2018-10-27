@@ -108,7 +108,8 @@ namespace aspect
         particles,
         static_field,
         fem_melt_field,
-        prescribed_field
+        prescribed_field,
+        prescribed_field_with_diffusion
       };
     };
 
@@ -318,6 +319,7 @@ namespace aspect
     double                         maximum_relative_increase_time_step;
     double                         reaction_time_step;
     unsigned int                   reaction_steps_per_advection_step;
+    double                         diffusion_length_scale;
     bool                           use_artificial_viscosity_smoothing;
     bool                           use_conduction_timestep;
     bool                           convert_to_years;

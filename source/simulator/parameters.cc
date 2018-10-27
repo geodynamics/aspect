@@ -355,13 +355,13 @@ namespace aspect
                            "not converge and return an error message pointing out that the user didn't allow "
                            "a sufficiently large number of iterations for the iterative solver to converge.");
 
-        prm.declare_entry("GMRES solver restart length", "50",
-                          Patterns::Integer(1),
-                          "This is the number of iterations that define the GMRES solver restart length. "
-                          "Increasing this parameter helps with convergence issues arising from high localized "
-                          "viscosity jumps in the domain. Be aware that increasing this number increases the "
-                          "memory usage of the Stokes solver, and makes individual Stokes iterations more "
-                          "expensive.");
+        prm.declare_entry ("GMRES solver restart length", "50",
+                           Patterns::Integer(1),
+                           "This is the number of iterations that define the GMRES solver restart length. "
+                           "Increasing this parameter helps with convergence issues arising from high localized "
+                           "viscosity jumps in the domain. Be aware that increasing this number increases the "
+                           "memory usage of the Stokes solver, and makes individual Stokes iterations more "
+                           "expensive.");
 
         prm.declare_entry ("Linear solver A block tolerance", "1e-2",
                            Patterns::Double(0,1),
@@ -468,6 +468,18 @@ namespace aspect
                            "this criterion and the ``Reaction time step'', whichever yields the "
                            "smaller time step. "
                            "Units: none.");
+      }
+      prm.leave_subsection ();
+      prm.enter_subsection ("Diffusion solver parameters");
+      {
+        prm.declare_entry ("Diffusion length scale", "1.e4",
+                           Patterns::Double (0),
+                           "Set a length scale for the diffusion of compositional fields if the "
+                           "``prescribed field with diffusion'' method is selected for a field. "
+                           "More precisely, this length scale represents the square root of the "
+                           "product of diffusivity and time in the diffusion equation, and controls "
+                           "the distance over which features are diffused."
+                           "Units: m.");
       }
       prm.leave_subsection ();
     }
@@ -965,7 +977,7 @@ namespace aspect
                          Patterns::List(Patterns::Anything()),
                          "A user-defined name for each of the compositional fields requested.");
       prm.declare_entry ("Compositional field methods", "",
-                         Patterns::List (Patterns::Selection("field|particles|static|melt field|prescribed field")),
+                         Patterns::List (Patterns::Selection("field|particles|static|melt field|prescribed field|prescribed field with diffusion")),
                          "A comma separated list denoting the solution method of each "
                          "compositional field. Each entry of the list must be "
                          "one of the currently implemented field types: "
@@ -1011,6 +1023,13 @@ namespace aspect
                          "model output, called the `PrescribedFieldOutputs' is interpolated "
                          "onto the field. This field does not change otherwise, it is not "
                          "advected with the flow."
+                         "\n"
+                         "\\item ``prescribed field with diffusion'': If a compositional field is "
+                         "marked this way, the value of a specific additional material model output, "
+                         "called the `PrescribedFieldOutputs' is interpolated onto the field, as in "
+                         "the ``prescribed field'' method. Afterwards, the field is diffused based on "
+                         "a solver parameter, the diffusion length scale. The field is not advected "
+                         "with the flow."
                          "\\end{itemize}");
       prm.declare_entry ("Mapped particle properties", "",
                          Patterns::Map (Patterns::Anything(),
@@ -1157,6 +1176,11 @@ namespace aspect
         if (convert_to_years == true)
           reaction_time_step *= year_in_seconds;
         reaction_steps_per_advection_step = prm.get_integer ("Reaction time steps per advection step");
+      }
+      prm.leave_subsection ();
+      prm.enter_subsection ("Diffusion solver parameters");
+      {
+        diffusion_length_scale = prm.get_double("Diffusion length scale");
       }
       prm.leave_subsection ();
     }
@@ -1531,6 +1555,8 @@ namespace aspect
             compositional_field_methods[i] = AdvectionFieldMethod::fem_melt_field;
           else if (x_compositional_field_methods[i] == "prescribed field")
             compositional_field_methods[i] = AdvectionFieldMethod::prescribed_field;
+          else if (x_compositional_field_methods[i] == "prescribed field with diffusion")
+            compositional_field_methods[i] = AdvectionFieldMethod::prescribed_field_with_diffusion;
           else
             AssertThrow(false,ExcNotImplemented());
         }
@@ -1542,6 +1568,9 @@ namespace aspect
                                  "transport is used in the simulation."));
 
       if (std::find(compositional_field_methods.begin(), compositional_field_methods.end(), AdvectionFieldMethod::prescribed_field)
+          != compositional_field_methods.end()
+          ||
+          std::find(compositional_field_methods.begin(), compositional_field_methods.end(), AdvectionFieldMethod::prescribed_field_with_diffusion)
           != compositional_field_methods.end())
         AssertThrow (!this->use_discontinuous_composition_discretization,
                      ExcMessage ("The advection method 'prescribed field' has not yet been tested with "
