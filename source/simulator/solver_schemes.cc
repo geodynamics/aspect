@@ -183,7 +183,7 @@ namespace aspect
               // if this is a prescribed field with diffusion, we first have to copy the material model
               // outputs into the prescribed field before we assemle and solve the equation
               if (method == Parameters<dim>::AdvectionFieldMethod::prescribed_field_with_diffusion)
-                interpolate_material_output_into_fields(c);
+                interpolate_material_output_into_field(c);
 
               assemble_advection_system (adv_field);
 
@@ -207,7 +207,7 @@ namespace aspect
 
             case Parameters<dim>::AdvectionFieldMethod::prescribed_field:
             {
-              interpolate_material_output_into_fields(c);
+              interpolate_material_output_into_field(c);
 
               // Call the signal in case the user wants to do something with the variable:
               SolverControl dummy;

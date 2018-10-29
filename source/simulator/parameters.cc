@@ -1028,8 +1028,12 @@ namespace aspect
                          "marked this way, the value of a specific additional material model output, "
                          "called the `PrescribedFieldOutputs' is interpolated onto the field, as in "
                          "the ``prescribed field'' method. Afterwards, the field is diffused based on "
-                         "a solver parameter, the diffusion length scale. The field is not advected "
-                         "with the flow."
+                         "a solver parameter, the diffusion length scale, smoothing the field. "
+                         "Specifically, the field is updated following the equation "
+                         "$C_\\text{smoothed} = C\\text{prescribed} + \\nabla \\cdot l^2 \\nabla C\\text{prescribed}$, "
+                         "where $l$ is the diffusion length scale. Note that this means that the amount "
+                         "of diffusion is independent of the time step size, and that the field is not "
+                         "advected with the flow."
                          "\\end{itemize}");
       prm.declare_entry ("Mapped particle properties", "",
                          Patterns::Map (Patterns::Anything(),

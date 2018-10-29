@@ -1726,7 +1726,7 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::interpolate_material_output_into_fields (const unsigned int c)
+  void Simulator<dim>::interpolate_material_output_into_field (const unsigned int c)
   {
     // we need some temporary vectors to store our updates to composition in
     // before we copy them over to the solution vector in the end
@@ -2341,7 +2341,7 @@ namespace aspect
   template void Simulator<dim>::interpolate_onto_velocity_system(const TensorFunction<1,dim> &func, LinearAlgebra::Vector &vec);\
   template void Simulator<dim>::apply_limiter_to_dg_solutions(const AdvectionField &advection_field); \
   template void Simulator<dim>::compute_reactions(); \
-  template void Simulator<dim>::interpolate_material_output_into_fields(const unsigned int c); \
+  template void Simulator<dim>::interpolate_material_output_into_field(const unsigned int c); \
   template void Simulator<dim>::check_consistency_of_formulation(); \
   template void Simulator<dim>::replace_outflow_boundary_ids(const unsigned int boundary_id_offset); \
   template void Simulator<dim>::restore_outflow_boundary_ids(const unsigned int boundary_id_offset); \

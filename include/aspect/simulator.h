@@ -1150,7 +1150,7 @@ namespace aspect
 
       /**
        * Interpolate material model outputs onto a compositional field. For the field
-       * whose index is given in the input argument compositional_index, this function
+       * whose index is given in the @p compositional_index, this function
        * interpolates additional material model outputs called 'PrescribedFieldOutputs'
        * and copies these values into the solution vector.
        * This is useful for fields that use the 'prescribed field' compositional field
@@ -1163,7 +1163,7 @@ namespace aspect
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
        */
-      void interpolate_material_output_into_fields (const unsigned int compositional_index);
+      void interpolate_material_output_into_field (const unsigned int compositional_index);
 
 
       /**
