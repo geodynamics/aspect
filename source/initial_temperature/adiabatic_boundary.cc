@@ -140,7 +140,7 @@ namespace aspect
       /**
        * Read data from disk and distribute among processes
        */
-      std::istringstream in(Utilities::read_and_distribute_file_content(filename, this->get_mpi_communicator()));
+      std::istringstream in(Utilities::read_and_distribute_file_content(filename, this->get_mpi_communicator(), this->get_parameters().read_from_url));
 
       /**
        * Reading data lines.

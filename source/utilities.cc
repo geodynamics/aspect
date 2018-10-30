@@ -24,6 +24,7 @@
 #include <D4Connect.h>
 #include <Connect.h>
 #include <Response.h>
+#include <Array.h>
 
 #include <array>
 #include <deal.II/base/point.h>
@@ -878,6 +879,7 @@ namespace aspect
 									 bool readUrl)
     {
       std::string data_string;
+      std::stringstream urlString;
 
       if (Utilities::MPI::this_mpi_process(comm) == 0)
         {
@@ -888,18 +890,92 @@ namespace aspect
           //Check to see if the prm file will be reading data from the disk or
 		// from a provided URL
 		if (readUrl) {
-			std::cout << "TESTING THE READ FROM URL == true" << std::endl;
+			std::cout << "TESTING THE READ FROM URL == true <<<<<<<< file: " << filename << std::endl;
 
 			libdap::Connect *url = 0;
 			url = new libdap::Connect(filename);
-			//url->request_data();
+			libdap::BaseTypeFactory factory;
+			libdap::DataDDS dds(&factory);
 
-			cout << "Data gathered from the url:";
+			url->request_data(dds, "");
 
+
+			//Array to store the url data
+			libdap::Array *urlArray;
+			libdap::Array *urlData;
+
+			//Vectors that will hold the different arrays stored in urlData
+			std::vector<std::string> lat, lon, thickness;
+
+			int arrayNum = 0;
+
+
+			//Check dds values to make sure the arrays are of the same length and of type string
+			for (libdap::DDS::Vars_iter i = dds.var_begin(); i != dds.var_end(); i++) {
+			        libdap::BaseType *btp = *i;
+			        if ((*i)->type() == libdap::dods_array_c) {
+			            urlArray = static_cast <libdap::Array *>(btp);
+
+			            if (urlArray->var() != NULL && urlArray->var()->type() == libdap::dods_str_c) {
+							urlData = static_cast <libdap::Array *>(btp);
+
+							//The url Array contains a seperate array for each column of data.
+							// This will put each of these individual arrays into its own vector.
+							//TODO: This is too specific and needs to be generalized so that
+							//		data sets with more or less columns can be processed.
+							if (arrayNum == 0)
+								urlData->value(lat);
+							else if (arrayNum == 1)
+								urlData->value(lon);
+							else if (arrayNum == 2)
+								urlData->value(thickness);
+
+							arrayNum++;
+						}
+						else {
+							AssertThrow (false,
+							ExcMessage (std::string("Error when reading from url: ") + filename +
+									" maybe it was not of the correct type?"));
+						}
+
+			        }
+			        else {
+			        		AssertThrow (false,
+			        	    ExcMessage (std::string("Error when reading from url: ") + filename +
+			        	    		" maybe it was not of the correct type?"));
+			        }
+			    }
+
+
+
+			//If all of the arrays are the same length, process the data from the url
+			if (lat.size() == lon.size() && lon.size() == thickness.size()) {
+				for (int i = 0; i < lat.size(); i++) {
+					urlString << lat[i];
+					urlString << " ";
+					urlString << lon[i];
+					urlString << " ";
+					urlString << thickness[i];
+					urlString << "\n";
+				}
+			}
+			else {
+				cout << "Columns gathered from the url are not the same length" << endl;
+			}
+
+			std::string tester;
+			tester = urlString.str();
+
+			//--May need a second dds
+			//url->request_data(dds, "");
+
+
+  	  	  data_string = urlString.str();
+  	  	  filesize = data_string.size();
 		}
 		else
 		{
-		  std::cout << "TESTING THE READ FROM URL == false" << std::endl;
+		  std::cout << "TESTING THE READ FROM URL == false <<<<<<<< file: " << filename << std::endl;
 
           std::ifstream filestream(filename.c_str());
 
@@ -928,14 +1004,15 @@ namespace aspect
               return data_string; // never reached
             }
 
+
+
           data_string = datastream.str();
           filesize = data_string.size();
-
-          // Distribute data_size and data across processes
-          MPI_Bcast(&filesize,1,MPI_UNSIGNED,0,comm);
-          MPI_Bcast(&data_string[0],filesize,MPI_CHAR,0,comm);
-
           }
+
+		// Distribute data_size and data across processes
+		MPI_Bcast(&filesize,1,MPI_UNSIGNED,0,comm);
+		MPI_Bcast(&data_string[0],filesize,MPI_CHAR,0,comm);
         }
       else
         {
