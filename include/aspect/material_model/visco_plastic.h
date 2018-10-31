@@ -175,19 +175,8 @@ namespace aspect
 
         /**
          * Enumeration for selecting which viscosity averaging scheme to use.
-         * Select between harmonic, arithmetic, geometric, and
-         * maximum_composition. The max composition scheme simply uses the
-         * viscosity of whichever field has the highest volume fraction.
-         * For each quadrature point, averaging is conducted over the
-         * N compositional fields plus the background field.
          */
-        enum averaging_scheme
-        {
-          harmonic,
-          arithmetic,
-          geometric,
-          maximum_composition
-        } viscosity_averaging;
+        CompositionalAveragingOperation viscosity_averaging;
 
         /**
          * Enumeration for selecting which type of viscous flow law to use.
@@ -210,9 +199,6 @@ namespace aspect
           drucker_prager
         } yield_mechanism;
 
-        double average_value (const std::vector<double> &volume_fractions,
-                              const std::vector<double> &parameter_values,
-                              const averaging_scheme &average_type) const;
 
         std::pair<std::vector<double>, std::vector<bool> >
         calculate_isostrain_viscosities ( const std::vector<double> &volume_fractions,

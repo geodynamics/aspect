@@ -928,6 +928,42 @@ namespace aspect
     compute_volume_fractions(const std::vector<double> &compositional_fields,
                              const ComponentMask &field_mask = ComponentMask());
 
+
+    /**
+     * For multicomponent material models:
+     * Enumeration for selecting which averaging scheme to use when
+     * averaging the properties of different compositional fields.
+     * Select between harmonic, arithmetic, geometric, and
+     * maximum_composition. The max composition scheme simply uses the
+     * viscosity of whichever field has the highest volume fraction.
+     */
+    enum CompositionalAveragingOperation
+    {
+      harmonic,
+      arithmetic,
+      geometric,
+      maximum_composition
+    };
+
+    /**
+     * For multicomponent material models:
+     * Material models compute output quantities such as the viscosity, the
+     * density, etc. For some models, these values depend strongly on the
+     * composition, and more than one compositional field might have nonzero
+     * values at a given quadrature point. This means that properties have to
+     * be averaged based on the fractions of each compositional field present.
+     * This function performs this type of averaging, and allows it to choose
+     * between harmonic, arithmetic and geometric averaging or simply selecting
+     * the material property of the compositional field with the largest volume
+     * fraction. For each quadrature point, averaging is conducted over the
+     * compositional fields given in @p volume_fractions, plus an additional
+     * background field in case the composition does not add up to 1.
+     */
+    double average_value (const std::vector<double> &volume_fractions,
+                          const std::vector<double> &parameter_values,
+                          const CompositionalAveragingOperation &average_type);
+
+
     /**
      * A base class for parameterizations of material models. Classes derived
      * from this class will need to implement functions that provide material

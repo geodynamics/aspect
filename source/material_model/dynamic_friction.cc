@@ -33,9 +33,8 @@ namespace aspect
     template <int dim>
     const std::vector<double>
     DynamicFriction<dim>::
-    compute_viscosities(
-      const double pressure,
-      const SymmetricTensor<2,dim> &strain_rate) const
+    compute_viscosities(const double pressure,
+                        const SymmetricTensor<2,dim> &strain_rate) const
     {
 
       std::vector<double> viscosities( mu_s.size());
@@ -97,53 +96,6 @@ namespace aspect
       return viscosities;
     }
 
-    template <int dim>
-    double
-    DynamicFriction<dim>::
-    average_value ( const std::vector<double> &volume_fractions,
-                    const std::vector<double> &parameter_values,
-                    const enum AveragingScheme &average_type) const
-    {
-      double averaged_parameter = 0.0;
-
-      switch (average_type)
-        {
-          case arithmetic:
-          {
-            for (unsigned int i=0; i< volume_fractions.size(); ++i)
-              averaged_parameter += volume_fractions[i]*parameter_values[i];
-            break;
-          }
-          case harmonic:
-          {
-            for (unsigned int i=0; i< volume_fractions.size(); ++i)
-              averaged_parameter += volume_fractions[i]/(parameter_values[i]);
-            averaged_parameter = 1.0/averaged_parameter;
-            break;
-          }
-          case geometric:
-          {
-            for (unsigned int i=0; i < volume_fractions.size(); ++i)
-              averaged_parameter += volume_fractions[i]*std::log(parameter_values[i]);
-            averaged_parameter = std::exp(averaged_parameter);
-            break;
-          }
-          case maximum_composition:
-          {
-            const unsigned int i = (unsigned int)(std::max_element( volume_fractions.begin(),
-                                                                    volume_fractions.end() )
-                                                  - volume_fractions.begin());
-            averaged_parameter = parameter_values[i];
-            break;
-          }
-          default:
-          {
-            AssertThrow( false, ExcNotImplemented() );
-            break;
-          }
-        }
-      return averaged_parameter;
-    }
 
 
     template <int dim>
@@ -161,15 +113,15 @@ namespace aspect
           if (in.strain_rate.size() > 0)
             {
               const std::vector<double> viscosities = compute_viscosities(in.pressure[i], in.strain_rate[i]);
-              out.viscosities[i] = average_value ( volume_fractions, viscosities, viscosity_averaging);
+              out.viscosities[i] = average_value (volume_fractions, viscosities, viscosity_averaging);
             }
-          out.specific_heat[i] = average_value ( volume_fractions, specific_heats, arithmetic);
+          out.specific_heat[i] = average_value (volume_fractions, specific_heats, arithmetic);
 
 
           // Arithmetic averaging of thermal conductivities
           // This may not be strictly the most reasonable thing, but for most Earth materials we hope
           // that they do not vary so much that it is a big problem.
-          out.thermal_conductivities[i] = average_value ( volume_fractions, thermal_conductivities, arithmetic);
+          out.thermal_conductivities[i] = average_value (volume_fractions, thermal_conductivities, arithmetic);
 
           double density = 0.0;
           for (unsigned int j=0; j < volume_fractions.size(); ++j)
@@ -182,7 +134,7 @@ namespace aspect
           out.densities[i] = density;
 
 
-          out.thermal_expansion_coefficients[i] = average_value ( volume_fractions, thermal_expansivities, arithmetic);
+          out.thermal_expansion_coefficients[i] = average_value (volume_fractions, thermal_expansivities, arithmetic);
 
 
           // Compressibility at the given positions.
