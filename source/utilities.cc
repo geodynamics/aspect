@@ -887,7 +887,7 @@ namespace aspect
           unsigned int filesize = numbers::invalid_unsigned_int;
 
 
-          //Check to see if the prm file will be reading data from the disk or
+         //Check to see if the prm file will be reading data from the disk or
 		// from a provided URL
 		if (readUrl) {
 			std::cout << "TESTING THE READ FROM URL == true <<<<<<<< file: " << filename << std::endl;
@@ -902,12 +902,11 @@ namespace aspect
 
 			//Array to store the url data
 			libdap::Array *urlArray;
-			libdap::Array *urlData;
 
-			//Vectors that will hold the different arrays stored in urlData
-			std::vector<std::string> lat, lon, thickness;
-
-			int arrayNum = 0;
+			//Temporary vector that will hold the different arrays stored in urlArray
+			std::vector<std::string> tmp;
+			//Vector that will hold the arrays and the values within those arrays
+			std::vector<std::vector<std::string>> columns;
 
 
 			//Check dds values to make sure the arrays are of the same length and of type string
@@ -915,22 +914,14 @@ namespace aspect
 			        libdap::BaseType *btp = *i;
 			        if ((*i)->type() == libdap::dods_array_c) {
 			            urlArray = static_cast <libdap::Array *>(btp);
-
 			            if (urlArray->var() != NULL && urlArray->var()->type() == libdap::dods_str_c) {
-							urlData = static_cast <libdap::Array *>(btp);
+							urlArray = static_cast <libdap::Array *>(btp);
 
 							//The url Array contains a seperate array for each column of data.
 							// This will put each of these individual arrays into its own vector.
-							//TODO: This is too specific and needs to be generalized so that
-							//		data sets with more or less columns can be processed.
-							if (arrayNum == 0)
-								urlData->value(lat);
-							else if (arrayNum == 1)
-								urlData->value(lon);
-							else if (arrayNum == 2)
-								urlData->value(thickness);
+							urlArray->value(tmp);
+							columns.push_back(tmp);
 
-							arrayNum++;
 						}
 						else {
 							AssertThrow (false,
@@ -947,24 +938,18 @@ namespace aspect
 			    }
 
 
-
-			//If all of the arrays are the same length, process the data from the url
-			if (lat.size() == lon.size() && lon.size() == thickness.size()) {
-				for (int i = 0; i < lat.size(); i++) {
-					urlString << lat[i];
-					urlString << " ";
-					urlString << lon[i];
-					urlString << " ";
-					urlString << thickness[i];
+			//Add the values from the arrays into the stringstream. The values are passed in
+			// per row with a character return added at the end of each row.
+			// TODO: Add a check to make sure that each column is the same size before writing
+			//		 to the stringstream
+				for (int i = 0; i < tmp.size(); i++) {
+					for (int j = 0; j < columns.size(); j++) {
+						urlString << columns[j][i];
+						urlString << " ";
+					}
 					urlString << "\n";
 				}
-			}
-			else {
-				cout << "Columns gathered from the url are not the same length" << endl;
-			}
 
-			std::string tester;
-			tester = urlString.str();
 
 			//--May need a second dds
 			//url->request_data(dds, "");
