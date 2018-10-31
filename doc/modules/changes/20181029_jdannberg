@@ -5,10 +5,5 @@ given as an input parameter. This option can be used by selecting the
 'prescribed field with diffusion' compositional field method in the 
 input file, and allows it to smooth quantities that are computed in 
 the material model.
-Changed: If the 'prescribed field' compositional field method is used 
-for a field, this field will now be solved in the order it is listed
-in in the input file (as is done for all compositional fields) instead 
-of being updated after all of the other fields are solved (the 
-previous behaviour). 
 <br>
 (Juliane Dannberg, 2018/10/29)
