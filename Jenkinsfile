@@ -5,6 +5,10 @@ pipeline {
     docker {
         image 'dealii/dealii:v8.5.1-gcc-mpi-fulldepscandi-debugrelease'
 	label 'has-docker'
+	// We mount /repos into the docker image. This allows us to cache
+	// the git repo by setting "advanced clone behaviors". If the
+	// directory does not exist, this will be ignored.
+	args '-v /repos:/repos:ro'
     }
   }
 
