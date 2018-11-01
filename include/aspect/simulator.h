@@ -1149,10 +1149,12 @@ namespace aspect
 
 
       /**
-       * Interpolate material model outputs onto compositional fields in case the
-       * 'prescribed field' compositional field method is used. For every field that
-       * uses this method, this function interpolates additional material model outputs
-       * called 'PrescribedFieldOutputs' and copies these values into the solution vector.
+       * Interpolate material model outputs onto a compositional field. For the field
+       * whose index is given in the @p compositional_index, this function
+       * interpolates additional material model outputs called 'PrescribedFieldOutputs'
+       * and copies these values into the solution vector.
+       * This is useful for fields that use the 'prescribed field' compositional field
+       * method.
        *
        * This function also updates the old solution vectors with these interpolated
        * values so that this compositional field method can be combined with time-dependent
@@ -1161,7 +1163,7 @@ namespace aspect
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
        */
-      void interpolate_material_output_into_fields ();
+      void interpolate_material_output_into_field (const unsigned int compositional_index);
 
 
       /**

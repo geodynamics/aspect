@@ -178,7 +178,13 @@ namespace aspect
           {
             case Parameters<dim>::AdvectionFieldMethod::fem_field:
             case Parameters<dim>::AdvectionFieldMethod::fem_melt_field:
+            case Parameters<dim>::AdvectionFieldMethod::prescribed_field_with_diffusion:
             {
+              // if this is a prescribed field with diffusion, we first have to copy the material model
+              // outputs into the prescribed field before we assemle and solve the equation
+              if (method == Parameters<dim>::AdvectionFieldMethod::prescribed_field_with_diffusion)
+                interpolate_material_output_into_field(c);
+
               assemble_advection_system (adv_field);
 
               if (compute_initial_residual)
@@ -194,11 +200,25 @@ namespace aspect
             }
 
             case Parameters<dim>::AdvectionFieldMethod::particles:
+            {
               interpolate_particle_properties(adv_field);
               break;
+            }
+
+            case Parameters<dim>::AdvectionFieldMethod::prescribed_field:
+            {
+              interpolate_material_output_into_field(c);
+
+              // Call the signal in case the user wants to do something with the variable:
+              SolverControl dummy;
+              signals.post_advection_solver(*this,
+                                            adv_field.is_temperature(),
+                                            adv_field.compositional_variable,
+                                            dummy);
+              break;
+            }
 
             case Parameters<dim>::AdvectionFieldMethod::static_field:
-            case Parameters<dim>::AdvectionFieldMethod::prescribed_field:
             {
               // Do nothing here, but at least call the signal in case the
               // user wants to do something with the variable:
@@ -214,9 +234,6 @@ namespace aspect
               AssertThrow(false,ExcNotImplemented());
           }
       }
-
-    // Update the prescribed fields *after* we have solved all the other fields
-    interpolate_material_output_into_fields();
 
     // for consistency we update the current linearization point only after we have solved
     // all fields, so that we use the same point in time for every field when solving
