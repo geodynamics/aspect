@@ -110,22 +110,26 @@ namespace aspect
                    const std::vector<double> &parameter_values,
                    const enum CompositionalAveragingOperation &average_type)
     {
+      Assert(volume_fractions.size() == parameter_values.size(),
+             ExcMessage ("The volume fractions and parameter values vectors used for averaging "
+                         "have to have the same length!"));
+
       double averaged_parameter = 0.0;
 
       switch (average_type)
         {
           case arithmetic:
           {
-            for (unsigned int i=0; i< volume_fractions.size(); ++i)
-              averaged_parameter += volume_fractions[i]*parameter_values[i];
+            for (unsigned int i=0; i<volume_fractions.size(); ++i)
+              averaged_parameter += volume_fractions[i] * parameter_values[i];
             break;
           }
           case harmonic:
           {
-            for (unsigned int i=0; i< volume_fractions.size(); ++i)
+            for (unsigned int i=0; i<volume_fractions.size(); ++i)
               {
-                AssertThrow(parameter_values[i] != 0,
-                            ExcMessage ("All values must be greater than 0 during harmonic averaging"));
+                AssertThrow(parameter_values[i] > 0,
+                            ExcMessage ("All parameter values must be greater than 0 for harmonic averaging!"));
                 averaged_parameter += volume_fractions[i]/(parameter_values[i]);
               }
             averaged_parameter = 1.0/averaged_parameter;
@@ -133,8 +137,12 @@ namespace aspect
           }
           case geometric:
           {
-            for (unsigned int i=0; i < volume_fractions.size(); ++i)
-              averaged_parameter += volume_fractions[i]*std::log(parameter_values[i]);
+            for (unsigned int i=0; i<volume_fractions.size(); ++i)
+              {
+                AssertThrow(parameter_values[i] > 0,
+                            ExcMessage ("All parameter values must be greater than 0 for geometric averaging!"));
+                averaged_parameter += volume_fractions[i] * std::log(parameter_values[i]);
+              }
             averaged_parameter = std::exp(averaged_parameter);
             break;
           }
@@ -148,7 +156,7 @@ namespace aspect
           }
           default:
           {
-            AssertThrow( false, ExcNotImplemented() );
+            AssertThrow(false, ExcNotImplemented());
             break;
           }
         }

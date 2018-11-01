@@ -952,12 +952,17 @@ namespace aspect
      * composition, and more than one compositional field might have nonzero
      * values at a given quadrature point. This means that properties have to
      * be averaged based on the fractions of each compositional field present.
-     * This function performs this type of averaging, and allows it to choose
-     * between harmonic, arithmetic and geometric averaging or simply selecting
-     * the material property of the compositional field with the largest volume
-     * fraction. For each quadrature point, averaging is conducted over the
-     * compositional fields given in @p volume_fractions, plus an additional
-     * background field in case the composition does not add up to 1.
+     * This function performs this type of averaging. The averaging is based
+     * on the choice in @p average_type. Averaging is conducted over the
+     * compositional fields given in @p volume_fractions. This means that
+     * @p volume_fractions and @p parameter_values have to have the same size,
+     * which would typically be the number of compositional fields used in the
+     * simulation (with the potential addition of a background field, in case
+     * the composition does not add up to 1). However, one might not want to
+     * average over all fields, as in some cases compositional fields do not
+     * represent a rock type, but other tracked quantities like the finite
+     * strain, so the implementation is independent of the number of entries in
+     * @p volume_fractions.
      */
     double average_value (const std::vector<double> &volume_fractions,
                           const std::vector<double> &parameter_values,
