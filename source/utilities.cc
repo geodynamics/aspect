@@ -890,8 +890,6 @@ namespace aspect
          //Check to see if the prm file will be reading data from the disk or
 		// from a provided URL
 		if (readUrl) {
-			std::cout << "TESTING THE READ FROM URL == true <<<<<<<< file: " << filename << std::endl;
-
 			libdap::Connect *url = 0;
 			url = new libdap::Connect(filename);
 			libdap::BaseTypeFactory factory;
@@ -958,10 +956,9 @@ namespace aspect
   	  	  data_string = urlString.str();
   	  	  filesize = data_string.size();
 		}
+
 		else
 		{
-		  std::cout << "TESTING THE READ FROM URL == false <<<<<<<< file: " << filename << std::endl;
-
           std::ifstream filestream(filename.c_str());
 
           if (!filestream)
@@ -999,6 +996,7 @@ namespace aspect
 		MPI_Bcast(&filesize,1,MPI_UNSIGNED,0,comm);
 		MPI_Bcast(&data_string[0],filesize,MPI_CHAR,0,comm);
         }
+
       else
         {
           // Prepare for receiving data
