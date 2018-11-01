@@ -119,6 +119,22 @@ For more information, see the section in the manual that discusses the general m
 
 
 {\it Possible values:} An integer $n$ such that $0\leq n \leq 2147483647$
+\item {\it Parameter name:} {\tt Maximum first time step}
+\phantomsection\label{parameters:Maximum first time step}
+
+
+\index[prmindex]{Maximum first time step}
+\index[prmindexfull]{Maximum first time step}
+{\it Value:} 5.69e+300
+
+
+{\it Default:} 5.69e+300
+
+
+{\it Description:} Set a maximum time step size for only the first timestep. Generally the time step based on the CFL number should be sufficient, but for complicated models or benchmarking it may be useful to limit the first time step to some value, especially when using the free surface, which needs to settle to prevent instabilities. This should in that case be combined with a value set for ``Maximum relative increase in time step''. The default value is a value so that when converted from years into seconds it equals the largest number representable by a floating point number, implying an unlimited time step. Units: Years or seconds, depending on the ``Use years in output instead of seconds'' parameter.
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
 \item {\it Parameter name:} {\tt Maximum relative increase in time step}
 \phantomsection\label{parameters:Maximum relative increase in time step}
 
@@ -658,6 +674,26 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 \label{parameters:Boundary_20composition_20model}
 
 \begin{itemize}
+\item {\it Parameter name:} {\tt Allow fixed composition on outflow boundaries}
+\phantomsection\label{parameters:Boundary composition model/Allow fixed composition on outflow boundaries}
+
+
+\index[prmindex]{Allow fixed composition on outflow boundaries}
+\index[prmindexfull]{Boundary composition model!Allow fixed composition on outflow boundaries}
+{\it Value:} false for models without melt
+
+
+{\it Default:} false for models without melt
+
+
+{\it Description:} When the composition is fixed on a given boundary as determined by the list of 'Fixed composition boundary indicators', there might be parts of the boundary where material flows out and one may want to prescribe the composition only on those parts of the boundary where there is inflow. This parameter determines if compositions are only prescribed at these inflow parts of the boundary (if false) or everywhere on a given boundary, independent of the flow direction (if true). By default, this parameter is set to false, except in models with melt transport (see below). Note that in this context, `fixed' refers to the fact that these are the boundary indicators where Dirichlet boundary conditions are applied, and does not imply that the boundary composition is time-independent. 
+
+Mathematically speaking, the compositional fields satisfy an advection equation that has no diffusion. For this equation, one can only impose Dirichlet boundary conditions (i.e., prescribe a fixed compositional field value at the boundary) at those boundaries where material flows in. This would correspond to the ``false'' setting of this parameter, which is correspondingly the default. On the other hand, on a finite dimensional discretization such as the one one obtains from the finite element method, it is possible to also prescribe values on outflow boundaries, even though this may make no physical sense. This would then correspond to the ``true'' setting of this parameter.
+
+A warning for models with melt transport: In models with fluid flow, some compositional fields (in particular the porosity) might be transported with the fluid velocity, and would need to set the constraints based on the fluid velocity. However, this is currently not possible, because we reuse the same matrix for all compositional fields, and therefore can not use different constraints for different fields. Consequently, we set this parameter to true by default in models where melt transport is enabled. Be aware that if you change this default setting, you will not use the melt velocity, but the solid velocity to determine on which parts of the boundaries there is outflow.
+
+
+{\it Possible values:} Any one of true, false, false for models without melt
 \item {\it Parameter name:} {\tt Fixed composition boundary indicators}
 \phantomsection\label{parameters:Boundary composition model/Fixed composition boundary indicators}
 
@@ -1392,6 +1428,24 @@ If the function you are describing represents a vector-valued function with mult
 \label{parameters:Boundary_20temperature_20model}
 
 \begin{itemize}
+\item {\it Parameter name:} {\tt Allow fixed temperature on outflow boundaries}
+\phantomsection\label{parameters:Boundary temperature model/Allow fixed temperature on outflow boundaries}
+
+
+\index[prmindex]{Allow fixed temperature on outflow boundaries}
+\index[prmindexfull]{Boundary temperature model!Allow fixed temperature on outflow boundaries}
+{\it Value:} true
+
+
+{\it Default:} true
+
+
+{\it Description:} When the temperature is fixed on a given boundary as determined by the list of 'Fixed temperature boundary indicators', there might be parts of the boundary where material flows out and one may want to prescribe the temperature only on the parts of the boundary where there is inflow. This parameter determines if temperatures are only prescribed at these inflow parts of the boundary (if false) or everywhere on a given boundary, independent of the flow direction (if true).Note that in this context, `fixed' refers to the fact that these are the boundary indicators where Dirichlet boundary conditions are applied, and does not imply that the boundary temperature is time-independent. 
+
+Mathematically speaking, the temperature satisfies an advection-diffusion equation. For this type of equation, one can prescribe the temperature even on outflow boundaries as long as the diffusion coefficient is nonzero. This would correspond to the ``true'' setting of this parameter, which is correspondingly the default. In practice, however, this would only make physical sense if the diffusion coefficient is actually quite large to prevent the creation of a boundary layer. In addition, if there is no diffusion, one can only impose Dirichlet boundary conditions (i.e., prescribe a fixed temperature value at the boundary) at those boundaries where material flows in. This would correspond to the ``false'' setting of this parameter.
+
+
+{\it Possible values:} A boolean value (true or false)
 \item {\it Parameter name:} {\tt Fixed temperature boundary indicators}
 \phantomsection\label{parameters:Boundary temperature model/Fixed temperature boundary indicators}
 
@@ -3299,10 +3353,12 @@ If the function you are describing represents a vector-valued function with mult
 These choices correspond to the following methods by which compositional fields gain their values:\begin{itemize}\item ``field'': If a compositional field is marked with this method, then its values are computed in each time step by advecting along the values of the previous time step using the velocity field, and applying reaction rates to it. In other words, this corresponds to the usual notion of a composition field as mentioned in Section~\ref{sec:compositional}. 
 \item ``particles'': If a compositional field is marked with this method, then its values are obtained in each time step by interpolating the corresponding properties from the particles located on each cell. The time evolution therefore happens because particles move along with the velocity field, and particle properties can react with each other as well. See Section~\ref{sec:particles} for more information about how particles behave.
 \item ``static'': If a compositional field is marked this way, then it does not evolve at all. Its values are simply set to the initial conditions, and will then never change.
-\item ``melt field'': If a compositional field is marked with this method, then its values are computed in each time step by advecting along the values of the previous time step using the melt velocity, and applying reaction rates to it. In other words, this corresponds to the usual notion of a composition field as mentioned in Section~\ref{sec:compositional}, except that it is advected with the melt velocity instead of the solid velocity. This method can only be chosen if melt transport is active in the model.\end{itemize}
+\item ``melt field'': If a compositional field is marked with this method, then its values are computed in each time step by advecting along the values of the previous time step using the melt velocity, and applying reaction rates to it. In other words, this corresponds to the usual notion of a composition field as mentioned in Section~\ref{sec:compositional}, except that it is advected with the melt velocity instead of the solid velocity. This method can only be chosen if melt transport is active in the model.
+\item ``prescribed field'': The value of these fields is determined in each time step from the material model. If a compositional field is marked with this method, then the value of a specific additional material model output, called the `PrescribedFieldOutputs' is interpolated onto the field. This field does not change otherwise, it is not advected with the flow.
+\item ``prescribed field with diffusion'': If a compositional field is marked this way, the value of a specific additional material model output, called the `PrescribedFieldOutputs' is interpolated onto the field, as in the ``prescribed field'' method. Afterwards, the field is diffused based on a solver parameter, the diffusion length scale, smoothing the field. Specifically, the field is updated following the equation $C_\text{smoothed} = C\text{prescribed} + \nabla \cdot l^2 \nabla C\text{prescribed}$, where $l$ is the diffusion length scale. Note that this means that the amount of diffusion is independent of the time step size, and that the field is not advected with the flow.\end{itemize}
 
 
-{\it Possible values:} A list of 0 to 4294967295 elements where each element is [Any one of field, particles, static, melt field]
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [Any one of field, particles, static, melt field, prescribed field, prescribed field with diffusion]
 \item {\it Parameter name:} {\tt List of normalized fields}
 \phantomsection\label{parameters:Compositional fields/List of normalized fields}
 
@@ -17119,6 +17175,28 @@ If the function you are describing represents a vector-valued function with mult
 
 
 {\it Possible values:} Any one of Chebyshev, symmetric Gauss-Seidel
+\end{itemize}
+
+\subsection{Parameters in section \tt Solver parameters/Diffusion solver parameters}
+\label{parameters:Solver_20parameters/Diffusion_20solver_20parameters}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Diffusion length scale}
+\phantomsection\label{parameters:Solver parameters/Diffusion solver parameters/Diffusion length scale}
+
+
+\index[prmindex]{Diffusion length scale}
+\index[prmindexfull]{Solver parameters!Diffusion solver parameters!Diffusion length scale}
+{\it Value:} 1.e4
+
+
+{\it Default:} 1.e4
+
+
+{\it Description:} Set a length scale for the diffusion of compositional fields if the ``prescribed field with diffusion'' method is selected for a field. More precisely, this length scale represents the square root of the product of diffusivity and time in the diffusion equation, and controls the distance over which features are diffused.Units: m.
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
 \end{itemize}
 
 \subsection{Parameters in section \tt Solver parameters/Newton solver parameters}
