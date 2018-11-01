@@ -2905,7 +2905,7 @@ namespace aspect
                         const double background_density,
                         const unsigned int n_compositional_fields)
             :
-            Function<dim>(dim+2),
+            Function<dim>(dim+2+n_compositional_fields),
             eta_B_(eta_B),
             background_density(background_density),
             n_compositional_fields(n_compositional_fields) {}
