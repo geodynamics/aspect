@@ -1175,6 +1175,24 @@ namespace aspect
                          ExcMessage("If adiabatic heating is enabled you should not add another adiabatic gradient"
                                     "to the temperature for computing the viscosity, because the ambient"
                                     "temperature profile already includes the adiabatic gradient."));
+
+          // Currently, it only makes sense to use this material model with strain weakening when the
+          // nonlinear solver scheme does a single advection iteration. More than one nonlinear advection
+          // iteration will result in the incorrect value of strain being used in the material model, as 
+          // the compositional fields representing strain are updated through the reaction rate terms.
+          if (use_strain_weakening)
+            {
+              AssertThrow((this->get_parameters().nonlinear_solver ==
+                           Parameters<dim>::NonlinearSolver::single_Advection_single_Stokes
+                           ||
+                           this->get_parameters().nonlinear_solver ==
+                           Parameters<dim>::NonlinearSolver::single_Advection_iterated_Stokes),
+                          ExcMessage("The material model will only work with the nonlinear "
+                                     "solver schemes 'single Advection, single Stokes' and "
+                                     "'single Advection, iterated Stokes' when strain "
+                                     "weakening is enabled"));
+            }
+
         }
         prm.leave_subsection();
       }
