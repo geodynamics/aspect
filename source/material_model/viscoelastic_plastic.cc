@@ -604,21 +604,15 @@ namespace aspect
             ExcNotImplemented();
 
           // It does not make sense to use this material with the 'no Advection, iterated Stokes'
-          // or 'single Advection, no Stokes' solver schemes.
+          // 'single Advection, no Stokes', 'iterated Advection and Stokes' or 'iterated Advection
+          // and Newton Stokes' solver schemes.
           AssertThrow((this->get_parameters().nonlinear_solver ==
                        Parameters<dim>::NonlinearSolver::single_Advection_single_Stokes
                        ||
                        this->get_parameters().nonlinear_solver ==
-                       Parameters<dim>::NonlinearSolver::single_Advection_iterated_Stokes
-                       ||
-                       this->get_parameters().nonlinear_solver ==
-                       Parameters<dim>::NonlinearSolver::iterated_Advection_and_Stokes
-                       ||
-                       this->get_parameters().nonlinear_solver ==
-                       Parameters<dim>::NonlinearSolver::iterated_Advection_and_Newton_Stokes),
+                       Parameters<dim>::NonlinearSolver::single_Advection_iterated_Stokes),
                       ExcMessage("The material model will only work with the solver schemes "
-                                 "'single Advection, single Stokes', 'single Advection, iterated Stokes' "
-                                 "and 'iterated Advection and Netwon Stokes'."));
+                                 "'single Advection, single Stokes' and 'single Advection, iterated Stokes'"));
 
           // Functionality to average the additional RHS terms over the cell is not implemented.
           // This enforces that the variable 'Material averaging' is set to 'none'.
