@@ -32,9 +32,10 @@ namespace aspect
   {
 
     /**
-     * A postprocessor that computes gravity and gravity potential for a set of points
-     * (e.g. satellites) in or above the model surface for a user-defined range of latitudes,
-     * longitudes and radius.
+     * A postprocessor that computes gravity, gravity anomalies, gravity potential and
+     * gravity gradients for a set of points (e.g. satellites) in or above the model
+     * surface for a user-defined range of latitudes, longitudes and radius, or a list
+     * of point coordinates.
 
      * @ingroup Postprocessing
      */
@@ -77,54 +78,57 @@ namespace aspect
         /**
          * Gravity may be calculated for a sets of points along the radius (e.g. depth
          * profile) between a minimum and maximum radius. Number of points along the radius
-         * is specified with number_points_radius.
+         * is specified with n_points_radius.
          */
-        double number_points_radius;
+        double n_points_radius;
 
         /**
          * Gravity may be calculated for a sets of points along the longitude (e.g. satellite
          * mapping) between a minimum and maximum longitude. Number of points along the
-         * longitude is specified with number_points_longitude.
+         * longitude is specified with n_points_longitude.
          */
-        double number_points_longitude;
+        double n_points_longitude;
 
         /**
          * Gravity may be calculated for a sets of points along the latitude (e.g. satellite
          * mapping) between a minimum and maximum latitude. Number of points along the
-         * latitude is specified with number_points_latitude.
+         * latitude is specified with n_points_latitude.
          */
-        double number_points_latitude;
+        double n_points_latitude;
 
         /**
-         * Minimum radius may be defined in or outside the model.
+         * Minimum radius for the depth range in case of the map sampling scheme. Presribe 
+         * a minimum radius for a sampling coverage at a specific height. May be defined 
+         * in or outside the model. 
          */
         double minimum_radius;
 
         /**
-         * Maximum radius for depth-profile. Can be defined in or outside the model.
-         * No need to specify maximum_radius if number_points_radius is 1;
+         * Maximum radius for depth-profile in case of the map sampling scheme. May be 
+         * defined in or outside the model. No need to specify maximum_radius if 
+         * n_points_radius is 1.
          */
         double maximum_radius;
 
         /**
-         * Minimum longitude.
+         * Minimum longitude for longitude range in case of the map sampling scheme.
          */
         double minimum_longitude;
 
         /**
-         * Maximum longitude.
-         * No need to specify maximum_longitude if number_points_longitude is 1;
+         * Maximum longitude for the longitude range in case of the map sampling scheme.
+         * No need to specify maximum_longitude if n_points_longitude is 1.
          */
         double maximum_longitude;
 
         /**
-         * Minimum latitude
+         * Minimum latitude for the latitude range in case of the map sampling scheme.
          */
         double minimum_latitude;
 
         /**
-         * Maximum latitude
-         * No need to specify maximum_latitude if number_points_latitude is 1;
+         * Maximum latitude for the latitude range in case of the map sampling scheme.
+         * No need to specify maximum_latitude if n_points_latitude is 1.
          */
         double maximum_latitude;
 
@@ -133,6 +137,34 @@ namespace aspect
          * gravity anomalies;
          */
         double reference_density;
+
+        /**
+         * Specify the sampling scheme determining if gravity calculation is performed
+         * for a map of points or a list of points.
+         */
+        enum SamplingScheme
+        {
+          map,
+          list
+        } sampling_scheme;
+
+        /**
+         * List of radius coordinates for the list sampling scheme. Must be in order
+         * with the lists of longitude and latitude.
+         */
+        std::vector<double> radius_list;
+ 
+        /**
+         * List of longitude coordinates for the list sampling scheme. Must be in order
+         * with the lists of radius and latitude.
+         */
+        std::vector<double> longitude_list;
+
+        /**
+         * List of latitude coordinates for the list sampling scheme. Must be in order
+         * with the lists of radius and longitude.
+         */
+        std::vector<double> latitude_list;
 
     };
   }
