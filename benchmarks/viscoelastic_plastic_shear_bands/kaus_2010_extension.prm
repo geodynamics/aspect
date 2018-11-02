@@ -36,11 +36,11 @@ subsection Solver parameters
   subsection Stokes solver parameters
     set Use direct solver for Stokes system = false
     set Linear solver tolerance = 1e-7
-    set Number of cheap Stokes solver steps = 2000
+    set Number of cheap Stokes solver steps = 0
   end
 end
 
-# Model geometry (64x16 km, 0.4 km spacing)
+# Model geometry (40x10 km, 0.4 km spacing)
 subsection Geometry model
   set Model name = box
 
@@ -77,14 +77,14 @@ subsection Free surface
 end
 
 # Velocity boundary conditions
-# The imposed velocity produces a background strain-rate of 1e-15.
+# The imposed velocity produces a background strain-rate of 2e-15.
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = bottom
   set Prescribed velocity boundary indicators = left x: function, right x:function
   subsection Function
     set Variable names      = x,y
     set Function constants  = cm=0.01, year=1, vel=0.12616
-    set Function expression = if (x<32e3 , -vel*cm/year, vel*cm/year); 0;
+    set Function expression = if (x<20e3 , -vel*cm/year, vel*cm/year); 0;
   end
 end
 
@@ -101,7 +101,7 @@ subsection Initial composition model
     set Variable names      = x,y
     set Function constants  =
     set Function expression = 0; 0; 0; \
-                              if (y<=0.8e3 && x>=19.2e3 && x<=20.8e3, 1, 0);  
+                              if (y<=0.4e3 && x>=19.6e3 && x<=20.4e3, 1, 0);  
   end
 end
 
