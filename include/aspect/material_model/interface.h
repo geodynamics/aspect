@@ -23,6 +23,8 @@
 
 #include <aspect/global.h>
 #include <aspect/plugins.h>
+#include <aspect/material_model/utilities.h>
+
 #include <deal.II/base/point.h>
 #include <deal.II/base/quadrature.h>
 #include <deal.II/base/symmetric_tensor.h>
@@ -908,65 +910,6 @@ namespace aspect
         std::vector<Tensor<2,dim> > elastic_force;
     };
 
-
-    /**
-     * For multicomponent material models: Given a vector of of compositional
-     * fields of length N, this function returns a vector of volume fractions
-     * of length N+1, corresponding to the volume fraction of a ``background
-     * material'' as the first entry, and volume fractions for each of the input
-     * fields as the following entries. The returned vector will sum to one.
-     * If the sum of the compositional_fields is greater than
-     * one, we assume that there is no background mantle (i.e., that field value
-     * is zero). Otherwise, the difference between the sum of the compositional
-     * fields and 1.0 is assumed to be the amount of background mantle.
-     * Optionally, one can input a component mask that determines which of the
-     * compositional fields to use during the computation (e.g. because
-     * some fields contain non-volumetric quantities like strain,
-     * porosity, or trace elements). By default, all fields are included.
-     */
-    std::vector<double>
-    compute_volume_fractions(const std::vector<double> &compositional_fields,
-                             const ComponentMask &field_mask = ComponentMask());
-
-
-    /**
-     * For multicomponent material models:
-     * Enumeration for selecting which averaging scheme to use when
-     * averaging the properties of different compositional fields.
-     * Select between harmonic, arithmetic, geometric, and
-     * maximum_composition. The max composition scheme simply uses the
-     * viscosity of whichever field has the highest volume fraction.
-     */
-    enum CompositionalAveragingOperation
-    {
-      harmonic,
-      arithmetic,
-      geometric,
-      maximum_composition
-    };
-
-    /**
-     * For multicomponent material models:
-     * Material models compute output quantities such as the viscosity, the
-     * density, etc. For some models, these values depend strongly on the
-     * composition, and more than one compositional field might have nonzero
-     * values at a given quadrature point. This means that properties have to
-     * be averaged based on the fractions of each compositional field present.
-     * This function performs this type of averaging. The averaging is based
-     * on the choice in @p average_type. Averaging is conducted over the
-     * compositional fields given in @p volume_fractions. This means that
-     * @p volume_fractions and @p parameter_values have to have the same size,
-     * which would typically be the number of compositional fields used in the
-     * simulation (with the potential addition of a background field, in case
-     * the composition does not add up to 1). However, one might not want to
-     * average over all fields, as in some cases compositional fields do not
-     * represent a rock type, but other tracked quantities like the finite
-     * strain, so the implementation is independent of the number of entries in
-     * @p volume_fractions.
-     */
-    double average_value (const std::vector<double> &volume_fractions,
-                          const std::vector<double> &parameter_values,
-                          const CompositionalAveragingOperation &average_type);
 
 
     /**

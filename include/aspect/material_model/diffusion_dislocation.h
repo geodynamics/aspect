@@ -130,7 +130,7 @@ namespace aspect
         std::vector<double> densities;
         std::vector<double> thermal_expansivities;
 
-        CompositionalAveragingOperation viscosity_averaging;
+        MaterialUtilities::CompositionalAveragingOperation viscosity_averaging;
 
         std::vector<double>
         calculate_isostrain_viscosities ( const std::vector<double> &volume_fractions,

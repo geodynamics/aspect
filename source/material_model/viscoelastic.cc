@@ -73,7 +73,7 @@ namespace aspect
     Viscoelastic<dim>::
     calculate_average_vector (const std::vector<double> &composition,
                               const std::vector<double> &parameter_values,
-                              const CompositionalAveragingOperation &average_type) const
+                              const MaterialUtilities::CompositionalAveragingOperation &average_type) const
     {
       // Store which components to exclude during volume fraction computation.
       ComponentMask composition_mask(this->n_compositional_fields(), true);
@@ -81,8 +81,8 @@ namespace aspect
       // assume these fields are listed first
       for (unsigned int i=0; i < SymmetricTensor<2,dim>::n_independent_components; ++i)
         composition_mask.set(i, false);
-      const std::vector<double> volume_fractions = compute_volume_fractions(composition, composition_mask);
-      const double averaged_vector = average_value(volume_fractions, parameter_values, average_type);
+      const std::vector<double> volume_fractions = MaterialUtilities::compute_volume_fractions(composition, composition_mask);
+      const double averaged_vector = MaterialUtilities::average_value(volume_fractions, parameter_values, average_type);
       return averaged_vector;
     }
 
@@ -136,14 +136,14 @@ namespace aspect
         {
           const double temperature = in.temperature[i];
           const std::vector<double> composition = in.composition[i];
-          const std::vector<double> volume_fractions = compute_volume_fractions(composition, composition_mask);
+          const std::vector<double> volume_fractions = MaterialUtilities::compute_volume_fractions(composition, composition_mask);
 
-          out.specific_heat[i] = average_value(volume_fractions, specific_heats, arithmetic);
+          out.specific_heat[i] = MaterialUtilities::average_value(volume_fractions, specific_heats, MaterialUtilities::arithmetic);
 
           // Arithmetic averaging of thermal conductivities
           // This may not be strictly the most reasonable thing, but for most Earth materials we hope
           // that they do not vary so much that it is a big problem.
-          out.thermal_conductivities[i] = average_value(volume_fractions, thermal_conductivities, arithmetic);
+          out.thermal_conductivities[i] = MaterialUtilities::average_value(volume_fractions, thermal_conductivities, MaterialUtilities::arithmetic);
 
           double density = 0.0;
           for (unsigned int j=0; j < volume_fractions.size(); ++j)
@@ -155,7 +155,7 @@ namespace aspect
             }
           out.densities[i] = density;
 
-          out.thermal_expansion_coefficients[i] = average_value(volume_fractions, thermal_expansivities, arithmetic);
+          out.thermal_expansion_coefficients[i] = MaterialUtilities::average_value(volume_fractions, thermal_expansivities, MaterialUtilities::arithmetic);
 
           // Compressibility at the given positions.
           // The compressibility is given as
@@ -381,16 +381,8 @@ namespace aspect
         {
           reference_T = prm.get_double ("Reference temperature");
 
-          if (prm.get ("Viscosity averaging scheme") == "harmonic")
-            viscosity_averaging = harmonic;
-          else if (prm.get ("Viscosity averaging scheme") == "arithmetic")
-            viscosity_averaging = arithmetic;
-          else if (prm.get ("Viscosity averaging scheme") == "geometric")
-            viscosity_averaging = geometric;
-          else if (prm.get ("Viscosity averaging scheme") == "maximum composition")
-            viscosity_averaging = maximum_composition;
-          else
-            AssertThrow(false, ExcMessage("Not a valid viscosity averaging scheme"));
+          viscosity_averaging = MaterialUtilities::parse_compositional_averaging_operation ("Viscosity averaging scheme",
+                                prm);
 
           // Parse viscoelastic properties
           densities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Densities"))),

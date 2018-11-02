@@ -176,7 +176,7 @@ namespace aspect
         /**
          * Enumeration for selecting which viscosity averaging scheme to use.
          */
-        CompositionalAveragingOperation viscosity_averaging;
+        MaterialUtilities::CompositionalAveragingOperation viscosity_averaging;
 
         /**
          * Enumeration for selecting which type of viscous flow law to use.
