@@ -232,33 +232,16 @@ namespace aspect
         double reference_T;
 
         /**
-         * Enumeration for selecting which averaging scheme to use. Select
-         * between harmonic, arithmetic, geometric, and maximum_composition.
-         * The max composition scheme simply uses the parameter of whichever
-         * field has the highest volume fraction.
+         * Enumeration for selecting which viscosity averaging scheme to use.
          */
-        enum AveragingScheme
-        {
-          harmonic,
-          arithmetic,
-          geometric,
-          maximum_composition
-        };
-
-
-        AveragingScheme viscosity_averaging;
-
-        double average_value (const std::vector<double> &composition,
-                              const std::vector<double> &parameter_values,
-                              const enum AveragingScheme &average_type) const;
-
+        CompositionalAveragingOperation viscosity_averaging;
 
         /**
          * Used for calculating average elastic shear modulus and viscosity
          */
         double calculate_average_vector (const std::vector<double> &composition,
                                          const std::vector<double> &parameter_values,
-                                         const enum AveragingScheme &average_type) const;
+                                         const CompositionalAveragingOperation &average_type) const;
 
 
         double calculate_average_viscoelastic_viscosity (const double average_viscosity,

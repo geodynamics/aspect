@@ -130,26 +130,7 @@ namespace aspect
         std::vector<double> densities;
         std::vector<double> thermal_expansivities;
 
-        /**
-         * Enumeration for selecting which viscosity averaging scheme to use.
-         * Select between harmonic, arithmetic, geometric, and
-         * maximum_composition. The max composition scheme simply uses the
-         * viscosity of whichever field has the highest volume fraction. For
-         * each quadrature point, averaging is conducted over the N
-         * compositional fields plus the background field.
-         */
-        enum averaging_scheme
-        {
-          harmonic,
-          arithmetic,
-          geometric,
-          maximum_composition
-        } viscosity_averaging;
-
-
-        double average_value (const std::vector<double> &composition,
-                              const std::vector<double> &parameter_values,
-                              const enum averaging_scheme &average_type) const;
+        CompositionalAveragingOperation viscosity_averaging;
 
         std::vector<double>
         calculate_isostrain_viscosities ( const std::vector<double> &volume_fractions,

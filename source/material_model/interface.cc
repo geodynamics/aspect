@@ -105,6 +105,66 @@ namespace aspect
 
 
 
+    double
+    average_value (const std::vector<double> &volume_fractions,
+                   const std::vector<double> &parameter_values,
+                   const enum CompositionalAveragingOperation &average_type)
+    {
+      Assert(volume_fractions.size() == parameter_values.size(),
+             ExcMessage ("The volume fractions and parameter values vectors used for averaging "
+                         "have to have the same length!"));
+
+      double averaged_parameter = 0.0;
+
+      switch (average_type)
+        {
+          case arithmetic:
+          {
+            for (unsigned int i=0; i<volume_fractions.size(); ++i)
+              averaged_parameter += volume_fractions[i] * parameter_values[i];
+            break;
+          }
+          case harmonic:
+          {
+            for (unsigned int i=0; i<volume_fractions.size(); ++i)
+              {
+                AssertThrow(parameter_values[i] > 0,
+                            ExcMessage ("All parameter values must be greater than 0 for harmonic averaging!"));
+                averaged_parameter += volume_fractions[i]/(parameter_values[i]);
+              }
+            averaged_parameter = 1.0/averaged_parameter;
+            break;
+          }
+          case geometric:
+          {
+            for (unsigned int i=0; i<volume_fractions.size(); ++i)
+              {
+                AssertThrow(parameter_values[i] > 0,
+                            ExcMessage ("All parameter values must be greater than 0 for geometric averaging!"));
+                averaged_parameter += volume_fractions[i] * std::log(parameter_values[i]);
+              }
+            averaged_parameter = std::exp(averaged_parameter);
+            break;
+          }
+          case maximum_composition:
+          {
+            const unsigned int i = (unsigned int)(std::max_element( volume_fractions.begin(),
+                                                                    volume_fractions.end() )
+                                                  - volume_fractions.begin());
+            averaged_parameter = parameter_values[i];
+            break;
+          }
+          default:
+          {
+            AssertThrow(false, ExcNotImplemented());
+            break;
+          }
+        }
+      return averaged_parameter;
+    }
+
+
+
     template <int dim>
     Interface<dim>::~Interface ()
     {}

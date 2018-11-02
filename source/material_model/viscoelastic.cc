@@ -67,71 +67,20 @@ namespace aspect
     }
 
 
-    template <int dim>
-    double
-    Viscoelastic<dim>::
-    average_value (const std::vector<double> &volume_fractions,
-                   const std::vector<double> &parameter_values,
-                   const enum AveragingScheme &average_type) const
-    {
-      double averaged_parameter = 0.0;
-
-      switch (average_type)
-        {
-          case arithmetic:
-          {
-            for (unsigned int i=0; i< volume_fractions.size(); ++i)
-              averaged_parameter += volume_fractions[i]*parameter_values[i];
-            break;
-          }
-          case harmonic:
-          {
-            for (unsigned int i=0; i< volume_fractions.size(); ++i)
-              {
-                AssertThrow(parameter_values[i] != 0,
-                            ExcMessage ("All values must be greater than 0 during harmonic averaging"));
-                averaged_parameter += volume_fractions[i]/(parameter_values[i]);
-              }
-            averaged_parameter = 1.0/averaged_parameter;
-            break;
-          }
-          case geometric:
-          {
-            for (unsigned int i=0; i < volume_fractions.size(); ++i)
-              averaged_parameter += volume_fractions[i]*std::log(parameter_values[i]);
-            averaged_parameter = std::exp(averaged_parameter);
-            break;
-          }
-          case maximum_composition:
-          {
-            const unsigned int i = (unsigned int)(std::max_element( volume_fractions.begin(),
-                                                                    volume_fractions.end() )
-                                                  - volume_fractions.begin());
-            averaged_parameter = parameter_values[i];
-            break;
-          }
-          default:
-          {
-            AssertThrow( false, ExcNotImplemented() );
-            break;
-          }
-        }
-      return averaged_parameter;
-    }
 
     template <int dim>
     double
     Viscoelastic<dim>::
     calculate_average_vector (const std::vector<double> &composition,
                               const std::vector<double> &parameter_values,
-                              const enum AveragingScheme &average_type) const
+                              const CompositionalAveragingOperation &average_type) const
     {
       // Store which components to exclude during volume fraction computation.
-      ComponentMask composition_mask(this->n_compositional_fields(),true);
+      ComponentMask composition_mask(this->n_compositional_fields(), true);
       // assign compositional fields associated with viscoelastic stress a value of 0
       // assume these fields are listed first
       for (unsigned int i=0; i < SymmetricTensor<2,dim>::n_independent_components; ++i)
-        composition_mask.set(i,false);
+        composition_mask.set(i, false);
       const std::vector<double> volume_fractions = compute_volume_fractions(composition, composition_mask);
       const double averaged_vector = average_value(volume_fractions, parameter_values, average_type);
       return averaged_vector;
