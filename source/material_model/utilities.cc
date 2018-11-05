@@ -162,12 +162,14 @@ namespace aspect
       DruckerPragerInputs::DruckerPragerInputs(const double cohesion_,
                                                const double friction_angle_,
                                                const double pressure_,
-                                               const double effective_strain_rate_)
+                                               const double effective_strain_rate_,
+                                               const double max_yield_strength_)
         :
         cohesion(cohesion_),
         friction_angle(friction_angle_),
         pressure(pressure_),
-        effective_strain_rate(effective_strain_rate_)
+        effective_strain_rate(effective_strain_rate_),
+        max_yield_strength(max_yield_strength_)
       {}
 
 
@@ -195,6 +197,8 @@ namespace aspect
                                ( 6.0 * in.cohesion * cos_phi + 6.0 * in.pressure * sin_phi) * strength_inv_part
                                :
                                in.cohesion * cos_phi + in.pressure * sin_phi);
+
+        out.yield_strength = std::min(out.yield_strength, in.max_yield_strength);
 
         // Rescale the viscosity back onto the yield surface
         const double strain_rate_effective_inv = 1./(2.*in.effective_strain_rate);

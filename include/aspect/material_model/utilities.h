@@ -124,17 +124,20 @@ namespace aspect
       {
         /**
         * Constructor. Initializes the various variables of this
-        * structure with the input values.
+        * structure with the input values. By default, there is no
+        * maximum yield strength, so the parameter is set to infinity.
         */
         DruckerPragerInputs(const double cohesion,
                             const double friction_angle,
                             const double pressure,
-                            const double effective_strain_rate);
+                            const double effective_strain_rate,
+                            const double max_yield_strength = std::numeric_limits<double>::infinity());
 
         const double cohesion;
         const double friction_angle;
         const double pressure;
         const double effective_strain_rate;
+        const double max_yield_strength;
       };
 
 

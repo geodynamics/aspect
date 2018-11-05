@@ -200,16 +200,14 @@ namespace aspect
 
           // Third step: plastic yielding
           // Calculate Drucker-Prager yield strength (i.e. yield stress)
-          const MaterialUtilities::DruckerPragerInputs plastic_in(coh, phi, std::max(pressure,0.0), edot_ii);
+          // Use max_yield_strength to limit the yield strength for depths beneath the lithosphere
+          const MaterialUtilities::DruckerPragerInputs plastic_in(coh, phi, std::max(pressure,0.0), edot_ii, max_yield_strength);
           MaterialUtilities::DruckerPragerOutputs plastic_out;
           MaterialUtilities::compute_drucker_prager_yielding<dim> (plastic_in, plastic_out);
 
-          // Use max_yield_strength to limit the yield strength for depths beneath the lithosphere
-          const double yield_strength = std::min(plastic_out.yield_strength, max_yield_strength);
-
           // If the viscous stress is greater than the yield strength, indicate we are in the yielding regime.
           const double viscous_stress = 2. * viscosity_pre_yield * edot_ii;
-          if (viscous_stress >= yield_strength)
+          if (viscous_stress >= plastic_out.yield_strength)
             composition_yielding[j] = true;
 
           // Select if yield viscosity is based on Drucker Prager or stress limiter rheology
@@ -218,7 +216,7 @@ namespace aspect
             {
               case stress_limiter:
               {
-                const double viscosity_limiter = yield_strength / (2.0 * ref_strain_rate)
+                const double viscosity_limiter = plastic_out.yield_strength / (2.0 * ref_strain_rate)
                                                  * std::pow((edot_ii/ref_strain_rate), 1./exponents_stress_limiter[j] - 1.0);
                 viscosity_yield = 1. / ( 1./viscosity_limiter + 1./viscosity_pre_yield);
                 break;
@@ -226,7 +224,7 @@ namespace aspect
               case drucker_prager:
               {
                 // If the viscous stress is greater than the yield strength, rescale the viscosity back to yield surface
-                if (viscous_stress >= yield_strength)
+                if (viscous_stress >= plastic_out.yield_strength)
                   viscosity_yield = plastic_out.plastic_viscosity;
                 break;
               }
