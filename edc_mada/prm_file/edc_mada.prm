@@ -35,14 +35,15 @@ subsection Discretization
  end
 end
 
-   
+
 subsection Initial temperature model
-  set Model name = adiabatic boundary
-  subsection Adiabatic boundary
-    set Data directory           = 
-    set Isotherm depth filename  = http://localhost:8080/opendap/data/csv/litho.africa.0.csv
-  end
+   set Model name = adiabatic boundary
+ subsection Ascii data model
+    set Data directory    =
+ set Data file name       = http://localhost:8080/opendap/data/csv/litho.africa.0.csv
 end
+end
+   
 
 subsection Compositional fields
   set Number of fields = 2

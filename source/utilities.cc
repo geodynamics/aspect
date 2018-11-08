@@ -894,8 +894,10 @@ namespace aspect
 			url = new libdap::Connect(filename);
 			libdap::BaseTypeFactory factory;
 			libdap::DataDDS dds(&factory);
+			libdap::DAS das;
 
 			url->request_data(dds, "");
+			url->request_das(das);
 
 
 			//Array to store the url data
@@ -913,8 +915,6 @@ namespace aspect
 			        if ((*i)->type() == libdap::dods_array_c) {
 			            urlArray = static_cast <libdap::Array *>(btp);
 			            if (urlArray->var() != NULL && urlArray->var()->type() == libdap::dods_str_c) {
-							urlArray = static_cast <libdap::Array *>(btp);
-
 							//The url Array contains a seperate array for each column of data.
 							// This will put each of these individual arrays into its own vector.
 							urlArray->value(tmp);
@@ -936,17 +936,38 @@ namespace aspect
 			    }
 
 
+			//Add the POINTS data that is required and found at the top of the data file.
+			// The POINTS values are set as attributes inside a table.
+			// Loop through the Attribute table to locate the points values within
+			std::vector<std::string> points;
+			libdap::AttrTable *table;
+			for (libdap::AttrTable::Attr_iter i = das.var_begin(); i != das.var_end(); i++) {
+				table = das.get_table(i);
+				if (table->get_attr("points") != "")
+					points.push_back(table->get_attr("points"));
+				else
+					break;
+			}
+
+			//Append the gathered POINTS in the proper format:
+			// "# POINTS: <val1> <val2> <val3>"
+			urlString << "# POINTS:";
+			for (int i = 0; i < points.size(); i++) {
+				urlString << " " << points[i];
+			}
+			urlString << "\n";
+
 			//Add the values from the arrays into the stringstream. The values are passed in
 			// per row with a character return added at the end of each row.
 			// TODO: Add a check to make sure that each column is the same size before writing
 			//		 to the stringstream
-				for (int i = 0; i < tmp.size(); i++) {
-					for (int j = 0; j < columns.size(); j++) {
-						urlString << columns[j][i];
-						urlString << " ";
-					}
-					urlString << "\n";
+			for (int i = 0; i < tmp.size(); i++) {
+				for (int j = 0; j < columns.size(); j++) {
+					urlString << columns[j][i];
+					urlString << " ";
 				}
+				urlString << "\n";
+			}
 
 
 			//--May need a second dds
@@ -1965,12 +1986,13 @@ namespace aspect
                             << filename << "." << std::endl << std::endl;
 
 
-          AssertThrow(Utilities::fexists(filename),
+          /*AssertThrow(Utilities::fexists(filename),
                       ExcMessage (std::string("Ascii data file <")
                                   +
                                   filename
                                   +
                                   "> not found!"));
+                                  */
           lookups.find(*boundary_id)->second->load_file(filename,this->get_mpi_communicator(), this->get_parameters().read_from_url);
 
           // If the boundary condition is constant, switch off time_dependence
