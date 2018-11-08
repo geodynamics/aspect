@@ -307,12 +307,6 @@ namespace aspect
       get_mapping () const;
 
       /**
-       * Return if the data file being read in is from a URL or not.
-       */
-      bool
-	  read_file_from_url () const;
-
-      /**
        * Return the directory specified in the input parameter file to be the
        * place where output files are to be placed. The string is terminated
        * by a directory separator (i.e., '/').

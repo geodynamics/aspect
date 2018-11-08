@@ -875,8 +875,7 @@ namespace aspect
     //Author: Kodi Neumiller 10/9/18
     std::string
     read_and_distribute_file_content(const std::string &filename,
-                                     const MPI_Comm &comm,
-									 bool readUrl)
+                                     const MPI_Comm &comm)
     {
       std::string data_string;
       std::stringstream urlString;
@@ -889,7 +888,8 @@ namespace aspect
 
          //Check to see if the prm file will be reading data from the disk or
 		// from a provided URL
-		if (readUrl) {
+        //std::string checkUrl = filename.substr(0, 7);
+		if ( filename.find("http://") == 0 || filename.find("https://") == 0 || filename.find("file://") == 0) {
 			libdap::Connect *url = 0;
 			url = new libdap::Connect(filename);
 			libdap::BaseTypeFactory factory;
@@ -1627,11 +1627,10 @@ namespace aspect
     template <int dim>
     void
     AsciiDataLookup<dim>::load_file(const std::string &filename,
-                                    const MPI_Comm &comm,
-									bool readUrl)
+                                    const MPI_Comm &comm)
     {
       // Read data from disk and distribute among processes
-      std::stringstream in(read_and_distribute_file_content(filename, comm, readUrl));
+      std::stringstream in(read_and_distribute_file_content(filename, comm));
 
       // Read header lines and table size
       while (in.peek() == '#')
@@ -1993,7 +1992,7 @@ namespace aspect
                                   +
                                   "> not found!"));
                                   */
-          lookups.find(*boundary_id)->second->load_file(filename,this->get_mpi_communicator(), this->get_parameters().read_from_url);
+          lookups.find(*boundary_id)->second->load_file(filename,this->get_mpi_communicator());
 
           // If the boundary condition is constant, switch off time_dependence
           // immediately. If not, also load the second file for interpolation.
@@ -2011,7 +2010,7 @@ namespace aspect
               if (Utilities::fexists(filename))
                 {
                   lookups.find(*boundary_id)->second.swap(old_lookups.find(*boundary_id)->second);
-                  lookups.find(*boundary_id)->second->load_file(filename,this->get_mpi_communicator(), this->get_parameters().read_from_url);
+                  lookups.find(*boundary_id)->second->load_file(filename,this->get_mpi_communicator());
                 }
               else
                 end_time_dependence ();
@@ -2218,7 +2217,7 @@ namespace aspect
           if (Utilities::fexists(filename))
             {
               lookups.find(boundary_id)->second.swap(old_lookups.find(boundary_id)->second);
-              lookups.find(boundary_id)->second->load_file(filename,this->get_mpi_communicator(), this->get_parameters().read_from_url);
+              lookups.find(boundary_id)->second->load_file(filename,this->get_mpi_communicator());
             }
 
           // If loading current_time_step failed, end time dependent part with old_file_number.
@@ -2239,7 +2238,7 @@ namespace aspect
       if (Utilities::fexists(filename))
         {
           lookups.find(boundary_id)->second.swap(old_lookups.find(boundary_id)->second);
-          lookups.find(boundary_id)->second->load_file(filename,this->get_mpi_communicator(), this->get_parameters().read_from_url);
+          lookups.find(boundary_id)->second->load_file(filename,this->get_mpi_communicator());
         }
 
       // If next file does not exist, end time dependent part with current_time_step.
@@ -2408,7 +2407,7 @@ namespace aspect
                               filename
                               +
                               "> not found!"));
-      lookup->load_file(filename, this->get_mpi_communicator(), this->get_parameters().read_from_url);
+      lookup->load_file(filename, this->get_mpi_communicator());
     }
 
     template <int dim>
@@ -2451,7 +2450,7 @@ namespace aspect
                               filename
                               +
                               "> not found!"));
-      lookup->load_file(filename,communicator, false);
+      lookup->load_file(filename,communicator);
     }
 
 

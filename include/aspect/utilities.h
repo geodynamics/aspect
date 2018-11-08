@@ -375,8 +375,7 @@ namespace aspect
      */
     std::string
     read_and_distribute_file_content(const std::string &filename,
-                                     const MPI_Comm &comm,
-									 bool readUrl = false);
+                                     const MPI_Comm &comm);
 
     /**
      * Creates a path as if created by the shell command "mkdir -p", therefore
@@ -574,8 +573,7 @@ namespace aspect
          */
         void
         load_file(const std::string &filename,
-                  const MPI_Comm &communicator,
-				  bool readUrl);
+                  const MPI_Comm &communicator);
 
         /**
          * Returns the computed data (velocity, temperature, etc. - according
