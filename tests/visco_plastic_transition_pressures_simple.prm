@@ -5,7 +5,7 @@ set End time                               = 0
 set Use years in output instead of seconds = true
 set Nonlinear solver scheme                = single Advection, single Stokes
 set Max nonlinear iterations               = 1
-set Surface pressure                       = 3.e9
+set Surface pressure                       = 1.55e9
 
 # Model geometry (100x100 km, 10 km spacing)
 subsection Geometry model
@@ -58,7 +58,6 @@ subsection Material model
     set Densities = 2700; 3400
 
     set Viscous flow law = dislocation
-    set Densities = 2700; 3400
     set Prefactors for dislocation creep = 5.e-23
     set Stress exponents for dislocation creep = 1.0
     set Activation energies for dislocation creep = 0.
@@ -70,7 +69,7 @@ end
 subsection Gravity model
   set Model name = vertical
   subsection Vertical
-    set Magnitude = 0.0
+    set Magnitude = 10.0
   end
 end
 

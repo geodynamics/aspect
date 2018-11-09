@@ -75,57 +75,6 @@ namespace aspect
       return cohesions;
     }
 
-
-<<<<<<< HEAD
-=======
-    template <int dim>
-    double
-    ViscoPlastic<dim>::
-    average_value ( const std::vector<double> &volume_fractions,
-                    const std::vector<double> &parameter_values,
-                    const enum averaging_scheme &average_type) const
-    {
-      double averaged_parameter = 0.0;
-
-      switch (average_type)
-        {
-          case arithmetic:
-          {
-            for (unsigned int i=0; i< volume_fractions.size(); ++i)
-              averaged_parameter += volume_fractions[i]*parameter_values[i];
-            break;
-          }
-          case harmonic:
-          {
-            for (unsigned int i=0; i< volume_fractions.size(); ++i)
-              averaged_parameter += volume_fractions[i]/(parameter_values[i]);
-            averaged_parameter = 1.0/averaged_parameter;
-            break;
-          }
-          case geometric:
-          {
-            for (unsigned int i=0; i < volume_fractions.size(); ++i)
-              averaged_parameter += volume_fractions[i]*std::log(parameter_values[i]);
-            averaged_parameter = std::exp(averaged_parameter);
-            break;
-          }
-          case maximum_composition:
-          {
-            const unsigned int i = (unsigned int)(std::max_element( volume_fractions.begin(),
-                                                                    volume_fractions.end() )
-                                                  - volume_fractions.begin());
-            averaged_parameter = parameter_values[i];
-            break;
-          }
-          default:
-          {
-            AssertThrow( false, ExcNotImplemented() );
-            break;
-          }
-        }
-      return averaged_parameter;
-    }
-
     template <int dim>
     std::vector<double>
     ViscoPlastic<dim>::
@@ -149,29 +98,19 @@ namespace aspect
           double phase_func;
           if (!use_depth)
             {
-              // first, get the pressure at which the phase transition occurs normally
-              // and get the pressure change in the range of the phase transition
 
-              double transition_pressure;
-              double pressure_width;
-              double width_temp;
-
-              transition_pressure = transition_pressures[phase];
-              pressure_width = transition_pressure_widths[phase];
-              width_temp = transition_pressure_widths[phase];
-
-              // then calculate the deviation from the transition point (both in temperature
+              // First, calculate the deviation from the transition point (both in temperature
               // and in pressure)
-              double pressure_deviation = pressure - transition_pressure
+              double pressure_deviation = pressure - transition_pressures[phase]
                                           - transition_slopes[phase] * (temperature - transition_temperatures[phase]);
 
-              // last, calculate the percentage of material that has undergone the transition
+              // Next, calculate the percentage of material that has undergone the transition
               // (also in dependence of the phase transition width - this is an input parameter)
               // use delta function for width = 0
-              if (width_temp==0)
-                (pressure_deviation > 0) ? phase_func = 1 : phase_func = 0;
+              if (transition_pressure_widths[phase]==0)
+                phase_func = (pressure_deviation > 0) ? 1 : 0;
               else
-                phase_func = 0.5*(1.0 + std::tanh(pressure_deviation / pressure_width));
+                phase_func = 0.5*(1.0 + std::tanh(pressure_deviation / transition_pressure_widths[phase]));
             }
           // this part of the loop is only implemented for phase transitions based off of depth,
           // since pressure-based transitions are included above.
@@ -677,9 +616,6 @@ namespace aspect
                                                                               in.temperature[i],
                                                                               in.pressure[i]);
 
-          const std::vector<double> volume_fractions = compute_volume_fractions(in.composition[i],
-                                                                                volumetric_compositions);
-
           // Compute the equation of state variables and thermodynamic properties
           out.densities[i] = 0.0;
           out.thermal_expansion_coefficients[i] = 0.0;
@@ -878,29 +814,31 @@ namespace aspect
           // Phase change parameters
           prm.declare_entry ("Phase transition depths", "",
                              Patterns::List (Patterns::Double(0)),
-                             "A list of depths where phase transitions occur, for a total of M values, "
-                             "where M is the number of phase changes. Values must monotonically increase. "
-                             "Units: $m$.");
+                             "A list of depths where phase transitions occur (i.e., phase function value of 0.5), "
+                             "for a total of M values, where M is the number of phase changes. Values must "
+                             "monotonically increase. Units: $m$.");
           prm.declare_entry ("Phase transition widths", "",
                              Patterns::List (Patterns::Double(0)),
                              "A list of widths for each phase transition, in terms of depth, for a total, "
-                             " of M values, where M is the number of phase changes. The phase functions "
+                             "of M values, where M is the number of phase changes. The phase functions "
                              "are scaled with these values, leading to a jump between phases "
                              "for a value of zero and a gradual transition for larger values. "
+                             "The full transition from a phase function value of 0 to 1 occurs over twice this width. "
                              "List must have the same number of entries as Phase transition depths. "
                              "Units: $m$.");
           prm.declare_entry ("Phase transition pressures", "",
                              Patterns::List (Patterns::Double(0)),
-                             "A list of pressures where phase transitions occur, for a total of M values, "
-                             "where M is the number of phase changes. Values must monotonically increase. "
-                             "Define transition by depth instead of pressure must be set to false to use "
-                             "this parameter. Units: $Pa$.");
+                             "A list of pressures where phase transitions occur (i.e. phase function value of 0.5), "
+                             "for a total of M values, where M is the number of phase changes. Values must "
+                             "monotonically increase. Define transition by depth instead of pressure must be set "
+                             "to false to use this parameter. Units: $Pa$.");
           prm.declare_entry ("Phase transition pressure widths", "",
                              Patterns::List (Patterns::Double(0)),
                              "A list of widths for each phase transition, in terms of pressure, for a "
                              "total of M values, where M is the number of phase changes. The phase "
                              "functions are scaled with these values leading to a jump between phases "
                              "for a value of zero and a gradual transition for larger values. "
+                             "The full transition from a phase function value of 0 to 1 occurs over twice this width. "
                              "List must have the same number of entries as Phase transition pressures. "
                              "Define transition by depth instead of pressure must be set to false "
                              "to use this parameter. "
@@ -924,8 +862,8 @@ namespace aspect
           prm.declare_entry ("Phase transition Clapeyron slopes", "",
                              Patterns::List (Patterns::Double()),
                              "A list of Clapeyron slopes for each phase transition, for a toal of M "
-                             "vales, where M is the number of phase changes. A positive Clapeyron "
-                             "slope indicates that the phase transition will occur in a greadter depth "
+                             "values, where M is the number of phase changes. A positive Clapeyron "
+                             "slope indicates that the phase transition will occur in a greater depth "
                              "if the temperature is higher than the one given in Phase transition "
                              "temperatures and in a smaller depth, if the temperature is smaller than the "
                              "one given in Phase transition temperatures. For negative slopes the other way "
