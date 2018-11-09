@@ -24,6 +24,7 @@
 #include <D4Connect.h>
 #include <Connect.h>
 #include <Response.h>
+#include <Array.h>
 
 #include <array>
 #include <deal.II/base/point.h>
@@ -874,10 +875,10 @@ namespace aspect
     //Author: Kodi Neumiller 10/9/18
     std::string
     read_and_distribute_file_content(const std::string &filename,
-                                     const MPI_Comm &comm,
-									 bool readUrl)
+                                     const MPI_Comm &comm)
     {
       std::string data_string;
+      std::stringstream urlString;
 
       if (Utilities::MPI::this_mpi_process(comm) == 0)
         {
@@ -885,20 +886,100 @@ namespace aspect
           unsigned int filesize = numbers::invalid_unsigned_int;
 
 
-          //Check to see if the prm file will be reading data from the disk or
+         //Check to see if the prm file will be reading data from the disk or
 		// from a provided URL
-		if (readUrl) {
-			std::cout << "TESTING THE READ FROM URL == true" << std::endl;
-
+        //std::string checkUrl = filename.substr(0, 7);
+		if ( filename.find("http://") == 0 || filename.find("https://") == 0 || filename.find("file://") == 0) {
 			libdap::Connect *url = 0;
 			url = new libdap::Connect(filename);
-			//url->request_data();
+			libdap::BaseTypeFactory factory;
+			libdap::DataDDS dds(&factory);
+			libdap::DAS das;
 
+			url->request_data(dds, "");
+			url->request_das(das);
+
+
+			//Array to store the url data
+			libdap::Array *urlArray;
+
+			//Temporary vector that will hold the different arrays stored in urlArray
+			std::vector<std::string> tmp;
+			//Vector that will hold the arrays and the values within those arrays
+			std::vector<std::vector<std::string>> columns;
+
+
+			//Check dds values to make sure the arrays are of the same length and of type string
+			for (libdap::DDS::Vars_iter i = dds.var_begin(); i != dds.var_end(); i++) {
+			        libdap::BaseType *btp = *i;
+			        if ((*i)->type() == libdap::dods_array_c) {
+			            urlArray = static_cast <libdap::Array *>(btp);
+			            if (urlArray->var() != NULL && urlArray->var()->type() == libdap::dods_str_c) {
+							//The url Array contains a seperate array for each column of data.
+							// This will put each of these individual arrays into its own vector.
+							urlArray->value(tmp);
+							columns.push_back(tmp);
+
+						}
+						else {
+							AssertThrow (false,
+							ExcMessage (std::string("Error when reading from url: ") + filename +
+									" maybe it was not of the correct type?"));
+						}
+
+			        }
+			        else {
+			        		AssertThrow (false,
+			        	    ExcMessage (std::string("Error when reading from url: ") + filename +
+			        	    		" maybe it was not of the correct type?"));
+			        }
+			    }
+
+
+			//Add the POINTS data that is required and found at the top of the data file.
+			// The POINTS values are set as attributes inside a table.
+			// Loop through the Attribute table to locate the points values within
+			std::vector<std::string> points;
+			libdap::AttrTable *table;
+			for (libdap::AttrTable::Attr_iter i = das.var_begin(); i != das.var_end(); i++) {
+				table = das.get_table(i);
+				if (table->get_attr("points") != "")
+					points.push_back(table->get_attr("points"));
+				else
+					break;
+			}
+
+			//Append the gathered POINTS in the proper format:
+			// "# POINTS: <val1> <val2> <val3>"
+			urlString << "# POINTS:";
+			for (int i = 0; i < points.size(); i++) {
+				urlString << " " << points[i];
+			}
+			urlString << "\n";
+
+			//Add the values from the arrays into the stringstream. The values are passed in
+			// per row with a character return added at the end of each row.
+			// TODO: Add a check to make sure that each column is the same size before writing
+			//		 to the stringstream
+			for (int i = 0; i < tmp.size(); i++) {
+				for (int j = 0; j < columns.size(); j++) {
+					urlString << columns[j][i];
+					urlString << " ";
+				}
+				urlString << "\n";
+			}
+
+
+			//--May need a second dds
+			//url->request_data(dds, "");
+
+
+  	  	  data_string = urlString.str();
+  	  	  filesize = data_string.size();
 		}
+
 		else
 		{
-		  std::cout << "TESTING THE READ FROM URL == false" << std::endl;
-
           std::ifstream filestream(filename.c_str());
 
           if (!filestream)
@@ -926,15 +1007,17 @@ namespace aspect
               return data_string; // never reached
             }
 
+
+
           data_string = datastream.str();
           filesize = data_string.size();
-
-          // Distribute data_size and data across processes
-          MPI_Bcast(&filesize,1,MPI_UNSIGNED,0,comm);
-          MPI_Bcast(&data_string[0],filesize,MPI_CHAR,0,comm);
-
           }
+
+		// Distribute data_size and data across processes
+		MPI_Bcast(&filesize,1,MPI_UNSIGNED,0,comm);
+		MPI_Bcast(&data_string[0],filesize,MPI_CHAR,0,comm);
         }
+
       else
         {
           // Prepare for receiving data
@@ -1544,11 +1627,10 @@ namespace aspect
     template <int dim>
     void
     AsciiDataLookup<dim>::load_file(const std::string &filename,
-                                    const MPI_Comm &comm,
-									bool readUrl)
+                                    const MPI_Comm &comm)
     {
       // Read data from disk and distribute among processes
-      std::stringstream in(read_and_distribute_file_content(filename, comm, readUrl));
+      std::stringstream in(read_and_distribute_file_content(filename, comm));
 
       // Read header lines and table size
       while (in.peek() == '#')
@@ -1903,13 +1985,14 @@ namespace aspect
                             << filename << "." << std::endl << std::endl;
 
 
-          AssertThrow(Utilities::fexists(filename),
+          /*AssertThrow(Utilities::fexists(filename),
                       ExcMessage (std::string("Ascii data file <")
                                   +
                                   filename
                                   +
                                   "> not found!"));
-          lookups.find(*boundary_id)->second->load_file(filename,this->get_mpi_communicator(), this->get_parameters().read_from_url);
+                                  */
+          lookups.find(*boundary_id)->second->load_file(filename,this->get_mpi_communicator());
 
           // If the boundary condition is constant, switch off time_dependence
           // immediately. If not, also load the second file for interpolation.
@@ -1927,7 +2010,7 @@ namespace aspect
               if (Utilities::fexists(filename))
                 {
                   lookups.find(*boundary_id)->second.swap(old_lookups.find(*boundary_id)->second);
-                  lookups.find(*boundary_id)->second->load_file(filename,this->get_mpi_communicator(), this->get_parameters().read_from_url);
+                  lookups.find(*boundary_id)->second->load_file(filename,this->get_mpi_communicator());
                 }
               else
                 end_time_dependence ();
@@ -2134,7 +2217,7 @@ namespace aspect
           if (Utilities::fexists(filename))
             {
               lookups.find(boundary_id)->second.swap(old_lookups.find(boundary_id)->second);
-              lookups.find(boundary_id)->second->load_file(filename,this->get_mpi_communicator(), this->get_parameters().read_from_url);
+              lookups.find(boundary_id)->second->load_file(filename,this->get_mpi_communicator());
             }
 
           // If loading current_time_step failed, end time dependent part with old_file_number.
@@ -2155,7 +2238,7 @@ namespace aspect
       if (Utilities::fexists(filename))
         {
           lookups.find(boundary_id)->second.swap(old_lookups.find(boundary_id)->second);
-          lookups.find(boundary_id)->second->load_file(filename,this->get_mpi_communicator(), this->get_parameters().read_from_url);
+          lookups.find(boundary_id)->second->load_file(filename,this->get_mpi_communicator());
         }
 
       // If next file does not exist, end time dependent part with current_time_step.
@@ -2324,7 +2407,7 @@ namespace aspect
                               filename
                               +
                               "> not found!"));
-      lookup->load_file(filename, this->get_mpi_communicator(), this->get_parameters().read_from_url);
+      lookup->load_file(filename, this->get_mpi_communicator());
     }
 
     template <int dim>
@@ -2367,7 +2450,7 @@ namespace aspect
                               filename
                               +
                               "> not found!"));
-      lookup->load_file(filename,communicator, false);
+      lookup->load_file(filename,communicator);
     }
 
 

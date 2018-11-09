@@ -66,8 +66,7 @@ namespace aspect
            * file does not exist.
            */
           void load_file(const std::string &filename,
-                         const MPI_Comm &comm,
-						 bool readUrl);
+                         const MPI_Comm &comm);
 
           /**
            * Returns the computed surface velocity in cartesian coordinates.

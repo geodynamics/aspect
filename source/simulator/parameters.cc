@@ -78,11 +78,6 @@ namespace aspect
                        "If auto is selected, models will be resumed if there is an existing "
                        "checkpoint file, otherwise started from scratch.");
 
-    prm.declare_entry ("Read from url", "false",
-    					   Patterns::Bool (),
-					   "A boolean to determine if the data file to be read in is located in a directory "
-					   "on the machine, or if it will be accessed via a given URL.");
-
     prm.declare_entry ("Max nonlinear iterations", "10",
                        Patterns::Integer (0),
                        "The maximal number of nonlinear iterations to be performed.");
@@ -1090,7 +1085,6 @@ namespace aspect
     AssertThrow (prm.get_integer("Dimension") == dim,
                  ExcInternalError());
 
-    read_from_url           = prm.get_bool ("Read from url");
     CFL_number              = prm.get_double ("CFL number");
     use_conduction_timestep = prm.get_bool ("Use conduction timestep");
     convert_to_years        = prm.get_bool ("Use years in output instead of seconds");

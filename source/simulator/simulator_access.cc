@@ -170,13 +170,6 @@ namespace aspect
 
 
   template <int dim>
-  bool
-  SimulatorAccess<dim>::read_file_from_url () const
-  {
-	  return simulator->parameters.read_from_url;
-  }
-
-  template <int dim>
   std::string
   SimulatorAccess<dim>::get_output_directory () const
   {

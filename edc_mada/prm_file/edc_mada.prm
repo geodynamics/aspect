@@ -4,6 +4,7 @@ set Use years in output instead of seconds = true
 set CFL number = 0.25
 set End time                               = 0
 set Output directory                       = output-edc_mada
+set Read from url						  = true
 set Nonlinear solver scheme                = single Advection, iterated Stokes
 set Nonlinear solver tolerance             = 1e-5
 set Max nonlinear iterations               = 50
@@ -34,14 +35,15 @@ subsection Discretization
  end
 end
 
-   
+
 subsection Initial temperature model
-  set Model name = adiabatic boundary
-  subsection Adiabatic boundary
-    set Data directory           = $ASPECT_SOURCE_DIR/edc_mada/input_files/
-    set Isotherm depth filename  = litho.africa.txt
-  end
+   set Model name = adiabatic boundary
+ subsection Ascii data model
+    set Data directory    =
+ set Data file name       = http://localhost:8080/opendap/data/csv/litho.africa.0.csv
 end
+end
+   
 
 subsection Compositional fields
   set Number of fields = 2
@@ -107,7 +109,7 @@ end
 end
 
 subsection Mesh refinement
-  set Initial global refinement                = 6
+  set Initial global refinement                = 1
   set Initial adaptive refinement              = 0
   set Time steps between mesh refinement       = 0
 end
