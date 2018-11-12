@@ -32,6 +32,7 @@
 #include <aspect/geometry_model/chunk.h>
 #include <aspect/geometry_model/ellipsoidal_chunk.h>
 #include <aspect/geometry_model/box.h>
+#include <aspect/geometry_model/two_merged_boxes.h>
 
 namespace aspect
 {
@@ -125,7 +126,8 @@ namespace aspect
 
       // Where to calculate the density
       // for spherical domains
-      if (dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model()) == nullptr)
+      if (dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model()) == nullptr &&
+          dynamic_cast<const GeometryModel::TwoMergedBoxes<dim>*> (&this->get_geometry_model()) == nullptr)
         in0.position[0] = Utilities::Coordinates::spherical_to_cartesian_coordinates<dim>(spherical_representative_point);
       // and for cartesian domains
       else
