@@ -31,140 +31,141 @@ processes=4
 
 CohesionLine="s/set List of cohesions.*/      set List of cohesions                              = 1e8,0/g"
 PhiLine="s/set List of angles of internal friction.*/      set List of angles of internal friction            = $phi,0/g"
+
 if [ $materialmodelnameShort == "DP" ]; then
-materialmodelname="drucker prager compositions"
+ materialmodelname="drucker prager compositions"
 elif [ $materialmodelnameShort == "vM" ]; then
-materialmodelname="drucker prager compositions"
+ materialmodelname="drucker prager compositions"
 elif [ $materialmodelnameShort == "SNL" ]; then
-materialmodelname="simple nonlinear compositions"
-CohesionLine="s/ set List of cohesion of fields.*/ /g"
-PhiLine="s/set List of angles of internal friction of fields.*/ /g"
+ materialmodelname="simple nonlinear compositions"
+ CohesionLine="s/ set List of cohesion of fields.*/ /g"
+ PhiLine="s/set List of angles of internal friction of fields.*/ /g"
 elif [ $materialmodelnameShort == "VP2" ]; then
-materialmodelname="viscoplastic2"
+ materialmodelname="viscoplastic2"
 fi
 
 SOLVER_SHORT="NS" #"itIMPES" #"NS" #NS"
 SOLVER="NS"
 if [ $SOLVER_SHORT == "NS" ]; then
-SOLVER="Newton Stokes"
+ SOLVER="Newton Stokes"
 elif [ $SOLVER_SHORT == "itIMPES" ]; then
-SOLVER="iterated IMPES"
+ SOLVER="iterated IMPES"
 fi
 
 
 for i_grid in "${grid[@]}"
 do
-for i_agrid in "${agrid[@]}"
-do
-for i_NSP in "${NSP[@]}"
-do
-for i_NSA in "${NSA[@]}"
-do
-for i_NLT in "${NLT[@]}"
-do
-for i_ABT in "${ABT[@]}"
-do
-for i_ST in "${ST[@]}"
-do
-for i_UDS in "${UDS[@]}"
-do
-for i_SF in "${SF[@]}"
-do
-for i_LT in "${LT[@]}"
-do
-for i_n in "${n[@]}"
-do
-for i_UFS in "${UFS[@]}"
-do
-for i_P in "${P[@]}"
-do
-for i_boundary_type in "${boundary_type[@]}"
-do
-for i_LS in "${LS[@]}"
-do
-for i_AEW in "${AEW[@]}"
-do
-for i_OS in "${OS[@]}"
-do
-for i_RSM in "${RSM[@]}"
-do
-for i_BV in "${BV[@]}"
-do
-for i_vel in "${vel[@]}"
-do
-U="7.92219116e-11"
-if [ $i_vel == 25 ]; then
-U="7.92219116e-11"
-elif [ $i_vel == 50 ]; then
-U="1.58443823e-10"
-elif [ $i_vel == 125 ]; then
-U="3.96109558e-10"
-fi
+ for i_agrid in "${agrid[@]}"
+ do
+  for i_NSP in "${NSP[@]}"
+  do
+   for i_NSA in "${NSA[@]}"
+   do
+    for i_NLT in "${NLT[@]}"
+    do
+     for i_ABT in "${ABT[@]}"
+     do
+      for i_ST in "${ST[@]}"
+      do
+       for i_UDS in "${UDS[@]}"
+       do
+        for i_SF in "${SF[@]}"
+        do
+         for i_LT in "${LT[@]}"
+         do
+          for i_n in "${n[@]}"
+          do
+           for i_UFS in "${UFS[@]}"
+           do
+            for i_P in "${P[@]}"
+            do
+             for i_boundary_type in "${boundary_type[@]}"
+             do
+              for i_LS in "${LS[@]}"
+              do
+               for i_AEW in "${AEW[@]}"
+               do
+                for i_OS in "${OS[@]}"
+                do
+                 for i_RSM in "${RSM[@]}"
+                 do
+                  for i_BV in "${BV[@]}"
+                  do
+                   for i_vel in "${vel[@]}"
+                   do
+                    U="7.92219116e-11"
+                    if [ $i_vel == 25 ]; then
+                     U="7.92219116e-11"
+                    elif [ $i_vel == 50 ]; then
+                     U="1.58443823e-10"
+                    elif [ $i_vel == 125 ]; then
+                     U="3.96109558e-10"
+                    fi
 
-dirname_clean="$version""$materialmodelnameShort""_BT""$i_boundary_type""_""$SOLVER_SHORT""_ST""$i_ST""_UFS""$i_UFS""_NSP-""$i_NSP""_NSA-""$i_NSA""_C""$COMP""_g""$i_grid""_ag""$i_agrid""_AEW""$i_AEW""_UDS""$i_UDS""_SF""$i_SF""_NLT""$i_NLT""_ABT""$i_ABT""_LT""$i_LT""_mLT""$i_OS""_I""$I""_P""$i_P""_EW1""_theta1""_LS""$i_LS""_RSM""$i_RSM""_AV""$AV""_phi""$phi""_vel""$i_vel""_BV""$i_BV""_n""$i_n"
-dirname="results/""$dirname_clean"
-infilename="$dirname""/input.prm"
-outfilename="$dirname""/output.log"
-errorfilename="$dirname""/error.log"
-outplotfilename="$dirname""/plot.dat"
+                    dirname_clean="$version""$materialmodelnameShort""_BT""$i_boundary_type""_""$SOLVER_SHORT""_ST""$i_ST""_UFS""$i_UFS""_NSP-""$i_NSP""_NSA-""$i_NSA""_C""$COMP""_g""$i_grid""_ag""$i_agrid""_AEW""$i_AEW""_UDS""$i_UDS""_SF""$i_SF""_NLT""$i_NLT""_ABT""$i_ABT""_LT""$i_LT""_mLT""$i_OS""_I""$I""_P""$i_P""_EW1""_theta1""_LS""$i_LS""_RSM""$i_RSM""_AV""$AV""_phi""$phi""_vel""$i_vel""_BV""$i_BV""_n""$i_n"
+                    dirname="results/""$dirname_clean"
+                    infilename="$dirname""/input.prm"
+                    outfilename="$dirname""/output.log"
+                    errorfilename="$dirname""/error.log"
+                    outplotfilename="$dirname""/plot.dat"
 
-input_name="input_""$i_boundary_type"".prm"
+                    input_name="input_""$i_boundary_type"".prm"
 
-mkdir -p $dirname
+                    mkdir -p $dirname
 
-echo "$dirname"
-sed  \
--e "$PhiLine" \
--e "$CohesionLine" \
--e "s/    set Function expression = if(x<60e3,.*/    set Function expression = if(x<60e3,$U,-$U);0/g" \
--e "s/    set Nonlinear Newton solver switch tolerance.*/     set Nonlinear Newton solver switch tolerance = $i_ST/g" \
--e "s/set Reference viscosity =.*/    set Reference viscosity = $i_BV/g" \
--e "s/set Output directory .*/set Output directory = results\/$dirname_clean/g" \
--e "s/    set Model name = .*/    set Model name = $materialmodelname/g" \
--e "s/set Nonlinear solver scheme.*/set Nonlinear solver scheme = $SOLVER/g" \
--e "s/  set Initial global refinement          = .*/  set Initial global refinement          = $i_grid/g" \
--e "s/  set Initial adaptive refinement        = .*/  set Initial adaptive refinement        = $i_agrid/g" \
--e "s/      set List of stress exponents of fields                       = .*/      set List of stress exponents of fields                       = $i_n, 1/g" \
--e "s/set Stress exponent .*/      set Stress exponent              = $i_n/g" \
--e "s/set Function constants = n .*/   set Function constants = n = $i_n/g" \
--e "s/    set Viscosity averaging p = .*/    set Viscosity averaging p = $AV/g" \
--e "s/set Max nonlinear iterations = .*/set Max nonlinear iterations = $I /g" \
--e "s/set Linear solver tolerance =.*/set Linear solver tolerance = $i_LT/g" \
--e "s/set Nonlinear solver tolerance.*/set Nonlinear solver tolerance = $i_NLT/g" \
--e "s/set Linear solver A block tolerance.*/set Linear solver A block tolerance = $i_ABT/g" \
--e "s/    set Reference compressibility .*/    set Reference compressibility = $COMP/g" \
--e "s/set Max pre-Newton nonlinear iterations = .*/    set Max pre-Newton nonlinear iterations = $i_P/g" \
--e "s/set Use Newton failsafe = .*/set Use Newton failsafe = $i_UFS/g" \
--e "s/set Stabilization preconditioner = .*/set Stabilization preconditioner = $i_NSP/g" \
--e "s/set Stabilization velocity block = .*/set Stabilization velocity block = $i_NSA/g" \
--e "s/set SPD safety factor = .*/set SPD safety factor = $i_SF/g" \
--e "s/set Use deviator of strain-rate = .*/set Use deviator of strain-rate = $i_UDS/g" \
--e "s/set Max Newton line search iterations = .*/    set Max Newton line search iterations = $i_LS/g" \
--e "s/set Maximum linear Stokes solver tolerance =.*/set Maximum linear Stokes solver tolerance = $i_OS/g" \
--e "s/set Use Newton residual scaling method .*/    set Use Newton residual scaling method = $i_RSM/g" \
-$input_name > "$infilename"
+                    echo "$dirname"
+                    sed  \
+                     -e "$PhiLine" \
+                     -e "$CohesionLine" \
+                     -e "s/    set Function expression = if(x<60e3,.*/    set Function expression = if(x<60e3,$U,-$U);0/g" \
+                     -e "s/    set Nonlinear Newton solver switch tolerance.*/     set Nonlinear Newton solver switch tolerance = $i_ST/g" \
+                     -e "s/set Reference viscosity =.*/    set Reference viscosity = $i_BV/g" \
+                     -e "s/set Output directory .*/set Output directory = results\/$dirname_clean/g" \
+                     -e "s/    set Model name = .*/    set Model name = $materialmodelname/g" \
+                     -e "s/set Nonlinear solver scheme.*/set Nonlinear solver scheme = $SOLVER/g" \
+                     -e "s/  set Initial global refinement          = .*/  set Initial global refinement          = $i_grid/g" \
+                     -e "s/  set Initial adaptive refinement        = .*/  set Initial adaptive refinement        = $i_agrid/g" \
+                     -e "s/      set List of stress exponents of fields                       = .*/      set List of stress exponents of fields                       = $i_n, 1/g" \
+                     -e "s/set Stress exponent .*/      set Stress exponent              = $i_n/g" \
+                     -e "s/set Function constants = n .*/   set Function constants = n = $i_n/g" \
+                     -e "s/    set Viscosity averaging p = .*/    set Viscosity averaging p = $AV/g" \
+                     -e "s/set Max nonlinear iterations = .*/set Max nonlinear iterations = $I /g" \
+                     -e "s/set Linear solver tolerance =.*/set Linear solver tolerance = $i_LT/g" \
+                     -e "s/set Nonlinear solver tolerance.*/set Nonlinear solver tolerance = $i_NLT/g" \
+                     -e "s/set Linear solver A block tolerance.*/set Linear solver A block tolerance = $i_ABT/g" \
+                     -e "s/    set Reference compressibility .*/    set Reference compressibility = $COMP/g" \
+                     -e "s/set Max pre-Newton nonlinear iterations = .*/    set Max pre-Newton nonlinear iterations = $i_P/g" \
+                     -e "s/set Use Newton failsafe = .*/set Use Newton failsafe = $i_UFS/g" \
+                     -e "s/set Stabilization preconditioner = .*/set Stabilization preconditioner = $i_NSP/g" \
+                     -e "s/set Stabilization velocity block = .*/set Stabilization velocity block = $i_NSA/g" \
+                     -e "s/set SPD safety factor = .*/set SPD safety factor = $i_SF/g" \
+                     -e "s/set Use deviator of strain-rate = .*/set Use deviator of strain-rate = $i_UDS/g" \
+                     -e "s/set Max Newton line search iterations = .*/    set Max Newton line search iterations = $i_LS/g" \
+                     -e "s/set Maximum linear Stokes solver tolerance =.*/set Maximum linear Stokes solver tolerance = $i_OS/g" \
+                     -e "s/set Use Newton residual scaling method .*/    set Use Newton residual scaling method = $i_RSM/g" \
+                     $input_name > "$infilename"
 
-nohup mpirun -np $processes $build_dir./aspect $infilename > $outfilename 2>$errorfilename
+                    nohup mpirun -np $processes $build_dir./aspect $infilename > $outfilename 2>$errorfilename
 
-grep "Relative nonlinear residual" $outfilename > $outplotfilename
+                    grep "Relative nonlinear residual" $outfilename > $outplotfilename
 
-done
-done
-done
-done
-done
-done
-done
-done
-done
-done
-done
-done
-done
-done
-done
-done
-done
-done
-done
+                   done
+                  done
+                 done
+                done
+               done
+              done
+             done
+            done
+           done
+          done
+         done
+        done
+       done
+      done
+     done
+    done
+   done
+  done
+ done
 done
