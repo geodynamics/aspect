@@ -234,14 +234,14 @@ namespace aspect
         /**
          * Enumeration for selecting which viscosity averaging scheme to use.
          */
-        CompositionalAveragingOperation viscosity_averaging;
+        MaterialUtilities::CompositionalAveragingOperation viscosity_averaging;
 
         /**
          * Used for calculating average elastic shear modulus and viscosity
          */
         double calculate_average_vector (const std::vector<double> &composition,
                                          const std::vector<double> &parameter_values,
-                                         const CompositionalAveragingOperation &average_type) const;
+                                         const MaterialUtilities::CompositionalAveragingOperation &average_type) const;
 
 
         double calculate_average_viscoelastic_viscosity (const double average_viscosity,

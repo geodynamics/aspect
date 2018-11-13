@@ -135,7 +135,7 @@ namespace aspect
          */
         double reference_T;
 
-        CompositionalAveragingOperation viscosity_averaging;
+        MaterialUtilities::CompositionalAveragingOperation viscosity_averaging;
 
         /**
          * Vector for field densities, read from parameter file .

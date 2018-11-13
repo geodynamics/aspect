@@ -40,16 +40,16 @@ namespace aspect
         {
           const double temperature = in.temperature[i];
           const std::vector<double> composition = in.composition[i];
-          const std::vector<double> volume_fractions = compute_volume_fractions(composition);
+          const std::vector<double> volume_fractions = MaterialUtilities::compute_volume_fractions(composition);
 
-          out.viscosities[i] = average_value (volume_fractions, viscosities, viscosity_averaging);
-          out.specific_heat[i] = average_value (volume_fractions, specific_heats, arithmetic);
+          out.viscosities[i] = MaterialUtilities::average_value (volume_fractions, viscosities, viscosity_averaging);
+          out.specific_heat[i] = MaterialUtilities::average_value (volume_fractions, specific_heats, MaterialUtilities::arithmetic);
 
 
           // Arithmetic averaging of thermal conductivities
           // This may not be strictly the most reasonable thing, but for most Earth materials we hope
           // that they do not vary so much that it is a big problem.
-          out.thermal_conductivities[i] = average_value (volume_fractions, thermal_conductivities, arithmetic);
+          out.thermal_conductivities[i] = MaterialUtilities::average_value (volume_fractions, thermal_conductivities, MaterialUtilities::arithmetic);
 
           double density = 0.0;
           for (unsigned int j=0; j < volume_fractions.size(); ++j)
@@ -62,7 +62,7 @@ namespace aspect
           out.densities[i] = density;
 
 
-          out.thermal_expansion_coefficients[i] = average_value (volume_fractions, thermal_expansivities, arithmetic);
+          out.thermal_expansion_coefficients[i] = MaterialUtilities::average_value (volume_fractions, thermal_expansivities, MaterialUtilities::arithmetic);
 
 
           // Compressibility at the given positions.
@@ -157,16 +157,8 @@ namespace aspect
         {
           reference_T = prm.get_double ("Reference temperature");
 
-          if (prm.get ("Viscosity averaging scheme") == "harmonic")
-            viscosity_averaging = harmonic;
-          else if (prm.get ("Viscosity averaging scheme") == "arithmetic")
-            viscosity_averaging = arithmetic;
-          else if (prm.get ("Viscosity averaging scheme") == "geometric")
-            viscosity_averaging = geometric;
-          else if (prm.get ("Viscosity averaging scheme") == "maximum composition")
-            viscosity_averaging = maximum_composition;
-          else
-            AssertThrow(false, ExcMessage("Not a valid viscosity averaging scheme"));
+          viscosity_averaging = MaterialUtilities::parse_compositional_averaging_operation ("Viscosity averaging scheme",
+                                prm);
 
           // Establish that a background field is required here
           const bool has_background_field = true;

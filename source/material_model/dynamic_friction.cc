@@ -37,60 +37,34 @@ namespace aspect
                         const SymmetricTensor<2,dim> &strain_rate) const
     {
 
-      std::vector<double> viscosities( mu_s.size());
+      std::vector<double> viscosities(mu_s.size());
 
       // second invariant for strain tensor
-      const double edot_ii = ( (this->get_timestep_number() == 0 && strain_rate.norm() <= std::numeric_limits<double>::min())
-                               ?
-                               reference_strain_rate
-                               :
-                               std::max(std::sqrt(std::fabs(second_invariant(deviator(strain_rate)))),
-                                        minimum_strain_rate) );
-
       const double strain_rate_dev_inv2 = ( (this->get_timestep_number() == 0 && strain_rate.norm() <= std::numeric_limits<double>::min())
                                             ?
                                             reference_strain_rate * reference_strain_rate
                                             :
                                             std::fabs(second_invariant(deviator(strain_rate))));
-      // In later timesteps, we still need to care about cases of very small
-      // strain rates. We expect the viscosity to approach the maximum_viscosity
-      // in these cases. This check prevents a division-by-zero.
+
       for (unsigned int i = 0; i < mu_s.size(); i++)
         {
-          std::vector<double> mu( mu_s.size());
-          std::vector<double> phi( mu_s.size());
-          std::vector<double> strength( mu_s.size());
-          std::vector<double> viscous_stress( mu_s.size());
-
-          // Calculate viscous stress
-          viscous_stress[i] = 2. * background_viscosities[i] * edot_ii;
-
           // Calculate effective steady-state friction coefficient. The formula below is equivalent to the
-          // equation 13 in van Dinther et al., (2013, JGR) . Although here the dynamic friction coefficient
+          // equation 13 in van Dinther et al., (2013, JGR). Although here the dynamic friction coefficient
           // is directly specified. In addition, we also use a reference strain rate in place of a characteristic
           // velocity divided by local element size.
-          mu[i]  = mu_d[i] + ( mu_s[i] - mu_d[i] ) / ( ( 1 + strain_rate_dev_inv2/reference_strain_rate ) );
+          const double mu  = mu_d[i] + (mu_s[i] - mu_d[i]) / ( (1 + strain_rate_dev_inv2/reference_strain_rate) );
 
           // Convert effective steady-state friction coefficient to internal angle of friction.
-          phi[i] = std::atan (mu[i]);
+          const double phi = std::atan (mu);
 
-          if (std::sqrt(strain_rate_dev_inv2) <= std::numeric_limits<double>::min())
-            viscosities[i] = maximum_viscosity;
-
-          // Drucker Prager yield criterion.
-          strength[i] = ( (dim==3)
-                          ?
-                          ( 6.0 * cohesions[i] * std::cos(phi[i]) + 6.0 * std::max(pressure,0.0) * std::sin(phi[i]) )
-                          / ( std::sqrt(3.0) * ( 3.0 + std::sin(phi[i]) ) )
-                          :
-                          cohesions[i] * std::cos(phi[i]) + std::max(pressure,0.0) * std::sin(phi[i]) );
-
-          // Rescale the viscosity back onto the yield surface
-          viscosities[i] = strength[i] / ( 2.0 * std::sqrt(strain_rate_dev_inv2) );
+          // Compute the viscosity according to the Drucker-Prager yield criterion.
+          const MaterialUtilities::DruckerPragerInputs plastic_in(cohesions[i], phi, std::max(pressure,0.0), std::sqrt(strain_rate_dev_inv2));
+          MaterialUtilities::DruckerPragerOutputs plastic_out;
+          MaterialUtilities::compute_drucker_prager_yielding<dim> (plastic_in, plastic_out);
 
           // Cut off the viscosity between a minimum and maximum value to avoid
           // a numerically unfavourable large viscosity range.
-          viscosities[i] = 1.0 / ( ( 1.0 / ( viscosities[i] + minimum_viscosity ) ) + ( 1.0 / maximum_viscosity ) );
+          viscosities[i] = 1.0 / ( ( 1.0 / (plastic_out.plastic_viscosity + minimum_viscosity) ) + (1.0 / maximum_viscosity) );
 
         }
       return viscosities;
@@ -108,20 +82,20 @@ namespace aspect
         {
 
           const std::vector<double> composition = in.composition[i];
-          const std::vector<double> volume_fractions = compute_volume_fractions(composition);
+          const std::vector<double> volume_fractions = MaterialUtilities::compute_volume_fractions(composition);
 
           if (in.strain_rate.size() > 0)
             {
               const std::vector<double> viscosities = compute_viscosities(in.pressure[i], in.strain_rate[i]);
-              out.viscosities[i] = average_value (volume_fractions, viscosities, viscosity_averaging);
+              out.viscosities[i] = MaterialUtilities::average_value (volume_fractions, viscosities, viscosity_averaging);
             }
-          out.specific_heat[i] = average_value (volume_fractions, specific_heats, arithmetic);
+          out.specific_heat[i] = MaterialUtilities::average_value (volume_fractions, specific_heats, MaterialUtilities::arithmetic);
 
 
           // Arithmetic averaging of thermal conductivities
           // This may not be strictly the most reasonable thing, but for most Earth materials we hope
           // that they do not vary so much that it is a big problem.
-          out.thermal_conductivities[i] = average_value (volume_fractions, thermal_conductivities, arithmetic);
+          out.thermal_conductivities[i] = MaterialUtilities::average_value (volume_fractions, thermal_conductivities, MaterialUtilities::arithmetic);
 
           double density = 0.0;
           for (unsigned int j=0; j < volume_fractions.size(); ++j)
@@ -134,7 +108,7 @@ namespace aspect
           out.densities[i] = density;
 
 
-          out.thermal_expansion_coefficients[i] = average_value (volume_fractions, thermal_expansivities, arithmetic);
+          out.thermal_expansion_coefficients[i] = MaterialUtilities::average_value (volume_fractions, thermal_expansivities, MaterialUtilities::arithmetic);
 
 
           // Compressibility at the given positions.
@@ -265,16 +239,8 @@ namespace aspect
         {
           reference_T = prm.get_double ("Reference temperature");
 
-          if (prm.get ("Viscosity averaging scheme") == "harmonic")
-            viscosity_averaging = harmonic;
-          else if (prm.get ("Viscosity averaging scheme") == "arithmetic")
-            viscosity_averaging = arithmetic;
-          else if (prm.get ("Viscosity averaging scheme") == "geometric")
-            viscosity_averaging = geometric;
-          else if (prm.get ("Viscosity averaging scheme") == "maximum composition")
-            viscosity_averaging = maximum_composition;
-          else
-            AssertThrow(false, ExcMessage("Not a valid viscosity averaging scheme"));
+          viscosity_averaging = MaterialUtilities::parse_compositional_averaging_operation ("Viscosity averaging scheme",
+                                prm);
 
           // Parse DynamicFriction properties
           densities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Densities"))),

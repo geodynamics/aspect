@@ -79,13 +79,13 @@ namespace aspect
     template <int dim>
     std::pair<std::vector<double>, std::vector<bool> >
     ViscoPlastic<dim>::
-    calculate_isostrain_viscosities ( const std::vector<double> &volume_fractions,
-                                      const double &pressure,
-                                      const double &temperature,
-                                      const std::vector<double> &composition,
-                                      const SymmetricTensor<2,dim> &strain_rate,
-                                      const ViscosityScheme &viscous_type,
-                                      const YieldScheme &yield_type) const
+    calculate_isostrain_viscosities (const std::vector<double> &volume_fractions,
+                                     const double &pressure,
+                                     const double &temperature,
+                                     const std::vector<double> &composition,
+                                     const SymmetricTensor<2,dim> &strain_rate,
+                                     const ViscosityScheme &viscous_type,
+                                     const YieldScheme &yield_type) const
     {
       // This function calculates viscosities assuming that all the compositional fields
       // experience the same strain rate (isostrain).
@@ -106,6 +106,8 @@ namespace aspect
       // to be used in incompressible and compressible models.
       const double temperature_for_viscosity = temperature + adiabatic_temperature_gradient_for_viscosity*pressure;
 
+
+      // First step: viscous behavior
       // Calculate viscosities for each of the individual compositional phases
       std::vector<double> composition_viscosities(volume_fractions.size());
       std::vector<bool> composition_yielding(volume_fractions.size());
@@ -130,9 +132,6 @@ namespace aspect
                                                   (constants::gas_constant*temperature_for_viscosity*stress_exponents_dislocation[j])) *
                                          std::pow(edot_ii,((1. - stress_exponents_dislocation[j])/stress_exponents_dislocation[j]));
 
-          // Composite viscosity
-          double viscosity_composite = (viscosity_diffusion * viscosity_dislocation)/(viscosity_diffusion + viscosity_dislocation);
-
           // Select what form of viscosity to use (diffusion, dislocation or composite)
           double viscosity_pre_yield = 0.0;
           switch (viscous_type)
@@ -149,30 +148,26 @@ namespace aspect
               }
               case composite:
               {
-                viscosity_pre_yield = viscosity_composite;
+                viscosity_pre_yield = (viscosity_diffusion * viscosity_dislocation)/(viscosity_diffusion + viscosity_dislocation);
                 break;
               }
               default:
               {
-                AssertThrow( false, ExcNotImplemented() );
+                AssertThrow(false, ExcNotImplemented());
                 break;
               }
             }
 
           double phi = angles_internal_friction[j];
-
-          // Passing cohesions to a new variable
           double coh = cohesions[j];
 
-          // Viscous weakening
-          double viscous_weakening = 1.;
 
-          // Strain weakening
-          double strain_ii = 0.;
+          // Second step: strain weakening
           if (use_strain_weakening == true)
             {
               // Calculate and/or constrain the strain invariant of the previous timestep
-              if ( use_finite_strain_tensor == true )
+              double strain_ii = 0.;
+              if (use_finite_strain_tensor)
                 {
                   // Calculate second invariant of left stretching tensor "L"
                   Tensor<2,dim> strain;
@@ -198,63 +193,44 @@ namespace aspect
               if (use_viscous_strain_weakening == true)
                 strain_ii = composition[this->introspection().compositional_index_for_name("viscous_strain")];
 
-              viscous_weakening = calculate_viscous_weakening(strain_ii, j);
+              // Apply strain weakening of the viscous viscosity
+              viscosity_pre_yield *= calculate_viscous_weakening(strain_ii, j);
             }
 
 
-          // Apply strain weakening of the viscous viscosity
-          viscosity_pre_yield *= viscous_weakening;
-
-          // Calculate viscous stress
-          double viscous_stress = 2. * viscosity_pre_yield * edot_ii;
-
-          // Calculate Drucker Prager yield strength (i.e. yield stress)
-          double yield_strength = ( (dim==3)
-                                    ?
-                                    ( 6.0 * coh * std::cos(phi) + 6.0 * std::max(pressure,0.0) * std::sin(phi) )
-                                    / ( std::sqrt(3.0) * (3.0 + std::sin(phi) ) )
-                                    :
-                                    coh * std::cos(phi) + std::max(pressure,0.0) * std::sin(phi) );
-
+          // Third step: plastic yielding
+          // Calculate Drucker-Prager yield strength (i.e. yield stress)
           // Use max_yield_strength to limit the yield strength for depths beneath the lithosphere
-          yield_strength = std::min(yield_strength, max_yield_strength);
+          const MaterialUtilities::DruckerPragerInputs plastic_in(coh, phi, std::max(pressure,0.0), edot_ii, max_yield_strength);
+          MaterialUtilities::DruckerPragerOutputs plastic_out;
+          MaterialUtilities::compute_drucker_prager_yielding<dim> (plastic_in, plastic_out);
 
-          // If the viscous stress is greater than the yield strength, rescale the viscosity back to yield surface
-          // Also, we use a value of 1 to indicate we're in the yielding regime.
-          double viscosity_drucker_prager;
-          if ( viscous_stress >= yield_strength )
-            {
-              viscosity_drucker_prager = yield_strength / (2.0 * edot_ii);
-              composition_yielding[j] = true;
-            }
-          else
-            {
-              viscosity_drucker_prager = viscosity_pre_yield;
-            }
-
-
-          // Stress limiter rheology
-          double viscosity_limiter;
-          viscosity_limiter = yield_strength / (2.0 * ref_strain_rate) *
-                              std::pow((edot_ii/ref_strain_rate), 1./exponents_stress_limiter[j] - 1.0);
+          // If the viscous stress is greater than the yield strength, indicate we are in the yielding regime.
+          const double viscous_stress = 2. * viscosity_pre_yield * edot_ii;
+          if (viscous_stress >= plastic_out.yield_strength)
+            composition_yielding[j] = true;
 
           // Select if yield viscosity is based on Drucker Prager or stress limiter rheology
-          double viscosity_yield;
+          double viscosity_yield = viscosity_pre_yield;
           switch (yield_type)
             {
               case stress_limiter:
               {
+                const double viscosity_limiter = plastic_out.yield_strength / (2.0 * ref_strain_rate)
+                                                 * std::pow((edot_ii/ref_strain_rate), 1./exponents_stress_limiter[j] - 1.0);
                 viscosity_yield = 1. / ( 1./viscosity_limiter + 1./viscosity_pre_yield);
                 break;
               }
               case drucker_prager:
               {
-                viscosity_yield = viscosity_drucker_prager;
+                // If the viscous stress is greater than the yield strength, rescale the viscosity back to yield surface
+                if (viscous_stress >= plastic_out.yield_strength)
+                  viscosity_yield = plastic_out.plastic_viscosity;
                 break;
               }
               default:
               {
-                AssertThrow( false, ExcNotImplemented() );
+                AssertThrow(false, ExcNotImplemented());
                 break;
               }
             }
@@ -277,10 +253,10 @@ namespace aspect
       const double cut_off_strain_ii = std::max(std::min(strain_ii,end_plastic_strain_weakening_intervals[j]),start_plastic_strain_weakening_intervals[j]);
 
       // Linear strain weakening of cohesion and internal friction angle between specified strain values
-      const double strain_fraction = ( cut_off_strain_ii - start_plastic_strain_weakening_intervals[j] ) /
-                                     ( start_plastic_strain_weakening_intervals[j] - end_plastic_strain_weakening_intervals[j] );
-      const double current_coh = cohesions[j] + ( cohesions[j] - cohesions[j] * cohesion_strain_weakening_factors[j] ) * strain_fraction;
-      const double current_phi = angles_internal_friction[j] + ( angles_internal_friction[j] - angles_internal_friction[j] * friction_strain_weakening_factors[j] ) * strain_fraction;
+      const double strain_fraction = (cut_off_strain_ii - start_plastic_strain_weakening_intervals[j]) /
+                                     (start_plastic_strain_weakening_intervals[j] - end_plastic_strain_weakening_intervals[j]);
+      const double current_coh = cohesions[j] + (cohesions[j] - cohesions[j] * cohesion_strain_weakening_factors[j]) * strain_fraction;
+      const double current_phi = angles_internal_friction[j] + (angles_internal_friction[j] - angles_internal_friction[j] * friction_strain_weakening_factors[j]) * strain_fraction;
 
       return std::make_pair (current_coh, current_phi);
     }
@@ -438,11 +414,11 @@ namespace aspect
             }
 
           double viscosity_averaging_p = 0; // Geometric
-          if (viscosity_averaging == harmonic)
+          if (viscosity_averaging == MaterialUtilities::harmonic)
             viscosity_averaging_p = -1;
-          if (viscosity_averaging == arithmetic)
+          if (viscosity_averaging == MaterialUtilities::arithmetic)
             viscosity_averaging_p = 1;
-          if (viscosity_averaging == maximum_composition)
+          if (viscosity_averaging == MaterialUtilities::maximum_composition)
             viscosity_averaging_p = 1000;
 
 
@@ -562,7 +538,7 @@ namespace aspect
           out.specific_heat[i] = 0.0;
           double thermal_diffusivity = 0.0;
 
-          const std::vector<double> volume_fractions = compute_volume_fractions(in.composition[i], volumetric_compositions);
+          const std::vector<double> volume_fractions = MaterialUtilities::compute_volume_fractions(in.composition[i], volumetric_compositions);
           for (unsigned int j=0; j < volume_fractions.size(); ++j)
             {
               // not strictly correct if thermal expansivities are different, since we are interpreting
@@ -606,7 +582,7 @@ namespace aspect
               // We have given the user freedom to apply alternative bounds, because in diffusion-dominated
               // creep (where n_diff=1) viscosities are stress and strain-rate independent, so the calculation
               // of compositional field viscosities is consistent with any averaging scheme.
-              out.viscosities[i] = average_value(volume_fractions, calculate_viscosities.first, viscosity_averaging);
+              out.viscosities[i] = MaterialUtilities::average_value(volume_fractions, calculate_viscosities.first, viscosity_averaging);
 
               // Decide based on the maximum composition if material is yielding.
               // This avoids for example division by zero for harmonic averaging (as plastic_yielding
@@ -649,7 +625,7 @@ namespace aspect
       // If we use the full strain tensor, compute the change in the individual tensor components.
       if (in.current_cell.state() == IteratorState::valid && use_strain_weakening == true
           && use_finite_strain_tensor == true && this->get_timestep_number() > 0 && in.strain_rate.size())
-        compute_finite_strain_reaction_terms(in,out);
+        compute_finite_strain_reaction_terms(in, out);
     }
 
     template <int dim>
@@ -1045,17 +1021,8 @@ namespace aspect
                                                                                       n_fields,
                                                                                       "Friction strain weakening factors");
 
-          // Rheological parameters
-          if (prm.get ("Viscosity averaging scheme") == "harmonic")
-            viscosity_averaging = harmonic;
-          else if (prm.get ("Viscosity averaging scheme") == "arithmetic")
-            viscosity_averaging = arithmetic;
-          else if (prm.get ("Viscosity averaging scheme") == "geometric")
-            viscosity_averaging = geometric;
-          else if (prm.get ("Viscosity averaging scheme") == "maximum composition")
-            viscosity_averaging = maximum_composition;
-          else
-            AssertThrow(false, ExcMessage("Not a valid viscosity averaging scheme"));
+          viscosity_averaging = MaterialUtilities::parse_compositional_averaging_operation ("Viscosity averaging scheme",
+                                prm);
 
           // Rheological parameters
           if (prm.get ("Viscous flow law") == "composite")

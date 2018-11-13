@@ -81,8 +81,6 @@ namespace aspect
                                               :
                                               std::fabs(second_invariant(strain_rate_deviator))));
 
-              const double sqrt3 = std::sqrt(3.0);
-
               const double strain_rate_effective = edot_ii_strict;
 
               // In later time steps, we still need to care about cases of very small
@@ -101,19 +99,11 @@ namespace aspect
               else
                 {
                   // plasticity
-                  const double sin_phi = std::sin(angle_of_internal_friction);
-                  const double cos_phi = std::cos(angle_of_internal_friction);
-                  const double strain_rate_effective_inv = 1./(2.*std::sqrt(strain_rate_effective));
-                  const double strength_inv_part = 1./(sqrt3*(3.0+sin_phi));
+                  const MaterialUtilities::DruckerPragerInputs plastic_in(cohesion, angle_of_internal_friction, pressure, std::sqrt(strain_rate_effective));
+                  MaterialUtilities::DruckerPragerOutputs plastic_out;
+                  MaterialUtilities::compute_drucker_prager_yielding<dim> (plastic_in, plastic_out);
 
-                  const double strength = ( (dim==3)
-                                            ?
-                                            ( 6.0 * cohesion * cos_phi + 6.0 * pressure * sin_phi) * strength_inv_part
-                                            :
-                                            cohesion * cos_phi + pressure * sin_phi );
-
-                  // Rescale the viscosity back onto the yield surface
-                  const double eta_plastic = strength * strain_rate_effective_inv;
+                  const double eta_plastic = plastic_out.plastic_viscosity;
 
                   // Cut off the viscosity between a minimum and maximum value to avoid
                   // a numerically unfavourable large viscosity range.
@@ -132,12 +122,7 @@ namespace aspect
                                                       / ((eta_plastic + minimum_viscosity + maximum_viscosity) * (eta_plastic + minimum_viscosity + maximum_viscosity));
                       const SymmetricTensor<2,dim> effective_viscosity_strain_rate_derivatives
                         = -0.5 * averaging_factor * (eta_plastic / edot_ii_strict) * strain_rate_deviator;
-                      const double effective_viscosity_pressure_derivatives = averaging_factor * sin_phi * strain_rate_effective_inv *
-                                                                              (dim == 3
-                                                                               ?
-                                                                               (6.0 * strength_inv_part)
-                                                                               :
-                                                                               1);
+                      const double effective_viscosity_pressure_derivatives = averaging_factor * plastic_out.viscosity_pressure_derivative;
 
                       derivatives->viscosity_derivative_wrt_strain_rate[i] = deviator_tensor<dim>() * effective_viscosity_strain_rate_derivatives;
 

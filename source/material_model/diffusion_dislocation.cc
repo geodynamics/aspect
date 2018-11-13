@@ -182,7 +182,7 @@ namespace aspect
           const double temperature = in.temperature[i];
           const double pressure= in.pressure[i];
           const std::vector<double> composition = in.composition[i];
-          const std::vector<double> volume_fractions = compute_volume_fractions(composition);
+          const std::vector<double> volume_fractions = MaterialUtilities::compute_volume_fractions(composition);
 
           // Averaging composition-field dependent properties
 
@@ -215,7 +215,7 @@ namespace aspect
               // We have given the user freedom to apply alternative bounds, because in diffusion-dominated
               // creep (where n_diff=1) viscosities are stress and strain-rate independent, so the calculation
               // of compositional field viscosities is consistent with any averaging scheme.
-              out.viscosities[i] = average_value(volume_fractions, composition_viscosities, viscosity_averaging);
+              out.viscosities[i] = MaterialUtilities::average_value(volume_fractions, composition_viscosities, viscosity_averaging);
             }
 
           out.densities[i] = density;
@@ -436,17 +436,8 @@ namespace aspect
                                                                           n_fields,
                                                                           "Thermal expansivities");
 
-          // Rheological parameters
-          if (prm.get ("Viscosity averaging scheme") == "harmonic")
-            viscosity_averaging = harmonic;
-          else if (prm.get ("Viscosity averaging scheme") == "arithmetic")
-            viscosity_averaging = arithmetic;
-          else if (prm.get ("Viscosity averaging scheme") == "geometric")
-            viscosity_averaging = geometric;
-          else if (prm.get ("Viscosity averaging scheme") == "maximum composition")
-            viscosity_averaging = maximum_composition;
-          else
-            AssertThrow(false, ExcMessage("Not a valid viscosity averaging scheme"));
+          viscosity_averaging = MaterialUtilities::parse_compositional_averaging_operation ("Viscosity averaging scheme",
+                                prm);
 
           // Rheological parameters
           // Diffusion creep parameters (Stress exponents often but not always 1)

@@ -126,7 +126,7 @@ namespace aspect
         /**
          * Enumeration for selecting which viscosity averaging scheme to use.
          */
-        CompositionalAveragingOperation viscosity_averaging;
+        MaterialUtilities::CompositionalAveragingOperation viscosity_averaging;
 
         /**
          * Vector for field densities, read from parameter file .
