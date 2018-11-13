@@ -35,7 +35,7 @@ namespace aspect
     using namespace dealii;
 
     /**
-     * An namespace in which we define utility functions that
+     * A namespace in which we define utility functions that
      * might be used in many different places in the material
      * model to prevent code duplication.
      */

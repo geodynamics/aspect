@@ -55,7 +55,7 @@ namespace aspect
     using namespace dealii;
 
     /**
-     * An namespace whose enum members are used in querying the nonlinear
+     * A namespace whose enum members are used in querying the nonlinear
      * dependence of physical parameters on other solution variables.
      */
     namespace NonlinearDependence
