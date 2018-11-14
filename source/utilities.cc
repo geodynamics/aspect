@@ -871,7 +871,7 @@ namespace aspect
     }
 
 
-    //Added readUrl (with default value as false)
+    //Added a check to read data files from a url
     //Author: Kodi Neumiller 10/9/18
     std::string
     read_and_distribute_file_content(const std::string &filename,
@@ -888,8 +888,7 @@ namespace aspect
 
          //Check to see if the prm file will be reading data from the disk or
 		// from a provided URL
-        //std::string checkUrl = filename.substr(0, 7);
-		if ( filename.find("http://") == 0 || filename.find("https://") == 0 || filename.find("file://") == 0) {
+		if (filename.find("http://") == 0 || filename.find("https://") == 0 || filename.find("file://") == 0) {
 			libdap::Connect *url = 0;
 			url = new libdap::Connect(filename);
 			libdap::BaseTypeFactory factory;
@@ -905,7 +904,7 @@ namespace aspect
 
 			//Temporary vector that will hold the different arrays stored in urlArray
 			std::vector<std::string> tmp;
-			//Vector that will hold the arrays and the values within those arrays
+			//Vector that will hold the arrays (columns) and the values within those arrays
 			std::vector<std::vector<std::string>> columns;
 
 
@@ -924,14 +923,14 @@ namespace aspect
 						else {
 							AssertThrow (false,
 							ExcMessage (std::string("Error when reading from url: ") + filename +
-									" maybe it was not of the correct type?"));
+									" Maybe it was not of the correct type?"));
 						}
 
 			        }
 			        else {
 			        		AssertThrow (false,
 			        	    ExcMessage (std::string("Error when reading from url: ") + filename +
-			        	    		" maybe it was not of the correct type?"));
+			        	    		" Maybe it was not of the correct type?"));
 			        }
 			    }
 
