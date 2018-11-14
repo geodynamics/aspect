@@ -199,6 +199,26 @@ namespace aspect
           drucker_prager
         } yield_mechanism;
 
+        /**
+         * Enumeration for selecting which type of weakening mechanism to use.
+         * For none, no strain weakening occurs.
+         * Otherwise, the material can be weakened based on the full finite
+         * strain tensor, the total accumulated strain, or the plastic strain
+         * and viscous strain can be tracked separately and used only for
+         * the corresponding (plastic or viscous) part of the viscosity
+         * computation.
+         */
+        enum WeakeningMechanism
+        {
+          none,
+          finite_strain_tensor,
+          total_strain,
+          plastic_weakening_with_plastic_strain_only,
+          plastic_weakening_with_total_strain_only,
+          plastic_weakening_with_plastic_strain_and_viscous_weakening_with_viscous_strain,
+          viscous_weakening_with_viscous_strain_only
+        } weakening_mechanism;
+
 
         std::pair<std::vector<double>, std::vector<bool> >
         calculate_isostrain_viscosities ( const std::vector<double> &volume_fractions,
