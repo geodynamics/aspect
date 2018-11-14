@@ -837,14 +837,10 @@ namespace aspect
     }
 
 
-//Evaluate the cosine and sine terms of a real spherical harmonic.
-//This is a fully normalized harmonic, that is to say, inner products
-//of these functions should integrate to a kronecker delta over
-//the surface of a sphere.
-    std::pair<double,double> real_spherical_harmonic( const unsigned int l, // degree
-                                                      const unsigned int m, // order
-                                                      const double theta,   // colatitude (radians)
-                                                      const double phi )    // longitude (radians)
+    std::pair<double,double> real_spherical_harmonic( const unsigned int l,
+                                                      const unsigned int m,
+                                                      const double theta,
+                                                      const double phi)
     {
       const double sqrt_2 = numbers::SQRT2;
       const std::complex<double> sph_harm_val = boost::math::spherical_harmonic( l, m, theta, phi );
