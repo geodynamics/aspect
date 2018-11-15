@@ -7501,15 +7501,16 @@ One can see that subduction zones are visible as depressed surface topography
 due to the downward flow, while regions such as Iceland, Hawaii, or mid ocean 
 ridges are elevated due to (deep and) shallow upward flow. The core mantle boundary
 topography shows that the upwelling large low shear wave velocity 
-provinces deflect the core mantle boundary up. Lastly, Figure~\ref{fig:ic-2}e and 
-f show geoid perturbations for 2 and 4 global refinement steps, respectively. 
+provinces deflect the core mantle boundary up. Figure~\ref{fig:ic-2}e and 
+f shows geoid perturbations for 2 and 4 global refinement steps, respectively. 
 The geoid anomalies show a strong correlation with the surface dynamic topography. 
 This is in part expected given that the geoid anomalies are driven by the 
 deflection of the upper and lower surface
 as well as internal density variations. The relative importance of these different
 contributors is dictated by the Earth's viscosity profile. Due to the isoviscous
 assumption in this cookbook, we don't properly recover patterns of the observed
-geoid. 
+geoid. Lastly, Figure~\ref{fig:ic-2}g and h shows geoid perturbations for 2 and 4 
+global refinement steps, respectively.
 
 As discussed in the previous cookbook, dynamic topography does not necessarily 
 average to zero if the resolution is not high enough. While one can simply subtract
@@ -7522,13 +7523,15 @@ dynamic topography is closer to zero than the mean top dynamic topography. This 
 likely due to the larger magnitude of dynamic topography at the surface and the
 difference in resolution between the top and bottom domain
 (for a given refinement, the resolution at the core mantle boundary is
-higher than the resolution at the surface). The average geoid height is zero since
-the minimum degree in the geoid anomaly expansion is set to 2. 
+higher than the resolution at the surface). The average geoid height and gravity anomaly 
+is zero since the minimum degree in the geoid anomaly expansion is set to 2. 
 
 This model uses a highly simplified material model that is incompressible and 
 isoviscous and does therefore not represent real mantle flow. More realistic 
 material properties, density scaling as well as boundary conditions will affect the magnitudes
-and patterns shown here. 
+and patterns shown here. A comparison between surface dynamic topography, the geoid,
+and gravity anomalies from ASPECT and a spectral based code shows good agreement 
+(see \texttt{tests/spectral-comparison/} for figure and details).
 
 \begin{figure}
   \includegraphics[width=\textwidth]{cookbooks/initial-condition-S20RTS/Fig_cookbook_V4-01.png}
@@ -7551,8 +7554,10 @@ and patterns shown here.
   refinement of 2 (a, cookbook) and 4 (b). The colorbar ranges from -2400m to 400m for panel (a) and
   from -2000m to 1600m for panel (b). The second row shows the dynamic topography at
   the core mantle boundary for the same model and a refinement of 2 (c, cookbook) and 4 (d). Averages of the 
-  dynamic topography fields are indicated at the bottom left of each panel. The bottom row shows the
-  geoid anomalies from this model at the surface for refinement of 2 (e, cookbook) and 4 (f).}
+  dynamic topography fields are indicated at the bottom left of each panel. The third row shows the
+  geoid anomalies from this model at the surface for refinement of 2 (e, cookbook) and 4 (f). 
+  The fourth row shows the gravity anomalies from this model at the surface for refinement of 2 
+  (g, cookbook) and 4 (h)}
   \label{fig:ic-2}
 \end{figure}
 
