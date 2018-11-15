@@ -15,4 +15,4 @@
 # 15: Outward mass flux through boundary with indicator 2 ("bottom") (kg/yr)
 # 16: Outward mass flux through boundary with indicator 3 ("top") (kg/yr)
 # 17: Visualization file name
-0 0.000000000000e+00 0.000000000000e+00 100 1003 441 0 1 3 2 3.14232888e-18 6.44507990e-18 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 output-visco_plastic_transition_pressures_simple/solution/solution-00000
+0 0.000000000000e+00 0.000000000000e+00 100 1003 441 0 2 3 2 2.85728810e-18 5.72956343e-18 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 output-visco_plastic_transition_pressures_simple/solution/solution-00000 
