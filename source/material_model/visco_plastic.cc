@@ -232,7 +232,7 @@ namespace aspect
 
           // Third step: plastic yielding
           // Calculate Drucker-Prager yield strength (i.e. yield stress)
-          const MaterialUtilities::DruckerPragerInputs plastic_in(yield_parameters.first, yield_parameters.second, std::max(pressure,0.0), edot_ii);
+          const MaterialUtilities::DruckerPragerInputs plastic_in(yield_parameters.first, yield_parameters.second, std::max(pressure,0.0), edot_ii, max_yield_strength);
           MaterialUtilities::DruckerPragerOutputs plastic_out;
           MaterialUtilities::compute_drucker_prager_yielding<dim> (plastic_in, plastic_out);
 
@@ -794,8 +794,8 @@ namespace aspect
                              "of friction based on accumulated finite strain.  Units: None. "
                              "By default, this parameter is set to false. The default option is there "
                              "to make sure that the parameter is not used at the same time as the "
-                             "``Strain weakening mechanism'' parameter, which has the same functionality."
-                             "This parameter is deprecated; please use ``Strain weakening mechanism''"
+                             "``Strain weakening mechanism'' parameter, which has the same functionality. "
+                             "This parameter is deprecated; please use ``Strain weakening mechanism'' "
                              "instead!");
           prm.declare_entry ("Use plastic strain weakening", "default",
                              Patterns::Selection("true|false|default"),
@@ -803,8 +803,8 @@ namespace aspect
                              "of friction based on accumulated finite plastic strain only. Units: None. "
                              "By default, this parameter is set to false. The default option is there "
                              "to make sure that the parameter is not used at the same time as the "
-                             "``Strain weakening mechanism'' parameter, which has the same functionality."
-                             "This parameter is deprecated; please use ``Strain weakening mechanism''"
+                             "``Strain weakening mechanism'' parameter, which has the same functionality. "
+                             "This parameter is deprecated; please use ``Strain weakening mechanism'' "
                              "instead!");
           prm.declare_entry ("Use viscous strain weakening", "default",
                              Patterns::Selection("true|false|default"),
@@ -812,8 +812,8 @@ namespace aspect
                              "based on accumulated finite viscous strain only. Units: None. "
                              "By default, this parameter is set to false. The default option is there "
                              "to make sure that the parameter is not used at the same time as the "
-                             "``Strain weakening mechanism'' parameter, which has the same functionality."
-                             "This parameter is deprecated; please use ``Strain weakening mechanism''"
+                             "``Strain weakening mechanism'' parameter, which has the same functionality. "
+                             "This parameter is deprecated; please use ``Strain weakening mechanism'' "
                              "instead!");
           prm.declare_entry ("Use finite strain tensor", "default",
                              Patterns::Selection("true|false|default"),
@@ -821,8 +821,8 @@ namespace aspect
                              "Units: None. "
                              "By default, this parameter is set to false. The default option is there "
                              "to make sure that the parameter is not used at the same time as the "
-                             "``Strain weakening mechanism'' parameter, which has the same functionality."
-                             "This parameter is deprecated; please use ``Strain weakening mechanism''"
+                             "``Strain weakening mechanism'' parameter, which has the same functionality. "
+                             "This parameter is deprecated; please use ``Strain weakening mechanism'' "
                              "instead!");
           prm.declare_entry ("Start plasticity strain weakening intervals", "0.",
                              Patterns::List(Patterns::Double(0)),
@@ -1106,6 +1106,8 @@ namespace aspect
                 weakening_mechanism = plastic_weakening_with_plastic_strain_and_viscous_weakening_with_viscous_strain;
               else if (!use_plastic_strain_weakening && !use_viscous_strain_weakening)
                 weakening_mechanism = total_strain;
+              else
+                AssertThrow(false, ExcInternalError());
             }
 
           if (weakening_mechanism == plastic_weakening_with_plastic_strain_only
