@@ -21,10 +21,12 @@
 #include <aspect/utilities.h>
 #include <aspect/simulator_access.h>
 
+#if HAVE_LIBDAP
 #include <D4Connect.h>
 #include <Connect.h>
 #include <Response.h>
 #include <Array.h>
+#endif
 
 #include <array>
 #include <deal.II/base/point.h>
@@ -886,6 +888,8 @@ namespace aspect
           unsigned int filesize = numbers::invalid_unsigned_int;
 
 
+//----Only run if the user wishes to use the libdap packages----//
+#if HAVE_LIBDAP
          //Check to see if the prm file will be reading data from the disk or
 		// from a provided URL
 		if (filename.find("http://") == 0 || filename.find("https://") == 0 || filename.find("file://") == 0) {
@@ -951,7 +955,7 @@ namespace aspect
 			//Append the gathered POINTS in the proper format:
 			// "# POINTS: <val1> <val2> <val3>"
 			urlString << "# POINTS:";
-			for (int i = 0; i < points.size(); i++) {
+			for (unsigned int i = 0; i < points.size(); i++) {
 				urlString << " " << points[i];
 			}
 			urlString << "\n";
@@ -960,8 +964,8 @@ namespace aspect
 			// per row with a character return added at the end of each row.
 			// TODO: Add a check to make sure that each column is the same size before writing
 			//		 to the stringstream
-			for (int i = 0; i < tmp.size(); i++) {
-				for (int j = 0; j < columns.size(); j++) {
+			for (unsigned int i = 0; i < tmp.size(); i++) {
+				for (unsigned int j = 0; j < columns.size(); j++) {
 					urlString << columns[j][i];
 					urlString << " ";
 				}
@@ -1015,6 +1019,40 @@ namespace aspect
 		// Distribute data_size and data across processes
 		MPI_Bcast(&filesize,1,MPI_UNSIGNED,0,comm);
 		MPI_Bcast(&data_string[0],filesize,MPI_CHAR,0,comm);
+#else
+		std::ifstream filestream(filename.c_str());
+
+		if (!filestream)
+			{
+			  // broadcast failure state, then throw
+			  MPI_Bcast(&filesize,1,MPI_UNSIGNED,0,comm);
+			  AssertThrow (false,
+						   ExcMessage (std::string("Could not open file <") + filename + ">."));
+			  return data_string; // never reached
+			}
+
+		// Read data from disk
+		std::stringstream datastream;
+		filestream >> datastream.rdbuf();
+
+		if (!filestream.eof())
+			{
+			  // broadcast failure state, then throw
+			  MPI_Bcast(&filesize,1,MPI_UNSIGNED,0,comm);
+			  AssertThrow (false,
+						   ExcMessage (std::string("Reading of file ") + filename + " finished " +
+									   "before the end of file was reached. Is the file corrupted or"
+									   "too large for the input buffer?"));
+			  return data_string; // never reached
+			}
+
+		data_string = datastream.str();
+		filesize = data_string.size();
+
+		// Distribute data_size and data across processes
+		MPI_Bcast(&filesize,1,MPI_UNSIGNED,0,comm);
+		MPI_Bcast(&data_string[0],filesize,MPI_CHAR,0,comm);
+#endif
         }
 
       else
