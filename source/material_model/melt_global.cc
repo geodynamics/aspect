@@ -424,11 +424,11 @@ namespace aspect
                              "computed. If the model does not use operator splitting, this parameter is not used. "
                              "Units: yr or s, depending on the ``Use years "
                              "in output instead of seconds'' parameter.");
-           prm.declare_entry ("Exponential depletion strengthening factor", "1.0",
+           prm.declare_entry ("Exponential depletion strengthening factor", "0.0",
                               Patterns::Double (0),
                               "$\\alpha_F$: exponential dependency of viscosity on the depletion "
 							  "field $F$ (called peridotite). "
-                              "Dimensionless factor. With a value of 1.0 (the default) the "
+                              "Dimensionless factor. With a value of 0.0 (the default) the "
                               "viscosity does not depend on the depletion. The effective viscosity increase"
                               "due to depletion is defined as $exp( \\alpha_F * F)$. ");
            prm.declare_entry ("Maximum Depletion viscosity change", "1.0e3",
