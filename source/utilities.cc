@@ -1020,6 +1020,16 @@ namespace aspect
 		MPI_Bcast(&filesize,1,MPI_UNSIGNED,0,comm);
 		MPI_Bcast(&data_string[0],filesize,MPI_CHAR,0,comm);
 #else
+		if (filename.find("http://") == 0 || filename.find("https://") == 0 || filename.find("file://") == 0) {
+			  // broadcast failure state, then throw
+			  MPI_Bcast(&filesize,1,MPI_UNSIGNED,0,comm);
+			  AssertThrow (false,
+						   ExcMessage (std::string("Reading of file ") + filename + " failed. " +
+								   "Make sure you have the dependencies for reading a url " +
+								   "(when running cmake make sure -DLIBDAP_ON=ON)"));
+			  return data_string; // never reached
+		}
+
 		std::ifstream filestream(filename.c_str());
 
 		if (!filestream)
@@ -2022,13 +2032,13 @@ namespace aspect
                             << filename << "." << std::endl << std::endl;
 
 
-          /*AssertThrow(Utilities::fexists(filename),
+          AssertThrow(Utilities::fexists(filename) || filename.find("http://") == 0 || filename.find("https://") == 0 || filename.find("file://") == 0,
                       ExcMessage (std::string("Ascii data file <")
                                   +
                                   filename
                                   +
                                   "> not found!"));
-                                  */
+
           lookups.find(*boundary_id)->second->load_file(filename,this->get_mpi_communicator());
 
           // If the boundary condition is constant, switch off time_dependence
@@ -2438,7 +2448,7 @@ namespace aspect
                         << filename << "." << std::endl << std::endl;
 
 
-      AssertThrow(Utilities::fexists(filename),
+      AssertThrow(Utilities::fexists(filename) || filename.find("http://") == 0 || filename.find("https://") == 0 || filename.find("file://") == 0,
                   ExcMessage (std::string("Ascii data file <")
                               +
                               filename
@@ -2481,7 +2491,7 @@ namespace aspect
 
       const std::string filename = this->data_directory + this->data_file_name;
 
-      AssertThrow(Utilities::fexists(filename),
+      AssertThrow(Utilities::fexists(filename) || filename.find("http://") == 0 || filename.find("https://") == 0 || filename.find("file://") == 0,
                   ExcMessage (std::string("Ascii data file <")
                               +
                               filename
