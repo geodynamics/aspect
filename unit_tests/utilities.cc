@@ -36,9 +36,8 @@ TEST_CASE("Utilities::weighted_p_norm_average")
 
 }
 
-//TODO:
-//	1.) Need to test that the values coming back match what's expected
-//	2.) Need to test that the stringstream is formated correctly ("POINTS", linebreaks, values ordered properly)
+//	1.) Test that the values coming back match what's expected
+//	2.) Test that the stringstream is formated correctly ("POINTS", linebreaks, values ordered properly)
 #if HAVE_LIBDAP
 TEST_CASE("Utilities::read_and_distribute_file_content")
 {
