@@ -1179,7 +1179,7 @@ namespace aspect
         {
           pcout.get_stream().imbue(std::locale(std::locale(), new aspect::Utilities::ThousandSep));
         }
-      catch (std::runtime_error e)
+      catch (const std::runtime_error &e)
         {
           // If the locale doesn't work, just give up
         }
