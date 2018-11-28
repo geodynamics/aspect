@@ -119,9 +119,9 @@ namespace aspect
              << "# 28: gravity_gradient_theory_yz" << '\n'
              << '\n';
 
-      // Storing cartesian coordinate, density and JxW at local quadrature points in a vector
-      // avoids to use MaterialModel and fe_values within the loops. Because postprocessor
-      // run in parallel, the total number of local quadrature points has to be determined:
+      // Storing cartesian coordinates, density and JxW at local quadrature points in a vector
+      // avoids to use MaterialModel and fe_values within the loops. Because the postprocessor
+      // runs in parallel, the total number of local quadrature points has to be determined:
       const unsigned int n_locally_owned_cells = (this->get_triangulation().n_locally_owned_active_cells());
       const unsigned int n_quadrature_points_per_cell = quadrature_formula.size();
 
@@ -155,25 +155,21 @@ namespace aspect
                   density_JxW[local_cell_number * n_quadrature_points_per_cell + q] = out.densities[q] * fe_values.JxW(q);
                   relative_density_JxW[local_cell_number * n_quadrature_points_per_cell + q] = (out.densities[q]-reference_density) * fe_values.JxW(q);
                   position_point[local_cell_number * n_quadrature_points_per_cell + q] = position_point_cell[q];
-
                 }
               ++local_cell_number;
             }
         }
    
       // Pre-Assign the coordinates of all satellites in a vector point:
-      // *** First calculate the number of satellites for the sampling scheme used
+      // *** First calculate the number of satellites according to the sampling scheme:
       unsigned int n_satellites;
       if (sampling_scheme == map)
         n_satellites = n_points_radius * n_points_longitude * n_points_latitude;
       else if (sampling_scheme == list)
-        {
         n_satellites = longitude_list.size();
-        output << longitude_list.size() << ' ' << latitude_list.size() << ' ' << radius_list.size() << '\n' << '\n';
-        }
       else n_satellites = 1;
-      
-      // *** Second assign the coordinates of all satellites in the vector point
+  
+      // *** Second assign the coordinates of all satellites:
       std::vector<Point<dim> > satellites_coordinate(n_satellites);
       if (sampling_scheme == map)
         {
@@ -185,8 +181,8 @@ namespace aspect
                   for (unsigned int j=0; j < n_points_latitude; ++j)
                     {
                       satellites_coordinate[p][0] = minimum_radius + ((maximum_radius - minimum_radius) / n_points_radius) * h;
-                      satellites_coordinate[p][1] = (minimum_longitude + ((maximum_longitude - minimum_longitude) / n_points_longitude) * i) * numbers::PI / 180.;
-                      satellites_coordinate[p][2] = (minimum_latitude + ((maximum_latitude - minimum_latitude) / n_points_latitude) * j) * numbers::PI / 180.;
+                      satellites_coordinate[p][1] = (minimum_colongitude + ((maximum_colongitude - minimum_colongitude) / n_points_longitude) * i) * numbers::PI / 180.;
+                      satellites_coordinate[p][2] = (minimum_colatitude + ((maximum_colatitude - minimum_colatitude) / n_points_latitude) * j) * numbers::PI / 180.;
                       ++p;
                     }
                 }
@@ -205,21 +201,23 @@ namespace aspect
             }
         }
 
-      // This is the main loop which computes gravity acceleration and potential at a
-      // point located at the spherical coordinate [r, phi, theta]:
+      // This is the main loop which computes gravity acceleration, potential and
+      // gradients at a point located at the spherical coordinate [r, phi, theta].
+      // This loop corresponds to the 3 integrals of Newton law:
       for (unsigned int p=0; p < n_satellites; ++p)
         {
 
-          // The spherical coordinates are shifted into cartesian to allow simplification in the mathematical equation.
+          // The spherical coordinates are shifted into cartesian to allow simplification
+          // in the mathematical equation.
           std::array<double,dim> satellite_point_coordinate;
           satellite_point_coordinate[0] = satellites_coordinate[p][0];
           satellite_point_coordinate[1] = satellites_coordinate[p][1];
           satellite_point_coordinate[2] = satellites_coordinate[p][2];
           const Point<dim> position_satellite = Utilities::Coordinates::spherical_to_cartesian_coordinates<dim>(satellite_point_coordinate);
 
-          // For each point (i.e. satellite), the fourth integral goes over cells and quadrature
-          // points to get the unique distance between those, indispensable to calculate
-          // gravity vector components x,y,z (in tensor), and potential.
+          // For each point (i.e. satellite), the fourth integral goes over cells and 
+          // quadrature points to get the unique distance between those, to calculate
+          // gravity vector components x,y,z (in tensor), potential and gradients.
           Tensor<1,dim> local_g;
           Tensor<1,dim> local_g_anomaly;
           Tensor<2,dim> local_g_gradient;
@@ -301,7 +299,8 @@ namespace aspect
                                                                                    /  pow(satellites_coordinate[p][0],5);
             }
 
-          // write output
+          // write output. 
+          // g_gradient is here given in eotvos E (1E = 1e-9 per square seconds) 
           if (dealii::Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
             {
               output << satellites_coordinate[p][0] << ' '
@@ -433,15 +432,15 @@ namespace aspect
           n_points_latitude  = prm.get_double ("Number points latitude");
           minimum_radius    = prm.get_double ("Minimum radius");
           maximum_radius    = prm.get_double ("Maximum radius");
-          minimum_longitude = prm.get_double ("Minimum longitude") + 180;
-          maximum_longitude = prm.get_double ("Maximum longitude") + 180;
-          minimum_latitude  = prm.get_double ("Minimum latitude") + 90;
-          maximum_latitude  = prm.get_double ("Maximum latitude") + 90;
+          minimum_colongitude = prm.get_double ("Minimum longitude") + 180;
+          maximum_colongitude = prm.get_double ("Maximum longitude") + 180;
+          minimum_colatitude  = prm.get_double ("Minimum latitude") + 90;
+          maximum_colatitude  = prm.get_double ("Maximum latitude") + 90;
           reference_density = prm.get_double ("Reference density");
           radius_list    = Utilities::string_to_double(Utilities::split_string_list(prm.get("List of radius")));
           longitude_list = Utilities::string_to_double(Utilities::split_string_list(prm.get("List of longitude")));
           latitude_list  = Utilities::string_to_double(Utilities::split_string_list(prm.get("List of latitude")));
-	  AssertThrow (longitude_list.size() == latitude_list.size(),
+	  AssertThrow (longitude_list.size() == latitude_list.size() || radius_list.size() == longitude_list.size(),
                        ExcMessage ("Make sure you have the same number of point coordinates in the list sampling scheme."));
           AssertThrow (dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()) != nullptr ||
                        dynamic_cast<const GeometryModel::Sphere<dim>*> (&this->get_geometry_model()) != nullptr ||
@@ -471,6 +470,8 @@ namespace aspect
                                   "A postprocessor that computes gravity, gravity anomalies, gravity "
                                   "potential and gravity gradients for a set of points (e.g. satellites) "
                                   "in or above the model surface for either a user-defined range of "
-                                  "latitudes, longitudes and radius or a list of point coordinates.")
+                                  "latitudes, longitudes and radius or a list of point coordinates."
+                                  "Spherical coordinates in the output file are radius, colatitude "
+                                  "and colongitude.")
   }
 }

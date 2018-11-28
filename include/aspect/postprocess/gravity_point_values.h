@@ -113,24 +113,24 @@ namespace aspect
         /**
          * Minimum longitude for longitude range in case of the map sampling scheme.
          */
-        double minimum_longitude;
+        double minimum_colongitude;
 
         /**
          * Maximum longitude for the longitude range in case of the map sampling scheme.
          * No need to specify maximum_longitude if n_points_longitude is 1.
          */
-        double maximum_longitude;
+        double maximum_colongitude;
 
         /**
          * Minimum latitude for the latitude range in case of the map sampling scheme.
          */
-        double minimum_latitude;
+        double minimum_colatitude;
 
         /**
          * Maximum latitude for the latitude range in case of the map sampling scheme.
          * No need to specify maximum_latitude if n_points_latitude is 1.
          */
-        double maximum_latitude;
+        double maximum_colatitude;
 
         /**
          * A reference density is required to obtained relative density to calculate
