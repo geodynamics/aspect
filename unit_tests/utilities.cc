@@ -43,13 +43,13 @@ TEST_CASE("Utilities::read_and_distribute_file_content")
 {
 	MPI_Comm                            mpi_communicator;
 
-	std::string stringTester = "# POINTS: 3 3 1 2 3 4 5 6 7 8 9";
+	std::string expectedString = "# POINTS: 3 3 1 2 3 4 5 6 7 8 9";
 	std::string returnString = aspect::Utilities::read_and_distribute_file_content("http://test.opendap.org/opendap/BALTO/test.balto.csv", mpi_communicator);
 	returnString = returnString.replace(13, 1, "");
 	returnString = returnString.replace(19, 1, " ");
 	returnString = returnString.replace(25, 1, " ");
 	returnString = returnString.replace(31, 1, "");
 	INFO("check if the stringstream from read_and_distribute_file_content match the file text");
-	REQUIRE( returnString == stringTester);
+	REQUIRE( returnString == expectedString);
 }
 #endif

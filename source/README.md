@@ -11,11 +11,15 @@ from the provided URL and treat it as it would a local file.
 URL File Format
 ---------------
 
-The function that reads in the URL data requires that the file be formatted a certain way.
-Currently the function expects a CSV file. The function can read any number of columns of 
-data as well as any number of rows. The  "# POINTS:" values are represented as attributes 
-in the CSV file. The attributes can be set using a .das file of the same name as the .csv file. 
-Both the .csv and the .csv.das file must be included (i.e. urlFile.csv and urlFile.csv.das).
+The url reader requires data to be read in a certain way, but there are a few different ways of
+storing that data for Aspect to get. We used CSV files to store and read our data, but other
+methods, such as NetCDF, can also be used. The data must be formated properly so that our
+url reader can obtain the necesary information (column header, POINTS, data type, and data).
+
+The function can read any number of columns of data as well as any number of rows. The "# POINTS:" 
+values are represented as attributes in the CSV file. The attributes can be set using a .das file of 
+the same name as the .csv file. Both the .csv and the .csv.das file must be included 
+(i.e. **urlFile.csv** and **urlFile.csv.das**).
 
 CSV files must include the column title followed by <String>, this is because Aspect takes in 
 values from local files as strings (and url files are designed to be read in to look like local 
