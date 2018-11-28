@@ -62,8 +62,9 @@ end
 subsection Postprocess
   set List of postprocessors = gravity calculation
   subsection Gravity calculation
-    set Minimum radius                = 4 
-    set Minimum longitude             = 200
-    set Minimum latitude              = 35
+    set Sampling scheme           = list
+    set List of radius            = 4 
+    set List of longitude         = 100
+    set List of latitude          = 35
   end
 end
