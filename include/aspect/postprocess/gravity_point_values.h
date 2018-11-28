@@ -97,15 +97,15 @@ namespace aspect
         double n_points_latitude;
 
         /**
-         * Minimum radius for the depth range in case of the map sampling scheme. Presribe 
-         * a minimum radius for a sampling coverage at a specific height. May be defined 
-         * in or outside the model. 
+         * Minimum radius for the depth range in case of the map sampling scheme. Presribe
+         * a minimum radius for a sampling coverage at a specific height. May be defined
+         * in or outside the model.
          */
         double minimum_radius;
 
         /**
-         * Maximum radius for depth-profile in case of the map sampling scheme. May be 
-         * defined in or outside the model. No need to specify maximum_radius if 
+         * Maximum radius for depth-profile in case of the map sampling scheme. May be
+         * defined in or outside the model. No need to specify maximum_radius if
          * n_points_radius is 1.
          */
         double maximum_radius;
@@ -153,7 +153,7 @@ namespace aspect
          * with the lists of longitude and latitude.
          */
         std::vector<double> radius_list;
- 
+
         /**
          * List of longitude coordinates for the list sampling scheme. Must be in order
          * with the lists of radius and latitude.

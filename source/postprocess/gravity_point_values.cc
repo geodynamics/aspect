@@ -159,7 +159,7 @@ namespace aspect
               ++local_cell_number;
             }
         }
-   
+
       // Pre-Assign the coordinates of all satellites in a vector point:
       // *** First calculate the number of satellites according to the sampling scheme:
       unsigned int n_satellites;
@@ -168,7 +168,7 @@ namespace aspect
       else if (sampling_scheme == list)
         n_satellites = longitude_list.size();
       else n_satellites = 1;
-  
+
       // *** Second assign the coordinates of all satellites:
       std::vector<Point<dim> > satellites_coordinate(n_satellites);
       if (sampling_scheme == map)
@@ -218,7 +218,7 @@ namespace aspect
           satellite_point_coordinate[2] = satellites_coordinate[p][2];
           const Point<dim> position_satellite = Utilities::Coordinates::spherical_to_cartesian_coordinates<dim>(satellite_point_coordinate);
 
-          // For each point (i.e. satellite), the fourth integral goes over cells and 
+          // For each point (i.e. satellite), the fourth integral goes over cells and
           // quadrature points to get the unique distance between those, to calculate
           // gravity vector components x,y,z (in tensor), potential and gradients.
           Tensor<1,dim> local_g;
@@ -245,21 +245,21 @@ namespace aspect
                       // For gravity gradient:
                       const double grad_KK = G * density_JxW[local_cell_number * n_quadrature_points_per_cell + q] / pow(dist,5);
                       local_g_gradient[0][0] += grad_KK * (3.0 * pow((position_satellite[0] - position_point[local_cell_number * n_quadrature_points_per_cell + q][0]),2)
-                                                               - pow(dist,2));
+                                                           - pow(dist,2));
                       local_g_gradient[1][1] += grad_KK * (3.0 * pow((position_satellite[1] - position_point[local_cell_number * n_quadrature_points_per_cell + q][1]),2)
-                                                               - pow(dist,2));
+                                                           - pow(dist,2));
                       local_g_gradient[2][2] += grad_KK * (3.0 * pow((position_satellite[2] - position_point[local_cell_number * n_quadrature_points_per_cell + q][2]),2)
-                                                               - pow(dist,2));
+                                                           - pow(dist,2));
                       local_g_gradient[0][1] += grad_KK * (3.0 * (position_satellite[0] - position_point[local_cell_number * n_quadrature_points_per_cell + q][0])
-                                                               * (position_satellite[1] - position_point[local_cell_number * n_quadrature_points_per_cell + q][1])); 
+                                                           * (position_satellite[1] - position_point[local_cell_number * n_quadrature_points_per_cell + q][1]));
                       local_g_gradient[0][2] += grad_KK * (3.0 * (position_satellite[0] - position_point[local_cell_number * n_quadrature_points_per_cell + q][0])
-                                                               * (position_satellite[2] - position_point[local_cell_number * n_quadrature_points_per_cell + q][2])); 
+                                                           * (position_satellite[2] - position_point[local_cell_number * n_quadrature_points_per_cell + q][2]));
                       local_g_gradient[1][2] += grad_KK * (3.0 * (position_satellite[1] - position_point[local_cell_number * n_quadrature_points_per_cell + q][1])
-                                                               * (position_satellite[2] - position_point[local_cell_number * n_quadrature_points_per_cell + q][2])); 
+                                                           * (position_satellite[2] - position_point[local_cell_number * n_quadrature_points_per_cell + q][2]));
                     }
                   ++local_cell_number;
                 }
-             }
+            }
 
           // Sum local gravity components over global domain
           const Tensor<1,dim> g          = Utilities::MPI::sum (local_g, this->get_mpi_communicator());
@@ -283,27 +283,27 @@ namespace aspect
             {
               g_theory = G * numbers::PI * 4/3 * reference_density * (pow(model_outer_radius,3) - pow(model_inner_radius,3)) / pow(satellites_coordinate[p][0],2);
               g_gradient_theory[0][0] = -G * numbers::PI * 4/3 * reference_density * (pow(model_outer_radius,3) - pow(model_inner_radius,3))
-                                                                                   * (pow(satellites_coordinate[p][0], 2) - 3.0 * pow(position_satellite[0],2))
-                                                                                   /  pow(satellites_coordinate[p][0],5);
+                                        * (pow(satellites_coordinate[p][0], 2) - 3.0 * pow(position_satellite[0],2))
+                                        /  pow(satellites_coordinate[p][0],5);
               g_gradient_theory[1][1] = -G * numbers::PI * 4/3 * reference_density * (pow(model_outer_radius,3) - pow(model_inner_radius,3))
-                                                                                   * (pow(satellites_coordinate[p][0], 2) - 3.0 * pow(position_satellite[1],2))
-                                                                                   /  pow(satellites_coordinate[p][0],5);
+                                        * (pow(satellites_coordinate[p][0], 2) - 3.0 * pow(position_satellite[1],2))
+                                        /  pow(satellites_coordinate[p][0],5);
               g_gradient_theory[2][2] = -G * numbers::PI * 4/3 * reference_density * (pow(model_outer_radius,3) - pow(model_inner_radius,3))
-                                                                                   * (pow(satellites_coordinate[p][0], 2) - 3.0 * pow(position_satellite[2],2))
-                                                                                   /  pow(satellites_coordinate[p][0],5);
+                                        * (pow(satellites_coordinate[p][0], 2) - 3.0 * pow(position_satellite[2],2))
+                                        /  pow(satellites_coordinate[p][0],5);
               g_gradient_theory[0][1] = -G * numbers::PI * 4/3 * reference_density * (pow(model_outer_radius,3) - pow(model_inner_radius,3))
-                                                                                   * (- 3.0 * position_satellite[0] * position_satellite[1])
-                                                                                   /  pow(satellites_coordinate[p][0],5);
+                                        * (- 3.0 * position_satellite[0] * position_satellite[1])
+                                        /  pow(satellites_coordinate[p][0],5);
               g_gradient_theory[0][2] = -G * numbers::PI * 4/3 * reference_density * (pow(model_outer_radius,3) - pow(model_inner_radius,3))
-                                                                                   * (- 3.0 * position_satellite[0] * position_satellite[2])
-                                                                                   /  pow(satellites_coordinate[p][0],5);
+                                        * (- 3.0 * position_satellite[0] * position_satellite[2])
+                                        /  pow(satellites_coordinate[p][0],5);
               g_gradient_theory[1][2] = -G * numbers::PI * 4/3 * reference_density * (pow(model_outer_radius,3) - pow(model_inner_radius,3))
-                                                                                   * (- 3.0 * position_satellite[1] * position_satellite[2])
-                                                                                   /  pow(satellites_coordinate[p][0],5);
+                                        * (- 3.0 * position_satellite[1] * position_satellite[2])
+                                        /  pow(satellites_coordinate[p][0],5);
             }
 
-          // write output. 
-          // g_gradient is here given in eotvos E (1E = 1e-9 per square seconds) 
+          // write output.
+          // g_gradient is here given in eotvos E (1E = 1e-9 per square seconds)
           if (dealii::Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
             {
               output << satellites_coordinate[p][0] << ' '
@@ -335,7 +335,7 @@ namespace aspect
         }
       return std::pair<std::string, std::string> ("gravity computation file:",filename);
     }
-     
+
     template <int dim>
     void
     GravityPointValues<dim>::declare_parameters (ParameterHandler &prm)
@@ -411,7 +411,7 @@ namespace aspect
           prm.declare_entry ("List of latitude", "",
                              Patterns::List (Patterns::Double(-90.0,90.0)),
                              "List of satellite latitude coordinates.");
-        
+
         }
         prm.leave_subsection();
       }
@@ -429,7 +429,7 @@ namespace aspect
           if (prm.get ("Sampling scheme") == "map")
             sampling_scheme = map;
           else if (prm.get ("Sampling scheme") == "list")
-	    sampling_scheme = list;
+            sampling_scheme = list;
           else
             AssertThrow (false, ExcMessage ("Not a valid sampling scheme."));
           quadrature_degree_increase = prm.get_double ("Quadrature degree increase");
@@ -446,7 +446,7 @@ namespace aspect
           radius_list    = Utilities::string_to_double(Utilities::split_string_list(prm.get("List of radius")));
           longitude_list = Utilities::string_to_double(Utilities::split_string_list(prm.get("List of longitude")));
           latitude_list  = Utilities::string_to_double(Utilities::split_string_list(prm.get("List of latitude")));
-	  AssertThrow (longitude_list.size() == latitude_list.size(),
+          AssertThrow (longitude_list.size() == latitude_list.size(),
                        ExcMessage ("Make sure you have the same number of point coordinates in the list sampling scheme."));
           AssertThrow (dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()) != nullptr ||
                        dynamic_cast<const GeometryModel::Sphere<dim>*> (&this->get_geometry_model()) != nullptr ||
