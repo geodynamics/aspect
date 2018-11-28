@@ -641,7 +641,7 @@ namespace aspect
          * Either InterpolatedUniformGridData or InterpolatedTensorProductGridData;
          * the type is determined from the grid specified in the data file.
          */
-        std::vector<Function<dim> *> data;
+        std::vector<std::unique_ptr<Function<dim>>> data;
 
         /**
          * The coordinate values in each direction as specified in the data file.
