@@ -244,7 +244,7 @@ namespace aspect
 
     protected:
       /**
-       * std::vector that contains collection of variables.
+       * A std::vector that contains a collection of variables.
        */
       std::vector<FEVariable<dim> > variables;
 
@@ -254,13 +254,19 @@ namespace aspect
       unsigned int n_components_;
 
       /**
-         * Total number of blocks of all variables, returned by n_blocks().
-         */
+       * Total number of blocks of all variables, returned by n_blocks().
+       */
       unsigned int n_blocks_;
 
       /**
-         * Data to be used in the FESystem constructor, returned by get_fes().
-         */
+       * Data to be used in the FESystem constructor. The get_fes() function
+       * returns a reference to this array.
+       *
+       * The pointers stored in this area are not owned by the current object,
+       * but are instead pointers to the finite elements owned by the elements
+       * of the `variables` array. As a consequence, we do not need to
+       * explicitly manage the deallocation of these pointers.
+       */
       std::vector<const FiniteElement<dim> *> fes;
 
       /**
