@@ -1717,18 +1717,15 @@ namespace aspect
       // its type depending on the read-in grid.
       for (unsigned int i = 0; i < components; i++)
         {
-          if (data[i])
-            delete data[i];
-
           if (coordinate_values_are_equidistant)
-            data[i] = new Functions::InterpolatedUniformGridData<dim> (grid_extent,
-                                                                       table_intervals,
-                                                                       data_tables[dim+i]);
+            data[i]
+              = std_cxx14::make_unique<Functions::InterpolatedUniformGridData<dim>> (grid_extent,
+                                                                                     table_intervals,
+                                                                                     data_tables[dim+i]);
           else
-            {
-              data[i] = new Functions::InterpolatedTensorProductGridData<dim> (coordinate_values,
-                                                                               data_tables[dim+i]);
-            }
+            data[i]
+              = std_cxx14::make_unique<Functions::InterpolatedTensorProductGridData<dim>> (coordinate_values,
+                                                                                           data_tables[dim+i]);
         }
     }
 
@@ -1819,6 +1816,8 @@ namespace aspect
       prm.leave_subsection();
     }
 
+
+
     template <int dim>
     AsciiDataBoundary<dim>::AsciiDataBoundary ()
       :
@@ -1832,6 +1831,8 @@ namespace aspect
       lookups(),
       old_lookups()
     {}
+
+
 
     template <int dim>
     void
@@ -1903,6 +1904,7 @@ namespace aspect
             }
         }
     }
+
 
 
     template <int dim>
