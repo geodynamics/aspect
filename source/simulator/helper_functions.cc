@@ -1727,8 +1727,9 @@ namespace aspect
   }
 
 
+
   template <int dim>
-  void Simulator<dim>::interpolate_material_output_into_field (const unsigned int c)
+  void Simulator<dim>::interpolate_material_output_into_compositional_field (const unsigned int c)
   {
     // we need some temporary vectors to store our updates to composition in
     // before we copy them over to the solution vector in the end
@@ -1740,8 +1741,12 @@ namespace aspect
     pcout << "   Copying properties into prescribed compositional field " + name_of_field + "."
           << std::endl;
 
-    // make an fevalues object that allows us to interpolate onto the solution vector
-    const Quadrature<dim> quadrature(dof_handler.get_fe().base_element(introspection.base_elements.compositional_fields).get_unit_support_points());
+    // Create an FEValues object that allows us to interpolate onto the solution
+    // vector. To make this happen, we need to have a quadrature formula that
+    // consists of the support points of the compositional field finite element
+    const Quadrature<dim> quadrature(dof_handler.get_fe()
+                                     .base_element(introspection.base_elements.compositional_fields)
+                                     .get_unit_support_points());
 
     FEValues<dim> fe_values (*mapping,
                              dof_handler.get_fe(),
@@ -1784,14 +1789,15 @@ namespace aspect
 
           material_model->evaluate(in, out);
 
-          // interpolate material properties onto the compositional fields
+          // Interpolate material properties onto the compositional fields
           for (unsigned int j=0; j<dof_handler.get_fe().base_element(introspection.base_elements.compositional_fields).dofs_per_cell; ++j)
             {
               const unsigned int composition_idx
                 = dof_handler.get_fe().component_to_system_index(introspection.component_indices.compositional_fields[c],
                                                                  /*dof index within component=*/ j);
 
-              // skip entries that are not locally owned:
+              // Skip degrees of freedom that are not locally owned. These
+              // will eventually be handled by one of the other processors.
               if (dof_handler.locally_owned_dofs().is_element(local_dof_indices[composition_idx]))
                 {
                   Assert(numbers::is_finite(prescribed_field_out->prescribed_field_outputs[j][c]),
@@ -1799,19 +1805,20 @@ namespace aspect
                                     "but the material model you use does not fill the PrescribedFieldOutputs "
                                     "for your prescribed field, which is required for this method."));
 
-                  distributed_vector(local_dof_indices[composition_idx]) = prescribed_field_out->prescribed_field_outputs[j][c];
+                  distributed_vector(local_dof_indices[composition_idx])
+                    = prescribed_field_out->prescribed_field_outputs[j][c];
                 }
             }
         }
 
-    // put the final values into the solution vector
-
+    // Put the final values into the solution vector, also
+    // updating the ghost elements of the 'solution' vector.
     const unsigned int block_c = introspection.block_indices.compositional_fields[c];
     distributed_vector.block(block_c).compress(VectorOperation::insert);
     solution.block(block_c) = distributed_vector.block(block_c);
 
     // We also want to copy the values into the old solution, because it might
-    // be used in other parts of the code
+    // be used in other parts of the code.
     old_solution.block(block_c) = distributed_vector.block(block_c);
   }
 
@@ -2343,7 +2350,7 @@ namespace aspect
   template void Simulator<dim>::interpolate_onto_velocity_system(const TensorFunction<1,dim> &func, LinearAlgebra::Vector &vec);\
   template void Simulator<dim>::apply_limiter_to_dg_solutions(const AdvectionField &advection_field); \
   template void Simulator<dim>::compute_reactions(); \
-  template void Simulator<dim>::interpolate_material_output_into_field(const unsigned int c); \
+  template void Simulator<dim>::interpolate_material_output_into_compositional_field(const unsigned int c); \
   template void Simulator<dim>::check_consistency_of_formulation(); \
   template void Simulator<dim>::replace_outflow_boundary_ids(const unsigned int boundary_id_offset); \
   template void Simulator<dim>::restore_outflow_boundary_ids(const unsigned int boundary_id_offset); \

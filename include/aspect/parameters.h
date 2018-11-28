@@ -98,7 +98,12 @@ namespace aspect
     /**
      * A struct that describes the available methods to solve
      * advected fields. This type is at the moment only used to determine how
-     * to advect each compositional field.
+     * to advect each compositional field -- or what else to do with it if
+     * it doesn't satisfy an advection equation, for example if the
+     * compositional field just contains data interpolated from
+     * particles in each time step (`particles`) or if it contains
+     * data interpolated from other sources such as material outputs
+     * (`prescribed_field`), neither of which is further advected.
      */
     struct AdvectionFieldMethod
     {
