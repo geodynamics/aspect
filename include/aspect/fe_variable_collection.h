@@ -252,18 +252,22 @@ namespace aspect
        * Total number of components of all variables, returned by n_components().
        */
       unsigned int n_components_;
+
       /**
-       * Total number of blocks of all variables, returned by n_blocks().
-       */
+         * Total number of blocks of all variables, returned by n_blocks().
+         */
       unsigned int n_blocks_;
+
       /**
-       * Data to be used in the FESystem constructor, returned by get_fes().
-       */
+         * Data to be used in the FESystem constructor, returned by get_fes().
+         */
       std::vector<const FiniteElement<dim> *> fes;
+
       /**
-       * Data to be used in the FESystem constructor, returned by get_multiplicities().
-       */
+         * Data to be used in the FESystem constructor, returned by get_multiplicities().
+         */
       std::vector<unsigned int> multiplicities;
+
       /**
        * Mapping from component to block, returned by get_components_to_blocks().
        */
