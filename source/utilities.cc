@@ -1845,19 +1845,17 @@ namespace aspect
                                "a spherical shell, chunk or box geometry."));
 
 
-      for (typename std::set<types::boundary_id>::const_iterator
-           boundary_id = boundary_ids.begin();
-           boundary_id != boundary_ids.end(); ++boundary_id)
+      for (const auto &boundary_id : boundary_ids)
         {
-          std::shared_ptr<Utilities::AsciiDataLookup<dim-1> > lookup;
-          lookup.reset(new Utilities::AsciiDataLookup<dim-1> (components,
-                                                              this->scale_factor));
-          lookups.insert(std::make_pair(*boundary_id,lookup));
+          lookups.insert(std::make_pair(boundary_id,
+                                        std::make_shared<Utilities::AsciiDataLookup<dim-1>>
+                                        (components,
+                                         this->scale_factor)));
 
-          lookup.reset(new Utilities::AsciiDataLookup<dim-1> (components,
-                                                              this->scale_factor));
-          old_lookups.insert(std::make_pair(*boundary_id,lookup));
-
+          old_lookups.insert(std::make_pair(boundary_id,
+                                            std::make_shared<Utilities::AsciiDataLookup<dim-1>>
+                                            (components,
+                                             this->scale_factor)));
 
           // Set the first file number and load the first files
           current_file_number = first_data_file_number;
@@ -1868,7 +1866,7 @@ namespace aspect
             :
             current_file_number + 1;
 
-          const std::string filename (create_filename (current_file_number,*boundary_id));
+          const std::string filename (create_filename (current_file_number, boundary_id));
 
           this->get_pcout() << std::endl << "   Loading Ascii data boundary file "
                             << filename << "." << std::endl << std::endl;
@@ -1880,25 +1878,25 @@ namespace aspect
                                   filename
                                   +
                                   "> not found!"));
-          lookups.find(*boundary_id)->second->load_file(filename,this->get_mpi_communicator());
+          lookups.find(boundary_id)->second->load_file(filename,this->get_mpi_communicator());
 
           // If the boundary condition is constant, switch off time_dependence
           // immediately. If not, also load the second file for interpolation.
           // This catches the case that many files are present, but the
           // parameter file requests a single file.
-          if (filename == create_filename (current_file_number+1,*boundary_id))
+          if (filename == create_filename (current_file_number+1, boundary_id))
             {
               end_time_dependence ();
             }
           else
             {
-              const std::string filename (create_filename (next_file_number,*boundary_id));
+              const std::string filename (create_filename (next_file_number, boundary_id));
               this->get_pcout() << std::endl << "   Loading Ascii data boundary file "
                                 << filename << "." << std::endl << std::endl;
               if (Utilities::fexists(filename))
                 {
-                  lookups.find(*boundary_id)->second.swap(old_lookups.find(*boundary_id)->second);
-                  lookups.find(*boundary_id)->second->load_file(filename,this->get_mpi_communicator());
+                  lookups.find(boundary_id)->second.swap(old_lookups.find(boundary_id)->second);
+                  lookups.find(boundary_id)->second->load_file(filename, this->get_mpi_communicator());
                 }
               else
                 end_time_dependence ();
@@ -2265,9 +2263,12 @@ namespace aspect
       prm.leave_subsection();
     }
 
+
+
     template <int dim>
     AsciiDataInitial<dim>::AsciiDataInitial ()
     {}
+
 
 
     template <int dim>
@@ -2280,8 +2281,8 @@ namespace aspect
                    ExcMessage ("This ascii data plugin can only be used when using "
                                "a spherical shell, chunk or box geometry."));
 
-      lookup.reset(new Utilities::AsciiDataLookup<dim> (components,
-                                                        this->scale_factor));
+      lookup = std::make_shared<Utilities::AsciiDataLookup<dim>> (components,
+                                                                  this->scale_factor);
 
       const std::string filename = this->data_directory + this->data_file_name;
 
@@ -2297,6 +2298,8 @@ namespace aspect
                               "> not found!"));
       lookup->load_file(filename, this->get_mpi_communicator());
     }
+
+
 
     template <int dim>
     double
@@ -2319,16 +2322,18 @@ namespace aspect
     }
 
 
+
     template <int dim>
     AsciiDataProfile<dim>::AsciiDataProfile ()
     {}
+
 
 
     template <int dim>
     void
     AsciiDataProfile<dim>::initialize (const MPI_Comm &communicator)
     {
-      lookup.reset(new Utilities::AsciiDataLookup<1> (this->scale_factor));
+      lookup = std_cxx14::make_unique<Utilities::AsciiDataLookup<1>> (this->scale_factor);
 
       const std::string filename = this->data_directory + this->data_file_name;
 
@@ -2342,6 +2347,7 @@ namespace aspect
     }
 
 
+
     template <int dim>
     std::vector<std::string>
     AsciiDataProfile<dim>::get_column_names() const
@@ -2349,12 +2355,16 @@ namespace aspect
       return lookup->get_column_names();
     }
 
+
+
     template <int dim>
     unsigned int
     AsciiDataProfile<dim>::get_column_index_from_name(const std::string &column_name) const
     {
       return lookup->get_column_index_from_name(column_name);
     }
+
+
 
     template <int dim>
     unsigned int
@@ -2372,12 +2382,15 @@ namespace aspect
         }
     }
 
+
+
     template <int dim>
     std::string
     AsciiDataProfile<dim>::get_column_name_from_index(const unsigned int column_index) const
     {
       return lookup->get_column_name_from_index(column_index);
     }
+
 
 
     template <int dim>
