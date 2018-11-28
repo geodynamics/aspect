@@ -227,8 +227,8 @@ namespace aspect
                                             adv_field.is_temperature(),
                                             adv_field.compositional_variable,
                                             dummy);
+              break;
             }
-            break;
 
             default:
               AssertThrow(false,ExcNotImplemented());
