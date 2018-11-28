@@ -297,7 +297,7 @@ namespace aspect
             (cell->is_ghost() &&
              parameters.use_artificial_viscosity_smoothing == false))
           {
-            viscosity_per_cell[cell->active_cell_index()] = -1;
+            viscosity_per_cell[cell->active_cell_index()] = numbers::signaling_nan<double>();
             continue;
           }
 
