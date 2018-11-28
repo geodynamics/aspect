@@ -192,7 +192,10 @@ namespace aspect
         {
           for (unsigned int p=0; p < n_satellites; ++p)
             {
-              satellites_coordinate[p][0] = radius_list[0];
+              if (radius_list.size() == 1)
+                satellites_coordinate[p][0] = radius_list[0];
+              else
+                satellites_coordinate[p][0] = radius_list[p];
               if (longitude_list[p] < 0)
                 satellites_coordinate[p][1] = (360 + longitude_list[p]) * numbers::PI / 180.;
               else
@@ -398,7 +401,10 @@ namespace aspect
                              "relative to a reference density.");
           prm.declare_entry ("List of radius", "",
                              Patterns::List (Patterns::Double(0)),
-                             "List of satellite radius coordinates.");
+                             "List of satellite radius coordinates. Just specify one "
+                             "radius if all points values have the same radius. If "
+                             "not, make sure there are as many radius as longitude "
+                             "and latitude");
           prm.declare_entry ("List of longitude", "",
                              Patterns::List (Patterns::Double(-180.0,180.0)),
                              "List of satellite longitude coordinates.");
@@ -440,7 +446,7 @@ namespace aspect
           radius_list    = Utilities::string_to_double(Utilities::split_string_list(prm.get("List of radius")));
           longitude_list = Utilities::string_to_double(Utilities::split_string_list(prm.get("List of longitude")));
           latitude_list  = Utilities::string_to_double(Utilities::split_string_list(prm.get("List of latitude")));
-	  AssertThrow (longitude_list.size() == latitude_list.size() || radius_list.size() == longitude_list.size(),
+	  AssertThrow (longitude_list.size() == latitude_list.size(),
                        ExcMessage ("Make sure you have the same number of point coordinates in the list sampling scheme."));
           AssertThrow (dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()) != nullptr ||
                        dynamic_cast<const GeometryModel::Sphere<dim>*> (&this->get_geometry_model()) != nullptr ||
