@@ -109,15 +109,16 @@ namespace aspect
      * computation.
      */
     template <int dim>
-    Mapping<dim> *construct_mapping(const GeometryModel::Interface<dim> &geometry_model,
-                                    const InitialTopographyModel::Interface<dim> &initial_topography_model)
+    std::unique_ptr<Mapping<dim>>
+                               construct_mapping(const GeometryModel::Interface<dim> &geometry_model,
+                                                 const InitialTopographyModel::Interface<dim> &initial_topography_model)
     {
       if (geometry_model.has_curved_elements())
-        return new MappingQ<dim>(4, true);
+        return std_cxx14::make_unique<MappingQ<dim>>(4, true);
       if (dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(&initial_topography_model) != nullptr)
-        return new MappingCartesian<dim>();
+        return std_cxx14::make_unique<MappingCartesian<dim>>();
 
-      return new MappingQ1<dim>();
+      return std_cxx14::make_unique<MappingQ1<dim>>();
     }
   }
 
@@ -143,10 +144,14 @@ namespace aspect
   Simulator<dim>::Simulator (const MPI_Comm mpi_communicator_,
                              ParameterHandler &prm)
     :
-    assemblers (new Assemblers::Manager<dim>()),
+    assemblers (std_cxx14::make_unique<Assemblers::Manager<dim>>()),
     parameters (prm, mpi_communicator_),
-    melt_handler (parameters.include_melt_transport ? new MeltHandler<dim> (prm) : nullptr),
-    newton_handler (parameters.nonlinear_solver == NonlinearSolver::iterated_Advection_and_Newton_Stokes ? new NewtonHandler<dim> () : nullptr),
+    melt_handler (parameters.include_melt_transport ?
+                  std_cxx14::make_unique<MeltHandler<dim>>(prm) :
+                  nullptr),
+    newton_handler (parameters.nonlinear_solver == NonlinearSolver::iterated_Advection_and_Newton_Stokes ?
+                    std_cxx14::make_unique<NewtonHandler<dim>>() :
+                    nullptr),
     post_signal_creation(
       std::bind (&internals::SimulatorSignals::call_connector_functions<dim>,
                  std::ref(signals))),
@@ -177,7 +182,9 @@ namespace aspect
     prescribed_stokes_solution (PrescribedStokesSolution::create_prescribed_stokes_solution<dim>(prm)),
     adiabatic_conditions (AdiabaticConditions::create_adiabatic_conditions<dim>(prm)),
 #ifdef ASPECT_USE_WORLD_BUILDER
-    world_builder (parameters.world_builder_file != "" ? new WorldBuilder::World (parameters.world_builder_file) : nullptr),
+    world_builder (parameters.world_builder_file != "" ?
+                   std_cxx14::make_unique<WorldBuilder::World>(parameters.world_builder_file) :
+                   nullptr),
 #endif
     boundary_heat_flux (BoundaryHeatFlux::create_boundary_heat_flux<dim>(prm)),
 
@@ -334,7 +341,7 @@ namespace aspect
                       ExcMessage("The free surface scheme can only be used with no pressure normalization") );
 
         // Allocate the FreeSurfaceHandler object
-        free_surface.reset( new FreeSurfaceHandler<dim>( *this, prm ) );
+        free_surface = std_cxx14::make_unique<FreeSurfaceHandler<dim>>(*this, prm );
       }
 
     // Initialize the melt handler

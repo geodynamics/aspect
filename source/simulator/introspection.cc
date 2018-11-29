@@ -110,9 +110,9 @@ namespace aspect
                     const unsigned int degree)
     {
       if (discontinuous)
-        return std::shared_ptr<FiniteElement<dim> >(new FE_DGP<dim>(degree));
+        return std::make_shared<FE_DGP<dim>>(degree);
       else
-        return std::shared_ptr<FiniteElement<dim> >(new FE_Q<dim>(degree));
+        return std::make_shared<FE_Q<dim>>(degree);
     }
 
 
@@ -123,9 +123,9 @@ namespace aspect
                     const unsigned int degree)
     {
       if (discontinuous)
-        return std::shared_ptr<FiniteElement<dim> >(new FE_DGQ<dim>(degree));
+        return std::make_shared<FE_DGQ<dim>>(degree);
       else
-        return std::shared_ptr<FiniteElement<dim> >(new FE_Q<dim>(degree));
+        return std::make_shared<FE_Q<dim>>(degree);
     }
   }
 
@@ -141,8 +141,7 @@ namespace aspect
     const unsigned int n_velocity_blocks = parameters.use_direct_stokes_solver ? 0 : 1;
     variables.push_back(
       VariableDeclaration<dim>("velocity",
-                               std::shared_ptr<FiniteElement<dim> >(
-                                 new FE_Q<dim>(parameters.stokes_velocity_degree)),
+                               std::make_shared<FE_Q<dim>>(parameters.stokes_velocity_degree),
                                dim,
                                n_velocity_blocks));
 
