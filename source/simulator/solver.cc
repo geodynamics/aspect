@@ -803,7 +803,7 @@ namespace aspect
         // step 1b: take the stronger solver in case
         // the simple solver failed and attempt solving
         // it in n_expensive_stokes_solver_steps steps or less.
-        catch (SolverControl::NoConvergence)
+        catch (const SolverControl::NoConvergence &)
           {
             // use the value defined by the user
             // OR
