@@ -478,7 +478,31 @@ namespace aspect
     //
     // In either case this might not show the real message of the exception
     // that was being triggered.
+    //
+    // There are a number of obstacles to detecting whether the system is
+    // currently doing stack unwinding, as illustrated by a number of GotW
+    // (Gotcha of the Week) entries. Fortunately, they do not apply to the
+    // current class because class Simulator is not likely going to be used
+    // as a local variable in the destructor of another class. Consequently,
+    // if we get here and an exception is active, we can be pretty sure
+    // that the stack is being unwound *because of something that happened
+    // in a member function of the current class*.
+    //
+    // So the remaining question is then simply how we can determine that
+    // the stack is being unwound. C++ used to have a function
+    // std::uncaught_exception(), but it was deprecated in C++17 in favor
+    // of the new function std::uncaught_exceptions(). To make things more
+    // awkward, some compilers started to emit deprecation notes if they
+    // support C++17 (and the corresponding flag is switched on by deal.II)
+    // even though here in ASPECT we do not yet rely on C++17 support. So
+    // we have to conditionally use one or the other to avoid that we
+    // either (i) get a warning about using a deprecated function, or
+    // (ii) get an error about calling an undeclared function.
+#if __cplusplus >= 201703L
+    if (std::uncaught_exceptions())
+#else
     if (std::uncaught_exception())
+#endif
       computing_timer.reset();
   }
 
