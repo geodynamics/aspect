@@ -168,8 +168,7 @@ namespace aspect
           && outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >() == nullptr)
         {
           outputs.additional_outputs.push_back(
-            std::shared_ptr<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >
-            (new MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> (n_points)));
+            std::make_shared<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >(n_points));
         }
 
       Assert(!this->get_parameters().enable_additional_stokes_rhs
@@ -1652,7 +1651,7 @@ namespace aspect
     variables.insert(variables.begin()+1,
                      VariableDeclaration<dim>(
                        "fluid pressure",
-                       std::shared_ptr<FiniteElement<dim> >(new FE_Q<dim>(parameters.stokes_velocity_degree-1)),
+                       std::make_shared<FE_Q<dim>>(parameters.stokes_velocity_degree-1),
                        1,
                        0)); // same block as p_c even without a direct solver!
 
@@ -1661,16 +1660,17 @@ namespace aspect
                        "compaction pressure",
                        melt_parameters.use_discontinuous_p_c
                        ?
-                       std::shared_ptr<FiniteElement<dim> >(new FE_DGP<dim>(parameters.stokes_velocity_degree-1))
+                       std::shared_ptr<FiniteElement<dim>>(
+                         std::make_shared<FE_DGP<dim>>(parameters.stokes_velocity_degree-1))
                        :
-                       std::shared_ptr<FiniteElement<dim> >(new FE_Q<dim>(parameters.stokes_velocity_degree-1)),
+                       std::shared_ptr<FiniteElement<dim>>(
+                         std::make_shared<FE_Q<dim>>(parameters.stokes_velocity_degree-1)),
                        1,
                        1));
 
     variables.insert(variables.begin()+3,
                      VariableDeclaration<dim>("fluid velocity",
-                                              std::shared_ptr<FiniteElement<dim> >(
-                                                new FE_Q<dim>(parameters.stokes_velocity_degree)),
+                                              std::make_shared<FE_Q<dim>>(parameters.stokes_velocity_degree),
                                               dim,
                                               1));
 
@@ -1847,8 +1847,7 @@ namespace aspect
     const unsigned int n_points = output.viscosities.size();
     const unsigned int n_comp = output.reaction_terms[0].size();
     output.additional_outputs.push_back(
-      std::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
-      (new MaterialModel::MeltOutputs<dim> (n_points, n_comp)));
+      std::make_shared<MaterialModel::MeltOutputs<dim>> (n_points, n_comp));
   }
 
 

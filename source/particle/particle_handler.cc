@@ -36,7 +36,7 @@ namespace aspect
       global_number_of_particles(0),
       global_max_particles_per_cell(0),
       next_free_particle_index(0),
-      property_pool(new PropertyPool(0)),
+      property_pool(std_cxx14::make_unique<PropertyPool>(0)),
       size_callback(),
       store_callback(),
       load_callback(),
@@ -59,7 +59,7 @@ namespace aspect
       global_number_of_particles(0),
       global_max_particles_per_cell(0),
       next_free_particle_index(0),
-      property_pool(new PropertyPool(n_properties)),
+      property_pool(std_cxx14::make_unique<PropertyPool>(n_properties)),
       size_callback(),
       store_callback(),
       load_callback(),
@@ -86,7 +86,7 @@ namespace aspect
       mpi_communicator = communicator;
 
       // Create the memory pool that will store all particle properties
-      property_pool.reset(new PropertyPool(n_properties));
+      property_pool = std_cxx14::make_unique<PropertyPool>(n_properties);
     }
 
 
