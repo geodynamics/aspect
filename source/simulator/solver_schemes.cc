@@ -192,10 +192,14 @@ namespace aspect
 
               current_residual[c] = solve_advection(adv_field);
 
-              // free matrix:
+              // Release the contents of the matrix block we used again:
               const unsigned int block_idx = adv_field.block_index(introspection);
               if (adv_field.compositional_variable!=0)
                 system_matrix.block(block_idx, block_idx).clear();
+
+              // No need to call the post_advection_solver signal here: It is
+              // automatically called from solve_advection() above.
+
               break;
             }
 
