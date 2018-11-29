@@ -354,7 +354,7 @@ namespace aspect
              triangulation.begin_active(); cell != triangulation.end(); ++cell)
         for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
           if (cell->face(f)->at_boundary())
-            cell->face(f)->set_all_manifold_ids (numbers::invalid_manifold_id);
+            cell->face(f)->set_all_manifold_ids (numbers::flat_manifold_id);
     }
 
     template <int dim>

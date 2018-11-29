@@ -60,7 +60,7 @@ namespace aspect
       {
         for (typename Triangulation<dim>::active_cell_iterator cell =
                triangulation.begin_active(); cell != triangulation.end(); ++cell)
-          cell->set_all_manifold_ids (numbers::invalid_manifold_id);
+          cell->set_all_manifold_ids (numbers::flat_manifold_id);
       }
     }
 
