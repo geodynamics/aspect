@@ -804,11 +804,15 @@ namespace aspect
      * the MaterialModel::MaterialModelOutputs structure and filled in the
      * MaterialModel::Interface::evaluate() function.
      *
-     * If the advection scheme "prescribed field" is selected, then these
-     * material model outputs will be interpolated onto the corresponding
+     * This structure is used if for one of the compositional fields employed
+     * by a simulation, the advection scheme "prescribed field" is selected.
+     * (See Parameters::AdvectionFieldMethod for more information.)
+     * Then, while updating the compositional field, a structure of this
+     * type is created, given to the material model, and the material model
+     * outputs will finally be interpolated onto the corresponding
      * compositional field.
      *
-     * However, note that this structure always has as many prescribed field
+     * @note This structure always has as many prescribed field
      * outputs as there are compositional fields, even if not all of them
      * are using the "prescribed field" method. It is the responsibility
      * of the individual material models to fill the correct entries.
