@@ -1,0 +1,70 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+Loading shared library <./liburl_reader.so>
+
+
+   Loading Ascii data initial file http://localhost:8080/opendap/data/csv/geomIO_urlTest.csv.
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+Number of active cells: 1,024 (on 6 levels)
+Number of degrees of freedom: 17,989 (8,450+1,089+4,225+4,225)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Solving C_1 system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 39+0 iterations.
+
+Number of active cells: 3,967 (on 7 levels)
+Number of degrees of freedom: 68,660 (32,282+4,096+16,141+16,141)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Solving C_1 system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 40+0 iterations.
+
+Number of active cells: 15,583 (on 8 levels)
+Number of degrees of freedom: 267,679 (125,912+15,855+62,956+62,956)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Solving C_1 system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 48+0 iterations.
+
+Number of active cells: 61,450 (on 9 levels)
+Number of degrees of freedom: 1,051,571 (494,752+62,067+247,376+247,376)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Solving C_1 system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 54+0 iterations.
+
+Number of active cells: 242,653 (on 10 levels)
+Number of degrees of freedom: 4,144,436 (1,950,122+244,192+975,061+975,061)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Solving C_1 system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 59+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  1 m/year, 1 m/year
+     Temperature min/avg/max:            0 K, 1909 K, 2152 K
+     Heat fluxes through boundary parts: 5.578e-10 W, 7.785e-10 W, 5.935e+06 W, 9.667e+06 W
+     Writing graphical output:           output-url_reader/solution/solution-00000
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
