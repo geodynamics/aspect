@@ -647,7 +647,6 @@ namespace aspect
       // Prepare the output data
       if (output_in_lat_lon == true)
         {
-          std::vector<std::pair<std::pair<double,double>,double> > stored_values_lon_lat;
           double lon, lat;
           for (unsigned int i=0; i<surface_cell_spherical_coordinates.size(); ++i)
             {
@@ -659,32 +658,24 @@ namespace aspect
                      :
                      surface_cell_spherical_coordinates.at(i).second*(180./numbers::PI) - 360.);
 
-              stored_values_lon_lat.emplace_back(std::make_pair(lon,lat),geoid_anomaly.at(i));
-            }
-          // Write the solution to the stream output
-          for (unsigned int i=0; i<stored_values_lon_lat.size(); ++i)
-            {
-              output << stored_values_lon_lat.at(i).first.first
+              // Write the solution to the stream output
+              output << lon
                      << ' '
-                     << stored_values_lon_lat.at(i).first.second
+                     << lat
                      << ' '
-                     << stored_values_lon_lat.at(i).second
+                     << geoid_anomaly.at(i)
                      << std::endl;
+
             }
         }
       else
         {
-          std::vector<std::pair<Point<dim>,double> > stored_values_xyz;
           for (unsigned int i=0; i<surface_cell_locations.size(); ++i)
             {
-              stored_values_xyz.push_back(std::make_pair(surface_cell_locations.at(i),geoid_anomaly.at(i)));
-            }
-          // Write the solution to the stream output
-          for (unsigned int i=0; i<stored_values_xyz.size(); ++i)
-            {
-              output << stored_values_xyz.at(i).first
+              // Write the solution to the stream output
+              output << surface_cell_locations.at(i)
                      << ' '
-                     << stored_values_xyz.at(i).second
+                     << geoid_anomaly.at(i)
                      << std::endl;
             }
         }
@@ -737,6 +728,120 @@ namespace aspect
         {
           MPI_Send (&output.str()[0], output.str().size()+1, MPI_CHAR, 0, mpi_tag,
                     this->get_mpi_communicator());
+        }
+
+      // Prepare the free-air gravity anomaly output
+      if (also_output_gravity_anomaly == true)
+        {
+          // have a stream into which we write the gravity anomaly data. the text stream is then
+          // later sent to processor 0
+          std::ostringstream output_gravity_anomaly;
+          // Compute the grid gravity anomaly based on spherical harmonics
+          std::vector<double> gravity_anomaly;
+          gravity_anomaly.reserve(surface_cell_spherical_coordinates.size());
+
+          for (unsigned int i=0; i<surface_cell_spherical_coordinates.size(); ++i)
+            {
+              int ind = 0;
+              double gravity_value = 0;
+              for (unsigned int ideg =  min_degree; ideg < max_degree+1; ++ideg)
+                {
+                  for (unsigned int iord = 0; iord < ideg+1; ++iord)
+                    {
+                      // normalization after Dahlen and Tromp, 1986, Appendix B.6
+                      const std::pair<double,double> sph_harm_vals = aspect::Utilities::real_spherical_harmonic(ideg,iord,surface_cell_spherical_coordinates.at(i).first,surface_cell_spherical_coordinates.at(i).second);
+                      const double cos_component = sph_harm_vals.first; // real / cos part
+                      const double sin_component = sph_harm_vals.second; // imaginary / sine part
+
+                      // the conversion from geoid to gravity anomaly is given by gravity_anomaly = (l-1)*g/R_surface * geoid_anomaly
+                      // based on Forte (2007) equation [97]
+                      gravity_value += (geoid_coecos.at(ind)*cos_component+geoid_coesin.at(ind)*sin_component) * (ideg - 1) * surface_gravity / outer_radius;
+                      ++ind;
+                    }
+                }
+              gravity_anomaly.push_back(gravity_value);
+            }
+
+          // Prepare the output data
+          if (output_in_lat_lon == true)
+            {
+              double lon, lat;
+              for (unsigned int i=0; i<surface_cell_spherical_coordinates.size(); ++i)
+                {
+                  // Transfer the spherical coordinates to geographical coordinates
+                  lat = 90. - surface_cell_spherical_coordinates.at(i).first*(180./numbers::PI);
+                  lon = (surface_cell_spherical_coordinates.at(i).second <= numbers::PI
+                         ?
+                         surface_cell_spherical_coordinates.at(i).second*(180./numbers::PI)
+                         :
+                         surface_cell_spherical_coordinates.at(i).second*(180./numbers::PI) - 360.);
+
+                  // Write the solution to the stream output
+                  output_gravity_anomaly << lon
+                                         << ' '
+                                         << lat
+                                         << ' '
+                                         << gravity_anomaly.at(i)
+                                         << std::endl;
+
+                }
+            }
+          else
+            {
+              for (unsigned int i=0; i<surface_cell_locations.size(); ++i)
+                {
+                  // Write the solution to the stream output
+                  output_gravity_anomaly << surface_cell_locations.at(i)
+                                         << ' '
+                                         << gravity_anomaly.at(i)
+                                         << std::endl;
+                }
+            }
+
+          const std::string filename = this->get_output_directory() +
+                                       "gravity_anomaly." +
+                                       dealii::Utilities::int_to_string(this->get_timestep_number(), 5);
+          const unsigned int max_data_length = dealii::Utilities::MPI::max (output_gravity_anomaly.str().size()+1,
+                                                                            this->get_mpi_communicator());
+          const unsigned int mpi_tag = 123;
+          // on processor 0, collect all of the data the individual processors send
+          // and concatenate them into one file
+          if (dealii::Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
+            {
+              std::ofstream file (filename.c_str());
+              file << "# "
+                   << ((output_in_lat_lon == true)? "longitude latitude" : "x y z")
+                   << " gravity_anomaly" << std::endl;
+              // first write out the data we have created locally
+              file << output_gravity_anomaly.str();
+              std::string tmp;
+              tmp.resize (max_data_length, '\0');
+              // then loop through all of the other processors and collect
+              // data, then write it to the file
+              for (unsigned int p=1; p<dealii::Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()); ++p)
+                {
+                  MPI_Status status;
+                  // get the data. note that MPI says that an MPI_Recv may receive
+                  // less data than the length specified here. since we have already
+                  // determined the maximal message length, we use this feature here
+                  // rather than trying to find out the exact message length with
+                  // a call to MPI_Probe.
+                  MPI_Recv (&tmp[0], max_data_length, MPI_CHAR, p, mpi_tag,
+                            this->get_mpi_communicator(), &status);
+                  // output the string. note that 'tmp' has length max_data_length,
+                  // but we only wrote a certain piece of it in the MPI_Recv, ended
+                  // by a \0 character. write only this part by outputting it as a
+                  // C string object, rather than as a std::string
+                  file << tmp.c_str();
+                }
+            }
+          else
+            // on other processors, send the data to processor zero. include the \0
+            // character at the end of the string
+            {
+              MPI_Send (&output_gravity_anomaly.str()[0], output_gravity_anomaly.str().size()+1, MPI_CHAR, 0, mpi_tag,
+                        this->get_mpi_communicator());
+            }
         }
 
       return std::pair<std::string,std::string>("Writing geoid anomaly:",
@@ -817,6 +922,10 @@ namespace aspect
                             Patterns::Bool(),
                             "Option to also output the spherical harmonic coefficients of the density anomaly contribution to the "
                             "maximum degree. The default is false. ");
+          prm.declare_entry("Also output the gravity anomaly", "false",
+                            Patterns::Bool(),
+                            "Option to also output the free-air gravity anomaly up to the maximum degree. "
+                            "The unit of the output is in SI, hence m/s^2 (1mgal = 10^-5 m/s^2). The default is false. ");
         }
         prm.leave_subsection ();
       }
@@ -840,6 +949,7 @@ namespace aspect
           also_output_surface_dynamic_topo_contribution_SH_coes = prm.get_bool ("Also output the spherical harmonic coefficients of surface dynamic topography contribution");
           also_output_CMB_dynamic_topo_contribution_SH_coes = prm.get_bool ("Also output the spherical harmonic coefficients of CMB dynamic topography contribution");
           also_output_density_anomaly_contribution_SH_coes = prm.get_bool ("Also output the spherical harmonic coefficients of density anomaly contribution");
+          also_output_gravity_anomaly = prm.get_bool ("Also output the gravity anomaly");
         }
         prm.leave_subsection ();
       }

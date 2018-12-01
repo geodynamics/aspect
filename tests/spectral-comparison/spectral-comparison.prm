@@ -11,7 +11,7 @@ set Dimension                              = 3
 # the instantaneous solution.
 set End time                               = 0
 set Use years in output instead of seconds = true
-set Output directory                       = output-S20RTS
+set Output directory                       = output
 
 # The following variables describe how the pressure should
 # be normalized. Here, we choose a zero average pressure
@@ -22,7 +22,7 @@ set Surface pressure                       = 0
 # Here we specify the residual tolerance for the linear solver.
 subsection Solver parameters
   subsection Stokes solver parameters
-    set Linear solver tolerance = 1e-4
+    set Linear solver tolerance = 1e-5
   end
 end
 
@@ -41,14 +41,14 @@ end
 # the domain. Here we set the temperature to be constant,
 # but different from the reference temperature to approximate
 # boundary layers.
-subsection Boundary temperature model
-  set Fixed temperature boundary indicators = top, bottom
-  set List of model names = spherical constant
-  subsection Spherical constant
-    set Inner temperature = 2000
-    set Outer temperature = 1000
-  end
-end
+#subsection Boundary temperature model
+#  set Fixed temperature boundary indicators = top, bottom
+#  set List of model names = spherical constant
+#  subsection Spherical constant
+#    set Inner temperature = 1600
+#    set Outer temperature = 1600
+#  end
+#end
 
 # This section describes the gravity field, which is pointing
 # towards the Earth's center with the same magnitude of 10 m/s^2
@@ -85,6 +85,8 @@ subsection Initial temperature model
 # This specifies the background temperature to which we add the 
 # temperature difference.
     set Reference temperature             = 1600
+
+#    set Remove temperature heterogeneity down to specified depth = 660000
   end
 end
 
@@ -106,7 +108,7 @@ end
 # is too low to fully resolve the mantle flow, however it does capture
 # the main features.
 subsection Mesh refinement
-  set Initial global refinement          = 2
+  set Initial global refinement          = 5
   set Initial adaptive refinement        = 0
 end
 
@@ -119,11 +121,11 @@ end
 # We output the density, velocity, dynamic topography, geoid and heat flux density
 # for plotting. 
 subsection Postprocess
-  set List of postprocessors = geoid, velocity statistics, heat flux map, heat flux statistics, dynamic topography, visualization, basic statistics
+  set List of postprocessors = geoid, dynamic topography, visualization, basic statistics
 
   subsection Visualization
     set Output format                 = vtu
-    set List of output variables      = geoid, dynamic topography, heat flux map, density,viscosity, gravity
+    set List of output variables      = geoid, dynamic topography,  density, viscosity, gravity
     set Time between graphical output = 0
     set Number of grouped files       = 1 
   end
@@ -131,4 +133,5 @@ subsection Postprocess
   subsection Geoid
     set Also output the gravity anomaly  = true
   end
+
 end

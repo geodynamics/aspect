@@ -109,6 +109,11 @@ namespace aspect
         bool also_output_density_anomaly_contribution_SH_coes;
 
         /**
+         * A parameter to control whether to output the free-air gravity anomaly
+         */
+        bool also_output_gravity_anomaly;
+
+        /**
          * Parameters to set the density value out of the surface and CMB boundary
          */
         double density_above;
