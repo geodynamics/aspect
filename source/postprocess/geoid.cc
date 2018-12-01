@@ -925,7 +925,7 @@ namespace aspect
           prm.declare_entry("Also output the gravity anomaly", "false",
                             Patterns::Bool(),
                             "Option to also output the free-air gravity anomaly up to the maximum degree. "
-                            "The unit of the output is in SI, hence m/s^2 (1mgal = 10^-5 m/s^2). The default is false. ");
+                            "The unit of the output is in SI, hence $m/s^2$ ($1mgal = 10^-5 m/s^2$). The default is false. ");
         }
         prm.leave_subsection ();
       }
