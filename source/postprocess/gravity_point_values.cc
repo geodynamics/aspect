@@ -43,7 +43,7 @@ namespace aspect
       const std::string filename = (this->get_output_directory() +
                                     "output_gravity");
       // Call the postprocessor only after the last time step
-      if (this->get_time() == this->get_end_time())
+      if (this->get_time() == end_time)
         {
           // Get quadrature formula and increase the degree of quadrature over the velocity
           // element degree.
