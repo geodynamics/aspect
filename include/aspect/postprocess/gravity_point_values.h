@@ -137,6 +137,7 @@ namespace aspect
          * gravity anomalies;
          */
         double reference_density;
+        double end_time;
 
         /**
          * Specify the sampling scheme determining if gravity calculation is performed
