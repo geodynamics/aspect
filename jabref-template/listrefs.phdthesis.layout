@@ -28,15 +28,8 @@
 
         -->
 
-         \begin{journal}\format[HTMLChars]{\journal}\end{journal}<!--
-    -->\begin{booktitle}, In: \format[HTMLChars]{\booktitle}.\end{booktitle}<!--
- -->\begin{howpublished}, \howpublished\end{howpublished}<!--
-       -->\begin{school}. Thesis at \format[HTMLChars]{\school}\end{school}<!--
+          \begin{school} PhD thesis, \format[HTMLChars]{\school}\end{school}<!--
       -->\begin{address}, \format[HTMLChars]{\address}\end{address}<!--
-       -->\begin{volume}, vol. \volume\end{volume}<!--
-       -->\begin{number}(\format[FormatPagesForHTML]{\number})\end{number}<!--
-        -->\begin{pages}, pp. \format[FormatPagesForHTML]{\pages}\end{pages}<!--
-         -->\begin{note}  (\format[HTMLChars]{\note})\end{note}<!--
     -->\begin{publisher}, \format[HTMLChars]{\publisher}\end{publisher}<!--
          -->\begin{year}, \format[HTMLChars]{\year}\end{year}<!--
                      -->.
