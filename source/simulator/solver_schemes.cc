@@ -1456,13 +1456,17 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::solve_stokes_adjoint ()
   {
-
     // TODO iterate
     // todo make number of interations a parameter and change Do iterations for inversion parameter
-    for (unsigned int i=0; i<parameters.num_it_adjoint; ++i)
-      {
+//    for (unsigned int i=0; i<parameters.num_it_adjoint; ++i)
+//      {
+
+//        pcout << " ^^ Adjoint iteration number " << i  << std::endl;
+
         // -------------------------------------------------------------
         // SOLVE FORWARD PROBLEM
+
+        pcout << "   Forward problem ... " << std::endl;
 
         adjoint_problem = false;
         rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
@@ -1478,13 +1482,14 @@ namespace aspect
           current_linearization_point.block(introspection.block_indices.pressure)
             = solution.block(introspection.block_indices.pressure);
 
+        // postprocess forward solution to calculate DT and maybe geoid etc.
+        // TODO: only run the postprocessors I need, e.g. DT
+         postprocess ();
 
         // -------------------------------------------------------------
         // SOLVE ADJOINT PROBLEM
 
-        // postprocess forward solution to calculate DT and maybe geoid etc.
-        // TODO: only run the postprocessors I need, e.g. DT
-        postprocess ();
+        pcout << "   Adjoint problem ... " << std::endl;
 
         // only do adjoint if final (refined) mesh is reached
         adjoint_problem = true;
@@ -1501,29 +1506,32 @@ namespace aspect
           current_adjoint_solution.block(introspection.block_indices.pressure)
             = solution.block(introspection.block_indices.pressure);
 
-        // put forward solution back into solution vector
+        // put forward solution back into solution vector for postprocessing output
         solution.block(introspection.block_indices.velocities) =
           current_linearization_point.block(introspection.block_indices.velocities);
         if (introspection.block_indices.velocities != introspection.block_indices.pressure)
           solution.block(introspection.block_indices.pressure)
             = current_linearization_point.block(introspection.block_indices.pressure);
 
+        // postprocess adjoint solution to get output
+        // TODO: only run the postprocessors I need, e.g. DT
+        // postprocess ();
+
+
         // -------------------------------------------------------------
         // COMPUTE UPDATES FOR ETA AND RHO
 
-            // the inversion only works with a specific material model
-            // this doesn't actually check the material model yet just the number of comp fields, but okay
-            Assert(introspection.n_compositional_fields == 2,
-                   ExcMessage ("You're not using the right material model for the adjoint problem. "
-                               "The only model that is consistent is the additive material model."));
+        // the inversion only works with a specific material model
+        // this doesn't actually check the material model yet just the number of comp fields, but okay
+        Assert(introspection.n_compositional_fields == 2,
+               ExcMessage ("You're not using the right material model for the adjoint problem. "
+                           "The only model that is consistent is the additive material model."));
 
-            // set up rhs and mass matrix
-            // solve system for gradients in eta and rho
-            compute_parameter_update();
+        // set up rhs and mass matrix
+        // solve system for gradients in eta and rho
+        compute_parameter_update();
 
-            //in.composition[i][density_idx];
-            //in.composition[i][viscosity_idx];
-      }
+//      }
   }
 
 }

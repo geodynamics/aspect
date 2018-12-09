@@ -195,7 +195,7 @@ namespace aspect
                                                "iterated Advection and Newton Stokes|single Advection, iterated Newton Stokes|"
                                                "single Advection, no Stokes|IMPES|iterated IMPES|"
                                                "iterated Stokes|Newton Stokes|Stokes only|Advection only|"
-                                               "first timestep only|Stokes adjoint, single Stokes|no Advection, no Stokes";
+                                               "first timestep only, single Stokes|no Advection, no Stokes|Stokes adjoint";
 
     prm.declare_entry ("Nonlinear solver scheme", "single Advection, single Stokes",
                        Patterns::Selection (allowed_solver_schemes),
@@ -1307,7 +1307,10 @@ namespace aspect
       prm.declare_entry ("Use fixed surface value", "false",
                          Patterns::Bool (),
                          "");
-      prm.declare_entry ("Factor to update the material properties", "0.1",
+      prm.declare_entry ("Factor to update the density properties", "0.",
+                         Patterns::Double (),
+                         "");
+      prm.declare_entry ("Factor to update the viscosity properties", "0.",
                          Patterns::Double (),
                          "");
     }
@@ -1983,7 +1986,8 @@ namespace aspect
       read_in_points                  = prm.get_bool ("Read points in from file");
       num_it_adjoint                  = prm.get_integer ("Number of iterations in adjoint inversion");
       use_fixed_surface_value         = prm.get_bool ("Use fixed surface value");
-      update_factor             = prm.get_double ("Factor to update the material properties");
+      update_factor_rho               = prm.get_double ("Factor to update the density properties");
+      update_factor_eta               = prm.get_double ("Factor to update the viscosity properties");
     }
     prm.leave_subsection ();
 

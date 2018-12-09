@@ -594,6 +594,7 @@ namespace aspect
 
     material_model->evaluate(scratch.material_model_inputs,
                              scratch.material_model_outputs);
+
     MaterialModel::MaterialAveraging::average (parameters.material_averaging,
                                                cell,
                                                scratch.finite_element_values.get_quadrature(),
@@ -1579,8 +1580,8 @@ namespace aspect
                      system_rhs.block(eta_comp_block),
                      PreconditionIdentity());
 
-    solution.block(rho_comp_block).add (parameters.update_factor, delta.block(rho_comp_block));
-    solution.block(eta_comp_block).add (parameters.update_factor, delta.block(eta_comp_block));
+    solution.block(rho_comp_block).add (parameters.update_factor_rho, delta.block(rho_comp_block));
+    solution.block(eta_comp_block).add (parameters.update_factor_eta, delta.block(eta_comp_block));
 
     /*
         // output rhs

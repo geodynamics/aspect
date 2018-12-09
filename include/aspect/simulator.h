@@ -723,11 +723,6 @@ namespace aspect
        */
       void solve_no_advection_no_stokes ();
 
-      /** 
-       * This solves the adjoint equations
-       */
-      void solve_stokes_adjoint ();
-
       /**
        * Initiate the assembly of the Stokes preconditioner matrix via
        * assemble_stokes_preconditoner(), then set up the data structures to

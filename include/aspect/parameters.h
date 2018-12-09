@@ -76,7 +76,7 @@ namespace aspect
         single_Advection_iterated_Newton_Stokes,
         single_Advection_no_Stokes,
         first_timestep_only_single_Stokes,
-        no_Advection_no_Stokes
+        no_Advection_no_Stokes,
         Stokes_adjoint
       };
     };
@@ -710,8 +710,8 @@ namespace aspect
     bool               read_in_points;
     unsigned int           num_it_adjoint;
     bool          use_fixed_surface_value;
-    double        update_factor;
-
+    double        update_factor_eta;
+    double        update_factor_rho;
   };
 
 }
