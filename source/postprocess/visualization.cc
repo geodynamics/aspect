@@ -485,18 +485,19 @@ namespace aspect
         }
 
       // Now build the patches. If selected, increase the output resolution.
-      if (interpolate_output)
-        {
-          data_out.build_patches (this->get_mapping(),
-                                  this->get_stokes_velocity_degree(),
-                                  this->get_geometry_model().has_curved_elements()
-                                  ?
-                                  DataOut<dim>::curved_inner_cells
-                                  :
-                                  DataOut<dim>::no_curved_cells);
-        }
-      else
-        data_out.build_patches(this->get_mapping()); // Giving the mapping ensures that the case with mesh deformation works correctly.
+      // Giving the mapping ensures that the case with mesh deformation works correctly.
+      const unsigned int subdivisions = interpolate_output
+                                        ?
+                                        this->get_stokes_velocity_degree()
+                                        :
+                                        0;
+      data_out.build_patches (this->get_mapping(),
+                              subdivisions,
+                              this->get_geometry_model().has_curved_elements()
+                              ?
+                              DataOut<dim>::curved_inner_cells
+                              :
+                              DataOut<dim>::no_curved_cells);
 
       // Now prepare everything for writing the output and choose output format
       std::string solution_file_prefix = "solution-" + Utilities::int_to_string (output_file_number, 5);
