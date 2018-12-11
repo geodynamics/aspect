@@ -3,7 +3,7 @@
 pipeline {
   agent {
     docker {
-        image 'dealii/dealii:v8.5.1-gcc-mpi-fulldepscandi-debugrelease'
+        image 'tjhei/dealii:v9.0.1-full-v9.0.1-r4'
 	// We mount /repos into the docker image. This allows us to cache
 	// the git repo by setting "advanced clone behaviors". If the
 	// directory does not exist, this will be ignored.
@@ -88,7 +88,6 @@ pipeline {
       options {timeout(time: 90, unit: 'MINUTES')}
       steps {
         sh '''
-          export OMPI_MCA_btl=self,tcp
           cd /home/dealii/build-gcc-fast/tests
           echo "Prebuilding tests..."
 	  ninja -k 0 tests || true
@@ -100,7 +99,6 @@ pipeline {
       options {timeout(time: 90, unit: 'MINUTES')}
       steps {
         sh '''
-          export OMPI_MCA_btl=self,tcp
           rm -f /home/dealii/build-gcc-fast/FAILED
           cd /home/dealii/build-gcc-fast
           ctest --output-on-failure -j4 || { touch FAILED; }
