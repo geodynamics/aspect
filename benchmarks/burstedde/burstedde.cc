@@ -79,9 +79,6 @@ namespace aspect
         const double y = pos[1];
         const double z = pos[2];
 
-        const double min_eta = 1.0;
-        const double max_eta = eta;
-
         return x*y*z+x*x*x*y*y*y*z-5./32.;
       }
 
@@ -404,7 +401,7 @@ namespace aspect
 
     template <int dim>
     void
-    BursteddeGravity<dim>::declare_parameters (ParameterHandler &prm)
+    BursteddeGravity<dim>::declare_parameters (ParameterHandler &)
     {
       //nothing to declare here. This plugin will however, read parameters
       //declared by the material model in the "Burstedde benchmark" section
@@ -442,7 +439,7 @@ namespace aspect
 
     template <int dim>
     std::pair<std::string,std::string>
-    BursteddePostprocessor<dim>::execute (TableHandler &statistics)
+    BursteddePostprocessor<dim>::execute (TableHandler &)
     {
       std::shared_ptr<Function<dim> > ref_func;
       {

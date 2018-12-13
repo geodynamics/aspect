@@ -54,7 +54,7 @@ namespace aspect
       {
         const double PI = numbers::PI;
         double Z, u1, u2, u3, u4, u5, u6, ZA, ZB;
-        double sum1, sum2, sum3, sum4, sum5, sum6, mag, x, z, xc;
+        double sum1, sum2, sum3, sum4, sum5, sum6, x, z, xc;
         double _C1A, _C2A, _C3A, _C4A, _C1B, _C2B, _C3B, _C4B, _C1, _C2, _C3, _C4;
         int n, nx;
 
@@ -2849,10 +2849,7 @@ namespace aspect
         u4 *= 2 * n * PI * sin(n * PI * z); /* zx stress */
         sum4 += u4;
 
-
-        mag = sqrt(sum1 * sum1 + sum2 * sum2);
-        /*printf("%0.7f %0.7f %0.7f %0.7f %0.7f %0.7f %0.7f %0.7f %0.7f\n",x,z,sum1,sum2,sum3,sum4,sum5,sum6,mag);*/
-
+        /*printf("%0.7f %0.7f %0.7f %0.7f %0.7f %0.7f %0.7f %0.7f\n",x,z,sum1,sum2,sum3,sum4,sum5,sum6);*/
 
         /* Output */
         if (vel != NULL)
