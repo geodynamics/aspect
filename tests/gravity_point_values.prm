@@ -4,7 +4,7 @@
 # General parameters
 set Dimension                              = 3
 set End time                               = 0
-set Output directory                       = output_gravity_point_values
+set Output directory                       = output-gravity_point_values
 
 # Model geometry
 subsection Geometry model

@@ -44,6 +44,11 @@ namespace aspect
     {
       public:
         /**
+         * Constructor.
+         */
+        GravityPointValues ();
+
+        /**
          * Specify the creation of output_gravity.txt.
          */
         virtual
@@ -62,11 +67,59 @@ namespace aspect
         virtual
         void
         parse_parameters (ParameterHandler &prm);
+
         /**
-         * @}
+         * Serialize the contents of this class as far as they are not read
+         * from input parameter files.
          */
+        template <class Archive>
+        void serialize (Archive &ar, const unsigned int version);
 
       private:
+        /**
+         * Interval between the generation of gravity output.
+         */
+        double output_interval;
+
+        /**
+         * A time (in seconds) at which the last graphical output was supposed
+         * to be produced. Used to check for the next necessary output time.
+         */
+        double last_output_time;
+
+        /**
+         * Maximum number of steps between the generation of gravity output.
+         */
+        unsigned int maximum_timesteps_between_outputs;
+
+        /**
+         * Timestep at which the last gravity output was produced
+         * Used to check for the next necessary output time.
+         */
+        unsigned int last_output_timestep;
+
+        /**
+         * Consecutively counted number indicating the how-manyth time we will
+         * create output the next time we get to it.
+         */
+        unsigned int output_file_number;
+
+        /**
+         * end_time is taken from pramater file. It is used to tell the
+         * postprocessor to write gravity output at the end time.
+         */
+        double end_time;
+
+        /**
+         * Set the time output was supposed to be written. In the simplest
+         * case, this is the previous last output time plus the interval, but
+         * in general we'd like to ensure that it is the largest supposed
+         * output time, which is smaller than the current time, to avoid
+         * falling behind with last_output_time and having to catch up once
+         * the time step becomes larger. This is done after every output.
+         */
+        void set_last_output_time (const double current_time);
+
         /**
          * Quadrature degree increase over the velocity element degree may be required when
          * gravity is calculated near the surface or inside the model. An increase in the
@@ -137,7 +190,6 @@ namespace aspect
          * gravity anomalies;
          */
         double reference_density;
-        double end_time;
 
         /**
          * Specify the sampling scheme determining if gravity calculation is performed
