@@ -1,23 +1,25 @@
 # This test is based on boundary_heat_flux and checks that the consistent
 # boundary flux method in the heatflux statistics postprocessor computes
-# the correct boundary fluxes for models with adjacent Dirichlet and
-# Neumann temperature boundary conditions.
+# the correct boundary fluxes for models with Dirichlet temperature
+# boundary conditions on two adjacent faces of the same cell that belong
+# to different boundaries.
 
 
 set Dimension                              = 2
 set Use years in output instead of seconds = false
-set End time                               = 2.5e16
+set End time                               = 1e13
 
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
 set Adiabatic surface temperature          = 90  # -183°C adiabat
 set Use conduction timestep                = true
+set Output directory = output-no-expansion
 
 subsection Geometry model
   set Model name = box
 
   subsection Box
-    set X extent = 100000
+    set X extent = 20000
     set Y extent = 20000      
   end
 end
@@ -35,7 +37,8 @@ end
 
 subsection Boundary velocity model
   subsection Function
-    set Function expression = 0;0
+    set Function constants = yr_in_s=31557600
+    set Function expression = 1/yr_in_s;0
   end
   set Prescribed velocity boundary indicators = 0:function,1:function, 2:function,3:function 
 end
@@ -48,7 +51,7 @@ subsection Discretization
 end
 
 subsection Boundary temperature model
-  set Fixed temperature boundary indicators = left
+  set Fixed temperature boundary indicators = top, left
   set List of model names = initial temperature
 end
 
@@ -70,11 +73,12 @@ subsection Material model
     set Reference specific heat  = 1000
     set Reference temperature    = 273 
     set Thermal conductivity     = 2.38
+    set Thermal expansion coefficient      = 0.0
   end
 end
 
 subsection Mesh refinement
-  set Initial global refinement                = 0
+  set Initial global refinement                = 2
   set Initial adaptive refinement              = 0
   set Time steps between mesh refinement       = 0
 end

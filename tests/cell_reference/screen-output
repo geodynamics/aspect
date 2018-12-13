@@ -39,8 +39,14 @@ Level: 1 Index: 1
 Level: 1 Index: 2
 Level: 1 Index: 3
 Level: 1 Index: 0
+Level: 1 Index: 0
+Level: 1 Index: 0
+Level: 1 Index: 1
 Level: 1 Index: 1
 Level: 1 Index: 2
+Level: 1 Index: 2
+Level: 1 Index: 2
+Level: 1 Index: 3
 Level: 1 Index: 3
      Writing graphical output:           output-cell_reference/solution/solution-00000
      RMS, max velocity:                  5.88e-08 m/s, 1.41e-07 m/s

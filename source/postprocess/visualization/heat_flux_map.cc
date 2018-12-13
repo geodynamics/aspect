@@ -82,12 +82,21 @@ namespace aspect
       ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(HeatFluxMap,
                                                   "heat flux map",
                                                   "A visualization output object that generates output for "
-                                                  "the heat flux density across the top and bottom boundary. The heat flux density "
-                                                  "is computed in outward direction, i.e., from the domain to the "
-                                                  "outside, using the consistent boundary flux method as described in "
-                                                  "Gresho, P. M., Lee, R. L., Sani, R. L., Maslanik, M. K., & Eaton, B. E. (1987). "
-                                                  "The consistent Galerkin FEM for computing derived boundary quantities in thermal and or fluids "
-                                                  "problems. International Journal for Numerical Methods in Fluids, 7(4), 371-394.")
+                                                  "the heat flux density across the top and bottom boundary "
+                                                  "in outward direction. "
+                                                  "The heat flux is computed as sum "
+                                                  "of advective heat flux and conductive heat "
+                                                  "flux through Neumann boundaries, both "
+                                                  "computed as integral over the boundary area, "
+                                                  "and conductive heat flux through Dirichlet "
+                                                  "boundaries, which is computed using the "
+                                                  "consistent boundary flux method as described "
+                                                  "in ``Gresho, P. M., Lee, R. L., Sani, R. L., "
+                                                  "Maslanik, M. K., & Eaton, B. E. (1987). "
+                                                  "The consistent Galerkin FEM for computing "
+                                                  "derived boundary quantities in thermal and or "
+                                                  "fluids problems. International Journal for "
+                                                  "Numerical Methods in Fluids, 7(4), 371-394.''")
     }
   }
 }

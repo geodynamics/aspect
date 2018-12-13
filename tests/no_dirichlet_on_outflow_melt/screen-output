@@ -170,7 +170,7 @@ Number of degrees of freedom: 2,377 (578+273+578+81+289+289+289)
    Postprocessing:
      RMS, max velocity:                  5.52 m/year, 11.6 m/year
      Temperature min/avg/max:            0 K, 1568 K, 1659 K
-     Heat fluxes through boundary parts: 0 W, 0 W, -64.46 W, 4.201e+07 W
+     Heat fluxes through boundary parts: 0 W, 0 W, -8.067e+07 W, 4.201e+07 W
      Writing graphical output:           output-no_dirichlet_on_outflow_melt/solution/solution-00001
 
 *** Timestep 2:  t=62.6432 years
@@ -250,7 +250,7 @@ Number of degrees of freedom: 2,377 (578+273+578+81+289+289+289)
    Postprocessing:
      RMS, max velocity:                  5.44 m/year, 11.1 m/year
      Temperature min/avg/max:            4.669 K, 1569 K, 1670 K
-     Heat fluxes through boundary parts: 0 W, 0 W, 113.5 W, -1.549e+05 W
+     Heat fluxes through boundary parts: 0 W, 0 W, -7.242e+07 W, 4.874e+06 W
      Writing graphical output:           output-no_dirichlet_on_outflow_melt/solution/solution-00002
 
 *** Timestep 3:  t=81.5083 years
@@ -321,7 +321,7 @@ Number of degrees of freedom: 2,377 (578+273+578+81+289+289+289)
    Postprocessing:
      RMS, max velocity:                  5.55 m/year, 13.7 m/year
      Temperature min/avg/max:            9.965 K, 1570 K, 1663 K
-     Heat fluxes through boundary parts: 0 W, 0 W, 112.7 W, -2.413e+05 W
+     Heat fluxes through boundary parts: 0 W, 0 W, -3.433e+07 W, 5.201e+06 W
      Writing graphical output:           output-no_dirichlet_on_outflow_melt/solution/solution-00003
 
 *** Timestep 4:  t=98.9429 years
@@ -392,7 +392,7 @@ Number of degrees of freedom: 2,377 (578+273+578+81+289+289+289)
    Postprocessing:
      RMS, max velocity:                  6.72 m/year, 16.7 m/year
      Temperature min/avg/max:            0 K, 1564 K, 1678 K
-     Heat fluxes through boundary parts: 0 W, 0 W, -0.0006064 W, 6.079e+08 W
+     Heat fluxes through boundary parts: 0 W, 0 W, 1.299e+07 W, 6.079e+08 W
      Writing graphical output:           output-no_dirichlet_on_outflow_melt/solution/solution-00004
 
 *** Timestep 5:  t=115.856 years
@@ -454,7 +454,7 @@ Number of degrees of freedom: 2,377 (578+273+578+81+289+289+289)
    Postprocessing:
      RMS, max velocity:                  8.28 m/year, 19.2 m/year
      Temperature min/avg/max:            0 K, 1560 K, 1661 K
-     Heat fluxes through boundary parts: 0 W, 0 W, -0.001325 W, 1.178e+08 W
+     Heat fluxes through boundary parts: 0 W, 0 W, 5.496e+07 W, 1.178e+08 W
      Writing graphical output:           output-no_dirichlet_on_outflow_melt/solution/solution-00005
 
 *** Timestep 6:  t=133.201 years
@@ -516,7 +516,7 @@ Number of degrees of freedom: 2,377 (578+273+578+81+289+289+289)
    Postprocessing:
      RMS, max velocity:                  9.21 m/year, 20.6 m/year
      Temperature min/avg/max:            0 K, 1556 K, 1650 K
-     Heat fluxes through boundary parts: 0 W, 0 W, 0.0005586 W, 2.019e+08 W
+     Heat fluxes through boundary parts: 0 W, 0 W, 8.025e+07 W, 2.019e+08 W
      Writing graphical output:           output-no_dirichlet_on_outflow_melt/solution/solution-00006
 
 *** Timestep 7:  t=151.664 years
@@ -578,7 +578,7 @@ Number of degrees of freedom: 2,377 (578+273+578+81+289+289+289)
    Postprocessing:
      RMS, max velocity:                  8.64 m/year, 19.8 m/year
      Temperature min/avg/max:            0 K, 1551 K, 1657 K
-     Heat fluxes through boundary parts: 0 W, 0 W, 0.0007898 W, 1.991e+08 W
+     Heat fluxes through boundary parts: 0 W, 0 W, 7.847e+07 W, 1.991e+08 W
      Writing graphical output:           output-no_dirichlet_on_outflow_melt/solution/solution-00007
 
 *** Timestep 8:  t=172.01 years
@@ -649,7 +649,7 @@ Number of degrees of freedom: 2,377 (578+273+578+81+289+289+289)
    Postprocessing:
      RMS, max velocity:                  6.31 m/year, 17.1 m/year
      Temperature min/avg/max:            0 K, 1546 K, 1662 K
-     Heat fluxes through boundary parts: 0 W, 0 W, -0.00108 W, 1.971e+08 W
+     Heat fluxes through boundary parts: 0 W, 0 W, 4.352e+07 W, 1.971e+08 W
      Writing graphical output:           output-no_dirichlet_on_outflow_melt/solution/solution-00008
 
 *** Timestep 9:  t=195.146 years
@@ -720,7 +720,7 @@ Number of degrees of freedom: 2,377 (578+273+578+81+289+289+289)
    Postprocessing:
      RMS, max velocity:                  3.7 m/year, 12.5 m/year
      Temperature min/avg/max:            0 K, 1540 K, 1667 K
-     Heat fluxes through boundary parts: 0 W, 0 W, -0.001272 W, 2.09e+08 W
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.832e+07 W, 2.09e+08 W
      Writing graphical output:           output-no_dirichlet_on_outflow_melt/solution/solution-00009
 
 *** Timestep 10:  t=222.845 years
@@ -800,7 +800,7 @@ Number of degrees of freedom: 2,377 (578+273+578+81+289+289+289)
    Postprocessing:
      RMS, max velocity:                  5.08 m/year, 8.51 m/year
      Temperature min/avg/max:            34.5 K, 1538 K, 1687 K
-     Heat fluxes through boundary parts: 0 W, 0 W, -69.36 W, -1.059e+06 W
+     Heat fluxes through boundary parts: 0 W, 0 W, -7.588e+07 W, 7.342e+06 W
      Writing graphical output:           output-no_dirichlet_on_outflow_melt/solution/solution-00010
 
 *** Timestep 11:  t=252.064 years
@@ -925,7 +925,7 @@ Number of degrees of freedom: 2,377 (578+273+578+81+289+289+289)
    Postprocessing:
      RMS, max velocity:                  8.78 m/year, 16.9 m/year
      Temperature min/avg/max:            112.1 K, 1538 K, 1694 K
-     Heat fluxes through boundary parts: 0 W, 0 W, 23.73 W, -9.845e+05 W
+     Heat fluxes through boundary parts: 0 W, 0 W, -7.112e+07 W, 1.633e+07 W
      Writing graphical output:           output-no_dirichlet_on_outflow_melt/solution/solution-00011
 
 *** Timestep 12:  t=270.464 years
@@ -1086,7 +1086,7 @@ Number of degrees of freedom: 2,377 (578+273+578+81+289+289+289)
    Postprocessing:
      RMS, max velocity:                  9.12 m/year, 20.1 m/year
      Temperature min/avg/max:            192.7 K, 1539 K, 1691 K
-     Heat fluxes through boundary parts: 0 W, 0 W, -155.7 W, -1.169e+06 W
+     Heat fluxes through boundary parts: 0 W, 0 W, -3.316e+07 W, 9.869e+06 W
      Writing graphical output:           output-no_dirichlet_on_outflow_melt/solution/solution-00012
 
 *** Timestep 13:  t=283.713 years
@@ -1229,7 +1229,7 @@ Number of degrees of freedom: 2,377 (578+273+578+81+289+289+289)
    Postprocessing:
      RMS, max velocity:                  7.5 m/year, 17.9 m/year
      Temperature min/avg/max:            276.4 K, 1539 K, 1691 K
-     Heat fluxes through boundary parts: 0 W, 0 W, -134.5 W, -1.34e+06 W
+     Heat fluxes through boundary parts: 0 W, 0 W, 2.694e+06 W, -2.429e+06 W
      Writing graphical output:           output-no_dirichlet_on_outflow_melt/solution/solution-00013
 
 *** Timestep 14:  t=296.279 years
@@ -1291,7 +1291,7 @@ Number of degrees of freedom: 2,377 (578+273+578+81+289+289+289)
    Postprocessing:
      RMS, max velocity:                  2.91 m/year, 7.02 m/year
      Temperature min/avg/max:            0 K, 1524 K, 1647 K
-     Heat fluxes through boundary parts: 0 W, 0 W, -0.07493 W, 2.133e+09 W
+     Heat fluxes through boundary parts: 0 W, 0 W, 3.633e+07 W, 2.133e+09 W
      Writing graphical output:           output-no_dirichlet_on_outflow_melt/solution/solution-00014
 
 *** Timestep 15:  t=373.407 years
@@ -1371,7 +1371,7 @@ Number of degrees of freedom: 2,377 (578+273+578+81+289+289+289)
    Postprocessing:
      RMS, max velocity:                  0.909 m/year, 2.62 m/year
      Temperature min/avg/max:            0 K, 1494 K, 1657 K
-     Heat fluxes through boundary parts: 0 W, 0 W, 0.05861 W, -4.558e+08 W
+     Heat fluxes through boundary parts: 0 W, 0 W, 9.93e+06 W, -4.558e+08 W
      Writing graphical output:           output-no_dirichlet_on_outflow_melt/solution/solution-00015
 
 *** Timestep 16:  t=500 years
@@ -1514,7 +1514,7 @@ Number of degrees of freedom: 2,377 (578+273+578+81+289+289+289)
    Postprocessing:
      RMS, max velocity:                  4.45 m/year, 7.63 m/year
      Temperature min/avg/max:            -3.451 K, 1471 K, 1668 K
-     Heat fluxes through boundary parts: 0 W, 0 W, 48.76 W, -8.37e+04 W
+     Heat fluxes through boundary parts: 0 W, 0 W, 6.82e+07 W, -3.148e+06 W
      Writing graphical output:           output-no_dirichlet_on_outflow_melt/solution/solution-00016
 
 Termination requested by criterion: end time

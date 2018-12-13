@@ -8,13 +8,16 @@ for Numerical Methods in Fluids, 7(4), 371-394.
 
 This leads to significantly different (and more accurate) heat flux
 output. In particular the following changes are expected:
-  - Heatflux through reflecting boundaries is exactly 0 (not guaranteed before)
+  - Heatflux through reflecting boundaries is exactly 0,
   - Heatflux through boundaries with Neumann boundary conditions is
-    computed correctly (previously ignored)
+    computed correctly (previously ignored),
+  - Heatflux through boundaries with Dirichlet boundary conditions is
+    much more accurate than before,
   - Heatflux due to artificial stabilization terms is correctly included (fixing
-    apparent heatflux imbalances for steady-state models in spherical geometry)
+    apparent heatflux imbalances for steady-state models in spherical geometry),
   - Heatflux now includes advective heat flux (i.e. the term velocity times
-    temperature gradient), not purely conductive heatflux
+    temperature times density times specific heat capacity), not purely
+    conductive heatflux.
 
 Note that all of these changes purely affect the postprocessing. The
 accuracy of the solution has not changed.
