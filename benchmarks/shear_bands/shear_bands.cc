@@ -796,7 +796,7 @@ namespace aspect
       types::boundary_id upper_boundary = this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
       types::boundary_id lower_boundary = this->get_geometry_model().translate_symbolic_boundary_name_to_id("bottom");
 
-      const BoundaryVelocity::Manager<dim> bm = this->get_boundary_velocity_manager();
+      const BoundaryVelocity::Manager<dim> &bm = this->get_boundary_velocity_manager();
       const double max_velocity = bm.boundary_velocity(upper_boundary, upper_boundary_point).norm();
       const double min_velocity = bm.boundary_velocity(lower_boundary, lower_boundary_point).norm();
 

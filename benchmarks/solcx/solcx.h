@@ -2849,10 +2849,7 @@ namespace aspect
         u4 *= 2 * n * PI * sin(n * PI * z); /* zx stress */
         sum4 += u4;
 
-
-        //mag = sqrt(sum1 * sum1 + sum2 * sum2);
-        /*printf("%0.7f %0.7f %0.7f %0.7f %0.7f %0.7f %0.7f %0.7f %0.7f\n",x,z,sum1,sum2,sum3,sum4,sum5,sum6,mag);*/
-
+        /*printf("%0.7f %0.7f %0.7f %0.7f %0.7f %0.7f %0.7f %0.7f\n",x,z,sum1,sum2,sum3,sum4,sum5,sum6);*/
 
         /* Output */
         if (vel != NULL)
