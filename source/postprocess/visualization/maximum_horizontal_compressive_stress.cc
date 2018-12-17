@@ -111,7 +111,7 @@ namespace aspect
                   const double b = orthogonal_directions[1] *
                                    (compressive_stress *
                                     orthogonal_directions[1]);
-                  const double c = orthogonal_directions[0] *
+                  const double c = 2.0*orthogonal_directions[0] *
                                    (compressive_stress *
                                     orthogonal_directions[1]);
 
