@@ -37,6 +37,7 @@
 #include <aspect/simulator/assemblers/interface.h>
 #include <aspect/geometry_model/initial_topography_model/zero_topography.h>
 #include <aspect/material_model/rheology/elasticity.h>
+#include <aspect/time_stepping/repeat_on_nonlinear_fail.h>
 
 #include <deal.II/base/index_set.h>
 #include <deal.II/base/conditional_ostream.h>
@@ -195,6 +196,7 @@ namespace aspect
     old_time_step (numbers::signaling_nan<double>()),
     timestep_number (numbers::invalid_unsigned_int),
     nonlinear_iteration (numbers::invalid_unsigned_int),
+    nonlinear_solver_failures (0),
 
     // We need to disable eliminate_refined_boundary_islands as this leads to
     // a deadlock for deal.II <= 9.2.0 as described in
@@ -1889,91 +1891,128 @@ namespace aspect
     if (parameters.use_operator_splitting)
       compute_reactions ();
 
-    switch (parameters.nonlinear_solver)
+    try
       {
-        case NonlinearSolver::single_Advection_single_Stokes:
-        {
-          solve_single_advection_single_stokes();
-          break;
-        }
+        switch (parameters.nonlinear_solver)
+          {
+            case NonlinearSolver::single_Advection_single_Stokes:
+            {
+              solve_single_advection_single_stokes();
+              break;
+            }
 
-        case NonlinearSolver::no_Advection_iterated_Stokes:
-        {
-          solve_no_advection_iterated_stokes();
-          break;
-        }
+            case NonlinearSolver::no_Advection_iterated_Stokes:
+            {
+              solve_no_advection_iterated_stokes();
+              break;
+            }
 
-        case NonlinearSolver::no_Advection_single_Stokes:
-        {
-          solve_no_advection_single_stokes();
-          break;
-        }
+            case NonlinearSolver::no_Advection_single_Stokes:
+            {
+              solve_no_advection_single_stokes();
+              break;
+            }
 
-        case NonlinearSolver::iterated_Advection_and_Stokes:
-        {
-          solve_iterated_advection_and_stokes();
-          break;
-        }
+            case NonlinearSolver::iterated_Advection_and_Stokes:
+            {
+              solve_iterated_advection_and_stokes();
+              break;
+            }
 
-        case NonlinearSolver::single_Advection_iterated_Stokes:
-        {
-          solve_single_advection_iterated_stokes();
-          break;
-        }
+            case NonlinearSolver::single_Advection_iterated_Stokes:
+            {
+              solve_single_advection_iterated_stokes();
+              break;
+            }
 
-        case NonlinearSolver::no_Advection_iterated_defect_correction_Stokes:
-        {
-          solve_no_advection_iterated_defect_correction_stokes();
-          break;
-        }
+            case NonlinearSolver::no_Advection_iterated_defect_correction_Stokes:
+            {
+              solve_no_advection_iterated_defect_correction_stokes();
+              break;
+            }
 
-        case NonlinearSolver::single_Advection_iterated_defect_correction_Stokes:
-        {
-          solve_single_advection_iterated_defect_correction_stokes();
-          break;
-        }
+            case NonlinearSolver::single_Advection_iterated_defect_correction_Stokes:
+            {
+              solve_single_advection_iterated_defect_correction_stokes();
+              break;
+            }
 
-        case NonlinearSolver::iterated_Advection_and_defect_correction_Stokes:
-        {
-          solve_iterated_advection_and_defect_correction_stokes();
-          break;
-        }
+            case NonlinearSolver::iterated_Advection_and_defect_correction_Stokes:
+            {
+              solve_iterated_advection_and_defect_correction_stokes();
+              break;
+            }
 
-        case NonlinearSolver::iterated_Advection_and_Newton_Stokes:
-        {
-          solve_iterated_advection_and_newton_stokes(/*use_newton_iterations =*/ true);
-          break;
-        }
+            case NonlinearSolver::iterated_Advection_and_Newton_Stokes:
+            {
+              solve_iterated_advection_and_newton_stokes(/*use_newton_iterations =*/ true);
+              break;
+            }
 
-        case NonlinearSolver::single_Advection_iterated_Newton_Stokes:
-        {
-          solve_single_advection_and_iterated_newton_stokes(/*use_newton_iterations =*/ true);
-          break;
-        }
+            case NonlinearSolver::single_Advection_iterated_Newton_Stokes:
+            {
+              solve_single_advection_and_iterated_newton_stokes(/*use_newton_iterations =*/ true);
+              break;
+            }
 
-        case NonlinearSolver::single_Advection_no_Stokes:
-        {
-          solve_single_advection_no_stokes();
-          break;
-        }
+            case NonlinearSolver::single_Advection_no_Stokes:
+            {
+              solve_single_advection_no_stokes();
+              break;
+            }
 
-        case NonlinearSolver::first_timestep_only_single_Stokes:
-        {
-          solve_first_timestep_only_single_stokes();
-          break;
-        }
+            case NonlinearSolver::first_timestep_only_single_Stokes:
+            {
+              solve_first_timestep_only_single_stokes();
+              break;
+            }
 
-        case NonlinearSolver::no_Advection_no_Stokes:
-        {
-          solve_no_advection_no_stokes();
-          break;
-        }
+            case NonlinearSolver::no_Advection_no_Stokes:
+            {
+              solve_no_advection_no_stokes();
+              break;
+            }
 
-        default:
-          Assert (false, ExcNotImplemented());
+            default:
+              Assert (false, ExcNotImplemented());
+          }
+        pcout << std::endl;
       }
+    catch (ExcNonlinearSolverNoConvergence &)
+      {
+        pcout << "\nWARNING: The nonlinear solver in the current timestep failed to converge." << std::endl
+              << "Acting according to the parameter 'Nonlinear solver failure strategy'..." << std::endl;
+        ++nonlinear_solver_failures;
 
-    pcout << std::endl;
+        switch (parameters.nonlinear_solver_failure_strategy)
+          {
+            case Parameters<dim>::NonlinearSolverFailureStrategy::continue_with_next_timestep:
+            {
+              pcout << "Continuing to the next timestep even though solution is not fully converged." << std::endl;
+              // do nothing and continue
+              break;
+            }
+            case Parameters<dim>::NonlinearSolverFailureStrategy::cut_timestep_size:
+            {
+              if (timestep_number == 0)
+                {
+                  pcout << "Error: We can not cut the timestep in step 0, so we are aborting."
+                        << std::endl;
+                  throw;
+                }
+              time_stepping_manager.template get_matching_active_plugin<TimeStepping::RepeatOnNonlinearFail<dim>>().nonlinear_solver_has_failed();
+              break;
+            }
+            case Parameters<dim>::NonlinearSolverFailureStrategy::abort_program:
+            {
+              pcout << "Aborting simulation as requested." << std::endl;
+              // rethrow the current exception
+              throw;
+            }
+            default:
+              AssertThrow(false, ExcNotImplemented());
+          }
+      }
   }
 
 
@@ -2070,8 +2109,7 @@ namespace aspect
     simulator_is_past_initialization = true;
     do
       {
-        // Only solve if we are not in pre-refinement, or we do not want to skip
-        // solving in pre-refinement.
+        // During pre-refinement, do not solve if we are asked to skip it:
         if (! (parameters.skip_solvers_on_initial_refinement
                && pre_refinement_step < parameters.initial_adaptive_refinement))
           {
@@ -2172,6 +2210,9 @@ namespace aspect
     // we disable automatic summary printing so that it won't happen when
     // throwing an exception. Therefore, we have to do this manually here:
     computing_timer.print_summary ();
+
+    if (nonlinear_solver_failures > 0)
+      pcout << "\nWARNING: During this computation " << nonlinear_solver_failures << " nonlinear solver failures occurred!" << std::endl;
 
     pcout << "-- Total wallclock time elapsed including restarts: "
           << round(wall_timer.wall_time()+total_walltime_until_last_snapshot)

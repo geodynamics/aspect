@@ -506,6 +506,9 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
       Relative nonlinear residual (total system) after nonlinear iteration 100: 5.69791e-07
 
 
+WARNING: The nonlinear solver in the current timestep failed to converge.
+Acting according to the parameter 'Nonlinear solver failure strategy'...
+Continuing to the next timestep even though solution is not fully converged.
    Postprocessing:
      RMS, max velocity:                  2.57e-08 m/s, 3.05e-08 m/s
      Pressure min/avg/max:               -1.042e+08 Pa, 5.031e+08 Pa, 1.122e+09 Pa
@@ -1014,6 +1017,9 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
       Relative nonlinear residual (total system) after nonlinear iteration 100: 0.000442183
 
 
+WARNING: The nonlinear solver in the current timestep failed to converge.
+Acting according to the parameter 'Nonlinear solver failure strategy'...
+Continuing to the next timestep even though solution is not fully converged.
    Postprocessing:
      RMS, max velocity:                  2.57e-08 m/s, 3.05e-08 m/s
      Pressure min/avg/max:               -6.632e+07 Pa, 5.038e+08 Pa, 1.118e+09 Pa
@@ -1521,6 +1527,9 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
       Relative nonlinear residual (total system) after nonlinear iteration 100: 0.000499731
 
 
+WARNING: The nonlinear solver in the current timestep failed to converge.
+Acting according to the parameter 'Nonlinear solver failure strategy'...
+Continuing to the next timestep even though solution is not fully converged.
    Postprocessing:
      RMS, max velocity:                  2.57e-08 m/s, 3.05e-08 m/s
      Pressure min/avg/max:               -1.172e+08 Pa, 5.031e+08 Pa, 1.104e+09 Pa
@@ -1531,3 +1540,5 @@ Termination requested by criterion: end time
 
 
 
+
+WARNING: During this computation 3 nonlinear solver failures occurred!
