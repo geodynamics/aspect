@@ -811,6 +811,7 @@ namespace aspect
       }
     while (nonlinear_solver_control.check(nonlinear_iteration, relative_residual) == SolverControl::iterate);
 
+    AssertThrow(nonlinear_solver_control.last_check() != SolverControl::failure, ExcNonlinearSolverNoConvergence());
     signals.post_nonlinear_solver(nonlinear_solver_control);
   }
 
@@ -874,6 +875,8 @@ namespace aspect
       }
     while (nonlinear_solver_control.check(nonlinear_iteration, relative_residual) == SolverControl::iterate);
 
+    AssertThrow(nonlinear_solver_control.last_check() != SolverControl::failure, ExcNonlinearSolverNoConvergence());
+
     // Reset the linear tolerance to what it was at the beginning of the time step.
     parameters.linear_stokes_solver_tolerance = begin_linear_tolerance;
 
@@ -891,6 +894,8 @@ namespace aspect
   {
     // The defect correction solver is just the Newton solver without derivatives.
     solve_single_advection_and_iterated_newton_stokes(/*use_newton_iterations = */ false);
+    AssertThrow(nonlinear_solver_control.last_check() != SolverControl::failure, ExcNonlinearSolverNoConvergence());
+
   }
 
   template <int dim>
@@ -898,6 +903,8 @@ namespace aspect
   {
     // The defect correction solver is just the Newton solver without derivatives.
     solve_iterated_advection_and_newton_stokes(/*use_newton_iterations = */ false);
+    AssertThrow(nonlinear_solver_control.last_check() != SolverControl::failure, ExcNonlinearSolverNoConvergence());
+
   }
 
 
@@ -1012,6 +1019,7 @@ namespace aspect
       }
     while (nonlinear_solver_control.check(nonlinear_iteration, relative_residual) == SolverControl::iterate);
 
+    AssertThrow(nonlinear_solver_control.last_check() != SolverControl::failure, ExcNonlinearSolverNoConvergence());
     signals.post_nonlinear_solver(nonlinear_solver_control);
   }
 
@@ -1059,6 +1067,7 @@ namespace aspect
       }
     while (nonlinear_solver_control.check(nonlinear_iteration, relative_residual) == SolverControl::iterate);
 
+    AssertThrow(nonlinear_solver_control.last_check() != SolverControl::failure, ExcNonlinearSolverNoConvergence());
     signals.post_nonlinear_solver(nonlinear_solver_control);
   }
 
@@ -1190,6 +1199,8 @@ namespace aspect
       }
     while (nonlinear_solver_control.check(nonlinear_iteration, relative_residual) == SolverControl::iterate);
 
+    AssertThrow(nonlinear_solver_control.last_check() != SolverControl::failure, ExcNonlinearSolverNoConvergence());
+
     // Reset the Newton stabilization at the end of the timestep.
     newton_handler->parameters.preconditioner_stabilization = starting_preconditioner_stabilization;
     newton_handler->parameters.velocity_block_stabilization = starting_velocity_block_stabilization;
@@ -1296,6 +1307,8 @@ namespace aspect
         ++nonlinear_iteration;
       }
     while (nonlinear_solver_control.check(nonlinear_iteration, relative_residual) == SolverControl::iterate);
+
+    AssertThrow(nonlinear_solver_control.last_check() != SolverControl::failure, ExcNonlinearSolverNoConvergence());
 
     // Reset the Newton stabilization at the end of the timestep.
     newton_handler->parameters.preconditioner_stabilization = starting_preconditioner_stabilization;

@@ -190,6 +190,36 @@ namespace aspect
         parse_parameters (ParameterHandler &prm);
 
         /**
+         * Go through the list of all plugins that have been selected
+         * in the input file (and are consequently currently active) and return
+         * true if one of them has the desired type specified by the template
+         * argument.
+         *
+         * This function can only be called if the given template type (the first template
+         * argument) is a class derived from the Interface class in this namespace.
+         */
+        template <typename PluginType,
+                  typename = typename std::enable_if_t<std::is_base_of<Interface<dim>,PluginType>::value>>
+        bool
+        has_matching_plugin () const;
+
+        /**
+         * Go through the list of all mesh plugins that have been selected
+         * in the input file (and are consequently currently active) and see
+         * if one of them has the type specified by the template
+         * argument or can be cast to that type. If so, return a reference
+         * to it. If no plugin is active that matches the
+         * given type, throw an exception.
+         *
+         * This function can only be called if the given template type (the first template
+         * argument) is a class derived from the Interface class in this namespace.
+         */
+        template <typename PluginType,
+                  typename = typename std::enable_if_t<std::is_base_of<Interface<dim>,PluginType>::value>>
+        const PluginType &
+        get_matching_plugin () const;
+
+        /**
          * For the current plugin subsystem, write a connection graph of all of the
          * plugins we know about, in the format that the
          * programs dot and neato understand. This allows for a visualization of
@@ -201,7 +231,6 @@ namespace aspect
         static
         void
         write_plugin_graph (std::ostream &output_stream);
-
 
         /**
          * A function that is used to register time stepping model objects in such
@@ -262,6 +291,46 @@ namespace aspect
          */
         std::list<std::unique_ptr<Interface<dim>>> active_plugins;
     };
+
+
+
+    template <int dim>
+    template <typename PluginType, typename>
+    inline
+    bool
+    Manager<dim>::has_matching_plugin () const
+    {
+      for (const auto &p : active_plugins)
+        if (Plugins::plugin_type_matches<PluginType>(*p))
+          return true;
+
+      return false;
+    }
+
+
+
+    template <int dim>
+    template <typename PluginType, typename>
+    inline
+    const PluginType &
+    Manager<dim>::get_matching_plugin () const
+    {
+      AssertThrow(has_matching_plugin<PluginType> (),
+                  ExcMessage("You asked TimeStepping::Manager::get_matching_plugin() for a "
+                             "plugin of type <" + boost::core::demangle(typeid(PluginType).name()) + "> "
+                             "that could not be found in the current model. Activate this "
+                             "plugin in the input file."));
+
+      for (const auto &p : active_plugins)
+        if (Plugins::plugin_type_matches<PluginType>(*p))
+          return Plugins::get_plugin_as_type<PluginType>(*p);
+
+      // We will never get here, because we had the Assert above. Just to avoid warnings.
+      typename std::list<std::unique_ptr<Interface<dim>>>::const_iterator plugin;
+      return Plugins::get_plugin_as_type<PluginType>(*(*plugin));
+    }
+
+
 
     /**
      * Given a class name, a name, and a description for the parameter file, register it with the

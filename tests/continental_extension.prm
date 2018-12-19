@@ -19,6 +19,7 @@ include $ASPECT_SOURCE_DIR/cookbooks/continental_extension/continental_extension
 set Timing output frequency                = 100
 set End time                               = 1e4
 set Max nonlinear iterations               = 1
+set Nonlinear solver failure strategy      = continue with next timestep
 
 # Perform only one global refinement and no adaptive refinements
 subsection Mesh refinement
