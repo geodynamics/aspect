@@ -35,7 +35,7 @@ namespace aspect
     bool
     EndWalltime<dim>::execute()
     {
-      return ( (std::time(nullptr)-start_walltime) >= (int)walltime_duration);
+      return std::difftime(std::time(nullptr),start_walltime) >= walltime_duration;
     }
 
 

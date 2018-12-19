@@ -320,8 +320,8 @@ namespace aspect
     get_local_component_association (const FiniteElement<dim,spacedim>  &fe,
                                      const ComponentMask        & /*component_mask*/)
     {
-      std::vector<unsigned char> local_component_association (fe.dofs_per_cell,
-                                                              (unsigned char)(-1));
+      const unsigned char invalid = static_cast<unsigned char>(-1);
+      std::vector<unsigned char> local_component_association (fe.dofs_per_cell, invalid);
 
       // compute the component each local dof belongs to.
       // if the shape function is primitive, then this
@@ -337,7 +337,7 @@ namespace aspect
 
       Assert (std::find (local_component_association.begin(),
                          local_component_association.end(),
-                         (unsigned char)(-1))
+                         invalid)
               ==
               local_component_association.end(),
               ExcInternalError());
@@ -1206,7 +1206,7 @@ namespace aspect
 
       std::vector<double> band_matrix::l_solve(const std::vector<double> &b) const
       {
-        assert( this->dim() == (int)b.size() );
+        assert( this->dim() == static_cast<int>(b.size()) );
         std::vector<double> x(this->dim());
         int j_start;
         double sum;
@@ -1223,7 +1223,7 @@ namespace aspect
 
       std::vector<double> band_matrix::r_solve(const std::vector<double> &b) const
       {
-        assert( this->dim() == (int)b.size() );
+        assert( this->dim() == static_cast<int>(b.size()) );
         std::vector<double> x(this->dim());
         int j_stop;
         double sum;
@@ -1240,7 +1240,7 @@ namespace aspect
       std::vector<double> band_matrix::lu_solve(const std::vector<double> &b,
                                                 bool is_lu_decomposed)
       {
-        assert(this->dim() == (int)b.size());
+        assert( this->dim() == static_cast<int>(b.size()) );
         std::vector<double>  x,y;
         // TODO: this is completely unsafe because you rely on the user
         // if the function is called more than once.
