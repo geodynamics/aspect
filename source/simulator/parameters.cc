@@ -265,6 +265,15 @@ namespace aspect
                        "The `Newton Stokes' scheme is deprecated and only allowed for reasons of "
                        "backwards compatibility. It is the same as `iterated Advection and Newton Stokes'.");
 
+    prm.declare_entry ("Nonlinear solver failure strategy", "continue with next timestep",
+                       Patterns::Selection("continue with next timestep|cut timestep size|abort program"),
+                       "Select the strategy on what to do if the nonlinear solver scheme fails to "
+                       "converge. The options are:\n"
+                       "`continue with next timestep`: ignore error and continue to the next timestep\n"
+                       "`cut timestep size`: reduce the current timestep size by a specified factor and redo "
+                       "the timestep\n"
+                       "`abort program`: abort the program with an error message.");
+
     prm.declare_entry ("Nonlinear solver tolerance", "1e-5",
                        Patterns::Double(0., 1.),
                        "A relative tolerance up to which the nonlinear solver will iterate. "
@@ -1469,6 +1478,8 @@ namespace aspect
       else
         AssertThrow (false, ExcNotImplemented());
     }
+    nonlinear_solver_failure_strategy = NonlinearSolverFailureStrategy::parse(
+                                          prm.get("Nonlinear solver failure strategy"));
 
     prm.enter_subsection ("Solver parameters");
     {
