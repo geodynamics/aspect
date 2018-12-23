@@ -161,14 +161,17 @@ namespace aspect
                   {
                     for (unsigned int substep = 0; substep < n_substeps; ++substep)
                       {
+                        const double step_ratio = static_cast<double>(substep)/static_cast<double>(n_substeps);
+                        const double step_ratio_next = static_cast<double>(substep+1)/static_cast<double>(n_substeps);
+
                         const double current_pressure = pressures[q]
-                                                        + ((double)(substep)/(double)(n_substeps))
+                                                        + step_ratio
                                                         * (pressures[p]-pressures[q]);
                         const double T1_substep = temperatures[q]
-                                                  + ((double)(substep)/(double)(n_substeps))
+                                                  + step_ratio
                                                   * (temperatures[p]-temperatures[q]);
                         const double T2_substep = temperatures[q]
-                                                  + ((double)(substep+1)/(double)(n_substeps))
+                                                  + step_ratio_next
                                                   * (temperatures[p]-temperatures[q]);
                         const double enthalpy2 = enthalpy(T2_substep,current_pressure);
                         const double enthalpy1 = enthalpy(T1_substep,current_pressure);
@@ -180,14 +183,16 @@ namespace aspect
                   {
                     for (unsigned int substep = 0; substep < n_substeps; ++substep)
                       {
+                        const double step_ratio = static_cast<double>(substep)/static_cast<double>(n_substeps);
+                        const double step_ratio_next = static_cast<double>(substep+1)/static_cast<double>(n_substeps);
                         const double current_temperature = temperatures[q]
-                                                           + ((double)(substep)/(double)(n_substeps))
+                                                           + step_ratio
                                                            * (temperatures[p]-temperatures[q]);
                         const double p1_substep = pressures[q]
-                                                  + ((double)(substep)/(double)(n_substeps))
+                                                  + step_ratio
                                                   * (pressures[p]-pressures[q]);
                         const double p2_substep = pressures[q]
-                                                  + ((double)(substep+1)/(double)(n_substeps))
+                                                  + step_ratio_next
                                                   * (pressures[p]-pressures[q]);
                         const double enthalpy2 = enthalpy(current_temperature,p2_substep);
                         const double enthalpy1 = enthalpy(current_temperature,p1_substep);

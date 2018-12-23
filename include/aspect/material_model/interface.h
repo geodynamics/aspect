@@ -101,7 +101,7 @@ namespace aspect
       inline Dependence operator | (const Dependence d1,
                                     const Dependence d2)
       {
-        return Dependence((int)d1 | (int)d2);
+        return Dependence(static_cast<int>(d1) | static_cast<int>(d2));
       }
 
       inline Dependence operator |= (Dependence &d1,

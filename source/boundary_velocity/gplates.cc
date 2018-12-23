@@ -626,10 +626,9 @@ namespace aspect
     {
       std::string templ = data_directory+velocity_file_name;
       const int size = templ.length();
-      char *filename = (char *) (malloc ((size + 10) * sizeof(char)));
-      snprintf (filename, size + 10, templ.c_str (), timestep);
-      std::string str_filename (filename);
-      free (filename);
+      std::vector<char> buffer(size+10);
+      snprintf (buffer.data(), size + 10, templ.c_str(), timestep);
+      std::string str_filename (buffer.data());
       return str_filename;
     }
 

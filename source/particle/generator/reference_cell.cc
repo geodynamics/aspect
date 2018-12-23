@@ -151,7 +151,7 @@ namespace aspect
                                                                                               dim,
                                                                                               "Number of particles per cell per direction");
                 for (std::vector<double>::const_iterator itr = n_particles_tmp.begin(); itr != n_particles_tmp.end(); itr++)
-                  number_of_particles.push_back((unsigned int) *itr);
+                  number_of_particles.push_back(static_cast<unsigned int>(*itr));
               }
               prm.leave_subsection();
             }
