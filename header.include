@@ -24,6 +24,7 @@
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Info<b class="caret"></b></a>
               <ul class="dropdown-menu">
+                <li><a href="../doc/parameter_view/parameters.xml">Parameter Documentation</a></li>
                 <li><a href="http://www.math.clemson.edu/~heister/manual.pdf">Manual</a></li>
                 <li><a href="index.html#contact">Forum and Contact</a></li>
                 <li><a href="citing.html?src=www&ver=release">How to cite?</a></li>
