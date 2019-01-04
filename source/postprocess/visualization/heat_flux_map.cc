@@ -44,7 +44,7 @@ namespace aspect
         std::vector<std::vector<std::pair<double, double> > > heat_flux_and_area =
           internal::compute_heat_flux_through_boundary_faces (*this);
 
-        // loop over all of the surface cells and evaluate the heatflux
+        // loop over all of the surface cells and evaluate the heat flux
         typename DoFHandler<dim>::active_cell_iterator
         cell = this->get_dof_handler().begin_active(),
         endc = this->get_dof_handler().end();

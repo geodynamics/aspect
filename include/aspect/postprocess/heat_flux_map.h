@@ -34,7 +34,7 @@ namespace aspect
     {
       /**
        * This function computes the combined heat flux through each boundary face (conductive + advective).
-       * For reflecting boundaries the integrated heat flux is 0, for boundaries with prescribed heat flux
+       * For reflecting boundaries the conductive heat flux is 0, for boundaries with prescribed heat flux
        * (inhomogeneous Neumann boundary conditions) it is simply the integral of the prescribed heat flux over
        * the face, and for boundaries with non-tangential velocities the advective heat flux is computed as
        * the integral over the advective heat flux density.
@@ -54,7 +54,7 @@ namespace aspect
        * The function returns a vector with as many entries as active cells. For each locally owned
        * cell it contains a vector with one entry per face. Each of these entries contains a pair
        * of doubles, containing the combined heat flux (first entry) and face area (second entry).
-       * This function is a helper function that unifies the complex heatflux computation necessary
+       * This function is a helper function that unifies the complex heat flux computation necessary
        * for several postprocessors.
        */
       template <int dim>

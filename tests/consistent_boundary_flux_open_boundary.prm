@@ -1,5 +1,5 @@
 # This test is based on boundary_heat_flux and checks that the consistent
-# boundary flux method in the heatflux statistics postprocessor computes
+# boundary flux method in the heat flux statistics postprocessor computes
 # the correct boundary fluxes for models with Dirichlet temperature
 # boundary conditions on two adjacent faces of the same cell that belong
 # to different boundaries.

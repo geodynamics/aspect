@@ -136,8 +136,8 @@ namespace aspect
                                   "heat flux densities",
                                   "A postprocessor that computes some statistics "
                                   "about the heat flux density for each boundary id. "
-                                  " The heat flux density across each boundary "
-                                  " is computed in outward "
+                                  "The heat flux density across each boundary "
+                                  "is computed in outward "
                                   "direction, i.e., from the domain to the "
                                   "outside. The heat flux is computed as sum "
                                   "of advective heat flux and conductive heat "

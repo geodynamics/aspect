@@ -120,6 +120,9 @@ namespace aspect
         const std::set<types::boundary_id> &tangential_velocity_boundaries =
           simulator_access.get_boundary_velocity_manager().get_tangential_boundary_velocity_indicators();
 
+        const std::set<types::boundary_id> &zero_velocity_boundaries =
+          simulator_access.get_boundary_velocity_manager().get_zero_boundary_velocity_indicators();
+
         Vector<float> artificial_viscosity(simulator_access.get_triangulation().n_active_cells());
         simulator_access.get_artificial_viscosity(artificial_viscosity, true);
 
@@ -292,8 +295,9 @@ namespace aspect
                         }
                     }
 
-                  // Add advective heat flux for boundaries that are non-tangential.
-                  if (tangential_velocity_boundaries.find(boundary_id) == tangential_velocity_boundaries.end())
+                  // Add advective heat flux for boundaries that are not tangential and not zero velocity boundaries.
+                  if (tangential_velocity_boundaries.find(boundary_id) == tangential_velocity_boundaries.end() &&
+                      zero_velocity_boundaries.find(boundary_id) == zero_velocity_boundaries.end())
                     {
                       face_in.reinit(fe_face_values, cell, simulator_access.introspection(), simulator_access.get_solution(), true);
                       simulator_access.get_material_model().evaluate(face_in, face_out);
@@ -341,7 +345,8 @@ namespace aspect
 
         std::vector<double> heat_flux_values(n_face_q_points);
 
-        // Now add the heat flux for each face at Dirichlet boundaries
+        // Now add the conductive heat flux for each face at Dirichlet boundaries
+        // (Neumann boundaries and advective heat flux have been added above).
         for (cell = simulator_access.get_dof_handler().begin_active(); cell!=endc; ++cell)
           if (cell->is_locally_owned() && cell->at_boundary())
             {
