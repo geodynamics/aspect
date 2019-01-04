@@ -10,7 +10,13 @@
 				<link rel="stylesheet" type="text/css" href="parameters.css"></link>
 			</head>
 			<body>
-				<h2>ASPECT input parameters</h2>
+				<h2>
+					ASPECT input parameters  
+					<button onclick="expandAll()">Expand all</button> 
+					<button onclick="collapseAll()">Collapse all</button> 
+					<button onclick="expandAllSubsections()">Expand subsections</button> 
+					<button onclick="collapseAllSubsections()">Collapse subsections</button> 
+				</h2>
 				<ul>
 					<xsl:apply-templates
 						select="ParameterHandler/*" />
@@ -32,7 +38,7 @@
 						</div>
 						        </xsl:when>
 							<xsl:otherwise>
-		                                <div class="collapsible mangled">
+		                                <div class="collapsible subsection mangled">
 							subsection <b> <xsl:value-of select="name()" /> </b>
                                                 </div>
 					</xsl:otherwise>

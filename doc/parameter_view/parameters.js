@@ -31,6 +31,43 @@ function demangleStrings() {
   return;
 }
 
+function expand(collection) {
+  var i;
+  for (i = 0; i < collection.length; i++) {
+    collection[i].classList.add("active");
+    var content = collection[i].nextElementSibling;
+    content.style.display = "block";
+  }
+}
+
+function collapse(collection) {
+  var i;
+  for (i = 0; i < collection.length; i++) {
+    collection[i].classList.remove("active");
+    var content = collection[i].nextElementSibling;
+    content.style.display = "none";
+  }
+}
+
+function expandAll() {
+  var coll = document.getElementsByClassName("collapsible");
+  expand(coll)
+}
+
+function collapseAll() {
+  var coll = document.getElementsByClassName("collapsible");
+  collapse(coll)
+}
+
+function expandAllSubsections() {
+  var coll = document.getElementsByClassName("subsection");
+  expand(coll)
+}
+
+function collapseAllSubsections() {
+  var coll = document.getElementsByClassName("subsection");
+  collapse(coll)
+}
 
 var coll = document.getElementsByClassName("collapsible");
 var i;
