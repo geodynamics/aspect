@@ -12,12 +12,15 @@
 			<body>
 				<h2>
 					ASPECT input parameters  
+				</h2>
+
+				<div>
 					<button onclick="expandAll()">Expand all</button> 
 					<button onclick="collapseAll()">Collapse all</button> 
 					<button onclick="expandAllSubsections()">Expand subsections</button> 
 					<button onclick="collapseAllSubsections()">Collapse subsections</button> 
-				</h2>
-				<ul>
+				</div>
+				<ul id="ParameterList">
 					<xsl:apply-templates
 						select="ParameterHandler/*" />
 				</ul>
