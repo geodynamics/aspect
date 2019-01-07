@@ -87,7 +87,7 @@ namespace aspect
          * @param material_model_inputs The material property inputs.
          * @param material_model_outputs The material property outputs.
          * @param normal_vectors The normal vector at each quadrature point.
-         * @return A vector of heatflux vectors at the evaluation points.
+         * @return A vector of heat flux vectors at the evaluation points.
          */
         virtual
         std::vector<Tensor<1,dim> >

@@ -10,7 +10,7 @@ Number of degrees of freedom: 948 (578+81+289)
    Postprocessing:
      RMS, max velocity:                  17.9 m/s, 25.3 m/s
      Temperature min/avg/max:            0 K, 0.5 K, 1 K
-     Heat fluxes through boundary parts: 3.761e-05 W, -3.761e-05 W, -1 W, 1 W
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.379 W, 1.379 W
      Writing graphical output:           output-max_timesteps_btwn_output/solution/solution-00000
 
 *** Timestep 1:  t=0.00246718 seconds
@@ -20,7 +20,7 @@ Number of degrees of freedom: 948 (578+81+289)
    Postprocessing:
      RMS, max velocity:                  122 m/s, 172 m/s
      Temperature min/avg/max:            0 K, 0.5 K, 1 K
-     Heat fluxes through boundary parts: 0.0002736 W, -0.0002736 W, -1.041 W, 1.041 W
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.043 W, 1.043 W
 
 *** Timestep 2:  t=0.00282949 seconds
    Solving temperature system... 12 iterations.
@@ -29,7 +29,7 @@ Number of degrees of freedom: 948 (578+81+289)
    Postprocessing:
      RMS, max velocity:                  227 m/s, 322 m/s
      Temperature min/avg/max:            0 K, 0.5 K, 1 K
-     Heat fluxes through boundary parts: 0.0006384 W, -0.0006384 W, -1.131 W, 1.131 W
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.129 W, 1.129 W
 
 *** Timestep 3:  t=0.00302322 seconds
    Solving temperature system... 13 iterations.
@@ -38,7 +38,7 @@ Number of degrees of freedom: 948 (578+81+289)
    Postprocessing:
      RMS, max velocity:                  333 m/s, 472 m/s
      Temperature min/avg/max:            0 K, 0.5 K, 1 K
-     Heat fluxes through boundary parts: 0.001372 W, -0.001372 W, -1.275 W, 1.275 W
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.259 W, 1.259 W
 
 *** Timestep 4:  t=0.00315526 seconds
    Solving temperature system... 13 iterations.
@@ -47,7 +47,7 @@ Number of degrees of freedom: 948 (578+81+289)
    Postprocessing:
      RMS, max velocity:                  432 m/s, 614 m/s
      Temperature min/avg/max:            0 K, 0.5 K, 1 K
-     Heat fluxes through boundary parts: 0.002615 W, -0.002615 W, -1.478 W, 1.478 W
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.439 W, 1.439 W
 
 *** Timestep 5:  t=0.00325679 seconds
    Solving temperature system... 13 iterations.
@@ -56,7 +56,7 @@ Number of degrees of freedom: 948 (578+81+289)
    Postprocessing:
      RMS, max velocity:                  521 m/s, 744 m/s
      Temperature min/avg/max:            0 K, 0.5 K, 1 K
-     Heat fluxes through boundary parts: 0.00448 W, -0.00448 W, -1.747 W, 1.747 W
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.679 W, 1.679 W
      Writing graphical output:           output-max_timesteps_btwn_output/solution/solution-00001
 
 *** Timestep 6:  t=0.00334066 seconds
@@ -66,7 +66,7 @@ Number of degrees of freedom: 948 (578+81+289)
    Postprocessing:
      RMS, max velocity:                  600 m/s, 859 m/s
      Temperature min/avg/max:            0 K, 0.5 K, 1 K
-     Heat fluxes through boundary parts: 0.007061 W, -0.007061 W, -2.089 W, 2.089 W
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.989 W, 1.989 W
 
 *** Timestep 7:  t=0.00341331 seconds
    Solving temperature system... 13 iterations.
@@ -75,7 +75,7 @@ Number of degrees of freedom: 948 (578+81+289)
    Postprocessing:
      RMS, max velocity:                  668 m/s, 958 m/s
      Temperature min/avg/max:            0 K, 0.5 K, 1 K
-     Heat fluxes through boundary parts: 0.01046 W, -0.01046 W, -2.511 W, 2.511 W
+     Heat fluxes through boundary parts: 0 W, 0 W, -2.389 W, 2.389 W
 
 *** Timestep 8:  t=0.00347846 seconds
    Solving temperature system... 12 iterations.
@@ -84,7 +84,7 @@ Number of degrees of freedom: 948 (578+81+289)
    Postprocessing:
      RMS, max velocity:                  724 m/s, 1.04e+03 m/s
      Temperature min/avg/max:            0 K, 0.5 K, 1 K
-     Heat fluxes through boundary parts: 0.01482 W, -0.01482 W, -3.018 W, 3.018 W
+     Heat fluxes through boundary parts: 0 W, 0 W, -2.899 W, 2.899 W
 
 *** Timestep 9:  t=0.00353846 seconds
    Solving temperature system... 12 iterations.
@@ -93,7 +93,7 @@ Number of degrees of freedom: 948 (578+81+289)
    Postprocessing:
      RMS, max velocity:                  768 m/s, 1.11e+03 m/s
      Temperature min/avg/max:            0 K, 0.5 K, 1 K
-     Heat fluxes through boundary parts: 0.02205 W, -0.02205 W, -3.614 W, 3.614 W
+     Heat fluxes through boundary parts: 0 W, 0 W, -3.545 W, 3.545 W
 
 *** Timestep 10:  t=0.00359492 seconds
    Solving temperature system... 12 iterations.
@@ -102,7 +102,7 @@ Number of degrees of freedom: 948 (578+81+289)
    Postprocessing:
      RMS, max velocity:                  801 m/s, 1.16e+03 m/s
      Temperature min/avg/max:            0 K, 0.5 K, 1 K
-     Heat fluxes through boundary parts: 0.03367 W, -0.03367 W, -4.3 W, 4.3 W
+     Heat fluxes through boundary parts: 0 W, 0 W, -4.351 W, 4.351 W
      Writing graphical output:           output-max_timesteps_btwn_output/solution/solution-00002
 
 Termination requested by criterion: end step

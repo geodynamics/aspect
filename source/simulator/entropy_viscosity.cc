@@ -237,7 +237,8 @@ namespace aspect
   void
   Simulator<dim>::
   get_artificial_viscosity (Vector<T> &viscosity_per_cell,
-                            const AdvectionField &advection_field) const
+                            const AdvectionField &advection_field,
+                            const bool skip_interior_cells) const
   {
     Assert(viscosity_per_cell.size()==triangulation.n_active_cells(), ExcInternalError());
 
@@ -297,8 +298,25 @@ namespace aspect
             (cell->is_ghost() &&
              parameters.use_artificial_viscosity_smoothing == false))
           {
-            viscosity_per_cell[cell->active_cell_index()] = numbers::signaling_nan<double>();
+            viscosity_per_cell[cell->active_cell_index()] = numbers::signaling_nan<T>();
             continue;
+          }
+        // Also skip all interior cells if we are asked to do so. Do not
+        // skip neighbor cells of boundary cells if smoothing is on, because
+        // the smoothing uses both the boundary cell and its neighbor.
+        else if (skip_interior_cells && !cell->at_boundary())
+          {
+            bool neighbor_at_boundary = false;
+            for (unsigned int face_no=0; face_no<GeometryInfo<dim>::faces_per_cell; ++face_no)
+              if (cell->neighbor(face_no)->at_boundary() == true)
+                neighbor_at_boundary = true;
+
+            if (parameters.use_artificial_viscosity_smoothing == false ||
+                neighbor_at_boundary == false)
+              {
+                viscosity_per_cell[cell->active_cell_index()] = numbers::signaling_nan<T>();
+                continue;
+              }
           }
 
         const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
@@ -459,18 +477,23 @@ namespace aspect
         for (cell = dof_handler.begin_active(); cell!=end_cell; ++cell)
           {
             if (cell->is_locally_owned())
-              for (unsigned int face_no=0; face_no<GeometryInfo<dim>::faces_per_cell; ++face_no)
-                if (cell->at_boundary(face_no) == false)
-                  {
-                    if (cell->neighbor(face_no)->active())
-                      viscosity_per_cell[cell->active_cell_index()] = std::max(viscosity_per_cell[cell->active_cell_index()],
-                                                                               viscosity_per_cell_temp[cell->neighbor(face_no)->active_cell_index()]);
-                    else
-                      for (unsigned int l=0; l<cell->neighbor(face_no)->n_children(); ++l)
-                        if (cell->neighbor(face_no)->child(l)->active())
-                          viscosity_per_cell[cell->active_cell_index()] = std::max(viscosity_per_cell[cell->active_cell_index()],
-                                                                                   viscosity_per_cell_temp[cell->neighbor(face_no)->child(l)->active_cell_index()]);
-                  }
+              {
+                if (skip_interior_cells && !cell->at_boundary())
+                  continue;
+
+                for (unsigned int face_no=0; face_no<GeometryInfo<dim>::faces_per_cell; ++face_no)
+                  if (cell->at_boundary(face_no) == false)
+                    {
+                      if (cell->neighbor(face_no)->active())
+                        viscosity_per_cell[cell->active_cell_index()] = std::max(viscosity_per_cell[cell->active_cell_index()],
+                                                                                 viscosity_per_cell_temp[cell->neighbor(face_no)->active_cell_index()]);
+                      else
+                        for (unsigned int l=0; l<cell->neighbor(face_no)->n_children(); ++l)
+                          if (cell->neighbor(face_no)->child(l)->active())
+                            viscosity_per_cell[cell->active_cell_index()] = std::max(viscosity_per_cell[cell->active_cell_index()],
+                                                                                     viscosity_per_cell_temp[cell->neighbor(face_no)->child(l)->active_cell_index()]);
+                    }
+              }
           }
       }
   }
@@ -482,9 +505,11 @@ namespace aspect
 {
 #define INSTANTIATE(dim) \
   template void Simulator<dim>::get_artificial_viscosity (Vector<double> &viscosity_per_cell,  \
-                                                          const AdvectionField &advection_field) const; \
+                                                          const AdvectionField &advection_field, \
+                                                          const bool skip_interior_cells) const; \
   template void Simulator<dim>::get_artificial_viscosity (Vector<float> &viscosity_per_cell,  \
-                                                          const AdvectionField &advection_field) const; \
+                                                          const AdvectionField &advection_field, \
+                                                          const bool skip_interior_cells) const; \
    
 
   ASPECT_INSTANTIATE(INSTANTIATE)

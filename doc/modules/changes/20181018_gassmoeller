@@ -1,0 +1,28 @@
+Changed: The heat flux through the boundary cells that is computed
+in several postprocessors is now computed using the consistent boundary
+flux method as described in
+
+Gresho, et al. (1987). The consistent Galerkin FEM for computing derived
+boundary quantities in thermal and or fluids problems. International Journal
+for Numerical Methods in Fluids, 7(4), 371-394.
+
+This leads to significantly different (and more accurate) heat flux
+output. In particular the following changes are expected:
+  - Heat flux through reflecting boundaries is exactly 0,
+  - Heat flux through boundaries with Neumann boundary conditions is
+    computed correctly (previously ignored),
+  - Heat flux through boundaries with Dirichlet boundary conditions is
+    much more accurate than before,
+  - Heat flux due to artificial stabilization terms is correctly included (fixing
+    apparent heat flux imbalances for steady-state models in spherical geometry),
+  - Heat flux now includes advective heat flux (i.e. the term velocity times
+    temperature times density times specific heat capacity), not purely
+    conductive heat flux.
+
+Note that all of these changes purely affect the postprocessing. The
+accuracy of the solution has not changed.
+
+Benchmark and test results have been updated and therefore now differ from
+publications that described their initial results.
+<br>
+(Rene Gassmoeller, 2018/10/18)

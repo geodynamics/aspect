@@ -18,7 +18,7 @@ Number of degrees of freedom: 3,557 (1,666+225+833+833)
      Writing graphical output:           output-update_script/solution/solution-00000
      RMS, max velocity:                  0.581 m/year, 1.12 m/year
      Temperature min/avg/max:            273 K, 2272 K, 4250 K
-     Heat fluxes through boundary parts: -2.273e+05 W, 5.442e+05 W, 2170 W, 2170 W
+     Heat fluxes through boundary parts: 1.013e+06 W, -2.716e+06 W, 0 W, 0 W
      Writing depth average:              output-update_script/depth_average.gnuplot
      Writing particle output:            output-update_script/particles/particles-00000
      Heating rate (average/total):       -3.452e-10 W/kg, -2.902e+07 W
@@ -34,7 +34,7 @@ Number of degrees of freedom: 3,557 (1,666+225+833+833)
      Writing graphical output:           output-update_script/solution/solution-00001
      RMS, max velocity:                  0.575 m/year, 1.11 m/year
      Temperature min/avg/max:            273 K, 2269 K, 4250 K
-     Heat fluxes through boundary parts: -2.156e+05 W, 5.196e+05 W, 1932 W, 1932 W
+     Heat fluxes through boundary parts: -8.04e+07 W, 1.002e+08 W, 0 W, 0 W
      Writing depth average:              output-update_script/depth_average.gnuplot
      Number of advected particles:       50
      Heating rate (average/total):       -3.399e-10 W/kg, -2.858e+07 W
