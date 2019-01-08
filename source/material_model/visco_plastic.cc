@@ -85,14 +85,8 @@ namespace aspect
 
       std::vector<double> phase_fractions(number_of_phase_transitions + 1);
 
-      // The first entry represents material values prior to the first phase transition
-      // and we start by assuming no phase transtion has yet occurred.
-      phase_fractions[0] = 1.;
-
       for (unsigned int i=1; i<(number_of_phase_transitions + 1); ++i)
         {
-          unsigned int phase = i - 1;
-
           // We need to convert the depth to pressure (depth-based phase transitions),
           // or else use the pressure itself if the phase transition is defined based off a pressure.
           double phase_func;
@@ -101,16 +95,16 @@ namespace aspect
 
               // First, calculate the deviation from the transition point (both in temperature
               // and in pressure)
-              double pressure_deviation = pressure - transition_pressures[phase]
-                                          - transition_slopes[phase] * (temperature - transition_temperatures[phase]);
+              double pressure_deviation = pressure - transition_pressures[i-1]
+                                          - transition_slopes[i-1] * (temperature - transition_temperatures[i-1]);
 
               // Next, calculate the percentage of material that has undergone the transition
               // (also in dependence of the phase transition width - this is an input parameter)
               // use delta function for width = 0
-              if (transition_pressure_widths[phase]==0)
+              if (transition_pressure_widths[i-1]==0)
                 phase_func = (pressure_deviation > 0) ? 1 : 0;
               else
-                phase_func = 0.5*(1.0 + std::tanh(pressure_deviation / transition_pressure_widths[phase]));
+                phase_func = 0.5*(1.0 + std::tanh(pressure_deviation / transition_pressure_widths[i-1]));
             }
           // this part of the loop is only implemented for phase transitions based off of depth,
           // since pressure-based transitions are included above.
@@ -119,37 +113,23 @@ namespace aspect
               double depth = this->get_geometry_model().depth(position);
               double depth_deviation = (pressure > 0
                                         ?
-                                        depth - transition_depths[phase]
-                                        - transition_slopes[phase] * (depth / pressure) * (temperature - transition_temperatures[phase])
+                                        depth - transition_depths[i-1]
+                                        - transition_slopes[i-1] * (depth / pressure) * (temperature - transition_temperatures[i-1])
                                         :
-                                        depth - transition_depths[phase]
-                                        - (transition_slopes[phase] / (this->get_gravity_model().gravity_vector(position).norm()
+                                        depth - transition_depths[i-1]
+                                        - (transition_slopes[i-1] / (this->get_gravity_model().gravity_vector(position).norm()
                                                                        *  this->get_adiabatic_conditions().density(position)))
-                                        * (temperature - transition_temperatures[phase]));
+                                        * (temperature - transition_temperatures[i-1]));
               // use delta function for width = 0
-              if (transition_widths[phase]==0)
+              if (transition_widths[i-1]==0)
                 phase_func = (depth_deviation > 0) ? 1 : 0;
               else
-                phase_func = 0.5*(1.0 + std::tanh(depth_deviation / transition_widths[phase]));
+                phase_func = 0.5*(1.0 + std::tanh(depth_deviation / transition_widths[i-1]));
             }
 
-          // Phase change has not started
-          if (phase_func==0.)
-            {
-              phase_fractions[i] = 0.;
-            }
-          // Phase transition has started but not finished
-          else if (phase_func>0. && phase_func<1.)
-            {
-              phase_fractions[i] = phase_func;
-              phase_fractions[i-1] = 1. - phase_func;
-            }
-          // Phase change has finished
-          else
-            {
-              phase_fractions[i] = 1.;
-              phase_fractions[i-1] = 0.;
-            }
+          phase_fractions[i] = phase_func;
+          phase_fractions[i-1] = 1. - phase_func;
+
         }
 
       return phase_fractions;
@@ -783,34 +763,6 @@ namespace aspect
                              "\n\n"
                              "Units: $Pa \\, s$");
 
-          // Equation of state parameters
-          prm.declare_entry ("Thermal diffusivities", "0.8e-6",
-                             Patterns::List(Patterns::Double(0)),
-                             "List of thermal diffusivities, for background material and compositional fields, "
-                             "for a total of N+1 values, where N is the number of compositional fields. "
-                             "If only one value is given, then all use the same value.  Units: $m^2/s$");
-          prm.declare_entry ("Heat capacities", "1.25e3",
-                             Patterns::List(Patterns::Double(0)),
-                             "List of heat capacities $C_p$, for background material and compositional fields, "
-                             "for a total of N+1 values, where N is the number of compositional fields. "
-                             "If only one value is given, then all use the same value.  Units: $J/kg/K$");
-          prm.declare_entry ("Densities", "3300.",
-                             Patterns::Anything(),
-                             "List of reference densities, $\\rho_{0}$, for background material and compositional "
-                             "fields, for a total of (M+1)*(N+1) values. N is the number of compositional "
-                             "fields and M is  the number of phase transitions. The list of values should begin "
-                             "with comma separated values for the background material and each compositional field "
-                             "that correspond to pressures below the first specified transition pressure or depth. "
-                             "Next, this list of values should be repeated M times with each list separated by a "
-                             "semicolon. If only one value is given for each transition pressure and one or more "
-                             "compositional fields is present, then each compositional field uses the same value. "
-                             " Units: $kg / m^3$");
-          prm.declare_entry ("Thermal expansivities", "3.5e-5",
-                             Patterns::List(Patterns::Double(0)),
-                             "List of thermal expansivities for background material and compositional fields, "
-                             "for a total of N+1 values, where N is the number of compositional fields. "
-                             "If only one value is given, then all use the same value.  Units: $1 / K$");
-
           // Phase change parameters
           prm.declare_entry ("Phase transition depths", "",
                              Patterns::List (Patterns::Double(0)),
@@ -869,6 +821,34 @@ namespace aspect
                              "one given in Phase transition temperatures. For negative slopes the other way "
                              "round. List must have the same number of entries as Phase transition depths. "
                              "Units: $Pa/K$.");
+
+          // Equation of state parameters
+          prm.declare_entry ("Thermal diffusivities", "0.8e-6",
+                             Patterns::List(Patterns::Double(0)),
+                             "List of thermal diffusivities, for background material and compositional fields, "
+                             "for a total of N+1 values, where N is the number of compositional fields. "
+                             "If only one value is given, then all use the same value.  Units: $m^2/s$");
+          prm.declare_entry ("Heat capacities", "1.25e3",
+                             Patterns::List(Patterns::Double(0)),
+                             "List of heat capacities $C_p$, for background material and compositional fields, "
+                             "for a total of N+1 values, where N is the number of compositional fields. "
+                             "If only one value is given, then all use the same value.  Units: $J/kg/K$");
+          prm.declare_entry ("Densities", "3300.",
+                             Patterns::Anything(),
+                             "List of reference densities, $\\rho_{0}$, for background material and compositional "
+                             "fields, for a total of (M+1)*(N+1) values. N is the number of compositional "
+                             "fields and M is  the number of phase transitions. The list of values should begin "
+                             "with comma separated values for the background material and each compositional field "
+                             "that correspond to pressures below the first specified transition pressure or depth. "
+                             "Next, this list of values should be repeated M times with each list separated by a "
+                             "semicolon. If only one value is given for each transition pressure and one or more "
+                             "compositional fields is present, then each compositional field uses the same value. "
+                             " Units: $kg / m^3$");
+          prm.declare_entry ("Thermal expansivities", "3.5e-5",
+                             Patterns::List(Patterns::Double(0)),
+                             "List of thermal expansivities for background material and compositional fields, "
+                             "for a total of N+1 values, where N is the number of compositional fields. "
+                             "If only one value is given, then all use the same value.  Units: $1 / K$");
 
           // Strain weakening parameters
           prm.declare_entry ("Use strain weakening", "false",
@@ -1131,8 +1111,6 @@ namespace aspect
                                                                           n_fields,
                                                                           "Thermal expansivities");
 
-          // Grain size parameters
-          grain_size = prm.get_double("Grain size");
 
           // Strain weakening parameters
           use_strain_weakening             = prm.get_bool ("Use strain weakening");
@@ -1220,6 +1198,9 @@ namespace aspect
           friction_strain_weakening_factors = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Friction strain weakening factors"))),
                                                                                       n_fields,
                                                                                       "Friction strain weakening factors");
+
+          // Grain size parameters
+          grain_size = prm.get_double("Grain size");
 
           viscosity_averaging = MaterialUtilities::parse_compositional_averaging_operation ("Viscosity averaging scheme",
                                 prm);

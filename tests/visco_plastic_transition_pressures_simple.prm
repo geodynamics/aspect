@@ -1,3 +1,6 @@
+# A test to check wether the correct density is calculated
+# after a phase transition defined by pressure has occurred.
+
 # Global parameters
 set Dimension                              = 2
 set Start time                             = 0

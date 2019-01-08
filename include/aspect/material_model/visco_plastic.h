@@ -183,15 +183,21 @@ namespace aspect
         // Use depth (if true) instead of pressure to define phase transitions
         bool use_depth;
 
+        // Table of densities. Each value in a given row represents the density
+        // of a specific compositional field, which may vary as a function of 
+        // phase transitions (columns).
         dealii::Table<2,double> densities;
+
+
         std::vector<double> thermal_expansivities;
         std::vector<double> thermal_diffusivities;
         std::vector<double> heat_capacities;
 
         /**
-         * Percentage of material that has already undergone the phase
-         * transition to the higher-pressure material (this is done
-         * individually for each transition and summed up in the end)
+         * Vector representing the percentage of each phase that is
+         * present at a given temperature and pressure (or depth). Note
+         * that this function will not work if there are overlapping 
+         * phase transitions.
          */
         std::vector<double>
         compute_phase_fractions (const Point<dim> &position,
