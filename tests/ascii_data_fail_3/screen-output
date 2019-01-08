@@ -1,0 +1,17 @@
+
+
+   Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/fail_3.txt.
+
+ERROR: Uncaught exception in MPI_InitFinalize on proc 0. Skipping MPI_Finalize() to avoid a deadlock.
+
+
+Exception 'ExcMessage (std::string("While reading the data file '" + filename + "' the ascii data " "plugin has reached the end of the file, but has not found the " "expected number of points. Please check the number of data " "lines against the POINTS header in the file."))' on rank 0 on processing: 
+
+An error occurred in file <utilities.cc> in function
+(line in output replaced by default.sh script)
+The violated condition was: 
+    false
+Additional information: 
+    While reading the data file 'ASPECT_DIR/data/boundary-velocity/ascii-data/test/fail_3.txt' the ascii data plugin has reached the end of the file, but has not found the expected number of points. Please check the number of data lines against the POINTS header in the file.
+
+Aborting!

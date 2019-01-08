@@ -1643,9 +1643,22 @@ namespace aspect
         }
       while (in >> temp_data);
 
+      if (in.eof())
+        {
+          AssertThrow(field_index == (components + dim) * data_table.n_elements(),
+                      ExcMessage (std::string("While reading the data file '" + filename + "' the ascii data "
+                                              "plugin has reached the end of the file, but has not found the "
+                                              "expected number of points. Please check the number of data "
+                                              "lines against the POINTS header in the file.")));
+        }
+      else
+        {
+          AssertThrow(field_index == (components + dim) * data_table.n_elements(),
+                      ExcMessage (std::string("While reading the data file '" + filename + "' the ascii data "
+                                              "plugin has encountered an error before the end of the file. "
+                                              "Please check for malformed data values (e.g. NaN).")));
+        }
 
-      AssertThrow(field_index == (components + dim) * data_table.n_elements(),
-                  ExcMessage (std::string("Number of read in points does not match number of expected points. File corrupted?")));
 
       // In case the data is specified on a grid that is equidistant
       // in each coordinate direction, we only need to store
