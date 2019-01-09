@@ -1558,7 +1558,6 @@ namespace aspect
         }
 
       // Read column lines if present
-      unsigned int field_index = 0;
       unsigned int name_column_index = 0;
       double temp_data;
 
@@ -1627,9 +1626,10 @@ namespace aspect
 
 
       // Read data lines
+      unsigned int read_data_entries = 0;
       do
         {
-          const unsigned int column_num = field_index%(components+dim);
+          const unsigned int column_num = read_data_entries%(components+dim);
 
           if (column_num >= dim)
             {
@@ -1637,28 +1637,26 @@ namespace aspect
               maximum_component_value[column_num-dim] = std::max(maximum_component_value[column_num-dim], temp_data);
             }
 
-          data_tables[column_num](compute_table_indices(field_index)) = temp_data;
+          data_tables[column_num](compute_table_indices(read_data_entries)) = temp_data;
 
-          ++field_index;
+          ++read_data_entries;
         }
       while (in >> temp_data);
 
-      if (in.eof())
-        {
-          AssertThrow(field_index == (components + dim) * data_table.n_elements(),
-                      ExcMessage (std::string("While reading the data file '" + filename + "' the ascii data "
-                                              "plugin has reached the end of the file, but has not found the "
-                                              "expected number of points. Please check the number of data "
-                                              "lines against the POINTS header in the file.")));
-        }
-      else
-        {
-          AssertThrow(field_index == (components + dim) * data_table.n_elements(),
-                      ExcMessage (std::string("While reading the data file '" + filename + "' the ascii data "
-                                              "plugin has encountered an error before the end of the file. "
-                                              "Please check for malformed data values (e.g. NaN).")));
-        }
+      AssertThrow(in.eof(),
+                  ExcMessage ("While reading the data file '" + filename + "' the ascii data "
+                              "plugin has encountered an error before the end of the file. "
+                              "Please check for malformed data values (e.g. NaN) or superfluous "
+                              "lines at the end of the data file."));
 
+      const unsigned int n_expected_data_entries = (components + dim) * data_table.n_elements();
+      AssertThrow(read_data_entries == n_expected_data_entries,
+                  ExcMessage ("While reading the data file '" + filename + "' the ascii data "
+                              "plugin has reached the end of the file, but has not found the "
+                              "expected number of data values considering the spatial dimension, "
+                              "data columns, and number of lines prescribed by the POINTS header "
+                              "of the file. Please check the number of data "
+                              "lines against the POINTS header in the file."));
 
       // In case the data is specified on a grid that is equidistant
       // in each coordinate direction, we only need to store

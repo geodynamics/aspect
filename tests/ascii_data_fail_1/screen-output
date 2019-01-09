@@ -5,13 +5,13 @@
 ERROR: Uncaught exception in MPI_InitFinalize on proc 0. Skipping MPI_Finalize() to avoid a deadlock.
 
 
-Exception 'ExcMessage (std::string("While reading the data file '" + filename + "' the ascii data " "plugin has encountered an error before the end of the file. " "Please check for malformed data values (e.g. NaN)."))' on rank 0 on processing: 
+Exception 'ExcMessage ("While reading the data file '" + filename + "' the ascii data " "plugin has encountered an error before the end of the file. " "Please check for malformed data values (e.g. NaN) or superfluous " "lines at the end of the data file.")' on rank 0 on processing: 
 
 An error occurred in file <utilities.cc> in function
 (line in output replaced by default.sh script)
 The violated condition was: 
-    false
+    in.eof()
 Additional information: 
-    While reading the data file 'ASPECT_DIR/data/boundary-velocity/ascii-data/test/fail_1.txt' the ascii data plugin has encountered an error before the end of the file. Please check for malformed data values (e.g. NaN).
+    While reading the data file 'ASPECT_DIR/data/boundary-velocity/ascii-data/test/fail_1.txt' the ascii data plugin has encountered an error before the end of the file. Please check for malformed data values (e.g. NaN) or superfluous lines at the end of the data file.
 
 Aborting!
