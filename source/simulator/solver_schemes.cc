@@ -261,9 +261,13 @@ namespace aspect
   double Simulator<dim>::assemble_and_solve_stokes (const bool compute_initial_residual,
                                                     double *initial_nonlinear_residual)
   {
-    // If the Stokes matrix depends on the solution, or the boundary conditions
-    // for the Stokes system have changed rebuild the matrix and preconditioner
-    // before solving.
+    // If the Stokes matrix depends on the solution, or we have active
+    // velocity boundary conditions, we need to re-assemble the system matrix
+    // (and preconditioner) every time. If we have active boundary conditions,
+    // they could a) depend on the solution, or b) be inhomogeneous. In both
+    // cases, just assembling the RHS will be incorrect.  If no active
+    // boundaries exist, we only have no-slip or free slip conditions, so we
+    // don't need to force assembly of the matrix.
     if (stokes_matrix_depends_on_solution()
         ||
         (boundary_velocity_manager.get_active_boundary_velocity_conditions().size() > 0))

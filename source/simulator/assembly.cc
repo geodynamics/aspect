@@ -686,6 +686,15 @@ namespace aspect
     if (rebuild_stokes_matrix == true)
       system_matrix = 0;
 
+    // We are using constraints.distribute_local_to_global() without a matrix
+    // if we do not rebuild the Stokes matrix. This produces incorrect results
+    // when having inhomogeneous constraints. Make sure that we can not have
+    // this situation (no active boundary conditions means that only
+    // no-slip/free slip are used). This should not happen as we set this up
+    // correctly before calling this function.
+    Assert(rebuild_stokes_matrix || boundary_velocity_manager.get_active_boundary_velocity_conditions().size()==0,
+           ExcInternalError("If we have inhomogeneous constraints, we must re-assemble the system matrix."));
+
     system_rhs = 0;
     if (do_pressure_rhs_compatibility_modification)
       pressure_shape_function_integrals = 0;
