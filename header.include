@@ -24,15 +24,15 @@
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Info<b class="caret"></b></a>
               <ul class="dropdown-menu">
-                <li><a href="../doc/parameter_view/parameters.xml">Parameter Documentation</a></li>
+                <li><a href="../doc/parameter_view/parameters.xml">Parameter documentation</a></li>
                 <li><a href="http://www.math.clemson.edu/~heister/manual.pdf">Manual</a></li>
-                <li><a href="index.html#contact">Forum and Contact</a></li>
+                <li><a href="index.html#contact">Forum and contact</a></li>
                 <li><a href="citing.html?src=www&ver=release">How to cite?</a></li>
                 <li><a href="publications.html">Publications</a></li>
                 <li><a href="https://github.com/geodynamics/aspect/blob/master/LICENSE">License</a></li>
-                <li><a href="https://github.com/geodynamics/aspect/wiki">Installation Instructions</a></li>
+                <li><a href="https://github.com/geodynamics/aspect/wiki">Installation instructions</a></li>
                 <li><a href="https://github.com/geodynamics/aspect#more-information">Help!</a></li>
-                <li><a href="https://geodynamics.org/cig/events/calendar/2016-cig-all-hands-meeting/aspect-tutorial/tutorial/">Online Tutorial</a></li>
+                <li><a href="https://geodynamics.org/cig/events/calendar/2016-cig-all-hands-meeting/aspect-tutorial/tutorial/">Online tutorial</a></li>
                 <li><a href="https://github.com/geodynamics/aspect/blob/master/CONTRIBUTING.md">Participate</a></li>
               </ul>
             </li>
