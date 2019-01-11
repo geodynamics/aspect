@@ -1,0 +1,17 @@
+
+
+   Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/fail_4.txt.
+
+ERROR: Uncaught exception in MPI_InitFinalize on proc 0. Skipping MPI_Finalize() to avoid a deadlock.
+
+
+Exception 'ExcMessage (std::string("Ascii data file <") + filename + "> not found!")' on rank 0 on processing: 
+
+An error occurred in file <utilities.cc> in function
+(line in output replaced by default.sh script)
+The violated condition was: 
+    Utilities::fexists(filename)
+Additional information: 
+    Ascii data file <ASPECT_DIR/data/boundary-velocity/ascii-data/test/fail_4.txt> not found!
+
+Aborting!
