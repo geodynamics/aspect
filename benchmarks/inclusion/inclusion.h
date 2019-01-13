@@ -285,7 +285,7 @@ namespace aspect
          */
         virtual
         std::pair<std::string,std::string>
-        execute (TableHandler &statistics)
+        execute (TableHandler &/*statistics*/)
         {
           std::shared_ptr<Function<dim> > ref_func;
           if (dynamic_cast<const InclusionMaterial<dim> *>(&this->get_material_model()) != NULL)
