@@ -19,8 +19,8 @@
  */
 
 
-#ifndef _aspect__newton_h
-#define _aspect__newton_h
+#ifndef _aspect_newton_h
+#define _aspect_newton_h
 
 #include <aspect/simulator/assemblers/interface.h>
 #include <aspect/simulator_access.h>
