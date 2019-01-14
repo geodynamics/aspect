@@ -316,16 +316,12 @@ namespace aspect
     typename NonlinearSolver::Kind nonlinear_solver;
 
     double                         nonlinear_tolerance;
-    double                         nonlinear_switch_tolerance;
     bool                           resume_computation;
     double                         start_time;
     double                         CFL_number;
     double                         maximum_time_step;
     double                         maximum_relative_increase_time_step;
     double                         maximum_first_time_step;
-    double                         reaction_time_step;
-    unsigned int                   reaction_steps_per_advection_step;
-    double                         diffusion_length_scale;
     bool                           use_artificial_viscosity_smoothing;
     bool                           use_conduction_timestep;
     bool                           convert_to_years;
@@ -333,24 +329,44 @@ namespace aspect
     double                         surface_pressure;
     double                         adiabatic_surface_temperature;
     unsigned int                   timing_output_frequency;
+    unsigned int                   max_nonlinear_iterations;
+    unsigned int                   max_nonlinear_iterations_in_prerefinement;
+    bool                           use_operator_splitting;
+    std::string                    world_builder_file;
+
+    /**
+     * @}
+     */
+
+    /**
+     * @name section: Solver parameters
+     * @{
+     */
+    double                         temperature_solver_tolerance;
+    double                         composition_solver_tolerance;
+
+    // subsection: Stokes parameters
     bool                           use_direct_stokes_solver;
     double                         linear_stokes_solver_tolerance;
+    unsigned int                   n_cheap_stokes_solver_steps;
+    unsigned int                   n_expensive_stokes_solver_steps;
     double                         linear_solver_A_block_tolerance;
     bool                           use_full_A_block_preconditioner;
     double                         linear_solver_S_block_tolerance;
+    unsigned int                   stokes_gmres_restart_length;
+
+    // subsection: AMG parameters
     std::string                    AMG_smoother_type;
     unsigned int                   AMG_smoother_sweeps;
     double                         AMG_aggregation_threshold;
     bool                           AMG_output_details;
-    unsigned int                   max_nonlinear_iterations;
-    unsigned int                   max_nonlinear_iterations_in_prerefinement;
-    unsigned int                   n_cheap_stokes_solver_steps;
-    unsigned int                   n_expensive_stokes_solver_steps;
-    unsigned int                   stokes_gmres_restart_length;
-    double                         temperature_solver_tolerance;
-    double                         composition_solver_tolerance;
-    bool                           use_operator_splitting;
-    std::string                    world_builder_file;
+
+    // subsection: Operator splitting parameters
+    double                         reaction_time_step;
+    unsigned int                   reaction_steps_per_advection_step;
+
+    // subsection: Diffusion solver parameters
+    double                         diffusion_length_scale;
 
     /**
      * @}
