@@ -30,6 +30,10 @@
 
 namespace aspect
 {
+  template <int dim>
+  struct Introspection;
+
+
   namespace MaterialModel
   {
     using namespace dealii;
@@ -323,6 +327,123 @@ namespace aspect
       compute_drucker_prager_yielding (const DruckerPragerInputs &in,
                                        DruckerPragerOutputs &out);
 
+
+
+      /**
+       * A data structure with all inputs for the
+       * MaterialModel::Interface::compute_phase_function() method.
+       */
+      struct PhaseFunctionInputs
+      {
+        /**
+        * Constructor. Initializes the various variables of this
+        * structure with the input values.
+        */
+        PhaseFunctionInputs(const bool use_depth,
+                            const int phase,
+                            const double depth,
+                            const double gravity,
+                            const double temperature,
+                            const double pressure,
+                            const double transition_point,
+                            const double transition_width,
+                            const double transition_temperature,
+                            const double transition_slope);
+
+        const bool use_depth;
+        const int phase;
+        const double depth;
+        const double gravity;
+        const double temperature;
+        const double pressure;
+        const double transition_point;
+        const double transition_width;
+        const double transition_temperature;
+        const double transition_slope;
+      };
+
+
+      /**
+       * A data structure with all outputs computed by the
+       * MaterialModel::Interface::compute_phase_function() method.
+       */
+      struct PhaseFunctionOutputs
+      {
+        /**
+        * Constructor. Initializes the various variables of this
+        * structure to NaNs.
+        */
+        PhaseFunctionOutputs();
+
+        double phase_function;
+      };
+
+
+      /**
+       * For material models with phase changes:
+       * Function to compute the percentage of material that has 
+       * already undergone the phase transition to the higher-pressure 
+       * material. This is done individually for each transition and 
+       * summed up in the end.
+       */
+      template <int dim>
+      void
+      compute_phase_function (const PhaseFunctionInputs &in,
+                              PhaseFunctionOutputs &out);
+
+
+      /**
+       * A data structure with all inputs for the
+       * MaterialModel::Interface::compute_phase_function_derivative() method.
+       */
+      struct PhaseFunctionDerivativeInputs
+      {
+        /**
+        * Constructor. Initializes the various variables of this
+        * structure with the input values.
+        */
+        PhaseFunctionDerivativeInputs(const double temperature,
+                                      const double pressure,
+                                      const double transition_pressure,
+                                      const double pressure_width,
+                                      const double transition_temperature,
+                                      const double transition_slope);
+
+        const double temperature;
+        const double pressure;
+        const double transition_pressure;
+        const double pressure_width;
+        const double transition_temperature;
+        const double transition_slope;
+      };
+
+
+      /**
+       * A data structure with all outputs computed by the
+       * MaterialModel::Interface::compute_phase_function_derivative() method.
+       */
+      struct PhaseFunctionDerivativeOutputs
+      {
+        /**
+        * Constructor. Initializes the various variables of this
+        * structure to NaNs.
+        */
+        PhaseFunctionDerivativeOutputs();
+
+        double phase_function_derivative;
+      };
+
+
+      /**
+       * For material models with phase changes:
+       * Function to compute the derivative of the phase function, where
+       * the argument is the pressure deviation.
+       */
+      template <int dim>
+      void
+      compute_phase_function_derivative (const PhaseFunctionDerivativeInputs &in,
+                                         PhaseFunctionDerivativeOutputs &out);
+      
     }
   }
 }
