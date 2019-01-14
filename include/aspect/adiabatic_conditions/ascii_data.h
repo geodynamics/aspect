@@ -19,8 +19,8 @@
 */
 
 
-#ifndef _aspect__adiabatic_conditions_ascii_data_h
-#define _aspect__adiabatic_conditions_ascii_data_h
+#ifndef _aspect_adiabatic_conditions_ascii_data_h
+#define _aspect_adiabatic_conditions_ascii_data_h
 
 
 #include <aspect/adiabatic_conditions/interface.h>

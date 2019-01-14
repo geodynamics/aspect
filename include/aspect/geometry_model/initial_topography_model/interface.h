@@ -19,8 +19,8 @@
 */
 
 
-#ifndef _aspect_geometry_model__initial_topography_model_interface_h
-#define _aspect_geometry_model__initial_topography_model_interface_h
+#ifndef _aspect_geometry_model_initial_topography_model_interface_h
+#define _aspect_geometry_model_initial_topography_model_interface_h
 
 #include <aspect/plugins.h>
 #include <deal.II/base/parameter_handler.h>

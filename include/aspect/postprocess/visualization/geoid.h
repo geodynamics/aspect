@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__postprocess_visualization_geoid_h
-#define __aspect__postprocess_visualization_geoid_h
+#ifndef _aspect_postprocess_visualization_geoid_h
+#define _aspect_postprocess_visualization_geoid_h
 
 #include <aspect/simulator_access.h>
 #include <aspect/postprocess/visualization.h>

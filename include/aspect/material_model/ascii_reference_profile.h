@@ -19,8 +19,8 @@
 */
 
 
-#ifndef _aspect__model_ascii_reference_profile_h
-#define _aspect__model_ascii_reference_profile_h
+#ifndef _aspect_model_ascii_reference_profile_h
+#define _aspect_model_ascii_reference_profile_h
 
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>

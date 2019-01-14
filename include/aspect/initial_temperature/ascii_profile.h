@@ -19,8 +19,8 @@
 */
 
 
-#ifndef _aspect__initial_temperature_ascii_profile_h
-#define _aspect__initial_temperature_ascii_profile_h
+#ifndef _aspect_initial_temperature_ascii_profile_h
+#define _aspect_initial_temperature_ascii_profile_h
 
 #include <aspect/initial_temperature/interface.h>
 #include <aspect/utilities.h>

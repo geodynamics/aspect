@@ -19,8 +19,8 @@
  */
 
 
-#ifndef _aspect__postprocess_geoid_h
-#define _aspect__postprocess_geoid_h
+#ifndef _aspect_postprocess_geoid_h
+#define _aspect_postprocess_geoid_h
 
 #include <aspect/postprocess/interface.h>
 #include <aspect/simulator_access.h>

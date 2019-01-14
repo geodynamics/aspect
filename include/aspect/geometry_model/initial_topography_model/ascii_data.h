@@ -19,8 +19,8 @@
 */
 
 
-#ifndef _aspect_geometry_model__initial_topography_model_ascii_data_h
-#define _aspect_geometry_model__initial_topography_model_ascii_data_h
+#ifndef _aspect_geometry_model_initial_topography_model_ascii_data_h
+#define _aspect_geometry_model_initial_topography_model_ascii_data_h
 
 #include <aspect/geometry_model/initial_topography_model/interface.h>
 #include <aspect/simulator_access.h>

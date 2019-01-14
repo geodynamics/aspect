@@ -19,8 +19,8 @@
 */
 
 
-#ifndef _aspect_geometry_model__initial_topography_model_zero_topography_h
-#define _aspect_geometry_model__initial_topography_model_zero_topography_h
+#ifndef _aspect_geometry_model_initial_topography_model_zero_topography_h
+#define _aspect_geometry_model_initial_topography_model_zero_topography_h
 
 #include <aspect/geometry_model/initial_topography_model/interface.h>
 
