@@ -1539,7 +1539,7 @@ namespace aspect
       Parameters<dim>                     parameters;
 
       /**
-       * Shared pointer for an instance of the MeltHandler. This way,
+       * Unique pointer for an instance of the MeltHandler. This way,
        * if we do not need the machinery for doing melt stuff, we do
        * not even allocate it.
        */
@@ -1784,11 +1784,11 @@ namespace aspect
     private:
 
       /**
-       * Shared pointer for an instance of the FreeSurfaceHandler. this way,
+       * Unique pointer for an instance of the FreeSurfaceHandler. this way,
        * if we do not need the machinery for doing free surface stuff, we do
        * not even allocate it.
        */
-      std::shared_ptr<FreeSurfaceHandler<dim> > free_surface;
+      std::unique_ptr<FreeSurfaceHandler<dim> > free_surface;
 
       friend class boost::serialization::access;
       friend class SimulatorAccess<dim>;
