@@ -45,7 +45,7 @@ namespace aspect
                                   (this->get_geometry_model()).outer_radius();
       double model_inner_radius = dynamic_cast<const GeometryModel::SphericalShell<dim>&>
                                   (this->get_geometry_model()).inner_radius();
-  
+
       // epsilon specifies the amplitude of the nonaxisymmetric perturbation. epsilon here is only valid
       // for the cubic steady-state case. For users who want to try the dodecahedral initial condition, epsilon
       // has to be set at sqrt(14/11) (Arrial et al. 2014).
@@ -54,7 +54,7 @@ namespace aspect
       // In case of spherical shell, calculate spherical coordinates
       const std_cxx11::array<double,dim> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(position);
 
-      // This is different than the standard harmonic perturbation in ASPECT 
+      // This is different than the standard harmonic perturbation in ASPECT
       double background_temperature = model_inner_radius * (scoord[0] - model_outer_radius) / scoord[0] / (model_inner_radius - model_outer_radius);
 
       // Use a spherical harmonic function as lateral perturbation
@@ -62,11 +62,11 @@ namespace aspect
       std::pair<double,double> sph_harm_vals2 = Utilities::real_spherical_harmonic(lateral_wave_number_l2, lateral_wave_number_m2, scoord[2], scoord[1]);
 
       // For historical reasons, the initial conditions module used an unnormalized real spherical harmonic
-      // (see utilities.cc). The current version of the harmonic perturbation in ASPECT denormalizes the 
+      // (see utilities.cc). The current version of the harmonic perturbation in ASPECT denormalizes the
       // return value of the real_spherical_harmonic to keep its original behavior.
       // For this benchmark, we use the original version of the harmonic perturbation, which is the same
-      // than used in Arrial et al. (2014) and Zhong et al. (2008). 
-      // We left in comments below the denormalization which is not required here. 
+      // than used in Arrial et al. (2014) and Zhong et al. (2008).
+      // We left in comments below the denormalization which is not required here.
       double lateral_perturbation_1 = sph_harm_vals1.first; // / (lateral_wave_number_m1 == 0 ? 1.0 : std::sqrt(2.));
       double lateral_perturbation_2 = sph_harm_vals2.first; // / (lateral_wave_number_m2 == 0 ? 1.0 : std::sqrt(2.));
 

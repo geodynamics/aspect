@@ -1,6 +1,8 @@
 # A simple setup for thermal convection in a hollow sphere. The setup
 # is based from Arrial et al. (2014) benchmark of CitcomS and a RBF-PS 
 # model.
+set Additional shared libraries = ./libthermal_convection_3d.so
+ 
 
 ############### Global parameters
 # We use a 3d setup. Here the equations of contuinity, momentum and

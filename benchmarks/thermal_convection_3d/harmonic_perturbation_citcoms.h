@@ -32,11 +32,11 @@ namespace aspect
   {
     using namespace dealii;
     /**
-     * This setup is a different implementation than the one in the main code 
+     * This setup is a different implementation than the one in the main code
      * and it is based on the Arrial et al. (2014) setup. It generates an
      * initial constant temperature field which is perturbed following a
      * spherical harmonic function in lateral and radial direction. This
-     * setup can only be used for a hollow sphere. 
+     * setup can only be used for a hollow sphere.
      *
      * @ingroup InitialTemperatures
      */
@@ -77,7 +77,7 @@ namespace aspect
 
         /**
          * The degree of the spherical harmonics in a 3D spherical shell
-         * for the lateral wave number of the axisymmetric harmonic 
+         * for the lateral wave number of the axisymmetric harmonic
          * perturbation.
          */
         int lateral_wave_number_l1;
@@ -90,8 +90,8 @@ namespace aspect
         int lateral_wave_number_m1;
 
         /**
-         * The degree of the spherical harmonics in a 3D spherical shell 
-         * for the lateral wave number of the nonaxisymmetric harmonic 
+         * The degree of the spherical harmonics in a 3D spherical shell
+         * for the lateral wave number of the nonaxisymmetric harmonic
          * perturbation.
          */
         int lateral_wave_number_l2;

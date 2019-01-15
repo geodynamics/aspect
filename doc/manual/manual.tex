@@ -9942,23 +9942,43 @@ ilabel{sec:benchmark-thermal-convection}
 
 \textit{This section was contributed by L. Jeanniot and C. Thieulot.}
 
-We use an incompressible and isoviscous Rayleigh-Bénard thermal convection benchmark at infinite Prandtl number in a spherical shell to compare the results predicted by ASPECT with the previously benchmarked numerical code CitcomS. This benchmark follows the setup of Arrial et al. (2014) and Zhong et al. (2008). We explore the sensitivity of the initial and steady-state root mean square velocity $V_RMS$, average temperature $<T>$ and Nusselt number $Nu$ measured at both inner and outer boundaries to resolution for a Rayleigh number $Ra = 7000$ and $Ra = 70000$. 
+We use an incompressible and isoviscous Rayleigh-Bénard thermal convection benchmark at infinite Prandtl number in a spherical shell to compare the results predicted by ASPECT to the previously benchmarked numerical code CitcomS along with a pseudospectral radial basis function-Chebyshev model (RBF-PS). This benchmark follows the setup of Zhong et al. (2008) and Arrial et al. (2014). We explore the sensitivity of 1) the initial and steady-state root mean square velocity $V_RMS$, 2) average temperature $<T>$ and 3) Nusselt number $Nu$ measured at both inner and outer boundaries on model resolution for a Rayleigh number $Ra = 7000$ and $Ra = 70000$. 
 
-The setup is a 3d spherical shell with a nondimensional length scale chosen as the approximate thickness of the mantle of the Earth (i.e. mantle thickness = 1). For low resolution models (here global refinement of 3), specifying Cells along circumferences at 12 allows better and quickier convergence to the solution. Angular momentum is here removed from the velocity field at the end of the Stokes solver step so that the net angular momentum is zero because for some geometries and certain boundary conditions the velocity field in not uniquely determined but contains free translations and/or rotations. 
-The dynamics of the fluid are entirely governed by the Rayleigh number $Ra$, which can be interpreted as a ratio of the destabilizing force due to the buoyancy of the heated fluid to the stabilizing force due to the the viscosity of the fluid and heat transfer by conduction. Therefore, we set here all the parameters which are parts of the Rayleigh formula to 1, except for the gravity component. The value given to the gravity magnitude therefore specifies the Rayleigh number value.
+The setup is a 3d spherical shell with a nondimensional length scale chosen as the approximate thickness of the mantle of the Earth (i.e. mantle thickness = 1). We perfomed low resolution models with a global mesh refinement of 3 (higher resolution computation lead to identical results). Cells along circumferences is set at 12 which allows a comparable mesh design to that of CitcomS and the RBF-PS model. The angular momentum is here removed from the velocity field at the end of the Stokes solver step so that the net angular momentum is zero because for some geometries and certain boundary conditions the velocity field in not uniquely determined but contains free translations and/or rotations.
+The dynamics of the fluid are entirely governed by the Rayleigh number $Ra$, which can be interpreted as a ratio of the destabilizing force due to the buoyancy of the heated fluid to the stabilizing force due to the viscosity of the fluid and heat transfer by conduction:
+\begin{gather*}
+ Ra =
+  \frac {\rho_0 g \alpha \Delta T (\Delta R)^3}{\kappa \eta} 
+\end{gather*}
+
+ Therefore, we can prescribe for the dynamic system a fixed Rayleigh number by turning to 1 all the parameters, expect one, which are parts of the Rayleigh formula. For this benchmarck, the value given to the gravity magnitude specifies the Rayleigh number.
 \lstinputlisting[language=prmfile]{cookbooks/benchmarks/thermal_convection_3d_1.prm}
 
-The governing equations describe an incompressible Boussinesq fluid at infinite Prandtl number 3D spherical shell that is heated from below and cooled from above. The temperature scale is chosen as the difference between the temperature at the inner and outer boundaries (equal to 1).
-The initial temperature is given by the sum of a conductive profile together with a perturbation. 
-\begin{align}
+The governing equations describe an incompressible Boussinesq fluid at infinite Prandtl number in a 3D spherical shell that is heated from below and cooled from above. The temperature scale is chosen as the difference between the temperature at the inner and outer boundaries (equal to 1).
+The initial temperature is given by the sum of a conductive profile together with a perturbation $T_P$:
 
-\end{align}
-The perturbation determines the final patterns of the polyhedral symmetry which is here cubic .
-A perturbation parameter has been introduced to slowly perturb the amplitude of the nonaxisymmetric mode. Set to 0 means the perturbation is full; set to 1 and there is no perturbation (i.e the initial condition temperature profile is only axissymmetric)
+\begin{gather*}
+  T(r,\theta,\phi) =
+  \underbrace{{R_i(r-R_o)}/{r(R_i-R_o)}}_{\text{conductive profile}} + 
+  \underbrace{0.01T_P(\theta,\phi)+\sin(\pi{r-R_i}/{R_o-R_i})}_{\text{perturbation to profile}} 
+\end{gather*}
 
+with
+
+\begin{gather*}
+  T_P(\theta,\phi) =
+  \underbraceY{Y_l^{m=0}(\theta,\phi)}_{\text{axisymmetric}} + 
+  \underbrace{\epsilonY_l^{m\neq 0}(\theta,\phi)}_{\text{nonaxisymmetric}} 
+\end{gather*}
+
+$Y_l^m$ corresponds to the normalized spherical harmonic of order $m$ and degree $l$. According to the values of $m$ and $l$ and $\epsilon$, the initial condition temperature profile may be of diverse nature. For this benchmark, we primarily use a cubic initial condition where $\epsilon = 5\7(1-\delta)$. In Zhong et al. (2008) $\delta =0$. Here as in Arrial et al. (2014), $\delta$ is a perturbation parameter to slowy perturb the amplitude of the nonaxisymmetric mode. Set $\delta$ to 0 means the perturbation is full; set to 1 means there is no perturbation (i.e the initial condition temperature profile is only axisymmetric).
 \lstinputlisting[language=prmfile]{cookbooks/benchmarks/thermal_convection_3d_2.prm}
 
+At the time of writing this benchmark (January 2019), there has been a long discussion regarding the use of the stabilization parameters for the viscosity scheme $beta$ and $cR$ in 3D spherical geometries. Therefore we switched those two parameters off for this benchmark.
 \lstinputlisting[language=prmfile]{cookbooks/benchmarks/thermal_convection_3d_3.prm}
+
+A plugin was written based on the original spherical harmonic perturbation of the initial temperature already implemented in ASPECT, but including the nonaxisymmetric mode perturbation.
+Setting Cells along circumference to 12 allows a better and quickier convergence to the solution. 
 
 \section{Extending and contributing to \aspect}
 \label{sec:extending}
