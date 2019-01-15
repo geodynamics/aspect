@@ -337,6 +337,70 @@ IF (ASPECT_PRECOMPILE_HEADERS)
   LIST(INSERT TARGET_SRC 0 ${HELPER_PATH})
 ENDIF()
 
+# Check whether we can find the WorldBuilder files. If so, make sure we
+# add a preprocessor #define that says that the WorldBuilder exists. Also 
+# add the new configure file to TARGET_SRC before DEAL_II_INVOKE_AUTOPILOT
+# is invoked.
+EXECUTE_PROCESS(COMMAND ls ${CMAKE_SOURCE_DIR}/contrib/WorldBuilder/VERSION
+                RESULT_VARIABLE result
+                OUTPUT_QUIET ERROR_QUIET)
+IF (result)
+  MESSAGE("-- World Builder not found.")
+  SET(ASPECT_WITH_WORLD_BUILDER OFF CACHE BOOL "" FORCE)
+ELSE()
+  SET(WORLD_BUILDER_SOURCE_DIR "${CMAKE_SOURCE_DIR}/contrib/WorldBuilder")
+  FILE(STRINGS "${WORLD_BUILDER_SOURCE_DIR}/VERSION" WORLD_BUILDER_VERSION)
+  string(REPLACE "-" "." VERSION_LIST_TEMP ${WORLD_BUILDER_VERSION})
+  string(REPLACE "." ";" VERSION_LIST ${VERSION_LIST_TEMP})
+  list(LENGTH VERSION_LIST VERSION_LENGTH)
+  list(GET VERSION_LIST 0 WORLD_BUILDER_VERSION_MAJOR)
+  list(GET VERSION_LIST 1 WORLD_BUILDER_VERSION_MINOR)
+  list(GET VERSION_LIST 2 WORLD_BUILDER_VERSION_PATCH)
+  if (${VERSION_LENGTH} GREATER 3)
+    list(GET VERSION_LIST 3 WORLD_BUILDER_VERSION_LABEL)
+  endif()
+
+  find_package(Git)
+  IF(GIT_FOUND AND EXISTS ${WORLD_BUILDER_SOURCE_DIR}/.git)
+  execute_process(COMMAND
+    "${GIT_EXECUTABLE}" describe --match=NeVeRmAtCh --always --abbrev=40 --dirty
+    WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
+    OUTPUT_VARIABLE GIT_SHA1
+    ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+  execute_process(COMMAND
+    "${GIT_EXECUTABLE}" rev-parse --abbrev-ref HEAD
+    WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
+    OUTPUT_VARIABLE GIT_BRANCH
+    ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+  # the date of the commit
+  execute_process(COMMAND
+    "${GIT_EXECUTABLE}" log -1 --format=%ad --date=local
+    WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
+    OUTPUT_VARIABLE GIT_DATE
+    ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+  # the subject of the commit
+  execute_process(COMMAND
+    "${GIT_EXECUTABLE}" log -1 --format=%s
+    WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
+    OUTPUT_VARIABLE GIT_COMMIT_SUBJECT
+    ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+  ENDIF()
+  MESSAGE("-- World Builder version ${WORLD_BUILDER_VERSION} found.")
+  SET(ASPECT_WITH_WORLD_BUILDER ON CACHE BOOL "If ON the World Builder is compiled togheter with ASPECT.")
+
+  configure_file("${WORLD_BUILDER_SOURCE_DIR}/source/config.cc.in" "${WORLD_BUILDER_SOURCE_DIR}/source/config.cc" @ONLY)
+
+  LIST(INSERT TARGET_SRC 0 "${WORLD_BUILDER_SOURCE_DIR}/source/config.cc")
+
+  FOREACH(_source_file ${TARGET_SRC})
+    SET_PROPERTY(SOURCE ${_source_file}
+                 APPEND PROPERTY COMPILE_DEFINITIONS ASPECT_USE_WORLD_BUILDER=1)
+  ENDFOREACH()
+ENDIF()
 
 DEAL_II_INVOKE_AUTOPILOT()
 
@@ -355,24 +419,6 @@ ELSE()
 ENDIF()
 
 
-# Check whether we can find the WorldBuilder files. If so, make sure we
-# add a preprocessor #define that says that the WorldBuilder exists.
-EXECUTE_PROCESS(COMMAND ls ${CMAKE_SOURCE_DIR}/contrib/WorldBuilder/VERSION
-                RESULT_VARIABLE result
-                OUTPUT_QUIET ERROR_QUIET)
-IF (result)
-  MESSAGE("-- World Builder not found.")
-  SET(ASPECT_WITH_WORLD_BUILDER OFF CACHE BOOL "" FORCE)
-ELSE()
-  FILE(STRINGS "${CMAKE_SOURCE_DIR}/contrib/WorldBuilder/VERSION" WorldBuilderVersion)
-  MESSAGE("-- World Builder version ${WorldBuilderVersion} found.")
-  SET(ASPECT_WITH_WORLD_BUILDER ON CACHE BOOL "If ON the World Builder is compiled togheter with ASPECT.")
-
-  FOREACH(_source_file ${TARGET_SRC})
-    SET_PROPERTY(SOURCE ${_source_file}
-                 APPEND PROPERTY COMPILE_DEFINITIONS ASPECT_USE_WORLD_BUILDER=1)
-  ENDFOREACH()
-ENDIF()
 
 IF (ASPECT_USE_SHARED_LIBS)
   # some systems need to explicitly link to some libraries to use dlopen
