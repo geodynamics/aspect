@@ -167,6 +167,8 @@ namespace aspect
               out.specific_heat[i] = 0;
               out.thermal_expansion_coefficients[i] = 0;
               out.thermal_conductivities[i] = 0.0;
+              out.entropy_derivative_pressure[i] = 0.0;
+              out.entropy_derivative_temperature[i] = 0.0;
             }
         }
 
