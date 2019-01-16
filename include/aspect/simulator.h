@@ -410,6 +410,20 @@ namespace aspect
       void compute_initial_pressure_field ();
 
       /**
+       * Fill the given @p constraints with constraints coming from the velocity boundary
+       * conditions that do not change over time. This function is used by
+       * setup_dofs();
+       */
+      void compute_initial_velocity_boundary_constraints (ConstraintMatrix &constraints);
+
+      /**
+       * Fill the given @p constraints with constraints coming from the velocity boundary
+       * conditions that do can change over time. This function is used by
+       * compute_current_constraints().
+       */
+      void compute_current_velocity_boundary_constraints (ConstraintMatrix &constraints);
+
+      /**
        * Given the 'constraints' member that contains all constraints that are
        * independent of the time (e.g., hanging node constraints, tangential
        * flow constraints, etc), copy it over to 'current_constraints' and add

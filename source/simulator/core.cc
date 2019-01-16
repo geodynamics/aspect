@@ -687,75 +687,7 @@ namespace aspect
     new_current_constraints.clear ();
     new_current_constraints.reinit (introspection.index_sets.system_relevant_set);
     new_current_constraints.merge (constraints);
-    {
-      // set the current time and do the interpolation
-      // for the prescribed velocity fields
-      boundary_velocity_manager.update();
-      for (typename std::map<types::boundary_id,std::pair<std::string, std::vector<std::string> > >::const_iterator
-           p = boundary_velocity_manager.get_active_boundary_velocity_names().begin();
-           p != boundary_velocity_manager.get_active_boundary_velocity_names().end(); ++p)
-        {
-          VectorFunctionFromVelocityFunctionObject<dim> vel
-          (introspection.n_components,
-           [&] (const Point<dim> &x) -> Tensor<1,dim>
-          {
-            return boundary_velocity_manager.boundary_velocity(p->first, x);
-          });
-
-          // here we create a mask for interpolate_boundary_values out of the 'selector'
-          std::vector<bool> mask(introspection.component_masks.velocities.size(), false);
-          const std::string &comp = p->second.first;
-
-          if (comp.length()>0)
-            {
-              for (std::string::const_iterator direction=comp.begin(); direction!=comp.end(); ++direction)
-                {
-                  switch (*direction)
-                    {
-                      case 'x':
-                        mask[introspection.component_indices.velocities[0]] = true;
-                        break;
-                      case 'y':
-                        mask[introspection.component_indices.velocities[1]] = true;
-                        break;
-                      case 'z':
-                        // we must be in 3d, or 'z' should never have gotten through
-                        Assert (dim==3, ExcInternalError());
-                        if (dim==3)
-                          mask[introspection.component_indices.velocities[2]] = true;
-                        break;
-                      default:
-                        Assert (false, ExcInternalError());
-                    }
-                }
-            }
-          else
-            {
-              // no mask given -- take all velocities
-              for (unsigned int i=0; i<introspection.component_masks.velocities.size(); ++i)
-                mask[i]=introspection.component_masks.velocities[i];
-            }
-
-          if (!assemble_newton_stokes_system || (assemble_newton_stokes_system && nonlinear_iteration == 0))
-            {
-              VectorTools::interpolate_boundary_values (*mapping,
-                                                        dof_handler,
-                                                        p->first,
-                                                        vel,
-                                                        new_current_constraints,
-                                                        mask);
-            }
-          else
-            {
-              VectorTools::interpolate_boundary_values (*mapping,
-                                                        dof_handler,
-                                                        p->first,
-                                                        ZeroFunction<dim>(introspection.n_components),
-                                                        new_current_constraints,
-                                                        mask);
-            }
-        }
-    }
+    compute_current_velocity_boundary_constraints(new_current_constraints);
 
     // If there is a fixed boundary temperature or heat flux,
     // update the temperature boundary condition.
@@ -1176,6 +1108,116 @@ namespace aspect
   }
 
 
+  template <int dim>
+  void Simulator<dim>::compute_initial_velocity_boundary_constraints (ConstraintMatrix &constraints)
+  {
+
+    // This needs to happen after the periodic constraints are added:
+    setup_nullspace_constraints(constraints);
+
+    // then compute constraints for the velocity. the constraints we compute
+    // here are the ones that are the same for all following time steps. in
+    // addition, we may be computing constraints from boundary values for the
+    // velocity that are different between time steps. these are then put
+    // into current_constraints in start_timestep().
+    signals.pre_compute_no_normal_flux_constraints(triangulation);
+    {
+      // do the interpolation for zero velocity
+      for (std::set<types::boundary_id>::const_iterator
+           p = boundary_velocity_manager.get_zero_boundary_velocity_indicators().begin();
+           p != boundary_velocity_manager.get_zero_boundary_velocity_indicators().end(); ++p)
+        VectorTools::interpolate_boundary_values (*mapping,
+                                                  dof_handler,
+                                                  *p,
+                                                  ZeroFunction<dim>(introspection.n_components),
+                                                  constraints,
+                                                  introspection.component_masks.velocities);
+
+
+      // do the same for no-normal-flux boundaries
+      VectorTools::compute_no_normal_flux_constraints (dof_handler,
+                                                       /* first_vector_component= */
+                                                       introspection.component_indices.velocities[0],
+                                                       boundary_velocity_manager.get_tangential_boundary_velocity_indicators(),
+                                                       constraints,
+                                                       *mapping);
+    }
+
+
+  }
+
+  template <int dim>
+  void Simulator<dim>::compute_current_velocity_boundary_constraints (ConstraintMatrix &constraints)
+  {
+    // set the current time and do the interpolation
+    // for the prescribed velocity fields
+    boundary_velocity_manager.update();
+    for (typename std::map<types::boundary_id,std::pair<std::string, std::vector<std::string> > >::const_iterator
+         p = boundary_velocity_manager.get_active_boundary_velocity_names().begin();
+         p != boundary_velocity_manager.get_active_boundary_velocity_names().end(); ++p)
+      {
+        VectorFunctionFromVelocityFunctionObject<dim> vel
+        (introspection.n_components,
+         [&] (const Point<dim> &x) -> Tensor<1,dim>
+        {
+          return boundary_velocity_manager.boundary_velocity(p->first, x);
+        });
+
+        // here we create a mask for interpolate_boundary_values out of the 'selector'
+        std::vector<bool> mask(introspection.component_masks.velocities.size(), false);
+        const std::string &comp = p->second.first;
+
+        if (comp.length()>0)
+          {
+            for (std::string::const_iterator direction=comp.begin(); direction!=comp.end(); ++direction)
+              {
+                switch (*direction)
+                  {
+                    case 'x':
+                      mask[introspection.component_indices.velocities[0]] = true;
+                      break;
+                    case 'y':
+                      mask[introspection.component_indices.velocities[1]] = true;
+                      break;
+                    case 'z':
+                      // we must be in 3d, or 'z' should never have gotten through
+                      Assert (dim==3, ExcInternalError());
+                      if (dim==3)
+                        mask[introspection.component_indices.velocities[2]] = true;
+                      break;
+                    default:
+                      Assert (false, ExcInternalError());
+                  }
+              }
+          }
+        else
+          {
+            // no mask given -- take all velocities
+            for (unsigned int i=0; i<introspection.component_masks.velocities.size(); ++i)
+              mask[i]=introspection.component_masks.velocities[i];
+          }
+
+        if (!assemble_newton_stokes_system || (assemble_newton_stokes_system && nonlinear_iteration == 0))
+          {
+            VectorTools::interpolate_boundary_values (*mapping,
+                                                      dof_handler,
+                                                      p->first,
+                                                      vel,
+                                                      constraints,
+                                                      mask);
+          }
+        else
+          {
+            VectorTools::interpolate_boundary_values (*mapping,
+                                                      dof_handler,
+                                                      p->first,
+                                                      ZeroFunction<dim>(introspection.n_components),
+                                                      constraints,
+                                                      mask);
+          }
+      }
+  }
+
 
   template <int dim>
   void Simulator<dim>::setup_dofs ()
@@ -1266,36 +1308,8 @@ namespace aspect
 
     }
 
-    // This needs to happen after the periodic constraints are added:
-    setup_nullspace_constraints(constraints);
 
-    // then compute constraints for the velocity. the constraints we compute
-    // here are the ones that are the same for all following time steps. in
-    // addition, we may be computing constraints from boundary values for the
-    // velocity that are different between time steps. these are then put
-    // into current_constraints in start_timestep().
-    signals.pre_compute_no_normal_flux_constraints(triangulation);
-    {
-      // do the interpolation for zero velocity
-      for (std::set<types::boundary_id>::const_iterator
-           p = boundary_velocity_manager.get_zero_boundary_velocity_indicators().begin();
-           p != boundary_velocity_manager.get_zero_boundary_velocity_indicators().end(); ++p)
-        VectorTools::interpolate_boundary_values (*mapping,
-                                                  dof_handler,
-                                                  *p,
-                                                  ZeroFunction<dim>(introspection.n_components),
-                                                  constraints,
-                                                  introspection.component_masks.velocities);
-
-
-      // do the same for no-normal-flux boundaries
-      VectorTools::compute_no_normal_flux_constraints (dof_handler,
-                                                       /* first_vector_component= */
-                                                       introspection.component_indices.velocities[0],
-                                                       boundary_velocity_manager.get_tangential_boundary_velocity_indicators(),
-                                                       constraints,
-                                                       *mapping);
-    }
+    compute_initial_velocity_boundary_constraints(constraints);
     constraints.close();
     signals.post_compute_no_normal_flux_constraints(triangulation);
 
