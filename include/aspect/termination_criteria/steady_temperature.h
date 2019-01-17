@@ -29,10 +29,21 @@ namespace aspect
 {
   namespace TerminationCriteria
   {
+    namespace internal
+    {
+      /**
+       * A function that trims the handed over list and removes all entries from the front that are
+       * further back in time measured from the last entry than given by the first argument.
+       * Additionally it makes sure to always keep two entries in the list, if the list had
+       * two or more entries. Otherwise the function does not change the list.
+       */
+      void trim_time_temperature_list (const double necessary_time_in_steady_state,
+                                       std::list<std::pair<double, double> > &time_temperature_list);
+    }
 
     /**
-     * A class that implements a termination criterion based on steady state
-     * of the root mean square of the velocity field.
+     * A class that implements a termination criterion based on the steady state
+     * of the average temperature.
      *
      * @ingroup TerminationCriteria
      */
@@ -66,7 +77,7 @@ namespace aspect
 
       private:
         double                                  necessary_time_in_steady_state;
-        double                                  relative_deviation;
+        double                                  allowed_relative_deviation;
 
         /**
          * A list of pairs (time, temperature) that we have computed at

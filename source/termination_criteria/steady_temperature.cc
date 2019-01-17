@@ -27,12 +27,28 @@ namespace aspect
 {
   namespace TerminationCriteria
   {
+    namespace internal
+    {
+      void trim_time_temperature_list (const double necessary_time_in_steady_state,
+                                       std::list<std::pair<double, double> > &time_temperature_list)
+      {
+        // Remove old times until we're at the correct time period
+        // but ensure at least two entries remain in the list (one old, one current timestep)
+        auto it = time_temperature_list.begin();
+        while (time_temperature_list.back().first - (*it).first > necessary_time_in_steady_state &&
+               std::distance(it,time_temperature_list.end()) > 2)
+          ++it;
+
+        time_temperature_list.erase(time_temperature_list.begin(), it);
+      }
+    }
+
     template <int dim>
     bool
     SteadyTemperature<dim>::execute(void)
     {
       const QGauss<dim> quadrature_formula (this->get_fe()
-                                            .base_element(this->introspection().base_elements.velocities).degree+1);
+                                            .base_element(this->introspection().base_elements.temperature).degree+1);
       const unsigned int n_q_points = quadrature_formula.size();
 
       FEValues<dim> fe_values (this->get_mapping(),
@@ -64,34 +80,27 @@ namespace aspect
         = Utilities::MPI::sum (local_temperature_integral, this->get_mpi_communicator());
 
       // Calculate the average global temperature
-      const double average_T = global_temperature_integral / std::sqrt(this->get_volume());
+      const double average_temperature = global_temperature_integral / this->get_volume();
 
       // Keep a list of times and temperatures at those times
-      time_temperature.push_back(std::make_pair(this->get_time(), average_T));
+      time_temperature.push_back(std::make_pair(this->get_time(), average_temperature));
 
       // If the length of the simulation time covered in the list is shorter than the
       // specified parameter, we must continue the simulation
-
-      if ((time_temperature.size() <= 1)
+      if ((time_temperature.size() <= 2)
           ||
           (time_temperature.back().first - time_temperature.front().first < necessary_time_in_steady_state))
         return false;
 
-      // Remove old times until we're at the correct time period
-      // but ensure at least two entries remain in the list (one old, one current timestep)
-      std::list<std::pair<double, double> >::iterator it = time_temperature.begin();
-      while (time_temperature.back().first - (*it).first > necessary_time_in_steady_state &&
-             std::distance(it,time_temperature.end()) > 2)
-        ++it;
-
-      time_temperature.erase(time_temperature.begin(), it);
+      // Remove old entries outside of current time window
+      internal::trim_time_temperature_list(necessary_time_in_steady_state,time_temperature);
 
       // Scan through the list and calculate the min, mean and max temperature
       // We assume a linear change of temperatures between times
       double T_min, T_max, T_prev, time_prev, T_sum=0, T_mean, deviation_max;
       T_min = T_max = T_prev = time_temperature.front().second;
       time_prev = time_temperature.front().first;
-      for (it=time_temperature.begin(); it!=time_temperature.end(); ++it)
+      for (auto it=time_temperature.begin(); it!=time_temperature.end(); ++it)
         {
           T_min = std::min(T_min, (*it).second);
           T_max = std::max(T_max, (*it).second);
@@ -111,7 +120,7 @@ namespace aspect
                              "'steady state temperature' plugin can not compute a "
                              "relative deviation of temperature in this case."));
 
-      if (deviation_max/T_mean > relative_deviation)
+      if (deviation_max/T_mean > allowed_relative_deviation)
         return false;
 
       return true;
@@ -154,14 +163,14 @@ namespace aspect
       {
         prm.enter_subsection("Steady state temperature");
         {
-          relative_deviation = prm.get_double ("Maximum relative deviation");
+          allowed_relative_deviation = prm.get_double ("Maximum relative deviation");
           necessary_time_in_steady_state = prm.get_double ("Time in steady state");
           necessary_time_in_steady_state *= this->convert_output_to_years() ? year_in_seconds : 1.0;
         }
         prm.leave_subsection ();
       }
       prm.leave_subsection ();
-      AssertThrow (relative_deviation >= 0,
+      AssertThrow (allowed_relative_deviation >= 0,
                    ExcMessage("Relative deviation must be greater than or equal to 0."));
       AssertThrow (necessary_time_in_steady_state > 0,
                    ExcMessage("Steady state minimum time period must be greater than 0."));
