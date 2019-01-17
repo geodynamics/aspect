@@ -3174,6 +3174,7 @@ aspect> ls -l output/
 total 932
 -rw-rw-r-- 1 bangerth bangerth  11134 Dec 11 10:08 depth_average.gnuplot
 -rw-rw-r-- 1 bangerth bangerth  11294 Dec 11 10:08 log.txt
+-rw-rw-r-- 1 bangerth bangerth     42 Dec 11 10:07 original.prm
 -rw-rw-r-- 1 bangerth bangerth 326074 Dec 11 10:07 parameters.prm
 -rw-rw-r-- 1 bangerth bangerth 577138 Dec 11 10:07 parameters.tex
 drwxr-xr-x 2 bangerth bangerth   4096 Dec 11 10:08 solution
@@ -3183,16 +3184,31 @@ drwxr-xr-x 2 bangerth bangerth   4096 Dec 11 10:08 solution
 \end{lstlisting}
 The purpose of these files is as follows:
 \begin{itemize}
-\item \textit{A listing of all run-time parameters:} The
-  \texttt{output/parameters.prm} file contains a complete listing of all
+
+\item \textit{Screen output:} The file \texttt{output/log.txt} contains a copy
+  of the output that is printed to the terminal when you run \aspect{}.
+
+\item \textit{A listing of all run-time parameters:} The file
+  \texttt{output/original.prm} is a copy of the parameter file that was used
+  in this computation. It is often useful to save this file together with
+  simulation data to allow for the easy reproduction of computations later on.
+
+  The \texttt{output/parameters.prm} file contains a complete listing of all
   run-time parameters. In particular, this includes the ones that have been
   specified in the input parameter file passed on the command line, but it
-  also includes those parameters for which defaults have been used. It is
-  often useful to save this file together with simulation data to allow for
-  the easy reproduction of computations later on.
+  also includes those parameters for which defaults have been used. This file
+  can also be used to explore all available parameters and possible options as
+  it contains the documentation of all parameters.
+
+  Finally, there is \texttt{output/parameters.tex}, that lists the parameters
+  like \texttt{output/parameters.prm} in \LaTeX{} format, and
+  \texttt{output/parameters.json} in JSON format.
   
-  There is a second file, \texttt{output/parameters.prm}, that lists these
-  parameters in \LaTeX{} format.
+  While \texttt{output/parameters.prm} contains all parameters (with their
+  default values if they were not specified), all formatting and comments are
+  lost. As \texttt{output/original.prm} is identical to the prm you started
+  \aspect{} with, it preserves comments and formatting while not outputting
+  the default values (or documentation).
 
 \item \textit{Graphical output files:} One of the postprocessors chosen
   in the parameter file used for this computation is the one that generates
