@@ -602,6 +602,20 @@ run_simulator(const std::string &input_as_string,
   else
     {
       aspect::Simulator<dim> simulator(MPI_COMM_WORLD, prm);
+      if (i_am_proc_0)
+        {
+          // write create output/original.prm containing exactly what we got
+          // started with:
+          std::string output_directory = prm.get ("Output directory");
+          if (output_directory.size() == 0)
+            output_directory = "./";
+          else if (output_directory[output_directory.size()-1] != '/')
+            output_directory += "/";
+
+          std::ofstream file(output_directory + "original.prm");
+          file << input_as_string;
+        }
+
       simulator.run();
     }
 }
