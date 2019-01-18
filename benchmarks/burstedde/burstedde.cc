@@ -73,7 +73,7 @@ namespace aspect
 
       double
       burstedde_pressure (const Point<3> &pos,
-                          const double eta)
+                          const double /*eta*/)
       {
         const double x = pos[0];
         const double y = pos[1];
