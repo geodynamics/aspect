@@ -111,6 +111,9 @@ namespace aspect
           out.thermal_conductivities[i] = k_value;
           out.thermal_expansion_coefficients[i] = thermal_alpha;
           out.compressibilities[i] = 0.0;
+
+          out.entropy_derivative_pressure[i] = 0.0;
+          out.entropy_derivative_temperature[i] = 0.0;
         }
     }
 
