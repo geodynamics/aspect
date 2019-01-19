@@ -226,30 +226,30 @@ namespace aspect
             // entry for the first layer), so we have to use i+1 as index
             if (composition.size()==0)      // only one field
               {
-                for (unsigned int i=0; i<number_of_phase_transitions; ++i)
+                for (unsigned int phase=0; phase<number_of_phase_transitions; ++phase)
                   {
                     const double phaseFunction = phase_function (position,
                                                                  temperature,
                                                                  pressure,
-                                                                 i);
+                                                                 phase);
 
-                    phase_dependence += phaseFunction * density_jumps[i];
-                    viscosity_phase_dependence *= 1. + phaseFunction * (phase_prefactors[i+1]-1.);
+                    phase_dependence += phaseFunction * density_jumps[phase];
+                    viscosity_phase_dependence *= 1. + phaseFunction * (phase_prefactors[phase+1]-1.);
                   }
               }
             else if (composition.size()>0)
               {
-                for (unsigned int i=0; i<number_of_phase_transitions; ++i)
+                for (unsigned int phase=0; phase<number_of_phase_transitions; ++phase)
                   {
                     const double phaseFunction = phase_function (position,
                                                                  temperature,
                                                                  pressure,
-                                                                 i);
-                    if (transition_phases[i] == 0)     // 1st compositional field
-                      phase_dependence += phaseFunction * density_jumps[i] * (1.0 - composition[0]);
-                    else if (transition_phases[i] == 1) // 2nd compositional field
-                      phase_dependence += phaseFunction * density_jumps[i] * composition[0];
-                    viscosity_phase_dependence *= 1. + phaseFunction * (phase_prefactors[i]-1.);
+                                                                 phase);
+                    if (transition_phases[phase] == 0)     // 1st compositional field
+                      phase_dependence += phaseFunction * density_jumps[phase] * (1.0 - composition[0]);
+                    else if (transition_phases[phase] == 1) // 2nd compositional field
+                      phase_dependence += phaseFunction * density_jumps[phase] * composition[0];
+                    viscosity_phase_dependence *= 1. + phaseFunction * (phase_prefactors[phase]-1.);
                   }
               }
             // fourth, pressure dependence of density
