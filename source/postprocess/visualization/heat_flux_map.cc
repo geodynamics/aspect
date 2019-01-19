@@ -22,6 +22,7 @@
 #include <aspect/postprocess/visualization/heat_flux_map.h>
 #include <aspect/postprocess/heat_flux_map.h>
 #include <aspect/geometry_model/interface.h>
+#include <aspect/boundary_velocity/interface.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
@@ -32,40 +33,125 @@ namespace aspect
   {
     namespace VisualizationPostprocessors
     {
+      template <int dim>
+      HeatFluxMap<dim>::
+      HeatFluxMap ()
+        :
+        DataPostprocessorScalar<dim> ("heat_flux_map",
+                                      update_quadrature_points)
+      {}
+
+
 
       template <int dim>
-      std::pair<std::string, Vector<float> *>
-      HeatFluxMap<dim>::execute () const
+      void
+      HeatFluxMap<dim>::update ()
       {
-        std::pair<std::string, Vector<float> *>
-        return_value ("heat_flux_map",
-                      new Vector<float>(this->get_triangulation().n_active_cells()));
+        if (output_point_wise_heat_flux)
+          heat_flux_density_solution = Postprocess::internal::compute_dirichlet_boundary_heat_flux_solution_vector(*this);
+        else
+          heat_flux_and_area = internal::compute_heat_flux_through_boundary_faces (*this);
+      }
 
-        std::vector<std::vector<std::pair<double, double> > > heat_flux_and_area =
-          internal::compute_heat_flux_through_boundary_faces (*this);
 
-        // loop over all of the surface cells and evaluate the heat flux
-        typename DoFHandler<dim>::active_cell_iterator
-        cell = this->get_dof_handler().begin_active(),
-        endc = this->get_dof_handler().end();
 
-        for (; cell!=endc; ++cell)
-          if (cell->is_locally_owned())
+      template <int dim>
+      void
+      HeatFluxMap<dim>::
+      evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
+                            std::vector<Vector<double> > &computed_quantities) const
+      {
+        auto cell = input_data.template get_cell<DoFHandler<dim> >();
+
+        if (output_point_wise_heat_flux)
+          {
+            std::vector<Point<dim>> quadrature_points(input_data.evaluation_points.size());
+            for (unsigned int i=0; i<input_data.evaluation_points.size(); ++i)
+              quadrature_points[i] = this->get_mapping().transform_real_to_unit_cell(cell,input_data.evaluation_points[i]);
+
+            const Quadrature<dim> quadrature_formula(quadrature_points);
+
+            FEValues<dim> fe_volume_values (this->get_mapping(),
+                                            this->get_fe(),
+                                            quadrature_formula,
+                                            update_values);
+
+            fe_volume_values.reinit(cell);
+
+            std::vector<double> heat_flux_values(quadrature_formula.size());
+            fe_volume_values[this->introspection().extractors.temperature].get_function_values(heat_flux_density_solution, heat_flux_values);
+
+            for (unsigned int q=0; q<quadrature_formula.size(); ++q)
+              computed_quantities[q](0) = heat_flux_values[q];
+          }
+        else
+          {
+            double heat_flux = 0.0;
+
+            for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+              if (cell->at_boundary(f) &&
+                  (this->get_geometry_model().translate_id_to_symbol_name (cell->face(f)->boundary_id()) == "top" ||
+                   this->get_geometry_model().translate_id_to_symbol_name (cell->face(f)->boundary_id()) == "bottom"))
+                {
+                  // add heatflow for this face
+                  heat_flux += heat_flux_and_area[cell->active_cell_index()][f].first /
+                               heat_flux_and_area[cell->active_cell_index()][f].second;
+                }
+
+            for (unsigned int q=0; q<computed_quantities.size(); ++q)
+              computed_quantities[q](0) = heat_flux;
+          }
+      }
+
+
+
+      template <int dim>
+      void
+      HeatFluxMap<dim>::declare_parameters (ParameterHandler &prm)
+      {
+        prm.enter_subsection("Postprocess");
+        {
+          prm.enter_subsection("Visualization");
+          {
+            prm.enter_subsection("Heat flux map");
             {
-              (*return_value.second)(cell->active_cell_index()) = 0;
-
-              for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
-                if (cell->at_boundary(f) &&
-                    (this->get_geometry_model().translate_id_to_symbol_name (cell->face(f)->boundary_id()) == "top" ||
-                     this->get_geometry_model().translate_id_to_symbol_name (cell->face(f)->boundary_id()) == "bottom"))
-                  {
-                    // add heatflow for this face
-                    (*return_value.second)(cell->active_cell_index()) += heat_flux_and_area[cell->active_cell_index()][f].first /
-                                                                         heat_flux_and_area[cell->active_cell_index()][f].second;
-                  }
+              prm.declare_entry("Output point wise heat flux",
+                                "false",
+                                Patterns::Bool(),
+                                "A boolean flag that controls whether to output the "
+                                "heat flux map as a point wise value, or as a cell-wise "
+                                "averaged value. The point wise output is more "
+                                "accurate, but it currently omits prescribed heat "
+                                "flux values at boundaries and advective heat flux "
+                                "that is caused by velocities non-tangential to boundaries. "
+                                "If you do not use these two features it is recommended "
+                                "to switch this setting on to benefit from the increased "
+                                "output resolution.");
             }
+            prm.leave_subsection();
+          }
+          prm.leave_subsection();
+        }
+        prm.leave_subsection();
+      }
 
-        return return_value;
+      template <int dim>
+      void
+      HeatFluxMap<dim>::parse_parameters (ParameterHandler &prm)
+      {
+        prm.enter_subsection("Postprocess");
+        {
+          prm.enter_subsection("Visualization");
+          {
+            prm.enter_subsection("Heat flux map");
+            {
+              output_point_wise_heat_flux = prm.get_bool("Output point wise heat flux");
+            }
+            prm.leave_subsection();
+          }
+          prm.leave_subsection();
+        }
+        prm.leave_subsection();
       }
     }
   }
@@ -95,7 +181,12 @@ namespace aspect
                                                   "The consistent Galerkin FEM for computing "
                                                   "derived boundary quantities in thermal and or "
                                                   "fluids problems. International Journal for "
-                                                  "Numerical Methods in Fluids, 7(4), 371-394.''")
+                                                  "Numerical Methods in Fluids, 7(4), 371-394.'' "
+                                                  "If only conductive heat flux through Dirichlet "
+                                                  "boundaries is of interest, the "
+                                                  "postprocessor can produce output of higher resolution "
+                                                  "by evaluating the CBF solution vector point-wise "
+                                                  "instead of computing cell-wise averaged values.")
     }
   }
 }

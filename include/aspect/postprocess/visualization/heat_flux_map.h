@@ -33,22 +33,49 @@ namespace aspect
     namespace VisualizationPostprocessors
     {
       /**
-       * A postprocessor that computes the pointwise heat flux density through the boundaries.
+       * A postprocessor that computes the heat flux density through the top and bottom boundaries.
        *
        * @ingroup Postprocessing
        */
       template <int dim>
       class HeatFluxMap
-        : public CellDataVectorCreator<dim>,
-          public SimulatorAccess<dim>
+        : public DataPostprocessorScalar<dim>,
+          public SimulatorAccess<dim>,
+          public Interface<dim>
       {
         public:
+          HeatFluxMap();
+
           /**
-           * @copydoc CellDataVectorCreator<dim>::execute()
+           * @copydoc Interface<dim>::update()
+           */
+          void update();
+
+          virtual
+          void
+          evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
+                                std::vector<Vector<double> > &computed_quantities) const;
+
+          /**
+           * @copydoc Interface<dim>::declare_parameters()
+           */
+          static
+          void
+          declare_parameters (ParameterHandler &prm);
+
+          /**
+           * @copydoc Interface<dim>::parse_parameters()
            */
           virtual
-          std::pair<std::string, Vector<float> *>
-          execute () const;
+          void
+          parse_parameters (ParameterHandler &prm);
+
+        private:
+          bool output_point_wise_heat_flux;
+
+          LinearAlgebra::BlockVector heat_flux_density_solution;
+
+          std::vector<std::vector<std::pair<double, double> > > heat_flux_and_area;
       };
     }
   }
