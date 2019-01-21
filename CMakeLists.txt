@@ -24,8 +24,8 @@ MESSAGE(STATUS "====================================================")
 # Set the name of the project and target:
 SET(TARGET "aspect")
 
-FILE(GLOB_RECURSE TARGET_SRC  "source/*.cc" "unit_tests/*.cc" "include/*.h" "contrib/catch/catch.hpp" "contrib/WorldBuilder/source/*.cc")
-INCLUDE_DIRECTORIES(include ${CMAKE_BINARY_DIR}/include contrib/catch contrib/WorldBuilder/include/)
+FILE(GLOB_RECURSE TARGET_SRC  "source/*.cc" "unit_tests/*.cc" "include/*.h" "contrib/catch/catch.hpp")
+INCLUDE_DIRECTORIES(include ${CMAKE_BINARY_DIR}/include contrib/catch)
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8.8)
 
@@ -338,18 +338,24 @@ IF (ASPECT_PRECOMPILE_HEADERS)
 ENDIF()
 
 # Check whether we can find the WorldBuilder and enable it.
+SET(ASPECT_WITH_WORLD_BUILDER ON CACHE BOOL "If ON the World Builder is compiled togheter with ASPECT.")
 IF (NOT EXISTS ${CMAKE_SOURCE_DIR}/contrib/WorldBuilder/VERSION)
   MESSAGE("-- World Builder not found.")
   SET(ASPECT_WITH_WORLD_BUILDER OFF CACHE BOOL "" FORCE)
-ELSE()
+ENDIF()
+IF (ASPECT_WITH_WORLD_BUILDER)
   SET(WORLD_BUILDER_SOURCE_DIR "${CMAKE_SOURCE_DIR}/contrib/WorldBuilder")
   INCLUDE("${WORLD_BUILDER_SOURCE_DIR}/cmake/version.cmake")
   MESSAGE("-- World Builder version ${WORLD_BUILDER_VERSION} found.")
-  SET(ASPECT_WITH_WORLD_BUILDER ON CACHE BOOL "If ON the World Builder is compiled togheter with ASPECT.")
+
+  # add source and include dirs:
+  FILE(GLOB_RECURSE _files "contrib/WorldBuilder/source/*.cc")
+  LIST(APPEND TARGET_SRC ${_files})
+  INCLUDE_DIRECTORIES("${WORLD_BUILDER_SOURCE_DIR}/include/")
 
   # generate config.cc and include it:
-  CONFIGURE_FILE("${WORLD_BUILDER_SOURCE_DIR}/source/config.cc.in" "${WORLD_BUILDER_SOURCE_DIR}/source/config.cc" @ONLY)
-  LIST(INSERT TARGET_SRC 0 "${WORLD_BUILDER_SOURCE_DIR}/source/config.cc")
+  CONFIGURE_FILE("${WORLD_BUILDER_SOURCE_DIR}/source/config.cc.in" "${CMAKE_BINARY_DIR}/world_builder_config.cc" @ONLY)
+  LIST(INSERT TARGET_SRC 0 "${CMAKE_BINARY_DIR}/world_builder_config.cc")
 
   # set ASPECT_USE_WORLD_BUILDER define for all source files:
   FOREACH(_source_file ${TARGET_SRC})
