@@ -682,9 +682,12 @@ namespace aspect
     void
     World<dim>::advance_timestep()
     {
+      unsigned int a=0;
       do
         {
+          std::cout << "Integration step " << a << std::endl;
           advect_particles();
+          a++;
         }
       // Keep calling the integrator until it indicates it is finished
       while (integrator->new_integration_step());

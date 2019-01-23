@@ -1526,7 +1526,7 @@ namespace aspect
         Postprocess::Particles<dim> &particle_postprocessor =
                    const_cast<Postprocess::Particles<dim> &>(postprocess_manager.template get_matching_postprocessor<Postprocess::Particles<dim> >());
         Particle::ParticleHandler<dim> &particle_handler = const_cast<Particle::ParticleHandler<dim> &> (particle_postprocessor.get_particle_world().get_particle_handler());
-        particle_handler.sort_particles_into_subdomains_and_cells();
+       // particle_handler.sort_particles_into_subdomains_and_cells();
       }
     }
 
