@@ -426,7 +426,7 @@ namespace aspect
     if (parameters.use_direct_stokes_solver)
       return;
 
-    TimerOutput::Scope timer (computing_timer, "   Build Stokes preconditioner");
+    TimerOutput::Scope timer (computing_timer, "Build Stokes preconditioner");
     pcout << "   Rebuilding Stokes preconditioner..." << std::flush;
 
     // first assemble the raw matrices necessary for the preconditioner
@@ -675,13 +675,13 @@ namespace aspect
   {
     TimerOutput::Scope timer (computing_timer,
                               (!assemble_newton_stokes_system ?
-                               "   Assemble Stokes system" :
+                               "Assemble Stokes system" :
                                (assemble_newton_stokes_matrix ?
                                 (newton_handler->parameters.newton_derivative_scaling_factor == 0 ?
-                                 "   Assemble Stokes system Picard" :
-                                 "   Assemble Stokes system Newton")
+                                 "Assemble Stokes system Picard" :
+                                 "Assemble Stokes system Newton")
                                 :
-                                "   Assemble Stokes system rhs")));
+                                "Assemble Stokes system rhs")));
 
     if (rebuild_stokes_matrix == true)
       system_matrix = 0;
@@ -796,8 +796,8 @@ namespace aspect
                                                  LinearAlgebra::PreconditionILU &preconditioner)
   {
     TimerOutput::Scope timer (computing_timer, (advection_field.is_temperature() ?
-                                                "   Build temperature preconditioner" :
-                                                "   Build composition preconditioner"));
+                                                "Build temperature preconditioner" :
+                                                "Build composition preconditioner"));
 
     const unsigned int block_idx = advection_field.block_index(introspection);
     preconditioner.initialize (system_matrix.block(block_idx, block_idx));
@@ -1081,8 +1081,8 @@ namespace aspect
   void Simulator<dim>::assemble_advection_system (const AdvectionField &advection_field)
   {
     TimerOutput::Scope timer (computing_timer, (advection_field.is_temperature() ?
-                                                "   Assemble temperature system" :
-                                                "   Assemble composition system"));
+                                                "Assemble temperature system" :
+                                                "Assemble composition system"));
 
     const unsigned int block_idx = advection_field.block_index(introspection);
 
