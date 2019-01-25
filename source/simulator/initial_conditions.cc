@@ -303,8 +303,12 @@ namespace aspect
     // overwrite the relevant composition block only
     const unsigned int blockidx = advection_field.block_index(introspection);
     solution.block(blockidx) = particle_solution.block(blockidx);
-    old_solution.block(blockidx) = particle_solution.block(blockidx);
-    old_old_solution.block(blockidx) = particle_solution.block(blockidx);
+
+    if (timestep_number == 0)
+      {
+        old_solution.block(blockidx) = particle_solution.block(blockidx);
+        old_old_solution.block(blockidx) = particle_solution.block(blockidx);
+      }
   }
 
 
