@@ -794,6 +794,9 @@ namespace aspect
                          "pressure, respectively (unless the `Use locally conservative "
                          "discretization' parameter is set, which modifies the pressure "
                          "element). "
+                         "\n\n"
+                         "Be careful if you choose 1 as the degree. The resulting element "
+                         "is not stable and it may lead to artifacts in the solution. "
                          "Units: None.");
       prm.declare_entry ("Temperature polynomial degree", "2",
                          Patterns::Integer (1),
@@ -810,6 +813,10 @@ namespace aspect
                          "either the element $Q_2$ or $DGQ_2$ for the compositional "
                          "field(s), depending on whether we use continuous or "
                          "discontinuous field(s). "
+                         "\n\n"
+                         "For continuous elements, the value needs to be 1 or larger "
+                         "as $Q_1$ is the lowest order element, while $DGQ_0$ is a "
+                         "valid choice. "
                          "Units: None.");
       prm.declare_entry ("Use locally conservative discretization", "false",
                          Patterns::Bool (),
