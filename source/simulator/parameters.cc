@@ -804,7 +804,7 @@ namespace aspect
                          "discontinuous field. "
                          "Units: None.");
       prm.declare_entry ("Composition polynomial degree", "2",
-                         Patterns::Integer (1),
+                         Patterns::Integer (0),
                          "The polynomial degree to use for the composition variable(s). "
                          "As an example, a value of 2 for this parameter will yield "
                          "either the element $Q_2$ or $DGQ_2$ for the compositional "
@@ -1432,6 +1432,11 @@ namespace aspect
         = prm.get_bool("Use discontinuous temperature discretization");
       use_discontinuous_composition_discretization
         = prm.get_bool("Use discontinuous composition discretization");
+
+      Assert(use_discontinuous_composition_discretization == true || composition_degree > 0,
+             ExcMessage("Using a composition polynomial degree of 0 (cell-wise constant composition) "
+                        "is only supported if a discontinuous composition discretization is selected."));
+
       prm.enter_subsection ("Stabilization parameters");
       {
         use_artificial_viscosity_smoothing  = prm.get_bool ("Use artificial viscosity smoothing");
