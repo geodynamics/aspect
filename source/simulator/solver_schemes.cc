@@ -949,36 +949,6 @@ namespace aspect
 
     if (parameters.run_postprocessors_on_nonlinear_iterations)
       postprocess ();
-    
-
-    /*double initial_stokes_residual = 0.0;
-
-    const unsigned int max_nonlinear_iterations =
-      (pre_refinement_step < parameters.initial_adaptive_refinement)
-      ?
-      std::min(parameters.max_nonlinear_iterations,
-               parameters.max_nonlinear_iterations_in_prerefinement)
-      :
-      parameters.max_nonlinear_iterations;
-    do
-      {
-        const double relative_nonlinear_stokes_residual =
-          assemble_and_solve_stokes(nonlinear_iteration == 0, &initial_stokes_residual);
-
-        pcout << "      Relative nonlinear residual (Stokes system) after nonlinear iteration " << nonlinear_iteration+1
-              << ": " << relative_nonlinear_stokes_residual
-              << std::endl
-              << std::endl;
-
-        if (parameters.run_postprocessors_on_nonlinear_iterations)
-          postprocess ();
-
-        if (relative_nonlinear_stokes_residual < parameters.nonlinear_tolerance)
-          break;
-
-        ++nonlinear_iteration;
-      }
-    while (nonlinear_iteration < max_nonlinear_iterations);*/
 
     return;
   }

@@ -1689,7 +1689,7 @@ namespace aspect
 
         case NonlinearSolver::no_Advection_no_Stokes:
         {
-          solve_first_timestep_only_single_stokes();
+          solve_no_advection_no_stokes();
           break;
         }
 
