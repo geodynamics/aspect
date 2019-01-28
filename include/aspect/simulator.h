@@ -560,9 +560,9 @@ namespace aspect
        * This function implements one scheme for the various
        * steps necessary to assemble and solve the nonlinear problem.
        *
-       * The `no Advection, no Stokes' scheme does not solve the
-       * advection and Stokes systems, but instead just set up the
-       * data structures from row materials.
+       * The `no Advection, no Stokes' scheme skips solving the temperature,
+       * composition and Stokes equations, which permits to go directly to
+       * postprocessing after setting up the initial condition.
        *
        * This function is implemented in
        * <code>source/simulator/solver_schemes.cc</code>.
