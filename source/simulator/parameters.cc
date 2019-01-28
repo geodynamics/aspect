@@ -182,7 +182,7 @@ namespace aspect
                                                "single Advection, iterated Stokes|no Advection, iterated Stokes|"
                                                "iterated Advection and Newton Stokes|single Advection, no Stokes|"
                                                "IMPES|iterated IMPES|iterated Stokes|Newton Stokes|Stokes only|Advection only|"
-                                               "first timestep only, single Stokes";
+                                               "first timestep only, single Stokes|no Advection, no Stokes";
 
     prm.declare_entry ("Nonlinear solver scheme", "single Advection, single Stokes",
                        Patterns::Selection (allowed_solver_schemes),
@@ -1162,6 +1162,8 @@ namespace aspect
         nonlinear_solver = NonlinearSolver::single_Advection_no_Stokes;
       else if (solver_scheme == "first timestep only, single Stokes")
         nonlinear_solver = NonlinearSolver::first_timestep_only_single_Stokes;
+      else if (solver_scheme == "no Advection, no Stokes")
+        nonlinear_solver = NonlinearSolver::no_Advection_no_Stokes;
       else
         AssertThrow (false, ExcNotImplemented());
     }

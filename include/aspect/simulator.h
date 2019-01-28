@@ -557,6 +557,19 @@ namespace aspect
       void solve_single_advection_no_stokes ();
 
       /**
+       * This function implements one scheme for the various
+       * steps necessary to assemble and solve the nonlinear problem.
+       *
+       * The `no Advection, no Stokes' scheme does not solve the
+       * advection and Stokes systems, but instead just set up the
+       * data structures from row materials.
+       *
+       * This function is implemented in
+       * <code>source/simulator/solver_schemes.cc</code>.
+       */
+      void solve_no_advection_no_stokes ();
+
+      /**
        * Initiate the assembly of the Stokes preconditioner matrix via
        * assemble_stokes_preconditoner(), then set up the data structures to
        * actually build a preconditioner from this matrix.

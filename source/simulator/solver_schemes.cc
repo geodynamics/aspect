@@ -906,6 +906,82 @@ namespace aspect
 
     return;
   }
+
+
+
+  template <int dim>
+  void Simulator<dim>::solve_no_advection_no_stokes ()
+  {
+    //assemble_and_solve_temperature();
+    //assemble_and_solve_composition();
+
+    // Assign Stokes solution
+    /*LinearAlgebra::BlockVector distributed_stokes_solution (introspection.index_sets.system_partitioning, mpi_communicator);
+
+    auto lambda = [&](const Point<dim> &p, Vector<double> &result)
+    {
+      prescribed_stokes_solution->stokes_solution(p, result);
+    };
+
+    VectorFunctionFromVectorFunctionObject<dim> func(
+      lambda,
+      0,
+      parameters.include_melt_transport ? 2*dim+3 : dim+1, // velocity and pressure
+      introspection.n_components);
+
+    VectorTools::interpolate (*mapping, dof_handler, func, distributed_stokes_solution);
+
+    // distribute hanging node and other constraints
+    current_constraints.distribute (distributed_stokes_solution);
+
+    solution.block(introspection.block_indices.velocities) =
+      distributed_stokes_solution.block(introspection.block_indices.velocities);
+    solution.block(introspection.block_indices.pressure) =
+      distributed_stokes_solution.block(introspection.block_indices.pressure);
+
+    if (parameters.include_melt_transport)
+      {
+        const unsigned int block_u_f = introspection.variable("fluid velocity").block_index;
+        const unsigned int block_p_f = introspection.variable("fluid pressure").block_index;
+        solution.block(block_u_f) = distributed_stokes_solution.block(block_u_f);
+        solution.block(block_p_f) = distributed_stokes_solution.block(block_p_f);
+      }*/
+
+    if (parameters.run_postprocessors_on_nonlinear_iterations)
+      postprocess ();
+    
+
+    /*double initial_stokes_residual = 0.0;
+
+    const unsigned int max_nonlinear_iterations =
+      (pre_refinement_step < parameters.initial_adaptive_refinement)
+      ?
+      std::min(parameters.max_nonlinear_iterations,
+               parameters.max_nonlinear_iterations_in_prerefinement)
+      :
+      parameters.max_nonlinear_iterations;
+    do
+      {
+        const double relative_nonlinear_stokes_residual =
+          assemble_and_solve_stokes(nonlinear_iteration == 0, &initial_stokes_residual);
+
+        pcout << "      Relative nonlinear residual (Stokes system) after nonlinear iteration " << nonlinear_iteration+1
+              << ": " << relative_nonlinear_stokes_residual
+              << std::endl
+              << std::endl;
+
+        if (parameters.run_postprocessors_on_nonlinear_iterations)
+          postprocess ();
+
+        if (relative_nonlinear_stokes_residual < parameters.nonlinear_tolerance)
+          break;
+
+        ++nonlinear_iteration;
+      }
+    while (nonlinear_iteration < max_nonlinear_iterations);*/
+
+    return;
+  }
 }
 
 // explicit instantiation of the functions we implement in this file
@@ -921,7 +997,8 @@ namespace aspect
   template void Simulator<dim>::solve_single_advection_iterated_stokes(); \
   template void Simulator<dim>::solve_iterated_advection_and_newton_stokes(); \
   template void Simulator<dim>::solve_single_advection_no_stokes(); \
-  template void Simulator<dim>::solve_first_timestep_only_single_stokes();
+  template void Simulator<dim>::solve_first_timestep_only_single_stokes(); \
+  template void Simulator<dim>::solve_no_advection_no_stokes();
 
   ASPECT_INSTANTIATE(INSTANTIATE)
 }
