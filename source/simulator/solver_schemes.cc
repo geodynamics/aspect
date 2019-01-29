@@ -912,8 +912,6 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::solve_no_advection_no_stokes ()
   {
-    // This section is now empty but I guess I need some assertThrows?
-    // NOT SURE IF THIS IS NEEDED:
     if (parameters.run_postprocessors_on_nonlinear_iterations)
       postprocess ();
 
