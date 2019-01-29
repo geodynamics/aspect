@@ -167,7 +167,7 @@ namespace aspect
       // density and the JxW are here together for simplicity in the equation (both variables
       // only appear together):
       std::vector<double> density_JxW (n_locally_owned_cells * n_quadrature_points_per_cell);
-      std::vector<double> relative_density_JxW (n_locally_owned_cells * n_quadrature_points_per_cell);
+      std::vector<double> density_difference_JxW (n_locally_owned_cells * n_quadrature_points_per_cell);
 
       // Declare the vector 'position_point' to store the position of quadrature points:
       std::vector<Point<dim> > position_point (n_locally_owned_cells * n_quadrature_points_per_cell);
@@ -191,7 +191,7 @@ namespace aspect
               for (unsigned int q = 0; q < n_quadrature_points_per_cell; ++q)
                 {
                   density_JxW[local_cell_number * n_quadrature_points_per_cell + q] = out.densities[q] * fe_values.JxW(q);
-                  relative_density_JxW[local_cell_number * n_quadrature_points_per_cell + q] = (out.densities[q]-reference_density) * fe_values.JxW(q);
+                  density_difference_JxW[local_cell_number * n_quadrature_points_per_cell + q] = (out.densities[q]-reference_density) * fe_values.JxW(q);
                   position_point[local_cell_number * n_quadrature_points_per_cell + q] = position_point_cell[q];
                 }
               ++local_cell_number;
@@ -273,26 +273,32 @@ namespace aspect
                     {
                       const double dist = (position_satellite - position_point[local_cell_number * n_quadrature_points_per_cell + q]).norm();
                       // For gravity acceleration:
-                      const double KK = G * density_JxW[local_cell_number * n_quadrature_points_per_cell + q] / pow(dist,3);
+                      const double KK = G * density_JxW[local_cell_number * n_quadrature_points_per_cell + q] / std::pow(dist,3);
                       local_g += KK * (position_satellite - position_point[local_cell_number * n_quadrature_points_per_cell + q]);
                       // For gravity anomalies:
-                      const double relative_KK = G * relative_density_JxW[local_cell_number * n_quadrature_points_per_cell + q] / pow(dist,3);
+                      const double relative_KK = G * density_difference_JxW[local_cell_number * n_quadrature_points_per_cell + q] / std::pow(dist,3);
                       local_g_anomaly += relative_KK * (position_satellite - position_point[local_cell_number * n_quadrature_points_per_cell + q]);
                       // For gravity potential:
                       local_g_potential -= G * density_JxW[local_cell_number * n_quadrature_points_per_cell + q] / dist;
                       // For gravity gradient:
-                      const double grad_KK = G * density_JxW[local_cell_number * n_quadrature_points_per_cell + q] / pow(dist,5);
-                      local_g_gradient[0][0] += grad_KK * (3.0 * pow((position_satellite[0] - position_point[local_cell_number * n_quadrature_points_per_cell + q][0]),2)
-                                                           - pow(dist,2));
-                      local_g_gradient[1][1] += grad_KK * (3.0 * pow((position_satellite[1] - position_point[local_cell_number * n_quadrature_points_per_cell + q][1]),2)
-                                                           - pow(dist,2));
-                      local_g_gradient[2][2] += grad_KK * (3.0 * pow((position_satellite[2] - position_point[local_cell_number * n_quadrature_points_per_cell + q][2]),2)
-                                                           - pow(dist,2));
-                      local_g_gradient[0][1] += grad_KK * (3.0 * (position_satellite[0] - position_point[local_cell_number * n_quadrature_points_per_cell + q][0])
+                      const double grad_KK = G * density_JxW[local_cell_number * n_quadrature_points_per_cell + q] / std::pow(dist,5);
+                      local_g_gradient[0][0] += grad_KK * (3.0 
+                                                           * std::pow((position_satellite[0] - position_point[local_cell_number * n_quadrature_points_per_cell + q][0]),2)
+                                                           - std::pow(dist,2));
+                      local_g_gradient[1][1] += grad_KK * (3.0 
+                                                           * std::pow((position_satellite[1] - position_point[local_cell_number * n_quadrature_points_per_cell + q][1]),2)
+                                                           - std::pow(dist,2));
+                      local_g_gradient[2][2] += grad_KK * (3.0 
+                                                           * std::pow((position_satellite[2] - position_point[local_cell_number * n_quadrature_points_per_cell + q][2]),2)
+                                                           - std::pow(dist,2));
+                      local_g_gradient[0][1] += grad_KK * (3.0 
+                                                           * (position_satellite[0] - position_point[local_cell_number * n_quadrature_points_per_cell + q][0])
                                                            * (position_satellite[1] - position_point[local_cell_number * n_quadrature_points_per_cell + q][1]));
-                      local_g_gradient[0][2] += grad_KK * (3.0 * (position_satellite[0] - position_point[local_cell_number * n_quadrature_points_per_cell + q][0])
+                      local_g_gradient[0][2] += grad_KK * (3.0 
+                                                           * (position_satellite[0] - position_point[local_cell_number * n_quadrature_points_per_cell + q][0])
                                                            * (position_satellite[2] - position_point[local_cell_number * n_quadrature_points_per_cell + q][2]));
-                      local_g_gradient[1][2] += grad_KK * (3.0 * (position_satellite[1] - position_point[local_cell_number * n_quadrature_points_per_cell + q][1])
+                      local_g_gradient[1][2] += grad_KK * (3.0 
+                                                           * (position_satellite[1] - position_point[local_cell_number * n_quadrature_points_per_cell + q][1])
                                                            * (position_satellite[2] - position_point[local_cell_number * n_quadrature_points_per_cell + q][2]));
                     }
                   ++local_cell_number;
@@ -315,29 +321,37 @@ namespace aspect
             }
           else if ((satellites_coordinate[p][0] > model_inner_radius) && (satellites_coordinate[p][0] < model_outer_radius))
             {
-              g_theory = G * numbers::PI * 4/3 * reference_density * (satellites_coordinate[p][0] - (pow(model_inner_radius,3) / pow(satellites_coordinate[p][0],2)));
+              g_theory = G * numbers::PI * 4/3 * reference_density * (satellites_coordinate[p][0] - (std::pow(model_inner_radius,3) 
+                                                                   /  std::pow(satellites_coordinate[p][0],2)));
             }
           else
             {
-              g_theory = G * numbers::PI * 4/3 * reference_density * (pow(model_outer_radius,3) - pow(model_inner_radius,3)) / pow(satellites_coordinate[p][0],2);
-              g_gradient_theory[0][0] = -G * numbers::PI * 4/3 * reference_density * (pow(model_outer_radius,3) - pow(model_inner_radius,3))
-                                        * (pow(satellites_coordinate[p][0], 2) - 3.0 * pow(position_satellite[0],2))
-                                        /  pow(satellites_coordinate[p][0],5);
-              g_gradient_theory[1][1] = -G * numbers::PI * 4/3 * reference_density * (pow(model_outer_radius,3) - pow(model_inner_radius,3))
-                                        * (pow(satellites_coordinate[p][0], 2) - 3.0 * pow(position_satellite[1],2))
-                                        /  pow(satellites_coordinate[p][0],5);
-              g_gradient_theory[2][2] = -G * numbers::PI * 4/3 * reference_density * (pow(model_outer_radius,3) - pow(model_inner_radius,3))
-                                        * (pow(satellites_coordinate[p][0], 2) - 3.0 * pow(position_satellite[2],2))
-                                        /  pow(satellites_coordinate[p][0],5);
-              g_gradient_theory[0][1] = -G * numbers::PI * 4/3 * reference_density * (pow(model_outer_radius,3) - pow(model_inner_radius,3))
-                                        * (- 3.0 * position_satellite[0] * position_satellite[1])
-                                        /  pow(satellites_coordinate[p][0],5);
-              g_gradient_theory[0][2] = -G * numbers::PI * 4/3 * reference_density * (pow(model_outer_radius,3) - pow(model_inner_radius,3))
-                                        * (- 3.0 * position_satellite[0] * position_satellite[2])
-                                        /  pow(satellites_coordinate[p][0],5);
-              g_gradient_theory[1][2] = -G * numbers::PI * 4/3 * reference_density * (pow(model_outer_radius,3) - pow(model_inner_radius,3))
-                                        * (- 3.0 * position_satellite[1] * position_satellite[2])
-                                        /  pow(satellites_coordinate[p][0],5);
+              g_theory = G * numbers::PI * 4/3 * reference_density * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3)) 
+                                                                   /  std::pow(satellites_coordinate[p][0],2);
+              g_gradient_theory[0][0] = -G * numbers::PI * 4/3 * reference_density 
+                                           * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
+                                           * (std::pow(satellites_coordinate[p][0], 2) - 3.0 * pow(position_satellite[0],2))
+                                           /  std::pow(satellites_coordinate[p][0],5);
+              g_gradient_theory[1][1] = -G * numbers::PI * 4/3 * reference_density 
+                                           * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
+                                           * (std::pow(satellites_coordinate[p][0], 2) - 3.0 * pow(position_satellite[1],2))
+                                           /  std::pow(satellites_coordinate[p][0],5);
+              g_gradient_theory[2][2] = -G * numbers::PI * 4/3 * reference_density 
+                                           * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
+                                           * (std::pow(satellites_coordinate[p][0], 2) - 3.0 * pow(position_satellite[2],2))
+                                           /  std::pow(satellites_coordinate[p][0],5);
+              g_gradient_theory[0][1] = -G * numbers::PI * 4/3 * reference_density 
+                                           * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
+                                           * (- 3.0 * position_satellite[0] * position_satellite[1])
+                                           /  std::pow(satellites_coordinate[p][0],5);
+              g_gradient_theory[0][2] = -G * numbers::PI * 4/3 * reference_density 
+                                           * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
+                                           * (- 3.0 * position_satellite[0] * position_satellite[2])
+                                           /  std::pow(satellites_coordinate[p][0],5);
+              g_gradient_theory[1][2] = -G * numbers::PI * 4/3 * reference_density 
+                                           * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
+                                           * (- 3.0 * position_satellite[1] * position_satellite[2])
+                                           /  std::pow(satellites_coordinate[p][0],5);
             }
 
           // write output.
@@ -381,17 +395,17 @@ namespace aspect
     void
     GravityPointValues<dim>::declare_parameters (ParameterHandler &prm)
     {
-      prm.declare_entry ("End time",
-                         /* boost::lexical_cast<std::string>(std::numeric_limits<double>::max() /
-                                              year_in_seconds) = */ "5.69e+300",
-                         Patterns::Double (),
-                         "The end time of the simulation. The default value is a number "
-                         "so that when converted from years to seconds it is approximately "
-                         "equal to the largest number representable in floating point "
-                         "arithmetic. For all practical purposes, this equals infinity. "
-                         "Units: Years if the "
-                         "'Use years in output instead of seconds' parameter is set; "
-                         "seconds otherwise.");
+      //prm.declare_entry ("End time",
+      //                   /* boost::lexical_cast<std::string>(std::numeric_limits<double>::max() /
+      //                                        year_in_seconds) = */ "5.69e+300",
+      //                   Patterns::Double (),
+      //                   "The end time of the simulation. The default value is a number "
+      //                   "so that when converted from years to seconds it is approximately "
+      //                   "equal to the largest number representable in floating point "
+      //                   "arithmetic. For all practical purposes, this equals infinity. "
+      //                   "Units: Years if the "
+      //                   "'Use years in output instead of seconds' parameter is set; "
+      //                   "seconds otherwise.");
       prm.enter_subsection ("Postprocess");
       {
         prm.enter_subsection ("Gravity calculation");
@@ -410,41 +424,50 @@ namespace aspect
                              "solution from noise due to the model grid.");
           prm.declare_entry ("Number points radius", "1",
                              Patterns::Double (0.0),
+                             "Parameter for the map sampling scheme: "
                              "Gravity may be calculated for a set of points along "
                              "the radius (e.g. depth profile) between a minimum and "
                              "maximum radius.");
           prm.declare_entry ("Number points longitude", "1",
                              Patterns::Double (0.0),
+                             "Parameter for the map sampling scheme: "
                              "Gravity may be calculated for a sets of points along "
                              "the longitude (e.g. gravity map) between a minimum and "
                              "maximum longitude.");
           prm.declare_entry ("Number points latitude", "1",
                              Patterns::Double (0.0),
+                             "Parameter for the map sampling scheme: "
                              "Gravity may be calculated for a sets of points along "
                              "the latitude (e.g. gravity map) between a minimum and "
                              "maximum latitude.");
           prm.declare_entry ("Minimum radius", "0",
                              Patterns::Double (0.0),
+                             "Parameter for the map sampling scheme: "
                              "Minimum radius may be defined in or outside the model. "
                              "Prescribe a minimum radius for a sampling coverage at a "
                              "specific height.");
           prm.declare_entry ("Maximum radius", "0",
                              Patterns::Double (0.0),
+                             "Parameter for the map sampling scheme: "
                              "Maximum radius can be defined in or outside the model.");
           prm.declare_entry ("Minimum longitude", "-180",
                              Patterns::Double (-180.0,180.0),
+                             "Parameter for the map sampling scheme: "
                              "Gravity may be calculated for a sets of points along "
                              "the longitude between a minimum and maximum longitude.");
           prm.declare_entry ("Minimum latitude", "-90",
                              Patterns::Double (-90.0,90.0),
+                             "Parameter for the map sampling scheme: "
                              "Gravity may be calculated for a sets of points along "
                              "the latitude between a minimum and maximum latitude.");
           prm.declare_entry ("Maximum longitude", "180",
                              Patterns::Double (-180.0,180.0),
+                             "Parameter for the map sampling scheme: "
                              "Gravity may be calculated for a sets of points along "
                              "the longitude between a minimum and maximum longitude.");
           prm.declare_entry ("Maximum latitude", "90",
                              Patterns::Double (-90.0,90.0),
+                             "Parameter for the map sampling scheme: "
                              "Gravity may be calculated for a sets of points along "
                              "the latitude between a minimum and maximum latitude.");
           prm.declare_entry ("Reference density", "3300",
@@ -453,15 +476,18 @@ namespace aspect
                              "relative to a reference density.");
           prm.declare_entry ("List of radius", "",
                              Patterns::List (Patterns::Double(0)),
+                             "Parameter for the list sampling scheme: "
                              "List of satellite radius coordinates. Just specify one "
                              "radius if all points values have the same radius. If "
                              "not, make sure there are as many radius as longitude "
                              "and latitude");
           prm.declare_entry ("List of longitude", "",
                              Patterns::List (Patterns::Double(-180.0,180.0)),
+                             "Parameter for the list sampling scheme: "
                              "List of satellite longitude coordinates.");
           prm.declare_entry ("List of latitude", "",
                              Patterns::List (Patterns::Double(-90.0,90.0)),
+                             "Parameter for the list sampling scheme: "
                              "List of satellite latitude coordinates.");
           prm.declare_entry ("Time between gravity output", "1e8",
                              Patterns::Double(0.0),
@@ -539,7 +565,7 @@ namespace aspect
       prm.leave_subsection();
     }
 
-    // IS THIS NEEDED ???
+    // This deals with having the correct behavior during checkpoint/restart cycles
     template <int dim>
     template <class Archive>
     void GravityPointValues<dim>::serialize (Archive &ar, const unsigned int)

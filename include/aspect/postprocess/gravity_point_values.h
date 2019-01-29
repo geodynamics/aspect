@@ -105,7 +105,7 @@ namespace aspect
         unsigned int output_file_number;
 
         /**
-         * end_time is taken from pramater file. It is used to tell the
+         * end_time is taken from parameter file. It is used to tell the
          * postprocessor to write gravity output at the end time.
          */
         double end_time;
