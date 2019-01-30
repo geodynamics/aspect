@@ -1687,6 +1687,12 @@ namespace aspect
           break;
         }
 
+        case NonlinearSolver::no_Advection_no_Stokes:
+        {
+          solve_no_advection_no_stokes();
+          break;
+        }
+
         default:
           Assert (false, ExcNotImplemented());
       }
