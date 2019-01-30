@@ -61,28 +61,41 @@ namespace aspect
       evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
                             std::vector<Vector<double> > &computed_quantities) const
       {
+        for (unsigned int q=0; q<computed_quantities.size(); ++q)
+          computed_quantities[q](0) = 0;
+
         auto cell = input_data.template get_cell<DoFHandler<dim> >();
 
         if (output_point_wise_heat_flux)
           {
-            std::vector<Point<dim>> quadrature_points(input_data.evaluation_points.size());
-            for (unsigned int i=0; i<input_data.evaluation_points.size(); ++i)
-              quadrature_points[i] = this->get_mapping().transform_real_to_unit_cell(cell,input_data.evaluation_points[i]);
+            bool cell_at_top_or_bottom_boundary = false;
+            for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+              if (cell->at_boundary(f) &&
+                  (this->get_geometry_model().translate_id_to_symbol_name (cell->face(f)->boundary_id()) == "top" ||
+                   this->get_geometry_model().translate_id_to_symbol_name (cell->face(f)->boundary_id()) == "bottom"))
+                cell_at_top_or_bottom_boundary = true;
 
-            const Quadrature<dim> quadrature_formula(quadrature_points);
+            if (cell_at_top_or_bottom_boundary)
+              {
+                std::vector<Point<dim>> quadrature_points(input_data.evaluation_points.size());
+                for (unsigned int i=0; i<input_data.evaluation_points.size(); ++i)
+                  quadrature_points[i] = this->get_mapping().transform_real_to_unit_cell(cell,input_data.evaluation_points[i]);
 
-            FEValues<dim> fe_volume_values (this->get_mapping(),
-                                            this->get_fe(),
-                                            quadrature_formula,
-                                            update_values);
+                const Quadrature<dim> quadrature_formula(quadrature_points);
 
-            fe_volume_values.reinit(cell);
+                FEValues<dim> fe_volume_values (this->get_mapping(),
+                                                this->get_fe(),
+                                                quadrature_formula,
+                                                update_values);
 
-            std::vector<double> heat_flux_values(quadrature_formula.size());
-            fe_volume_values[this->introspection().extractors.temperature].get_function_values(heat_flux_density_solution, heat_flux_values);
+                fe_volume_values.reinit(cell);
 
-            for (unsigned int q=0; q<quadrature_formula.size(); ++q)
-              computed_quantities[q](0) = heat_flux_values[q];
+                std::vector<double> heat_flux_values(quadrature_formula.size());
+                fe_volume_values[this->introspection().extractors.temperature].get_function_values(heat_flux_density_solution, heat_flux_values);
+
+                for (unsigned int q=0; q<quadrature_formula.size(); ++q)
+                  computed_quantities[q](0) = heat_flux_values[q];
+              }
           }
         else
           {
