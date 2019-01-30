@@ -44,16 +44,20 @@ namespace aspect
        */
       template <int dim>
       class DynamicTopography
-        : public CellDataVectorCreator<dim>,
-          public SimulatorAccess<dim>
+        : public DataPostprocessorScalar<dim>,
+          public SimulatorAccess<dim>,
+          public Interface<dim>
       {
         public:
+          DynamicTopography();
+
           /**
            * @copydoc CellDataVectorCreator<dim>::execute()
            */
           virtual
-          std::pair<std::string, Vector<float> *>
-          execute () const;
+          void
+          evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
+                                std::vector<Vector<double> > &computed_quantities) const;
 
           /**
            * Register the other postprocessor that we need: DynamicTopography
