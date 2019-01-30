@@ -1,17 +1,4 @@
------------------------------------------------------------------------------
--- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
---     . version 2.1.0-pre (solver_scheme_none, 7c9c104eb)
---     . using deal.II 9.0.1
---     . using Trilinos 12.10.1
---     . using p4est 2.0.0
---     . running in DEBUG mode
---     . running with 1 MPI process
------------------------------------------------------------------------------
 
------------------------------------------------------------------------------
--- For information on how to cite ASPECT, see:
---   https://aspect.geodynamics.org/citing.html?ver=2.1.0-pre&sha=7c9c104eb&src=code
------------------------------------------------------------------------------
 Number of active cells: 24 (on 2 levels)
 Number of degrees of freedom: 1,277 (915+57+305)
 
@@ -19,23 +6,12 @@ Number of degrees of freedom: 1,277 (915+57+305)
 
    Postprocessing:
      Writing graphical output: output-solve_no_advection_no_stokes/solution/solution-00000
-     Temperature min/avg/max:  300 K, 2293 K, 3968 K
+     Temperature min/avg/max:  300 K, 2289 K, 3968 K
 
 Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |     0.235s |            |
-|                                             |            |            |
-| Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Initialization                  |         1 |    0.0274s |        12% |
-| Postprocessing                  |         1 |    0.0153s |       6.5% |
-| Setup dof systems               |         1 |    0.0542s |        23% |
-| Setup initial conditions        |         1 |    0.0628s |        27% |
 +---------------------------------+-----------+------------+------------+
 
------------------------------------------------------------------------------
--- For information on how to cite ASPECT, see:
---   https://aspect.geodynamics.org/citing.html?ver=2.1.0-pre&sha=7c9c104eb&src=code
------------------------------------------------------------------------------
