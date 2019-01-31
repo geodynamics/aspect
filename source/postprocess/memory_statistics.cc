@@ -44,6 +44,10 @@ namespace aspect
       statistics.add_value ("current_constraints memory consumption (MB) ", this->get_current_constraints().memory_consumption()/mb);
       statistics.add_value ("Solution vector memory consumption (MB) ", this->get_solution().memory_consumption()/mb);
 
+      dealii::Utilities::System::MemoryStats stats;
+      dealii::Utilities::System::get_memory_stats(stats);
+      statistics.add_value ("Peak virtual memory usage (VmPeak) (MB) ", stats.VmPeak/1024.0);
+
       std::ostringstream output;
       output << std::fixed << std::setprecision(2) << this->get_system_matrix().memory_consumption()/mb << " MB";
 
@@ -66,8 +70,9 @@ namespace aspect
                                   "the memory consumption. "
                                   "In particular, it computes the memory usage of the "
                                   "system matrix, triangulation, p4est, "
-                                  "DoFHandler, current constraints, and solution vector, "
-                                  "all in MB. It also outputs the memory usage of the system "
+                                  "DoFHandler, current constraints, solution vector, "
+                                  "and peak virtual memory usage, all in MB. "
+                                  "It also outputs the memory usage of the system "
                                   "matrix to the screen.")
   }
 }
