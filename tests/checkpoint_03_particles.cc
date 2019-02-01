@@ -58,8 +58,8 @@ int f()
   std::cout << "* now comparing:" << std::endl;
 
   ret = system ("cd output-checkpoint_03_particles ; "
-                "cp output1.tmp/particles/particles-00009.0000.gnuplot particles-00009.0000.gnuplot1;"
-                "cp output2.tmp/particles/particles-00009.0000.gnuplot particles-00009.0000.gnuplot2;"
+                "cp output1.tmp/particles/particle-00009.0000.txt particles-00009.0000.gnuplot1;"
+                "cp output2.tmp/particles/particle-00009.0000.txt particles-00009.0000.gnuplot2;"
                 "cp output1.tmp/log.txt log.txt1;"
                 "cp output2.tmp/log.txt log.txt2;"
                 "cp output1.tmp/statistics statistics1;"
