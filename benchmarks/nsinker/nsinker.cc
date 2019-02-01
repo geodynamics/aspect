@@ -29,6 +29,11 @@ namespace aspect
     class NSinkerMaterial : public MaterialModel::Interface<dim>
     {
       public:
+        /**
+         * Constructor
+         */
+        NSinkerMaterial ();
+
         double value (const Point<dim> &/*p*/) const;
 
         /**
@@ -158,33 +163,27 @@ namespace aspect
          * Number of sinking spheres.
          */
         unsigned int n_sinkers;
+
+        /**
+         * Centers for the sinkers provided by Cedric Thielot (pers. comm. from Dave May)
+         */
+        std::vector<Point<3> > centers;
+
+        /**
+         * Parameters for evaluating viscosity
+         */
+        double delta;
+        double omega;
     };
 
 
-
-    template <int dim>
-    double
-    NSinkerMaterial<dim>::value (const Point<dim> &/*p*/) const
+    template<int dim>
+    NSinkerMaterial<dim>::NSinkerMaterial ()
     {
-      AssertThrow(false,ExcNotImplemented());
-    }
+      delta = 200.0;
+      omega = 0.1;
 
-
-
-    template <>
-    double
-    NSinkerMaterial<3>::value (const Point<3> &p) const
-    {
-      const unsigned dim = 3;
-
-      // Parameters for Sinker example
-      double delta = 200.0;
-      double omega = 0.1;
-      double chi = 1.0;
-
-      // Centers for the sinkers provided by Cedric Thielot (pers. comm. from Dave May)
-      std::vector<Point<dim> > centers(76);
-
+      centers.resize(75);
       centers[0] = Point<3>(2.4257829890e-01, 1.3469574514e-02, 3.8313885004e-01);
       centers[1] = Point<3>(4.1465269048e-01, 6.7768972864e-02, 9.9312692973e-01);
       centers[2] = Point<3>(4.8430804651e-01, 7.6533776604e-01, 3.1833815403e-02);
@@ -260,6 +259,31 @@ namespace aspect
       centers[72] = Point<3>(8.2344259034e-01, 5.9961585635e-01, 7.4369772512e-01);
       centers[73] = Point<3>(3.2766604253e-01, 8.3176720460e-02, 9.5114077951e-01);
       centers[74] = Point<3>(8.2308128282e-01, 5.2712029523e-01, 3.1080186614e-01);
+    }
+
+    template <>
+    double
+    NSinkerMaterial<2>::value (const Point<2> &p) const
+    {
+      double chi = 1.0;
+
+      for (unsigned int s=0; s<n_sinkers; ++s)
+        {
+          double dist = p.distance(Point<2>(centers[s](0), centers[s](1)));
+          double temp = 1-std::exp(-delta*
+                                   std::pow(std::max(0.0,dist-omega/2.0),2));
+          chi *= temp;
+        }
+      return chi;
+    }
+
+
+
+    template <>
+    double
+    NSinkerMaterial<3>::value (const Point<3> &p) const
+    {
+      double chi = 1.0;
 
       for (unsigned int s=0; s<n_sinkers; ++s)
         {
