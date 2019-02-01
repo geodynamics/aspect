@@ -53,10 +53,10 @@ namespace aspect
             // HDF5 only supports 3D vector output, therefore only treat output fields as vector if we
             // have a dimension of 3 and 3 components.
             const bool field_is_vector = (!only_group_3d_vectors)
-                ?
-                    n_components == dim
-                    :
-                    dim == 3 && n_components == 3;
+                                         ?
+                                         n_components == dim
+                                         :
+                                         dim == 3 && n_components == 3;
 
             // If it is a 1D element, or a vector, print just the name, otherwise append the index after an underscore
             if ((n_components == 1) || field_is_vector)

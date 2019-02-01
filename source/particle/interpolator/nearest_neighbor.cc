@@ -111,7 +111,7 @@ namespace aspect
 
                 Assert(nearest_neighbor_cell != numbers::invalid_unsigned_int,
                        ExcMessage("A cell and all of its neighbors do not contain any particles. "
-                           "This case is not supported by the 'nearest neighbor' interpolation scheme."));
+                                  "This case is not supported by the 'nearest neighbor' interpolation scheme."));
 
                 point_properties[pos_idx] = properties_at_points(particle_handler,
                                                                  std::vector<Point<dim> > (1,positions[pos_idx]),
