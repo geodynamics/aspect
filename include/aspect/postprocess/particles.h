@@ -60,7 +60,8 @@ namespace aspect
            * write function of the base class can be called to write the output data.
            */
           void build_patches(const Particle::ParticleHandler<dim> &particle_handler,
-                             const aspect::Particle::Property::ParticlePropertyInformation &property_information);
+                             const aspect::Particle::Property::ParticlePropertyInformation &property_information,
+                             const bool only_group_3d_vectors);
 
         private:
           /**
