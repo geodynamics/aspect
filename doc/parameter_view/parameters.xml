@@ -235,7 +235,7 @@ The kind of scheme used to resolve the nonlinearity in the system. `single Advec
 13
 </pattern>
 <pattern_description>
-[Selection single Advection, single Stokes|iterated Advection and Stokes|single Advection, iterated Stokes|no Advection, iterated Stokes|iterated Advection and Newton Stokes|single Advection, no Stokes|IMPES|iterated IMPES|iterated Stokes|Newton Stokes|Stokes only|Advection only|first timestep only, single Stokes ]
+[Selection single Advection, single Stokes|iterated Advection and Stokes|single Advection, iterated Stokes|no Advection, iterated Stokes|iterated Advection and Newton Stokes|single Advection, no Stokes|IMPES|iterated IMPES|iterated Stokes|Newton Stokes|Stokes only|Advection only|first timestep only, single Stokes|no Advection, no Stokes ]
 </pattern_description>
 </Nonlinear_20solver_20scheme>
 <Nonlinear_20solver_20tolerance>
@@ -2123,13 +2123,13 @@ The file format then consists of lines with Euclidean coordinates followed by th
 
 `gravity calculation&apos;: A postprocessor that computes gravity and gravity potential for a set of points (e.g. satellites) in or above the model surface for a user-defined range of latitudes, longitudes and radius.
 
-`heat flux densities&apos;: A postprocessor that computes some statistics about the (conductive) heat flux density for each boundary id. The heat flux density is computed in outward direction, i.e., from the domain to the outside, using the formula $\frac{1}{|\Gamma_i|} \int_{\Gamma_i} -k \nabla T \cdot \mathbf n$ where $\Gamma_i$ is the part of the boundary with indicator $i$, $k$ is the thermal conductivity as reported by the material model, $T$ is the temperature, and $\mathbf n$ is the outward normal. Note that the quantity so computed does not include any energy transported across the boundary by material transport in cases where $\mathbf u \cdot \mathbf n \neq 0$.
+`heat flux densities&apos;: A postprocessor that computes some statistics about the heat flux density for each boundary id. The heat flux density across each boundary is computed in outward direction, i.e., from the domain to the outside. The heat flux is computed as sum of advective heat flux and conductive heat flux through Neumann boundaries, both computed as integral over the boundary area, and conductive heat flux through Dirichlet boundaries, which is computed using the consistent boundary flux method as described in ``Gresho, Lee, Sani, Maslanik, Eaton (1987). The consistent Galerkin FEM for computing derived boundary quantities in thermal and or fluids problems. International Journal for Numerical Methods in Fluids, 7(4), 371-394.&apos;&apos;
 
-Note that the ``heat flux&apos;&apos; postprocessor computes the same quantity as the one here, but not divided by the area of the surface. In other words, it computes the \textit{total} heat flux through each boundary.
+Note that the ``heat flux statistics&apos;&apos; postprocessor computes the same quantity as the one here, but not divided by the area of the surface. In other words, it computes the \textit{total} heat flux through each boundary.
 
-`heat flux map&apos;: A postprocessor that computes the (conductive) heat flux density across each boundary. The heat density flux is computed in outward direction, i.e., from the domain to the outside, using the formula $-k \nabla T \cdot \mathbf n$, where $k$ is the thermal conductivity as reported by the material model, $T$ is the temperature, and $\mathbf n$ is the outward normal. Note that the quantity so computed does not include any energy transported across the boundary by material transport in cases where $\mathbf u \cdot \mathbf n \neq 0$. The integrated heat flux for each boundary can be obtained from the heat flux statistics postprocessor.
+`heat flux map&apos;: A postprocessor that computes the heat flux density across each boundary in outward direction, i.e., from the domain to the outside. The heat flux is computed as sum of advective heat flux and conductive heat flux through Neumann boundaries, both computed as integral over the boundary area, and conductive heat flux through Dirichlet boundaries, which is computed using the consistent boundary flux method as described in ``Gresho, Lee, Sani, Maslanik, Eaton (1987). The consistent Galerkin FEM for computing derived boundary quantities in thermal and or fluids problems. International Journal for Numerical Methods in Fluids, 7(4), 371-394.&apos;&apos;
 
-`heat flux statistics&apos;: A postprocessor that computes some statistics about the (conductive) heat flux across boundaries. For each boundary indicator (see your geometry description for which boundary indicators are used), the heat flux is computed in outward direction, i.e., from the domain to the outside, using the formula $\int_{\Gamma_i} -k \nabla T \cdot \mathbf n$ where $\Gamma_i$ is the part of the boundary with indicator $i$, $k$ is the thermal conductivity as reported by the material model, $T$ is the temperature, and $\mathbf n$ is the outward normal. Note that the quantity so computed does not include any energy transported across the boundary by material transport in cases where $\mathbf u \cdot \mathbf n \neq 0$. The point-wise heat flux can be obtained from the heat flux map postprocessor, which outputs the heat flux to a file, or the heat flux map visualization postprocessor, which outputs the heat flux for visualization. 
+`heat flux statistics&apos;: A postprocessor that computes some statistics about the heat flux density across each boundary in outward direction, i.e., from the domain to the outside. The heat flux is computed as sum of advective heat flux and conductive heat flux through Neumann boundaries, both computed as integral over the boundary area, and conductive heat flux through Dirichlet boundaries, which is computed using the consistent boundary flux method as described in ``Gresho, Lee, Sani, Maslanik, Eaton (1987). The consistent Galerkin FEM for computing derived boundary quantities in thermal and or fluids problems. International Journal for Numerical Methods in Fluids, 7(4), 371-394.&apos;&apos;The point-wise heat flux can be obtained from the heat flux map postprocessor, which outputs the heat flux to a file, or the heat flux map visualization postprocessor, which outputs the heat flux for visualization. 
 
 As stated, this postprocessor computes the \textit{outbound} heat flux. If you are interested in the opposite direction, for example from the core into the mantle when the domain describes the mantle, then you need to multiply the result by -1.
 
@@ -3908,7 +3908,7 @@ Strictly speaking, the dynamic topography is of course a quantity that is only o
 
 `gravity&apos;: A visualization output object that outputs the gravity vector.
 
-`heat flux map&apos;: A visualization output object that generates output for the heat flux density across each boundary. The heat flux density is computed in outward direction, i.e., from the domain to the outside, using the formula $-k \nabla T \cdot \mathbf n$, where $k$ is the thermal conductivity as reported by the material model, $T$ is the temperature, and $\mathbf n$ is the outward normal. Note that the quantity so computed does not include any energy transported across the boundary by material transport in cases where $\mathbf u \cdot \mathbf n \neq 0$.At the edge of the domain (e.g. top left corner) the heat flux density is calculated as the sum of the heat flux across both boundaries of the cell (e.g. top and left boundary) divided by the sum of both face areas. The integrated heatflux for each boundary can be obtained from the heat flux statistics postprocessor.
+`heat flux map&apos;: A visualization output object that generates output for the heat flux density across the top and bottom boundary in outward direction. The heat flux is computed as sum of advective heat flux and conductive heat flux through Neumann boundaries, both computed as integral over the boundary area, and conductive heat flux through Dirichlet boundaries, which is computed using the consistent boundary flux method as described in ``Gresho, Lee, Sani, Maslanik, Eaton (1987). The consistent Galerkin FEM for computing derived boundary quantities in thermal and or fluids problems. International Journal for Numerical Methods in Fluids, 7(4), 371-394.&apos;&apos;
 
 `heating&apos;: A visualization output object that generates output for all the heating terms used in the energy equation.
 
@@ -4546,7 +4546,9 @@ The number of timesteps between performing checkpoints. If 0 and time between ch
 2
 </default_value>
 <documentation>
-The polynomial degree to use for the velocity variables in the Stokes system. The polynomial degree for the pressure variable will then be one less in order to make the velocity/pressure pair conform with the usual LBB (Babuska-Brezzi) condition. In other words, we are using a Taylor-Hood element for the Stokes equations and this parameter indicates the polynomial degree of it. As an example, a value of 2 for this parameter will yield the element $Q_2^d \times Q_1$ for the $d$ velocity components and the pressure, respectively (unless the `Use locally conservative discretization&apos; parameter is set, which modifies the pressure element). Units: None.
+The polynomial degree to use for the velocity variables in the Stokes system. The polynomial degree for the pressure variable will then be one less in order to make the velocity/pressure pair conform with the usual LBB (Babuska-Brezzi) condition. In other words, we are using a Taylor-Hood element for the Stokes equations and this parameter indicates the polynomial degree of it. As an example, a value of 2 for this parameter will yield the element $Q_2^d \times Q_1$ for the $d$ velocity components and the pressure, respectively (unless the `Use locally conservative discretization&apos; parameter is set, which modifies the pressure element). 
+
+Be careful if you choose 1 as the degree. The resulting element is not stable and it may lead to artifacts in the solution. Units: None.
 </documentation>
 <pattern>
 62
@@ -4580,13 +4582,15 @@ The polynomial degree to use for the temperature variable. As an example, a valu
 2
 </default_value>
 <documentation>
-The polynomial degree to use for the composition variable(s). As an example, a value of 2 for this parameter will yield either the element $Q_2$ or $DGQ_2$ for the compositional field(s), depending on whether we use continuous or discontinuous field(s). Units: None.
+The polynomial degree to use for the composition variable(s). As an example, a value of 2 for this parameter will yield either the element $Q_2$ or $DGQ_2$ for the compositional field(s), depending on whether we use continuous or discontinuous field(s). 
+
+For continuous elements, the value needs to be 1 or larger as $Q_1$ is the lowest order element, while $DGQ_0$ is a valid choice. Units: None.
 </documentation>
 <pattern>
 64
 </pattern>
 <pattern_description>
-[Integer range 1...2147483647 (inclusive)]
+[Integer range 0...2147483647 (inclusive)]
 </pattern_description>
 </Composition_20polynomial_20degree>
 <Use_20locally_20conservative_20discretization>
