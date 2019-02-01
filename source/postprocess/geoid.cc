@@ -90,7 +90,7 @@ namespace aspect
                                this->get_fe(),
                                quadrature_formula,
                                update_values |
-                               update_q_points |
+                               update_quadrature_points |
                                update_JxW_values |
                                update_gradients);
 
@@ -182,7 +182,7 @@ namespace aspect
                                         this->get_fe(),
                                         quadrature_formula_face,
                                         update_values |
-                                        update_q_points |
+                                        update_quadrature_points |
                                         update_JxW_values);
 
       std::vector<double> topo_values( quadrature_formula_face.size());
@@ -402,7 +402,7 @@ namespace aspect
                                                this->get_fe(),
                                                quadrature_formula_face_center,
                                                update_values |
-                                               update_q_points|
+                                               update_quadrature_points|
                                                update_JxW_values);
 
       // define a vector to store the location of the cells along the surface

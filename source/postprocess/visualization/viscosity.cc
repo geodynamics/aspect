@@ -34,7 +34,7 @@ namespace aspect
       Viscosity ()
         :
         DataPostprocessorScalar<dim> ("viscosity",
-                                      update_values | update_gradients | update_q_points)
+                                      update_values | update_gradients | update_quadrature_points)
       {}
 
 

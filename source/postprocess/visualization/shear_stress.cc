@@ -116,7 +116,7 @@ namespace aspect
       UpdateFlags
       ShearStress<dim>::get_needed_update_flags () const
       {
-        return update_gradients | update_values | update_q_points;
+        return update_gradients | update_values | update_quadrature_points;
       }
 
     }

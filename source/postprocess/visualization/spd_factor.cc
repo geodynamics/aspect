@@ -36,7 +36,7 @@ namespace aspect
       SPD_Factor ()
         :
         DataPostprocessorScalar<dim> ("spd_factor",
-                                      update_values | update_gradients | update_q_points)
+                                      update_values | update_gradients | update_quadrature_points)
       {}
 
 

@@ -34,7 +34,7 @@ namespace aspect
       ThermalConductivity ()
         :
         DataPostprocessorScalar<dim> ("thermal_conductivity",
-                                      update_values | update_q_points )
+                                      update_values | update_quadrature_points )
       {}
 
 

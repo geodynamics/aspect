@@ -35,7 +35,7 @@ namespace aspect
       Depth ()
         :
         DataPostprocessorScalar<dim> ("depth",
-                                      update_q_points)
+                                      update_quadrature_points)
       {}
 
 

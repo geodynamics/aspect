@@ -67,7 +67,7 @@ namespace aspect
       Adiabat<dim>::
       get_needed_update_flags () const
       {
-        return update_q_points;
+        return update_quadrature_points;
       }
 
 

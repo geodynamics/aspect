@@ -35,7 +35,7 @@ namespace aspect
       ThermalDiffusivity ()
         :
         DataPostprocessorScalar<dim> ("thermal_diffusivity",
-                                      update_values | update_q_points )
+                                      update_values | update_quadrature_points )
       {}
 
 
