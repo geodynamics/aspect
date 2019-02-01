@@ -62,7 +62,7 @@ namespace aspect
                                         quadrature_formula,
                                         update_values |
                                         update_gradients |
-                                        update_q_points |
+                                        update_quadrature_points |
                                         update_JxW_values);
 
         FEFaceValues<dim> fe_face_values (simulator_access.get_mapping(),
@@ -72,7 +72,7 @@ namespace aspect
                                           update_values |
                                           update_gradients |
                                           update_normal_vectors |
-                                          update_q_points);
+                                          update_quadrature_points);
 
         const unsigned int dofs_per_cell = simulator_access.get_fe().dofs_per_cell;
         const unsigned int n_q_points = quadrature_formula.size();

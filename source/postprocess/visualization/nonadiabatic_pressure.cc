@@ -34,7 +34,7 @@ namespace aspect
       NonadiabaticPressure ()
         :
         DataPostprocessorScalar<dim> ("nonadiabatic_pressure",
-                                      update_values | update_q_points)
+                                      update_values | update_quadrature_points)
       {}
 
 

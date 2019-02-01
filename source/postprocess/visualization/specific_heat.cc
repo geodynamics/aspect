@@ -34,7 +34,7 @@ namespace aspect
       SpecificHeat ()
         :
         DataPostprocessorScalar<dim> ("specific_heat",
-                                      update_values | update_q_points | update_gradients)
+                                      update_values | update_quadrature_points | update_gradients)
       {}
 
 

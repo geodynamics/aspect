@@ -1926,7 +1926,7 @@ namespace aspect
                                       finite_element,
                                       quadrature_formula,
                                       update_values   | update_normal_vectors |
-                                      update_q_points | update_JxW_values);
+                                      update_quadrature_points | update_JxW_values);
 
     std::vector<Tensor<1,dim> > face_current_velocity_values (fe_face_values.n_quadrature_points);
 

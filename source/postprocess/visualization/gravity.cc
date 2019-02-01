@@ -35,7 +35,7 @@ namespace aspect
       Gravity ()
         :
         DataPostprocessorVector<dim> ("gravity",
-                                      update_q_points)
+                                      update_quadrature_points)
       {}
 
 

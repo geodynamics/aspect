@@ -53,9 +53,9 @@ namespace aspect
       FEFaceValues<dim> fe_face_values (this->get_mapping(),
                                         this->get_fe(),
                                         quadrature_formula,
-                                        update_values         | update_gradients |
-                                        update_normal_vectors |
-                                        update_q_points       | update_JxW_values);
+                                        update_values            | update_gradients |
+                                        update_normal_vectors    |
+                                        update_quadrature_points | update_JxW_values);
 
       std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (quadrature_formula.size()));
 

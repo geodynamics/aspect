@@ -34,7 +34,7 @@ namespace aspect
       StrainRate ()
         :
         DataPostprocessorScalar<dim> ("strain_rate",
-                                      update_gradients | update_q_points)
+                                      update_gradients | update_quadrature_points)
       {}
 
 

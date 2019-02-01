@@ -36,7 +36,7 @@ namespace aspect
       MeltFraction ()
         :
         DataPostprocessorScalar<dim> ("melt_fraction",
-                                      update_values | update_q_points)
+                                      update_values | update_quadrature_points)
       {}
 
 

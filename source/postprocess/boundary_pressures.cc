@@ -42,7 +42,7 @@ namespace aspect
                                         quadrature_formula_face,
                                         update_values |
                                         update_gradients |
-                                        update_q_points |
+                                        update_quadrature_points |
                                         update_JxW_values);
 
       double local_top_pressure = 0.;
