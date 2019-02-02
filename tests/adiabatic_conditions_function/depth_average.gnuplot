@@ -4,7 +4,7 @@
 #
 # For a description of the GNUPLOT format see the GNUPLOT manual.
 #
-# <x> <y> <temperature> <adiabatic_temperature> <adiabatic_pressure> <adiabatic_density> <adiabatic_density_derivative> <velocity_magnitude> <sinking_velocity> <viscosity> <vertical_heat_flux> 
+# <depth> <time> <temperature> <adiabatic_temperature> <adiabatic_pressure> <adiabatic_density> <adiabatic_density_derivative> <velocity_magnitude> <sinking_velocity> <viscosity> <vertical_heat_flux> 
 0 0 1579.74 0 0 5 -0 0.595801 0.206277 1 1.17364e+08 
 0.62 0 1579.74 0 0 5 -0 0.595801 0.206277 1 1.17364e+08 
 

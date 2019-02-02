@@ -9,258 +9,218 @@ Number of degrees of freedom: 652 (375+27+125+125)
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 24+0 iterations.
+   Solving Stokes system... 25+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 273 K, 1489 K, 3000 K
 
-*** Timestep 1:  t=3318.93 years
+*** Timestep 1:  t=4014.13 years
    Solving temperature system... 9 iterations.
    Solving C_1 system ... 9 iterations.
-   Solving Stokes system... 20+0 iterations.
+   Solving Stokes system... 22+0 iterations.
 
    Postprocessing:
-     Temperature min/avg/max: 273 K, 1485 K, 3000 K
+     Temperature min/avg/max: 273 K, 1483 K, 3000 K
 
-*** Timestep 2:  t=6634.94 years
+*** Timestep 2:  t=8022.35 years
    Solving temperature system... 8 iterations.
    Solving C_1 system ... 9 iterations.
-   Solving Stokes system... 20+0 iterations.
+   Solving Stokes system... 21+0 iterations.
 
    Postprocessing:
-     Temperature min/avg/max: 273 K, 1480 K, 3000 K
+     Temperature min/avg/max: 273 K, 1476 K, 3000 K
 
-*** Timestep 3:  t=9948.43 years
+*** Timestep 3:  t=12024.8 years
    Solving temperature system... 8 iterations.
    Solving C_1 system ... 8 iterations.
    Solving Stokes system... 20+0 iterations.
 
    Postprocessing:
-     Temperature min/avg/max: 273 K, 1474 K, 3000 K
+     Temperature min/avg/max: 273 K, 1467 K, 3000 K
 
-*** Timestep 4:  t=13259.7 years
+*** Timestep 4:  t=16021.7 years
    Solving temperature system... 8 iterations.
    Solving C_1 system ... 8 iterations.
    Solving Stokes system... 19+0 iterations.
 
    Postprocessing:
-     Temperature min/avg/max: 273 K, 1468 K, 3000 K
+     Temperature min/avg/max: 273 K, 1458 K, 3000 K
 
-*** Timestep 5:  t=16568.9 years
+*** Timestep 5:  t=20013.2 years
+   Solving temperature system... 8 iterations.
+   Solving C_1 system ... 8 iterations.
+   Solving Stokes system... 20+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max: 273 K, 1450 K, 3000 K
+
+*** Timestep 6:  t=23999.5 years
+   Solving temperature system... 8 iterations.
+   Solving C_1 system ... 8 iterations.
+   Solving Stokes system... 20+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max: 273 K, 1442 K, 3000 K
+
+*** Timestep 7:  t=27980.7 years
+   Solving temperature system... 8 iterations.
+   Solving C_1 system ... 8 iterations.
+   Solving Stokes system... 20+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max: 273 K, 1434 K, 3000 K
+
+*** Timestep 8:  t=31957 years
+   Solving temperature system... 8 iterations.
+   Solving C_1 system ... 8 iterations.
+   Solving Stokes system... 20+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max: 273 K, 1427 K, 3000 K
+
+*** Timestep 9:  t=35928.5 years
+   Solving temperature system... 8 iterations.
+   Solving C_1 system ... 8 iterations.
+   Solving Stokes system... 20+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max: 273 K, 1420 K, 3000 K
+
+*** Timestep 10:  t=39895.3 years
+   Solving temperature system... 8 iterations.
+   Solving C_1 system ... 8 iterations.
+   Solving Stokes system... 20+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max: 273 K, 1413 K, 3000 K
+
+*** Timestep 11:  t=43857.6 years
    Solving temperature system... 8 iterations.
    Solving C_1 system ... 8 iterations.
    Solving Stokes system... 19+0 iterations.
 
    Postprocessing:
-     Temperature min/avg/max: 273 K, 1461 K, 3000 K
+     Temperature min/avg/max: 273 K, 1406 K, 3000 K
 
-*** Timestep 6:  t=19876.2 years
+*** Timestep 12:  t=47815.5 years
    Solving temperature system... 8 iterations.
    Solving C_1 system ... 8 iterations.
    Solving Stokes system... 19+0 iterations.
 
    Postprocessing:
-     Temperature min/avg/max: 273 K, 1455 K, 3000 K
+     Temperature min/avg/max: 273 K, 1400 K, 3000 K
 
-*** Timestep 7:  t=23181.7 years
+*** Timestep 13:  t=51769.2 years
    Solving temperature system... 8 iterations.
    Solving C_1 system ... 8 iterations.
    Solving Stokes system... 19+0 iterations.
 
    Postprocessing:
-     Temperature min/avg/max: 273 K, 1449 K, 3000 K
+     Temperature min/avg/max: 273 K, 1395 K, 3000 K
 
-*** Timestep 8:  t=26485.7 years
+*** Timestep 14:  t=55718.8 years
    Solving temperature system... 8 iterations.
    Solving C_1 system ... 8 iterations.
    Solving Stokes system... 19+0 iterations.
-
-   Postprocessing:
-     Temperature min/avg/max: 273 K, 1444 K, 3000 K
-
-*** Timestep 9:  t=29788.1 years
-   Solving temperature system... 8 iterations.
-   Solving C_1 system ... 8 iterations.
-   Solving Stokes system... 19+0 iterations.
-
-   Postprocessing:
-     Temperature min/avg/max: 273 K, 1438 K, 3000 K
-
-*** Timestep 10:  t=33089.1 years
-   Solving temperature system... 8 iterations.
-   Solving C_1 system ... 8 iterations.
-   Solving Stokes system... 19+0 iterations.
-
-   Postprocessing:
-     Temperature min/avg/max: 273 K, 1433 K, 3000 K
-
-*** Timestep 11:  t=36388.8 years
-   Solving temperature system... 8 iterations.
-   Solving C_1 system ... 8 iterations.
-   Solving Stokes system... 19+0 iterations.
-
-   Postprocessing:
-     Temperature min/avg/max: 273 K, 1428 K, 3000 K
-
-*** Timestep 12:  t=39687.3 years
-   Solving temperature system... 8 iterations.
-   Solving C_1 system ... 8 iterations.
-   Solving Stokes system... 19+0 iterations.
-
-   Postprocessing:
-     Temperature min/avg/max: 273 K, 1423 K, 3000 K
-
-*** Timestep 13:  t=42984.7 years
-   Solving temperature system... 8 iterations.
-   Solving C_1 system ... 8 iterations.
-   Solving Stokes system... 18+0 iterations.
-
-   Postprocessing:
-     Temperature min/avg/max: 273 K, 1419 K, 3000 K
-
-*** Timestep 14:  t=46281 years
-   Solving temperature system... 8 iterations.
-   Solving C_1 system ... 8 iterations.
-   Solving Stokes system... 18+0 iterations.
-
-   Postprocessing:
-     Temperature min/avg/max: 273 K, 1415 K, 3000 K
-
-*** Timestep 15:  t=49576.3 years
-   Solving temperature system... 8 iterations.
-   Solving C_1 system ... 8 iterations.
-   Solving Stokes system... 18+0 iterations.
-
-   Postprocessing:
-     Temperature min/avg/max: 273 K, 1410 K, 3000 K
-
-*** Timestep 16:  t=52870.7 years
-   Solving temperature system... 8 iterations.
-   Solving C_1 system ... 8 iterations.
-   Solving Stokes system... 18+0 iterations.
-
-   Postprocessing:
-     Temperature min/avg/max: 273 K, 1407 K, 3000 K
-
-*** Timestep 17:  t=56164.3 years
-   Solving temperature system... 8 iterations.
-   Solving C_1 system ... 8 iterations.
-   Solving Stokes system... 18+0 iterations.
-
-   Postprocessing:
-     Temperature min/avg/max: 273 K, 1403 K, 3000 K
-
-*** Timestep 18:  t=59457 years
-   Solving temperature system... 8 iterations.
-   Solving C_1 system ... 8 iterations.
-   Solving Stokes system... 18+0 iterations.
-
-   Postprocessing:
-     Temperature min/avg/max: 273 K, 1399 K, 3000 K
-
-*** Timestep 19:  t=62749 years
-   Solving temperature system... 8 iterations.
-   Solving C_1 system ... 8 iterations.
-   Solving Stokes system... 18+0 iterations.
-
-   Postprocessing:
-     Temperature min/avg/max: 273 K, 1396 K, 3000 K
-
-*** Timestep 20:  t=66040.2 years
-   Solving temperature system... 8 iterations.
-   Solving C_1 system ... 8 iterations.
-   Solving Stokes system... 18+0 iterations.
-
-   Postprocessing:
-     Temperature min/avg/max: 273 K, 1392 K, 3000 K
-
-*** Timestep 21:  t=69330.8 years
-   Solving temperature system... 7 iterations.
-   Solving C_1 system ... 8 iterations.
-   Solving Stokes system... 18+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 273 K, 1389 K, 3000 K
 
-*** Timestep 22:  t=72620.7 years
-   Solving temperature system... 7 iterations.
+*** Timestep 15:  t=59664.3 years
+   Solving temperature system... 8 iterations.
    Solving C_1 system ... 8 iterations.
-   Solving Stokes system... 18+0 iterations.
+   Solving Stokes system... 19+0 iterations.
 
    Postprocessing:
-     Temperature min/avg/max: 273 K, 1386 K, 3000 K
+     Temperature min/avg/max: 273 K, 1384 K, 3000 K
 
-*** Timestep 23:  t=75910.1 years
-   Solving temperature system... 7 iterations.
+*** Timestep 16:  t=63606.1 years
+   Solving temperature system... 8 iterations.
    Solving C_1 system ... 8 iterations.
-   Solving Stokes system... 18+0 iterations.
-
-   Postprocessing:
-     Temperature min/avg/max: 273 K, 1383 K, 3000 K
-
-*** Timestep 24:  t=79198.8 years
-   Solving temperature system... 7 iterations.
-   Solving C_1 system ... 8 iterations.
-   Solving Stokes system... 18+0 iterations.
-
-   Postprocessing:
-     Temperature min/avg/max: 273 K, 1380 K, 3000 K
-
-*** Timestep 25:  t=82487 years
-   Solving temperature system... 7 iterations.
-   Solving C_1 system ... 7 iterations.
-   Solving Stokes system... 18+0 iterations.
+   Solving Stokes system... 19+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 273 K, 1378 K, 3000 K
 
-*** Timestep 26:  t=85774.7 years
+*** Timestep 17:  t=67544.1 years
+   Solving temperature system... 8 iterations.
+   Solving C_1 system ... 8 iterations.
+   Solving Stokes system... 19+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max: 273 K, 1374 K, 3000 K
+
+*** Timestep 18:  t=71478.5 years
+   Solving temperature system... 8 iterations.
+   Solving C_1 system ... 8 iterations.
+   Solving Stokes system... 19+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max: 273 K, 1369 K, 3000 K
+
+*** Timestep 19:  t=75409.5 years
+   Solving temperature system... 8 iterations.
+   Solving C_1 system ... 8 iterations.
+   Solving Stokes system... 19+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max: 273 K, 1364 K, 3000 K
+
+*** Timestep 20:  t=79337.1 years
+   Solving temperature system... 8 iterations.
+   Solving C_1 system ... 8 iterations.
+   Solving Stokes system... 19+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max: 273 K, 1360 K, 3000 K
+
+*** Timestep 21:  t=83261.5 years
+   Solving temperature system... 7 iterations.
+   Solving C_1 system ... 8 iterations.
+   Solving Stokes system... 19+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max: 273 K, 1356 K, 3000 K
+
+*** Timestep 22:  t=87182.8 years
+   Solving temperature system... 7 iterations.
+   Solving C_1 system ... 8 iterations.
+   Solving Stokes system... 19+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max: 273 K, 1351 K, 3000 K
+
+*** Timestep 23:  t=91101.1 years
+   Solving temperature system... 7 iterations.
+   Solving C_1 system ... 7 iterations.
+   Solving Stokes system... 19+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max: 273 K, 1347 K, 3000 K
+
+*** Timestep 24:  t=95016.5 years
+   Solving temperature system... 7 iterations.
+   Solving C_1 system ... 7 iterations.
+   Solving Stokes system... 19+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max: 273 K, 1344 K, 3000 K
+
+*** Timestep 25:  t=98929.1 years
    Solving temperature system... 7 iterations.
    Solving C_1 system ... 7 iterations.
    Solving Stokes system... 18+0 iterations.
 
    Postprocessing:
-     Temperature min/avg/max: 273 K, 1375 K, 3000 K
+     Temperature min/avg/max: 273 K, 1340 K, 3000 K
 
-*** Timestep 27:  t=89062 years
-   Solving temperature system... 7 iterations.
-   Solving C_1 system ... 7 iterations.
-   Solving Stokes system... 18+0 iterations.
-
-   Postprocessing:
-     Temperature min/avg/max: 273 K, 1372 K, 3000 K
-
-*** Timestep 28:  t=92348.7 years
-   Solving temperature system... 7 iterations.
-   Solving C_1 system ... 7 iterations.
-   Solving Stokes system... 18+0 iterations.
-
-   Postprocessing:
-     Temperature min/avg/max: 273 K, 1370 K, 3000 K
-
-*** Timestep 29:  t=95635.1 years
-   Solving temperature system... 7 iterations.
-   Solving C_1 system ... 7 iterations.
-   Solving Stokes system... 18+0 iterations.
-
-   Postprocessing:
-     Temperature min/avg/max: 273 K, 1367 K, 3000 K
-
-*** Timestep 30:  t=98921 years
-   Solving temperature system... 7 iterations.
-   Solving C_1 system ... 7 iterations.
-   Solving Stokes system... 18+0 iterations.
-
-   Postprocessing:
-     Temperature min/avg/max: 273 K, 1365 K, 3000 K
-
-*** Timestep 31:  t=100000 years
+*** Timestep 26:  t=100000 years
    Solving temperature system... 7 iterations.
    Solving C_1 system ... 7 iterations.
    Solving Stokes system... 17+0 iterations.
 
    Postprocessing:
-     Temperature min/avg/max: 273 K, 1364 K, 3000 K
+     Temperature min/avg/max: 273 K, 1339 K, 3000 K
 
 Termination requested by criterion: end time
 

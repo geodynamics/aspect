@@ -6,7 +6,7 @@ Number of degrees of freedom: 852 (674+89+89)
    Skipping temperature solve because RHS is zero.
 
    Postprocessing:
-     RMS, max velocity:                                     0.707 m/s, 0.981 m/s
+     RMS, max velocity:                                     0.707 m/s, 0.982 m/s
      Angular momentum, Moment of inertia, Angular velocity: -1.57 kg*m^2/s, 1.57 kg*m^2, -1 1/s
 
 Termination requested by criterion: end time

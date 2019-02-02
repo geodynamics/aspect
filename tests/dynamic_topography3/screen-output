@@ -5,10 +5,10 @@ Number of degrees of freedom: 4,030 (2,910+150+970)
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 147+0 iterations.
+   Solving Stokes system... 98+0 iterations.
 
    Postprocessing:
-     Pressure at top/bottom of domain: -2.108e+04 Pa, 9.425e+10 Pa
+     Pressure at top/bottom of domain: -2.045e+04 Pa, 9.425e+10 Pa
      Computing dynamic topography      
      Writing graphical output:         output-dynamic_topography3/solution/solution-00000
 

@@ -9,9 +9,9 @@ Number of degrees of freedom: 10,436 (6,402+833+3,201)
 
    Postprocessing:
      Writing graphical output:           output-steinberger_latent_heat/solution/solution-00000
-     RMS, max velocity:                  0.454 m/year, 0.876 m/year
+     RMS, max velocity:                  0.454 m/year, 0.877 m/year
      Temperature min/avg/max:            273 K, 2606 K, 4250 K
-     Heat fluxes through boundary parts: -3.57e+05 W, 1.595e+06 W, 0 W, 0 W
+     Heat fluxes through boundary parts: -3.574e+05 W, 1.595e+06 W, 0 W, 0 W
 
 Termination requested by criterion: end time
 

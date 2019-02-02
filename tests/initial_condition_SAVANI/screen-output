@@ -5,11 +5,11 @@ Number of degrees of freedom: 1,277 (915+57+305)
 *** Timestep 0:  t=0 seconds
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 35+0 iterations.
+   Solving Stokes system... 34+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-initial_condition_SAVANI/solution/solution-00000
-     Temperature min/avg/max:  1477 K, 1599 K, 1752 K
+     Temperature min/avg/max:  1476 K, 1600 K, 1751 K
 
 Termination requested by criterion: end time
 
