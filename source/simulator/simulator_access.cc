@@ -618,6 +618,15 @@ namespace aspect
   }
 
   template <int dim>
+  const VolumeOfFluidHandler<dim> &
+  SimulatorAccess<dim>::get_volume_of_fluid_handler () const
+  {
+    Assert (simulator->volume_of_fluid_handler.get() != nullptr,
+            ExcMessage("You can not call this function if volume of fluid interface tracking is not enabled."));
+    return *(simulator->volume_of_fluid_handler);
+  }
+
+  template <int dim>
   const NewtonHandler<dim> &
   SimulatorAccess<dim>::get_newton_handler () const
   {

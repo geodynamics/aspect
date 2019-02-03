@@ -1,0 +1,96 @@
+# Test for linear interface under constant velocity
+# Error should be at machine precision
+
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 4
+set Use years in output instead of seconds = false
+set CFL number                             = 0.5
+set Output directory                       = output
+
+subsection Volume of Fluid
+    set Enable interface tracking = true
+    set Number initialization samples = 16
+end
+
+subsection Compositional fields
+    set Number of fields = 1
+    set Names of fields = F_1
+    set Compositional field methods = volume of fluid
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 3
+  set Time steps between mesh refinement = 0
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1
+    set Y extent = 1
+    set Y periodic = true
+  end
+end
+
+subsection Material model
+  set Model name = simple
+end
+
+subsection Gravity model
+  set Model name = vertical
+end
+
+subsection Initial temperature model
+  set Model name = function
+end
+
+subsection Initial composition model
+  set List of model names = function
+  set Volume of fluid intialization type = F_1:level set
+
+  subsection Function
+    set Variable names = x,y,t
+    set Function constants = init=1.4, x0=1.0, y0=0.3, xv=0.0, yv=-0.25
+    set Function expression = cos(init*pi)*(x-x0)+sin(init*pi)*(y-y0)
+  end
+end
+
+subsection Prescribed Stokes solution
+  set Model name = function
+  subsection Velocity function
+    set Variable names = x,y,t
+
+    set Function constants = init=1.4, x0=1.0, y0=0.3, xv=0.0, yv=-0.25
+    set Function expression = xv;yv
+  end
+end
+
+set Nonlinear solver scheme                   = Advection only
+
+subsection Postprocess
+  set List of postprocessors = volume of fluid statistics, volume of fluid mms
+
+  subsection VoF MMS
+    set Number error samples = 16
+    set Time between error estimates = 4.0
+
+    subsection True LS
+      set Variable names = x,y,t
+      set Function constants = init=1.4, x0=1.0, y0=0.3, xv=0.0, yv=-0.25
+      set Function expression = cos(init*pi)*(x-x0)+sin(init*pi)*(y-y0)
+    end
+  end
+
+  subsection Visualization
+    set Time between graphical output = 0.0
+
+    set List of output variables = volume of fluid values
+
+    subsection Volume of Fluid
+      set Output interface reconstruction contour = true
+    end
+  end
+end
