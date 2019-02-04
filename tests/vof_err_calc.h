@@ -315,7 +315,7 @@ namespace aspect
                 }
               const double dot = normal * xU;
               const double computed_fluid_fraction_at_point = VolumeOfFluid::Utilities::compute_fluid_fraction<dim> (h * normal,
-                      (d_compute - dot));
+                                                              (d_compute - dot));
               const double diff = abs (solution_fluid_fraction_at_point - computed_fluid_fraction_at_point);
               val += diff * fe_err.JxW (i);
             }
