@@ -23,6 +23,7 @@
 #include <aspect/geometry_model/sphere.h>
 #include <aspect/geometry_model/chunk.h>
 #include <aspect/termination_criteria/interface.h>
+#include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/global.h>
 #include <aspect/utilities.h>
 
@@ -115,7 +116,7 @@ namespace aspect
              << '\n';
 
       // Get quadrature formula and increase the degree of quadrature over the velocity
-      // element degree.
+      // element degree:
       const QGauss<dim> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.velocities).degree+quadrature_degree_increase);
       FEValues<dim> fe_values (this->get_mapping(),
                                this->get_fe(),
@@ -125,7 +126,7 @@ namespace aspect
                                update_quadrature_points |
                                update_JxW_values);
 
-      // Get the value of the outer radius and inner radius
+      // Get the value of the outer radius and inner radius:
       double model_outer_radius;
       double model_inner_radius;
       if (dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()) != nullptr)
@@ -154,7 +155,7 @@ namespace aspect
           model_inner_radius = 0;
         }
 
-      // Get the value of the universal gravitational constant
+      // Get the value of the universal gravitational constant:
       const double G = aspect::constants::big_g;
 
       // Storing cartesian coordinates, density and JxW at local quadrature points in a vector
@@ -179,6 +180,7 @@ namespace aspect
       endc = this->get_dof_handler().end();
       MaterialModel::MaterialModelInputs<dim> in(quadrature_formula.size(),this->n_compositional_fields());
       MaterialModel::MaterialModelOutputs<dim> out(quadrature_formula.size(),this->n_compositional_fields());
+      //const double reference_density = (this->get_adiabatic_conditions().density(in.position[0]));
       unsigned int local_cell_number = 0;
       for (; cell!=endc; ++cell)
         {
@@ -191,12 +193,17 @@ namespace aspect
               for (unsigned int q = 0; q < n_quadrature_points_per_cell; ++q)
                 {
                   density_JxW[local_cell_number * n_quadrature_points_per_cell + q] = out.densities[q] * fe_values.JxW(q);
-                  density_difference_JxW[local_cell_number * n_quadrature_points_per_cell + q] = (out.densities[q]-reference_density) * fe_values.JxW(q);
+                  density_difference_JxW[local_cell_number * n_quadrature_points_per_cell + q] = (out.densities[q]-medium_density) * fe_values.JxW(q);
                   position_point[local_cell_number * n_quadrature_points_per_cell + q] = position_point_cell[q];
                 }
               ++local_cell_number;
             }
         }
+      
+      //double sum_density = 0;
+      //for (unsigned int d=0; d<all_density.size(); ++d)
+      //  sum_density = sum_density + all_density[d];
+      //const double average_density=sum_density/all_density.size(); 
 
       // Pre-Assign the coordinates of all satellites in a vector point:
       // *** First calculate the number of satellites according to the sampling scheme:
@@ -305,7 +312,7 @@ namespace aspect
                 }
             }
 
-          // Sum local gravity components over global domain
+          // Sum local gravity components over global domain:
           const Tensor<1,dim> g          = Utilities::MPI::sum (local_g, this->get_mpi_communicator());
           const Tensor<1,dim> g_anomaly  = Utilities::MPI::sum (local_g_anomaly, this->get_mpi_communicator());
           const Tensor<2,dim> g_gradient = Utilities::MPI::sum (local_g_gradient, this->get_mpi_communicator());
@@ -321,41 +328,41 @@ namespace aspect
             }
           else if ((satellites_coordinate[p][0] > model_inner_radius) && (satellites_coordinate[p][0] < model_outer_radius))
             {
-              g_theory = G * numbers::PI * 4/3 * reference_density * (satellites_coordinate[p][0] - (std::pow(model_inner_radius,3) 
+              g_theory = G * numbers::PI * 4/3 * medium_density * (satellites_coordinate[p][0] - (std::pow(model_inner_radius,3) 
                                                                    /  std::pow(satellites_coordinate[p][0],2)));
             }
           else
             {
-              g_theory = G * numbers::PI * 4/3 * reference_density * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3)) 
+              g_theory = G * numbers::PI * 4/3 * medium_density * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3)) 
                                                                    /  std::pow(satellites_coordinate[p][0],2);
-              g_gradient_theory[0][0] = -G * numbers::PI * 4/3 * reference_density 
+              g_gradient_theory[0][0] = -G * numbers::PI * 4/3 * medium_density 
                                            * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
                                            * (std::pow(satellites_coordinate[p][0], 2) - 3.0 * pow(position_satellite[0],2))
                                            /  std::pow(satellites_coordinate[p][0],5);
-              g_gradient_theory[1][1] = -G * numbers::PI * 4/3 * reference_density 
+              g_gradient_theory[1][1] = -G * numbers::PI * 4/3 * medium_density 
                                            * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
                                            * (std::pow(satellites_coordinate[p][0], 2) - 3.0 * pow(position_satellite[1],2))
                                            /  std::pow(satellites_coordinate[p][0],5);
-              g_gradient_theory[2][2] = -G * numbers::PI * 4/3 * reference_density 
+              g_gradient_theory[2][2] = -G * numbers::PI * 4/3 * medium_density 
                                            * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
                                            * (std::pow(satellites_coordinate[p][0], 2) - 3.0 * pow(position_satellite[2],2))
                                            /  std::pow(satellites_coordinate[p][0],5);
-              g_gradient_theory[0][1] = -G * numbers::PI * 4/3 * reference_density 
+              g_gradient_theory[0][1] = -G * numbers::PI * 4/3 * medium_density 
                                            * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
                                            * (- 3.0 * position_satellite[0] * position_satellite[1])
                                            /  std::pow(satellites_coordinate[p][0],5);
-              g_gradient_theory[0][2] = -G * numbers::PI * 4/3 * reference_density 
+              g_gradient_theory[0][2] = -G * numbers::PI * 4/3 * medium_density 
                                            * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
                                            * (- 3.0 * position_satellite[0] * position_satellite[2])
                                            /  std::pow(satellites_coordinate[p][0],5);
-              g_gradient_theory[1][2] = -G * numbers::PI * 4/3 * reference_density 
+              g_gradient_theory[1][2] = -G * numbers::PI * 4/3 * medium_density 
                                            * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
                                            * (- 3.0 * position_satellite[1] * position_satellite[2])
                                            /  std::pow(satellites_coordinate[p][0],5);
             }
 
           // write output.
-          // g_gradient is here given in eotvos E (1E = 1e-9 per square seconds)
+          // g_gradient is here given in eotvos E (1E = 1e-9 per square seconds):
           if (dealii::Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
             {
               output << satellites_coordinate[p][0] << ' '
@@ -385,7 +392,8 @@ namespace aspect
                      << '\n';
             }
         }
-      // up the next time we need output
+
+      // up the next time we need output:
       set_last_output_time (this->get_time());
       last_output_timestep = this->get_timestep_number();
       return std::pair<std::string, std::string> ("gravity computation file:",filename);
@@ -459,7 +467,7 @@ namespace aspect
                              "Parameter for the map sampling scheme: "
                              "Gravity may be calculated for a sets of points along "
                              "the latitude between a minimum and maximum latitude.");
-          prm.declare_entry ("Reference density", "3300",
+          prm.declare_entry ("Medium density for gravity anomalies", "3300",
                              Patterns::Double (0.0),
                              "Gravity anomalies are computed using densities anomalies "
                              "relative to a reference density.");
@@ -530,7 +538,7 @@ namespace aspect
           maximum_colongitude = prm.get_double ("Maximum longitude") + 180;
           minimum_colatitude  = prm.get_double ("Minimum latitude") + 90;
           maximum_colatitude  = prm.get_double ("Maximum latitude") + 90;
-          reference_density   = prm.get_double ("Reference density");
+          medium_density   = prm.get_double ("Medium density for gravity anomalies");
           radius_list    = Utilities::string_to_double(Utilities::split_string_list(prm.get("List of radius")));
           longitude_list = Utilities::string_to_double(Utilities::split_string_list(prm.get("List of longitude")));
           latitude_list  = Utilities::string_to_double(Utilities::split_string_list(prm.get("List of latitude")));
@@ -554,7 +562,7 @@ namespace aspect
       prm.leave_subsection();
     }
 
-    // This deals with having the correct behavior during checkpoint/restart cycles
+    // This deals with having the correct behavior during checkpoint/restart cycles:
     template <int dim>
     template <class Archive>
     void GravityPointValues<dim>::serialize (Archive &ar, const unsigned int)
@@ -569,8 +577,7 @@ namespace aspect
     void
     GravityPointValues<dim>::set_last_output_time (const double current_time)
     {
-      // if output_interval is positive, then update the last supposed output
-      // time
+      // if output_interval is positive, then update the last supposed output time:
       if (output_interval > 0)
         {
           // We need to find the last time output was supposed to be written.

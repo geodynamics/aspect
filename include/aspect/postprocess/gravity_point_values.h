@@ -186,10 +186,11 @@ namespace aspect
         double maximum_colatitude;
 
         /**
-         * A reference density is required to obtained relative density to calculate
-         * gravity anomalies;
+         * A density is required to obtained relative density to calculate
+         * gravity anomalies. The medium_density is also used to fill the domain 
+         * with a constant density and predict the analytical value of gravity.
          */
-        double reference_density;
+        double medium_density;
 
         /**
          * Specify the sampling scheme determining if gravity calculation is performed
