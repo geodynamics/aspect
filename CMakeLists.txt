@@ -263,6 +263,19 @@ ADD_CUSTOM_TARGET(indent
   COMMENT "Indenting all ASPECT header and source files..."
   )
 
+# Provide "switch_to_release" and "switch_to_debug"
+ADD_CUSTOM_TARGET(switch_to_release
+  COMMAND ${CMAKE_COMMAND} -D CMAKE_BUILD_TYPE=Release .
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+  COMMENT "switching to RELEASE mode..."
+  )
+
+ADD_CUSTOM_TARGET(switch_to_debug
+  COMMAND ${CMAKE_COMMAND} -D CMAKE_BUILD_TYPE=Debug .
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+  COMMENT "switching to DEBUG mode..."
+  )
+
 
 # Depending on whether we link statically or allow for shared libs,
 # we can or can not load plugins via external shared libs. Pass this
