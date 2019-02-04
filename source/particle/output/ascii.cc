@@ -21,6 +21,7 @@
 #include <aspect/particle/output/ascii.h>
 #include <aspect/utilities.h>
 
+#if !DEAL_II_VERSION_GTE(9,0,0)
 
 namespace aspect
 {
@@ -158,3 +159,4 @@ namespace aspect
   }
 }
 
+#endif

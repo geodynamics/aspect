@@ -20,6 +20,8 @@
 
 #include <aspect/particle/particle_accessor.h>
 
+#if !DEAL_II_VERSION_GTE(9,0,0)
+
 namespace aspect
 {
   namespace Particle
@@ -34,10 +36,10 @@ namespace aspect
 
 
     template <int dim, int spacedim>
-    ParticleAccessor<dim,spacedim>::ParticleAccessor (const std::multimap<types::LevelInd, Particle<dim,spacedim> > &map,
-                                                      const typename std::multimap<types::LevelInd, Particle<dim,spacedim> >::iterator &particle)
+    ParticleAccessor<dim,spacedim>::ParticleAccessor (const std::multimap<Particles::internal::LevelInd, Particle<dim,spacedim> > &map,
+                                                      const typename std::multimap<Particles::internal::LevelInd, Particle<dim,spacedim> >::iterator &particle)
       :
-      map (const_cast<std::multimap<types::LevelInd, Particle<dim,spacedim> > *> (&map)),
+      map (const_cast<std::multimap<Particles::internal::LevelInd, Particle<dim,spacedim> > *> (&map)),
       particle (particle)
     {}
 
@@ -253,3 +255,5 @@ namespace aspect
     ASPECT_INSTANTIATE(INSTANTIATE)
   }
 }
+
+#endif

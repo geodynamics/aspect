@@ -32,6 +32,7 @@
 #include <aspect/particle/integrator/interface.h>
 #include <aspect/particle/interpolator/interface.h>
 #include <aspect/particle/output/interface.h>
+#include <aspect/particle/property/interface.h>
 #include <aspect/postprocess/visualization.h>
 
 #include <deal.II/base/index_set.h>
@@ -275,7 +276,9 @@ namespace aspect
     Particle::Generator::write_plugin_graph<dim>(out);
     Particle::Integrator::write_plugin_graph<dim>(out);
     Particle::Interpolator::write_plugin_graph<dim>(out);
+#if !DEAL_II_VERSION_GTE(9,0,0)
     Particle::Output::write_plugin_graph<dim>(out);
+#endif
     Particle::Property::Manager<dim>::write_plugin_graph(out);
     Postprocess::Manager<dim>::write_plugin_graph(out);
     Postprocess::Visualization<dim>::write_plugin_graph(out);

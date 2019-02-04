@@ -39,7 +39,7 @@ namespace aspect
       {
         typename parallel::distributed::Triangulation<dim>::active_cell_iterator found_cell;
 
-        if (cell == typename parallel::distributed::Triangulation<dim>::active_cell_iterator())
+        if (cell->state() == IteratorState::invalid)
           {
             // We can not simply use one of the points as input for find_active_cell_around_point
             // because for vertices of mesh cells we might end up getting ghost_cells as return value
@@ -93,7 +93,7 @@ namespace aspect
                 std::vector<typename parallel::distributed::Triangulation<dim>::active_cell_iterator> neighbors;
                 GridTools::get_active_neighbors<parallel::distributed::Triangulation<dim> >(found_cell,neighbors);
 
-                int nearest_neighbor_cell = -std::numeric_limits<int>::max();
+                unsigned int nearest_neighbor_cell = numbers::invalid_unsigned_int;
                 for (unsigned int i=0; i<neighbors.size(); ++i)
                   {
                     // Only recursively call this function if the neighbor cell contains
@@ -108,6 +108,10 @@ namespace aspect
                         nearest_neighbor_cell = i;
                       }
                   }
+
+                Assert(nearest_neighbor_cell != numbers::invalid_unsigned_int,
+                       ExcMessage("A cell and all of its neighbors do not contain any particles. "
+                                  "This case is not supported by the 'nearest neighbor' interpolation scheme."));
 
                 point_properties[pos_idx] = properties_at_points(particle_handler,
                                                                  std::vector<Point<dim> > (1,positions[pos_idx]),

@@ -18,9 +18,11 @@
  <http://www.gnu.org/licenses/>.
  */
 
+
 #include <aspect/particle/output/interface.h>
 #include <aspect/simulator_access.h>
 
+#if !DEAL_II_VERSION_GTE(9,0,0)
 
 namespace aspect
 {
@@ -197,3 +199,5 @@ namespace aspect
     }
   }
 }
+
+#endif
