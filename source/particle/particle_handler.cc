@@ -263,8 +263,6 @@ namespace aspect
       update_n_global_particles();
       update_next_free_particle_index();
       update_global_max_particles_per_cell();
-
-      return;
     }
 
 
