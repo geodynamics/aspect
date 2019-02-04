@@ -346,11 +346,13 @@ namespace aspect
       point2[1] = phi / 180.0 * numbers::PI;
       if (dim == 3)
         {
-          // Octant
+          point1[2] = 0.0;
+
           if (phi == 90.0)
+            // Octant
             point2[2] = 0.5 * numbers::PI;
-          // Full shell
           else
+            // Full shell
             point2[2] = numbers::PI;
         }
 
