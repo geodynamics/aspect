@@ -35,7 +35,17 @@ namespace aspect
      * A postprocessor that computes gravity, gravity anomalies, gravity potential and
      * gravity gradients for a set of points (e.g. satellites) in or above the model
      * surface for a user-defined range of latitudes, longitudes and radius, or a list
-     * of point coordinates.
+     * of point coordinates. Spherical coordinates in the output file are radius,
+     * colattitude and colongitude. Gravity is here based on the density distribution
+     * from the material model (and non adiabatic). This means that the density may
+     * come directly from an ascii file. This postprocessor also computes theoretical
+     * gravity (and gradients), which corresponds to the analytical solution of gravity
+     * in the same geometry but filled with an absolute density. The absolute density
+     * is also used to determine the density difference for computing gravity anomalies.
+     * Thus one man remain careful on the gravity anomaly results because the solution
+     * may not reflect the actual gravity anomaly. One way to obtain gravity anomalies
+     * is to substract gravity at a point from the average gravity on the map. Or
+     * another way is to use this postprocessor directly on density anomalies.
 
      * @ingroup Postprocessing
      */
@@ -129,6 +139,7 @@ namespace aspect
         double quadrature_degree_increase;
 
         /**
+         * Parameter for the map sampling scheme:
          * Gravity may be calculated for a sets of points along the radius (e.g. depth
          * profile) between a minimum and maximum radius. Number of points along the radius
          * is specified with n_points_radius.
@@ -136,6 +147,7 @@ namespace aspect
         double n_points_radius;
 
         /**
+         * Parameter for the map sampling scheme:
          * Gravity may be calculated for a sets of points along the longitude (e.g. satellite
          * mapping) between a minimum and maximum longitude. Number of points along the
          * longitude is specified with n_points_longitude.
@@ -143,6 +155,7 @@ namespace aspect
         double n_points_longitude;
 
         /**
+         * Parameter for the map sampling scheme:
          * Gravity may be calculated for a sets of points along the latitude (e.g. satellite
          * mapping) between a minimum and maximum latitude. Number of points along the
          * latitude is specified with n_points_latitude.
@@ -150,6 +163,7 @@ namespace aspect
         double n_points_latitude;
 
         /**
+         * Parameter for the map sampling scheme:
          * Minimum radius for the depth range in case of the map sampling scheme. Presribe
          * a minimum radius for a sampling coverage at a specific height. May be defined
          * in or outside the model.
@@ -157,6 +171,7 @@ namespace aspect
         double minimum_radius;
 
         /**
+         * Parameter for the map sampling scheme:
          * Maximum radius for depth-profile in case of the map sampling scheme. May be
          * defined in or outside the model. No need to specify maximum_radius if
          * n_points_radius is 1.
@@ -164,22 +179,26 @@ namespace aspect
         double maximum_radius;
 
         /**
+         * Parameter for the map sampling scheme:
          * Minimum longitude for longitude range in case of the map sampling scheme.
          */
         double minimum_colongitude;
 
         /**
+         * Parameter for the map sampling scheme:
          * Maximum longitude for the longitude range in case of the map sampling scheme.
          * No need to specify maximum_longitude if n_points_longitude is 1.
          */
         double maximum_colongitude;
 
         /**
+         * Parameter for the map sampling scheme:
          * Minimum latitude for the latitude range in case of the map sampling scheme.
          */
         double minimum_colatitude;
 
         /**
+         * Parameter for the map sampling scheme:
          * Maximum latitude for the latitude range in case of the map sampling scheme.
          * No need to specify maximum_latitude if n_points_latitude is 1.
          */
@@ -187,10 +206,10 @@ namespace aspect
 
         /**
          * A density is required to obtained relative density to calculate
-         * gravity anomalies. The medium_density is also used to fill the domain 
-         * with a constant density and predict the analytical value of gravity.
+         * gravity anomalies. The absolute density is also used to fill the domain
+         * with a constant density and predict the analytical solution of gravity.
          */
-        double medium_density;
+        double absolute_density;
 
         /**
          * Specify the sampling scheme determining if gravity calculation is performed
@@ -203,18 +222,21 @@ namespace aspect
         } sampling_scheme;
 
         /**
+         * Parameter for the list sampling scheme:
          * List of radius coordinates for the list sampling scheme. Must be in order
          * with the lists of longitude and latitude.
          */
         std::vector<double> radius_list;
 
         /**
+         * Parameter for the list sampling scheme:
          * List of longitude coordinates for the list sampling scheme. Must be in order
          * with the lists of radius and latitude.
          */
         std::vector<double> longitude_list;
 
         /**
+         * Parameter for the list sampling scheme:
          * List of latitude coordinates for the list sampling scheme. Must be in order
          * with the lists of radius and longitude.
          */
