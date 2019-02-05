@@ -854,15 +854,15 @@ namespace aspect
         {
           data_directory = Utilities::expand_ASPECT_SOURCE_DIR(prm.get ("Data directory"));
 
-          velocity_file_name              = prm.get ("Velocity file name");
-          data_file_time_step             = prm.get_double ("Data file time step");
-          first_data_file_model_time      = prm.get_double ("First data file model time");
-          first_data_file_number          = prm.get_double ("First data file number");
-          decreasing_file_order           = prm.get_bool   ("Decreasing file order");
-          scale_factor          = prm.get_double ("Scale factor");
-          point1                = prm.get ("Point one");
-          point2                = prm.get ("Point two");
-          lithosphere_thickness = prm.get_double ("Lithosphere thickness");
+          velocity_file_name         = prm.get        ("Velocity file name");
+          data_file_time_step        = prm.get_double ("Data file time step");
+          first_data_file_model_time = prm.get_double ("First data file model time");
+          first_data_file_number     = prm.get_integer("First data file number");
+          decreasing_file_order      = prm.get_bool   ("Decreasing file order");
+          scale_factor               = prm.get_double ("Scale factor");
+          point1                     = prm.get        ("Point one");
+          point2                     = prm.get        ("Point two");
+          lithosphere_thickness      = prm.get_double ("Lithosphere thickness");
 
           if (this->convert_output_to_years())
             {

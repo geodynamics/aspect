@@ -722,7 +722,7 @@ namespace aspect
 
       for (unsigned int i = 0; i < n_poly_points; ++i)
         {
-          const std::array<Point<2>,2 > list = {point_list[i], shifted_point_list[i]};
+          const std::array<Point<2>,2 > list = {{point_list[i], shifted_point_list[i]}};
           distances[i] = distance_to_line(list, point);
         }
 
@@ -2267,7 +2267,7 @@ namespace aspect
       {
         data_file_time_step             = prm.get_double ("Data file time step");
         first_data_file_model_time      = prm.get_double ("First data file model time");
-        first_data_file_number          = prm.get_double ("First data file number");
+        first_data_file_number          = prm.get_integer("First data file number");
         decreasing_file_order           = prm.get_bool   ("Decreasing file order");
 
         if (this->convert_output_to_years() == true)

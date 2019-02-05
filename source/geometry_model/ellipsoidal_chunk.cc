@@ -519,10 +519,10 @@ namespace aspect
           bottom_depth = prm.get_double("Depth");
           semi_major_axis_a = prm.get_double("Semi-major axis");
           eccentricity = prm.get_double("Eccentricity");
-          semi_minor_axis_b=std::sqrt((1 - pow(eccentricity,2)) * pow(semi_major_axis_a,2));
-          EW_subdiv = prm.get_double("East-West subdivisions");
-          NS_subdiv = prm.get_double("North-South subdivisions");
-          depth_subdiv = prm.get_double("Depth subdivisions");
+          semi_minor_axis_b = std::sqrt((1 - pow(eccentricity,2.)) * pow(semi_major_axis_a,2.));
+          EW_subdiv = prm.get_integer("East-West subdivisions");
+          NS_subdiv = prm.get_integer("North-South subdivisions");
+          depth_subdiv = prm.get_integer("Depth subdivisions");
 
           // Check whether the corners of the rectangle are really place correctly
           if (present[0] == true && present[1] == true)

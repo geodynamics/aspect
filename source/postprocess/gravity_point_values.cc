@@ -42,7 +42,10 @@ namespace aspect
     {
       // Get quadrature formula and increase the degree of quadrature over the velocity
       // element degree.
-      const QGauss<dim> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.velocities).degree+quadrature_degree_increase);
+      const unsigned int degree = static_cast<unsigned int>(
+                                    this->get_fe().base_element(this->introspection().base_elements.velocities).degree
+                                    + quadrature_degree_increase);
+      const QGauss<dim> quadrature_formula (degree);
       FEValues<dim> fe_values (this->get_mapping(),
                                this->get_fe(),
                                quadrature_formula,

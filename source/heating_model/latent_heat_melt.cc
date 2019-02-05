@@ -49,7 +49,7 @@ namespace aspect
 
           if (this->introspection().compositional_name_exists("porosity") &&  this->get_timestep_number() > 0)
             {
-              const double porosity_idx = this->introspection().compositional_index_for_name("porosity");
+              const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
               double melting_rate = 0.0;
 
               if (!use_operator_split)
