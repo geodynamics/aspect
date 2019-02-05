@@ -9,5 +9,3 @@ cd output-checkpoint_03_particles ;  rm -rf output2.tmp ; mkdir output2.tmp ;  c
 Executing the following command:
 cd output-checkpoint_03_particles ; (cat ASPECT_DIR/tests/checkpoint_03_particles.prm  ;  echo 'set Output directory = output2.tmp'  ;  echo 'set Resume computation = true' ) | ../../aspect -- > /dev/null
 * now comparing:
-cp: cannot stat 'output1.tmp/particles/particle-00009.0000.txt': No such file or directory
-cp: cannot stat 'output2.tmp/particles/particle-00009.0000.txt': No such file or directory
