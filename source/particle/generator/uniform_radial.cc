@@ -48,7 +48,7 @@ namespace aspect
             for (unsigned int i = 0; i < radial_layers; ++i)
               {
                 const double radius = P_min[0] + (radial_spacing * i);
-                particles_per_layer[i] = round(n_particles * radius / total_radius);
+                particles_per_layer[i] = static_cast<unsigned int>(round(n_particles * radius / total_radius));
               }
           }
         else if (dim == 3)
@@ -59,7 +59,7 @@ namespace aspect
             for (unsigned int i = 0; i < radial_layers; ++i)
               {
                 const double area = std::pow(P_min[0] + (radial_spacing * i),2);
-                particles_per_layer[i] = round(n_particles * area / total_area);
+                particles_per_layer[i] = static_cast<unsigned int>(round(n_particles * area / total_area));
               }
           }
         else
@@ -94,11 +94,13 @@ namespace aspect
               }
             else if (dim == 3)
               {
-                const unsigned int theta_particles = round(sqrt(particles_per_layer[i]));
-                const unsigned int phi_particles = round(
-                                                     static_cast<double>(particles_per_layer[i])
-                                                     /
-                                                     static_cast<double>(theta_particles));
+                const unsigned int theta_particles = static_cast<unsigned int>(
+                                                       round(sqrt(particles_per_layer[i])));
+                const unsigned int phi_particles = static_cast<unsigned int>(
+                                                     round(
+                                                       static_cast<double>(particles_per_layer[i])
+                                                       /
+                                                       static_cast<double>(theta_particles)));
                 const double theta_spacing = (P_max[2] - P_min[2]) / fmax(theta_particles-1,1);
 
                 for (unsigned int j = 0; j < theta_particles; ++j)

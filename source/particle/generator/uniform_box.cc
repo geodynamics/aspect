@@ -50,7 +50,7 @@ namespace aspect
         // Calculate separation of particles
         for (unsigned int i = 0; i < dim; ++i)
           {
-            n_particles_per_direction[i] = round(std::pow(n_particles * std::pow(P_diff[i],dim) / volume, 1./dim));
+            n_particles_per_direction[i] = static_cast<unsigned int>(round(std::pow(n_particles * std::pow(P_diff[i],dim) / volume, 1./dim)));
             spacing[i] = P_diff[i] / fmax(n_particles_per_direction[i] - 1,1);
           }
 

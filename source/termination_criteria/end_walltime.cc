@@ -60,7 +60,8 @@ namespace aspect
     {
       prm.enter_subsection("Termination criteria");
       {
-        walltime_duration = prm.get_double ("Wall time") * 3600; // Change from hours to seconds.
+        // Change from hours to seconds:
+        walltime_duration = static_cast<unsigned int>(prm.get_double ("Wall time") * 3600.);
       }
       prm.leave_subsection ();
     }
