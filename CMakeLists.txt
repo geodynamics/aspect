@@ -263,17 +263,72 @@ ADD_CUSTOM_TARGET(indent
   COMMENT "Indenting all ASPECT header and source files..."
   )
 
+IF(CMAKE_GENERATOR MATCHES "Ninja")
+  SET(_make_command "$ ninja")
+ELSE()
+  SET(_make_command " $ make")
+ENDIF()
+
 # Provide "release" and "debug" targets to switch compile mode
+IF(${DEAL_II_BUILD_TYPE} MATCHES "DebugRelease")
 ADD_CUSTOM_TARGET(release
   COMMAND ${CMAKE_COMMAND} -D CMAKE_BUILD_TYPE=Release .
+  COMMAND ${CMAKE_COMMAND} -E echo "***"
+  COMMAND ${CMAKE_COMMAND} -E echo "*** Switched to Release mode. Now recompile with: ${_make_command}"
+  COMMAND ${CMAKE_COMMAND} -E echo "***"
   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+  VERBATIM
   COMMENT "switching to RELEASE mode..."
   )
 ADD_CUSTOM_TARGET(debug
   COMMAND ${CMAKE_COMMAND} -D CMAKE_BUILD_TYPE=Debug .
+  COMMAND ${CMAKE_COMMAND} -E echo "***"
+  COMMAND ${CMAKE_COMMAND} -E echo "*** Switched to Debug mode. Now recompile with: ${_make_command}"
+  COMMAND ${CMAKE_COMMAND} -E echo "***"
   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+  VERBATIM
   COMMENT "switching to DEBUG mode..."
   )
+ENDIF()
+
+# Provide a "distclean" target (like it is done in deal.II):
+ADD_CUSTOM_TARGET(distclean
+  COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target clean
+  COMMAND ${CMAKE_COMMAND} -E remove_directory CMakeFiles
+  COMMAND ${CMAKE_COMMAND} -E remove
+    CMakeCache.txt cmake_install.cmake Makefile
+    build.ninja rules.ninja .ninja_deps .ninja_log
+  COMMENT "distclean invoked"
+  )
+
+
+
+FILE(WRITE ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/print_usage.cmake
+"MESSAGE(
+\"###
+#
+#  Project ${TARGET} set up with  ${DEAL_II_PACKAGE_NAME}-${DEAL_II_PACKAGE_VERSION}  found at
+#      ${DEAL_II_PATH}
+#
+#  CMAKE_BUILD_TYPE:          ${CMAKE_BUILD_TYPE}
+#
+#  You can now run
+#      ${_make_command}                - to compile and link ${TARGET}
+#      ${_make_command} debug          - to switch the build type to 'Debug'
+#      ${_make_command} release        - to switch the build type to 'Release'
+#      ${_make_command} clean          - to remove the generated executable as well as
+#                               all intermediate compilation files
+#      ${_make_command} distclean      - to clean the directory from all generated
+#                               files (includes clean, runclean and the removal
+#                               of the generated build system)
+#      ${_make_command} info           - to view this message again
+\")")
+
+# Provide "info" target
+ADD_CUSTOM_TARGET(info
+  COMMAND ${CMAKE_COMMAND} -P ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/print_usage.cmake
+  )
+
 
 # Depending on whether we link statically or allow for shared libs,
 # we can or can not load plugins via external shared libs. Pass this
@@ -507,3 +562,11 @@ INSTALL(FILES ${CMAKE_BINARY_DIR}/include/aspect/revision.h DESTINATION "include
 
 MESSAGE(STATUS "Writing config into detailed.log...")
 INCLUDE(cmake/write_config)
+
+# print "info" if run for the first time:
+IF(NOT USAGE_PRINTED)
+  INCLUDE(${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/print_usage.cmake)
+  SET(USAGE_PRINTED TRUE CACHE INTERNAL "")
+ELSE()
+  MESSAGE(STATUS "Run  ${_make_command} info  to print a detailed help message")
+ENDIF()
