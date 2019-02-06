@@ -116,7 +116,7 @@ namespace aspect
              << '\n';
 
       // Get quadrature formula and increase the degree of quadrature over the velocity
-      // element degree:
+      // element degree.
       const unsigned int degree = static_cast<unsigned int>(
                                     this->get_fe().base_element(this->introspection().base_elements.velocities).degree
                                     + quadrature_degree_increase);
