@@ -57,7 +57,7 @@ namespace aspect
     GravityPointValues<dim>::execute (TableHandler &)
     {
       // Check time to see if we output gravity
-      if ((std::isnan(last_output_time)) || (this->get_time() == end_time))
+      if (std::isnan(last_output_time))
         {
           last_output_time = this->get_time() - output_interval;
           last_output_timestep = this->get_timestep_number();
@@ -168,7 +168,7 @@ namespace aspect
       // density and the JxW are here together for simplicity in the equation (both variables
       // only appear together):
       std::vector<double> density_JxW (n_locally_owned_cells * n_quadrature_points_per_cell);
-      std::vector<double> density_difference_JxW (n_locally_owned_cells * n_quadrature_points_per_cell);
+      std::vector<double> density_anomalies_JxW (n_locally_owned_cells * n_quadrature_points_per_cell);
 
       // Declare the vector 'position_point' to store the position of quadrature points:
       std::vector<Point<dim> > position_point (n_locally_owned_cells * n_quadrature_points_per_cell);
@@ -180,7 +180,6 @@ namespace aspect
       endc = this->get_dof_handler().end();
       MaterialModel::MaterialModelInputs<dim> in(quadrature_formula.size(),this->n_compositional_fields());
       MaterialModel::MaterialModelOutputs<dim> out(quadrature_formula.size(),this->n_compositional_fields());
-      //const double reference_density = (this->get_adiabatic_conditions().density(in.position[0]));
       unsigned int local_cell_number = 0;
       for (; cell!=endc; ++cell)
         {
@@ -193,17 +192,12 @@ namespace aspect
               for (unsigned int q = 0; q < n_quadrature_points_per_cell; ++q)
                 {
                   density_JxW[local_cell_number * n_quadrature_points_per_cell + q] = out.densities[q] * fe_values.JxW(q);
-                  density_difference_JxW[local_cell_number * n_quadrature_points_per_cell + q] = (out.densities[q]-absolute_density) * fe_values.JxW(q);
+                  density_anomalies_JxW[local_cell_number * n_quadrature_points_per_cell + q] = (out.densities[q]-reference_density) * fe_values.JxW(q);
                   position_point[local_cell_number * n_quadrature_points_per_cell + q] = position_point_cell[q];
                 }
               ++local_cell_number;
             }
         }
-
-      //double sum_density = 0;
-      //for (unsigned int d=0; d<all_density.size(); ++d)
-      //  sum_density = sum_density + all_density[d];
-      //const double average_density=sum_density/all_density.size();
 
       // Pre-Assign the coordinates of all satellites in a vector point:
       // *** First calculate the number of satellites according to the sampling scheme:
@@ -283,8 +277,8 @@ namespace aspect
                       const double KK = G * density_JxW[local_cell_number * n_quadrature_points_per_cell + q] / std::pow(dist,3);
                       local_g += KK * (position_satellite - position_point[local_cell_number * n_quadrature_points_per_cell + q]);
                       // For gravity anomalies:
-                      const double relative_KK = G * density_difference_JxW[local_cell_number * n_quadrature_points_per_cell + q] / std::pow(dist,3);
-                      local_g_anomaly += relative_KK * (position_satellite - position_point[local_cell_number * n_quadrature_points_per_cell + q]);
+                      const double KK_anomalies = G * density_anomalies_JxW[local_cell_number * n_quadrature_points_per_cell + q] / std::pow(dist,3);
+                      local_g_anomaly += KK_anomalies * (position_satellite - position_point[local_cell_number * n_quadrature_points_per_cell + q]);
                       // For gravity potential:
                       local_g_potential -= G * density_JxW[local_cell_number * n_quadrature_points_per_cell + q] / dist;
                       // For gravity gradient:
@@ -328,34 +322,34 @@ namespace aspect
             }
           else if ((satellites_coordinate[p][0] > model_inner_radius) && (satellites_coordinate[p][0] < model_outer_radius))
             {
-              g_theory = G * numbers::PI * 4/3 * absolute_density * (satellites_coordinate[p][0] - (std::pow(model_inner_radius,3)
+              g_theory = G * numbers::PI * 4/3 * reference_density * (satellites_coordinate[p][0] - (std::pow(model_inner_radius,3)
                                                                      /  std::pow(satellites_coordinate[p][0],2)));
             }
           else
             {
-              g_theory = G * numbers::PI * 4/3 * absolute_density * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
+              g_theory = G * numbers::PI * 4/3 * reference_density * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
                          /  std::pow(satellites_coordinate[p][0],2);
-              g_gradient_theory[0][0] = -G * numbers::PI * 4/3 * absolute_density
+              g_gradient_theory[0][0] = -G * numbers::PI * 4/3 * reference_density
                                         * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
                                         * (std::pow(satellites_coordinate[p][0], 2) - 3.0 * pow(position_satellite[0],2))
                                         /  std::pow(satellites_coordinate[p][0],5);
-              g_gradient_theory[1][1] = -G * numbers::PI * 4/3 * absolute_density
+              g_gradient_theory[1][1] = -G * numbers::PI * 4/3 * reference_density
                                         * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
                                         * (std::pow(satellites_coordinate[p][0], 2) - 3.0 * pow(position_satellite[1],2))
                                         /  std::pow(satellites_coordinate[p][0],5);
-              g_gradient_theory[2][2] = -G * numbers::PI * 4/3 * absolute_density
+              g_gradient_theory[2][2] = -G * numbers::PI * 4/3 * reference_density
                                         * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
                                         * (std::pow(satellites_coordinate[p][0], 2) - 3.0 * pow(position_satellite[2],2))
                                         /  std::pow(satellites_coordinate[p][0],5);
-              g_gradient_theory[0][1] = -G * numbers::PI * 4/3 * absolute_density
+              g_gradient_theory[0][1] = -G * numbers::PI * 4/3 * reference_density
                                         * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
                                         * (- 3.0 * position_satellite[0] * position_satellite[1])
                                         /  std::pow(satellites_coordinate[p][0],5);
-              g_gradient_theory[0][2] = -G * numbers::PI * 4/3 * absolute_density
+              g_gradient_theory[0][2] = -G * numbers::PI * 4/3 * reference_density
                                         * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
                                         * (- 3.0 * position_satellite[0] * position_satellite[2])
                                         /  std::pow(satellites_coordinate[p][0],5);
-              g_gradient_theory[1][2] = -G * numbers::PI * 4/3 * absolute_density
+              g_gradient_theory[1][2] = -G * numbers::PI * 4/3 * reference_density
                                         * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
                                         * (- 3.0 * position_satellite[1] * position_satellite[2])
                                         /  std::pow(satellites_coordinate[p][0],5);
@@ -467,10 +461,10 @@ namespace aspect
                              "Parameter for the map sampling scheme: "
                              "Gravity may be calculated for a sets of points along "
                              "the latitude between a minimum and maximum latitude.");
-          prm.declare_entry ("Absolute density", "3300",
+          prm.declare_entry ("Reference density", "3300",
                              Patterns::Double (0.0),
-                             "Gravity anomalies are computed using densities anomalies "
-                             "relative to a reference density.");
+                             "Gravity anomalies may be computed using density "
+                             "anomalies relative to a reference density.");
           prm.declare_entry ("List of radius", "",
                              Patterns::List (Patterns::Double(0)),
                              "Parameter for the list sampling scheme: "
@@ -538,7 +532,7 @@ namespace aspect
           maximum_colongitude = prm.get_double ("Maximum longitude") + 180;
           minimum_colatitude  = prm.get_double ("Minimum latitude") + 90;
           maximum_colatitude  = prm.get_double ("Maximum latitude") + 90;
-          absolute_density   = prm.get_double ("Absolute density");
+          reference_density   = prm.get_double ("Reference density");
           radius_list    = Utilities::string_to_double(Utilities::split_string_list(prm.get("List of radius")));
           longitude_list = Utilities::string_to_double(Utilities::split_string_list(prm.get("List of longitude")));
           latitude_list  = Utilities::string_to_double(Utilities::split_string_list(prm.get("List of latitude")));
@@ -590,6 +584,32 @@ namespace aspect
           last_output_time = last_output_time + std::floor((current_time-last_output_time)/output_interval*magic) * output_interval/magic;
         }
     }
+
+    template <int dim>
+    void
+    GravityPointValues<dim>::save (std::map<std::string, std::string> &status_strings) const
+    {
+      std::ostringstream os;
+      aspect::oarchive oa (os);
+      oa << (*this);
+
+      status_strings["GravityPointValues"] = os.str();
+    }
+
+
+    template <int dim>
+    void
+    GravityPointValues<dim>::load (const std::map<std::string, std::string> &status_strings)
+    {
+      // see if something was saved
+      if (status_strings.find("GravityPointValues") != status_strings.end())
+        {
+          std::istringstream is (status_strings.find("GravityPointValues")->second);
+          aspect::iarchive ia (is);
+          ia >> (*this);
+        }
+    }
+
   }
 }
 
@@ -611,12 +631,13 @@ namespace aspect
                                   "density may come directly from an ascii file. This postprocessor also "
                                   "computes theoretical gravity (and gradients), which corresponds to "
                                   "the analytical solution of gravity in the same geometry but filled "
-                                  "with an absolute density. The absolute density is also used to "
-                                  "determine the density difference for computing gravity anomalies. "
-                                  "Thus one man remain careful on the gravity anomaly results because "
-                                  "the solution may not reflect the actual gravity anomaly. One way "
-                                  "to obtain gravity anomalies is to substract gravity at a point from "
-                                  "the average gravity on the map. Or another way is to use this "
-                                  "postprocessor directly on density anomalies.")
+                                  "with a reference density. The reference density is also used to "
+                                  "determine density anomalies for computing gravity anomalies. Thus "
+                                  "one man remain careful on the gravity anomaly meaning because the "
+                                  "solution may not reflect the actual gravity anomaly (dependencies "
+                                  "of density to other parameters  e.g. temperature). On way to obtain "
+                                  "gravity anomalies is to substract gravity at a point from the average "
+                                  "gravity on the map. Or another way is to use this postprocessor "
+                                  "directly on density anomalies from an ascii file.")
   }
 }

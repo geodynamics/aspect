@@ -40,12 +40,13 @@ namespace aspect
      * from the material model (and non adiabatic). This means that the density may
      * come directly from an ascii file. This postprocessor also computes theoretical
      * gravity (and gradients), which corresponds to the analytical solution of gravity
-     * in the same geometry but filled with an absolute density. The absolute density
+     * in the same geometry but filled with a referemce density. The reference density
      * is also used to determine the density difference for computing gravity anomalies.
-     * Thus one man remain careful on the gravity anomaly results because the solution
-     * may not reflect the actual gravity anomaly. One way to obtain gravity anomalies
-     * is to substract gravity at a point from the average gravity on the map. Or
-     * another way is to use this postprocessor directly on density anomalies.
+     * Thus one man remain careful on the gravity anomaly meaning because the solution
+     * may not reflect the actual gravity anomaly (due to dependencies of density to 
+     * other parameters, e.g. temperature). One way to obtain gravity anomalies is to
+     * substract gravity at a point from the average gravity on the map. Or another
+     * way is to use this postprocessor directly on density anomalies.
 
      * @ingroup Postprocessing
      */
@@ -84,6 +85,18 @@ namespace aspect
          */
         template <class Archive>
         void serialize (Archive &ar, const unsigned int version);
+
+        /**
+         * Save the state of this object.
+         */
+        virtual
+        void save (std::map<std::string, std::string> &status_strings) const;
+
+        /**
+         * Restore the state of the object.
+         */
+        virtual
+        void load (const std::map<std::string, std::string> &status_strings);
 
       private:
         /**
@@ -205,11 +218,13 @@ namespace aspect
         double maximum_colatitude;
 
         /**
-         * A density is required to obtained relative density to calculate
-         * gravity anomalies. The absolute density is also used to fill the domain
-         * with a constant density and predict the analytical solution of gravity.
+         * A reference density is required for two purposes: 
+         * 1) benchmark the gravity postprocessor with computing analytically gravity
+         * acceleration and gradients in the domain filled with a constant density.
+         * 2) calculate the density difference of the density given by the material
+         * model and a constant density, in order to compute gravity anomalies.
          */
-        double absolute_density;
+        double reference_density;
 
         /**
          * Specify the sampling scheme determining if gravity calculation is performed
