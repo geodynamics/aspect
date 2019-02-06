@@ -323,7 +323,7 @@ namespace aspect
           else if ((satellites_coordinate[p][0] > model_inner_radius) && (satellites_coordinate[p][0] < model_outer_radius))
             {
               g_theory = G * numbers::PI * 4/3 * reference_density * (satellites_coordinate[p][0] - (std::pow(model_inner_radius,3)
-                                                                     /  std::pow(satellites_coordinate[p][0],2)));
+                                                                      /  std::pow(satellites_coordinate[p][0],2)));
             }
           else
             {

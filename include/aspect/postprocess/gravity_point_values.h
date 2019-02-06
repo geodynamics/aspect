@@ -43,7 +43,7 @@ namespace aspect
      * in the same geometry but filled with a referemce density. The reference density
      * is also used to determine the density difference for computing gravity anomalies.
      * Thus one man remain careful on the gravity anomaly meaning because the solution
-     * may not reflect the actual gravity anomaly (due to dependencies of density to 
+     * may not reflect the actual gravity anomaly (due to dependencies of density to
      * other parameters, e.g. temperature). One way to obtain gravity anomalies is to
      * substract gravity at a point from the average gravity on the map. Or another
      * way is to use this postprocessor directly on density anomalies.
@@ -218,7 +218,7 @@ namespace aspect
         double maximum_colatitude;
 
         /**
-         * A reference density is required for two purposes: 
+         * A reference density is required for two purposes:
          * 1) benchmark the gravity postprocessor with computing analytically gravity
          * acceleration and gradients in the domain filled with a constant density.
          * 2) calculate the density difference of the density given by the material
