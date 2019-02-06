@@ -239,8 +239,7 @@ namespace aspect
         {
           const unsigned int n_points = out.viscosities.size();
           out.additional_outputs.push_back(
-            std::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
-            (new MaterialModel::SeismicAdditionalOutputs<dim> (n_points)));
+            std::make_shared<MaterialModel::SeismicAdditionalOutputs<dim>> (n_points));
         }
     }
   }
