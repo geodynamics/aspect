@@ -636,11 +636,11 @@ namespace aspect
                                   "the analytical solution of gravity in the same geometry but filled "
                                   "with a reference density. The reference density is also used to "
                                   "determine density anomalies for computing gravity anomalies. Thus "
-                                  "one man remain careful on the gravity anomaly meaning because the "
-                                  "solution may not reflect the actual gravity anomaly (dependencies "
-                                  "of density to other parameters  e.g. temperature). On way to obtain "
-                                  "gravity anomalies is to substract gravity at a point from the average "
-                                  "gravity on the map. Or another way is to use this postprocessor "
-                                  "directly on density anomalies from an ascii file.")
+                                  "one must carefully evaluate the meaning of the gravity anomaly output, "
+                                  "because the solution may not reflect the actual gravity anomaly (due to "
+                                  "differences in the assumed reference density). On way to guarantee correct "
+                                  "gravity anomalies is to subtract gravity of a certain point from the average "
+                                  "gravity on the map. Another way is to directly use density anomalies for this "
+                                  "postprocessor.")
   }
 }
