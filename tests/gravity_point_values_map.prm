@@ -1,10 +1,12 @@
-# A simple setup for gravity acceleration calculated at a point P.
+# A simple setup for testing the gravity postprocessor using the 
+# sample scheme 'map'.
 # See the corresponding section in the manual for more information.
 
 # General parameters
 set Dimension                              = 3
 set End time                               = 0
-set Output directory                       = output_gravity_point_values
+set Output directory                       = output-gravity_point_values_map
+set Nonlinear solver scheme                = no Advection, no Stokes
 
 # Model geometry
 subsection Geometry model
@@ -62,8 +64,9 @@ end
 subsection Postprocess
   set List of postprocessors = gravity calculation
   subsection Gravity calculation
+    set Sampling scheme               = map
     set Minimum radius                = 4 
-    set Minimum longitude             = 200
-    set Minimum latitude              = 35
+    set Number points longitude       = 5
+    set Number points latitude        = 5
   end
 end
