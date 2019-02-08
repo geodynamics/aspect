@@ -1,0 +1,20 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Iterations for Stokes solver
+# 10: Velocity iterations in Stokes preconditioner
+# 11: Schur complement iterations in Stokes preconditioner
+# 12: Error_u_l2
+# 13: Error_p_l2
+# 14: Error_rho_l2
+# 15: Number of advected particles
+# 16: Particle file name
+# 17: Visualization file name
+0 0.000000000000e+00 0.000000000000e+00 48 552 240 432 0 33 34 170 3.4714e+00 4.6897e+00 1.1340e+02 768 output-time_dependent_annulus/output-time_dependent_annulus/particles/particles-00000 output-time_dependent_annulus/solution/solution-00000 
+1 1.529603815079e-03 1.529603815079e-03 48 552 240 432 0  0  0   0 3.4714e+00 4.6897e+00 1.1340e+02 768 output-time_dependent_annulus/output-time_dependent_annulus/particles/particles-00001 output-time_dependent_annulus/solution/solution-00001 
+2 3.000000000000e-03 1.470396184921e-03 48 552 240 432 0 24 25 125 3.5667e+00 4.5742e+00 1.1611e+02 768 output-time_dependent_annulus/output-time_dependent_annulus/particles/particles-00002 output-time_dependent_annulus/solution/solution-00002 
