@@ -6630,9 +6630,12 @@ can be much more expensive. Both approaches can be used to actively influence th
 \label{sec:geomio}
 \textit{This section was contributed by Juliane Dannberg}
 
+\note{This cookbook is based on a developer version of geomIO from July 2016. In the meantime, the development of 
+geomIO continued, and there is now a publication\cite{bauvillegeomio} that describes its features and how they can be used in more detail.}
+
 Many geophysical setups require initial conditions with several different materials and complex geometries. 
 Hence, sometimes it would be easier to generate the initial geometries of the materials as a drawing instead 
-of by writing code. The MATLAB-based library geomIO (\url{http://geomio.bitbucket.org/}) provides a convenient tool
+of by writing code. The MATLAB-based library geomIO (\url{https://bitbucket.org/geomio/geomio}, \cite{bauvillegeomio}) provides a convenient tool
 to convert a drawing generated with the vector graphics editor Inkscape (\url{https://inkscape.org/en/}) to a data 
 file that can be read into \aspect{}. Here, we will demonstrate how this can be done for a 2D setup for a model
 with one compositional field, but geomIO also has the capability to create 3D volumes based on a series of 2D vector 
