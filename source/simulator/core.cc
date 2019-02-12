@@ -1250,7 +1250,12 @@ namespace aspect
       // is kept here, even though explicitly setting a facet should always work.
       try
         {
-          pcout.get_stream().imbue(std::locale(std::locale(), new aspect::Utilities::ThousandSep));
+          // Imbue the stream with a locale that does the right thing. The
+          // locale is responsible for later deleting the object pointed
+          // to by the last argument (the "facet"), see
+          // https://en.cppreference.com/w/cpp/locale/locale/locale
+          pcout.get_stream().imbue(std::locale(std::locale(),
+                                               new aspect::Utilities::ThousandSep));
         }
       catch (const std::runtime_error &e)
         {
@@ -1519,8 +1524,9 @@ namespace aspect
       if (parameters.free_surface_enabled)
         {
           x_fs_system[0] = &free_surface->mesh_displacements;
-          freesurface_trans.reset (new parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector>
-                                   (free_surface->free_surface_dof_handler));
+          freesurface_trans
+            = std_cxx14::make_unique<parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector>>
+              (free_surface->free_surface_dof_handler);
         }
 
 

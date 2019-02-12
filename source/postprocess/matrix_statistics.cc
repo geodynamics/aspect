@@ -52,7 +52,12 @@ namespace
     // is kept here, even though explicitly setting a facet should always work.
     try
       {
-        output.imbue(std::locale(std::locale(), new aspect::Utilities::ThousandSep));
+        // Imbue the stream with a locale that does the right thing. The
+        // locale is responsible for later deleting the object pointed
+        // to by the last argument (the "facet"), see
+        // https://en.cppreference.com/w/cpp/locale/locale/locale
+        output.imbue(std::locale(std::locale(),
+                                 new aspect::Utilities::ThousandSep));
       }
     catch (const std::runtime_error &e)
       {
