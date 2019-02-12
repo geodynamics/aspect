@@ -1795,8 +1795,8 @@ namespace aspect
 
 
 
-      std::shared_ptr<LinearAlgebra::PreconditionAMG>     Amg_preconditioner;
-      std::shared_ptr<LinearAlgebra::PreconditionBase>    Mp_preconditioner;
+      std::unique_ptr<LinearAlgebra::PreconditionAMG>           Amg_preconditioner;
+      std::unique_ptr<LinearAlgebra::PreconditionBase>          Mp_preconditioner;
 
       bool                                                      rebuild_sparsity_and_matrices;
       bool                                                      rebuild_stokes_matrix;
