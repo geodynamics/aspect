@@ -54,7 +54,11 @@ namespace aspect
       {
         public:
 
-          virtual std::pair<std::string, Vector<float> *>
+          /**
+           * @copydoc CellDataVectorCreator<dim>::execute()
+           */
+          virtual
+          std::pair<std::string, Vector<float> *>
           execute() const;
 
       };
