@@ -44,7 +44,7 @@ namespace aspect
       {
         public:
           /**
-           * Evaluate the solution for the heat flux.
+           * @copydoc CellDataVectorCreator<dim>::execute()
            */
           virtual
           std::pair<std::string, Vector<float> *>
