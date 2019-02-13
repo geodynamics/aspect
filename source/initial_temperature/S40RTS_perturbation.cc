@@ -171,8 +171,12 @@ namespace aspect
     void
     S40RTSPerturbation<dim>::initialize()
     {
-      spherical_harmonics_lookup.reset(new internal::S40RTS::SphericalHarmonicsLookup(data_directory+harmonics_coeffs_file_name,this->get_mpi_communicator()));
-      spline_depths_lookup.reset(new internal::S40RTS::SplineDepthsLookup(data_directory+spline_depth_file_name,this->get_mpi_communicator()));
+      spherical_harmonics_lookup
+        = std::make_shared<internal::S40RTS::SphericalHarmonicsLookup>(data_directory+harmonics_coeffs_file_name,
+                                                                       this->get_mpi_communicator());
+      spline_depths_lookup
+        = std::make_shared<internal::S40RTS::SplineDepthsLookup>(data_directory+spline_depth_file_name,
+                                                                 this->get_mpi_communicator());
 
       if (vs_to_density_method == file)
         {

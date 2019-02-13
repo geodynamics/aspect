@@ -140,8 +140,7 @@ namespace aspect
 
     const unsigned int n_points = output.viscosities.size();
     output.additional_outputs.push_back(
-      std::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
-      (new MaterialModel::MaterialModelDerivatives<dim> (n_points)));
+      std::make_shared<MaterialModel::MaterialModelDerivatives<dim>>(n_points));
   }
 
 

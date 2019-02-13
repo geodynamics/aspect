@@ -226,9 +226,10 @@ namespace aspect
 
         for (unsigned int i = 0; i < 2; i++)
           {
-            velocities[i].reset(new Functions::InterpolatedUniformGridData<2> (grid_extent,
-                                                                               table_intervals,
-                                                                               velocity_values[i]));
+            velocities[i]
+              = std_cxx14::make_unique<Functions::InterpolatedUniformGridData<2>> (grid_extent,
+                                                                                   table_intervals,
+                                                                                   velocity_values[i]);
           }
 
         AssertThrow(i == n_points,
@@ -562,8 +563,8 @@ namespace aspect
       if (((dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model())) != nullptr)
           || ((dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model())) != nullptr))
         {
-          lookup.reset(new internal::GPlatesLookup<dim>(pointone,pointtwo));
-          old_lookup.reset(new internal::GPlatesLookup<dim>(pointone,pointtwo));
+          lookup = std::make_shared<internal::GPlatesLookup<dim>>(pointone, pointtwo);
+          old_lookup = std::make_shared<internal::GPlatesLookup<dim>>(pointone, pointtwo);
         }
       else
         AssertThrow (false,ExcMessage ("This gplates plugin can only be used when using "

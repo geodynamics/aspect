@@ -88,7 +88,8 @@ namespace aspect
 
         try
           {
-            function.reset (new Functions::ParsedFunction<dim>(this->n_compositional_fields()));
+            function
+              = std_cxx14::make_unique<Functions::ParsedFunction<dim>>(this->n_compositional_fields());
             function->parse_parameters (prm);
           }
         catch (...)
