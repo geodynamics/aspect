@@ -161,8 +161,12 @@ namespace aspect
     void
     SAVANIPerturbation<dim>::initialize()
     {
-      spherical_harmonics_lookup.reset(new internal::SAVANI::SphericalHarmonicsLookup(data_directory+harmonics_coeffs_file_name,this->get_mpi_communicator()));
-      spline_depths_lookup.reset(new internal::SAVANI::SplineDepthsLookup(data_directory+spline_depth_file_name,this->get_mpi_communicator()));
+      spherical_harmonics_lookup
+        = std::make_shared<internal::SAVANI::SphericalHarmonicsLookup>(data_directory+harmonics_coeffs_file_name,
+                                                                       this->get_mpi_communicator());
+      spline_depths_lookup
+        = std::make_shared<internal::SAVANI::SplineDepthsLookup>(data_directory+spline_depth_file_name,
+                                                                 this->get_mpi_communicator());
 
       if (vs_to_density_method == file)
         {

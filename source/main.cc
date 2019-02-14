@@ -415,12 +415,11 @@ read_parameter_file(const std::string &parameter_file_name)
                      MPI_INT,
                      /*root=*/0, MPI_COMM_WORLD);
 
-          char *p = new char[size];
-          MPI_Bcast (p, size,
+          std::vector<char> p (size);
+          MPI_Bcast (p.data(), size,
                      MPI_CHAR,
                      /*root=*/0, MPI_COMM_WORLD);
-          input_as_string = p;
-          delete[] p;
+          input_as_string = p.data();
         }
     }
 
