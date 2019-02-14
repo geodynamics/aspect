@@ -135,8 +135,12 @@ namespace aspect
       for (unsigned i = 0; i < material_file_names.size(); i++)
         material_lookup.push_back(std::make_shared<Lookup::PerplexReader>
                                   (data_directory+material_file_names[i],interpolation,this->get_mpi_communicator()));
-      lateral_viscosity_lookup.reset(new internal::LateralViscosityLookup(data_directory+lateral_viscosity_file_name,this->get_mpi_communicator()));
-      radial_viscosity_lookup.reset(new internal::RadialViscosityLookup(data_directory+radial_viscosity_file_name,this->get_mpi_communicator()));
+      lateral_viscosity_lookup
+        = std::make_shared<internal::LateralViscosityLookup>(data_directory+lateral_viscosity_file_name,
+                                                             this->get_mpi_communicator());
+      radial_viscosity_lookup
+        = std::make_shared<internal::RadialViscosityLookup>(data_directory+radial_viscosity_file_name,
+                                                            this->get_mpi_communicator());
       avg_temp.resize(n_lateral_slices);
     }
 

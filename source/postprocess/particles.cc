@@ -199,11 +199,10 @@ namespace aspect
 
           // Create the temporary file; get at the actual filename
           // by using a C-style string that mkstemp will then overwrite
-          char *tmp_filename_x = new char[tmp_filename.size()+1];
-          std::strcpy(tmp_filename_x, tmp_filename.c_str());
-          int tmp_file_desc = mkstemp(tmp_filename_x);
-          tmp_filename = tmp_filename_x;
-          delete []tmp_filename_x;
+          std::unique_ptr<char[]> tmp_filename_x (new char[tmp_filename.size()+1]);
+          std::strcpy(tmp_filename_x.get(), tmp_filename.c_str());
+          int tmp_file_desc = mkstemp(tmp_filename_x.get());
+          tmp_filename = tmp_filename_x.get();
 
           // If we failed to create the temp file, just write directly to the target file.
           // We also provide a warning about this fact. There are places where
