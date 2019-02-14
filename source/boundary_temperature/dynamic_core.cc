@@ -303,21 +303,24 @@ namespace aspect
     {
       data_OES.clear();
       if (name_OES.size()==0) return;
-      std::istringstream in(Utilities::read_and_distribute_file_content(name_OES.c_str(), this->get_mpi_communicator()));
+      std::istringstream in(Utilities::read_and_distribute_file_content(name_OES.c_str(),
+                                                                        this->get_mpi_communicator()));
       if (in.good())
         {
           str_data_OES data_read;
-          const int buff_size = 1024;
-          char *line = new char [buff_size];
+          std::string line;
           while (!in.eof())
             {
-              in.getline(line, buff_size);
-              if (sscanf(line,"%le\t%le\n",&(data_read.t),&(data_read.w))==2)
+              std::getline(in, line);
+              if (sscanf(line.data(), "%le\t%le\n", &data_read.t, &data_read.w)==2)
                 data_OES.push_back(data_read);
             }
         }
       if (data_OES.size()!=0)
-        this->get_pcout()<<"Other energy source is in use ( "<<data_OES.size()<<" data points is read)."<<std::endl;
+        this->get_pcout() << "Other energy source is in use ( "
+                          << data_OES.size()
+                          << " data points is read)."
+                          << std::endl;
     }
 
     template <int dim>
