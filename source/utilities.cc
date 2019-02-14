@@ -1526,7 +1526,7 @@ namespace aspect
       while (in.peek() == '#')
         {
           std::string line;
-          getline(in,line);
+          std::getline(in,line);
           std::stringstream linestream(line);
           std::string word;
           while (linestream >> word)

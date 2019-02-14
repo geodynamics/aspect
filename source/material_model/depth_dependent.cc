@@ -71,7 +71,7 @@ namespace aspect
 
       /* The input viscosity file has two columns that are the viscosity and Depth */
       std::string header;
-      getline(in, header);/* Discard header line */
+      std::getline(in, header);/* Discard header line */
       std::vector<double> visc_vec;
       std::array< std::vector<double>, 1 > depth_table;
       while (!in.eof())

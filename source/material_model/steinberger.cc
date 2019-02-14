@@ -45,7 +45,7 @@ namespace aspect
         // Read data from disk and distribute among processes
         std::istringstream in(Utilities::read_and_distribute_file_content(filename, comm));
 
-        getline(in, temp); // eat first line
+        std::getline(in, temp); // eat first line
 
         min_depth=1e20;
         max_depth=-1;
@@ -58,7 +58,7 @@ namespace aspect
               break;
             in >> depth;
             depth *=1000.0;
-            getline(in, temp);
+            std::getline(in, temp);
 
             min_depth = std::min(depth, min_depth);
             max_depth = std::max(depth, max_depth);
@@ -103,7 +103,7 @@ namespace aspect
               break;
             in >> depth;
             depth *=1000.0;
-            getline(in, temp);
+            std::getline(in, temp);
 
             min_depth = std::min(depth, min_depth);
             max_depth = std::max(depth, max_depth);

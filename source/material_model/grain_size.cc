@@ -333,7 +333,7 @@ namespace aspect
                     }
                 }
 
-              getline(in, temp);
+              std::getline(in, temp);
               if (in.eof())
                 break;
               i++;
@@ -411,7 +411,7 @@ namespace aspect
               else
                 h *= 1e6; // conversion from [kJ/g] to [J/kg]
 
-              getline(in, temp);
+              std::getline(in, temp);
               if (in.eof())
                 break;
 
@@ -482,7 +482,7 @@ namespace aspect
                   in.clear();
 
 
-                getline(in, temp);
+                std::getline(in, temp);
                 if (in.eof())
                   break;
 
@@ -513,28 +513,28 @@ namespace aspect
         // Read data from disk and distribute among processes
         std::istringstream in(Utilities::read_and_distribute_file_content(filename, comm));
 
-        getline(in, temp); // eat first line
-        getline(in, temp); // eat next line
-        getline(in, temp); // eat next line
-        getline(in, temp); // eat next line
+        std::getline(in, temp); // eat first line
+        std::getline(in, temp); // eat next line
+        std::getline(in, temp); // eat next line
+        std::getline(in, temp); // eat next line
 
         in >> min_temp;
-        getline(in, temp);
+        std::getline(in, temp);
         in >> delta_temp;
-        getline(in, temp);
+        std::getline(in, temp);
         in >> n_temperature;
-        getline(in, temp);
-        getline(in, temp);
+        std::getline(in, temp);
+        std::getline(in, temp);
         in >> min_press;
         min_press *= 1e5;  // conversion from [bar] to [Pa]
-        getline(in, temp);
+        std::getline(in, temp);
         in >> delta_press;
         delta_press *= 1e5; // conversion from [bar] to [Pa]
-        getline(in, temp);
+        std::getline(in, temp);
         in >> n_pressure;
-        getline(in, temp);
-        getline(in, temp);
-        getline(in, temp);
+        std::getline(in, temp);
+        std::getline(in, temp);
+        std::getline(in, temp);
 
         AssertThrow(min_temp >= 0.0, ExcMessage("Read in of Material header failed (mintemp)."));
         AssertThrow(delta_temp > 0, ExcMessage("Read in of Material header failed (delta_temp)."));
@@ -597,7 +597,7 @@ namespace aspect
                 h = enthalpy_values[(i-1)%n_temperature][(i-1)/n_temperature];
               }
 
-            getline(in, temp);
+            std::getline(in, temp);
             if (in.eof())
               break;
 

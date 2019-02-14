@@ -60,7 +60,7 @@ namespace aspect
               std::istringstream in(Utilities::read_and_distribute_file_content(filename, comm));
 
               in >> order;
-              getline(in,temp);  // throw away the rest of the line
+              std::getline(in,temp);  // throw away the rest of the line
 
               const unsigned int num_splines = 21;
               const unsigned int maxnumber = num_splines * (order+1)*(order+1);
@@ -136,8 +136,8 @@ namespace aspect
               // Read data from disk and distribute among processes
               std::istringstream in(Utilities::read_and_distribute_file_content(filename, comm));
 
-              getline(in,temp);  // throw away the rest of the line
-              getline(in,temp);  // throw away the rest of the line
+              std::getline(in,temp);  // throw away the rest of the line
+              std::getline(in,temp);  // throw away the rest of the line
 
               // This is fixed for this tomography model
               const unsigned int num_splines = 21;
