@@ -1862,12 +1862,12 @@ namespace aspect
       for (const auto &boundary_id : boundary_ids)
         {
           lookups.insert(std::make_pair(boundary_id,
-                                        std::make_shared<Utilities::AsciiDataLookup<dim-1>>
+                                        std_cxx14::make_unique<Utilities::AsciiDataLookup<dim-1>>
                                         (components,
                                          this->scale_factor)));
 
           old_lookups.insert(std::make_pair(boundary_id,
-                                            std::make_shared<Utilities::AsciiDataLookup<dim-1>>
+                                            std_cxx14::make_unique<Utilities::AsciiDataLookup<dim-1>>
                                             (components,
                                              this->scale_factor)));
 
@@ -2087,7 +2087,7 @@ namespace aspect
               const bool load_both_files = std::abs(current_file_number - old_file_number) >= 1;
 
               for (typename std::map<types::boundary_id,
-                   std::shared_ptr<Utilities::AsciiDataLookup<dim-1> > >::iterator
+                   std::unique_ptr<Utilities::AsciiDataLookup<dim-1> > >::iterator
                    boundary_id = lookups.begin();
                    boundary_id != lookups.end(); ++boundary_id)
                 update_data(boundary_id->first,load_both_files);
@@ -2297,8 +2297,8 @@ namespace aspect
                    ExcMessage ("This ascii data plugin can only be used when using "
                                "a spherical shell, chunk or box geometry."));
 
-      lookup = std::make_shared<Utilities::AsciiDataLookup<dim>> (components,
-                                                                  this->scale_factor);
+      lookup = std_cxx14::make_unique<Utilities::AsciiDataLookup<dim>> (components,
+                                                                        this->scale_factor);
 
       const std::string filename = this->data_directory + this->data_file_name;
 
