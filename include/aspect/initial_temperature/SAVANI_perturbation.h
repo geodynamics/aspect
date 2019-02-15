@@ -160,13 +160,13 @@ namespace aspect
          * Pointer to an object that reads and processes the spherical
          * harmonics coefficients
          */
-        std::shared_ptr<internal::SAVANI::SphericalHarmonicsLookup> spherical_harmonics_lookup;
+        std::unique_ptr<internal::SAVANI::SphericalHarmonicsLookup> spherical_harmonics_lookup;
 
         /**
          * Pointer to an object that reads and processes the depths for the
          * spline knot points.
          */
-        std::shared_ptr<internal::SAVANI::SplineDepthsLookup> spline_depths_lookup;
+        std::unique_ptr<internal::SAVANI::SplineDepthsLookup> spline_depths_lookup;
 
         /**
          * Object containing the data profile.

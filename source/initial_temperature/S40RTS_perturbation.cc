@@ -49,114 +49,102 @@ namespace aspect
         // This might need adjusting if this code is used to read in spherical harmonic
         // based tomography models that aren't S40RTS or S20RTS.
 
-        class SphericalHarmonicsLookup
+        SphericalHarmonicsLookup::
+        SphericalHarmonicsLookup(const std::string &filename,
+                                 const MPI_Comm &comm)
         {
-          public:
-            SphericalHarmonicsLookup(const std::string &filename,
-                                     const MPI_Comm &comm)
+          std::string temp;
+          // Read data from disk and distribute among processes
+          std::istringstream in(Utilities::read_and_distribute_file_content(filename, comm));
+
+          in >> order;
+          std::getline(in,temp);  // throw away the rest of the line
+
+          const unsigned int num_splines = 21;
+          const unsigned int maxnumber = num_splines * (order+1)*(order+1);
+
+          // read in all coefficients as a single data vector
+          std::vector<double> coeffs(maxnumber,0.0);
+
+          for (unsigned int i=0; i<maxnumber; ++i)
             {
-              std::string temp;
-              // Read data from disk and distribute among processes
-              std::istringstream in(Utilities::read_and_distribute_file_content(filename, comm));
+              in >> coeffs[i];
+            }
 
-              in >> order;
-              std::getline(in,temp);  // throw away the rest of the line
+          // reorder the coefficients into sin and cos coefficients. a_lm will be the cos coefficients
+          // and b_lm the sin coefficients.
+          unsigned int ind = 0;
 
-              const unsigned int num_splines = 21;
-              const unsigned int maxnumber = num_splines * (order+1)*(order+1);
+          a_lm.reserve(maxnumber);
+          b_lm.reserve(maxnumber);
+          for (unsigned int j=0; j<num_splines; ++j)
+            for (unsigned int i=0; i<order+1; ++i)
+              {
+                a_lm.push_back(coeffs[ind]);
+                b_lm.push_back(0.0);
+                ++ind;
 
-              // read in all coefficients as a single data vector
-              std::vector<double> coeffs(maxnumber,0.0);
-
-              for (unsigned int i=0; i<maxnumber; ++i)
-                {
-                  in >> coeffs[i];
-                }
-
-              // reorder the coefficients into sin and cos coefficients. a_lm will be the cos coefficients
-              // and b_lm the sin coefficients.
-              unsigned int ind = 0;
-
-              a_lm.reserve(maxnumber);
-              b_lm.reserve(maxnumber);
-              for (unsigned int j=0; j<num_splines; ++j)
-                for (unsigned int i=0; i<order+1; ++i)
+                unsigned int ind_degree = 0;
+                while (ind_degree < i)
                   {
                     a_lm.push_back(coeffs[ind]);
-                    b_lm.push_back(0.0);
                     ++ind;
-
-                    unsigned int ind_degree = 0;
-                    while (ind_degree < i)
-                      {
-                        a_lm.push_back(coeffs[ind]);
-                        ++ind;
-                        b_lm.push_back(coeffs[ind]);
-                        ++ind;
-                        ++ind_degree;
-                      }
+                    b_lm.push_back(coeffs[ind]);
+                    ++ind;
+                    ++ind_degree;
                   }
-            }
+              }
+        }
 
-            // Declare a function that returns the cosine coefficients
-            const std::vector<double> &cos_coeffs() const
-            {
-              return a_lm;
-            }
+        // Declare a function that returns the cosine coefficients
+        const std::vector<double> &
+        SphericalHarmonicsLookup::cos_coeffs() const
+        {
+          return a_lm;
+        }
 
-            // Declare a function that returns the sine coefficients
-            const std::vector<double> &sin_coeffs() const
-            {
-              return b_lm;
-            }
+        // Declare a function that returns the sine coefficients
+        const std::vector<double> &
+        SphericalHarmonicsLookup::sin_coeffs() const
+        {
+          return b_lm;
+        }
 
-            unsigned int maxdegree()
-            {
-              return order;
-            }
-
-          private:
-            unsigned int order;
-            std::vector<double> a_lm;
-            std::vector<double> b_lm;
-
-        };
+        unsigned int
+        SphericalHarmonicsLookup::maxdegree() const
+        {
+          return order;
+        }
 
         // Read in the knot points for the spline interpolation. They are located in data/
         // initial-temperature/S40RTS and were taken from the plotting script
         // lib/libS20/splhsetup.f which is part of the plotting package downloadable at
         // http://www.earth.lsa.umich.edu/~jritsema/research.html
-        class SplineDepthsLookup
+        SplineDepthsLookup::SplineDepthsLookup(const std::string &filename,
+                                               const MPI_Comm &comm)
         {
-          public:
-            SplineDepthsLookup(const std::string &filename,
-                               const MPI_Comm &comm)
+          std::string temp;
+          // Read data from disk and distribute among processes
+          std::istringstream in(Utilities::read_and_distribute_file_content(filename, comm));
+
+          std::getline(in,temp);  // throw away the rest of the line
+          std::getline(in,temp);  // throw away the rest of the line
+
+          // This is fixed for this tomography model
+          const unsigned int num_splines = 21;
+
+          depths.resize(num_splines);
+          for (unsigned int i=0; i<num_splines; ++i)
             {
-              std::string temp;
-              // Read data from disk and distribute among processes
-              std::istringstream in(Utilities::read_and_distribute_file_content(filename, comm));
-
-              std::getline(in,temp);  // throw away the rest of the line
-              std::getline(in,temp);  // throw away the rest of the line
-
-              // This is fixed for this tomography model
-              const unsigned int num_splines = 21;
-
-              depths.resize(num_splines);
-              for (unsigned int i=0; i<num_splines; ++i)
-                {
-                  in >> depths[i];
-                }
+              in >> depths[i];
             }
+        }
 
-            const std::vector<double> &spline_depths() const
-            {
-              return depths;
-            }
-
-          private:
-            std::vector<double> depths;
-        };
+        const std::vector<double> &
+        SplineDepthsLookup::spline_depths() const
+        {
+          return depths;
+        }
       }
     }
 
@@ -172,11 +160,11 @@ namespace aspect
     S40RTSPerturbation<dim>::initialize()
     {
       spherical_harmonics_lookup
-        = std::make_shared<internal::S40RTS::SphericalHarmonicsLookup>(data_directory+harmonics_coeffs_file_name,
-                                                                       this->get_mpi_communicator());
+        = std_cxx14::make_unique<internal::S40RTS::SphericalHarmonicsLookup>(data_directory+harmonics_coeffs_file_name,
+                                                                             this->get_mpi_communicator());
       spline_depths_lookup
-        = std::make_shared<internal::S40RTS::SplineDepthsLookup>(data_directory+spline_depth_file_name,
-                                                                 this->get_mpi_communicator());
+        = std_cxx14::make_unique<internal::S40RTS::SplineDepthsLookup>(data_directory+spline_depth_file_name,
+                                                                       this->get_mpi_communicator());
 
       if (vs_to_density_method == file)
         {
