@@ -35,15 +35,10 @@ namespace aspect
     void
     AsciiData<dim>::initialize ()
     {
-      const std::map<types::boundary_id,std::shared_ptr<BoundaryTraction::Interface<dim> > >
-      bvs = this->get_boundary_traction();
-      for (typename std::map<types::boundary_id,std::shared_ptr<BoundaryTraction::Interface<dim> > >::const_iterator
-           p = bvs.begin();
-           p != bvs.end(); ++p)
-        {
-          if (p->second.get() == this)
-            boundary_ids.insert(p->first);
-        }
+      for (const auto &bv : this->get_boundary_traction())
+        if (bv.second.get() == this)
+          boundary_ids.insert(bv.first);
+
       AssertThrow(*(boundary_ids.begin()) != numbers::invalid_boundary_id,
                   ExcMessage("Did not find the boundary indicator for the traction ascii data plugin."));
 

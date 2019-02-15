@@ -46,14 +46,10 @@ namespace aspect
       // Ensure the initial lithostatic pressure traction boundary conditions are used,
       // and register for which boundary indicators these conditions are set.
       std::set<types::boundary_id> traction_bi;
-      const std::map<types::boundary_id,std::shared_ptr<BoundaryTraction::Interface<dim> > >
-      bvs = this->get_boundary_traction();
-      for (typename std::map<types::boundary_id,std::shared_ptr<BoundaryTraction::Interface<dim> > >::const_iterator
-           p = bvs.begin();
-           p != bvs.end(); ++p)
+      for (const auto &p : this->get_boundary_traction())
         {
-          if (p->second.get() == this)
-            traction_bi.insert(p->first);
+          if (p.second.get() == this)
+            traction_bi.insert(p.first);
         }
       AssertThrow(*(traction_bi.begin()) != numbers::invalid_boundary_id,
                   ExcMessage("Did not find any boundary indicators for the initial lithostatic pressure plugin."));

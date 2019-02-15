@@ -1646,7 +1646,7 @@ namespace aspect
       const std::unique_ptr<AdiabaticConditions::Interface<dim> >             adiabatic_conditions;
       const std::unique_ptr<WorldBuilder::World>                              world_builder;
       BoundaryVelocity::Manager<dim>                                          boundary_velocity_manager;
-      std::map<types::boundary_id,std::shared_ptr<BoundaryTraction::Interface<dim> > > boundary_traction;
+      std::map<types::boundary_id,std::unique_ptr<BoundaryTraction::Interface<dim> > > boundary_traction;
       const std::unique_ptr<BoundaryHeatFlux::Interface<dim> >                boundary_heat_flux;
 
       /**
