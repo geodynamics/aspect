@@ -55,7 +55,7 @@ namespace aspect
               std::istringstream in(Utilities::read_and_distribute_file_content(filename, comm));
 
               in >> order;
-              getline(in,temp);  // throw away the rest of the line
+              std::getline(in,temp);  // throw away the rest of the line
 
               const unsigned int num_layers = 28;
 
@@ -69,7 +69,7 @@ namespace aspect
                       in >> new_val;
                       coeffs.push_back(0.01*new_val);
                     }
-                  getline(in,temp);
+                  std::getline(in,temp);
                 }
 
               // reorder the coefficients into sin and cos coefficients. a_lm will be the cos coefficients
@@ -128,8 +128,8 @@ namespace aspect
               // Read data from disk and distribute among processes
               std::istringstream in(Utilities::read_and_distribute_file_content(filename, comm));
 
-              getline(in,temp);  // throw away the rest of the line
-              getline(in,temp);  // throw away the rest of the line
+              std::getline(in,temp);  // throw away the rest of the line
+              std::getline(in,temp);  // throw away the rest of the line
 
               const unsigned int num_splines = 28;
               depths.resize(num_splines);
