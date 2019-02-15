@@ -178,8 +178,7 @@ namespace aspect
                                                   MaterialModel::MaterialModelOutputs<dim> &outputs) const
         {
           outputs.additional_outputs.push_back(
-            std::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
-            (new MaterialModel::SeismicAdditionalOutputs<dim> (n_points)));
+            std::make_shared<MaterialModel::SeismicAdditionalOutputs<dim>> (n_points));
         }
 
         void operator()(const MaterialModel::MaterialModelInputs<dim> &,
@@ -505,51 +504,48 @@ namespace aspect
       {
         if (property_names[property_index] == "temperature")
           {
-            functors.push_back(std::unique_ptr<internal::FunctorBase<dim> >(
-                                 new FunctorDepthAverageField<dim> (this->introspection().extractors.temperature)));
+            functors.push_back(std_cxx14::make_unique<FunctorDepthAverageField<dim>>
+                               (this->introspection().extractors.temperature));
           }
         else if (property_names[property_index].substr(0,2) == "C_")
           {
             const unsigned int c =
               Utilities::string_to_int(property_names[property_index].substr(2,std::string::npos));
 
-            functors.push_back(std::unique_ptr<internal::FunctorBase<dim> >(
-                                 new FunctorDepthAverageField<dim> (this->introspection().extractors.compositional_fields[c])));
+            functors.push_back(std_cxx14::make_unique<FunctorDepthAverageField<dim>> (
+                                 this->introspection().extractors.compositional_fields[c]));
           }
         else if (property_names[property_index] == "velocity_magnitude")
           {
-            functors.push_back(std::unique_ptr<internal::FunctorBase<dim> >(
-                                 new FunctorDepthAverageVelocityMagnitude<dim> (this->introspection().extractors.velocities,
-                                                                                this->convert_output_to_years())));
+            functors.push_back(std_cxx14::make_unique<FunctorDepthAverageVelocityMagnitude<dim>>
+                               (this->introspection().extractors.velocities,
+                                this->convert_output_to_years()));
           }
         else if (property_names[property_index] == "sinking_velocity")
           {
-            functors.push_back(std::unique_ptr<internal::FunctorBase<dim> >(
-                                 new FunctorDepthAverageSinkingVelocity<dim> (this->introspection().extractors.velocities,
-                                                                              &this->get_gravity_model(),
-                                                                              this->convert_output_to_years())));
+            functors.push_back(std_cxx14::make_unique<FunctorDepthAverageSinkingVelocity<dim>>
+                               (this->introspection().extractors.velocities,
+                                &this->get_gravity_model(),
+                                this->convert_output_to_years()));
           }
         else if (property_names[property_index] == "Vs")
           {
-            functors.push_back(std::unique_ptr<internal::FunctorBase<dim> >(
-                                 new FunctorDepthAverageVsVp<dim> (true /* Vs */)));
+            functors.push_back(std_cxx14::make_unique<FunctorDepthAverageVsVp<dim>> (true /* Vs */));
           }
         else if (property_names[property_index] == "Vp")
           {
-            functors.push_back(std::unique_ptr<internal::FunctorBase<dim> >(
-                                 new FunctorDepthAverageVsVp<dim> (false /* Vp */)));
+            functors.push_back(std_cxx14::make_unique<FunctorDepthAverageVsVp<dim>> (false /* Vp */));
           }
         else if (property_names[property_index] == "viscosity")
           {
-            functors.push_back(std::unique_ptr<internal::FunctorBase<dim> >(
-                                 new FunctorDepthAverageViscosity<dim>()));
+            functors.push_back(std_cxx14::make_unique<FunctorDepthAverageViscosity<dim>>());
           }
         else if (property_names[property_index] == "vertical_heat_flux")
           {
-            functors.push_back(std::unique_ptr<internal::FunctorBase<dim> >(
-                                 new FunctorDepthAverageVerticalHeatFlux<dim> (this->introspection().extractors.velocities,
-                                                                               this->introspection().extractors.temperature,
-                                                                               &this->get_gravity_model())));
+            functors.push_back(std_cxx14::make_unique<FunctorDepthAverageVerticalHeatFlux<dim>>
+                               (this->introspection().extractors.velocities,
+                                this->introspection().extractors.temperature,
+                                &this->get_gravity_model()));
           }
         else
           {
