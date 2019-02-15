@@ -18,8 +18,8 @@
  <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _aspect__volume_of_fluid_utilities_h
-#define _aspect__volume_of_fluid_utilities_h
+#ifndef _aspect_volume_of_fluid_utilities_h
+#define _aspect_volume_of_fluid_utilities_h
 
 #include <deal.II/base/point.h>
 

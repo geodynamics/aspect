@@ -19,8 +19,8 @@
 */
 
 
-#ifndef _aspect__postprocess_visualization_volume_of_fluid_values_h
-#define _aspect__postprocess_visualization_volume_of_fluid_values_h
+#ifndef _aspect_postprocess_visualization_volume_of_fluid_values_h
+#define _aspect_postprocess_visualization_volume_of_fluid_values_h
 
 #include <aspect/postprocess/visualization.h>
 #include <aspect/simulator_access.h>
