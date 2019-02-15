@@ -20,8 +20,8 @@
 */
 
 
-#ifndef _aspect__postprocess_volume_of_fluid_statistics_h
-#define _aspect__postprocess_volume_of_fluid_statistics_h
+#ifndef _aspect_postprocess_volume_of_fluid_statistics_h
+#define _aspect_postprocess_volume_of_fluid_statistics_h
 
 #include <aspect/postprocess/interface.h>
 #include <aspect/simulator_access.h>
