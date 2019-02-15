@@ -547,13 +547,13 @@ namespace aspect
               const double u_theta = spherical_vector[2];
 
               cartesian_vector[0] = std::cos(phi)*std::sin(theta)*u_r
-                                    - std::sin(phi)*u_theta
-                                    - std::cos(phi)*std::cos(theta)*u_phi; // X
+                                    + std::cos(theta)*std::cos(phi)*u_theta
+                                    - std::sin(phi)*u_phi; // X
               cartesian_vector[1] = std::sin(phi)*std::sin(theta)*u_r
-                                    + std::cos(phi)*u_theta
-                                    - std::sin(phi)*std::cos(theta)*u_phi; // Y
+                                    + std::cos(theta)*std::sin(phi)*u_theta
+                                    + std::cos(phi)*u_phi; // Y
               cartesian_vector[2] = std::cos(theta)*u_r
-                                    + std::sin(theta)*u_phi;                 // Z
+                                    - std::sin(theta)*u_theta; // Z
               break;
             }
 
