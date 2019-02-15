@@ -2086,11 +2086,8 @@ namespace aspect
 
               const bool load_both_files = std::abs(current_file_number - old_file_number) >= 1;
 
-              for (typename std::map<types::boundary_id,
-                   std::unique_ptr<Utilities::AsciiDataLookup<dim-1> > >::iterator
-                   boundary_id = lookups.begin();
-                   boundary_id != lookups.end(); ++boundary_id)
-                update_data(boundary_id->first,load_both_files);
+              for (const auto &boundary_id : lookups)
+                update_data(boundary_id.first, load_both_files);
             }
 
           time_weight = time_steps_since_start
