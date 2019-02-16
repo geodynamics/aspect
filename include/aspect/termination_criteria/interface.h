@@ -256,13 +256,13 @@ namespace aspect
          * A list of termination criterion objects that have been requested in
          * the parameter file.
          */
-        std::list<std::shared_ptr<Interface<dim> > > termination_objects;
+        std::list<std::unique_ptr<Interface<dim> > > termination_objects;
 
         /**
          * A list of names corresponding to the termination criteria in the
          * termination_objects.
          */
-        std::list<std::string>                              termination_obj_names;
+        std::list<std::string>                       termination_obj_names;
 
         /**
          * Whether to do a final checkpoint before termination. This is
