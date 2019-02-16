@@ -7,13 +7,13 @@ Number of degrees of freedom: 948 (578+81+289)
 ERROR: Uncaught exception in MPI_InitFinalize on proc 0. Skipping MPI_Finalize() to avoid a deadlock.
 
 
-Exception 'ExcMessage("You asked Postprocess:Manager::get_matching_postprocessor() for a " "postprocessor of type <" + boost::core::demangle(typeid(PostprocessorType).name()) + "> " "that could not be found in the current model. Activate this " "postprocessor in the input file.")' on rank 0 on processing: 
+Exception 'ExcMessage("You asked Postprocess::Manager::get_matching_postprocessor() for a " "postprocessor of type <" + boost::core::demangle(typeid(PostprocessorType).name()) + "> " "that could not be found in the current model. Activate this " "postprocessor in the input file.")' on rank 0 on processing: 
 
 An error occurred in file <interface.h> in function
 (line in output replaced by default.sh script)
 The violated condition was: 
     has_matching_postprocessor<PostprocessorType> ()
 Additional information: 
-    You asked Postprocess:Manager::get_matching_postprocessor() for a postprocessor of type <aspect::Postprocess::PressureStatistics<2>> that could not be found in the current model. Activate this postprocessor in the input file.
+    You asked Postprocess::Manager::get_matching_postprocessor() for a postprocessor of type <aspect::Postprocess::PressureStatistics<2>> that could not be found in the current model. Activate this postprocessor in the input file.
 
 Aborting!
