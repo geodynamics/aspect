@@ -445,7 +445,7 @@ namespace aspect
     Manager<dim>::get_matching_heating_model () const
     {
       AssertThrow(has_matching_heating_model<HeatingModelType> (),
-                  ExcMessage("You asked HeatingModel:Manager::get_heating_model() for a "
+                  ExcMessage("You asked HeatingModel::Manager::get_heating_model() for a "
                              "heating model of type <" + boost::core::demangle(typeid(HeatingModelType).name()) + "> "
                              "that could not be found in the current model. Activate this "
                              "heating model in the input file."));

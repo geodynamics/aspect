@@ -347,7 +347,7 @@ namespace aspect
     Manager<dim>::get_matching_mesh_refinement_strategy () const
     {
       AssertThrow(has_matching_mesh_refinement_strategy<MeshRefinementType> (),
-                  ExcMessage("You asked MeshRefinement:Manager::get_matching_mesh_refinement_strategy() for a "
+                  ExcMessage("You asked MeshRefinement::Manager::get_matching_mesh_refinement_strategy() for a "
                              "mesh refinement strategy of type <" + boost::core::demangle(typeid(MeshRefinementType).name()) + "> "
                              "that could not be found in the current model. Activate this "
                              "mesh refinement strategy in the input file."));

@@ -434,7 +434,7 @@ namespace aspect
     Manager<dim>::get_matching_postprocessor () const
     {
       AssertThrow(has_matching_postprocessor<PostprocessorType> (),
-                  ExcMessage("You asked Postprocess:Manager::get_matching_postprocessor() for a "
+                  ExcMessage("You asked Postprocess::Manager::get_matching_postprocessor() for a "
                              "postprocessor of type <" + boost::core::demangle(typeid(PostprocessorType).name()) + "> "
                              "that could not be found in the current model. Activate this "
                              "postprocessor in the input file."));
