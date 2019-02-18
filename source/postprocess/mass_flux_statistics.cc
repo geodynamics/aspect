@@ -72,11 +72,6 @@ namespace aspect
       // mass flux and that is owned by this processor,
       // integrate the normal mass flux given by the formula
       //   j =  \rho * v * n
-      //
-      // for the spherical shell geometry, note that for the inner boundary,
-      // the normal vector points *into* the core, i.e. we compute the flux
-      // *out* of the mantle, not into it. we fix this when we add the local
-      // contribution to the global flux
       for (; cell!=endc; ++cell)
         if (cell->is_locally_owned())
           for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
@@ -130,7 +125,7 @@ namespace aspect
           global_boundary_fluxes[*p] = global_values[index];
       }
 
-      // now add all of the computed heat fluxes to the statistics object
+      // now add all of the computed mass fluxes to the statistics object
       // and create a single string that can be output to the screen
       std::ostringstream screen_text;
       unsigned int index = 0;
@@ -186,7 +181,7 @@ namespace aspect
                                   "the core into the mantle when the domain describes the "
                                   "mantle, then you need to multiply the result by -1."
                                   "\n\n"
-                                  "\\note{In geodynamics, the term ``mass flux'' is often understand "
+                                  "\\note{In geodynamics, the term ``mass flux'' is often understood "
                                   "to be the quantity $\\rho \\mathbf v$, which is really a mass "
                                   "flux \\textit{density}, i.e., a vector-valued field. In contrast "
                                   "to this, the current postprocessor only computes the integrated "
