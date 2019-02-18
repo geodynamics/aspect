@@ -364,7 +364,7 @@ namespace aspect
     Manager<dim>::get_matching_boundary_velocity_model () const
     {
       AssertThrow(has_matching_boundary_velocity_model<BoundaryVelocityType> (),
-                  ExcMessage("You asked BoundaryVelocity:Manager::get_boundary_velocity_model() for a "
+                  ExcMessage("You asked BoundaryVelocity::Manager::get_boundary_velocity_model() for a "
                              "boundary velocity model of type <" + boost::core::demangle(typeid(BoundaryVelocityType).name()) + "> "
                              "that could not be found in the current model. Activate this "
                              "boundary velocity model in the input file."));

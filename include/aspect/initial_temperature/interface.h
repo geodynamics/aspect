@@ -296,7 +296,7 @@ namespace aspect
     Manager<dim>::get_matching_initial_temperature_model () const
     {
       AssertThrow(has_matching_initial_temperature_model<InitialTemperatureType> (),
-                  ExcMessage("You asked InitialTemperature:Manager::get_initial_temperature_model() for a "
+                  ExcMessage("You asked InitialTemperature::Manager::get_initial_temperature_model() for a "
                              "initial temperature model of type <" + boost::core::demangle(typeid(InitialTemperatureType).name()) + "> "
                              "that could not be found in the current model. Activate this "
                              "initial temperature model in the input file."));

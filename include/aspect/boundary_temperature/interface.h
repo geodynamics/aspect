@@ -393,7 +393,7 @@ namespace aspect
     Manager<dim>::get_matching_boundary_temperature_model () const
     {
       AssertThrow(has_matching_boundary_temperature_model<BoundaryTemperatureType> (),
-                  ExcMessage("You asked BoundaryTemperature:Manager::get_boundary_temperature_model() for a "
+                  ExcMessage("You asked BoundaryTemperature::Manager::get_boundary_temperature_model() for a "
                              "boundary temperature model of type <" + boost::core::demangle(typeid(BoundaryTemperatureType).name()) + "> "
                              "that could not be found in the current model. Activate this "
                              "boundary temperature model in the input file."));
