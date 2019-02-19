@@ -379,7 +379,7 @@ namespace aspect
 
 
   template <int dim>
-  const std::map<types::boundary_id,std::shared_ptr<BoundaryTraction::Interface<dim> > > &
+  const std::map<types::boundary_id,std::unique_ptr<BoundaryTraction::Interface<dim> > > &
   SimulatorAccess<dim>::get_boundary_traction () const
   {
     return simulator->boundary_traction;
