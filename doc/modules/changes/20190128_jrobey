@@ -1,8 +1,5 @@
 New: Added basic support for a volume-of-fluid interface tracking advection
 method in 2D incompressible box models. The VoF method is an efficient method
-to track a distinct compositional field without artificial diffusion, and
-ASPECT's implementation is described in 
-
-TODO: FILL IN REFERENCE.
+to track a distinct compositional field without artificial diffusion.
 
 (Jonathan Robey, 2019/01/28)
