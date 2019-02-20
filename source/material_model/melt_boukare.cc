@@ -238,8 +238,8 @@ namespace aspect
 
               const double Pth = endmember_thermal_pressure(in.temperature[q], i) - endmember_thermal_pressure(reference_temperature, i);
 
-              const double ksi_over_ksi_0 = endmember_molar_heat_capacity(in.temperature[q], i)
-                                            / endmember_molar_heat_capacity(reference_temperature, i) ;
+              const double heat_capacity_ratio = endmember_molar_heat_capacity(in.temperature[q], i)
+                                                 / endmember_molar_heat_capacity(reference_temperature, i) ;
 
               // Integrate the gibbs free energy along the isobaric path from (P_ref, T_ref) to (P_ref, T_final)
               const double G_Pref_Tf = reference_enthalpies[i] + endmember_enthalpy_thermal_addition(in.temperature[q], i)
@@ -251,23 +251,21 @@ namespace aspect
 
               if (in.pressure[q] != reference_pressure)
                 {
-                  intVdP = in.pressure[q] * reference_volumes[i] * (1. - a +
-                                                                           (a * (std::pow((1. - b * Pth), 1. - c) -
-                                                                                 std::pow((1. + b * (in.pressure[q] - Pth)), 1. - c)) /
-                                                                            (b * (c - 1.) * in.pressure[q])));
-                  intVdP -= reference_pressure * reference_volumes[i] * (1. - a +
-                                                                         (a * (std::pow((1. - b * Pth), 1. - c) -
-                                                                               std::pow((1. + b * (reference_pressure - Pth)), 1. - c)) /
-                                                                          (b * (c - 1.) * reference_pressure)));
+                  intVdP = in.pressure[q] * reference_volumes[i]
+                           * (1. - a + (a * (std::pow((1. - b * Pth), 1. - c) - std::pow((1. + b * (in.pressure[q] - Pth)), 1. - c))
+                                        / (b * (c - 1.) * in.pressure[q])));
+                  intVdP -= reference_pressure * reference_volumes[i]
+                            * (1. - a + (a * (std::pow((1. - b * Pth), 1. - c) - std::pow((1. + b * (reference_pressure - Pth)), 1. - c))
+                                         / (b * (c - 1.) * reference_pressure)));
 
-                  const double prefactor = reference_volumes[i] * reference_thermal_expansivities[i] * reference_bulk_moduli[i] * a * ksi_over_ksi_0;
+                  const double prefactor = reference_volumes[i] * reference_thermal_expansivities[i] * reference_bulk_moduli[i] * a * heat_capacity_ratio;
                   dintVdpdT = prefactor * (std::pow(1. + b * (in.pressure[q] - Pth), -c) - std::pow(1. + b * (reference_pressure - Pth), -c));
                 }
 
 
               double gibbs = G_Pref_Tf + intVdP;
               double entropy =  reference_entropies[i] + endmember_entropy_thermal_addition(in.temperature[q], i) + dintVdpdT;
-              double volume = reference_volumes[i]*(1 - a * (1. - std::pow((1. + b * (in.pressure[q] - Pth)), -1.0 * c)));
+              double volume = reference_volumes[i]*(1 - a * (1. - std::pow((1. + b * (in.pressure[q] - Pth)), -c)));
               double density = molar_masses[i]/volume;
 
               const double isothermal_bulk_modulus = reference_bulk_moduli[i] * (1. + b * (in.pressure[q] - Pth))
@@ -283,7 +281,7 @@ namespace aspect
                                     + specific_heat_second_coefficients[i] * std::pow(in.temperature[q], -2.)
                                     + specific_heat_third_coefficients[i] * std::pow(in.temperature[q], -0.5);
 
-              const double dSdT0 = reference_volumes[i] * reference_bulk_moduli[i] * std::pow(ksi_over_ksi_0 * reference_thermal_expansivities[i], 2.0)
+              const double dSdT0 = reference_volumes[i] * reference_bulk_moduli[i] * std::pow(heat_capacity_ratio * reference_thermal_expansivities[i], 2.0)
                                    * (std::pow(1. + b * (in.pressure[q] - Pth), -1.-c) - std::pow(1. + b * (reference_pressure - Pth), -1.- c));
 
               const double relative_T = Einstein_temperatures[i] / in.temperature[q];
@@ -594,7 +592,7 @@ namespace aspect
                       ExcMessage("The Melting time scale for operator splitting must be larger than 0!"));
 
           // Equation of state parameters
-          const unsigned int n_endmembers = this->include_melt_transport() ? 6 : 3;
+          const unsigned int n_endmembers = this->include_melt_transport() ? 7 : 4;
           molar_masses = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Molar masses"))),
                                                                  n_endmembers,
                                                                  "Molar masses");
@@ -645,9 +643,6 @@ namespace aspect
           AssertThrow(this->introspection().compositional_name_exists("bridgmanite"),
                       ExcMessage("Material model melt boukare only works if there is a "
                                  "compositional field called bridgmanite."));
-          AssertThrow(this->introspection().compositional_name_exists("periclase"),
-                      ExcMessage("Material model melt boukare with melt transport only "
-                                 "works if there is a compositional field called periclase."));
           AssertThrow(this->introspection().compositional_name_exists("iron_fraction_in_bridgmanite"),
                       ExcMessage("Material model melt boukare with melt transport only "
                                  "works if there is a compositional field called iron_fraction_in_bridgmanite."));
