@@ -4,11 +4,11 @@
     <title>The ASPECT mantle convection code: Publications</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="Content-Type" content="text/html; charset=\encoding">
+    <meta http-equiv="Content-Type" content="text/html; charset=\encoding">
     <link rel="icon" href="/favicon.ico"/>
     <link rel="apple-touch-icon" href="/pictures/clover57.png"/>
-    <meta name="author" content="the deal.II authors"/>
-    <meta name="keywords" content="mantle convection, dealii, finite elements, finite element method, fem, finite element software, open source, adaptive, finite element method, finite element modeling, finite element modelling, finite element methods, numerical analysis, numerical analysis software, computational fluid dynamics software"/>
+    <meta name="author" content="the ASPECT authors"/>
+    <meta name="keywords" content="mantle convection, dealii, publications, finite elements, finite element method, fem, finite element software, open source, adaptive, finite element method, finite element modeling, finite element modelling, finite element methods, numerical analysis, numerical analysis software, computational fluid dynamics software"/>
     <meta name="robots" content="index, follow">
 
 <script type="text/javascript">
@@ -414,7 +414,7 @@ p.infolinks { margin: 0.3em 0em 0em 0em; padding: 0px; }
           <div class="well">
             <h2>Publications using ASPECT</h2>
 	    <p>
-	      Below we list all publications we know about that use ASPECT. Please get in touch if you think there is anything incorrect or missing!
+	      Below we list all publications we know about. Please get in touch if you think there is anything incorrect or missing!
 	    </p>
 
 <form action="" id="quicksearch">
