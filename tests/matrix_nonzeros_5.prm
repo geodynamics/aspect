@@ -125,6 +125,9 @@ end
 
 subsection Postprocess
   set List of postprocessors = composition statistics, memory statistics, matrix statistics
+  subsection Memory statistics
+    set Output peak virtual memory (VmPeak) = false
+  end
 end
 
 
