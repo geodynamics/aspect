@@ -16,7 +16,7 @@ Publication List
 
 The publication list hosted at https://aspect.geodynamics.org/publications.html is built the following way:
  - Add citations to the ASPECT Mendeley group at https://www.mendeley.com/community/aspect-1/
- - Go to "Mendeley Desktop", select the group, export as bibtex, and replace https://github.com/geodynamics/aspect/blob/master/doc/manual/citing_aspect.bib
+ - Go to "Mendeley Desktop", select the group "ASPECT", select all, sort by "added" (oldest first), export as bibtex, and replace https://github.com/geodynamics/aspect/blob/master/doc/manual/citing_aspect.bib
  - the webserver will automatically export the html page using JabRef html export and the template located at https://github.com/geodynamics/aspect/tree/www/jabref-template
 
 
