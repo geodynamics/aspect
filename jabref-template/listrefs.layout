@@ -56,10 +56,6 @@
       \begin{url}
         [<a href="\format{\url}" target="_blank">URL</a>]
       \end{url}
-
-      \begin{file}
-        [<a href="\format[WrapFileLinks(\r,,pdf)]{\file}" target="_blank">PDF</a>]
-      \end{file}
     </p>
 
     <br>
