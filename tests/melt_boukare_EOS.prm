@@ -23,7 +23,7 @@ set Use operator splitting = true
 
 subsection Compositional fields
   set Number of fields = 4
-  set Names of fields  = bridgmanite, periclase, iron_fraction_in_bridgmanite, iron_fraction_in_periclase
+  set Names of fields  = bridgmanite, iron_fraction_in_bridgmanite, iron_fraction_in_periclase, porosity
 end
 
 
@@ -56,7 +56,7 @@ end
 subsection Initial composition model
   set Model name = function
   subsection Function
-   set Function expression = 0; 1; 0; 0 #mpv
+   set Function expression = 0.0; 0.0; 0.0; 0 #mpv
   end
 end
 
@@ -98,6 +98,9 @@ subsection Material model
   set Model name = melt boukare
 
   subsection Melt boukare
+    set Endmember names               = FeSiO3_bridgmanite, MgSiO3_bridgmanite, FeO_periclase, MgO_periclase
+    set Endmember states              = solid, solid, solid, solid
+    set Reference volumes             = 5e-05, 5e-05, 5e-05, 2.445e-05
     set Thermal conductivity          = 8.5
     set Reference shear viscosity     = 5e22
     set Thermal viscosity exponent    = 0

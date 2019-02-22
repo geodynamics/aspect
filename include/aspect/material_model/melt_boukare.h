@@ -119,6 +119,7 @@ namespace aspect
 
       private:
         // properties of the endmember components
+        std::vector<std::string> endmember_names;
         std::vector<double> molar_masses;
         std::vector<double> number_of_atoms;
         std::vector<double> reference_volumes;
@@ -156,6 +157,18 @@ namespace aspect
 
         // entropy change upon melting
         double peridotite_melting_entropy_change;
+
+        struct EndmemberState
+        {
+          enum Kind
+          {
+            solid,
+            melt
+          };
+        };
+
+        typename EndmemberState::Kind density_formulation;
+        std::vector<typename EndmemberState::Kind> endmember_states;
 
         /**
          * Calculate the Einstein thermal energy of an endmember component.
@@ -204,7 +217,14 @@ namespace aspect
         double
         melt_fraction (const double temperature,
                        const double pressure,
-                       const double depletion) const;
+                       const double bulk_composition,
+                       double &solid_composition,
+                       double &melt_composition) const;
+
+        virtual
+        double
+        limit_update_to_0_and_1 (const double value,
+                                 const double change_of_value) const;
     };
 
   }
