@@ -310,13 +310,13 @@ namespace aspect
       // get indices of the different endmembers
       // TODO: get from the list of endmembers, for now: MgSiO3_bridgmanite, FeSiO3_bridgmanite, MgO_periclase, FeO_periclase
       // TODO: also get the opposite (name of index)
-      const unsigned int febdg_idx = 0;
-      const unsigned int mgbdg_idx = 1;
-      const unsigned int wus_idx = 2;
-      const unsigned int per_idx = 3;
-      const unsigned int mgmelt_idx = 4;
-      const unsigned int femelt_idx = 5;
-      const unsigned int simelt_idx = 6;
+      const unsigned int febdg_idx = distance(endmember_names.begin(), find(endmember_names.begin(), endmember_names.end(), "FeSiO3_bridgmanite"));
+      const unsigned int mgbdg_idx = distance(endmember_names.begin(), find(endmember_names.begin(), endmember_names.end(), "MgSiO3_bridgmanite"));
+      const unsigned int wus_idx = distance(endmember_names.begin(), find(endmember_names.begin(), endmember_names.end(), "FeO_periclase"));
+      const unsigned int per_idx = distance(endmember_names.begin(), find(endmember_names.begin(), endmember_names.end(), "MgO_periclase"));
+      const unsigned int femelt_idx = distance(endmember_names.begin(), find(endmember_names.begin(), endmember_names.end(), "FeO_melt"));
+      const unsigned int mgmelt_idx = distance(endmember_names.begin(), find(endmember_names.begin(), endmember_names.end(), "MgO_melt"));
+      const unsigned int simelt_idx = distance(endmember_names.begin(), find(endmember_names.begin(), endmember_names.end(), "SiO2_melt"));
 
 
       for (unsigned int q=0; q<in.position.size(); ++q)
@@ -725,7 +725,7 @@ namespace aspect
                              "of the different endmember components."
                              "Units: Pa.");
 
-          prm.declare_entry ("Endmember names", "FeSiO3_bridgmanite, MgSiO3_bridgmanite, FeO_periclase, MgO_periclase, MgO_melt, FeO_melt, SiO2_melt",
+          prm.declare_entry ("Endmember names", "FeSiO3_bridgmanite, MgSiO3_bridgmanite, FeO_periclase, MgO_periclase, FeO_melt, MgO_melt, SiO2_melt",
                              Patterns::List(Patterns::MultipleSelection("MgSiO3_bridgmanite|FeSiO3_bridgmanite|MgO_periclase|FeO_periclase|MgO_melt|FeO_melt|SiO2_melt")),
                              "Names of the endmember components used in the equation of state and the melting model, "
                              "and whose parameters are determined by the other input parameters of this material model. "
