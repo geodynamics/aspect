@@ -52,10 +52,22 @@ namespace aspect
       output_file_number (numbers::invalid_unsigned_int)
     {}
 
+
     template <int dim>
     std::pair<std::string,std::string>
     GravityPointValues<dim>::execute (TableHandler &)
     {
+      AssertThrow(false, ExcNotImplemented());
+      return std::pair<std::string,std::string>();
+    }
+
+
+    template <>
+    std::pair<std::string,std::string>
+    GravityPointValues<3>::execute (TableHandler &)
+    {
+      const int dim = 3;
+
       // Check time to see if we output gravity
       if (std::isnan(last_output_time))
         {
