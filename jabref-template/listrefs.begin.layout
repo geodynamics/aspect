@@ -416,6 +416,9 @@ p.infolinks { margin: 0.3em 0em 0em 0em; padding: 0px; }
 	    <p>
 	      Below we list all publications we know about. Please get in touch if you think there is anything incorrect or missing!
 	    </p>
+	    <div id="plot"></div>
+	    <div id="n_publications"></div>
+	    <br/>
 
 <form action="" id="quicksearch">
 <input type="text" id="qs_field" autocomplete="off" placeholder="Type to search..." /> <input type="button" onclick="clearQS()" value="clear" />

@@ -13,4 +13,75 @@
   <script src="js/bootstrap.min.js"></script>
   <script src="js/accordion.js"></script>
 
+  <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+
+  <script type="text/javascript">
+    var first_year = 2012;
+    var last_year  = 2019;
+
+    // set up the table's structure
+    var table = [
+    ['Year', 'Publications', { role: 'style' }],
+    ['2012',  0, 'blue'],
+    ['2013',  0, 'blue'],
+    ['2014',  0, 'blue'],
+    ['2015',  0, 'blue'],
+    ['2016',  0, 'blue'],
+    ['2017',  0, 'blue'],
+    ['2018',  0, 'silver'],
+    ['2019',  0, 'silver']
+    ];
+
+    // now get the number of publications per year from the
+    // lists we have in the HTML above
+
+    var tbl = document.getElementById("qs_table");
+    var allrows = tbl.getElementsByTagName("tr");
+    var curyear="-1";
+    for(i = 0;i < allrows.length; i++)
+    {
+	if (allrows[i].className=="show")
+	{
+	  //console.log("year: " + allrows[i].innerText);
+	  curyear=allrows[i].innerText;
+	}
+	else if (allrows[i].className=="entry")
+	{
+	  //  console.log("entry");
+	  table[curyear-first_year+1][1] += 1;
+	}
+	else if (allrows[i].className.indexOf("bibtex")!=-1)
+	{
+	  // skip bibtex
+	}
+	else if (allrows[i].className.indexOf("abstract")!=-1)
+	{
+	  // skip abstract
+	}
+	else
+	    console.log("unknown: " + allrows[i].className);
+    }
+
+    google.load("visualization", "1", {packages:["corechart"]});
+    google.setOnLoadCallback(drawChart);
+    function drawChart() {
+    var data = google.visualization.arrayToDataTable(table);
+
+    var options = {
+    title: 'Publications per year',
+    hAxis: {title: 'Year'},
+    legend: {position: 'none'}
+    };
+
+    var chart = new google.visualization.ColumnChart(document.getElementById('plot'));
+
+    chart.draw(data, options);
+    }
+
+    var n_publications=0;
+    for (var i=first_year; i<=last_year; ++i)
+      n_publications += table[i-first_year+1][1];
+    document.getElementById("n_publications").innerHTML = "Total number of publications: <b>" + n_publications + "</b>.";
+  </script>
+
 </html>
