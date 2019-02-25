@@ -605,24 +605,24 @@ namespace aspect
           double melt_molar_mass = 0.0;
           double total_molar_mass = 0.0;
           double total_volume = 0.0;
-          // TODO: fix this using a phase vector (phase == 'bridgmanite')
+
           for (unsigned int i=0; i<n_endmembers; ++i)
             {
-              if (i<2)
+              // TODO: fix this using a phase vector (phase == 'bridgmanite')
+              const double endmember_phase_fraction_in_solid = i<2 ? bridgmanite_molar_fraction_in_solid : ferropericlase_molar_fraction_in_solid;
+
+              if (endmember_states[i] == EndmemberState::solid)
                 {
-                  phase_mole_fractions_in_composite[i] = solid_molar_fraction * bridgmanite_molar_fraction_in_solid;
-                  solid_molar_mass += bridgmanite_molar_fraction_in_solid * endmember_mole_fractions_per_phase[i] * molar_masses[i];
+                  phase_mole_fractions_in_composite[i] = solid_molar_fraction * endmember_phase_fraction_in_solid;
+                  solid_molar_mass += endmember_phase_fraction_in_solid * endmember_mole_fractions_per_phase[i] * molar_masses[i];
                 }
-              else if (i>=2 && i<4)
-                {
-                  phase_mole_fractions_in_composite[i] = solid_molar_fraction * ferropericlase_molar_fraction_in_solid;
-                  solid_molar_mass += ferropericlase_molar_fraction_in_solid * endmember_mole_fractions_per_phase[i] * molar_masses[i];
-                }
-              else
+              else if (endmember_states[i] == EndmemberState::melt)
                 {
                   phase_mole_fractions_in_composite[i] = melt_molar_fraction;
                   melt_molar_mass += endmember_mole_fractions_per_phase[i] * molar_masses[i];
                 }
+              else
+                AssertThrow (false, ExcNotImplemented());
 
               endmember_mole_fractions_in_composite[i] = phase_mole_fractions_in_composite[i] * endmember_mole_fractions_per_phase[i];
               total_volume += endmember_mole_fractions_in_composite[i] * endmember_volumes[i];
@@ -634,12 +634,13 @@ namespace aspect
               out.thermal_expansion_coefficients[q] += (endmember_mole_fractions_in_composite[i] * endmember_volumes[i] * endmember_thermal_expansivities[i]) / total_volume;
               out.specific_heat[q] += endmember_mole_fractions_in_composite[i] * endmember_heat_capacities[i] / total_molar_mass;
 
+
               if (endmember_states[i] == EndmemberState::solid)
-              {
-            	const double endmember_phase_fraction_in_solid = i<2 ? bridgmanite_molar_fraction_in_solid : ferropericlase_molar_fraction_in_solid;
-                out.compressibilities[q] += (endmember_phase_fraction_in_solid * endmember_mole_fractions_per_phase[i] * endmember_volumes[i])
-                		                     / (solid_molar_volume * endmember_bulk_moduli[i]);
-              }
+                {
+                  const double endmember_phase_fraction_in_solid = i<2 ? bridgmanite_molar_fraction_in_solid : ferropericlase_molar_fraction_in_solid;
+                  out.compressibilities[q] += (endmember_phase_fraction_in_solid * endmember_mole_fractions_per_phase[i] * endmember_volumes[i])
+                                              / (solid_molar_volume * endmember_bulk_moduli[i]);
+                }
             }
 
           out.densities[q] = solid_molar_mass / solid_molar_volume;
