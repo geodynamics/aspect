@@ -529,13 +529,6 @@ namespace aspect
 
               if (in.pressure[q] != reference_pressure && in.pressure[q] > 0.0)
                 {
-                  /*intVdP = in.pressure[q] * reference_volumes[i]
-                           * (1. - a + (a * (std::pow(1. - b * Pth, 1. - c) - std::pow(1. + b * (in.pressure[q] - Pth), 1. - c))
-                                        / (b * (c - 1.) * in.pressure[q])));
-                  intVdP -= reference_pressure * reference_volumes[i]
-                            * (1. - a + (a * (std::pow(1. - b * Pth, 1. - c) - std::pow(1. + b * (reference_pressure - Pth), 1. - c))
-                                         / (b * (c - 1.) * reference_pressure)));*/
-
                   intVdP = reference_volumes[i]
                            * ((in.pressure[q] - reference_pressure) * (1. - a)
                               + (a * (std::pow((1. + b * (reference_pressure - Pth)), 1. - c) - std::pow((1. + b * (in.pressure[q] - Pth)), 1. - c)) / (b * (c - 1.))));
@@ -544,28 +537,29 @@ namespace aspect
                   dintVdpdT = prefactor * (std::pow(1. + b * (in.pressure[q] - Pth), -c) - std::pow(1. + b * (reference_pressure - Pth), -c));
                 }
 
+              // if the real pressure is zero, because it hasn't been initialized yet, use the hydrostatic pressure
+              const double pressure = in.pressure[q] > 0.0 ? in.pressure[q] : this->get_adiabatic_conditions().pressure(in.position[q]);
 
               endmember_gibbs_energies[i] = G_Pref_Tf + intVdP;
               endmember_entropies[i] =  reference_entropies[i] + endmember_entropy_thermal_addition(in.temperature[q], i) + dintVdpdT;
-              endmember_volumes[i] = reference_volumes[i]*(1 - a * (1. - std::pow(1. + b * (in.pressure[q] - Pth), -c)));
+              endmember_volumes[i] = reference_volumes[i] * (1 - a * (1. - std::pow(1. + b * (pressure - Pth), -c)));
               endmember_densities[i] = molar_masses[i]/endmember_volumes[i];
 
-              endmember_bulk_moduli[i] = reference_bulk_moduli[i] * (1. + b * (in.pressure[q] - Pth))
-                                         * (a + (1. - a) * std::pow(1. + b * (in.pressure[q] - Pth), c));
+              endmember_bulk_moduli[i] = reference_bulk_moduli[i] * (1. + b * (pressure - Pth))
+                                         * (a + (1. - a) * std::pow(1. + b * (pressure - Pth), c));
 
               const double C_V0 = endmember_molar_heat_capacity(reference_temperature, i);
               const double C_V = endmember_molar_heat_capacity(in.temperature[q], i);
               endmember_thermal_expansivities[i] = reference_thermal_expansivities[i] * (C_V / C_V0) *
-                                                   1. / ((1. + b * (in.pressure[q] - Pth)) *
-                                                         (a + (1. - a) * std::pow(1 + b * (in.pressure[q] - Pth), c)));
+                                                   1. / ((1. + b * (pressure - Pth)) *
+                                                         (a + (1. - a) * std::pow(1 + b * (pressure - Pth), c)));
 
               const double Cp_ref = reference_specific_heats[i] + specific_heat_linear_coefficients[i] * in.temperature[q]
                                     + specific_heat_second_coefficients[i] * std::pow(in.temperature[q], -2.)
                                     + specific_heat_third_coefficients[i] * std::pow(in.temperature[q], -0.5);
 
-              const double pressure = in.pressure[q] > 0.0 ? reference_pressure : 0.0;
               const double dSdT0 = reference_volumes[i] * reference_bulk_moduli[i] * std::pow(heat_capacity_ratio * reference_thermal_expansivities[i], 2.0)
-                                   * (std::pow(1. + b * (in.pressure[q] - Pth), -1.-c) - std::pow(1. + b * (pressure - Pth), -1.- c));
+                                   * (std::pow(1. + b * (pressure - Pth), -1.-c) - std::pow(1. + b * (reference_pressure - Pth), -1.- c));
 
               const double relative_T = Einstein_temperatures[i] / in.temperature[q];
               const double dSdT = dSdT0 + dintVdpdT * (1 - 2./relative_T + 2./(std::exp(relative_T) - 1.)) * relative_T/in.temperature[q];
@@ -609,6 +603,7 @@ namespace aspect
           std::vector<double> phase_mole_fractions_in_composite(n_endmembers);
           double solid_molar_mass = 0.0;
           double melt_molar_mass = 0.0;
+          double total_molar_mass = 0.0;
           double total_volume = 0.0;
           // TODO: fix this using a phase vector (phase == 'bridgmanite')
           for (unsigned int i=0; i<n_endmembers; ++i)
@@ -631,15 +626,20 @@ namespace aspect
 
               endmember_mole_fractions_in_composite[i] = phase_mole_fractions_in_composite[i] * endmember_mole_fractions_per_phase[i];
               total_volume += endmember_mole_fractions_in_composite[i] * endmember_volumes[i];
+              total_molar_mass += endmember_mole_fractions_in_composite[i] * molar_masses[i];
             }
 
           for (unsigned int i=0; i<n_endmembers; ++i)
             {
               out.thermal_expansion_coefficients[q] += (endmember_mole_fractions_in_composite[i] * endmember_volumes[i] * endmember_thermal_expansivities[i]) / total_volume;
-              out.specific_heat[q] += endmember_mole_fractions_in_composite[i] * endmember_heat_capacities[i];
+              out.specific_heat[q] += endmember_mole_fractions_in_composite[i] * endmember_heat_capacities[i] / total_molar_mass;
 
               if (endmember_states[i] == EndmemberState::solid)
-                out.compressibilities[q] += (endmember_mole_fractions_in_composite[i] * endmember_volumes[i]) / (solid_molar_volume * endmember_bulk_moduli[i]);
+              {
+            	const double endmember_phase_fraction_in_solid = i<2 ? bridgmanite_molar_fraction_in_solid : ferropericlase_molar_fraction_in_solid;
+                out.compressibilities[q] += (endmember_phase_fraction_in_solid * endmember_mole_fractions_per_phase[i] * endmember_volumes[i])
+                		                     / (solid_molar_volume * endmember_bulk_moduli[i]);
+              }
             }
 
           out.densities[q] = solid_molar_mass / solid_molar_volume;
@@ -649,7 +649,7 @@ namespace aspect
               double melt_compressiblity = 0;
               for (unsigned int i=0; i<n_endmembers; ++i)
                 if (endmember_states[i] == EndmemberState::melt)
-                  melt_compressiblity += (endmember_mole_fractions_in_composite[i] * endmember_volumes[i]) / (melt_molar_volume * endmember_bulk_moduli[i]);
+                  melt_compressiblity += (endmember_mole_fractions_per_phase[i] * endmember_volumes[i]) / (melt_molar_volume * endmember_bulk_moduli[i]);
 
               melt_out->fluid_densities[q] = melt_molar_mass / melt_molar_volume;
               // TODO: this does not take into account the volume change due to thermal expansion of melt

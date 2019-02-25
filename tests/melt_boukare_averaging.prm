@@ -17,7 +17,7 @@ set Max nonlinear iterations               = 5
 
 set Pressure normalization                 = surface
 set Surface pressure                       = 100.e9
-set Adiabatic surface temperature          = 6000
+set Adiabatic surface temperature          = 2000
 set Use conduction timestep                = true
 set Use operator splitting                 = true
 
@@ -53,14 +53,14 @@ subsection Initial temperature model
   set List of model names = function
 
   subsection Function
-    set Function expression = 6000
+    set Function expression = 2000
   end
 end
 
 subsection Initial composition model
   set Model name = function
   subsection Function
-   set Function expression = 1.0; 0.5; 0.; 1.0; 0.1; 0.9 #mpv
+   set Function expression = 0.25; 0.42; 0.41; 0.2; 0.43; 0.0 
   end
 end
 
@@ -74,7 +74,7 @@ subsection Boundary temperature model
   set Fixed temperature boundary indicators   = bottom, top
   set List of model names = initial temperature
   subsection Initial temperature
-    set Maximal temperature = 6000
+    set Maximal temperature = 2000
   end
 end
 
@@ -102,14 +102,6 @@ subsection Material model
   set Model name = melt boukare
 
   subsection Melt boukare
-#    set Endmember names               = FeSiO3_bridgmanite, MgSiO3_bridgmanite, FeO_periclase, MgO_periclase
-#    set Endmember states              = solid, solid, solid, solid
-#    set Reference volumes             = 7.5e-05, 2.5e-05, 7.5e-05, 2.5e-05, 50e-5, 50e-5, 50e-5
-    set Reference volumes             = 1e-5
-    set Reference thermal expansivities = 0
-    set Reference bulk moduli         = 1e300
-    set Endmember names               = FeSiO3_bridgmanite, MgSiO3_bridgmanite, FeO_periclase, MgO_periclase, FeO_melt, MgO_melt, SiO2_melt
-    set Molar masses                  = 0.2,0.1,0.2,0.1,0.5,1.0,1
     set Thermal conductivity          = 8.5
     set Reference shear viscosity     = 5e22
     set Thermal viscosity exponent    = 0
