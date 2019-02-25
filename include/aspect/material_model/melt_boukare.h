@@ -213,6 +213,21 @@ namespace aspect
         endmember_entropy_thermal_addition (const double temperature,
                                             const unsigned int endmember_index) const;
 
+        /**
+         * Convert from the mole fraction of iron in the solid to the mole fraction of iron in the
+         * two solid phases, bridgmanite and ferropericlase, and the mass fraction of bridgmanite
+         * in the solid.
+         */
+        virtual
+        void
+        convert_to_fraction_of_endmembers_in_solid (const double temperature,
+                                                    const double pressure,
+                                                    const double molar_Fe_in_solid,
+                                                    const std::vector<double> &endmember_gibbs_energies,
+                                                    double &molar_FeSiO3_in_bridgmanite,
+                                                    double &molar_FeO_in_ferropericlase,
+                                                    double &mass_bridgmanite_in_solid) const;
+
         virtual
         double
         melt_fraction (const double temperature,
