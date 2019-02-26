@@ -88,7 +88,7 @@ namespace aspect
       /**
        * Get the local index (within vof fields) for the named composition/volume of fluid field
        */
-      unsigned int field_index_for_name(std::string fieldname) const;
+      unsigned int field_index_for_name(const std::string &fieldname) const;
 
       /**
        * Do necessary internal initialization that is dependent on having the

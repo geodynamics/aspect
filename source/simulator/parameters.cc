@@ -1731,19 +1731,6 @@ namespace aspect
     }
     prm.leave_subsection ();
 
-    prm.enter_subsection ("Volume of Fluid");
-    {
-      const bool explicit_volume_of_fluid_tracking_enabled = prm.get_bool("Enable interface tracking");
-
-      // Check that volume of fluid interface tracking has been enabled explicitly if used
-      AssertThrow(explicit_volume_of_fluid_tracking_enabled || !volume_of_fluid_tracking_enabled,
-                  ExcMessage("Volume of Fluid interface tracking must be enabled "
-                             "(Volume of Fluid/Enable interface tracking) to use the "
-                             "``volume of fluid`` interface tracking advection "
-                             "method(Compositional fields/Compositional field methods)."));
-    }
-    prm.leave_subsection ();
-
     // then, finally, let user additions that do not go through the usual
     // plugin mechanism, declare their parameters if they have subscribed
     // to the relevant signals

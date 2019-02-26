@@ -39,10 +39,10 @@ namespace aspect
     using namespace dealii;
 
     template <int dim>
-    class VoFMMSErr : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
+    class VolumeOfFluidSpecifiedSolutionDiff : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
-        VoFMMSErr();
+        VolumeOfFluidSpecifiedSolutionDiff();
 
         double get_next_t (const double curr_time, const double interval);
 
@@ -71,9 +71,9 @@ namespace aspect
         // Error calculation functions
         static std::vector<std::string> error_names ();
         static std::vector<std::string> error_abrev ();
-        std::vector<double> calc_error_ls (const Function<dim> &func,
-                                           const unsigned int n_samp,
-                                           const unsigned int f_ind);
+        std::vector<double> calc_error_level_set (const Function<dim> &func,
+                const unsigned int n_samp,
+                const unsigned int f_ind);
 
         // Required variables
         bool initialized;
@@ -88,7 +88,7 @@ namespace aspect
     };
 
     template <int dim>
-    VoFMMSErr<dim>::VoFMMSErr ()
+    VolumeOfFluidSpecifiedSolutionDiff<dim>::VolumeOfFluidSpecifiedSolutionDiff ()
       : initialized(false),
         error_eval_interval (std::numeric_limits<double>::quiet_NaN ()),
         next_evaluation_time (std::numeric_limits<double>::quiet_NaN ()),
@@ -97,7 +97,7 @@ namespace aspect
     }
 
     template <int dim>
-    double VoFMMSErr<dim>::get_next_t (const double curr_time,
+    double VolumeOfFluidSpecifiedSolutionDiff<dim>::get_next_t (const double curr_time,
                                        const double interval)
     {
       const int i = (int) (curr_time / interval);
@@ -106,7 +106,7 @@ namespace aspect
 
     template <int dim>
     std::pair<std::string, std::string>
-    VoFMMSErr<dim>::execute (TableHandler &)
+    VolumeOfFluidSpecifiedSolutionDiff<dim>::execute (TableHandler &)
     {
       std::string result_string = "";
       std::string label_string = "";
@@ -143,7 +143,7 @@ namespace aspect
           std::vector<double> local_err_vals (n_volume_of_fluid_fields*n_err);
           for (unsigned int f=0; f<n_volume_of_fluid_fields; ++f)
             {
-              std::vector<double> l_err_vals_f = calc_error_ls (*trueSolLS, n_error_samples, f);
+              std::vector<double> l_err_vals_f = calc_error_level_set (*trueSolLS, n_error_samples, f);
               for (unsigned int i=0; i<n_err; ++i)
                 local_err_vals[f*n_err+i] = l_err_vals_f[i];
             }
@@ -171,7 +171,7 @@ namespace aspect
 
     template <int dim>
     void
-    VoFMMSErr<dim>::declare_parameters (ParameterHandler &prm)
+    VolumeOfFluidSpecifiedSolutionDiff<dim>::declare_parameters (ParameterHandler &prm)
     {
       prm.enter_subsection("Postprocess");
       {
@@ -199,7 +199,7 @@ namespace aspect
 
     template <int dim>
     void
-    VoFMMSErr<dim>::parse_parameters (ParameterHandler &prm)
+    VolumeOfFluidSpecifiedSolutionDiff<dim>::parse_parameters (ParameterHandler &prm)
     {
       prm.enter_subsection("Postprocess");
       {
@@ -223,7 +223,7 @@ namespace aspect
     }
 
     template <int dim>
-    std::vector<std::string> VoFMMSErr<dim>::error_abrev ()
+    std::vector<std::string> VolumeOfFluidSpecifiedSolutionDiff<dim>::error_abrev ()
     {
       std::vector<std::string> names (1, "IEstL1");
       names.push_back ("FEstL1");
@@ -231,7 +231,7 @@ namespace aspect
     }
 
     template <int dim>
-    std::vector<double> VoFMMSErr<dim>::calc_error_ls (const Function<dim> &func,
+    std::vector<double> VolumeOfFluidSpecifiedSolutionDiff<dim>::calc_error_level_set (const Function<dim> &func,
                                                        const unsigned int n_samp,
                                                        const unsigned int f_ind)
     {
@@ -336,7 +336,7 @@ namespace aspect
 {
   namespace Postprocess
   {
-    ASPECT_REGISTER_POSTPROCESSOR(VoFMMSErr,
+    ASPECT_REGISTER_POSTPROCESSOR(VolumeOfFluidSpecifiedSolutionDiff,
                                   "volume of fluid mms",
                                   "A postprocessor that approximates the interface error.")
   }

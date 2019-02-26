@@ -320,7 +320,7 @@ namespace aspect
   }
 
   template <int dim>
-  unsigned int VolumeOfFluidHandler<dim>::field_index_for_name(std::string composition_fieldname) const
+  unsigned int VolumeOfFluidHandler<dim>::field_index_for_name(const std::string &composition_fieldname) const
   {
     const unsigned int composition_index = this->introspection().compositional_index_for_name(composition_fieldname);
     if (volume_of_fluid_composition_map_index.count(composition_index) ==0)
