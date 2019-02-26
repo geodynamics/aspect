@@ -29,8 +29,8 @@
         -->
 
     \begin{howpublished} PhD thesis, \format[HTMLChars]{\howpublished}\end{howpublished}<!--
-    -->\begin{publisher}, \format[HTMLChars]{\publisher}\end{publisher}<!--
-         -->\begin{year}, \format[HTMLChars]{\year}\end{year}<!--
+    -->\begin{publisher}\format[HTMLChars]{\publisher}. \end{publisher}<!--
+         -->\begin{year}\format[HTMLChars]{\year}\end{year}<!--
                      -->.
 
     
