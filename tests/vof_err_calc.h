@@ -72,8 +72,8 @@ namespace aspect
         static std::vector<std::string> error_names ();
         static std::vector<std::string> error_abrev ();
         std::vector<double> calc_error_level_set (const Function<dim> &func,
-                const unsigned int n_samp,
-                const unsigned int f_ind);
+                                                  const unsigned int n_samp,
+                                                  const unsigned int f_ind);
 
         // Required variables
         bool initialized;
@@ -98,7 +98,7 @@ namespace aspect
 
     template <int dim>
     double VolumeOfFluidSpecifiedSolutionDiff<dim>::get_next_t (const double curr_time,
-                                       const double interval)
+                                                                const double interval)
     {
       const int i = (int) (curr_time / interval);
       return (i + 1) * interval;
@@ -232,8 +232,8 @@ namespace aspect
 
     template <int dim>
     std::vector<double> VolumeOfFluidSpecifiedSolutionDiff<dim>::calc_error_level_set (const Function<dim> &func,
-                                                       const unsigned int n_samp,
-                                                       const unsigned int f_ind)
+        const unsigned int n_samp,
+        const unsigned int f_ind)
     {
       const LinearAlgebra::BlockVector &solution = this->get_solution();
 
