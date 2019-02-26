@@ -180,8 +180,12 @@ namespace aspect
           // Boundary is not periodic
 
           double face_flux = 0;
-          double face_ls_d = 0;
-          double face_ls_time_grad = 0;
+
+          // Variables for holding values that indicate the "level set" (not
+          // signed distance) on the cell face aperture for calculating the
+          // volume fluxed through this cell face.
+          double face_level_set_d = 0;
+          double face_level_set_time_grad = 0;
           double boundary_fluid_flux = 0;
 
           // Using VolumeOfFluid so need to accumulate flux through face
@@ -243,13 +247,13 @@ namespace aspect
           // function on the unit cell on the cell interface being assembled
           if (face_normal_is_positive)
             {
-              face_ls_d = cell_i_d - 0.5*cell_i_normal[f_dim];
-              face_ls_time_grad = (face_flux/cell_volume)*cell_i_normal[f_dim];
+              face_level_set_d = cell_i_d - 0.5*cell_i_normal[f_dim];
+              face_level_set_time_grad = (face_flux/cell_volume)*cell_i_normal[f_dim];
             }
           else
             {
-              face_ls_d = cell_i_d + 0.5*cell_i_normal[f_dim];
-              face_ls_time_grad = -(face_flux/cell_volume)*cell_i_normal[f_dim];
+              face_level_set_d = cell_i_d + 0.5*cell_i_normal[f_dim];
+              face_level_set_time_grad = -(face_flux/cell_volume)*cell_i_normal[f_dim];
             }
 
           // Calculate outward flux
@@ -268,9 +272,9 @@ namespace aspect
           else // Cell is upwind of boundary, so compute the volume fraction on the advected volume
             {
               flux_volume_of_fluid = VolumeOfFluid::Utilities::calculate_volume_flux<dim> (f_dim,
-                                                                                           face_ls_time_grad,
+                                                                                           face_level_set_time_grad,
                                                                                            cell_i_normal,
-                                                                                           face_ls_d);
+                                                                                           face_level_set_d);
             }
 
           // Add fluxes to RHS
@@ -406,10 +410,13 @@ namespace aspect
               const double neighbor_i_d = scratch.neighbor_i_d_values[0];
 
               double face_flux = 0;
-              double face_ls_d = 0;
-              double face_ls_time_grad = 0;
-              double n_face_ls_d = 0;
-              double n_face_ls_time_grad =0;
+              // Variables for holding values that indicate the "level set"
+              // (not signed distance) on the cell face aperture (face x time)
+              // for calculating the volume fluxed through this cell face.
+              double face_level_set_d = 0;
+              double face_level_set_time_grad = 0;
+              double n_face_level_set_d = 0;
+              double n_face_level_set_time_grad =0;
 
               // Using VolumeOfFluid so need to accumulate flux through face
               for (unsigned int q=0; q<n_f_q_points; ++q)
@@ -435,24 +442,24 @@ namespace aspect
               // computed here
               if (face_normal_is_positive)
                 {
-                  face_ls_d = cell_i_d - 0.5*cell_i_normal[f_dim];
-                  face_ls_time_grad = (face_flux/cell_volume)*cell_i_normal[f_dim];
+                  face_level_set_d = cell_i_d - 0.5*cell_i_normal[f_dim];
+                  face_level_set_time_grad = (face_flux/cell_volume)*cell_i_normal[f_dim];
                 }
               else
                 {
-                  face_ls_d = cell_i_d + 0.5*cell_i_normal[f_dim];
-                  face_ls_time_grad = -(face_flux/cell_volume)*cell_i_normal[f_dim];
+                  face_level_set_d = cell_i_d + 0.5*cell_i_normal[f_dim];
+                  face_level_set_time_grad = -(face_flux/cell_volume)*cell_i_normal[f_dim];
                 }
 
               if (n_face_normal_is_positive)
                 {
-                  n_face_ls_d = neighbor_i_d - 0.5*neighbor_i_normal[n_f_dim];
-                  n_face_ls_time_grad = -(face_flux/neighbor_volume)*neighbor_i_normal[n_f_dim];
+                  n_face_level_set_d = neighbor_i_d - 0.5*neighbor_i_normal[n_f_dim];
+                  n_face_level_set_time_grad = -(face_flux/neighbor_volume)*neighbor_i_normal[n_f_dim];
                 }
               else
                 {
-                  n_face_ls_d = neighbor_i_d + 0.5*neighbor_i_normal[n_f_dim];
-                  n_face_ls_time_grad = (face_flux/neighbor_volume)*neighbor_i_normal[n_f_dim];
+                  n_face_level_set_d = neighbor_i_d + 0.5*neighbor_i_normal[n_f_dim];
+                  n_face_level_set_time_grad = (face_flux/neighbor_volume)*neighbor_i_normal[n_f_dim];
                 }
 
               // Calculate outward flux
@@ -464,16 +471,16 @@ namespace aspect
               else if (face_flux < 0.0) // Neighbor is upwind
                 {
                   flux_volume_of_fluid = VolumeOfFluid::Utilities::calculate_volume_flux<dim> (n_f_dim,
-                                                                                               n_face_ls_time_grad,
+                                                                                               n_face_level_set_time_grad,
                                                                                                neighbor_i_normal,
-                                                                                               n_face_ls_d);
+                                                                                               n_face_level_set_d);
                 }
               else // This cell is upwind
                 {
                   flux_volume_of_fluid = VolumeOfFluid::Utilities::calculate_volume_flux<dim> (f_dim,
-                                                                                               face_ls_time_grad,
+                                                                                               face_level_set_time_grad,
                                                                                                cell_i_normal,
-                                                                                               face_ls_d);
+                                                                                               face_level_set_d);
                 }
 
               std::vector<types::global_dof_index> neighbor_dof_indices (main_fe.dofs_per_cell);
