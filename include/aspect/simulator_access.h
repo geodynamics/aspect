@@ -137,6 +137,7 @@ namespace aspect
   }
 
   template <int dim> class MeltHandler;
+  template <int dim> class VolumeOfFluidHandler;
   template <int dim> class FreeSurfaceHandler;
 
   template <int dim> class NewtonHandler;
@@ -736,6 +737,12 @@ namespace aspect
        */
       const MeltHandler<dim> &
       get_melt_handler () const;
+
+      /**
+       * Return a reference to the VolumeOfFluid handler.
+       */
+      const VolumeOfFluidHandler<dim> &
+      get_volume_of_fluid_handler () const;
 
       /**
        * Return a reference to the Newton handler that controls the Newton

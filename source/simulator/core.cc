@@ -23,6 +23,7 @@
 #include <aspect/global.h>
 #include <aspect/utilities.h>
 #include <aspect/melt.h>
+#include <aspect/volume_of_fluid/handler.h>
 #include <aspect/newton.h>
 #include <aspect/free_surface.h>
 #include <aspect/citation_info.h>
@@ -155,6 +156,9 @@ namespace aspect
     post_signal_creation(
       std::bind (&internals::SimulatorSignals::call_connector_functions<dim>,
                  std::ref(signals))),
+    volume_of_fluid_handler (parameters.volume_of_fluid_tracking_enabled ?
+                             std_cxx14::make_unique<VolumeOfFluidHandler<dim>> (*this, prm) :
+                             nullptr),
     introspection (construct_variables<dim>(parameters, signals, melt_handler), parameters),
     mpi_communicator (Utilities::MPI::duplicate_communicator (mpi_communicator_)),
     iostream_tee_device(std::cout, log_file_stream),
@@ -365,6 +369,13 @@ namespace aspect
 
     mesh_refinement_manager.initialize_simulator (*this);
     mesh_refinement_manager.parse_parameters (prm);
+
+    // VoF Must be initialized after mesh_refinement_manager, due to needing to check
+    // for a mesh refinement strategy
+    if (parameters.volume_of_fluid_tracking_enabled)
+      {
+        volume_of_fluid_handler->initialize (prm);
+      }
 
     termination_manager.initialize_simulator (*this);
     termination_manager.parse_parameters (prm);
@@ -929,6 +940,15 @@ namespace aspect
       // needed.  All other matrix blocks are left empty here.
       if (have_fem_compositional_field)
         coupling[x.compositional_fields[0]][x.compositional_fields[0]] = DoFTools::always;
+
+      // If we are using VolumeOfFluid interface tracking, create a matrix block in the
+      // field corresponding to the volume fraction.
+      if (parameters.volume_of_fluid_tracking_enabled)
+        {
+          const unsigned int volume_of_fluid_block = volume_of_fluid_handler->field_struct_for_field_index(0)
+                                                     .volume_fraction.first_component_index;
+          coupling[volume_of_fluid_block][volume_of_fluid_block] = DoFTools::always;
+        }
     }
 
     LinearAlgebra::BlockDynamicSparsityPattern sp;
@@ -941,7 +961,9 @@ namespace aspect
                mpi_communicator);
 #endif
 
-    if ((parameters.use_discontinuous_temperature_discretization) || (parameters.use_discontinuous_composition_discretization))
+    if ((parameters.use_discontinuous_temperature_discretization) ||
+        (parameters.use_discontinuous_composition_discretization) ||
+        (parameters.volume_of_fluid_tracking_enabled))
       {
         Table<2,DoFTools::Coupling> face_coupling (introspection.n_components,
                                                    introspection.n_components);
@@ -955,6 +977,13 @@ namespace aspect
         // Only allocate composition 0 matrix if needed. Same as the non-DG case (see above)
         if (parameters.use_discontinuous_composition_discretization && have_fem_compositional_field)
           face_coupling[x.compositional_fields[0]][x.compositional_fields[0]] = DoFTools::always;
+
+        if (parameters.volume_of_fluid_tracking_enabled)
+          {
+            const unsigned int volume_of_fluid_block = volume_of_fluid_handler->field_struct_for_field_index(0)
+                                                       .volume_fraction.first_component_index;
+            face_coupling[volume_of_fluid_block][volume_of_fluid_block] = DoFTools::always;
+          }
 
         DoFTools::make_flux_sparsity_pattern (dof_handler,
                                               sp,

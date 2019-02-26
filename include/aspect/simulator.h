@@ -97,6 +97,9 @@ namespace aspect
   template <int dim>
   class FreeSurfaceHandler;
 
+  template <int dim>
+  class VolumeOfFluidHandler;
+
   namespace internal
   {
     namespace Assembly
@@ -327,7 +330,6 @@ namespace aspect
          */
         unsigned int polynomial_degree(const Introspection<dim> &introspection) const;
       };
-
 
     private:
 
@@ -1580,7 +1582,18 @@ namespace aspect
       std::unique_ptr<NewtonHandler<dim> > newton_handler;
 
       SimulatorSignals<dim>               signals;
+
       const IntermediaryConstructorAction post_signal_creation;
+
+      /**
+       * Unique pointer for an instance of the VolumeOfFluidHandler. This way,
+       * if we do not need the machinery for doing volume_of_fluid stuff, we do
+       * not even allocate it.
+       *
+       * Located here due to needing signals access
+       */
+      std::unique_ptr<VolumeOfFluidHandler<dim> > volume_of_fluid_handler;
+
       Introspection<dim>                  introspection;
 
 
@@ -1819,7 +1832,8 @@ namespace aspect
 
       friend class boost::serialization::access;
       friend class SimulatorAccess<dim>;
-      friend class FreeSurfaceHandler<dim>;  // FreeSurfaceHandler needs access to the internals of the Simulator
+      friend class FreeSurfaceHandler<dim>;   // FreeSurfaceHandler needs access to the internals of the Simulator
+      friend class VolumeOfFluidHandler<dim>; // VolumeOfFluidHandler needs access to the internals of the Simulator
       friend struct Parameters<dim>;
   };
 }
