@@ -383,6 +383,9 @@ SimulatorAccess -> N6aspect14MeshRefinement8VelocityILi2EEE [style="dotted", arr
 N6aspect14MeshRefinement9ViscosityILi2EEE [label="viscosity", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
 N6aspect14MeshRefinement9ViscosityILi2EEE -> N6aspect14MeshRefinement9InterfaceILi2EEE [len=3, weight=50];
 SimulatorAccess -> N6aspect14MeshRefinement9ViscosityILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
+N6aspect14MeshRefinement22VolumeOfFluidInterfaceILi2EEE [label="volume of fluid\ninterface", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
+N6aspect14MeshRefinement22VolumeOfFluidInterfaceILi2EEE -> N6aspect14MeshRefinement9InterfaceILi2EEE [len=3, weight=50];
+SimulatorAccess -> N6aspect14MeshRefinement22VolumeOfFluidInterfaceILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
 N6aspect14MeshRefinement9InterfaceILi2EEE -> Simulator [len=15, weight=50];
 
 N6aspect8Particle9Generator9InterfaceILi2EEE [label="Particle generator interface", height=.8,width=.8,shape="rect",fillcolor="green"]
@@ -433,18 +436,6 @@ N6aspect8Particle12Interpolator15NearestNeighborILi2EEE [label="nearest\nneighbo
 N6aspect8Particle12Interpolator15NearestNeighborILi2EEE -> N6aspect8Particle12Interpolator9InterfaceILi2EEE [len=3, weight=50];
 SimulatorAccess -> N6aspect8Particle12Interpolator15NearestNeighborILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
 N6aspect8Particle12Interpolator9InterfaceILi2EEE -> Simulator [len=15, weight=50];
-
-N6aspect8Particle6Output9InterfaceILi2EEE [label="Particle output interface", height=.8,width=.8,shape="rect",fillcolor="green"]
-N6aspect8Particle6Output11ASCIIOutputILi2EEE [label="ascii", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
-N6aspect8Particle6Output11ASCIIOutputILi2EEE -> N6aspect8Particle6Output9InterfaceILi2EEE [len=3, weight=50];
-SimulatorAccess -> N6aspect8Particle6Output11ASCIIOutputILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
-N6aspect8Particle6Output10HDF5OutputILi2EEE [label="hdf5", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
-N6aspect8Particle6Output10HDF5OutputILi2EEE -> N6aspect8Particle6Output9InterfaceILi2EEE [len=3, weight=50];
-SimulatorAccess -> N6aspect8Particle6Output10HDF5OutputILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
-N6aspect8Particle6Output9VTUOutputILi2EEE [label="vtu", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
-N6aspect8Particle6Output9VTUOutputILi2EEE -> N6aspect8Particle6Output9InterfaceILi2EEE [len=3, weight=50];
-SimulatorAccess -> N6aspect8Particle6Output9VTUOutputILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
-N6aspect8Particle6Output9InterfaceILi2EEE -> Simulator [len=15, weight=50];
 
 N6aspect8Particle8Property9InterfaceILi2EEE [label="Particle property interface", height=.8,width=.8,shape="rect",fillcolor="green"]
 N6aspect8Particle8Property11CompositionILi2EEE [label="composition", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
@@ -573,6 +564,9 @@ SimulatorAccess -> N6aspect11Postprocess18VelocityStatisticsILi2EEE [style="dott
 N6aspect11Postprocess13VisualizationILi2EEE [label="visualization", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
 N6aspect11Postprocess13VisualizationILi2EEE -> N6aspect11Postprocess9InterfaceILi2EEE [len=3, weight=50];
 SimulatorAccess -> N6aspect11Postprocess13VisualizationILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
+N6aspect11Postprocess23VolumeOfFluidStatisticsILi2EEE [label="volume of fluid\nstatistics", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
+N6aspect11Postprocess23VolumeOfFluidStatisticsILi2EEE -> N6aspect11Postprocess9InterfaceILi2EEE [len=3, weight=50];
+SimulatorAccess -> N6aspect11Postprocess23VolumeOfFluidStatisticsILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
 N6aspect11Postprocess9InterfaceILi2EEE -> Simulator [len=15, weight=50];
 
 N6aspect11Postprocess27VisualizationPostprocessors9InterfaceILi2EEE [label="Visualization postprocessor interface", height=.8,width=.8,shape="rect",fillcolor="green"]
@@ -666,6 +660,9 @@ SimulatorAccess -> N6aspect11Postprocess27VisualizationPostprocessors12SpecificH
 N6aspect11Postprocess27VisualizationPostprocessors10StrainRateILi2EEE [label="strain rate", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
 N6aspect11Postprocess27VisualizationPostprocessors10StrainRateILi2EEE -> N6aspect11Postprocess27VisualizationPostprocessors9InterfaceILi2EEE [len=3, weight=50];
 SimulatorAccess -> N6aspect11Postprocess27VisualizationPostprocessors10StrainRateILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
+N6aspect11Postprocess27VisualizationPostprocessors16StrainRateTensorILi2EEE [label="strain rate\ntensor", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
+N6aspect11Postprocess27VisualizationPostprocessors16StrainRateTensorILi2EEE -> N6aspect11Postprocess27VisualizationPostprocessors9InterfaceILi2EEE [len=3, weight=50];
+SimulatorAccess -> N6aspect11Postprocess27VisualizationPostprocessors16StrainRateTensorILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
 N6aspect11Postprocess27VisualizationPostprocessors6StressILi2EEE [label="stress", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
 N6aspect11Postprocess27VisualizationPostprocessors6StressILi2EEE -> N6aspect11Postprocess27VisualizationPostprocessors9InterfaceILi2EEE [len=3, weight=50];
 SimulatorAccess -> N6aspect11Postprocess27VisualizationPostprocessors6StressILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
@@ -687,6 +684,9 @@ SimulatorAccess -> N6aspect11Postprocess27VisualizationPostprocessors16VerticalH
 N6aspect11Postprocess27VisualizationPostprocessors9ViscosityILi2EEE [label="viscosity", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
 N6aspect11Postprocess27VisualizationPostprocessors9ViscosityILi2EEE -> N6aspect11Postprocess27VisualizationPostprocessors9InterfaceILi2EEE [len=3, weight=50];
 SimulatorAccess -> N6aspect11Postprocess27VisualizationPostprocessors9ViscosityILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
+N6aspect11Postprocess27VisualizationPostprocessors19VolumeOfFluidValuesILi2EEE [label="volume of fluid\nvalues", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
+N6aspect11Postprocess27VisualizationPostprocessors19VolumeOfFluidValuesILi2EEE -> N6aspect11Postprocess27VisualizationPostprocessors9InterfaceILi2EEE [len=3, weight=50];
+SimulatorAccess -> N6aspect11Postprocess27VisualizationPostprocessors19VolumeOfFluidValuesILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
 N6aspect11Postprocess27VisualizationPostprocessors20VolumetricStrainRateILi2EEE [label="volumetric\nstrain rate", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
 N6aspect11Postprocess27VisualizationPostprocessors20VolumetricStrainRateILi2EEE -> N6aspect11Postprocess27VisualizationPostprocessors9InterfaceILi2EEE [len=3, weight=50];
 SimulatorAccess -> N6aspect11Postprocess27VisualizationPostprocessors20VolumetricStrainRateILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
