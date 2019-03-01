@@ -32,6 +32,24 @@ namespace aspect
   {
     namespace internal
     {
+      /**
+       * Compute the heat flux for boundaries with prescribed temperature (Dirichlet
+       * boundary conditions) using the consistent boundary flux method. The method
+       * is described in
+       *
+       * Gresho, P. M., Lee, R. L., Sani, R. L., Maslanik, M. K., & Eaton, B. E. (1987).
+       * The consistent Galerkin FEM for computing derived boundary quantities in thermal and or fluids
+       * problems. International Journal for Numerical Methods in Fluids, 7(4), 371-394.
+       *
+       * In summary, the method solves the temperature equation again on the boundary faces, with known
+       * temperatures and solving for the boundary fluxes that satisfy the equation. Since the
+       * equation is only formed on the faces and it can be solved using only diagonal matrices,
+       * the computation is cheap. Conceptually simpler methods like evaluating the temperature
+       * gradient on the face are significantly less accurate.
+       *
+       * The function returns a solution vector, which contains the heat flux in the temperature
+       * block of the vector.
+       */
       template <int dim>
       LinearAlgebra::BlockVector
       compute_dirichlet_boundary_heat_flux_solution_vector (const SimulatorAccess<dim> &simulator_access);
@@ -43,17 +61,7 @@ namespace aspect
        * the face, and for boundaries with non-tangential velocities the advective heat flux is computed as
        * the integral over the advective heat flux density.
        * For boundaries with prescribed temperature (Dirichlet boundary conditions) the heat flux
-       * is computed using the consistent boundary flux method. The method is described in
-       *
-       * Gresho, P. M., Lee, R. L., Sani, R. L., Maslanik, M. K., & Eaton, B. E. (1987).
-       * The consistent Galerkin FEM for computing derived boundary quantities in thermal and or fluids
-       * problems. International Journal for Numerical Methods in Fluids, 7(4), 371-394.
-       *
-       * In summary, the method solves the temperature equation again on the boundary faces, with known
-       * temperatures and solving for the boundary fluxes that satisfy the equation. Since the
-       * equation is only formed on the faces and it can be solved using only diagonal matrices,
-       * the computation is cheap. Conceptually simpler methods like evaluating the temperature
-       * gradient on the face are significantly less accurate.
+       * is computed using the compute_dirichlet_boundary_heat_flux_solution_vector() function.
        *
        * The function returns a vector with as many entries as active cells. For each locally owned
        * cell it contains a vector with one entry per face. Each of these entries contains a pair

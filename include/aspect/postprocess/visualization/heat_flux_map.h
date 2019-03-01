@@ -47,10 +47,18 @@ namespace aspect
           HeatFluxMap();
 
           /**
+           * Fill the temporary storage variables with the
+           * heat flux for the current time step.
+           *
            * @copydoc Interface<dim>::update()
            */
           void update();
 
+          /**
+           * Compute the heat flux for the given input cell.
+           *
+           * @copydoc DataPostprocessorScalar<dim>::evaluate_vector_field()
+           */
           virtual
           void
           evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
@@ -71,10 +79,24 @@ namespace aspect
           parse_parameters (ParameterHandler &prm);
 
         private:
+          /**
+           * A flag that determines whether to use the point-wise
+           * heat flux calculation or the cell-wise averaged calculation.
+           */
           bool output_point_wise_heat_flux;
 
+          /**
+           * A temporary storage place for the point-wise heat flux
+           * solution. Only initialized and used if output_point_wise_heat_flux
+           * is set to true.
+           */
           LinearAlgebra::BlockVector heat_flux_density_solution;
 
+          /**
+           * A temporary storage place for the cell-wise heat flux
+           * solution. Only initialized and used if output_point_wise_heat_flux
+           * is set to false.
+           */
           std::vector<std::vector<std::pair<double, double> > > heat_flux_and_area;
       };
     }
