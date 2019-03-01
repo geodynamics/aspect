@@ -127,8 +127,7 @@ namespace aspect
             {
               prm.declare_entry("Output interface reconstruction contour", "false",
                                 Patterns::Bool (),
-                                "Include fields volume_of_fluid_contour_* defined such that the "
-                                "0 contour is the fluid interface");
+                                "Include fields defined such that the 0 contour is the fluid interface");
 
               // TODO: Fix this for curved geometries
               prm.declare_entry("Output interface normals", "false",

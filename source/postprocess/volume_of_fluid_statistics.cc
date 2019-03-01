@@ -120,6 +120,6 @@ namespace aspect
     ASPECT_REGISTER_POSTPROCESSOR(VolumeOfFluidStatistics,
                                   "volume of fluid statistics",
                                   "A postprocessor that computes some statistics about the "
-                                  "volume_of_fluid fields.")
+                                  "volume-of-fluid fields.")
   }
 }
