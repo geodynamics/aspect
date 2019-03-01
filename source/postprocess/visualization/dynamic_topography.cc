@@ -49,6 +49,9 @@ namespace aspect
 
         auto cell = input_data.template get_cell<DoFHandler<dim> >();
 
+        // We only want to output dynamic topography at the top and bottom
+        // boundary, so only compute it if the current cell has
+        // a face at the top or bottom boundary.
         bool cell_at_top_or_bottom_boundary = false;
         for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
           if (cell->at_boundary(f) &&
@@ -72,6 +75,10 @@ namespace aspect
             fe_volume_values.reinit(cell);
 
             std::vector<double> dynamic_topography_values(quadrature_formula.size());
+
+            // It might seem unintuitive to use the extractor for the temperature block,
+            // but that is where dynamic_topography.topography_vector() stores the values.
+            // See the documentation of that function for more details.
             fe_volume_values[this->introspection().extractors.temperature].get_function_values(dynamic_topography.topography_vector(),
                 dynamic_topography_values);
 
