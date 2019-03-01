@@ -52,10 +52,24 @@ namespace aspect
       output_file_number (numbers::invalid_unsigned_int)
     {}
 
+
+
     template <int dim>
     std::pair<std::string,std::string>
     GravityPointValues<dim>::execute (TableHandler &)
     {
+      AssertThrow(false, ExcNotImplemented());
+      return std::pair<std::string,std::string>();
+    }
+
+
+
+    template <>
+    std::pair<std::string,std::string>
+    GravityPointValues<3>::execute (TableHandler &)
+    {
+      const int dim = 3;
+
       // Check time to see if we output gravity
       if (std::isnan(last_output_time))
         {
@@ -396,6 +410,8 @@ namespace aspect
       return std::pair<std::string, std::string> ("gravity computation file:",filename);
     }
 
+
+
     template <int dim>
     void
     GravityPointValues<dim>::declare_parameters (ParameterHandler &prm)
@@ -502,6 +518,8 @@ namespace aspect
       prm.leave_subsection();
     }
 
+
+
     template <int dim>
     void
     GravityPointValues<dim>::parse_parameters (ParameterHandler &prm)
@@ -559,16 +577,20 @@ namespace aspect
       prm.leave_subsection();
     }
 
-    // This deals with having the correct behavior during checkpoint/restart cycles:
+
+
     template <int dim>
     template <class Archive>
     void GravityPointValues<dim>::serialize (Archive &ar, const unsigned int)
     {
+      // This deals with having the correct behavior during checkpoint/restart cycles:
       ar &last_output_time
       & last_output_timestep
       & output_file_number
       ;
     }
+
+
 
     template <int dim>
     void
@@ -588,6 +610,8 @@ namespace aspect
         }
     }
 
+
+
     template <int dim>
     void
     GravityPointValues<dim>::save (std::map<std::string, std::string> &status_strings) const
@@ -598,6 +622,7 @@ namespace aspect
 
       status_strings["GravityPointValues"] = os.str();
     }
+
 
 
     template <int dim>
