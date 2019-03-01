@@ -37,13 +37,9 @@ namespace aspect
     namespace internal
     {
       template <int dim>
-      std::vector<std::vector<std::pair<double, double> > >
-      compute_heat_flux_through_boundary_faces (const SimulatorAccess<dim> &simulator_access)
+      LinearAlgebra::BlockVector
+      compute_dirichlet_boundary_heat_flux_solution_vector (const SimulatorAccess<dim> &simulator_access)
       {
-        std::vector<std::vector<std::pair<double, double> > > heat_flux_and_area(simulator_access.get_triangulation().n_active_cells(),
-                                                                                 std::vector<std::pair<double, double> >(GeometryInfo<dim>::faces_per_cell,
-                                                                                     std::pair<double,double>(0.0,0.0)));
-
         // Quadrature degree for assembling the consistent boundary flux equation, see Simulator::assemble_advection_system()
         // for a justification of the chosen quadrature degree.
         const unsigned int quadrature_degree = simulator_access.get_parameters().temperature_degree
@@ -116,12 +112,6 @@ namespace aspect
 
         const std::set<types::boundary_id> &fixed_heat_flux_boundaries =
           simulator_access.get_parameters().fixed_heat_flux_boundary_indicators;
-
-        const std::set<types::boundary_id> &tangential_velocity_boundaries =
-          simulator_access.get_boundary_velocity_manager().get_tangential_boundary_velocity_indicators();
-
-        const std::set<types::boundary_id> &zero_velocity_boundaries =
-          simulator_access.get_boundary_velocity_manager().get_zero_boundary_velocity_indicators();
 
         Vector<float> artificial_viscosity(simulator_access.get_triangulation().n_active_cells());
         simulator_access.get_artificial_viscosity(artificial_viscosity, true);
@@ -232,10 +222,6 @@ namespace aspect
 
                   fe_face_values.reinit (cell, f);
 
-                  // Integrate the face area
-                  for (unsigned int q=0; q<n_face_q_points; ++q)
-                    heat_flux_and_area[cell->active_cell_index()][f].second += fe_face_values.JxW(q);
-
                   const unsigned int boundary_id = cell->face(f)->boundary_id();
 
                   // Compute heat flux through Dirichlet boundary using CBF method
@@ -282,42 +268,12 @@ namespace aspect
                       // heat_flux_and_area, and assemble the CBF term into local_rhs.
                       for (unsigned int q=0; q < n_face_q_points; ++q)
                         {
-                          const double normal_heat_flux = heat_flux[q] * fe_face_values.normal_vector(q);
-                          const double JxW = fe_face_values.JxW(q);
-                          heat_flux_and_area[cell->active_cell_index()][f].first += normal_heat_flux * JxW;
-
                           for (unsigned int i = 0; i<dofs_per_cell; ++i)
                             {
                               // Neumann boundary condition term (term 3 in equation (30) of Gresho et al.)
                               local_rhs(i) += - fe_face_values[simulator_access.introspection().extractors.temperature].value(i,q) *
-                                              normal_heat_flux * JxW;
+                                              heat_flux[q] * fe_face_values.normal_vector(q) * fe_face_values.JxW(q);
                             }
-                        }
-                    }
-
-                  // Add advective heat flux for boundaries that are not tangential and not zero velocity boundaries.
-                  if (tangential_velocity_boundaries.find(boundary_id) == tangential_velocity_boundaries.end() &&
-                      zero_velocity_boundaries.find(boundary_id) == zero_velocity_boundaries.end())
-                    {
-                      face_in.reinit(fe_face_values, cell, simulator_access.introspection(), simulator_access.get_solution(), true);
-                      simulator_access.get_material_model().evaluate(face_in, face_out);
-
-                      if (simulator_access.get_parameters().formulation_temperature_equation ==
-                          Parameters<dim>::Formulation::TemperatureEquation::reference_density_profile)
-                        {
-                          for (unsigned int q=0; q<n_face_q_points; ++q)
-                            {
-                              face_out.densities[q] = simulator_access.get_adiabatic_conditions().density(face_in.position[q]);
-                            }
-                        }
-
-                      // Integrate the advective heat flux
-                      for (unsigned int q=0; q<n_face_q_points; ++q)
-                        {
-                          heat_flux_and_area[cell->active_cell_index()][f].first += face_out.densities[q] *
-                                                                                    face_out.specific_heat[q] * face_in.temperature[q] *
-                                                                                    face_in.velocity[q] * fe_face_values.normal_vector(q) *
-                                                                                    fe_face_values.JxW(q);
                         }
                     }
                 }
@@ -343,25 +299,139 @@ namespace aspect
         distributed_heat_flux_vector.compress(VectorOperation::insert);
         heat_flux_vector = distributed_heat_flux_vector;
 
+        return heat_flux_vector;
+      }
+
+      template <int dim>
+      std::vector<std::vector<std::pair<double, double> > >
+      compute_heat_flux_through_boundary_faces (const SimulatorAccess<dim> &simulator_access)
+      {
+        std::vector<std::vector<std::pair<double, double> > > heat_flux_and_area(simulator_access.get_triangulation().n_active_cells(),
+                                                                                 std::vector<std::pair<double, double> >(GeometryInfo<dim>::faces_per_cell,
+                                                                                     std::pair<double,double>(0.0,0.0)));
+
+        // Quadrature degree for assembling the consistent boundary flux equation, see Simulator::assemble_advection_system()
+        // for a justification of the chosen quadrature degree.
+        const unsigned int quadrature_degree = simulator_access.get_parameters().temperature_degree
+                                               +
+                                               (simulator_access.get_parameters().stokes_velocity_degree+1)/2;
+
+        // GLL quadrature on the faces to get a diagonal mass matrix.
+        const QGaussLobatto<dim-1> quadrature_formula_face(quadrature_degree);
+
+        FEFaceValues<dim> fe_face_values (simulator_access.get_mapping(),
+                                          simulator_access.get_fe(),
+                                          quadrature_formula_face,
+                                          update_JxW_values |
+                                          update_values |
+                                          update_gradients |
+                                          update_normal_vectors |
+                                          update_q_points);
+
+        const unsigned int n_face_q_points = quadrature_formula_face.size();
+
+        typename MaterialModel::Interface<dim>::MaterialModelInputs face_in(fe_face_values.n_quadrature_points, simulator_access.n_compositional_fields());
+        typename MaterialModel::Interface<dim>::MaterialModelOutputs face_out(fe_face_values.n_quadrature_points, simulator_access.n_compositional_fields());
+
+        const std::set<types::boundary_id> &fixed_temperature_boundaries =
+          simulator_access.get_boundary_temperature_manager().get_fixed_temperature_boundary_indicators();
+
+        const std::set<types::boundary_id> &fixed_heat_flux_boundaries =
+          simulator_access.get_parameters().fixed_heat_flux_boundary_indicators;
+
+        const std::set<types::boundary_id> &tangential_velocity_boundaries =
+          simulator_access.get_boundary_velocity_manager().get_tangential_boundary_velocity_indicators();
+
+        const std::set<types::boundary_id> &zero_velocity_boundaries =
+          simulator_access.get_boundary_velocity_manager().get_zero_boundary_velocity_indicators();
+
+        const LinearAlgebra::BlockVector heat_flux_vector = compute_dirichlet_boundary_heat_flux_solution_vector(simulator_access);
         std::vector<double> heat_flux_values(n_face_q_points);
 
-        // Now add the conductive heat flux for each face at Dirichlet boundaries
-        // (Neumann boundaries and advective heat flux have been added above).
-        for (cell = simulator_access.get_dof_handler().begin_active(); cell!=endc; ++cell)
+        // loop over all of the surface cells and evaluate the heat flux
+        typename DoFHandler<dim>::active_cell_iterator
+        cell = simulator_access.get_dof_handler().begin_active(),
+        endc = simulator_access.get_dof_handler().end();
+
+        for (; cell!=endc; ++cell)
           if (cell->is_locally_owned() && cell->at_boundary())
             {
               for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
                 if (cell->at_boundary(f))
                   {
+                    // Determine the type of boundary
                     const unsigned int boundary_id = cell->face(f)->boundary_id();
-                    if (fixed_temperature_boundaries.find(boundary_id) != fixed_temperature_boundaries.end())
+                    const bool prescribed_temperature = fixed_temperature_boundaries.find(boundary_id) != fixed_temperature_boundaries.end();
+                    const bool prescribed_heat_flux = fixed_heat_flux_boundaries.find(boundary_id) != fixed_heat_flux_boundaries.end();
+                    const bool non_tangential_velocity =
+                      tangential_velocity_boundaries.find(boundary_id) == tangential_velocity_boundaries.end() &&
+                      zero_velocity_boundaries.find(boundary_id) == zero_velocity_boundaries.end();
+
+                    fe_face_values.reinit (cell, f);
+
+                    // Integrate the face area
+                    for (unsigned int q=0; q<n_face_q_points; ++q)
+                      heat_flux_and_area[cell->active_cell_index()][f].second += fe_face_values.JxW(q);
+
+                    // Compute heat flux through Dirichlet boundaries by integrating the CBF solution vector
+                    if (prescribed_temperature)
                       {
-                        fe_face_values.reinit (cell, f);
                         fe_face_values[simulator_access.introspection().extractors.temperature].get_function_values(heat_flux_vector, heat_flux_values);
 
                         for (unsigned int q=0; q<n_face_q_points; ++q)
                           heat_flux_and_area[cell->active_cell_index()][f].first += heat_flux_values[q] *
                                                                                     fe_face_values.JxW(q);
+                      }
+
+                    // if necessary, compute material properties for this face
+                    if (prescribed_heat_flux || non_tangential_velocity)
+                      {
+                        face_in.reinit(fe_face_values, cell, simulator_access.introspection(), simulator_access.get_solution(), true);
+                        simulator_access.get_material_model().evaluate(face_in, face_out);
+
+                        if (simulator_access.get_parameters().formulation_temperature_equation ==
+                            Parameters<dim>::Formulation::TemperatureEquation::reference_density_profile)
+                          {
+                            for (unsigned int q=0; q<n_face_q_points; ++q)
+                              {
+                                face_out.densities[q] = simulator_access.get_adiabatic_conditions().density(face_in.position[q]);
+                              }
+                          }
+                      }
+
+                    // Compute heat flux through Neumann boundary by integrating the heat flux
+                    if (prescribed_heat_flux)
+                      {
+                        std::vector<Tensor<1,dim> > heat_flux(n_face_q_points);
+                        heat_flux = simulator_access.get_boundary_heat_flux().heat_flux(
+                                      boundary_id,
+                                      face_in,
+                                      face_out,
+#if DEAL_II_VERSION_GTE(9,0,0)
+                                      fe_face_values.get_normal_vectors()
+#else
+                                      fe_face_values.get_all_normal_vectors()
+#endif
+                                    );
+
+                        for (unsigned int q=0; q < n_face_q_points; ++q)
+                          {
+                            const double normal_heat_flux = heat_flux[q] * fe_face_values.normal_vector(q);
+                            const double JxW = fe_face_values.JxW(q);
+                            heat_flux_and_area[cell->active_cell_index()][f].first += normal_heat_flux * JxW;
+                          }
+                      }
+
+                    // Compute advective heat flux
+                    if (non_tangential_velocity)
+                      {
+                        for (unsigned int q=0; q<n_face_q_points; ++q)
+                          {
+                            heat_flux_and_area[cell->active_cell_index()][f].first += face_out.densities[q] *
+                                                                                      face_out.specific_heat[q] * face_in.temperature[q] *
+                                                                                      face_in.velocity[q] * fe_face_values.normal_vector(q) *
+                                                                                      fe_face_values.JxW(q);
+                          }
                       }
                   }
             }
@@ -481,6 +551,14 @@ namespace aspect
 {
   namespace Postprocess
   {
+    namespace internal
+    {
+#define INSTANTIATE(dim) \
+  template LinearAlgebra::BlockVector compute_dirichlet_boundary_heat_flux_solution_vector (const SimulatorAccess<dim> &simulator_access);
+
+      ASPECT_INSTANTIATE(INSTANTIATE)
+    }
+
     ASPECT_REGISTER_POSTPROCESSOR(HeatFluxMap,
                                   "heat flux map",
                                   "A postprocessor that computes the heat flux "
