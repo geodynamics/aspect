@@ -303,8 +303,16 @@ namespace aspect
     // overwrite the relevant composition block only
     const unsigned int blockidx = advection_field.block_index(introspection);
     solution.block(blockidx) = particle_solution.block(blockidx);
-    old_solution.block(blockidx) = particle_solution.block(blockidx);
-    old_old_solution.block(blockidx) = particle_solution.block(blockidx);
+
+    // In the first timestep initialize all solution vectors with the initial
+    // particle solution, identical to the end of the
+    // Simulator<dim>::set_initial_temperature_and_compositional_fields ()
+    // function.
+    if (timestep_number == 0)
+      {
+        old_solution.block(blockidx) = particle_solution.block(blockidx);
+        old_old_solution.block(blockidx) = particle_solution.block(blockidx);
+      }
   }
 
 
