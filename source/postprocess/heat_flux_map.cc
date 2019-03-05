@@ -326,7 +326,7 @@ namespace aspect
                                           update_values |
                                           update_gradients |
                                           update_normal_vectors |
-                                          update_q_points);
+                                          update_quadrature_points);
 
         const unsigned int n_face_q_points = quadrature_formula_face.size();
 
