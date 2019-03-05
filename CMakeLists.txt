@@ -16,6 +16,7 @@
 # along with ASPECT; see the file doc/COPYING.  If not see
 # <http://www.gnu.org/licenses/>.
 
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8.12)
 
 MESSAGE(STATUS "====================================================")
 MESSAGE(STATUS "============ Configuring ASPECT ====================")
@@ -26,8 +27,6 @@ SET(TARGET "aspect")
 
 FILE(GLOB_RECURSE TARGET_SRC  "source/*.cc" "unit_tests/*.cc" "include/*.h" "contrib/catch/catch.hpp")
 INCLUDE_DIRECTORIES(include ${CMAKE_BINARY_DIR}/include contrib/catch)
-
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8.8)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 

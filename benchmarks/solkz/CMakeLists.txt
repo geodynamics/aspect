@@ -16,7 +16,7 @@
 # along with ASPECT; see the file LICENSE.  If not see
 # <http://www.gnu.org/licenses/>.
 
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8.8)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8.12)
 
 FIND_PACKAGE(Aspect 2.1.0 QUIET HINTS ${Aspect_DIR} ../ ../../ $ENV{ASPECT_DIR})
 

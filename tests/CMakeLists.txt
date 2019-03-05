@@ -1,5 +1,5 @@
 ################### top matter ################
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8.8)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8.12)
 
 IF (CMP0058)
  cmake_policy(CMP0058 NEW) 
