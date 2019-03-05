@@ -1047,7 +1047,7 @@ namespace aspect
     //
     // We have to deal with several complications:
     // - we can have an FE_Q or an FE_DGP for the pressure
-    // - we might use a direct solver, so pressure and velocity is in the same block
+    // - we might use a direct solver, so pressure and velocity are in the same block
     // - we might have melt transport, where we need to operate only on p_f
     //
     // We ensure int_\Omega f = 0 by computing a correction factor
@@ -1059,9 +1059,10 @@ namespace aspect
     //
     // We can compute
     //   c = \int f = (f, 1) = (f, \sum_i \phi_i) = \sum_i (f, \phi_i) = \sum_i F_i
-    // which is just the sum over the RHS vector for FE_Q. For FE_DGP we need
-    // to restrict to 0th shape functions on each cell because this is how we
-    // represent the function 1.
+    // which is just the sum over the RHS vector for FE_Q. For FE_DGP
+    // we need to restrict to 0th shape functions on each cell,
+    // because this is the shape function that is constant 1. (The
+    // other shape functions have mean value zero.)
     //
     // To make the adjustment fnew = f - c/|\Omega|
     // note that
@@ -1174,8 +1175,6 @@ namespace aspect
 
         vector.compress(VectorOperation::add);
       }
-
-
   }
 
 
