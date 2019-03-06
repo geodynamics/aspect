@@ -21,7 +21,7 @@ values are represented as attributes in the CSV file. The attributes can be set 
 the same name as the .csv file. Both the .csv and the .csv.das file must be included 
 (i.e. **urlFile.csv** and **urlFile.csv.das**).
 
-CSV files must include the column title followed by <String>, this is because Aspect takes in 
+CSV files must include the column title followed by "String", this is because Aspect takes in 
 values from local files as strings (and url files are designed to be read in to look like local 
 files). The CSV must then be organized so that there are the same number of values per row as 
 there is number of columns. So 4 columns would mean that there has to be 4 values and then a 
