@@ -918,7 +918,7 @@ namespace aspect
 			        if ((*i)->type() == libdap::dods_array_c) {
 			            urlArray = static_cast <libdap::Array *>(btp);
 			            if (urlArray->var() != NULL && urlArray->var()->type() == libdap::dods_str_c) {
-							//The url Array contains a seperate array for each column of data.
+							//The url Array contains a separate array for each column of data.
 							// This will put each of these individual arrays into its own vector.
 							urlArray->value(tmp);
 							columns.push_back(tmp);
