@@ -29,12 +29,17 @@
 #include <deal.II/base/work_stream.h>
 #include <deal.II/base/signaling_nan.h>
 #include <deal.II/lac/full_matrix.h>
-#include <deal.II/lac/constraint_matrix.h>
 #include <deal.II/grid/tria_iterator.h>
 #include <deal.II/grid/filtered_iterator.h>
 #include <deal.II/dofs/dof_accessor.h>
 #include <deal.II/dofs/dof_tools.h>
 #include <deal.II/fe/fe_values.h>
+
+#if DEAL_II_VERSION_GTE(9,1,0)
+#  include <deal.II/lac/affine_constraints.h>
+#else
+#  include <deal.II/lac/constraint_matrix.h>
+#endif
 
 namespace aspect
 {
