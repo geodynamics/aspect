@@ -1,7 +1,12 @@
+
+# Test the aspect simulator using local data match the file used
+# with the opendap client. See aspect_url_test.prm for an example
+# of that version.
+
 set Dimension                              = 3
 set Use years in output instead of seconds = true
 set End time                               = 0
-set Output directory                       = output-adiabatic_boundary-url-test
+set Output directory                       = output-adiabatic_boundary-no-url-test
 set Nonlinear solver scheme                = single Advection, iterated Stokes
 set Nonlinear solver tolerance             = 1e-5
 set Max nonlinear iterations               = 50
@@ -28,8 +33,8 @@ end
 subsection Initial temperature model
    set Model name = adiabatic boundary
  subsection Ascii data model 
-    set Data directory    = 
- set Data file name       = http://test.opendap.org/opendap/BALTO/lithospheric_thickness.csv
+    set Data directory    = $ASPECT_SOURCE_DIR/input_files/
+    set Data file name    = lithospheric_thickness.txt
 end 
 end 
    
