@@ -158,7 +158,7 @@ namespace aspect
          * profile) between a minimum and maximum radius. Number of points along the radius
          * is specified with n_points_radius.
          */
-        double n_points_radius;
+        unsigned int n_points_radius;
 
         /**
          * Parameter for the map sampling scheme:
@@ -166,7 +166,7 @@ namespace aspect
          * mapping) between a minimum and maximum longitude. Number of points along the
          * longitude is specified with n_points_longitude.
          */
-        double n_points_longitude;
+        unsigned int n_points_longitude;
 
         /**
          * Parameter for the map sampling scheme:
@@ -174,7 +174,7 @@ namespace aspect
          * mapping) between a minimum and maximum latitude. Number of points along the
          * latitude is specified with n_points_latitude.
          */
-        double n_points_latitude;
+        unsigned int n_points_latitude;
 
         /**
          * Parameter for the map sampling scheme:
