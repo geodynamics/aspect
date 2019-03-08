@@ -17,8 +17,7 @@ set Surface pressure                       = 0
 
 set Pressure normalization                 = volume
 
-set Nonlinear solver scheme                = Stokes only
-set Linear solver tolerance                = 1e-7
+set Nonlinear solver scheme                = no Advection, iterated Stokes
 set Nonlinear solver tolerance             = 1e-5
 set Max nonlinear iterations               = 1
 
@@ -27,7 +26,7 @@ set Use years in output instead of seconds = false  # default: true
 
 
 subsection Boundary temperature model
-  set Model name = box
+  set List of model names = box
 
 end
 
@@ -88,16 +87,16 @@ subsection Mesh refinement
 end
 
 
-subsection Model settings
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
 
-
+subsection Boundary temperature model
   set Fixed temperature boundary indicators   = 0, 1
+end
 
+subsection Boundary velocity model
   set Prescribed velocity boundary indicators = 0: InclusionBoundary, 1: InclusionBoundary, 2: InclusionBoundary, 3: InclusionBoundary
-
-  set Tangential velocity boundary indicators =
-
-  set Zero velocity boundary indicators       =
 end
 
 
@@ -121,5 +120,11 @@ end
 subsection Material model
   subsection Inclusion
     set Viscosity jump = 1e3
+  end
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-7
   end
 end

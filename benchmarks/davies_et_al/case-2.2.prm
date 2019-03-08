@@ -31,13 +31,14 @@ subsection Geometry model
   end
 end
 
-subsection Model settings
-  set Remove nullspace                        = net rotation
 
-  set Fixed temperature boundary indicators   = 0,1
-  set Prescribed velocity boundary indicators = 
+subsection Nullspace removal
+  set Remove nullspace                        = net rotation
+end
+
+
+subsection Boundary velocity model
   set Tangential velocity boundary indicators = 0,1
-  set Zero velocity boundary indicators       = 
 end
 
 subsection Gravity model
@@ -60,7 +61,9 @@ subsection Material model
 end
 
 subsection Boundary temperature model
-  set Model name = spherical constant
+  set Fixed temperature boundary indicators = 0,1
+  set List of model names = spherical constant
+
   subsection Spherical constant
     set Inner temperature = 1
     set Outer temperature = 0

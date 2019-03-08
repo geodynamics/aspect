@@ -1,0 +1,122 @@
+# Here we verify that the adiabatic conditions plugin can use
+# a variabe number of points. We only use 5 points, so that the 
+# profile should have distinct kinks. 
+
+set Dimension = 2
+set CFL number                             = 1.0
+set End time                               = 0
+set Start time                             = 0
+set End time                               = 0
+set Surface pressure                       = 0
+set Use years in output instead of seconds = false  # default: true
+set Nonlinear solver scheme                = single Advection, single Stokes
+
+
+############ These parameters are of interest for this test: #########
+
+subsection Boundary temperature model
+  set List of model names = spherical constant
+
+  subsection Spherical constant
+    set Inner temperature = 3000.0
+    set Outer temperature = 300.0
+  end
+end
+
+
+set Adiabatic surface temperature = 1200
+subsection Initial temperature model
+  set Model name = adiabatic
+
+  subsection Adiabatic
+    set Age top boundary layer = 0
+    set Age bottom boundary layer = 0
+    set Subadiabaticity = 0
+  end
+end
+
+subsection Adiabatic conditions model
+  set Model name = compute profile
+
+  subsection Compute profile
+    set Number of points = 5
+  end
+end
+
+
+########################################################################
+
+
+subsection Gravity model
+  set Model name = radial constant
+
+  subsection Radial constant
+    set Magnitude = 9.81
+  end
+end
+
+
+subsection Geometry model
+  set Model name = spherical shell
+
+  subsection Spherical shell
+    set Inner radius = 3481000
+    set Outer radius = 6371000
+    set Opening angle = 90
+  end
+end
+
+
+subsection Material model
+  set Model name = simple compressible
+
+  subsection Simple compressible model
+    set Reference density             = 3300
+    set Reference specific heat       = 1250
+    set Thermal conductivity          = 4.125 # default: 4.7
+    set Thermal expansion coefficient = 2e-5
+    set Viscosity                     = 1    # default: 5e24
+    set Reference compressibility     = 1e-11
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 5
+end
+
+
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = 0, 1
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = 0, 2, 3
+end
+
+subsection Boundary velocity model
+  set Zero velocity boundary indicators       = 1
+end
+
+subsection Heating model
+  set List of model names = adiabatic heating, shear heating
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, depth average
+
+  subsection Visualization
+    set Output format                 = gnuplot
+    set List of output variables      = adiabat
+  end
+
+  subsection Depth average
+    set Number of zones = 10
+  end
+end
+

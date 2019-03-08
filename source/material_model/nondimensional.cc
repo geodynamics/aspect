@@ -14,14 +14,15 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
 
 #include <aspect/material_model/nondimensional.h>
+#include <aspect/geometry_model/interface.h>
+#include <aspect/adiabatic_conditions/interface.h>
 
-using namespace dealii;
 
 namespace aspect
 {
@@ -214,7 +215,7 @@ namespace aspect
                                    "\n\n"
                                    "The density is defined as \\[\\rho = \\exp(\\text{Di}/\\gamma \\cdot z) "
                                    " (1.0 - \\alpha T' + \\text{Di} \\gamma p'),\\] where "
-                                   "$\\alpha=\text{Di}$ is the thermal expansion coefficient, "
+                                   "$\\alpha=\\text{Di}$ is the thermal expansion coefficient, "
                                    "$\\gamma$ is the Grueneisen parameter, and $p'$ is "
                                    "the pressure variation from the adiabatic "
                                    "pressure. The pressure dependent term is not present "

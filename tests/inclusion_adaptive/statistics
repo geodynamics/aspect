@@ -9,9 +9,9 @@
 # 9: Velocity iterations in Stokes preconditioner
 # 10: Schur complement iterations in Stokes preconditioner
 # 11: Visualization file name
-0 0.000000000000e+00 0.000000000000e+00  64  659  289 1  23  24  95 output-inclusion_adaptive/solution/solution-00000 
-0 0.000000000000e+00 0.000000000000e+00  76  803  353 1  27  28 116 output-inclusion_adaptive/solution/solution-00001 
-0 0.000000000000e+00 0.000000000000e+00 100 1055  465 1  28  29 128 output-inclusion_adaptive/solution/solution-00002 
-0 0.000000000000e+00 0.000000000000e+00 172 1847  817 1  30  31 125 output-inclusion_adaptive/solution/solution-00003 
-0 0.000000000000e+00 0.000000000000e+00 292 3107 1377 1 145 148 647 output-inclusion_adaptive/solution/solution-00004 
-0 0.000000000000e+00 0.000000000000e+00 430 4709 2089 1 151 155 773 output-inclusion_adaptive/solution/solution-00005 
+0 0.000000000000e+00 0.000000000000e+00  64  659  289 1  19  20  79 output-inclusion_adaptive/solution/solution-00000 
+0 0.000000000000e+00 0.000000000000e+00 100 1055  465 1  22  23  99 output-inclusion_adaptive/solution/solution-00001 
+0 0.000000000000e+00 0.000000000000e+00 172 1847  817 1  23  24 100 output-inclusion_adaptive/solution/solution-00002 
+0 0.000000000000e+00 0.000000000000e+00 268 2891 1281 1 143 146 607 output-inclusion_adaptive/solution/solution-00003 
+0 0.000000000000e+00 0.000000000000e+00 433 4727 2097 1 144 147 733 output-inclusion_adaptive/solution/solution-00004 
+0 0.000000000000e+00 0.000000000000e+00 706 7724 3429 1 131 134 666 output-inclusion_adaptive/solution/solution-00005 

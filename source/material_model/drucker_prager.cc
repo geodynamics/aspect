@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
@@ -23,7 +23,6 @@
 #include <aspect/utilities.h>
 #include <aspect/newton.h>
 
-using namespace dealii;
 
 namespace aspect
 {
@@ -50,9 +49,6 @@ namespace aspect
           // calculate effective viscosity
           if (in.strain_rate.size() > 0)
             {
-              SymmetricTensor<2,dim> effective_viscosity_strain_rate_derivatives;
-              double effective_viscosity_pressure_derivatives = 0;
-
               const SymmetricTensor<2,dim> strain_rate_deviator = deviator(in.strain_rate[i]);
 
               // For the very first time this function is called
@@ -85,73 +81,61 @@ namespace aspect
                                               :
                                               std::fabs(second_invariant(strain_rate_deviator))));
 
-              const double sqrt3 = std::sqrt(3.0);
+              const double strain_rate_effective = edot_ii_strict;
 
-              double strain_rate_effective = edot_ii_strict;
-
-              // plasticity
-              const double sin_phi = std::sin(angle_of_internal_friction);
-              const double cos_phi = std::cos(angle_of_internal_friction);
-              const double strain_rate_effective_inv = 1/(2*std::sqrt(strain_rate_effective));
-              const double strength_inv_part = 1/(sqrt3*(3.0+sin_phi));
-
-              const double strength = ( (dim==3)
-                                        ?
-                                        ( 6.0 * cohesion * cos_phi + 2.0 * pressure * sin_phi) * strength_inv_part
-                                        :
-                                        cohesion * cos_phi + pressure * sin_phi );
-
-              // Rescale the viscosity back onto the yield surface
-              const double eta_plastic = strength * strain_rate_effective_inv;
-
-              // Cut off the viscosity between a minimum and maximum value to avoid
-              // a numerically unfavourable large viscosity range.
-              const double effective_viscosity = 1.0 / ( ( 1.0 / ( eta_plastic + minimum_viscosity ) ) + ( 1.0 / maximum_viscosity ) );
-
-              Assert(dealii::numbers::is_finite(effective_viscosity), ExcMessage ("Error: Viscosity is not finite."));
-
-              // In later timesteps, we still need to care about cases of very small
+              // In later time steps, we still need to care about cases of very small
               // strain rates. We expect the viscosity to approach the maximum_viscosity
               // in these cases. This check prevents a division-by-zero.
               if (std::sqrt(strain_rate_effective) <= std::numeric_limits<double>::min())
                 {
                   out.viscosities[i] = maximum_viscosity;
+
+                  if (derivatives != nullptr)
+                    {
+                      derivatives->viscosity_derivative_wrt_strain_rate[i] = 0.0;
+                      derivatives->viscosity_derivative_wrt_pressure[i] = 0.0;
+                    }
                 }
               else
                 {
+                  // plasticity
+                  const MaterialUtilities::DruckerPragerInputs plastic_in(cohesion, angle_of_internal_friction, pressure, std::sqrt(strain_rate_effective));
+                  MaterialUtilities::DruckerPragerOutputs plastic_out;
+                  MaterialUtilities::compute_drucker_prager_yielding<dim> (plastic_in, plastic_out);
+
+                  const double eta_plastic = plastic_out.plastic_viscosity;
+
+                  // Cut off the viscosity between a minimum and maximum value to avoid
+                  // a numerically unfavourable large viscosity range.
+                  const double effective_viscosity = 1.0 / ( ( 1.0 / ( eta_plastic + minimum_viscosity ) ) + ( 1.0 / maximum_viscosity ) );
+
+                  Assert(dealii::numbers::is_finite(effective_viscosity), ExcMessage ("Error: Viscosity is not finite."));
+
                   out.viscosities[i] = effective_viscosity;
-                }
 
-              Assert(dealii::numbers::is_finite(out.viscosities[i]),
-                     ExcMessage ("Error: Averaged viscosity is not finite."));
+                  Assert(dealii::numbers::is_finite(out.viscosities[i]),
+                         ExcMessage ("Error: Averaged viscosity is not finite."));
 
-              if (derivatives != NULL)
-                {
-                  if (std::sqrt(strain_rate_effective) > std::numeric_limits<double>::min())
+                  if (derivatives != nullptr)
                     {
-                      const double averaging_factor = effective_viscosity * effective_viscosity * std::pow(eta_plastic + minimum_viscosity,-2);
-                      effective_viscosity_strain_rate_derivatives = averaging_factor * 0.5 * (eta_plastic * (-1.0/std::sqrt(edot_ii_strict * edot_ii_strict))) * strain_rate_deviator;
-                      effective_viscosity_pressure_derivatives = averaging_factor * (dim == 2 ?
-                                                                                     sin_phi * strain_rate_effective_inv
-                                                                                     :
-                                                                                     (sin_phi*strength_inv_part));
+                      const double averaging_factor = maximum_viscosity * maximum_viscosity
+                                                      / ((eta_plastic + minimum_viscosity + maximum_viscosity) * (eta_plastic + minimum_viscosity + maximum_viscosity));
+                      const SymmetricTensor<2,dim> effective_viscosity_strain_rate_derivatives
+                        = -0.5 * averaging_factor * (eta_plastic / edot_ii_strict) * strain_rate_deviator;
+                      const double effective_viscosity_pressure_derivatives = averaging_factor * plastic_out.viscosity_pressure_derivative;
+
+                      derivatives->viscosity_derivative_wrt_strain_rate[i] = deviator_tensor<dim>() * effective_viscosity_strain_rate_derivatives;
+
+                      derivatives->viscosity_derivative_wrt_pressure[i] = effective_viscosity_pressure_derivatives;
+
+                      Assert(dealii::numbers::is_finite(derivatives->viscosity_derivative_wrt_pressure[i]),
+                             ExcMessage ("Error: Averaged viscosity_derivative_wrt_pressure is not finite."));
+                      for (int x = 0; x < dim; x++)
+                        for (int y = 0; y < dim; y++)
+                          Assert(dealii::numbers::is_finite(derivatives->viscosity_derivative_wrt_strain_rate[i][x][y]),
+                                 ExcMessage ("Error: Averaged viscosity_derivative_wrt_strain_rate is not finite."));
+
                     }
-                  else
-                    {
-                      effective_viscosity_strain_rate_derivatives = 0;
-                    }
-
-                  derivatives->viscosity_derivative_wrt_strain_rate[i] = effective_viscosity_strain_rate_derivatives;
-
-                  derivatives->viscosity_derivative_wrt_pressure[i] = effective_viscosity_pressure_derivatives;
-
-                  Assert(dealii::numbers::is_finite(derivatives->viscosity_derivative_wrt_pressure[i]),
-                         ExcMessage ("Error: Averaged dviscosities_dpressure is not finite."));
-                  for (int x = 0; x < dim; x++)
-                    for (int y = 0; y < dim; y++)
-                      Assert(dealii::numbers::is_finite(derivatives->viscosity_derivative_wrt_strain_rate[i][x][y]),
-                             ExcMessage ("Error: Averaged dviscosities_dstrain_rate is not finite."));
-
                 }
             }
           out.densities[i] = reference_rho * (1.0 - thermal_expansivity * (temperature - reference_T));
@@ -215,7 +199,26 @@ namespace aspect
                              "in the density calculation. Units: $K$.");
           prm.declare_entry ("Reference viscosity", "1e22",
                              Patterns::Double (0),
-                             "The value of the reference viscosity $\\eta_0$. Units: $kg/m/s$.");
+                             "The reference viscosity that is used for pressure scaling. "
+                             "To understand how pressure scaling works, take a look at "
+                             "\\cite{KHB12}. In particular, the value of this parameter "
+                             "would not affect the solution computed by \\aspect{} if "
+                             "we could do arithmetic exactly; however, computers do "
+                             "arithmetic in finite precision, and consequently we need to "
+                             "scale quantities in ways so that their magnitudes are "
+                             "roughly the same. As explained in \\cite{KHB12}, we scale "
+                             "the pressure during some computations (never visible by "
+                             "users) by a factor that involves a reference viscosity. This "
+                             "parameter describes this reference viscosity."
+                             "\n\n"
+                             "For problems with a constant viscosity, you will generally want "
+                             "to choose the reference viscosity equal to the actual viscosity. "
+                             "For problems with a variable viscosity, the reference viscosity "
+                             "should be a value that adequately represents the order of "
+                             "magnitude of the viscosities that appear, such as an average "
+                             "value or the value one would use to compute a Rayleigh number."
+                             "\n\n"
+                             "Units: $Pa \\, s$");
           prm.declare_entry ("Thermal conductivity", "4.7",
                              Patterns::Double (0),
                              "The value of the thermal conductivity $k$. "
@@ -317,7 +320,7 @@ namespace aspect
                                    "coefficients are chosen to be similar to what is believed to be correct "
                                    "for Earth's mantle. All of the values that define this model are read "
                                    "from a section ``Material model/Drucker Prager'' in the input file, see "
-                                   "Section~\\ref{parameters:Material_20model/Drucker_20Prager}."
+                                   "Section~\\ref{parameters:Material_20model/Drucker_20Prager}. "
                                    "Note that the model does not take into account any dependencies of "
                                    "material properties on compositional fields. "
                                    "\n\n"

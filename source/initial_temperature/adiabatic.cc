@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,12 +14,14 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
 
 #include <aspect/initial_temperature/adiabatic.h>
+#include <aspect/adiabatic_conditions/interface.h>
+#include <aspect/boundary_temperature/interface.h>
 #include <aspect/geometry_model/box.h>
 #include <aspect/geometry_model/spherical_shell.h>
 #include <aspect/geometry_model/chunk.h>
@@ -60,13 +62,13 @@ namespace aspect
       // at the surface and maximal_temperature() the value at the bottom.
       const double T_surface = (this->has_boundary_temperature()
                                 ?
-                                this->get_boundary_temperature().minimal_temperature(
+                                this->get_boundary_temperature_manager().minimal_temperature(
                                   this->get_fixed_temperature_boundary_indicators())
                                 :
                                 adiabatic_surface_temperature);
       const double T_bottom = (this->has_boundary_temperature()
                                ?
-                               this->get_boundary_temperature().maximal_temperature(
+                               this->get_boundary_temperature_manager().maximal_temperature(
                                  this->get_fixed_temperature_boundary_indicators())
                                :
                                adiabatic_bottom_temperature);
@@ -87,7 +89,14 @@ namespace aspect
       in.strain_rate.resize(0); // adiabat has strain=0.
       this->get_material_model().evaluate(in, out);
 
-      const double kappa = out.thermal_conductivities[0] / (out.densities[0] * out.specific_heat[0]);
+      const double kappa = ( (this->get_parameters().formulation_temperature_equation ==
+                              Parameters<dim>::Formulation::TemperatureEquation::reference_density_profile)
+                             ?
+                             out.thermal_conductivities[0] /
+                             (this->get_adiabatic_conditions().density(in.position[0]) * out.specific_heat[0])
+                             :
+                             out.thermal_conductivities[0] / (out.densities[0] * out.specific_heat[0])
+                           );
 
       // analytical solution for the thermal boundary layer from half-space cooling model
       const double surface_cooling_temperature = age_top > 0.0 ?
@@ -95,7 +104,7 @@ namespace aspect
                                                  erfc(this->get_geometry_model().depth(position) /
                                                       (2 * sqrt(kappa * age_top)))
                                                  : 0.0;
-      const double bottom_heating_temperature = age_bottom > 0.0 ?
+      const double bottom_heating_temperature = (age_bottom > 0.0 && this->get_adiabatic_conditions().is_initialized()) ?
                                                 (T_bottom - adiabatic_bottom_temperature + subadiabaticity)
                                                 * erfc((this->get_geometry_model().maximal_depth()
                                                         - this->get_geometry_model().depth(position)) /
@@ -178,7 +187,7 @@ namespace aspect
             }
           else
             AssertThrow (false,
-                         ExcMessage ("Not a valid geometry model for the initial conditions model"
+                         ExcMessage ("Not a valid geometry model for the initial temperature model"
                                      "adiabatic."));
         }
 
@@ -243,8 +252,8 @@ namespace aspect
                              "boundary layer temperature will be used.");
           prm.declare_entry ("Position", "center",
                              Patterns::Selection ("center"),
-                             "Where the initial temperature perturbation should be placed. If 'center' is "
-                             "given, then the perturbation will be centered along a 'midpoint' of some "
+                             "Where the initial temperature perturbation should be placed. If `center' is "
+                             "given, then the perturbation will be centered along a `midpoint' of some "
                              "sort of the bottom boundary. For example, in the case of a box geometry, "
                              "this is the center of the bottom face; in the case of a spherical shell "
                              "geometry, it is along the inner surface halfway between the bounding "
@@ -301,13 +310,14 @@ namespace aspect
               prm.enter_subsection("Function");
               try
                 {
-                  function.reset (new Functions::ParsedFunction<1>(n_compositional_fields));
+                  function
+                    = std_cxx14::make_unique<Functions::ParsedFunction<1>>(n_compositional_fields);
                   function->parse_parameters (prm);
                 }
               catch (...)
                 {
                   std::cerr << "ERROR: FunctionParser failed to parse\n"
-                            << "\t'Initial conditions.Adiabatic.Function'\n"
+                            << "\t'Initial temperature model.Adiabatic.Function'\n"
                             << "with expression\n"
                             << "\t'" << prm.get("Function expression") << "'"
                             << "More information about the cause of the parse error \n"

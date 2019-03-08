@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
@@ -25,29 +25,66 @@
 #include <aspect/postprocess/interface.h>
 #include <aspect/simulator_access.h>
 
+
 namespace aspect
 {
   namespace Postprocess
   {
 
     /**
-     * Loops over the cells vertices and determines the maximum and minimum
-     * topography of the domain, relative to the initial box height for a box
-     * geometry model, and the initial radius for spheres or spherical shells.
-     * Intended for use with a free surface.
+     * A postprocessor that outputs the surface topography to file.
+
      * @ingroup Postprocessing
      */
-
     template <int dim>
-    class Topography : public Interface<dim>, public SimulatorAccess<dim>
+    class Topography : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
         /**
-         * Calculate the maximum and minimum topography [m]
+         * Output topography [m] to file
          */
         virtual
-        std::pair<std::string,std::string>
-        execute (TableHandler &statistics);
+        std::pair<std::string,std::string> execute (TableHandler &statistics);
+
+        /**
+         * @name Functions used in dealing with run-time parameters
+         * @{
+         */
+        /**
+         * Declare the parameters this class takes through input files.
+         */
+        static
+        void
+        declare_parameters (ParameterHandler &prm);
+
+        /**
+         * Read the parameters this class declares from the parameter file.
+         */
+        virtual
+        void
+        parse_parameters (ParameterHandler &prm);
+        /**
+         * @}
+         */
+
+      private:
+        /**
+         * Whether or not to produce text files with topography values
+         */
+        bool write_to_file;
+
+        /**
+         * Interval between the generation of text output. This parameter
+         * is read from the input file and consequently is not part of the
+         * state that needs to be saved and restored.
+         */
+        double output_interval;
+
+        /**
+         * A time (in seconds) at which the last text output was supposed
+         * to be produced. Used to check for the next necessary output time.
+         */
+        double last_output_time;
     };
   }
 }

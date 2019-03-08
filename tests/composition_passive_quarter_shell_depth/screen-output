@@ -1,0 +1,34 @@
+
+Number of active cells: 3,072 (on 6 levels)
+Number of degrees of freedom: 65,926 (25,090+3,201+12,545+12,545+12,545)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 0 iterations.
+   Solving C_1 system ... 0 iterations.
+   Solving C_2 system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 60+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-composition_passive_quarter_shell_depth/solution/solution-00000
+     Temperature min/avg/max:   0 K, 0.2417 K, 1 K
+     Compositions min/max/mass: 0/1/0.1374 // 0/1/0.1058
+
+*** Timestep 1:  t=1 seconds
+   Solving temperature system... 7 iterations.
+   Solving C_1 system ... 6 iterations.
+   Solving C_2 system ... 6 iterations.
+   Solving Stokes system... 37+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-composition_passive_quarter_shell_depth/solution/solution-00001
+     Temperature min/avg/max:   0 K, 0.2417 K, 1 K
+     Compositions min/max/mass: -2.484e-05/1/0.1374 // -5.556e-05/1/0.1058
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

@@ -4,11 +4,11 @@
     <Piece NumberOfPoints="5" NumberOfCells="5">
       <Points>
         <DataArray name="Position" type="Float64" NumberOfComponents="3" Format="ascii">
-          0.442382 0.856879 0.0
-          0.388042 0.967838 0.0
-          0.4865 0.511138 0.0
-          0.617799 0.86825 0.0
-          0.695098 0.9761 0.0
+          0.44318 0.68981 0.0
+          0.280937 0.811481 0.0
+          0.548289 0.600343 0.0
+          0.682848 0.635618 0.0
+          0.502451 0.969555 0.0
         </DataArray>
       </Points>
       <Cells>
@@ -45,7 +45,7 @@
         <DataArray type="Float64" Name="initial anomaly" NumberOfComponents="1" Format="ascii">
           0
           0
-          2.5091e-14
+          0
           0
           0
         </DataArray>

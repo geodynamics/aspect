@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2015 - 2016 by the authors of the ASPECT code.
+ Copyright (C) 2015 - 2018 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with ASPECT; see the file doc/COPYING.  If not see
+ along with ASPECT; see the file LICENSE.  If not see
  <http://www.gnu.org/licenses/>.
  */
 
@@ -89,7 +89,7 @@ namespace aspect
           /**
            * A function object representing the particle property.
            */
-          std_cxx11::unique_ptr<Functions::ParsedFunction<dim> > function;
+          std::unique_ptr<Functions::ParsedFunction<dim> > function;
 
           /**
            * A private variable that stores the number of particle property

@@ -28,7 +28,7 @@
 # accelerate towards the top as expected but is in fact constant).
 #
 # This testcase therefore verifies that we compute this wrong solution
-# in the first iteration. We use the Stokes only/max_nonlinear_iterations=1
+# in the first iteration. We use the no Advection, iterated Stokes/max_nonlinear_iterations=1
 # option for the solver scheme.
 
 set Dimension = 2
@@ -39,14 +39,14 @@ set Adiabatic surface temperature          = 0
 set Surface pressure                       = 0
 set Use years in output instead of seconds = false  # default: true
 
-set Nonlinear solver scheme                = Stokes only
+set Nonlinear solver scheme                = no Advection, iterated Stokes
 set Max nonlinear iterations               = 1
 
 
 
 
 subsection Boundary temperature model
-  set Model name = box
+  set List of model names = box
 end
 
 
@@ -105,10 +105,15 @@ subsection Mesh refinement
 end
 
 
-subsection Model settings
-  set Fixed temperature boundary indicators   =
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary velocity model
   set Tangential velocity boundary indicators = 0, 1
-  set Zero velocity boundary indicators       =
+end
+
+subsection Boundary velocity model
   set Prescribed velocity boundary indicators = 2: function
 end
 

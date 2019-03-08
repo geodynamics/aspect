@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,12 +14,13 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
 
 #include <aspect/initial_temperature/harmonic_perturbation.h>
+#include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/geometry_model/box.h>
 #include <aspect/geometry_model/spherical_shell.h>
 #include <aspect/geometry_model/chunk.h>
@@ -56,7 +57,7 @@ namespace aspect
           spherical_geometry_model = dynamic_cast <const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()))
         {
           // In case of spherical shell calculate spherical coordinates
-          const std_cxx11::array<double,dim> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(position);
+          const std::array<double,dim> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(position);
 
           if (dim==2)
             {
@@ -90,7 +91,7 @@ namespace aspect
                         ExcMessage ("Harmonic perturbation only implemented in 2D for chunk geometry"));
 
           // In case of chunk calculate spherical coordinates
-          const std_cxx11::array<double,dim> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(position);
+          const std::array<double,dim> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(position);
 
           // Use a sine as lateral perturbation that is scaled to the opening angle of the geometry.
           // This way the perturbation is always 0 at the model boundaries.

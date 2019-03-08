@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
@@ -34,14 +34,13 @@ namespace aspect
     std::pair<std::string,std::string>
     DynamicTopography<dim>::execute (TableHandler &)
     {
-      Postprocess::BoundaryPressures<dim> *boundary_pressures =
-        this->template find_postprocessor<Postprocess::BoundaryPressures<dim> >();
-      AssertThrow(boundary_pressures != NULL,
-                  ExcMessage("Could not find the BoundaryPressures postprocessor") );
+      const Postprocess::BoundaryPressures<dim> &boundary_pressures =
+        this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::BoundaryPressures<dim> >();
+
       // Get the average pressure at the top and bottom boundaries.
       // This will be used to compute the dynamic pressure at the boundaries.
-      const double surface_pressure = boundary_pressures->pressure_at_top();
-      const double bottom_pressure = boundary_pressures->pressure_at_bottom();
+      const double surface_pressure = boundary_pressures.pressure_at_top();
+      const double bottom_pressure = boundary_pressures.pressure_at_bottom();
 
       // If the gravity vector is pointed *up*, as determined by representative points
       // at the surface and at depth, then we are running backwards advection, and need
@@ -68,7 +67,7 @@ namespace aspect
                                       quadrature_formula,
                                       update_values |
                                       update_gradients |
-                                      update_q_points |
+                                      update_quadrature_points |
                                       update_JxW_values);
 
       FEFaceValues<dim> fe_face_values (this->get_mapping(),
@@ -77,7 +76,7 @@ namespace aspect
                                         update_JxW_values |
                                         update_values |
                                         update_gradients |
-                                        update_q_points);
+                                        update_quadrature_points);
 
       // Storage for shape function values for the current solution.
       // Used for constructing the known side of the CBF system.
@@ -152,12 +151,12 @@ namespace aspect
               local_mass_matrix = 0.;
 
               // Evaluate the material model in the cell volume.
-              MaterialModel::MaterialModelInputs<dim> in_volume(fe_volume_values, &cell, this->introspection(), this->get_solution());
+              MaterialModel::MaterialModelInputs<dim> in_volume(fe_volume_values, cell, this->introspection(), this->get_solution());
               MaterialModel::MaterialModelOutputs<dim> out_volume(fe_volume_values.n_quadrature_points, this->n_compositional_fields());
               this->get_material_model().evaluate(in_volume, out_volume);
 
               // Evaluate the material model on the cell face.
-              MaterialModel::MaterialModelInputs<dim> in_face(fe_face_values, &cell, this->introspection(), this->get_solution());
+              MaterialModel::MaterialModelInputs<dim> in_face(fe_face_values, cell, this->introspection(), this->get_solution());
               MaterialModel::MaterialModelOutputs<dim> out_face(fe_face_values.n_quadrature_points, this->n_compositional_fields());
               this->get_material_model().evaluate(in_face, out_face);
 
@@ -226,7 +225,7 @@ namespace aspect
                                            this->get_fe(),
                                            support_quadrature,
                                            update_values | update_normal_vectors
-                                           | update_gradients | update_q_points);
+                                           | update_gradients | update_quadrature_points);
 
       std::vector<Tensor<1,dim> > stress_support_values( support_quadrature.size() );
       std::vector<double> topo_values( support_quadrature.size() );
@@ -239,13 +238,13 @@ namespace aspect
                                           this->get_fe(),
                                           output_quadrature,
                                           update_values | update_normal_vectors | update_gradients |
-                                          update_q_points | update_JxW_values);
+                                          update_quadrature_points | update_JxW_values);
       std::vector<Tensor<1,dim> > stress_output_values( output_quadrature.size() );
 
 
       cell = this->get_dof_handler().begin_active();
       endc = this->get_dof_handler().end();
-      for (unsigned int cell_index = 0; cell != endc; ++cell, ++cell_index)
+      for (; cell != endc; ++cell)
         if (cell->is_locally_owned())
           if (cell->at_boundary())
             {
@@ -290,7 +289,7 @@ namespace aspect
               fe_support_values.reinit (cell, face_idx);
 
               // Evaluate the material model on the cell face.
-              MaterialModel::MaterialModelInputs<dim> in_support(fe_support_values, &cell, this->introspection(), this->get_solution());
+              MaterialModel::MaterialModelInputs<dim> in_support(fe_support_values, cell, this->introspection(), this->get_solution());
               MaterialModel::MaterialModelOutputs<dim> out_support(fe_support_values.n_quadrature_points, this->n_compositional_fields());
               this->get_material_model().evaluate(in_support, out_support);
 
@@ -334,7 +333,7 @@ namespace aspect
               fe_output_values.reinit(cell, face_idx);
 
               // Evaluate the material model on the cell face.
-              MaterialModel::MaterialModelInputs<dim> in_output(fe_output_values, &cell, this->introspection(), this->get_solution());
+              MaterialModel::MaterialModelInputs<dim> in_output(fe_output_values, cell, this->introspection(), this->get_solution());
               MaterialModel::MaterialModelOutputs<dim> out_output(fe_output_values.n_quadrature_points, this->n_compositional_fields());
               this->get_material_model().evaluate(in_output, out_output);
 
@@ -375,7 +374,7 @@ namespace aspect
                 stored_values_bottom.push_back(std::make_pair(cell->face(face_idx)->center(), dynamic_topography));
 
               // Add the value to the vector for the visualization postprocessor.
-              visualization_values(cell_index) = dynamic_topography;
+              visualization_values(cell->active_cell_index()) = dynamic_topography;
             }
       distributed_topo_vector.compress(VectorOperation::insert);
       topo_vector = distributed_topo_vector;
@@ -510,7 +509,7 @@ namespace aspect
     {
       prm.enter_subsection("Postprocess");
       {
-        prm.enter_subsection("Dynamic Topography");
+        prm.enter_subsection("Dynamic topography");
         {
           prm.declare_entry ("Density above","0",
                              Patterns::Double (0),
@@ -551,7 +550,7 @@ namespace aspect
     {
       prm.enter_subsection("Postprocess");
       {
-        prm.enter_subsection("Dynamic Topography");
+        prm.enter_subsection("Dynamic topography");
         {
           density_above = prm.get_double ("Density above");
           density_below = prm.get_double ("Density below");
@@ -575,7 +574,7 @@ namespace aspect
                                   "dynamic topography",
                                   "A postprocessor that computes a measure of dynamic topography "
                                   "based on the stress at the surface and bottom. The data is written into text "
-                                  "files named 'dynamic\\_topography.NNNNN' in the output directory, "
+                                  "files named `dynamic\\_topography.NNNNN' in the output directory, "
                                   "where NNNNN is the number of the time step."
                                   "\n\n"
                                   "The exact approach works as follows: At the centers of all cells "

@@ -9,14 +9,10 @@ set Use years in output instead of seconds = false
 set End time                               = 0.5
 set Output directory                       = output-convection-box
 
-# Then there are variables that describe the tolerance of
-# the linear solver as well as how the pressure should
+# Then there are variables that describe how the pressure should
 # be normalized. Here, we choose a zero average pressure
 # at the surface of the domain (for the current geometry, the
 # surface is defined as the top boundary).
-set Linear solver tolerance                = 1e-7
-set Temperature solver tolerance           = 1e-10
-
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
 
@@ -64,11 +60,12 @@ end
 # for the temperature. The model we choose is called 'box' and
 # allows to set a constant temperature on each of the four sides
 # of the box geometry. In our case, we choose something that is
-# heated from below and cooled from above. (As will be seen
-# in the next section, the actual temperature prescribed here
-# at the left and right does not matter.)
+# heated from below and cooled from above. 
+# All other parts of the boundary are insulated (i.e., no heat flux through
+# these boundaries; this is also often used to specify symmetry boundaries).
 subsection Boundary temperature model
-  set Model name = box
+  set Fixed temperature boundary indicators   = bottom, top
+  set List of model names = box
 
   subsection Box
     set Bottom temperature = 1
@@ -79,23 +76,14 @@ subsection Boundary temperature model
 end
 
 
-# We then also have to prescribe several other parts of the model
-# such as which boundaries actually carry a prescribed boundary
-# temperature (as described in the documentation of the `box'
-# geometry, boundaries 2 and 3 are the bottom and top boundaries)
-# whereas all other parts of the boundary are insulated (i.e.,
-# no heat flux through these boundaries; this is also often used
-# to specify symmetry boundaries).
-subsection Model settings
-  set Fixed temperature boundary indicators   = bottom, top
-
-  # The next parameters then describe on which parts of the
-  # boundary we prescribe a zero or nonzero velocity and
-  # on which parts the flow is allowed to be tangential.
-  # Here, all four sides of the box allow tangential
-  # unrestricted flow but with a zero normal component:
-  set Zero velocity boundary indicators       =
-  set Prescribed velocity boundary indicators =
+# We then also have to prescribe several other parts of the model such as
+# which boundaries actually carry a prescribed boundary temperature, whereas
+# The next parameters then describe on which parts of the
+# boundary we prescribe a zero or nonzero velocity and
+# on which parts the flow is allowed to be tangential.
+# Here, all four sides of the box allow tangential
+# unrestricted flow but with a zero normal component:
+subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, right, bottom, top
 end
 
@@ -109,22 +97,30 @@ subsection Gravity model
   set Model name = vertical
 
   subsection Vertical
-    set Magnitude = 1e14   # = Ra / Thermal expansion coefficient
+    set Magnitude = 1e4   # = Ra 
   end
 end
 
 
 subsection Material model
-  set Model name = simple # default:
+  set Model name = simple
 
   subsection Simple model
     set Reference density             = 1
     set Reference specific heat       = 1
     set Reference temperature         = 0
     set Thermal conductivity          = 1
-    set Thermal expansion coefficient = 1e-10
+    set Thermal expansion coefficient = 1
     set Viscosity                     = 1
   end
+end
+
+
+# We also have to specify that we want to use the Boussinesq
+# approximation (assuming the density in the temperature
+# equation to be constant, and incompressibility).
+subsection Formulation
+  set Formulation = Boussinesq approximation
 end
 
 
@@ -158,4 +154,8 @@ subsection Postprocess
   subsection Visualization
     set Time between graphical output = 0.01
   end
+end
+
+subsection Solver parameters
+  set Temperature solver tolerance = 1e-10
 end

@@ -3,9 +3,8 @@ set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 0
 set Use years in output instead of seconds = true
-set Nonlinear solver scheme                = iterated Stokes
+set Nonlinear solver scheme                = single Advection, iterated Stokes
 set Max nonlinear iterations               = 1
-set Number of cheap Stokes solver steps    = 0
 set Output directory                       = visco_plastic_complex
 set Timing output frequency                = 1
 
@@ -29,8 +28,15 @@ end
 
 
 # Boundary classifications (fixed T boundaries, prescribed velocity) 
-subsection Model settings
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary temperature model
   set Fixed temperature boundary indicators   = bottom, top
+end
+
+subsection Boundary velocity model
   set Prescribed velocity boundary indicators = bottom y: function, top y: function, left x: function, right x: function
 end
 
@@ -45,7 +51,7 @@ end
 
 # Temperature boundary conditions
 subsection Boundary temperature model
-  set Model name = box
+  set List of model names = box
   subsection Box
     set Bottom temperature = 1573
     set Top temperature    =  273
@@ -78,7 +84,7 @@ end
 # For a reference crustal density of 2800 kg/m^3 and 9.e-7 W/m^3 heating production,
 # the heating rate (assuming a single element) is 9.e-7/2800. = 3.214287e-10
 subsection Heating model
-  set Model name = radioactive decay
+  set List of model names = radioactive decay
   subsection Radioactive decay
     set Number of elements            = 1
     set Heating rates                 = 3.2142857e-10
@@ -93,7 +99,7 @@ end
 # Compositional fields used to track finite strain
 subsection Compositional fields
   set Number of fields = 2
-  set Names of fields = eii, crust
+  set Names of fields = plastic_strain, crust
 end
 
 # Initial composition model 
@@ -107,7 +113,7 @@ end
 
 # Boundary composition specification
 subsection Boundary composition model
-  set Model name = initial composition
+  set List of model names = initial composition
 end
 
 # Material model (values for background material, strain fields and crust)
@@ -138,14 +144,16 @@ subsection Material model
     set Activation volumes for dislocation creep = 18.e-6,18.e-6,0.
 
     # Yielding mechanism and values
-    set Yield mechanism = drucker
+    set Yield mechanism = limiter
+    set Stress limiter exponents = 10, 10, 10
     set Angles of internal friction = 0.,0.,0.
     set Cohesions = 1.e6,1.e6,1.e6
 
     # Strain weakening
     set Use strain weakening = true
-    set Start strain weakening intervals = 0.
-    set End strain weakening intervals = 1.0
+    set Use plastic strain weakening = true
+    set Start plasticity strain weakening intervals = 0.
+    set End plasticity strain weakening intervals = 1.0
     set Cohesion strain weakening factors = 0.5
     set Friction strain weakening factors = 0.5
 
@@ -163,4 +171,10 @@ end
 # Post processing
 subsection Postprocess
   set List of postprocessors = velocity statistics, mass flux statistics
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Number of cheap Stokes solver steps = 0
+  end
 end

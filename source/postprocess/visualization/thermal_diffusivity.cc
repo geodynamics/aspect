@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,12 +14,13 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
 
 #include <aspect/postprocess/visualization/thermal_diffusivity.h>
+#include <aspect/adiabatic_conditions/interface.h>
 
 
 
@@ -34,7 +35,7 @@ namespace aspect
       ThermalDiffusivity ()
         :
         DataPostprocessorScalar<dim> ("thermal_diffusivity",
-                                      update_values | update_q_points )
+                                      update_values | update_quadrature_points )
       {}
 
 
@@ -59,7 +60,14 @@ namespace aspect
         this->get_material_model().evaluate(in, out);
 
         for (unsigned int q=0; q<n_quadrature_points; ++q)
-          computed_quantities[q](0) = out.thermal_conductivities[q] / (out.densities[q] * out.specific_heat[q]);
+
+          if (this->get_parameters().formulation_temperature_equation ==
+              Parameters<dim>::Formulation::TemperatureEquation::reference_density_profile)
+            computed_quantities[q](0) = out.thermal_conductivities[q] /
+                                        (this->get_adiabatic_conditions().density(in.position[q]) * out.specific_heat[q]);
+          else
+            computed_quantities[q](0) = out.thermal_conductivities[q] / (out.densities[q] * out.specific_heat[q]);
+
       }
     }
   }

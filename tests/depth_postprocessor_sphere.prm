@@ -3,11 +3,11 @@ set CFL number                             = 1.0
 set End time                               = 0
 set Start time                             = 0
 set Use years in output instead of seconds = false
-set Nonlinear solver scheme                = IMPES
+set Nonlinear solver scheme                = single Advection, single Stokes
 
 
 subsection Boundary temperature model
-  set Model name = constant
+  set List of model names = constant
   subsection Constant
     set Boundary indicator to temperature mappings = surface: 0.0
   end
@@ -17,6 +17,10 @@ end
 
 subsection Gravity model
   set Model name = radial linear
+  subsection Radial linear
+    set Magnitude at bottom = 0.0
+    set Magnitude at bottom = 0.0
+  end
 end
 
 
@@ -54,10 +58,15 @@ subsection Mesh refinement
 end
 
 
-subsection Model settings
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary temperature model
   set Fixed temperature boundary indicators   = 0
-  set Prescribed velocity boundary indicators =
-  set Tangential velocity boundary indicators = 
+end
+
+subsection Boundary velocity model
   set Zero velocity boundary indicators       = 0
 end
 

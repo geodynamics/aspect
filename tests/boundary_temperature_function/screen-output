@@ -5,7 +5,7 @@ Number of degrees of freedom: 948 (578+81+289)
 *** Timestep 0:  t=0 seconds
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 31+0 iterations.
+   Solving Stokes system... 22+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-boundary_temperature_function/solution/solution-00000

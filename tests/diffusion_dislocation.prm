@@ -15,10 +15,8 @@ set Start time                             = 0
 set Adiabatic surface temperature          = 0
 set Surface pressure                       = 0
 set Pressure normalization = surface
-set Linear solver tolerance = 1.e-7
-set Number of cheap Stokes solver steps    = 30
 set Use years in output instead of seconds = true
-set Nonlinear solver scheme                = iterated IMPES
+set Nonlinear solver scheme                = iterated Advection and Stokes
 
 subsection Geometry model
   set Model name = box
@@ -29,8 +27,15 @@ subsection Geometry model
   end
 end
 
-subsection Model settings
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary temperature model
   set Fixed temperature boundary indicators   = bottom, top
+end
+
+subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, right, bottom, top
 end
 
@@ -96,11 +101,11 @@ subsection Material model
 end
 
 subsection Boundary temperature model
-  set Model name = initial temperature
+  set List of model names = initial temperature
 end
 
 subsection Boundary composition model
-  set Model name = initial composition
+  set List of model names = initial composition
 end
 
 subsection Gravity model
@@ -119,4 +124,11 @@ end
 subsection Termination criteria
   set Termination criteria = end step
   set End step = 0
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1.e-7
+    set Number of cheap Stokes solver steps = 30
+  end
 end

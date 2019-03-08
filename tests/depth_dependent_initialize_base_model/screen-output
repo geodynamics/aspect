@@ -1,0 +1,71 @@
+
+
+   Setting up GPlates boundary velocity plugin.
+
+   Input point 1 spherical coordinates: 1.571 4.870
+   Input point 1 normalized cartesian coordinates: 0.157 -0.988 -0.000
+   Input point 1 rotated model coordinates: 0.157 -0.988 -0.000
+   Input point 2 spherical coordinates: 1.571 5.240
+   Input point 2 normalized cartesian coordinates: 0.503 -0.864 -0.000
+   Input point 2 rotated model coordinates: 0.503 -0.864 -0.000
+
+   Model will be rotated by -0.00 degrees around axis 0.00 0.00 1.00
+   The ParaView rotation angles are: 0.00 -0.00 0.00
+   The inverse ParaView rotation angles are: 0.00 -0.00 0.00
+
+   Loading GPlates data boundary file ASPECT_DIR/data/boundary-velocity/gplates/current_day.gpml.
+
+
+   Loading new velocity file did not succeed.
+   Assuming constant boundary conditions for rest of model run.
+
+Number of active cells: 192 (on 3 levels)
+Number of degrees of freedom: 2,832 (1,728+240+864)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 23+0 iterations.
+
+Number of active cells: 480 (on 4 levels)
+Number of degrees of freedom: 7,056 (4,320+576+2,160)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 108+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.0611 m/year, 0.159 m/year
+     Temperature min/avg/max:            273 K, 2048 K, 3500 K
+     Heat fluxes through boundary parts: -9.333e+07 W, 7.666e+06 W
+     Writing depth average:              output-depth_dependent_initialize_base_model/depth_average.gnuplot
+
+*** Timestep 1:  t=892758 years
+   Solving temperature system... 9 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 43+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.0613 m/year, 0.16 m/year
+     Temperature min/avg/max:            273 K, 2032 K, 3500 K
+     Heat fluxes through boundary parts: -1.75e+08 W, 4.277e+07 W
+
+*** Timestep 2:  t=1e+06 years
+   Solving temperature system... 8 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 38+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.0614 m/year, 0.16 m/year
+     Temperature min/avg/max:            273 K, 2030 K, 3500 K
+     Heat fluxes through boundary parts: -2.706e+08 W, 7.784e+07 W
+     Writing depth average:              output-depth_dependent_initialize_base_model/depth_average.gnuplot
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

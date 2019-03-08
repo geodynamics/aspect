@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
@@ -28,6 +28,10 @@
 
 #include <deal.II/base/point.h>
 #include <deal.II/base/parameter_handler.h>
+
+#include <boost/core/demangle.hpp>
+#include <typeinfo>
+
 
 namespace aspect
 {
@@ -172,7 +176,7 @@ namespace aspect
          * Return a list of pointers to all initial temperature models
          * currently used in the computation, as specified in the input file.
          */
-        const std::list<std_cxx11::shared_ptr<Interface<dim> > > &
+        const std::list<std::shared_ptr<Interface<dim> > > &
         get_active_initial_temperature_conditions () const;
 
         /**
@@ -180,11 +184,48 @@ namespace aspect
          * the input file (and are consequently currently active) and see if one
          * of them has the desired type specified by the template argument. If so,
          * return a pointer to it. If no initial temperature model is active
-         * that matches the given type, return a NULL pointer.
+         * that matches the given type, return a nullptr.
          */
         template <typename InitialTemperatureType>
+        DEAL_II_DEPRECATED
         InitialTemperatureType *
         find_initial_temperature_model () const;
+
+        /**
+         * Go through the list of all initial temperature models that have been selected
+         * in the input file (and are consequently currently active) and return
+         * true if one of them has the desired type specified by the template
+         * argument.
+         */
+        template <typename InitialTemperatureType>
+        bool
+        has_matching_initial_temperature_model () const;
+
+        /**
+         * Go through the list of all initial temperature models that have been selected
+         * in the input file (and are consequently currently active) and see
+         * if one of them has the type specified by the template
+         * argument or can be casted to that type. If so, return a reference
+         * to it. If no initial temperature model is active that matches the given type,
+         * throw an exception.
+         */
+        template <typename InitialTemperatureType>
+        const InitialTemperatureType &
+        get_matching_initial_temperature_model () const;
+
+
+        /**
+         * For the current plugin subsystem, write a connection graph of all of the
+         * plugins we know about, in the format that the
+         * programs dot and neato understand. This allows for a visualization of
+         * how all of the plugins that ASPECT knows about are interconnected, and
+         * connect to other parts of the ASPECT code.
+         *
+         * @param output_stream The stream to write the output to.
+         */
+        static
+        void
+        write_plugin_graph (std::ostream &output_stream);
 
         /**
          * Exception.
@@ -199,7 +240,7 @@ namespace aspect
          * A list of initial temperature objects that have been requested in the
          * parameter file.
          */
-        std::list<std_cxx11::shared_ptr<Interface<dim> > > initial_temperature_objects;
+        std::list<std::shared_ptr<Interface<dim> > > initial_temperature_objects;
 
         /**
          * A list of names of initial temperature objects that have been requested
@@ -224,14 +265,52 @@ namespace aspect
     InitialTemperatureType *
     Manager<dim>::find_initial_temperature_model () const
     {
-      for (typename std::list<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
+      for (typename std::list<std::shared_ptr<Interface<dim> > >::const_iterator
            p = initial_temperature_objects.begin();
            p != initial_temperature_objects.end(); ++p)
         if (InitialTemperatureType *x = dynamic_cast<InitialTemperatureType *> ( (*p).get()) )
           return x;
-      return NULL;
+      return nullptr;
     }
 
+
+    template <int dim>
+    template <typename InitialTemperatureType>
+    inline
+    bool
+    Manager<dim>::has_matching_initial_temperature_model () const
+    {
+      for (typename std::list<std::shared_ptr<Interface<dim> > >::const_iterator
+           p = initial_temperature_objects.begin();
+           p != initial_temperature_objects.end(); ++p)
+        if (Plugins::plugin_type_matches<InitialTemperatureType>(*(*p)))
+          return true;
+      return false;
+    }
+
+
+    template <int dim>
+    template <typename InitialTemperatureType>
+    inline
+    const InitialTemperatureType &
+    Manager<dim>::get_matching_initial_temperature_model () const
+    {
+      AssertThrow(has_matching_initial_temperature_model<InitialTemperatureType> (),
+                  ExcMessage("You asked InitialTemperature::Manager::get_initial_temperature_model() for a "
+                             "initial temperature model of type <" + boost::core::demangle(typeid(InitialTemperatureType).name()) + "> "
+                             "that could not be found in the current model. Activate this "
+                             "initial temperature model in the input file."));
+
+      typename std::list<std::shared_ptr<Interface<dim> > >::const_iterator initial_temperature_model;
+      for (typename std::list<std::shared_ptr<Interface<dim> > >::const_iterator
+           p = initial_temperature_objects.begin();
+           p != initial_temperature_objects.end(); ++p)
+        if (Plugins::plugin_type_matches<InitialTemperatureType>(*(*p)))
+          return Plugins::get_plugin_as_type<InitialTemperatureType>(*(*p));
+
+      // We will never get here, because we had the Assert above. Just to avoid warnings.
+      return Plugins::get_plugin_as_type<InitialTemperatureType>(*(*initial_temperature_model));
+    }
 
 
     /**

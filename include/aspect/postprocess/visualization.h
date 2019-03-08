@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
@@ -114,6 +114,11 @@ namespace aspect
            * Initialize function.
            */
           virtual void initialize ();
+
+          /**
+           * Update any temporary information needed by the visualization postprocessor.
+           */
+          virtual void update();
 
           /**
            * Declare the parameters this class takes through input files.
@@ -221,14 +226,17 @@ namespace aspect
           /**
            * The function classes have to implement that want to output
            * cell-wise data.
-           * @return A pair of values with the following meaning: - The first
-           * element provides the name by which this data should be written to
-           * the output file. - The second element is a pointer to a vector
-           * with one element per active cell on the current processor.
-           * Elements corresponding to active cells that are either artificial
-           * or ghost cells (in deal.II language, see the deal.II glossary)
-           * will be ignored but must nevertheless exist in the returned
-           * vector. While implementations of this function must create this
+           *
+           * @return A pair of values with the following meaning:
+           * - The first element provides the name by which this data should
+           *   be written to the output file.
+           * - The second element is a pointer to a vector with one element
+           *   per active cell on the current processor. Elements corresponding
+           *   to active cells that are either artificial or ghost cells (in
+           *   deal.II language, see the deal.II glossary)
+           *   will be ignored but must nevertheless exist in the returned
+           *   vector.
+           * While implementations of this function must create this
            * vector, ownership is taken over by the caller of this function
            * and the caller will take care of destroying the vector pointed
            * to.
@@ -277,6 +285,13 @@ namespace aspect
         virtual
         std::pair<std::string,std::string>
         execute (TableHandler &statistics);
+
+        /**
+         * Update any temporary information needed by the visualization postprocessor.
+         */
+        virtual
+        void
+        update ();
 
         /**
          * A function that is used to register visualization postprocessor
@@ -347,6 +362,20 @@ namespace aspect
         template <class Archive>
         void serialize (Archive &ar, const unsigned int version);
 
+
+        /**
+         * For the current plugin subsystem, write a connection graph of all of the
+         * plugins we know about, in the format that the
+         * programs dot and neato understand. This allows for a visualization of
+         * how all of the plugins that ASPECT knows about are interconnected, and
+         * connect to other parts of the ASPECT code.
+         *
+         * @param output_stream The stream to write the output to.
+         */
+        static
+        void
+        write_plugin_graph (std::ostream &output_stream);
+
         /**
          * Exception.
          */
@@ -369,6 +398,20 @@ namespace aspect
          * to be produced. Used to check for the next necessary output time.
          */
         double last_output_time;
+
+        /**
+         * Maximum number of steps between the generation of graphical output.
+         * This parameter
+         * is read from the input file and consequently is not part of the
+         * state that needs to be saved and restored.
+         */
+        unsigned int maximum_timesteps_between_outputs;
+
+        /**
+         * Timestep at which the last graphical output was produced
+         * Used to check for the next necessary output time.
+         */
+        unsigned int last_output_timestep;
 
         /**
          * Consecutively counted number indicating the how-manyth time we will
@@ -409,6 +452,15 @@ namespace aspect
          * the velocity finite element (usually 2).
          */
         bool interpolate_output;
+
+        /**
+         * deal.II offers the possibility to filter duplicate vertices in HDF5
+         * output files. This merges the vertices of adjacent cells and
+         * therefore saves disk space, but misrepresents discontinuous
+         * output properties. Activating this function reduces the disk space
+         * by about a factor of $2^{dim}$ for hdf5 output.
+         */
+        bool filter_output;
 
         /**
          * For free surface computations Aspect uses an Arbitrary-Lagrangian-
@@ -495,7 +547,7 @@ namespace aspect
          * A list of postprocessor objects that have been requested in the
          * parameter file.
          */
-        std::list<std_cxx11::shared_ptr<VisualizationPostprocessors::Interface<dim> > > postprocessors;
+        std::list<std::shared_ptr<VisualizationPostprocessors::Interface<dim> > > postprocessors;
 
         /**
          * A list of pairs (time, pvtu_filename) that have so far been written

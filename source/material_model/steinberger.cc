@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,20 +14,23 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
 
 #include <aspect/material_model/steinberger.h>
+#include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/utilities.h>
 #include <aspect/lateral_averaging.h>
 
+#include <deal.II/base/quadrature_lib.h>
+#include <deal.II/fe/fe_values.h>
 #include <deal.II/base/table.h>
 #include <fstream>
 #include <iostream>
+#include <memory>
 
-using namespace dealii;
 
 namespace aspect
 {
@@ -35,378 +38,92 @@ namespace aspect
   {
     namespace internal
     {
-
-      class MaterialLookup
+      LateralViscosityLookup::LateralViscosityLookup(const std::string &filename,
+                                                     const MPI_Comm &comm)
       {
-        public:
-          MaterialLookup(const std::string &filename,
-                         const bool interpol,
-                         const MPI_Comm &comm)
+        std::string temp;
+        // Read data from disk and distribute among processes
+        std::istringstream in(Utilities::read_and_distribute_file_content(filename, comm));
+
+        std::getline(in, temp); // eat first line
+
+        min_depth=1e20;
+        max_depth=-1;
+
+        while (!in.eof())
           {
+            double visc, depth;
+            in >> visc;;
+            if (in.eof())
+              break;
+            in >> depth;
+            depth *=1000.0;
+            std::getline(in, temp);
 
-            /* Initializing variables */
-            interpolation = interpol;
-            delta_press=-1.0;
-            min_press=-1.0;
-            delta_temp=-1.0;
-            min_temp=-1.0;
-            numtemp=0;
-            numpress=0;
+            min_depth = std::min(depth, min_depth);
+            max_depth = std::max(depth, max_depth);
 
-            std::string temp;
-            // Read data from disk and distribute among processes
-            std::istringstream in(Utilities::read_and_distribute_file_content(filename, comm));
-
-            getline(in, temp); // eat first line
-            getline(in, temp); // eat next line
-            getline(in, temp); // eat next line
-            getline(in, temp); // eat next line
-
-            in >> min_temp;
-            getline(in, temp);
-            in >> delta_temp;
-            getline(in, temp);
-            in >> numtemp;
-            getline(in, temp);
-            getline(in, temp);
-            in >> min_press;
-            min_press *= 1e5;  // conversion from [bar] to [Pa]
-            getline(in, temp);
-            in >> delta_press;
-            delta_press *= 1e5; // conversion from [bar] to [Pa]
-            getline(in, temp);
-            in >> numpress;
-            getline(in, temp);
-            getline(in, temp);
-            getline(in, temp);
-
-            Assert(min_temp >= 0.0, ExcMessage("Read in of Material header failed (mintemp)."));
-            Assert(delta_temp > 0, ExcMessage("Read in of Material header failed (delta_temp)."));
-            Assert(numtemp > 0, ExcMessage("Read in of Material header failed (numtemp)."));
-            Assert(min_press >= 0, ExcMessage("Read in of Material header failed (min_press)."));
-            Assert(delta_press > 0, ExcMessage("Read in of Material header failed (delta_press)."));
-            Assert(numpress > 0, ExcMessage("Read in of Material header failed (numpress)."));
-
-
-            max_temp = min_temp + (numtemp-1) * delta_temp;
-            max_press = min_press + (numpress-1) * delta_press;
-
-            density_values.reinit(numtemp,numpress);
-            thermal_expansivity_values.reinit(numtemp,numpress);
-            specific_heat_values.reinit(numtemp,numpress);
-            vp_values.reinit(numtemp,numpress);
-            vs_values.reinit(numtemp,numpress);
-            enthalpy_values.reinit(numtemp,numpress);
-
-            unsigned int i = 0;
-            while (!in.eof())
-              {
-                double temp1,temp2;
-                double rho,alpha,cp,vp,vs,h;
-                in >> temp1 >> temp2;
-                in >> rho;
-                if (in.fail())
-                  {
-                    in.clear();
-                    rho = density_values[(i-1)%numtemp][(i-1)/numtemp];
-                  }
-                in >> alpha;
-                if (in.fail())
-                  {
-                    in.clear();
-                    alpha = thermal_expansivity_values[(i-1)%numtemp][(i-1)/numtemp];
-                  }
-                in >> cp;
-                if (in.fail())
-                  {
-                    in.clear();
-                    cp = specific_heat_values[(i-1)%numtemp][(i-1)/numtemp];
-                  }
-                in >> vp;
-                if (in.fail())
-                  {
-                    in.clear();
-                    vp = vp_values[(i-1)%numtemp][(i-1)/numtemp];
-                  }
-                in >> vs;
-                if (in.fail())
-                  {
-                    in.clear();
-                    vs = vs_values[(i-1)%numtemp][(i-1)/numtemp];
-                  }
-                in >> h;
-                if (in.fail())
-                  {
-                    in.clear();
-                    h = enthalpy_values[(i-1)%numtemp][(i-1)/numtemp];
-                  }
-
-                getline(in, temp);
-                if (in.eof())
-                  break;
-
-                density_values[i%numtemp][i/numtemp]=rho;
-                thermal_expansivity_values[i%numtemp][i/numtemp]=alpha;
-                specific_heat_values[i%numtemp][i/numtemp]=cp;
-                vp_values[i%numtemp][i/numtemp]=vp;
-                vs_values[i%numtemp][i/numtemp]=vs;
-                enthalpy_values[i%numtemp][i/numtemp]=h;
-
-                i++;
-              }
-            Assert(i==numtemp*numpress, ExcMessage("Material table size not consistent with header."));
-
+            values.push_back(visc);
           }
+        delta_depth = (max_depth-min_depth)/(values.size()-1);
+      }
 
-          double
-          specific_heat(double temperature,
-                        double pressure) const
-          {
-            return value(temperature,pressure,specific_heat_values,interpolation);
-          }
-
-          double
-          density(double temperature,
-                  double pressure) const
-          {
-            return value(temperature,pressure,density_values,interpolation);
-          }
-
-          double
-          thermal_expansivity(const double temperature,
-                              const double pressure) const
-          {
-            return value(temperature,pressure,thermal_expansivity_values,interpolation);
-          }
-
-          double
-          seismic_Vp(const double temperature,
-                     const double pressure) const
-          {
-            return value(temperature,pressure,vp_values,false);
-          }
-
-          double
-          seismic_Vs(const double temperature,
-                     const double pressure) const
-          {
-            return value(temperature,pressure,vs_values,false);
-          }
-
-          double
-          dHdT (const double temperature,
-                const double pressure) const
-          {
-            const double h = value(temperature,pressure,enthalpy_values,interpolation);
-            const double dh = value(temperature+delta_temp,pressure,enthalpy_values,interpolation);
-            return (dh - h) / delta_temp;
-          }
-
-          double
-          dHdp (const double temperature,
-                const double pressure) const
-          {
-            const double h = value(temperature,pressure,enthalpy_values,interpolation);
-            const double dh = value(temperature,pressure+delta_press,enthalpy_values,interpolation);
-            return (dh - h) / delta_press;
-          }
-
-          double
-          dRhodp (const double temperature,
-                  const double pressure) const
-          {
-            const double rho = value(temperature,pressure,density_values,interpolation);
-            const double drho = value(temperature,pressure+delta_press,density_values,interpolation);
-            return (drho - rho) / delta_press;
-          }
-
-          double
-          value (const double temperature,
-                 const double pressure,
-                 const dealii::Table<2,
-                 double> &values,
-                 bool interpol) const
-          {
-            const double nT = get_nT(temperature);
-            const unsigned int inT = static_cast<unsigned int>(nT);
-
-            const double np = get_np(pressure);
-            const unsigned int inp = static_cast<unsigned int>(np);
-
-            Assert(inT<values.n_rows(), ExcMessage("Attempting to look up a temperature value with index greater than the number of rows."));
-            Assert(inp<values.n_cols(), ExcMessage("Attempting to look up a pressure value with index greater than the number of columns."));
-
-            if (!interpol)
-              return values[inT][inp];
-            else
-              {
-                // compute the coordinates of this point in the
-                // reference cell between the data points
-                const double xi = nT-inT;
-                const double eta = np-inp;
-
-                Assert ((0 <= xi) && (xi <= 1), ExcInternalError());
-                Assert ((0 <= eta) && (eta <= 1), ExcInternalError());
-
-                // use these coordinates for a bilinear interpolation
-                return ((1-xi)*(1-eta)*values[inT][inp] +
-                        xi    *(1-eta)*values[inT+1][inp] +
-                        (1-xi)*eta    *values[inT][inp+1] +
-                        xi    *eta    *values[inT+1][inp+1]);
-              }
-          }
-
-
-
-        private:
-
-
-          double get_nT(double temperature) const
-          {
-            temperature=std::max(min_temp, temperature);
-            temperature=std::min(temperature, max_temp-delta_temp);
-            Assert(temperature>=min_temp, ExcMessage("ASPECT found a temperature less than min_T."));
-            Assert(temperature<=max_temp, ExcMessage("ASPECT found a temperature greater than max_T."));
-            return (temperature-min_temp)/delta_temp;
-          }
-
-          double get_np(double pressure) const
-          {
-            pressure=std::max(min_press, pressure);
-            pressure=std::min(pressure, max_press-delta_press);
-            Assert(pressure>=min_press, ExcMessage("ASPECT found a pressure less than min_p."));
-            Assert(pressure<=max_press, ExcMessage("ASPECT found a pressure greater than max_p."));
-            return (pressure-min_press)/delta_press;
-          }
-
-
-          dealii::Table<2,double> density_values;
-          dealii::Table<2,double> thermal_expansivity_values;
-          dealii::Table<2,double> specific_heat_values;
-          dealii::Table<2,double> vp_values;
-          dealii::Table<2,double> vs_values;
-          dealii::Table<2,double> enthalpy_values;
-
-
-          double delta_press;
-          double min_press;
-          double max_press;
-          double delta_temp;
-          double min_temp;
-          double max_temp;
-          unsigned int numtemp;
-          unsigned int numpress;
-          bool interpolation;
-      };
-
-      class LateralViscosityLookup
+      double LateralViscosityLookup::lateral_viscosity(double depth) const
       {
-        public:
-          LateralViscosityLookup(const std::string &filename,
-                                 const MPI_Comm &comm)
-          {
-            std::string temp;
-            // Read data from disk and distribute among processes
-            std::istringstream in(Utilities::read_and_distribute_file_content(filename, comm));
+        depth=std::max(min_depth, depth);
+        depth=std::min(depth, max_depth);
 
-            getline(in, temp); // eat first line
+        Assert(depth>=min_depth, ExcMessage("ASPECT found a depth less than min_depth."));
+        Assert(depth<=max_depth, ExcMessage("ASPECT found a depth greater than max_depth."));
+        const unsigned int idx = static_cast<unsigned int>((depth-min_depth)/delta_depth);
+        Assert(idx<values.size(), ExcMessage("Attempting to look up a depth with an index that would be out of range. (depth-min_depth)/delta_depth too large."));
+        return values[idx];
+      }
 
-            min_depth=1e20;
-            max_depth=-1;
-
-            while (!in.eof())
-              {
-                double visc, depth;
-                in >> visc;;
-                if (in.eof())
-                  break;
-                in >> depth;
-                depth *=1000.0;
-                getline(in, temp);
-
-                min_depth = std::min(depth, min_depth);
-                max_depth = std::max(depth, max_depth);
-
-                values.push_back(visc);
-              }
-            delta_depth = (max_depth-min_depth)/(values.size()-1);
-          }
-
-          double lateral_viscosity(double depth)
-          {
-            depth=std::max(min_depth, depth);
-            depth=std::min(depth, max_depth);
-
-            Assert(depth>=min_depth, ExcMessage("ASPECT found a depth less than min_depth."));
-            Assert(depth<=max_depth, ExcMessage("ASPECT found a depth greater than max_depth."));
-            const unsigned int idx = static_cast<unsigned int>((depth-min_depth)/delta_depth);
-            Assert(idx<values.size(), ExcMessage("Attempting to look up a depth with an index that would be out of range. (depth-min_depth)/delta_depth too large."));
-            return values[idx];
-          }
-
-          int get_nslices() const
-          {
-            return values.size();
-          }
-
-        private:
-          std::vector<double> values;
-          double min_depth;
-          double delta_depth;
-          double max_depth;
-
-      };
-
-      class RadialViscosityLookup
+      int LateralViscosityLookup::get_nslices() const
       {
-        public:
-          RadialViscosityLookup(const std::string &filename,
-                                const MPI_Comm &comm)
+        return values.size();
+      }
+
+      RadialViscosityLookup::RadialViscosityLookup(const std::string &filename,
+                                                   const MPI_Comm &comm)
+      {
+        std::string temp;
+        // Read data from disk and distribute among processes
+        std::istringstream in(Utilities::read_and_distribute_file_content(filename, comm));
+
+        min_depth=1e20;
+        max_depth=-1;
+
+        while (!in.eof())
           {
-            std::string temp;
-            // Read data from disk and distribute among processes
-            std::istringstream in(Utilities::read_and_distribute_file_content(filename, comm));
+            double visc, depth;
+            in >> visc;;
+            if (in.eof())
+              break;
+            in >> depth;
+            depth *=1000.0;
+            std::getline(in, temp);
 
-            min_depth=1e20;
-            max_depth=-1;
+            min_depth = std::min(depth, min_depth);
+            max_depth = std::max(depth, max_depth);
 
-            while (!in.eof())
-              {
-                double visc, depth;
-                in >> visc;;
-                if (in.eof())
-                  break;
-                in >> depth;
-                depth *=1000.0;
-                getline(in, temp);
-
-                min_depth = std::min(depth, min_depth);
-                max_depth = std::max(depth, max_depth);
-
-                values.push_back(visc);
-              }
-            delta_depth = (max_depth-min_depth)/(values.size()-1);
+            values.push_back(visc);
           }
+        delta_depth = (max_depth-min_depth)/(values.size()-1);
+      }
 
-          double radial_viscosity(double depth)
-          {
-            depth=std::max(min_depth, depth);
-            depth=std::min(depth, max_depth);
+      double RadialViscosityLookup::radial_viscosity(double depth) const
+      {
+        depth=std::max(min_depth, depth);
+        depth=std::min(depth, max_depth);
 
-            Assert(depth>=min_depth, ExcMessage("ASPECT found a depth less than min_depth."));
-            Assert(depth<=max_depth, ExcMessage("ASPECT found a depth greater than max_depth."));
-            const unsigned int idx = static_cast<unsigned int>((depth-min_depth)/delta_depth);
-            Assert(idx<values.size(), ExcMessage("Attempting to look up a depth with an index that would be out of range. (depth-min_depth)/delta_depth too large."));
-            return values[idx];
-          }
-
-        private:
-          std::vector<double> values;
-          double min_depth;
-          double delta_depth;
-          double max_depth;
-
-      };
+        Assert(depth>=min_depth, ExcMessage("ASPECT found a depth less than min_depth."));
+        Assert(depth<=max_depth, ExcMessage("ASPECT found a depth greater than max_depth."));
+        const unsigned int idx = static_cast<unsigned int>((depth-min_depth)/delta_depth);
+        Assert(idx<values.size(), ExcMessage("Attempting to look up a depth with an index that would be out of range. (depth-min_depth)/delta_depth too large."));
+        return values[idx];
+      }
     }
 
 
@@ -416,10 +133,14 @@ namespace aspect
     Steinberger<dim>::initialize()
     {
       for (unsigned i = 0; i < material_file_names.size(); i++)
-        material_lookup.push_back(std_cxx11::shared_ptr<internal::MaterialLookup>
-                                  (new internal::MaterialLookup(data_directory+material_file_names[i],interpolation,this->get_mpi_communicator())));
-      lateral_viscosity_lookup.reset(new internal::LateralViscosityLookup(data_directory+lateral_viscosity_file_name,this->get_mpi_communicator()));
-      radial_viscosity_lookup.reset(new internal::RadialViscosityLookup(data_directory+radial_viscosity_file_name,this->get_mpi_communicator()));
+        material_lookup.push_back(std::make_shared<Lookup::PerplexReader>
+                                  (data_directory+material_file_names[i],interpolation,this->get_mpi_communicator()));
+      lateral_viscosity_lookup
+        = std::make_shared<internal::LateralViscosityLookup>(data_directory+lateral_viscosity_file_name,
+                                                             this->get_mpi_communicator());
+      radial_viscosity_lookup
+        = std::make_shared<internal::RadialViscosityLookup>(data_directory+radial_viscosity_file_name,
+                                                            this->get_mpi_communicator());
       avg_temp.resize(n_lateral_slices);
     }
 
@@ -498,47 +219,25 @@ namespace aspect
                    const Point<dim> &) const
     {
       double cp = 0.0;
-      if (!latent_heat)
+
+      if (material_lookup.size() == 1)
         {
-          if (material_lookup.size() == 1)
-            {
-              cp = material_lookup[0]->specific_heat(temperature,pressure);
-            }
-          else if (material_lookup.size() == compositional_fields.size() + 1)
-            {
-              const double background_cp = material_lookup[0]->specific_heat(temperature,pressure);
-              cp = background_cp;
-              for (unsigned int i = 0; i < compositional_fields.size(); ++i)
-                cp += compositional_fields[i] *
-                      (material_lookup[i+1]->specific_heat(temperature,pressure) - background_cp);
-            }
-          else
-            {
-              for (unsigned i = 0; i < material_lookup.size(); ++i)
-                cp += compositional_fields[i] * material_lookup[i]->specific_heat(temperature,pressure);
-            }
+          cp = material_lookup[0]->specific_heat(temperature,pressure);
+        }
+      else if (material_lookup.size() == compositional_fields.size() + 1)
+        {
+          const double background_cp = material_lookup[0]->specific_heat(temperature,pressure);
+          cp = background_cp;
+          for (unsigned int i = 0; i < compositional_fields.size(); ++i)
+            cp += compositional_fields[i] *
+                  (material_lookup[i+1]->specific_heat(temperature,pressure) - background_cp);
         }
       else
         {
-          if (material_lookup.size() == 1)
-            {
-              cp = material_lookup[0]->dHdT(temperature,pressure);
-            }
-          else if (material_lookup.size() == compositional_fields.size() + 1)
-            {
-              const double background_cp = material_lookup[0]->dHdT(temperature,pressure);
-              cp = background_cp;
-              for (unsigned int i = 0; i < compositional_fields.size(); ++i)
-                cp += compositional_fields[i] *
-                      (material_lookup[i+1]->dHdT(temperature,pressure) - background_cp);
-            }
-          else
-            {
-              for (unsigned i = 0; i < material_lookup.size(); ++i)
-                cp += compositional_fields[i] * material_lookup[i]->dHdT(temperature,pressure);
-              cp = std::max(std::min(cp,6000.0),500.0);
-            }
+          for (unsigned i = 0; i < material_lookup.size(); ++i)
+            cp += compositional_fields[i] * material_lookup[i]->specific_heat(temperature,pressure);
         }
+
       return cp;
     }
 
@@ -595,51 +294,26 @@ namespace aspect
     thermal_expansion_coefficient (const double      temperature,
                                    const double      pressure,
                                    const std::vector<double> &compositional_fields,
-                                   const Point<dim> &position) const
+                                   const Point<dim> &/*position*/) const
     {
       double alpha = 0.0;
-      if (!latent_heat)
+
+      if (material_lookup.size() == 1)
         {
-          if (material_lookup.size() == 1)
-            {
-              alpha = material_lookup[0]->thermal_expansivity(temperature,pressure);
-            }
-          else if (material_lookup.size() == compositional_fields.size() + 1)
-            {
-              const double background_alpha = material_lookup[0]->thermal_expansivity(temperature,pressure);
-              alpha = background_alpha;
-              for (unsigned int i = 0; i<compositional_fields.size(); ++i)
-                alpha += compositional_fields[i] *
-                         (material_lookup[i+1]->thermal_expansivity(temperature,pressure) - background_alpha);
-            }
-          else
-            {
-              for (unsigned i = 0; i < material_lookup.size(); ++i)
-                alpha += compositional_fields[i] * material_lookup[i]->thermal_expansivity(temperature,pressure);
-            }
+          alpha = material_lookup[0]->thermal_expansivity(temperature,pressure);
+        }
+      else if (material_lookup.size() == compositional_fields.size() + 1)
+        {
+          const double background_alpha = material_lookup[0]->thermal_expansivity(temperature,pressure);
+          alpha = background_alpha;
+          for (unsigned int i = 0; i<compositional_fields.size(); ++i)
+            alpha += compositional_fields[i] *
+                     (material_lookup[i+1]->thermal_expansivity(temperature,pressure) - background_alpha);
         }
       else
         {
-          double dHdp = 0.0;
-          if (material_lookup.size() == 1)
-            {
-              dHdp = material_lookup[0]->dHdp(temperature,pressure);
-            }
-          else if (material_lookup.size() == compositional_fields.size() + 1)
-            {
-              const double background_dHdp = material_lookup[0]->dHdp(temperature,pressure);
-              dHdp = background_dHdp;
-              for (unsigned int i = 0; i < compositional_fields.size(); ++i)
-                dHdp += compositional_fields[i] *
-                        (material_lookup[i+1]->dHdp(temperature,pressure) - background_dHdp);
-            }
-          else
-            {
-              for (unsigned i = 0; i < material_lookup.size(); ++i)
-                dHdp += compositional_fields[i] * material_lookup[i]->dHdp(temperature,pressure);
-            }
-          alpha = (1 - density(temperature,pressure,compositional_fields,position) * dHdp) / temperature;
-          alpha = std::max(std::min(alpha,1e-3),1e-5);
+          for (unsigned i = 0; i < material_lookup.size(); ++i)
+            alpha += compositional_fields[i] * material_lookup[i]->thermal_expansivity(temperature,pressure);
         }
       return alpha;
     }
@@ -723,7 +397,7 @@ namespace aspect
         {
           dRhodp = material_lookup[0]->dRhodp(temperature,pressure);
         }
-      if (material_lookup.size() == compositional_fields.size() + 1)
+      else if (material_lookup.size() == compositional_fields.size() + 1)
         {
           const double background_dRhodp = material_lookup[0]->dRhodp(temperature,pressure);
           dRhodp = background_dRhodp;
@@ -749,6 +423,48 @@ namespace aspect
       return true;
     }
 
+
+
+    template <int dim>
+    std::array<std::pair<double, unsigned int>,2>
+    Steinberger<dim>::
+    enthalpy_derivative (const typename Interface<dim>::MaterialModelInputs &in) const
+    {
+      // We have to take into account here that the p,T spacing of the table of material properties
+      // we use might be on a finer grid than our model. Because of that we compute the enthalpy
+      // derivatives by using finite differences that average over the whole temperature and
+      // pressure range that is used in this cell. This way we should not miss any phase transformation.
+      std::array<std::pair<double, unsigned int>,2> derivative;
+
+      // get the pressures and temperatures at the vertices of the cell
+      const QTrapez<dim> quadrature_formula;
+      const unsigned int n_q_points = quadrature_formula.size();
+      FEValues<dim> fe_values (this->get_mapping(),
+                               this->get_fe(),
+                               quadrature_formula,
+                               update_values);
+
+      std::vector<double> temperatures(n_q_points), pressures(n_q_points);
+      fe_values.reinit (in.current_cell);
+
+      fe_values[this->introspection().extractors.temperature]
+      .get_function_values (this->get_current_linearization_point(), temperatures);
+      fe_values[this->introspection().extractors.pressure]
+      .get_function_values (this->get_current_linearization_point(), pressures);
+
+      // compute the averaged enthalpy derivatives for all temperatures and
+      // pressures in this cell. The 1 means we only do one substep for this
+      // computation (see documentation of the called function for more
+      // information.
+      derivative = material_lookup[0]->enthalpy_derivatives(temperatures,
+                                                            pressures,
+                                                            1);
+
+      return derivative;
+    }
+
+
+
     template <int dim>
     void
     Steinberger<dim>::evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
@@ -761,8 +477,11 @@ namespace aspect
             out.viscosities[i]                  = viscosity                     (in.temperature[i], in.pressure[i], in.composition[i], in.strain_rate[i], in.position[i]);
 
           out.densities[i]                      = density                       (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
-          out.thermal_expansion_coefficients[i] = thermal_expansion_coefficient (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
-          out.specific_heat[i]                  = specific_heat                 (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
+          if (!latent_heat)
+            {
+              out.thermal_expansion_coefficients[i] = thermal_expansion_coefficient (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
+              out.specific_heat[i]                  = specific_heat                 (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
+            }
           out.thermal_conductivities[i]         = thermal_conductivity          (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
           out.compressibilities[i]              = compressibility               (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
           out.entropy_derivative_pressure[i]    = 0;
@@ -775,6 +494,50 @@ namespace aspect
             {
               seismic_out->vp[i] = seismic_Vp(in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
               seismic_out->vs[i] = seismic_Vs(in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
+            }
+        }
+
+      if (latent_heat)
+        {
+          /* We separate the calculation of specific heat and thermal expansivity,
+           * because they may depend on cell-wise averaged values that are only
+           * available here.
+           */
+          double average_temperature(0.0);
+          double average_density(0.0);
+          for (unsigned int i = 0; i < in.position.size(); ++i)
+            {
+              average_temperature += in.temperature[i];
+              average_density += out.densities[i];
+            }
+          average_temperature /= in.position.size();
+          average_density /= in.position.size();
+
+          std::array<std::pair<double, unsigned int>,2> dH;
+          if (in.current_cell.state() == IteratorState::valid)
+            dH = enthalpy_derivative(in);
+
+          for (unsigned int i = 0; i < in.position.size(); ++i)
+            {
+              // Use the adiabatic pressure instead of the real one,
+              // to stabilize against pressure oscillations in phase transitions
+              const double pressure = this->get_adiabatic_conditions().pressure(in.position[i]);
+
+              // If all of the derivatives were computed successfully
+              if ((in.current_cell.state() == IteratorState::valid)
+                  && (dH[0].second > 0)
+                  && (dH[1].second > 0))
+                {
+                  // alpha = (1 - rho * dH/dp) / T
+                  out.thermal_expansion_coefficients[i] = (1 - average_density * dH[1].first) / average_temperature;
+                  // cp = dH/dT
+                  out.specific_heat[i] = dH[0].first;
+                }
+              else
+                {
+                  out.thermal_expansion_coefficients[i] = (1 - out.densities[i] * material_lookup[0]->dHdp(in.temperature[i],pressure)) / in.temperature[i];
+                  out.specific_heat[i] = material_lookup[0]->dHdT(in.temperature[i],pressure);
+                }
             }
         }
     }
@@ -794,7 +557,7 @@ namespace aspect
                              "text '$ASPECT_SOURCE_DIR' which will be interpreted as the path "
                              "in which the ASPECT source files were located when ASPECT was "
                              "compiled. This interpretation allows, for example, to reference "
-                             "files located in the 'data/' subdirectory of ASPECT. ");
+                             "files located in the `data/' subdirectory of ASPECT. ");
           prm.declare_entry ("Material file names", "pyr-ringwood88.txt",
                              Patterns::List (Patterns::Anything()),
                              "The file names of the material data (material "
@@ -805,7 +568,7 @@ namespace aspect
                              "for the whole model domain, and compositional fields "
                              "are ignored. 2. If there is one more file name than the "
                              "number of compositional fields, then the first file is "
-                             "assumed to define a 'background composition' that is "
+                             "assumed to define a `background composition' that is "
                              "modified by the compositional fields. If there are "
                              "exactly as many files as compositional fields, the fields are "
                              "assumed to represent the fractions of different materials "
@@ -839,7 +602,26 @@ namespace aspect
                              "Following the approach of Nakagawa et al. 2009. ");
           prm.declare_entry ("Reference viscosity", "1e23",
                              Patterns::Double(0),
-                             "The reference viscosity that is used for pressure scaling. ");
+                             "The reference viscosity that is used for pressure scaling. "
+                             "To understand how pressure scaling works, take a look at "
+                             "\\cite{KHB12}. In particular, the value of this parameter "
+                             "would not affect the solution computed by \\aspect{} if "
+                             "we could do arithmetic exactly; however, computers do "
+                             "arithmetic in finite precision, and consequently we need to "
+                             "scale quantities in ways so that their magnitudes are "
+                             "roughly the same. As explained in \\cite{KHB12}, we scale "
+                             "the pressure during some computations (never visible by "
+                             "users) by a factor that involves a reference viscosity. This "
+                             "parameter describes this reference viscosity."
+                             "\n\n"
+                             "For problems with a constant viscosity, you will generally want "
+                             "to choose the reference viscosity equal to the actual viscosity. "
+                             "For problems with a variable viscosity, the reference viscosity "
+                             "should be a value that adequately represents the order of "
+                             "magnitude of the viscosities that appear, such as an average "
+                             "value or the value one would use to compute a Rayleigh number."
+                             "\n\n"
+                             "Units: $Pa \\, s$");
           prm.declare_entry ("Minimum viscosity", "1e19",
                              Patterns::Double(0),
                              "The minimum viscosity that is allowed in the viscosity "
@@ -902,6 +684,11 @@ namespace aspect
                                 "prescribed " + Utilities::int_to_string(material_file_names.size()) + " material data files, but there are " +
                                 Utilities::int_to_string(this->n_compositional_fields()) + " compositional fields."));
 
+        if (latent_heat)
+          AssertThrow (material_file_names.size() == 1,
+                       ExcMessage("This formalism is currently only implemented for one material "
+                                  "table."));
+
         // Declare dependencies on solution variables
         this->model_dependence.viscosity = NonlinearDependence::temperature;
         this->model_dependence.density = NonlinearDependence::temperature | NonlinearDependence::pressure | NonlinearDependence::compositional_fields;
@@ -915,12 +702,11 @@ namespace aspect
     void
     Steinberger<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      if (out.template get_additional_output<SeismicAdditionalOutputs<dim> >() == NULL)
+      if (out.template get_additional_output<SeismicAdditionalOutputs<dim> >() == nullptr)
         {
           const unsigned int n_points = out.viscosities.size();
           out.additional_outputs.push_back(
-            std_cxx11::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
-            (new MaterialModel::SeismicAdditionalOutputs<dim> (n_points)));
+            std::make_shared<MaterialModel::SeismicAdditionalOutputs<dim>> (n_points));
         }
     }
 

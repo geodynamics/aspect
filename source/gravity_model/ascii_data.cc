@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
@@ -82,8 +82,8 @@ namespace aspect
       prm.enter_subsection("Gravity model");
       {
         Utilities::AsciiDataBase<dim>::declare_parameters(prm,
-                                                          "$ASPECT_SOURCE_DIR/data/adiabatic-conditions/ascii-data/test/",
-                                                          "");
+                                                          "$ASPECT_SOURCE_DIR/data/gravity-model/",
+                                                          "prem.txt");
       }
       prm.leave_subsection();
     }
@@ -99,7 +99,6 @@ namespace aspect
       }
       prm.leave_subsection();
     }
-
   }
 }
 
@@ -111,16 +110,18 @@ namespace aspect
     ASPECT_REGISTER_GRAVITY_MODEL(AsciiData,
                                   "ascii data",
                                   "Gravity is read from a file that describes the reference "
-                                  "state. Note the required format of the "
+                                  "state. The default profile follows the preliminary "
+                                  "reference Earth model (PREM, Dziewonski and Anderson, 1981). "
+                                  "Note the required format of the "
                                   "input data: The first lines may contain any number of comments "
-                                  "if they begin with '#', but one of these lines needs to "
+                                  "if they begin with `#', but one of these lines needs to "
                                   "contain the number of points in the reference state as "
-                                  "for example '# POINTS: 3'. "
+                                  "for example `# POINTS: 3'. "
                                   "Following the comment lines there has to be a single line "
                                   "containing the names of all data columns, separated by arbitrarily "
                                   "many spaces. Column names are not allowed to contain spaces. "
                                   "The file can contain unnecessary columns, but for this plugin it "
-                                  "needs to at least provide a column named 'gravity'. "
+                                  "needs to at least provide a column named `gravity'. "
                                   "Note that the data lines in the file need to be sorted in order "
                                   "of increasing depth from 0 to the maximal depth in the model "
                                   "domain. Points in the model that are outside of the provided "

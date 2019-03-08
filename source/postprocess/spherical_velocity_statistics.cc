@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
@@ -40,8 +40,8 @@ namespace aspect
     std::pair<std::string,std::string>
     SphericalVelocityStatistics<dim>::execute (TableHandler &statistics)
     {
-      Assert (dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()) != 0 ||
-              dynamic_cast<const GeometryModel::Sphere<dim>*> (&this->get_geometry_model()) != 0,
+      Assert (dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()) != nullptr ||
+              dynamic_cast<const GeometryModel::Sphere<dim>*> (&this->get_geometry_model()) != nullptr,
               ExcMessage ("This postprocessor can only be used if the geometry "
                           "is a sphere or spherical shell."));
 

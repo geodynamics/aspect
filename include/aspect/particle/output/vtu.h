@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2015 - 2016 by the authors of the ASPECT code.
+ Copyright (C) 2015 - 2019 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with ASPECT; see the file doc/COPYING.  If not see
+ along with ASPECT; see the file LICENSE.  If not see
  <http://www.gnu.org/licenses/>.
  */
 
@@ -23,6 +23,8 @@
 
 #include <aspect/particle/output/interface.h>
 #include <aspect/simulator_access.h>
+
+#if !DEAL_II_VERSION_GTE(9,0,0)
 
 namespace aspect
 {
@@ -59,8 +61,8 @@ namespace aspect
            * to a file. If possible, encode the current simulation time
            * into this file using the data provided in the last argument.
            *
-           * @param[in] particles The set of particles to generate a graphical
-           * representation for.
+           * @param[in] particle_handler The particle handler that allows access
+           * to the collection of particles.
            *
            * @param [in] property_information Information object containing names and number
            * of components of each property.
@@ -76,7 +78,7 @@ namespace aspect
            */
           virtual
           std::string
-          output_particle_data(const std::multimap<types::LevelInd, Particle<dim> >     &particles,
+          output_particle_data(const ParticleHandler<dim> &particle_handler,
                                const Property::ParticlePropertyInformation &property_information,
                                const double current_time);
 
@@ -127,4 +129,5 @@ namespace aspect
   }
 }
 
+#endif
 #endif

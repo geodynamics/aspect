@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2014 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,12 +14,13 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 #ifndef _aspect_geometry_model_sphere_h
 #define _aspect_geometry_model_sphere_h
 
+#include <deal.II/grid/manifold_lib.h>
 #include <aspect/geometry_model/interface.h>
 #include <aspect/simulator_access.h>
 
@@ -33,6 +34,11 @@ namespace aspect
     class Sphere : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
+        /**
+         * Constructor.
+         */
+        Sphere();
+
         /**
          * Generate a coarse mesh for the geometry described by this class.
          */
@@ -64,6 +70,13 @@ namespace aspect
          */
         virtual
         double depth(const Point<dim> &position) const;
+
+        /**
+         * Return the height of the given position relative to
+         * the radius of the sphere.
+         */
+        virtual
+        double height_above_reference_surface(const Point<dim> &position) const;
 
         virtual
         Point<dim> representative_point(const double depth) const;
@@ -100,6 +113,13 @@ namespace aspect
         bool
         has_curved_elements() const;
 
+        /*
+         * Returns what the natural coordinate system for this geometry model is,
+         * which for a sphere is Spherical.
+         */
+        virtual
+        aspect::Utilities::Coordinates::CoordinateSystem natural_coordinate_system() const;
+
         /**
          * Return whether the given point lies within the domain specified
          * by the geometry. This function does not take into account
@@ -129,6 +149,12 @@ namespace aspect
          */
         double R;
 
+#if DEAL_II_VERSION_GTE(9,0,0)
+        /**
+         * The manifold that describes the geometry.
+         */
+        const SphericalManifold<dim> spherical_manifold;
+#endif
     };
   }
 }

@@ -1,0 +1,84 @@
+# This is a benchmark to check that the 'Material statistics'
+# postprocessor works correctly. It creates a model with lateral
+# flow. The density in the model is constant and the volume is known,
+# so it is easy to compute the expected output. Over time material
+# with a different density flows in until it fills the whole domain.
+
+set Dimension = 2
+
+set End time                               = 1e8
+set Use years in output instead of seconds = true
+set Adiabatic surface temperature          = 1600
+set Nonlinear solver scheme                = single Advection, single Stokes
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set Y extent = 100000
+    set X extent = 100000
+  end
+end
+
+
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 0.0
+  end
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = left
+  set List of model names = function
+
+  subsection Function
+    set Function expression = (t<1e7) ? 1600 + (t / 1e7) * 1000 : 2600
+  end
+end
+
+# To guarantuee a steady rightward flow, we fix the velocity
+# at the left and right, and set it to free slip on the top and bottom. 
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = left:function, right:function
+  set Tangential velocity boundary indicators = bottom,top
+
+  subsection Function
+    set Function expression = 1e-2;0.0
+    set Variable names      = x,y
+  end
+end
+
+subsection Initial temperature model
+  set Model name = adiabatic
+end
+
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Reference density = 3300
+    set Reference temperature = 1600
+    set Thermal expansion coefficient = 1e-4
+    set Thermal conductivity = 0.0
+    set Viscosity = 1e21
+
+    # This was computed to correspond to a viscosity decrease of one order
+    # of magnitude over a temperature increase of 1000 K for a reference
+    # viscosity of 1e21 Pas and a reference temperature of 1600 K.
+    set Thermal viscosity exponent = 3.684136149
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0 
+  set Initial global refinement          = 0
+  set Time steps between mesh refinement = 0
+end
+
+
+subsection Postprocess
+  set List of postprocessors = material statistics
+end

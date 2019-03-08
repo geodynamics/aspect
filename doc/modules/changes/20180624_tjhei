@@ -1,0 +1,5 @@
+New: We now have unit_tests in the unit_test/ folder using the Catch testing
+framework. They should be used instead of writing a test in tests/ if they
+don't require an ASPECT run.
+<br>
+(Timo Heister, 2018/06/24)

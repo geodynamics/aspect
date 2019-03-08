@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,21 +14,25 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
 
 #include <aspect/boundary_traction/initial_lithostatic_pressure.h>
+#include <aspect/initial_temperature/interface.h>
+#include <aspect/initial_composition/interface.h>
+#include <aspect/gravity_model/interface.h>
 #include <aspect/global.h>
 #include <aspect/utilities.h>
-#include <deal.II/base/std_cxx11/array.h>
+#include <array>
 
 #include <aspect/geometry_model/sphere.h>
 #include <aspect/geometry_model/spherical_shell.h>
 #include <aspect/geometry_model/chunk.h>
 #include <aspect/geometry_model/ellipsoidal_chunk.h>
 #include <aspect/geometry_model/box.h>
+#include <aspect/geometry_model/two_merged_boxes.h>
 
 namespace aspect
 {
@@ -42,14 +46,10 @@ namespace aspect
       // Ensure the initial lithostatic pressure traction boundary conditions are used,
       // and register for which boundary indicators these conditions are set.
       std::set<types::boundary_id> traction_bi;
-      const std::map<types::boundary_id,std_cxx11::shared_ptr<BoundaryTraction::Interface<dim> > >
-      bvs = this->get_boundary_traction();
-      for (typename std::map<types::boundary_id,std_cxx11::shared_ptr<BoundaryTraction::Interface<dim> > >::const_iterator
-           p = bvs.begin();
-           p != bvs.end(); ++p)
+      for (const auto &p : this->get_boundary_traction())
         {
-          if (p->second.get() == this)
-            traction_bi.insert(p->first);
+          if (p.second.get() == this)
+            traction_bi.insert(p.first);
         }
       AssertThrow(*(traction_bi.begin()) != numbers::invalid_boundary_id,
                   ExcMessage("Did not find any boundary indicators for the initial lithostatic pressure plugin."));
@@ -70,7 +70,7 @@ namespace aspect
       // For spherical(-like) domains, modify the representative point:
       // go from degrees to radians...
       const double degrees_to_radians = dealii::numbers::PI/180.0;
-      std_cxx11::array<double, dim> spherical_representative_point;
+      std::array<double, dim> spherical_representative_point;
       for (unsigned int d=0; d<dim; d++)
         spherical_representative_point[d] = representative_point[d];
       spherical_representative_point[1] *= degrees_to_radians;
@@ -82,7 +82,7 @@ namespace aspect
         }
 
       // Check that the representative point lies in the domain.
-      AssertThrow((dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model())!=0) ?
+      AssertThrow((dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model()) != nullptr) ?
                   (this->get_geometry_model().point_is_in_domain(representative_point)) :
                   (this->get_geometry_model().point_is_in_domain(Utilities::Coordinates::spherical_to_cartesian_coordinates<dim>(spherical_representative_point))),
                   ExcMessage("The reference point does not lie with the domain."));
@@ -122,7 +122,8 @@ namespace aspect
 
       // Where to calculate the density
       // for spherical domains
-      if (dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model()) == 0)
+      if (dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model()) == nullptr &&
+          dynamic_cast<const GeometryModel::TwoMergedBoxes<dim>*> (&this->get_geometry_model()) == nullptr)
         in0.position[0] = Utilities::Coordinates::spherical_to_cartesian_coordinates<dim>(spherical_representative_point);
       // and for cartesian domains
       else
@@ -168,7 +169,7 @@ namespace aspect
 
           // Where to calculate the density:
           // for spherical domains
-          if (dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model()) == 0)
+          if (dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model()) == nullptr)
             {
               // decrease radius with depth increment
               spherical_representative_point[0] -= delta_z;

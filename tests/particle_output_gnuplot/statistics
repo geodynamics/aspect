@@ -1,0 +1,16 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Iterations for composition solver 1
+# 10: Iterations for Stokes solver
+# 11: Velocity iterations in Stokes preconditioner
+# 12: Schur complement iterations in Stokes preconditioner
+# 13: Number of advected particles
+# 14: Particle file name
+0 0.000000000000e+00 0.000000000000e+00 256 2467 1089 1089 0  0 33 34 99 10 output-particle_output_gnuplot/particles/particles-00000 
+1 7.000000000000e+01 7.000000000000e+01 256 2467 1089 1089 0 16 32 33 99 10 output-particle_output_gnuplot/particles/particles-00001 

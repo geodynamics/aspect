@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
@@ -23,8 +23,6 @@
 #include <aspect/geometry_model/initial_topography_model/zero_topography.h>
 
 #include <deal.II/grid/grid_generator.h>
-#include <deal.II/grid/tria_boundary_lib.h>
-#include <deal.II/grid/manifold_lib.h>
 #include <aspect/utilities.h>
 
 namespace aspect
@@ -46,7 +44,10 @@ namespace aspect
     SphericalShell<dim>::
     create_coarse_mesh (parallel::distributed::Triangulation<dim> &coarse_grid) const
     {
-      AssertThrow (phi == 360 || phi == 90 || dim!=3, ExcNotImplemented());
+      AssertThrow (phi == 360 || phi == 90 || ((phi == 180) && (dim == 2)),
+                   ExcMessage ("The only opening angles that are allowed for "
+                               "this geometry are 90, 180, and 360 in 2d; "
+                               "and 90 and 360 in 3d."));
 
       if (phi == 360)
         {
@@ -97,12 +98,16 @@ namespace aspect
       // Boundary objects are no longer necessary for deal.II 9.0,
       // because everything is handled by the manifold.
 #if !DEAL_II_VERSION_GTE(9,0,0)
-      coarse_grid.signals.pre_refinement.connect (std_cxx11::bind (&SphericalShell<dim>::set_manifold_ids,
-                                                                   std_cxx11::cref(*this),
-                                                                   std_cxx11::ref(coarse_grid)));
-      coarse_grid.signals.post_refinement.connect (std_cxx11::bind (&SphericalShell<dim>::clear_manifold_ids,
-                                                                    std_cxx11::cref(*this),
-                                                                    std_cxx11::ref(coarse_grid)));
+      coarse_grid.signals.pre_refinement.connect (
+        [&]()
+      {
+        this->set_manifold_ids(coarse_grid);
+      });
+      coarse_grid.signals.post_refinement.connect (
+        [&]()
+      {
+        this->clear_manifold_ids(coarse_grid);
+      });
 
       clear_manifold_ids(coarse_grid);
 
@@ -245,12 +250,15 @@ namespace aspect
     SphericalShell<dim>::
     length_scale () const
     {
-      // as described in the first ASPECT paper, a length scale of
+      // As described in the first ASPECT paper, a length scale of
       // 10km = 1e4m works well for the pressure scaling for earth
-      // sized spherical shells. use a length scale that
-      // yields this value for the R0,R1 corresponding to earth
-      // but otherwise scales like (R1-R0)
-      return 1e4 * maximal_depth() / (6336000.-3481000.);
+      // sized spherical shells. So use a formulation that yields this
+      // value for the R0,R1 corresponding to earth, and that more
+      // generally scales with (R1-R0), which we can get by calling
+      // maximal_depth(). In essence, the factor in front of the call
+      // to maximal_depth() is just a magic number that has turned out
+      // to work well.
+      return (1e4 / (6336000.-3481000.)) * maximal_depth();
     }
 
 
@@ -262,6 +270,12 @@ namespace aspect
       return std::min (std::max (R1-position.norm(), 0.), maximal_depth());
     }
 
+    template <int dim>
+    double
+    SphericalShell<dim>::height_above_reference_surface(const Point<dim> &position) const
+    {
+      return position.norm()-outer_radius();
+    }
 
 
     template <int dim>
@@ -320,23 +334,25 @@ namespace aspect
                   this->get_timestep_number() == 0,
                   ExcMessage("After displacement of the free surface, this function can no longer be used to determine whether a point lies in the domain or not."));
 
-      AssertThrow(dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(&this->get_initial_topography_model()) != 0,
+      AssertThrow(dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(&this->get_initial_topography_model()) != nullptr,
                   ExcMessage("After adding topography, this function can no longer be used to determine whether a point lies in the domain or not."));
 
-      const std_cxx11::array<double, dim> spherical_point = Utilities::Coordinates::cartesian_to_spherical_coordinates(point);
+      const std::array<double, dim> spherical_point = Utilities::Coordinates::cartesian_to_spherical_coordinates(point);
 
-      std_cxx11::array<double, dim> point1, point2;
+      std::array<double, dim> point1, point2;
       point1[0] = R0;
       point2[0] = R1;
       point1[1] = 0.0;
       point2[1] = phi / 180.0 * numbers::PI;
       if (dim == 3)
         {
-          // Octant
+          point1[2] = 0.0;
+
           if (phi == 90.0)
+            // Octant
             point2[2] = 0.5 * numbers::PI;
-          // Full shell
           else
+            // Full shell
             point2[2] = numbers::PI;
         }
 
@@ -348,6 +364,15 @@ namespace aspect
       return true;
     }
 
+
+    template <int dim>
+    aspect::Utilities::Coordinates::CoordinateSystem
+    SphericalShell<dim>::natural_coordinate_system() const
+    {
+      return aspect::Utilities::Coordinates::CoordinateSystem::spherical;
+    }
+
+
     template <int dim>
     void
     SphericalShell<dim>::declare_parameters (ParameterHandler &prm)
@@ -358,15 +383,28 @@ namespace aspect
         {
           prm.declare_entry ("Inner radius", "3481000",  // 6371-2890 in km
                              Patterns::Double (0),
-                             "Inner radius of the spherical shell. Units: m.");
+                             "Inner radius of the spherical shell. Units: m. "
+                             "\n\n"
+                             "\\note{The default value of 3,481,000 m equals the "
+                             "radius of a sphere with equal volume as Earth (i.e., "
+                             "6371 km) minus the average depth of the core-mantle "
+                             "boundary (i.e., 2890 km).}");
           prm.declare_entry ("Outer radius", "6336000",  // 6371-35 in km
                              Patterns::Double (0),
-                             "Outer radius of the spherical shell. Units: m.");
+                             "Outer radius of the spherical shell. Units: m. "
+                             "\n\n"
+                             "\\note{The default value of 6,336,000 m equals the "
+                             "radius of a sphere with equal volume as Earth (i.e., "
+                             "6371 km) minus the average depth of the mantle-crust "
+                             "interface (i.e., 35 km).}");
           prm.declare_entry ("Opening angle", "360",
                              Patterns::Double (0, 360),
                              "Opening angle in degrees of the section of the shell "
-                             "that we want to build. Units: degrees.");
-
+                             "that we want to build. "
+                             "The only opening angles that are allowed for "
+                             "this geometry are 90, 180, and 360 in 2d; "
+                             "and 90 and 360 in 3d. "
+                             "Units: degrees.");
           prm.declare_entry ("Cells along circumference", "0",
                              Patterns::Integer (0),
                              "The number of cells in circumferential direction that are "
@@ -408,6 +446,9 @@ namespace aspect
           R1  = prm.get_double ("Outer radius");
           phi = prm.get_double ("Opening angle");
           n_cells_along_circumference = prm.get_integer ("Cells along circumference");
+
+          AssertThrow (R0 < R1,
+                       ExcMessage ("Inner radius must be less than outer radius."));
         }
         prm.leave_subsection();
       }
@@ -427,13 +468,24 @@ namespace aspect
                                    "Inner and outer radii are read from the parameter file "
                                    "in subsection 'Spherical shell'."
                                    "\n\n"
+                                   "Despite the name, this geometry does not imply the use of "
+                                   "a spherical coordinate system when used in 2d. Indeed, "
+                                   "in 2d the geometry is simply an annulus in a Cartesian "
+                                   "coordinate system and consequently would correspond to "
+                                   "a cross section of the fluid filled space between two "
+                                   "infinite cylinders where one has made the assumption that "
+                                   "the velocity in direction of the cylinder axes is zero. "
+                                   "This is consistent with the definition of what we consider "
+                                   "the two-dimension case given in "
+                                   "Section~\\ref{sec:meaning-of-2d}."
+                                   "\n\n"
                                    "The model assigns boundary indicators as follows: In 2d, "
                                    "inner and outer boundaries get boundary indicators zero "
                                    "and one, and if the opening angle set in the input file "
                                    "is less than 360, then left and right boundaries are "
                                    "assigned indicators two and three. These boundaries can "
-                                   "also be referenced using the symbolic names 'inner', 'outer' "
-                                   "and (if applicable) 'left', 'right'."
+                                   "also be referenced using the symbolic names `inner', `outer' "
+                                   "and (if applicable) `left', `right'."
                                    "\n\n"
                                    "In 3d, inner and "
                                    "outer indicators are treated as in 2d. If the opening "
@@ -441,7 +493,7 @@ namespace aspect
                                    "intersection of a spherical shell and the first octant, "
                                    "then indicator 2 is at the face $x=0$, 3 at $y=0$, "
                                    "and 4 at $z=0$. These last three boundaries can then also "
-                                   "be referred to as 'east', 'west' and 'south' symbolically "
+                                   "be referred to as `east', `west' and `south' symbolically "
                                    "in input files.")
   }
 }

@@ -1,0 +1,31 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Iterations for composition solver 1
+# 10: Iterations for Stokes solver
+# 11: Velocity iterations in Stokes preconditioner
+# 12: Schur complement iterations in Stokes preconditioner
+# 13: Visualization file name
+# 14: RMS velocity (m/year)
+# 15: Max. velocity (m/year)
+# 16: Minimal temperature (K)
+# 17: Average temperature (K)
+# 18: Maximal temperature (K)
+# 19: Average nondimensional temperature (K)
+# 20: Outward heat flux through boundary with indicator 0 ("bottom") (W)
+# 21: Outward heat flux through boundary with indicator 1 ("top") (W)
+# 22: Outward heat flux through boundary with indicator 2 ("left") (W)
+# 23: Outward heat flux through boundary with indicator 3 ("right") (W)
+# 24: Number of advected particles
+# 25: Particle file name
+# 26: Average adiabatic heating rate (W/kg)
+# 27: Total adiabatic heating rate (W)
+# 28: Pressure at top (Pa)
+# 29: Pressure at bottom (Pa)
+0 0.000000000000e+00 0.000000000000e+00 192 1891 833 833  0 0 18 19 19 output-update_script_2/solution/solution-00000 6.12503263e-01 1.17599847e+00 2.73000000e+02 2.29523784e+03 4.25000000e+03 5.08483239e-01  7.86573547e+05 -2.81076450e+06 0.00000000e+00 0.00000000e+00 50 output-update_script_2/output-update_script_2/particles/particles-00000 -3.80595985e-10 -3.21314982e+07 6.10867321e-08 1.13610118e+11 
+1 1.000000000000e+05 1.000000000000e+05 192 1891 833 833 12 0 15 16 16 output-update_script_2/solution/solution-00001 6.06410870e-01 1.17477225e+00 2.73000000e+02 2.29237652e+03 4.25000000e+03 5.07763772e-01 -7.88424862e+07  1.04611014e+08 0.00000000e+00 0.00000000e+00 50                                                                      "" -3.74839836e-10 -3.16488993e+07 5.81592529e-08 1.13611657e+11 

@@ -5,7 +5,6 @@ set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 0
 
-set Linear solver tolerance                = 1e-7
 set Pressure normalization                 = volume
 
 
@@ -17,8 +16,11 @@ subsection Geometry model
   end
 end
 
-subsection Model settings
-  set Tangential velocity boundary indicators = 
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary velocity model
   set Zero velocity boundary indicators       = left, right, bottom, top
 end
 
@@ -48,7 +50,7 @@ end
 # Note: The temperature plays no role in this model
 
 subsection Boundary temperature model
-  set Model name = box
+  set List of model names = box
 end
 
 subsection Initial temperature model
@@ -93,5 +95,11 @@ subsection Postprocess
     set Output format                 = gnuplot
     set Time between graphical output = 0
     set List of output variables = density, viscosity
+  end
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-7
   end
 end

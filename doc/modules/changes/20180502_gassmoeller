@@ -1,0 +1,6 @@
+New: ASPECT now stores the steps for the continuous integration setup
+inside the repository in form of a Jenkins pipeline file. This file
+documents each step in our testing procedure, and allows to easily setup
+new Jenkins server that reproduce the official ASPECT tester.
+<br>
+(Rene Gassmoeller, Timo Heister, Tyler Esser, 2018/05/02)

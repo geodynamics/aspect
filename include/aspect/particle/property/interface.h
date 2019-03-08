@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2015 - 2016 by the authors of the ASPECT code.
+ Copyright (C) 2015 - 2019 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -14,21 +14,31 @@
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with ASPECT; see the file doc/COPYING.  If not see
+ along with ASPECT; see the file LICENSE.  If not see
  <http://www.gnu.org/licenses/>.
  */
 
 #ifndef _aspect_particle_property_interface_h
 #define _aspect_particle_property_interface_h
 
-#include <aspect/particle/particle.h>
-#include <aspect/particle/interpolator/interface.h>
-#include <aspect/particle/property_pool.h>
-
-#include <aspect/simulator_access.h>
+#include <aspect/global.h>
 #include <aspect/plugins.h>
 
-#include <deal.II/base/std_cxx1x/shared_ptr.h>
+#if DEAL_II_VERSION_GTE(9,0,0)
+#include <deal.II/particles/particle.h>
+#include <deal.II/particles/particle_handler.h>
+#include <deal.II/particles/property_pool.h>
+#else
+#include <aspect/particle/particle.h>
+#include <aspect/particle/particle_handler.h>
+#include <aspect/particle/property_pool.h>
+#endif
+
+#include <aspect/particle/interpolator/interface.h>
+
+#include <aspect/simulator_access.h>
+
+#include <memory>
 #include <deal.II/fe/fe_update_flags.h>
 
 namespace aspect
@@ -37,6 +47,10 @@ namespace aspect
   {
     namespace Property
     {
+#if DEAL_II_VERSION_GTE(9,0,0)
+      using namespace dealii::Particles;
+#endif
+
       /**
        * This class is used to store all the necessary information to translate
        * between the data structure of the particle properties (a flat vector of
@@ -223,7 +237,7 @@ namespace aspect
           unsigned int number_of_components;
 
           /**
-           * The number of disctintly named particle property fields.
+           * The number of distinctly named particle property fields.
            */
           unsigned int number_of_fields;
 
@@ -283,13 +297,13 @@ namespace aspect
       };
 
       /**
-        * Interface provides an example of how to extend the Particle
-        * class to include related particle data. This allows users to attach
-        * scalars/vectors/tensors/etc to particles and ensure they are
-        * transmitted correctly over MPI and written to output files.
-        *
-        * @ingroup ParticleProperties
-        */
+       * Interface provides an example of how to extend the Particle class to
+       * include related particle data. This allows users to attach
+       * scalars/vectors/tensors/etc to particles and ensure they are
+       * transmitted correctly over MPI and written to output files.
+       *
+       * @ingroup ParticleProperties
+       */
       template <int dim>
       class Interface
       {
@@ -485,7 +499,7 @@ namespace aspect
            * collection after it was created.
            */
           void
-          initialize_one_particle (Particle<dim> &particle) const;
+          initialize_one_particle (typename ParticleHandler<dim>::particle_iterator &particle) const;
 
           /**
            * Initialization function for particle properties. This function is
@@ -493,9 +507,9 @@ namespace aspect
            * collection that were created later than the initial particle
            * generation.
            */
-          void
-          initialize_late_particle (Particle<dim> &particle,
-                                    const std::multimap<types::LevelInd, Particle<dim> > &particles,
+          std::vector<double>
+          initialize_late_particle (const Point<dim> &particle_location,
+                                    const ParticleHandler<dim> &particle_handler,
                                     const Interpolator::Interface<dim> &interpolator,
                                     const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell = typename parallel::distributed::Triangulation<dim>::active_cell_iterator()) const;
 
@@ -504,7 +518,7 @@ namespace aspect
            * called once every time step for every particle.
            */
           void
-          update_one_particle (Particle<dim> &particle,
+          update_one_particle (typename ParticleHandler<dim>::particle_iterator &particle,
                                const Vector<double> &solution,
                                const std::vector<Tensor<1,dim> > &gradients) const;
 
@@ -562,23 +576,15 @@ namespace aspect
           get_data_info() const;
 
           /**
-           * Get a reference to the property pool that own all particle
-           * properties, and organizes them physically.
-           *
-           * @return A reference to the property_pool object.
-           */
-          PropertyPool &
-          get_property_pool() const;
-
-          /**
            * Get the position of the property specified by name in the property
            * vector of the particles.
            *
            * @deprecated This function will be replaced by
            * ParticlePropertyInformation::get_position_by_fieldname(name)
            */
+          DEAL_II_DEPRECATED
           unsigned int
-          get_property_component_by_name(const std::string &name) const DEAL_II_DEPRECATED;
+          get_property_component_by_name(const std::string &name) const;
 
           /**
            * A function that is used to register particle property
@@ -619,25 +625,33 @@ namespace aspect
           void
           parse_parameters (ParameterHandler &prm);
 
+
+          /**
+           * For the current plugin subsystem, write a connection graph of all of the
+           * plugins we know about, in the format that the
+           * programs dot and neato understand. This allows for a visualization of
+           * how all of the plugins that ASPECT knows about are interconnected, and
+           * connect to other parts of the ASPECT code.
+           *
+           * @param output_stream The stream to write the output to.
+           */
+          static
+          void
+          write_plugin_graph (std::ostream &output_stream);
+
         private:
 
           /**
            * A list of property objects that have been requested in the
            * parameter file.
            */
-          std::list<std_cxx1x::shared_ptr<Interface<dim> > > property_list;
+          std::list<std::shared_ptr<Interface<dim> > > property_list;
 
           /**
            * A class that stores all information about the particle properties,
            * their association with property plugins and their storage pattern.
            */
           ParticlePropertyInformation property_information;
-
-          /**
-           * This object owns and organizes the memory for all particle
-           * properties.
-           */
-          std_cxx11::unique_ptr<PropertyPool> property_pool;
       };
 
 

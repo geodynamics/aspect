@@ -10,9 +10,11 @@ set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 1
 set Use years in output instead of seconds = false
-set Number of cheap Stokes solver steps    = 0
-set Linear solver tolerance                = 1e-8
-#set Nonlinear solver scheme                = iterated IMPES
+
+subsection Discretization
+  set Stokes velocity polynomial degree    = 2
+  set Composition polynomial degree        = 1
+end
 
 subsection Geometry model
   set Model name = box
@@ -24,18 +26,28 @@ subsection Geometry model
 end
 
 
-subsection Model settings
-  set Fixed temperature boundary indicators   = 2, 3
-#  set Fixed composition boundary indicators   = 2, 3
-  set Zero velocity boundary indicators       =
-  set Tangential velocity boundary indicators = 0, 1, 2
-  set Prescribed velocity boundary indicators = 3: function
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
 
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = 2, 3
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = 0, 1, 2
+end
+
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = 3: function
+end
+
+subsection Melt settings
   set Include melt transport                  = true
 end
 
 subsection Melt settings
-  set Melt transport threshold                = 0.0
+  set Use discontinuous compaction pressure   = false
 end
 
 subsection Heating model
@@ -43,7 +55,7 @@ subsection Heating model
 end
 
 subsection Boundary temperature model
-  set Model name = box
+  set List of model names = box
 
   subsection Box
     set Bottom temperature = 1
@@ -114,21 +126,4 @@ subsection Initial composition model
     set Variable names      = x,y
     set Function expression = if(y<0.2, 1, 0) ;  0.0
   end
-end
-
-subsection Discretization
-  set Stokes velocity polynomial degree    = 2
-  set Composition polynomial degree        = 1
-end
-
-subsection Boundary fluid pressure model
-  set Plugin name = density
-  subsection Density
-    set Density formulation = solid density
-  end
-
-end
-
-subsection Boundary composition model
-  set Model name = initial composition
 end

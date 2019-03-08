@@ -1,3 +1,5 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 
 Loading shared library <./libfind_postprocess.so>
 
@@ -6,12 +8,16 @@ Number of degrees of freedom: 948 (578+81+289)
 
 PressureStatistics is not found!
 HeatFluxStatistics is found!
+PressureStatistics is not found!
+HeatFluxStatistics is found!
 *** Timestep 0:  t=0 seconds
+PressureStatistics is not found!
+HeatFluxStatistics is found!
 PressureStatistics is not found!
 HeatFluxStatistics is found!
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+0 iterations.
+   Solving Stokes system... 22+0 iterations.
 
    Postprocessing:
      Heat fluxes through boundary parts: 1.688e-07 W, 2.017e-05 W, 2.43e-07 W, 2.43e-07 W

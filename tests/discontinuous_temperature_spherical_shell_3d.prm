@@ -26,7 +26,7 @@ end
 # the domain. Here we set the temperature to be constant.
 # Alternatively it could be set to the initial condition.
 subsection Boundary temperature model
-  set Model name = spherical constant
+  set List of model names = spherical constant
   subsection Spherical constant
     set Inner temperature = 1600
     set Outer temperature = 1600
@@ -79,10 +79,15 @@ subsection Mesh refinement
 end
 
 # We assume fixed temperatures and free slip at the inner and outer boundary
-subsection Model settings
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary temperature model
   set Fixed temperature boundary indicators   = 0,1
+end
 
-
+subsection Boundary velocity model
   set Tangential velocity boundary indicators = 0,1
 end
 

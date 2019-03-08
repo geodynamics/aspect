@@ -6,8 +6,8 @@
       are up to date in the manual
     . update the used deal.II version for the Docker container in docker/Dockerfile
       and in the manual
-    . check that readme.html is okay and the links to the mailinglists are
-      working (also in manual.pdf)
+    . check that README.md and http://aspect.dealii.org/ReadMe.html are okay
+      and the links to the mailinglists are working (also in manual.pdf)
     . run (and be patient):
       cd benchmarks && ./check.sh BUILDDIR
       cd cookbooks && ./check.sh BUILDDIR
@@ -15,27 +15,29 @@
     - format is X.Y.Z for a release, X.Y.Z-pre for the dev version or X.Y.Z-rcW for release candidates
     - backwards incompatible changes require incrementing X, adding features incrementing Y
   . setup:
-      export OLDVER=1.4.0;export VER=1.5.0;export VERSHORT=1.5;export NEXTVER=2.0.0-pre
+      export OLDVER=1.5.0;export VER=2.0.0;export VERSHORT=2.0;export NEXTVER=2.1.0-pre
       export DEALSRCDIR=/ssd/deal-git/
   . fix doxygen errors:
       find include -name "*h" -print | xargs -n 1 $DEALSRCDIR/contrib/utilities/checkdoxygen.py
     and commit.
-  . update the release for people to cite in the manual by updating
-      the release number and the release year
+  . manual, check for missing labels:
+    . cd doc
+    . make manual.pdf
+    . grep undefined manual/manual.log    # try to remove some
+    . make aspect.tag
   . fix formatting, copyright years:
-      old:
       find . -name "*.h" -print | while read file;do $DEALSRCDIR/contrib/utilities/wrapcomments.py $file >temp;mv temp $file;done
-      new: use the deal.II copyright script!
       ./doc/indent
-      find . -name "*.h" -o -name "*.cc" -print | while read file;do sed -i '0,/^.*Copyright.*/{s/^.*Copyright.*/  Copyright (C) 2011 - 2016 by the authors of the ASPECT code./}' $file; done
-      git status # check!
-      git commit -a -m "doxygen formatting, comment wrapping" # or rather create a pull-request
+      ./doc/update_copyright.sh
+      git commit -a -m "doxygen formatting, comment wrapping"
+      # create a pull-request
   . create branch for master PR to update changes.h in doc/modules:
       git checkout -b post-release-$VER
-      cd doc/modules; ./increment_version.sh $OLDVER $VER;cd ../..
+      cd doc/modules; rm -f changes/*~; ./increment_version.sh $OLDVER $VER;cd ../..
       cd doc;./bump_version.sh $NEXTVER; cd ..
       git commit -m "release task: update version and changes.h"
-  . create a branch, bump version:
+      # create a PR
+  . create a branch, bump version: # TODO: this should be 2.0.0-pre not 2.0.0
       git checkout post-release-$VER && \
       git checkout -b aspect-$VERSHORT && \
       cd doc && ./bump_version.sh $VER && cd .. && \
@@ -45,27 +47,53 @@
       cd doc && ./update_parameters.sh && make manual.pdf && cp manual.pdf manual-$VER.pdf && cd .. && \
       git add doc/manual/parameters.tex && \
       git commit -m "release task: update manual"
-  . create a RC tar file:
+  . Tag an RC:
       export TAG=$VER-rc1
+      cd doc && ./bump_version.sh $TAG && cd .. && \
+      git commit -m "version $TAG" && \
       git tag -s v$TAG -m "version $TAG"
-      export PREFIX=aspect-$TAG && rm -rf $PREFIX.tar.gz && \
-      git archive --format=tar.gz --prefix=$PREFIX/ HEAD >$PREFIX.tar.gz && \
-      rm -rf $PREFIX && tar xf $PREFIX.tar.gz && \
-      rm $PREFIX.tar.gz &&  cp doc/manual.pdf $PREFIX/doc && \
-      tar czf $PREFIX.tar.gz $PREFIX && rm -rf $PREFIX
   . Tag the release:
-      git tag -s v$VER -m "version $VER"
-  . create the tar file:
-      export PREFIX=aspect-$VER && rm -rf $PREFIX.tar.gz && \
-      git archive --format=tar.gz --prefix=$PREFIX/ HEAD >$PREFIX.tar.gz && \
-      rm -rf $PREFIX && tar xf $PREFIX.tar.gz && \
-      rm $PREFIX.tar.gz &&  cp doc/manual.pdf $PREFIX/doc && \
-      tar czf $PREFIX.tar.gz $PREFIX && rm -rf $PREFIX
+      export TAG=$VER
+      cd doc && ./bump_version.sh $TAG && cd .. && \
+      git commit -m "version $TAG" && \
+      git tag -s v$TAG -m "version $TAG"
+  . create a tar file:
+      cd doc && make manual.pdf && cp manual.pdf aspect-manual-$TAG.pdf && cd ..
+      export PREFIX=aspect-$TAG && rm -rf $PREFIX.tar.gz && \
+      git archive --format=tar.gz --prefix=$PREFIX/ HEAD >$PREFIX.tar.gz && rm -rf $PREFIX
+  . final testing by extracting tarball, compiling, and running:
+      tar xf $PREFIX.tar.gz
+      cd $PREFIX
+      docker run --rm -it -v `pwd`:/home/dealii/aspect \
+      	     dealii/dealii:v8.5.0-gcc-mpi-fulldepscandi-debugrelease /bin/bash
+
+      mkdir build; cd build
+      cmake -G "Ninja" -D ASPECT_RUN_ALL_TESTS=ON -D \
+            ASPECT_PRECOMPILE_HEADERS=ON ~/aspect
+      ninja; ctest -j 8 -V
+
   . make public (branch and tag):
-      git push cig aspect-$VER
-      git push cig v$VER
-  . create a release on github, upload tarball, upload manual-$VER.pdf
+      git push cig aspect-$VERSHORT
+      git push cig v$TAG
+  . sign:
+      gpg --detach-sign --armor aspect-$TAG.tar.gz
+      sha1sum aspect-$TAG.tar.gz
+      gpg --detach-sign --armor manual-$TAG.pdf
+      sha1sum aspect-$TAG.tar.gz manual-$TAG.pdf >sha1sum-$TAG.txt
+  . create a release on github, upload tar.gz and manual-$VER.pdf
+  . readme / release notes: add zenodo DOI button
   . link it on download.html, update version info etc.
+  . create zenodo release for source code:
+    - https://zenodo.org/deposit?page=1&size=20
+    - title: ASPECT v2.0.0
+    - license: GPL 2
+    - check CIG comments: https://github.com/geodynamics/best_practices/blob/master/ZenodoBestPractices.md
+    - cig community!
+    - update zenodo badge in README.md to newest version (see badge button on the right of zenodo page)
+    - add zenodo badge also to the release on github (on top, see 2.0.1 for an example)
+  . create figshare DOI for manual
+  . update doc/manual/aspect.bib with src and manual doi
+  . update aspect.geodynamics.org/cite.html
   . update http://geodynamics.org/cig/software/aspect/:
        update current release number
        create entry for the new release
@@ -77,6 +105,97 @@
        cig-mc@geodynamics.org
        cig-cs@geodynamics.org
        dealii@googlegroups.com
+
+
+Announcement for 2.0.1 (June 21, 2018)
+-----------------------------------------
+We are pleased to announce the release of ASPECT 2.0.1. ASPECT is the Advanced
+Solver for Problems in Earth's ConvecTion. It uses modern numerical methods such
+as adaptive mesh refinement, multigrid, and a modular software design to
+provide a fast, flexible, and extensible mantle convection solver. ASPECT is
+available from
+
+                   https://aspect.geodynamics.org/
+
+and the release is available from
+
+        https://github.com/geodynamics/aspect/releases/tag/v2.0.1
+
+This release is a bugfix release for 2.0.0 and includes the following fixes:
+- Fixed: The 'compositional heating' heating plugin had a parameter
+  'Use compositional field for heat production averaging' that was used
+  inconsistently with its description. Its first entry did not correspond
+  to the background field, but to the first compositional field, and the
+  last value was ignored. This is fixed now, the first entry is used for
+  the background field, and all following values determine whether to include
+  the corresponding compositional fields.
+- Fixed: The 'depth dependent' material model did not properly initialize
+  the material model it uses as a base model. This caused crashes if the
+  base model requires an initialization (such as the 'steinberger' material
+  model). This is fixed now by properly initializing the base model.
+- Fixed: The advection assembler for DG elements was not thread-safe,
+  which led to wrong results or crashes if a discontinuous temperature
+  or composition discretization was combined with multithreading.
+- Disabled: The particle functionality was not tested when combined with a
+  free surface boundary, and this combination is currently not supported. This
+  limitation is now made clear by failing for such setups with a descriptive
+  error message.
+
+Wolfgang Bangerth, Juliane Dannberg, Rene Gassmoeller, Timo Heister,
+Jacqueline Austermann, Menno Fraters, Anne Glerum, John Naliboff,
+and many other contributors.
+
+
+Announcement for 2.0.0 (May 10, 2018)
+-----------------------------------------
+We are pleased to announce the release of ASPECT 2.0.0. ASPECT is the Advanced
+Solver for Problems in Earth's ConvecTion. It uses modern numerical methods such
+as adaptive mesh refinement, multigrid, and a modular software design to
+provide a fast, flexible, and extensible mantle convection solver. ASPECT is
+available from
+
+                   https://aspect.geodynamics.org/
+
+and the release is available from
+
+        https://github.com/geodynamics/aspect/releases/tag/v2.0.0
+
+This release includes the following changes:
+- New: Newton solver and defect correction Picard iterations for nonlinear
+  problems (for the Stokes system)
+- Melt solver: Overhaul leading to improved performance and stability, better
+  integration with other plugins
+- New: Material model with grain size evolution
+- New: Boundary temperature plugin with evolving core-mantle boundary
+  temperature based on the heat flux through the core-mantle boundary
+- New: ASPECT can now compute the geoid in 3D spherical shell geometry
+- New: Operator splitting for reactions between compositional fields
+- New: Added a PREM gravity profile
+- Improved: Significantly reduced memory consumption in models that use many
+  compositional fields
+- Improved: A large number of performance improvements for preconditioners,
+  assembly, seismic tomography initial conditions, and lateral averaging
+- Improved: More flexibility for boundary and initial conditions, different
+  plugins can be combined
+- Improved: The dynamic topography postprocessor now uses the consistent
+  boundary flux method for computing surface stresses, which is significantly
+  more accurate
+- New: Additional RHS force terms in the Stokes system can be added
+- New particle interpolators: nearest neighbor, bilinear least squares,
+  harmonic average
+- New: Graphical user interface for the creation and modification of input
+  parameter files
+- Many other fixes and small improvements.
+- Rework: Updated parameter and section names to make them more consistent and
+  easier to understand. A script for updating parameter and source files is
+  provided with the release.
+
+A complete list of changes can be found at
+  https://aspect.geodynamics.org/doc/doxygen/changes_between_1_85_80_and_2_80_80.html
+
+Wolfgang Bangerth, Juliane Dannberg, Rene Gassmoeller, Timo Heister,
+Jacqueline Austermann, Menno Fraters, Anne Glerum, John Naliboff,
+and many other contributors.
 
 
 Announcement for 1.5.0 (February 28, 2017)

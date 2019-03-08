@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
@@ -35,15 +35,10 @@ namespace aspect
     void
     AsciiData<dim>::initialize ()
     {
-      const std::map<types::boundary_id,std_cxx11::shared_ptr<BoundaryTraction::Interface<dim> > >
-      bvs = this->get_boundary_traction();
-      for (typename std::map<types::boundary_id,std_cxx11::shared_ptr<BoundaryTraction::Interface<dim> > >::const_iterator
-           p = bvs.begin();
-           p != bvs.end(); ++p)
-        {
-          if (p->second.get() == this)
-            boundary_ids.insert(p->first);
-        }
+      for (const auto &bv : this->get_boundary_traction())
+        if (bv.second.get() == this)
+          boundary_ids.insert(bv.first);
+
       AssertThrow(*(boundary_ids.begin()) != numbers::invalid_boundary_id,
                   ExcMessage("Did not find the boundary indicator for the traction ascii data plugin."));
 
@@ -116,12 +111,12 @@ namespace aspect
                                             "applied as traction normal to the surface of a given boundary, "
                                             "pointing inwards. Note the required format of the "
                                             "input data: The first lines may contain any number of comments "
-                                            "if they begin with '#', but one of these lines needs to "
+                                            "if they begin with `#', but one of these lines needs to "
                                             "contain the number of grid points in each dimension as "
-                                            "for example '# POINTS: 3 3'. "
+                                            "for example `# POINTS: 3 3'. "
                                             "The order of the data columns "
-                                            "has to be 'x', 'Pressure [Pa]' in a 2d model and "
-                                            " 'x', 'y', 'Pressure [Pa]' in a 3d model, which means that "
+                                            "has to be `x', `Pressure [Pa]' in a 2d model and "
+                                            " `x', `y', `Pressure [Pa]' in a 3d model, which means that "
                                             "there has to be a single column "
                                             "containing the pressure. "
                                             "Note that the data in the input "
@@ -131,13 +126,13 @@ namespace aspect
                                             "assign the correct data to the prescribed coordinates. "
                                             "If you use a spherical model, "
                                             "then the data will still be handled as Cartesian, "
-                                            "however the assumed grid changes. 'x' will be replaced by "
+                                            "however the assumed grid changes. `x' will be replaced by "
                                             "the radial distance of the point to the bottom of the model, "
-                                            "'y' by the azimuth angle and 'z' by the polar angle measured "
+                                            "`y' by the azimuth angle and `z' by the polar angle measured "
                                             "positive from the north pole. The grid will be assumed to be "
                                             "a latitude-longitude grid. Note that the order "
-                                            "of spherical coordinates is 'r', 'phi', 'theta' "
-                                            "and not 'r', 'theta', 'phi', since this allows "
+                                            "of spherical coordinates is `r', `phi', `theta' "
+                                            "and not `r', `theta', `phi', since this allows "
                                             "for dimension independent expressions.")
   }
 }

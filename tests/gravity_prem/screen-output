@@ -1,0 +1,20 @@
+
+Number of active cells: 160 (on 3 levels)
+Number of degrees of freedom: 2,392 (1,458+205+729)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 32+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-gravity_prem/solution/solution-00000
+     RMS, max velocity:        4.93e-15 m/s, 3.64e-14 m/s
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

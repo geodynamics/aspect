@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
@@ -36,7 +36,7 @@ namespace aspect
           // null pointer. System is guaranteed to return non-zero if it finds
           // a terminal and zero if there is none (like on the compute nodes of
           // some cluster architectures, e.g. IBM BlueGene/Q)
-          AssertThrow(system((char *)0) != 0,
+          AssertThrow(system(nullptr) != 0,
                       ExcMessage("The \"command\" postprocessor required a command-processor, "
                                  "which appears to be unavailable on this system."));
 

@@ -1,5 +1,3 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
 Loading shared library <./libinclusion_adaptive.so>
 
@@ -8,72 +6,78 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 0:  t=0 seconds
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 23+0 iterations.
-      Relative Stokes residual after nonlinear iteration 1: 1
+   Solving Stokes system... 19+0 iterations.
+      Relative  nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+
 
    Postprocessing:
      Writing graphical output:            output-inclusion_adaptive/solution/solution-00000
-     DoFs; Errors u_L1, p_L1, u_L2, p_L2: 659; 1.728438e-01, 1.486558e+00, 8.838163e-02, 1.109955e+00
-
-Number of active cells: 76 (on 5 levels)
-Number of degrees of freedom: 1,156 (706+97+353)
-
-*** Timestep 0:  t=0 seconds
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 27+0 iterations.
-      Relative Stokes residual after nonlinear iteration 1: 1
-
-   Postprocessing:
-     Writing graphical output:            output-inclusion_adaptive/solution/solution-00001
-     DoFs; Errors u_L1, p_L1, u_L2, p_L2: 803; 1.395862e-01, 1.164569e+00, 7.233389e-02, 8.870612e-01
+     DoFs; Errors u_L1, p_L1, u_L2, p_L2: 659; 1.728441e-01, 1.486556e+00, 8.838172e-02, 1.109955e+00
 
 Number of active cells: 100 (on 5 levels)
 Number of degrees of freedom: 1,520 (930+125+465)
 
 *** Timestep 0:  t=0 seconds
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 28+0 iterations.
-      Relative Stokes residual after nonlinear iteration 1: 1
+   Solving Stokes system... 22+0 iterations.
+      Relative  nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+
 
    Postprocessing:
-     Writing graphical output:            output-inclusion_adaptive/solution/solution-00002
-     DoFs; Errors u_L1, p_L1, u_L2, p_L2: 1055; 1.103003e-01, 1.245554e+00, 5.774426e-02, 1.478275e+00
+     Writing graphical output:            output-inclusion_adaptive/solution/solution-00001
+     DoFs; Errors u_L1, p_L1, u_L2, p_L2: 1055; 1.103002e-01, 1.245505e+00, 5.774417e-02, 1.478144e+00
 
 Number of active cells: 172 (on 6 levels)
 Number of degrees of freedom: 2,664 (1,634+213+817)
 
 *** Timestep 0:  t=0 seconds
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+0 iterations.
-      Relative Stokes residual after nonlinear iteration 1: 1
+   Solving Stokes system... 23+0 iterations.
+      Relative  nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+
+
+   Postprocessing:
+     Writing graphical output:            output-inclusion_adaptive/solution/solution-00002
+     DoFs; Errors u_L1, p_L1, u_L2, p_L2: 1847; 3.406466e-02, 5.739126e-01, 1.825218e-02, 1.110510e+00
+
+Number of active cells: 268 (on 7 levels)
+Number of degrees of freedom: 4,172 (2,562+329+1,281)
+
+*** Timestep 0:  t=0 seconds
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 143+0 iterations.
+      Relative  nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+
 
    Postprocessing:
      Writing graphical output:            output-inclusion_adaptive/solution/solution-00003
-     DoFs; Errors u_L1, p_L1, u_L2, p_L2: 1847; 3.406467e-02, 5.739120e-01, 1.825218e-02, 1.110507e+00
+     DoFs; Errors u_L1, p_L1, u_L2, p_L2: 2891; 2.502095e-02, 5.110242e-01, 1.347436e-02, 1.208300e+00
 
-Number of active cells: 292 (on 7 levels)
-Number of degrees of freedom: 4,484 (2,754+353+1,377)
+Number of active cells: 433 (on 8 levels)
+Number of degrees of freedom: 6,824 (4,194+533+2,097)
 
 *** Timestep 0:  t=0 seconds
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 145+0 iterations.
-      Relative Stokes residual after nonlinear iteration 1: 1
+   Solving Stokes system... 144+0 iterations.
+      Relative  nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+
 
    Postprocessing:
      Writing graphical output:            output-inclusion_adaptive/solution/solution-00004
-     DoFs; Errors u_L1, p_L1, u_L2, p_L2: 3107; 2.510904e-02, 4.997074e-01, 1.352156e-02, 1.149322e+00
+     DoFs; Errors u_L1, p_L1, u_L2, p_L2: 4727; 1.274723e-02, 3.576438e-01, 6.856214e-03, 9.831613e-01
 
-Number of active cells: 430 (on 8 levels)
-Number of degrees of freedom: 6,798 (4,178+531+2,089)
+Number of active cells: 706 (on 9 levels)
+Number of degrees of freedom: 11,153 (6,858+866+3,429)
 
 *** Timestep 0:  t=0 seconds
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 151+0 iterations.
-      Relative Stokes residual after nonlinear iteration 1: 1
+   Solving Stokes system... 131+0 iterations.
+      Relative  nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+
 
    Postprocessing:
      Writing graphical output:            output-inclusion_adaptive/solution/solution-00005
-     DoFs; Errors u_L1, p_L1, u_L2, p_L2: 4709; 1.274187e-02, 3.565584e-01, 6.853986e-03, 9.786209e-01
+     DoFs; Errors u_L1, p_L1, u_L2, p_L2: 7724; 9.845176e-03, 2.314029e-01, 5.286338e-03, 6.889164e-01
 
 Termination requested by criterion: end time
 

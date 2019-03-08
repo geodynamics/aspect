@@ -1,19 +1,17 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
 
    Setting up GPlates boundary velocity plugin.
 
    Input point 1 spherical coordinates: 1.571 4.870
-   Input point 1 normalized cartesian coordinates: 0.157 -0.988 0.000
-   Input point 1 rotated model coordinates: 0.157 -0.988 0.000
+   Input point 1 normalized cartesian coordinates: 0.157 -0.988 -0.000
+   Input point 1 rotated model coordinates: 0.157 -0.988 -0.000
    Input point 2 spherical coordinates: 1.571 5.240
-   Input point 2 normalized cartesian coordinates: 0.503 -0.864 0.000
-   Input point 2 rotated model coordinates: 0.503 -0.864 0.000
+   Input point 2 normalized cartesian coordinates: 0.503 -0.864 -0.000
+   Input point 2 rotated model coordinates: 0.503 -0.864 -0.000
 
-   Model will be rotated by 0.00 degrees around axis 0.00 0.00 1.00
-   The ParaView rotation angles are: 0.00 0.00 0.00
-   The inverse ParaView rotation angles are: 0.00 0.00 0.00
+   Model will be rotated by -0.00 degrees around axis 0.00 0.00 1.00
+   The ParaView rotation angles are: 0.00 -0.00 0.00
+   The inverse ParaView rotation angles are: 0.00 -0.00 0.00
 
    Loading GPlates data boundary file ASPECT_DIR/data/boundary-velocity/gplates/current_day.gpml.
 
@@ -27,13 +25,13 @@ Number of degrees of freedom: 41,280 (25,344+3,264+12,672)
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 156+0 iterations.
+   Solving Stokes system... 138+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-burnman_seismic_test/solution/solution-00000
      RMS, max velocity:                  0.319 m/year, 1.61 m/year
      Temperature min/avg/max:            273 K, 2082 K, 3500 K
-     Heat fluxes through boundary parts: -1.315e+06 W, 3.033e+06 W
+     Heat fluxes through boundary parts: -4.412e+06 W, 6.948e+06 W
 
 Termination requested by criterion: end time
 

@@ -6,11 +6,10 @@ set End time                               = 1e9
 #set Resume computation                     = true
 set Start time                             = 0
 set Pressure normalization                 = no
-set Linear solver tolerance                = 1.e-7
 set Use years in output instead of seconds = true
 
 subsection Boundary temperature model
-  set Model name = constant
+  set List of model names = constant
   subsection Constant
     set Boundary indicator to temperature mappings = 0:200,1:200,2:200,3:200
   end
@@ -84,11 +83,23 @@ subsection Mesh refinement
 end
 
 
-subsection Model settings
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary temperature model
   set Fixed temperature boundary indicators   = 2,3
-  set Prescribed velocity boundary indicators =
+end
+
+subsection Boundary velocity model
   set Tangential velocity boundary indicators = 0,1
+end
+
+subsection Boundary velocity model
   set Zero velocity boundary indicators       = 2
+end
+
+subsection Free surface
   set Free surface boundary indicators = 3
 end
 
@@ -107,5 +118,11 @@ subsection Postprocess
   subsection Visualization
     set Output format = gnuplot
     set Time between graphical output = 0.
+  end
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1.e-7
   end
 end

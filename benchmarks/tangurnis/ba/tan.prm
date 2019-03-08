@@ -12,8 +12,7 @@ set End time                               = 0.0001
 
 # The temperature is prescibed, so we only need to 
 # solve the Stokes system
-set Nonlinear solver scheme                = Stokes only
-set Use direct solver for Stokes system    = false
+set Nonlinear solver scheme                = no Advection, iterated Stokes
 set Use years in output instead of seconds = false
 
 set Adiabatic surface temperature          = 0
@@ -46,7 +45,8 @@ end
 # temperature according to the prescibed temperature of the Tan & Gurnis
 # benchmark. 
 subsection Boundary temperature model
-  set Model name = Tan Gurnis
+  set Fixed temperature boundary indicators = left, right, bottom, top
+  set List of model names = Tan Gurnis
 end
 
 
@@ -121,8 +121,7 @@ subsection Mesh refinement
 end
 
 
-subsection Model settings
-  set Fixed temperature boundary indicators   = left, right, bottom, top
+subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, right, bottom, top
 end
 

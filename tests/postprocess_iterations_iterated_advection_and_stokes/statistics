@@ -1,0 +1,80 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Number of nonlinear iterations
+# 9: Iterations for temperature solver
+# 10: Iterations for composition solver 1
+# 11: Iterations for Stokes solver
+# 12: Velocity iterations in Stokes preconditioner
+# 13: Schur complement iterations in Stokes preconditioner
+# 14: Visualization file name
+# 15: Pressure at top (Pa)
+# 16: Pressure at bottom (Pa)
+ 0 0.000000000000e+00 0.000000000000e+00 512 4851 2145 2145 1  0  0 58 60 59 output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00000.0000 -2.00234354e-13 6.44378461e+05 
+ 0 0.000000000000e+00 0.000000000000e+00 512 4851 2145 2145 1  0  0  1  2  2 output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00000.0001 -2.17308601e-13 6.44378461e+05 
+ 1 1.325098399530e+04 1.325098399530e+04 512 4851 2145 2145 1 10  9 55 57 57 output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00001.0000 -4.24527874e-13 6.39527845e+05 
+ 1 1.325098399530e+04 1.325098399530e+04 512 4851 2145 2145 1 10  9 53 55 55 output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00001.0001  1.27280752e-13 6.38764968e+05 
+ 1 1.325098399530e+04 1.325098399530e+04 512 4851 2145 2145 1  9  8 49 50 50 output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00001.0002 -3.50798170e-13 6.38636093e+05 
+ 1 1.325098399530e+04 1.325098399530e+04 512 4851 2145 2145 1  9  8 46 47 47 output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00001.0003  2.06443171e-13 6.38613348e+05 
+ 1 1.325098399530e+04 1.325098399530e+04 512 4851 2145 2145 1  8  7 43 44 44 output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00001.0004 -4.67989594e-13 6.38609219e+05 
+ 1 1.325098399530e+04 1.325098399530e+04 512 4851 2145 2145 1  8  7 40 41 41 output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00001.0005 -2.06443171e-13 6.38608453e+05 
+ 1 1.325098399530e+04 1.325098399530e+04 512 4851 2145 2145 1  7  6 37 38 38 output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00001.0006 -3.79513949e-13 6.38608309e+05 
+ 1 1.325098399530e+04 1.325098399530e+04 512 4851 2145 2145 1  6  6 34 35 35 output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00001.0007 -3.69424621e-13 6.38608281e+05 
+ 2 2.535716731529e+04 1.210618331999e+04 512 4851 2145 2145 1 11 12 54 56 56 output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00002.0000  1.80055698e-13 6.31367444e+05 
+ 2 2.535716731529e+04 1.210618331999e+04 512 4851 2145 2145 1 10 10 52 54 54 output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00002.0001 -9.00278489e-14 6.31085147e+05 
+ 2 2.535716731529e+04 1.210618331999e+04 512 4851 2145 2145 1  9  9 47 48 48 output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00002.0002 -3.25962901e-14 6.31042838e+05 
+ 2 2.535716731529e+04 1.210618331999e+04 512 4851 2145 2145 1  8  8 43 44 44 output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00002.0003 -5.12227416e-14 6.31035957e+05 
+ 2 2.535716731529e+04 1.210618331999e+04 512 4851 2145 2145 1  7  7 40 41 41 output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00002.0004 -3.53902578e-13 6.31034784e+05 
+ 2 2.535716731529e+04 1.210618331999e+04 512 4851 2145 2145 1  6  7 37 38 38 output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00002.0005 -1.78503493e-13 6.31034577e+05 
+ 2 2.535716731529e+04 1.210618331999e+04 512 4851 2145 2145 1  6  6 34 35 35 output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00002.0006 -1.59877042e-13 6.31034540e+05 
+ 2 2.535716731529e+04 1.210618331999e+04 512 4851 2145 2145 1  5  5 31 32 32 output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00002.0007 -5.19988437e-13 6.31034533e+05 
+ 3 3.619208533367e+04 1.083491801838e+04 512 4851 2145 2145 1 11 12 54 56 56 output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00003.0000 -2.57665912e-13 6.24956244e+05 
+ 3 3.619208533367e+04 1.083491801838e+04 512 4851 2145 2145 1  9 10 48 49 49 output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00003.0001  4.96705373e-14 6.24976586e+05 
+ 3 3.619208533367e+04 1.083491801838e+04 512 4851 2145 2145 1  8  9 44 45 45 output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00003.0002 -3.24410697e-13 6.24976635e+05 
+ 3 3.619208533367e+04 1.083491801838e+04 512 4851 2145 2145 1  7  7 40 41 41 output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00003.0003 -3.91155481e-13 6.24976531e+05 
+ 3 3.619208533367e+04 1.083491801838e+04 512 4851 2145 2145 1  6  6 36 37 37 output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00003.0004  2.17308601e-13 6.24976511e+05 
+ 3 3.619208533367e+04 1.083491801838e+04 512 4851 2145 2145 1  5  5 31 32 32 output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00003.0005  1.45907203e-13 6.24976508e+05 
+ 4 4.612504713052e+04 9.932961796852e+03 512 4851 2145 2145 1 11 12 55 57 57 output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00004.0000 -4.45482632e-13 6.21152406e+05 
+ 4 4.612504713052e+04 9.932961796852e+03 512 4851 2145 2145 1  9 11 49 50 50 output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00004.0001 -6.81417684e-13 6.21125183e+05 
+ 4 4.612504713052e+04 9.932961796852e+03 512 4851 2145 2145 1  8  9 44 45 45 output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00004.0002 -1.24176343e-13 6.21124911e+05 
+ 4 4.612504713052e+04 9.932961796852e+03 512 4851 2145 2145 1  7  8 39 40 40 output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00004.0003 -1.61429246e-13 6.21124754e+05 
+ 4 4.612504713052e+04 9.932961796852e+03 512 4851 2145 2145 1  6  7 35 36 36 output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00004.0004 -9.46844618e-14 6.21124737e+05 
+ 4 4.612504713052e+04 9.932961796852e+03 512 4851 2145 2145 1  5  5 30 31 31 output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00004.0005 -1.50563816e-13 6.21124736e+05 
+ 5 5.585544450673e+04 9.730397376201e+03 512 4851 2145 2145 1 11 12 55 57 57 output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00005.0000  1.62981451e-13 6.18550689e+05 
+ 5 5.585544450673e+04 9.730397376201e+03 512 4851 2145 2145 1  9 11 48 49 49 output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00005.0001 -1.03997687e-13 6.18562862e+05 
+ 5 5.585544450673e+04 9.730397376201e+03 512 4851 2145 2145 1  8  9 43 44 44 output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00005.0002 -1.69190268e-13 6.18562795e+05 
+ 5 5.585544450673e+04 9.730397376201e+03 512 4851 2145 2145 1  7  8 39 40 40 output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00005.0003 -2.28174031e-13 6.18562738e+05 
+ 5 5.585544450673e+04 9.730397376201e+03 512 4851 2145 2145 1  6  7 34 35 35 output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00005.0004  2.35935052e-13 6.18562730e+05 
+ 6 6.516718392073e+04 9.311739414003e+03 512 4851 2145 2145 1 11 12 55 57 57 output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00006.0000 -2.39039461e-13 6.16964243e+05 
+ 6 6.516718392073e+04 9.311739414003e+03 512 4851 2145 2145 1  9 11 48 49 49 output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00006.0001 -2.85605590e-13 6.16974170e+05 
+ 6 6.516718392073e+04 9.311739414003e+03 512 4851 2145 2145 1  8 10 43 44 44 output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00006.0002 -2.04890966e-13 6.16974297e+05 
+ 6 6.516718392073e+04 9.311739414003e+03 512 4851 2145 2145 1  7  8 38 39 39 output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00006.0003 -2.71635751e-13 6.16974284e+05 
+ 6 6.516718392073e+04 9.311739414003e+03 512 4851 2145 2145 1  6  7 34 35 35 output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00006.0004 -4.19095159e-14 6.16974281e+05 
+ 7 7.377171307630e+04 8.604529155577e+03 512 4851 2145 2145 1 11 12 54 56 56 output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00007.0000  2.26621826e-13 6.16048542e+05 
+ 7 7.377171307630e+04 8.604529155577e+03 512 4851 2145 2145 1 10 11 48 49 49 output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00007.0001 -3.63215804e-13 6.16054246e+05 
+ 7 7.377171307630e+04 8.604529155577e+03 512 4851 2145 2145 1  9 10 43 44 44 output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00007.0002 -3.10440858e-15 6.16054377e+05 
+ 7 7.377171307630e+04 8.604529155577e+03 512 4851 2145 2145 1  8  8 38 39 39 output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00007.0003  2.40591665e-13 6.16054378e+05 
+ 7 7.377171307630e+04 8.604529155577e+03 512 4851 2145 2145 1  7  7 33 34 34 output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00007.0004  1.52116021e-13 6.16054377e+05 
+ 8 8.163036557927e+04 7.858652502966e+03 512 4851 2145 2145 1 12 12 53 55 55 output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00008.0000 -6.98491931e-14 6.15529557e+05 
+ 8 8.163036557927e+04 7.858652502966e+03 512 4851 2145 2145 1 11 11 47 48 48 output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00008.0001  1.81607902e-13 6.15532157e+05 
+ 8 8.163036557927e+04 7.858652502966e+03 512 4851 2145 2145 1  9  9 42 43 43 output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00008.0002  5.43271502e-14 6.15532270e+05 
+ 8 8.163036557927e+04 7.858652502966e+03 512 4851 2145 2145 1  8  8 37 38 38 output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00008.0003 -2.01786558e-13 6.15532275e+05 
+ 8 8.163036557927e+04 7.858652502966e+03 512 4851 2145 2145 1  7  7 32 33 33 output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00008.0004 -8.69234403e-14 6.15532276e+05 
+ 9 8.874030957319e+04 7.109943993915e+03 512 4851 2145 2145 1 12 12 52 54 54 output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00009.0000  6.20881716e-14 6.15223524e+05 
+ 9 8.874030957319e+04 7.109943993915e+03 512 4851 2145 2145 1 11 11 46 47 47 output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00009.0001 -1.81607902e-13 6.15224448e+05 
+ 9 8.874030957319e+04 7.109943993915e+03 512 4851 2145 2145 1  9  9 41 42 42 output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00009.0002 -4.93600965e-13 6.15224539e+05 
+ 9 8.874030957319e+04 7.109943993915e+03 512 4851 2145 2145 1  8  8 36 37 37 output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00009.0003  1.24176343e-13 6.15224544e+05 
+ 9 8.874030957319e+04 7.109943993915e+03 512 4851 2145 2145 1  7  7 32 33 33 output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00009.0004 -1.00893279e-13 6.15224544e+05 
+10 9.520234943858e+04 6.462039865394e+03 512 4851 2145 2145 1 12 12 52 54 54 output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00010.0000  1.05549892e-13 6.15019938e+05 
+10 9.520234943858e+04 6.462039865394e+03 512 4851 2145 2145 1 11 10 44 45 45 output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00010.0001 -2.98023224e-13 6.15020127e+05 
+10 9.520234943858e+04 6.462039865394e+03 512 4851 2145 2145 1  9  9 41 42 42 output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00010.0002 -2.60770321e-13 6.15020185e+05 
+10 9.520234943858e+04 6.462039865394e+03 512 4851 2145 2145 1  8  8 36 37 37 output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00010.0003  4.81183330e-14 6.15020189e+05 
+10 9.520234943858e+04 6.462039865394e+03 512 4851 2145 2145 1  7  6 31 32 32 output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00010.0004 -1.27280752e-13 6.15020189e+05 
+11 1.000000000000e+05 4.797650561420e+03 512 4851 2145 2145 1 11 11 52 54 54 output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00011.0000  8.53712360e-14 6.14882660e+05 
+11 1.000000000000e+05 4.797650561420e+03 512 4851 2145 2145 1 10 10 44 45 45 output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00011.0001  3.57006987e-14 6.14882468e+05 
+11 1.000000000000e+05 4.797650561420e+03 512 4851 2145 2145 1  8  8 39 40 40 output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00011.0002 -8.22668274e-14 6.14882485e+05 
+11 1.000000000000e+05 4.797650561420e+03 512 4851 2145 2145 1  7  7 33 34 34 output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00011.0003 -1.21071935e-13 6.14882486e+05 

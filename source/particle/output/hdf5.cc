@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2019 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -14,15 +14,18 @@
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with ASPECT; see the file doc/COPYING.  If not see
+ along with ASPECT; see the file LICENSE.  If not see
  <http://www.gnu.org/licenses/>.
  */
+
 
 #include <aspect/particle/output/hdf5.h>
 #include <aspect/utilities.h>
 
 #include <deal.II/numerics/data_out.h>
 #include <deal.II/base/utilities.h>
+
+#if !DEAL_II_VERSION_GTE(9,0,0)
 
 #ifdef DEAL_II_WITH_HDF5
 #include <hdf5.h>
@@ -50,8 +53,13 @@ namespace aspect
       HDF5Output<dim>::HDF5Output()
         :
         file_index(0)
-      {
+      {}
 
+
+
+      template <int dim>
+      void HDF5Output<dim>::initialize ()
+      {
 #ifndef DEAL_II_WITH_HDF5
         AssertThrow (false,
                      ExcMessage ("deal.ii was not compiled with HDF5 support, "
@@ -60,19 +68,16 @@ namespace aspect
                                  "or select a different particle output format."));
 #endif
 
-      }
-
-      template <int dim>
-      void HDF5Output<dim>::initialize ()
-      {
         aspect::Utilities::create_directory (this->get_output_directory() + "particles/",
                                              this->get_mpi_communicator(),
                                              true);
       }
 
+
+
       template <int dim>
       std::string
-      HDF5Output<dim>::output_particle_data(const std::multimap<types::LevelInd, Particle<dim> > &particles,
+      HDF5Output<dim>::output_particle_data(const ParticleHandler<dim> &particle_handler,
                                             const Property::ParticlePropertyInformation &property_information,
                                             const double current_time)
       {
@@ -86,8 +91,8 @@ namespace aspect
         const std::string h5_filename = output_path_prefix+".h5";
 
         // Create the hdf5 output size information
-        types::particle_index n_local_particles = particles.size();
-        const types::particle_index n_global_particles = Utilities::MPI::sum(n_local_particles,this->get_mpi_communicator());
+        types::particle_index n_local_particles = particle_handler.n_locally_owned_particles();
+        const types::particle_index n_global_particles = particle_handler.n_global_particles();
 
         hsize_t global_dataset_size[2];
         global_dataset_size[0] = n_global_particles;
@@ -116,22 +121,22 @@ namespace aspect
             const unsigned int n_components = property_information.get_components_by_field_index(property);
 
             if (n_components == dim)
-              property_data.push_back(std::vector<double> (3 * n_local_particles,0.0));
+              property_data.emplace_back(3 * n_local_particles,0.0);
             else
               for (unsigned int component = 0; component < n_components; ++component)
-                property_data.push_back(std::vector<double> (1 * n_local_particles));
+                property_data.emplace_back(1 * n_local_particles);
           }
 
         // Write into the output vectors
-        typename std::multimap<types::LevelInd, Particle<dim> >::const_iterator it = particles.begin();
-        for (unsigned int i = 0; it != particles.end(); ++i, ++it)
+        typename ParticleHandler<dim>::particle_iterator it = particle_handler.begin();
+        for (unsigned int i = 0; it != particle_handler.end(); ++i, ++it)
           {
             for (unsigned int d = 0; d < dim; ++d)
-              position_data[i*3+d] = it->second.get_location()(d);
+              position_data[i*3+d] = it->get_location()(d);
 
-            index_data[i] = it->second.get_id();
+            index_data[i] = it->get_id();
 
-            const ArrayView<const double> properties = it->second.get_properties();
+            const ArrayView<const double> properties = it->get_properties();
 
             unsigned int particle_property_index = 0;
 
@@ -166,8 +171,8 @@ namespace aspect
         H5Pclose(plist_id);
 
         // Write the position data
-        const hid_t position_dataspace = H5Screate_simple(2, global_dataset_size, NULL);
-        const hid_t local_position_dataspace = H5Screate_simple(2, local_dataset_size, NULL);
+        const hid_t position_dataspace = H5Screate_simple(2, global_dataset_size, nullptr);
+        const hid_t local_position_dataspace = H5Screate_simple(2, local_dataset_size, nullptr);
 
 #if H5Dcreate_vers == 1
         hid_t position_dataset = H5Dcreate(h5_file, "nodes", H5T_NATIVE_DOUBLE, position_dataspace, H5P_DEFAULT);
@@ -176,7 +181,7 @@ namespace aspect
 #endif
 
         // Select the local hyperslab from the dataspace
-        H5Sselect_hyperslab(position_dataspace, H5S_SELECT_SET, offset, NULL, local_dataset_size, NULL);
+        H5Sselect_hyperslab(position_dataspace, H5S_SELECT_SET, offset, nullptr, local_dataset_size, nullptr);
 
         // Write position data to the HDF5 file
         H5Dwrite(position_dataset, H5T_NATIVE_DOUBLE, local_position_dataspace, position_dataspace, write_properties, &position_data[0]);
@@ -189,8 +194,8 @@ namespace aspect
 
         global_dataset_size[1] = 1;
         local_dataset_size[1] = 1;
-        const hid_t index_dataspace = H5Screate_simple(1, global_dataset_size, NULL);
-        const hid_t local_index_dataspace = H5Screate_simple(1, local_dataset_size, NULL);
+        const hid_t index_dataspace = H5Screate_simple(1, global_dataset_size, nullptr);
+        const hid_t local_index_dataspace = H5Screate_simple(1, local_dataset_size, nullptr);
 #if H5Dcreate_vers == 1
         const hid_t particle_index_dataset = H5Dcreate(h5_file, "id", HDF5_PARTICLE_INDEX_TYPE, index_dataspace, H5P_DEFAULT);
 #else
@@ -198,7 +203,7 @@ namespace aspect
 #endif
 
         // Select the local hyperslab from the dataspace
-        H5Sselect_hyperslab(index_dataspace, H5S_SELECT_SET, offset, NULL, local_dataset_size, NULL);
+        H5Sselect_hyperslab(index_dataspace, H5S_SELECT_SET, offset, nullptr, local_dataset_size, nullptr);
 
         // Write index data to the HDF5 file
         H5Dwrite(particle_index_dataset, HDF5_PARTICLE_INDEX_TYPE, local_index_dataspace, index_dataspace, write_properties, &index_data[0]);
@@ -231,8 +236,8 @@ namespace aspect
                 if (data_fields > 1)
                   field_name.append('_' + Utilities::to_string(i));
 
-                const hid_t property_dataspace = H5Screate_simple(2, global_dataset_size, NULL);
-                const hid_t local_property_dataspace = H5Screate_simple(2, local_dataset_size, NULL);
+                const hid_t property_dataspace = H5Screate_simple(2, global_dataset_size, nullptr);
+                const hid_t local_property_dataspace = H5Screate_simple(2, local_dataset_size, nullptr);
 #if H5Dcreate_vers == 1
                 const hid_t particle_property_dataset = H5Dcreate(h5_file, field_name.c_str(), H5T_NATIVE_DOUBLE, property_dataspace, H5P_DEFAULT);
 #else
@@ -240,7 +245,7 @@ namespace aspect
 #endif
 
                 // Select the local hyperslab from the dataspace
-                H5Sselect_hyperslab(property_dataspace, H5S_SELECT_SET, offset, NULL, local_dataset_size, NULL);
+                H5Sselect_hyperslab(property_dataspace, H5S_SELECT_SET, offset, nullptr, local_dataset_size, nullptr);
 
                 // Write index data to the HDF5 file
                 H5Dwrite(particle_property_dataset, H5T_NATIVE_DOUBLE, local_property_dataspace, property_dataspace, write_properties, &property_data[output_index][0]);
@@ -291,7 +296,7 @@ namespace aspect
         return output_path_prefix;
 #else
         (void) property_information;
-        (void) particles;
+        (void) particle_handler;
         (void) current_time;
         return "";
 #endif
@@ -303,6 +308,8 @@ namespace aspect
       void HDF5Output<dim>::serialize (Archive &ar, const unsigned int)
       {
         // invoke serialization of the base class
+        ar &static_cast<Interface<dim> &>(*this);
+
         ar &file_index
         &xdmf_entries
         ;
@@ -344,3 +351,4 @@ namespace aspect
   }
 }
 
+#endif

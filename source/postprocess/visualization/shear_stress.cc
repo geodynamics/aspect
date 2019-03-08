@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
@@ -78,18 +78,18 @@ namespace aspect
         switch (dim)
           {
             case 2:
-              names.push_back ("shear_stress_xx");
-              names.push_back ("shear_stress_yy");
-              names.push_back ("shear_stress_xy");
+              names.emplace_back("shear_stress_xx");
+              names.emplace_back("shear_stress_yy");
+              names.emplace_back("shear_stress_xy");
               break;
 
             case 3:
-              names.push_back ("shear_stress_xx");
-              names.push_back ("shear_stress_yy");
-              names.push_back ("shear_stress_zz");
-              names.push_back ("shear_stress_xy");
-              names.push_back ("shear_stress_xz");
-              names.push_back ("shear_stress_yz");
+              names.emplace_back("shear_stress_xx");
+              names.emplace_back("shear_stress_yy");
+              names.emplace_back("shear_stress_zz");
+              names.emplace_back("shear_stress_xy");
+              names.emplace_back("shear_stress_xz");
+              names.emplace_back("shear_stress_yz");
               break;
 
             default:
@@ -116,7 +116,7 @@ namespace aspect
       UpdateFlags
       ShearStress<dim>::get_needed_update_flags () const
       {
-        return update_gradients | update_values | update_q_points;
+        return update_gradients | update_values | update_quadrature_points;
       }
 
     }

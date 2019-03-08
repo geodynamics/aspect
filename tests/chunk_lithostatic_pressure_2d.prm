@@ -14,7 +14,7 @@ set Adiabatic surface temperature          = 1600
 set Surface pressure                       = 0
 set Pressure normalization                 = surface
 set Use years in output instead of seconds = true
-set Nonlinear solver scheme                = IMPES
+set Nonlinear solver scheme                = single Advection, single Stokes
 
 
 subsection Gravity model
@@ -26,12 +26,12 @@ end
 
 
 subsection Boundary temperature model
-  set Model name = initial temperature
+  set List of model names = initial temperature
 end
 
 
 subsection Boundary composition model
-  set Model name = initial composition
+  set List of model names = initial composition
 end
 
 
@@ -88,14 +88,24 @@ end
 # Because the eastern boundary is open and material might
 # move through it, 
 # we set fixed temperature and composition boundary conditions.
-subsection Model settings
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary temperature model
   set Fixed temperature boundary indicators   = inner, outer, east
+end
+
+subsection Boundary composition model
   set Fixed composition boundary indicators   = inner, outer, east
-  set Zero velocity boundary indicators       = 
-  set Prescribed velocity boundary indicators = 
+end
+
+subsection Boundary traction model
   set Prescribed traction boundary indicators = east: initial lithostatic pressure
+end
+
+subsection Boundary velocity model
   set Tangential velocity boundary indicators = inner, outer, west, north, south
-  set Include shear heating                   = false
 end
 
 

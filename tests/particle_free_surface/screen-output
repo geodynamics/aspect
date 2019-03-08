@@ -1,0 +1,14 @@
+
+ERROR: Uncaught exception in MPI_InitFinalize on proc 0. Skipping MPI_Finalize() to avoid a deadlock.
+
+
+Exception 'ExcMessage("Combining particles and a free surface is currently untested " "and not officially supported. If you disable this assertion make " "sure you benchmark the particle accuracy, and carefully check for " "problems related to storing the particle reference coordinates for " "a deforming mesh.")' on rank 0 on processing: 
+
+An error occurred in file <world.cc> in function
+(line in output replaced by default.sh script)
+The violated condition was: 
+    !this->get_parameters().free_surface_enabled
+Additional information: 
+    Combining particles and a free surface is currently untested and not officially supported. If you disable this assertion make sure you benchmark the particle accuracy, and carefully check for problems related to storing the particle reference coordinates for a deforming mesh.
+
+Aborting!

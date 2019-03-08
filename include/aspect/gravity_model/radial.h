@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2014 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
@@ -38,7 +38,7 @@ namespace aspect
      * @ingroup GravityModels
      */
     template <int dim>
-    class RadialConstant : public Interface<dim>
+    class RadialConstant : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
         /**
@@ -69,12 +69,11 @@ namespace aspect
 
 
     /**
-     * A class that describes gravity as a radial vector with a magnitude that
-     * is physically correct for an earth in which there are different
-     * densities for the earth core and mantle. Specifically, at the core-
-     * mantle boundary, gravity is assumed to be equal to 10.7 m/s^2 and it is
-     * 9.8 at the earth surface; in between, it follows the behavior one would
-     * expect for a mantle of constant density.
+     * This model has been removed due to its misleading name. The available
+     * AsciiData gravity model (using default parameters) is much more
+     * earth-like, since it uses the gravity profile used in the construction
+     * of the Preliminary Reference Earth Model (PREM, Dziewonski and Anderson,
+     * 1981).
      *
      * This is the model used and discussed in the step-32 tutorial program of
      * deal.II.
@@ -82,9 +81,11 @@ namespace aspect
      * @ingroup GravityModels
      */
     template <int dim>
-    class RadialEarthLike : public Interface<dim>
+    class RadialEarthLike : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
+        virtual void initialize();
+
         /**
          * Return the gravity vector as a function of position.
          */
@@ -94,14 +95,12 @@ namespace aspect
 
     /**
      * A class that describes gravity as a radial vector of linearly
-     * decreasing magnitude with depth.  Meant for use in the Sphere geometry
-     * model, where you expect that kind of field if one assumed a constant
-     * density of Earth.
+     * changing magnitude with depth.
      *
      * @ingroup GravityModels
      */
     template <int dim>
-    class RadialLinear : public Interface<dim>, public virtual SimulatorAccess<dim>
+    class RadialLinear : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
         /**
@@ -128,6 +127,13 @@ namespace aspect
          * Magnitude of the gravity vector at the surface, m/s^2
          */
         double magnitude_at_surface;
+
+        /**
+         * Magnitude of the gravity vector at the bottom, m/s^2.
+         * 'Bottom' means at the maximum depth of the provided geometry, for
+         * a full sphere this means the center.
+         */
+        double magnitude_at_bottom;
 
     };
   }

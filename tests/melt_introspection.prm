@@ -15,10 +15,10 @@ set Surface pressure                       = 0
 
 set Use years in output instead of seconds = false  # default: true
 
-set Nonlinear solver scheme                = IMPES
+set Nonlinear solver scheme                = single Advection, single Stokes
 
 subsection Boundary temperature model
-  set Model name = box
+  set List of model names = box
 end
 
 subsection Compositional fields
@@ -92,19 +92,20 @@ subsection Mesh refinement
 end
 
 
-subsection Model settings
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
 
-
+subsection Boundary temperature model
   set Fixed temperature boundary indicators   = 0, 1
+end
 
-  set Prescribed velocity boundary indicators =
-
+subsection Boundary velocity model
   set Tangential velocity boundary indicators = 0,1,2,3
+end
 
-  set Zero velocity boundary indicators       =
-
+subsection Melt settings
   set Include melt transport                  = true
-
 end
 
 

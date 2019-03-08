@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,12 +14,13 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
 
 #include <aspect/boundary_velocity/function.h>
+#include <aspect/geometry_model/box.h>
 #include <aspect/utilities.h>
 #include <aspect/global.h>
 #include <deal.II/base/signaling_nan.h>
@@ -43,38 +44,15 @@ namespace aspect
                        const Point<dim> &position) const
     {
       Tensor<1,dim> velocity;
-      if (coordinate_system == Utilities::Coordinates::cartesian)
-        {
-          for (unsigned int d=0; d<dim; ++d)
-            velocity[d] = boundary_velocity_function.value(position,d);
-        }
-      else if (coordinate_system == Utilities::Coordinates::spherical)
-        {
-          const std_cxx11::array<double,dim> spherical_coordinates =
-            aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(position);
-          Point<dim> point;
 
-          for (unsigned int d=0; d<dim; ++d)
-            point[d] = spherical_coordinates[d];
+      Utilities::NaturalCoordinate<dim> point =
+        this->get_geometry_model().cartesian_to_other_coordinates(position, coordinate_system);
 
-          for (unsigned int d=0; d<dim; ++d)
-            velocity[d] = boundary_velocity_function.value(point,d);
-        }
-      else if (coordinate_system == Utilities::Coordinates::depth)
-        {
-          const double depth = this->get_geometry_model().depth(position);
-          Point<dim> point;
-          point(0) = depth;
+      for (unsigned int d=0; d<dim; ++d)
+        velocity[d] = boundary_velocity_function.value(Utilities::convert_array_to_point<dim>(point.get_coordinates()), d);
 
-          for (unsigned int d=0; d<dim; ++d)
-            velocity[d] = boundary_velocity_function.value(point,d);
-        }
-      else
-        {
-          AssertThrow(false, ExcNotImplemented());
-          return numbers::signaling_nan<Tensor<1,dim> >();
-        }
-
+      if (use_spherical_unit_vectors)
+        velocity = Utilities::Coordinates::spherical_to_cartesian_vector(velocity, position);
 
       // Aspect always wants things in MKS system. however, as described
       // in the documentation of this class, we interpret the formulas
@@ -116,12 +94,19 @@ namespace aspect
                              Patterns::Selection ("cartesian|spherical|depth"),
                              "A selection that determines the assumed coordinate "
                              "system for the function variables. Allowed values "
-                             "are 'cartesian', 'spherical', and 'depth'. 'spherical' coordinates "
+                             "are `cartesian', `spherical', and `depth'. `spherical' coordinates "
                              "are interpreted as r,phi or r,phi,theta in 2D/3D "
-                             "respectively with theta being the polar angle. 'depth' "
+                             "respectively with theta being the polar angle. `depth' "
                              "will create a function, in which only the first "
                              "parameter is non-zero, which is interpreted to "
                              "be the depth of the point.");
+          prm.declare_entry ("Use spherical unit vectors", "false",
+                             Patterns::Bool (),
+                             "Specify velocity as r, phi, and theta components "
+                             "instead of x, y, and z. Positive velocities point up, east, "
+                             "and north (in 3D) or out and clockwise (in 2D). "
+                             "This setting only makes sense for spherical geometries."
+                            );
 
           Functions::ParsedFunction<dim>::declare_parameters (prm, dim);
         }
@@ -140,6 +125,11 @@ namespace aspect
         prm.enter_subsection("Function");
         {
           coordinate_system = Utilities::Coordinates::string_to_coordinate_system(prm.get("Coordinate system"));
+          use_spherical_unit_vectors = prm.get_bool("Use spherical unit vectors");
+          if (use_spherical_unit_vectors)
+            AssertThrow ((dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model())) == nullptr,
+                         ExcMessage ("Spherical unit vectors should not be used "
+                                     "when geometry model is not spherical."));
         }
         try
           {

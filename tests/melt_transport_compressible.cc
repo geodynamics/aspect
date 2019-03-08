@@ -1,9 +1,12 @@
 #include <aspect/material_model/interface.h>
 #include <aspect/boundary_velocity/interface.h>
 #include <aspect/boundary_fluid_pressure/interface.h>
+#include <aspect/gravity_model/interface.h>
+#include <aspect/postprocess/interface.h>
 #include <aspect/simulator_access.h>
 #include <aspect/global.h>
 #include <aspect/melt.h>
+#include <aspect/simulator.h>
 
 #include <deal.II/dofs/dof_tools.h>
 #include <deal.II/numerics/data_out.h>
@@ -56,7 +59,7 @@ namespace aspect
         // fill melt outputs if they exist
         aspect::MaterialModel::MeltOutputs<dim> *melt_out = out.template get_additional_output<aspect::MaterialModel::MeltOutputs<dim> >();
 
-        if (melt_out != NULL)
+        if (melt_out != nullptr)
           {
             for (unsigned int i=0; i<in.position.size(); ++i)
               {
@@ -118,21 +121,28 @@ namespace aspect
       virtual void vector_value (const Point< dim >   &p,
                                  Vector< double >   &values) const
       {
-        double x = p(0);
-        double y = p(1);
-        double porosity = 1.0 - 0.3 * std::exp(y);
-        double K_D = 2.2 + 2.0 * 0.075/0.135 + (1.0 - 5.0/6.0) * 0.075 * 0.3 * 1.2 / 0.135 * std::exp(y);
+        const double x = p(0);
+        const double y = p(1);
+        const double porosity = 1.0 - 0.3 * std::exp(y);
+        const double K_D = 2.2 + 2.0 * 0.075/0.135 + (1.0 - 5.0/6.0) * 0.075 * 0.3 * 1.2 / 0.135 * std::exp(y);
+        const double ref_K_D = 2.2 + 2.0 * 0.075/0.135 + (1.0 - 5.0/6.0) * 0.075 * 0.3 * 1.2 / 0.135 * std::exp(0.5);
 
         values[0]=0.1 * std::exp(y);       // x vel
         values[1]=-0.075 * std::exp(y);    // y vel
         values[2]=-0.135*(std::exp(y) - std::exp(1)) + 1.0 - y;  // p_f
-        values[3]=0.75 * (std::exp(-y) + 2.0/3.0 * std::exp(2.0*x) + 1.0) * 0.1 * std::exp(y);  // p_c
+        values[3]=0.75 * (std::exp(-y) + 2.0/3.0 * std::exp(2.0*x) + 1.0) * 0.1 * std::exp(y);  // p_c_bar
         values[4]=0.1 * std::exp(y);       // x melt vel
         values[5]=-0.075 * std::exp(y) + 0.135 * std::exp(y) * K_D / porosity;    // y melt vel
 
         values[6]=values[2] + values[3] / (1.0 - porosity);  // p_s
         values[7]=0; // T
         values[8]=porosity; // porosity
+
+        // We have to scale the compaction pressure solution to p_c_bar using sqrt(K_D / ref_K_D).
+        // K_D is equal to the porosity (as defined in the material model).
+        const double p_c_scale = std::sqrt(K_D / ref_K_D);
+        if (p_c_scale > 0)
+          values[3] /= p_c_scale;
       }
   };
 
@@ -177,6 +187,7 @@ namespace aspect
     Vector<float> cellwise_errors_u (this->get_triangulation().n_active_cells());
     Vector<float> cellwise_errors_p_f (this->get_triangulation().n_active_cells());
     Vector<float> cellwise_errors_p_c (this->get_triangulation().n_active_cells());
+    Vector<float> cellwise_errors_p_c_bar (this->get_triangulation().n_active_cells());
     Vector<float> cellwise_errors_u_f (this->get_triangulation().n_active_cells());
     Vector<float> cellwise_errors_p (this->get_triangulation().n_active_cells());
     Vector<float> cellwise_errors_porosity (this->get_triangulation().n_active_cells());
@@ -214,7 +225,7 @@ namespace aspect
     VectorTools::integrate_difference (this->get_mapping(),this->get_dof_handler(),
                                        this->get_solution(),
                                        ref_func,
-                                       cellwise_errors_p_c,
+                                       cellwise_errors_p_c_bar,
                                        quadrature_formula,
                                        VectorTools::L2_norm,
                                        &comp_p_c);
@@ -233,15 +244,46 @@ namespace aspect
                                        VectorTools::L2_norm,
                                        &comp_u_f);
 
+
+    // Loop over all cells to compute the error for p_c from p_c_bar
+    const QGauss<dim> quadrature(this->get_parameters().stokes_velocity_degree+1);
+    FEValues<dim> fe_values (this->get_mapping(),
+                             this->get_fe(),
+                             quadrature,
+                             update_quadrature_points | update_values | update_gradients | update_JxW_values);
+
+    MaterialModel::MaterialModelInputs<dim> in(quadrature.size(), this->n_compositional_fields());
+    MaterialModel::MaterialModelOutputs<dim> out(quadrature.size(), this->n_compositional_fields());
+
+    MeltHandler<dim>::create_material_model_outputs(out);
+
+    typename DoFHandler<dim>::active_cell_iterator
+    cell = this->get_dof_handler().begin_active(),
+    endc = this->get_dof_handler().end();
+    for (; cell!=endc; ++cell)
+      if (cell->is_locally_owned())
+        {
+          fe_values.reinit (cell);
+          in.reinit(fe_values, cell, this->introspection(), this->get_solution());
+
+          this->get_material_model().evaluate(in, out);
+
+          const double p_c_scale = dynamic_cast<const MaterialModel::MeltInterface<dim>*>(&this->get_material_model())->p_c_scale(in, out, this->get_melt_handler(), true);
+
+          const unsigned int i = cell->active_cell_index();
+          cellwise_errors_p_c[i] = cellwise_errors_p_c_bar[i] * p_c_scale;
+        }
+
     std::ostringstream os;
     os << std::scientific << std::sqrt(Utilities::MPI::sum(cellwise_errors_u.norm_sqr(),MPI_COMM_WORLD))
        << ", " << std::sqrt(Utilities::MPI::sum(cellwise_errors_p.norm_sqr(),MPI_COMM_WORLD))
        << ", " << std::sqrt(Utilities::MPI::sum(cellwise_errors_p_f.norm_sqr(),MPI_COMM_WORLD))
+       << ", " << std::sqrt(Utilities::MPI::sum(cellwise_errors_p_c_bar.norm_sqr(),MPI_COMM_WORLD))
        << ", " << std::sqrt(Utilities::MPI::sum(cellwise_errors_p_c.norm_sqr(),MPI_COMM_WORLD))
        << ", " << std::sqrt(Utilities::MPI::sum(cellwise_errors_porosity.norm_sqr(),MPI_COMM_WORLD))
        << ", " << std::sqrt(Utilities::MPI::sum(cellwise_errors_u_f.norm_sqr(),MPI_COMM_WORLD));
 
-    return std::make_pair("Errors u_L2, p_L2, p_f_L2, p_c_L2, porosity_L2, u_f_L2:", os.str());
+    return std::make_pair("Errors u_L2, p_L2, p_f_L2, p_c_bar_L2, p_c_L2, porosity_L2, u_f_L2:", os.str());
   }
 
 

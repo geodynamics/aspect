@@ -1,10 +1,13 @@
 #include <aspect/material_model/interface.h>
 #include <aspect/boundary_velocity/interface.h>
 #include <aspect/boundary_fluid_pressure/interface.h>
+#include <aspect/postprocess/interface.h>
+#include <aspect/gravity_model/interface.h>
 #include <aspect/simulator_access.h>
 #include <aspect/global.h>
 #include <aspect/mesh_refinement/interface.h>
 #include <aspect/melt.h>
+#include <aspect/simulator.h>
 
 #include <deal.II/dofs/dof_tools.h>
 #include <deal.II/numerics/data_out.h>
@@ -12,6 +15,8 @@
 #include <deal.II/base/function_lib.h>
 #include <deal.II/numerics/error_estimator.h>
 #include <deal.II/numerics/vector_tools.h>
+#include <deal.II/fe/fe_values.h>
+#include <deal.II/numerics/derivative_approximation.h>
 
 
 namespace aspect
@@ -68,16 +73,97 @@ namespace aspect
       {
         indicators = 0;
 
-        KellyErrorEstimator<dim>::estimate (this->get_mapping(),
-                                            this->get_dof_handler(),
-                                            QGauss<dim-1>(this->introspection().polynomial_degree.velocities +1),
-                                            typename FunctionMap<dim>::type(),
-                                            this->get_solution(),
-                                            indicators,
-                                            this->introspection().variable("compaction pressure").component_mask,
-                                            0,
-                                            0,
-                                            this->get_triangulation().locally_owned_subdomain());
+        // create a vector in which we set the compaction pressure block
+        // (that contains the scaled compaction pressure p_c_bar) to
+        // be a finite element interpolation of the (real) compaction pressure.
+        // we do so by setting up a quadrature formula and looping over these
+        // points, rescaling the compaction pressure, and writing
+        // the result into the output vector. As the scaling factor between
+        // the pressures is cell-wise constant (and the error indicator is
+        // a cellwise quantity too), we use a quadrature formula with only
+        // one point.
+        LinearAlgebra::BlockVector vec_distributed (this->introspection().index_sets.system_partitioning,
+                                                    this->get_mpi_communicator());
+
+        const unsigned int pc_component_index = this->introspection().variable("compaction pressure").first_component_index;
+        const unsigned int pc_base_index = this->introspection().variable("compaction pressure").base_index;
+
+        // Use a quadrature formula with only one point, as the scaling factor we need is cell-wise constant
+        const QMidpoint<dim> quadrature;
+
+        std::vector<types::global_dof_index> local_dof_indices (this->get_fe().dofs_per_cell);
+        FEValues<dim> fe_values (this->get_mapping(),
+                                 this->get_fe(),
+                                 quadrature,
+                                 update_quadrature_points | update_values | update_gradients);
+
+        MaterialModel::MaterialModelInputs<dim> in(quadrature.size(), this->n_compositional_fields());
+        MaterialModel::MaterialModelOutputs<dim> out(quadrature.size(), this->n_compositional_fields());
+        MeltHandler<dim>::create_material_model_outputs(out);
+
+        typename DoFHandler<dim>::active_cell_iterator
+        cell = this->get_dof_handler().begin_active(),
+        endc = this->get_dof_handler().end();
+        for (; cell!=endc; ++cell)
+          if (cell->is_locally_owned())
+            {
+              fe_values.reinit(cell);
+              // Set use_strain_rates to false since we don't need viscosity
+              in.reinit(fe_values, cell, this->introspection(), this->get_solution(), false);
+
+              this->get_material_model().evaluate(in, out);
+
+              MaterialModel::MeltOutputs<dim> *melt_out = out.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
+              AssertThrow(melt_out != nullptr,
+                          ExcMessage("Need MeltOutputs from the material model for computing the melt properties."));
+
+              const double p_c_scale = dynamic_cast<const MaterialModel::MeltInterface<dim>*>(&this->get_material_model())->p_c_scale(in, out, this->get_melt_handler(), true);
+
+              cell->get_dof_indices (local_dof_indices);
+
+              // for each compaction pressure dof, write into the output
+              // vector the scaled compaction pressure. note that quadrature points and
+              // dofs are enumerated in the same order
+              for (unsigned int i=0; i<this->get_fe().base_element(pc_base_index).dofs_per_cell; ++i)
+                {
+                  const unsigned int system_local_dof
+                    = this->get_fe().component_to_system_index(pc_component_index,
+                                                               /*dof index within component=*/i);
+
+                  vec_distributed(local_dof_indices[system_local_dof])
+                    = p_c_scale * this->get_solution()[local_dof_indices[system_local_dof]];
+                }
+            }
+
+        vec_distributed.compress(VectorOperation::insert);
+
+        // now create a vector with the requisite ghost elements
+        // and use it for estimating the gradients
+        LinearAlgebra::BlockVector vec (this->introspection().index_sets.system_partitioning,
+                                        this->introspection().index_sets.system_relevant_partitioning,
+                                        this->get_mpi_communicator());
+        vec = vec_distributed;
+
+        DerivativeApproximation::approximate_gradient  (this->get_mapping(),
+                                                        this->get_dof_handler(),
+                                                        vec,
+                                                        indicators,
+                                                        pc_component_index);
+
+        // Scale gradient in each cell with the correct power of h. Otherwise,
+        // error indicators do not reduce when refined if there is a density
+        // jump. We need at least order 1 for the error not to grow when
+        // refining, so anything >1 should work. (note that the gradient
+        // itself scales like 1/h, so multiplying it with any factor h^s, s>1
+        // will yield convergence of the error indicators to zero as h->0)
+        const double power = 1.0 + dim/2.0;
+        {
+          unsigned int i=0;
+          for (cell = this->get_dof_handler().begin_active(); cell!=endc; ++cell, ++i)
+            if (cell->is_locally_owned())
+              indicators(i) *= std::pow(cell->diameter(), power);
+        }
+
       }
 
   };
@@ -88,7 +174,7 @@ namespace aspect
 
   template <int dim>
   class TestMeltMaterial:
-    public MaterialModel::MeltInterface<dim>, public ::aspect::SimulatorAccess<dim>
+    public MaterialModel::MeltInterface<dim>, public SimulatorAccess<dim>
   {
     public:
       virtual bool is_compressible () const
@@ -112,13 +198,11 @@ namespace aspect
                             typename MaterialModel::Interface<dim>::MaterialModelOutputs &out) const
       {
         const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
-        double c = 1.0;
         for (unsigned int i=0; i<in.position.size(); ++i)
           {
-            const double porosity = in.composition[i][porosity_idx];
             const double x = in.position[i](0);
             const double z = in.position[i](1);
-            out.viscosities[i] = 1.0;//exp(c*porosity);
+            out.viscosities[i] = 1.0;
             out.thermal_expansion_coefficients[i] = 0.0;
             out.specific_heat[i] = 1.0;
             out.thermal_conductivities[i] = 1.0;
@@ -136,9 +220,8 @@ namespace aspect
         // fill melt outputs if they exist
         aspect::MaterialModel::MeltOutputs<dim> *melt_out = out.template get_additional_output<aspect::MaterialModel::MeltOutputs<dim> >();
 
-        if (melt_out != NULL)
+        if (melt_out != nullptr)
           {
-            double c = 1.0;
             const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
 
             for (unsigned int i=0; i<in.position.size(); ++i)
@@ -182,10 +265,10 @@ namespace aspect
 
 
   template <int dim>
-  class RefFunction : public Function<dim>
+  class RefFunction : public Function<dim>, public ::aspect::SimulatorAccess<dim>
   {
     public:
-      RefFunction () : Function<dim>(dim+2) {}
+      RefFunction () : Function<dim>(2*dim+3+2) {}
       virtual void vector_value (const Point< dim >   &p,
                                  Vector< double >   &values) const
       {
@@ -202,8 +285,14 @@ namespace aspect
         values[7] = 0;
         values[8] = 0.1000000000e-1 + 0.2000000000e0 * exp(-0.200e2 * pow(x + 0.20e1 * z, 0.2e1));
 
+        // We have to scale the compaction pressure solution to p_c_bar using sqrt(K_D / ref_K_D).
+        // K_D is equal to the porosity (as defined in the material model).
+        const double K_D = values[8];
+        const double ref_K_D = 0.01;
+        const double p_c_scale = std::sqrt(K_D / ref_K_D);
 
-
+        if (p_c_scale > 0)
+          values[3] /= p_c_scale;
       }
   };
 
@@ -238,6 +327,7 @@ namespace aspect
     Vector<float> cellwise_errors_u (this->get_triangulation().n_active_cells());
     Vector<float> cellwise_errors_p_f (this->get_triangulation().n_active_cells());
     Vector<float> cellwise_errors_p_c (this->get_triangulation().n_active_cells());
+    Vector<float> cellwise_errors_p_c_bar (this->get_triangulation().n_active_cells());
     Vector<float> cellwise_errors_u_f (this->get_triangulation().n_active_cells());
     Vector<float> cellwise_errors_p (this->get_triangulation().n_active_cells());
     Vector<float> cellwise_errors_porosity (this->get_triangulation().n_active_cells());
@@ -276,7 +366,7 @@ namespace aspect
     VectorTools::integrate_difference (this->get_mapping(),this->get_dof_handler(),
                                        this->get_solution(),
                                        ref_func,
-                                       cellwise_errors_p_c,
+                                       cellwise_errors_p_c_bar,
                                        quadrature_formula,
                                        VectorTools::L2_norm,
                                        &comp_p_c);
@@ -295,12 +385,43 @@ namespace aspect
                                        VectorTools::L2_norm,
                                        &comp_u_f);
 
+
+    // Loop over all cells to compute the error for p_c from p_c_bar
+    const QGauss<dim> quadrature(this->get_parameters().stokes_velocity_degree+1);
+    FEValues<dim> fe_values (this->get_mapping(),
+                             this->get_fe(),
+                             quadrature,
+                             update_quadrature_points | update_values | update_gradients | update_JxW_values);
+
+    MaterialModel::MaterialModelInputs<dim> in(quadrature.size(), this->n_compositional_fields());
+    MaterialModel::MaterialModelOutputs<dim> out(quadrature.size(), this->n_compositional_fields());
+
+    MeltHandler<dim>::create_material_model_outputs(out);
+
+    typename DoFHandler<dim>::active_cell_iterator
+    cell = this->get_dof_handler().begin_active(),
+    endc = this->get_dof_handler().end();
+    for (; cell!=endc; ++cell)
+      if (cell->is_locally_owned())
+        {
+          fe_values.reinit (cell);
+          in.reinit(fe_values, cell, this->introspection(), this->get_solution());
+
+          this->get_material_model().evaluate(in, out);
+
+          const double p_c_scale = dynamic_cast<const MaterialModel::MeltInterface<dim>*>(&this->get_material_model())->p_c_scale(in, out, this->get_melt_handler(), true);
+
+          const unsigned int i = cell->active_cell_index();
+          cellwise_errors_p_c[i] = cellwise_errors_p_c_bar[i] * p_c_scale;
+        }
+
     std::ostringstream os;
     os << std::scientific
        << "ndofs= " << this->get_solution().size()
        << " u_L2= " << std::sqrt(Utilities::MPI::sum(cellwise_errors_u.norm_sqr(),MPI_COMM_WORLD))
        << " p_L2= "  << std::sqrt(Utilities::MPI::sum(cellwise_errors_p.norm_sqr(),MPI_COMM_WORLD))
        << " p_f_L2= " << std::sqrt(Utilities::MPI::sum(cellwise_errors_p_f.norm_sqr(),MPI_COMM_WORLD))
+       << " p_c_bar_L= " << std::sqrt(Utilities::MPI::sum(cellwise_errors_p_c_bar.norm_sqr(),MPI_COMM_WORLD))
        << " p_c_L= " << std::sqrt(Utilities::MPI::sum(cellwise_errors_p_c.norm_sqr(),MPI_COMM_WORLD))
        << " phi_L2= " << std::sqrt(Utilities::MPI::sum(cellwise_errors_porosity.norm_sqr(),MPI_COMM_WORLD))
        << " u_f_L2= " << std::sqrt(Utilities::MPI::sum(cellwise_errors_u_f.norm_sqr(),MPI_COMM_WORLD))

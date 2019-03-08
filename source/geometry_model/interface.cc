@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,15 +14,16 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
 
 #include <aspect/global.h>
 #include <aspect/geometry_model/interface.h>
+#include <aspect/simulator_access.h>
 #include <deal.II/base/exceptions.h>
-#include <deal.II/base/std_cxx11/tuple.h>
+#include <tuple>
 
 namespace aspect
 {
@@ -40,7 +41,7 @@ namespace aspect
 
 
 
-    template<int dim>
+    template <int dim>
     std::map<std::string,types::boundary_id>
     Interface<dim>::get_symbolic_boundary_names_map() const
     {
@@ -50,7 +51,7 @@ namespace aspect
 
 
 
-    template<int dim>
+    template <int dim>
     std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int > >
     Interface<dim>::get_periodic_boundary_pairs() const
     {
@@ -70,20 +71,47 @@ namespace aspect
 
 
     template <int dim>
-    std_cxx11::array<double,dim>
+    std::array<double,dim>
     Interface<dim>::cartesian_to_natural_coordinates(const Point<dim> &) const
     {
       Assert (false,
               ExcMessage ("The cartesian_to_natural_coordinates function has "
                           "not been implemented in this geometry model."));
-      return std_cxx11::array<double,dim>();
+      return std::array<double,dim>();
     }
 
 
+    template <int dim>
+    Utilities::NaturalCoordinate<dim>
+    Interface<dim>::cartesian_to_other_coordinates(const Point<dim> &position,
+                                                   const Utilities::Coordinates::CoordinateSystem &coordinate_system) const
+    {
+      std::array<double, dim> other_coord;
+      switch (coordinate_system)
+        {
+          case Utilities::Coordinates::cartesian:
+            other_coord = Utilities::convert_point_to_array(position);
+            break;
+
+          case Utilities::Coordinates::spherical:
+            other_coord = Utilities::Coordinates::cartesian_to_spherical_coordinates(position);
+            break;
+
+          case Utilities::Coordinates::depth:
+            other_coord[0] = depth(position);
+            break;
+
+          case Utilities::Coordinates::ellipsoidal:
+          default:
+            AssertThrow(false, ExcNotImplemented());
+        }
+
+      return Utilities::NaturalCoordinate<dim>(other_coord, coordinate_system);
+    }
 
     template <int dim>
     Point<dim>
-    Interface<dim>::natural_to_cartesian_coordinates(const std_cxx11::array<double,dim> &) const
+    Interface<dim>::natural_to_cartesian_coordinates(const std::array<double,dim> &) const
     {
       Assert (false,
               ExcMessage ("The natural_to_cartesian_coordinates function has "
@@ -218,7 +246,7 @@ namespace aspect
 
     namespace
     {
-      std_cxx11::tuple
+      std::tuple
       <void *,
       void *,
       aspect::internal::Plugins::PluginList<Interface<2> >,
@@ -234,10 +262,10 @@ namespace aspect
                              void (*declare_parameters_function) (ParameterHandler &),
                              Interface<dim> *(*factory_function) ())
     {
-      std_cxx11::get<dim>(registered_plugins).register_plugin (name,
-                                                               description,
-                                                               declare_parameters_function,
-                                                               factory_function);
+      std::get<dim>(registered_plugins).register_plugin (name,
+                                                         description,
+                                                         declare_parameters_function,
+                                                         factory_function);
     }
 
 
@@ -260,11 +288,11 @@ namespace aspect
       // errors because the value obviously does not conform to the Pattern.
       AssertThrow(model_name != "unspecified",
                   ExcMessage("You need to select a Geometry model "
-                             "('set Model name' in 'subsection Geometry model')."));
+                             "(`set Model name' in `subsection Geometry model')."));
 
-      return std_cxx11::get<dim>(registered_plugins).create_plugin (model_name,
-                                                                    "Geometry model::model name",
-                                                                    prm);
+      return std::get<dim>(registered_plugins).create_plugin (model_name,
+                                                              "Geometry model::model name",
+                                                              prm);
     }
 
 
@@ -277,18 +305,27 @@ namespace aspect
       prm.enter_subsection ("Geometry model");
       {
         const std::string pattern_of_names
-          = std_cxx11::get<dim>(registered_plugins).get_pattern_of_names ();
+          = std::get<dim>(registered_plugins).get_pattern_of_names ();
         prm.declare_entry ("Model name", "unspecified",
                            Patterns::Selection (pattern_of_names+"|unspecified"),
                            "Select one of the following models:\n\n"
                            +
-                           std_cxx11::get<dim>(registered_plugins).get_description_string());
+                           std::get<dim>(registered_plugins).get_description_string());
       }
       prm.leave_subsection ();
 
-      std_cxx11::get<dim>(registered_plugins).declare_parameters (prm);
+      std::get<dim>(registered_plugins).declare_parameters (prm);
     }
 
+
+
+    template <int dim>
+    void
+    write_plugin_graph (std::ostream &out)
+    {
+      std::get<dim>(registered_plugins).write_plugin_graph ("Geometry model interface",
+                                                            out);
+    }
   }
 }
 
@@ -324,6 +361,10 @@ namespace aspect
   template  \
   void \
   declare_parameters<dim> (ParameterHandler &); \
+  \
+  template \
+  void \
+  write_plugin_graph<dim> (std::ostream &); \
   \
   template \
   Interface<dim> * \

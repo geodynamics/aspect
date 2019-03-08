@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
@@ -28,6 +28,10 @@
 
 #include <deal.II/base/point.h>
 #include <deal.II/base/parameter_handler.h>
+
+#include <boost/core/demangle.hpp>
+#include <typeinfo>
+
 
 namespace aspect
 {
@@ -175,7 +179,7 @@ namespace aspect
          * Return a list of pointers to all initial composition models
          * currently used in the computation, as specified in the input file.
          */
-        const std::list<std_cxx11::shared_ptr<Interface<dim> > > &
+        const std::list<std::shared_ptr<Interface<dim> > > &
         get_active_initial_composition_conditions () const;
 
         /**
@@ -183,11 +187,47 @@ namespace aspect
          * the input file (and are consequently currently active) and see if one
          * of them has the desired type specified by the template argument. If so,
          * return a pointer to it. If no initial composition model is active that matches the
-         * given type, return a NULL pointer.
+         * given type, return a nullptr.
          */
         template <typename InitialCompositionType>
+        DEAL_II_DEPRECATED
         InitialCompositionType *
         find_initial_composition_model () const;
+
+        /**
+         * Go through the list of all initial composition models that have been selected
+         * in the input file (and are consequently currently active) and return
+         * true if one of them has the desired type specified by the template
+         * argument.
+         */
+        template <typename InitialCompositionType>
+        bool
+        has_matching_initial_composition_model () const;
+
+        /**
+         * Go through the list of all initial composition models that have been selected
+         * in the input file (and are consequently currently active) and see
+         * if one of them has the type specified by the template
+         * argument or can be casted to that type. If so, return a reference
+         * to it. If no initial composition model is active that matches the given type,
+         * throw an exception.
+         */
+        template <typename InitialCompositionType>
+        const InitialCompositionType &
+        get_matching_initial_composition_model () const;
+
+        /**
+         * For the current plugin subsystem, write a connection graph of all of the
+         * plugins we know about, in the format that the
+         * programs dot and neato understand. This allows for a visualization of
+         * how all of the plugins that ASPECT knows about are interconnected, and
+         * connect to other parts of the ASPECT code.
+         *
+         * @param output_stream The stream to write the output to.
+         */
+        static
+        void
+        write_plugin_graph (std::ostream &output_stream);
 
         /**
          * Exception.
@@ -202,7 +242,7 @@ namespace aspect
          * A list of initial composition objects that have been requested in the
          * parameter file.
          */
-        std::list<std_cxx11::shared_ptr<Interface<dim> > > initial_composition_objects;
+        std::list<std::shared_ptr<Interface<dim> > > initial_composition_objects;
 
         /**
          * A list of names of initial composition objects that have been requested
@@ -237,14 +277,52 @@ namespace aspect
     InitialCompositionType *
     Manager<dim>::find_initial_composition_model () const
     {
-      for (typename std::list<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
+      for (typename std::list<std::shared_ptr<Interface<dim> > >::const_iterator
            p = initial_composition_objects.begin();
            p != initial_composition_objects.end(); ++p)
         if (InitialCompositionType *x = dynamic_cast<InitialCompositionType *> ( (*p).get()) )
           return x;
-      return NULL;
+      return nullptr;
     }
 
+
+    template <int dim>
+    template <typename InitialCompositionType>
+    inline
+    bool
+    Manager<dim>::has_matching_initial_composition_model () const
+    {
+      for (typename std::list<std::shared_ptr<Interface<dim> > >::const_iterator
+           p = initial_composition_objects.begin();
+           p != initial_composition_objects.end(); ++p)
+        if (Plugins::plugin_type_matches<InitialCompositionType>(*(*p)))
+          return true;
+      return false;
+    }
+
+
+    template <int dim>
+    template <typename InitialCompositionType>
+    inline
+    const InitialCompositionType &
+    Manager<dim>::get_matching_initial_composition_model () const
+    {
+      AssertThrow(has_matching_initial_composition_model<InitialCompositionType> (),
+                  ExcMessage("You asked InitialComposition::Manager::get_initial_composition_model() for a "
+                             "initial composition model of type <" + boost::core::demangle(typeid(InitialCompositionType).name()) + "> "
+                             "that could not be found in the current model. Activate this "
+                             "initial composition model in the input file."));
+
+      typename std::list<std::shared_ptr<Interface<dim> > >::const_iterator initial_composition_model;
+      for (typename std::list<std::shared_ptr<Interface<dim> > >::const_iterator
+           p = initial_composition_objects.begin();
+           p != initial_composition_objects.end(); ++p)
+        if (Plugins::plugin_type_matches<InitialCompositionType>(*(*p)))
+          return Plugins::get_plugin_as_type<InitialCompositionType>(*(*p));
+
+      // We will never get here, because we had the Assert above. Just to avoid warnings.
+      return Plugins::get_plugin_as_type<InitialCompositionType>(*(*initial_composition_model));
+    }
 
 
     /**

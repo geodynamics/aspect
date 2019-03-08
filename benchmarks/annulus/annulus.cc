@@ -1,3 +1,22 @@
+/*
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
+
+  This file is part of ASPECT.
+
+  ASPECT is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2, or (at your option)
+  any later version.
+
+  ASPECT is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with ASPECT; see the file LICENSE.  If not see
+  <http://www.gnu.org/licenses/>.
+*/
 #include <aspect/simulator.h>
 #include <aspect/material_model/simple.h>
 #include <aspect/boundary_velocity/interface.h>
@@ -37,7 +56,7 @@ namespace aspect
     namespace AnalyticSolutions
     {
       const double A=2.0, B=-3.0/std::log(2.0), C=-1;
-      const double inner_radius = 1, outer_radius = 2.;
+      const double outer_radius = 2.;
       const double rho_0 = 1000.;
       const double gravity = 1.;
 
@@ -327,11 +346,11 @@ namespace aspect
                        const Point<2> &p) const
     {
 
-      const AnnulusMaterial<2> *
+      const AnnulusMaterial<2> &
       material_model
-        = dynamic_cast<const AnnulusMaterial<2> *>(&this->get_material_model());
+        = Plugins::get_plugin_as_type<const AnnulusMaterial<2> >(this->get_material_model());
 
-      return AnalyticSolutions::Annulus_velocity (p, material_model->get_beta());
+      return AnalyticSolutions::Annulus_velocity (p, material_model.get_beta());
     }
 
 
@@ -350,8 +369,8 @@ namespace aspect
 
 
     /**
-     *gravity model for the Annulus benchmark
-    */
+     * Gravity model for the Annulus benchmark
+     */
 
     template <int dim>
     class AnnulusGravity : public aspect::GravityModel::Interface<dim>
@@ -409,13 +428,12 @@ namespace aspect
     std::pair<std::string,std::string>
     AnnulusPostprocessor<dim>::execute (TableHandler &)
     {
-      std_cxx1x::shared_ptr<Function<dim> > ref_func;
+      std::shared_ptr<Function<dim> > ref_func;
       {
-        const AnnulusMaterial<dim> *
-        material_model
-          = dynamic_cast<const AnnulusMaterial<dim> *>(&this->get_material_model());
+        const AnnulusMaterial<dim> &material_model
+          = Plugins::get_plugin_as_type<const AnnulusMaterial<dim> >(this->get_material_model());
 
-        ref_func.reset (new AnalyticSolutions::FunctionAnnulus<dim>(material_model->get_beta()));
+        ref_func.reset (new AnalyticSolutions::FunctionAnnulus<dim>(material_model.get_beta()));
       }
 
       const QGauss<dim> quadrature_formula (this->introspection().polynomial_degree.velocities+2);
@@ -493,20 +511,20 @@ namespace aspect
     double
     AnnulusPostprocessor<dim>::compute_dynamic_topography_error() const
     {
-      Postprocess::DynamicTopography<dim> *dynamic_topography =
-        this->template find_postprocessor<Postprocess::DynamicTopography<dim> >();
+      const Postprocess::DynamicTopography<dim> &dynamic_topography =
+        this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::DynamicTopography<dim> >();
 
-      const AnnulusMaterial<dim> *material_model
-        = dynamic_cast<const AnnulusMaterial<dim> *>(&this->get_material_model());
-      const double beta = material_model->get_beta();
+      const AnnulusMaterial<dim> &material_model
+        = Plugins::get_plugin_as_type<const AnnulusMaterial<dim> >(this->get_material_model());
+      const double beta = material_model.get_beta();
 
       const QGauss<dim-1> quadrature_formula (this->introspection().polynomial_degree.velocities+2);
       FEFaceValues<dim> fe_face_values(this->get_mapping(),
                                        this->get_fe(),
                                        quadrature_formula,
                                        update_values | update_gradients |
-                                       update_q_points | update_JxW_values);
-      LinearAlgebra::BlockVector topo_vector = dynamic_topography->topography_vector();
+                                       update_quadrature_points | update_JxW_values);
+      LinearAlgebra::BlockVector topo_vector = dynamic_topography.topography_vector();
       std::vector<double> topo_values(quadrature_formula.size());
 
       double l2_error = 0.;
@@ -522,10 +540,10 @@ namespace aspect
               if (cell->face(f)->at_boundary())
                 {
                   fe_face_values.reinit(cell, f);
-                  MaterialModel::MaterialModelInputs<dim> in_face(fe_face_values, &cell, this->introspection(), this->get_solution());
+                  MaterialModel::MaterialModelInputs<dim> in_face(fe_face_values, cell, this->introspection(), this->get_solution());
                   MaterialModel::MaterialModelOutputs<dim> out_face(fe_face_values.n_quadrature_points, this->n_compositional_fields());
                   fe_face_values[this->introspection().extractors.temperature].get_function_values(topo_vector, topo_values);
-                  this->get_material_model().evaluate(in_face, out_face);
+                  material_model.evaluate(in_face, out_face);
 
                   for (unsigned int q=0; q < quadrature_formula.size(); ++q)
                     {
@@ -568,4 +586,3 @@ namespace aspect
                                   "and reports the error. See the manual for more information.")
   }
 }
-

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
@@ -105,6 +105,11 @@ namespace aspect
          * @}
          */
 
+        virtual
+        void
+        create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const;
+
+
       private:
         double reference_rho_s;
         double reference_rho_f;
@@ -126,6 +131,7 @@ namespace aspect
         double compressibility;
         double melt_compressibility;
         bool include_melting_and_freezing;
+        double melting_time_scale;
 
         // entropy change upon melting
         double peridotite_melting_entropy_change;

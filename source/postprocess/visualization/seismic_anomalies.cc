@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,12 +14,13 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
 
 #include <aspect/postprocess/visualization/seismic_anomalies.h>
+#include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/lateral_averaging.h>
 #include <aspect/utilities.h>
 
@@ -61,30 +62,27 @@ namespace aspect
 
         std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (quadrature_formula.size()));
 
-        // Loop over the cells
-        typename DoFHandler<dim>::active_cell_iterator
-        cell = this->get_dof_handler().begin_active(),
-        endc = this->get_dof_handler().end();
-
-
         switch (average_velocity_scheme)
           {
             case reference_profile:
             {
               MaterialModel::MaterialModelOutputs<dim> adiabatic_out(n_q_points, this->n_compositional_fields());
 
-              unsigned int cell_index = 0;
-              for (; cell!=endc; ++cell,++cell_index)
+              // Loop over the cells
+              typename DoFHandler<dim>::active_cell_iterator
+              cell = this->get_dof_handler().begin_active(),
+              endc = this->get_dof_handler().end();
+
+              for (; cell!=endc; ++cell)
                 if (cell->is_locally_owned())
                   {
                     // Get the pressure, temperature and composition in the cell
                     fe_values.reinit (cell);
 
-                    in.reinit(fe_values, &cell, this->introspection(), this->get_solution(), false);
+                    in.reinit(fe_values, cell, this->introspection(), this->get_solution(), false);
 
                     out.additional_outputs.push_back(
-                      std_cxx11::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
-                      (new MaterialModel::SeismicAdditionalOutputs<dim> (n_q_points)));
+                      std::make_shared<MaterialModel::SeismicAdditionalOutputs<dim>> (n_q_points));
                     this->get_material_model().evaluate(in, out);
 
 
@@ -95,8 +93,7 @@ namespace aspect
                     in.pressure[0]=this->get_adiabatic_conditions().pressure(in.position[0]);
 
                     adiabatic_out.additional_outputs.push_back(
-                      std_cxx11::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
-                      (new MaterialModel::SeismicAdditionalOutputs<dim> (n_q_points)));
+                      std::make_shared<MaterialModel::SeismicAdditionalOutputs<dim>> (n_q_points));
                     this->get_material_model().evaluate(in, adiabatic_out);
 
 
@@ -110,7 +107,7 @@ namespace aspect
                     const double adiabatic_Vs = adiabatic_seismic_outputs->vs[0];
 
                     // Compute the percentage deviation from the average
-                    (*return_value.second)(cell_index) = (Vs - adiabatic_Vs)/adiabatic_Vs*1e2;
+                    (*return_value.second)(cell->active_cell_index()) = (Vs - adiabatic_Vs)/adiabatic_Vs*1e2;
                   }
               break;
             }
@@ -134,9 +131,12 @@ namespace aspect
               padded_Vs_depth_average[n_slices+1] = 2.*Vs_depth_average[n_slices-1] - Vs_depth_average[n_slices-2];
               std::copy ( Vs_depth_average.begin(), Vs_depth_average.end(), padded_Vs_depth_average.begin() + 1 );
 
+              // Loop over the cells
+              typename DoFHandler<dim>::active_cell_iterator
+              cell = this->get_dof_handler().begin_active(),
+              endc = this->get_dof_handler().end();
 
-              unsigned int cell_index = 0;
-              for (; cell!=endc; ++cell,++cell_index)
+              for (; cell!=endc; ++cell)
                 if (cell->is_locally_owned())
                   {
                     // Get the pressure, temperature and composition in the cell
@@ -166,11 +166,10 @@ namespace aspect
                         for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
                           in.composition[i][c] = composition_values[c][i];
                       }
-                    in.cell = &cell;
+                    in.current_cell = cell;
 
                     out.additional_outputs.push_back(
-                      std_cxx11::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
-                      (new MaterialModel::SeismicAdditionalOutputs<dim> (n_q_points)));
+                      std::make_shared<MaterialModel::SeismicAdditionalOutputs<dim>> (n_q_points));
                     this->get_material_model().evaluate(in, out);
 
                     MaterialModel::SeismicAdditionalOutputs<dim> *seismic_outputs
@@ -191,13 +190,15 @@ namespace aspect
 
                     // Compute the percentage deviation from the average
                     const double Vs_average = (1. - fractional_slice)*padded_Vs_depth_average[idx] + fractional_slice*padded_Vs_depth_average[idx+1];
-                    (*return_value.second)(cell_index) = (Vs - Vs_average)/Vs_average*1e2;
+                    (*return_value.second)(cell->active_cell_index()) = (Vs - Vs_average)/Vs_average*1e2;
                   }
               break;
             }
           }
         return return_value;
       }
+
+
 
       template <int dim>
       std::pair<std::string, Vector<float> *>
@@ -228,30 +229,27 @@ namespace aspect
 
         std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (quadrature_formula.size()));
 
-        // Loop over the cells
-        typename DoFHandler<dim>::active_cell_iterator
-        cell = this->get_dof_handler().begin_active(),
-        endc = this->get_dof_handler().end();
-
-
         switch (average_velocity_scheme)
           {
             case reference_profile:
             {
               MaterialModel::MaterialModelOutputs<dim> adiabatic_out(n_q_points, this->n_compositional_fields());
 
-              unsigned int cell_index = 0;
-              for (; cell!=endc; ++cell,++cell_index)
+              // Loop over the cells
+              typename DoFHandler<dim>::active_cell_iterator
+              cell = this->get_dof_handler().begin_active(),
+              endc = this->get_dof_handler().end();
+
+              for (; cell!=endc; ++cell)
                 if (cell->is_locally_owned())
                   {
                     // Get the pressure, temperature and composition in the cell
                     fe_values.reinit (cell);
 
-                    in.reinit(fe_values, &cell, this->introspection(), this->get_solution(), false);
+                    in.reinit(fe_values, cell, this->introspection(), this->get_solution(), false);
 
                     out.additional_outputs.push_back(
-                      std_cxx11::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
-                      (new MaterialModel::SeismicAdditionalOutputs<dim> (n_q_points)));
+                      std::make_shared<MaterialModel::SeismicAdditionalOutputs<dim>>(n_q_points));
                     this->get_material_model().evaluate(in, out);
 
                     // Substitute the adiabatic reference state for temperature and pressure,
@@ -260,8 +258,7 @@ namespace aspect
                     in.pressure[0]=this->get_adiabatic_conditions().pressure(in.position[0]);
 
                     adiabatic_out.additional_outputs.push_back(
-                      std_cxx11::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
-                      (new MaterialModel::SeismicAdditionalOutputs<dim> (n_q_points)));
+                      std::make_shared<MaterialModel::SeismicAdditionalOutputs<dim>> (n_q_points));
                     this->get_material_model().evaluate(in, adiabatic_out);
 
 
@@ -275,7 +272,7 @@ namespace aspect
                     const double adiabatic_Vp = adiabatic_seismic_outputs->vp[0];
 
                     // Compute the percentage deviation from the average
-                    (*return_value.second)(cell_index) = (Vp - adiabatic_Vp)/adiabatic_Vp*1e2;
+                    (*return_value.second)(cell->active_cell_index()) = (Vp - adiabatic_Vp)/adiabatic_Vp*1e2;
                   }
               break;
             }
@@ -300,8 +297,12 @@ namespace aspect
               std::copy ( Vp_depth_average.begin(), Vp_depth_average.end(), padded_Vp_depth_average.begin() + 1 );
 
 
-              unsigned int cell_index = 0;
-              for (; cell!=endc; ++cell,++cell_index)
+              // Loop over the cells
+              typename DoFHandler<dim>::active_cell_iterator
+              cell = this->get_dof_handler().begin_active(),
+              endc = this->get_dof_handler().end();
+
+              for (; cell!=endc; ++cell)
                 if (cell->is_locally_owned())
                   {
                     // Get the pressure, temperature and composition in the cell
@@ -331,11 +332,10 @@ namespace aspect
                         for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
                           in.composition[i][c] = composition_values[c][i];
                       }
-                    in.cell = &cell;
+                    in.current_cell = cell;
 
                     out.additional_outputs.push_back(
-                      std_cxx11::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
-                      (new MaterialModel::SeismicAdditionalOutputs<dim> (n_q_points)));
+                      std::make_shared<MaterialModel::SeismicAdditionalOutputs<dim>> (n_q_points));
                     this->get_material_model().evaluate(in, out);
 
                     MaterialModel::SeismicAdditionalOutputs<dim> *seismic_outputs
@@ -356,13 +356,16 @@ namespace aspect
 
                     // Compute the percentage deviation from the average
                     const double Vp_average = (1. - fractional_slice)*padded_Vp_depth_average[idx] + fractional_slice*padded_Vp_depth_average[idx+1];
-                    (*return_value.second)(cell_index) = (Vp - Vp_average)/Vp_average*1e2;
+                    (*return_value.second)(cell->active_cell_index()) = (Vp - Vp_average)/Vp_average*1e2;
                   }
               break;
             }
           }
+
         return return_value;
       }
+
+
 
       template <int dim>
       void
@@ -400,10 +403,24 @@ namespace aspect
         prm.leave_subsection();
       }
 
+
+
       template <int dim>
       void
       SeismicVsAnomaly<dim>::parse_parameters (ParameterHandler &prm)
       {
+        // First make sure the material model actually provides seismic velocities
+        MaterialModel::MaterialModelOutputs<dim> out(1, this->n_compositional_fields());
+        this->get_material_model().create_additional_named_outputs(out);
+
+        const bool material_model_provides_seismic_output =
+          (out.template get_additional_output<MaterialModel::SeismicAdditionalOutputs<dim> >() != 0);
+
+        AssertThrow(material_model_provides_seismic_output,
+                    ExcMessage("You requested the 'Vs anomaly' postprocessor, "
+                               "but the material model does not provide seismic velocities. Either remove 'Vs anomaly', "
+                               "or use a material model that provides these velocities."));
+
         prm.enter_subsection("Postprocess");
         {
           prm.enter_subsection("Visualization");
@@ -426,6 +443,8 @@ namespace aspect
         }
         prm.leave_subsection();
       }
+
+
 
       template <int dim>
       void
@@ -463,17 +482,30 @@ namespace aspect
         prm.leave_subsection();
       }
 
+
+
       template <int dim>
       void
       SeismicVpAnomaly<dim>::parse_parameters (ParameterHandler &prm)
       {
+        // First make sure the material model actually provides seismic velocities
+        MaterialModel::MaterialModelOutputs<dim> out(1, this->n_compositional_fields());
+        this->get_material_model().create_additional_named_outputs(out);
+
+        const bool material_model_provides_seismic_output =
+          (out.template get_additional_output<MaterialModel::SeismicAdditionalOutputs<dim> >() != 0);
+
+        AssertThrow(material_model_provides_seismic_output,
+                    ExcMessage("You requested the 'Vp anomaly' postprocessor, "
+                               "but the material model does not provide seismic velocities. Either remove 'Vp anomaly', "
+                               "or use a material model that provides these velocities."));
+
         prm.enter_subsection("Postprocess");
         {
           prm.enter_subsection("Visualization");
           {
             prm.enter_subsection("Vp anomaly");
             {
-
               // Average velocity scheme
               if (prm.get ("Average velocity scheme") == "reference profile")
                 average_velocity_scheme = reference_profile;
@@ -493,6 +525,7 @@ namespace aspect
     }
   }
 }
+
 
 // explicit instantiations
 namespace aspect
@@ -521,7 +554,8 @@ namespace aspect
                                                   "capture step changes in velocities, but small enough to "
                                                   "maintain a reasonable number of evaluation points per slice. "
                                                   "Bear in mind that lateral averaging subsamples the "
-                                                  "finite element mesh.")
+                                                  "finite element mesh. Note that this plugin requires a "
+                                                  "material model that provides seismic velocities.")
 
       ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(SeismicVpAnomaly,
                                                   "Vp anomaly",
@@ -543,7 +577,8 @@ namespace aspect
                                                   "capture step changes in velocities, but small enough to "
                                                   "maintain a reasonable number of evaluation points per slice. "
                                                   "Bear in mind that lateral averaging subsamples the "
-                                                  "finite element mesh.")
+                                                  "finite element mesh. Note that this plugin requires a "
+                                                  "material model that provides seismic velocities.")
     }
   }
 }

@@ -27,7 +27,7 @@ set CFL number                             = 1.0
 # instead of seconds' parameter is set; seconds otherwise.
 set End time                               = 0.0001
 
-set Nonlinear solver scheme                = Stokes only
+set Nonlinear solver scheme                = no Advection, iterated Stokes
 
 # The name of the directory into which all output files should be placed. This
 # may be an absolute or a relative path.
@@ -54,7 +54,6 @@ set Start time                             = 0
 set Adiabatic surface temperature          = 0
 
 subsection Adiabatic conditions model
-  #set Model name = initial profile
   set Model name = function
   subsection Function
     set Function constants  = Di=0.0, gamma=1.0
@@ -105,7 +104,7 @@ subsection Boundary temperature model
   # `spherical constant': A model in which the temperature is chosen constant
   # on the inner and outer boundaries of a spherical shell. Parameters are
   # read from subsection 'Sherical constant'.
-  set Model name = Tan Gurnis
+  set List of model names = Tan Gurnis
 
 end
 
@@ -166,19 +165,6 @@ end
 
 
 subsection Gravity model
-  # Select one of the following models:
-  #
-  # `radial constant': A gravity model in which the gravity direction is
-  # radially inward and at constant magnitude. The magnitude is read from the
-  # parameter file in subsection 'Radial constant'.
-  #
-  # `radial earth-like': A gravity model in which the gravity direction is
-  # radially inward and with a magnitude that matches that of the earth at the
-  # core-mantle boundary as well as at the surface and in between is
-  # physically correct under the assumption of a constant density.
-  #
-  # `vertical': A gravity model in which the gravity direction is vertically
-  # downward and at constant magnitude.
   set Model name = vertical
 
 end
@@ -246,32 +232,25 @@ subsection Mesh refinement
 end
 
 
-subsection Model settings
-  set Include adiabatic heating               = false
-  set Include shear heating                   = false # default: true
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
 
+subsection Boundary temperature model
   # A comma separated list of integers denoting those boundaries on which the
   # temperature is fixed and described by the boundary temperature object
   # selected in its own section of this input file. All boundary indicators
   # used by the geometry but not explicitly listed here will end up with
   # no-flux (insulating) boundary conditions.
   set Fixed temperature boundary indicators   = left, right, bottom, top
+end
 
-  # A comma separated list of integers denoting those boundaries on which the
-  # velocity is tangential but prescribed, i.e., where external forces act to
-  # prescribe a particular velocity. This is often used to prescribe a
-  # velocity that equals that of overlying plates.
-  set Prescribed velocity boundary indicators = 
-
+subsection Boundary velocity model
   # A comma separated list of integers denoting those boundaries on which the
   # velocity is tangential and unrestrained, i.e., where no external forces
   # act to prescribe a particular tangential velocity (although there is a
   # force that requires the flow to be tangential).
   set Tangential velocity boundary indicators = left, right, bottom, top
-
-  # A comma separated list of integers denoting those boundaries on which the
-  # velocity is zero.
-  set Zero velocity boundary indicators       = 
 end
 
 

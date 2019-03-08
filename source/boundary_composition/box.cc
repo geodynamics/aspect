@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
@@ -145,7 +145,7 @@ namespace aspect
       // has the requisite number of elements
       for (unsigned int f=0; f<2*dim; ++f)
         AssertThrow (composition_values[f].size() == this->n_compositional_fields(),
-                     ExcMessage (std::string("The specification of boundary composition values for the 'box' model "
+                     ExcMessage (std::string("The specification of boundary composition values for the `box' model "
                                              "requires as many values on each face of the box as there are compositional "
                                              "fields. However, for face ")
                                  +

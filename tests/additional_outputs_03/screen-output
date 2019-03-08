@@ -8,32 +8,14 @@ Number of active cells: 4 (on 2 levels)
 Number of degrees of freedom: 84 (50+9+25)
 
 *** Timestep 0:  t=0 seconds
-* create_additional_material_model_outputs() called
-   creating additional output!
-* evaluate called with additional outputs!
-averaging!
-* create_additional_material_model_outputs() called
-* evaluate called with additional outputs!
-averaging!
-* create_additional_material_model_outputs() called
-* evaluate called with additional outputs!
-averaging!
-* create_additional_material_model_outputs() called
-* evaluate called with additional outputs!
-averaging!
-* create_additional_material_model_outputs() called
-   creating additional output!
-* evaluate called with additional outputs!
-averaging!
-* create_additional_material_model_outputs() called
-* evaluate called with additional outputs!
-averaging!
-* create_additional_material_model_outputs() called
-* evaluate called with additional outputs!
-averaging!
-* create_additional_material_model_outputs() called
-* evaluate called with additional outputs!
-averaging!
+* evaluate called without additional outputs!
+* evaluate called without additional outputs!
+* evaluate called without additional outputs!
+* evaluate called without additional outputs!
+* evaluate called without additional outputs!
+* evaluate called without additional outputs!
+* evaluate called without additional outputs!
+* evaluate called without additional outputs!
    Solving temperature system... 0 iterations.
 * create_additional_material_model_outputs() called
    creating additional output!
@@ -56,19 +38,10 @@ averaging!
 averaging!
 * local_assemble_stokes call, have additional? 1
    value = 21 21
-   Rebuilding Stokes preconditioner...* create_additional_material_model_outputs() called
-   creating additional output!
-* evaluate called with additional outputs!
-averaging!
-* create_additional_material_model_outputs() called
-* evaluate called with additional outputs!
-averaging!
-* create_additional_material_model_outputs() called
-* evaluate called with additional outputs!
-averaging!
-* create_additional_material_model_outputs() called
-* evaluate called with additional outputs!
-averaging!
+   Rebuilding Stokes preconditioner...* evaluate called without additional outputs!
+* evaluate called without additional outputs!
+* evaluate called without additional outputs!
+* evaluate called without additional outputs!
 
    Solving Stokes system... 9+0 iterations.
 
@@ -86,4 +59,4 @@ Termination requested by criterion: end time
 +---------------------------------+-----------+------------+------------+
 +---------------------------------+-----------+------------+------------+
 
-called without: 4 with: 16
+called without: 16 with: 4

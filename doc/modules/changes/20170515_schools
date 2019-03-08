@@ -1,8 +1,0 @@
-New: A new particle property is added which indicates the presence of melt 
-greater than the melt transport threshold at the particles position. If melt 
-is not present a 0 is recorded. If melt is present a 1 is recorded. Only works
-if there is a compositonal field named "porosity". A second new particle property
-is also added which indicates the value for each compositional field. This can be 
-used as a preliminary way to track the petrological evolution of material.
-<br>
-(Joe Schools, Rene Gassmoeller, 2017/05/15)

@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2017 by the authors of the ASPECT code.
+ Copyright (C) 2017 - 2019 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -14,12 +14,12 @@
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with ASPECT; see the file doc/COPYING.  If not see
+ along with ASPECT; see the file LICENSE.  If not see
  <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _aspect__particle_interpolator_nearest_neighbor_h
-#define _aspect__particle_interpolator_nearest_neighbor_h
+#ifndef _aspect_particle_interpolator_nearest_neighbor_h
+#define _aspect_particle_interpolator_nearest_neighbor_h
 
 #include <aspect/particle/interpolator/interface.h>
 #include <aspect/simulator_access.h>
@@ -46,7 +46,7 @@ namespace aspect
            */
           virtual
           std::vector<std::vector<double> >
-          properties_at_points(const std::multimap<types::LevelInd, Particle<dim> > &particles,
+          properties_at_points(const ParticleHandler<dim> &particle_handler,
                                const std::vector<Point<dim> > &positions,
                                const ComponentMask &selected_properties,
                                const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const;

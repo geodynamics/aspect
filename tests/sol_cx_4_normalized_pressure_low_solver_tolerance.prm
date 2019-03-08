@@ -5,7 +5,6 @@
 # now becomes so that it affects the overall error (which is iteration
 # plus discretization)
 
-set Linear solver tolerance = 1e-2
 
 set Dimension = 2
 
@@ -26,13 +25,13 @@ set Pressure normalization                 = volume
 
 set Use years in output instead of seconds = false  # default: true
 
-set Nonlinear solver scheme                = Stokes only
+set Nonlinear solver scheme                = no Advection, iterated Stokes
 set Nonlinear solver tolerance             = 1e-5
 set Max nonlinear iterations               = 1
 
 
 subsection Boundary temperature model
-  set Model name = box
+  set List of model names = box
 
 end
 
@@ -93,16 +92,16 @@ subsection Mesh refinement
 end
 
 
-subsection Model settings
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
 
-
+subsection Boundary temperature model
   set Fixed temperature boundary indicators   = 0, 1
+end
 
-  set Prescribed velocity boundary indicators =
-
+subsection Boundary velocity model
   set Tangential velocity boundary indicators = 0,1,2,3
-
-  set Zero velocity boundary indicators       =
 end
 
 
@@ -122,3 +121,8 @@ subsection Postprocess
   end
 end
 
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-2
+  end
+end

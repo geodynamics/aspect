@@ -1,3 +1,7 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+Loading shared library <./libmorency_doin.so>
 
 Number of active cells: 1,024 (on 6 levels)
 Number of degrees of freedom: 22,214 (8,450+1,089+4,225+4,225+4,225)
@@ -7,7 +11,7 @@ Number of degrees of freedom: 22,214 (8,450+1,089+4,225+4,225+4,225)
    Solving upper_crust system ... 0 iterations.
    Solving lower_crust system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 118+0 iterations.
+   Solving Stokes system... 136+0 iterations.
 
    Postprocessing:
      Writing depth average: output-morency_doin/depth_average.gnuplot

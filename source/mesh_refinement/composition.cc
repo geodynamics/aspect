@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
@@ -33,7 +33,7 @@ namespace aspect
     Composition<dim>::execute(Vector<float> &indicators) const
     {
       AssertThrow (this->n_compositional_fields() >= 1,
-                   ExcMessage ("This refinement criterion can not be used when no "
+                   ExcMessage ("This refinement criterion cannot be used when no "
                                "compositional fields are active!"));
       indicators = 0;
       Vector<float> this_indicator (indicators.size());
@@ -45,7 +45,7 @@ namespace aspect
           KellyErrorEstimator<dim>::estimate (this->get_mapping(),
                                               this->get_dof_handler(),
                                               quadrature,
-                                              typename FunctionMap<dim>::type(),
+                                              std::map<types::boundary_id,const Function<dim>*>(),
                                               this->get_solution(),
                                               this_indicator,
                                               this->introspection().component_masks.compositional_fields[c],
@@ -70,7 +70,7 @@ namespace aspect
                             "",
                             Patterns::List (Patterns::Double(0)),
                             "A list of scaling factors by which every individual compositional "
-                            "field will be multiplied by. If only a single compositional "
+                            "field will be multiplied. If only a single compositional "
                             "field exists, then this parameter has no particular meaning. "
                             "On the other hand, if multiple criteria are chosen, then these "
                             "factors are used to weigh the various indicators relative to "
@@ -125,6 +125,27 @@ namespace aspect
                                               "refinement indicators from the compositional fields. "
                                               "If there is more than one compositional field, then "
                                               "it simply takes the sum of the indicators computed "
-                                              "from each of the compositional field.")
+                                              "from each of the compositional field."
+                                              "\n\n"
+                                              "The way these indicators are computed is by "
+                                              "evaluating the `Kelly error indicator' on each "
+                                              "compositional field. This error indicator takes the "
+                                              "finite element approximation of the compositional "
+                                              "field and uses it to compute an approximation "
+                                              "of the second derivatives of the composition for "
+                                              "each cell. This approximation is then multiplied "
+                                              "by an appropriate power of the cell's diameter "
+                                              "to yield an indicator for how large the error "
+                                              "is likely going to be on this cell. This "
+                                              "construction rests on the observation that for "
+                                              "many partial differential equations, the error "
+                                              "on each cell is proportional to some power of "
+                                              "the cell's diameter times the second derivatives "
+                                              "of the solution on that cell."
+                                              "\n\n"
+                                              "For complex equations such as those we solve "
+                                              "here, this observation may not be strictly "
+                                              "true in the mathematical sense, but it often "
+                                              "yields meshes that are surprisingly good.")
   }
 }

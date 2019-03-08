@@ -6,7 +6,7 @@ Number of degrees of freedom: 3,770 (2,187+125+729+729)
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+0 iterations.
+   Solving Stokes system... 26+0 iterations.
 
    Postprocessing:
      RMS, max velocity:         0.000133 m/s, 0.000329 m/s
@@ -16,7 +16,7 @@ Number of degrees of freedom: 3,770 (2,187+125+729+729)
 *** Timestep 1:  t=10 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 11 iterations.
-   Solving Stokes system... 26+0 iterations.
+   Solving Stokes system... 22+0 iterations.
 
    Postprocessing:
      RMS, max velocity:         0.000135 m/s, 0.000332 m/s

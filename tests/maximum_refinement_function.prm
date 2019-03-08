@@ -15,7 +15,6 @@
 
 set Adiabatic surface temperature          = 1623               # default: 0
 set CFL number                             = 1.0
-set Composition solver tolerance           = 1e-12
 
 # The number of space dimensions you want to run this program in.
 set Dimension                              = 2
@@ -43,7 +42,7 @@ subsection Boundary temperature model
   # 
   # `box': A model in which the temperature is chosen constant on all the
   # sides of a box.
-  set Model name = initial temperature
+  set List of model names = initial temperature
 
   subsection Initial temperature
     # Temperature at the inner boundary (core mantle boundary). Units: K.
@@ -95,21 +94,7 @@ end
 
 
 subsection Gravity model
-  # Select one of the following models:
-  # 
-  # `vertical': A gravity model in which the gravity direction is vertically
-  # downward and at a constant magnitude by default equal to one.
-  # 
-  # `radial constant': A gravity model in which the gravity direction is
-  # radially inward and at constant magnitude. The magnitude is read from the
-  # parameter file in subsection 'Radial constant'.
-  # 
-  # `radial earth-like': A gravity model in which the gravity direction is
-  # radially inward and with a magnitude that matches that of the earth at the
-  # core-mantle boundary as well as at the surface and in between is
-  # physically correct under the assumption of a constant density.
-  set Model name = vertical # default: 
-
+  set Model name = vertical
 
   subsection Vertical
     # Magnitude of the gravity vector in $m/s^2$. The direction is always
@@ -175,11 +160,19 @@ subsection Mesh refinement
 end
 
 
-subsection Model settings
-  set Fixed temperature boundary indicators   = 0,3        # default: 
-  set Prescribed velocity boundary indicators =  
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
 
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = 0,3        # default: 
+end
+
+subsection Boundary velocity model
   set Tangential velocity boundary indicators = 0,1,2,3
+end
+
+subsection Boundary velocity model
   set Zero velocity boundary indicators       =           # default: 
 end
 

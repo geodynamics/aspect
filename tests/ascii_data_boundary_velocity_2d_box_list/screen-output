@@ -1,0 +1,43 @@
+
+
+   Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/box_2d_left.0.txt.
+
+
+   Loading new data file did not succeed.
+   Assuming constant boundary conditions for rest of model run.
+
+
+   Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/box_2d_right.0.txt.
+
+
+   Loading new data file did not succeed.
+   Assuming constant boundary conditions for rest of model run.
+
+Number of active cells: 80 (on 3 levels)
+Number of degrees of freedom: 1,212 (738+105+369)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 17+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.0162 m/year, 0.0366 m/year
+     Heat fluxes through boundary parts: -1.806e+06 W, 1.806e+06 W, 5.356e+05 W, 1.644e+05 W
+
+*** Timestep 1:  t=1e+06 years
+   Solving temperature system... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 16+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.0162 m/year, 0.0348 m/year
+     Heat fluxes through boundary parts: -1.787e+06 W, 1.787e+06 W, 2.142e+06 W, 1.528e+06 W
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

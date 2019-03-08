@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,17 +14,19 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
 
 #include <aspect/material_model/melt_simple.h>
+#include <aspect/adiabatic_conditions/interface.h>
+#include <aspect/gravity_model/interface.h>
+#include <aspect/utilities.h>
 
 #include <deal.II/base/parameter_handler.h>
 #include <deal.II/numerics/fe_field_function.h>
 
-using namespace dealii;
 
 namespace aspect
 {
@@ -181,8 +183,26 @@ namespace aspect
     {
       for (unsigned int q=0; q<in.temperature.size(); ++q)
         melt_fractions[q] = this->melt_fraction(in.temperature[q],
-                                                std::max(0.0, in.pressure[q]));
+                                                this->get_adiabatic_conditions().pressure(in.position[q]));
       return;
+    }
+
+
+    template <int dim>
+    void
+    MeltSimple<dim>::initialize ()
+    {
+      if (this->include_melt_transport())
+        {
+          AssertThrow(this->get_parameters().use_operator_splitting,
+                      ExcMessage("The material model ``Melt simple'' can only be used with operator splitting!"));
+          AssertThrow(this->introspection().compositional_name_exists("peridotite"),
+                      ExcMessage("Material model Melt simple only works if there is a "
+                                 "compositional field called peridotite."));
+          AssertThrow(this->introspection().compositional_name_exists("porosity"),
+                      ExcMessage("Material model Melt simple with melt transport only "
+                                 "works if there is a compositional field called porosity."));
+        }
     }
 
 
@@ -191,37 +211,7 @@ namespace aspect
     MeltSimple<dim>::
     evaluate(const typename Interface<dim>::MaterialModelInputs &in, typename Interface<dim>::MaterialModelOutputs &out) const
     {
-      std::vector<double> maximum_melt_fractions(in.position.size());
-      std::vector<double> old_porosity(in.position.size());
-
-      // we want to get the peridotite field from the old solution here,
-      // because it tells us how much of the material was already molten
-      if (this->include_melt_transport() && in.cell
-          && this->get_timestep_number() > 0)
-        {
-          // Prepare the field function
-          Functions::FEFieldFunction<dim, DoFHandler<dim>, LinearAlgebra::BlockVector>
-          fe_value(this->get_dof_handler(), this->get_old_solution(), this->get_mapping());
-
-          // get peridotite and porosity field from the old the solution
-          AssertThrow(this->introspection().compositional_name_exists("peridotite"),
-                      ExcMessage("Material model Melt simple only works if there is a "
-                                 "compositional field called peridotite."));
-          AssertThrow(this->introspection().compositional_name_exists("porosity"),
-                      ExcMessage("Material model Melt simple with melt transport only "
-                                 "works if there is a compositional field called porosity."));
-          const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
-          const unsigned int peridotite_idx = this->introspection().compositional_index_for_name("peridotite");
-
-          fe_value.set_active_cell(*in.cell);
-          fe_value.value_list(in.position,
-                              maximum_melt_fractions,
-                              this->introspection().component_indices.compositional_fields[peridotite_idx]);
-
-          fe_value.value_list(in.position,
-                              old_porosity,
-                              this->introspection().component_indices.compositional_fields[porosity_idx]);
-        }
+      ReactionRateOutputs<dim> *reaction_rate_out = out.template get_additional_output<ReactionRateOutputs<dim> >();
 
       for (unsigned int i=0; i<in.position.size(); ++i)
         {
@@ -246,74 +236,115 @@ namespace aspect
           out.densities[i] = (reference_rho_s + delta_rho)
                              * temperature_dependence * std::exp(compressibility * (in.pressure[i] - this->get_surface_pressure()));
 
-          if (this->include_melt_transport())
+          if (this->include_melt_transport() && in.strain_rate.size() > 0)
             {
-              AssertThrow(this->introspection().compositional_name_exists("peridotite"),
-                          ExcMessage("Material model Melt simple only works if there is a "
-                                     "compositional field called peridotite."));
-              AssertThrow(this->introspection().compositional_name_exists("porosity"),
-                          ExcMessage("Material model Melt simple with melt transport only "
-                                     "works if there is a compositional field called porosity."));
               const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
               const unsigned int peridotite_idx = this->introspection().compositional_index_for_name("peridotite");
+              const double old_porosity = in.composition[i][porosity_idx];
+              const double maximum_melt_fraction = in.composition[i][peridotite_idx];
 
               // calculate the melting rate as difference between the equilibrium melt fraction
               // and the solution of the previous time step
-              double melting_rate = 0.0;
+              double porosity_change = 0.0;
               if (fractional_melting)
                 {
                   // solidus is lowered by previous melting events (fractional melting)
-                  const double solidus_change = (in.composition[i][peridotite_idx] - in.composition[i][porosity_idx]) * depletion_solidus_change;
+                  const double solidus_change = (maximum_melt_fraction - old_porosity) * depletion_solidus_change;
                   const double eq_melt_fraction = melt_fraction(in.temperature[i] - solidus_change, this->get_adiabatic_conditions().pressure(in.position[i]));
-                  melting_rate = eq_melt_fraction - old_porosity[i];
+                  porosity_change = eq_melt_fraction - old_porosity;
                 }
               else
-                // batch melting
-                melting_rate = melt_fraction(in.temperature[i], this->get_adiabatic_conditions().pressure(in.position[i]))
-                               - std::max(maximum_melt_fractions[i], 0.0);
+                {
+                  // batch melting
+                  porosity_change = melt_fraction(in.temperature[i], this->get_adiabatic_conditions().pressure(in.position[i]))
+                                    - std::max(maximum_melt_fraction, 0.0);
+                  porosity_change = std::max(porosity_change, 0.0);
+
+                  // freezing of melt below the solidus
+                  {
+                    // If the porosity is larger than the equilibrium melt fraction, melt should freeze again.
+                    // Because we do not track the melt composition, we have to use a workaround here for freezing of melt:
+                    // We reduce the porosity until either it reaches the equilibrium melt fraction, or the depletion
+                    // (peridotite field), which decreases as melt freezes, reaches the same value as the equilibrium
+                    // melt fraction, whatever happens earlier. An exception is when the melt fraction is zero; in this case
+                    // all melt should freeze.
+                    const double eq_melt_fraction = melt_fraction(in.temperature[i], this->get_adiabatic_conditions().pressure(in.position[i]));
+
+                    // If the porosity change is not negative, there is no freezing, and the change in porosity
+                    // is covered by the melting relation above.
+
+                    // porosity reaches the equilibrium melt fraction:
+                    const double porosity_change_wrt_melt_fraction = std::min(eq_melt_fraction - old_porosity - porosity_change,0.0);
+
+                    // depletion reaches the equilibrium melt fraction:
+                    const double porosity_change_wrt_depletion = std::min((eq_melt_fraction - std::max(maximum_melt_fraction, 0.0))
+                                                                          * (1.0 - old_porosity) / (1.0 - maximum_melt_fraction),0.0);
+                    double freezing_amount = std::max(porosity_change_wrt_melt_fraction, porosity_change_wrt_depletion);
+
+                    if (eq_melt_fraction == 0.0)
+                      freezing_amount = - old_porosity;
+
+                    porosity_change += freezing_amount;
+
+                    // Adapt time scale of freezing with respect to melting.
+                    // We have to multiply with the melting time scale here to obtain the porosity change
+                    // that happens in the time defined by the melting time scale (as opposed to a rate).
+                    // This is important because we want to perform some checks on this quantity (for example,
+                    // we want to make sure that this change does not lead to a negative porosity, see below).
+                    // Later on, the overall porosity change is then divided again by the melting time scale
+                    // to obtain the rate of melting or freezing, which is used in the operator splitting scheme.
+                    if (porosity_change < 0 )
+                      porosity_change *= freezing_rate * melting_time_scale;
+                  }
+                }
 
               // remove melt that gets close to the surface
               if (this->get_geometry_model().depth(in.position[i]) < extraction_depth)
-                melting_rate = -old_porosity[i] * (in.position[i](1) - (this->get_geometry_model().maximal_depth() - extraction_depth))/extraction_depth;
-
-              // freezing of melt below the solidus
-              {
-                const double freezing = freezing_rate * this->get_timestep() / year_in_seconds
-                                        * 0.5 * (melt_fraction(in.temperature[i], this->get_adiabatic_conditions().pressure(in.position[i])) - old_porosity[i]
-                                                 - std::abs(melt_fraction(in.temperature[i], this->get_adiabatic_conditions().pressure(in.position[i])) - old_porosity[i]));
-                melting_rate += freezing;
-              }
+                porosity_change = -old_porosity * (in.position[i](1) - (this->get_geometry_model().maximal_depth() - extraction_depth))/extraction_depth;
 
               // do not allow negative porosity
-              if (old_porosity[i] + melting_rate < 0)
-                melting_rate = -old_porosity[i];
+              porosity_change = std::max(porosity_change, -old_porosity);
 
               // because depletion is a volume-based, and not a mass-based property that is advected,
               // additional scaling factors on the right hand side apply
               for (unsigned int c=0; c<in.composition[i].size(); ++c)
                 {
-                  if (c == peridotite_idx && this->get_timestep_number() > 0 && (in.strain_rate.size()))
-                    out.reaction_terms[i][c] = melting_rate * (1 - in.composition[i][peridotite_idx])
-                                               / (1 - in.composition[i][porosity_idx]);
-                  else if (c == porosity_idx && this->get_timestep_number() > 0 && (in.strain_rate.size()))
-                    out.reaction_terms[i][c] = melting_rate
-                                               * out.densities[i] / this->get_timestep();
-                  else
-                    out.reaction_terms[i][c] = 0.0;
+                  // fill reaction rate outputs
+                  if (reaction_rate_out != nullptr)
+                    {
+                      if (c == peridotite_idx && this->get_timestep_number() > 0)
+                        reaction_rate_out->reaction_rates[i][c] = porosity_change / melting_time_scale
+                                                                  * (1 - maximum_melt_fraction) / (1 - old_porosity);
+                      else if (c == porosity_idx && this->get_timestep_number() > 0)
+                        reaction_rate_out->reaction_rates[i][c] = porosity_change / melting_time_scale;
+                      else
+                        reaction_rate_out->reaction_rates[i][c] = 0.0;
+                    }
+                  out.reaction_terms[i][c] = 0.0;
                 }
 
               const double porosity = std::min(1.0, std::max(in.composition[i][porosity_idx],0.0));
               out.viscosities[i] = eta_0 * exp(- alpha_phi * porosity);
+
+              out.entropy_derivative_pressure[i]    = entropy_change (in.temperature[i], this->get_adiabatic_conditions().pressure(in.position[i]), maximum_melt_fraction, NonlinearDependence::pressure);
+              out.entropy_derivative_temperature[i] = entropy_change (in.temperature[i], this->get_adiabatic_conditions().pressure(in.position[i]), maximum_melt_fraction, NonlinearDependence::temperature);
             }
           else
             {
               out.viscosities[i] = eta_0;
-              for (unsigned int c=0; c<in.composition[i].size(); ++c)
-                out.reaction_terms[i][c] = 0.0;
-            }
 
-          out.entropy_derivative_pressure[i]    = entropy_change (in.temperature[i], this->get_adiabatic_conditions().pressure(in.position[i]), maximum_melt_fractions[i], NonlinearDependence::pressure);
-          out.entropy_derivative_temperature[i] = entropy_change (in.temperature[i], this->get_adiabatic_conditions().pressure(in.position[i]), maximum_melt_fractions[i], NonlinearDependence::temperature);
+              out.entropy_derivative_pressure[i]    = entropy_change (in.temperature[i], this->get_adiabatic_conditions().pressure(in.position[i]), 0, NonlinearDependence::pressure);
+              out.entropy_derivative_temperature[i] = entropy_change (in.temperature[i], this->get_adiabatic_conditions().pressure(in.position[i]), 0, NonlinearDependence::temperature);
+
+              // no melting/freezing is used in the model --> set all reactions to zero
+              for (unsigned int c=0; c<in.composition[i].size(); ++c)
+                {
+                  out.reaction_terms[i][c] = 0.0;
+
+                  if (reaction_rate_out != nullptr)
+                    reaction_rate_out->reaction_rates[i][c] = 0.0;
+                }
+            }
 
           out.thermal_expansion_coefficients[i] = thermal_expansivity;
           out.specific_heat[i] = reference_specific_heat;
@@ -342,7 +373,7 @@ namespace aspect
       // fill melt outputs if they exist
       MeltOutputs<dim> *melt_out = out.template get_additional_output<MeltOutputs<dim> >();
 
-      if (melt_out != NULL)
+      if (melt_out != nullptr)
         {
           const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
 
@@ -388,11 +419,11 @@ namespace aspect
               else
                 {
                   const double delta_temp = in.temperature[i]-reference_T;
-                  const double T_dependence = (thermal_viscosity_exponent == 0.0
+                  const double T_dependence = (thermal_bulk_viscosity_exponent == 0.0
                                                ?
                                                0.0
                                                :
-                                               thermal_viscosity_exponent*delta_temp/reference_T);
+                                               thermal_bulk_viscosity_exponent*delta_temp/reference_T);
                   visc_temperature_dependence = std::max(std::min(std::exp(-T_dependence),1e4),1e-4);
                 }
               melt_out->compaction_viscosities[i] *= visc_temperature_dependence;
@@ -423,15 +454,15 @@ namespace aspect
                              Patterns::Double (0),
                              "The value of the constant viscosity $\\eta_0$ of the solid matrix. "
                              "This viscosity may be modified by both temperature and porosity "
-                             "dependencies. Units: $Pa s$.");
+                             "dependencies. Units: $Pa \\, s$.");
           prm.declare_entry ("Reference bulk viscosity", "1e22",
                              Patterns::Double (0),
                              "The value of the constant bulk viscosity $\\xi_0$ of the solid matrix. "
                              "This viscosity may be modified by both temperature and porosity "
-                             "dependencies. Units: $Pa s$.");
+                             "dependencies. Units: $Pa \\, s$.");
           prm.declare_entry ("Reference melt viscosity", "10",
                              Patterns::Double (0),
-                             "The value of the constant melt viscosity $\\eta_f$. Units: $Pa s$.");
+                             "The value of the constant melt viscosity $\\eta_f$. Units: $Pa \\, s$.");
           prm.declare_entry ("Exponential melt weakening factor", "27",
                              Patterns::Double (0),
                              "The porosity dependence of the viscosity. Units: dimensionless.");
@@ -497,11 +528,52 @@ namespace aspect
                              "melting should be used (if false), assuming that the melt fraction only "
                              "depends on temperature and pressure, and how much melt has already been "
                              "generated at a given point, but not considering movement of melt in "
-                             "the melting parameterization.");
+                             "the melting parameterization."
+                             "\n\n"
+                             "Note that melt does not freeze unless the 'Freezing rate' parameter is set "
+                             "to a value larger than 0.");
           prm.declare_entry ("Freezing rate", "0.0",
                              Patterns::Double (0),
-                             "Freezing rate of melt when in subsolidus regions."
-                             "Units: $1/yr$.");
+                             "Freezing rate of melt when in subsolidus regions. "
+                             "If this parameter is set to a number larger than 0.0, it specifies the "
+                             "fraction of melt that will freeze per year (or per second, depending on the "
+                             "``Use years in output instead of seconds'' parameter), as soon as the porosity "
+                             "exceeds the equilibrium melt fraction, and the equilibrium melt fraction "
+                             "falls below the depletion. In this case, melt will freeze according to the "
+                             "given rate until one of those conditions is not fulfilled anymore. The "
+                             "reasoning behind this is that there should not be more melt present than "
+                             "the equilibrium melt fraction, as melt production decreases with increasing "
+                             "depletion, but the freezing process of melt also reduces the depletion by "
+                             "the same amount, and as soon as the depletion falls below the equilibrium "
+                             "melt fraction, we expect that material should melt again (no matter how "
+                             "much melt is present). This is quite a simplification and not a realistic "
+                             "freezing parameterization, but without tracking the melt composition, there "
+                             "is no way to compute freezing rates accurately. "
+                             "If this parameter is set to zero, no freezing will occur. "
+                             "Note that freezing can never be faster than determined by the "
+                             "``Melting time scale for operator splitting''. The product of the "
+                             "``Freezing rate'' and the ``Melting time scale for operator splitting'' "
+                             "defines how fast freezing occurs with respect to melting (if the "
+                             "product is 0.5, melting will occur twice as fast as freezing). "
+                             "Units: 1/yr or 1/s, depending on the ``Use years "
+                             "in output instead of seconds'' parameter.");
+          prm.declare_entry ("Melting time scale for operator splitting", "1e3",
+                             Patterns::Double (0),
+                             "Because the operator splitting scheme is used, the porosity field can not "
+                             "be set to a new equilibrium melt fraction instantly, but the model has to "
+                             "provide a melting time scale instead. This time scale defines how fast melting "
+                             "happens, or more specifically, the parameter defines the time after which "
+                             "the deviation of the porosity from the equilibrium melt fraction will be "
+                             "reduced to a fraction of $1/e$. So if the melting time scale is small compared "
+                             "to the time step size, the reaction will be so fast that the porosity is very "
+                             "close to the equilibrium melt fraction after reactions are computed. Conversely, "
+                             "if the melting time scale is large compared to the time step size, almost no "
+                             "melting and freezing will occur."
+                             "\n\n"
+                             "Also note that the melting time scale has to be larger than or equal to the reaction "
+                             "time step used in the operator splitting scheme, otherwise reactions can not be "
+                             "computed. "
+                             "Units: yr or s, depending on the ``Use years in output instead of seconds'' parameter.");
           prm.declare_entry ("Depletion density change", "0.0",
                              Patterns::Double (),
                              "The density contrast between material with a depletion of 1 and a "
@@ -639,12 +711,34 @@ namespace aspect
           model_is_compressible      = prm.get_bool ("Use full compressibility");
           fractional_melting         = prm.get_bool ("Use fractional melting");
           freezing_rate              = prm.get_double ("Freezing rate");
+          melting_time_scale         = prm.get_double ("Melting time scale for operator splitting");
           melt_bulk_modulus_derivative = prm.get_double ("Melt bulk modulus derivative");
           depletion_density_change   = prm.get_double ("Depletion density change");
           depletion_solidus_change   = prm.get_double ("Depletion solidus change");
 
           if (thermal_viscosity_exponent!=0.0 && reference_T == 0.0)
             AssertThrow(false, ExcMessage("Error: Material model Melt simple with Thermal viscosity exponent can not have reference_T=0."));
+
+          if (this->convert_output_to_years() == true)
+            {
+              melting_time_scale *= year_in_seconds;
+              freezing_rate /= year_in_seconds;
+            }
+
+          AssertThrow(melting_time_scale >= this->get_parameters().reaction_time_step,
+                      ExcMessage("The reaction time step " + Utilities::to_string(this->get_parameters().reaction_time_step)
+                                 + " in the operator splitting scheme is too large to compute melting rates! "
+                                 "You have to choose it in such a way that it is smaller than the 'Melting time scale for "
+                                 "operator splitting' chosen in the material model, which is currently "
+                                 + Utilities::to_string(melting_time_scale) + "."));
+          AssertThrow(melting_time_scale > 0,
+                      ExcMessage("The Melting time scale for operator splitting must be larger than 0!"));
+          AssertThrow(freezing_rate * this->get_parameters().reaction_time_step <= 1.0,
+                      ExcMessage("The reaction time step " + Utilities::to_string(this->get_parameters().reaction_time_step)
+                                 + " in the operator splitting scheme is too large to compute freezing rates! "
+                                 "You have to choose it in such a way that it is smaller than the inverse of the "
+                                 "'Freezing rate' chosen in the material model, which is currently "
+                                 + Utilities::to_string(1.0/freezing_rate) + "."));
 
           A1              = prm.get_double ("A1");
           A2              = prm.get_double ("A2");
@@ -666,6 +760,19 @@ namespace aspect
       }
       prm.leave_subsection();
     }
+
+
+    template <int dim>
+    void
+    MeltSimple<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
+    {
+      if (this->get_parameters().use_operator_splitting && out.template get_additional_output<ReactionRateOutputs<dim> >() == nullptr)
+        {
+          const unsigned int n_points = out.viscosities.size();
+          out.additional_outputs.push_back(
+            std::make_shared<MaterialModel::ReactionRateOutputs<dim>> (n_points, this->n_compositional_fields()));
+        }
+    }
   }
 }
 
@@ -680,7 +787,7 @@ namespace aspect
                                    "material parameters required for the modelling of melt transport, "
                                    "including a source term for the porosity according to the melting "
                                    "model for dry peridotite of \\cite{KSL2003}. This also includes a "
-                                   "computation of the latent heat of melting (if the 'latent heat' "
+                                   "computation of the latent heat of melting (if the `latent heat' "
                                    "heating model is active)."
                                    "\n\n"
                                    "Most of the material properties are constant, except for the shear, "
@@ -690,7 +797,7 @@ namespace aspect
                                    "$\\eta(\\phi,T) = \\eta_0 e^{\\alpha(\\phi-\\phi_0)} e^{-\\beta(T-T_0)/T_0}$, "
                                    "$\\xi(\\phi,T) = \\xi_0 \\frac{\\phi_0}{\\phi} e^{-\\beta(T-T_0)/T_0}$, "
                                    "$k=k_0 \\phi^n (1-\\phi)^m$, "
-                                   "$\\rho=\\rho_0 (1 - \\alpha (T - T_\\text{adi})) e^{\\kappa p}$."
+                                   "$\\rho=\\rho_0 (1 - \\alpha (T - T_{\\text{adi}})) e^{\\kappa p}$."
                                    "\n\n"
                                    "The model is compressible only if this is specified in the input file, "
                                    "and contains compressibility for both solid and melt.")

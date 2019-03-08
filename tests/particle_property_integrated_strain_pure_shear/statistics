@@ -10,12 +10,12 @@
 # 10: Schur complement iterations in Stokes preconditioner
 # 11: Number of advected particles
 # 12: Particle file name
-0 0.000000000000e+00 0.000000000000e+00 16 187 81 0 20 21 63 10 output-particle_property_integrated_strain_pure_shear/output-particle_property_integrated_strain_pure_shear/particles/particle-00000 
+0 0.000000000000e+00 0.000000000000e+00 16 187 81 0 15 16 48 10 output-particle_property_integrated_strain_pure_shear/output-particle_property_integrated_strain_pure_shear/particles/particle-00000 
 1 1.250000000000e-01 1.250000000000e-01 16 187 81 0  0  0  0 10                                                                                                                                   "" 
 2 2.500000000000e-01 1.250000000000e-01 16 187 81 0  0  0  0 10                                                                                                                                   "" 
 3 3.750000000000e-01 1.250000000000e-01 16 187 81 0  0  0  0  9                                                                                                                                   "" 
 4 5.000000000000e-01 1.250000000000e-01 16 187 81 0  0  0  0  8                                                                                                                                   "" 
-5 6.250000000000e-01 1.250000000000e-01 16 187 81 0  0  0  0  7                                                                                                                                   "" 
+5 6.250000000000e-01 1.250000000000e-01 16 187 81 0  0  0  0  6                                                                                                                                   "" 
 6 7.500000000000e-01 1.250000000000e-01 16 187 81 0  0  0  0  6                                                                                                                                   "" 
-7 8.750000000000e-01 1.250000000000e-01 16 187 81 0  0  0  0  5                                                                                                                                   "" 
-8 1.000000000000e+00 1.250000000000e-01 16 187 81 0  0  0  0  4 output-particle_property_integrated_strain_pure_shear/output-particle_property_integrated_strain_pure_shear/particles/particle-00001 
+7 8.750000000000e-01 1.250000000000e-01 16 187 81 0  0  0  0  4                                                                                                                                   "" 
+8 1.000000000000e+00 1.250000000000e-01 16 187 81 0  0  0  0  2 output-particle_property_integrated_strain_pure_shear/output-particle_property_integrated_strain_pure_shear/particles/particle-00001 

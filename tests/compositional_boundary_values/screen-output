@@ -7,7 +7,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving C_1 system ... 12 iterations.
    Solving C_2 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 26+0 iterations.
+   Solving Stokes system... 21+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -2.929e-16/10/0.2083 // 1/10/1.187

@@ -29,10 +29,19 @@ subsection Geometry model
 end
 
 
-subsection Model settings
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary velocity model
   set Zero velocity boundary indicators       = inner
-  set Tangential velocity boundary indicators = 
+end
+
+subsection Boundary velocity model
   set Prescribed velocity boundary indicators = outer:function 
+end
+
+subsection Boundary temperature model
   set Fixed temperature boundary indicators   = inner, outer
 end
 
@@ -43,7 +52,7 @@ end
 
 
 subsection Boundary temperature model
-  set Model name = spherical constant
+  set List of model names = spherical constant
   subsection Spherical constant
     set Inner temperature = 4370
     set Outer temperature = 273 
@@ -51,7 +60,7 @@ subsection Boundary temperature model
 end
 
 subsection Boundary temperature model
-  set Model name = function
+  set List of model names = function
   subsection Function
         set Variable names = r,phi
         set Coordinate system = spherical
@@ -74,8 +83,8 @@ subsection Initial temperature model
 end
 
 subsection Gravity model
-  set Model name = vertical
-  subsection Vertical
+  set Model name = radial constant
+  subsection Radial constant
     set Magnitude = 10
   end
 end

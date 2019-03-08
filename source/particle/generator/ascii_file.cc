@@ -1,21 +1,21 @@
 /*
-  Copyright (C) 2015 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2019 by the authors of the ASPECT code.
 
- This file is part of ASPECT.
+  This file is part of ASPECT.
 
- ASPECT is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2, or (at your option)
- any later version.
+  ASPECT is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2, or (at your option)
+  any later version.
 
- ASPECT is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
+  ASPECT is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
 
- You should have received a copy of the GNU General Public License
- along with ASPECT; see the file doc/COPYING.  If not see
- <http://www.gnu.org/licenses/>.
+  You should have received a copy of the GNU General Public License
+  along with ASPECT; see the file LICENSE.  If not see
+  <http://www.gnu.org/licenses/>.
  */
 
 #include <aspect/particle/generator/ascii_file.h>
@@ -30,7 +30,7 @@ namespace aspect
     {
       template <int dim>
       void
-      AsciiFile<dim>::generate_particles(std::multimap<types::LevelInd, Particle<dim> > &particles)
+      AsciiFile<dim>::generate_particles(std::multimap<Particles::internal::LevelInd, Particle<dim> > &particles)
       {
         const std::string filename = data_directory+data_filename;
 
@@ -41,7 +41,7 @@ namespace aspect
         while (in.peek() == '#')
           {
             std::string temp;
-            getline(in,temp);
+            std::getline(in,temp);
           }
 
         // Read data lines
@@ -83,7 +83,7 @@ namespace aspect
                                    "text '$ASPECT_SOURCE_DIR' which will be interpreted as the path "
                                    "in which the ASPECT source files were located when ASPECT was "
                                    "compiled. This interpretation allows, for example, to reference "
-                                   "files located in the 'data/' subdirectory of ASPECT. ");
+                                   "files located in the `data/' subdirectory of ASPECT. ");
                 prm.declare_entry ("Data file name", "particle.dat",
                                    Patterns::Anything (),
                                    "The name of the particle file.");
@@ -140,11 +140,15 @@ namespace aspect
                                          "specified in an Ascii data file. The file format is "
                                          "a simple text file, with as many columns as spatial "
                                          "dimensions and as many lines as particles to be generated. "
-                                         "Initial comment lines starting with `#' will be discarded."
+                                         "Initial comment lines starting with `#' will be discarded. "
+                                         "Note that this plugin always generates as many particles "
+                                         "as there are coordinates in the data file, the "
+                                         "``Postprocess/Particles/Number of particles'' parameter "
+                                         "has no effect on this plugin. "
                                          "All of the values that define this generator are read "
-                                         "from a section ``Particle generator/Ascii file'' in the "
+                                         "from a section ``Postprocess/Particles/Generator/Ascii file'' in the "
                                          "input file, see "
-                                         "Section~\\ref{parameters:Particle_20generator/Ascii_20file}.")
+                                         "Section~\\ref{parameters:Postprocess/Particles/Generator/Ascii_20file}.")
     }
   }
 }

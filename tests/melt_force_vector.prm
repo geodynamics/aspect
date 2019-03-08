@@ -1,12 +1,10 @@
 # A simple reference solution with RHS force vector with incompressible
 # melt transport
 
-set Nonlinear solver scheme                = IMPES
+set Nonlinear solver scheme                = single Advection, single Stokes
 set Max nonlinear iterations               = 50
 set Nonlinear solver tolerance             = 1e-10 #1e-10
-set Linear solver tolerance                = 1e-12
 
-set Use direct solver for Stokes system        = true
 
 
 subsection Mesh refinement
@@ -40,7 +38,6 @@ set Resume computation                     = false
 set Start time                             = 0
 
 set Use years in output instead of seconds = false
-set Number of cheap Stokes solver steps    = 0
 
 subsection Compositional fields
   set Number of fields = 1
@@ -52,7 +49,7 @@ subsection Boundary fluid pressure model
 end
 
 subsection Boundary temperature model
-  set Model name = initial temperature
+  set List of model names = initial temperature
 
   subsection Initial temperature
     # Temperature at the inner boundary (core mantle boundary). Units: K.
@@ -65,7 +62,7 @@ subsection Boundary temperature model
 end
 
 subsection Boundary composition model
-  set Model name = initial composition
+  set List of model names = initial composition
 end
 
 
@@ -128,16 +125,31 @@ end
 
 
 
-subsection Model settings
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary temperature model
   set Fixed temperature boundary indicators   = 2,3        # default: 
+end
+
+subsection Boundary composition model
   set Fixed composition boundary indicators   = 0,1,2,3   
+end
+
+subsection Boundary velocity model
   set Prescribed velocity boundary indicators = 0:function, 1:function, 2:function, 3:function
+end
 
-  set Tangential velocity boundary indicators = 
+subsection Boundary velocity model
   set Zero velocity boundary indicators       =           # default: 
+end
 
+subsection Melt settings
   set Include melt transport                  = true
-#  set Melt transport threshold = 0
+end
+
+subsection Formulation
   set Enable additional Stokes RHS            = true
 end
 
@@ -177,3 +189,10 @@ end
 
 
 
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-12
+    set Use direct solver for Stokes system = true
+    set Number of cheap Stokes solver steps = 0
+  end
+end

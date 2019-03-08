@@ -37,27 +37,24 @@ subsection Heating model
 end
 
 
-subsection Model settings
-  # We only fix the temperature at the upper boundary, the other boundaries
-  # are isolating. To guarantuee a steady downward flow, we fix the velocity
-  # at the top and bottom, and set it to free slip on the sides. 
-  set Fixed temperature boundary indicators   = top
-  set Prescribed velocity boundary indicators = bottom:function, top:function
-  set Tangential velocity boundary indicators = left, right
-end
-
-
 ############### Boundary conditions
-# We set the top temperature to T1=1000K. 
+# We only fix the temperature at the upper boundary, the other boundaries
+# are isolating.
 subsection Boundary temperature model
-  set Model name = box
+  set Fixed temperature boundary indicators = top
+  set List of model names = box
+
   subsection Box
     set Top temperature = 1000
   end
 end
 
-# We prescribe a constant downward flow.
+# To guarantuee a steady downward flow, we fix the velocity
+# at the top and bottom, and set it to free slip on the sides. 
 subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = bottom:function, top:function
+  set Tangential velocity boundary indicators = left, right
+
   subsection Function
     set Function expression = 0;-2.1422e-11
     set Variable names      = x,y

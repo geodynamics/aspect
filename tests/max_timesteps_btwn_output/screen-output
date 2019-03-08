@@ -1,0 +1,114 @@
+
+Number of active cells: 64 (on 4 levels)
+Number of degrees of freedom: 948 (578+81+289)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 5+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  17.9 m/s, 25.3 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.379 W, 1.379 W
+     Writing graphical output:           output-max_timesteps_btwn_output/solution/solution-00000
+
+*** Timestep 1:  t=0.00246718 seconds
+   Solving temperature system... 12 iterations.
+   Solving Stokes system... 11+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  122 m/s, 172 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.043 W, 1.043 W
+
+*** Timestep 2:  t=0.00282949 seconds
+   Solving temperature system... 12 iterations.
+   Solving Stokes system... 11+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  227 m/s, 322 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.129 W, 1.129 W
+
+*** Timestep 3:  t=0.00302322 seconds
+   Solving temperature system... 13 iterations.
+   Solving Stokes system... 12+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  333 m/s, 472 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.259 W, 1.259 W
+
+*** Timestep 4:  t=0.00315526 seconds
+   Solving temperature system... 13 iterations.
+   Solving Stokes system... 12+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  432 m/s, 614 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.439 W, 1.439 W
+
+*** Timestep 5:  t=0.00325679 seconds
+   Solving temperature system... 13 iterations.
+   Solving Stokes system... 12+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  521 m/s, 744 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.679 W, 1.679 W
+     Writing graphical output:           output-max_timesteps_btwn_output/solution/solution-00001
+
+*** Timestep 6:  t=0.00334066 seconds
+   Solving temperature system... 13 iterations.
+   Solving Stokes system... 12+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  600 m/s, 859 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.989 W, 1.989 W
+
+*** Timestep 7:  t=0.00341331 seconds
+   Solving temperature system... 13 iterations.
+   Solving Stokes system... 12+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  668 m/s, 958 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -2.389 W, 2.389 W
+
+*** Timestep 8:  t=0.00347846 seconds
+   Solving temperature system... 12 iterations.
+   Solving Stokes system... 12+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  724 m/s, 1.04e+03 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -2.899 W, 2.899 W
+
+*** Timestep 9:  t=0.00353846 seconds
+   Solving temperature system... 12 iterations.
+   Solving Stokes system... 12+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  768 m/s, 1.11e+03 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -3.545 W, 3.545 W
+
+*** Timestep 10:  t=0.00359492 seconds
+   Solving temperature system... 12 iterations.
+   Solving Stokes system... 12+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  801 m/s, 1.16e+03 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -4.351 W, 4.351 W
+     Writing graphical output:           output-max_timesteps_btwn_output/solution/solution-00002
+
+Termination requested by criterion: end step
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

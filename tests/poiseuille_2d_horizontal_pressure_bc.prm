@@ -10,11 +10,11 @@ set Start time                             = 0
 set Adiabatic surface temperature          = 0
 set Surface pressure                       = 0
 set Use years in output instead of seconds = false  # default: true
-set Nonlinear solver scheme                = IMPES
+set Nonlinear solver scheme                = single Advection, single Stokes
 
 
 subsection Boundary temperature model
-  set Model name = box
+  set List of model names = box
   subsection Box
     set Left temperature = 0
   end
@@ -72,12 +72,24 @@ subsection Mesh refinement
 end
 
 
-subsection Model settings
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary temperature model
   set Fixed temperature boundary indicators   = 0, 1
+end
+
+subsection Boundary traction model
   # Prescribe a horizontal traction on the vertical boundaries
   set Prescribed traction boundary indicators = 0 x: function, 1 x: function
-  set Tangential velocity boundary indicators = 
+end
+
+subsection Boundary velocity model
   set Zero velocity boundary indicators       = 2, 3
+end
+
+subsection Boundary velocity model
   # Prescribe a zero vertical velocity component on the vertical boundaries
   set Prescribed velocity boundary indicators = 0 y: function, 1 y: function
 end

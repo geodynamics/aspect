@@ -1,4 +1,4 @@
-# Copyright (C) 2015 - 2016 by the authors of the ASPECT code.
+# Copyright (C) 2015 - 2019 by the authors of the ASPECT code.
 #
 # This file is part of ASPECT.
 #
@@ -13,12 +13,12 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with ASPECT; see the file doc/COPYING.  If not see
+# along with ASPECT; see the file LICENSE.  If not see
 # <http://www.gnu.org/licenses/>.
 
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8.8)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8.12)
 
-FIND_PACKAGE(Aspect 1.5.0 QUIET HINTS ${Aspect_DIR} ../ ../../ $ENV{ASPECT_DIR})
+FIND_PACKAGE(Aspect 2.1.0 QUIET HINTS ${Aspect_DIR} ../ ../../ $ENV{ASPECT_DIR})
 
 IF (NOT Aspect_FOUND)
   MESSAGE(FATAL_ERROR "\n"

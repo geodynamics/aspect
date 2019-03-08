@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,12 +14,13 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
 #include <deal.II/base/signaling_nan.h>
 #include <aspect/initial_temperature/spherical_shell.h>
+#include <aspect/boundary_temperature/interface.h>
 #include <aspect/geometry_model/spherical_shell.h>
 #include <aspect/geometry_model/sphere.h>
 #include <aspect/geometry_model/chunk.h>
@@ -49,17 +50,17 @@ namespace aspect
       const GeometryModel::Interface<dim> *geometry_model = &this->get_geometry_model();
       double R1;
 
-      if (dynamic_cast<const GeometryModel::Sphere<dim>*>(geometry_model) != 0)
+      if (dynamic_cast<const GeometryModel::Sphere<dim>*>(geometry_model) != nullptr)
         {
           R1 = dynamic_cast<const GeometryModel::Sphere<dim>&>
                (this->get_geometry_model()).radius();
         }
-      else if (dynamic_cast<const GeometryModel::SphericalShell<dim>*>(geometry_model) != 0)
+      else if (dynamic_cast<const GeometryModel::SphericalShell<dim>*>(geometry_model) != nullptr)
         {
           R1 = dynamic_cast<const GeometryModel::SphericalShell<dim>&>
                (this->get_geometry_model()).outer_radius();
         }
-      else if (dynamic_cast<const GeometryModel::Chunk<dim>*>(geometry_model) != 0)
+      else if (dynamic_cast<const GeometryModel::Chunk<dim>*>(geometry_model) != nullptr)
         {
           R1 = dynamic_cast<const GeometryModel::Chunk<dim>&>
                (this->get_geometry_model()).outer_radius();
@@ -113,9 +114,9 @@ namespace aspect
                            +
                            0.2 * s * (1-s) * std::sin(angular_mode*phi +(90 + 2*rotation_offset)*numbers::PI/180 ) * scale;
 
-      return (this->get_boundary_temperature().maximal_temperature()*(s_mod)
+      return (this->get_boundary_temperature_manager().maximal_temperature()*(s_mod)
               +
-              this->get_boundary_temperature().minimal_temperature()*(1-s_mod));
+              this->get_boundary_temperature_manager().minimal_temperature()*(1-s_mod));
     }
 
 
@@ -200,20 +201,20 @@ namespace aspect
       const GeometryModel::Interface<dim> *geometry_model = &this->get_geometry_model();
       double R0, R1;
 
-      if (dynamic_cast<const GeometryModel::Sphere<dim>*>(geometry_model) != 0)
+      if (dynamic_cast<const GeometryModel::Sphere<dim>*>(geometry_model) != nullptr)
         {
           R0 = 0.;
           R1 = dynamic_cast<const GeometryModel::Sphere<dim>&>
                (this->get_geometry_model()).radius();
         }
-      else if (dynamic_cast<const GeometryModel::SphericalShell<dim>*>(geometry_model) != 0)
+      else if (dynamic_cast<const GeometryModel::SphericalShell<dim>*>(geometry_model) != nullptr)
         {
           R0 = dynamic_cast<const GeometryModel::SphericalShell<dim>&>
                (this->get_geometry_model()).inner_radius();
           R1 = dynamic_cast<const GeometryModel::SphericalShell<dim>&>
                (this->get_geometry_model()).outer_radius();
         }
-      else if (dynamic_cast<const GeometryModel::Chunk<dim>*>(geometry_model) != 0)
+      else if (dynamic_cast<const GeometryModel::Chunk<dim>*>(geometry_model) != nullptr)
         {
           R0 = dynamic_cast<const GeometryModel::Chunk<dim>&>
                (this->get_geometry_model()).inner_radius();
@@ -248,10 +249,10 @@ namespace aspect
           R1 = numbers::signaling_nan<double>();
         }
 
-      const double dT = this->get_boundary_temperature().maximal_temperature()
-                        - this->get_boundary_temperature().minimal_temperature();
-      const double T0 = this->get_boundary_temperature().maximal_temperature()/dT;
-      const double T1 = this->get_boundary_temperature().minimal_temperature()/dT;
+      const double dT = this->get_boundary_temperature_manager().maximal_temperature()
+                        - this->get_boundary_temperature_manager().minimal_temperature();
+      const double T0 = this->get_boundary_temperature_manager().maximal_temperature()/dT;
+      const double T1 = this->get_boundary_temperature_manager().minimal_temperature()/dT;
       const double h = R1-R0;
 
       // s = fraction of the way from

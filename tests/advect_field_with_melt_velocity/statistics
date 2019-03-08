@@ -1,0 +1,33 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Number of nonlinear iterations
+# 9: Iterations for temperature solver
+# 10: Iterations for composition solver 1
+# 11: Iterations for composition solver 2
+# 12: Iterations for composition solver 3
+# 13: Iterations for Stokes solver
+# 14: Velocity iterations in Stokes preconditioner
+# 15: Schur complement iterations in Stokes preconditioner
+# 16: Minimal value for composition porosity
+# 17: Maximal value for composition porosity
+# 18: Global mass for composition porosity
+# 19: Minimal value for composition peridotite
+# 20: Maximal value for composition peridotite
+# 21: Global mass for composition peridotite
+# 22: Minimal value for composition melt_composition
+# 23: Maximal value for composition melt_composition
+# 24: Global mass for composition melt_composition
+# 25: Visualization file name
+0 0.000000000000e+00 0.000000000000e+00 1024 9539 4225 12675 2 0 0 0  0 1 2 50 8.72158000e-02 8.72158000e-02 8.72158000e-02  0.00000000e+00 1.00000000e+00 4.94791667e-01  0.00000000e+00 1.00000000e+00 4.94791667e-01 output-advect_field_with_melt_velocity/solution/solution-00000 
+1 1.562530132333e-02 1.562530132333e-02 1024 9539 4225 12675 2 0 0 6 18 0 0  0 8.72158000e-02 8.72158000e-02 8.72158000e-02 -2.19478567e-20 1.03151248e+00 4.94791667e-01 -5.28699931e-02 1.00000000e+00 4.79166667e-01 output-advect_field_with_melt_velocity/solution/solution-00001 
+2 3.125060264665e-02 1.562530132333e-02 1024 9539 4225 12675 2 0 0 9 18 0 0  0 8.72158000e-02 8.72158000e-02 8.72158000e-02 -6.87445622e-05 1.01614560e+00 4.94791667e-01 -2.19266863e-02 1.00000000e+00 4.63541768e-01 output-advect_field_with_melt_velocity/solution/solution-00002 
+3 4.687590396998e-02 1.562530132333e-02 1024 9539 4225 12675 2 0 0 9 19 0 0  0 8.72158000e-02 8.72158000e-02 8.72158000e-02 -7.13903156e-06 1.00987077e+00 4.94791667e-01 -6.42503191e-03 1.00000000e+00 4.47917537e-01 output-advect_field_with_melt_velocity/solution/solution-00003 
+4 6.250120529331e-02 1.562530132333e-02 1024 9539 4225 12675 2 0 0 9 18 0 0  0 8.72158000e-02 8.72158000e-02 8.72158000e-02 -8.62629021e-04 1.00233127e+00 4.94791667e-01 -2.44604283e-02 1.00000000e+00 4.32295609e-01 output-advect_field_with_melt_velocity/solution/solution-00004 
+5 7.812650661663e-02 1.562530132333e-02 1024 9539 4225 12675 2 0 0 8 18 0 0  0 8.72158000e-02 8.72158000e-02 8.72158000e-02 -1.05907389e-03 1.00043102e+00 4.94791667e-01 -2.85289112e-02 1.00000000e+00 4.16678954e-01 output-advect_field_with_melt_velocity/solution/solution-00005 
+6 9.375180793996e-02 1.562530132333e-02 1024 9539 4225 12675 2 0 0 8 18 0 0  0 8.72158000e-02 8.72158000e-02 8.72158000e-02 -3.33695138e-04 1.00030047e+00 4.94791667e-01 -2.66421368e-02 1.00000000e+00 4.01070962e-01 output-advect_field_with_melt_velocity/solution/solution-00006 
+7 1.000000000000e-01 6.248192060040e-03 1024 9539 4225 12675 2 0 0 8 14 0 0  0 8.72158000e-02 8.72158000e-02 8.72158000e-02 -2.56888391e-04 1.00031572e+00 4.94791667e-01 -2.09855620e-02 1.00000000e+00 3.94832510e-01 output-advect_field_with_melt_velocity/solution/solution-00007 

@@ -6,13 +6,14 @@ Number of degrees of freedom: 527 (375+27+125)
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+6 iterations.
-      Relative Stokes residual after nonlinear iteration 1: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
    Solving Stokes system... 0+0 iterations.
-      Relative Stokes residual after nonlinear iteration 2: 4.14038e-06
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 4.41285e-06
+
 
    Postprocessing:
-     RMS, max velocity: 0.00495 m/year, 0.00881 m/year
+     RMS, max velocity: 0.00488 m/year, 0.009 m/year
 
 Termination requested by criterion: end time
 

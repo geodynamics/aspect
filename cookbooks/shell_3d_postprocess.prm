@@ -1,0 +1,106 @@
+# A description of convection in a 3d spherical shell with 
+# a prescribed initial condition based on a harmonic
+# perturbation
+
+# Define the number of space dimensions we would like to 
+# work in:
+set Dimension                              = 3 
+
+# Specify the time you want to let the model run for in 
+# years and the output directory. Here we only calculate
+# the instantaneous solution.
+set End time                               = 0
+set Use years in output instead of seconds = true
+set Output directory                       = output-shell_3d_postprocess
+
+# The following variables describe how the pressure should
+# be normalized. Here, we choose a zero average pressure
+# at the surface of the domain 
+set Pressure normalization                 = surface
+set Surface pressure                       = 0
+
+# Here we specify the geometry of the domain, which is 
+# a spherical shell with inner radius of 3481km and 
+# outer radius of 6371km
+subsection Geometry model
+  set Model name = spherical shell
+  subsection Spherical shell
+    set Inner radius  = 3481000
+    set Outer radius  = 6371000
+  end
+end
+
+# This section specifies the temperature at the boundary of 
+# the domain. Here we set the temperature to be constant at
+# bottom and top.
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = bottom,top
+  set List of model names = spherical constant
+
+  subsection Spherical constant
+    set Inner temperature = 2000
+    set Outer temperature = 1000
+  end
+end
+
+# This section describes the gravity field, which is pointing
+# towards the Earth's center with the same magnitude of 10 m/s^2
+# everywhere
+subsection Gravity model
+  set Model name = radial constant
+  subsection Radial constant
+    set Magnitude = 10
+  end
+end
+
+# This section prescribes the initial condition in the temperature
+# field, which is chosen as a degree n=4, l=2 perturbation
+subsection Initial temperature model
+  set Model name = harmonic perturbation
+
+  subsection Harmonic perturbation
+    set Lateral wave number one     = 4
+    set Lateral wave number two     = 2
+    set Magnitude                   = 500
+    set Reference temperature       = 1600
+  end
+end
+
+# The material model is based on the simple material model, which assumes
+# a constant density, and other parameters as stated below.
+subsection Material model
+  set Model name = simple
+    subsection Simple model
+    set Reference density                 = 3300
+    set Viscosity                         = 1e21
+    set Thermal expansion coefficient     = 3e-5
+    set Reference temperature             = 1600
+    set Thermal conductivity              = 4.125 
+    set Reference specific heat           = 1250
+  end
+end
+
+# For this calculation we only do 2 global refinement steps. This resolution
+# is too low to fully resolve the mantle flow, however it does capture
+# the main features.
+subsection Mesh refinement
+  set Initial global refinement          = 2
+  set Initial adaptive refinement        = 0
+end
+
+# We assume free slip at the inner and outer boundary
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = bottom,top
+end
+
+
+# We output the density, velocity, dynamic topography and geoid anomalies
+subsection Postprocess
+  set List of postprocessors = velocity statistics, dynamic topography, visualization, basic statistics, geoid
+
+  subsection Visualization
+    set Output format                 = vtu
+    set List of output variables      = geoid, dynamic topography, density, viscosity, gravity
+    set Number of grouped files       = 1 
+  end
+end

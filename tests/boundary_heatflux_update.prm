@@ -1,0 +1,104 @@
+# This test is used to check if the heat flux boundary conditions
+# work correctly, in particular if the initialize and update functions work.
+# Otherwise, it is a copy of the boundary_heatflux test.
+set Use years in output instead of seconds = false
+set End time                               = 2e12
+set Maximum time step                      = 1e12
+
+set Pressure normalization                 = surface
+set Surface pressure                       = 0
+set Adiabatic surface temperature          = 90
+set Use conduction timestep                = true
+
+# Then come a number of sections that deal with the setup
+# of the problem to solve. The first one deals with the
+# geometry of the domain within which we want to solve.
+# The sections that follow all have the same basic setup
+# where we select the name of a particular model (here,
+# the box geometry) and then, in a further subsection,
+# set the parameters that are specific to this particular
+# model.
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 100000
+    set Y extent = 100000      
+  end
+end
+
+
+# We then choose a vertical gravity model and describe the
+# initial temperature with a vertical gradient.
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 1.42
+  end
+end
+
+
+
+# The next section deals with the initial conditions for the
+# temperature (there are no initial conditions for the
+# velocity variable since the velocity is assumed to always
+# be in a static equilibrium with the temperature field).
+# There are a number of models with the 'function' model
+# a generic one that allows us to enter the actual initial
+# conditions in the form of a formula that can contain
+# constants. We choose a linear temperature profile that
+# matches the boundary conditions defined below plus
+# a small perturbation:
+subsection Initial temperature model
+  set Model name = adiabatic
+end
+
+subsection Boundary velocity model
+  subsection Function
+    set Function expression = 0;0
+  end
+  set Prescribed velocity boundary indicators = 0:function,1:function, 2:function,3:function 
+end
+
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = top
+  set List of model names = initial temperature
+end
+
+subsection Boundary heat flux model
+  set Fixed heat flux boundary indicators = bottom
+  set Model name = heatflux update
+end
+
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Reference density        = 950
+    set Reference specific heat  = 1000
+    set Reference temperature    = 273 
+    set Thermal conductivity     = 2.38
+  end
+end
+
+subsection Mesh refinement
+  set Initial global refinement                = 5
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 0
+end
+
+# The final part is to specify what ASPECT should do with the
+# solution once computed at the end of every time step. The
+# process of evaluating the solution is called `postprocessing'
+# and we choose to compute temperature statistics,
+# statistics about the heat flux through the boundaries of the
+# domain, and to generate graphical output files for later
+# visualization.
+subsection Postprocess
+  set List of postprocessors = temperature statistics, heat flux statistics, visualization
+  subsection Visualization
+    set List of output variables      =  heat flux map
+  end
+end

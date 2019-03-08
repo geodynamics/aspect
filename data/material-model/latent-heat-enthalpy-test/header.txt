@@ -1,0 +1,13 @@
+|6.6.6
+PYR-Ringwood88_2.tab                                                                                
+           2
+T(K)    
+   850.0 
+   20.0    
+         21
+P(bar)  
+   0 
+   8000.0
+         51
+           8
+T(K)           P(bar)         rho,kg/m3      alpha,1/K      cp,J/K/kg      vp,km/s        vs,km/s        h,J/kg        

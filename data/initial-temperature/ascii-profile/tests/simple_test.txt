@@ -1,0 +1,8 @@
+# Test data for ascii data reference state
+# Only next line is parsed in format: [nx] because of keyword "POINTS:"
+# POINTS: 3
+# Columns: depth (m), temperature (K)
+depth temperature
+0.       300.
+670000.  2000.
+2890000. 4000.

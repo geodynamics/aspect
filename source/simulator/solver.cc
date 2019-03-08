@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
@@ -25,7 +25,6 @@
 
 #include <deal.II/base/signaling_nan.h>
 #include <deal.II/lac/solver_gmres.h>
-#include <deal.II/lac/constraint_matrix.h>
 
 #ifdef ASPECT_USE_PETSC
 #include <deal.II/lac/solver_cg.h>
@@ -41,8 +40,6 @@ namespace aspect
 {
   namespace internal
   {
-    using namespace dealii;
-
     /**
      * Implement multiplication with Stokes part of system matrix. In essence, this
      * object represents a 2x2 block matrix that corresponds to the top left
@@ -328,7 +325,7 @@ namespace aspect
 
       // apply the top right block
       {
-        stokes_matrix.block(0,1).vmult(utmp, dst.block(1)); // B^T
+        stokes_matrix.block(0,1).vmult(utmp, dst.block(1)); // B^T or J^{up}
         utmp *= -1.0;
         utmp += src.block(0);
       }
@@ -426,18 +423,18 @@ namespace aspect
                 ExcMessage ("The " + field_name + " equation can not be solved, because the matrix is zero, "
                             "but the right-hand side is nonzero."));
 
+    LinearAlgebra::PreconditionILU preconditioner;
+    build_advection_preconditioner(advection_field, preconditioner);
+
+    TimerOutput::Scope timer (computing_timer, (advection_field.is_temperature() ?
+                                                "Solve temperature system" :
+                                                "Solve composition system"));
     if (advection_field.is_temperature())
       {
-        build_advection_preconditioner(advection_field,
-                                       T_preconditioner);
-        computing_timer.enter_section ("   Solve temperature system");
         pcout << "   Solving temperature system... " << std::flush;
       }
     else
       {
-        build_advection_preconditioner(advection_field,
-                                       C_preconditioner);
-        computing_timer.enter_section ("   Solve composition system");
         pcout << "   Solving "
               << introspection.name_for_compositional_index(advection_field.compositional_variable)
               << " system "
@@ -472,11 +469,7 @@ namespace aspect
         solver.solve (system_matrix.block(block_idx,block_idx),
                       distributed_solution.block(block_idx),
                       system_rhs.block(block_idx),
-                      (advection_field.is_temperature()
-                       ?
-                       *T_preconditioner
-                       :
-                       *C_preconditioner));
+                      preconditioner);
       }
     // if the solver fails, report the error from processor 0 with some additional
     // information about its location, and throw a quiet exception on all other
@@ -522,21 +515,23 @@ namespace aspect
          && parameters.use_limiter_for_discontinuous_composition_solution))
       apply_limiter_to_dg_solutions(advection_field);
 
-    computing_timer.exit_section();
-
     return initial_residual;
   }
 
+
+
   template <int dim>
-  double Simulator<dim>::solve_stokes ()
+  std::pair<double,double>
+  Simulator<dim>::solve_stokes ()
   {
-    computing_timer.enter_section ("   Solve Stokes system");
+    TimerOutput::Scope timer (computing_timer, "Solve Stokes system");
     pcout << "   Solving Stokes system... " << std::flush;
 
     // extract Stokes parts of solution vector, without any ghost elements
     LinearAlgebra::BlockVector distributed_stokes_solution (introspection.index_sets.stokes_partitioning, mpi_communicator);
 
-    double initial_residual = numbers::signaling_nan<double>();
+    double initial_nonlinear_residual = numbers::signaling_nan<double>();
+    double final_linear_residual      = numbers::signaling_nan<double>();
 
     if (parameters.use_direct_stokes_solver)
       {
@@ -557,6 +552,7 @@ namespace aspect
         // (it will be ignored by the solver anyway), we need this if we are
         // using a nonlinear scheme, because we use this to compute the current
         // nonlinear residual (see initial_residual below).
+
         // TODO: if there was an easy way to know if the caller needs the
         // initial residual we could skip all of this stuff.
         distributed_stokes_solution.block(0) = solution.block(0);
@@ -581,10 +577,10 @@ namespace aspect
         // we need a temporary vector for the residual (even if we don't care about it)
         LinearAlgebra::Vector residual (introspection.index_sets.stokes_partitioning[0], mpi_communicator);
 
-        initial_residual = system_matrix.block(0,0).residual(
-                             residual,
-                             distributed_stokes_solution.block(0),
-                             system_rhs.block(0));
+        initial_nonlinear_residual = system_matrix.block(0,0).residual(
+                                       residual,
+                                       distributed_stokes_solution.block(0),
+                                       system_rhs.block(0));
 
         SolverControl cn;
         // TODO: can we re-use the direct solver?
@@ -598,6 +594,12 @@ namespace aspect
             solver.solve(system_matrix.block(0,0),
                          distributed_stokes_solution.block(0),
                          system_rhs.block(0));
+
+            // if we got here, we have successfully solved the linear system
+            // with a direct solver, and the final linear residual should
+            // be approximately zero. we could compute it exactly, but
+            // this is probably not necessary
+            final_linear_residual = 0;
           }
         // if the solver fails, report the error from processor 0 with some additional
         // information about its location, and throw a quiet exception on all other
@@ -663,41 +665,79 @@ namespace aspect
         // linearized_stokes_variables has a different
         // layout than current_linearization_point, which also contains all the
         // other solution variables.
-        linearized_stokes_initial_guess.block (block_vel) = current_linearization_point.block (block_vel);
+        if (!assemble_newton_stokes_system)
+          {
+            linearized_stokes_initial_guess.block (block_vel) = current_linearization_point.block (block_vel);
+            linearized_stokes_initial_guess.block (block_p) = current_linearization_point.block (block_p);
 
-        linearized_stokes_initial_guess.block (block_p) = current_linearization_point.block (block_p);
-        denormalize_pressure (this->last_pressure_normalization_adjustment,
-                              linearized_stokes_initial_guess,
-                              current_linearization_point);
+            denormalize_pressure (this->last_pressure_normalization_adjustment,
+                                  linearized_stokes_initial_guess,
+                                  current_linearization_point);
+          }
+        else
+          {
+            // The Newton solver solves for updates to variables, for which our best guess is zero when
+            // the it isn't the first nonlinear iteration. When it is the first nonlinear iteration, we
+            // have to assemble the full (non-defect correction) Picard, to get the boundary conditions
+            // right in combination with being able to use the initial guess optimally. So we may never
+            // end up here when it is the first nonlinear iteration.
+            Assert(nonlinear_iteration != 0,
+                   ExcMessage ("The Newton solver may not be active in the first nonlinear iteration"));
+
+            linearized_stokes_initial_guess.block (block_vel) = 0;
+            linearized_stokes_initial_guess.block (block_p) = 0;
+          }
 
         current_constraints.set_zero (linearized_stokes_initial_guess);
         linearized_stokes_initial_guess.block (block_p) /= pressure_scaling;
 
-        // (ab)use the distributed solution vector to temporarily put a residual in
-        // (we don't care about the residual vector -- all we care about is the
-        // value (number) of the initial residual). The initial residual is returned
-        // to the caller (for nonlinear computations).
-        initial_residual = stokes_block.residual (distributed_stokes_solution,
-                                                  linearized_stokes_initial_guess,
-                                                  system_rhs);
+        double solver_tolerance = 0;
+        if (assemble_newton_stokes_system == false)
+          {
+            // (ab)use the distributed solution vector to temporarily put a residual in
+            // (we don't care about the residual vector -- all we care about is the
+            // value (number) of the initial residual). The initial residual is returned
+            // to the caller (for nonlinear computations). This value is computed before
+            // the solve because we want to compute || A^{k+1} U^k - F^{k+1} ||, which is
+            // the nonlinear residual. Because the place where the nonlinear residual is
+            // checked against the nonlinear tolerance comes after the solve, the system
+            // is solved one time too many in the case of a nonlinear Picard solver.
+            initial_nonlinear_residual = stokes_block.residual (distributed_stokes_solution,
+                                                                linearized_stokes_initial_guess,
+                                                                system_rhs);
 
-        // Note: the residual is computed with a zero velocity, effectively computing
-        // || B^T p - g ||, which we are going to use for our solver tolerance.
-        // We do not use the current velocity for the initial residual because
-        // this would not decrease the number of iterations if we had a better
-        // initial guess (say using a smaller timestep). But we need to use
-        // the pressure instead of only using the norm of the rhs, because we
-        // are only interested in the part of the rhs not balanced by the static
-        // pressure (the current pressure is a good approximation for the static
-        // pressure).
-        const double residual_u = system_matrix.block(0,1).residual (distributed_stokes_solution.block(0),
-                                                                     linearized_stokes_initial_guess.block(1),
-                                                                     system_rhs.block(0));
-        const double residual_p = system_rhs.block(1).l2_norm();
+            // Note: the residual is computed with a zero velocity, effectively computing
+            // || B^T p - g ||, which we are going to use for our solver tolerance.
+            // We do not use the current velocity for the initial residual because
+            // this would not decrease the number of iterations if we had a better
+            // initial guess (say using a smaller timestep). But we need to use
+            // the pressure instead of only using the norm of the rhs, because we
+            // are only interested in the part of the rhs not balanced by the static
+            // pressure (the current pressure is a good approximation for the static
+            // pressure).
+            const double residual_u = system_matrix.block(0,1).residual (distributed_stokes_solution.block(0),
+                                                                         linearized_stokes_initial_guess.block(1),
+                                                                         system_rhs.block(0));
+            const double residual_p = system_rhs.block(1).l2_norm();
 
-        const double solver_tolerance = parameters.linear_stokes_solver_tolerance *
-                                        sqrt(residual_u*residual_u+residual_p*residual_p);
+            solver_tolerance = parameters.linear_stokes_solver_tolerance *
+                               std::sqrt(residual_u*residual_u+residual_p*residual_p);
+          }
+        else
+          {
+            // if we are solving for the Newton update, then the initial guess of the solution
+            // vector is the zero vector, and the starting (nonlinear) residual is simply
+            // the norm of the (Newton) right hand side vector
+            const double residual_u = system_rhs.block(0).l2_norm();
+            const double residual_p = system_rhs.block(1).l2_norm();
+            solver_tolerance = parameters.linear_stokes_solver_tolerance *
+                               std::sqrt(residual_u*residual_u+residual_p*residual_p);
 
+            // as described in the documentation of the function, the initial
+            // nonlinear residual for the Newton method is computed by just
+            // taking the norm of the right hand side
+            initial_nonlinear_residual = std::sqrt(residual_u*residual_u+residual_p*residual_p);
+          }
         // Now overwrite the solution vector again with the current best guess
         // to solve the linear system
         distributed_stokes_solution = linearized_stokes_initial_guess;
@@ -722,7 +762,7 @@ namespace aspect
 
         // create a cheap preconditioner that consists of only a single V-cycle
         const internal::BlockSchurPreconditioner<LinearAlgebra::PreconditionAMG,
-              LinearAlgebra::PreconditionILU>
+              LinearAlgebra::PreconditionBase>
               preconditioner_cheap (system_matrix, system_preconditioner_matrix,
                                     *Mp_preconditioner, *Amg_preconditioner,
                                     false,
@@ -731,7 +771,7 @@ namespace aspect
 
         // create an expensive preconditioner that solves for the A block with CG
         const internal::BlockSchurPreconditioner<LinearAlgebra::PreconditionAMG,
-              LinearAlgebra::PreconditionILU>
+              LinearAlgebra::PreconditionBase>
               preconditioner_expensive (system_matrix, system_preconditioner_matrix,
                                         *Mp_preconditioner, *Amg_preconditioner,
                                         true,
@@ -750,23 +790,32 @@ namespace aspect
             SolverFGMRES<LinearAlgebra::BlockVector>
             solver(solver_control_cheap, mem,
                    SolverFGMRES<LinearAlgebra::BlockVector>::
-                   AdditionalData(50, true));
+                   AdditionalData(parameters.stokes_gmres_restart_length));
 
             solver.solve (stokes_block,
                           distributed_stokes_solution,
                           distributed_stokes_rhs,
                           preconditioner_cheap);
+
+            final_linear_residual = solver_control_cheap.last_value();
           }
 
         // step 1b: take the stronger solver in case
         // the simple solver failed and attempt solving
         // it in n_expensive_stokes_solver_steps steps or less.
-        catch (SolverControl::NoConvergence)
+        catch (const SolverControl::NoConvergence &)
           {
+            // use the value defined by the user
+            // OR
+            // at least a restart length of 100 for melt models
+            const unsigned int number_of_temporary_vectors = (parameters.include_melt_transport == false ?
+                                                              parameters.stokes_gmres_restart_length :
+                                                              std::max(parameters.stokes_gmres_restart_length, 100U));
+
             SolverFGMRES<LinearAlgebra::BlockVector>
             solver(solver_control_expensive, mem,
                    SolverFGMRES<LinearAlgebra::BlockVector>::
-                   AdditionalData(50, true));
+                   AdditionalData(number_of_temporary_vectors));
 
             try
               {
@@ -774,6 +823,8 @@ namespace aspect
                              distributed_stokes_solution,
                              distributed_stokes_rhs,
                              preconditioner_expensive);
+
+                final_linear_residual = solver_control_expensive.last_value();
               }
             // if the solver fails, report the error from processor 0 with some additional
             // information about its location, and throw a quiet exception on all other
@@ -857,23 +908,29 @@ namespace aspect
         solution.block(block_p) = distributed_stokes_solution.block(block_p);
 
         // print the number of iterations to screen
-        pcout << solver_control_cheap.last_step() << '+'
-              << solver_control_expensive.last_step() << " iterations.";
+        pcout << (solver_control_cheap.last_step() != numbers::invalid_unsigned_int ?
+                  solver_control_cheap.last_step():
+                  0)
+              << '+'
+              << (solver_control_expensive.last_step() != numbers::invalid_unsigned_int ?
+                  solver_control_expensive.last_step():
+                  0)
+              << " iterations.";
         pcout << std::endl;
       }
 
 
     // do some cleanup now that we have the solution
     remove_nullspace(solution, distributed_stokes_solution);
-    this->last_pressure_normalization_adjustment = normalize_pressure(solution);
+    if (!assemble_newton_stokes_system)
+      this->last_pressure_normalization_adjustment = normalize_pressure(solution);
 
     // convert melt pressures:
     if (parameters.include_melt_transport)
       melt_handler->compute_melt_variables(solution);
 
-    computing_timer.exit_section();
-
-    return initial_residual;
+    return std::pair<double,double>(initial_nonlinear_residual,
+                                    final_linear_residual);
   }
 
 }
@@ -887,7 +944,7 @@ namespace aspect
 {
 #define INSTANTIATE(dim) \
   template double Simulator<dim>::solve_advection (const AdvectionField &); \
-  template double Simulator<dim>::solve_stokes ();
+  template std::pair<double,double> Simulator<dim>::solve_stokes ();
 
   ASPECT_INSTANTIATE(INSTANTIATE)
 }

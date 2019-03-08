@@ -1,0 +1,132 @@
+#########################################################
+# This is a test for the melting rate functionality,
+# in particular the freezing of melt.
+# It uses the melt simple model.
+
+# The initial porosity has the form of a Gaussian function 
+# there is a fixed (constant) freezing rate. 
+
+# The amplitude of the Gaussian is 0.2, and the melting time 
+# scale is chosen in such a way that the fraction of melt 
+# should be cut in half every year (visible in the maximum 
+# value of the porosity field).
+
+############### Global parameters
+
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 2
+set Use years in output instead of seconds = true
+set Adiabatic surface temperature          = 1600 
+set Nonlinear solver scheme                = iterated Advection and Stokes
+set Max nonlinear iterations               = 50
+set Maximum time step                      = 1
+
+set Pressure normalization                 = surface
+set Surface pressure                       = 0
+
+subsection Material model
+
+  set Model name = melt simple
+  subsection Melt simple
+    set Melt extraction depth = 0.0
+    set Freezing rate         = 1.0
+    set Melting time scale for operator splitting = 1.442695041
+  end
+end
+
+set Use operator splitting                     = true
+subsection Solver parameters
+  subsection Operator splitting parameters
+    set Reaction time step                     = 0.005
+    set Reaction time steps per advection step = 1
+  end
+end
+
+############### Parameters describing the model
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 100000
+    set Y extent = 100000
+  end
+end
+
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = 0, 1, 2, 3
+end
+
+subsection Melt settings
+  set Include melt transport = true
+end
+
+subsection Compositional fields
+  set Number of fields = 2
+  set Names of fields = porosity, peridotite
+end
+
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 10.0
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Function expression       = 293
+  end
+end
+
+subsection Initial composition model
+  set Model name = function
+  
+  subsection Function
+    set Variable names      = x,y
+    set Function constants  = pi=3.1415926,x0=50000,y0=50000,c=10000
+    set Function expression = 0.2 * exp(-((x-x0)*(x-x0)+(y-y0)*(y-y0))/(2*c*c)); 0.0 * exp(-((x-x0)*(x-x0)+(y-y0)*(y-y0))/(2*c*c))
+  end
+end
+
+
+# The final part of this input file describes how many times the
+# mesh is refined and what to do with the solution once computed
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 5
+  set Time steps between mesh refinement = 0
+end
+
+subsection Postprocess
+
+  set List of postprocessors = composition statistics, visualization
+
+  subsection Visualization
+
+    set List of output variables      = density, viscosity, thermal expansivity, melt material properties
+
+    subsection Melt material properties
+      set List of properties = permeability, fluid density, compaction viscosity, fluid viscosity
+    end
+
+    set Number of grouped files       = 0
+
+    set Output format                 = vtu
+
+    set Time between graphical output = 0
+
+  end
+
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Use direct solver for Stokes system = false
+  end
+end

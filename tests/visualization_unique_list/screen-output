@@ -1,4 +1,5 @@
 
+ERROR: Uncaught exception in MPI_InitFinalize on proc 0. Skipping MPI_Finalize() to avoid a deadlock.
 
 
 Exception 'ExcMessage("The list of strings for the parameter " "'Postprocess/Visualization/List of output variables' contains entries more than once. " "This is not allowed. Please check your parameter file.")' on rank 0 on processing: 

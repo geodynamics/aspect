@@ -20,4 +20,4 @@
 # 20: Outward heat flux through boundary with indicator 2 ("east") (W)
 # 21: Outward heat flux through boundary with indicator 3 ("west") (W)
 # 22: Outward heat flux through boundary with indicator 4 ("south") (W)
-0 0.000000000000e+00 0.000000000000e+00 24 972 305 0 144 147 293 output-symbolic_boundary_names_spherical_shell_3d_90_degrees/solution/solution-00000 6.45601640e+09 1.64189193e+10 0.00000000e+00 2.45290764e+03 6.00000000e+03 4.08817940e-01 -3.91672588e+04 1.33874375e+05 3.67826096e+03 3.67823498e+03 1.75281555e+03 
+0 0.000000000000e+00 0.000000000000e+00 24 972 305 0 58 60 118 output-symbolic_boundary_names_spherical_shell_3d_90_degrees/solution/solution-00000 6.45601654e+09 1.64189183e+10 0.00000000e+00 2.45290764e+03 6.00000000e+03 4.08817940e-01 -1.71222667e+28 -3.69817925e+28 0.00000000e+00 0.00000000e+00 0.00000000e+00 

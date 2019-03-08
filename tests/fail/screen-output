@@ -1,4 +1,5 @@
 
+ERROR: Uncaught exception in MPI_InitFinalize on proc 0. Skipping MPI_Finalize() to avoid a deadlock.
 
 
 Exception 'ExcMessage ("ASPECT can only be run in 2d and 3d but a " "different space dimension is given in the parameter file.")' on rank 0 on processing: 

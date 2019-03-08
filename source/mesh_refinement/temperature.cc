@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
@@ -39,7 +39,7 @@ namespace aspect
       KellyErrorEstimator<dim>::estimate (this->get_mapping(),
                                           this->get_dof_handler(),
                                           quadrature,
-                                          typename FunctionMap<dim>::type(),
+                                          std::map<types::boundary_id,const Function<dim>*>(),
                                           this->get_solution(),
                                           indicators,
                                           this->introspection().component_masks.temperature,
@@ -58,6 +58,27 @@ namespace aspect
     ASPECT_REGISTER_MESH_REFINEMENT_CRITERION(Temperature,
                                               "temperature",
                                               "A mesh refinement criterion that computes "
-                                              "refinement indicators from the temperature field.")
+                                              "refinement indicators from the temperature field."
+                                              "\n\n"
+                                              "The way these indicators are computed is by "
+                                              "evaluating the `Kelly error indicator' on the "
+                                              "temperature field. This error indicator takes the "
+                                              "finite element approximation of the temperature "
+                                              "field and uses it to compute an approximation "
+                                              "of the second derivatives of the temperature for "
+                                              "each cell. This approximation is then multiplied "
+                                              "by an appropriate power of the cell's diameter "
+                                              "to yield an indicator for how large the error "
+                                              "is likely going to be on this cell. This "
+                                              "construction rests on the observation that for "
+                                              "many partial differential equations, the error "
+                                              "on each cell is proportional to some power of "
+                                              "the cell's diameter times the second derivatives "
+                                              "of the solution on that cell."
+                                              "\n\n"
+                                              "For complex equations such as those we solve "
+                                              "here, this observation may not be strictly "
+                                              "true in the mathematical sense, but it often "
+                                              "yields meshes that are surprisingly good.")
   }
 }

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2013 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2013 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
@@ -24,9 +24,14 @@
 
 #include <aspect/plugins.h>
 #include <aspect/geometry_model/interface.h>
+#include <aspect/utilities.h>
+#include <aspect/simulator_access.h>
 
 #include <deal.II/base/parameter_handler.h>
 #include <deal.II/distributed/tria.h>
+
+#include <boost/core/demangle.hpp>
+#include <typeinfo>
 
 
 namespace aspect
@@ -119,53 +124,275 @@ namespace aspect
         parse_parameters (ParameterHandler &prm);
     };
 
-
     /**
-     * Register a boundary composition model so that it can be selected from
-     * the parameter file.
-     *
-     * @param name A string that identifies the boundary composition model
-     * @param description A text description of what this model does and that
-     * will be listed in the documentation of the parameter file.
-     * @param declare_parameters_function A pointer to a function that can be
-     * used to declare the parameters that this geometry model wants to read
-     * from input files.
-     * @param factory_function A pointer to a function that can create an
-     * object of this boundary composition model.
+     * A class that manages all boundary composition objects.
      *
      * @ingroup BoundaryCompositions
      */
     template <int dim>
-    void
-    register_boundary_composition (const std::string &name,
-                                   const std::string &description,
-                                   void (*declare_parameters_function) (ParameterHandler &),
-                                   Interface<dim> *(*factory_function) ());
+    class Manager : public ::aspect::SimulatorAccess<dim>
+    {
+      public:
+        /**
+         * Destructor. Made virtual since this class has virtual member
+         * functions.
+         */
+        virtual ~Manager ();
+
+        /**
+         * A function that is called at the beginning of each time step and
+         * calls the corresponding functions of all created plugins.
+         *
+         * The point of this function is to allow complex boundary composition
+         * models to do an initialization step once at the beginning of each
+         * time step. An example would be a model that needs to call an
+         * external program to compute the composition change at a boundary.
+         */
+        virtual
+        void
+        update ();
+
+        /**
+         * Declare the parameters of all known boundary composition plugins, as
+         * well as the ones this class has itself.
+         */
+        static
+        void
+        declare_parameters (ParameterHandler &prm);
+
+        /**
+         * Read the parameters this class declares from the parameter file.
+         * This determines which boundary composition objects will be created;
+         * then let these objects read their parameters as well.
+         */
+        void
+        parse_parameters (ParameterHandler &prm);
+
+        /**
+         * A function that calls the boundary_composition functions of all the
+         * individual boundary composition objects and uses the stored operators
+         * to combine them.
+         */
+        double
+        boundary_composition (const types::boundary_id boundary_indicator,
+                              const Point<dim> &position,
+                              const unsigned int compositional_field) const;
+
+        /**
+         * A function that is used to register boundary composition objects in such
+         * a way that the Manager can deal with all of them without having to
+         * know them by name. This allows the files in which individual
+         * plugins are implemented to register these plugins, rather than also
+         * having to modify the Manager class by adding the new boundary
+         * composition plugin class.
+         *
+         * @param name A string that identifies the boundary composition model
+         * @param description A text description of what this model does and that
+         * will be listed in the documentation of the parameter file.
+         * @param declare_parameters_function A pointer to a function that can be
+         * used to declare the parameters that this boundary composition model
+         * wants to read from input files.
+         * @param factory_function A pointer to a function that can create an
+         * object of this boundary composition model.
+         */
+        static
+        void
+        register_boundary_composition (const std::string &name,
+                                       const std::string &description,
+                                       void (*declare_parameters_function) (ParameterHandler &),
+                                       Interface<dim> *(*factory_function) ());
+
+
+        /**
+         * Return a list of names of all boundary composition models currently
+         * used in the computation, as specified in the input file.
+         */
+        const std::vector<std::string> &
+        get_active_boundary_composition_names () const;
+
+        /**
+         * Return a list of pointers to all boundary composition models
+         * currently used in the computation, as specified in the input file.
+         */
+        const std::vector<std::shared_ptr<Interface<dim> > > &
+        get_active_boundary_composition_conditions () const;
+
+        /**
+         * Go through the list of all boundary composition models that have been selected in
+         * the input file (and are consequently currently active) and see if one
+         * of them has the desired type specified by the template argument. If so,
+         * return a pointer to it. If no boundary composition model is active
+         * that matches the given type, return a nullptr.
+         *
+         * @deprecated Use has_matching_boundary_composition_model() and
+         * get_matching_boundary_composition_model() instead.
+         */
+        template <typename BoundaryCompositionType>
+        DEAL_II_DEPRECATED
+        BoundaryCompositionType *
+        find_boundary_composition_model () const;
+
+        /**
+         * Go through the list of all boundary composition models that have been selected
+         * in the input file (and are consequently currently active) and return
+         * true if one of them has the desired type specified by the template
+         * argument.
+         */
+        template <typename BoundaryCompositionType>
+        bool
+        has_matching_boundary_composition_model () const;
+
+        /**
+         * Go through the list of all boundary composition models that have been selected
+         * in the input file (and are consequently currently active) and see
+         * if one of them has the type specified by the template
+         * argument or can be casted to that type. If so, return a reference
+         * to it. If no boundary composition model is active that matches the given type,
+         * throw an exception.
+         */
+        template <typename BoundaryCompositionType>
+        const BoundaryCompositionType &
+        get_matching_boundary_composition_model () const;
+
+        /*
+         * Return a set of boundary indicators for which boundary
+         * compositions are prescribed.
+         */
+        const std::set<types::boundary_id> &
+        get_fixed_composition_boundary_indicators() const;
+
+        /*
+         * Return whether Dirichlet boundary conditions will be applied
+         * on parts of the boundaries where material flows out.
+         */
+        bool
+        allows_fixed_composition_on_outflow_boundaries() const;
+
+        /**
+         * For the current plugin subsystem, write a connection graph of all of the
+         * plugins we know about, in the format that the
+         * programs dot and neato understand. This allows for a visualization of
+         * how all of the plugins that ASPECT knows about are interconnected, and
+         * connect to other parts of the ASPECT code.
+         *
+         * @param output_stream The stream to write the output to.
+         */
+        static
+        void
+        write_plugin_graph (std::ostream &output_stream);
+
+
+        /**
+         * Exception.
+         */
+        DeclException1 (ExcBoundaryCompositionNameNotFound,
+                        std::string,
+                        << "Could not find entry <"
+                        << arg1
+                        << "> among the names of registered boundary composition objects.");
+      private:
+        /**
+         * A list of boundary composition objects that have been requested in the
+         * parameter file.
+         */
+        std::vector<std::shared_ptr<Interface<dim> > > boundary_composition_objects;
+
+        /**
+         * A list of names of boundary composition objects that have been requested
+         * in the parameter file.
+         */
+        std::vector<std::string> model_names;
+
+        /**
+         * A list of enums of boundary composition operators that have been
+         * requested in the parameter file. Each name is associated
+         * with a model_name, and is used to modify the composition
+         * boundary with the values from the current plugin.
+         */
+        std::vector<aspect::Utilities::Operator> model_operators;
+
+        /**
+         * A set of boundary ids on which the boundary_composition_objects
+         * will be applied.
+         */
+        std::set<types::boundary_id> fixed_composition_boundary_indicators;
+
+        /**
+         * Whether we allow the composition to be fixed on parts of the boundary
+         * where material flows out of the domain.
+         */
+        bool allow_fixed_composition_on_outflow_boundaries;
+    };
+
+
+
+    template <int dim>
+    template <typename BoundaryCompositionType>
+    inline
+    BoundaryCompositionType *
+    Manager<dim>::find_boundary_composition_model () const
+    {
+      for (typename std::vector<std::shared_ptr<Interface<dim> > >::const_iterator
+           p = boundary_composition_objects.begin();
+           p != boundary_composition_objects.end(); ++p)
+        if (BoundaryCompositionType *x = dynamic_cast<BoundaryCompositionType *> ( (*p).get()) )
+          return x;
+      return nullptr;
+    }
+
+
+    template <int dim>
+    template <typename BoundaryCompositionType>
+    inline
+    bool
+    Manager<dim>::has_matching_boundary_composition_model () const
+    {
+      for (typename std::vector<std::shared_ptr<Interface<dim> > >::const_iterator
+           p = boundary_composition_objects.begin();
+           p != boundary_composition_objects.end(); ++p)
+        if (Plugins::plugin_type_matches<BoundaryCompositionType>(*(*p)))
+          return true;
+
+      return false;
+    }
+
+
+
+    template <int dim>
+    template <typename BoundaryCompositionType>
+    inline
+    const BoundaryCompositionType &
+    Manager<dim>::get_matching_boundary_composition_model () const
+    {
+      AssertThrow(has_matching_boundary_composition_model<BoundaryCompositionType> (),
+                  ExcMessage("You asked BoundaryComposition::Manager::get_boundary_composition_model() for a "
+                             "boundary composition model of type <" + boost::core::demangle(typeid(BoundaryCompositionType).name()) + "> "
+                             "that could not be found in the current model. Activate this "
+                             "boundary composition model in the input file."));
+
+      typename std::vector<std::shared_ptr<Interface<dim> > >::const_iterator boundary_composition_model;
+      for (typename std::vector<std::shared_ptr<Interface<dim> > >::const_iterator
+           p = boundary_composition_objects.begin();
+           p != boundary_composition_objects.end(); ++p)
+        if (Plugins::plugin_type_matches<BoundaryCompositionType>(*(*p)))
+          return Plugins::get_plugin_as_type<BoundaryCompositionType>(*(*p));
+
+      // We will never get here, because we had the Assert above. Just to avoid warnings.
+      return Plugins::get_plugin_as_type<BoundaryCompositionType>(*(*boundary_composition_model));
+    }
+
+
+
 
     /**
-     * A function that given the name of a model returns a pointer to an
-     * object that describes it. Ownership of the pointer is transferred to
-     * the caller.
-     *
-     * The model object returned is not yet initialized and has not read its
-     * runtime parameters yet.
-     *
-     * @ingroup BoundaryCompositions
+     * Return a string that consists of the names of boundary composition models that can
+     * be selected. These names are separated by a vertical line '|' so
+     * that the string can be an input to the deal.II classes
+     * Patterns::Selection or Patterns::MultipleSelection.
      */
     template <int dim>
-    Interface<dim> *
-    create_boundary_composition (ParameterHandler &prm);
-
-
-    /**
-     * Declare the runtime parameters of the registered boundary composition
-     * models.
-     *
-     * @ingroup BoundaryCompositions
-     */
-    template <int dim>
-    void
-    declare_parameters (ParameterHandler &prm);
+    std::string
+    get_valid_model_names_pattern ();
 
 
     /**
@@ -181,10 +408,10 @@ namespace aspect
   namespace ASPECT_REGISTER_BOUNDARY_COMPOSITION_MODEL_ ## classname \
   { \
     aspect::internal::Plugins::RegisterHelper<aspect::BoundaryComposition::Interface<2>,classname<2> > \
-    dummy_ ## classname ## _2d (&aspect::BoundaryComposition::register_boundary_composition<2>, \
+    dummy_ ## classname ## _2d (&aspect::BoundaryComposition::Manager<2>::register_boundary_composition, \
                                 name, description); \
     aspect::internal::Plugins::RegisterHelper<aspect::BoundaryComposition::Interface<3>,classname<3> > \
-    dummy_ ## classname ## _3d (&aspect::BoundaryComposition::register_boundary_composition<3>, \
+    dummy_ ## classname ## _3d (&aspect::BoundaryComposition::Manager<3>::register_boundary_composition, \
                                 name, description); \
   }
   }

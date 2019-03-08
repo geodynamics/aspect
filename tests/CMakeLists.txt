@@ -1,13 +1,15 @@
 ################### top matter ################
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8.8)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8.12)
 
 IF (CMP0058)
  cmake_policy(CMP0058 NEW) 
 ENDIF()
 
 SET(ASPECT_BINARY "${ASPECT_BINARY}" CACHE STRING "" FORCE)
-SET(ASPECT_DIR "${ASPECT_DIR}" CACHE STRING "" FORCE)
-FIND_PACKAGE(Aspect 1.5.0 QUIET HINTS ${ASPECT_DIR})
+SET(Aspect_DIR "${Aspect_DIR}" CACHE STRING "" FORCE)
+SET(ASPECT_COMPARE_TEST_RESULTS "${ASPECT_COMPARE_TEST_RESULTS}" CACHE BOOL "" FORCE)
+
+FIND_PACKAGE(Aspect 2.1.0 QUIET HINTS ${Aspect_DIR})
 DEAL_II_INITIALIZE_CACHED_VARIABLES()
 
 FIND_PACKAGE(Perl)
@@ -290,55 +292,58 @@ FOREACH(_test ${_tests})
 
     GET_FILENAME_COMPONENT(ASPECT_BASE_DIR ${CMAKE_CURRENT_SOURCE_DIR} PATH)
 
-    # Commands to normalize each output. Note that we depend on screen-output
-    # instead of ${_output_name} here, to avoid having to specify BYPRODUCTS
-    # for ninja.
-    FOREACH(_output_name ${_output_files})
-	ADD_CUSTOM_COMMAND(OUTPUT ${_output_name}.notime
-	  COMMAND ${PERL_EXECUTABLE}
-		  ${CMAKE_CURRENT_SOURCE_DIR}/normalize.pl
-		  ${_output_name} ${ASPECT_BASE_DIR}
-		  >${_output_name}.notime
-          DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/screen-output)
-    ENDFOREACH()
-
-    # Create commands to copy and normalize reference output
-    FOREACH(_name ${_relative_output_filenames})
-	ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/${_name}.cmp.notime
-	  COMMAND ${PERL_EXECUTABLE}
-		  ${CMAKE_CURRENT_SOURCE_DIR}/normalize.pl
-		  ${CMAKE_CURRENT_SOURCE_DIR}/${_testname}/${_name} ${ASPECT_BASE_DIR}
-		  >${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/${_name}.cmp.notime
-          DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${_testname}/${_name})
-    ENDFOREACH()
-
-    # Now create commands to diff reference with output file:
-    FOREACH(_name ${_relative_output_filenames})
-      # the normalized reference file:
-      SET(_ref_file ${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/${_name}.cmp.notime)
-      # the normalized output file:
-      SET(_run_file ${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/${_name}.notime)
-
-      # generate .diff file:
-      ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/${_name}.diff
-	COMMAND
-	    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/diff_test.sh 
-		${TEST_DIFF}
-		${_testname}/${_name}
-		${CMAKE_CURRENT_SOURCE_DIR}
-		${CMAKE_CURRENT_BINARY_DIR}
-	DEPENDS ${_ref_file}
-		${_run_file})
-
-      # Add the target for this output file to the dependencies of this
-      # test. Note that a target may not contain "/" but outputs can be
-      # in subdirectories (for example solution/solution...), so replace them.
-      STRING(REPLACE "/" "-" _target_name ${_testname}.${_name}.diff)
-      ADD_CUSTOM_TARGET(${_target_name}
-	DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/${_name}.diff)
-      ADD_DEPENDENCIES(tests.${_testname} ${_target_name})
-
-    ENDFOREACH()
+    IF(ASPECT_COMPARE_TEST_RESULTS)
+      # Commands to normalize each output. Note that we depend on screen-output
+      # instead of ${_output_name} here, to avoid having to specify BYPRODUCTS
+      # for ninja.
+      FOREACH(_output_name ${_output_files})
+  	ADD_CUSTOM_COMMAND(OUTPUT ${_output_name}.notime
+  	  COMMAND ${PERL_EXECUTABLE}
+  		  ${CMAKE_CURRENT_SOURCE_DIR}/normalize.pl
+  		  ${_output_name} ${ASPECT_BASE_DIR}
+  		  >${_output_name}.notime
+            DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/screen-output)
+      ENDFOREACH()
+  
+      # Create commands to copy and normalize reference output
+      FOREACH(_name ${_relative_output_filenames})
+  	ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/${_name}.cmp.notime
+  	  COMMAND ${PERL_EXECUTABLE}
+  		  ${CMAKE_CURRENT_SOURCE_DIR}/normalize.pl
+  		  ${CMAKE_CURRENT_SOURCE_DIR}/${_testname}/${_name} ${ASPECT_BASE_DIR}
+  		  >${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/${_name}.cmp.notime
+            DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${_testname}/${_name})
+      ENDFOREACH()
+  
+      # Now create commands to diff reference with output file:
+      FOREACH(_name ${_relative_output_filenames})
+        # the normalized reference file:
+        SET(_ref_file ${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/${_name}.cmp.notime)
+        # the normalized output file:
+        SET(_run_file ${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/${_name}.notime)
+  
+        # generate .diff file:
+        ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/${_name}.diff
+  	COMMAND
+  	    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/diff_test.sh 
+  		${TEST_DIFF}
+  		${_testname}/${_name}
+  		${CMAKE_CURRENT_SOURCE_DIR}
+  		${CMAKE_CURRENT_BINARY_DIR}
+  		${ASPECT_COMPARE_TEST_RESULTS}
+  	DEPENDS ${_ref_file}
+  		${_run_file})
+  
+        # Add the target for this output file to the dependencies of this
+        # test. Note that a target may not contain "/" but outputs can be
+        # in subdirectories (for example solution/solution...), so replace them.
+        STRING(REPLACE "/" "-" _target_name ${_testname}.${_name}.diff)
+        ADD_CUSTOM_TARGET(${_target_name}
+  	DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/${_name}.diff)
+        ADD_DEPENDENCIES(tests.${_testname} ${_target_name})
+  
+      ENDFOREACH()
+    ENDIF()
 
     # add this test to the dependencies of the overall 'tests' target
     # and declare it to ctest

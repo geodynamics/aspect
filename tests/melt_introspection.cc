@@ -3,7 +3,7 @@
 #include <aspect/material_model/simple.h>
 #include <aspect/simulator_access.h>
 #include <aspect/melt.h>
-#include <aspect/assembly.h>
+#include <aspect/simulator/assemblers/interface.h>
 
 #include <deal.II/fe/fe_dgq.h>
 #include <iostream>
@@ -19,8 +19,7 @@ namespace aspect
     std::cout << "* signals.edit_finite_element_variables:" << std::endl;
 
     VariableDeclaration<dim> dummy("dummy",
-                                   std_cxx11::shared_ptr<FiniteElement<dim> > (
-                                     new dealii::FE_DGQ<dim>(4)),
+                                   std::make_shared<FE_DGQ<dim>>(4),
                                    1,
                                    1);
     variables.insert(variables.begin()+6, dummy);
@@ -79,7 +78,7 @@ namespace aspect
         // fill melt outputs if they exist
         aspect::MaterialModel::MeltOutputs<dim> *melt_out = out.template get_additional_output<aspect::MaterialModel::MeltOutputs<dim> >();
 
-        if (melt_out != NULL)
+        if (melt_out != nullptr)
           {
             const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
             for (unsigned int i=0; i<in.position.size(); ++i)

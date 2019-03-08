@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2017 by the authors of the ASPECT code.
+  Copyright (C) 2017 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
@@ -43,11 +43,6 @@ namespace aspect
     {
       public:
         /**
-         * Constructor.
-         */
-        CompositionalHeating ();
-
-        /**
          * Return the magnitude of heat production arising from values assigned
          * to each compositional field.
          */
@@ -72,35 +67,27 @@ namespace aspect
         parse_parameters (ParameterHandler &prm);
 
       private:
-
         /**
-         * From a list of compositional fields of length N, we come up with an
-         * N+1 length list that which also includes the fraction of
-         * ``background mantle''. This list should sum to one, and is
-         * interpreted as volume fractions.  If the sum of the
-         * compositional_fields is greater than one, we assume that there is
-         * no background mantle (i.e., that field value is zero).  Otherwise,
-         * the difference between the sum of the compositional fields and 1.0
-         * is assumed to be the amount of background mantle.
-         */
-        std::vector<double> compute_volume_fractions(
-          const std::vector<double> &compositional_fields) const;
-
-        /**
-         * Magnitude of heat production in each compositional field
+         * Magnitude of heat production for each compositional field
          */
         std::vector<double> heating_values;
 
         /**
-         * User can choose whether the heat production value associated with
-         * each compositional field is used when the average value at each
-         * point is calculated. This is useful if some compositional fields
+         * A vector with as many entries as compositional fields.
+         * If the entry for a particular field is true the field is considered
+         * during the averaging of heat production rates, if not the field is
+         * ignored. This is useful if some compositional fields
          * are used to track properties like finite strain that should not
-         * contribute to material properties like viscosity, heat production,
-         * etc.
+         * contribute to heat production.
          */
-        std::vector<int> field_used_in_heat_production_averaging;
+        std::vector<bool> fields_used_in_heat_production_averaging;
 
+        /**
+         * Similar to fields_used_in_heat_production_averaging, except it
+         * determines whether to include the background field in the heat
+         * production computation.
+         */
+        bool use_background_field_for_heat_production_averaging;
     };
   }
 }

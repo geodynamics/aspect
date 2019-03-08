@@ -46,23 +46,16 @@ subsection Initial composition model
   end
 end
 
+
 subsection Boundary temperature model
-  set Model name = box
-end
-
-
-subsection Model settings
-  set Fixed temperature boundary indicators   = top, bottom
-
-  set Zero velocity boundary indicators       =
-  set Prescribed velocity boundary indicators = bottom:function,left:function,right:function,top:function
-
-  set Tangential velocity boundary indicators = 
-
+  set Fixed temperature boundary indicators = top, bottom
+  set List of model names = box
 end
 
 
 subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = bottom:function,left:function,right:function,top:function
+
   subsection Function
     set Function expression = 1;0
   end

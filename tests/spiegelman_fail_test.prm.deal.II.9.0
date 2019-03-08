@@ -1,0 +1,132 @@
+# This is the most difficult case of the Spiegelman benchmark. The
+# goal of this test is to show that the linear Newton solver fails
+# when the the matrix becomes non Symmetric Postive Definite, and 
+# is safed by forcing the matrix to be SPD. In the next timestep 
+# the stabilization is reset to the user defined values. 
+
+set Additional shared libraries = ../tests/libspiegelman_fail_test.so
+set Output directory = output/ 
+set Dimension = 2
+set CFL number                             = 1.0
+set End time                               = 1
+set Start time                             = 0
+set Adiabatic surface temperature          = 0
+set Surface pressure                       = 0
+set Use years in output instead of seconds = false  
+set Nonlinear solver scheme = Newton Stokes
+set Max nonlinear iterations = 4
+set Nonlinear solver tolerance = 1e-14
+set Pressure normalization = no
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Number of cheap Stokes solver steps = 0
+    set Linear solver tolerance = 9e-1
+  end
+  subsection Newton solver parameters
+    set Max pre-Newton nonlinear iterations = 2
+    set SPD safety factor = 9e-1
+    set Nonlinear Newton solver switch tolerance = 1e-20
+    set Max Newton line search iterations = 0
+    set Maximum linear Stokes solver tolerance = 9e-1
+    set Use Newton residual scaling method = false
+    set Use Newton failsafe = true
+    set Stabilization preconditioner = none
+    set Stabilization velocity block = none
+  end
+end
+
+subsection Boundary temperature model
+  set Model name = box
+end
+
+
+ subsection Initial temperature model
+   set Model name = function
+   subsection Function
+    set Function expression = 0 
+   end
+ end
+
+ subsection Initial composition model
+   set Model name = function
+   subsection Function
+    set Variable names = x,z
+    set Function constants = H = 30e3
+    set Function expression = if(z < 0.25 * H,1, \
+if(z < (0.25+(1/12)-0.02)*H & x > (2-(1/12))*H & x < (2+(1/12))*H,1, \
+if(z < (0.25+(1/12))*H & (x > (2-(1/12)+0.02)*H & x < (2+(1/12)-0.02)*H | (x-(2-(1/12)+0.02)*H)^2 + (z-(0.25+(1/12)-0.02)*H)^2 < (0.02*H)^2 | (x-(2+(1/12)-0.02)*H)^2 + (z-(0.25+(1/12)-0.02)*H)^2 < (0.02*H)^2),1, \
+if(z < (0.25+0.02)*H && x > (2-(1/12)-0.02)*H && x < (2+(1/12)+0.02)*H && ((x-(2-(1/12)-0.02)*H)^2 + (z-(0.25+0.02)*H)^2 > (0.02*H)^2 && (x-(2+(1/12)+0.02)*H)^2 + (z-(0.25+0.02)*H)^2 > (0.02*H)^2),1,0))))
+   end
+ end
+
+
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 9.81
+  end
+end
+
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 120e3
+    set Y extent = 30e3
+    set X repetitions = 4
+  end
+end
+
+
+subsection Compositional fields
+  set Number of fields = 1
+    set List of conductivities                         = 2.25,   2.25
+    set List of capacities                             = 1250,   1250
+    set List of reference densities                    = 2700.0, 2700.0
+    set List of cohesions                              = 1e8,    0
+    set List of angles of internal friction            = 30,     0
+    set List of initial viscosities                    = 1e20,   1e21
+    set List of constant viscosities                   = 0,      1e21 
+end
+
+subsection Material model
+    set Model name = spiegelman 2016
+
+  subsection Spiegelman 2016 
+    set Maximum viscosity = 1e24
+    set Minimum viscosity = 1e21
+    set Use deviator of strain-rate = false
+    set Viscosity averaging p = -1
+    set Use analytical derivative     = false
+    set Reference viscosity = 5e24
+    set Reference compressibility = 0
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 4
+  set Strategy =  strain rate
+end
+
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = 2 
+  set Prescribed velocity boundary indicators = 0 x:function,1 x:function 
+  subsection Function
+    set Variable names = x,z
+    set Function expression = if(x<60e3,3.96109558e-10,-3.96109558e-10);0
+  end
+end
+
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, pressure statistics, mass flux statistics, visualization
+  subsection Visualization
+    set List of output variables = material properties,strain rate, spd factor
+    set Interpolate output = false
+  end
+end

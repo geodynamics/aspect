@@ -1,0 +1,160 @@
+#########################################################
+# This is a test for the melting rate functionality, 
+# and it is the same as the melting_rate_operator_splitting
+# test case, except that is uses the melt global instead 
+# of the melt simple material model. This also means that 
+# we have to change the absolute temperature values, as 
+# this material model has fixed temperature difference 
+# of 500 K between solidus and liquidus.
+
+# We set the temperature in such a way that the initial 
+# equilibrium melt fraction would be 2e-3, but due to 
+# latent heat effects, the temperature gets reduced and
+# the final melt fraction should be 1e-3. 
+# Likewise, the temperature should be reduced from 1001
+# to 1000.5. 
+
+############### Global parameters
+
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 2e5
+set Use years in output instead of seconds = true
+set Adiabatic surface temperature          = 1001
+set Nonlinear solver scheme                = iterated Advection and Stokes
+set Max nonlinear iterations               = 100  
+set CFL number                             = 1.0
+set Maximum time step                      = 1e5
+
+set Pressure normalization                 = surface
+set Surface pressure                       = 0
+
+set Use operator splitting                     = true
+subsection Solver parameters
+  subsection Operator splitting parameters
+    set Reaction time step                     = 1e3
+    set Reaction time steps per advection step = 10
+  end
+end
+
+
+############### Parameters describing the model
+# Let us here choose again a box domain 
+# where we fix the temperature at the bottom and top,
+# allow free slip along the boundaries
+# and include melt migration.
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 100000
+    set Y extent = 100000
+  end
+end
+
+
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = 0, 1, 2, 3
+end
+
+subsection Melt settings
+  set Include melt transport = true
+end
+
+############### Compositional fields
+# We want to use two compositional fields, the porosity and
+# an additional field, to check if the melting rate functionality 
+# has the same effect as the reaction term for the other 
+# compositional fields. As the porosity field is advected by
+# a different mechanism, slight differences between the fields
+# are expected. 
+subsection Compositional fields
+  set Number of fields = 2
+  set Names of fields = porosity, peridotite
+end
+
+
+# We don't need gravity. 
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 0.0
+  end
+end
+
+
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Function expression       = 1001
+  end
+end
+
+subsection Initial composition model
+  set Model name = function
+  
+  subsection Function
+    set Variable names      = x,y
+    set Function constants  = pi=3.1415926,x0=100000,y0=50000,c=10000
+    set Function expression = 0.0; 0.0
+  end
+end
+
+
+subsection Material model
+  set Model name = melt global
+
+  subsection Melt global
+    set Reference solid density       = 1000
+    set Reference melt density        = 1000
+    set Thermal conductivity          = 0.0
+    set Thermal expansion coefficient = 0.0
+    set Reference shear viscosity     = 1e21
+    set Reference specific heat       = 1000.0
+    set Exponential melt weakening factor = 0.0
+    set Melting time scale for operator splitting = 1.111111111e3
+
+    # simplifiy the melting model so that porosity depends on temperature linearly
+    set Surface solidus               = 1000
+    set Pressure solidus change       = 0.0
+    set Depletion solidus change      = 0.0
+  end
+end
+
+subsection Heating model
+  set List of model names = latent heat melt
+  subsection Latent heat melt
+    set Melting entropy change = -500.0
+  end
+end
+
+# The final part of this input file describes how many times the
+# mesh is refined and what to do with the solution once computed
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 4
+  set Time steps between mesh refinement = 0
+end
+
+subsection Postprocess
+
+  set List of postprocessors = composition statistics, temperature statistics, visualization
+
+  subsection Visualization
+
+    set List of output variables      = density, viscosity, thermal expansivity, melt material properties, melt fraction
+    subsection Melt material properties
+      set List of properties = permeability, fluid density, compaction viscosity, fluid viscosity
+    end
+    set Number of grouped files       = 0
+    set Output format                 = vtu
+    set Time between graphical output = 0
+
+  end
+
+end

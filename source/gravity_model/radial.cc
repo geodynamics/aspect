@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,12 +14,17 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
 
 #include <aspect/gravity_model/radial.h>
+#include <aspect/geometry_model/interface.h>
+#include <aspect/geometry_model/box.h>
+#include <aspect/geometry_model/two_merged_boxes.h>
+#include <aspect/geometry_model/sphere.h>
+#include <aspect/utilities.h>
 
 #include <deal.II/base/tensor.h>
 
@@ -32,6 +37,9 @@ namespace aspect
     Tensor<1,dim>
     RadialConstant<dim>::gravity_vector (const Point<dim> &p) const
     {
+      if (p.norm() == 0.0)
+        return Tensor<1,dim>();
+
       const double r = p.norm();
       return -magnitude * p/r;
     }
@@ -70,16 +78,39 @@ namespace aspect
         prm.leave_subsection ();
       }
       prm.leave_subsection ();
+
+      Assert (Plugins::plugin_type_matches<const GeometryModel::Box<dim> >(this->get_geometry_model()) == false,
+              ExcMessage ("Gravity model 'radial constant' should not be used with geometry model 'box'."));
+
+      Assert (Plugins::plugin_type_matches<const GeometryModel::TwoMergedBoxes<dim> >(this->get_geometry_model()) == false,
+              ExcMessage ("Gravity model 'radial constant' should not be used with geometry model 'box with "
+                          "lithosphere boundary indicators'."));
     }
 
 // ------------------------------ RadialEarthLike -------------------
 
     template <int dim>
-    Tensor<1,dim>
-    RadialEarthLike<dim>::gravity_vector (const Point<dim> &p) const
+    void
+    RadialEarthLike<dim>::initialize ()
     {
-      const double r = p.norm();
-      return -(1.245e-6 * r + 7.714e13/r/r) * p / r;
+      AssertThrow(false,
+                  ExcMessage("The 'radial earth-like' gravity model has been removed "
+                             "due to its misleading name. The available AsciiData gravity "
+                             "model (using default parameters) is much more earth-like, since "
+                             "it uses the gravity profile used in the construction of the "
+                             "Preliminary Reference Earth Model (PREM, Dziewonski and Anderson, "
+                             "1981). Use the 'ascii data' model instead of 'radial earth-like'."));
+    }
+
+
+
+    template <int dim>
+    Tensor<1,dim>
+    RadialEarthLike<dim>::gravity_vector (const Point<dim> &/*p*/) const
+    {
+      // We should never get here, because of the assertion in initialize().
+      AssertThrow(false,ExcInternalError());
+      return Tensor<1,dim>();
     }
 
 
@@ -94,8 +125,11 @@ namespace aspect
         return Tensor<1,dim>();
 
       const double depth = this->get_geometry_model().depth(p);
-      return  (-magnitude_at_surface * p/p.norm() *
-               (1.0 - depth/this->get_geometry_model().maximal_depth()));
+      const double maximal_depth = this->get_geometry_model().maximal_depth();
+
+      return  (-magnitude_at_surface * (1.0 - depth/maximal_depth)
+               -magnitude_at_bottom  * (depth/maximal_depth))
+              * p/p.norm();
     }
 
 
@@ -111,6 +145,15 @@ namespace aspect
                              Patterns::Double (),
                              "Magnitude of the radial gravity vector "
                              "at the surface of the domain. Units: $m/s^2$");
+          prm.declare_entry ("Magnitude at bottom", "10.7",
+                             Patterns::Double (),
+                             "Magnitude of the radial gravity vector "
+                             "at the bottom of the domain. `Bottom' means the"
+                             "maximum depth in the chosen geometry, and for "
+                             "example represents the core-mantle boundary in "
+                             "the case of the `spherical shell' geometry model, "
+                             "and the center in the case of the `sphere' "
+                             "geometry model. Units: $m/s^2$");
         }
         prm.leave_subsection ();
       }
@@ -127,12 +170,18 @@ namespace aspect
         prm.enter_subsection("Radial linear");
         {
           magnitude_at_surface = prm.get_double ("Magnitude at surface");
+          magnitude_at_bottom = prm.get_double ("Magnitude at bottom");
         }
         prm.leave_subsection ();
       }
       prm.leave_subsection ();
-    }
+      Assert (dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model()) == nullptr,
+              ExcMessage ("Gravity model 'radial linear' should not be used with geometry model 'box'."));
+      Assert (dynamic_cast<const GeometryModel::TwoMergedBoxes<dim>*> (&this->get_geometry_model()) == nullptr,
+              ExcMessage ("Gravity model 'radial linear' should not be used with geometry model 'box with "
+                          "lithosphere boundary indicators'."));
 
+    }
   }
 }
 
@@ -150,20 +199,17 @@ namespace aspect
 
     ASPECT_REGISTER_GRAVITY_MODEL(RadialEarthLike,
                                   "radial earth-like",
-                                  "A gravity model in which the gravity direction is radially inward "
-                                  "and with a magnitude that matches that of the earth at "
-                                  "the core-mantle boundary as well as at the surface and "
-                                  "in between is physically correct under the assumption "
-                                  "of a constant density.")
+                                  "This plugin has been removed due to its misleading name. "
+                                  "The included profile was hard-coded and was less earth-like "
+                                  "than the `ascii data' plugin, which uses the profile "
+                                  "of the Preliminary Reference Earth Model (PREM). Use `ascii data' "
+                                  "instead of `radial earth-like'.")
 
     ASPECT_REGISTER_GRAVITY_MODEL(RadialLinear,
                                   "radial linear",
                                   "A gravity model which is radial (pointing inward if the gravity "
-                                  "is positive) and the magnitude decreases linearly with depth down "
-                                  "to zero at the maximal depth the geometry returns, as you would "
-                                  "get with a constant density spherical domain. (Note that this "
-                                  "would be for a full sphere, not a spherical shell.) The "
-                                  "magnitude of gravity at the surface is read from the input "
-                                  "file in a section ``Gravity model/Radial linear''.")
+                                  "is positive) and the magnitude changes linearly with depth. The "
+                                  "magnitude of gravity at the surface and bottom is read from the "
+                                  "input file in a section ``Gravity model/Radial linear''.")
   }
 }

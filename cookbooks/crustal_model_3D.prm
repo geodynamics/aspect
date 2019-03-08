@@ -7,11 +7,9 @@ set End time                               = 1e6
 set Use years in output instead of seconds = true
 set CFL number                             = .5
 set Output directory                       = output-crustal_model_3D
-set Linear solver tolerance                = 1e-9
-set Nonlinear solver scheme                = iterated Stokes
+set Nonlinear solver scheme                = single Advection, iterated Stokes
 set Nonlinear solver tolerance             = 1e-8
 set Max nonlinear iterations               = 100
-set Number of cheap Stokes solver steps    = 0
 set Pressure normalization                 = no
 set Timing output frequency                = 1
 
@@ -28,17 +26,12 @@ subsection Geometry model
   end
 end
 
-subsection Model settings
-  set Tangential velocity boundary indicators = front,back 
-  set Prescribed velocity boundary indicators = left: function, right:function, bottom:function
-  set Free surface boundary indicators        = top
-end
-
 
 # Advecting the free surface vertically rather than
 # in the surface normal direction can result in a
 # more stable mesh when the deformation is large
 subsection Free surface
+  set Free surface boundary indicators = top
   set Surface velocity projection = vertical
 end
 
@@ -69,6 +62,9 @@ end
 # The velocity along the top boundary models a spreading
 # center that is moving left and right:
 subsection Boundary velocity model
+  set Tangential velocity boundary indicators = front,back 
+  set Prescribed velocity boundary indicators = left: function, right:function, bottom:function
+
   subsection Function
     set Variable names      = x,y,z
     set Function constants  = cm=0.01, year=1 
@@ -82,7 +78,7 @@ end
 # temperature boundary conditions.
 
 subsection Boundary temperature model
-  set Model name = box
+  set List of model names = box
 end
 
 subsection Initial temperature model
@@ -130,3 +126,9 @@ end
 
 
 
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-9
+    set Number of cheap Stokes solver steps = 0
+  end
+end

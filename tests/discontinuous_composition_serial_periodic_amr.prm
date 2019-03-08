@@ -1,0 +1,81 @@
+# Test serial AMR with discontinuous composition elements
+# (in particular flux terms at periodic boundary faces where
+# neighbors are of different level).
+# This test in parallel currently fails (crashes), but we can
+# not test that, because expected test failures are only supported
+# in serial tests.
+
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 4
+set Use years in output instead of seconds = false
+set CFL number                             = 0.5
+set Output directory                       = output
+
+subsection Mesh refinement
+  set Minimum refinement level           = 2
+  set Initial adaptive refinement        = 1
+  set Initial global refinement          = 3
+  set Time steps between mesh refinement = 1
+  set Strategy = composition gradient
+end
+
+subsection Discretization
+  set Use discontinuous composition discretization = true
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1
+    set Y extent = 1
+    set Y periodic = true
+  end
+end
+
+subsection Material model
+  set Model name = simple
+end
+
+subsection Gravity model
+  set Model name = vertical
+end
+
+subsection Initial temperature model
+  set Model name = function
+end
+
+subsection Prescribed Stokes solution
+  set Model name = function
+  subsection Velocity function
+    set Variable names = x,y,t
+
+    set Function constants = init=1.4, x0=1.0, y0=0.3, xv=0.0, yv=-0.25
+    set Function expression = xv;yv
+  end
+end
+
+set Nonlinear solver scheme                   = single Advection, no Stokes
+
+subsection Compositional fields
+  set Number of fields = 1
+end
+
+subsection Initial composition model
+  set Model name = function
+  subsection Function
+    set Variable names = x,y,t
+    set Function expression = if (y<0.65, if(y>0.35, 1.0, 0.0), 0.0)
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization
+
+  subsection Visualization
+    set Time between graphical output = 0.0
+  end
+end
+
+set Output directory = periodic_test

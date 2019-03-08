@@ -23,11 +23,11 @@ set Surface pressure                       = 0
 
 set Use years in output instead of seconds = false  # default: true
 
-set Nonlinear solver scheme                = IMPES
+set Nonlinear solver scheme                = single Advection, single Stokes
 
 
 subsection Boundary temperature model
-  set Model name = time_dep_box
+  set List of model names = time_dep_box
 
   subsection Time_Dep_Box
     set Bottom temperature = 0
@@ -120,17 +120,16 @@ subsection Mesh refinement
 end
 
 
-subsection Model settings
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
 
-
-
+subsection Boundary temperature model
   set Fixed temperature boundary indicators   = 2, 3
+end
 
-  set Prescribed velocity boundary indicators =
-
+subsection Boundary velocity model
   set Tangential velocity boundary indicators = 0,1,2,3
-
-  set Zero velocity boundary indicators       =
 end
 
 subsection Checkpointing

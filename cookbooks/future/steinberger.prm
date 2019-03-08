@@ -1,14 +1,14 @@
 set Dimension                              = 2
 set CFL number                             = 1.0
 set End time                               = 1e8
-set Linear solver tolerance                = 1e-7
 set Adiabatic surface temperature          = 1613.0
 set Output directory                       = output-steinberger
 set Use years in output instead of seconds = true
 
 
 subsection Boundary temperature model
-  set Model name = spherical constant
+  set Fixed temperature boundary indicators = top, bottom
+  set List of model names = spherical constant
 
   subsection Spherical constant
     set Inner temperature = 4273
@@ -82,8 +82,7 @@ subsection Mesh refinement
 end
 
 
-subsection Model settings
-  set Fixed temperature boundary indicators   = top, bottom
+subsection Boundary velocity model
   set Tangential velocity boundary indicators = top, bottom, left, right
 end
 

@@ -54,7 +54,6 @@ set Dimension                              = 2
 # steady state solution.
 set CFL number = 5.0
 set Additional shared libraries            = ./libking.so
-set Use direct solver for Stokes system    = false
 
 # This is the non-dimensionalized surface temperature, which is the 
 # ratio of the dimensional surface temperature T_surf = 273 K and
@@ -73,8 +72,6 @@ subsection Discretization
   end
 end
 
-set Linear solver tolerance                = 1e-9
-set Temperature solver tolerance           = 1e-10
 
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
@@ -168,9 +165,10 @@ end
 
 # We prescibe the adiabatic surface temperature as top temperature
 # and the (nondimensional) temperature change across the boundary 
-# is set to 1.
+# is set to 1 (with no flux conditions at the sides).
 subsection Boundary temperature model
-  set Model name = box
+  set Fixed temperature boundary indicators = top, bottom
+  set List of model names = box
 
   subsection Box
     set Top temperature    = 0.091
@@ -180,11 +178,8 @@ subsection Boundary temperature model
   end
 end
 
-# The temperature is prescribed at top and bottom (with no flux
-# conditions at the sides), and the velocity boundary conditions
-# are free slip on all bounadries. 
-subsection Model settings
-  set Fixed temperature boundary indicators   = top, bottom
+# The velocity boundary conditions are free slip on all boundaries.
+subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, right, top, bottom
 end
 
@@ -236,3 +231,10 @@ subsection Postprocess
   end
 end
 
+subsection Solver parameters
+  set Temperature solver tolerance = 1e-10
+
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-9
+  end
+end

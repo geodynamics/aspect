@@ -2,7 +2,7 @@
 Loading shared library <./libmelting_rate.so>
 
 Number of active cells: 512 (on 5 levels)
-Number of degrees of freedom: 16,698 (5,412+4,290+561+2,145+2,145+2,145)
+Number of degrees of freedom: 17,673 (6,387+4,290+561+2,145+2,145+2,145)
 
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
@@ -10,88 +10,80 @@ Number of degrees of freedom: 16,698 (5,412+4,290+561+2,145+2,145+2,145)
    Solving peridotite system ... 0 iterations.
    Solving Stokes system... done.
    Solving for u_f in 12 iterations.
-      Relative nonlinear residuals: 1.63037e-16, 1.18813e-16, 1.18813e-16, 1
-      Total relative residual after nonlinear iteration 1: 1
-
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.64801e-16, 1.20288e-16, 1.20288e-16, 1
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1
 
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
    Solving Stokes system... done.
    Solving for u_f in 12 iterations.
-      Relative nonlinear residuals: 1.63037e-16, 1.18813e-16, 1.18813e-16, 2.03318e-14
-      Total relative residual after nonlinear iteration 2: 2.03318e-14
-
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.64801e-16, 1.20288e-16, 1.20288e-16, 1.55267e-14
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 1.55267e-14
 
 
    Postprocessing:
      Compositions min/max/mass: 1.438e-28/0.2/1.257e+08 // 1.438e-28/0.2/1.257e+08
      Writing graphical output:  output-melting_rate/solution/solution-00000
 
-*** Timestep 1:  t=117.058 years
-   Solving temperature system... 6 iterations.
+*** Timestep 1:  t=163.192 years
+   Solving temperature system... 7 iterations.
    Solving porosity system ... 9 iterations.
    Solving peridotite system ... 8 iterations.
    Solving Stokes system... done.
    Solving for u_f in 12 iterations.
-      Relative nonlinear residuals: 8.21938e-06, 0.00120747, 0.000498096, 0.0644058
-      Total relative residual after nonlinear iteration 1: 0.0644058
-
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.14639e-05, 0.00151834, 0.000425756, 0.0637341
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0637341
 
    Solving temperature system... 5 iterations.
    Solving porosity system ... 7 iterations.
    Solving peridotite system ... 6 iterations.
    Solving Stokes system... done.
    Solving for u_f in 12 iterations.
-      Relative nonlinear residuals: 1.11692e-07, 5.91343e-05, 3.92016e-06, 0.000199776
-      Total relative residual after nonlinear iteration 2: 0.000199776
-
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.12415e-07, 5.73213e-05, 3.80856e-06, 0.00146622
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.00146622
 
    Solving temperature system... 2 iterations.
    Solving porosity system ... 5 iterations.
    Solving peridotite system ... 3 iterations.
    Solving Stokes system... done.
    Solving for u_f in 12 iterations.
-      Relative nonlinear residuals: 1.23859e-10, 1.31334e-07, 4.80374e-09, 4.68229e-07
-      Total relative residual after nonlinear iteration 3: 4.68229e-07
-
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.66379e-10, 1.51207e-07, 6.34018e-09, 2.4166e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 2.4166e-06
 
 
    Postprocessing:
-     Compositions min/max/mass: -1.948e-11/0.2001/1.257e+08 // -1.463e-13/0.2001/1.257e+08
+     Compositions min/max/mass: -4.549e-10/0.2001/1.257e+08 // -4.053e-12/0.2001/1.257e+08
      Writing graphical output:  output-melting_rate/solution/solution-00001
 
 *** Timestep 2:  t=200 years
    Solving temperature system... 5 iterations.
    Solving porosity system ... 8 iterations.
-   Solving peridotite system ... 7 iterations.
+   Solving peridotite system ... 8 iterations.
    Solving Stokes system... done.
    Solving for u_f in 12 iterations.
-      Relative nonlinear residuals: 2.55762e-07, 0.000122317, 0.000104543, 0.0201335
-      Total relative residual after nonlinear iteration 1: 0.0201335
-
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.42373e-07, 0.000322559, 0.00033521, 0.153188
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.153188
 
    Solving temperature system... 4 iterations.
    Solving porosity system ... 7 iterations.
-   Solving peridotite system ... 5 iterations.
+   Solving peridotite system ... 6 iterations.
    Solving Stokes system... done.
    Solving for u_f in 12 iterations.
-      Relative nonlinear residuals: 1.63871e-08, 9.00004e-06, 6.07269e-07, 3.08189e-05
-      Total relative residual after nonlinear iteration 2: 3.08189e-05
-
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 6.76458e-08, 3.65664e-05, 2.48756e-06, 0.000934279
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000934279
 
    Solving temperature system... 1 iterations.
    Solving porosity system ... 4 iterations.
-   Solving peridotite system ... 2 iterations.
+   Solving peridotite system ... 3 iterations.
    Solving Stokes system... done.
    Solving for u_f in 12 iterations.
-      Relative nonlinear residuals: 9.01415e-12, 9.61468e-09, 3.53146e-10, 3.53203e-08
-      Total relative residual after nonlinear iteration 3: 3.53203e-08
-
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.96312e-11, 1.84105e-08, 7.59998e-10, 2.88236e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 2.88236e-07
 
 
    Postprocessing:
-     Compositions min/max/mass: -3.804e-11/0.2002/1.258e+08 // -5.002e-13/0.2002/1.258e+08
+     Compositions min/max/mass: -7.119e-10/0.2002/1.258e+08 // -5.202e-12/0.2002/1.258e+08
      Writing graphical output:  output-melting_rate/solution/solution-00002
 
 Termination requested by criterion: end time

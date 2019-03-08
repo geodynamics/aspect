@@ -3,17 +3,23 @@
 # In this 1D model, material is upwelling with a high temperature
 # from the bottom boundary and melting adiabatically. This 
 # leads to dissipation heating due to the relative movement of 
-# melt and solid. As these thers scale with 1/porosity, this
-# can lead to instabilities. This should be fixed by using a
-# Melt transport threshold > 0, as done in this test. 
+# melt and solid. As these terms scale with 1/porosity, this
+# can lead to instabilities. However, this can be avoided by 
+# choosing a resolution that is high enough and choosing the 
+# Darcy coefficient variation threshold that is not too small
+# (here, the default value is sufficient). 
 
 # The test is based on the model of 1D upwelling melting in a
-# plume with melt-realted heating in the Supplementary material 
-# of Dannberg & Heister, 2016.  
+# plume with melt-related heating in the Supplementary material 
+# of Dannberg & Heister, 2016.
+# To better compare the results with Dannberg & Heister, 2016, 
+# the bottom boundary temperature can be changed to 2000 K
+# (this is just not feasible in the test, as it would take too 
+# many time time steps until the onset of melting).
 
 set Adiabatic surface temperature          = 1600               # default: 0
 set CFL number                             = 1.0
-set Nonlinear solver scheme                = iterated IMPES
+set Nonlinear solver scheme                = iterated Advection and Stokes
 set Max nonlinear iterations               = 10
 
 set Dimension                              = 2
@@ -26,7 +32,14 @@ set Resume computation                     = false
 set Start time                             = 0
 
 set Use years in output instead of seconds = true
-set Use direct solver for Stokes system    = false
+set Use operator splitting                 = true
+
+subsection Solver parameters
+  subsection Operator splitting parameters
+    set Reaction time step                     = 2e2
+    set Reaction time steps per advection step = 10
+  end
+end
 
 subsection Discretization
   set Stokes velocity polynomial degree = 2
@@ -44,7 +57,7 @@ end
 
 
 subsection Boundary temperature model
-  set Model name = function
+  set List of model names = function
 
   subsection Initial temperature
     set Minimal temperature = 293
@@ -58,7 +71,7 @@ subsection Boundary temperature model
 end
 
 subsection Boundary composition model
-  set Model name = initial composition
+  set List of model names = initial composition
 end
 
 subsection Boundary velocity model
@@ -133,7 +146,8 @@ subsection Material model
     set Use full compressibility = false
     set Thermal conductivity = 4.7
     set Melt extraction depth = 0.0
-    set Freezing rate = 0.0
+    set Freezing rate = 0
+    set Mass fraction cpx = 0.1
   end
 end
 
@@ -170,29 +184,41 @@ subsection Boundary fluid pressure model
   end
 end
 
-subsection Model settings
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary temperature model
   set Fixed temperature boundary indicators   = 2
+end
+
+subsection Boundary composition model
   set Fixed composition boundary indicators   = 2
+end
+
+subsection Boundary velocity model
   set Prescribed velocity boundary indicators = 2:function
+end
 
+subsection Boundary velocity model
   set Tangential velocity boundary indicators = 0,1
-  set Zero velocity boundary indicators       = 
+end
 
+subsection Melt settings
   set Include melt transport                  = true
 end
 
 subsection Melt settings
-  set Melt transport threshold                = 1e-3
   set Heat advection by melt                  = true
 end
 
 subsection Heating model
-  set List of model names                     = adiabatic heating, latent heat, shear heating, adiabatic heating of melt, shear heating with melt
+  set List of model names                     = adiabatic heating, latent heat melt, shear heating, adiabatic heating of melt, shear heating with melt
 end
 
 subsection Postprocess
 
-  set List of postprocessors = composition statistics,velocity statistics, mass flux statistics, heating statistics, temperature statistics
+  set List of postprocessors = composition statistics,velocity statistics, mass flux statistics, heating statistics, temperature statistics, visualization
 
   subsection Visualization
 
@@ -212,4 +238,10 @@ subsection Postprocess
     set Time between graphical output = 2500                                                                               # default: 1e8
   end
 
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Use direct solver for Stokes system = false
+  end
 end

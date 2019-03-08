@@ -11,7 +11,6 @@ end
 #############################
 # Otherwise use the setup of burstedde
 
-set Linear solver tolerance                = 1e-12
 
 set Dimension                              = 3
 
@@ -19,13 +18,12 @@ set Start time                             = 0
 set End time                               = 0
 set Use years in output instead of seconds = false
 
-set Nonlinear solver scheme                = Stokes only
+set Nonlinear solver scheme                = no Advection, iterated Stokes
 
 set Output directory                       = output
 
 set Pressure normalization                 = volume
 
-set Number of cheap Stokes solver steps = 0
 
 ############### Parameters describing the model
 # The setup is a 3d unit cube.
@@ -45,8 +43,11 @@ subsection Geometry model
 end
 
 #Boundary conditions
-subsection Model settings
-  set Tangential velocity boundary indicators = 
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary velocity model
   set Prescribed velocity boundary indicators = 0:BursteddeBoundary, 1: BursteddeBoundary, 2: BursteddeBoundary, 3: BursteddeBoundary, 4: BursteddeBoundary, 5: BursteddeBoundary
 end
 
@@ -70,7 +71,7 @@ end
 # temperature boundary conditions.
 
 subsection Boundary temperature model
-  set Model name = box
+  set List of model names = box
 end
 
 subsection Initial temperature model
@@ -97,3 +98,9 @@ end
 
 
 
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-12
+    set Number of cheap Stokes solver steps = 0
+  end
+end

@@ -14,7 +14,7 @@ subsection Prescribed Stokes solution
   set Function expression = 0;1
   end
 end
-set Nonlinear solver scheme                = Advection only
+set Nonlinear solver scheme                = single Advection, no Stokes
 
 
 subsection Geometry model
@@ -41,7 +41,7 @@ end
 
 
 subsection Boundary temperature model
-  set Model name = box
+  set List of model names = box
   subsection Box
     set Bottom temperature = 0
     set Left temperature   = 0
@@ -50,12 +50,6 @@ subsection Boundary temperature model
   end
 end
 
-subsection Model settings
-  set Fixed temperature boundary indicators   = 
-  set Zero velocity boundary indicators       = 
-  set Prescribed velocity boundary indicators =
-  set Tangential velocity boundary indicators = 
-end
 
 subsection Gravity model
   set Model name = vertical

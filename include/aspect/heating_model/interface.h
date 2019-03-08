@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
@@ -25,9 +25,14 @@
 #include <aspect/plugins.h>
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>
+#include <aspect/utilities.h>
 
 #include <deal.II/base/point.h>
 #include <deal.II/base/parameter_handler.h>
+
+#include <boost/core/demangle.hpp>
+#include <typeinfo>
+
 
 namespace aspect
 {
@@ -64,12 +69,34 @@ namespace aspect
                            const unsigned int n_comp);
 
       /**
-       * All source terms of the temperature equation at the given position.
-       * This includes shear heating, adiabatic heating, radiogenic heat
-       * production, the right hand side part of latent heat or any other
-       * heating terms on the right hand side of the energy equation.
+       * All source terms of the temperature equation that represent a
+       * continuous process leading to a rate of change in temperature
+       * at the given position. This includes shear heating, adiabatic
+       * heating, radiogenic heat production, or any other heating rates
+       * on the right hand side of the energy equation.
        */
       std::vector<double> heating_source_terms;
+
+      /**
+       * The source terms of the temperature equation that represent
+       * fast changes in temperature (compared to the advection time
+       * scale), for example due to reactions, at the given position.
+       * On the advection time scale, these reactions might look like
+       * instantaneous changes in temperatures. This includes for example
+       * latent heat of melt.
+       *
+       * These reaction rates are only used in the operator_splitting nonlinear
+       * solver scheme, which allows it to solve reactions of compositional
+       * fields and temperature decoupled from the advection, and using a
+       * different time step size.
+       * In this case, they are used in addition to (and independent from) any
+       * heating_source_terms that a heating model defines, which are assembled
+       * as usual. For any other solver scheme, these values are ignored.
+       *
+       * In contrast to the heating source terms, these terms are actual changes
+       * in temperature (units K/s or K/yr) rather than changes in energy.
+       */
+      std::vector<double> rates_of_temperature_change;
 
       /**
        * Left hand side contribution of latent heat; this is added to the
@@ -141,12 +168,13 @@ namespace aspect
         /**
          * Return the specific heating rate as a function of position.
          */
+        DEAL_II_DEPRECATED
         virtual
         double
         specific_heating_rate (const double temperature,
                                const double pressure,
                                const std::vector<double> &compositional_fields,
-                               const Point<dim> &position) const DEAL_II_DEPRECATED;
+                               const Point<dim> &position) const;
 
         /**
          * Declare the parameters this class takes through input files. The
@@ -177,7 +205,17 @@ namespace aspect
          */
         virtual
         void
-        create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &) const;
+        create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const;
+
+        /**
+         * Allow the heating model to attach additional material model inputs
+         * it needs. The default implementation of this function does not add any
+         * inputs. Consequently, derived classes do not have to overload
+         * this function if they do not need any additional inputs.
+         */
+        virtual
+        void
+        create_additional_material_model_inputs(MaterialModel::MaterialModelInputs<dim> &inputs) const;
     };
 
 
@@ -246,6 +284,16 @@ namespace aspect
                   const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
                   HeatingModel::HeatingModelOutputs &heating_model_outputs) const;
 
+        /**
+         * Allow the heating model plugins to attach additional material model
+         * inputs and outputs by looping over all registered plugins and calling
+         * their respective member functions.
+         */
+        virtual
+        void
+        create_additional_material_model_inputs_and_outputs(MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
+                                                            MaterialModel::MaterialModelOutputs<dim> &material_model_outputs) const;
+
 
         /**
          * A function that is used to register heating model objects in such
@@ -285,7 +333,7 @@ namespace aspect
          * Return a list of pointers to all heating models currently used in the
          * computation, as specified in the input file.
          */
-        const std::list<std_cxx11::shared_ptr<Interface<dim> > > &
+        const std::list<std::shared_ptr<Interface<dim> > > &
         get_active_heating_models () const;
 
         /**
@@ -293,11 +341,48 @@ namespace aspect
          * the input file (and are consequently currently active) and see if one
          * of them has the desired type specified by the template argument. If so,
          * return a pointer to it. If no heating model is active that matches the
-         * given type, return a NULL pointer.
+         * given type, return a nullptr.
          */
         template <typename HeatingModelType>
+        DEAL_II_DEPRECATED
         HeatingModelType *
         find_heating_model () const;
+
+        /**
+         * Go through the list of all heating models that have been selected
+         * in the input file (and are consequently currently active) and return
+         * true if one of them has the desired type specified by the template
+         * argument.
+         */
+        template <typename HeatingModelType>
+        bool
+        has_matching_heating_model () const;
+
+        /**
+         * Go through the list of all heating models that have been selected
+         * in the input file (and are consequently currently active) and see
+         * if one of them has the type specified by the template
+         * argument or can be casted to that type. If so, return a reference
+         * to it. If no heating model is active that matches the given type,
+         * throw an exception.
+         */
+        template <typename HeatingModelType>
+        const HeatingModelType &
+        get_matching_heating_model () const;
+
+
+        /**
+         * For the current plugin subsystem, write a connection graph of all of the
+         * plugins we know about, in the format that the
+         * programs dot and neato understand. This allows for a visualization of
+         * how all of the plugins that ASPECT knows about are interconnected, and
+         * connect to other parts of the ASPECT code.
+         *
+         * @param output_stream The stream to write the output to.
+         */
+        static
+        void
+        write_plugin_graph (std::ostream &output_stream);
 
         /**
          * Exception.
@@ -312,7 +397,7 @@ namespace aspect
          * A list of heating model objects that have been requested in the
          * parameter file.
          */
-        std::list<std_cxx11::shared_ptr<Interface<dim> > > heating_model_objects;
+        std::list<std::shared_ptr<Interface<dim> > > heating_model_objects;
 
         /**
          * A list of names of heating model objects that have been requested
@@ -329,14 +414,52 @@ namespace aspect
     HeatingModelType *
     Manager<dim>::find_heating_model () const
     {
-      for (typename std::list<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
+      for (typename std::list<std::shared_ptr<Interface<dim> > >::const_iterator
            p = heating_model_objects.begin();
            p != heating_model_objects.end(); ++p)
         if (HeatingModelType *x = dynamic_cast<HeatingModelType *> ( (*p).get()) )
           return x;
-      return NULL;
+      return nullptr;
     }
 
+
+    template <int dim>
+    template <typename HeatingModelType>
+    inline
+    bool
+    Manager<dim>::has_matching_heating_model () const
+    {
+      for (typename std::list<std::shared_ptr<Interface<dim> > >::const_iterator
+           p = heating_model_objects.begin();
+           p != heating_model_objects.end(); ++p)
+        if (Plugins::plugin_type_matches<HeatingModelType>(*(*p)))
+          return true;
+      return false;
+    }
+
+
+    template <int dim>
+    template <typename HeatingModelType>
+    inline
+    const HeatingModelType &
+    Manager<dim>::get_matching_heating_model () const
+    {
+      AssertThrow(has_matching_heating_model<HeatingModelType> (),
+                  ExcMessage("You asked HeatingModel::Manager::get_heating_model() for a "
+                             "heating model of type <" + boost::core::demangle(typeid(HeatingModelType).name()) + "> "
+                             "that could not be found in the current model. Activate this "
+                             "heating model in the input file."));
+
+      typename std::list<std::shared_ptr<Interface<dim> > >::const_iterator heating_model;
+      for (typename std::list<std::shared_ptr<Interface<dim> > >::const_iterator
+           p = heating_model_objects.begin();
+           p != heating_model_objects.end(); ++p)
+        if (Plugins::plugin_type_matches<HeatingModelType>(*(*p)))
+          return Plugins::get_plugin_as_type<HeatingModelType>(*(*p));
+
+      // We will never get here, because we had the Assert above. Just to avoid warnings.
+      return Plugins::get_plugin_as_type<HeatingModelType>(*(*heating_model));
+    }
 
 
     /**

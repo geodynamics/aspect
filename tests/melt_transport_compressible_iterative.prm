@@ -15,11 +15,9 @@ end
 
 set Adiabatic surface temperature          = 1623               # default: 0
 set CFL number                             = 1.0
-set Composition solver tolerance           = 1e-12
-set Nonlinear solver scheme                = iterated IMPES
-set Max nonlinear iterations               = 50
-set Linear solver tolerance                = 5e-7
-set Nonlinear solver tolerance             = 1e-4
+set Nonlinear solver scheme                = iterated Advection and Stokes
+set Max nonlinear iterations               = 5
+set Nonlinear solver tolerance             = 1e-6
 
 # The number of space dimensions you want to run this program in.
 set Dimension                              = 2
@@ -34,8 +32,6 @@ set Resume computation                     = false
 set Start time                             = 0
 
 set Use years in output instead of seconds = false
-set Use direct solver for Stokes system    = false
-set Number of cheap Stokes solver steps    = 0
 
 subsection Compositional fields
   set Number of fields = 1
@@ -47,7 +43,7 @@ subsection Boundary fluid pressure model
 end
 
 subsection Boundary temperature model
-  set Model name = initial temperature
+  set List of model names = initial temperature
 
   subsection Initial temperature
     # Temperature at the inner boundary (core mantle boundary). Units: K.
@@ -60,7 +56,7 @@ subsection Boundary temperature model
 end
 
 subsection Boundary composition model
-  set Model name = initial composition
+  set List of model names = initial composition
 end
 
 
@@ -119,23 +115,37 @@ end
 
 subsection Mesh refinement
   set Coarsening fraction                      = 0.0
-  set Refinement fraction                      = 0.0
+  set Refinement fraction                      = 1.0
 
   set Initial adaptive refinement              = 0                    # default: 2
-  set Initial global refinement                = 4                    # default: 2
+  set Initial global refinement                = 3                    # default: 2
   set Strategy                                 = composition
   set Time steps between mesh refinement       = 0
+  set Run postprocessors on initial refinement = true
 end
 
 
-subsection Model settings
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary temperature model
   set Fixed temperature boundary indicators   = 2,3        # default: 
+end
+
+subsection Boundary composition model
   set Fixed composition boundary indicators   = 0,1,2,3   
+end
+
+subsection Boundary velocity model
   set Prescribed velocity boundary indicators = 0:function, 1:function, 2:function, 3:function
+end
 
-  set Tangential velocity boundary indicators = 
+subsection Boundary velocity model
   set Zero velocity boundary indicators       =           # default: 
+end
 
+subsection Melt settings
   set Include melt transport                  = true
 end
 
@@ -149,3 +159,10 @@ end
 
 
 
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-5
+    set Number of cheap Stokes solver steps = 500
+    set Use direct solver for Stokes system = false
+  end
+end

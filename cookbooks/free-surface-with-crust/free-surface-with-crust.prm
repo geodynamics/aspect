@@ -27,7 +27,9 @@ set Use years in output instead of seconds = true
 # We let the boundaries be zero temperature, as we are just
 # modelling a single rising blob
 subsection Boundary temperature model
-  set Model name = constant
+  set Fixed temperature boundary indicators = top, bottom, left, right
+  set List of model names = constant
+
   subsection Constant
     set Boundary indicator to temperature mappings = 0:0,1:0,2:0,3:0
   end
@@ -109,28 +111,22 @@ subsection Mesh refinement
 end
 
 
-# Here we specify that the model has fixed temperature
-# boundary conditions, as well as free slip boundary
-# conditions for the sides and bottom. 
-subsection Model settings
-  set Fixed temperature boundary indicators   = top, bottom, left, right
-  set Prescribed velocity boundary indicators =
+# We prescribe free slip boundary conditions for the sides and bottom. 
+subsection Boundary velocity model
   set Tangential velocity boundary indicators = bottom, left, right
-  set Zero velocity boundary indicators       = 
-
-  # We specify a comma delimited list of the free surface boundaries
-  # for the model.  In this case, it is just the top boundary (3)
-  # of the box geometry model. 
-  set Free surface boundary indicators = top
 end
 
 # Here is the major new section to the parameter file,
 # specifying the parameter for running free surface
 # calculations
 subsection Free surface
+  # We specify a comma delimited list of the free surface boundaries
+  # for the model.  In this case, it is just the 'top' boundary
+  # of the box geometry model.
+  set Free surface boundary indicators = top
   # We need to specify the free surface stabilization parameter
-  # theta, between zero and one.  If it is zero, there is no stabilization
-  # and you are likely to see a sloshing instability develop.  If
+  # theta, between zero and one. If it is zero, there is no stabilization
+  # and you are likely to see a sloshing instability develop. If
   # it is one, the surface should be the most stable, though you
   # may find that the rates that it moves are fairly damped
   set Free surface stabilization theta = 0.5

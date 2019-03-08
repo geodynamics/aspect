@@ -19,13 +19,13 @@ Number of degrees of freedom: 32,097 (10,258+1,323+5,129+5,129+5,129+5,129)
    Solving C_2 system ... 0 iterations.
    Solving C_3 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+14 iterations.
+   Solving Stokes system... 30+13 iterations.
 
    Postprocessing:
      Writing graphical output: output-multicomponent_arithmetic/solution/solution-00000
 
 *** Timestep 1:  t=59830.4 years
-   Solving temperature system... 10 iterations.
+   Solving temperature system... 11 iterations.
    Solving C_1 system ... 11 iterations.
    Solving C_2 system ... 15 iterations.
    Solving C_3 system ... 11 iterations.

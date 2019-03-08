@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
@@ -53,7 +53,11 @@ namespace aspect
         for (unsigned int i=0; i<property_names.size(); ++i)
           if (property_names[i] == "fluid density gradient")
             for (unsigned int i=0; i<dim; ++i)
-              solution_names.push_back ("fluid_density_gradient");
+              solution_names.emplace_back("fluid_density_gradient");
+          else if (property_names[i] == "compaction pressure")
+            {
+              solution_names.emplace_back("p_c");
+            }
           else
             {
               solution_names.push_back(property_names[i]);
@@ -88,7 +92,7 @@ namespace aspect
       MeltMaterialProperties<dim>::
       get_needed_update_flags () const
       {
-        return update_gradients | update_values  | update_q_points;
+        return update_gradients | update_values  | update_quadrature_points;
       }
 
       template <int dim>
@@ -104,17 +108,21 @@ namespace aspect
         Assert (computed_quantities.size() == n_quadrature_points,    ExcInternalError());
         Assert (input_data.solution_values[0].size() == this->introspection().n_components,   ExcInternalError());
 
-        // Set use_strain_rates to false since we have no need for viscosity.
+        // Set use_strain_rates to true since the compaction viscosity might also depend on the strain rate.
         MaterialModel::MaterialModelInputs<dim> in(input_data,
-                                                   this->introspection(), false);
+                                                   this->introspection(), true);
         MaterialModel::MaterialModelOutputs<dim> out(n_quadrature_points, this->n_compositional_fields());
         MeltHandler<dim>::create_material_model_outputs(out);
 
         this->get_material_model().evaluate(in, out);
         MaterialModel::MeltOutputs<dim> *melt_outputs = out.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
-        AssertThrow(melt_outputs != NULL,
+        AssertThrow(melt_outputs != nullptr,
                     ExcMessage("Need MeltOutputs from the material model for computing the melt properties."));
 
+        const double p_c_scale = dynamic_cast<const MaterialModel::MeltInterface<dim>*>(&this->get_material_model())->p_c_scale(in,
+                                 out,
+                                 this->get_melt_handler(),
+                                 true);
 
         for (unsigned int q=0; q<n_quadrature_points; ++q)
           {
@@ -137,6 +145,33 @@ namespace aspect
                       }
                     --output_index;
                   }
+                else if (property_names[i] == "compaction pressure")
+                  {
+                    const unsigned int pc_comp_idx = this->introspection().variable("compaction pressure").first_component_index;
+                    const double p_c_bar = input_data.solution_values[q][pc_comp_idx];
+
+                    computed_quantities[q][output_index] = p_c_scale * p_c_bar;
+                  }
+                else if (property_names[i] == "darcy coefficient")
+                  {
+                    const double K_D = this->get_melt_handler().limited_darcy_coefficient(melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q], p_c_scale > 0);
+                    computed_quantities[q][output_index] = K_D;
+                  }
+                else if (property_names[i] == "darcy coefficient no cutoff")
+                  {
+                    const double K_D_no_cut = melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q];
+                    computed_quantities[q][output_index] = K_D_no_cut;
+                  }
+                else if (property_names[i] == "is melt cell")
+                  {
+                    computed_quantities[q][output_index] = this->get_melt_handler().is_melt_cell(in.current_cell)? 1.0 : 0.0;
+                  }
+                else if (property_names[i] == "compaction length")
+                  {
+                    const double compaction_length = std::sqrt((out.viscosities[q] + 4./3. * melt_outputs->compaction_viscosities[q])
+                                                               * melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q]);
+                    computed_quantities[q][output_index] = compaction_length;
+                  }
                 else
                   AssertThrow(false, ExcNotImplemented());
               }
@@ -155,7 +190,9 @@ namespace aspect
             {
               const std::string pattern_of_names
                 = "compaction viscosity|fluid viscosity|permeability|"
-                  "fluid density|fluid density gradient";
+                  "fluid density|fluid density gradient|is melt cell|"
+                  "darcy coefficient|darcy coefficient no cutoff|"
+                  "compaction length";
 
               prm.declare_entry("List of properties",
                                 "compaction viscosity,permeability",
@@ -188,6 +225,9 @@ namespace aspect
                           ExcMessage("The list of strings for the parameter "
                                      "'Postprocess/Visualization/Melt material properties/List of properties' contains entries more than once. "
                                      "This is not allowed. Please check your parameter file."));
+
+              // Always output compaction pressure
+              property_names.insert(property_names.begin(),"compaction pressure");
             }
             prm.leave_subsection();
           }
@@ -211,7 +251,10 @@ namespace aspect
       ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(MeltMaterialProperties,
                                                   "melt material properties",
                                                   "A visualization output object that generates output "
-                                                  "for melt related properties of the material model.")
+                                                  "for melt related properties of the material model. Note "
+                                                  "that this postprocessor always outputs the compaction pressure, "
+                                                  "but can output a large range of additional properties, as "
+                                                  "selected in the ``List of properties'' parameter.")
 
     }
   }

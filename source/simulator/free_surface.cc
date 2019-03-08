@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
  */
 
@@ -22,7 +22,9 @@
 #include <aspect/simulator.h>
 #include <aspect/free_surface.h>
 #include <aspect/global.h>
-#include <aspect/assembly.h>
+#include <aspect/simulator/assemblers/interface.h>
+#include <aspect/melt.h>
+#include <aspect/citation_info.h>
 
 #include <deal.II/dofs/dof_renumbering.h>
 #include <deal.II/dofs/dof_accessor.h>
@@ -36,11 +38,106 @@
 #include <deal.II/numerics/vector_tools.h>
 
 
-using namespace dealii;
-
 
 namespace aspect
 {
+  namespace Assemblers
+  {
+    template <int dim>
+    void
+    ApplyStabilization<dim>::
+    execute (internal::Assembly::Scratch::ScratchBase<dim>       &scratch_base,
+             internal::Assembly::CopyData::CopyDataBase<dim>      &data_base) const
+    {
+      internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>& > (scratch_base);
+      internal::Assembly::CopyData::StokesSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::StokesSystem<dim>& > (data_base);
+
+      if (!this->get_parameters().free_surface_enabled)
+        return;
+
+      if (this->get_parameters().include_melt_transport)
+        {
+          this->get_melt_handler().apply_free_surface_stabilization_with_melt (this->get_free_surface_handler().get_stabilization_term(),
+                                                                               scratch.cell,
+                                                                               scratch,
+                                                                               data);
+          return;
+        }
+
+      const Introspection<dim> &introspection = this->introspection();
+      const FiniteElement<dim> &fe = this->get_fe();
+
+      const typename DoFHandler<dim>::active_cell_iterator cell (&this->get_triangulation(),
+                                                                 scratch.finite_element_values.get_cell()->level(),
+                                                                 scratch.finite_element_values.get_cell()->index(),
+                                                                 &this->get_dof_handler());
+
+      const unsigned int n_face_q_points = scratch.face_finite_element_values.n_quadrature_points;
+      const unsigned int stokes_dofs_per_cell = data.local_dof_indices.size();
+
+      // only apply on free surface faces
+      if (cell->at_boundary() && cell->is_locally_owned())
+        for (unsigned int face_no=0; face_no<GeometryInfo<dim>::faces_per_cell; ++face_no)
+          if (cell->face(face_no)->at_boundary())
+            {
+              const types::boundary_id boundary_indicator
+                = cell->face(face_no)->boundary_id();
+
+              if (this->get_parameters().free_surface_boundary_indicators.find(boundary_indicator)
+                  == this->get_parameters().free_surface_boundary_indicators.end())
+                continue;
+
+              scratch.face_finite_element_values.reinit(cell, face_no);
+
+              this->compute_material_model_input_values (this->get_solution(),
+                                                         scratch.face_finite_element_values,
+                                                         cell,
+                                                         false,
+                                                         scratch.face_material_model_inputs);
+
+              this->get_material_model().evaluate(scratch.face_material_model_inputs, scratch.face_material_model_outputs);
+
+              for (unsigned int q_point = 0; q_point < n_face_q_points; ++q_point)
+                {
+                  for (unsigned int i = 0, i_stokes = 0; i_stokes < stokes_dofs_per_cell; /*increment at end of loop*/)
+                    {
+                      if (introspection.is_stokes_component(fe.system_to_component_index(i).first))
+                        {
+                          scratch.phi_u[i_stokes] = scratch.face_finite_element_values[introspection.extractors.velocities].value(i, q_point);
+                          ++i_stokes;
+                        }
+                      ++i;
+                    }
+
+                  const Tensor<1,dim>
+                  gravity = this->get_gravity_model().gravity_vector(scratch.face_finite_element_values.quadrature_point(q_point));
+                  double g_norm = gravity.norm();
+
+                  // construct the relevant vectors
+                  const Tensor<1,dim> n_hat = scratch.face_finite_element_values.normal_vector(q_point);
+                  const Tensor<1,dim> g_hat = (g_norm == 0.0 ? Tensor<1,dim>() : gravity/g_norm);
+
+                  const double pressure_perturbation = scratch.face_material_model_outputs.densities[q_point] *
+                                                       this->get_timestep() *
+                                                       this->get_free_surface_handler().get_stabilization_term() *
+                                                       g_norm;
+
+                  // see Kaus et al 2010 for details of the stabilization term
+                  for (unsigned int i=0; i< stokes_dofs_per_cell; ++i)
+                    for (unsigned int j=0; j< stokes_dofs_per_cell; ++j)
+                      {
+                        // The fictive stabilization stress is (phi_u[i].g)*(phi_u[j].n)
+                        const double stress_value = -pressure_perturbation*
+                                                    (scratch.phi_u[i]*g_hat) * (scratch.phi_u[j]*n_hat)
+                                                    *scratch.face_finite_element_values.JxW(q_point);
+
+                        data.local_matrix(i,j) += stress_value;
+                      }
+                }
+            }
+    }
+  }
+
   template <int dim>
   FreeSurfaceHandler<dim>::FreeSurfaceHandler (Simulator<dim> &simulator,
                                                ParameterHandler &prm)
@@ -49,16 +146,26 @@ namespace aspect
       free_surface_dof_handler (sim.triangulation)
   {
     parse_parameters(prm);
+    CitationInfo::add("fs");
+  }
 
-    assembler_connection =
-      sim.assemblers->local_assemble_stokes_system
-      .connect (std_cxx11::bind(&FreeSurfaceHandler<dim>::apply_stabilization,
-                                std_cxx11::ref(*this),
-                                std_cxx11::_1,
-                                // discard pressure_scaling,
-                                // discard rebuild_stokes_matrix,
-                                std_cxx11::_4,
-                                std_cxx11::_5));
+  template <int dim>
+  FreeSurfaceHandler<dim>::~FreeSurfaceHandler ()
+  {
+    // Free the Simulator's mapping object, otherwise
+    // when the FreeSurfaceHandler gets destroyed,
+    // the mapping's reference to the mesh displacement
+    // vector will be invalid.
+    sim.mapping.reset();
+  }
+
+
+
+  template <int dim>
+  void FreeSurfaceHandler<dim>::set_assemblers()
+  {
+    sim.assemblers->stokes_system.push_back(
+      std_cxx14::make_unique<aspect::Assemblers::ApplyStabilization<dim>> ());
 
     // Note that we do not want face_material_model_data, because we do not
     // connect to a face assembler. We instead connect to a normal assembler,
@@ -72,15 +179,7 @@ namespace aspect
         update_JxW_values);
   }
 
-  template <int dim>
-  FreeSurfaceHandler<dim>::~FreeSurfaceHandler ()
-  {
-    // Free the Simulator's mapping object, otherwise
-    // when the FreeSurfaceHandler gets destroyed,
-    // the mapping's reference to the mesh displacement
-    // vector will be invalid.
-    sim.mapping.reset();
-  }
+
 
   template <int dim>
   void FreeSurfaceHandler<dim>::declare_parameters(ParameterHandler &prm)
@@ -155,7 +254,7 @@ namespace aspect
             = sim.geometry_model->translate_symbolic_boundary_names_to_ids(Utilities::split_string_list
                                                                            (prm.get ("Additional tangential mesh velocity boundary indicators")));
 
-          tangential_mesh_boundary_indicators = sim.parameters.tangential_velocity_boundary_indicators;
+          tangential_mesh_boundary_indicators = sim.boundary_velocity_manager.get_tangential_boundary_velocity_indicators();
           tangential_mesh_boundary_indicators.insert(x_additional_tangential_mesh_boundary_indicators.begin(),
                                                      x_additional_tangential_mesh_boundary_indicators.end());
         }
@@ -177,7 +276,8 @@ namespace aspect
   {
     if (!sim.parameters.free_surface_enabled)
       return;
-    sim.computing_timer.enter_section("Free surface");
+
+    TimerOutput::Scope timer (sim.computing_timer, "Free surface");
 
     // Make the constraints for the elliptic problem.  On the free surface, we
     // constrain mesh velocity to be v.n, on free slip it is constrained to
@@ -195,7 +295,6 @@ namespace aspect
 
     // After changing the mesh we need to rebuild things
     sim.rebuild_stokes_matrix = sim.rebuild_stokes_preconditioner = true;
-    sim.computing_timer.exit_section("Free surface");
   }
 
 
@@ -221,15 +320,15 @@ namespace aspect
       DoFTools::make_periodicity_constraints(free_surface_dof_handler, (*p).first.first, (*p).first.second, (*p).second, mesh_displacement_constraints);
 
     // Zero out the displacement for the zero-velocity boundary indicators
-    for (std::set<types::boundary_id>::const_iterator p = sim.parameters.zero_velocity_boundary_indicators.begin();
-         p != sim.parameters.zero_velocity_boundary_indicators.end(); ++p)
+    for (std::set<types::boundary_id>::const_iterator p = sim.boundary_velocity_manager.get_zero_boundary_velocity_indicators().begin();
+         p != sim.boundary_velocity_manager.get_zero_boundary_velocity_indicators().end(); ++p)
       VectorTools::interpolate_boundary_values (free_surface_dof_handler, *p,
                                                 ZeroFunction<dim>(dim), mesh_displacement_constraints);
 
     // Zero out the displacement for the prescribed velocity boundaries
     // if the boundary is not in the set of tangential mesh boundaries
-    for (std::map<types::boundary_id, std::pair<std::string, std::string> >::const_iterator p = sim.parameters.prescribed_velocity_boundary_indicators.begin();
-         p != sim.parameters.prescribed_velocity_boundary_indicators.end(); ++p)
+    for (std::map<types::boundary_id, std::pair<std::string, std::vector<std::string> > >::const_iterator p = sim.boundary_velocity_manager.get_active_boundary_velocity_names().begin();
+         p != sim.boundary_velocity_manager.get_active_boundary_velocity_names().end(); ++p)
       {
         if (tangential_mesh_boundary_indicators.find(p->first) == tangential_mesh_boundary_indicators.end())
           {
@@ -653,86 +752,15 @@ namespace aspect
     mesh_vertex_constraints.close();
 
     // Now reset the mapping of the simulator to be something that captures mesh deformation in time.
-    sim.mapping.reset (new MappingQ1Eulerian<dim, LinearAlgebra::Vector> (free_surface_dof_handler,
-                                                                          mesh_displacements));
+    sim.mapping
+      = std_cxx14::make_unique<MappingQ1Eulerian<dim, LinearAlgebra::Vector>> (free_surface_dof_handler,
+                                                                               mesh_displacements);
   }
 
   template <int dim>
-  void
-  FreeSurfaceHandler<dim>::
-  apply_stabilization (const typename DoFHandler<dim>::active_cell_iterator &cell,
-                       internal::Assembly::Scratch::StokesSystem<dim>       &scratch,
-                       internal::Assembly::CopyData::StokesSystem<dim>      &data)
+  double FreeSurfaceHandler<dim>::get_stabilization_term() const
   {
-    if (!sim.parameters.free_surface_enabled)
-      return;
-
-    const Introspection<dim> &introspection = sim.introspection;
-    const FiniteElement<dim> &fe = sim.finite_element;
-
-    const unsigned int n_face_q_points = scratch.face_finite_element_values.n_quadrature_points;
-    const unsigned int stokes_dofs_per_cell = data.local_dof_indices.size();
-
-    // only apply on free surface faces
-    if (cell->at_boundary() && cell->is_locally_owned())
-      for (unsigned int face_no=0; face_no<GeometryInfo<dim>::faces_per_cell; ++face_no)
-        if (cell->face(face_no)->at_boundary())
-          {
-            const types::boundary_id boundary_indicator
-              = cell->face(face_no)->boundary_id();
-
-            if (sim.parameters.free_surface_boundary_indicators.find(boundary_indicator)
-                == sim.parameters.free_surface_boundary_indicators.end())
-              continue;
-
-            scratch.face_finite_element_values.reinit(cell, face_no);
-
-            sim.compute_material_model_input_values (sim.solution,
-                                                     scratch.face_finite_element_values,
-                                                     cell,
-                                                     false,
-                                                     scratch.face_material_model_inputs);
-
-            sim.material_model->evaluate(scratch.face_material_model_inputs, scratch.face_material_model_outputs);
-
-            for (unsigned int q_point = 0; q_point < n_face_q_points; ++q_point)
-              {
-                for (unsigned int i = 0, i_stokes = 0; i_stokes < stokes_dofs_per_cell; /*increment at end of loop*/)
-                  {
-                    if (introspection.is_stokes_component(fe.system_to_component_index(i).first))
-                      {
-                        scratch.phi_u[i_stokes] = scratch.face_finite_element_values[introspection.extractors.velocities].value(i, q_point);
-                        ++i_stokes;
-                      }
-                    ++i;
-                  }
-
-                const Tensor<1,dim>
-                gravity = sim.gravity_model->gravity_vector(scratch.face_finite_element_values.quadrature_point(q_point));
-                double g_norm = gravity.norm();
-
-                // construct the relevant vectors
-                const Tensor<1,dim> n_hat = scratch.face_finite_element_values.normal_vector(q_point);
-                const Tensor<1,dim> g_hat = (g_norm == 0.0 ? Tensor<1,dim>() : gravity/g_norm);
-
-                double pressure_perturbation = scratch.face_material_model_outputs.densities[q_point] *
-                                               sim.time_step * free_surface_theta * g_norm;
-
-                // see Kaus et al 2010 for details of the stabilization term
-                for (unsigned int i=0; i< stokes_dofs_per_cell; ++i)
-                  for (unsigned int j=0; j< stokes_dofs_per_cell; ++j)
-                    {
-                      // The fictive stabilization stress is (phi_u[i].g)*(phi_u[j].n)
-                      const double stress_value = -pressure_perturbation*
-                                                  (scratch.phi_u[i]*g_hat) * (scratch.phi_u[j]*n_hat)
-                                                  *scratch.face_finite_element_values.JxW(q_point);
-
-                      data.local_matrix(i,j) += stress_value;
-                    }
-              }
-          }
-
-
+    return free_surface_theta;
   }
 }
 

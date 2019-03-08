@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,14 +14,15 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
 
 #include <aspect/material_model/latent_heat.h>
+#include <aspect/adiabatic_conditions/interface.h>
+#include <aspect/gravity_model/interface.h>
 
-using namespace dealii;
 
 namespace aspect
 {
@@ -81,7 +82,7 @@ namespace aspect
           double phase_func;
           // use delta function for width = 0
           if (transition_widths[phase]==0)
-            (depth_deviation > 0) ? phase_func = 1 : phase_func = 0;
+            phase_func = (depth_deviation > 0) ? 1 : 0;
           else
             phase_func = 0.5*(1.0 + std::tanh(depth_deviation / transition_widths[phase]));
           return phase_func;
@@ -225,30 +226,30 @@ namespace aspect
             // entry for the first layer), so we have to use i+1 as index
             if (composition.size()==0)      // only one field
               {
-                for (unsigned int i=0; i<number_of_phase_transitions; ++i)
+                for (unsigned int phase=0; phase<number_of_phase_transitions; ++phase)
                   {
                     const double phaseFunction = phase_function (position,
                                                                  temperature,
                                                                  pressure,
-                                                                 i);
+                                                                 phase);
 
-                    phase_dependence += phaseFunction * density_jumps[i];
-                    viscosity_phase_dependence *= 1. + phaseFunction * (phase_prefactors[i+1]-1.);
+                    phase_dependence += phaseFunction * density_jumps[phase];
+                    viscosity_phase_dependence *= 1. + phaseFunction * (phase_prefactors[phase+1]-1.);
                   }
               }
             else if (composition.size()>0)
               {
-                for (unsigned int i=0; i<number_of_phase_transitions; ++i)
+                for (unsigned int phase=0; phase<number_of_phase_transitions; ++phase)
                   {
                     const double phaseFunction = phase_function (position,
                                                                  temperature,
                                                                  pressure,
-                                                                 i);
-                    if (transition_phases[i] == 0)     // 1st compositional field
-                      phase_dependence += phaseFunction * density_jumps[i] * (1.0 - composition[0]);
-                    else if (transition_phases[i] == 1) // 2nd compositional field
-                      phase_dependence += phaseFunction * density_jumps[i] * composition[0];
-                    viscosity_phase_dependence *= 1. + phaseFunction * (phase_prefactors[i]-1.);
+                                                                 phase);
+                    if (transition_phases[phase] == 0)     // 1st compositional field
+                      phase_dependence += phaseFunction * density_jumps[phase] * (1.0 - composition[0]);
+                    else if (transition_phases[phase] == 1) // 2nd compositional field
+                      phase_dependence += phaseFunction * density_jumps[phase] * composition[0];
+                    viscosity_phase_dependence *= 1. + phaseFunction * (phase_prefactors[phase]-1.);
                   }
               }
             // fourth, pressure dependence of density
@@ -304,6 +305,11 @@ namespace aspect
             out.entropy_derivative_pressure[i] = entropy_gradient_pressure;
             out.entropy_derivative_temperature[i] = entropy_gradient_temperature;
           }
+
+          // Assign reaction terms
+          for (unsigned int c=0; c<in.composition[i].size(); ++c)
+            out.reaction_terms[i][c] = 0.0;
+
         }
     }
 
@@ -460,11 +466,11 @@ namespace aspect
           prm.declare_entry ("Minimum viscosity", "1e19",
                              Patterns::Double (0),
                              "Limit for the minimum viscosity in the model. "
-                             "Units: Pa s.");
+                             "Units: Pa \\, s.");
           prm.declare_entry ("Maximum viscosity", "1e24",
                              Patterns::Double (0),
                              "Limit for the maximum viscosity in the model. "
-                             "Units: Pa s.");
+                             "Units: Pa \\, s.");
         }
         prm.leave_subsection();
       }
@@ -589,8 +595,8 @@ namespace aspect
                                    "Clapeyron slope $\\gamma$ and the density change $\\Delta\\rho$ "
                                    "of the phase transition being input parameters. "
                                    "The model employs an analytic phase function in the form "
-                                   "$X=0.5 \\left( 1 + \\tanh \\left( \\frac{\\Delta p}{\\Delta p_0} \\right) \\right)$ "
-                                   "with $\\Delta p = p - p_{transition} - \\gamma \\left( T - T_{transition} \\right)$ "
+                                   "$X=\\frac{1}{2} \\left( 1 + \\tanh \\left( \\frac{\\Delta p}{\\Delta p_0} \\right) \\right)$ "
+                                   "with $\\Delta p = p - p_{\\text{transition}} - \\gamma \\left( T - T_{\\text{transition}} \\right)$ "
                                    "and $\\Delta p_0$ being the pressure difference over the width "
                                    "of the phase transition (specified as input parameter).")
   }

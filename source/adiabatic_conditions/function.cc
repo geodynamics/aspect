@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2017 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
@@ -92,9 +92,9 @@ namespace aspect
         Functions::ParsedFunction<1>::declare_parameters (prm, 3);
         prm.declare_entry("Function expression","0.0; 0.0; 1.0",
                           Patterns::Anything(),
-                          "Expression for the adiabatic pressure, "
-                          "temperature, and density separated by "
-                          "semicolons as a function of 'depth'.");
+                          "Expression for the adiabatic temperature, "
+                          "pressure, and density separated by "
+                          "semicolons as a function of `depth'.");
         prm.declare_entry("Variable names","depth");
         prm.leave_subsection();
       }

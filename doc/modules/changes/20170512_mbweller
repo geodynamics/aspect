@@ -1,3 +1,0 @@
-New: Functions [boundary - temperature; velocity; traction] now allow user defined Coordinate Systems [cartesian; spherical; depth].
-<br>
-(Matt Weller, 2017/05/12)

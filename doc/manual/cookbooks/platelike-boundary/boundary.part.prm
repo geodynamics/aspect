@@ -1,4 +1,7 @@
 subsection Boundary velocity model
+  set Tangential velocity boundary indicators = left, right, bottom
+  set Prescribed velocity boundary indicators = top: function
+
   subsection Function
     set Variable names      = x,z,t
     set Function constants  = pi=3.1415926

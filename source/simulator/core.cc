@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,25 +14,38 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
 
 #include <aspect/simulator.h>
 #include <aspect/global.h>
-#include <aspect/assembly.h>
 #include <aspect/utilities.h>
 #include <aspect/melt.h>
+#include <aspect/volume_of_fluid/handler.h>
+#include <aspect/newton.h>
 #include <aspect/free_surface.h>
+#include <aspect/citation_info.h>
 
+#ifdef ASPECT_USE_WORLD_BUILDER
+#  include <world_builder/world.h>
+#else
+// We need a definition of World to be able to compile, so just provide an empty class:
+namespace WorldBuilder
+{
+  class World
+  {};
+}
+#endif
+
+#include <aspect/simulator/assemblers/interface.h>
 #include <aspect/geometry_model/initial_topography_model/zero_topography.h>
 
 #include <deal.II/base/index_set.h>
 #include <deal.II/base/conditional_ostream.h>
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/base/signaling_nan.h>
-#include <deal.II/lac/constraint_matrix.h>
 #include <deal.II/lac/block_sparsity_pattern.h>
 #include <deal.II/lac/sparsity_tools.h>
 #include <deal.II/grid/grid_tools.h>
@@ -62,29 +75,12 @@
 #include <string>
 
 
-using namespace dealii;
 
 
 namespace aspect
 {
   namespace
   {
-    /**
-     * Return whether t is an element of the given container object.
-     */
-    template <typename Container>
-    bool is_element (const typename Container::value_type &t,
-                     const Container                      &container)
-    {
-      for (typename Container::const_iterator p = container.begin();
-           p != container.end();
-           ++p)
-        if (*p == t)
-          return true;
-
-      return false;
-    }
-
     /**
      * Helper function to construct the final std::vector of FEVariable before
      * it is used to construct the Introspection object. Create the default
@@ -93,7 +89,7 @@ namespace aspect
     template <int dim>
     std::vector<VariableDeclaration<dim> > construct_variables(const Parameters<dim> &parameters,
                                                                SimulatorSignals<dim> &signals,
-                                                               std_cxx11::shared_ptr<MeltHandler<dim> > &melt_handler)
+                                                               std::unique_ptr<MeltHandler<dim> > &melt_handler)
     {
       std::vector<VariableDeclaration<dim> > variables
         = construct_default_variables (parameters);
@@ -114,15 +110,16 @@ namespace aspect
      * computation.
      */
     template <int dim>
-    Mapping<dim> *construct_mapping(const GeometryModel::Interface<dim> &geometry_model,
-                                    const InitialTopographyModel::Interface<dim> &initial_topography_model)
+    std::unique_ptr<Mapping<dim>>
+                               construct_mapping(const GeometryModel::Interface<dim> &geometry_model,
+                                                 const InitialTopographyModel::Interface<dim> &initial_topography_model)
     {
       if (geometry_model.has_curved_elements())
-        return new MappingQ<dim>(4, true);
-      if (dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(&initial_topography_model) != 0)
-        return new MappingCartesian<dim>();
+        return std_cxx14::make_unique<MappingQ<dim>>(4, true);
+      if (dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(&initial_topography_model) != nullptr)
+        return std_cxx14::make_unique<MappingCartesian<dim>>();
 
-      return new MappingQ1<dim>();
+      return std_cxx14::make_unique<MappingQ1<dim>>();
     }
   }
 
@@ -134,7 +131,7 @@ namespace aspect
    */
   template <int dim>
   Simulator<dim>::IntermediaryConstructorAction::
-  IntermediaryConstructorAction (std_cxx11::function<void ()> action)
+  IntermediaryConstructorAction (const std::function<void ()> &action)
   {
     action();
   }
@@ -148,12 +145,20 @@ namespace aspect
   Simulator<dim>::Simulator (const MPI_Comm mpi_communicator_,
                              ParameterHandler &prm)
     :
-    assemblers (new internal::Assembly::AssemblerLists<dim>()),
+    assemblers (std_cxx14::make_unique<Assemblers::Manager<dim>>()),
     parameters (prm, mpi_communicator_),
-    melt_handler (parameters.include_melt_transport ? new MeltHandler<dim> (prm) : NULL),
+    melt_handler (parameters.include_melt_transport ?
+                  std_cxx14::make_unique<MeltHandler<dim>>(prm) :
+                  nullptr),
+    newton_handler (parameters.nonlinear_solver == NonlinearSolver::iterated_Advection_and_Newton_Stokes ?
+                    std_cxx14::make_unique<NewtonHandler<dim>>() :
+                    nullptr),
     post_signal_creation(
-      std_cxx11::bind (&internals::SimulatorSignals::call_connector_functions<dim>,
-                       std_cxx11::ref(signals))),
+      std::bind (&internals::SimulatorSignals::call_connector_functions<dim>,
+                 std::ref(signals))),
+    volume_of_fluid_handler (parameters.volume_of_fluid_tracking_enabled ?
+                             std_cxx14::make_unique<VolumeOfFluidHandler<dim>> (*this, prm) :
+                             nullptr),
     introspection (construct_variables<dim>(parameters, signals, melt_handler), parameters),
     mpi_communicator (Utilities::MPI::duplicate_communicator (mpi_communicator_)),
     iostream_tee_device(std::cout, log_file_stream),
@@ -172,33 +177,26 @@ namespace aspect
     // make sure the parameters object gets a chance to
     // parse those parameters that depend on symbolic names
     // for boundary components
-    post_geometry_model_creation_action (std_cxx11::bind (&Parameters<dim>::parse_geometry_dependent_parameters,
-                                                          std_cxx11::ref(parameters),
-                                                          std_cxx11::ref(prm),
-                                                          std_cxx11::cref(*geometry_model))),
+    post_geometry_model_creation_action (std::bind (&Parameters<dim>::parse_geometry_dependent_parameters,
+                                                    std::ref(parameters),
+                                                    std::ref(prm),
+                                                    std::cref(*geometry_model))),
     material_model (MaterialModel::create_material_model<dim>(prm)),
     gravity_model (GravityModel::create_gravity_model<dim>(prm)),
-    // create a boundary temperature model, but only if we actually need
-    // it. otherwise, allow the user to simply specify nothing at all
-    boundary_temperature (parameters.fixed_temperature_boundary_indicators.empty()
-                          ?
-                          0
-                          :
-                          BoundaryTemperature::create_boundary_temperature<dim>(prm)),
-    // create a boundary composition model, but only if we actually need
-    // it. otherwise, allow the user to simply specify nothing at all
-    boundary_composition (parameters.fixed_composition_boundary_indicators.empty()
-                          ?
-                          0
-                          :
-                          BoundaryComposition::create_boundary_composition<dim>(prm)),
     prescribed_stokes_solution (PrescribedStokesSolution::create_prescribed_stokes_solution<dim>(prm)),
     adiabatic_conditions (AdiabaticConditions::create_adiabatic_conditions<dim>(prm)),
+#ifdef ASPECT_USE_WORLD_BUILDER
+    world_builder (parameters.world_builder_file != "" ?
+                   std_cxx14::make_unique<WorldBuilder::World>(parameters.world_builder_file) :
+                   nullptr),
+#endif
+    boundary_heat_flux (BoundaryHeatFlux::create_boundary_heat_flux<dim>(prm)),
 
-    time (std::numeric_limits<double>::quiet_NaN()),
-    time_step (0),
-    old_time_step (0),
-    timestep_number (0),
+    time (numbers::signaling_nan<double>()),
+    time_step (numbers::signaling_nan<double>()),
+    old_time_step (numbers::signaling_nan<double>()),
+    timestep_number (numbers::invalid_unsigned_int),
+    nonlinear_iteration (numbers::invalid_unsigned_int),
 
     triangulation (mpi_communicator,
                    typename Triangulation<dim>::MeshSmoothing
@@ -216,6 +214,8 @@ namespace aspect
     last_pressure_normalization_adjustment (numbers::signaling_nan<double>()),
 
     rebuild_stokes_matrix (true),
+    assemble_newton_stokes_matrix (true),
+    assemble_newton_stokes_system (parameters.nonlinear_solver == NonlinearSolver::iterated_Advection_and_Newton_Stokes ? true : false),
     rebuild_stokes_preconditioner (true)
   {
     if (Utilities::MPI::this_mpi_process(mpi_communicator) == 0)
@@ -230,203 +230,9 @@ namespace aspect
         print_aspect_header(log_file_stream);
       }
 
-    computing_timer.enter_section("Initialization");
+    // now that we have output set up, we can start timer sections
+    TimerOutput::Scope timer (computing_timer, "Initialization");
 
-    // first do some error checking for the parameters we got
-    {
-      // make sure velocity and traction boundary indicators don't appear in multiple lists
-      std::set<types::boundary_id> boundary_indicator_lists[6]
-        = { parameters.zero_velocity_boundary_indicators,
-            parameters.tangential_velocity_boundary_indicators,
-            parameters.free_surface_boundary_indicators,
-            std::set<types::boundary_id>()   // to be prescribed velocity and traction boundary indicators
-          };
-
-      // sets of the boundary indicators only (no selectors and values)
-      std::set<types::boundary_id> velocity_bi;
-      std::set<types::boundary_id> traction_bi;
-
-      for (std::map<types::boundary_id,std::pair<std::string, std::string> >::const_iterator
-           p = parameters.prescribed_velocity_boundary_indicators.begin();
-           p != parameters.prescribed_velocity_boundary_indicators.end();
-           ++p)
-        velocity_bi.insert(p->first);
-
-      for (std::map<types::boundary_id,std::pair<std::string, std::string> >::const_iterator
-           r = parameters.prescribed_traction_boundary_indicators.begin();
-           r != parameters.prescribed_traction_boundary_indicators.end();
-           ++r)
-        traction_bi.insert(r->first);
-
-      // are there any indicators that occur in both the prescribed velocity and traction list?
-      std::set<types::boundary_id> intersection;
-      std::set_intersection (velocity_bi.begin(),
-                             velocity_bi.end(),
-                             traction_bi.begin(),
-                             traction_bi.end(),
-                             std::inserter(intersection, intersection.end()));
-
-      // if so, do they have different selectors?
-      if (!intersection.empty())
-        {
-          for (std::set<types::boundary_id>::const_iterator
-               it = intersection.begin();
-               it != intersection.end();
-               ++it)
-            {
-              std::set<char> velocity_selector;
-              std::set<char> traction_selector;
-
-              for (std::string::const_iterator
-                   it_selector  = parameters.prescribed_velocity_boundary_indicators[*it].first.begin();
-                   it_selector != parameters.prescribed_velocity_boundary_indicators[*it].first.end();
-                   ++it_selector)
-                velocity_selector.insert(*it_selector);
-
-              for (std::string::const_iterator
-                   it_selector  = parameters.prescribed_traction_boundary_indicators[*it].first.begin();
-                   it_selector != parameters.prescribed_traction_boundary_indicators[*it].first.end();
-                   ++it_selector)
-                traction_selector.insert(*it_selector);
-
-              // if there are no selectors specified, throw exception
-              AssertThrow(!velocity_selector.empty() || !traction_selector.empty(),
-                          ExcMessage ("Boundary indicator <"
-                                      +
-                                      Utilities::int_to_string(*it)
-                                      +
-                                      "> with symbolic name <"
-                                      +
-                                      geometry_model->translate_id_to_symbol_name (*it)
-                                      +
-                                      "> is listed as having both "
-                                      "velocity and traction boundary conditions in the input file."));
-
-              std::set<char> intersection_selector;
-              std::set_intersection (velocity_selector.begin(),
-                                     velocity_selector.end(),
-                                     traction_selector.begin(),
-                                     traction_selector.end(),
-                                     std::inserter(intersection_selector, intersection_selector.end()));
-
-              // if the same selectors are specified, throw exception
-              AssertThrow(intersection_selector.empty(),
-                          ExcMessage ("Selectors of boundary indicator <"
-                                      +
-                                      Utilities::int_to_string(*it)
-                                      +
-                                      "> with symbolic name <"
-                                      +
-                                      geometry_model->translate_id_to_symbol_name (*it)
-                                      +
-                                      "> are listed as having both "
-                                      "velocity and traction boundary conditions in the input file."));
-            }
-        }
-
-
-      // remove correct boundary indicators that occur in both the velocity and the traction set
-      // but have different selectors
-      std::set<types::boundary_id> union_set;
-      std::set_union (velocity_bi.begin(),
-                      velocity_bi.end(),
-                      traction_bi.begin(),
-                      traction_bi.end(),
-                      std::inserter(union_set, union_set.end()));
-
-      // assign the prescribed boundary indicator list to the boundary_indicator_lists
-      boundary_indicator_lists[3] = union_set;
-
-      // for each combination of boundary indicator lists, make sure that the
-      // intersection is empty
-      for (unsigned int i=0; i<sizeof(boundary_indicator_lists)/sizeof(boundary_indicator_lists[0]); ++i)
-        for (unsigned int j=i+1; j<sizeof(boundary_indicator_lists)/sizeof(boundary_indicator_lists[0]); ++j)
-          {
-            std::set<types::boundary_id> intersection;
-            std::set_intersection (boundary_indicator_lists[i].begin(),
-                                   boundary_indicator_lists[i].end(),
-                                   boundary_indicator_lists[j].begin(),
-                                   boundary_indicator_lists[j].end(),
-                                   std::inserter(intersection, intersection.end()));
-
-            // if the same indicators are specified for different boundary conditions, throw exception
-            AssertThrow (intersection.empty(),
-                         ExcMessage ("Boundary indicator <"
-                                     +
-                                     Utilities::int_to_string(*intersection.begin())
-                                     +
-                                     "> with symbolic name <"
-                                     +
-                                     geometry_model->translate_id_to_symbol_name (*intersection.begin())
-                                     +
-                                     "> is listed as having more "
-                                     "than one type of velocity or traction boundary condition in the input file."));
-          }
-
-      // Check that the periodic boundaries do not have other boundary conditions set
-      typedef std::set< std::pair< std::pair< types::boundary_id, types::boundary_id>, unsigned int> >
-      periodic_boundary_set;
-      periodic_boundary_set pbs = geometry_model->get_periodic_boundary_pairs();
-
-      for (periodic_boundary_set::iterator p = pbs.begin(); p != pbs.end(); ++p)
-        {
-          // Throw error if we are trying to use the same boundary for more than one boundary condition
-          AssertThrow( is_element( (*p).first.first, parameters.fixed_temperature_boundary_indicators ) == false &&
-                       is_element( (*p).first.second, parameters.fixed_temperature_boundary_indicators ) == false &&
-                       is_element( (*p).first.first, parameters.fixed_composition_boundary_indicators ) == false &&
-                       is_element( (*p).first.second, parameters.fixed_composition_boundary_indicators ) == false &&
-                       is_element( (*p).first.first, boundary_indicator_lists[0] ) == false && // zero velocity
-                       is_element( (*p).first.second, boundary_indicator_lists[0] ) == false && // zero velocity
-                       is_element( (*p).first.first, boundary_indicator_lists[1] ) == false && // tangential velocity
-                       is_element( (*p).first.second, boundary_indicator_lists[1] ) == false && // tangential velocity
-                       is_element( (*p).first.first, boundary_indicator_lists[2] ) == false && // free surface
-                       is_element( (*p).first.second, boundary_indicator_lists[2] ) == false && // free surface
-                       is_element( (*p).first.first, boundary_indicator_lists[3] ) == false && // prescribed traction or velocity
-                       is_element( (*p).first.second, boundary_indicator_lists[3] ) == false,  // prescribed traction or velocity
-                       ExcMessage("Periodic boundaries must not have boundary conditions set."));
-        }
-
-      const std::set<types::boundary_id> all_boundary_indicators
-        = geometry_model->get_used_boundary_indicators();
-      if (parameters.nonlinear_solver!=NonlinearSolver::Advection_only)
-        {
-          // next make sure that all listed indicators are actually used by
-          // this geometry
-          for (unsigned int i=0; i<sizeof(boundary_indicator_lists)/sizeof(boundary_indicator_lists[0]); ++i)
-            for (typename std::set<types::boundary_id>::const_iterator
-                 p = boundary_indicator_lists[i].begin();
-                 p != boundary_indicator_lists[i].end(); ++p)
-              AssertThrow (all_boundary_indicators.find (*p)
-                           != all_boundary_indicators.end(),
-                           ExcMessage ("One of the boundary indicators listed in the input file "
-                                       "is not used by the geometry model."));
-        }
-      else
-        {
-          // next make sure that there are no listed indicators
-          for (unsigned  int i = 0; i<sizeof(boundary_indicator_lists)/sizeof(boundary_indicator_lists[0]); ++i)
-            AssertThrow (boundary_indicator_lists[i].empty(),
-                         ExcMessage ("With solver type Advection only, one cannot set boundary conditions for velocity."));
-        }
-
-
-      // now do the same for the fixed temperature indicators and the
-      // compositional indicators
-      for (typename std::set<types::boundary_id>::const_iterator
-           p = parameters.fixed_temperature_boundary_indicators.begin();
-           p != parameters.fixed_temperature_boundary_indicators.end(); ++p)
-        AssertThrow (all_boundary_indicators.find (*p)
-                     != all_boundary_indicators.end(),
-                     ExcMessage ("One of the fixed boundary temperature indicators listed in the input file "
-                                 "is not used by the geometry model."));
-      for (typename std::set<types::boundary_id>::const_iterator
-           p = parameters.fixed_composition_boundary_indicators.begin();
-           p != parameters.fixed_composition_boundary_indicators.end(); ++p)
-        AssertThrow (all_boundary_indicators.find (*p)
-                     != all_boundary_indicators.end(),
-                     ExcMessage ("One of the fixed boundary composition indicators listed in the input file "
-                                 "is not used by the geometry model."));
-    }
 
     // if any plugin wants access to the Simulator by deriving from SimulatorAccess, initialize it and
     // call the initialize() functions immediately after.
@@ -440,7 +246,7 @@ namespace aspect
     // the SimulatorAccess class via multiple inheritance, we need to
     // do a sideways dynamic_cast to this putative sibling of the
     // interface class, and investigate if the dynamic_cast
-    // succeeds. if it succeeds, the dynamic_cast returns a non-NULL
+    // succeeds. if it succeeds, the dynamic_cast returns a non-nullptr
     // result, and we can test this in an if-statement. there is a nice
     // idiom whereby we can write
     //    if (SiblingClass *ptr = dynamic_cast<SiblingClass*>(ptr_to_base))
@@ -485,38 +291,36 @@ namespace aspect
     initial_composition_manager.initialize_simulator(*this);
     initial_composition_manager.parse_parameters (prm);
 
-    if (boundary_temperature.get())
-      {
-        if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(boundary_temperature.get()))
-          sim->initialize_simulator (*this);
-        boundary_temperature->parse_parameters (prm);
-        boundary_temperature->initialize ();
-      }
+    // Create a boundary temperature manager
+    boundary_temperature_manager.initialize_simulator (*this);
+    boundary_temperature_manager.parse_parameters (prm);
 
-    if (boundary_composition.get())
-      {
-        if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(boundary_composition.get()))
-          sim->initialize_simulator (*this);
-        boundary_composition->parse_parameters (prm);
-        boundary_composition->initialize ();
-      }
+    if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(boundary_heat_flux.get()))
+      sim->initialize_simulator (*this);
+    boundary_heat_flux->parse_parameters (prm);
+    boundary_heat_flux->initialize ();
+
+    // Create a boundary composition manager
+    boundary_composition_manager.initialize_simulator (*this);
+    boundary_composition_manager.parse_parameters (prm);
+
+    boundary_velocity_manager.initialize_simulator (*this);
+    boundary_velocity_manager.parse_parameters (prm);
 
     // Make sure we only have a prescribed Stokes plugin if needed
-    if (parameters.nonlinear_solver==NonlinearSolver::Advection_only)
+    if (parameters.nonlinear_solver == NonlinearSolver::single_Advection_no_Stokes)
       {
-        AssertThrow(prescribed_stokes_solution.get()!=NULL,
-                    ExcMessage("For 'Advection only' solver you need to provide a Stokes plugin")
+        AssertThrow(prescribed_stokes_solution.get()!=nullptr,
+                    ExcMessage("For the 'single Advection, no Stokes' solver scheme you need to provide a Stokes plugin!")
                    );
       }
     else
       {
-        AssertThrow(prescribed_stokes_solution.get()==NULL,
-                    ExcMessage("The prescribed stokes plugin you selected only works with solver type 'Advection only' ")
+        AssertThrow(prescribed_stokes_solution.get()==nullptr,
+                    ExcMessage("The prescribed stokes plugin you selected only works with the solver "
+                               "scheme 'single Advection, no Stokes'.")
                    );
       }
-
-
-
 
     if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(prescribed_stokes_solution.get()))
       sim->initialize_simulator (*this);
@@ -535,29 +339,29 @@ namespace aspect
     // Initialize the free surface handler
     if (parameters.free_surface_enabled)
       {
-        // It should be possible to make the free surface work with any of a number of nonlinear
-        // schemes, but I do not see a way to do it in generality --IR
-        AssertThrow( parameters.nonlinear_solver == NonlinearSolver::IMPES ||
-                     parameters.nonlinear_solver == NonlinearSolver::iterated_Stokes,
-                     ExcMessage("The free surface scheme is only implemented for the IMPES or Iterated Stokes solver") );
         // Pressure normalization doesn't really make sense with a free surface, and if we do
         // use it, we can run into problems with geometry_model->depth().
         AssertThrow ( parameters.pressure_normalization == "no",
                       ExcMessage("The free surface scheme can only be used with no pressure normalization") );
 
         // Allocate the FreeSurfaceHandler object
-        free_surface.reset( new FreeSurfaceHandler<dim>( *this, prm ) );
+        free_surface = std_cxx14::make_unique<FreeSurfaceHandler<dim>>(*this, prm );
       }
 
     // Initialize the melt handler
     if (parameters.include_melt_transport)
       {
-        AssertThrow( !parameters.use_discontinuous_temperature_discretization &&
-                     !parameters.use_discontinuous_composition_discretization,
-                     ExcMessage("Melt transport can not be used with discontinuous elements.") );
-        AssertThrow( !parameters.free_surface_enabled,
-                     ExcMessage("Melt transport together with a free surface has not been tested.") );
         melt_handler->initialize_simulator (*this);
+        melt_handler->initialize();
+      }
+
+    // If the solver type is a Newton type of solver, we need to set make sure
+    // assemble_newton_stokes_system set to true.
+    if (parameters.nonlinear_solver == NonlinearSolver::iterated_Advection_and_Newton_Stokes)
+      {
+        assemble_newton_stokes_system = true;
+        newton_handler->initialize_simulator(*this);
+        newton_handler->parameters.parse_parameters(prm);
       }
 
     postprocess_manager.initialize_simulator (*this);
@@ -566,6 +370,13 @@ namespace aspect
     mesh_refinement_manager.initialize_simulator (*this);
     mesh_refinement_manager.parse_parameters (prm);
 
+    // VoF Must be initialized after mesh_refinement_manager, due to needing to check
+    // for a mesh refinement strategy
+    if (parameters.volume_of_fluid_tracking_enabled)
+      {
+        volume_of_fluid_handler->initialize (prm);
+      }
+
     termination_manager.initialize_simulator (*this);
     termination_manager.parse_parameters (prm);
 
@@ -573,21 +384,6 @@ namespace aspect
 
     geometry_model->create_coarse_mesh (triangulation);
     global_Omega_diameter = GridTools::diameter (triangulation);
-
-    for (std::map<types::boundary_id,std::pair<std::string,std::string> >::const_iterator
-         p = parameters.prescribed_velocity_boundary_indicators.begin();
-         p != parameters.prescribed_velocity_boundary_indicators.end();
-         ++p)
-      {
-        BoundaryVelocity::Interface<dim> *bv
-          = BoundaryVelocity::create_boundary_velocity<dim>
-            (p->second.second);
-        boundary_velocity[p->first].reset (bv);
-        if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(bv))
-          sim->initialize_simulator(*this);
-        bv->parse_parameters (prm);
-        bv->initialize ();
-      }
 
     for (std::map<types::boundary_id,std::pair<std::string,std::string> >::const_iterator
          p = parameters.prescribed_traction_boundary_indicators.begin();
@@ -612,19 +408,19 @@ namespace aspect
 
     std::set<types::boundary_id> open_velocity_boundary_indicators
       = geometry_model->get_used_boundary_indicators();
-    for (std::map<types::boundary_id,std::pair<std::string,std::string> >::const_iterator
-         p = parameters.prescribed_velocity_boundary_indicators.begin();
-         p != parameters.prescribed_velocity_boundary_indicators.end();
+    for (std::map<types::boundary_id,std::pair<std::string,std::vector<std::string> > >::const_iterator
+         p = boundary_velocity_manager.get_active_boundary_velocity_names().begin();
+         p != boundary_velocity_manager.get_active_boundary_velocity_names().end();
          ++p)
       open_velocity_boundary_indicators.erase (p->first);
     for (std::set<types::boundary_id>::const_iterator
-         p = parameters.zero_velocity_boundary_indicators.begin();
-         p != parameters.zero_velocity_boundary_indicators.end();
+         p = boundary_velocity_manager.get_zero_boundary_velocity_indicators().begin();
+         p != boundary_velocity_manager.get_zero_boundary_velocity_indicators().end();
          ++p)
       open_velocity_boundary_indicators.erase (*p);
     for (std::set<types::boundary_id>::const_iterator
-         p = parameters.tangential_velocity_boundary_indicators.begin();
-         p != parameters.tangential_velocity_boundary_indicators.end();
+         p = boundary_velocity_manager.get_tangential_boundary_velocity_indicators().begin();
+         p != boundary_velocity_manager.get_tangential_boundary_velocity_indicators().end();
          ++p)
       open_velocity_boundary_indicators.erase (*p);
 
@@ -651,24 +447,32 @@ namespace aspect
                      ExcMessage (std::string("Could not open file <") +
                                  parameters.output_directory + "parameters.prm>."));
         prm.print_parameters(prm_out, ParameterHandler::Text);
-      }
-    if (Utilities::MPI::this_mpi_process(mpi_communicator) == 0)
-      {
-        std::ofstream prm_out ((parameters.output_directory + "parameters.tex").c_str());
-        AssertThrow (prm_out,
+
+        std::ofstream tex_out ((parameters.output_directory + "parameters.tex").c_str());
+        AssertThrow (tex_out,
                      ExcMessage (std::string("Could not open file <") +
                                  parameters.output_directory + "parameters.tex>."));
-        prm.print_parameters(prm_out, ParameterHandler::LaTeX);
+        prm.print_parameters(tex_out, ParameterHandler::LaTeX);
+
+        std::ofstream json_out ((parameters.output_directory + "parameters.json").c_str());
+        AssertThrow (json_out,
+                     ExcMessage (std::string("Could not open file <") +
+                                 parameters.output_directory + "parameters.json>."));
+        prm.print_parameters(json_out, ParameterHandler::JSON);
       }
+
+    // check that the boundary condition selection is consistent
+    check_consistency_of_boundary_conditions();
 
     // check that the setup of equations, material models, and heating terms is consistent
     check_consistency_of_formulation();
 
+    if (parameters.use_discontinuous_temperature_discretization || parameters.use_discontinuous_composition_discretization)
+      CitationInfo::add("dg");
+
     // now that all member variables have been set up, also
     // connect the functions that will actually do the assembly
     set_assemblers();
-
-    computing_timer.exit_section();
   }
 
 
@@ -681,6 +485,43 @@ namespace aspect
     // wait if there is a thread that's still writing the statistics
     // object (set from the output_statistics() function)
     output_statistics_thread.join();
+
+    // Detect if we are being destroyed because an uncaught exception has
+    // been triggered. If so, reset() the TimerOutput class. This will clear
+    // the currently active timing sections. Otherwise, its destructor will try to
+    // do MPI communication when leaving the open sections, which can cause one of the
+    // following problems:
+    // 1. deadlocks or hangs in the MPI commands synchronizing the timers.
+    // 2. Incorrect error reporting about mismatched Trilinos compress() calls.
+    //
+    // In either case this might not show the real message of the exception
+    // that was being triggered.
+    //
+    // There are a number of obstacles to detecting whether the system is
+    // currently doing stack unwinding, as illustrated by a number of GotW
+    // (Gotcha of the Week) entries. Fortunately, they do not apply to the
+    // current class because class Simulator is not likely going to be used
+    // as a local variable in the destructor of another class. Consequently,
+    // if we get here and an exception is active, we can be pretty sure
+    // that the stack is being unwound *because of something that happened
+    // in a member function of the current class*.
+    //
+    // So the remaining question is then simply how we can determine that
+    // the stack is being unwound. C++ used to have a function
+    // std::uncaught_exception(), but it was deprecated in C++17 in favor
+    // of the new function std::uncaught_exceptions(). To make things more
+    // awkward, some compilers started to emit deprecation notes if they
+    // support C++17 (and the corresponding flag is switched on by deal.II)
+    // even though here in ASPECT we do not yet rely on C++17 support. So
+    // we have to conditionally use one or the other to avoid that we
+    // either (i) get a warning about using a deprecated function, or
+    // (ii) get an error about calling an undeclared function.
+#if __cplusplus >= 201703L
+    if (std::uncaught_exceptions())
+#else
+    if (std::uncaught_exception())
+#endif
+      computing_timer.reset();
   }
 
 
@@ -707,7 +548,7 @@ namespace aspect
          *     of the resulting Function object.
          */
         VectorFunctionFromVelocityFunctionObject (const unsigned int n_components,
-                                                  const std_cxx11::function<Tensor<1,dim> (const Point<dim> &)> &function_object);
+                                                  const std::function<Tensor<1,dim> (const Point<dim> &)> &function_object);
 
         /**
          * Return the value of the
@@ -736,7 +577,7 @@ namespace aspect
          * The function object which we call when this class's value() or
          * value_list() functions are called.
          **/
-        const std_cxx11::function<Tensor<1,dim> (const Point<dim> &)> function_object;
+        const std::function<Tensor<1,dim> (const Point<dim> &)> function_object;
     };
 
 
@@ -744,7 +585,7 @@ namespace aspect
     VectorFunctionFromVelocityFunctionObject<dim>::
     VectorFunctionFromVelocityFunctionObject
     (const unsigned int n_components,
-     const std_cxx11::function<Tensor<1,dim> (const Point<dim> &)> &function_object)
+     const std::function<Tensor<1,dim> (const Point<dim> &)> &function_object)
       :
       Function<dim>(n_components),
       function_object (function_object)
@@ -813,15 +654,15 @@ namespace aspect
     // into current_constraints and then add to current_constraints
     compute_current_constraints ();
 
-
-    // TODO: do this in a more efficient way (TH)? we really only need
-    // to make sure that the time dependent velocity boundary conditions
-    // end up in the right hand side in the right way; we currently do
-    // that by re-assembling the entire system
-    if (!boundary_velocity.empty())
-      rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
-
-
+    // If needed, construct sparsity patterns and matrices with the current
+    // constraints. Of course we need to force assembly too.
+    if (rebuild_sparsity_and_matrices)
+      {
+        rebuild_sparsity_and_matrices = false;
+        setup_system_matrix (introspection.index_sets.system_partitioning);
+        setup_system_preconditioner (introspection.index_sets.system_partitioning);
+        rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
+      }
 
     // notify different system components that we started the next time step
     // TODO: implement this for all plugins that might need it at one place.
@@ -839,10 +680,8 @@ namespace aspect
     // that end up in the bilinear form. we update those that end up in
     // the constraints object when calling compute_current_constraints()
     // above
-    for (typename std::map<types::boundary_id,std_cxx11::shared_ptr<BoundaryTraction::Interface<dim> > >::iterator
-         p = boundary_traction.begin();
-         p != boundary_traction.end(); ++p)
-      p->second->update ();
+    for (auto &p : boundary_traction)
+      p.second->update ();
   }
 
 
@@ -851,73 +690,28 @@ namespace aspect
   Simulator<dim>::
   compute_current_constraints ()
   {
-    current_constraints.clear ();
-    current_constraints.reinit (introspection.index_sets.system_relevant_set);
-    current_constraints.merge (constraints);
-    {
-      // set the current time and do the interpolation
-      // for the prescribed velocity fields
-      for (typename std::map<types::boundary_id,std_cxx11::shared_ptr<BoundaryVelocity::Interface<dim> > >::iterator
-           p = boundary_velocity.begin();
-           p != boundary_velocity.end(); ++p)
-        {
-          p->second->update ();
-          VectorFunctionFromVelocityFunctionObject<dim> vel
-          (introspection.n_components,
-           std_cxx11::bind (static_cast<Tensor<1,dim> (BoundaryVelocity::Interface<dim>::*)(
-                              const types::boundary_id,
-                              const Point<dim> &) const> (&BoundaryVelocity::Interface<dim>::boundary_velocity),
-                            p->second,
-                            p->first,
-                            std_cxx11::_1));
+    // We put the constraints we compute into a separate ConstraintMatrix so we can check
+    // if the set of constraints has changed. If it did, we need to update the sparsity patterns.
+    ConstraintMatrix new_current_constraints;
+    new_current_constraints.clear ();
+    new_current_constraints.reinit (introspection.index_sets.system_relevant_set);
+    new_current_constraints.merge (constraints);
+    compute_current_velocity_boundary_constraints(new_current_constraints);
 
-          // here we create a mask for interpolate_boundary_values out of the 'selector'
-          std::vector<bool> mask(introspection.component_masks.velocities.size(), false);
-          const std::string &comp = parameters.prescribed_velocity_boundary_indicators[p->first].first;
-
-          if (comp.length()>0)
-            {
-              for (std::string::const_iterator direction=comp.begin(); direction!=comp.end(); ++direction)
-                {
-                  switch (*direction)
-                    {
-                      case 'x':
-                        mask[introspection.component_indices.velocities[0]] = true;
-                        break;
-                      case 'y':
-                        mask[introspection.component_indices.velocities[1]] = true;
-                        break;
-                      case 'z':
-                        // we must be in 3d, or 'z' should never have gotten through
-                        Assert (dim==3, ExcInternalError());
-                        if (dim==3)
-                          mask[introspection.component_indices.velocities[2]] = true;
-                        break;
-                      default:
-                        Assert (false, ExcInternalError());
-                    }
-                }
-            }
-          else
-            {
-              // no mask given -- take all velocities
-              for (unsigned int i=0; i<introspection.component_masks.velocities.size(); ++i)
-                mask[i]=introspection.component_masks.velocities[i];
-            }
-
-          VectorTools::interpolate_boundary_values (*mapping,
-                                                    dof_handler,
-                                                    p->first,
-                                                    vel,
-                                                    current_constraints,
-                                                    mask);
-        }
-    }
-
-    // If there is a fixed boundary temperature,
+    // If there is a fixed boundary temperature or heat flux,
     // update the temperature boundary condition.
-    if (boundary_temperature.get())
-      boundary_temperature->update();
+    boundary_temperature_manager.update();
+    boundary_heat_flux->update();
+
+    // If we do not want to prescribe Dirichlet boundary conditions on outflow boundaries,
+    // we update the boundary indicators of all faces that belong to ouflow boundaries
+    // so that they are not in the list of fixed temperature boundary indicators any more.
+    // We will undo this change in a later step, after the constraints have been set.
+    // As long as we allow deal.II 8.5, we can not have boundary ids of more than 256,
+    // so we want to offset them by 128 and not allow more than 128 boundary ids.
+    const unsigned int boundary_id_offset = 128;
+    if (!boundary_temperature_manager.allows_fixed_temperature_on_outflow_boundaries())
+      replace_outflow_boundary_ids(boundary_id_offset);
 
     // if using continuous temperature FE, do the same for the temperature variable:
     // evaluate the current boundary temperature and add these constraints as well
@@ -927,29 +721,40 @@ namespace aspect
         // temperature boundary conditions and interpolate the temperature
         // there
         for (std::set<types::boundary_id>::const_iterator
-             p = parameters.fixed_temperature_boundary_indicators.begin();
-             p != parameters.fixed_temperature_boundary_indicators.end(); ++p)
+             p = boundary_temperature_manager.get_fixed_temperature_boundary_indicators().begin();
+             p != boundary_temperature_manager.get_fixed_temperature_boundary_indicators().end(); ++p)
           {
-            Assert (is_element (*p, geometry_model->get_used_boundary_indicators()),
-                    ExcInternalError());
+            auto lambda = [&] (const Point<dim> &x) -> double
+            {
+              return boundary_temperature_manager.boundary_temperature(*p, x);
+            };
+
+            VectorFunctionFromScalarFunctionObject<dim> vector_function_object(
+              lambda,
+              introspection.component_masks.temperature.first_selected_component(),
+              introspection.n_components);
+
             VectorTools::interpolate_boundary_values (*mapping,
                                                       dof_handler,
                                                       *p,
-                                                      VectorFunctionFromScalarFunctionObject<dim>(std_cxx11::bind (&BoundaryTemperature::Interface<dim>::boundary_temperature,
-                                                          std_cxx11::cref(*boundary_temperature),
-                                                          *p,
-                                                          std_cxx11::_1),
-                                                          introspection.component_masks.temperature.first_selected_component(),
-                                                          introspection.n_components),
-                                                      current_constraints,
+                                                      vector_function_object,
+                                                      new_current_constraints,
                                                       introspection.component_masks.temperature);
           }
       }
 
+    if (!boundary_temperature_manager.allows_fixed_temperature_on_outflow_boundaries())
+      restore_outflow_boundary_ids(boundary_id_offset);
+
     // If there are fixed boundary compositions,
     // update the composition boundary condition.
-    if (boundary_composition.get())
-      boundary_composition->update();
+    boundary_composition_manager.update();
+
+    // If we do not want to prescribe Dirichlet boundary conditions on outflow boundaries,
+    // use the same trick for marking up outflow boundary conditions for compositional fields
+    // as we did above already for the temperature.
+    if (!boundary_composition_manager.allows_fixed_composition_on_outflow_boundaries())
+      replace_outflow_boundary_ids(boundary_id_offset);
 
     // now do the same for the composition variable:
     if (!parameters.use_discontinuous_composition_discretization)
@@ -959,32 +764,98 @@ namespace aspect
         // there
         for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
           for (std::set<types::boundary_id>::const_iterator
-               p = parameters.fixed_composition_boundary_indicators.begin();
-               p != parameters.fixed_composition_boundary_indicators.end(); ++p)
+               p = boundary_composition_manager.get_fixed_composition_boundary_indicators().begin();
+               p != boundary_composition_manager.get_fixed_composition_boundary_indicators().end(); ++p)
             {
-              Assert (is_element (*p, geometry_model->get_used_boundary_indicators()),
-                      ExcInternalError());
+              auto lambda = [&] (const Point<dim> &x) -> double
+              {
+                return boundary_composition_manager.boundary_composition(*p, x, c);
+              };
+
+              VectorFunctionFromScalarFunctionObject<dim> vector_function_object(
+                lambda,
+                introspection.component_masks.compositional_fields[c].first_selected_component(),
+                introspection.n_components);
+
               VectorTools::interpolate_boundary_values (*mapping,
                                                         dof_handler,
                                                         *p,
-                                                        VectorFunctionFromScalarFunctionObject<dim>(std_cxx11::bind (&BoundaryComposition::Interface<dim>::boundary_composition,
-                                                            std_cxx11::cref(*boundary_composition),
-                                                            *p,
-                                                            std_cxx11::_1,
-                                                            c),
-                                                            introspection.component_masks.compositional_fields[c].first_selected_component(),
-                                                            introspection.n_components),
-                                                        current_constraints,
+                                                        vector_function_object,
+                                                        new_current_constraints,
                                                         introspection.component_masks.compositional_fields[c]);
             }
       }
 
+    if (!boundary_composition_manager.allows_fixed_composition_on_outflow_boundaries())
+      restore_outflow_boundary_ids(boundary_id_offset);
+
+    if (parameters.include_melt_transport)
+      melt_handler->add_current_constraints (new_current_constraints);
 
     // let plugins add more constraints if they so choose, then close the
     // constraints object
-    signals.post_constraints_creation(*this, current_constraints);
+    signals.post_constraints_creation(*this, new_current_constraints);
 
+    new_current_constraints.close();
+
+    // Now check if the current_constraints we just computed changed from before. Do this before the melt handler
+    // adds constraints for the melt cells, because they are allowed to change (and often do) without us having
+    // to reinit the sparsity pattern.
+    // If the mesh got refined and the size of the linear system changed, the old and new constraint
+    // matrices will have different entries, and we can not easily compare them.
+    // However, in case of mesh refinement we have to rebuild the matrix anyway, so we can skip the
+    // step that checks if constraints have changed.
+    bool mesh_has_changed = (current_constraints.get_local_lines().size()
+                             != new_current_constraints.get_local_lines().size())
+                            ||
+                            (current_constraints.get_local_lines()
+                             != new_current_constraints.get_local_lines());
+
+    if (!mesh_has_changed)
+      {
+        bool constrained_dofs_set_changed = false;
+
+#if DEAL_II_VERSION_GTE(9,0,0)
+        for (auto &row: current_constraints.get_lines())
+          {
+            if (!new_current_constraints.is_constrained(row.index))
+              {
+                constrained_dofs_set_changed = true;
+                break;
+              }
+          }
+#else
+        for (const auto row: current_constraints.get_local_lines())
+          {
+            // Decide if we need to construct a new sparsity pattern.
+            // This is only necessary if at least one of the DoFs that were
+            // constrained in the previous time step are not constrained any more,
+            // because in this case we will need additionl matrix entries.
+            // The matrices will be reassembled in each timestep regardless,
+            // so the values of the constraints do not matter for the sparsity pattern.
+            if (current_constraints.is_constrained(row)
+                != new_current_constraints.is_constrained(row))
+              {
+                constrained_dofs_set_changed = true;
+                break;
+              }
+          }
+#endif
+
+        const bool any_constrained_dofs_set_changed = Utilities::MPI::sum(constrained_dofs_set_changed ? 1 : 0,
+                                                                          mpi_communicator) > 0;
+        if (any_constrained_dofs_set_changed)
+          rebuild_sparsity_and_matrices = true;
+      }
+
+#if DEAL_II_VERSION_GTE(9,0,0)
+    current_constraints.copy_from(new_current_constraints);
+#else
+    current_constraints.clear ();
+    current_constraints.reinit (introspection.index_sets.system_relevant_set);
+    current_constraints.merge (new_current_constraints);
     current_constraints.close();
+#endif
   }
 
 
@@ -996,6 +867,18 @@ namespace aspect
   {
     system_matrix.clear ();
 
+    bool have_fem_compositional_field = false;
+    for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
+      {
+        const AdvectionField adv_field (AdvectionField::composition(c));
+        if (adv_field.advection_method(introspection)==Parameters<dim>::AdvectionFieldMethod::fem_field
+            || adv_field.advection_method(introspection)==Parameters<dim>::AdvectionFieldMethod::fem_melt_field)
+          {
+            have_fem_compositional_field = true;
+            break;
+          }
+      }
+
     Table<2,DoFTools::Coupling> coupling (introspection.n_components,
                                           introspection.n_components);
     coupling.fill (DoFTools::none);
@@ -1005,13 +888,10 @@ namespace aspect
     // - all velocities couple with all velocities
     // - pressure couples with all velocities and the other way
     //   around
-    // - temperature only couples with itself when using the IMPES
-    //   scheme
+    // - temperature only couples with itself
     // - compositional fields only couple with themselves
-    // this is also valid in the case of melt transport (for the
-    // fluid and the compaction pressure
-    // additionally, fluid pressure and compaction pressures couple
-    // with themselves
+    // - additionally, in models with melt transport fluid pressure
+    //   and compaction pressures couple with themselves
     {
       const typename Introspection<dim>::ComponentIndices &x
         = introspection.component_indices;
@@ -1053,25 +933,21 @@ namespace aspect
             }
         }
       coupling[x.temperature][x.temperature] = DoFTools::always;
-      for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
+
+      // If we have at least one compositional field that is a FEM field, we
+      // create a matrix block in the first compositional block. Its sparsity
+      // pattern will later be used to allocate composition matrices as
+      // needed.  All other matrix blocks are left empty here.
+      if (have_fem_compositional_field)
+        coupling[x.compositional_fields[0]][x.compositional_fields[0]] = DoFTools::always;
+
+      // If we are using VolumeOfFluid interface tracking, create a matrix block in the
+      // field corresponding to the volume fraction.
+      if (parameters.volume_of_fluid_tracking_enabled)
         {
-          const AdvectionField adv_field (AdvectionField::composition(c));
-          const typename Parameters<dim>::AdvectionFieldMethod::Kind method = adv_field.advection_method(introspection);
-          switch (method)
-            {
-              // Coupling cases
-              case Parameters<dim>::AdvectionFieldMethod::fem_field:
-                coupling[x.compositional_fields[c]][x.compositional_fields[c]]
-                  = DoFTools::always;
-                break;
-              // Non-coupling cases
-              case Parameters<dim>::AdvectionFieldMethod::particles:
-                coupling[x.compositional_fields[c]][x.compositional_fields[c]]
-                  = DoFTools::none;
-                break;
-              default:
-                Assert(false,ExcNotImplemented());
-            }
+          const unsigned int volume_of_fluid_block = volume_of_fluid_handler->field_struct_for_field_index(0)
+                                                     .volume_fraction.first_component_index;
+          coupling[volume_of_fluid_block][volume_of_fluid_block] = DoFTools::always;
         }
     }
 
@@ -1085,7 +961,9 @@ namespace aspect
                mpi_communicator);
 #endif
 
-    if ((parameters.use_discontinuous_temperature_discretization) || (parameters.use_discontinuous_composition_discretization))
+    if ((parameters.use_discontinuous_temperature_discretization) ||
+        (parameters.use_discontinuous_composition_discretization) ||
+        (parameters.volume_of_fluid_tracking_enabled))
       {
         Table<2,DoFTools::Coupling> face_coupling (introspection.n_components,
                                                    introspection.n_components);
@@ -1096,33 +974,20 @@ namespace aspect
         if (parameters.use_discontinuous_temperature_discretization)
           face_coupling[x.temperature][x.temperature] = DoFTools::always;
 
-        if (parameters.use_discontinuous_composition_discretization)
+        // Only allocate composition 0 matrix if needed. Same as the non-DG case (see above)
+        if (parameters.use_discontinuous_composition_discretization && have_fem_compositional_field)
+          face_coupling[x.compositional_fields[0]][x.compositional_fields[0]] = DoFTools::always;
+
+        if (parameters.volume_of_fluid_tracking_enabled)
           {
-            for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
-              {
-                const AdvectionField adv_field (AdvectionField::composition(c));
-                const typename Parameters<dim>::AdvectionFieldMethod::Kind method = adv_field.advection_method(introspection);
-                switch (method)
-                  {
-                    // Coupling cases
-                    case Parameters<dim>::AdvectionFieldMethod::fem_field:
-                      face_coupling[x.compositional_fields[c]][x.compositional_fields[c]]
-                        = DoFTools::always;
-                      break;
-                    // Non-coupling cases
-                    case Parameters<dim>::AdvectionFieldMethod::particles:
-                      face_coupling[x.compositional_fields[c]][x.compositional_fields[c]]
-                        = DoFTools::none;
-                      break;
-                    default:
-                      Assert(false,ExcNotImplemented());
-                  }
-              }
+            const unsigned int volume_of_fluid_block = volume_of_fluid_handler->field_struct_for_field_index(0)
+                                                       .volume_fraction.first_component_index;
+            face_coupling[volume_of_fluid_block][volume_of_fluid_block] = DoFTools::always;
           }
 
         DoFTools::make_flux_sparsity_pattern (dof_handler,
                                               sp,
-                                              constraints, false,
+                                              current_constraints, false,
                                               coupling,
                                               face_coupling,
                                               Utilities::MPI::
@@ -1131,7 +996,7 @@ namespace aspect
     else
       DoFTools::make_sparsity_pattern (dof_handler,
                                        coupling, sp,
-                                       constraints, false,
+                                       current_constraints, false,
                                        Utilities::MPI::
                                        this_mpi_process(mpi_communicator));
 
@@ -1146,6 +1011,21 @@ namespace aspect
 #else
     sp.compress();
 
+    // We only allocate a composition matrix block for composition 0 (see
+    // above). But even though we specify a coupling of DoFTools::none for the
+    // other composition blocks, entries for constrained entries for boundary
+    // conditions and hanging nodes are being created by
+    // make_sparsity_pattern. These are unnecessary, so we remove those
+    // entries here.
+    for (unsigned int c=1; c<introspection.n_compositional_fields; ++c)
+      {
+        const unsigned int block_idx = introspection.block_indices.compositional_fields[c];
+        // TODO: using clear() would be nice here but clear() also resets the
+        // size, so just reinit():
+        sp.block(block_idx, block_idx).reinit(sp.block(block_idx, block_idx).locally_owned_range_indices(),sp.block(block_idx, block_idx).locally_owned_domain_indices());
+        sp.block(block_idx, block_idx).compress();
+      }
+
     system_matrix.reinit (sp);
 #endif
   }
@@ -1158,10 +1038,12 @@ namespace aspect
   {
     Amg_preconditioner.reset ();
     Mp_preconditioner.reset ();
-    T_preconditioner.reset ();
-    C_preconditioner.reset ();
-
     system_preconditioner_matrix.clear ();
+
+    // The preconditioner matrix is only used for the Stokes block (velocity and Schur complement) and is of course not
+    // used if we use a direct solver.
+    if (parameters.use_direct_stokes_solver)
+      return;
 
     Table<2,DoFTools::Coupling> coupling (introspection.n_components,
                                           introspection.n_components);
@@ -1170,40 +1052,32 @@ namespace aspect
     const typename Introspection<dim>::ComponentIndices &x
       = introspection.component_indices;
 
+    // velocity-velocity block (only block diagonal):
     for (unsigned int d=0; d<dim; ++d)
       coupling[x.velocities[d]][x.velocities[d]] = DoFTools::always;
 
+    // Schur complement block (pressure - pressure):
     if (parameters.include_melt_transport)
       {
         coupling[introspection.variable("fluid pressure").first_component_index]
         [introspection.variable("fluid pressure").first_component_index] = DoFTools::always;
         coupling[introspection.variable("compaction pressure").first_component_index]
         [introspection.variable("compaction pressure").first_component_index] = DoFTools::always;
+        coupling[introspection.variable("compaction pressure").first_component_index]
+        [introspection.variable("fluid pressure").first_component_index] = DoFTools::always;
+        coupling[introspection.variable("fluid pressure").first_component_index]
+        [introspection.variable("compaction pressure").first_component_index] = DoFTools::always;
       }
     else
       coupling[x.pressure][x.pressure] = DoFTools::always;
-    coupling[x.temperature][x.temperature] = DoFTools::always;
-
-    for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
-      {
-        const AdvectionField adv_field (AdvectionField::composition(c));
-        const typename Parameters<dim>::AdvectionFieldMethod::Kind method = adv_field.advection_method(introspection);
-        switch (method)
-          {
-            // Coupling cases
-            case Parameters<dim>::AdvectionFieldMethod::fem_field:
-              coupling[x.compositional_fields[c]][x.compositional_fields[c]]
-                = DoFTools::always;
-              break;
-            // Non-coupling cases
-            case Parameters<dim>::AdvectionFieldMethod::particles:
-              coupling[x.compositional_fields[c]][x.compositional_fields[c]]
-                = DoFTools::none;
-              break;
-            default:
-              Assert(false,ExcNotImplemented());
-          }
-      }
+    // the system_preconditioner matrix is only used for the Stokes
+    // system as there we use a separate matrix for preconditioning
+    // than the system_matrix object). for temperature and
+    // compositional fields, we precondition with the respective block
+    // of system_matrix. consequently, there is no need to allocate
+    // memory for these blocks in the system_preconditioner matrix and
+    // its sparsity pattern here -- the corresponding entries of
+    // 'coupling' simply remain at DoFTools::none
 
     LinearAlgebra::BlockDynamicSparsityPattern sp;
 
@@ -1216,55 +1090,11 @@ namespace aspect
                mpi_communicator);
 #endif
 
-    if ((parameters.use_discontinuous_temperature_discretization) || (parameters.use_discontinuous_composition_discretization))
-      {
-        Table<2,DoFTools::Coupling> face_coupling (introspection.n_components,
-                                                   introspection.n_components);
-        face_coupling.fill (DoFTools::none);
-
-        const typename Introspection<dim>::ComponentIndices &x
-          = introspection.component_indices;
-        if (parameters.use_discontinuous_temperature_discretization)
-          face_coupling[x.temperature][x.temperature] = DoFTools::always;
-
-        if (parameters.use_discontinuous_composition_discretization)
-          {
-            for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
-              {
-                const AdvectionField adv_field (AdvectionField::composition(c));
-                const typename Parameters<dim>::AdvectionFieldMethod::Kind method = adv_field.advection_method(introspection);
-                switch (method)
-                  {
-                    // Coupling cases
-                    case Parameters<dim>::AdvectionFieldMethod::fem_field:
-                      face_coupling[x.compositional_fields[c]][x.compositional_fields[c]]
-                        = DoFTools::always;
-                      break;
-                    // Non-coupling cases
-                    case Parameters<dim>::AdvectionFieldMethod::particles:
-                      face_coupling[x.compositional_fields[c]][x.compositional_fields[c]]
-                        = DoFTools::none;
-                      break;
-                    default:
-                      Assert(false,ExcNotImplemented());
-                  }
-              }
-          }
-
-        DoFTools::make_flux_sparsity_pattern (dof_handler,
-                                              sp,
-                                              constraints, false,
-                                              coupling,
-                                              face_coupling,
-                                              Utilities::MPI::
-                                              this_mpi_process(mpi_communicator));
-      }
-    else
-      DoFTools::make_sparsity_pattern (dof_handler,
-                                       coupling, sp,
-                                       constraints, false,
-                                       Utilities::MPI::
-                                       this_mpi_process(mpi_communicator));
+    DoFTools::make_sparsity_pattern (dof_handler,
+                                     coupling, sp,
+                                     current_constraints, false,
+                                     Utilities::MPI::
+                                     this_mpi_process(mpi_communicator));
 
 #ifdef ASPECT_USE_PETSC
     SparsityTools::distribute_sparsity_pattern(sp,
@@ -1277,10 +1107,143 @@ namespace aspect
 #else
     sp.compress();
 
+    // We are not interested in temperature and composition matrices for the
+    // preconditioner matrix. But even though we specify a coupling of
+    // DoFTools::none, entries for constrained entries for boundary conditions
+    // and hanging nodes are being created by make_sparsity_pattern. These are
+    // unnecessary, so we remove those entries here.
+    {
+      // temperature:
+      const unsigned int block_idx = introspection.block_indices.temperature;
+      // TODO: using clear() would be nice here but clear() also resets the
+      // size, so just reinit():
+      sp.block(block_idx, block_idx).reinit(sp.block(block_idx, block_idx).locally_owned_range_indices(),sp.block(block_idx, block_idx).locally_owned_domain_indices());
+      sp.block(block_idx, block_idx).compress();
+    }
+    // compositions:
+    for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
+      {
+        const unsigned int block_idx = introspection.block_indices.compositional_fields[c];
+        // TODO: using clear() would be nice here but clear() also resets the
+        // size, so just reinit():
+        sp.block(block_idx, block_idx).reinit(sp.block(block_idx, block_idx).locally_owned_range_indices(),sp.block(block_idx, block_idx).locally_owned_domain_indices());
+        sp.block(block_idx, block_idx).compress();
+      }
+
     system_preconditioner_matrix.reinit (sp);
 #endif
   }
 
+
+  template <int dim>
+  void Simulator<dim>::compute_initial_velocity_boundary_constraints (ConstraintMatrix &constraints)
+  {
+
+    // This needs to happen after the periodic constraints are added:
+    setup_nullspace_constraints(constraints);
+
+    // then compute constraints for the velocity. the constraints we compute
+    // here are the ones that are the same for all following time steps. in
+    // addition, we may be computing constraints from boundary values for the
+    // velocity that are different between time steps. these are then put
+    // into current_constraints in start_timestep().
+    signals.pre_compute_no_normal_flux_constraints(triangulation);
+    {
+      // do the interpolation for zero velocity
+      for (std::set<types::boundary_id>::const_iterator
+           p = boundary_velocity_manager.get_zero_boundary_velocity_indicators().begin();
+           p != boundary_velocity_manager.get_zero_boundary_velocity_indicators().end(); ++p)
+        VectorTools::interpolate_boundary_values (*mapping,
+                                                  dof_handler,
+                                                  *p,
+                                                  ZeroFunction<dim>(introspection.n_components),
+                                                  constraints,
+                                                  introspection.component_masks.velocities);
+
+
+      // do the same for no-normal-flux boundaries
+      VectorTools::compute_no_normal_flux_constraints (dof_handler,
+                                                       /* first_vector_component= */
+                                                       introspection.component_indices.velocities[0],
+                                                       boundary_velocity_manager.get_tangential_boundary_velocity_indicators(),
+                                                       constraints,
+                                                       *mapping);
+    }
+
+
+  }
+
+  template <int dim>
+  void Simulator<dim>::compute_current_velocity_boundary_constraints (ConstraintMatrix &constraints)
+  {
+    // set the current time and do the interpolation
+    // for the prescribed velocity fields
+    boundary_velocity_manager.update();
+    for (typename std::map<types::boundary_id,std::pair<std::string, std::vector<std::string> > >::const_iterator
+         p = boundary_velocity_manager.get_active_boundary_velocity_names().begin();
+         p != boundary_velocity_manager.get_active_boundary_velocity_names().end(); ++p)
+      {
+        VectorFunctionFromVelocityFunctionObject<dim> vel
+        (introspection.n_components,
+         [&] (const Point<dim> &x) -> Tensor<1,dim>
+        {
+          return boundary_velocity_manager.boundary_velocity(p->first, x);
+        });
+
+        // here we create a mask for interpolate_boundary_values out of the 'selector'
+        std::vector<bool> mask(introspection.component_masks.velocities.size(), false);
+        const std::string &comp = p->second.first;
+
+        if (comp.length()>0)
+          {
+            for (std::string::const_iterator direction=comp.begin(); direction!=comp.end(); ++direction)
+              {
+                switch (*direction)
+                  {
+                    case 'x':
+                      mask[introspection.component_indices.velocities[0]] = true;
+                      break;
+                    case 'y':
+                      mask[introspection.component_indices.velocities[1]] = true;
+                      break;
+                    case 'z':
+                      // we must be in 3d, or 'z' should never have gotten through
+                      Assert (dim==3, ExcInternalError());
+                      if (dim==3)
+                        mask[introspection.component_indices.velocities[2]] = true;
+                      break;
+                    default:
+                      Assert (false, ExcInternalError());
+                  }
+              }
+          }
+        else
+          {
+            // no mask given -- take all velocities
+            for (unsigned int i=0; i<introspection.component_masks.velocities.size(); ++i)
+              mask[i]=introspection.component_masks.velocities[i];
+          }
+
+        if (!assemble_newton_stokes_system || (assemble_newton_stokes_system && nonlinear_iteration == 0))
+          {
+            VectorTools::interpolate_boundary_values (*mapping,
+                                                      dof_handler,
+                                                      p->first,
+                                                      vel,
+                                                      constraints,
+                                                      mask);
+          }
+        else
+          {
+            VectorTools::interpolate_boundary_values (*mapping,
+                                                      dof_handler,
+                                                      p->first,
+                                                      ZeroFunction<dim>(introspection.n_components),
+                                                      constraints,
+                                                      mask);
+          }
+      }
+  }
 
 
   template <int dim>
@@ -1288,7 +1251,7 @@ namespace aspect
   {
     signals.edit_parameters_pre_setup_dofs(*this, parameters);
 
-    computing_timer.enter_section("Setup dof systems");
+    TimerOutput::Scope timer (computing_timer, "Setup dof systems");
 
     dof_handler.distribute_dofs(finite_element);
 
@@ -1314,9 +1277,14 @@ namespace aspect
       // is kept here, even though explicitly setting a facet should always work.
       try
         {
-          pcout.get_stream().imbue(std::locale(std::locale(), new aspect::Utilities::ThousandSep));
+          // Imbue the stream with a locale that does the right thing. The
+          // locale is responsible for later deleting the object pointed
+          // to by the last argument (the "facet"), see
+          // https://en.cppreference.com/w/cpp/locale/locale/locale
+          pcout.get_stream().imbue(std::locale(std::locale(),
+                                               new aspect::Utilities::ThousandSep));
         }
-      catch (std::runtime_error e)
+      catch (const std::runtime_error &e)
         {
           // If the locale doesn't work, just give up
         }
@@ -1372,43 +1340,14 @@ namespace aspect
 
     }
 
-    // This needs to happen after the periodic constraints are added:
-    setup_nullspace_constraints(constraints);
 
-    // then compute constraints for the velocity. the constraints we compute
-    // here are the ones that are the same for all following time steps. in
-    // addition, we may be computing constraints from boundary values for the
-    // velocity that are different between time steps. these are then put
-    // into current_constraints in start_timestep().
-    signals.pre_compute_no_normal_flux_constraints(triangulation);
-    {
-      // do the interpolation for zero velocity
-      for (std::set<types::boundary_id>::const_iterator
-           p = parameters.zero_velocity_boundary_indicators.begin();
-           p != parameters.zero_velocity_boundary_indicators.end(); ++p)
-        VectorTools::interpolate_boundary_values (*mapping,
-                                                  dof_handler,
-                                                  *p,
-                                                  ZeroFunction<dim>(introspection.n_components),
-                                                  constraints,
-                                                  introspection.component_masks.velocities);
-
-
-      // do the same for no-normal-flux boundaries
-      VectorTools::compute_no_normal_flux_constraints (dof_handler,
-                                                       /* first_vector_component= */
-                                                       introspection.component_indices.velocities[0],
-                                                       parameters.tangential_velocity_boundary_indicators,
-                                                       constraints,
-                                                       *mapping);
-    }
+    compute_initial_velocity_boundary_constraints(constraints);
     constraints.close();
     signals.post_compute_no_normal_flux_constraints(triangulation);
 
-    // finally initialize vectors, matrices, etc.
-
-    setup_system_matrix (introspection.index_sets.system_partitioning);
-    setup_system_preconditioner (introspection.index_sets.system_partitioning);
+    // Finally initialize vectors. We delay construction of the sparsity
+    // patterns and matrices until we have current_constraints.
+    rebuild_sparsity_and_matrices = true;
 
     system_rhs.reinit(introspection.index_sets.system_partitioning, mpi_communicator);
     solution.reinit(introspection.index_sets.system_partitioning, introspection.index_sets.system_relevant_partitioning, mpi_communicator);
@@ -1416,14 +1355,14 @@ namespace aspect
     old_old_solution.reinit(introspection.index_sets.system_partitioning, introspection.index_sets.system_relevant_partitioning, mpi_communicator);
     current_linearization_point.reinit (introspection.index_sets.system_partitioning, introspection.index_sets.system_relevant_partitioning, mpi_communicator);
 
+    if (parameters.use_operator_splitting)
+      operator_split_reaction_vector.reinit (introspection.index_sets.system_partitioning, introspection.index_sets.system_relevant_partitioning, mpi_communicator);
+
     if (do_pressure_rhs_compatibility_modification)
       pressure_shape_function_integrals.reinit (introspection.index_sets.system_partitioning, mpi_communicator);
 
     rebuild_stokes_matrix         = true;
     rebuild_stokes_preconditioner = true;
-
-
-    computing_timer.exit_section();
   }
 
 
@@ -1452,7 +1391,6 @@ namespace aspect
 
       if (!parameters.include_melt_transport)
         {
-          // locally_owned_melt_pressure_dofs is only used if not using melt
           if (parameters.use_direct_stokes_solver)
             introspection.index_sets.locally_owned_pressure_dofs = system_index_set & Utilities::extract_locally_active_dofs_with_component(dof_handler, introspection.component_masks.pressure);
           else
@@ -1494,7 +1432,7 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::postprocess ()
   {
-    computing_timer.enter_section ("Postprocessing");
+    TimerOutput::Scope timer (computing_timer, "Postprocessing");
     pcout << "   Postprocessing:" << std::endl;
 
     // run all the postprocessing routines and then write
@@ -1532,108 +1470,110 @@ namespace aspect
 
     // finally, write the entire set of current results to disk
     output_statistics();
-
-    computing_timer.exit_section ();
   }
 
 
   template <int dim>
   void Simulator<dim>::refine_mesh (const unsigned int max_grid_level)
   {
-    computing_timer.enter_section ("Refine mesh structure, part 1");
-
-    Vector<float> estimated_error_per_cell (triangulation.n_active_cells());
-    mesh_refinement_manager.execute (estimated_error_per_cell);
-
-    if (parameters.adapt_by_fraction_of_cells)
-      parallel::distributed::GridRefinement::
-      refine_and_coarsen_fixed_number   (triangulation,
-                                         estimated_error_per_cell,
-                                         parameters.refinement_fraction,
-                                         parameters.coarsening_fraction);
-    else
-      parallel::distributed::GridRefinement::
-      refine_and_coarsen_fixed_fraction (triangulation,
-                                         estimated_error_per_cell,
-                                         parameters.refinement_fraction,
-                                         parameters.coarsening_fraction);
-
-    mesh_refinement_manager.tag_additional_cells ();
-
-
-    // clear refinement flags if parameter.refinement_fraction=0.0
-    if (parameters.refinement_fraction==0.0)
-      {
-        for (typename Triangulation<dim>::active_cell_iterator
-             cell = triangulation.begin_active();
-             cell != triangulation.end(); ++cell)
-          cell->clear_refine_flag ();
-      }
-    else
-      {
-        // limit maximum refinement level
-        if (triangulation.n_levels() > max_grid_level)
-          for (typename Triangulation<dim>::active_cell_iterator
-               cell = triangulation.begin_active(max_grid_level);
-               cell != triangulation.end(); ++cell)
-            cell->clear_refine_flag ();
-      }
-
-    // clear coarsening flags if parameter.coarsening_fraction=0.0
-    if (parameters.coarsening_fraction==0.0)
-      {
-        for (typename Triangulation<dim>::active_cell_iterator
-             cell = triangulation.begin_active();
-             cell != triangulation.end(); ++cell)
-          cell->clear_coarsen_flag ();
-      }
-    else
-      {
-        // limit minimum refinement level
-        for (typename Triangulation<dim>::active_cell_iterator
-             cell = triangulation.begin_active(0);
-             cell != triangulation.end_active(parameters.min_grid_level); ++cell)
-          cell->clear_coarsen_flag ();
-      }
-
-    std::vector<const LinearAlgebra::BlockVector *> x_system (2);
-    x_system[0] = &solution;
-    x_system[1] = &old_solution;
-
-    if (parameters.free_surface_enabled)
-      x_system.push_back( &free_surface->mesh_velocity );
-
     parallel::distributed::SolutionTransfer<dim,LinearAlgebra::BlockVector>
     system_trans(dof_handler);
 
-    std::vector<const LinearAlgebra::Vector *> x_fs_system (1);
-    std_cxx11::unique_ptr<parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector> >
+    std::unique_ptr<parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector> >
     freesurface_trans;
 
-    if (parameters.free_surface_enabled)
-      {
-        x_fs_system[0] = &free_surface->mesh_displacements;
-        freesurface_trans.reset (new parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector>
-                                 (free_surface->free_surface_dof_handler));
-      }
+    {
+      TimerOutput::Scope timer (computing_timer, "Refine mesh structure, part 1");
+
+      Vector<float> estimated_error_per_cell (triangulation.n_active_cells());
+      mesh_refinement_manager.execute (estimated_error_per_cell);
+
+      if (parameters.adapt_by_fraction_of_cells)
+        parallel::distributed::GridRefinement::
+        refine_and_coarsen_fixed_number   (triangulation,
+                                           estimated_error_per_cell,
+                                           parameters.refinement_fraction,
+                                           parameters.coarsening_fraction);
+      else
+        parallel::distributed::GridRefinement::
+        refine_and_coarsen_fixed_fraction (triangulation,
+                                           estimated_error_per_cell,
+                                           parameters.refinement_fraction,
+                                           parameters.coarsening_fraction);
+
+      mesh_refinement_manager.tag_additional_cells ();
 
 
-    // Possibly store data of plugins associated with cells
-    signals.pre_refinement_store_user_data(triangulation);
+      // clear refinement flags if parameter.refinement_fraction=0.0
+      if (parameters.refinement_fraction==0.0)
+        {
+          for (typename Triangulation<dim>::active_cell_iterator
+               cell = triangulation.begin_active();
+               cell != triangulation.end(); ++cell)
+            cell->clear_refine_flag ();
+        }
+      else
+        {
+          // limit maximum refinement level
+          if (triangulation.n_levels() > max_grid_level)
+            for (typename Triangulation<dim>::active_cell_iterator
+                 cell = triangulation.begin_active(max_grid_level);
+                 cell != triangulation.end(); ++cell)
+              cell->clear_refine_flag ();
+        }
 
-    triangulation.prepare_coarsening_and_refinement();
-    system_trans.prepare_for_coarsening_and_refinement(x_system);
+      // clear coarsening flags if parameter.coarsening_fraction=0.0
+      if (parameters.coarsening_fraction==0.0)
+        {
+          for (typename Triangulation<dim>::active_cell_iterator
+               cell = triangulation.begin_active();
+               cell != triangulation.end(); ++cell)
+            cell->clear_coarsen_flag ();
+        }
+      else
+        {
+          // limit minimum refinement level
+          for (typename Triangulation<dim>::active_cell_iterator
+               cell = triangulation.begin_active(0);
+               cell != triangulation.end_active(parameters.min_grid_level); ++cell)
+            cell->clear_coarsen_flag ();
+        }
 
-    if (parameters.free_surface_enabled)
-      freesurface_trans->prepare_for_coarsening_and_refinement(x_fs_system);
+      std::vector<const LinearAlgebra::BlockVector *> x_system (2);
+      x_system[0] = &solution;
+      x_system[1] = &old_solution;
 
-    triangulation.execute_coarsening_and_refinement ();
-    computing_timer.exit_section();
+      if (parameters.free_surface_enabled)
+        x_system.push_back( &free_surface->mesh_velocity );
+
+      std::vector<const LinearAlgebra::Vector *> x_fs_system (1);
+
+      if (parameters.free_surface_enabled)
+        {
+          x_fs_system[0] = &free_surface->mesh_displacements;
+          freesurface_trans
+            = std_cxx14::make_unique<parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector>>
+              (free_surface->free_surface_dof_handler);
+        }
+
+
+      // Possibly store data of plugins associated with cells
+      signals.pre_refinement_store_user_data(triangulation);
+
+      triangulation.prepare_coarsening_and_refinement();
+      system_trans.prepare_for_coarsening_and_refinement(x_system);
+
+      if (parameters.free_surface_enabled)
+        freesurface_trans->prepare_for_coarsening_and_refinement(x_fs_system);
+
+      triangulation.execute_coarsening_and_refinement ();
+    } // leave the timed section
 
     setup_dofs ();
 
-    computing_timer.enter_section ("Refine mesh structure, part 2");
     {
+      TimerOutput::Scope timer (computing_timer, "Refine mesh structure, part 2");
+
       LinearAlgebra::BlockVector distributed_system;
       LinearAlgebra::BlockVector old_distributed_system;
       LinearAlgebra::BlockVector distributed_mesh_velocity;
@@ -1693,104 +1633,12 @@ namespace aspect
 
       // Possibly load data of plugins associated with cells
       signals.post_refinement_load_user_data(triangulation);
-    }
-    computing_timer.exit_section();
 
-    // calculate global volume after displacing mesh (if we have, in fact, displaced it)
-    global_volume = GridTools::volume (triangulation, *mapping);
+      // calculate global volume after displacing mesh (if we have, in fact, displaced it)
+      global_volume = GridTools::volume (triangulation, *mapping);
+    }
   }
 
-  /**
-   * Converts a function with a certain number of components into a Function@dim@
-   * with optionally having additional zero components.
-   **/
-  template <int dim>
-  class VectorFunctionFromVectorFunctionObject : public Function<dim>
-  {
-    public:
-      /**
-       * Converts a function with @p n_object_components components into a Function@dim@
-       * while optionally providing additional components that are set to zero.
-       *
-       * @param function_object The function that will form the components
-       *     of the resulting Function object.
-       * @param first_component The first component that should be
-       *     filled.
-       * @param n_object_components The number of components that should be
-       *     filled from the first.
-       * @param n_total_components The total number of vector components of the
-       *     resulting Function object.
-       **/
-
-      VectorFunctionFromVectorFunctionObject (const std_cxx1x::function<void (const Point<dim> &,Vector<double> &)> &function_object,
-                                              const unsigned int first_component,
-                                              const unsigned int n_object_components,
-                                              const unsigned int n_total_components)
-        :
-        Function<dim>(n_total_components),
-        function_object (function_object),
-        first_component (first_component),
-        n_object_components (n_object_components)
-      {
-        Assert ((n_object_components > 0
-                 &&
-                 first_component+n_object_components <= n_total_components),
-                ExcMessage ("Number of objects components needs to be less than number of total components"));
-      }
-
-      double
-      value (const Point<dim> &p,
-             const unsigned int component) const
-      {
-        Assert (component < this->n_components,
-                ExcIndexRange (component, 0, this->n_components));
-
-        if (component < first_component)
-          return 0;
-        else if (component >= first_component + n_object_components)
-          return 0;
-        else
-          {
-            Vector<double> temp(n_object_components);
-            function_object (p, temp);
-            return temp(component - first_component);
-          }
-      }
-
-      void
-      vector_value (const Point<dim>   &p,
-                    Vector<double>     &values) const
-      {
-        AssertDimension(values.size(), this->n_components);
-
-        // set everything to zero, and then the right components to their correct values
-        values = 0;
-        Vector<double> temp(n_object_components);
-        function_object (p, temp);
-        for (unsigned int i = 0; i < n_object_components; i++)
-          {
-            values(first_component + i) = temp(i);
-          }
-      }
-
-    private:
-      /**
-       * The function object which we call when this class's solution() function is called.
-       **/
-      const std_cxx1x::function<void (const Point<dim> &,Vector<double> &)> function_object;
-
-      /**
-       * The first vector component whose value is to be filled by the given
-       * function.
-       */
-      const unsigned int first_component;
-      /**
-       * The number of vector components whose values are to be filled by the given
-       * function.
-       */
-      const unsigned int n_object_components;
-
-  };
 
 
   template <int dim>
@@ -1816,405 +1664,65 @@ namespace aspect
         current_linearization_point = distr_solution;
       }
 
+    // The free surface scheme is currently not built to work inside a nonlinear solver.
+    // We do the free surface execution at the beginning of the timestep for a specific reason.
+    // The time step size is calculated AFTER the whole solve_timestep() function.  If we call
+    // free_surface_execute() after the Stokes solve, it will be before we know what the appropriate
+    // time step to take is, and we will timestep the boundary incorrectly.
+    if (parameters.free_surface_enabled)
+      free_surface->execute ();
+
+    // Compute the reactions of compositional fields and temperature in case of operator splitting.
+    if (parameters.use_operator_splitting)
+      compute_reactions ();
+
     switch (parameters.nonlinear_solver)
       {
-        case NonlinearSolver::IMPES:
+        case NonlinearSolver::single_Advection_single_Stokes:
         {
-          // We do the free surface execution at the beginning of the timestep for a specific reason.
-          // The time step size is calculated AFTER the whole solve_timestep() function.  If we call
-          // free_surface_execute() after the Stokes solve, it will be before we know what the appropriate
-          // time step to take is, and we will timestep the boundary incorrectly.
-          if (parameters.free_surface_enabled)
-            free_surface->execute ();
-
-          assemble_advection_system (AdvectionField::temperature());
-          solve_advection(AdvectionField::temperature());
-
-          current_linearization_point.block(introspection.block_indices.temperature)
-            = solution.block(introspection.block_indices.temperature);
-
-          for (unsigned int c=0; c < introspection.n_compositional_fields; ++c)
-            {
-              const AdvectionField adv_field (AdvectionField::composition(c));
-              const typename Parameters<dim>::AdvectionFieldMethod::Kind method = adv_field.advection_method(introspection);
-              switch (method)
-                {
-                  case Parameters<dim>::AdvectionFieldMethod::fem_field:
-                    assemble_advection_system (adv_field);
-                    solve_advection(adv_field);
-                    break;
-
-                  case Parameters<dim>::AdvectionFieldMethod::particles:
-                    interpolate_particle_properties(adv_field);
-                    break;
-
-                  default:
-                    AssertThrow(false,ExcNotImplemented());
-                }
-            }
-
-          for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
-            current_linearization_point.block(introspection.block_indices.compositional_fields[c])
-              = solution.block(introspection.block_indices.compositional_fields[c]);
-
-          // the Stokes matrix depends on the viscosity. if the viscosity
-          // depends on other solution variables, then after we need to
-          // update the Stokes matrix in every time step and so need to set
-          // the following flag. if we change the Stokes matrix we also
-          // need to update the Stokes preconditioner.
-          if (stokes_matrix_depends_on_solution() == true)
-            rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
-
-          assemble_stokes_system();
-          build_stokes_preconditioner();
-          solve_stokes();
-
-          if (parameters.run_postprocessors_on_nonlinear_iterations)
-            postprocess ();
-
+          solve_single_advection_single_stokes();
           break;
         }
 
-        case NonlinearSolver::Stokes_only:
+        case NonlinearSolver::no_Advection_iterated_Stokes:
         {
-          double initial_stokes_residual = 0.0;
-
-          do
-            {
-              // the Stokes matrix depends on the viscosity. if the viscosity
-              // depends on other solution variables, then we need to
-              // update the Stokes matrix in every iteration and so need to set
-              // the rebuild_stokes_matrix flag. if we change the Stokes matrix we also
-              // need to update the Stokes preconditioner.
-              //
-              // there is a similar case where this nonlinear solver can be used, namely for
-              // compressible models. in that case, the matrix does not depend on
-              // the previous solution, but we still need to iterate since the right
-              // hand side depends on it. in those cases, the matrix does not change,
-              // but if we have to repeat computing the right hand side, we need to
-              // also rebuild the matrix if we end up with inhomogeneous velocity
-              // boundary conditions (i.e., if there are prescribed velocity boundary
-              // indicators)
-              if ((stokes_matrix_depends_on_solution() == true)
-                  ||
-                  (parameters.prescribed_velocity_boundary_indicators.size() > 0))
-                rebuild_stokes_matrix = true;
-              if (stokes_matrix_depends_on_solution() == true)
-                rebuild_stokes_preconditioner = true;
-
-              assemble_stokes_system();
-              build_stokes_preconditioner();
-
-              if (nonlinear_iteration==0)
-                initial_stokes_residual = compute_initial_stokes_residual();
-
-              const double stokes_residual = solve_stokes();
-
-              const double relative_tolerance = (initial_stokes_residual > 0) ? stokes_residual/initial_stokes_residual : 0.0;
-
-              pcout << "      Relative Stokes residual after nonlinear iteration " << nonlinear_iteration+1
-                    << ": " << relative_tolerance
-                    << std::endl;
-
-              if (parameters.run_postprocessors_on_nonlinear_iterations)
-                postprocess ();
-
-              if (relative_tolerance < parameters.nonlinear_tolerance)
-                break;
-
-              current_linearization_point = solution;
-
-              ++nonlinear_iteration;
-            }
-          while (! ((nonlinear_iteration >= parameters.max_nonlinear_iterations) // regular timestep
-                    ||
-                    ((pre_refinement_step < parameters.initial_adaptive_refinement) // pre-refinement
-                     &&
-                     (nonlinear_iteration >= parameters.max_nonlinear_iterations_in_prerefinement))));
+          solve_no_advection_iterated_stokes();
           break;
         }
 
-
-        case NonlinearSolver::iterated_IMPES:
+        case NonlinearSolver::iterated_Advection_and_Stokes:
         {
-          double initial_temperature_residual = 0;
-          double initial_stokes_residual      = 0;
-          std::vector<double> initial_composition_residual (introspection.n_compositional_fields,0);
-
-          do
-            {
-              assemble_advection_system(AdvectionField::temperature());
-
-              if (nonlinear_iteration == 0)
-                initial_temperature_residual = system_rhs.block(introspection.block_indices.temperature).l2_norm();
-
-              const double temperature_residual = solve_advection(AdvectionField::temperature());
-              const double relative_temperature_residual = (initial_temperature_residual > 0)
-                                                           ?
-                                                           temperature_residual/initial_temperature_residual
-                                                           :
-                                                           0.0;
-
-              current_linearization_point.block(introspection.block_indices.temperature)
-                = solution.block(introspection.block_indices.temperature);
-              rebuild_stokes_matrix = true;
-              std::vector<double> relative_composition_residual (introspection.n_compositional_fields,0);
-
-              for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
-                {
-                  const AdvectionField adv_field (AdvectionField::composition(c));
-                  typename Parameters<dim>::AdvectionFieldMethod::Kind method = adv_field.advection_method(introspection);
-                  switch (method)
-                    {
-                      case Parameters<dim>::AdvectionFieldMethod::fem_field:
-                      {
-                        assemble_advection_system (adv_field);
-
-                        if (nonlinear_iteration == 0)
-                          initial_composition_residual[c] = system_rhs.block(introspection.block_indices.compositional_fields[c]).l2_norm();
-
-                        const double composition_residual
-                          = solve_advection(adv_field);
-
-                        relative_composition_residual[c] = (initial_composition_residual[c] > 0)
-                                                           ?
-                                                           composition_residual/initial_composition_residual[c]
-                                                           :
-                                                           0.0;
-                      }
-                      break;
-
-                      case Parameters<dim>::AdvectionFieldMethod::particles:
-                        interpolate_particle_properties(adv_field);
-                        break;
-
-                      default:
-                        AssertThrow(false,ExcNotImplemented());
-                    }
-                }
-
-              // for consistency we update the current linearization point only after we have solved
-              // all fields, so that we use the same point in time for every field when solving
-              for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
-                current_linearization_point.block(introspection.block_indices.compositional_fields[c])
-                  = solution.block(introspection.block_indices.compositional_fields[c]);
-
-              // the Stokes matrix depends on the viscosity. if the viscosity
-              // depends on other solution variables, then after we need to
-              // update the Stokes matrix in every time step and so need to set
-              // the following flag. if we change the Stokes matrix we also
-              // need to update the Stokes preconditioner.
-              if (stokes_matrix_depends_on_solution() == true)
-                rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
-
-              assemble_stokes_system();
-              build_stokes_preconditioner();
-
-              if (nonlinear_iteration == 0)
-                initial_stokes_residual = compute_initial_stokes_residual();
-
-              const double stokes_residual = solve_stokes();
-              const double relative_stokes_residual = (initial_stokes_residual > 0) ? stokes_residual/initial_stokes_residual : 0.0;
-
-              current_linearization_point = solution;
-
-              // write the residual output in the same order as the output when
-              // solving the equations, output only relative residuals
-              pcout << "      Relative nonlinear residuals: " << relative_temperature_residual;
-              for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
-                pcout << ", " << relative_composition_residual[c];
-              pcout << ", " << relative_stokes_residual;
-              pcout << std::endl;
-
-              double max = 0.0;
-              for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
-                {
-                  // in models with melt migration the melt advection equation includes the divergence of the velocity
-                  // and can not be expected to converge to a smaller value than the residual of the Stokes equation.
-                  // thus, we set a threshold for the initial composition residual.
-                  // this only plays a role if the right-hand side of the advection equation is very small.
-                  const double threshold = (parameters.include_melt_transport && c == introspection.compositional_index_for_name("porosity")
-                                            ?
-                                            parameters.linear_stokes_solver_tolerance * time_step
-                                            :
-                                            0.0);
-                  if (initial_composition_residual[c]>threshold)
-                    max = std::max(relative_composition_residual[c],max);
-                }
-
-              max = std::max(relative_stokes_residual, max);
-              max = std::max(relative_temperature_residual, max);
-              pcout << "      Total relative residual after nonlinear iteration " << nonlinear_iteration+1 << ": " << max << std::endl;
-              pcout << std::endl
-                    << std::endl;
-
-              if (parameters.run_postprocessors_on_nonlinear_iterations)
-                postprocess ();
-
-              if (max < parameters.nonlinear_tolerance)
-                break;
-
-              ++nonlinear_iteration;
-
-//TODO: terminate here if the number of iterations is too large and we see no convergence
-            }
-          while (! ((nonlinear_iteration >= parameters.max_nonlinear_iterations) // regular timestep
-                    ||
-                    ((pre_refinement_step < parameters.initial_adaptive_refinement) // pre-refinement
-                     &&
-                     (nonlinear_iteration >= parameters.max_nonlinear_iterations_in_prerefinement))));
-
+          solve_iterated_advection_and_stokes();
           break;
         }
 
-        case NonlinearSolver::iterated_Stokes:
+        case NonlinearSolver::single_Advection_iterated_Stokes:
         {
-          if (parameters.free_surface_enabled)
-            free_surface->execute ();
-
-          // solve the temperature and composition systems once...
-          assemble_advection_system (AdvectionField::temperature());
-          solve_advection(AdvectionField::temperature());
-          current_linearization_point.block(introspection.block_indices.temperature)
-            = solution.block(introspection.block_indices.temperature);
-
-          for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
-            {
-              const AdvectionField adv_field (AdvectionField::composition(c));
-              typename Parameters<dim>::AdvectionFieldMethod::Kind method = adv_field.advection_method(introspection);
-              switch (method)
-                {
-                  case Parameters<dim>::AdvectionFieldMethod::fem_field:
-                    assemble_advection_system (adv_field);
-                    solve_advection(adv_field);
-                    break;
-
-                  case Parameters<dim>::AdvectionFieldMethod::particles:
-                    interpolate_particle_properties(adv_field);
-                    break;
-
-                  default:
-                    AssertThrow(false,ExcNotImplemented());
-                }
-            }
-
-          for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
-            current_linearization_point.block(introspection.block_indices.compositional_fields[c])
-              = solution.block(introspection.block_indices.compositional_fields[c]);
-
-          // residual vector (only for the velocity)
-          LinearAlgebra::Vector residual (introspection.index_sets.system_partitioning[0], mpi_communicator);
-          LinearAlgebra::Vector tmp (introspection.index_sets.system_partitioning[0], mpi_communicator);
-
-          // ...and then iterate the solution of the Stokes system
-          double initial_stokes_residual = 0;
-          for (nonlinear_iteration=0; (! ((nonlinear_iteration >= parameters.max_nonlinear_iterations) // regular timestep
-                                          ||
-                                          ((pre_refinement_step < parameters.initial_adaptive_refinement) // pre-refinement
-                                           &&
-                                           (nonlinear_iteration >= parameters.max_nonlinear_iterations_in_prerefinement)))); ++nonlinear_iteration)
-            {
-              // rebuild the matrix if it actually depends on the solution
-              // of the previous iteration.
-              if ((stokes_matrix_depends_on_solution() == true)
-                  ||
-                  (parameters.prescribed_velocity_boundary_indicators.size() > 0))
-                rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
-
-              assemble_stokes_system();
-              build_stokes_preconditioner();
-
-              if (nonlinear_iteration==0)
-                initial_stokes_residual = compute_initial_stokes_residual();
-
-              const double stokes_residual = solve_stokes();
-              const double relative_stokes_residual = (initial_stokes_residual > 0) ? stokes_residual/initial_stokes_residual : 0.0;
-
-              pcout << "      Relative Stokes residual after nonlinear iteration " << nonlinear_iteration+1
-                    << ": " << relative_stokes_residual
-                    << std::endl;
-
-              if (parameters.run_postprocessors_on_nonlinear_iterations)
-                postprocess ();
-
-              if (stokes_residual/initial_stokes_residual < parameters.nonlinear_tolerance)
-                {
-                  break; // convergence reached, exit nonlinear iterations.
-                }
-
-              current_linearization_point.block(introspection.block_indices.velocities)
-                = solution.block(introspection.block_indices.velocities);
-              if (introspection.block_indices.velocities != introspection.block_indices.pressure)
-                current_linearization_point.block(introspection.block_indices.pressure)
-                  = solution.block(introspection.block_indices.pressure);
-
-              pcout << std::endl;
-            }
-
+          solve_single_advection_iterated_stokes();
           break;
         }
 
-        case NonlinearSolver::Advection_only:
+        case NonlinearSolver::iterated_Advection_and_Newton_Stokes:
         {
-          // Identical to IMPES except does not solve Stokes equation
-          if (parameters.free_surface_enabled)
-            free_surface->execute ();
+          solve_iterated_advection_and_newton_stokes();
+          break;
+        }
 
-          LinearAlgebra::BlockVector distributed_stokes_solution (introspection.index_sets.system_partitioning, mpi_communicator);
+        case NonlinearSolver::single_Advection_no_Stokes:
+        {
+          solve_single_advection_no_stokes();
+          break;
+        }
 
-          VectorFunctionFromVectorFunctionObject<dim> func(std_cxx1x::bind (&PrescribedStokesSolution::Interface<dim>::stokes_solution,
-                                                                            std_cxx1x::cref(*prescribed_stokes_solution),
-                                                                            std_cxx1x::_1,
-                                                                            std_cxx1x::_2),
-                                                           0,
-                                                           dim+1, // velocity and pressure
-                                                           introspection.n_components);
+        case NonlinearSolver::first_timestep_only_single_Stokes:
+        {
+          solve_first_timestep_only_single_stokes();
+          break;
+        }
 
-          VectorTools::interpolate (*mapping, dof_handler, func, distributed_stokes_solution);
-
-          const unsigned int block_vel = introspection.block_indices.velocities;
-          const unsigned int block_p = introspection.block_indices.pressure;
-
-          // distribute hanging node and
-          // other constraints
-          current_constraints.distribute (distributed_stokes_solution);
-
-          solution.block(block_vel) = distributed_stokes_solution.block(block_vel);
-          solution.block(block_p) = distributed_stokes_solution.block(block_p);
-
-          assemble_advection_system (AdvectionField::temperature());
-          solve_advection(AdvectionField::temperature());
-
-          current_linearization_point.block(introspection.block_indices.temperature)
-            = solution.block(introspection.block_indices.temperature);
-
-          for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
-            {
-              const AdvectionField adv_field (AdvectionField::composition(c));
-              typename Parameters<dim>::AdvectionFieldMethod::Kind method = adv_field.advection_method(introspection);
-              switch (method)
-                {
-                  case Parameters<dim>::AdvectionFieldMethod::fem_field:
-                    assemble_advection_system (adv_field);
-                    solve_advection(adv_field);
-                    break;
-
-                  case Parameters<dim>::AdvectionFieldMethod::particles:
-                    interpolate_particle_properties(adv_field);
-                    break;
-
-                  default:
-                    AssertThrow(false,ExcNotImplemented());
-                }
-            }
-
-          for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
-            current_linearization_point.block(introspection.block_indices.compositional_fields[c])
-              = solution.block(introspection.block_indices.compositional_fields[c]);
-
-          if (parameters.run_postprocessors_on_nonlinear_iterations)
-            postprocess ();
-
+        case NonlinearSolver::no_Advection_no_Stokes:
+        {
+          solve_no_advection_no_stokes();
           break;
         }
 
@@ -2233,6 +1741,8 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::run ()
   {
+    CitationInfo::print_info_block(pcout);
+
     unsigned int max_refinement_level = parameters.initial_global_refinement +
                                         parameters.initial_adaptive_refinement;
     pre_refinement_step = 0;
@@ -2256,6 +1766,8 @@ namespace aspect
       }
     else
       {
+        time = parameters.start_time;
+
         // Instead of calling global_refine(n) we flag all cells for
         // refinement and then allow the mesh refinement plugins to unflag
         // the cells if desired. This procedure is repeated n times. If there
@@ -2272,47 +1784,55 @@ namespace aspect
             triangulation.execute_coarsening_and_refinement();
           }
 
-        time                      = parameters.start_time;
-        timestep_number           = 0;
-        time_step = old_time_step = 0;
-
         setup_dofs();
 
         global_volume = GridTools::volume (triangulation, *mapping);
       }
 
     // start the timer for periodic checkpoints after the setup above
-    time_t last_checkpoint_time = std::time(NULL);
+    time_t last_checkpoint_time = std::time(nullptr);
 
   start_time_iteration:
 
     if (parameters.resume_computation == false)
       {
-        computing_timer.enter_section ("Setup initial conditions");
+        TimerOutput::Scope timer (computing_timer, "Setup initial conditions");
 
-        // Add topography to box models after all initial refinement
-        // is completed.
-        if (pre_refinement_step == parameters.initial_adaptive_refinement)
-          signals.pre_set_initial_state (triangulation);
+        timestep_number           = 0;
+        time_step = old_time_step = 0;
 
-        set_initial_temperature_and_compositional_fields ();
-        compute_initial_pressure_field ();
+        if (! parameters.skip_setup_initial_conditions_on_initial_refinement
+            ||
+            ! (pre_refinement_step < parameters.initial_adaptive_refinement))
+          {
+            // Add topography to box models after all initial refinement
+            // is completed.
+            if (pre_refinement_step == parameters.initial_adaptive_refinement)
+              signals.pre_set_initial_state (triangulation);
 
-        signals.post_set_initial_state (*this);
+            set_initial_temperature_and_compositional_fields ();
+            compute_initial_pressure_field ();
 
-        computing_timer.exit_section();
+            signals.post_set_initial_state (*this);
+          }
       }
 
     // start the principal loop over time steps:
     do
       {
-        start_timestep ();
+        // Only solve if we are not in pre-refinement, or we do not want to skip
+        // solving in pre-refinement.
+        if (! (parameters.skip_solvers_on_initial_refinement
+               && pre_refinement_step < parameters.initial_adaptive_refinement))
+          {
+            start_timestep ();
 
-        // then do the core work: assemble systems and solve
-        solve_timestep ();
+            // then do the core work: assemble systems and solve
+            solve_timestep ();
+          }
 
         // see if we have to start over with a new adaptive refinement cycle
-        // at the beginning of the simulation
+        // at the beginning of the simulation.
         if (timestep_number == 0)
           {
             const bool initial_refinement_done = maybe_do_initial_refinement(max_refinement_level);
@@ -2354,7 +1874,7 @@ namespace aspect
 
         const bool checkpoint_written = maybe_write_checkpoint(last_checkpoint_time,termination);
         if (checkpoint_written)
-          last_checkpoint_time = std::time(NULL);
+          last_checkpoint_time = std::time(nullptr);
 
         // see if we want to terminate
         if (termination.first)
@@ -2365,6 +1885,8 @@ namespace aspect
     // we disable automatic summary printing so that it won't happen when
     // throwing an exception. Therefore, we have to do this manually here:
     computing_timer.print_summary ();
+
+    CitationInfo::print_info_block (pcout);
   }
 }
 

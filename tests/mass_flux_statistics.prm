@@ -6,7 +6,7 @@ set CFL number                             = 1.0
 set End time                               = 0
 
 subsection Boundary temperature model
-  set Model name = box
+  set List of model names = box
 end
 
 
@@ -41,7 +41,11 @@ subsection Mesh refinement
 end
 
 
-subsection Model settings
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary velocity model
   set Prescribed velocity boundary indicators = left:function,right:function,top:function,bottom:function
 end
 

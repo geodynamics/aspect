@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2015 - 2017 by the authors of the ASPECT code.
+ Copyright (C) 2015 - 2019 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with ASPECT; see the file doc/COPYING.  If not see
+ along with ASPECT; see the file LICENSE.  If not see
  <http://www.gnu.org/licenses/>.
  */
 
@@ -82,7 +82,7 @@ namespace aspect
     std::pair<std::vector<double>,std::vector<double> >
     Geoid<dim>::density_contribution (const double &outer_radius) const
     {
-      const unsigned int quadrature_degree = this->introspection().polynomial_degree.velocities;
+      const unsigned int quadrature_degree = this->introspection().polynomial_degree.temperature;
       // need to evaluate density contribution of each volume quadrature point
       const QGauss<dim> quadrature_formula(quadrature_degree);
 
@@ -90,7 +90,7 @@ namespace aspect
                                this->get_fe(),
                                quadrature_formula,
                                update_values |
-                               update_q_points |
+                               update_quadrature_points |
                                update_JxW_values |
                                update_gradients);
 
@@ -121,7 +121,7 @@ namespace aspect
                   {
                     fe_values.reinit (cell);
                     // Set use_strain_rates to false since we don't need viscosity
-                    in.reinit(fe_values, &cell, this->introspection(), this->get_solution(), false);
+                    in.reinit(fe_values, cell, this->introspection(), this->get_solution(), false);
 
                     this->get_material_model().evaluate(in, out);
 
@@ -130,7 +130,7 @@ namespace aspect
                     for (unsigned int q=0; q<quadrature_formula.size(); ++q)
                       {
                         // convert coordinates from [x,y,z] to [r, phi, theta]
-                        const std_cxx11::array<double,dim> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(in.position[q]);
+                        const std::array<double,dim> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(in.position[q]);
 
                         // normalization after Dahlen and Tromp, 1986, Appendix B.6
                         const std::pair<double,double> sph_harm_vals = aspect::Utilities::real_spherical_harmonic(ideg,iord,scoord[2],scoord[1]);
@@ -161,31 +161,28 @@ namespace aspect
                                                 const double &inner_radius) const
     {
       // Get a pointer to the dynamic topography postprocessor.
-      Postprocess::DynamicTopography<dim> *dynamic_topography =
-        this->template find_postprocessor<Postprocess::DynamicTopography<dim> >();
-      AssertThrow(dynamic_topography != NULL,
-                  ExcMessage("Could not find the DynamicTopography postprocessor") );
+      const Postprocess::DynamicTopography<dim> &dynamic_topography =
+        this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::DynamicTopography<dim> >();
 
       // Get the already-computed dynamic topography solution.
-      const LinearAlgebra::BlockVector topo_vector = dynamic_topography->topography_vector();
+      const LinearAlgebra::BlockVector topo_vector = dynamic_topography.topography_vector();
 
       // Get a pointer to the boundary densities postprocessor.
-      Postprocess::BoundaryDensities<dim> *boundary_densities =
-        this->template find_postprocessor<Postprocess::BoundaryDensities<dim> >();
-      AssertThrow(boundary_densities != NULL,
-                  ExcMessage("Could not find the BoundaryDensities postprocessor") );
-      const double top_layer_average_density = boundary_densities->density_at_top();
-      const double bottom_layer_average_density = boundary_densities->density_at_bottom();
+      const Postprocess::BoundaryDensities<dim> &boundary_densities =
+        this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::BoundaryDensities<dim> >();
+
+      const double top_layer_average_density = boundary_densities.density_at_top();
+      const double bottom_layer_average_density = boundary_densities.density_at_bottom();
 
 
-      const unsigned int quadrature_degree = this->introspection().polynomial_degree.velocities;
+      const unsigned int quadrature_degree = this->introspection().polynomial_degree.temperature;
       const QGauss<dim-1> quadrature_formula_face(quadrature_degree); // need to grab the infinitesimal area of each quadrature points on every boundary face here
 
       FEFaceValues<dim> fe_face_values (this->get_mapping(),
                                         this->get_fe(),
                                         quadrature_formula_face,
                                         update_values |
-                                        update_q_points |
+                                        update_quadrature_points |
                                         update_JxW_values);
 
       std::vector<double> topo_values( quadrature_formula_face.size());
@@ -275,7 +272,7 @@ namespace aspect
       std::vector<std::vector<double> > CMB_topo_spherical_function; // store theta, phi, spherical infinitesimal, and CMB dynamic topography
       for (unsigned int i=0; i<surface_stored_values.size(); ++i)
         {
-          const std_cxx11::array<double,dim> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(surface_stored_values.at(i).first);
+          const std::array<double,dim> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(surface_stored_values.at(i).first);
           const double theta = scoord[2];
           const double phi = scoord[1];
           // calculate spherical infinitesimal sin(theta)*d_theta*d_phi by infinitesimal_area/radius^2
@@ -290,7 +287,7 @@ namespace aspect
         }
       for (unsigned int i=0; i<CMB_stored_values.size(); ++i)
         {
-          const std_cxx11::array<double,dim> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(CMB_stored_values.at(i).first);
+          const std::array<double,dim> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(CMB_stored_values.at(i).first);
           const double theta = scoord[2];
           const double phi = scoord[1];
           // calculate spherical infinitesimal sin(theta)*d_theta*d_phi by infinitesimal_area/radius^2
@@ -405,7 +402,7 @@ namespace aspect
                                                this->get_fe(),
                                                quadrature_formula_face_center,
                                                update_values |
-                                               update_q_points|
+                                               update_quadrature_points|
                                                update_JxW_values);
 
       // define a vector to store the location of the cells along the surface
@@ -435,10 +432,10 @@ namespace aspect
       std::vector<std::pair<double,double> > surface_cell_spherical_coordinates;
       for (unsigned int i=0; i<surface_cell_locations.size(); ++i)
         {
-          const std_cxx11::array<double,dim> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(surface_cell_locations.at(i));
+          const std::array<double,dim> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(surface_cell_locations.at(i));
           const double phi = scoord[1];
           const double theta = scoord[2];
-          surface_cell_spherical_coordinates.push_back(std::make_pair(theta,phi));
+          surface_cell_spherical_coordinates.emplace_back(theta,phi);
         }
 
       // Compute the grid geoid anomaly based on spherical harmonics
@@ -650,7 +647,6 @@ namespace aspect
       // Prepare the output data
       if (output_in_lat_lon == true)
         {
-          std::vector<std::pair<std::pair<double,double>,double> > stored_values_lon_lat;
           double lon, lat;
           for (unsigned int i=0; i<surface_cell_spherical_coordinates.size(); ++i)
             {
@@ -662,32 +658,24 @@ namespace aspect
                      :
                      surface_cell_spherical_coordinates.at(i).second*(180./numbers::PI) - 360.);
 
-              stored_values_lon_lat.push_back(std::make_pair(std::make_pair(lon,lat),geoid_anomaly.at(i)));
-            }
-          // Write the solution to the stream output
-          for (unsigned int i=0; i<stored_values_lon_lat.size(); ++i)
-            {
-              output << stored_values_lon_lat.at(i).first.first
+              // Write the solution to the stream output
+              output << lon
                      << ' '
-                     << stored_values_lon_lat.at(i).first.second
+                     << lat
                      << ' '
-                     << stored_values_lon_lat.at(i).second
+                     << geoid_anomaly.at(i)
                      << std::endl;
+
             }
         }
       else
         {
-          std::vector<std::pair<Point<dim>,double> > stored_values_xyz;
           for (unsigned int i=0; i<surface_cell_locations.size(); ++i)
             {
-              stored_values_xyz.push_back(std::make_pair(surface_cell_locations.at(i),geoid_anomaly.at(i)));
-            }
-          // Write the solution to the stream output
-          for (unsigned int i=0; i<stored_values_xyz.size(); ++i)
-            {
-              output << stored_values_xyz.at(i).first
+              // Write the solution to the stream output
+              output << surface_cell_locations.at(i)
                      << ' '
-                     << stored_values_xyz.at(i).second
+                     << geoid_anomaly.at(i)
                      << std::endl;
             }
         }
@@ -742,6 +730,120 @@ namespace aspect
                     this->get_mpi_communicator());
         }
 
+      // Prepare the free-air gravity anomaly output
+      if (also_output_gravity_anomaly == true)
+        {
+          // have a stream into which we write the gravity anomaly data. the text stream is then
+          // later sent to processor 0
+          std::ostringstream output_gravity_anomaly;
+          // Compute the grid gravity anomaly based on spherical harmonics
+          std::vector<double> gravity_anomaly;
+          gravity_anomaly.reserve(surface_cell_spherical_coordinates.size());
+
+          for (unsigned int i=0; i<surface_cell_spherical_coordinates.size(); ++i)
+            {
+              int ind = 0;
+              double gravity_value = 0;
+              for (unsigned int ideg =  min_degree; ideg < max_degree+1; ++ideg)
+                {
+                  for (unsigned int iord = 0; iord < ideg+1; ++iord)
+                    {
+                      // normalization after Dahlen and Tromp, 1986, Appendix B.6
+                      const std::pair<double,double> sph_harm_vals = aspect::Utilities::real_spherical_harmonic(ideg,iord,surface_cell_spherical_coordinates.at(i).first,surface_cell_spherical_coordinates.at(i).second);
+                      const double cos_component = sph_harm_vals.first; // real / cos part
+                      const double sin_component = sph_harm_vals.second; // imaginary / sine part
+
+                      // the conversion from geoid to gravity anomaly is given by gravity_anomaly = (l-1)*g/R_surface * geoid_anomaly
+                      // based on Forte (2007) equation [97]
+                      gravity_value += (geoid_coecos.at(ind)*cos_component+geoid_coesin.at(ind)*sin_component) * (ideg - 1) * surface_gravity / outer_radius;
+                      ++ind;
+                    }
+                }
+              gravity_anomaly.push_back(gravity_value);
+            }
+
+          // Prepare the output data
+          if (output_in_lat_lon == true)
+            {
+              double lon, lat;
+              for (unsigned int i=0; i<surface_cell_spherical_coordinates.size(); ++i)
+                {
+                  // Transfer the spherical coordinates to geographical coordinates
+                  lat = 90. - surface_cell_spherical_coordinates.at(i).first*(180./numbers::PI);
+                  lon = (surface_cell_spherical_coordinates.at(i).second <= numbers::PI
+                         ?
+                         surface_cell_spherical_coordinates.at(i).second*(180./numbers::PI)
+                         :
+                         surface_cell_spherical_coordinates.at(i).second*(180./numbers::PI) - 360.);
+
+                  // Write the solution to the stream output
+                  output_gravity_anomaly << lon
+                                         << ' '
+                                         << lat
+                                         << ' '
+                                         << gravity_anomaly.at(i)
+                                         << std::endl;
+
+                }
+            }
+          else
+            {
+              for (unsigned int i=0; i<surface_cell_locations.size(); ++i)
+                {
+                  // Write the solution to the stream output
+                  output_gravity_anomaly << surface_cell_locations.at(i)
+                                         << ' '
+                                         << gravity_anomaly.at(i)
+                                         << std::endl;
+                }
+            }
+
+          const std::string filename = this->get_output_directory() +
+                                       "gravity_anomaly." +
+                                       dealii::Utilities::int_to_string(this->get_timestep_number(), 5);
+          const unsigned int max_data_length = dealii::Utilities::MPI::max (output_gravity_anomaly.str().size()+1,
+                                                                            this->get_mpi_communicator());
+          const unsigned int mpi_tag = 123;
+          // on processor 0, collect all of the data the individual processors send
+          // and concatenate them into one file
+          if (dealii::Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
+            {
+              std::ofstream file (filename.c_str());
+              file << "# "
+                   << ((output_in_lat_lon == true)? "longitude latitude" : "x y z")
+                   << " gravity_anomaly" << std::endl;
+              // first write out the data we have created locally
+              file << output_gravity_anomaly.str();
+              std::string tmp;
+              tmp.resize (max_data_length, '\0');
+              // then loop through all of the other processors and collect
+              // data, then write it to the file
+              for (unsigned int p=1; p<dealii::Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()); ++p)
+                {
+                  MPI_Status status;
+                  // get the data. note that MPI says that an MPI_Recv may receive
+                  // less data than the length specified here. since we have already
+                  // determined the maximal message length, we use this feature here
+                  // rather than trying to find out the exact message length with
+                  // a call to MPI_Probe.
+                  MPI_Recv (&tmp[0], max_data_length, MPI_CHAR, p, mpi_tag,
+                            this->get_mpi_communicator(), &status);
+                  // output the string. note that 'tmp' has length max_data_length,
+                  // but we only wrote a certain piece of it in the MPI_Recv, ended
+                  // by a \0 character. write only this part by outputting it as a
+                  // C string object, rather than as a std::string
+                  file << tmp.c_str();
+                }
+            }
+          else
+            // on other processors, send the data to processor zero. include the \0
+            // character at the end of the string
+            {
+              MPI_Send (&output_gravity_anomaly.str()[0], output_gravity_anomaly.str().size()+1, MPI_CHAR, 0, mpi_tag,
+                        this->get_mpi_communicator());
+            }
+        }
+
       return std::pair<std::string,std::string>("Writing geoid anomaly:",
                                                 filename);
     }
@@ -751,8 +853,8 @@ namespace aspect
     Geoid<dim>::required_other_postprocessors() const
     {
       std::list<std::string> deps;
-      deps.push_back("dynamic topography");
-      deps.push_back("boundary densities");
+      deps.emplace_back("dynamic topography");
+      deps.emplace_back("boundary densities");
       return deps;
     }
 
@@ -760,7 +862,7 @@ namespace aspect
     double
     Geoid<dim>::evaluate (const Point<dim> &p) const
     {
-      const std_cxx11::array<double,dim> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(p);
+      const std::array<double,dim> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(p);
       const double theta = scoord[2];
       const double phi = scoord[1];
       double value = 0.;
@@ -801,7 +903,7 @@ namespace aspect
           prm.declare_entry("Density above","0",
                             Patterns::Double (0),
                             "The density value above the surface boundary.");
-          prm.declare_entry("Density below","8000",
+          prm.declare_entry("Density below","9900",
                             Patterns::Double (0),
                             "The density value below the CMB boundary.");
           prm.declare_entry("Also output the spherical harmonic coefficients of geoid anomaly", "false",
@@ -820,6 +922,10 @@ namespace aspect
                             Patterns::Bool(),
                             "Option to also output the spherical harmonic coefficients of the density anomaly contribution to the "
                             "maximum degree. The default is false. ");
+          prm.declare_entry("Also output the gravity anomaly", "false",
+                            Patterns::Bool(),
+                            "Option to also output the free-air gravity anomaly up to the maximum degree. "
+                            "The unit of the output is in SI, hence $m/s^2$ ($1mgal = 10^-5 m/s^2$). The default is false. ");
         }
         prm.leave_subsection ();
       }
@@ -843,6 +949,7 @@ namespace aspect
           also_output_surface_dynamic_topo_contribution_SH_coes = prm.get_bool ("Also output the spherical harmonic coefficients of surface dynamic topography contribution");
           also_output_CMB_dynamic_topo_contribution_SH_coes = prm.get_bool ("Also output the spherical harmonic coefficients of CMB dynamic topography contribution");
           also_output_density_anomaly_contribution_SH_coes = prm.get_bool ("Also output the spherical harmonic coefficients of density anomaly contribution");
+          also_output_gravity_anomaly = prm.get_bool ("Also output the gravity anomaly");
         }
         prm.leave_subsection ();
       }

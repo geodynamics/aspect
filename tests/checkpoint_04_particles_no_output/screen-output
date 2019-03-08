@@ -1,0 +1,11 @@
+
+Loading shared library <./libcheckpoint_04_particles_no_output.so>
+* starting from beginning:
+Executing the following command:
+cd output-checkpoint_04_particles_no_output ; (cat ASPECT_DIR/tests/checkpoint_04_particles_no_output.prm  ;  echo 'set Output directory = output1.tmp'  ;  rm -rf output1.tmp ; mkdir output1.tmp ) | ../../aspect -- > /dev/null
+Executing the following command:
+cd output-checkpoint_04_particles_no_output ;  rm -rf output2.tmp ; mkdir output2.tmp ;  cp output1.tmp/restart* output2.tmp/
+* now resuming:
+Executing the following command:
+cd output-checkpoint_04_particles_no_output ; (cat ASPECT_DIR/tests/checkpoint_04_particles_no_output.prm  ;  echo 'set Output directory = output2.tmp'  ;  echo 'set Resume computation = true' ) | ../../aspect -- > /dev/null
+* now comparing:

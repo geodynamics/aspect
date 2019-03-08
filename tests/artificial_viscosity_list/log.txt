@@ -1,0 +1,34 @@
+
+Number of active cells: 48 (on 2 levels)
+Number of degrees of freedom: 1,032 (480+72+240+240)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Solving C_1 system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 20+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:           output-artificial_viscosity_list/solution/solution-00000
+     RMS, max velocity:                  0.0184 m/year, 0.0311 m/year
+     Temperature min/avg/max:            973 K, 1449 K, 1973 K
+     Heat fluxes through boundary parts: -6.418e+06 W, -9.555e+06 W
+
+*** Timestep 1:  t=1e+06 years
+   Solving temperature system... 8 iterations.
+   Solving C_1 system ... 9 iterations.
+   Solving Stokes system... 14+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:           output-artificial_viscosity_list/solution/solution-00001
+     RMS, max velocity:                  0.0184 m/year, 0.0311 m/year
+     Temperature min/avg/max:            973 K, 1444 K, 1973 K
+     Heat fluxes through boundary parts: -5.308e+06 W, -7.459e+06 W
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

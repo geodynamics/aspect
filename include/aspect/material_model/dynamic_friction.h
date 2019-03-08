@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2014 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
@@ -120,56 +120,22 @@ namespace aspect
 
       private:
         /**
-         * From a list of compositional fields of length N, we come up with an
-         * N+1 length list that which also includes the fraction of
-         * ``background mantle''. This list should sum to one, and is
-         * interpreted as volume fractions.  If the sum of the
-         * compositional_fields is greater than one, we assume that there is
-         * no background mantle (i.e., that field value is zero).  Otherwise,
-         * the difference between the sum of the compositional fields and 1.0
-         * is assumed to be the amount of background mantle.
+         * From a list of static friction of coefficient, dynamic friction of
+         * coefficient, cohesions and background viscosity for N + 1 fields
+         * (background mantle and N compositions) , we compute viscosities for
+         * drucker prager model with coefficient of friction dependent on the
+         * strain rate.
          */
-        const std::vector<double> compute_volume_fractions(
-          const std::vector<double> &compositional_fields) const;
+        const std::vector<double> compute_viscosities(const double pressure,
+                                                      const SymmetricTensor<2,dim> &strain_rate) const;
 
-        /**
-        * From a list of static friction of coefficient, dynamic friction of
-        * coefficient, cohesions and background viscosity for N + 1 fields
-        * (background mantle and N compositions) , we compute viscosities
-        * for drucker prager model with coefficient of friction dependent
-        * on the strain rate.
-        */
-
-        const std::vector<double> compute_viscosities(
-          const double pressure,
-          const SymmetricTensor<2,dim> &strain_rate) const;
         /**
          * Reference temperature for thermal expansion.  All components use
          * the same reference_T.
          */
         double reference_T;
 
-        /**
-         * Enumeration for selecting which averaging scheme to use. Select
-         * between harmonic, arithmetic, geometric, and maximum_composition.
-         * The max composition scheme simply uses the parameter of whichever
-         * field has the highest volume fraction.
-         */
-        enum AveragingScheme
-        {
-          harmonic,
-          arithmetic,
-          geometric,
-          maximum_composition
-        };
-
-
-        AveragingScheme viscosity_averaging;
-
-        double average_value (const std::vector<double> &composition,
-                              const std::vector<double> &parameter_values,
-                              const enum AveragingScheme &average_type) const;
-
+        MaterialUtilities::CompositionalAveragingOperation viscosity_averaging;
 
         /**
          * Vector for field densities, read from parameter file .
@@ -177,8 +143,8 @@ namespace aspect
         std::vector<double> densities;
 
         /**
-        * The dynamic coefficient of friction
-        */
+         * The dynamic coefficient of friction
+         */
         std::vector<double> mu_d;
 
         /**

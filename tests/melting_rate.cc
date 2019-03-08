@@ -43,7 +43,6 @@ namespace aspect
           {
             const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
             const unsigned int peridotite_idx = this->introspection().compositional_index_for_name("peridotite");
-            const double porosity = std::max(in.composition[i][porosity_idx],0.0);
 
             for (unsigned int c=0; c<in.composition[i].size(); ++c)
               {
@@ -51,10 +50,19 @@ namespace aspect
                 const double y = in.position[i][1] - 50000.0;
                 const double c0 = 10000.0;
                 const double deltaT = this->get_timestep();
-                if (c == peridotite_idx && deltaT>0.0)
+                if (c == peridotite_idx &&
+                    // check whether we are past the initialization
+                    // phase before the first time step
+                    this->get_timestep_number()!=numbers::invalid_unsigned_int &&
+                    deltaT>0.0)
                   out.reaction_terms[i][c] = 0.0001 * std::exp(-(x*x+y*y)/(2*c0*c0));
-                else if (c == porosity_idx && deltaT>0.0)
-                  out.reaction_terms[i][c] = 0.0001 * std::exp(-(x*x+y*y)/(2*c0*c0)) * 3000.0 / this->get_timestep();
+                else if (c == porosity_idx &&
+                         // check whether we are past the
+                         // initialization phase before the first time
+                         // step
+                         this->get_timestep_number()!=numbers::invalid_unsigned_int &&
+                         deltaT>0.0)
+                  out.reaction_terms[i][c] = 0.0001 * std::exp(-(x*x+y*y)/(2*c0*c0)) * 3000.0 / deltaT;
                 else
                   out.reaction_terms[i][c] = 0.0;
               }
@@ -70,7 +78,7 @@ namespace aspect
         // fill melt outputs if they exist
         aspect::MaterialModel::MeltOutputs<dim> *melt_out = out.template get_additional_output<aspect::MaterialModel::MeltOutputs<dim> >();
 
-        if (melt_out != NULL)
+        if (melt_out != nullptr)
           {
             const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
             for (unsigned int i=0; i<in.position.size(); ++i)

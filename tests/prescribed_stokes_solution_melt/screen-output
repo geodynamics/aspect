@@ -1,0 +1,87 @@
+
+Number of active cells: 64 (on 4 levels)
+Number of degrees of freedom: 2,058 (578+162+578+81+81+289+289)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 0 iterations.
+   Skipping porosity composition solve because RHS is zero.
+   Skipping peridotite composition solve because RHS is zero.
+
+   Postprocessing:
+     RMS, max velocity:                  0.816 m/s, 1.39 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: 0.1609 W, -0.1672 W, -1.848 W, 1.411 W
+
+*** Timestep 1:  t=0.0883883 seconds
+   Solving composition reactions in 1 substep(s).
+   Solving temperature system... 9 iterations.
+   Skipping porosity composition solve because RHS is zero.
+   Skipping peridotite composition solve because RHS is zero.
+
+   Postprocessing:
+     RMS, max velocity:                  0.816 m/s, 1.39 m/s
+     Temperature min/avg/max:            0 K, 0.5198 K, 1 K
+     Heat fluxes through boundary parts: 0.1671 W, -0.181 W, -1.37 W, 1.154 W
+
+*** Timestep 2:  t=0.176777 seconds
+   Solving composition reactions in 1 substep(s).
+   Solving temperature system... 8 iterations.
+   Skipping porosity composition solve because RHS is zero.
+   Skipping peridotite composition solve because RHS is zero.
+
+   Postprocessing:
+     RMS, max velocity:                  0.816 m/s, 1.39 m/s
+     Temperature min/avg/max:            0 K, 0.532 K, 1 K
+     Heat fluxes through boundary parts: 0.1718 W, -0.1887 W, -1.311 W, 1.222 W
+
+*** Timestep 3:  t=0.265165 seconds
+   Solving composition reactions in 1 substep(s).
+   Solving temperature system... 8 iterations.
+   Skipping porosity composition solve because RHS is zero.
+   Skipping peridotite composition solve because RHS is zero.
+
+   Postprocessing:
+     RMS, max velocity:                  0.816 m/s, 1.39 m/s
+     Temperature min/avg/max:            0 K, 0.5382 K, 1 K
+     Heat fluxes through boundary parts: 0.1745 W, -0.1922 W, -1.284 W, 1.256 W
+
+*** Timestep 4:  t=0.353553 seconds
+   Solving composition reactions in 1 substep(s).
+   Solving temperature system... 8 iterations.
+   Skipping porosity composition solve because RHS is zero.
+   Skipping peridotite composition solve because RHS is zero.
+
+   Postprocessing:
+     RMS, max velocity:                  0.816 m/s, 1.39 m/s
+     Temperature min/avg/max:            0 K, 0.5408 K, 1 K
+     Heat fluxes through boundary parts: 0.1758 W, -0.1936 W, -1.273 W, 1.271 W
+
+*** Timestep 5:  t=0.441942 seconds
+   Solving composition reactions in 1 substep(s).
+   Solving temperature system... 7 iterations.
+   Skipping porosity composition solve because RHS is zero.
+   Skipping peridotite composition solve because RHS is zero.
+
+   Postprocessing:
+     RMS, max velocity:                  0.816 m/s, 1.39 m/s
+     Temperature min/avg/max:            0 K, 0.5416 K, 1 K
+     Heat fluxes through boundary parts: 0.1763 W, -0.194 W, -1.27 W, 1.276 W
+
+*** Timestep 6:  t=0.5 seconds
+   Solving composition reactions in 1 substep(s).
+   Solving temperature system... 6 iterations.
+   Skipping porosity composition solve because RHS is zero.
+   Skipping peridotite composition solve because RHS is zero.
+
+   Postprocessing:
+     RMS, max velocity:                  0.816 m/s, 1.39 m/s
+     Temperature min/avg/max:            0 K, 0.5417 K, 1 K
+     Heat fluxes through boundary parts: 0.1764 W, -0.194 W, -1.269 W, 1.277 W
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

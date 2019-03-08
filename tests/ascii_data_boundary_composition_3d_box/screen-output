@@ -41,24 +41,24 @@ Number of degrees of freedom: 652 (375+27+125+125)
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 10 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 19+0 iterations.
+   Solving Stokes system... 16+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  1 m/year, 1 m/year
      Temperature min/avg/max:            0 K, 1369 K, 1913 K
-     Heat fluxes through boundary parts: -1.034e+08 W, -1.034e+08 W, -1.034e+08 W, -1.034e+08 W, 3.188e+10 W, 3.002e+10 W
+     Heat fluxes through boundary parts: -7.452e+13 W, 7.452e+13 W, 0 W, 0 W, 2.829e+11 W, 3.944e+10 W
      Compositions min/max/mass:          -3.004e-16/1/6.189e+16
 
 *** Timestep 1:  t=10000 years
    Solving temperature system... 8 iterations.
    Solving C_1 system ... 8 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 19+0 iterations.
+   Solving Stokes system... 16+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  1 m/year, 1 m/year
      Temperature min/avg/max:            0 K, 1359 K, 1899 K
-     Heat fluxes through boundary parts: -1.596e+08 W, 5.579e+07 W, -4.293e+07 W, -4.293e+07 W, 3.128e+10 W, 2.944e+10 W
+     Heat fluxes through boundary parts: -7.408e+13 W, 7.39e+13 W, 0 W, 0 W, 1.872e+13 W, 1.758e+13 W
      Compositions min/max/mass:          -0.04215/1/6.546e+16
 
 Termination requested by criterion: end time

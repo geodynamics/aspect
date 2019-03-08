@@ -10,14 +10,14 @@ set Adiabatic surface temperature          = 0
 set Surface pressure                       = 0
 set Pressure normalization                 = surface
 set Use years in output instead of seconds = true
-set Nonlinear solver scheme                = IMPES
+set Nonlinear solver scheme                = single Advection, single Stokes
 
 
 # We use a boundary temperature model
 # with additional boundary indicators 
 # as prescribed by the geometry model
 subsection Boundary temperature model
-  set Model name = box with lithosphere boundary indicators
+  set List of model names = box with lithosphere boundary indicators
   subsection Box with lithosphere boundary indicators
     set Left temperature = 0
   end
@@ -26,7 +26,7 @@ end
 
 # We use the initial composition
 subsection Boundary composition model
-  set Model name = initial composition 
+  set List of model names = initial composition 
 end
 
 
@@ -92,11 +92,27 @@ end
 # velocity function on the whole vertical boundaries.
 # Along the top boundary and the lithospheric part of the vertical 
 # boundaries, we prescribe a plate velocity of 1 cm/year.
-subsection Model settings
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary temperature model
   set Fixed temperature boundary indicators   = 0, 1, 6, 7, 8, 9
+end
+
+subsection Boundary composition model
   set Fixed composition boundary indicators   = 0, 1, 6, 7, 8, 9
+end
+
+subsection Boundary velocity model
   set Zero velocity boundary indicators       = 0, 1, 4
+end
+
+subsection Boundary velocity model
   set Tangential velocity boundary indicators = 2, 3
+end
+
+subsection Boundary velocity model
   set Prescribed velocity boundary indicators = 5: function, 6: function, 7: function, 8:function, 9:function
 end
 

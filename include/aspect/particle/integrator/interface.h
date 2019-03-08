@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2015 - 2016 by the authors of the ASPECT code.
+ Copyright (C) 2015 - 2019 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -14,16 +14,23 @@
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with ASPECT; see the file doc/COPYING.  If not see
+ along with ASPECT; see the file LICENSE.  If not see
  <http://www.gnu.org/licenses/>.
  */
 
 #ifndef _aspect_particle_integrator_interface_h
 #define _aspect_particle_integrator_interface_h
 
-#include <aspect/particle/particle.h>
 #include <aspect/plugins.h>
 #include <aspect/global.h>
+
+#if DEAL_II_VERSION_GTE(9,0,0)
+#include <deal.II/particles/particle.h>
+#include <deal.II/particles/particle_handler.h>
+#else
+#include <aspect/particle/particle.h>
+#include <aspect/particle/particle_handler.h>
+#endif
 
 #include <deal.II/base/parameter_handler.h>
 
@@ -34,6 +41,10 @@ namespace aspect
     namespace Integrator
     {
       using namespace dealii;
+
+#if DEAL_II_VERSION_GTE(9,0,0)
+      using namespace dealii::Particles;
+#endif
 
       /**
        * An abstract class defining virtual methods for performing integration
@@ -72,8 +83,8 @@ namespace aspect
            */
           virtual
           void
-          local_integrate_step(const typename std::multimap<types::LevelInd, Particle<dim> >::iterator &begin_particle,
-                               const typename std::multimap<types::LevelInd, Particle<dim> >::iterator &end_particle,
+          local_integrate_step(const typename ParticleHandler<dim>::particle_iterator &begin_particle,
+                               const typename ParticleHandler<dim>::particle_iterator &end_particle,
                                const std::vector<Tensor<1,dim> > &old_velocities,
                                const std::vector<Tensor<1,dim> > &velocities,
                                const double dt) = 0;
@@ -102,7 +113,7 @@ namespace aspect
            * @return The number of bytes required to store the relevant
            * integrator data for one particle.
            */
-          virtual unsigned int get_data_size() const;
+          virtual std::size_t get_data_size() const;
 
           /**
            * Read integration related data for a particle specified by particle_id
@@ -111,15 +122,15 @@ namespace aspect
            *
            * @param [in] data A pointer into the data array. The pointer
            * marks the position where this function starts reading.
-           * @param [in] particle_id The id number of the particle to read the data
-           * for.
+           * @param [in] particle An iterator pointing to the particle to read
+           * the data for.
            * @return The updated position of the pointer into the data array.
            * The return value is @p data advanced by get_data_size() bytes.
            */
           virtual
           const void *
-          read_data(const void *data,
-                    const types::particle_index particle_id);
+          read_data(const typename ParticleHandler<dim>::particle_iterator &particle,
+                    const void *data);
 
           /**
            * Write integration related data to a vector for a particle
@@ -127,16 +138,16 @@ namespace aspect
            * particles leave the local domain during an integration step to
            * transfer this data to another process.
            *
+           * @param [in] particle An iterator pointing to the particle to
+           * write the data for.
            * @param [in] data A pointer into the array of integrator data.
-           * @param [in] particle_id The id number of the particle to write the data
-           * for.
            * @return The updated position of the pointer into the data array.
            * The return value is @p data advanced by get_data_size() bytes.
            */
           virtual
           void *
-          write_data(void *data,
-                     const types::particle_index particle_id) const;
+          write_data(const typename ParticleHandler<dim>::particle_iterator &particle,
+                     void *data) const;
 
 
           /**
@@ -214,6 +225,20 @@ namespace aspect
       template <int dim>
       void
       declare_parameters (ParameterHandler &prm);
+
+
+      /**
+       * For the current plugin subsystem, write a connection graph of all of the
+       * plugins we know about, in the format that the
+       * programs dot and neato understand. This allows for a visualization of
+       * how all of the plugins that ASPECT knows about are interconnected, and
+       * connect to other parts of the ASPECT code.
+       *
+       * @param output_stream The stream to write the output to.
+       */
+      template <int dim>
+      void
+      write_plugin_graph (std::ostream &output_stream);
 
       /**
        * Given a class name, a name, and a description for the parameter file

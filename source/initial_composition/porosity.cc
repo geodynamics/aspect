@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2017 by the authors of the ASPECT code.
+  Copyright (C) 2017 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,12 +14,14 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
 
 #include <aspect/initial_composition/porosity.h>
+#include <aspect/initial_temperature/interface.h>
+#include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/material_model/interface.h>
 #include <aspect/melt.h>
 
@@ -35,16 +37,16 @@ namespace aspect
                          const unsigned int compositional_index) const
     {
       AssertThrow(this->introspection().compositional_name_exists("porosity"),
-                  ExcMessage("The initial composition plugin 'porosity' did not find a "
-                             "compositional field called 'porosity' to initialize. Please add a "
+                  ExcMessage("The initial composition plugin `porosity' did not find a "
+                             "compositional field called `porosity' to initialize. Please add a "
                              "compositional field with this name."));
 
       const MaterialModel::MeltFractionModel<dim> *material_model =
         dynamic_cast<const MaterialModel::MeltFractionModel<dim>* > (&this->get_material_model());
-      AssertThrow(material_model != NULL,
+      AssertThrow(material_model != nullptr,
                   ExcMessage("The used material model is not derived from the 'MeltFractionModel' class, "
                              "and therefore does not support computing equilibrium melt fractions. "
-                             "This is incompatible with the 'porosity' "
+                             "This is incompatible with the `porosity' "
                              "initial composition plugin, which needs to compute these melt fractions."));
 
       const unsigned int porosity_index = this->introspection().compositional_index_for_name("porosity");
@@ -67,7 +69,6 @@ namespace aspect
               in.composition[0][i] = 0.0;
 
           in.strain_rate[0] = SymmetricTensor<2,dim>();
-          in.cell = NULL;
 
           std::vector<double> melt_fraction(1);
           material_model->melt_fractions(in,melt_fraction);
@@ -88,10 +89,10 @@ namespace aspect
                                               "A class that implements initial conditions for the porosity field "
                                               "by computing the equilibrium melt fraction for the given initial "
                                               "condition and reference pressure profile. Note that this plugin only "
-                                              "works if there is a compositional field called 'porosity', and the "
+                                              "works if there is a compositional field called `porosity', and the "
                                               "used material model implements the 'MeltFractionModel' interface. "
                                               "For all compositional fields except porosity this plugin returns 0.0, "
-                                              "and they are therefore not changed as long as the default 'add' "
+                                              "and they are therefore not changed as long as the default `add' "
                                               "operator is selected for this plugin.")
   }
 }

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2018 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -14,13 +14,14 @@
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with ASPECT; see the file doc/COPYING.  If not see
+ along with ASPECT; see the file LICENSE.  If not see
  <http://www.gnu.org/licenses/>.
  */
 
 #include <aspect/particle/integrator/interface.h>
+#include <aspect/simulator_access.h>
 
-#include <deal.II/base/std_cxx1x/tuple.h>
+#include <tuple>
 
 namespace aspect
 {
@@ -50,7 +51,7 @@ namespace aspect
       }
 
       template <int dim>
-      unsigned int
+      std::size_t
       Interface<dim>::get_data_size() const
       {
         return 0;
@@ -58,16 +59,16 @@ namespace aspect
 
       template <int dim>
       const void *
-      Interface<dim>::read_data(const void *data,
-                                const types::particle_index /*id*/)
+      Interface<dim>::read_data(const typename ParticleHandler<dim>::particle_iterator &/*particle*/,
+                                const void *data)
       {
         return data;
       }
 
       template <int dim>
       void *
-      Interface<dim>::write_data(void *data,
-                                 const types::particle_index /*id*/) const
+      Interface<dim>::write_data(const typename ParticleHandler<dim>::particle_iterator &/*particle*/,
+                                 void *data) const
       {
         return data;
       }
@@ -79,7 +80,7 @@ namespace aspect
 
       namespace
       {
-        std_cxx1x::tuple
+        std::tuple
         <void *,
         void *,
         aspect::internal::Plugins::PluginList<Interface<2> >,
@@ -95,10 +96,10 @@ namespace aspect
                                     void (*declare_parameters_function) (ParameterHandler &),
                                     Interface<dim> *(*factory_function) ())
       {
-        std_cxx1x::get<dim>(registered_plugins).register_plugin (name,
-                                                                 description,
-                                                                 declare_parameters_function,
-                                                                 factory_function);
+        std::get<dim>(registered_plugins).register_plugin (name,
+                                                           description,
+                                                           declare_parameters_function,
+                                                           factory_function);
       }
 
 
@@ -117,8 +118,8 @@ namespace aspect
         }
         prm.leave_subsection ();
 
-        return std_cxx1x::get<dim>(registered_plugins).create_plugin (name,
-                                                                      "Particle::Integrator name");
+        return std::get<dim>(registered_plugins).create_plugin (name,
+                                                                "Particle::Integrator name");
       }
 
       template <int dim>
@@ -131,7 +132,7 @@ namespace aspect
           prm.enter_subsection ("Particles");
           {
             const std::string pattern_of_names
-              = std_cxx1x::get<dim>(registered_plugins).get_pattern_of_names ();
+              = std::get<dim>(registered_plugins).get_pattern_of_names ();
 
             prm.declare_entry ("Integration scheme", "rk2",
                                Patterns::Selection (pattern_of_names),
@@ -196,13 +197,23 @@ namespace aspect
                                "\n\n"
                                "Select one of the following models:\n\n"
                                +
-                               std_cxx1x::get<dim>(registered_plugins).get_description_string());
+                               std::get<dim>(registered_plugins).get_description_string());
           }
           prm.leave_subsection ();
         }
         prm.leave_subsection ();
 
-        std_cxx1x::get<dim>(registered_plugins).declare_parameters (prm);
+        std::get<dim>(registered_plugins).declare_parameters (prm);
+      }
+
+
+
+      template <int dim>
+      void
+      write_plugin_graph (std::ostream &out)
+      {
+        std::get<dim>(registered_plugins).write_plugin_graph ("Particle integrator interface",
+                                                              out);
       }
     }
   }
@@ -241,6 +252,10 @@ namespace aspect
   template  \
   void \
   declare_parameters<dim> (ParameterHandler &); \
+  \
+  template \
+  void \
+  write_plugin_graph<dim> (std::ostream &); \
   \
   template \
   Interface<dim> * \

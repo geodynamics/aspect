@@ -15,21 +15,18 @@ namespace aspect
     class SolCxCompositionalMaterial : public SolCxMaterial<dim>
     {
       public:
-        double density(const double temperature,
-                       const double pressure,
-                       const std::vector<double> &composition,
-                       const Point <dim> &position) const
+        virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                              MaterialModel::MaterialModelOutputs<dim> &out) const
         {
-          return composition[0];
-        }
-
-        double viscosity(const double temperature,
-                         const double pressure,
-                         const std::vector<double> &composition,
-                         const SymmetricTensor<2, dim> &strain_rate,
-                         const Point <dim> &position) const
-        {
-          return composition[1];
+          for (unsigned int i=0; i < in.position.size(); ++i)
+            {
+              out.densities[i] = in.composition[i][0];
+              out.viscosities[i] = in.composition[i][1];
+              out.compressibilities[i] = 0;
+              out.specific_heat[i] = 0;
+              out.thermal_expansion_coefficients[i] = 0;
+              out.thermal_conductivities[i] = 0.0;
+            }
         }
     };
   }

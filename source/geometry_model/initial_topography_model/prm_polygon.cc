@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2017 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,9 +14,9 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
-*/
+ */
 
 
 #include <aspect/geometry_model/initial_topography_model/prm_polygon.h>
@@ -48,6 +48,16 @@ namespace aspect
 
       // Point is not in any of the polygons. Return zero.
       return 0;
+    }
+
+
+
+    template <int dim>
+    double
+    PrmPolygon<dim>::
+    max_topography () const
+    {
+      return maximum_topography;
     }
 
 
@@ -100,6 +110,7 @@ namespace aspect
              * we need to fill the point lists and topography values. They
              * are stored in the Topography subsection in the Topography parameter.
              */
+            maximum_topography = -std::numeric_limits<double>::max();
             const std::string temptopo = prm.get("Topography parameters");
             const std::vector<std::string> temp_topographies = Utilities::split_string_list(temptopo,'&');
             const unsigned int temp_topographies_size = temp_topographies.size();
@@ -117,6 +128,7 @@ namespace aspect
                                                                " separated by a >.'"));
 
                 topography_values[i_topo] = Utilities::string_to_double(temp_topography[0]);
+                maximum_topography = std::max(topography_values[i_topo],maximum_topography);
 
                 const std::vector<std::string> temp_coordinates = Utilities::split_string_list(temp_topography[1],';');
                 const unsigned int temp_coordinate_size = temp_coordinates.size();

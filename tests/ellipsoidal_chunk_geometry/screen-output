@@ -1,0 +1,34 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+Loading shared library <./libellipsoidal_chunk_geometry.so>
+Simple sphere test
+Point: 6.371e+06 0 0 becomes: 0 0 0. Back transformed: 6.371e+06 0 0. Error: 0
+Point: 6.171e+06 0 0 becomes: 0 0 -200000. Back transformed: 6.171e+06 0 0. Error: 0
+Point: 3e+06 3e+06 0 becomes: 0.785398 0 -2.12836e+06. Back transformed: 3e+06 3e+06 0. Error: 1.09757e-16
+Point: 3e+06 3e+06 3e+06 becomes: 0.785398 0.61548 -1.17485e+06. Back transformed: 3e+06 3e+06 3e+06. Error: 0
+Point: 3e+06 -3e+06 -3e+06 becomes: -0.785398 -0.61548 -1.17485e+06. Back transformed: 3e+06 -3e+06 -3e+06. Error: 0
+Point: 25000 25000 3.481e+06 becomes: 0.785398 1.56064 -2.88982e+06. Back transformed: 25000 25000 3.481e+06. Error: 2.14025e-15
+Point: 25000 25000 1e+06 becomes: 0.785398 1.53546 -5.37038e+06. Back transformed: 25000 25000 1e+06. Error: 6.98103e-16
+Point: 25000 25000 500000 becomes: 0.785398 1.5002 -5.86975e+06. Back transformed: 25000 25000 500000. Error: 9.30731e-16
+Point: 25000 25000 50000 becomes: 0.785398 0.955317 -6.30976e+06. Back transformed: 25000 25000 50000. Error: 7.44593e-15
+WGS84 test
+Point: 6.371e+06 0 0 becomes: 0 0 -7137. Back transformed: 6.371e+06 0 0. Error: 0
+Point: 6.171e+06 0 0 becomes: 0 0 -207137. Back transformed: 6.171e+06 0 0. Error: 0
+Point: 3e+06 3e+06 0 becomes: 0.785398 0 -2.1355e+06. Back transformed: 3e+06 3e+06 0. Error: 1.09757e-16
+Point: 3e+06 3e+06 3e+06 becomes: 0.785398 0.619368 -1.17483e+06. Back transformed: 3e+06 3e+06 3e+06. Error: 3.69023e-09
+Point: 3e+06 -3e+06 -3e+06 becomes: -0.785398 -0.619368 -1.17483e+06. Back transformed: 3e+06 -3e+06 -3e+06. Error: 3.69023e-09
+Point: 25000 25000 3.481e+06 becomes: 0.785398 1.56076 -2.87557e+06. Back transformed: 25000 25000 3.481e+06. Error: 5.73998e-11
+Point: 25000 25000 1e+06 becomes: 0.785398 1.53691 -5.35615e+06. Back transformed: 25000 25000 1e+06. Error: 9.74229e-08
+Point: 25000 25000 500000 becomes: 0.785398 1.50575 -5.8556e+06. Back transformed: 25000 25000 500002. Error: 3.4858e-06
+Point: 25000 25000 50000 becomes: 0.785398 1.21599 -6.29522e+06. Back transformed: 25000 25000 55272.2. Error: 0.0860949
+Test for points outside of the provided depth range
+Point: 6.371e+06 0 0 becomes: 0 0 -7137. Back transformed: 6.371e+06 0 0. Error: 0
+Point: 6.171e+06 0 0 becomes: 0 0 -207137. Back transformed: 6.171e+06 0 0. Error: 0
+Point: 3e+06 3e+06 0 becomes: 0.785398 0 -2.1355e+06. Back transformed: 3e+06 3e+06 0. Error: 1.09757e-16
+Point: 3e+06 3e+06 3e+06 becomes: 0.785398 0.619368 -1.17483e+06. Back transformed: 3e+06 3e+06 3e+06. Error: 3.69023e-09
+Point: 3e+06 -3e+06 -3e+06 becomes: -0.785398 -0.619368 -1.17483e+06. Back transformed: 3e+06 -3e+06 -3e+06. Error: 3.69023e-09
+Point: 25000 25000 3.481e+06 becomes: 0.785398 1.56076 -2.87557e+06. Back transformed: 25000 25000 3.481e+06. Error: 5.73998e-11
+Point: 25000 25000 1e+06 becomes: 0.785398 1.53691 -5.35615e+06. Back transformed: 25000 25000 1e+06. Error: 9.74229e-08
+Point: 25000 25000 500000 becomes: 0.785398 1.50575 -5.8556e+06. Back transformed: 25000 25000 500002. Error: 3.4858e-06
+Point: 25000 25000 50000 becomes: 0.785398 1.21599 -6.29522e+06. Back transformed: 25000 25000 55272.2. Error: 0.0860949

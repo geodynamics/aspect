@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
@@ -22,7 +22,6 @@
 #include <aspect/boundary_traction/function.h>
 #include <aspect/utilities.h>
 #include <aspect/global.h>
-#include <deal.II/base/signaling_nan.h>
 
 namespace aspect
 {
@@ -40,43 +39,14 @@ namespace aspect
     Tensor<1,dim>
     Function<dim>::
     boundary_traction (const types::boundary_id,
-                       const Point<dim> &p,
+                       const Point<dim> &position,
                        const Tensor<1,dim> &) const
     {
       Tensor<1,dim> traction;
-      if (coordinate_system == Utilities::Coordinates::cartesian)
-        {
-          for (unsigned int d=0; d<dim; ++d)
-            traction[d] = boundary_traction_function.value(p,d);
-
-        }
-      else if (coordinate_system == Utilities::Coordinates::spherical)
-        {
-          const std_cxx11::array<double,dim> spherical_coordinates =
-            aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(p);
-          Point<dim> point;
-
-          for (unsigned int d=0; d<dim; ++d)
-            point[d] = spherical_coordinates[d];
-
-          for (unsigned int d=0; d<dim; ++d)
-            traction[d] = boundary_traction_function.value(point,d);
-
-        }
-      else if (coordinate_system == Utilities::Coordinates::depth)
-        {
-          const double depth = this->get_geometry_model().depth(p);
-          Point<dim> point;
-          point(0) = depth;
-
-          for (unsigned int d=0; d<dim; ++d)
-            traction[d] = boundary_traction_function.value(point,d);
-        }
-      else
-        {
-          AssertThrow(false, ExcNotImplemented());
-          return numbers::signaling_nan<Tensor<1,dim> >();
-        }
+      Utilities::NaturalCoordinate<dim> point =
+        this->get_geometry_model().cartesian_to_other_coordinates(position, coordinate_system);
+      for (unsigned int d=0; d<dim; ++d)
+        traction[d] = boundary_traction_function.value(Utilities::convert_array_to_point<dim>(point.get_coordinates()),d);
 
       return traction;
     }
@@ -107,9 +77,9 @@ namespace aspect
                              Patterns::Selection ("cartesian|spherical|depth"),
                              "A selection that determines the assumed coordinate "
                              "system for the function variables. Allowed values "
-                             "are 'cartesian', 'spherical', and 'depth'. 'spherical' coordinates "
+                             "are `cartesian', `spherical', and `depth'. `spherical' coordinates "
                              "are interpreted as r,phi or r,phi,theta in 2D/3D "
-                             "respectively with theta being the polar angle. 'depth' "
+                             "respectively with theta being the polar angle. `depth' "
                              "will create a function, in which only the first "
                              "parameter is non-zero, which is interpreted to "
                              "be the depth of the point.");

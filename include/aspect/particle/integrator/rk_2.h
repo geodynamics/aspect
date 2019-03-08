@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2015 - 2016 by the authors of the ASPECT code.
+ Copyright (C) 2015 - 2018 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with ASPECT; see the file doc/COPYING.  If not see
+ along with ASPECT; see the file LICENSE.  If not see
  <http://www.gnu.org/licenses/>.
  */
 
@@ -33,7 +33,7 @@ namespace aspect
     namespace Integrator
     {
       /**
-       * Runge Kutta second order integrator, where $y_{n+1} = y_n + dt*v(0.5*k_1), k_1 = dt*v(y_n)$.
+       * Runge Kutta second order integrator.
        * This scheme requires storing the original location, and the read/write_data functions reflect this.
        *
        * @ingroup ParticleIntegrators
@@ -63,8 +63,8 @@ namespace aspect
            */
           virtual
           void
-          local_integrate_step(const typename std::multimap<types::LevelInd, Particle<dim> >::iterator &begin_particle,
-                               const typename std::multimap<types::LevelInd, Particle<dim> >::iterator &end_particle,
+          local_integrate_step(const typename ParticleHandler<dim>::particle_iterator &begin_particle,
+                               const typename ParticleHandler<dim>::particle_iterator &end_particle,
                                const std::vector<Tensor<1,dim> > &old_velocities,
                                const std::vector<Tensor<1,dim> > &velocities,
                                const double dt);
@@ -93,39 +93,23 @@ namespace aspect
            * @return The number of bytes required to store the relevant
            * integrator data for one particle.
            */
-          virtual unsigned int get_data_size() const;
+          virtual std::size_t get_data_size() const;
 
           /**
-           * Read integration related data for a particle specified by particle_id
-           * from the data array. This function is called after transferring
-           * a particle to the local domain during an integration step.
-           *
-           * @param [in] data A pointer into the data array. The pointer
-           * marks the position where this function starts reading.
-           * @param [in] particle_id The id number of the particle to read the data
-           * for.
-           * @return The updated position of the pointer into the data array.
-           * The return value is @p data advanced by get_data_size() bytes.
+           * @copydoc Interface::read_data()
            */
           virtual
           const void *
-          read_data(const void *data,
-                    const types::particle_index particle_id);
+          read_data(const typename ParticleHandler<dim>::particle_iterator &particle,
+                    const void *data);
 
           /**
-           * Write integration related data to a vector for a particle
-           * specified by particle_id.
-           *
-           * @param [in,out] data A pointer to the array of data to write
-           * integrator data into. The pointer should be advanced by
-           * get_data_size() bytes within this function.
-           * @param [in] particle_id The id number of the particle to write the data
-           * for.
+           * @copydoc Interface::write_data()
            */
           virtual
           void *
-          write_data(void *data,
-                     const types::particle_index particle_id) const;
+          write_data(const typename ParticleHandler<dim>::particle_iterator &particle,
+                     void *data) const;
 
         private:
           /**

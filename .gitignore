@@ -6,6 +6,8 @@
 /.cproject
 /.project
 /.settings
+/compile_commands.json
+/.vscode/
 /AspectConfig.cmake
 /CMakeLists.txt.user*
 /CTestTestfile.cmake
@@ -17,6 +19,8 @@
 /benchmarks/**/cmake_install.cmake
 /benchmarks/**/lib*.so
 /benchmarks/**/output/
+/benchmarks/**/aspect
+/benchmarks/**/temp.prm
 /benchmarks/tangurnis/*/*csv
 /benchmarks/tangurnis/*/solution*
 /build*/
@@ -42,6 +46,7 @@
 /doc/manual/prmindexfull.ilg
 /doc/manual/prmindexfull.ind
 /doc/manual/cookbooks/**/*.out
+/doc/modules/changes.h
 /output/
 /tests/CMakeFiles/
 /tests/CTestTestfile.cmake

@@ -1,0 +1,50 @@
+
+Number of active cells: 100 (on 1 levels)
+Number of degrees of freedom: 2,326 (882+121+441+441+441)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Solving total_strain system ... 0 iterations.
+   Solving weak_layer system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 17+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+
+
+   Postprocessing:
+     RMS, max velocity:                  0.000408 m/year, 0.000691 m/year
+     Mass fluxes through boundary parts: 1.507e+05 kg/yr, 1.507e+05 kg/yr, -1.651e+05 kg/yr, -1.351e+05 kg/yr
+     Writing graphical output:           output-visco_plastic_yield_strain_weakening_compositions/solution/solution-00000
+
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+
+*** Timestep 1:  t=1 years
+   Solving temperature system... 0 iterations.
+   Solving total_strain system ... 5 iterations.
+   Solving weak_layer system ... 4 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 14+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.0436232
+
+
+   Postprocessing:
+     RMS, max velocity:                  0.000408 m/year, 0.000691 m/year
+     Mass fluxes through boundary parts: 1.507e+05 kg/yr, 1.507e+05 kg/yr, -1.651e+05 kg/yr, -1.351e+05 kg/yr
+
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

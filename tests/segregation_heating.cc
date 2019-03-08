@@ -1,4 +1,5 @@
 #include <aspect/boundary_fluid_pressure/interface.h>
+#include <aspect/gravity_model/interface.h>
 #include <aspect/simulator_access.h>
 #include <aspect/global.h>
 #include <aspect/melt.h>
@@ -21,7 +22,7 @@ namespace aspect
       ) const
       {
         const MaterialModel::MeltOutputs<dim> *melt_outputs = material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
-        Assert(melt_outputs != NULL, ExcMessage("Need MeltOutputs from the material model for shear heating with melt."));
+        Assert(melt_outputs != nullptr, ExcMessage("Need MeltOutputs from the material model for shear heating with melt."));
 
         for (unsigned int q=0; q<fluid_pressure_gradient_outputs.size(); ++q)
           {

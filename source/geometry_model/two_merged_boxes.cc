@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
@@ -27,7 +27,7 @@
 #include <deal.II/grid/tria_accessor.h>
 #include <deal.II/grid/grid_tools.h>
 
-#include <deal.II/base/std_cxx1x/bind.h>
+#include <functional>
 
 namespace aspect
 {
@@ -126,10 +126,11 @@ namespace aspect
 
       // make sure the right boundary indicators are set after refinement
       // through the function set_boundary_indicators above
-      total_coarse_grid.signals.post_refinement.connect
-      (std_cxx1x::bind (&TwoMergedBoxes<dim>::set_boundary_indicators,
-                        std_cxx1x::cref(*this),
-                        std_cxx1x::ref(total_coarse_grid)));
+      total_coarse_grid.signals.post_refinement.connect (
+        [&]()
+      {
+        this->set_boundary_indicators(total_coarse_grid);
+      });
     }
 
 
@@ -280,7 +281,7 @@ namespace aspect
                   this->get_timestep_number() == 0,
                   ExcMessage("After displacement of the free surface, this function can no longer be used to determine whether a point lies in the domain or not."));
 
-      AssertThrow(dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(&this->get_initial_topography_model()) != 0,
+      AssertThrow(dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(&this->get_initial_topography_model()) != nullptr,
                   ExcMessage("After adding topography, this function can no longer be used to determine whether a point lies in the domain or not."));
 
       for (unsigned int d = 0; d < dim; d++)
@@ -289,6 +290,39 @@ namespace aspect
           return false;
 
       return true;
+    }
+
+
+    template <int dim>
+    aspect::Utilities::Coordinates::CoordinateSystem
+    TwoMergedBoxes<dim>::natural_coordinate_system() const
+    {
+      return aspect::Utilities::Coordinates::CoordinateSystem::cartesian;
+    }
+
+
+    template <int dim>
+    std::array<double,dim>
+    TwoMergedBoxes<dim>::cartesian_to_natural_coordinates(const Point<dim> &position_point) const
+    {
+      std::array<double,dim> position_array;
+      for (unsigned int i = 0; i < dim; i++)
+        position_array[i] = position_point(i);
+
+      return position_array;
+    }
+
+
+
+    template <int dim>
+    Point<dim>
+    TwoMergedBoxes<dim>::natural_to_cartesian_coordinates(const std::array<double,dim> &position_tensor) const
+    {
+      Point<dim> position_point;
+      for (unsigned int i = 0; i < dim; i++)
+        position_point[i] = position_tensor[i];
+
+      return position_point;
     }
 
 

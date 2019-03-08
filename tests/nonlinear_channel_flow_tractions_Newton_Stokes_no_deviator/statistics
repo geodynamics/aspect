@@ -1,0 +1,26 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of nonlinear iterations
+# 8: Iterations for temperature solver
+# 9: Iterations for Stokes solver
+# 10: Velocity iterations in Stokes preconditioner
+# 11: Schur complement iterations in Stokes preconditioner
+# 12: RMS velocity (m/s)
+# 13: Max. velocity (m/s)
+# 14: Minimal pressure (Pa)
+# 15: Average pressure (Pa)
+# 16: Maximal pressure (Pa)
+# 17: Outward mass flux through boundary with indicator 0 ("left") (kg/s)
+# 18: Outward mass flux through boundary with indicator 1 ("right") (kg/s)
+# 19: Outward mass flux through boundary with indicator 2 ("bottom") (kg/s)
+# 20: Outward mass flux through boundary with indicator 3 ("top") (kg/s)
+# 21: Visualization file name
+0 0.000000000000e+00 0.000000000000e+00 256 2467 1089 29 0 2056 2258 2314 2.57340148e-08 3.05175054e-08 -1.54420896e-03 5.00000000e+08 1.00000000e+09 0.00000000e+00 0.00000000e+00 -8.13894261e-01 8.13894261e-01 output-nonlinear_channel_flow_tractions_Newton_Stokes_no_deviator/solution/solution-00000 
+1 1.000000000000e+00 1.000000000000e+00 256 2467 1089 14 0  656 3387  679 2.57340148e-08 3.05175054e-08 -2.29694546e-04 5.00000000e+08 1.00000000e+09 0.00000000e+00 0.00000000e+00 -8.13894262e-01 8.13894262e-01                                                                                        "" 
+2 2.000000000000e+00 1.000000000000e+00 256 2467 1089  9 0  591 2684  609 2.57340148e-08 3.05175054e-08 -2.95821271e-04 5.00000000e+08 1.00000000e+09 0.00000000e+00 0.00000000e+00 -8.13894262e-01 8.13894262e-01 output-nonlinear_channel_flow_tractions_Newton_Stokes_no_deviator/solution/solution-00001 
+3 3.000000000000e+00 1.000000000000e+00 256 2467 1089  8 0  441 2295  458 2.57340148e-08 3.05175054e-08 -1.60351934e-04 5.00000000e+08 1.00000000e+09 0.00000000e+00 0.00000000e+00 -8.13894262e-01 8.13894262e-01                                                                                        "" 
+4 4.000000000000e+00 1.000000000000e+00 256 2467 1089  4 0  426 2072  439 2.57340148e-08 3.05175054e-08 -2.68556136e-04 5.00000000e+08 1.00000000e+09 0.00000000e+00 0.00000000e+00 -8.13894262e-01 8.13894262e-01 output-nonlinear_channel_flow_tractions_Newton_Stokes_no_deviator/solution/solution-00002 

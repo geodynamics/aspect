@@ -5,7 +5,7 @@ Loading shared library <./libmelt_introspection.so>
 * signals.edit_finite_element_variables:
  name=velocity fe=FE_Q<2>(2) multiplicity=2 n_blocks=1 n_components=2
  name=fluid pressure fe=FE_Q<2>(1) multiplicity=1 n_blocks=0 n_components=1
- name=compaction pressure fe=FE_Q<2>(1) multiplicity=1 n_blocks=1 n_components=1
+ name=compaction pressure fe=FE_DGP<2>(1) multiplicity=1 n_blocks=1 n_components=1
  name=fluid velocity fe=FE_Q<2>(2) multiplicity=2 n_blocks=1 n_components=2
  name=pressure fe=FE_Q<2>(1) multiplicity=1 n_blocks=1 n_components=1
  name=temperature fe=FE_Q<2>(2) multiplicity=1 n_blocks=1 n_components=1
@@ -13,15 +13,15 @@ Loading shared library <./libmelt_introspection.so>
  name=compositions fe=FE_Q<2>(2) multiplicity=2 n_blocks=2 n_components=2
 
 Number of active cells: 4 (on 2 levels)
-Number of degrees of freedom: 302 (50+18+50+9+25+100+25+25)
+Number of degrees of freedom: 305 (50+21+50+9+25+100+25+25)
 
 *** Timestep 0:  t=0 seconds
    Solving temperature system... 0 iterations.
    Skipping porosity composition solve because RHS is zero.
    Skipping B composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 15+0 iterations.
-   Solving for u_f in 0 iterations.
+   Solving Stokes system... 5+0 iterations.
+   Solving for u_f in 1 iterations.
 
    Postprocessing:
      Writing graphical output: output-melt_introspection/solution/solution-00000

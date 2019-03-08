@@ -8,7 +8,7 @@ set End time                               = 0
 set Start time                             = 0
 set Adiabatic surface temperature          = 0
 set Surface pressure                       = 0
-set Nonlinear solver scheme                = IMPES
+set Nonlinear solver scheme                = single Advection, single Stokes
 set Pressure normalization                 = no
 
 
@@ -33,7 +33,7 @@ end
 
 # Temperature is zero everywhere
 subsection Boundary temperature model
- set Model name = initial temperature
+ set List of model names = initial temperature
 end
 
 subsection Initial temperature model
@@ -91,13 +91,28 @@ end
 # vertical boundaries through Prescribed velocity boundary indicators
 # because then we can specify that the mesh along these boundaries
 # is allowed to move according to the free surface displacement
-subsection Model settings
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary temperature model
   set Fixed temperature boundary indicators   = 0, 1, 2, 3
+end
+
+subsection Boundary composition model
   set Fixed composition boundary indicators   = 2 #,3
+end
+
+subsection Boundary traction model
   set Prescribed traction boundary indicators = 2 y: initial lithostatic pressure
+end
+
+subsection Boundary velocity model
   set Prescribed velocity boundary indicators = 0: function, 1: function, 2 x: function
+end
+
+subsection Free surface
   set Free surface boundary indicators        = 3
-  set Include shear heating                   = false
 end
 
 # The representative point determines where the pressure
@@ -133,7 +148,7 @@ subsection Compositional fields
 end
 
 subsection Boundary composition model
-  set Model name = initial composition
+  set List of model names = initial composition
 end
 
 subsection Initial composition model

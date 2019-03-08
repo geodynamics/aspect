@@ -1,0 +1,91 @@
+# Copy of the simpler box test with a gravity
+# profile that follows PREM.
+
+set Dimension = 2
+set CFL number                             = 1.0
+set End time                               = 0
+set Start time                             = 0
+set Adiabatic surface temperature          = 1600
+set Surface pressure                       = 0
+set Use years in output instead of seconds = false  # default: true
+set Nonlinear solver scheme                = single Advection, single Stokes
+
+
+subsection Boundary temperature model
+  set List of model names = box
+end
+
+
+
+subsection Gravity model
+  set Model name = ascii data
+
+  subsection Ascii data model
+#    set Data directory = $ASPECT_SOURCE_DIR/data/gravity-model/
+#    set Data file name = prem.txt
+  end
+end
+
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 637100
+    set Y extent = 6371000
+    set Y repetitions = 10
+  end
+end
+
+
+subsection Initial temperature model
+  set Model name = perturbed box
+end
+
+
+subsection Material model
+  set Model name = simpler
+
+  subsection Simpler model
+    set Reference density             = 3300
+    set Reference specific heat       = 1250
+    set Reference temperature         = 1600 # default: 293
+    set Thermal conductivity          = 4.7
+    set Thermal expansion coefficient = 2e-5
+    set Viscosity                     = 5e24
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 2
+end
+
+
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = 0, 1
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = 1
+end
+
+subsection Boundary velocity model
+  set Zero velocity boundary indicators       = 0, 2, 3
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics
+
+   
+subsection Visualization
+    set Output format                 = gnuplot
+    set List of output variables      = gravity
+end
+end
+

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
@@ -39,7 +39,7 @@ namespace aspect
     {
       // verify that the geometry is a box since only for this geometry
       // do we know for sure what boundary indicators it uses and what they mean
-      Assert (dynamic_cast<const GeometryModel::TwoMergedBoxes<dim>*>(&this->get_geometry_model()) != 0,
+      Assert (dynamic_cast<const GeometryModel::TwoMergedBoxes<dim>*>(&this->get_geometry_model()) != nullptr,
               ExcMessage ("This boundary model is only useful if the geometry is "
                           "a box with additional boundary indicators."));
 

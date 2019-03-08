@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2016-2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
@@ -24,9 +24,73 @@
 
 #include <aspect/simulator_access.h>
 
+#include <deal.II/fe/fe_values.h>
+
 namespace aspect
 {
   using namespace dealii;
+
+  namespace internal
+  {
+    /**
+     * This is the base class for all the functors implemented. Each is
+     * used to compute one of the properties that will be laterally
+     * averaged. The point of the base class is to allow handing over
+     * a variable of type
+     * <code> std::vector<std::unique_ptr<FunctorBase<dim> > > </code> to the
+     * LateralAveraging::get_averages() function.
+     */
+    template <int dim>
+    class FunctorBase
+    {
+      public:
+        /**
+         * operator() will have @p in and @p out filled out if @p true. By default
+         * returns false.
+         */
+        virtual
+        bool
+        need_material_properties() const;
+
+        /**
+         * If this functor needs additional material model outputs create them
+         * in here. By default, this does nothing.
+         */
+        virtual
+        void
+        create_additional_material_model_outputs (const unsigned int n_points,
+                                                  MaterialModel::MaterialModelOutputs<dim> &outputs) const;
+
+        /**
+         * Called once at the beginning of compute_lateral_averages() to setup
+         * internal data structures with the number of quadrature points.
+         */
+        virtual
+        void
+        setup(const unsigned int q_points);
+
+        /**
+         * This takes @p in material model inputs and @p out outputs (which are filled
+         * if need_material_properties() == true), an initialized FEValues
+         * object for a cell, and the current solution vector as inputs.
+         * Functions in derived classes should then evaluate the desired quantity
+         * and return the results in the output vector, which is q_points long.
+         */
+        virtual
+        void
+        operator()(const MaterialModel::MaterialModelInputs<dim> &in,
+                   const MaterialModel::MaterialModelOutputs<dim> &out,
+                   const FEValues<dim> &fe_values,
+                   const LinearAlgebra::BlockVector &solution,
+                   std::vector<double> &output) = 0;
+
+        /**
+         * Provide an (empty) virtual destructor.
+         */
+        virtual
+        ~FunctorBase();
+    };
+  }
 
   /**
    * LateralAveraging is a class that performs various averaging operations
@@ -46,6 +110,23 @@ namespace aspect
   class LateralAveraging : public SimulatorAccess<dim>
   {
     public:
+      /**
+       * Fill the @p values with a set of lateral averages of the selected
+       * @p property_names. See the implementation of this function for
+       * a range of accepted names. This function is more efficient than
+       * calling multiple of the other functions that compute one property
+       * each.
+       *
+       * @param n_slices The number of depth slices to perform the averaging in.
+       * @return The output vector of laterally averaged values. Each vector
+       * has the same size of @p n_slices, and there are
+       * as many vectors returned as names in @p property_names.
+       * @param property_names Names of the available quantities to average.
+       * Check the implementation of this function for available names.
+       */
+      std::vector<std::vector<double> >
+      get_averages(const unsigned int n_slices,
+                   const std::vector<std::string> &property_names) const;
 
       /**
        * Fill the argument with a set of lateral averages of the current
@@ -137,61 +218,24 @@ namespace aspect
       get_vertical_heat_flux_averages(std::vector<double> &values) const;
 
     private:
-
       /**
-       * Internal routine to compute the depth average of a certain quantity.
+       * Internal routine to compute the depth averages of several quantities.
+       * All of the public functions that compute a single field also call this
+       * function. The vector of functors @p functors must contain one or more
+       * objects of classes that are derived from FunctorBase and are used to
+       * fill the values vectors.
        *
-       * The functor @p fctr must be an object of a user defined type that can
-       * be arbitrary but has to satisfy certain requirements. In essence,
-       * this class type needs to implement the following interface of member
-       * functions:
-       * @code
-       * template <int dim>
-       * class Functor
-       * {
-       *   public:
-       *     // operator() will have @p in and @p out filled out if @p true
-       *     bool need_material_properties() const;
-       *
-       *     // called once at the beginning with the number of quadrature points
-       *     void setup(const unsigned int q_points);
-       *
-       *     // Fill @p output for each quadrature point.
-       *     // This takes material model inputs and outputs (which are filled
-       *     // if need_material_properties() == true), an initialized FEValues
-       *     // object for a cell, and the current solution vector as inputs.
-       *     // It then evaluates the desired quantity and puts the results in
-       *     // the output vector, which is q_points long.
-       *     void operator()(const MaterialModel::MaterialModelInputs<dim> &in,
-       *                     const MaterialModel::MaterialModelOutputs<dim> &out,
-       *                     FEValues<dim> &fe_values,
-       *                     const LinearAlgebra::BlockVector &solution,
-       *                     std::vector<double> &output);
-       * };
-       * @endcode
-       *
-       * @param values The output vector of depth averaged values. The
-       * function takes the pre-existing size of this vector as the number of
-       * depth slices.
-       * @param fctr Instance of a class satisfying the signature above.
+       * @param n_slices Number of depth slices to be computed.
+       * @param functors Instances of a class derived from FunctorBase
+       * that are used to compute the averaged properties.
+       * @return The output vectors of depth averaged values. The
+       * function returns one vector of doubles per property and uses
+       * @p n_slices as the number of depth slices.
+       * Each returned vector has the same size.
        */
-      template<class FUNCTOR>
-      void compute_lateral_average(std::vector<double> &values,
-                                   FUNCTOR &fctr) const;
-
-      /**
-       * Compute a depth average of the current temperature/composition. The
-       * function fills a vector that contains average
-       * temperatures/compositions over slices of the domain of same depth.
-       *
-       * @param field  Extractor for temperature or compositional field to average.
-       * @param values The output vector of depth averaged values. The
-       * function takes the pre-existing size of this vector as the number of
-       * depth slices.
-       */
-      void get_field_averages(const FEValuesExtractors::Scalar &field,
-                              std::vector<double> &values) const;
-
+      std::vector<std::vector<double> >
+      compute_lateral_averages(const unsigned int n_slices,
+                               std::vector<std::unique_ptr<internal::FunctorBase<dim> > > &functors) const;
   };
 }
 

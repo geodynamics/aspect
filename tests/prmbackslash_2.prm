@@ -35,7 +35,7 @@ put instead of seconds = \
 false  # default: true
 set Nonlinear solver \
  scheme                = \
-Stokes only
+no Advection, iterated Stokes
 
 subsection Boundary \
 temperature model
@@ -118,27 +118,17 @@ nsity, temperature
 end
 
 
-subsection Model set\
-tings
-  set Include adiaba\
-tic heating              \
- = false
-  set Include shear \
-heating                  \
- = false # default: true
-
+subsection Boundary temp\
+erature model
   set Fixed temperat\
 ure boundary indicators  \
  = 0, 1
-  set Prescribed vel\
-ocity boundary indicators\
- =
+end
+subsection Boundary velo\
+city model
   set Tangential vel\
 ocity boundary indicators\
  = 0,1,2,3
-  set Zero velocity \
-boundary indicators      \
- =
 end
 
 

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
@@ -121,8 +121,8 @@ namespace aspect
             Tensor<1,3> rotation_axis;
             const double rotation_angle = rotation_axis_from_matrix(rotation_axis,rotation_matrix);
 
-            std_cxx11::array<double,3> angles = angles_from_matrix(rotation_matrix);
-            std_cxx11::array<double,3> back_angles = angles_from_matrix(transpose(rotation_matrix));
+            std::array<double,3> angles = angles_from_matrix(rotation_matrix);
+            std::array<double,3> back_angles = angles_from_matrix(transpose(rotation_matrix));
 
             output << "   Input point 1 spherical coordinates: " << surface_point_one  << std::endl
                    << "   Input point 1 normalized cartesian coordinates: " << point_one  << std::endl
@@ -209,12 +209,12 @@ namespace aspect
           }
 
         // number of intervals in the direction of theta and phi
-        std_cxx11::array<unsigned int,2> table_intervals;
+        std::array<unsigned int,2> table_intervals;
         table_intervals[0] = n_theta - 1;
         table_intervals[1] = n_phi - 1;
 
         // Min and Max coordinates in data file
-        std_cxx11::array<std::pair<double,double>,2> grid_extent;
+        std::array<std::pair<double,double>,2> grid_extent;
 
         // min and max extent of the grid in the direction of theta and phi (whole spheres in GPlates)
         // polar angle theta: from 0° to 180°(PI)
@@ -226,9 +226,10 @@ namespace aspect
 
         for (unsigned int i = 0; i < 2; i++)
           {
-            velocities[i].reset(new Functions::InterpolatedUniformGridData<2> (grid_extent,
-                                                                               table_intervals,
-                                                                               velocity_values[i]));
+            velocities[i]
+              = std_cxx14::make_unique<Functions::InterpolatedUniformGridData<2>> (grid_extent,
+                                                                                   table_intervals,
+                                                                                   velocity_values[i]);
           }
 
         AssertThrow(i == n_points,
@@ -246,7 +247,7 @@ namespace aspect
                                           convert_tensor<dim,3>(position));
 
         // transform internal_position in spherical coordinates
-        std_cxx11::array<double,3> spherical_point =
+        std::array<double,3> spherical_point =
           Utilities::Coordinates::cartesian_to_spherical_coordinates(internal_position);
 
         Tensor<1,dim> output_boundary_velocity;
@@ -295,7 +296,7 @@ namespace aspect
 
       template <int dim>
       Tensor<1,dim>
-      GPlatesLookup<dim>::cartesian_velocity_at_surface_point(const std_cxx11::array<double,3> &spherical_point) const
+      GPlatesLookup<dim>::cartesian_velocity_at_surface_point(const std::array<double,3> &spherical_point) const
       {
         // Re-sort the components of the spherical position from [r,phi,theta] to [theta, phi]
         const Point<2> lookup_coordinates(spherical_point[2],spherical_point[1]);
@@ -334,7 +335,7 @@ namespace aspect
 
       template <int dim>
       Tensor<1,3>
-      GPlatesLookup<dim>::sphere_to_cart_velocity(const Tensor<1,2> &s_velocities, const std_cxx11::array<double,3> &s_position) const
+      GPlatesLookup<dim>::sphere_to_cart_velocity(const Tensor<1,2> &s_velocities, const std::array<double,3> &s_position) const
       {
         Tensor<1,3> velocity;
 
@@ -389,10 +390,10 @@ namespace aspect
       }
 
       template <int dim>
-      std_cxx11::array<double,3>
+      std::array<double,3>
       GPlatesLookup<dim>::angles_from_matrix(const Tensor<2,3> &rotation_matrix) const
       {
-        std_cxx11::array<double,3> orientation;
+        std::array<double,3> orientation;
 
         /*
          * The following code is part of the VTK project and copied here for
@@ -559,11 +560,11 @@ namespace aspect
                 ExcMessage ("To define a plane for the 2D model the two assigned points "
                             "may not be equal."));
 
-      if (((dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model())) != 0)
-          || ((dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model())) != 0))
+      if (((dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model())) != nullptr)
+          || ((dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model())) != nullptr))
         {
-          lookup.reset(new internal::GPlatesLookup<dim>(pointone,pointtwo));
-          old_lookup.reset(new internal::GPlatesLookup<dim>(pointone,pointtwo));
+          lookup = std::make_shared<internal::GPlatesLookup<dim>>(pointone, pointtwo);
+          old_lookup = std::make_shared<internal::GPlatesLookup<dim>>(pointone, pointtwo);
         }
       else
         AssertThrow (false,ExcMessage ("This gplates plugin can only be used when using "
@@ -626,10 +627,9 @@ namespace aspect
     {
       std::string templ = data_directory+velocity_file_name;
       const int size = templ.length();
-      char *filename = (char *) (malloc ((size + 10) * sizeof(char)));
-      snprintf (filename, size + 10, templ.c_str (), timestep);
-      std::string str_filename (filename);
-      free (filename);
+      std::vector<char> buffer(size+10);
+      snprintf (buffer.data(), size + 10, templ.c_str(), timestep);
+      std::string str_filename (buffer.data());
       return str_filename;
     }
 
@@ -792,7 +792,7 @@ namespace aspect
                              "text '$ASPECT_SOURCE_DIR' which will be interpreted as the path "
                              "in which the ASPECT source files were located when ASPECT was "
                              "compiled. This interpretation allows, for example, to reference "
-                             "files located in the 'data/' subdirectory of ASPECT. ");
+                             "files located in the `data/' subdirectory of ASPECT. ");
           prm.declare_entry ("Velocity file name", "phi.%d",
                              Patterns::Anything (),
                              "The file name of the material data. Provide file in format: "
@@ -823,17 +823,17 @@ namespace aspect
                              "in the input file, this number is either interpreted as seconds or as years. "
                              "The default is one million, i.e., either one million seconds or one million years.");
           prm.declare_entry ("Scale factor", "1",
-                             Patterns::Double (0),
+                             Patterns::Double (),
                              "Scalar factor, which is applied to the boundary velocity. "
                              "You might want to use this to scale the velocities to a "
                              "reference model (e.g. with free-slip boundary) or another "
                              "plate reconstruction.");
           prm.declare_entry ("Point one", "1.570796,0.0",
                              Patterns::Anything (),
-                             "Point that determines the plane in which a 2D model lies in. Has to be in the format 'a,b' where a and b are theta (polar angle)  and phi in radians.");
+                             "Point that determines the plane in which a 2D model lies in. Has to be in the format `a,b' where a and b are theta (polar angle)  and phi in radians.");
           prm.declare_entry ("Point two", "1.570796,1.570796",
                              Patterns::Anything (),
-                             "Point that determines the plane in which a 2D model lies in. Has to be in the format 'a,b' where a and b are theta (polar angle)  and phi in radians.");
+                             "Point that determines the plane in which a 2D model lies in. Has to be in the format `a,b' where a and b are theta (polar angle)  and phi in radians.");
           prm.declare_entry ("Lithosphere thickness", "100000",
                              Patterns::Double (0),
                              "Determines the depth of the lithosphere, so that the GPlates velocities can be applied at the sides of the model "
@@ -855,15 +855,15 @@ namespace aspect
         {
           data_directory = Utilities::expand_ASPECT_SOURCE_DIR(prm.get ("Data directory"));
 
-          velocity_file_name              = prm.get ("Velocity file name");
-          data_file_time_step             = prm.get_double ("Data file time step");
-          first_data_file_model_time      = prm.get_double ("First data file model time");
-          first_data_file_number          = prm.get_double ("First data file number");
-          decreasing_file_order           = prm.get_bool   ("Decreasing file order");
-          scale_factor          = prm.get_double ("Scale factor");
-          point1                = prm.get ("Point one");
-          point2                = prm.get ("Point two");
-          lithosphere_thickness = prm.get_double ("Lithosphere thickness");
+          velocity_file_name         = prm.get        ("Velocity file name");
+          data_file_time_step        = prm.get_double ("Data file time step");
+          first_data_file_model_time = prm.get_double ("First data file model time");
+          first_data_file_number     = prm.get_integer("First data file number");
+          decreasing_file_order      = prm.get_bool   ("Decreasing file order");
+          scale_factor               = prm.get_double ("Scale factor");
+          point1                     = prm.get        ("Point one");
+          point2                     = prm.get        ("Point two");
+          lithosphere_thickness      = prm.get_double ("Lithosphere thickness");
 
           if (this->convert_output_to_years())
             {

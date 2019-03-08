@@ -10,15 +10,13 @@
 # step before the program terminates.
 
 set Additional shared libraries            = ./libannulus.so
-set Linear solver tolerance                = 1e-12
 set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 0
 set Use years in output instead of seconds = false
-set Nonlinear solver scheme                = Stokes only
+set Nonlinear solver scheme                = no Advection, iterated Stokes
 set Output directory                       = output
 set Pressure normalization                 = surface
-set Number of cheap Stokes solver steps    = 0
 
 ############### Parameters describing the model
 # Because the temperature plays no role in this model we need not
@@ -37,8 +35,8 @@ subsection Geometry model
 end
 
 #Boundary conditions
-subsection Model settings
-  set Tangential velocity boundary indicators = 
+
+subsection Boundary velocity model
   set Prescribed velocity boundary indicators = 0  : AnnulusBoundary, \
                                                 1  : AnnulusBoundary
 end
@@ -71,7 +69,7 @@ end
 # temperature boundary conditions.
 
 subsection Boundary temperature model
-  set Model name = box
+  set List of model names = box
 end
 
 subsection Initial temperature model
@@ -102,7 +100,7 @@ end
 
 subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, AnnulusPostprocessor, depth average, memory statistics
-  subsection Dynamic Topography
+  subsection Dynamic topography
     set Density above = 0
     set Density below = 0
   end
@@ -111,3 +109,9 @@ subsection Postprocess
   end
 end
 
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-12
+    set Number of cheap Stokes solver steps = 0
+  end
+end

@@ -1,13 +1,14 @@
 #include <deal.II/base/parameter_handler.h>
 #include <aspect/global.h>
 #include <aspect/simulator_signals.h>
+#include <aspect/boundary_temperature/interface.h>
 
 namespace aspect
 {
   using namespace dealii;
 
   // Global variables (to be set by parameters)
-  int switch_step;
+  unsigned int switch_step;
   bool switched;
 
   /**
@@ -34,12 +35,15 @@ namespace aspect
   void change_boundary_condition (const SimulatorAccess<dim> &simulator_access,
                                   Parameters<dim> &parameters)
   {
-    types::boundary_id bottom = 2; // bottom boundary indicator for 2D box
-
-    if ( simulator_access.get_timestep_number() >= switch_step && !switched )
+    if (simulator_access.get_timestep_number() != numbers::invalid_unsigned_int
+        &&
+        simulator_access.get_timestep_number() >= switch_step
+        &&
+        !switched )
       {
-        simulator_access.get_pcout()<<"Switching boundary condition!"<<std::endl;
-        parameters.fixed_temperature_boundary_indicators.erase(bottom);
+        simulator_access.get_pcout()<<"Reducing CFL number!"<<std::endl;
+        parameters.CFL_number *= 0.5;
+
         switched = true;
       }
   }

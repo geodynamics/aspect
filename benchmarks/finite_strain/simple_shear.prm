@@ -41,11 +41,9 @@ subsection Geometry model
   end
 end
 
-subsection Model settings
-  set Prescribed velocity boundary indicators = bottom:function, top:function
-end
 
 subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = bottom:function, top:function
   subsection Function
     set Function expression = if (y < 0.5, -1, 1); 0
   end
@@ -73,7 +71,7 @@ subsection Compositional fields
 end
 
 subsection Boundary composition model
-  set Model name = initial composition
+  set List of model names = initial composition
 end
 
 subsection Initial composition model
@@ -87,7 +85,7 @@ end
 # Note: The temperature plays no role in this model
 
 subsection Boundary temperature model
-  set Model name = box
+  set List of model names = box
 end
 
 subsection Initial temperature model

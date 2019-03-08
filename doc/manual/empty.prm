@@ -17,10 +17,15 @@ subsection Gravity model
 end
 
 subsection Boundary temperature model
-  set Model name = box
+  set List of model names = box
 end
 
 subsection Initial temperature model
   set Model name = adiabatic
 end
-set Use direct solver for Stokes system        = true
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Use direct solver for Stokes system = true
+  end
+end

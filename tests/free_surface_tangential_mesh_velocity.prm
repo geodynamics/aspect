@@ -16,17 +16,29 @@ subsection Geometry model
   end
 end
 
-subsection Model settings
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary temperature model
   set Fixed temperature boundary indicators   = bottom, top
-  set Zero velocity boundary indicators       = 
+end
+
+subsection Boundary velocity model
   set Tangential velocity boundary indicators = bottom
+end
+
+subsection Boundary velocity model
   set Prescribed velocity boundary indicators = left x: function, right x: function
+end
+
+subsection Free surface
   set Free surface boundary indicators        = top
 end
 
 
 subsection Boundary temperature model
-  set Model name = function
+  set List of model names = function
 
   # box prescribes a constant temp, function is for a function
   subsection Function

@@ -1,6 +1,0 @@
-New: Added a simple nonlinear test, which contains a simple nonlinear material model 
-which has the the derivatives of the viscosity wrt the strain-rate and pressure and
-tests the derivatives against a finite difference derivative. This will be useful later 
-on for benchmarks.
-<br>
-(Menno Fraters 2017/05/16)

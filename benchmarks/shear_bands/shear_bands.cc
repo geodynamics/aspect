@@ -1,5 +1,26 @@
+/*
+  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
+
+  This file is part of ASPECT.
+
+  ASPECT is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2, or (at your option)
+  any later version.
+
+  ASPECT is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with ASPECT; see the file LICENSE.  If not see
+  <http://www.gnu.org/licenses/>.
+*/
 #include <aspect/initial_composition/interface.h>
 #include <aspect/geometry_model/box.h>
+#include <aspect/postprocess/interface.h>
+#include <aspect/boundary_velocity/interface.h>
 #include <aspect/simulator_access.h>
 #include <aspect/global.h>
 #include <aspect/melt.h>
@@ -13,7 +34,7 @@
 #include <deal.II/numerics/vector_tools.h>
 #include <deal.II/base/table.h>
 #include <deal.II/base/table_indices.h>
-#include <deal.II/base/std_cxx1x/array.h>
+#include <array>
 
 
 namespace aspect
@@ -292,7 +313,7 @@ namespace aspect
       private:
         double noise_amplitude;
         double background_porosity;
-        std_cxx1x::array<unsigned int,dim> grid_intervals;
+        std::array<unsigned int,dim> grid_intervals;
         Functions::InterpolatedUniformGridData<dim> *interpolate_noise;
     };
 
@@ -328,7 +349,7 @@ namespace aspect
 
       Table<dim,double> white_noise;
       white_noise.TableBase<dim,double>::reinit(size_idx);
-      std_cxx1x::array<std::pair<double,double>,dim> grid_extents;
+      std::array<std::pair<double,double>,dim> grid_extents;
 
       if (dynamic_cast<const GeometryModel::Box<dim> *>(&this->get_geometry_model()) != NULL)
         {
@@ -754,15 +775,12 @@ namespace aspect
                       ExcMessage("Postprocessor shear bands growth rate only works with the material model shear bands."));
         }
 
-      const PlaneWaveMeltBandsInitialCondition<dim> *
-      initial_composition
-        = this->get_initial_composition_manager().template find_initial_composition_model<PlaneWaveMeltBandsInitialCondition<dim> > ();
+      const PlaneWaveMeltBandsInitialCondition<dim> &initial_composition
+        = this->get_initial_composition_manager().template
+          get_matching_initial_composition_model<PlaneWaveMeltBandsInitialCondition<dim> > ();
 
-      AssertThrow(initial_composition != NULL,
-                  ExcMessage("Postprocessor shear bands growth rate only works with the plane wave melt bands initial composition."));
-
-      amplitude           = initial_composition->get_wave_amplitude();
-      initial_band_angle  = initial_composition->get_initial_band_angle();
+      amplitude           = initial_composition.get_wave_amplitude();
+      initial_band_angle  = initial_composition.get_initial_band_angle();
     }
 
 
@@ -775,18 +793,12 @@ namespace aspect
       const Point<dim> upper_boundary_point = this->get_geometry_model().representative_point(0.0);
       const Point<dim> lower_boundary_point = this->get_geometry_model().representative_point(this->get_geometry_model().maximal_depth());
 
-      // get the map of boundary indicators and velocity bounfary conditions
-      const std::map<types::boundary_id,std_cxx11::shared_ptr<BoundaryVelocity::Interface<dim> > >
-      bvs = this->get_prescribed_boundary_velocity();
       types::boundary_id upper_boundary = this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
       types::boundary_id lower_boundary = this->get_geometry_model().translate_symbolic_boundary_name_to_id("bottom");
 
-      // get the velocities at the upper and lower boundary
-      typename std::map<types::boundary_id,std_cxx11::shared_ptr<BoundaryVelocity::Interface<dim> > >::const_iterator
-      it = bvs.find(upper_boundary);
-      const double max_velocity = it->second->boundary_velocity(it->first,upper_boundary_point).norm();
-      it = bvs.find(lower_boundary);
-      const double min_velocity = it->second->boundary_velocity(it->first,lower_boundary_point).norm();
+      const BoundaryVelocity::Manager<dim> &bm = this->get_boundary_velocity_manager();
+      const double max_velocity = bm.boundary_velocity(upper_boundary, upper_boundary_point).norm();
+      const double min_velocity = bm.boundary_velocity(lower_boundary, lower_boundary_point).norm();
 
       const double strain_rate = 0.5 * (max_velocity + min_velocity) / this->get_geometry_model().maximal_depth();
       const double theta = std::atan(std::sin(initial_band_angle) / (std::cos(initial_band_angle) - time * strain_rate/sqrt(2.0) * std::sin(initial_band_angle)));

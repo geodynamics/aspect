@@ -1,0 +1,23 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Iterations for temperature solver
+# 8: Iterations for Stokes solver
+# 9: Velocity iterations in Stokes preconditioner
+# 10: Schur complement iterations in Stokes preconditioner
+# 11: RMS velocity (m/s)
+# 12: Max. velocity (m/s)
+# 13: Angular momentum (kg*m^2/s)
+# 14: Moment of inertia_xx (kg*m^2)
+# 15: Moment of inertia_yy (kg*m^2)
+# 16: Moment of inertia_zz (kg*m^2)
+# 17: Moment of inertia_xy (kg*m^2)
+# 18: Moment of inertia_xz (kg*m^2)
+# 19: Moment of inertia_yz (kg*m^2)
+# 20: Angular velocity (1/s)
+0 0.000000000000e+00 0.000000000000e+00 448 11968 3817  0 212 552 1146 8.65138885e-02 1.90227475e-01 3.63095660e-07 2.47411857e+00 2.43316012e+00 2.47411799e+00 -2.66113938e-01  1.28082817e-16  2.51555578e-06 1.46307240e-07 
+1 2.782694570681e-01 2.782694570681e-01 448 11968 3817 53 172 176  921 2.18176034e-02 4.86419203e-02 3.32967497e-07 2.66862795e+00 2.65619565e+00 2.66676820e+00 -8.32129507e-02  3.86164944e-08  6.65756394e-07 1.24812923e-07 
+2 1.000000000000e+00 7.217305429319e-01 448 11968 3817 56 213 607 1140 7.39540306e-03 1.88505963e-02 1.29050728e-06 3.10454298e+00 3.10865203e+00 3.09080940e+00  2.44472958e-02 -1.44337028e-08 -2.28050430e-07 4.17530526e-07 

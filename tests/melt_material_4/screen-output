@@ -2,31 +2,29 @@
 Loading shared library <./libmelt_material_4.so>
 
 Number of active cells: 1,024 (on 6 levels)
-Number of degrees of freedom: 28,617 (10,628+8,450+1,089+4,225+4,225)
+Number of degrees of freedom: 30,600 (12,611+8,450+1,089+4,225+4,225)
 
 *** Timestep 0:  t=0 seconds
    Solving temperature system... 3 iterations.
    Solving porosity system ... 3 iterations.
    Solving Stokes system... done.
-   Solving for u_f in 8 iterations.
-      Relative nonlinear residuals: 1.9817e-16, 1.92266e-16, 1
-      Total relative residual after nonlinear iteration 1: 1
-
+   Solving for u_f in 10 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.9277e-16, 1.87568e-16, 1
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1
 
    Solving temperature system... 3 iterations.
    Solving porosity system ... 3 iterations.
    Solving Stokes system... done.
-   Solving for u_f in 8 iterations.
-      Relative nonlinear residuals: 2.40604e-16, 1.30411e-16, 5.41055e-16
-      Total relative residual after nonlinear iteration 2: 5.41055e-16
-
+   Solving for u_f in 10 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.51232e-16, 1.37441e-16, 5.57132e-16
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 5.57132e-16
 
 
    Postprocessing:
-     RMS, max velocity:                         0.236 m/s, 0.497 m/s
-     Pressure min/avg/max:                      -1000 Pa, -277.5 Pa, -0.1001 Pa
-     Max and min velocity along boundary parts: 0.4968 m/s, 0.005322 m/s, 0.4968 m/s, 0.005322 m/s, 0.005 m/s, 0.005 m/s, 0.5 m/s, 0.5 m/s
-     Errors u_L2, p_f_L2, porosity_L2:          2.773584e-07, 7.711115e-08, 2.928076e-05
+     RMS, max velocity:                               0.236 m/s, 0.497 m/s
+     Pressure min/avg/max:                            -1000 Pa, -277.5 Pa, -0.1001 Pa
+     Max, min, and rms velocity along boundary parts: 0.4968 m/s, 0.005322 m/s, 0.2357 m/s, 0.4968 m/s, 0.005322 m/s, 0.2357 m/s, 0.005 m/s, 0.005 m/s, 0.005 m/s, 0.5 m/s, 0.5 m/s, 0.5 m/s
+     Errors u_L2, p_f_L2, porosity_L2:                2.773404e-07, 7.711126e-08, 2.928076e-05
 
 Termination requested by criterion: end time
 

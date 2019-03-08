@@ -1,0 +1,12 @@
+Improved: The artificial diffusion term that is added in the entropy viscosity
+method to the temperature and composition equations is now computed as the
+maximum of the physical diffusion and entropy viscosity instead of the sum.
+This is reasonable, as the entropy viscosity is the smallest diffusion that is
+necessary to stabilize the equation, and the presence of physical diffusion
+stabilizes the equation exactly as an artificial diffusion would. This change
+likely changes all benchmark results, but leads to more accurate, less
+diffusive solutions. We verified the new method in selected benchmarks, and
+updated test results but did not rerun and update all of the contained
+benchmark cases.
+<br>
+(Wolfgang Bangerth, Rene Gassmoeller, 2018/09/26)

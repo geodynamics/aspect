@@ -1,0 +1,141 @@
+# Test the compaction length refinement criterion.
+# The compaction length is 1 at the lower left boundary, 
+# and two magnitudes smaller at the top right boundary, 
+# and we specify two cells per compaction length. 
+# Hence, the finest cells should be on refinement level 8,
+# and in the top right corner.
+# The permeability changes along the x axis, the viscosity
+# along the y axis. 
+
+set Adiabatic surface temperature          = 1600               # default: 0
+set Nonlinear solver scheme                = iterated Advection and Stokes
+set Max nonlinear iterations               = 20
+
+# The number of space dimensions you want to run this program in.
+set Dimension                              = 2
+
+set End time                               = 0
+
+set Pressure normalization                 = surface
+set Surface pressure                       = 0
+
+set Use years in output instead of seconds = true
+
+subsection Compositional fields
+  set Number of fields = 2
+  set Names of fields = porosity, peridotite
+end
+
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1
+    set Y extent = 1
+  end
+
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 1
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Function expression       = 1 + 4.605170186 * y
+  end
+end
+
+subsection Initial composition model
+  set Model name = function
+  subsection Function
+    set Function expression = 0.5 - 0.4286 * x; 0 
+    set Variable names      = x,y
+  end
+end
+
+
+subsection Material model
+
+  set Model name = melt global 
+  subsection Melt global
+    set Thermal conductivity              = 0
+    set Reference solid density           = 1
+    set Reference melt density            = 1
+    set Thermal expansion coefficient     = 0
+    set Reference permeability            = 32 #permeability of 1 for phi=0.5
+    set Reference shear viscosity         = 0.5
+    set Reference bulk viscosity          = 0.375
+    set Exponential melt weakening factor = 0
+    set Thermal viscosity exponent        = 1
+    set Thermal bulk viscosity exponent   = 1
+    set Reference temperature             = 1
+    set Solid compressibility             = 0
+    set Melt compressibility              = 0
+    set Reference melt viscosity          = 1
+  end
+end
+
+
+subsection Mesh refinement
+  set Coarsening fraction                      = 0.5
+  set Refinement fraction                      = 0.5
+
+  set Initial adaptive refinement              = 5
+  set Initial global refinement                = 5
+  set Strategy                                 = compaction length
+  set Time steps between mesh refinement       = 0
+
+  subsection Compaction length
+    set Mesh cells per compaction length       = 2
+  end
+end
+
+
+subsection Boundary fluid pressure model
+  set Plugin name = density
+  subsection Density
+    set Density formulation = solid density
+  end
+end
+
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = 0,1,2,3
+end
+
+subsection Melt settings
+  set Include melt transport                  = true
+end
+
+
+subsection Postprocess
+
+  set List of postprocessors = visualization,composition statistics,velocity statistics, temperature statistics
+
+  subsection Visualization
+
+    set List of output variables      = material properties, nonadiabatic temperature, melt fraction, strain rate, melt material properties
+
+    subsection Material properties
+      set List of material properties = density, viscosity, thermal expansivity, reaction terms
+    end
+
+    subsection Melt material properties
+      set List of properties = fluid density, permeability, fluid viscosity, compaction viscosity
+    end
+
+    set Number of grouped files       = 0
+    set Output format                 = vtu
+    set Time between graphical output = 0
+  end
+end

@@ -3,7 +3,6 @@ set Start time                             = 0
 set End time                               = 0
 set Output directory                       = output_sinker-with-averaging
 
-set Linear solver tolerance                = 1e-7
 set Pressure normalization                 = volume
 
 
@@ -15,8 +14,8 @@ subsection Geometry model
   end
 end
 
-subsection Model settings
-  set Tangential velocity boundary indicators = 
+
+subsection Boundary velocity model
   set Zero velocity boundary indicators       = left, right, bottom, top
 end
 
@@ -46,7 +45,7 @@ end
 # Note: The temperature plays no role in this model
 
 subsection Boundary temperature model
-  set Model name = box
+  set List of model names = box
 end
 
 subsection Initial temperature model

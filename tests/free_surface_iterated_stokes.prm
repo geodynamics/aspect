@@ -9,14 +9,12 @@ set Start time                             = 0
 set Adiabatic surface temperature          = 0
 set Surface pressure                       = 0
 set Pressure normalization                 = no
-set Nonlinear solver scheme                = iterated Stokes
-set Linear solver tolerance                = 1.e-7
-set Number of cheap Stokes solver steps    = 0 
+set Nonlinear solver scheme                = single Advection, iterated Stokes
 set Timing output frequency                = 5
 set Use years in output instead of seconds = true
 
 subsection Boundary temperature model
-  set Model name = constant
+  set List of model names = constant
   subsection Constant
     set Boundary indicator to temperature mappings = 0:0,1:0,2:0,3:0
   end
@@ -87,11 +85,23 @@ subsection Mesh refinement
 end
 
 
-subsection Model settings
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary temperature model
   set Fixed temperature boundary indicators   = 2,3
-  set Prescribed velocity boundary indicators =
+end
+
+subsection Boundary velocity model
   set Tangential velocity boundary indicators = 0,1
+end
+
+subsection Boundary velocity model
   set Zero velocity boundary indicators       = 2
+end
+
+subsection Free surface
   set Free surface boundary indicators = 3
 end
 
@@ -108,5 +118,12 @@ subsection Postprocess
   set List of postprocessors = topography,velocity statistics, basic statistics
   subsection Visualization
     set Time between graphical output = 0
+  end
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1.e-7
+    set Number of cheap Stokes solver steps = 0 
   end
 end

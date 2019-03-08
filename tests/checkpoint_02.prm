@@ -4,7 +4,8 @@
 # we can actually compare if the checkpoint data of the second checkpoint is
 # identical.
 
-# Note: this currently fails with the iterative solver
+# Note: this requires a patch to Trilinos' ML (at least version 12.2.1 and
+# older) because the preconditioner is not deterministic.
 
 set Dimension = 2
 set CFL number                             = 1.0
@@ -13,12 +14,11 @@ set Start time                             = 0
 set Adiabatic surface temperature          = 0
 set Surface pressure                       = 0
 set Use years in output instead of seconds = false  # default: true
-set Nonlinear solver scheme                = IMPES
-set Use direct solver for Stokes system    = true
+set Nonlinear solver scheme                = single Advection, single Stokes
 
 
 subsection Boundary temperature model
-  set Model name = box
+  set List of model names = box
 end
 
 subsection Checkpointing
@@ -67,10 +67,15 @@ subsection Mesh refinement
 end
 
 
-subsection Model settings
-  set Fixed temperature boundary indicators   =
-  set Prescribed velocity boundary indicators =
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary velocity model
   set Tangential velocity boundary indicators = 1
+end
+
+subsection Boundary velocity model
   set Zero velocity boundary indicators       = 0, 2, 3
 end
 
@@ -89,3 +94,8 @@ subsection Termination criteria
   set Checkpoint on termination = false
 end
 
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Use direct solver for Stokes system = false
+  end
+end

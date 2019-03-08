@@ -30,7 +30,13 @@ CHECK_CXX_SOURCE_RUNS("
 
 int main()
 {
+  // Some implementations seem to not initialize the FPE bits to zero.
+  // Make sure we start from a clean state
+  feclearexcept(FE_DIVBYZERO|FE_INVALID);
+
+  // Enable floating point exceptions
   feenableexcept(FE_DIVBYZERO|FE_INVALID);
+
   std::ostringstream description;
   const double lower_bound = -std::numeric_limits<double>::max();
 

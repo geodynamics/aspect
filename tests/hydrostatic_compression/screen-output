@@ -1,0 +1,86 @@
+
+Loading shared library <./libhydrostatic_compression.so>
+
+Number of active cells: 256 (on 5 levels)
+Number of degrees of freedom: 3,556 (2,178+289+1,089)
+
+*** Timestep 0:  t=0 seconds
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 53+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 46+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.158525
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 45+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 0.0285702
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 43+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 0.00630939
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 41+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 0.000956415
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 38+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 6: 0.000253077
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 36+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 7: 3.27154e-05
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 34+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 8: 1.03183e-05
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 31+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 9: 1.00951e-06
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 27+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 10: 4.14596e-07
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 24+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 11: 2.88724e-08
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 21+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 12: 1.91991e-08
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 18+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 13: 1.6403e-09
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 16+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 14: 1.04158e-09
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 13+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 15: 1.34964e-10
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 11+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 16: 6.37208e-11
+
+
+   Postprocessing:
+     Writing graphical output:                        output-hydrostatic_compression/solution/solution-00000
+     RMS, max velocity:                               29.3 m/s, 42.2 m/s
+     Pressure min/avg/max:                            -0.002532 Pa, 0.4959 Pa, 0.989 Pa
+     Max, min, and rms velocity along boundary parts: 42.03 m/s, 38.83 m/s, 40.27 m/s, 42.03 m/s, 38.83 m/s, 40.27 m/s, 42.03 m/s, 6.236 m/s, 29.02 m/s, 42.01 m/s, 6.067 m/s, 29.02 m/s
+     Errors                                           ndofs= 3556 u_L2= 1.001381e-02 p_L2= 1.151619e-02
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

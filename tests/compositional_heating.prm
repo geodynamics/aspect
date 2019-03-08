@@ -3,8 +3,7 @@ set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 1e9
 set Use years in output instead of seconds = true
-set Nonlinear solver scheme                = IMPES
-set Number of cheap Stokes solver steps    = 200
+set Nonlinear solver scheme                = single Advection, single Stokes
 set Output directory                       = compositional_heating
 set Timing output frequency                = 1
 
@@ -28,14 +27,21 @@ end
 
 
 # Boundary classifications (fixed T boundaries, prescribed velocity) 
-subsection Model settings
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary temperature model
   set Fixed temperature boundary indicators   = bottom, top
+end
+
+subsection Boundary velocity model
   set Tangential velocity boundary indicators = bottom, top, left, right
 end
 
 # Temperature boundary conditions
 subsection Boundary temperature model
-  set Model name = box
+  set List of model names = box
   subsection Box
     set Bottom temperature = 1543
     set Top temperature    =  273
@@ -86,7 +92,7 @@ end
 # See Initial temperature model section for relationship between heat flux, production
 # and initial temperature profile representative of a continental geotherm.
 subsection Heating model
-  set Model name = compositional heating
+  set List of model names = compositional heating
   subsection Compositional heating
     set Use compositional field for heat production averaging = 1, 1
     set Compositional heating values = 0., 1.5e-6
@@ -110,7 +116,7 @@ end
 
 # Boundary composition specification
 subsection Boundary composition model
-  set Model name = initial composition
+  set List of model names = initial composition
 end
 
 # Material model (values for background material (mantle) and crust)
@@ -154,4 +160,10 @@ end
 # Postprocessor
 subsection Postprocess
   set List of postprocessors = heat flux statistics, temperature statistics
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Number of cheap Stokes solver steps = 200
+  end
 end

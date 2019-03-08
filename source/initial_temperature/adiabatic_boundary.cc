@@ -1,20 +1,21 @@
 /*
-   Copyright (C) 2016 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2018 by the authors of the ASPECT code.
 
-   This file is part of ASPECT.
-   ASPECT is free software; you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2, or (at your option)
-   any later version.
+  This file is part of ASPECT.
 
-   ASPECT is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
+  ASPECT is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2, or (at your option)
+  any later version.
 
-   You should have received a copy of the GNU General Public License
-   along with ASPECT; see the file doc/COPYING.  If not see
-   <http://www.gnu.org/licenses/>.
+  ASPECT is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with ASPECT; see the file LICENSE.  If not see
+  <http://www.gnu.org/licenses/>.
 */
 
 
@@ -26,14 +27,12 @@ namespace aspect
 {
   namespace InitialTemperature
   {
-    using namespace dealii;
-
     template <>
     double
     AdiabaticBoundary<2>::get_isotherm_depth(const double,
                                              const double) const
     {
-      AssertThrow (false, ExcMessage ("The 'adiabatic boundary' initial temperature plugin is only implemented for 3d cases."));
+      AssertThrow (false, ExcMessage ("The `adiabatic boundary' initial temperature plugin is only implemented for 3d cases."));
       return 0;
     }
 
@@ -65,7 +64,7 @@ namespace aspect
     double
     AdiabaticBoundary<2>::initial_temperature (const Point<2> &) const
     {
-      AssertThrow (false, ExcMessage ("The 'adiabatic boundary' initial temperature plugin is only implemented for 3d cases."));
+      AssertThrow (false, ExcMessage ("The `adiabatic boundary' initial temperature plugin is only implemented for 3d cases."));
       return 0;
     }
 
@@ -73,7 +72,7 @@ namespace aspect
     double
     AdiabaticBoundary<dim>::initial_temperature (const Point<dim> &position) const
     {
-      std_cxx11::array<double,dim> wcoord      = Utilities::Coordinates::WGS84_coordinates(position);
+      std::array<double,dim> wcoord      = Utilities::Coordinates::WGS84_coordinates(position);
       const double depth                       = wcoord[0] - position.norm();
       const double isotherm_depth              = get_isotherm_depth(wcoord[2], wcoord[1]);
       if (depth > isotherm_depth)
@@ -189,8 +188,8 @@ namespace aspect
                                               "An initial temperature condition that allows for discretizing "
                                               "the model domain into two layers separated by a user-defined "
                                               "isothermal boundary using a table look-up approach. The user includes an "
-                                              "input ascii data file that is formatted as 3 columns of 'latitude', "
-                                              "'longitude', and 'depth', where 'depth' is in kilometers and "
+                                              "input ascii data file that is formatted as 3 columns of `latitude', "
+                                              "`longitude', and `depth', where `depth' is in kilometers and "
                                               "represents the depth of an initial temperature of 1673.15 K (by default). "
                                               "The temperature is defined from the surface (273.15 K) to the isotherm "
                                               "as a linear gradient. Below the isotherm the temperature increases "

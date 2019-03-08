@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
@@ -33,51 +33,40 @@ namespace aspect
     namespace VisualizationPostprocessors
     {
       template <int dim>
-      std::pair<std::string, Vector<float> *>
-      Geoid<dim>::execute() const
+      Geoid<dim>::
+      Geoid ()
+        :
+        DataPostprocessorScalar<dim> ("geoid",
+                                      update_quadrature_points)
+      {}
+
+      template <int dim>
+      void
+      Geoid<dim>::
+      evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
+                            std::vector<Vector<double> > &computed_quantities) const
       {
-        std::pair<std::string, Vector<float> *>
-        return_value ("geoid",
-                      new Vector<float>(this->get_triangulation().n_active_cells()));
-
-        Postprocess::Geoid<dim> *geoid = this->template find_postprocessor<Postprocess::Geoid<dim> >();
-        AssertThrow(geoid != NULL,
-                    ExcMessage("Could not find the Geoid postprocessor"
-                               "Perhaps you forgot to include it in the Postprocessors list?"));
-
-        const GeometryModel::SphericalShell<dim> *geometry_model = dynamic_cast<const GeometryModel::SphericalShell<dim> *>
-                                                                   (&this->get_geometry_model());
-        AssertThrow (geometry_model != 0,
+        AssertThrow (Plugins::plugin_type_matches<const GeometryModel::SphericalShell<dim> >(this->get_geometry_model()),
                      ExcMessage("The geoid postprocessor is currently only implemented for "
                                 "the spherical shell geometry model."));
 
-        // loop over all of the surface cells and if one less than h/3 away from
-        // the top or bottom surface
-        typename DoFHandler<dim>::active_cell_iterator
-        cell = this->get_dof_handler().begin_active(),
-        endc = this->get_dof_handler().end();
+        for (unsigned int q=0; q<computed_quantities.size(); ++q)
+          computed_quantities[q](0) = 0;
 
-        unsigned int cell_index = 0;
-        for (; cell!=endc; ++cell,++cell_index)
-          if (cell->is_locally_owned())
-            {
-              (*return_value.second)(cell_index) = 0.0;
-              if (cell->at_boundary())
-                {
-                  for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
-                    {
-                      if (cell->at_boundary(f) && this->get_geometry_model().depth (cell->face(f)->center()) < cell->face(f)->minimum_vertex_distance()/3)
-                        {
-                          // Get the location of the cell for the expansion
-                          const Point<dim> p = cell->face(f)->center();
-                          (*return_value.second)(cell_index)  = geoid->evaluate(p);
+        const Postprocess::Geoid<dim> &geoid =
+          this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::Geoid<dim> >();
 
-                        }
-                    }
-                }
-            }
+        auto cell = input_data.template get_cell<DoFHandler<dim> >();
 
-        return return_value;
+        bool cell_at_top_boundary = false;
+        for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+          if (cell->at_boundary(f) &&
+              this->get_geometry_model().translate_id_to_symbol_name (cell->face(f)->boundary_id()) == "top")
+            cell_at_top_boundary = true;
+
+        if (cell_at_top_boundary)
+          for (unsigned int q=0; q<input_data.evaluation_points.size(); ++q)
+            computed_quantities[q](0) = geoid.evaluate(input_data.evaluation_points[q]);
       }
 
       template <int dim>

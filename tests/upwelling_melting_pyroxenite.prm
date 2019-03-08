@@ -80,14 +80,14 @@ subsection Initial composition model
 end
 
 subsection Boundary temperature model
-  set Model name = box
+  set List of model names = box
   subsection Box
     set Bottom temperature = 1746.794  # 1350°C adiabat
   end
 end
 
 subsection Boundary composition model
-  set Model name = initial composition
+  set List of model names = initial composition
 end
 
 subsection Boundary velocity model
@@ -96,16 +96,23 @@ subsection Boundary velocity model
   end
 end
 
-subsection Model settings
-  # The next parameters then describe on which parts of the
-  # boundary we prescribe a zero or nonzero velocity and
-  # on which parts the flow is allowed to be tangential.
-  # Here, all four sides of the box allow tangential
-  # unrestricted flow but with a zero normal component:
-  set Zero velocity boundary indicators       =
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary velocity model
   set Prescribed velocity boundary indicators = 2:function
+end
+
+subsection Boundary velocity model
   set Tangential velocity boundary indicators = 0,1
+end
+
+subsection Boundary temperature model
   set Fixed temperature boundary indicators   = 2
+end
+
+subsection Boundary composition model
   set Fixed composition boundary indicators   = 2
 end
 

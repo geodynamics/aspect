@@ -15,8 +15,7 @@
 # in equilibrium.
 #
 set Dimension                              = 2
-set Nonlinear solver scheme                = iterated IMPES
-set Linear solver tolerance                = 1e-12
+set Nonlinear solver scheme                = iterated Advection and Stokes
 
 # There are several global variables that have to do with what
 # time system we want to work in and what the end time is.
@@ -63,11 +62,11 @@ subsection Initial composition model
 end
 
 subsection Boundary temperature model
-  set Model name = initial temperature
+  set List of model names = initial temperature
 end
 
 subsection Boundary composition model
-  set Model name = initial composition
+  set List of model names = initial composition
 end
 
 subsection Boundary velocity model
@@ -76,13 +75,23 @@ subsection Boundary velocity model
   end
 end
 
-subsection Model settings
-  set Zero velocity boundary indicators       =
-  set Prescribed velocity boundary indicators = 
-  set Tangential velocity boundary indicators = 0,1,2,3
-  set Fixed temperature boundary indicators   = 2
-  set Fixed composition boundary indicators   = 2
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
 
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = 0,1,2,3
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = 2
+end
+
+subsection Boundary composition model
+  set Fixed composition boundary indicators   = 2
+end
+
+subsection Melt settings
   set Include melt transport                  = true
 end
 
@@ -144,3 +153,8 @@ subsection Postprocess
   end
 end
 
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-12
+  end
+end

@@ -1,0 +1,320 @@
+
+Number of active cells: 640 (on 4 levels)
+Number of degrees of freedom: 8,716 (5,346+697+2,673)
+
+Number of free surface degrees of freedom: 1394
+*** Timestep 0:  t=0 years
+   Solving mesh velocity system... 0 iterations.
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+12 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.45536e-16, 1
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1
+
+   Solving temperature system... 0 iterations.
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.45536e-16, 4.3798e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 4.3798e-08
+
+
+Number of active cells: 664 (on 5 levels)
+Number of degrees of freedom: 9,184 (5,634+733+2,817)
+
+Number of free surface degrees of freedom: 1466
+*** Timestep 0:  t=0 years
+   Solving mesh velocity system... 0 iterations.
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+12 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.10553e-16, 1
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1
+
+   Solving temperature system... 0 iterations.
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.10553e-16, 5.97035e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 5.97035e-08
+
+
+   Postprocessing:
+
+     Model domain depth (m):                        200000
+     Temperature contrast across model domain (K):  0
+     Reference depth (m):                           0
+     Reference temperature (K):                     0
+     Reference pressure (Pa):                       0
+     Reference gravity (m/s^2):                     10
+     Reference density (kg/m^3):                    3300
+     Reference thermal expansion coefficient (1/K): 4e-05
+     Reference specific heat capacity (J/(K*kg)):   1250
+     Reference thermal conductivity (W/(m*K)):      4.7
+     Reference viscosity (Pa*s):                    1e+21
+     Reference thermal diffusivity (m^2/s):         1.13939e-06
+     Rayleigh number:                               0
+
+     Topography min/max: 0 m, 0 m
+     RMS, max velocity:  0.000714 m/year, 0.00231 m/year
+
+*** Timestep 1:  t=135061 years
+   Solving mesh velocity system... 1 iterations.
+   Solving temperature system... 9 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+14 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.320951, 1.49028
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1.49028
+
+   Solving temperature system... 8 iterations.
+   Solving Stokes system... 0+10 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.00829604, 0.00591065
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.00829604
+
+   Solving temperature system... 6 iterations.
+   Solving Stokes system... 0+6 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.44118e-05, 1.67777e-05
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 2.44118e-05
+
+   Solving temperature system... 4 iterations.
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 6.68294e-08, 6.43749e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 6.68294e-08
+
+
+   Postprocessing:
+     Topography min/max: -78.72 m, 175.3 m
+     RMS, max velocity:  0.00055 m/year, 0.00136 m/year
+
+*** Timestep 2:  t=371186 years
+   Solving mesh velocity system... 1 iterations.
+   Solving temperature system... 9 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+14 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.419472, 1.60179
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1.60179
+
+   Solving temperature system... 8 iterations.
+   Solving Stokes system... 0+10 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.0194294, 0.0033101
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.0194294
+
+   Solving temperature system... 6 iterations.
+   Solving Stokes system... 0+7 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 5.80041e-05, 9.69542e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 5.80041e-05
+
+   Solving temperature system... 4 iterations.
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.43798e-07, 2.63685e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 1.43798e-07
+
+
+   Postprocessing:
+     Topography min/max: -106.7 m, 83.67 m
+     RMS, max velocity:  0.00069 m/year, 0.0022 m/year
+
+*** Timestep 3:  t=513293 years
+   Solving mesh velocity system... 1 iterations.
+   Solving temperature system... 8 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+14 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.0847454, 0.471672
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.471672
+
+   Solving temperature system... 7 iterations.
+   Solving Stokes system... 0+10 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.00481922, 0.000915868
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.00481922
+
+   Solving temperature system... 5 iterations.
+   Solving Stokes system... 0+6 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.04091e-05, 1.94465e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 1.04091e-05
+
+   Solving temperature system... 3 iterations.
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.88383e-08, 7.51653e-09
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 1.88383e-08
+
+
+   Postprocessing:
+     Topography min/max: -12.59 m, 41.1 m
+     RMS, max velocity:  0.000457 m/year, 0.00178 m/year
+
+*** Timestep 4:  t=693132 years
+   Solving mesh velocity system... 1 iterations.
+   Solving temperature system... 8 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+13 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.0275387, 0.365477
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.365477
+
+   Solving temperature system... 7 iterations.
+   Solving Stokes system... 0+10 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.00239656, 0.00064167
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.00239656
+
+   Solving temperature system... 5 iterations.
+   Solving Stokes system... 0+5 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 5.54385e-06, 1.45574e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 5.54385e-06
+
+
+   Postprocessing:
+     Topography min/max: -18.8 m, 58.78 m
+     RMS, max velocity:  0.00044 m/year, 0.0017 m/year
+
+*** Timestep 5:  t=882310 years
+   Solving mesh velocity system... 1 iterations.
+   Solving temperature system... 8 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+14 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.0193293, 0.16303
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.16303
+
+   Solving temperature system... 7 iterations.
+   Solving Stokes system... 0+9 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.000508684, 0.000450762
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000508684
+
+   Solving temperature system... 5 iterations.
+   Solving Stokes system... 0+2 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.23605e-06, 1.07454e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 1.23605e-06
+
+
+   Postprocessing:
+     Topography min/max: -14.4 m, 49.01 m
+     RMS, max velocity:  0.000445 m/year, 0.0017 m/year
+
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+
+*** Timestep 6:  t=1.07019e+06 years
+   Solving mesh velocity system... 1 iterations.
+   Solving temperature system... 8 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+13 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.0120697, 0.107064
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.107064
+
+   Solving temperature system... 7 iterations.
+   Solving Stokes system... 0+8 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.00025046, 0.000285346
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000285346
+
+   Solving temperature system... 4 iterations.
+   Solving Stokes system... 0+2 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 5.94103e-07, 6.68604e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 6.68604e-07
+
+
+   Postprocessing:
+     Topography min/max: -16.62 m, 53.86 m
+     RMS, max velocity:  0.000438 m/year, 0.00166 m/year
+
+*** Timestep 7:  t=1.26266e+06 years
+   Solving mesh velocity system... 1 iterations.
+   Solving temperature system... 8 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+12 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.00838116, 0.0487084
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0487084
+
+   Solving temperature system... 6 iterations.
+   Solving Stokes system... 0+8 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.000127766, 0.000129119
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000129119
+
+   Solving temperature system... 4 iterations.
+   Solving Stokes system... 0+2 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.97658e-07, 2.9659e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 2.97658e-07
+
+
+   Postprocessing:
+     Topography min/max: -15.62 m, 51.8 m
+     RMS, max velocity:  0.000437 m/year, 0.00164 m/year
+
+*** Timestep 8:  t=1.45689e+06 years
+   Solving mesh velocity system... 1 iterations.
+   Solving temperature system... 8 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+12 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.00622661, 0.0274262
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0274262
+
+   Solving temperature system... 6 iterations.
+   Solving Stokes system... 0+7 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 6.04838e-05, 6.54369e-05
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 6.54369e-05
+
+   Solving temperature system... 4 iterations.
+   Solving Stokes system... 0+2 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.39559e-07, 1.60765e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 1.60765e-07
+
+
+   Postprocessing:
+     Topography min/max: -16.19 m, 53.07 m
+     RMS, max velocity:  0.000434 m/year, 0.00161 m/year
+
+*** Timestep 9:  t=1.65441e+06 years
+   Solving mesh velocity system... 1 iterations.
+   Solving temperature system... 8 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+12 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.00489433, 0.014521
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.014521
+
+   Solving temperature system... 6 iterations.
+   Solving Stokes system... 0+7 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.36671e-05, 3.51523e-05
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 3.51523e-05
+
+   Solving temperature system... 4 iterations.
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 7.57618e-08, 8.50402e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 8.50402e-08
+
+
+   Postprocessing:
+     Topography min/max: -15.96 m, 52.63 m
+     RMS, max velocity:  0.000432 m/year, 0.00159 m/year
+
+*** Timestep 10:  t=1.8545e+06 years
+   Solving mesh velocity system... 1 iterations.
+   Solving temperature system... 8 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+11 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.00400225, 0.00876236
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00876236
+
+   Solving temperature system... 6 iterations.
+   Solving Stokes system... 0+7 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.58918e-05, 1.67608e-05
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 1.67608e-05
+
+   Solving temperature system... 3 iterations.
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.59926e-08, 4.08336e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 4.08336e-08
+
+
+   Postprocessing:
+     Topography min/max: -16.14 m, 53.07 m
+     RMS, max velocity:  0.000429 m/year, 0.00156 m/year
+
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+
+Termination requested by criterion: end step
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

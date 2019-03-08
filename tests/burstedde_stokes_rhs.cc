@@ -1,5 +1,6 @@
 #include <aspect/material_model/simple.h>
 #include <aspect/boundary_velocity/interface.h>
+#include <aspect/postprocess/interface.h>
 #include <aspect/simulator_access.h>
 #include <aspect/global.h>
 #include <deal.II/dofs/dof_tools.h>
@@ -376,13 +377,13 @@ namespace aspect
     std::pair<std::string,std::string>
     BursteddePostprocessor<dim>::execute (TableHandler &statistics)
     {
-      std_cxx1x::shared_ptr<Function<dim> > ref_func;
+      std::shared_ptr<Function<dim> > ref_func;
       {
         const BursteddeMaterial<dim> *
         material_model
           = dynamic_cast<const BursteddeMaterial<dim> *>(&this->get_material_model());
 
-        ref_func.reset (new AnalyticSolutions::FunctionBurstedde<dim>(material_model->get_beta()));
+        ref_func = std::make_shared<AnalyticSolutions::FunctionBurstedde<dim>>(material_model->get_beta());
       }
 
       const QGauss<dim> quadrature_formula (this->introspection().polynomial_degree.velocities+2);

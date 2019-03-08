@@ -1,0 +1,179 @@
+
+Number of active cells: 1 (on 1 levels)
+Number of degrees of freedom: 31 (18+4+9)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 2+0 iterations.
+
+   Postprocessing:
+     Average density / Average viscosity / Total mass:  3300 kg/m^3, 1e+21 Pa s, 3.3e+13 kg
+
+*** Timestep 1:  t=5e+06 years
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Average density / Average viscosity / Total mass:  3222 kg/m^3, 6.023e+20 Pa s, 3.222e+13 kg
+
+*** Timestep 2:  t=1e+07 years
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Average density / Average viscosity / Total mass:  3109 kg/m^3, 2.921e+20 Pa s, 3.109e+13 kg
+
+*** Timestep 3:  t=1.5e+07 years
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Average density / Average viscosity / Total mass:  3034 kg/m^3, 1.625e+20 Pa s, 3.034e+13 kg
+
+*** Timestep 4:  t=2e+07 years
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Average density / Average viscosity / Total mass:  2992 kg/m^3, 1.173e+20 Pa s, 2.992e+13 kg
+
+*** Timestep 5:  t=2.5e+07 years
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Average density / Average viscosity / Total mass:  2974 kg/m^3, 1.029e+20 Pa s, 2.974e+13 kg
+
+*** Timestep 6:  t=3e+07 years
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Average density / Average viscosity / Total mass:  2969 kg/m^3, 9.914e+19 Pa s, 2.969e+13 kg
+
+*** Timestep 7:  t=3.5e+07 years
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Average density / Average viscosity / Total mass:  2968 kg/m^3, 9.877e+19 Pa s, 2.968e+13 kg
+
+*** Timestep 8:  t=4e+07 years
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Average density / Average viscosity / Total mass:  2969 kg/m^3, 9.922e+19 Pa s, 2.969e+13 kg
+
+*** Timestep 9:  t=4.5e+07 years
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Average density / Average viscosity / Total mass:  2969 kg/m^3, 9.963e+19 Pa s, 2.969e+13 kg
+
+*** Timestep 10:  t=5e+07 years
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Average density / Average viscosity / Total mass:  2970 kg/m^3, 9.987e+19 Pa s, 2.97e+13 kg
+
+*** Timestep 11:  t=5.5e+07 years
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Average density / Average viscosity / Total mass:  2970 kg/m^3, 9.997e+19 Pa s, 2.97e+13 kg
+
+*** Timestep 12:  t=6e+07 years
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Average density / Average viscosity / Total mass:  2970 kg/m^3, 1e+20 Pa s, 2.97e+13 kg
+
+*** Timestep 13:  t=6.5e+07 years
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Average density / Average viscosity / Total mass:  2970 kg/m^3, 1e+20 Pa s, 2.97e+13 kg
+
+*** Timestep 14:  t=7e+07 years
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Average density / Average viscosity / Total mass:  2970 kg/m^3, 1e+20 Pa s, 2.97e+13 kg
+
+*** Timestep 15:  t=7.5e+07 years
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Average density / Average viscosity / Total mass:  2970 kg/m^3, 1e+20 Pa s, 2.97e+13 kg
+
+*** Timestep 16:  t=8e+07 years
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Average density / Average viscosity / Total mass:  2970 kg/m^3, 1e+20 Pa s, 2.97e+13 kg
+
+*** Timestep 17:  t=8.5e+07 years
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Average density / Average viscosity / Total mass:  2970 kg/m^3, 1e+20 Pa s, 2.97e+13 kg
+
+*** Timestep 18:  t=9e+07 years
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Average density / Average viscosity / Total mass:  2970 kg/m^3, 1e+20 Pa s, 2.97e+13 kg
+
+*** Timestep 19:  t=9.5e+07 years
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Average density / Average viscosity / Total mass:  2970 kg/m^3, 1e+20 Pa s, 2.97e+13 kg
+
+*** Timestep 20:  t=1e+08 years
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Average density / Average viscosity / Total mass:  2970 kg/m^3, 1e+20 Pa s, 2.97e+13 kg
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
@@ -65,6 +65,14 @@ namespace aspect
          */
         virtual bool is_compressible () const;
 
+        /**
+         * Initialization function. This function is called once at the
+         * beginning of the program after parse_parameters is run and after
+         * the SimulatorAccess (if applicable) is initialized.
+         */
+        virtual
+        void
+        initialize ();
 
         virtual void evaluate(const typename Interface<dim>::MaterialModelInputs &in,
                               typename Interface<dim>::MaterialModelOutputs &out) const;
@@ -105,6 +113,11 @@ namespace aspect
          * @}
          */
 
+        virtual
+        void
+        create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const;
+
+
       private:
         double reference_rho_s;
         double reference_rho_f;
@@ -128,6 +141,7 @@ namespace aspect
         bool model_is_compressible;
         bool fractional_melting;
         double freezing_rate;
+        double melting_time_scale;
 
         /**
          * Parameters for anhydrous melting of peridotite after Katz, 2003

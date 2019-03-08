@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,13 +14,14 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
 
 #include <aspect/postprocess/visualization/material_properties.h>
 #include <aspect/utilities.h>
+#include <aspect/melt.h>
 
 #include <algorithm>
 
@@ -85,7 +86,7 @@ namespace aspect
       MaterialProperties<dim>::
       get_needed_update_flags () const
       {
-        return update_gradients | update_values  | update_q_points;
+        return update_gradients | update_values  | update_quadrature_points;
       }
 
       template <int dim>
@@ -103,8 +104,22 @@ namespace aspect
         MaterialModel::MaterialModelOutputs<dim> out(n_quadrature_points,
                                                      this->n_compositional_fields());
 
-
         this->get_material_model().evaluate(in, out);
+
+        std::vector<double> melt_fractions(n_quadrature_points);
+        if (std::find(property_names.begin(), property_names.end(), "melt fraction") != property_names.end())
+          {
+            // we can only postprocess melt fractions if the material model that is used
+            // in the simulation has implemented them
+            // otherwise, throw an exception
+            if (const MaterialModel::MeltFractionModel<dim> *
+                melt_material_model = dynamic_cast <const MaterialModel::MeltFractionModel<dim>*> (&this->get_material_model()))
+              melt_material_model->melt_fractions(in, melt_fractions);
+            else
+              AssertThrow(false,
+                          ExcMessage("You are trying to visualize the melt fraction, but the material"
+                                     "model you use does not actually compute a melt fraction."));
+          }
 
         for (unsigned int q=0; q<n_quadrature_points; ++q)
           {
@@ -146,6 +161,8 @@ namespace aspect
                       }
                     --output_index;
                   }
+                else if (property_names[i] == "melt fraction")
+                  computed_quantities[q][output_index] = melt_fractions[q];
                 else
                   AssertThrow(false,
                               ExcMessage("Material property not implemented for this postprocessor."));
@@ -166,7 +183,8 @@ namespace aspect
               const std::string pattern_of_names
                 = "viscosity|density|thermal expansivity|specific heat|"
                   "thermal conductivity|thermal diffusivity|compressibility|"
-                  "entropy derivative temperature|entropy derivative pressure|reaction terms";
+                  "entropy derivative temperature|entropy derivative pressure|reaction terms|"
+                  "melt fraction";
 
               prm.declare_entry("List of material properties",
                                 "density,thermal expansivity,specific heat,viscosity",

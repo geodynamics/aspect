@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2017 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
@@ -158,6 +158,20 @@ namespace aspect
     template <int dim>
     void
     declare_parameters (ParameterHandler &prm);
+
+
+    /**
+     * For the current plugin subsystem, write a connection graph of all of the
+     * plugins we know about, in the format that the
+     * programs dot and neato understand. This allows for a visualization of
+     * how all of the plugins that ASPECT knows about are interconnected, and
+     * connect to other parts of the ASPECT code.
+     *
+     * @param output_stream The stream to write the output to.
+     */
+    template <int dim>
+    void
+    write_plugin_graph (std::ostream &output_stream);
 
 
     /**

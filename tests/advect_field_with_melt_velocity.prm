@@ -1,0 +1,154 @@
+#########################################################
+# This is a test for the advection scheme that transports
+# compositional fields with the melt velocity. The material
+# properties are set in such a way that the melt velocity 
+# is 1 m/yr and the solid velocity is 0. 
+# There are two compositional fields, one is transported 
+# with the solid velocity (the peridotite field), and one is
+# trnsported with the melt velocity (the melt composition
+# field). 
+# While the mass of the peridotite field should be conserved, 
+# the mass of the melt_composition field should decrease over 
+# time with a rate of 1/yr. 
+
+############### Global parameters
+
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 0.1
+set Use years in output instead of seconds = true
+set Adiabatic surface temperature          = 1600 
+set Nonlinear solver scheme                = iterated Advection and Stokes
+set Max nonlinear iterations               = 50  
+set CFL number                             = 1
+
+set Pressure normalization                 = surface
+set Surface pressure                       = 0
+
+
+############### Parameters describing the model
+# Let us here choose again a box domain 
+# where we fix the temperature at the bottom and top,
+# allow free slip along the boundaries
+# and include melt migration.
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1
+    set Y extent = 1
+  end
+end
+
+
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = 2
+  set List of model names = initial temperature
+end
+
+subsection Boundary composition model
+  set Fixed composition boundary indicators   = 2
+  set List of model names = initial composition
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = 0, 1, 2, 3
+#  set Prescribed velocity boundary indicators = 2:function
+  subsection Function
+    set Variable names      = x,y
+    set Function constants  = pi=3.1415926,x0=100000,y0=50000,c=10000
+    set Function expression = 0;0.01
+  end
+end
+
+subsection Melt settings
+  set Include melt transport = true
+end
+
+############### Compositional fields
+# We want to use two compositional fields, the porosity and
+# an additional field, to check if the melting rate functionality 
+# has the same effect as the reaction term for the other 
+# compositional fields. As the porosity field is advected by
+# a different mechanism, slight differences between the fields
+# are expected. 
+subsection Compositional fields
+  set Number of fields = 3
+  set Names of fields = porosity, peridotite, melt_composition
+  set Compositional field methods = field, field, melt field
+end
+
+# We then choose a vertical gravity model and describe the
+# initial temperature with a vertical gradient. 
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 10.0
+  end
+end
+
+
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Variable names      = x,y
+    set Function constants  = pi=3.1415926,x0=100000,y0=50000,c=10000
+    set Function expression = 293
+  end
+end
+
+subsection Initial composition model
+  set Model name = function
+  subsection Function
+    set Variable names      = x,y
+    set Function constants  = pi=3.1415926,x0=50000,y0=0.5,c=10000
+    set Function expression = 0.0872158; if(y>y0,1,0); if(y>y0,1,0)
+  end
+end
+
+
+subsection Material model
+  set Model name = melting rate
+end
+
+
+# The final part of this input file describes how many times the
+# mesh is refined and what to do with the solution once computed
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 5
+  set Time steps between mesh refinement = 0
+end
+
+subsection Postprocess
+
+  set List of postprocessors = composition statistics, visualization
+
+  subsection Visualization
+
+    set List of output variables      = density, viscosity, thermal expansivity, melt material properties
+
+    subsection Melt material properties
+      set List of properties = permeability, fluid density, compaction viscosity, fluid viscosity
+    end
+
+    set Number of grouped files       = 0
+
+    set Output format                 = vtu
+
+    set Time between graphical output = 0
+
+  end
+
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Use direct solver for Stokes system = false
+  end
+end

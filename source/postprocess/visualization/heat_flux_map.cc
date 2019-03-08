@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,13 +14,15 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
 
 #include <aspect/postprocess/visualization/heat_flux_map.h>
-#include <aspect/simulator_access.h>
+#include <aspect/postprocess/heat_flux_map.h>
+#include <aspect/geometry_model/interface.h>
+#include <aspect/boundary_velocity/interface.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
@@ -31,79 +33,138 @@ namespace aspect
   {
     namespace VisualizationPostprocessors
     {
+      template <int dim>
+      HeatFluxMap<dim>::
+      HeatFluxMap ()
+        :
+        DataPostprocessorScalar<dim> ("heat_flux_map",
+                                      update_quadrature_points)
+      {}
+
+
 
       template <int dim>
-      std::pair<std::string, Vector<float> *>
-      HeatFluxMap<dim>::execute () const
+      void
+      HeatFluxMap<dim>::update ()
       {
-        std::pair<std::string, Vector<float> *>
-        return_value ("heat_flux_map",
-                      new Vector<float>(this->get_triangulation().n_active_cells()));
+        if (output_point_wise_heat_flux)
+          heat_flux_density_solution = Postprocess::internal::compute_dirichlet_boundary_heat_flux_solution_vector(*this);
+        else
+          heat_flux_and_area = internal::compute_heat_flux_through_boundary_faces (*this);
+      }
 
-        // create a quadrature formula based on the temperature element alone.
-        const QGauss<dim-1> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.temperature).degree+1);
 
-        FEFaceValues<dim> fe_face_values (this->get_mapping(),
-                                          this->get_fe(),
-                                          quadrature_formula,
-                                          update_gradients      | update_values |
-                                          update_normal_vectors |
-                                          update_q_points       | update_JxW_values);
 
-        typename MaterialModel::Interface<dim>::MaterialModelInputs in(fe_face_values.n_quadrature_points, this->n_compositional_fields());
-        typename MaterialModel::Interface<dim>::MaterialModelOutputs out(fe_face_values.n_quadrature_points, this->n_compositional_fields());
+      template <int dim>
+      void
+      HeatFluxMap<dim>::
+      evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
+                            std::vector<Vector<double> > &computed_quantities) const
+      {
+        for (unsigned int q=0; q<computed_quantities.size(); ++q)
+          computed_quantities[q](0) = 0;
 
-        std::vector<Tensor<1,dim> > temperature_gradients (quadrature_formula.size());
-        std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (quadrature_formula.size()));
+        auto cell = input_data.template get_cell<DoFHandler<dim> >();
 
-        // loop over all of the surface cells and evaluate the heatflux
-        typename DoFHandler<dim>::active_cell_iterator
-        cell = this->get_dof_handler().begin_active(),
-        endc = this->get_dof_handler().end();
+        if (output_point_wise_heat_flux)
+          {
+            bool cell_at_top_or_bottom_boundary = false;
+            for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+              if (cell->at_boundary(f) &&
+                  (this->get_geometry_model().translate_id_to_symbol_name (cell->face(f)->boundary_id()) == "top" ||
+                   this->get_geometry_model().translate_id_to_symbol_name (cell->face(f)->boundary_id()) == "bottom"))
+                cell_at_top_or_bottom_boundary = true;
 
-        unsigned int cell_index = 0;
-        for (; cell!=endc; ++cell,++cell_index)
-          if (cell->is_locally_owned())
-            if (cell->at_boundary())
+            if (cell_at_top_or_bottom_boundary)
               {
-                double normal_flux = 0;
-                double face_area = 0;
+                std::vector<Point<dim>> quadrature_points(input_data.evaluation_points.size());
+                for (unsigned int i=0; i<input_data.evaluation_points.size(); ++i)
+                  quadrature_points[i] = this->get_mapping().transform_real_to_unit_cell(cell,input_data.evaluation_points[i]);
 
-                for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
-                  if (cell->at_boundary(f))
-                    {
-                      fe_face_values.reinit (cell, f);
+                const Quadrature<dim> quadrature_formula(quadrature_points);
 
-                      // Temperature gradients needed for heat flux.
-                      fe_face_values[this->introspection().extractors.temperature].get_function_gradients (this->get_solution(),
-                          temperature_gradients);
+                FEValues<dim> fe_volume_values (this->get_mapping(),
+                                                this->get_fe(),
+                                                quadrature_formula,
+                                                update_values);
 
-                      // Set use_strain_rate to false since we don't need viscosity.
-                      in.reinit(fe_face_values, &cell, this->introspection(), this->get_solution(), false);
-                      this->get_material_model().evaluate(in, out);
+                fe_volume_values.reinit(cell);
 
+                std::vector<double> heat_flux_values(quadrature_formula.size());
+                fe_volume_values[this->introspection().extractors.temperature].get_function_values(heat_flux_density_solution, heat_flux_values);
 
-                      // Calculate the normal conductive heat flux given by the formula
-                      //   j = - k * n . grad T
-
-                      for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)
-                        {
-                          const double thermal_conductivity
-                            = out.thermal_conductivities[q];
-
-                          normal_flux += -thermal_conductivity *
-                                         (temperature_gradients[q] * fe_face_values.normal_vector(q)) *
-                                         fe_face_values.JxW(q);
-                          face_area += fe_face_values.JxW(q);
-                        }
-                    }
-
-                // store final position and heatflow
-                (*return_value.second)(cell_index) = normal_flux / face_area;
-
+                for (unsigned int q=0; q<quadrature_formula.size(); ++q)
+                  computed_quantities[q](0) = heat_flux_values[q];
               }
+          }
+        else
+          {
+            double heat_flux = 0.0;
 
-        return return_value;
+            for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+              if (cell->at_boundary(f) &&
+                  (this->get_geometry_model().translate_id_to_symbol_name (cell->face(f)->boundary_id()) == "top" ||
+                   this->get_geometry_model().translate_id_to_symbol_name (cell->face(f)->boundary_id()) == "bottom"))
+                {
+                  // add heatflow for this face
+                  heat_flux += heat_flux_and_area[cell->active_cell_index()][f].first /
+                               heat_flux_and_area[cell->active_cell_index()][f].second;
+                }
+
+            for (unsigned int q=0; q<computed_quantities.size(); ++q)
+              computed_quantities[q](0) = heat_flux;
+          }
+      }
+
+
+
+      template <int dim>
+      void
+      HeatFluxMap<dim>::declare_parameters (ParameterHandler &prm)
+      {
+        prm.enter_subsection("Postprocess");
+        {
+          prm.enter_subsection("Visualization");
+          {
+            prm.enter_subsection("Heat flux map");
+            {
+              prm.declare_entry("Output point wise heat flux",
+                                "false",
+                                Patterns::Bool(),
+                                "A boolean flag that controls whether to output the "
+                                "heat flux map as a point wise value, or as a cell-wise "
+                                "averaged value. The point wise output is more "
+                                "accurate, but it currently omits prescribed heat "
+                                "flux values at boundaries and advective heat flux "
+                                "that is caused by velocities non-tangential to boundaries. "
+                                "If you do not use these two features it is recommended "
+                                "to switch this setting on to benefit from the increased "
+                                "output resolution.");
+            }
+            prm.leave_subsection();
+          }
+          prm.leave_subsection();
+        }
+        prm.leave_subsection();
+      }
+
+      template <int dim>
+      void
+      HeatFluxMap<dim>::parse_parameters (ParameterHandler &prm)
+      {
+        prm.enter_subsection("Postprocess");
+        {
+          prm.enter_subsection("Visualization");
+          {
+            prm.enter_subsection("Heat flux map");
+            {
+              output_point_wise_heat_flux = prm.get_bool("Output point wise heat flux");
+            }
+            prm.leave_subsection();
+          }
+          prm.leave_subsection();
+        }
+        prm.leave_subsection();
       }
     }
   }
@@ -117,23 +178,28 @@ namespace aspect
   {
     namespace VisualizationPostprocessors
     {
-
       ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(HeatFluxMap,
                                                   "heat flux map",
                                                   "A visualization output object that generates output for "
-                                                  "the heat flux density across each boundary. The heat flux density "
-                                                  "is computed in outward direction, i.e., from the domain to the "
-                                                  "outside, using the formula $-k \\nabla T \\cdot \\mathbf n$, where "
-                                                  "$k$ is the thermal conductivity as reported by the material "
-                                                  "model, $T$ is the temperature, and $\\mathbf n$ is the outward "
-                                                  "normal. Note that the quantity so computed does not include "
-                                                  "any energy transported across the boundary by material "
-                                                  "transport in cases where $\\mathbf u \\cdot \\mathbf n \\neq 0$."
-                                                  "At the edge of the domain (e.g. top left corner) the heat flux "
-                                                  "density is calculated as the sum of the heat flux across both "
-                                                  "boundaries of the cell (e.g. top and left boundary) divided "
-                                                  "by the sum of both face areas. The integrated heatflux for each "
-                                                  "boundary can be obtained from the heat flux statistics postprocessor.")
+                                                  "the heat flux density across the top and bottom boundary "
+                                                  "in outward direction. "
+                                                  "The heat flux is computed as sum "
+                                                  "of advective heat flux and conductive heat "
+                                                  "flux through Neumann boundaries, both "
+                                                  "computed as integral over the boundary area, "
+                                                  "and conductive heat flux through Dirichlet "
+                                                  "boundaries, which is computed using the "
+                                                  "consistent boundary flux method as described "
+                                                  "in ``Gresho, Lee, Sani, Maslanik, Eaton (1987). "
+                                                  "The consistent Galerkin FEM for computing "
+                                                  "derived boundary quantities in thermal and or "
+                                                  "fluids problems. International Journal for "
+                                                  "Numerical Methods in Fluids, 7(4), 371-394.'' "
+                                                  "If only conductive heat flux through Dirichlet "
+                                                  "boundaries is of interest, the "
+                                                  "postprocessor can produce output of higher resolution "
+                                                  "by evaluating the CBF solution vector point-wise "
+                                                  "instead of computing cell-wise averaged values.")
     }
   }
 }

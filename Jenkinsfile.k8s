@@ -1,0 +1,175 @@
+#!groovy
+
+pipeline {
+  agent {
+    kubernetes {
+      //cloud 'kubernetes'
+      label 'mypod'
+      containerTemplate {
+        name 'dealii'
+        image 'gassmoeller/aspect-tester:8.5.0'
+        ttyEnabled true
+        command 'cat'
+      }
+    }
+  }
+
+  options {
+    timeout(time: 2, unit: 'HOURS')
+  }
+
+  stages {
+    stage ("Info") {
+      steps {
+        container('dealii') {
+          echo "PR: ${env.CHANGE_ID} - ${env.CHANGE_TITLE}"
+          echo "CHANGE_AUTHOR_EMAIL: ${env.CHANGE_AUTHOR_EMAIL}"
+          echo "CHANGE_AUTHOR: ${env.CHANGE_AUTHOR}"
+          echo "CHANGE_AUTHOR_DISPLAY_NAME: ${env.CHANGE_AUTHOR_DISPLAY_NAME}"
+          echo "building on node ${env.NODE_NAME}"
+        }
+      }
+    }
+
+    stage ("Check Permissions") {
+      when {
+        allOf {
+          not {branch 'master'}
+          not {changeRequest authorEmail: "rene.gassmoeller@mailbox.org"}
+          not {changeRequest authorEmail: "timo.heister@gmail.com"}
+          not {changeRequest authorEmail: "bangerth@colostate.edu"}
+          not {changeRequest authorEmail: "judannberg@gmail.com"}
+          not {changeRequest authorEmail: "ja3170@columbia.edu"}
+          not {changeRequest authorEmail: "jbnaliboff@ucdavis.edu"}
+          not {changeRequest authorEmail: "menno.fraters@outlook.com"}
+          not {changeRequest authorEmail: "a.c.glerum@uu.nl"}
+        }
+      }
+      steps {
+        container('dealii') {
+          sh '''
+            wget -q -O - https://api.github.com/repos/geodynamics/aspect/issues/${CHANGE_ID}/labels | grep 'ready to test' || \
+            { echo "This commit will only be tested when it has the label 'ready to test'"; exit 1; }
+          '''
+        }
+      }
+    }
+
+    stage('Check Indentation') {
+      steps {
+        container('dealii') {
+          sh './doc/indent'
+          sh 'git diff > changes-astyle.diff'
+          archiveArtifacts artifacts: 'changes-astyle.diff', fingerprint: true
+          sh '''
+            git diff --exit-code || \
+            { echo "Please check indentation, see artifacts in the top right corner!"; exit 1; }
+          '''
+        }
+      }
+    }
+
+    stage('Build') {
+      options {
+        timeout(time: 15, unit: 'MINUTES')
+      }
+      steps {
+        container('dealii') {
+          sh 'mkdir build-gcc-fast'
+
+          // We need to add this option to mpirun, otherwise
+          // openmpi complains about running as root. We need
+          // to run as root, because the surrounding Jenkins container
+          // assumes we have root access.
+          sh 'sed -i "s/mpirun/mpirun --allow-run-as-root/" "tests/CMakeLists.txt"'
+
+          sh '''
+            cd build-gcc-fast
+
+            # Set up build system and compile ASPECT
+            cmake \
+              -G 'Ninja' \
+              -D CMAKE_CXX_FLAGS='-Werror' \
+              -D ASPECT_TEST_GENERATOR='Ninja' \
+              -D ASPECT_USE_PETSC='OFF' \
+              -D ASPECT_RUN_ALL_TESTS='ON' \
+              -D ASPECT_PRECOMPILE_HEADERS='ON' \
+              ..
+          '''
+
+          sh '''
+            cd build-gcc-fast
+            ninja
+          '''
+        }
+      }
+    }
+
+    stage('Test') {
+      options {
+        timeout(time: 90, unit: 'MINUTES')
+      }
+      steps {
+        container('dealii') {
+          sh '''
+            # This export avoids a warning about
+            # a discovered, but unconnected infiniband network.
+            export OMPI_MCA_btl=self,tcp
+
+            cd build-gcc-fast/tests
+
+            # Let ninja prebuild the test libraries and run
+            # the tests to create the output files in parallel. We
+            # want this to always succeed, because it does not generate
+            # useful output (we do this further down using 'ctest', however
+            # ctest can not run ninja in parallel, so this is the
+            # most efficient way to build the tests).
+            ninja -k 0 tests || true
+          '''
+
+          sh '''
+            # Avoid the warning described above
+            export OMPI_MCA_btl=self,tcp
+
+            cd build-gcc-fast
+
+            # Output the test results using ctest. Since
+            # the tests were prebuild in the previous shell
+            # command, this will be fast although it is not
+            # running in parallel.
+            ctest \
+              --no-compress-output \
+              --test-action Test
+          '''
+        }
+      }
+      post {
+        always {
+          container('dealii') {
+            // Generate the 'Tests' output page in Jenkins
+            xunit testTimeMargin: '3000',
+              thresholdMode: 1,
+              thresholds: [failed(), skipped()],
+              tools: [CTest(pattern: 'build-gcc-fast/Testing/**/*.xml')]
+
+            // Update the reference test output with the new test results
+            sh '''
+              export OMPI_MCA_btl=self,tcp
+              cd build-gcc-fast
+              ninja generate_reference_output
+            '''
+
+            // Revert the change to the mpirun command we made above, so
+            // that the modification does not show up in the 'git diff' command
+            sh 'git checkout tests/CMakeLists.txt'
+
+            // Generate the 'Artifacts' diff-file that can be
+            // used to update the test results
+            sh 'git diff tests > changes-test-results.diff'
+            archiveArtifacts artifacts: 'changes-test-results.diff', fingerprint: true
+          }
+        }
+      }
+    }
+  }
+}

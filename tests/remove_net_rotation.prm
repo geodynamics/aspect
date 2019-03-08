@@ -27,17 +27,25 @@ subsection Geometry model
 end
 
 
-subsection Model settings
-  set Zero velocity boundary indicators       = 
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary velocity model
   set Tangential velocity boundary indicators = 0,1
-  set Prescribed velocity boundary indicators =
+end
+
+subsection Boundary temperature model
   set Fixed temperature boundary indicators   = 0,1
+end
+
+subsection Nullspace removal
   set Remove nullspace = net rotation
 end
 
 
 subsection Boundary temperature model
-  set Model name = spherical constant
+  set List of model names = spherical constant
   subsection Spherical constant
     set Inner temperature = 100
     set Outer temperature = 0
@@ -64,5 +72,8 @@ end
 
 
 subsection Postprocess
-  set List of postprocessors = velocity statistics, basic statistics
+  set List of postprocessors = velocity statistics, basic statistics, rotation statistics
+  subsection Rotation statistics
+    set Use constant density of one = true
+  end
 end

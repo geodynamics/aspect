@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,12 +14,15 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
 
 #include <aspect/postprocess/point_values.h>
+#include <aspect/geometry_model/interface.h>
+#include <aspect/geometry_model/sphere.h>
+#include <aspect/geometry_model/spherical_shell.h>
 #include <aspect/global.h>
 #include <deal.II/numerics/vector_tools.h>
 
@@ -30,27 +33,51 @@ namespace aspect
   namespace Postprocess
   {
     template <int dim>
+    PointValues<dim>::PointValues ()
+      :
+      // the following value is later read from the input file
+      output_interval (0),
+      // initialize this to a nonsensical value; set it to the actual time
+      // the first time around we get to check it
+      last_output_time (std::numeric_limits<double>::quiet_NaN()),
+      evaluation_points_cartesian (std::vector<Point<dim> >() ),
+      point_values (std::vector<std::pair<double, std::vector<Vector<double> > > >() ),
+      use_natural_coordinates (false)
+    {}
+
+    template <int dim>
     std::pair<std::string,std::string>
     PointValues<dim>::execute (TableHandler &)
     {
+      // if this is the first time we get here, set the next output time
+      // to the current time. this makes sure we always produce data during
+      // the first time step
+      if (std::isnan(last_output_time))
+        last_output_time = this->get_time() - output_interval;
+
+      // see if output is requested at this time
+      if (this->get_time() < last_output_time + output_interval)
+        return std::pair<std::string,std::string>();
+
       // evaluate the solution at all of our evaluation points
       std::vector<Vector<double> >
-      current_point_values (evaluation_points.size(),
+      current_point_values (evaluation_points_cartesian.size(),
                             Vector<double> (this->introspection().n_components));
 
-      for (unsigned int p=0; p<evaluation_points.size(); ++p)
+      for (unsigned int p=0; p<evaluation_points_cartesian.size(); ++p)
         {
           // try to evaluate the solution at this point. in parallel, the point
           // will be on only one processor's owned cells, so the others are
           // going to throw an exception. make sure at least one processor
           // finds the given point
           bool point_found = false;
+
           try
             {
               VectorTools::point_value(this->get_mapping(),
                                        this->get_dof_handler(),
                                        this->get_solution(),
-                                       evaluation_points[p],
+                                       evaluation_points_cartesian[p],
                                        current_point_values[p]);
               point_found = true;
             }
@@ -63,11 +90,11 @@ namespace aspect
           const int n_procs = Utilities::MPI::sum (point_found ? 1 : 0, this->get_mpi_communicator());
           AssertThrow (n_procs > 0,
                        ExcMessage ("While trying to evaluate the solution at point " +
-                                   Utilities::to_string(evaluation_points[p][0]) + ", " +
-                                   Utilities::to_string(evaluation_points[p][1]) +
+                                   Utilities::to_string(evaluation_points_cartesian[p][0]) + ", " +
+                                   Utilities::to_string(evaluation_points_cartesian[p][1]) +
                                    (dim == 3
                                     ?
-                                    ", " + Utilities::to_string(evaluation_points[p][2])
+                                    ", " + Utilities::to_string(evaluation_points_cartesian[p][2])
                                     :
                                     "") + "), " +
                                    "no processors reported that the point lies inside the " +
@@ -110,13 +137,13 @@ namespace aspect
            time_point != point_values.end();
            ++time_point)
         {
-          Assert (time_point->second.size() == evaluation_points.size(),
+          Assert (time_point->second.size() == evaluation_points_cartesian.size(),
                   ExcInternalError());
-          for (unsigned int i=0; i<evaluation_points.size(); ++i)
+          for (unsigned int i=0; i<evaluation_points_cartesian.size(); ++i)
             {
               f << /* time = */ time_point->first / (this->convert_output_to_years() ? year_in_seconds : 1.)
                 << ' '
-                << /* location = */ evaluation_points[i] << ' ';
+                << /* location = */ evaluation_points_cartesian[i] << ' ';
 
               for (unsigned int c=0; c<time_point->second[i].size(); ++c)
                 {
@@ -140,8 +167,11 @@ namespace aspect
         }
 
       AssertThrow (f, ExcMessage("Writing data to <" + filename +
-                                 "> did not succeed in the 'point values' "
+                                 "> did not succeed in the `point values' "
                                  "postprocessor."));
+
+      // Update time
+      set_last_output_time (this->get_time());
 
       // return what should be printed to the screen. note that we had
       // just incremented the number, so use the previous value
@@ -158,6 +188,14 @@ namespace aspect
       {
         prm.enter_subsection("Point values");
         {
+          prm.declare_entry ("Time between point values output", "0",
+                             Patterns::Double (0),
+                             "The time interval between each generation of "
+                             "point values output. A value of zero indicates "
+                             "that output should be generated in each time step. "
+                             "Units: years if the "
+                             "'Use years in output instead of seconds' parameter is set; "
+                             "seconds otherwise.");
           prm.declare_entry("Evaluation points", "",
                             // a list of points, separated by semicolons; each point has
                             // exactly 'dim' components/coordinates, separated by commas
@@ -166,6 +204,13 @@ namespace aspect
                             "The list of points at which the solution should be evaluated. "
                             "Points need to be separated by semicolons, and coordinates of "
                             "each point need to be separated by commas.");
+          prm.declare_entry("Use natural coordinates", "false",
+                            Patterns::Bool (),
+                            "Whether or not the Evaluation points are specified in "
+                            "the natural coordinates of the geometry model, e.g. "
+                            "radius, lon, lat for the chunk model. "
+                            "Currently, natural coordinates for the spherical shell "
+                            "and sphere geometries are not supported. ");
         }
         prm.leave_subsection();
       }
@@ -181,8 +226,15 @@ namespace aspect
       {
         prm.enter_subsection("Point values");
         {
+          output_interval = prm.get_double ("Time between point values output");
+          if (this->convert_output_to_years())
+            output_interval *= year_in_seconds;
+
           const std::vector<std::string> point_list
             = Utilities::split_string_list(prm.get("Evaluation points"), ';');
+
+          std::vector<std::array<double,dim> > evaluation_points;
+
           for (unsigned int p=0; p<point_list.size(); ++p)
             {
               const std::vector<std::string> coordinates
@@ -194,10 +246,30 @@ namespace aspect
                                        ">, but this does not correspond to a list of numbers with "
                                        "as many coordinates as you run your simulation in."));
 
-              Point<dim> point;
+              std::array<double,dim> point;
               for (unsigned int d=0; d<dim; ++d)
                 point[d] = Utilities::string_to_double (coordinates[d]);
               evaluation_points.push_back (point);
+            }
+
+          use_natural_coordinates = prm.get_bool("Use natural coordinates");
+
+          if (use_natural_coordinates)
+            AssertThrow (dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()) == nullptr &&
+                         dynamic_cast<const GeometryModel::Sphere<dim>*> (&this->get_geometry_model()) == nullptr,
+                         ExcMessage ("This postprocessor can not be used if the geometry "
+                                     "is a sphere or spherical shell, because these geometries have not implemented natural coordinates."));
+
+          // Convert the vector of coordinate arrays in Cartesian or natural
+          // coordinates to a vector of Point<dim> of Cartesian coordinates.
+          evaluation_points_cartesian.resize(evaluation_points.size());
+          for (unsigned int p=0; p<evaluation_points.size(); ++p)
+            {
+              if (use_natural_coordinates)
+                evaluation_points_cartesian[p] = this->get_geometry_model().natural_to_cartesian_coordinates(evaluation_points[p]);
+              else
+                for (unsigned int i = 0; i < dim; i++)
+                  evaluation_points_cartesian[p][i] = evaluation_points[p][i];
             }
         }
         prm.leave_subsection();
@@ -210,8 +282,9 @@ namespace aspect
     template <class Archive>
     void PointValues<dim>::serialize (Archive &ar, const unsigned int)
     {
-      ar &evaluation_points
-      & point_values;
+      ar &evaluation_points_cartesian
+      & point_values
+      & last_output_time;
     }
 
 
@@ -239,6 +312,26 @@ namespace aspect
           ia >> (*this);
         }
     }
+
+
+    template <int dim>
+    void
+    PointValues<dim>::set_last_output_time (const double current_time)
+    {
+      // if output_interval is positive, then set the next output interval to
+      // a positive multiple.
+      if (output_interval > 0)
+        {
+          // We need to find the last time output was supposed to be written.
+          // this is the last_output_time plus the largest positive multiple
+          // of output_intervals that passed since then. We need to handle the
+          // edge case where last_output_time+output_interval==current_time,
+          // we did an output and std::floor sadly rounds to zero. This is done
+          // by forcing std::floor to round 1.0-eps to 1.0.
+          const double magic = 1.0+2.0*std::numeric_limits<double>::epsilon();
+          last_output_time = last_output_time + std::floor((current_time-last_output_time)/output_interval*magic) * output_interval/magic;
+        }
+    }
   }
 }
 
@@ -252,7 +345,8 @@ namespace aspect
                                   "point values",
                                   "A postprocessor that evaluates the solution (i.e., velocity, pressure, "
                                   "temperature, and compositional fields along with other fields that "
-                                  "are treated as primary variables) at the end of every time step "
+                                  "are treated as primary variables) at the end of every time step or "
+                                  "after a user-specified time interval "
                                   "at a given set of points and then writes this data into the file "
                                   "<point\\_values.txt> in the output directory. The points at which "
                                   "the solution should be evaluated are specified in the section "
@@ -269,9 +363,9 @@ namespace aspect
                                   "\\note{Evaluating the solution of a finite element field at "
                                   "arbitrarily chosen points is an expensive process. Using this "
                                   "postprocessor will only be efficient if the number of evaluation "
-                                  "points is relatively small. If you need a very large number of "
+                                  "points or output times is relatively small. If you need a very large number of "
                                   "evaluation points, you should consider extracting this "
                                   "information from the visualization program you use to display "
-                                  "the output of the 'visualization' postprocessor.}")
+                                  "the output of the `visualization' postprocessor.}")
   }
 }

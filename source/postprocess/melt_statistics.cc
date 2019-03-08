@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2017 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
@@ -71,7 +71,7 @@ namespace aspect
           {
             // fill material model inputs
             fe_values.reinit (cell);
-            in.reinit(fe_values, &cell, this->introspection(), this->get_solution());
+            in.reinit(fe_values, cell, this->introspection(), this->get_solution());
 
             // we can only postprocess melt fractions if the material model that is used
             // in the simulation has implemented them

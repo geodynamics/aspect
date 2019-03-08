@@ -11,14 +11,10 @@ set Use years in output instead of seconds = false
 set End time                               = 1.0
 set Output directory                       = output-convection-box-3d
 
-# Then there are variables that describe the tolerance of
-# the linear solver as well as how the pressure should
+# Then there are variables that describe how the pressure should
 # be normalized. Here, we choose a zero average pressure
 # at the surface of the domain (for the current geometry, the
 # surface is defined as the top boundary).
-set Linear solver tolerance                = 1e-7
-set Temperature solver tolerance           = 1e-10
-
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
 
@@ -63,15 +59,15 @@ subsection Initial temperature model
 end
 
 
-# Then follows a section that describes the boundary conditions
-# for the temperature. The model we choose is called 'box' and
-# allows to set a constant temperature on each of the four sides
-# of the box geometry. In our case, we choose something that is
-# heated from below and cooled from above. (As will be seen
-# in the next section, the actual temperature prescribed here
-# at the left and right does not matter.)
+# Then follows a section that describes the boundary conditions for the
+# temperature. The model we choose is called 'box' and allows to set a constant
+# temperature on each of the four sides of the box geometry. In our case, we
+# choose something that is heated from below and cooled from above. 
+# All other parts of the boundary are insulated (i.e., no heat flux through
+# these boundaries; this is also often used to specify symmetry boundaries).
 subsection Boundary temperature model
-  set Model name = box
+  set List of model names = box
+  set Fixed temperature boundary indicators   = bottom, top
 
   subsection Box
     set Bottom temperature = 1
@@ -82,27 +78,13 @@ subsection Boundary temperature model
 end
 
 
-# We then also have to prescribe several other parts of the model such as
-# which boundaries actually carry a prescribed boundary temperature, whereas
-# all other parts of the boundary are insulated (i.e., no heat flux through
-# these boundaries; this is also often used to specify symmetry boundaries).
-subsection Model settings
-  set Fixed temperature boundary indicators   = bottom, top
-
-  # The next parameters then describe on which parts of the
-  # boundary we prescribe a zero or nonzero velocity and
-  # on which parts the flow is allowed to be tangential.
-  # Here, all six sides of the box allow tangential
-  # unrestricted flow but with a zero normal component:
-  set Zero velocity boundary indicators       =
-  set Prescribed velocity boundary indicators =
+# The next parameters then describe on which parts of the
+# boundary we prescribe a zero or nonzero velocity and
+# on which parts the flow is allowed to be tangential.
+# Here, all six sides of the box allow tangential
+# unrestricted flow but with a zero normal component:
+subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, right, front, back, bottom, top
-
-  # The final part of this section describes whether we
-  # want to include adiabatic heating (from a small
-  # compressibility of the medium) or from shear friction,
-  # as well as the rate of internal heating. We do not
-  # want to use any of these options here:
 end
 
 
@@ -176,3 +158,6 @@ subsection Checkpointing
 end
 
 
+subsection Solver parameters
+  set Temperature solver tolerance = 1e-10
+end

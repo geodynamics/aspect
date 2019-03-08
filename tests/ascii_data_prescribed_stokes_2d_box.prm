@@ -15,7 +15,7 @@ set Surface pressure                       = 0
 subsection Prescribed Stokes solution  
   set Model name = ascii data
 end
-set Nonlinear solver scheme                = Advection only
+set Nonlinear solver scheme                = single Advection, no Stokes
 
 
 subsection Geometry model
@@ -39,7 +39,7 @@ end
 
 
 subsection Boundary temperature model
-  set Model name = box
+  set List of model names = box
 
   subsection Box
     set Bottom temperature = 1
@@ -50,14 +50,12 @@ subsection Boundary temperature model
 end
 
 
-subsection Model settings
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary temperature model
   set Fixed temperature boundary indicators   = bottom, top
-
-  set Zero velocity boundary indicators       =
-  set Prescribed velocity boundary indicators =
-  set Tangential velocity boundary indicators = 
-
-  
 end
 
 

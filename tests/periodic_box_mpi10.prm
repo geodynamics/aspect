@@ -12,12 +12,11 @@ set Output directory                       = output
 set Adiabatic surface temperature          = 0
 set Surface pressure                       = 0
 set Pressure normalization                 = no
-set Linear solver tolerance = 1.e-7
 set Use years in output instead of seconds = true
-set Nonlinear solver scheme                = IMPES
+set Nonlinear solver scheme                = single Advection, single Stokes
 
 subsection Boundary temperature model
-  set Model name = constant
+  set List of model names = constant
   subsection Constant
     set Boundary indicator to temperature mappings = 0:0,1:0,2:0,3:0
   end
@@ -88,11 +87,11 @@ subsection Mesh refinement
 end
 
 
-subsection Model settings
-  set Fixed temperature boundary indicators   = 
-  set Prescribed velocity boundary indicators =
-  set Tangential velocity boundary indicators = 
-  set Zero velocity boundary indicators       = 
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Nullspace removal
   set Remove nullspace                        = net translation
 end
 
@@ -103,4 +102,10 @@ end
 
 subsection Postprocess
   set List of postprocessors = velocity statistics, basic statistics, visualization
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1.e-7
+  end
 end

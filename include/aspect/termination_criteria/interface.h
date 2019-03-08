@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
@@ -25,7 +25,7 @@
 #include <aspect/global.h>
 #include <aspect/plugins.h>
 
-#include <deal.II/base/std_cxx11/shared_ptr.h>
+#include <memory>
 #include <deal.II/base/parameter_handler.h>
 #include <aspect/simulator_access.h>
 
@@ -231,6 +231,19 @@ namespace aspect
                                         Interface<dim> *(*factory_function) ());
 
         /**
+         * For the current plugin subsystem, write a connection graph of all of the
+         * plugins we know about, in the format that the
+         * programs dot and neato understand. This allows for a visualization of
+         * how all of the plugins that ASPECT knows about are interconnected, and
+         * connect to other parts of the ASPECT code.
+         *
+         * @param output_stream The stream to write the output to.
+         */
+        static
+        void
+        write_plugin_graph (std::ostream &output_stream);
+
+        /**
          * Exception.
          */
         DeclException1 (ExcTerminationCriteriaNameNotFound,
@@ -243,13 +256,13 @@ namespace aspect
          * A list of termination criterion objects that have been requested in
          * the parameter file.
          */
-        std::list<std_cxx11::shared_ptr<Interface<dim> > > termination_objects;
+        std::list<std::unique_ptr<Interface<dim> > > termination_objects;
 
         /**
          * A list of names corresponding to the termination criteria in the
          * termination_objects.
          */
-        std::list<std::string>                              termination_obj_names;
+        std::list<std::string>                       termination_obj_names;
 
         /**
          * Whether to do a final checkpoint before termination. This is

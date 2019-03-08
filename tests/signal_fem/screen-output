@@ -17,7 +17,7 @@ Number of degrees of freedom: 334 (50+9+25+200+25+25)
    Skipping A composition solve because RHS is zero.
    Skipping B composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 14+0 iterations.
+   Solving Stokes system... 11+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-signal_fem/solution/solution-00000

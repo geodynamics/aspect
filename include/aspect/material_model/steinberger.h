@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
@@ -22,6 +22,8 @@
 #define _aspect_material_model_steinberger_h
 
 #include <aspect/material_model/interface.h>
+
+#include <aspect/material_model/grain_size.h>
 #include <aspect/simulator_access.h>
 
 namespace aspect
@@ -32,16 +34,88 @@ namespace aspect
 
     namespace internal
     {
-      class MaterialLookup;
-      class LateralViscosityLookup;
-      class RadialViscosityLookup;
+      /**
+       * A class that reads in a text file that contains the
+       * temperature-dependency of viscosity for a set of equidistant depth
+       * layers. See
+       * the data/material-model/steinberger directory for an example data
+       * file.
+       * The class can return the value for a given depth.
+       */
+      class LateralViscosityLookup
+      {
+        public:
+          /**
+           * Read in a file.
+           */
+          LateralViscosityLookup(const std::string &filename,
+                                 const MPI_Comm &comm);
+
+          /**
+           * Returns a temperature-dependency for a given depth.
+           */
+          double lateral_viscosity(double depth) const;
+
+          /**
+           * Number of depth slices of the read file.
+           */
+          int get_nslices() const;
+        private:
+          /**
+           * Stored values
+           */
+          std::vector<double> values;
+
+          /**
+           * Stored bounds an depths.
+           */
+          double min_depth;
+          double delta_depth;
+          double max_depth;
+      };
+
+      /**
+       * A class that reads in a text file that contains the
+       * viscosity for a set of equidistant depth layers. See
+       * the data/material-model/steinberger directory for an example data
+       * file.
+       * The class can return the value for a given depth.
+       */
+      class RadialViscosityLookup
+      {
+        public:
+          /**
+           * Constructor. Reads in the given file.
+           */
+          RadialViscosityLookup(const std::string &filename,
+                                const MPI_Comm &comm);
+
+          /**
+           * Return the viscosity for a given depth.
+           */
+          double radial_viscosity(double depth) const;
+
+        private:
+          /**
+           * Stored data values.
+           */
+          std::vector<double> values;
+
+          /**
+           * Depth bounds for the read in values.
+           */
+          double min_depth;
+          double delta_depth;
+          double max_depth;
+      };
     }
+
     /**
      * A variable viscosity material model that reads the essential values of
      * coefficients from tables in input files.
      *
      * The viscosity of this model is based on the paper
-     * Steinberger/Calderwood 2006: "Models of large-scale viscous flow in the
+     * Steinberger & Calderwood 2006: "Models of large-scale viscous flow in the
      * Earth's mantle with constraints from mineral physics and surface
      * observations". The thermal conductivity is constant and the other
      * parameters are provided via lookup tables from the software PERPLEX.
@@ -110,6 +184,20 @@ namespace aspect
                                    const double      pressure,
                                    const std::vector<double> &compositional_fields,
                                    const Point<dim> &position) const;
+
+        /**
+         * Returns the cell-wise averaged enthalpy derivatives for the evaluate
+         * function and postprocessors. The function returns two pairs, the
+         * first one represents the temperature derivative, the second one the
+         * pressure derivative. The first member of each pair is the derivative,
+         * the second one the number of vertex combinations the function could
+         * use to compute the derivative. The second member is useful to handle
+         * the case no suitable combination of vertices could be found (e.g.
+         * if the temperature and pressure on all vertices of the current
+         * cell is identical.
+         */
+        std::array<std::pair<double, unsigned int>,2>
+        enthalpy_derivative (const typename Interface<dim>::MaterialModelInputs &in) const;
         /**
          * @}
          */
@@ -183,7 +271,8 @@ namespace aspect
         bool use_lateral_average_temperature;
 
         /**
-         * Reference viscosity. Only used for pressure scaling purposes.
+         * Reference viscosity. Only used for pressure scaling purposes
+         * and returned by the reference_viscosity() function.
          */
         double reference_eta;
 
@@ -219,19 +308,19 @@ namespace aspect
          * List of pointers to objects that read and process data we get from
          * Perplex files.
          */
-        std::vector<std_cxx11::shared_ptr<internal::MaterialLookup> > material_lookup;
+        std::vector<std::shared_ptr<Lookup::PerplexReader> > material_lookup;
 
         /**
          * Pointer to an object that reads and processes data for the lateral
          * temperature dependency of viscosity.
          */
-        std_cxx11::shared_ptr<internal::LateralViscosityLookup> lateral_viscosity_lookup;
+        std::shared_ptr<internal::LateralViscosityLookup> lateral_viscosity_lookup;
 
         /**
          * Pointer to an object that reads and processes data for the radial
          * viscosity profile.
          */
-        std_cxx11::shared_ptr<internal::RadialViscosityLookup> radial_viscosity_lookup;
+        std::shared_ptr<internal::RadialViscosityLookup> radial_viscosity_lookup;
 
     };
   }

@@ -5,7 +5,7 @@ Number of degrees of freedom: 10,436 (6,402+833+3,201)
 *** Timestep 0:  t=0 seconds
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 43+0 iterations.
+   Solving Stokes system... 46+0 iterations.
 
    Postprocessing:
 
@@ -23,10 +23,10 @@ Number of degrees of freedom: 10,436 (6,402+833+3,201)
      Reference thermal diffusivity (m^2/s):         2.42424e-13
      Rayleigh number:                               0
 
-     RMS, max velocity:                         1.2e-09 m/s, 3.64e-09 m/s
-     Temperature min/avg/max:                   0 K, 100.3 K, 1613 K
-     Heat fluxes through boundary parts:        -0.1191 W, -0.2681 W, 4.163e-16 W, 7.064e-16 W
-     Max and min velocity along boundary parts: 3.629e-09 m/s, 4.252e-12 m/s, 0 m/s, 0 m/s, 1.745e-10 m/s, 2.135e-12 m/s, 1.422e-09 m/s, 1.784e-12 m/s
+     RMS, max velocity:                               1.2e-09 m/s, 3.64e-09 m/s
+     Temperature min/avg/max:                         0 K, 100.3 K, 1613 K
+     Heat fluxes through boundary parts:              -3.291e+05 W, -5.474e+04 W, 0 W, 0 W
+     Max, min, and rms velocity along boundary parts: 3.629e-09 m/s, 4.252e-12 m/s, 2.027e-09 m/s, 0 m/s, 0 m/s, 0 m/s, 1.745e-10 m/s, 2.135e-12 m/s, 1.105e-10 m/s, 1.422e-09 m/s, 1.784e-12 m/s, 9.051e-10 m/s
 
 Number of active cells: 816 (on 6 levels)
 Number of degrees of freedom: 11,292 (6,928+900+3,464)
@@ -40,10 +40,10 @@ Number of degrees of freedom: 12,274 (7,530+979+3,765)
    Solving Stokes system... 200+19 iterations.
 
    Postprocessing:
-     RMS, max velocity:                         1.24e-09 m/s, 3.71e-09 m/s
-     Temperature min/avg/max:                   -199.1 K, 101.2 K, 1613 K
-     Heat fluxes through boundary parts:        -0.1173 W, -0.267 W, -9.457e-07 W, -7.313e-06 W
-     Max and min velocity along boundary parts: 3.692e-09 m/s, 4.322e-12 m/s, 0 m/s, 0 m/s, 1.764e-10 m/s, 2.137e-12 m/s, 1.442e-09 m/s, 1.789e-12 m/s
+     RMS, max velocity:                               1.24e-09 m/s, 3.71e-09 m/s
+     Temperature min/avg/max:                         -199.1 K, 101.2 K, 1613 K
+     Heat fluxes through boundary parts:              -5.744e+06 W, -1.649e+06 W, 0 W, 0 W
+     Max, min, and rms velocity along boundary parts: 3.692e-09 m/s, 4.322e-12 m/s, 2.064e-09 m/s, 0 m/s, 0 m/s, 0 m/s, 1.764e-10 m/s, 2.137e-12 m/s, 1.117e-10 m/s, 1.442e-09 m/s, 1.789e-12 m/s, 9.186e-10 m/s
 
 Termination requested by criterion: end time
 *** Snapshot created!

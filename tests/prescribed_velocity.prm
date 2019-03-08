@@ -10,7 +10,11 @@ subsection Initial temperature model
   set Model name = function
 end
 
-subsection Model settings
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary velocity model
   set Zero velocity boundary indicators = top
 end
 

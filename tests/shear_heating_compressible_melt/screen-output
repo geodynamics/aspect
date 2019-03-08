@@ -1,0 +1,23 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+Number of active cells: 64 (on 4 levels)
+Number of degrees of freedom: 2,266 (578+162+578+81+289+289+289)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 0 iterations.
+   Skipping porosity composition solve because RHS is zero.
+   Skipping peridotite composition solve because RHS is zero.
+
+   Postprocessing:
+     RMS, max velocity:             1.08 m/s, 1.97 m/s
+     Temperature min/avg/max:       0 K, 0.5014 K, 1 K
+     Heating rate (average/total):  2.111 W/kg, 2.111 W
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

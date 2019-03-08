@@ -1,0 +1,99 @@
+# This is the 'base' input file from which additional input files are generated
+# for the onset of convection example in:
+# benchmarks/onset-of-convection/onset-of-convection.ipynb.
+# UPPERCASE strings are replaced automatically by the python script
+# with appropriate values for each model run. This .prm file will fail if run
+# without substituting appropriate values for each UPPERCASE string.
+
+set Dimension                              = 2
+
+set Use years in output instead of seconds = false
+set Output directory                       = output
+
+
+set Pressure normalization                 = surface
+set Surface pressure                       = 0
+set Use conduction timestep                = true
+
+subsection Termination criteria
+  set Termination criteria                 = end step
+  set End step			           = 1
+end
+
+subsection Formulation
+  set Formulation = Boussinesq approximation
+end
+
+subsection Geometry model
+  set Model name = box
+  
+  subsection Box
+    set X extent = WIDTH
+    set Y extent = HEIGHT
+    set X repetitions = NX
+    set Y repetitions = NY
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,z
+    set Function constants  = p=PMAG, L=WIDTH,H=HEIGHT, pi=3.1415926536, k=2
+    set Function expression = DELTA_T*(1.0-z/H) - p*cos(k*pi*x/L)*sin(pi*z/H)
+  end
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = bottom, top
+  set List of model names = box
+
+  subsection Box
+    set Bottom temperature = DELTA_T
+    set Left temperature   = 0
+    set Right temperature  = 0
+    set Top temperature    = 0
+  end
+end
+
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = left, right, bottom, top
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = GRAVITY
+  end
+end
+
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Reference density             = DENSITY
+    set Reference specific heat       = SPECIFIC_HEAT
+    set Reference temperature         = 0
+    set Thermal conductivity          = KTHERMAL
+    set Thermal expansion coefficient = ALPHA
+    set Viscosity                     = VISCOSITY
+  end
+end
+
+subsection Mesh refinement
+  set Initial global refinement                = IREF
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 0
+end
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, point values
+  subsection Point values
+    set Evaluation points = EVALUATION_POINTS
+  end
+end
+

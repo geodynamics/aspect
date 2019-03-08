@@ -8,7 +8,7 @@ set Adiabatic surface temperature          = 1600.0
 set Use years in output instead of seconds = true
 
 subsection Boundary temperature model
-  set Model name = spherical constant
+  set List of model names = spherical constant
   subsection Spherical constant
     set Inner temperature = 4250
     set Outer temperature = 273
@@ -71,13 +71,25 @@ subsection Mesh refinement
 end
 
 
-subsection Model settings
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary temperature model
   set Fixed temperature boundary indicators   = 0,1
+end
 
-  set Include adiabatic heating               = true
-  set Include shear heating                   = false
+# Warning: Merge the parameter in the following subsection with any
+# other parameter of the same name, otherwise your model results might change
+subsection Heating model
+  set List of model names = adiabatic heating
+end
 
+subsection Boundary velocity model
   set Tangential velocity boundary indicators = 0,2,3
+end
+
+subsection Boundary velocity model
   set Zero velocity boundary indicators       = 1
 end
 

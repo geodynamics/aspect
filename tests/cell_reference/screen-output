@@ -23,7 +23,7 @@ Level: 1 Index: 1
 Level: 1 Index: 2
 Level: 1 Index: 3
 
-   Solving Stokes system... 12+0 iterations.
+   Solving Stokes system... 10+0 iterations.
 
    Postprocessing:
 Level: 1 Index: 0
@@ -34,10 +34,18 @@ Level: 1 Index: 2
 Level: 1 Index: 2
 Level: 1 Index: 3
 Level: 1 Index: 3
+Level: 1 Index: 0
+Level: 1 Index: 1
+Level: 1 Index: 2
+Level: 1 Index: 3
+Level: 1 Index: 0
+Level: 1 Index: 1
+Level: 1 Index: 2
+Level: 1 Index: 3
      Writing graphical output:           output-cell_reference/solution/solution-00000
      RMS, max velocity:                  5.88e-08 m/s, 1.41e-07 m/s
      Temperature min/avg/max:            0 K, 0.9574 K, 1.1 K
-     Heat fluxes through boundary parts: 1.944e-07 W, 5.194e-06 W, 2.8e-07 W, 2.8e-07 W
+     Heat fluxes through boundary parts: 8.38e-07 W, 2.058e-05 W, 0 W, 0 W
 
 Termination requested by criterion: end time
 

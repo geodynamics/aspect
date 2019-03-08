@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2018 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with ASPECT; see the file doc/COPYING.  If not see
+ along with ASPECT; see the file LICENSE.  If not see
  <http://www.gnu.org/licenses/>.
  */
 
@@ -240,7 +240,7 @@ namespace aspect
         std::vector<std::vector<std::pair<std::string, unsigned int> > > info;
 
         // Get the property information of the selected plugins
-        for (typename std::list<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
+        for (typename std::list<std::shared_ptr<Interface<dim> > >::const_iterator
              p = property_list.begin(); p!=property_list.end(); ++p)
           {
             (*p)->initialize();
@@ -250,14 +250,11 @@ namespace aspect
 
         // Initialize our property information
         property_information = ParticlePropertyInformation(info);
-
-        // Create the memory pool that will store all particle properties
-        property_pool.reset(new PropertyPool(property_information.n_components()));
       }
 
       template <int dim>
       void
-      Manager<dim>::initialize_one_particle (Particle<dim> &particle) const
+      Manager<dim>::initialize_one_particle (typename ParticleHandler<dim>::particle_iterator &particle) const
       {
         if (property_information.n_components() == 0)
           return;
@@ -265,10 +262,10 @@ namespace aspect
         std::vector<double> particle_properties;
         particle_properties.reserve(property_information.n_components());
 
-        for (typename std::list<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
+        for (typename std::list<std::shared_ptr<Interface<dim> > >::const_iterator
              p = property_list.begin(); p!=property_list.end(); ++p)
           {
-            (*p)->initialize_one_particle_property(particle.get_location(),
+            (*p)->initialize_one_particle_property(particle->get_location(),
                                                    particle_properties);
           }
 
@@ -278,26 +275,24 @@ namespace aspect
                           "the property plugins. Check the selected property plugins for "
                           "consistency between reported size and actually set properties."));
 
-        particle.set_properties(particle_properties);
+        particle->set_properties(particle_properties);
       }
 
       template <int dim>
-      void
-      Manager<dim>::initialize_late_particle (Particle<dim> &particle,
-                                              const std::multimap<types::LevelInd, Particle<dim> > &particles,
+      std::vector<double>
+      Manager<dim>::initialize_late_particle (const Point<dim> &particle_location,
+                                              const ParticleHandler<dim> &particle_handler,
                                               const Interpolator::Interface<dim> &interpolator,
                                               const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const
       {
-        particle.set_property_pool(*property_pool);
-
         if (property_information.n_components() == 0)
-          return;
+          return std::vector<double>();
 
         std::vector<double> particle_properties;
         particle_properties.reserve(property_information.n_components());
 
         unsigned int property_index = 0;
-        for (typename std::list<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
+        for (typename std::list<std::shared_ptr<Interface<dim> > >::const_iterator
              p = property_list.begin(); p!=property_list.end(); ++p, ++property_index)
           {
             switch ((*p)->late_initialization_mode())
@@ -311,7 +306,7 @@ namespace aspect
 
                 case aspect::Particle::Property::initialize:
                 {
-                  (*p)->initialize_one_particle_property(particle.get_location(),
+                  (*p)->initialize_one_particle_property(particle_location,
                                                          particle_properties);
                   break;
                 }
@@ -324,13 +319,13 @@ namespace aspect
                     {
                       found_cell = (GridTools::find_active_cell_around_point<> (this->get_mapping(),
                                                                                 this->get_triangulation(),
-                                                                                particle.get_location())).first;
+                                                                                particle_location)).first;
                     }
                   else
                     found_cell = cell;
 
-                  const std::vector<std::vector<double> > interpolated_properties = interpolator.properties_at_points(particles,
-                                                                                    std::vector<Point<dim> > (1,particle.get_location()),
+                  const std::vector<std::vector<double> > interpolated_properties = interpolator.properties_at_points(particle_handler,
+                                                                                    std::vector<Point<dim> > (1,particle_location),
                                                                                     ComponentMask(property_information.n_components(),true),
                                                                                     found_cell);
                   for (unsigned int property_component = 0; property_component < property_information.get_components_by_plugin_index(property_index); ++property_component)
@@ -345,24 +340,24 @@ namespace aspect
 
         Assert (particle_properties.size() == property_information.n_components(), ExcInternalError());
 
-        particle.set_properties(particle_properties);
+        return particle_properties;
       }
 
       template <int dim>
       void
-      Manager<dim>::update_one_particle (Particle<dim> &particle,
+      Manager<dim>::update_one_particle (typename ParticleHandler<dim>::particle_iterator &particle,
                                          const Vector<double> &solution,
                                          const std::vector<Tensor<1,dim> > &gradients) const
       {
         unsigned int plugin_index = 0;
-        for (typename std::list<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
+        for (typename std::list<std::shared_ptr<Interface<dim> > >::const_iterator
              p = property_list.begin(); p!=property_list.end(); ++p,++plugin_index)
           {
             (*p)->update_one_particle_property(property_information.get_position_by_plugin_index(plugin_index),
-                                               particle.get_location(),
+                                               particle->get_location(),
                                                solution,
                                                gradients,
-                                               particle.get_properties());
+                                               particle->get_properties());
           }
       }
 
@@ -371,7 +366,7 @@ namespace aspect
       Manager<dim>::need_update () const
       {
         UpdateTimeFlags update = update_never;
-        for (typename std::list<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
+        for (typename std::list<std::shared_ptr<Interface<dim> > >::const_iterator
              p = property_list.begin(); p!=property_list.end(); ++p)
           {
             update = std::max(update,(*p)->need_update());
@@ -384,7 +379,7 @@ namespace aspect
       Manager<dim>::get_needed_update_flags () const
       {
         UpdateFlags update = update_default;
-        for (typename std::list<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
+        for (typename std::list<std::shared_ptr<Interface<dim> > >::const_iterator
              p = property_list.begin(); p!=property_list.end(); ++p)
           {
             update |= (*p)->get_needed_update_flags();
@@ -415,13 +410,6 @@ namespace aspect
       }
 
       template <int dim>
-      PropertyPool &
-      Manager<dim>::get_property_pool () const
-      {
-        return *property_pool;
-      }
-
-      template <int dim>
       unsigned int
       Manager<dim>::get_property_component_by_name(const std::string &name) const
       {
@@ -430,7 +418,7 @@ namespace aspect
 
       namespace
       {
-        std_cxx11::tuple
+        std::tuple
         <void *,
         void *,
         aspect::internal::Plugins::PluginList<Property::Interface<2> >,
@@ -449,7 +437,7 @@ namespace aspect
             // finally also construct a string for Patterns::MultipleSelection that
             // contains the names of all registered particle properties
             const std::string pattern_of_names
-              = std_cxx11::get<dim>(registered_plugins).get_pattern_of_names ();
+              = std::get<dim>(registered_plugins).get_pattern_of_names ();
             prm.declare_entry("List of particle properties",
                               "",
                               Patterns::MultipleSelection(pattern_of_names),
@@ -458,7 +446,7 @@ namespace aspect
                               "and id of the particles are output. \n\n"
                               "The following properties are available:\n\n"
                               +
-                              std_cxx11::get<dim>(registered_plugins).get_description_string());
+                              std::get<dim>(registered_plugins).get_description_string());
           }
           prm.leave_subsection();
         }
@@ -466,7 +454,7 @@ namespace aspect
 
         // now declare the parameters of each of the registered
         // particle properties in turn
-        std_cxx11::get<dim>(registered_plugins).declare_parameters (prm);
+        std::get<dim>(registered_plugins).declare_parameters (prm);
       }
 
 
@@ -474,7 +462,7 @@ namespace aspect
       void
       Manager<dim>::parse_parameters (ParameterHandler &prm)
       {
-        Assert (std_cxx11::get<dim>(registered_plugins).plugins != 0,
+        Assert (std::get<dim>(registered_plugins).plugins != 0,
                 ExcMessage ("No postprocessors registered!?"));
         std::vector<std::string> prop_names;
 
@@ -497,9 +485,9 @@ namespace aspect
               {
                 prop_names.clear();
                 for (typename std::list<typename aspect::internal::Plugins::PluginList<aspect::Particle::Property::Interface<dim> >::PluginInfo>::const_iterator
-                     p = std_cxx11::get<dim>(registered_plugins).plugins->begin();
-                     p != std_cxx11::get<dim>(registered_plugins).plugins->end(); ++p)
-                  prop_names.push_back (std_cxx11::get<0>(*p));
+                     p = std::get<dim>(registered_plugins).plugins->begin();
+                     p != std::get<dim>(registered_plugins).plugins->end(); ++p)
+                  prop_names.push_back (std::get<0>(*p));
               }
           }
           prm.leave_subsection();
@@ -511,11 +499,11 @@ namespace aspect
         for (unsigned int name=0; name<prop_names.size(); ++name)
           {
             aspect::Particle::Property::Interface<dim> *
-            particle_property = std_cxx11::get<dim>(registered_plugins)
+            particle_property = std::get<dim>(registered_plugins)
                                 .create_plugin (prop_names[name],
                                                 "Particle property plugins");
 
-            property_list.push_back (std_cxx11::shared_ptr<Property::Interface<dim> >
+            property_list.push_back (std::shared_ptr<Property::Interface<dim> >
                                      (particle_property));
 
             if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*property_list.back()))
@@ -533,11 +521,22 @@ namespace aspect
                                   void (*declare_parameters_function) (ParameterHandler &),
                                   Property::Interface<dim> *(*factory_function) ())
       {
-        std_cxx11::get<dim>(registered_plugins).register_plugin (name,
-                                                                 description,
-                                                                 declare_parameters_function,
-                                                                 factory_function);
+        std::get<dim>(registered_plugins).register_plugin (name,
+                                                           description,
+                                                           declare_parameters_function,
+                                                           factory_function);
       }
+
+
+
+      template <int dim>
+      void
+      Manager<dim>::write_plugin_graph (std::ostream &out)
+      {
+        std::get<dim>(registered_plugins).write_plugin_graph ("Particle property interface",
+                                                              out);
+      }
+
     }
   }
 }

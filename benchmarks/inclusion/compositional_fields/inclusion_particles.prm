@@ -13,7 +13,7 @@ set Start time                             = 0
 set End time                               = 0
 
 set Pressure normalization                 = volume
-set Nonlinear solver scheme                = IMPES
+set Nonlinear solver scheme                = single Advection, single Stokes
 
 
 ############### Parameters describing the model
@@ -27,13 +27,12 @@ subsection Geometry model
   end
 end
 
-subsection Model settings
+
+subsection Boundary velocity model
   set Prescribed velocity boundary indicators = left  : InclusionBoundary, \
                                                 right : InclusionBoundary, \
                                                 bottom: InclusionBoundary, \
                                                 top   : InclusionBoundary
-  set Tangential velocity boundary indicators =
-  set Zero velocity boundary indicators       =
 end
 
 subsection Material model
@@ -51,7 +50,7 @@ end
 ############### Parameters describing the temperature field
 
 subsection Boundary temperature model
-  set Model name = box
+  set List of model names = box
 end
 
 

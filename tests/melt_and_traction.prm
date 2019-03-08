@@ -1,0 +1,300 @@
+# This is a test to see if traction boundary conditions work in models
+# with melt migration.  
+# At the right and bottom boundary, the lithostatic pressure is applied, 
+# so both the solid and the melt velocity should be approximately zero. 
+
+set Dimension                              = 2
+set Adiabatic surface temperature          = 1600
+set Maximum time step                      = 1e6
+set Use years in output instead of seconds = true
+set Nonlinear solver scheme                = iterated Advection and Stokes
+set Max nonlinear iterations               = 20
+set Nonlinear solver tolerance             = 1e-7
+
+# In addition, melting and freezing normally happens on a much faster
+# time scale than the flow of melt, so we want to decouple the advection
+# of melt (and temperature) and the melting process itself. To do that, 
+# we use the operator splitting scheme, and define that for every 
+# advection time step, we want to do at least 50 reaction time step, 
+# and in addition, we limit the maximum reaction time step size to 
+# 500,000 years. 
+set Use operator splitting                     = true
+subsection Solver parameters
+  subsection Operator splitting parameters
+    set Reaction time step                     = 1e5
+    set Reaction time steps per advection step = 50
+  end
+end
+
+# The end time of the simulation. We only do one time step. 
+set End time                               = 1e5
+
+# We apply the lithostatic pressure at the bottom and the right side. 
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = top, bottom
+end
+
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = top:function
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = left
+end
+
+subsection Boundary traction model
+  set Prescribed traction boundary indicators = right:initial lithostatic pressure, bottom y:initial lithostatic pressure
+end
+
+subsection Melt settings
+  # In addition, we now also specify in the model settings that we want to
+  # run a model with melt transport. 
+  set Include melt transport                  = true
+end
+
+subsection Boundary traction model
+  subsection Initial lithostatic pressure
+    set Number of integration points = 10000
+    set Representative point         = 300000,300000 
+  end
+end
+
+subsection Boundary velocity model
+  subsection Function
+    set Function constants  =
+    set Function expression = 0; 0
+  end
+end
+
+
+##################### Settings for melt transport ########################
+
+subsection Compositional fields
+  set Number of fields = 2
+  set Names of fields = porosity, peridotite
+end
+
+subsection Discretization
+  set Stokes velocity polynomial degree    = 2
+  set Composition polynomial degree        = 1
+  subsection Stabilization parameters
+    set beta  = 0.5
+    set cR    = 1
+  end
+end
+
+##################### Initial temperature model ########################
+
+# We choose an adiabatic temperature profile as initial condition. 
+subsection Initial temperature model
+  set List of model names = adiabatic
+  subsection Adiabatic
+    set Age bottom boundary layer = 0
+    set Age top boundary layer    = 5e7
+
+    subsection Function
+      set Function expression       = 0;0
+    end
+  end
+end
+
+# Now that our model uses compositional fields, we also need initial
+# conditions for the composition. 
+# We use the function plugin to set both fields to zero at the beginning
+# of the model run. 
+subsection Initial composition model
+  set List of model names = function, porosity
+  subsection Function
+    set Function expression = 0; 0
+    set Variable names      = x,y
+  end
+end
+
+##################### Boundary conditions ########################
+
+# As boundary conditions for the temperature, we just use the
+# initial conditions again. This temperature is applied as a prescribed
+# temperature at the top and bottom boundary, as specified above.
+subsection Boundary temperature model
+  set List of model names = initial temperature
+
+  subsection Initial temperature
+    set Minimal temperature = 293
+    set Maximal temperature = 3700
+  end
+end
+
+# We again choose the initial composition as boundary condition
+# for all compositional fields. 
+subsection Boundary composition model
+  set List of model names = initial composition
+end
+
+# Models with melt transport also need an additional boundary condition. 
+subsection Boundary fluid pressure model
+  set Plugin name = density
+  subsection Density
+    set Density formulation = fluid density
+  end
+end
+
+##################### Model geometry ########################
+
+# The model geometry is a square with a dimension of 300 km.
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 300000
+    set Y extent = 300000
+  end
+
+end
+
+################ Gravity and material properties ##################
+
+# The model has a constant gravity. 
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 9.81
+  end
+end
+
+# We use the melt global material model, which is one of the
+# material models that works with melt transport, as it also
+# specifies the material properties needed for melt migration, 
+# such as the permeability, the melt density and the melt 
+# viscosity.
+subsection Material model
+
+  set Model name = melt global 
+  subsection Melt global
+    
+    # First we describe the parameters for the solid, in the same way
+    # we did in the model without melt transport
+    set Thermal conductivity              = 4.7
+    set Reference solid density           = 3400
+    set Thermal expansion coefficient     = 2e-5
+    set Reference shear viscosity         = 5e21
+    set Thermal viscosity exponent        = 7
+    set Reference temperature             = 1600
+    
+    # The melt usually has a different (lower) density than the solid.
+    set Reference melt density            = 3400
+    
+    # The permeability describes how well the pores of a porous material
+    # are connected (and hence how fast melt can flow through the rock).
+    # It is computed as the product of the reference value given here 
+    # and the porosity cubed. This means that the lower the porosity is
+    # the more difficult it is for the melt to flow. 
+    set Reference permeability            = 1e-8
+    
+    # The bulk viscosity describes the resistance of the rock to dilation
+    # and compaction. Melt can only flow into a region that had no melt 
+    # before if the matrix of the solid rock expands, so this parameter 
+    # also limits how fast melt can flow upwards. 
+    # The bulk viscosity is computed as the reference value given here times
+    # a term that scales with one over the porosity. This means that for zero 
+    # porosity, the rock can not dilate/compact any more, which is the same
+    # behaviour that we have for solid mantle convection. 
+    set Reference bulk viscosity          = 1e19
+    
+    # In dependence of how much melt is present, we also weaken the shear
+    # viscosity: The more melt is present, the weaker the rock gets. 
+    # This scaling is exponential, following the relation
+    # viscosity ~ exp(-alpha * phi),
+    # where alpha is the parameter given here, and phi is the porosity.  
+    set Exponential melt weakening factor = 10
+    
+    # In the same way the shear viscosity is reduced with increasing temperature, 
+    # we also prescribe the temperature-dependence of the bulk viscosity. 
+    set Thermal bulk viscosity exponent   = 7
+       
+    # Finally, we prescribe the viscosity of the melt, which is used in Darcy's
+    # law. The lower this viscosity, the faster melt can flow.  
+    set Reference melt viscosity          = 1
+    
+    # change the density contrast of depleted material (in kg/m^3)
+    set Depletion density change          = -200.0
+
+    # How much melt has been generated and subsequently extracted from a particular 
+    # volume of rock (how 'depleted' that volume of rock is) usually changes the 
+    # solidus. The more the material has been molten already, the less melt will be
+    # generated afterwards for the same pressure and temperature conditions. We 
+    # model this using a simplified, linear relationship, saying that to melt 100%
+    # of the rock the temperature has to be 200 K higher than to melt it initially.
+    set Depletion solidus change          = 200
+
+    set Melting time scale for operator splitting = 1e100
+    set Include melting and freezing      = false
+  end
+end
+
+##################### Mesh refinement #########################
+
+# For the model with melt migration, we use adaptive refinement. 
+# We make use of two different refinement criteria: we set a minimum of 4 global
+# refinements everywhere in the model (which is the same resolution as for the 
+# model without melt), and we refine in regions where melt is present, to be 
+# precise, everywhere where the porosity is bigger than 1e-4. 
+# We adapt the mesh every 5 time steps. 
+subsection Mesh refinement
+  set Coarsening fraction                      = 0.05
+  set Refinement fraction                      = 0.8
+
+  set Initial adaptive refinement              = 0
+  set Initial global refinement                = 4
+  set Time steps between mesh refinement       = 0
+end
+
+# As the model is compressible and has an adiabatic temperature profile, we include 
+# adiabatic heating in the list of heating models. 
+# To make this model as simple as possible, we do not include shear heating (although
+# usually, adiabatic heating and shear heating should always be used together).  
+subsection Heating model
+  set List of model names = adiabatic heating
+end 
+
+##################### Postprocessing ########################
+
+subsection Postprocess
+
+  set List of postprocessors = visualization, composition statistics, velocity statistics, temperature statistics, mass flux statistics
+  set Run postprocessors on nonlinear iterations = true
+
+  # For the model with melt migration, also add a visualization
+  # postprocessor that computes the material properties relevant
+  # to migration (permeability, viscosity of the melt, etc.).
+
+  subsection Visualization
+    set List of output variables      = material properties, nonadiabatic temperature, strain rate, melt material properties, nonadiabatic pressure
+
+    subsection Material properties
+      set List of material properties = density, viscosity, thermal expansivity
+    end
+
+    subsection Melt material properties
+      set List of properties = fluid density, permeability, fluid viscosity, compaction viscosity
+    end
+
+    set Number of grouped files       = 0
+    set Output format                 = vtu
+    set Time between graphical output = 0
+    set Interpolate output            = true
+  end
+
+end
+
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-8
+    set Number of cheap Stokes solver steps = 100
+  end
+end

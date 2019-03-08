@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
@@ -22,49 +22,22 @@
 #include <aspect/initial_composition/function.h>
 #include <aspect/postprocess/interface.h>
 #include <aspect/utilities.h>
-#include <deal.II/base/signaling_nan.h>
-
+#include <aspect/geometry_model/interface.h>
 
 namespace aspect
 {
   namespace InitialComposition
   {
-//    template <int dim>
-//    Function<dim>::Function ()
-//    {}
 
     template <int dim>
     double
     Function<dim>::
     initial_composition (const Point<dim> &position, const unsigned int n_comp) const
     {
-      if (coordinate_system == Utilities::Coordinates::cartesian)
-        {
-          return function->value(position,n_comp);
-        }
-      else if (coordinate_system == ::aspect::Utilities::Coordinates::spherical)
-        {
-          const std_cxx11::array<double,dim> spherical_coordinates =
-            aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(position);
-          Point<dim> point;
+      Utilities::NaturalCoordinate<dim> point =
+        this->get_geometry_model().cartesian_to_other_coordinates(position, coordinate_system);
 
-          for (unsigned int i = 0; i<dim; ++i)
-            point[i] = spherical_coordinates[i];
-
-          return function->value(point,n_comp);
-        }
-      else if (coordinate_system == Utilities::Coordinates::depth)
-        {
-          const double depth = this->get_geometry_model().depth(position);
-          Point<dim> point;
-          point(0) = depth;
-          return function->value(point,n_comp);
-        }
-      else
-        {
-          AssertThrow(false, ExcNotImplemented());
-          return numbers::signaling_nan<double>();
-        }
+      return function->value(Utilities::convert_array_to_point<dim>(point.get_coordinates()),n_comp);
     }
 
 
@@ -87,9 +60,9 @@ namespace aspect
                              Patterns::Selection ("cartesian|spherical|depth"),
                              "A selection that determines the assumed coordinate "
                              "system for the function variables. Allowed values "
-                             "are 'cartesian', 'spherical', and 'depth'. 'spherical' coordinates "
+                             "are `cartesian', `spherical', and `depth'. `spherical' coordinates "
                              "are interpreted as r,phi or r,phi,theta in 2D/3D "
-                             "respectively with theta being the polar angle.'depth' "
+                             "respectively with theta being the polar angle. `depth' "
                              "will create a function, in which only the first "
                              "parameter is non-zero, which is interpreted to "
                              "be the depth of the point.");
@@ -115,7 +88,8 @@ namespace aspect
 
         try
           {
-            function.reset (new Functions::ParsedFunction<dim>(this->n_compositional_fields()));
+            function
+              = std_cxx14::make_unique<Functions::ParsedFunction<dim>>(this->n_compositional_fields());
             function->parse_parameters (prm);
           }
         catch (...)

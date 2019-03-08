@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
@@ -25,7 +25,6 @@
 
 #include <numeric>
 
-using namespace dealii;
 
 namespace aspect
 {
@@ -34,159 +33,43 @@ namespace aspect
     template <int dim>
     const std::vector<double>
     DynamicFriction<dim>::
-    compute_volume_fractions( const std::vector<double> &compositional_fields) const
-    {
-      std::vector<double> volume_fractions( compositional_fields.size()+1);
-
-      //clip the compositional fields so they are between zero and one
-      std::vector<double> x_comp = compositional_fields;
-      for ( unsigned int i=0; i < x_comp.size(); ++i)
-        x_comp[i] = std::min(std::max(x_comp[i], 0.0), 1.0);
-
-      //sum the compositional fields for normalization purposes
-      double sum_composition = 0.0;
-      for ( unsigned int i=0; i < x_comp.size(); ++i)
-        sum_composition += x_comp[i];
-
-      if (sum_composition >= 1.0)
-        {
-          volume_fractions[0] = 0.0;  //background mantle
-          for ( unsigned int i=1; i <= x_comp.size(); ++i)
-            volume_fractions[i] = x_comp[i-1]/sum_composition;
-        }
-      else
-        {
-          volume_fractions[0] = 1.0 - sum_composition; //background mantle
-          for ( unsigned int i=1; i <= x_comp.size(); ++i)
-            volume_fractions[i] = x_comp[i-1];
-        }
-      return volume_fractions;
-    }
-
-    template <int dim>
-    const std::vector<double>
-    DynamicFriction<dim>::
-    compute_viscosities(
-      const double pressure,
-      const SymmetricTensor<2,dim> &strain_rate) const
+    compute_viscosities(const double pressure,
+                        const SymmetricTensor<2,dim> &strain_rate) const
     {
 
-      std::vector<double> viscosities( mu_s.size());
+      std::vector<double> viscosities(mu_s.size());
 
       // second invariant for strain tensor
-      const double edot_ii = ( (this->get_timestep_number() == 0 && strain_rate.norm() <= std::numeric_limits<double>::min())
-                               ?
-                               reference_strain_rate
-                               :
-                               std::max(std::sqrt(std::fabs(second_invariant(deviator(strain_rate)))),
-                                        minimum_strain_rate) );
-
       const double strain_rate_dev_inv2 = ( (this->get_timestep_number() == 0 && strain_rate.norm() <= std::numeric_limits<double>::min())
                                             ?
                                             reference_strain_rate * reference_strain_rate
                                             :
                                             std::fabs(second_invariant(deviator(strain_rate))));
-      // In later timesteps, we still need to care about cases of very small
-      // strain rates. We expect the viscosity to approach the maximum_viscosity
-      // in these cases. This check prevents a division-by-zero.
-      for (int i = 0; i <= mu_s.size(); i++)
+
+      for (unsigned int i = 0; i < mu_s.size(); i++)
         {
-          std::vector<double> mu( mu_s.size());
-          std::vector<double> phi( mu_s.size());
-          std::vector<double> strength( mu_s.size());
-          //std::vector<double> eta( mu_s.size());
-          std::vector<double> viscous_stress( mu_s.size());
-
-          // Calculate viscous stress
-          viscous_stress[i] = 2. * background_viscosities[i] * edot_ii;
-
           // Calculate effective steady-state friction coefficient. The formula below is equivalent to the
-          // equation 13 in van Dinther et al., (2013, JGR) . Although here the dynamic friction coefficient
+          // equation 13 in van Dinther et al., (2013, JGR). Although here the dynamic friction coefficient
           // is directly specified. In addition, we also use a reference strain rate in place of a characteristic
           // velocity divided by local element size.
-          mu[i]  = mu_d[i] + ( mu_s[i] - mu_d[i] ) / ( ( 1 + strain_rate_dev_inv2/reference_strain_rate ) );
+          const double mu  = mu_d[i] + (mu_s[i] - mu_d[i]) / ( (1 + strain_rate_dev_inv2/reference_strain_rate) );
 
           // Convert effective steady-state friction coefficient to internal angle of friction.
-          phi[i] = std::atan (mu[i]);
+          const double phi = std::atan (mu);
 
-          if (std::sqrt(strain_rate_dev_inv2) <= std::numeric_limits<double>::min())
-            viscosities[i] = maximum_viscosity;
-
-          // Drucker Prager yield criterion.
-          strength[i] = ( (dim==3)
-                          ?
-                          ( 6.0 * cohesions[i] * std::cos(phi[i]) + 2.0 * std::max(pressure,0.0) * std::sin(phi[i]) )
-                          / ( std::sqrt(3.0) * ( 3.0 + std::sin(phi[i]) ) )
-                          :
-                          cohesions[i] * std::cos(phi[i]) + std::max(pressure,0.0) * std::sin(phi[i]) );
-
-          if ( viscous_stress[i] >= strength[i]  )
-            {
-              viscosities[i] = strength[i] / (2.0 * edot_ii);
-            }
-          else
-            {
-              viscosities[i] = background_viscosities[i];
-            }
-
-          // Rescale the viscosity back onto the yield surface
-          viscosities[i] = strength[i] / ( 2.0 * std::sqrt(strain_rate_dev_inv2) );
+          // Compute the viscosity according to the Drucker-Prager yield criterion.
+          const MaterialUtilities::DruckerPragerInputs plastic_in(cohesions[i], phi, std::max(pressure,0.0), std::sqrt(strain_rate_dev_inv2));
+          MaterialUtilities::DruckerPragerOutputs plastic_out;
+          MaterialUtilities::compute_drucker_prager_yielding<dim> (plastic_in, plastic_out);
 
           // Cut off the viscosity between a minimum and maximum value to avoid
           // a numerically unfavourable large viscosity range.
-          //viscosities[i] = 1.0 / ( ( 1.0 / ( eta[i] + minimum_viscosity ) ) + ( 1.0 / maximum_viscosity ) );
+          viscosities[i] = 1.0 / ( ( 1.0 / (plastic_out.plastic_viscosity + minimum_viscosity) ) + (1.0 / maximum_viscosity) );
 
         }
       return viscosities;
     }
 
-    template <int dim>
-    double
-    DynamicFriction<dim>::
-    average_value ( const std::vector<double> &volume_fractions,
-                    const std::vector<double> &parameter_values,
-                    const enum AveragingScheme &average_type) const
-    {
-      double averaged_parameter = 0.0;
-
-      switch (average_type)
-        {
-          case arithmetic:
-          {
-            for (unsigned int i=0; i< volume_fractions.size(); ++i)
-              averaged_parameter += volume_fractions[i]*parameter_values[i];
-            break;
-          }
-          case harmonic:
-          {
-            for (unsigned int i=0; i< volume_fractions.size(); ++i)
-              averaged_parameter += volume_fractions[i]/(parameter_values[i]);
-            averaged_parameter = 1.0/averaged_parameter;
-            break;
-          }
-          case geometric:
-          {
-            for (unsigned int i=0; i < volume_fractions.size(); ++i)
-              averaged_parameter += volume_fractions[i]*std::log(parameter_values[i]);
-            averaged_parameter = std::exp(averaged_parameter);
-            break;
-          }
-          case maximum_composition:
-          {
-            const unsigned int i = (unsigned int)(std::max_element( volume_fractions.begin(),
-                                                                    volume_fractions.end() )
-                                                  - volume_fractions.begin());
-            averaged_parameter = parameter_values[i];
-            break;
-          }
-          default:
-          {
-            AssertThrow( false, ExcNotImplemented() );
-            break;
-          }
-        }
-      return averaged_parameter;
-    }
 
 
     template <int dim>
@@ -199,20 +82,20 @@ namespace aspect
         {
 
           const std::vector<double> composition = in.composition[i];
-          const std::vector<double> volume_fractions = compute_volume_fractions(composition);
+          const std::vector<double> volume_fractions = MaterialUtilities::compute_volume_fractions(composition);
 
           if (in.strain_rate.size() > 0)
             {
               const std::vector<double> viscosities = compute_viscosities(in.pressure[i], in.strain_rate[i]);
-              out.viscosities[i] = average_value ( volume_fractions, viscosities, viscosity_averaging);
+              out.viscosities[i] = MaterialUtilities::average_value (volume_fractions, viscosities, viscosity_averaging);
             }
-          out.specific_heat[i] = average_value ( volume_fractions, specific_heats, arithmetic);
+          out.specific_heat[i] = MaterialUtilities::average_value (volume_fractions, specific_heats, MaterialUtilities::arithmetic);
 
 
           // Arithmetic averaging of thermal conductivities
           // This may not be strictly the most reasonable thing, but for most Earth materials we hope
           // that they do not vary so much that it is a big problem.
-          out.thermal_conductivities[i] = average_value ( volume_fractions, thermal_conductivities, arithmetic);
+          out.thermal_conductivities[i] = MaterialUtilities::average_value (volume_fractions, thermal_conductivities, MaterialUtilities::arithmetic);
 
           double density = 0.0;
           for (unsigned int j=0; j < volume_fractions.size(); ++j)
@@ -225,7 +108,7 @@ namespace aspect
           out.densities[i] = density;
 
 
-          out.thermal_expansion_coefficients[i] = average_value ( volume_fractions, thermal_expansivities, arithmetic);
+          out.thermal_expansion_coefficients[i] = MaterialUtilities::average_value (volume_fractions, thermal_expansivities, MaterialUtilities::arithmetic);
 
 
           // Compressibility at the given positions.
@@ -292,7 +175,7 @@ namespace aspect
                              Patterns::List(Patterns::Double(0)),
                              "List of thermal conductivities for background mantle and compositional fields,"
                              "for a total of N+1 values, where N is the number of compositional fields."
-                             "If only one value is given, then all use the same value. Units: $W/m/K$ ");
+                             "If only one value is given, then all use the same value. Units: $W/m/K$.");
           prm.declare_entry("Viscosity averaging scheme", "harmonic",
                             Patterns::Selection("arithmetic|harmonic|geometric|maximum composition"),
                             "When more than one compositional field is present at a point "
@@ -330,7 +213,7 @@ namespace aspect
                                Patterns::List(Patterns::Double(0)),
                                "List of background viscosities for mantle and compositional fields,"
                                "for a total of N+1 values, where N is the number of compositional fields."
-                               "If only one value is given, then all use the same value. Units: $Pa s $");
+                               "If only one value is given, then all use the same value. Units: $Pa \\, s $");
           }
           prm.leave_subsection();
         }
@@ -356,16 +239,8 @@ namespace aspect
         {
           reference_T = prm.get_double ("Reference temperature");
 
-          if (prm.get ("Viscosity averaging scheme") == "harmonic")
-            viscosity_averaging = harmonic;
-          else if (prm.get ("Viscosity averaging scheme") == "arithmetic")
-            viscosity_averaging = arithmetic;
-          else if (prm.get ("Viscosity averaging scheme") == "geometric")
-            viscosity_averaging = geometric;
-          else if (prm.get ("Viscosity averaging scheme") == "maximum composition")
-            viscosity_averaging = maximum_composition;
-          else
-            AssertThrow(false, ExcMessage("Not a valid viscosity averaging scheme"));
+          viscosity_averaging = MaterialUtilities::parse_compositional_averaging_operation ("Viscosity averaging scheme",
+                                prm);
 
           // Parse DynamicFriction properties
           densities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Densities"))),

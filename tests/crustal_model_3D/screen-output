@@ -1,0 +1,32 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+Number of active cells: 192 (on 2 levels)
+Number of degrees of freedom: 8,937 (6,435+357+2,145)
+
+Number of free surface degrees of freedom: 1071
+*** Timestep 0:  t=0 years
+   Solving mesh velocity system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+16 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+62 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.208101
+
+
+   Postprocessing:
+     Writing graphical output: output-crustal_model_3D/solution/solution-00000
+     RMS, max velocity:        0.00945 m/year, 0.016 m/year
+     Topography min/max:       0 m, 0 m
+     Pressure min/avg/max:     -7.758e+07 Pa, 2.117e+08 Pa, 6.156e+08 Pa
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

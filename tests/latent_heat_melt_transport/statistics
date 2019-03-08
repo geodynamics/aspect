@@ -1,0 +1,35 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Number of nonlinear iterations
+# 9: Iterations for temperature solver
+# 10: Iterations for composition solver 1
+# 11: Iterations for composition solver 2
+# 12: Iterations for Stokes solver
+# 13: Velocity iterations in Stokes preconditioner
+# 14: Schur complement iterations in Stokes preconditioner
+# 15: Minimal temperature (K)
+# 16: Average temperature (K)
+# 17: Maximal temperature (K)
+# 18: Visualization file name
+ 0 0.000000000000e+00 0.000000000000e+00 64 659 289 578 2  0  0  0 3 4 27 1.00000000e+03 1.00000000e+03 1.00000000e+03 output-latent_heat_melt_transport/solution/solution-00000 
+ 1 2.915345909288e+15 2.915345909288e+15 64 659 289 578 4 36 40 40 5 7 94 9.92371613e+02 1.00204689e+03 1.02835082e+03 output-latent_heat_melt_transport/solution/solution-00001 
+ 2 5.593423327768e+15 2.678077418481e+15 64 659 289 578 4 24 34 27 5 7 98 9.94550994e+02 1.01418009e+03 1.06034953e+03 output-latent_heat_melt_transport/solution/solution-00002 
+ 3 8.244656365632e+15 2.651233037864e+15 64 659 289 578 4 26 32 27 4 6 84 9.98590333e+02 1.02779782e+03 1.11391478e+03 output-latent_heat_melt_transport/solution/solution-00003 
+ 4 1.093542344732e+16 2.690767081691e+15 64 659 289 578 3 19 23 18 3 4 54 1.00000000e+03 1.04274385e+03 1.15998645e+03 output-latent_heat_melt_transport/solution/solution-00004 
+ 5 1.364058619123e+16 2.705162743906e+15 64 659 289 578 3 21 23 19 2 3 40 9.99962587e+02 1.05944028e+03 1.20712752e+03 output-latent_heat_melt_transport/solution/solution-00005 
+ 6 1.627615565215e+16 2.635569460925e+15 64 659 289 578 3 22 23 21 2 3 39 9.99915396e+02 1.07686101e+03 1.23744788e+03 output-latent_heat_melt_transport/solution/solution-00006 
+ 7 1.887429929983e+16 2.598143647675e+15 64 659 289 578 3 22 23 20 2 3 39 9.99783776e+02 1.09351796e+03 1.27216498e+03 output-latent_heat_melt_transport/solution/solution-00007 
+ 8 2.145233795991e+16 2.578038660084e+15 64 659 289 578 3 19 22 20 2 3 42 9.99477899e+02 1.10877613e+03 1.29959094e+03 output-latent_heat_melt_transport/solution/solution-00008 
+ 9 2.402038851603e+16 2.568050556119e+15 64 659 289 578 2 15 13 12 0 0  0 9.99317864e+02 1.12177009e+03 1.32166531e+03 output-latent_heat_melt_transport/solution/solution-00009 
+10 2.658220719876e+16 2.561818682730e+15 64 659 289 578 2 15 13 12 0 0  0 9.99299566e+02 1.13194664e+03 1.33157659e+03 output-latent_heat_melt_transport/solution/solution-00010 
+11 2.914324542601e+16 2.561038227251e+15 64 659 289 578 3 19 21 20 2 3 41 9.99383037e+02 1.13928202e+03 1.34326998e+03 output-latent_heat_melt_transport/solution/solution-00011 
+12 3.170694317599e+16 2.563697749979e+15 64 659 289 578 3 20 23 21 2 3 41 9.99445167e+02 1.14411528e+03 1.35392181e+03 output-latent_heat_melt_transport/solution/solution-00012 
+13 3.427170464927e+16 2.564761473280e+15 64 659 289 578 3 21 23 21 2 3 41 9.99461941e+02 1.14695794e+03 1.36224962e+03 output-latent_heat_melt_transport/solution/solution-00013 
+14 3.684185737935e+16 2.570152730081e+15 64 659 289 578 3 21 21 21 2 3 39 9.99531669e+02 1.14834125e+03 1.36493779e+03 output-latent_heat_melt_transport/solution/solution-00014 
+15 3.941549753934e+16 2.573640159981e+15 64 659 289 578 2 21 21 21 2 3 38 9.99500634e+02 1.14881713e+03 1.36827822e+03 output-latent_heat_melt_transport/solution/solution-00015 
+16 4.000000000000e+16 5.845024606639e+14 64 659 289 578 3 16 18 17 3 4 52 9.99445975e+02 1.15251058e+03 1.36940465e+03 output-latent_heat_melt_transport/solution/solution-00016 

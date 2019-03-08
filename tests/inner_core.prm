@@ -67,10 +67,15 @@ end
 # into account the effect of melting/freezing of material at 
 # the boundary of inner and outer core, and which is implemented
 # in the shared library. 
-subsection Model settings
-  set Zero velocity boundary indicators       = 
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary traction model
   set Prescribed traction boundary indicators = surface: zero traction
-  set Prescribed velocity boundary indicators =
+end
+
+subsection Boundary temperature model
   set Fixed temperature boundary indicators   = surface
 end
 
@@ -85,7 +90,7 @@ end
 
 # The (potential) temperature is set to zero at the outer boundary.
 subsection Boundary temperature model
-  set Model name = spherical constant
+  set List of model names = spherical constant
   subsection Spherical constant
     set Inner temperature = 0.8
     set Outer temperature = 0
@@ -105,6 +110,8 @@ subsection Gravity model
   set Model name = radial linear
 
   subsection Radial linear
+    set Magnitude at bottom = 0.0
+    set Magnitude at bottom = 0.0
     set Magnitude at surface = 2     # <-- Ra
   end
 end

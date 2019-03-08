@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,23 +14,30 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
 
 #include <aspect/simulator.h>
 #include <aspect/utilities.h>
-#include <aspect/assembly.h>
+#include <aspect/compat.h>
 #include <aspect/simulator_access.h>
+
+#include <aspect/simulator/assemblers/interface.h>
 #include <aspect/melt.h>
+#include <aspect/newton.h>
 #include <aspect/free_surface.h>
+#include <aspect/simulator/assemblers/stokes.h>
+#include <aspect/simulator/assemblers/advection.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/base/work_stream.h>
 #include <deal.II/base/signaling_nan.h>
 #include <deal.II/lac/full_matrix.h>
-#include <deal.II/lac/constraint_matrix.h>
+#if !DEAL_II_VERSION_GTE(9,1,0)
+#  include <deal.II/lac/constraint_matrix.h>
+#endif
 #include <deal.II/grid/tria_iterator.h>
 #include <deal.II/grid/filtered_iterator.h>
 #include <deal.II/dofs/dof_accessor.h>
@@ -42,430 +49,6 @@
 
 namespace aspect
 {
-  namespace internal
-  {
-    namespace Assembly
-    {
-      namespace Scratch
-      {
-        template <int dim>
-        StokesPreconditioner<dim>::
-        StokesPreconditioner (const FiniteElement<dim> &finite_element,
-                              const Quadrature<dim>    &quadrature,
-                              const Mapping<dim>       &mapping,
-                              const UpdateFlags         update_flags,
-                              const unsigned int        n_compositional_fields,
-                              const unsigned int        stokes_dofs_per_cell,
-                              const bool                add_compaction_pressure)
-          :
-          finite_element_values (mapping, finite_element, quadrature,
-                                 update_flags),
-          local_dof_indices (finite_element.dofs_per_cell),
-          dof_component_indices(stokes_dofs_per_cell),
-          grads_phi_u (stokes_dofs_per_cell, numbers::signaling_nan<SymmetricTensor<2,dim> >()),
-          phi_p (stokes_dofs_per_cell, numbers::signaling_nan<double>()),
-          phi_p_c (add_compaction_pressure ? stokes_dofs_per_cell : 0, numbers::signaling_nan<double>()),
-          grad_phi_p (add_compaction_pressure ? stokes_dofs_per_cell : 0, numbers::signaling_nan<Tensor<1,dim> >()),
-          material_model_inputs(quadrature.size(), n_compositional_fields),
-          material_model_outputs(quadrature.size(), n_compositional_fields)
-        {}
-
-
-
-        template <int dim>
-        StokesPreconditioner<dim>::
-        StokesPreconditioner (const StokesPreconditioner &scratch)
-          :
-          finite_element_values (scratch.finite_element_values.get_mapping(),
-                                 scratch.finite_element_values.get_fe(),
-                                 scratch.finite_element_values.get_quadrature(),
-                                 scratch.finite_element_values.get_update_flags()),
-          local_dof_indices (scratch.local_dof_indices),
-          dof_component_indices( scratch.dof_component_indices),
-          grads_phi_u (scratch.grads_phi_u),
-          phi_p (scratch.phi_p),
-          phi_p_c (scratch.phi_p_c),
-          grad_phi_p(scratch.grad_phi_p),
-          material_model_inputs(scratch.material_model_inputs),
-          material_model_outputs(scratch.material_model_outputs)
-        {}
-
-
-        template <int dim>
-        StokesPreconditioner<dim>::
-        ~StokesPreconditioner ()
-        {}
-
-
-
-
-        template <int dim>
-        StokesSystem<dim>::
-        StokesSystem (const FiniteElement<dim> &finite_element,
-                      const Mapping<dim>       &mapping,
-                      const Quadrature<dim>    &quadrature,
-                      const Quadrature<dim-1>  &face_quadrature,
-                      const UpdateFlags         update_flags,
-                      const UpdateFlags         face_update_flags,
-                      const unsigned int        n_compositional_fields,
-                      const unsigned int        stokes_dofs_per_cell,
-                      const bool                add_compaction_pressure,
-                      const bool                use_reference_density_profile)
-          :
-          StokesPreconditioner<dim> (finite_element, quadrature,
-                                     mapping,
-                                     update_flags,
-                                     n_compositional_fields,
-                                     stokes_dofs_per_cell,
-                                     add_compaction_pressure),
-
-          face_finite_element_values (mapping,
-                                      finite_element,
-                                      face_quadrature,
-                                      face_update_flags),
-
-          phi_u (stokes_dofs_per_cell, numbers::signaling_nan<Tensor<1,dim> >()),
-          grads_phi_u (stokes_dofs_per_cell, numbers::signaling_nan<SymmetricTensor<2,dim> >()),
-          div_phi_u (stokes_dofs_per_cell, numbers::signaling_nan<double>()),
-          velocity_values (quadrature.size(), numbers::signaling_nan<Tensor<1,dim> >()),
-          face_material_model_inputs(face_quadrature.size(), n_compositional_fields),
-          face_material_model_outputs(face_quadrature.size(), n_compositional_fields),
-          reference_densities(use_reference_density_profile ? quadrature.size() : 0, numbers::signaling_nan<double>()),
-          reference_densities_depth_derivative(use_reference_density_profile ? quadrature.size() : 0, numbers::signaling_nan<double>())
-        {}
-
-
-
-        template <int dim>
-        StokesSystem<dim>::
-        StokesSystem (const StokesSystem<dim> &scratch)
-          :
-          StokesPreconditioner<dim> (scratch),
-
-          face_finite_element_values (scratch.face_finite_element_values.get_mapping(),
-                                      scratch.face_finite_element_values.get_fe(),
-                                      scratch.face_finite_element_values.get_quadrature(),
-                                      scratch.face_finite_element_values.get_update_flags()),
-
-          phi_u (scratch.phi_u),
-          grads_phi_u (scratch.grads_phi_u),
-          div_phi_u (scratch.div_phi_u),
-          velocity_values (scratch.velocity_values),
-          face_material_model_inputs(scratch.face_material_model_inputs),
-          face_material_model_outputs(scratch.face_material_model_outputs),
-          reference_densities(scratch.reference_densities),
-          reference_densities_depth_derivative(scratch.reference_densities_depth_derivative)
-        {}
-
-
-
-        template <int dim>
-        AdvectionSystem<dim>::
-        AdvectionSystem (const FiniteElement<dim> &finite_element,
-                         const FiniteElement<dim> &advection_element,
-                         const Mapping<dim>       &mapping,
-                         const Quadrature<dim>    &quadrature,
-                         const Quadrature<dim-1>  &face_quadrature,
-                         const UpdateFlags         update_flags,
-                         const UpdateFlags         face_update_flags,
-                         const unsigned int        n_compositional_fields)
-          :
-          finite_element_values (mapping,
-                                 finite_element, quadrature,
-                                 update_flags),
-          face_finite_element_values ((face_quadrature.size() > 0
-                                       ?
-                                       new FEFaceValues<dim> (mapping,
-                                                              finite_element, face_quadrature,
-                                                              face_update_flags)
-                                       :
-                                       NULL)),
-          neighbor_face_finite_element_values ((face_quadrature.size() > 0
-                                                ?
-                                                new FEFaceValues<dim> (mapping,
-                                                                       finite_element, face_quadrature,
-                                                                       face_update_flags)
-                                                :
-                                                NULL)),
-          subface_finite_element_values ((face_quadrature.size() > 0
-                                          ?
-                                          new FESubfaceValues<dim> (mapping,
-                                                                    finite_element, face_quadrature,
-                                                                    face_update_flags)
-                                          :
-                                          NULL)),
-          local_dof_indices (finite_element.dofs_per_cell),
-
-          phi_field (advection_element.dofs_per_cell, numbers::signaling_nan<double>()),
-          grad_phi_field (advection_element.dofs_per_cell, numbers::signaling_nan<Tensor<1,dim> >()),
-          face_phi_field ((face_quadrature.size() > 0 ? advection_element.dofs_per_cell : 0),
-                          numbers::signaling_nan<double>()),
-          face_grad_phi_field ((face_quadrature.size() > 0 ? advection_element.dofs_per_cell : 0),
-                               numbers::signaling_nan<Tensor<1,dim> >()),
-          neighbor_face_phi_field ((face_quadrature.size() > 0 ? advection_element.dofs_per_cell : 0),
-                                   numbers::signaling_nan<double>()),
-          neighbor_face_grad_phi_field ((face_quadrature.size() > 0 ? advection_element.dofs_per_cell : 0),
-                                        numbers::signaling_nan<Tensor<1,dim> >()),
-          old_velocity_values (quadrature.size(), numbers::signaling_nan<Tensor<1,dim> >()),
-          old_old_velocity_values (quadrature.size(), numbers::signaling_nan<Tensor<1,dim> >()),
-          old_pressure (quadrature.size(), numbers::signaling_nan<double>()),
-          old_old_pressure (quadrature.size(), numbers::signaling_nan<double>()),
-          old_pressure_gradients (quadrature.size(), numbers::signaling_nan<Tensor<1,dim> >()),
-          old_old_pressure_gradients (quadrature.size(), numbers::signaling_nan<Tensor<1,dim> >()),
-          old_strain_rates (quadrature.size(), numbers::signaling_nan<SymmetricTensor<2,dim> >()),
-          old_old_strain_rates (quadrature.size(), numbers::signaling_nan<SymmetricTensor<2,dim> >()),
-          old_temperature_values (quadrature.size(), numbers::signaling_nan<double>()),
-          old_old_temperature_values(quadrature.size(), numbers::signaling_nan<double>()),
-          old_field_values (quadrature.size(), numbers::signaling_nan<double>()),
-          old_old_field_values(quadrature.size(), numbers::signaling_nan<double>()),
-          old_field_grads(quadrature.size(), numbers::signaling_nan<Tensor<1,dim> >()),
-          old_old_field_grads(quadrature.size(), numbers::signaling_nan<Tensor<1,dim> >()),
-          old_field_laplacians(quadrature.size(), numbers::signaling_nan<double>()),
-          old_old_field_laplacians(quadrature.size(), numbers::signaling_nan<double>()),
-          old_composition_values(n_compositional_fields,
-                                 std::vector<double>(quadrature.size(), numbers::signaling_nan<double>())),
-          old_old_composition_values(n_compositional_fields,
-                                     std::vector<double>(quadrature.size(), numbers::signaling_nan<double>())),
-          current_temperature_values(quadrature.size(), numbers::signaling_nan<double>()),
-          current_velocity_values(quadrature.size(), numbers::signaling_nan<Tensor<1,dim> >()),
-          face_current_velocity_values(face_quadrature.size(), numbers::signaling_nan<Tensor<1,dim> >()),
-          mesh_velocity_values(quadrature.size(), numbers::signaling_nan<Tensor<1,dim> >()),
-          face_mesh_velocity_values(face_quadrature.size(), numbers::signaling_nan<Tensor<1,dim> >()),
-          current_strain_rates(quadrature.size(), numbers::signaling_nan<SymmetricTensor<2,dim> >()),
-          current_composition_values(n_compositional_fields,
-                                     std::vector<double>(quadrature.size(), numbers::signaling_nan<double>())),
-          current_velocity_divergences(quadrature.size(), numbers::signaling_nan<double>()),
-          material_model_inputs(quadrature.size(), n_compositional_fields),
-          material_model_outputs(quadrature.size(), n_compositional_fields),
-          face_material_model_inputs(face_quadrature.size(), n_compositional_fields),
-          face_material_model_outputs(face_quadrature.size(), n_compositional_fields),
-          neighbor_face_material_model_inputs(face_quadrature.size(), n_compositional_fields),
-          neighbor_face_material_model_outputs(face_quadrature.size(), n_compositional_fields),
-          heating_model_outputs(quadrature.size(), n_compositional_fields),
-          face_heating_model_outputs(face_quadrature.size(), n_compositional_fields),
-          neighbor_face_heating_model_outputs(face_quadrature.size(), n_compositional_fields)
-        {}
-
-
-
-        template <int dim>
-        AdvectionSystem<dim>::
-        AdvectionSystem (const AdvectionSystem &scratch)
-          :
-          finite_element_values (scratch.finite_element_values.get_mapping(),
-                                 scratch.finite_element_values.get_fe(),
-                                 scratch.finite_element_values.get_quadrature(),
-                                 scratch.finite_element_values.get_update_flags()),
-          face_finite_element_values (scratch.face_finite_element_values),
-          neighbor_face_finite_element_values (scratch.neighbor_face_finite_element_values),
-          subface_finite_element_values (scratch.subface_finite_element_values),
-          local_dof_indices (scratch.finite_element_values.get_fe().dofs_per_cell),
-
-          phi_field (scratch.phi_field),
-          grad_phi_field (scratch.grad_phi_field),
-          face_phi_field (scratch.face_phi_field),
-          face_grad_phi_field (scratch.face_grad_phi_field),
-          neighbor_face_phi_field (scratch.neighbor_face_phi_field),
-          neighbor_face_grad_phi_field (scratch.neighbor_face_grad_phi_field),
-          old_velocity_values (scratch.old_velocity_values),
-          old_old_velocity_values (scratch.old_old_velocity_values),
-          old_pressure (scratch.old_pressure),
-          old_old_pressure (scratch.old_old_pressure),
-          old_pressure_gradients (scratch.old_pressure_gradients),
-          old_old_pressure_gradients (scratch.old_old_pressure_gradients),
-          old_strain_rates (scratch.old_strain_rates),
-          old_old_strain_rates (scratch.old_old_strain_rates),
-          old_temperature_values (scratch.old_temperature_values),
-          old_old_temperature_values (scratch.old_old_temperature_values),
-          old_field_values (scratch.old_field_values),
-          old_old_field_values(scratch.old_old_field_values),
-          old_field_grads (scratch.old_field_grads),
-          old_old_field_grads (scratch.old_old_field_grads),
-          old_field_laplacians (scratch.old_field_laplacians),
-          old_old_field_laplacians (scratch.old_old_field_laplacians),
-          old_composition_values(scratch.old_composition_values),
-          old_old_composition_values(scratch.old_old_composition_values),
-          current_temperature_values(scratch.current_temperature_values),
-          current_velocity_values(scratch.current_velocity_values),
-          face_current_velocity_values(scratch.face_current_velocity_values),
-          mesh_velocity_values(scratch.mesh_velocity_values),
-          face_mesh_velocity_values(scratch.face_mesh_velocity_values),
-          current_strain_rates(scratch.current_strain_rates),
-          current_composition_values(scratch.current_composition_values),
-          current_velocity_divergences(scratch.current_velocity_divergences),
-          material_model_inputs(scratch.material_model_inputs),
-          material_model_outputs(scratch.material_model_outputs),
-          face_material_model_inputs(scratch.face_material_model_inputs),
-          face_material_model_outputs(scratch.face_material_model_outputs),
-          neighbor_face_material_model_inputs(scratch.neighbor_face_material_model_inputs),
-          neighbor_face_material_model_outputs(scratch.neighbor_face_material_model_outputs),
-          heating_model_outputs(scratch.heating_model_outputs),
-          face_heating_model_outputs(scratch.face_heating_model_outputs),
-          neighbor_face_heating_model_outputs(scratch.neighbor_face_heating_model_outputs)
-        {}
-
-      }
-
-
-      namespace CopyData
-      {
-
-        template <int dim>
-        StokesPreconditioner<dim>::
-        StokesPreconditioner (const unsigned int stokes_dofs_per_cell)
-          :
-          local_matrix (stokes_dofs_per_cell,
-                        stokes_dofs_per_cell),
-          local_dof_indices (stokes_dofs_per_cell)
-        {}
-
-
-
-        template <int dim>
-        StokesPreconditioner<dim>::
-        StokesPreconditioner (const StokesPreconditioner &data)
-          :
-          local_matrix (data.local_matrix),
-          local_dof_indices (data.local_dof_indices)
-        {}
-
-
-        template <int dim>
-        void StokesPreconditioner<dim>::
-        extract_stokes_dof_indices(const std::vector<types::global_dof_index> &all_dof_indices,
-                                   const Introspection<dim>                   &introspection,
-                                   const dealii::FiniteElement<dim>           &finite_element)
-        {
-          const unsigned int dofs_per_cell = finite_element.dofs_per_cell;
-
-          for (unsigned int i=0, i_stokes=0; i<dofs_per_cell; /*increment at end of loop*/)
-            {
-              if (introspection.is_stokes_component(finite_element.system_to_component_index(i).first))
-                {
-                  this->local_dof_indices[i_stokes] = all_dof_indices[i];
-                  ++i_stokes;
-                }
-              ++i;
-            }
-        }
-
-
-        template <int dim>
-        StokesPreconditioner<dim>::
-        ~StokesPreconditioner ()
-        {}
-
-
-
-        template <int dim>
-        StokesSystem<dim>::
-        StokesSystem (const unsigned int        stokes_dofs_per_cell,
-                      const bool                do_pressure_rhs_compatibility_modification)
-          :
-          StokesPreconditioner<dim> (stokes_dofs_per_cell),
-          local_rhs (stokes_dofs_per_cell),
-          local_pressure_shape_function_integrals (do_pressure_rhs_compatibility_modification ?
-                                                   stokes_dofs_per_cell
-                                                   :
-                                                   0)
-        {}
-
-
-
-        template <int dim>
-        StokesSystem<dim>::
-        StokesSystem (const StokesSystem<dim> &data)
-          :
-          StokesPreconditioner<dim> (data),
-          local_rhs (data.local_rhs),
-          local_pressure_shape_function_integrals (data.local_pressure_shape_function_integrals.size())
-        {}
-
-
-
-
-        template <int dim>
-        AdvectionSystem<dim>::
-        AdvectionSystem (const FiniteElement<dim> &finite_element,
-                         const bool                field_is_discontinuous)
-          :
-          local_matrix (finite_element.dofs_per_cell,
-                        finite_element.dofs_per_cell),
-          local_matrices_int_ext ((field_is_discontinuous
-                                   ?
-                                   GeometryInfo<dim>::max_children_per_face * GeometryInfo<dim>::faces_per_cell
-                                   :
-                                   0),
-                                  FullMatrix<double>(finite_element.dofs_per_cell,
-                                                     finite_element.dofs_per_cell)),
-          local_matrices_ext_int ((field_is_discontinuous
-                                   ?
-                                   GeometryInfo<dim>::max_children_per_face * GeometryInfo<dim>::faces_per_cell
-                                   :
-                                   0),
-                                  FullMatrix<double>(finite_element.dofs_per_cell,
-                                                     finite_element.dofs_per_cell)),
-          local_matrices_ext_ext ((field_is_discontinuous
-                                   ?
-                                   GeometryInfo<dim>::max_children_per_face * GeometryInfo<dim>::faces_per_cell
-                                   :
-                                   0),
-                                  FullMatrix<double>(finite_element.dofs_per_cell,
-                                                     finite_element.dofs_per_cell)),
-          local_rhs (finite_element.dofs_per_cell),
-
-          assembled_matrices ((field_is_discontinuous
-                               ?
-                               GeometryInfo<dim>::max_children_per_face * GeometryInfo<dim>::faces_per_cell
-                               :
-                               0), false),
-
-          local_dof_indices (finite_element.dofs_per_cell),
-          neighbor_dof_indices ((field_is_discontinuous
-                                 ?
-                                 GeometryInfo<dim>::max_children_per_face * GeometryInfo<dim>::faces_per_cell
-                                 :
-                                 0),
-                                std::vector<types::global_dof_index>(finite_element.dofs_per_cell))
-        {}
-
-
-
-        template <int dim>
-        AdvectionSystem<dim>::
-        AdvectionSystem (const AdvectionSystem &data)
-          :
-          local_matrix (data.local_matrix),
-          local_matrices_int_ext (data.local_matrices_int_ext),
-          local_matrices_ext_int (data.local_matrices_ext_int),
-          local_matrices_ext_ext (data.local_matrices_ext_ext),
-          local_rhs (data.local_rhs),
-
-          assembled_matrices (data.assembled_matrices),
-
-          local_dof_indices (data.local_dof_indices),
-          neighbor_dof_indices (data.neighbor_dof_indices)
-        {}
-
-      }
-
-
-
-      template <int dim>
-      AssemblerLists<dim>::Properties::Properties ()
-        :
-        need_face_material_model_data (false),
-        need_face_finite_element_evaluation(false),
-        need_viscosity(false),
-        needed_update_flags ()
-      {}
-
-    }
-  }
-
-
-
-
   template <int dim>
   void
   Simulator<dim>::
@@ -513,364 +96,206 @@ namespace aspect
       for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
         material_model_inputs.composition[q][c] = composition_values[c][q];
 
+    DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
     material_model_inputs.cell = &cell;
+    DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
+
+    material_model_inputs.current_cell = cell;
   }
 
 
 
-  namespace Assemblers
+  namespace
   {
-    /**
-     * A namespace for the definition of functions that implement various
-     * other terms that need to occasionally or always be assembled.
-     */
-    namespace OtherTerms
+    // This function initializes the simulator access for all assemblers
+    // inside of the assemblers parameter. This is just a shortcut to save some
+    // lines in set_assemblers(), where this operation appears multiple times.
+    template <int dim, class AssemblerType>
+    void
+    initialize_simulator(const Simulator<dim> &simulator,
+                         std::vector<std::unique_ptr<AssemblerType> > &assemblers)
     {
-      template <int dim>
-      void
-      pressure_rhs_compatibility_modification (const SimulatorAccess<dim>                      &simulator_access,
-                                               internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
-                                               internal::Assembly::CopyData::StokesSystem<dim> &data)
-      {
-        const Introspection<dim> &introspection = simulator_access.introspection();
-        const FiniteElement<dim> &fe = simulator_access.get_fe();
-
-        const unsigned int stokes_dofs_per_cell = data.local_dof_indices.size();
-        const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
-
-        for (unsigned int q=0; q<n_q_points; ++q)
-          for (unsigned int i=0, i_stokes=0; i_stokes<stokes_dofs_per_cell; /*increment at end of loop*/)
-            {
-              if (introspection.is_stokes_component(fe.system_to_component_index(i).first))
-                {
-                  scratch.phi_p[i_stokes] = scratch.finite_element_values[introspection.extractors.pressure].value (i, q);
-                  data.local_pressure_shape_function_integrals(i_stokes) += scratch.phi_p[i_stokes] * scratch.finite_element_values.JxW(q);
-                  ++i_stokes;
-                }
-              ++i;
-            }
-      }
-
-
-
-      template <int dim>
-      void
-      boundary_traction (const SimulatorAccess<dim>                           &simulator_access,
-                         const typename DoFHandler<dim>::active_cell_iterator &cell,
-                         const unsigned int                                    face_no,
-                         internal::Assembly::Scratch::StokesSystem<dim>       &scratch,
-                         internal::Assembly::CopyData::StokesSystem<dim>      &data)
-      {
-        const Introspection<dim> &introspection = simulator_access.introspection();
-        const FiniteElement<dim> &fe = scratch.finite_element_values.get_fe();
-
-        // see if any of the faces are traction boundaries for which
-        // we need to assemble force terms for the right hand side
-        const unsigned int stokes_dofs_per_cell = data.local_dof_indices.size();
-
-        if (simulator_access.get_boundary_traction()
-            .find (cell->face(face_no)->boundary_id())
-            !=
-            simulator_access.get_boundary_traction().end())
-          {
-            scratch.face_finite_element_values.reinit (cell, face_no);
-
-            for (unsigned int q=0; q<scratch.face_finite_element_values.n_quadrature_points; ++q)
-              {
-                const Tensor<1,dim> traction
-                  = simulator_access.get_boundary_traction().find(
-                      cell->face(face_no)->boundary_id()
-                    )->second
-                    ->boundary_traction (cell->face(face_no)->boundary_id(),
-                                         scratch.face_finite_element_values.quadrature_point(q),
-                                         scratch.face_finite_element_values.normal_vector(q));
-
-                for (unsigned int i=0, i_stokes=0; i_stokes<stokes_dofs_per_cell; /*increment at end of loop*/)
-                  {
-                    if (introspection.is_stokes_component(fe.system_to_component_index(i).first))
-                      {
-                        data.local_rhs(i_stokes) += scratch.face_finite_element_values[introspection.extractors.velocities].value(i,q) *
-                                                    traction *
-                                                    scratch.face_finite_element_values.JxW(q);
-                        ++i_stokes;
-                      }
-                    ++i;
-                  }
-              }
-          }
-      }
+      for (unsigned int i=0; i<assemblers.size(); ++i)
+        if (SimulatorAccess<dim> *p = dynamic_cast<SimulatorAccess<dim>* >(assemblers[i].get()))
+          p->initialize_simulator(simulator);
     }
   }
 
   template <int dim>
   void
   Simulator<dim>::
-  create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const
+  set_default_assemblers()
   {
-    typedef typename std::vector<std_cxx11::shared_ptr<internal::Assembly::Assemblers::AssemblerBase<dim> > >
-    assembler_vector_t;
+    assemblers->stokes_preconditioner.push_back(std_cxx14::make_unique<aspect::Assemblers::StokesPreconditioner<dim> >());
+    assemblers->stokes_system.push_back(std_cxx14::make_unique<aspect::Assemblers::StokesIncompressibleTerms<dim> >());
 
-    for (typename assembler_vector_t::const_iterator it = assembler_objects.begin();
-         it != assembler_objects.end();
-         ++it)
+    if (material_model->is_compressible())
       {
-        (*it)->create_additional_material_model_outputs(outputs);
+        assemblers->stokes_preconditioner.push_back(
+          std_cxx14::make_unique<aspect::Assemblers::StokesCompressiblePreconditioner<dim> >());
+
+        assemblers->stokes_system.push_back(
+          std_cxx14::make_unique<aspect::Assemblers::StokesCompressibleStrainRateViscosityTerm<dim> >());
       }
 
+    if (parameters.formulation_mass_conservation ==
+        Parameters<dim>::Formulation::MassConservation::implicit_reference_density_profile)
+      {
+        assemblers->stokes_system.push_back(
+          std_cxx14::make_unique<aspect::Assemblers::StokesImplicitReferenceDensityCompressibilityTerm<dim> >());
+      }
+    else if (parameters.formulation_mass_conservation ==
+             Parameters<dim>::Formulation::MassConservation::reference_density_profile)
+      {
+        assemblers->stokes_system.push_back(
+          std_cxx14::make_unique<aspect::Assemblers::StokesReferenceDensityCompressibilityTerm<dim> >());
+      }
+    else if (parameters.formulation_mass_conservation ==
+             Parameters<dim>::Formulation::MassConservation::incompressible)
+      {
+        // do nothing, because we assembled div u =0 above already
+      }
+    else if (parameters.formulation_mass_conservation ==
+             Parameters<dim>::Formulation::MassConservation::isothermal_compression)
+      {
+        assemblers->stokes_system.push_back(
+          std_cxx14::make_unique<aspect::Assemblers::StokesIsothermalCompressionTerm<dim> >());
+      }
+    else if (parameters.formulation_mass_conservation ==
+             Parameters<dim>::Formulation::MassConservation::hydrostatic_compression)
+      {
+        assemblers->stokes_system.push_back(
+          std_cxx14::make_unique<aspect::Assemblers::StokesHydrostaticCompressionTerm<dim> >());
+      }
+    else
+      AssertThrow(false,
+                  ExcMessage("Unknown mass conservation equation approximation. There is no assembler"
+                             " defined that handles this formulation."));
+
+    // add the terms for traction boundary conditions
+    if (!boundary_traction.empty())
+      {
+        assemblers->stokes_system_on_boundary_face.push_back(
+          std_cxx14::make_unique<aspect::Assemblers::StokesBoundaryTraction<dim> >());
+      }
+
+    // add the terms necessary to normalize the pressure
+    if (do_pressure_rhs_compatibility_modification)
+      assemblers->stokes_system.push_back(
+        std_cxx14::make_unique<aspect::Assemblers::StokesPressureRHSCompatibilityModification<dim> >());
+
+    assemblers->advection_system.push_back(
+      std_cxx14::make_unique<aspect::Assemblers::AdvectionSystem<dim> >());
+
+    // add the diffusion assemblers if we have fields that use this method
+    if (std::find(parameters.compositional_field_methods.begin(), parameters.compositional_field_methods.end(),
+                  Parameters<dim>::AdvectionFieldMethod::prescribed_field_with_diffusion) != parameters.compositional_field_methods.end())
+      assemblers->advection_system.push_back(
+        std_cxx14::make_unique<aspect::Assemblers::DiffusionSystem<dim> >());
+
+    if (parameters.use_discontinuous_temperature_discretization ||
+        parameters.use_discontinuous_composition_discretization)
+      {
+        // TODO: This currently does not work in parallel, because the sparsity
+        // pattern of the matrix does not seem to know about flux terms
+        // across periodic faces of different levels. Fix this.
+        AssertThrow(geometry_model->get_periodic_boundary_pairs().size() == 0 ||
+                    Utilities::MPI::n_mpi_processes(mpi_communicator) == 1 ||
+                    (parameters.initial_adaptive_refinement == 0 &&
+                     parameters.adaptive_refinement_interval == 0),
+                    ExcMessage("Combining discontinuous elements with periodic boundaries and "
+                               "adaptive mesh refinement in parallel models is currently not supported. "
+                               "Please switch off any of those options or run on a single process."));
+
+        assemblers->advection_system_on_boundary_face.push_back(
+          std_cxx14::make_unique<aspect::Assemblers::AdvectionSystemBoundaryFace<dim> >());
+
+        assemblers->advection_system_on_interior_face.push_back(
+          std_cxx14::make_unique<aspect::Assemblers::AdvectionSystemInteriorFace<dim> >());
+      }
+
+    if (parameters.fixed_heat_flux_boundary_indicators.size() != 0)
+      {
+        assemblers->advection_system_on_boundary_face.push_back(
+          std_cxx14::make_unique<aspect::Assemblers::AdvectionSystemBoundaryHeatFlux<dim> >());
+      }
+
+    if (parameters.use_discontinuous_temperature_discretization
+        || parameters.fixed_heat_flux_boundary_indicators.size() != 0)
+      {
+        assemblers->advection_system_assembler_on_face_properties[0].need_face_material_model_data = true;
+        assemblers->advection_system_assembler_on_face_properties[0].need_face_finite_element_evaluation = true;
+      }
+
+    if (parameters.use_discontinuous_composition_discretization)
+      {
+        for (unsigned int i = 1; i<=introspection.n_compositional_fields; ++i)
+          {
+            assemblers->advection_system_assembler_on_face_properties[i].need_face_material_model_data = true;
+            assemblers->advection_system_assembler_on_face_properties[i].need_face_finite_element_evaluation = true;
+          }
+      }
   }
-
-
 
   template <int dim>
   void
   Simulator<dim>::
   set_assemblers ()
   {
-    // create an object for the complete equations assembly; add its
-    // member functions to the signals and add the object the list
-    // of assembler objects
-    aspect::Assemblers::StokesAssembler<dim> *stokes_assembler
-      = new aspect::Assemblers::StokesAssembler<dim>();
-    aspect::Assemblers::AdvectionAssembler<dim> *adv_assembler
-      = new aspect::Assemblers::AdvectionAssembler<dim>();
+    // first let the manager delete all existing assemblers:
+    assemblers->reset();
 
     assemblers->advection_system_assembler_properties.resize(1+introspection.n_compositional_fields);
     assemblers->advection_system_assembler_on_face_properties.resize(1+introspection.n_compositional_fields);
 
-    aspect::Assemblers::MeltEquations<dim> *melt_equation_assembler = NULL;
-    if (parameters.include_melt_transport)
-      melt_equation_assembler = new aspect::Assemblers::MeltEquations<dim>();
-
-    if (parameters.include_melt_transport)
-      assemblers->local_assemble_stokes_preconditioner
-      .connect (std_cxx11::bind(&aspect::Assemblers::MeltEquations<dim>::local_assemble_stokes_preconditioner_melt,
-                                std_cxx11::cref (*melt_equation_assembler),
-                                std_cxx11::_1, std_cxx11::_2, std_cxx11::_3));
-    else
-      assemblers->local_assemble_stokes_preconditioner
-      .connect (std_cxx11::bind(&aspect::Assemblers::StokesAssembler<dim>::preconditioner,
-                                std_cxx11::cref (*stokes_assembler),
-                                std_cxx11::_1, std_cxx11::_2, std_cxx11::_3));
-
-    if (parameters.include_melt_transport)
-      assemblers->local_assemble_stokes_system
-      .connect (std_cxx11::bind(&aspect::Assemblers::MeltEquations<dim>::local_assemble_stokes_system_melt,
-                                std_cxx11::cref (*melt_equation_assembler),
-                                std_cxx11::_1,
-                                std_cxx11::_2,
-                                std_cxx11::_3,
-                                std_cxx11::_4,
-                                std_cxx11::_5));
-    else
+    // Set up the set of assemblers depending on the mode of equations
+    if (!parameters.include_melt_transport
+        && !assemble_newton_stokes_system)
       {
-        assemblers->local_assemble_stokes_system
-        .connect (std_cxx11::bind(&aspect::Assemblers::StokesAssembler<dim>::incompressible_terms,
-                                  std_cxx11::cref (*stokes_assembler),
-                                  // discard cell,
-                                  std_cxx11::_2,
-                                  std_cxx11::_3,
-                                  std_cxx11::_4,
-                                  std_cxx11::_5));
+        set_default_assemblers();
 
-        if (material_model->is_compressible())
-          assemblers->local_assemble_stokes_system
-          .connect (std_cxx11::bind(&aspect::Assemblers::StokesAssembler<dim>::compressible_strain_rate_viscosity_term,
-                                    std_cxx11::cref (*stokes_assembler),
-                                    // discard cell,
-                                    std_cxx11::_2,
-                                    std_cxx11::_3,
-                                    std_cxx11::_4,
-                                    std_cxx11::_5));
-
-        if (parameters.formulation_mass_conservation ==
-            Parameters<dim>::Formulation::MassConservation::implicit_reference_density_profile)
-          assemblers->local_assemble_stokes_system
-          .connect (std_cxx11::bind(&aspect::Assemblers::StokesAssembler<dim>::implicit_reference_density_compressibility_term,
-                                    std_cxx11::cref (*stokes_assembler),
-                                    // discard cell,
-                                    std_cxx11::_2,
-                                    std_cxx11::_3,
-                                    std_cxx11::_4,
-                                    std_cxx11::_5,
-                                    std_cxx11::cref (this->parameters)));
-        else if (parameters.formulation_mass_conservation ==
-                 Parameters<dim>::Formulation::MassConservation::reference_density_profile)
-          {
-            assemblers->local_assemble_stokes_system
-            .connect (std_cxx11::bind(&aspect::Assemblers::StokesAssembler<dim>::reference_density_compressibility_term,
-                                      std_cxx11::cref (*stokes_assembler),
-                                      // discard cell,
-                                      std_cxx11::_2,
-                                      std_cxx11::_3,
-                                      std_cxx11::_4,
-                                      std_cxx11::_5,
-                                      std_cxx11::cref (this->parameters)));
-          }
-        else if (parameters.formulation_mass_conservation ==
-                 Parameters<dim>::Formulation::MassConservation::incompressible)
-          {
-            // do nothing, because we assembled div u =0 above already
-          }
-        else
-          assemblers->local_assemble_stokes_system
-          .connect (std_cxx11::bind(&aspect::Assemblers::StokesAssembler<dim>::isothermal_compression_term,
-                                    std_cxx11::cref (*stokes_assembler),
-                                    // discard cell,
-                                    std_cxx11::_2,
-                                    std_cxx11::_3,
-                                    std_cxx11::_4,
-                                    std_cxx11::_5,
-                                    std_cxx11::cref (this->parameters)));
-
+        // Let the free surface add its assembler:
+        if (parameters.free_surface_enabled)
+          free_surface->set_assemblers();
       }
-
-
-    assembler_objects.push_back (std_cxx11::shared_ptr<internal::Assembly::Assemblers::AssemblerBase<dim> >
-                                 (stokes_assembler));
-
-    assembler_objects.push_back (std_cxx11::shared_ptr<internal::Assembly::Assemblers::AssemblerBase<dim> >
-                                 (adv_assembler));
-
-
-    if (parameters.include_melt_transport)
-      assembler_objects.push_back (std_cxx11::shared_ptr<internal::Assembly::Assemblers::AssemblerBase<dim> >
-                                   (melt_equation_assembler));
-
-    // add the boundary integral for melt migration
-    if (parameters.include_melt_transport)
+    else if (parameters.include_melt_transport
+             && !assemble_newton_stokes_system)
       {
-        assemblers->stokes_system_assembler_on_boundary_face_properties.need_face_material_model_data = true;
-        assemblers->stokes_system_assembler_on_boundary_face_properties.needed_update_flags = (update_values  | update_quadrature_points |
-            update_normal_vectors | update_gradients |
-            update_JxW_values);
-        assemblers->local_assemble_stokes_system_on_boundary_face
-        .connect (std_cxx11::bind(&aspect::Assemblers::MeltEquations<dim>::local_assemble_stokes_system_melt_boundary,
-                                  std_cxx11::cref (*melt_equation_assembler),
-                                  std_cxx11::_1,
-                                  std_cxx11::_2,
-                                  std_cxx11::_3,
-                                  // discard rebuild_stokes_matrix,
-                                  std_cxx11::_5,
-                                  std_cxx11::_6));
+        melt_handler->set_assemblers(*assemblers);
+
+        // Let the free surface add its assembler:
+        if (parameters.free_surface_enabled)
+          free_surface->set_assemblers();
       }
-
-    // add the terms for traction boundary conditions
-    assemblers->local_assemble_stokes_system_on_boundary_face
-    .connect (std_cxx11::bind(&aspect::Assemblers::OtherTerms::boundary_traction<dim>,
-                              SimulatorAccess<dim>(*this),
-                              std_cxx11::_1,
-                              std_cxx11::_2,
-                              // discard pressure_scaling,
-                              // discard rebuild_stokes_matrix,
-                              std_cxx11::_5,
-                              std_cxx11::_6));
-
-    // add the terms necessary to normalize the pressure
-    if (do_pressure_rhs_compatibility_modification)
+    else if (!parameters.include_melt_transport
+             && assemble_newton_stokes_system)
       {
-        if (parameters.include_melt_transport)
-          assemblers->local_assemble_stokes_system
-          .connect (std_cxx11::bind(&aspect::Assemblers::OtherTerms::pressure_rhs_compatibility_modification_melt<dim>,
-                                    SimulatorAccess<dim>(*this),
-                                    // discard cell,
-                                    // discard pressure_scaling,
-                                    // discard rebuild_stokes_matrix,
-                                    std_cxx11::_4,
-                                    std_cxx11::_5));
-        else
-          assemblers->local_assemble_stokes_system
-          .connect (std_cxx11::bind(&aspect::Assemblers::OtherTerms::pressure_rhs_compatibility_modification<dim>,
-                                    SimulatorAccess<dim>(*this),
-                                    // discard cell,
-                                    // discard pressure_scaling,
-                                    // discard rebuild_stokes_matrix,
-                                    std_cxx11::_4,
-                                    std_cxx11::_5));
+        newton_handler->set_assemblers(*assemblers);
+
+        // Let the free surface add its assembler:
+        if (parameters.free_surface_enabled)
+          free_surface->set_assemblers();
       }
-
-    if (parameters.include_melt_transport)
+    else if (parameters.include_melt_transport
+             && assemble_newton_stokes_system)
       {
-        assemblers->local_assemble_advection_system
-        .connect (std_cxx11::bind(&aspect::Assemblers::MeltEquations<dim>::local_assemble_advection_system_melt,
-                                  std_cxx11::cref (*melt_equation_assembler),
-                                  // discard cell,
-                                  std_cxx11::_2,
-                                  std_cxx11::_3,
-                                  std_cxx11::_4,
-                                  std_cxx11::_5));
-
-        assemblers->compute_advection_system_residual
-        .connect (std_cxx11::bind(&aspect::Assemblers::MeltEquations<dim>::compute_advection_system_residual_melt,
-                                  std_cxx11::cref (*melt_equation_assembler),
-                                  // discard cell,
-                                  std_cxx11::_2,
-                                  std_cxx11::_3));
+        AssertThrow (false,
+                     ExcMessage("The melt implementation does not support the Newton solver at the moment."));
       }
     else
-      {
-        assemblers->local_assemble_advection_system
-        .connect (std_cxx11::bind(&aspect::Assemblers::AdvectionAssembler<dim>::local_assemble_advection_system,
-                                  std_cxx11::cref (*adv_assembler),
-                                  // discard cell,
-                                  std_cxx11::_2,
-                                  std_cxx11::_3,
-                                  std_cxx11::_4,
-                                  std_cxx11::_5));
-
-        assemblers->compute_advection_system_residual
-        .connect (std_cxx11::bind(&aspect::Assemblers::AdvectionAssembler<dim>::compute_advection_system_residual,
-                                  std_cxx11::cref (*adv_assembler),
-                                  // discard cell,
-                                  std_cxx11::_2,
-                                  std_cxx11::_3));
-
-      }
-
-    if (parameters.use_discontinuous_temperature_discretization ||
-        parameters.use_discontinuous_composition_discretization)
-      {
-        assemblers->local_assemble_advection_system_on_interior_face
-        .connect(std_cxx11::bind(&aspect::Assemblers::AdvectionAssembler<dim>::local_assemble_discontinuous_advection_interior_face_terms,
-                                 std_cxx11::cref (*adv_assembler),
-                                 std_cxx11::_1,
-                                 std_cxx11::_2,
-                                 std_cxx11::_3,
-                                 std_cxx11::_4,
-                                 std_cxx11::_5));
-
-        assemblers->local_assemble_advection_system_on_boundary_face
-        .connect(std_cxx11::bind(&aspect::Assemblers::AdvectionAssembler<dim>::local_assemble_discontinuous_advection_boundary_face_terms,
-                                 std_cxx11::cref (*adv_assembler),
-                                 std_cxx11::_1,
-                                 std_cxx11::_2,
-                                 std_cxx11::_3,
-                                 std_cxx11::_4,
-                                 std_cxx11::_5));
-
-        if (parameters.use_discontinuous_temperature_discretization)
-          {
-            assemblers->advection_system_assembler_on_face_properties[0].need_face_material_model_data = true;
-            assemblers->advection_system_assembler_on_face_properties[0].need_face_finite_element_evaluation = true;
-          }
-
-        if (parameters.use_discontinuous_composition_discretization)
-          {
-            for (unsigned int i = 1; i<=introspection.n_compositional_fields; ++i)
-              {
-                assemblers->advection_system_assembler_on_face_properties[i].need_face_material_model_data = true;
-                assemblers->advection_system_assembler_on_face_properties[i].need_face_finite_element_evaluation = true;
-              }
-          }
-      }
+      AssertThrow(false,ExcInternalError());
 
     // allow other assemblers to add themselves or modify the existing ones by firing the signal
-    this->signals.set_assemblers(*this, *assemblers, assembler_objects);
+    this->signals.set_assemblers(*this, *assemblers);
 
     // ensure that all assembler objects have access to the SimulatorAccess
     // base class
-    for (unsigned int i=0; i<assembler_objects.size(); ++i)
-      if (SimulatorAccess<dim> *p = dynamic_cast<SimulatorAccess<dim>*>(assembler_objects[i].get()))
-        p->initialize_simulator(*this);
+    initialize_simulator(*this,assemblers->stokes_preconditioner);
+    initialize_simulator(*this,assemblers->stokes_system);
+    initialize_simulator(*this,assemblers->stokes_system_on_boundary_face);
+    initialize_simulator(*this,assemblers->advection_system);
+    initialize_simulator(*this,assemblers->advection_system_on_boundary_face);
+    initialize_simulator(*this,assemblers->advection_system_on_interior_face);
   }
 
 
@@ -891,8 +316,7 @@ namespace aspect
     data.extract_stokes_dof_indices(scratch.local_dof_indices, introspection, finite_element);
 
     // Prepare the data structures for assembly
-    scratch.finite_element_values.reinit (cell);
-
+    scratch.reinit(cell);
     data.local_matrix = 0;
 
     compute_material_model_input_values (current_linearization_point,
@@ -900,7 +324,9 @@ namespace aspect
                                          cell,
                                          true,
                                          scratch.material_model_inputs);
-    create_additional_material_model_outputs(scratch.material_model_outputs);
+
+    for (unsigned int i=0; i<assemblers->stokes_preconditioner.size(); ++i)
+      assemblers->stokes_preconditioner[i]->create_additional_material_model_outputs(scratch.material_model_outputs);
 
     material_model->evaluate(scratch.material_model_inputs,
                              scratch.material_model_outputs);
@@ -910,9 +336,8 @@ namespace aspect
                                                scratch.finite_element_values.get_mapping(),
                                                scratch.material_model_outputs);
 
-    // trigger the invocation of the various functions that actually do
-    // all of the assembling
-    assemblers->local_assemble_stokes_preconditioner(pressure_scaling, scratch, data);
+    for (unsigned int i=0; i<assemblers->stokes_preconditioner.size(); ++i)
+      assemblers->stokes_preconditioner[i]->execute(scratch,data);
   }
 
 
@@ -954,30 +379,35 @@ namespace aspect
                                         + finite_element.base_element(introspection.base_elements.pressure).dofs_per_cell;
 
     if (parameters.include_melt_transport)
-      stokes_dofs_per_cell += finite_element.base_element(introspection.base_elements.pressure).dofs_per_cell;
+      stokes_dofs_per_cell += finite_element.base_element(introspection.variable("compaction pressure").base_index).dofs_per_cell;
+
+    auto worker = [&](const typename DoFHandler<dim>::active_cell_iterator &cell,
+                      internal::Assembly::Scratch::StokesPreconditioner<dim> &scratch,
+                      internal::Assembly::CopyData::StokesPreconditioner<dim> &data)
+    {
+      this->local_assemble_stokes_preconditioner(cell, scratch, data);
+    };
+
+    auto copier = [&](const internal::Assembly::CopyData::StokesPreconditioner<dim> &data)
+    {
+      this->copy_local_to_global_stokes_preconditioner(data);
+    };
 
     WorkStream::
     run (CellFilter (IteratorFilters::LocallyOwnedCell(),
                      dof_handler.begin_active()),
          CellFilter (IteratorFilters::LocallyOwnedCell(),
                      dof_handler.end()),
-         std_cxx11::bind (&Simulator<dim>::
-                          local_assemble_stokes_preconditioner,
-                          this,
-                          std_cxx11::_1,
-                          std_cxx11::_2,
-                          std_cxx11::_3),
-         std_cxx11::bind (&Simulator<dim>::
-                          copy_local_to_global_stokes_preconditioner,
-                          this,
-                          std_cxx11::_1),
+         worker,
+         copier,
          internal::Assembly::Scratch::
          StokesPreconditioner<dim> (finite_element, quadrature_formula,
                                     *mapping,
                                     cell_update_flags,
                                     introspection.n_compositional_fields,
                                     stokes_dofs_per_cell,
-                                    parameters.include_melt_transport),
+                                    parameters.include_melt_transport,
+                                    rebuild_stokes_matrix),
          internal::Assembly::CopyData::
          StokesPreconditioner<dim> (stokes_dofs_per_cell));
 
@@ -996,7 +426,7 @@ namespace aspect
     if (parameters.use_direct_stokes_solver)
       return;
 
-    computing_timer.enter_section ("   Build Stokes preconditioner");
+    TimerOutput::Scope timer (computing_timer, "Build Stokes preconditioner");
     pcout << "   Rebuilding Stokes preconditioner..." << std::flush;
 
     // first assemble the raw matrices necessary for the preconditioner
@@ -1009,8 +439,12 @@ namespace aspect
                                       introspection.component_masks.velocities,
                                       constant_modes);
 
-    Mp_preconditioner.reset (new LinearAlgebra::PreconditionILU());
-    Amg_preconditioner.reset (new LinearAlgebra::PreconditionAMG());
+    if (parameters.include_melt_transport)
+      Mp_preconditioner = std_cxx14::make_unique<LinearAlgebra::PreconditionAMG>();
+    else
+      Mp_preconditioner = std_cxx14::make_unique<LinearAlgebra::PreconditionILU>();
+
+    Amg_preconditioner = std_cxx14::make_unique<LinearAlgebra::PreconditionAMG>();
 
     LinearAlgebra::PreconditionAMG::AdditionalData Amg_data;
 #ifdef ASPECT_USE_PETSC
@@ -1037,17 +471,50 @@ namespace aspect
 
     /*  The stabilization term for the free surface (Kaus et. al., 2010)
      *  makes changes to the system matrix which are of the same form as
-     *  boundary stresses.  If these stresses are not also added to the
-     *  system_preconditioner_matrix, then  if fails to be very good as a
-     *  preconditioner.  Instead, we just pass the system_matrix to the
+     *  boundary stresses. If these stresses are not also added to the
+     *  system_preconditioner_matrix, then it fails to be very good as a
+     *  preconditioner. Instead, we just pass the system_matrix to the
      *  AMG precondition initialization so that it builds the preconditioner
      *  directly from that. However, we still need the mass matrix for the
      *  pressure block which is assembled in the preconditioner matrix.
      *  So rather than build a different preconditioner matrix which only
      *  does the mass matrix, we just reuse the same system_preconditioner_matrix
      *  for the Mp_preconditioner block.  Maybe a bit messy*/
-    Mp_preconditioner->initialize (system_preconditioner_matrix.block(1,1));
-    if (parameters.free_surface_enabled)
+
+    if (parameters.include_melt_transport == false)
+      {
+        LinearAlgebra::PreconditionILU *Mp_preconditioner_ILU
+          = dynamic_cast<LinearAlgebra::PreconditionILU *> (Mp_preconditioner.get());
+        Mp_preconditioner_ILU->initialize (system_preconditioner_matrix.block(1,1));
+      }
+    else
+      {
+        // in the case of melt transport we have an AMG preconditioner for the lower right block.
+        LinearAlgebra::PreconditionAMG::AdditionalData Amg_data;
+#ifdef ASPECT_USE_PETSC
+        Amg_data.symmetric_operator = false;
+#else
+        std::vector<std::vector<bool> > constant_modes;
+        dealii::ComponentMask cm_pressure = introspection.component_masks.pressure;
+        if (parameters.include_melt_transport)
+          cm_pressure = cm_pressure | introspection.variable("compaction pressure").component_mask;
+        DoFTools::extract_constant_modes (dof_handler,
+                                          cm_pressure,
+                                          constant_modes);
+
+        Amg_data.elliptic = true;
+        Amg_data.higher_order_elements = false;
+
+        Amg_data.smoother_sweeps = 2;
+        Amg_data.coarse_type = "symmetric Gauss-Seidel";
+#endif
+
+        LinearAlgebra::PreconditionAMG *Mp_preconditioner_AMG
+          = dynamic_cast<LinearAlgebra::PreconditionAMG *> (Mp_preconditioner.get());
+        Mp_preconditioner_AMG->initialize (system_preconditioner_matrix.block(1,1), Amg_data);
+      }
+
+    if (parameters.free_surface_enabled || parameters.include_melt_transport || parameters.use_full_A_block_preconditioner)
       Amg_preconditioner->initialize (system_matrix.block(0,0),
                                       Amg_data);
     else
@@ -1057,8 +524,8 @@ namespace aspect
     rebuild_stokes_preconditioner = false;
 
     pcout << std::endl;
-    computing_timer.exit_section();
   }
+
 
 
   template <int dim>
@@ -1079,7 +546,7 @@ namespace aspect
     data.extract_stokes_dof_indices (scratch.local_dof_indices, introspection, finite_element);
 
     // Prepare the data structures for assembly
-    scratch.finite_element_values.reinit (cell);
+    scratch.reinit(cell);
 
     if (rebuild_stokes_matrix)
       data.local_matrix = 0;
@@ -1091,9 +558,11 @@ namespace aspect
     compute_material_model_input_values (current_linearization_point,
                                          scratch.finite_element_values,
                                          cell,
-                                         rebuild_stokes_matrix,
+                                         assemble_newton_stokes_system ? true : rebuild_stokes_matrix,
                                          scratch.material_model_inputs);
-    create_additional_material_model_outputs(scratch.material_model_outputs);
+
+    for (unsigned int i=0; i<assemblers->stokes_system.size(); ++i)
+      assemblers->stokes_system[i]->create_additional_material_model_outputs(scratch.material_model_outputs);
 
     material_model->evaluate(scratch.material_model_inputs,
                              scratch.material_model_outputs);
@@ -1105,6 +574,12 @@ namespace aspect
 
     scratch.finite_element_values[introspection.extractors.velocities].get_function_values(current_linearization_point,
         scratch.velocity_values);
+    if (assemble_newton_stokes_system)
+      scratch.finite_element_values[introspection.extractors.velocities].get_function_divergences(current_linearization_point,scratch.velocity_divergence);
+    if (parameters.formulation_mass_conservation == Parameters<dim>::Formulation::MassConservation::hydrostatic_compression)
+      scratch.finite_element_values[introspection.extractors.temperature].get_function_gradients(current_linearization_point,
+          scratch.temperature_gradients);
+
 
     const bool use_reference_density_profile = (parameters.formulation_mass_conservation == Parameters<dim>::Formulation::MassConservation::reference_density_profile)
                                                || (parameters.formulation_mass_conservation == Parameters<dim>::Formulation::MassConservation::implicit_reference_density_profile);
@@ -1117,52 +592,56 @@ namespace aspect
           }
       }
 
+
     // trigger the invocation of the various functions that actually do
     // all of the assembling
-    assemblers->local_assemble_stokes_system(cell, pressure_scaling, rebuild_stokes_matrix,
-                                             scratch, data);
+    for (unsigned int i=0; i<assemblers->stokes_system.size(); ++i)
+      assemblers->stokes_system[i]->execute(scratch,data);
 
-    // then also work on possible face terms. if necessary, initialize
-    // the material model data on faces
-    for (unsigned int face_no=0; face_no<GeometryInfo<dim>::faces_per_cell; ++face_no)
-      if (cell->at_boundary(face_no))
-        {
-          scratch.face_finite_element_values.reinit (cell, face_no);
-
-          if (assemblers->stokes_system_assembler_on_boundary_face_properties.need_face_material_model_data)
+    if (!assemblers->stokes_system_on_boundary_face.empty())
+      {
+        // then also work on possible face terms. if necessary, initialize
+        // the material model data on faces
+        for (unsigned int face_number=0; face_number<GeometryInfo<dim>::faces_per_cell; ++face_number)
+          if (cell->at_boundary(face_number) && !cell->has_periodic_neighbor(face_number))
             {
-              const bool need_viscosity = rebuild_stokes_matrix |
-                                          assemblers->stokes_system_assembler_on_boundary_face_properties.need_viscosity;
+              scratch.reinit(cell, face_number);
+              if (assemblers->stokes_system_assembler_on_boundary_face_properties.need_face_material_model_data)
+                {
+                  const bool need_viscosity = rebuild_stokes_matrix |
+                                              assemblers->stokes_system_assembler_on_boundary_face_properties.need_viscosity;
 
-              compute_material_model_input_values (current_linearization_point,
-                                                   scratch.face_finite_element_values,
-                                                   cell,
-                                                   need_viscosity,
-                                                   scratch.face_material_model_inputs);
-              create_additional_material_model_outputs(scratch.face_material_model_outputs);
+                  compute_material_model_input_values (current_linearization_point,
+                                                       scratch.face_finite_element_values,
+                                                       cell,
+                                                       need_viscosity,
+                                                       scratch.face_material_model_inputs);
 
-              material_model->evaluate(scratch.face_material_model_inputs,
-                                       scratch.face_material_model_outputs);
+                  for (unsigned int i=0; i<assemblers->stokes_system_on_boundary_face.size(); ++i)
+                    assemblers->stokes_system_on_boundary_face[i]->create_additional_material_model_outputs(scratch.face_material_model_outputs);
 
-              // TODO: Currently we do not supply reference density values to Stokes face assemblers.
-              // This seems acceptable for now, since the only face assemblers are the ones for the melt
-              // assembly where one would not want to use the reference density anyway. In case the reference
-              // density is ever needed, those assemblers can also query the adiabatic conditions for the
-              // reference density.
+                  material_model->evaluate(scratch.face_material_model_inputs,
+                                           scratch.face_material_model_outputs);
 
-              // TODO: the following doesn't currently compile because the get_quadrature() call returns
-              //  a dim-1 dimensional quadrature
-              // MaterialModel::MaterialAveraging::average (parameters.material_averaging,
-              //                                            cell,
-              //                                            compressibility * density *
-              //                                            scratch.face_finite_element_values.get_mapping(),
-              //                                            scratch.face_material_model_outputs);
+                  // TODO: Currently we do not supply reference density values to Stokes face assemblers.
+                  // This seems acceptable for now, since the only face assemblers are the ones for the melt
+                  // assembly where one would not want to use the reference density anyway. In case the reference
+                  // density is ever needed, those assemblers can also query the adiabatic conditions for the
+                  // reference density.
+
+                  // TODO: the following doesn't currently compile because the get_quadrature() call returns
+                  //  a dim-1 dimensional quadrature
+                  // MaterialModel::MaterialAveraging::average (parameters.material_averaging,
+                  //                                            cell,
+                  //                                            compressibility * density *
+                  //                                            scratch.face_finite_element_values.get_mapping(),
+                  //                                            scratch.face_material_model_outputs);
+                }
+
+              for (unsigned int i=0; i<assemblers->stokes_system_on_boundary_face.size(); ++i)
+                assemblers->stokes_system_on_boundary_face[i]->execute(scratch,data);
             }
-
-          assemblers->local_assemble_stokes_system_on_boundary_face(cell, face_no,
-                                                                    pressure_scaling, rebuild_stokes_matrix,
-                                                                    scratch, data);
-        }
+      }
   }
 
 
@@ -1194,10 +673,27 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::assemble_stokes_system ()
   {
-    computing_timer.enter_section ("   Assemble Stokes system");
+    TimerOutput::Scope timer (computing_timer,
+                              (!assemble_newton_stokes_system ?
+                               "Assemble Stokes system" :
+                               (assemble_newton_stokes_matrix ?
+                                (newton_handler->parameters.newton_derivative_scaling_factor == 0 ?
+                                 "Assemble Stokes system Picard" :
+                                 "Assemble Stokes system Newton")
+                                :
+                                "Assemble Stokes system rhs")));
 
     if (rebuild_stokes_matrix == true)
       system_matrix = 0;
+
+    // We are using constraints.distribute_local_to_global() without a matrix
+    // if we do not rebuild the Stokes matrix. This produces incorrect results
+    // when having inhomogeneous constraints. Make sure that we can not have
+    // this situation (no active boundary conditions means that only
+    // no-slip/free slip are used). This should not happen as we set this up
+    // correctly before calling this function.
+    Assert(rebuild_stokes_matrix || boundary_velocity_manager.get_active_boundary_velocity_conditions().size()==0,
+           ExcInternalError("If we have inhomogeneous constraints, we must re-assemble the system matrix."));
 
     system_rhs = 0;
     if (do_pressure_rhs_compatibility_modification)
@@ -1245,26 +741,30 @@ namespace aspect
                                         + finite_element.base_element(introspection.base_elements.pressure).dofs_per_cell;
 
     if (parameters.include_melt_transport)
-      stokes_dofs_per_cell += finite_element.base_element(introspection.base_elements.pressure).dofs_per_cell;
+      stokes_dofs_per_cell += finite_element.base_element(introspection.variable("compaction pressure").base_index).dofs_per_cell;
 
     const bool use_reference_density_profile = (parameters.formulation_mass_conservation == Parameters<dim>::Formulation::MassConservation::reference_density_profile)
                                                || (parameters.formulation_mass_conservation == Parameters<dim>::Formulation::MassConservation::implicit_reference_density_profile);
+
+    auto worker = [&](const typename DoFHandler<dim>::active_cell_iterator &cell,
+                      internal::Assembly::Scratch::StokesSystem<dim> &scratch,
+                      internal::Assembly::CopyData::StokesSystem<dim> &data)
+    {
+      this->local_assemble_stokes_system(cell, scratch, data);
+    };
+
+    auto copier = [&](const internal::Assembly::CopyData::StokesSystem<dim> &data)
+    {
+      this->copy_local_to_global_stokes_system(data);
+    };
 
     WorkStream::
     run (CellFilter (IteratorFilters::LocallyOwnedCell(),
                      dof_handler.begin_active()),
          CellFilter (IteratorFilters::LocallyOwnedCell(),
                      dof_handler.end()),
-         std_cxx11::bind (&Simulator<dim>::
-                          local_assemble_stokes_system,
-                          this,
-                          std_cxx11::_1,
-                          std_cxx11::_2,
-                          std_cxx11::_3),
-         std_cxx11::bind (&Simulator<dim>::
-                          copy_local_to_global_stokes_system,
-                          this,
-                          std_cxx11::_1),
+         worker,
+         copier,
          internal::Assembly::Scratch::
          StokesSystem<dim> (finite_element, *mapping, quadrature_formula,
                             face_quadrature_formula,
@@ -1273,7 +773,9 @@ namespace aspect
                             introspection.n_compositional_fields,
                             stokes_dofs_per_cell,
                             parameters.include_melt_transport,
-                            use_reference_density_profile),
+                            use_reference_density_profile,
+                            rebuild_stokes_matrix,
+                            assemble_newton_stokes_matrix),
          internal::Assembly::CopyData::
          StokesSystem<dim> (stokes_dofs_per_cell,
                             do_pressure_rhs_compatibility_modification));
@@ -1293,38 +795,23 @@ namespace aspect
 
     // record that we have just rebuilt the matrix
     rebuild_stokes_matrix = false;
-
-    computing_timer.exit_section();
   }
+
+
 
   template <int dim>
   void
   Simulator<dim>::build_advection_preconditioner(const AdvectionField &advection_field,
-                                                 std_cxx11::shared_ptr<aspect::LinearAlgebra::PreconditionILU> &preconditioner)
+                                                 LinearAlgebra::PreconditionILU &preconditioner)
   {
-    switch (advection_field.field_type)
-      {
-        case AdvectionField::temperature_field:
-        {
-          computing_timer.enter_section ("   Build temperature preconditioner");
-          break;
-        }
-
-        case AdvectionField::compositional_field:
-        {
-          computing_timer.enter_section ("   Build composition preconditioner");
-          break;
-        }
-
-        default:
-          Assert (false, ExcNotImplemented());
-      }
+    TimerOutput::Scope timer (computing_timer, (advection_field.is_temperature() ?
+                                                "Build temperature preconditioner" :
+                                                "Build composition preconditioner"));
 
     const unsigned int block_idx = advection_field.block_index(introspection);
-    preconditioner.reset (new LinearAlgebra::PreconditionILU());
-    preconditioner->initialize (system_matrix.block(block_idx, block_idx));
-    computing_timer.exit_section();
+    preconditioner.initialize (system_matrix.block(block_idx, block_idx));
   }
+
 
 
   template <int dim>
@@ -1347,7 +834,7 @@ namespace aspect
 
     const unsigned int solution_component = advection_field.component_index(introspection);
 
-    scratch.finite_element_values.reinit (cell);
+    scratch.reinit(cell);
 
     // get all dof indices on the current cell, then extract those
     // that correspond to the solution_field we are interested in
@@ -1389,7 +876,16 @@ namespace aspect
                                          cell,
                                          true,
                                          scratch.material_model_inputs);
-    create_additional_material_model_outputs(scratch.material_model_outputs);
+
+    for (unsigned int i=0; i<assemblers->advection_system.size(); ++i)
+      assemblers->advection_system[i]->create_additional_material_model_outputs(scratch.material_model_outputs);
+
+    heating_model_manager.create_additional_material_model_inputs_and_outputs(scratch.material_model_inputs,
+                                                                              scratch.material_model_outputs);
+    material_model->fill_additional_material_model_inputs(scratch.material_model_inputs,
+                                                          current_linearization_point,
+                                                          scratch.finite_element_values,
+                                                          introspection);
 
     material_model->evaluate(scratch.material_model_inputs,
                              scratch.material_model_outputs);
@@ -1402,6 +898,26 @@ namespace aspect
             scratch.material_model_outputs.densities[q] = adiabatic_conditions->density(scratch.material_model_inputs.position[q]);
           }
       }
+
+#ifdef DEBUG
+    // make sure that if the model does not use operator splitting,
+    // the material model outputs do not fill the reaction_rates (because the reaction_terms are used instead)
+    if (!parameters.use_operator_splitting)
+      {
+        material_model->create_additional_named_outputs(scratch.material_model_outputs);
+        MaterialModel::ReactionRateOutputs<dim> *reaction_rate_outputs
+          = scratch.material_model_outputs.template get_additional_output<MaterialModel::ReactionRateOutputs<dim> >();
+
+        Assert(reaction_rate_outputs == nullptr,
+               ExcMessage("You are using a material model where the reaction rate outputs "
+                          "are created even though the operator splitting solver option is "
+                          "not used in the model, this is not supported! "
+                          "If operator splitting is disabled, the reaction_rates should not "
+                          "be created at all. If you want to run a model where reactions are "
+                          "much faster than the advection, which is what the reaction rate "
+                          "outputs are designed for, you should enable operator splitting."));
+      }
+#endif
 
     MaterialModel::MaterialAveraging::average (parameters.material_averaging,
                                                cell,
@@ -1416,18 +932,19 @@ namespace aspect
     // TODO: Compute artificial viscosity once per timestep instead of each time
     // temperature system is assembled (as this might happen more than once per
     // timestep for iterative solvers)
-    const double nu = viscosity_per_cell[cell->active_cell_index()];
-    Assert (nu >= 0, ExcMessage ("The artificial viscosity needs to be a non-negative quantity."));
+    scratch.artificial_viscosity = viscosity_per_cell[cell->active_cell_index()];
+    Assert (scratch.artificial_viscosity >= 0, ExcMessage ("The artificial viscosity needs to be a non-negative quantity."));
 
     // trigger the invocation of the various functions that actually do
     // all of the assembling
-    assemblers->local_assemble_advection_system(cell, advection_field, nu, scratch, data);
+    for (unsigned int i=0; i<assemblers->advection_system.size(); ++i)
+      assemblers->advection_system[i]->execute(scratch,data);
 
     // then also work on possible face terms. if necessary, initialize
     // the material model data on faces
-    const bool has_boundary_face_assemblers = !assemblers->local_assemble_advection_system_on_boundary_face.empty()
+    const bool has_boundary_face_assemblers = !assemblers->advection_system_on_boundary_face.empty()
                                               && assemblers->advection_system_assembler_on_face_properties[advection_field.field_index()].need_face_finite_element_evaluation;
-    const bool has_interior_face_assemblers = !assemblers->local_assemble_advection_system_on_interior_face.empty()
+    const bool has_interior_face_assemblers = !assemblers->advection_system_on_interior_face.empty()
                                               && assemblers->advection_system_assembler_on_face_properties[advection_field.field_index()].need_face_finite_element_evaluation;
 
     // skip the remainder if no work needs to be done on faces
@@ -1447,14 +964,14 @@ namespace aspect
           }
       }
 
-    for (unsigned int face_no=0; face_no<GeometryInfo<dim>::faces_per_cell; ++face_no)
+    for (scratch.face_number=0; scratch.face_number<GeometryInfo<dim>::faces_per_cell; ++scratch.face_number)
       {
-        const typename DoFHandler<dim>::face_iterator face = cell->face (face_no);
+        typename DoFHandler<dim>::face_iterator face = cell->face (scratch.face_number);
 
         if ((has_boundary_face_assemblers && face->at_boundary()) ||
             (has_interior_face_assemblers && !face->at_boundary()))
           {
-            (*scratch.face_finite_element_values).reinit (cell, face_no);
+            (*scratch.face_finite_element_values).reinit (cell, scratch.face_number);
 
             (*scratch.face_finite_element_values)[introspection.extractors.velocities].get_function_values(current_linearization_point,
                 scratch.face_current_velocity_values);
@@ -1472,10 +989,31 @@ namespace aspect
                                                      true,
                                                      scratch.face_material_model_inputs);
 
-                create_additional_material_model_outputs(scratch.face_material_model_outputs);
+                for (unsigned int i=0; i<assemblers->advection_system_on_boundary_face.size(); ++i)
+                  assemblers->advection_system_on_boundary_face[i]->create_additional_material_model_outputs(scratch.face_material_model_outputs);
+
+                for (unsigned int i=0; i<assemblers->advection_system_on_interior_face.size(); ++i)
+                  assemblers->advection_system_on_interior_face[i]->create_additional_material_model_outputs(scratch.face_material_model_outputs);
+
+                heating_model_manager.create_additional_material_model_inputs_and_outputs(scratch.face_material_model_inputs,
+                                                                                          scratch.face_material_model_outputs);
+                material_model->fill_additional_material_model_inputs(scratch.face_material_model_inputs,
+                                                                      current_linearization_point,
+                                                                      *scratch.face_finite_element_values,
+                                                                      introspection);
 
                 material_model->evaluate(scratch.face_material_model_inputs,
                                          scratch.face_material_model_outputs);
+
+                if (parameters.formulation_temperature_equation ==
+                    Parameters<dim>::Formulation::TemperatureEquation::reference_density_profile)
+                  {
+                    const unsigned int n_q_points = scratch.face_finite_element_values->n_quadrature_points;
+                    for (unsigned int q=0; q<n_q_points; ++q)
+                      {
+                        scratch.face_material_model_outputs.densities[q] = adiabatic_conditions->density(scratch.face_material_model_inputs.position[q]);
+                      }
+                  }
 
                 heating_model_manager.evaluate(scratch.face_material_model_inputs,
                                                scratch.face_material_model_outputs,
@@ -1489,14 +1027,13 @@ namespace aspect
                 //                                            scratch.face_material_model_outputs);
               }
 
-            if (face->at_boundary())
-              assemblers->local_assemble_advection_system_on_boundary_face(cell, face_no,
-                                                                           advection_field,
-                                                                           scratch, data);
+            // handle faces at periodic boundaries like interior faces
+            if (face->at_boundary() && !cell->has_periodic_neighbor (scratch.face_number))
+              for (unsigned int i=0; i<assemblers->advection_system_on_boundary_face.size(); ++i)
+                assemblers->advection_system_on_boundary_face[i]->execute(scratch,data);
             else
-              assemblers->local_assemble_advection_system_on_interior_face(cell, face_no,
-                                                                           advection_field,
-                                                                           scratch, data);
+              for (unsigned int i=0; i<assemblers->advection_system_on_interior_face.size(); ++i)
+                assemblers->advection_system_on_interior_face[i]->execute(scratch,data);
           }
       }
   }
@@ -1518,7 +1055,7 @@ namespace aspect
     /* In the following, we copy DG contributions element by element. This
      * is allowed since there are no constraints imposed on discontinuous fields.
      */
-    if (!assemblers->local_assemble_advection_system_on_interior_face.empty() &&
+    if (!assemblers->advection_system_on_interior_face.empty() &&
         assemblers->advection_system_assembler_on_face_properties[advection_field.field_index()].need_face_finite_element_evaluation)
       {
         for (unsigned int f=0; f<GeometryInfo<dim>::max_children_per_face
@@ -1552,14 +1089,24 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::assemble_advection_system (const AdvectionField &advection_field)
   {
-    if (advection_field.is_temperature())
-      computing_timer.enter_section ("   Assemble temperature system");
-    else
-      computing_timer.enter_section ("   Assemble composition system");
+    TimerOutput::Scope timer (computing_timer, (advection_field.is_temperature() ?
+                                                "Assemble temperature system" :
+                                                "Assemble composition system"));
 
     const unsigned int block_idx = advection_field.block_index(introspection);
+
+    if (!advection_field.is_temperature() && advection_field.compositional_variable!=0)
+      {
+        // Allocate the system matrix for the current compositional field by
+        // reusing the Trilinos sparsity pattern from the matrix stored for
+        // composition 0 (this is the place we allocate the matrix at).
+        const unsigned int block0_idx = AdvectionField::composition(0).block_index(introspection);
+        system_matrix.block(block_idx, block_idx).reinit(system_matrix.block(block0_idx, block0_idx));
+      }
+
     system_matrix.block(block_idx, block_idx) = 0;
-    system_rhs = 0;
+    system_rhs.block(block_idx) = 0;
+
 
     typedef
     FilteredIterator<typename DoFHandler<dim>::active_cell_iterator>
@@ -1585,10 +1132,10 @@ namespace aspect
                                                      +
                                                      (parameters.stokes_velocity_degree+1)/2;
 
-    const bool allocate_face_quadrature = (!assemblers->local_assemble_advection_system_on_boundary_face.empty() ||
-                                           !assemblers->local_assemble_advection_system_on_interior_face.empty()) &&
+    const bool allocate_face_quadrature = (!assemblers->advection_system_on_boundary_face.empty() ||
+                                           !assemblers->advection_system_on_interior_face.empty()) &&
                                           assemblers->advection_system_assembler_on_face_properties[advection_field.field_index()].need_face_finite_element_evaluation;
-    const bool allocate_neighbor_contributions = !assemblers->local_assemble_advection_system_on_interior_face.empty() &&
+    const bool allocate_neighbor_contributions = !assemblers->advection_system_on_interior_face.empty() &&
                                                  assemblers->advection_system_assembler_on_face_properties[advection_field.field_index()].need_face_finite_element_evaluation;;
 
     const UpdateFlags update_flags = update_values |
@@ -1605,24 +1152,25 @@ namespace aspect
                                            :
                                            update_default);
 
+    auto worker = [&](const typename DoFHandler<dim>::active_cell_iterator &cell,
+                      internal::Assembly::Scratch::AdvectionSystem<dim> &scratch,
+                      internal::Assembly::CopyData::AdvectionSystem<dim> &data)
+    {
+      this->local_assemble_advection_system(advection_field, viscosity_per_cell, cell, scratch, data);
+    };
+
+    auto copier = [&](const internal::Assembly::CopyData::AdvectionSystem<dim> &data)
+    {
+      this->copy_local_to_global_advection_system(advection_field, data);
+    };
+
     WorkStream::
     run (CellFilter (IteratorFilters::LocallyOwnedCell(),
                      dof_handler.begin_active()),
          CellFilter (IteratorFilters::LocallyOwnedCell(),
                      dof_handler.end()),
-         std_cxx11::bind (&Simulator<dim>::
-                          local_assemble_advection_system,
-                          this,
-                          advection_field,
-                          std_cxx11::cref(viscosity_per_cell),
-                          std_cxx11::_1,
-                          std_cxx11::_2,
-                          std_cxx11::_3),
-         std_cxx11::bind (&Simulator<dim>::
-                          copy_local_to_global_advection_system,
-                          this,
-                          std_cxx11::cref(advection_field),
-                          std_cxx11::_1),
+         worker,
+         copier,
          internal::Assembly::Scratch::
          AdvectionSystem<dim> (finite_element,
                                finite_element.base_element(advection_field.base_element(introspection)),
@@ -1636,15 +1184,14 @@ namespace aspect
                                 Quadrature<dim-1> ()),
                                update_flags,
                                face_update_flags,
-                               introspection.n_compositional_fields),
+                               introspection.n_compositional_fields,
+                               advection_field),
          internal::Assembly::CopyData::
          AdvectionSystem<dim> (finite_element.base_element(advection_field.base_element(introspection)),
                                allocate_neighbor_contributions));
 
     system_matrix.compress(VectorOperation::add);
     system_rhs.compress(VectorOperation::add);
-
-    computing_timer.exit_section();
   }
 }
 
@@ -1654,15 +1201,6 @@ namespace aspect
 namespace aspect
 {
 #define INSTANTIATE(dim) \
-  namespace internal { \
-    namespace Assembly { \
-      namespace Scratch { \
-        template struct AdvectionSystem<dim>; \
-        template struct StokesSystem<dim>; \
-      } \
-      template struct AssemblerLists<dim>::Properties; \
-    } \
-  } \
   template void Simulator<dim>::set_assemblers (); \
   template void Simulator<dim>::local_assemble_stokes_preconditioner ( \
                                                                        const DoFHandler<dim>::active_cell_iterator &cell, \
@@ -1680,7 +1218,7 @@ namespace aspect
                                                                      const internal::Assembly::CopyData::StokesSystem<dim> &data); \
   template void Simulator<dim>::assemble_stokes_system (); \
   template void Simulator<dim>::build_advection_preconditioner (const AdvectionField &, \
-                                                                std_cxx11::shared_ptr<aspect::LinearAlgebra::PreconditionILU> &preconditioner); \
+                                                                aspect::LinearAlgebra::PreconditionILU &preconditioner); \
   template void Simulator<dim>::local_assemble_advection_system ( \
                                                                   const AdvectionField          &advection_field, \
                                                                   const Vector<double>           &viscosity_per_cell, \
@@ -1696,9 +1234,8 @@ namespace aspect
                                                                       const FEValuesBase<dim,dim>                           &input_finite_element_values, \
                                                                       const DoFHandler<dim>::active_cell_iterator  &cell, \
                                                                       const bool                                             compute_strainrate, \
-                                                                      MaterialModel::MaterialModelInputs<dim>               &material_model_inputs) const; \
-  template void Simulator<dim>::create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const; \
-   
+                                                                      MaterialModel::MaterialModelInputs<dim>               &material_model_inputs) const;
+
 
 
   ASPECT_INSTANTIATE(INSTANTIATE)

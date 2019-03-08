@@ -8,14 +8,12 @@ set Use years in output instead of seconds = false
 set End time                               = .5
 set Output directory                       = output
 
-set Linear solver tolerance                = 1e-7
-set Temperature solver tolerance           = 1e-10
 
 
 subsection Prescribed Stokes solution  
   set Model name = circle
 end
-set Nonlinear solver scheme                = Advection only
+set Nonlinear solver scheme                = single Advection, no Stokes
 
 subsection Discretization
   set Temperature polynomial degree = 2
@@ -51,7 +49,7 @@ end
 
 
 subsection Boundary temperature model
-  set Model name = box
+  set List of model names = box
 
   subsection Box
     set Bottom temperature = 0
@@ -62,13 +60,12 @@ subsection Boundary temperature model
 end
 
 
-subsection Model settings
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary temperature model
   set Fixed temperature boundary indicators   = top, bottom, left, right
-
-  set Zero velocity boundary indicators       = 
-  set Prescribed velocity boundary indicators =
-  set Tangential velocity boundary indicators = 
-
 end
 
 
@@ -107,5 +104,13 @@ subsection Postprocess
 
   subsection Visualization
     set Time between graphical output = .1
+  end
+end
+
+subsection Solver parameters
+  set Temperature solver tolerance = 1e-10
+
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-7
   end
 end

@@ -57,17 +57,14 @@ subsection Initial temperature model
 end
 
 subsection Boundary temperature model
-  set Model name = box
+  set List of model names = box
 end
 
-subsection Model settings
-  # The next parameters then describe on which parts of the
-  # boundary we prescribe a zero or nonzero velocity and
-  # on which parts the flow is allowed to be tangential.
-  # Here, all four sides of the box allow tangential
-  # unrestricted flow but with a zero normal component:
-  set Zero velocity boundary indicators       =
-  set Prescribed velocity boundary indicators =
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary velocity model
   set Tangential velocity boundary indicators = 0,1,2,3
 end
 

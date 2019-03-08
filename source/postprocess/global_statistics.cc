@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2017 by the authors of the ASPECT code.
+  Copyright (C) 2017 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
@@ -30,25 +30,38 @@ namespace aspect
     void
     GlobalStatistics<dim>::initialize()
     {
-      this->get_signals().post_stokes_solver.connect(std_cxx11::bind(&aspect::Postprocess::GlobalStatistics<dim>::store_stokes_solver_history,
-                                                                     std_cxx11::ref(*this),
-                                                                     /* Drop first argument of signal*/
-                                                                     std_cxx11::_2,
-                                                                     std_cxx11::_3,
-                                                                     std_cxx11::_4,
-                                                                     std_cxx11::_5));
-      this->get_signals().post_advection_solver.connect(std_cxx11::bind(&aspect::Postprocess::GlobalStatistics<dim>::store_advection_solver_history,
-                                                                        std_cxx11::ref(*this),
-                                                                        /* Drop first argument of signal*/
-                                                                        std_cxx11::_2,
-                                                                        std_cxx11::_3,
-                                                                        std_cxx11::_4));
+      this->get_signals().post_stokes_solver.connect(
+        [&](const SimulatorAccess<dim> &/*simulator_access*/,
+            const unsigned int number_S_iterations,
+            const unsigned int number_A_iterations,
+            const SolverControl &solver_control_cheap,
+            const SolverControl &solver_control_expensive)
+      {
+        this->store_stokes_solver_history(number_S_iterations,
+                                          number_A_iterations,
+                                          solver_control_cheap,
+                                          solver_control_expensive);
+      });
+
+      this->get_signals().post_advection_solver.connect(
+        [&](const SimulatorAccess<dim> &/*simulator_access*/,
+            const bool solved_temperature_field,
+            const unsigned int compositional_index,
+            const SolverControl &solver_control)
+      {
+        this->store_advection_solver_history(solved_temperature_field,
+                                             compositional_index,
+                                             solver_control);
+      });
 
       // delete the data after the initial refinement steps, to not mix it up
       // with the first time step
       if (!this->get_parameters().run_postprocessors_on_initial_refinement)
-        this->get_signals().post_set_initial_state.connect(std_cxx11::bind(&aspect::Postprocess::GlobalStatistics<dim>::clear_data,
-                                                                           std_cxx11::ref(*this)));
+        this->get_signals().post_set_initial_state.connect(
+          [&] (const SimulatorAccess<dim> &)
+        {
+          this->clear_data();
+        });
     }
 
 
@@ -171,8 +184,8 @@ namespace aspect
 
           // only output the number of nonlinear iterations if we actually
           // use a nonlinear solver scheme
-          if (!(this->get_parameters().nonlinear_solver == Parameters<dim>::NonlinearSolver::IMPES
-                || this->get_parameters().nonlinear_solver == Parameters<dim>::NonlinearSolver::Advection_only))
+          if (!(this->get_parameters().nonlinear_solver == Parameters<dim>::NonlinearSolver::single_Advection_single_Stokes
+                || this->get_parameters().nonlinear_solver == Parameters<dim>::NonlinearSolver::single_Advection_no_Stokes))
             statistics.add_value("Number of nonlinear iterations",
                                  nonlinear_iterations);
 
@@ -209,7 +222,7 @@ namespace aspect
       // set global statistics about this time step
       statistics.add_value("Time step number", this->get_timestep_number());
 
-      if (this->get_parameters().convert_to_years == true)
+      if (this->convert_output_to_years() == true)
         {
           statistics.add_value("Time (years)", this->get_time() / year_in_seconds);
           statistics.set_precision("Time (years)", 12);

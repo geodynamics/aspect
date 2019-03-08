@@ -27,10 +27,9 @@ subsection Geometry model
   end
 end
 
-subsection Model settings
-  set Prescribed velocity boundary indicators =
+
+subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, right, bottom, top
-  set Zero velocity boundary indicators       =
 end
 
 subsection Material model
@@ -48,7 +47,7 @@ end
 ############### Parameters describing the temperature field
 
 subsection Boundary temperature model
-  set Model name = box
+  set List of model names = box
 end
 
 
@@ -76,6 +75,12 @@ subsection Compositional fields
   set Number of fields = 2
   set Names of fields = density_comp, viscosity_comp
   set Compositional field methods = particles, particles
+  
+  # In the source code, we assumed that density is being carried
+  # on compositional field 1 (at index 0) and viscosity is being
+  # carried on compositional field 2 (at index 1).  If this order
+  # is changed, then the evaluate() function in solcx_compositional_fields.h
+  # must also be changed.
   set Mapped particle properties = density_comp:function[0], viscosity_comp:function[1]
 end
 

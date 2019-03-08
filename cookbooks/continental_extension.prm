@@ -13,11 +13,9 @@ set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 5e6
 set Use years in output instead of seconds = true
-set Linear solver tolerance                = 1e-7
-set Nonlinear solver scheme                = iterated Stokes
+set Nonlinear solver scheme                = single Advection, iterated Stokes
 set Nonlinear solver tolerance             = 1e-4
 set Max nonlinear iterations               = 10
-set Number of cheap Stokes solver steps    = 0
 set CFL number                             = 0.5
 set Output directory                       = output-continental_extension
 set Timing output frequency                = 1
@@ -44,19 +42,11 @@ subsection Mesh refinement
   set Time steps between mesh refinement = 0
 end
 
-# Boundary classifications and adiabatic/shear heating specification
-# Velocity: free surface on top, outflow on sides, inflow at base
-# Temperature: fixed at top and bottom, insulating sides
-subsection Model settings
-  set Fixed temperature boundary indicators   = bottom, top
-  set Prescribed velocity boundary indicators = left x: function, right x:function, bottom y:function
-  set Free surface boundary indicators        = top
-end
-
 # Advecting the free surface vertically rather than
 # in the surface normal direction can result in a
 # more stable mesh when the deformation is large
 subsection Free surface
+  set Free surface boundary indicators        = top
   set Surface velocity projection = vertical
 end
 
@@ -66,6 +56,8 @@ end
 # Velocity components parallel to the base (x-velocity) and side walls (y-velocity)
 # are unconstrained (i.e. 'free'). 
 subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = left x: function, right x:function, bottom y:function
+
   subsection Function
     set Variable names      = x,y
     set Function constants  = cm=0.01, year=1
@@ -98,13 +90,21 @@ subsection Initial composition model
   end
 end
 
+# Composition: fixed on bottom, free on sides and top
+subsection Boundary composition model
+  set Fixed composition boundary indicators = bottom
+  set List of model names = initial composition
+end
+
 # Temperature boundary conditions
 # Top and bottom (fixed) temperatures are consistent with the initial temperature field
 # Note that while temperatures are specified for the model sides, these values are
 # not used as the sides are not specified "Fixed temperature boundaries".  Rather,
 # these boundaries are insulating (zero net heat flux).
 subsection Boundary temperature model
-  set Model name = box
+  set Fixed temperature boundary indicators = bottom, top
+  set List of model names = box
+
   subsection Box
     set Bottom temperature = 1573
     set Top temperature    =  273
@@ -142,21 +142,12 @@ subsection Initial temperature model
   end
 end
 
-# Internal heating (only internal heating for crust)
-# Assuming a very large decay time, the heat production (W/m^3) is effectively:
-#   radioactive_heating_rate (W/kg) * density (kg/m^3)
-# For a reference crustal density of 2800 kg/m^3 and 1.5e-6 W/m^3 heating production,
-# the heating rate (assuming a single element) is 1.5e-6/2800. = 5.357142857e-10 ~= 5.357e-10
+# Constant internal heat production values (W/m^3) for background material
+# and compositional fields.
 subsection Heating model
-  set Model name = radioactive decay
-  subsection Radioactive decay
-    set Number of elements    = 1
-    set Heating rates                 = 5.357e-10
-    set Half decay times              = 1.e20
-    set Initial concentrations mantle = 0.0
-    set Initial concentrations crust  = 1.0
-    set Crust defined by composition  = true
-    set Crust composition number      = 0
+  set List of model names = compositional heating
+  subsection Compositional heating
+    set Compositional heating values = 0., 1.5e-6, 0., 0., 0.
   end
 end
 
@@ -248,3 +239,8 @@ subsection Postprocess
   end
 end
 
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Number of cheap Stokes solver steps = 0
+  end
+end

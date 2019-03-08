@@ -3,10 +3,7 @@ set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 1e6
 set Use years in output instead of seconds = true
-set Use direct solver for Stokes system    = false
-set Linear solver tolerance                = 1e-7
-set Number of cheap Stokes solver steps    = 0
-set Nonlinear solver scheme                = iterated Stokes
+set Nonlinear solver scheme                = single Advection, iterated Stokes
 set Nonlinear solver tolerance             = 1e-3
 set Max nonlinear iterations               = 100
 set CFL number                             = 0.5
@@ -35,19 +32,12 @@ subsection Mesh refinement
 end
 
 
-# Boundary classifications
-subsection Model settings
-  set Fixed temperature boundary indicators   = bottom, top
-  set Prescribed velocity boundary indicators = left x: function, right x:function
-  set Tangential velocity boundary indicators = bottom
-  set Free surface boundary indicators        = top
-end
-
-
+# Free surface boundary classifications.
 # Advecting the free surface vertically rather than
 # in the surface normal direction can result in a
 # more stable mesh when the deformation is large
 subsection Free surface
+  set Free surface boundary indicators = top
   set Surface velocity projection = vertical
 end
 
@@ -55,6 +45,8 @@ end
 # Velocity on boundaries characterized by functions
 # Total extension rate is 1 cm/yr (0.5 cm/yr on each side)
 subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = left x: function, right x:function
+  set Tangential velocity boundary indicators = bottom
   subsection Function
     set Variable names      = x,y
     set Function constants  = m=0.005, year=1
@@ -89,7 +81,7 @@ end
 
 # Composition boundary conditions
 subsection Boundary composition model
-  set Model name = initial composition
+  set List of model names = initial composition
 end
 
 
@@ -100,16 +92,17 @@ subsection Discretization
   set Temperature polynomial degree     = 2
   set Use discontinuous composition discretization = true
   subsection Stabilization parameters
-      set Use limiter for discontinuous composition solution = true # apply the limiter to the DG solutions
-      set Global composition maximum = 100.0, 1.0, 1.0, 1.0
-      set Global composition minimum =   0.0, 0.0, 0.0, 1.0
+    set Use limiter for discontinuous composition solution = true # apply the limiter to the DG solutions
+    set Global composition maximum = 100.0, 1.0, 1.0, 1.0
+    set Global composition minimum =   0.0, 0.0, 0.0, 1.0
   end
 end
 
 
 # Temperature boundary conditions
 subsection Boundary temperature model
-  set Model name = box
+  set Fixed temperature boundary indicators   = bottom, top
+  set List of model names = box
   subsection Box
     set Bottom temperature = 273
     set Left temperature   = 273
@@ -183,5 +176,11 @@ subsection Postprocess
     set List of output variables = density, viscosity, strain rate, error indicator, partition
     set Time between graphical output = 1e5
     set Interpolate output = false
+  end
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Number of cheap Stokes solver steps = 0
   end
 end

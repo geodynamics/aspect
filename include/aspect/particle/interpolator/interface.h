@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2015 - 2017 by the authors of the ASPECT code.
+ Copyright (C) 2015 - 2019 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -14,16 +14,23 @@
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with ASPECT; see the file doc/COPYING.  If not see
+ along with ASPECT; see the file LICENSE.  If not see
  <http://www.gnu.org/licenses/>.
  */
 
 #ifndef _aspect_particle_interpolator_interface_h
 #define _aspect_particle_interpolator_interface_h
 
-#include <aspect/particle/particle.h>
 #include <aspect/plugins.h>
 #include <aspect/global.h>
+
+#if DEAL_II_VERSION_GTE(9,0,0)
+#include <deal.II/particles/particle.h>
+#include <deal.II/particles/particle_handler.h>
+#else
+#include <aspect/particle/particle.h>
+#include <aspect/particle/particle_handler.h>
+#endif
 
 #include <deal.II/base/point.h>
 #include <deal.II/base/parameter_handler.h>
@@ -37,6 +44,10 @@ namespace aspect
     namespace Interpolator
     {
       using namespace dealii;
+
+#if DEAL_II_VERSION_GTE(9,0,0)
+      using namespace dealii::Particles;
+#endif
 
       /**
        * An abstract class defining virtual methods for performing
@@ -61,7 +72,8 @@ namespace aspect
            * of doubles which contains a somehow computed
            * value of all particle properties at all given positions.
            *
-           * @param [in] particles Reference to the particle map.
+           * @param [in] particle_handler Reference to the particle handler
+           * that allows accessing the particles in the domain.
            * @param [in] positions The vector of positions where the properties
            * should be evaluated.
            * @param [in] cell An optional iterator to the cell containing the
@@ -71,11 +83,12 @@ namespace aspect
            * @return A vector with as many entries as @p positions. Every entry
            * is a vector of interpolated particle properties at this position.
            */
+          DEAL_II_DEPRECATED
           virtual
           std::vector<std::vector<double> >
-          properties_at_points(const std::multimap<types::LevelInd, Particle<dim> > &particles,
+          properties_at_points(const ParticleHandler<dim> &particle_handler,
                                const std::vector<Point<dim> > &positions,
-                               const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell = typename parallel::distributed::Triangulation<dim>::active_cell_iterator()) const DEAL_II_DEPRECATED;
+                               const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell = typename parallel::distributed::Triangulation<dim>::active_cell_iterator()) const;
 
           /**
            * Perform an interpolation of the properties of the particles in
@@ -88,7 +101,8 @@ namespace aspect
            * will be filled with computed properties, all other components
            * are not filled (or filled with invalid values).
            *
-           * @param [in] particles Reference to the particle map.
+           * @param [in] particle_handler Reference to the particle handler
+           * that allows accessing the particles in the domain.
            * @param [in] positions The vector of positions where the properties
            * should be evaluated.
            * @param [in] selected_properties A component mask that determines
@@ -102,7 +116,7 @@ namespace aspect
            */
           virtual
           std::vector<std::vector<double> >
-          properties_at_points(const std::multimap<types::LevelInd, Particle<dim> > &particles,
+          properties_at_points(const ParticleHandler<dim> &particle_handler,
                                const std::vector<Point<dim> > &positions,
                                const ComponentMask &selected_properties,
                                const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell = typename parallel::distributed::Triangulation<dim>::active_cell_iterator()) const = 0;
@@ -182,6 +196,20 @@ namespace aspect
       template <int dim>
       void
       declare_parameters (ParameterHandler &prm);
+
+
+      /**
+       * For the current plugin subsystem, write a connection graph of all of the
+       * plugins we know about, in the format that the
+       * programs dot and neato understand. This allows for a visualization of
+       * how all of the plugins that ASPECT knows about are interconnected, and
+       * connect to other parts of the ASPECT code.
+       *
+       * @param output_stream The stream to write the output to.
+       */
+      template <int dim>
+      void
+      write_plugin_graph (std::ostream &output_stream);
 
       /**
        * Given a class name, a name, and a description for the parameter file

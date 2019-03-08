@@ -13,13 +13,18 @@ set End time                               = 0
 set Use years in output instead of seconds = true
 set Output directory                       = output-S20RTS
 
-# The following variables describe the tolerance of
-# the linear solver as well as how the pressure should
+# The following variables describe how the pressure should
 # be normalized. Here, we choose a zero average pressure
 # at the surface of the domain 
-set Linear solver tolerance                = 1e-4
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
+
+# Here we specify the residual tolerance for the linear solver.
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-4
+  end
+end
 
 # Here we specify the geometry of the domain, which is 
 # a spherical shell with inner radius of 3481km and 
@@ -37,7 +42,8 @@ end
 # but different from the reference temperature to approximate
 # boundary layers.
 subsection Boundary temperature model
-  set Model name = spherical constant
+  set Fixed temperature boundary indicators = top, bottom
+  set List of model names = spherical constant
   subsection Spherical constant
     set Inner temperature = 2000
     set Outer temperature = 1000
@@ -104,31 +110,32 @@ subsection Mesh refinement
   set Initial adaptive refinement        = 0
 end
 
-# We assume fixed temperatures and free slip at the inner and outer boundary
-subsection Model settings
-  set Fixed temperature boundary indicators   = top, bottom
+# We assume free slip at the inner and outer boundary
+subsection Boundary velocity model
   set Tangential velocity boundary indicators = top, bottom
 end
 
 
-# We output the density, velocity, dynamic topography and heat flux density
-# for plotting. For the dynamic topography we subtract the mean so that the 
-# mean is zero and hence mass is conserved. 
+# We output the density, velocity, dynamic topography, geoid and heat flux density
+# for plotting. 
 subsection Postprocess
-  set List of postprocessors = velocity statistics, heat flux map, heat flux statistics, dynamic topography, visualization, basic statistics
-
-  subsection Dynamic Topography
-    set Subtract mean of dynamic topography = true
-  end
+  set List of postprocessors = geoid, velocity statistics, heat flux map, heat flux statistics, dynamic topography, visualization, basic statistics
 
   subsection Visualization
     set Output format                 = vtu
-    set List of output variables      = dynamic topography, heat flux map, density,viscosity, gravity
+    set List of output variables      = geoid, dynamic topography, heat flux map, density,viscosity, gravity
     set Time between graphical output = 0
     set Number of grouped files       = 1 
-   
-    subsection Dynamic Topography
-      set Subtract mean of dynamic topography = true
+
+# We only have dirichlet boundaries with tangential velocities, so we can
+# increase the output resolution as described in the documentation of the 'heat
+# flux map' postprocessor.
+    subsection Heat flux map
+      set Output point wise heat flux = true
     end
+  end
+
+  subsection Geoid
+    set Also output the gravity anomaly  = true
   end
 end

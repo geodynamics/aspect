@@ -1,7 +1,7 @@
 # This is a follow-on on the 'compressibility_iterated_stokes' testcase
 # where we choose
 #   u_z = 1+z/100
-# If we switch off adiabatic heating and friction heating, then there
+# If we switch off adiabatic heating and shear heating, then there
 # should be no effect on the temperature field from the velocity, and
 # no effect from the temperature onto the velocity either. Verify that
 # this is so
@@ -15,13 +15,13 @@ set Adiabatic surface temperature          = 0
 set Surface pressure                       = 0
 set Use years in output instead of seconds = false  # default: true
 
-set Nonlinear solver scheme                = Stokes only
+set Nonlinear solver scheme                = no Advection, iterated Stokes
 set Max nonlinear iterations               = 5
 
 
 
 subsection Boundary temperature model
-  set Model name = box
+  set List of model names = box
 end
 
 
@@ -80,10 +80,15 @@ subsection Mesh refinement
 end
 
 
-subsection Model settings
-  set Fixed temperature boundary indicators   =
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary velocity model
   set Tangential velocity boundary indicators = 0, 1
-  set Zero velocity boundary indicators       =
+end
+
+subsection Boundary velocity model
   set Prescribed velocity boundary indicators = 2: function
 end
 

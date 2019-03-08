@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
@@ -23,7 +23,6 @@
 #define _aspect_global_h
 
 #include <deal.II/base/mpi.h>
-#include <deal.II/base/multithread_info.h>
 
 DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
 
@@ -32,7 +31,7 @@ DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
 #  include <deal.II/lac/petsc_parallel_block_sparse_matrix.h>
 #  include <deal.II/lac/petsc_precondition.h>
 #else
-#  include <deal.II/lac/trilinos_block_vector.h>
+#  include <deal.II/lac/trilinos_parallel_block_vector.h>
 #  include <deal.II/lac/trilinos_block_sparse_matrix.h>
 #  include <deal.II/lac/trilinos_precondition.h>
 #endif
@@ -247,6 +246,11 @@ namespace aspect
     typedef dealii::PETScWrappers::MPI::BlockSparseMatrix BlockSparseMatrix;
 
     /**
+     * Typedef for the base class for all preconditioners.
+     */
+    typedef dealii::PETScWrappers::PreconditionerBase PreconditionBase;
+
+    /**
      * Typedef for the AMG preconditioner type used for the top left block of
      * the Stokes matrix.
      */
@@ -304,6 +308,11 @@ namespace aspect
     typedef dealii::TrilinosWrappers::BlockSparseMatrix BlockSparseMatrix;
 
     /**
+     * Typedef for the base class for all preconditioners.
+     */
+    typedef dealii::TrilinosWrappers::PreconditionBase PreconditionBase;
+
+    /**
      * Typedef for the AMG preconditioner type used for the top left block of
      * the Stokes matrix.
      */
@@ -347,32 +356,7 @@ namespace aspect
  * running, with how many processes, and using which linear algebra library.
  */
 template <class Stream>
-void print_aspect_header(Stream &stream)
-{
-  const int n_tasks = dealii::Utilities::MPI::n_mpi_processes(MPI_COMM_WORLD);
-
-  stream << "-----------------------------------------------------------------------------\n"
-         << "-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.\n"
-         << "--     . version 2.0.0-pre\n" //VERSION-INFO. Do not edit by hand.
-#ifdef DEBUG
-         << "--     . running in DEBUG mode\n"
-#else
-         << "--     . running in OPTIMIZED mode\n"
-#endif
-         << "--     . running with " << n_tasks << " MPI process" << (n_tasks == 1 ? "\n" : "es\n");
-  const int n_threads =
-    dealii::MultithreadInfo::n_threads();
-  if (n_threads>1)
-    stream << "--     . using " << n_threads << " threads " << (n_tasks == 1 ? "\n" : "each\n");
-#ifdef ASPECT_USE_PETSC
-  stream << "--     . using PETSc\n";
-#else
-  stream << "--     . using Trilinos\n";
-#endif
-  stream << "-----------------------------------------------------------------------------\n"
-         << std::endl;
-}
-
+void print_aspect_header(Stream &stream);
 
 /**
  * A macro that is used in instantiating the ASPECT classes and functions for

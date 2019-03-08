@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2019 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with ASPECT; see the file doc/COPYING.  If not see
+ along with ASPECT; see the file LICENSE.  If not see
  <http://www.gnu.org/licenses/>.
  */
 
@@ -24,7 +24,8 @@ DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
 #include <boost/random.hpp>
 DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
 
-#include <deal.II/base/std_cxx11/array.h>
+#include <array>
+#include <deal.II/base/exceptions.h>
 
 
 namespace aspect
@@ -35,7 +36,7 @@ namespace aspect
     {
       template <int dim>
       void
-      UniformBox<dim>::generate_particles(std::multimap<types::LevelInd, Particle<dim> > &particles)
+      UniformBox<dim>::generate_particles(std::multimap<Particles::internal::LevelInd, Particle<dim> > &particles)
       {
         const Tensor<1,dim> P_diff = P_max - P_min;
 
@@ -43,13 +44,13 @@ namespace aspect
         for (unsigned int i = 0; i < dim; ++i)
           volume *= P_diff[i];
 
-        std_cxx11::array<unsigned int,dim> n_particles_per_direction;
-        std_cxx11::array<double,dim> spacing;
+        std::array<unsigned int,dim> n_particles_per_direction;
+        std::array<double,dim> spacing;
 
         // Calculate separation of particles
         for (unsigned int i = 0; i < dim; ++i)
           {
-            n_particles_per_direction[i] = round(std::pow(n_particles * std::pow(P_diff[i],dim) / volume, 1./dim));
+            n_particles_per_direction[i] = static_cast<unsigned int>(round(std::pow(n_particles * std::pow(P_diff[i],dim) / volume, 1./dim)));
             spacing[i] = P_diff[i] / fmax(n_particles_per_direction[i] - 1,1);
           }
 
@@ -162,10 +163,15 @@ namespace aspect
                 P_min(1) = prm.get_double ("Minimum y");
                 P_max(1) = prm.get_double ("Maximum y");
 
+                AssertThrow(P_min(0) < P_max(0), ExcMessage("Minimum x must be less than maximum x"));
+                AssertThrow(P_min(1) < P_max(1), ExcMessage("Minimum y must be less than maximum y"));
+
                 if (dim == 3)
                   {
                     P_min(2) = prm.get_double ("Minimum z");
                     P_max(2) = prm.get_double ("Maximum z");
+
+                    AssertThrow(P_min(2) < P_max(2), ExcMessage("Minimum z must be less than maximum z"));
                   }
               }
               prm.leave_subsection();

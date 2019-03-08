@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
@@ -127,41 +127,10 @@ namespace aspect
         double heat_capacity;
         double grain_size;
 
-        /**
-         * From multicomponent material model: From a list of compositional
-         * fields of length N, we come up with an N+1 length list that which
-         * also includes the fraction of ``background mantle''. This list
-         * should sum to one, and is interpreted as volume fractions.  If the
-         * sum of the compositional_fields is greater than one, we assume that
-         * there is no background mantle (i.e., that field value is zero).
-         * Otherwise, the difference between the sum of the compositional
-         * fields and 1.0 is assumed to be the amount of background mantle.
-         */
-        std::vector<double> compute_volume_fractions(
-          const std::vector<double> &compositional_fields) const;
         std::vector<double> densities;
         std::vector<double> thermal_expansivities;
 
-        /**
-         * Enumeration for selecting which viscosity averaging scheme to use.
-         * Select between harmonic, arithmetic, geometric, and
-         * maximum_composition. The max composition scheme simply uses the
-         * viscosity of whichever field has the highest volume fraction. For
-         * each quadrature point, averaging is conducted over the N
-         * compositional fields plus the background field.
-         */
-        enum averaging_scheme
-        {
-          harmonic,
-          arithmetic,
-          geometric,
-          maximum_composition
-        } viscosity_averaging;
-
-
-        double average_value (const std::vector<double> &composition,
-                              const std::vector<double> &parameter_values,
-                              const enum averaging_scheme &average_type) const;
+        MaterialUtilities::CompositionalAveragingOperation viscosity_averaging;
 
         std::vector<double>
         calculate_isostrain_viscosities ( const std::vector<double> &volume_fractions,

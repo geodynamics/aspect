@@ -1,0 +1,29 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of nonlinear iterations
+# 8: Iterations for Stokes solver
+# 9: Velocity iterations in Stokes preconditioner
+# 10: Schur complement iterations in Stokes preconditioner
+# 11: Visualization file name
+# 12: RMS velocity (m/s)
+# 13: Max. velocity (m/s)
+# 14: Minimal pressure (Pa)
+# 15: Average pressure (Pa)
+# 16: Maximal pressure (Pa)
+# 17: Maximum velocity magnitude on boundary with indicator 0 ("left") (m/s)
+# 18: Minimum velocity magnitude on boundary with indicator 0 ("left") (m/s)
+# 19: RMS velocity on boundary with indicator 0 ("left") (m/s)
+# 20: Maximum velocity magnitude on boundary with indicator 1 ("right") (m/s)
+# 21: Minimum velocity magnitude on boundary with indicator 1 ("right") (m/s)
+# 22: RMS velocity on boundary with indicator 1 ("right") (m/s)
+# 23: Maximum velocity magnitude on boundary with indicator 2 ("bottom") (m/s)
+# 24: Minimum velocity magnitude on boundary with indicator 2 ("bottom") (m/s)
+# 25: RMS velocity on boundary with indicator 2 ("bottom") (m/s)
+# 26: Maximum velocity magnitude on boundary with indicator 3 ("top") (m/s)
+# 27: Minimum velocity magnitude on boundary with indicator 3 ("top") (m/s)
+# 28: RMS velocity on boundary with indicator 3 ("top") (m/s)
+0 0.000000000000e+00 0.000000000000e+00 256 2467 1089 16 497 514 514 output-hydrostatic_compression/solution/solution-00000 2.92524366e+01 4.22392776e+01 -2.53156380e-03 4.95858160e-01 9.88970602e-01 4.20262996e+01 3.88342616e+01 4.02675066e+01 4.20262996e+01 3.88342616e+01 4.02675066e+01 4.20265658e+01 6.23647330e+00 2.90157962e+01 4.20052408e+01 6.06655014e+00 2.90154109e+01 

@@ -1,5 +1,27 @@
+/*
+  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
+
+  This file is part of ASPECT.
+
+  ASPECT is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2, or (at your option)
+  any later version.
+
+  ASPECT is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with ASPECT; see the file LICENSE.  If not see
+  <http://www.gnu.org/licenses/>.
+*/
 #include <aspect/melt.h>
 #include <aspect/initial_composition/interface.h>
+#include <aspect/postprocess/interface.h>
+#include <aspect/gravity_model/interface.h>
+#include <aspect/geometry_model/interface.h>
 #include <aspect/simulator_access.h>
 #include <aspect/global.h>
 
@@ -245,9 +267,9 @@ namespace aspect
       class FunctionSolitaryWave : public Function<dim>
       {
         public:
-          FunctionSolitaryWave (const double offset, const double delta, const std::vector<double> &initial_pressure, const double max_z)
+          FunctionSolitaryWave (const double offset, const double delta, const std::vector<double> &initial_pressure, const double max_z, const unsigned int n_components)
             :
-            Function<dim>(dim+2),
+            Function<dim>(n_components),
             offset_(offset),
             delta_(delta),
             initial_pressure_(initial_pressure),
@@ -291,6 +313,57 @@ namespace aspect
 
 
     /**
+     * An initial conditions model for the solitary waves benchmark.
+     */
+    template <int dim>
+    class SolitaryWaveInitialCondition : public InitialComposition::Interface<dim>,
+      public ::aspect::SimulatorAccess<dim>
+    {
+      public:
+
+        /**
+         * Initialization function. Take references to the material model and
+         * get the compaction length, so that it can be used subsequently to
+         * compute the analytical solution for the shape of the solitary wave.
+         */
+        void
+        initialize ();
+
+        /**
+         * Return the boundary velocity as a function of position.
+         */
+        virtual
+        double
+        initial_composition (const Point<dim> &position, const unsigned int n_comp) const;
+
+        static
+        void
+        declare_parameters (ParameterHandler &prm);
+
+        virtual
+        void
+        parse_parameters (ParameterHandler &prm);
+
+        double
+        get_amplitude () const;
+
+        double
+        get_background_porosity () const;
+
+        double
+        get_offset () const;
+
+      private:
+        double amplitude;
+        double background_porosity;
+        double offset;
+        double compaction_length;
+        bool read_solution;
+        std::string file_name;
+    };
+
+
+    /**
      * @note This benchmark only talks about the flow field, not about a
      * temperature field. All quantities related to the temperature are
      * therefore set to zero in the implementation of this class.
@@ -313,7 +386,14 @@ namespace aspect
 
         virtual double reference_darcy_coefficient () const
         {
-          return reference_permeability * pow(0.01, 3.0) / eta_f;
+          // Note that this number is based on the background porosity in the
+          // solitary wave initial condition.
+          const SolitaryWaveInitialCondition<dim> &initial_composition =
+            this->get_initial_composition_manager().template
+            get_matching_initial_composition_model<SolitaryWaveInitialCondition<dim> >();
+
+          return reference_permeability * pow(initial_composition.get_background_porosity(), 3.0) / eta_f;
+
         }
 
         double length_scaling (const double porosity) const
@@ -445,55 +525,7 @@ namespace aspect
       prm.leave_subsection();
     }
 
-    /**
-     * An initial conditions model for the solitary waves benchmark.
-     */
-    template <int dim>
-    class SolitaryWaveInitialCondition : public InitialComposition::Interface<dim>,
-      public ::aspect::SimulatorAccess<dim>
-    {
-      public:
 
-        /**
-         * Initialization function. Take references to the material model and
-         * get the compaction length, so that it can be used subsequently to
-         * compute the analytical solution for the shape of the solitary wave.
-         */
-        void
-        initialize ();
-
-        /**
-         * Return the boundary velocity as a function of position.
-         */
-        virtual
-        double
-        initial_composition (const Point<dim> &position, const unsigned int n_comp) const;
-
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
-
-        virtual
-        void
-        parse_parameters (ParameterHandler &prm);
-
-        double
-        get_amplitude () const;
-
-        double
-        get_background_porosity () const;
-
-        double
-        get_offset () const;
-
-      private:
-        double amplitude;
-        double background_porosity;
-        double offset;
-        double compaction_length;
-        bool read_solution;
-        std::string file_name;
-    };
 
     template <int dim>
     double
@@ -656,7 +688,7 @@ namespace aspect
         unsigned int max_points;
         std::vector<double> initial_pressure;
         double maximum_pressure;
-        std_cxx1x::shared_ptr<AnalyticSolutions::FunctionSolitaryWave<dim> > ref_func;
+        std::shared_ptr<AnalyticSolutions::FunctionSolitaryWave<dim> > ref_func;
 
     };
 
@@ -667,31 +699,22 @@ namespace aspect
       // verify that we are using the "Solitary wave" initial conditions and material model,
       // then get the parameters we need
 
-      const SolitaryWaveInitialCondition<dim> *
-      initial_composition
-        = this->get_initial_composition_manager().template find_initial_composition_model<SolitaryWaveInitialCondition<dim> > ();
+      const SolitaryWaveInitialCondition<dim> &initial_composition
+        = this->get_initial_composition_manager().template get_matching_initial_composition_model<SolitaryWaveInitialCondition<dim> > ();
 
-      AssertThrow(initial_composition != NULL,
-                  ExcMessage("Postprocessor solitary wave only works with the solitary wave initial composition."));
+      amplitude           = initial_composition.get_amplitude();
+      background_porosity = initial_composition.get_background_porosity();
+      offset              = initial_composition.get_offset();
 
-      amplitude           = initial_composition->get_amplitude();
-      background_porosity = initial_composition->get_background_porosity();
-      offset              = initial_composition->get_offset();
+      AssertThrow(Plugins::plugin_type_matches<const SolitaryWaveMaterial<dim>>(this->get_material_model()),
+                  ExcMessage("Postprocessor Solitary Wave only works with the material model Solitary wave."));
 
-      if (dynamic_cast<const SolitaryWaveMaterial<dim> *>(&this->get_material_model()) != NULL)
-        {
-          const SolitaryWaveMaterial<dim> *
-          material_model
-            = dynamic_cast<const SolitaryWaveMaterial<dim> *>(&this->get_material_model());
+      const SolitaryWaveMaterial<dim> &material_model
+        = Plugins::get_plugin_as_type<const SolitaryWaveMaterial<dim> >(this->get_material_model());
 
-          compaction_length = material_model->length_scaling(background_porosity);
-          velocity_scaling = material_model->velocity_scaling(background_porosity);
-        }
-      else
-        {
-          AssertThrow(false,
-                      ExcMessage("Postprocessor Solitary Wave only works with the material model Solitary wave."));
-        }
+      compaction_length = material_model.length_scaling(background_porosity);
+      velocity_scaling = material_model.velocity_scaling(background_porosity);
+
 
       // we also need the boundary velocity, but we can not get it from simulator access
       // TODO: write solitary wave boundary condition where the phase speed is calculated!
@@ -917,7 +940,7 @@ namespace aspect
         {
           store_initial_pressure();
           ref_func.reset (new AnalyticSolutions::FunctionSolitaryWave<dim>(offset,0.0,initial_pressure,
-                                                                           this->get_geometry_model().maximal_depth()));
+                                                                           this->get_geometry_model().maximal_depth(), this->introspection().n_components));
         }
 
       double delta=0;
@@ -980,7 +1003,7 @@ namespace aspect
          << ", " << std::abs(delta);
 
 
-      return std::make_pair("Errors e_f, e_p, e_c, delta:", os.str());
+      return std::make_pair("Errors e_f, e_p_c_bar, e_c, delta:", os.str());
     }
 
   }

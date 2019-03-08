@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,14 +14,14 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 #include <aspect/global.h>
 #include <aspect/utilities.h>
 #include <aspect/simulator_access.h>
 
-#include <deal.II/base/std_cxx11/array.h>
+#include <array>
 #include <deal.II/base/point.h>
 
 #include <deal.II/base/mpi.h>
@@ -31,8 +31,15 @@
 #include <deal.II/base/exceptions.h>
 #include <deal.II/base/signaling_nan.h>
 
+#if DEAL_II_VERSION_GTE(9,0,0)
+#include <deal.II/base/patterns.h>
+#else
+#include <deal.II/base/parameter_handler.h>
+#endif
+
 #include <aspect/geometry_model/box.h>
 #include <aspect/geometry_model/spherical_shell.h>
+#include <aspect/geometry_model/sphere.h>
 #include <aspect/geometry_model/chunk.h>
 #include <aspect/geometry_model/initial_topography_model/ascii_data.h>
 
@@ -54,7 +61,187 @@ namespace aspect
    */
   namespace Utilities
   {
-    using namespace dealii;
+    template <typename T>
+    Table<2,T>
+    parse_input_table (const std::string &input_string,
+                       const unsigned int n_rows,
+                       const unsigned int n_columns,
+                       const std::string &property_name)
+    {
+      Table<2,T> input_table(n_rows,n_columns);
+
+      const std::vector<std::string> rows = Utilities::possibly_extend_from_1_to_N(Utilities::split_string_list(input_string,';'),
+                                                                                   n_rows,
+                                                                                   property_name);
+
+      for (unsigned int i=0; i<rows.size(); ++i)
+        {
+          std::vector<std::string> current_columns = Utilities::possibly_extend_from_1_to_N(Utilities::split_string_list(rows[i]),
+                                                     n_columns,
+                                                     property_name);
+
+          for (unsigned int j=0; j<current_columns.size(); ++j)
+            {
+              // get rid of surrounding whitespace
+              trim(current_columns[j]);
+
+              input_table[i][j] = boost::lexical_cast<T>(current_columns[j]);
+            }
+        }
+
+      return input_table;
+    }
+
+
+
+    std::vector<double> parse_map_to_double_array (const std::string &input_string,
+                                                   const std::vector<std::string> &input_field_names,
+                                                   const bool has_background_field,
+                                                   const std::string &property_name)
+    {
+      std::vector<std::string> field_names = input_field_names;
+      if (has_background_field)
+        field_names.insert(field_names.begin(),"background");
+
+      const unsigned int n_fields = field_names.size();
+      std::vector<double> return_values(n_fields,std::numeric_limits<double>::quiet_NaN());
+
+      // Parse the string depending on what Pattern we are dealing with
+      if (Patterns::Map(Patterns::Anything(),Patterns::Double(),1,n_fields).match(input_string))
+        {
+          // Split the list by comma delimited components,
+          // then by colon delimited field name and value.
+          const std::vector<std::string> field_entries = dealii::Utilities::split_string_list(input_string, ',');
+
+          AssertThrow ( (field_entries.size() == n_fields)
+                        || (field_entries.size() == 1),
+                        ExcMessage ("The number of "
+                                    + property_name
+                                    + " in the list must equal one of the following values:\n"
+                                    "1 (one value for all fields, including background, using the keyword=`all'), \n"
+                                    "or " + std::to_string(n_fields) + " (the number of fields, possibly plus 1 if a background field is expected)."));
+
+          // Parse by entry
+          for (std::vector<std::string>::const_iterator field_entry = field_entries.begin();
+               field_entry != field_entries.end(); ++field_entry)
+            {
+              // Split each entry into string and value ( <id> : <value>)
+              std::vector<std::string> key_and_value = Utilities::split_string_list (*field_entry, ':');
+
+              // Ensure that each entry has the correct form.
+              AssertThrow (key_and_value.size() == 2,
+                           ExcMessage ("The format for mapped "
+                                       + property_name
+                                       + "requires that each entry has the "
+                                       "form `<id> : <value>' "
+                                       ", but the entry <"
+                                       + *field_entry
+                                       + "> does not appear to follow this pattern."));
+
+              // If there is one entry in the list the keyword "all" must be found.
+              if ((field_entries.size() == 1) && (n_fields != 1))
+                {
+                  AssertThrow (key_and_value[0] == "all",
+                               ExcMessage ("There is only one "
+                                           + property_name
+                                           + " value given. The keyword `all' is "
+                                           "expected but is not found. Please"
+                                           "check your "
+                                           + property_name
+                                           + " list."));
+
+                  // Assign all the elements to the "all" value
+                  for (unsigned int field_index=0; field_index<n_fields; ++field_index)
+                    return_values[field_index] = Utilities::string_to_double(key_and_value[1]);
+                }
+              // Handle lists of multiple entries
+              else
+                {
+                  // Ensure that the special keyword "all" was not used when multiple entries exist.
+                  AssertThrow (key_and_value[0] != "all" || n_fields == 1,
+                               ExcMessage ("There are multiple "
+                                           + property_name
+                                           + " values found, the keyword `all' is not "
+                                           "allowed. Please check your "
+                                           + property_name
+                                           + " list."));
+
+                  // Continue with placing values into the correct positions according to
+                  // the order of names passed to this function in the argument list_of_field_names.
+                  std::vector<std::string>::iterator field_name
+                    = std::find(field_names.begin(),field_names.end(),key_and_value[0]);
+
+                  // Ensure that each non-special keyword found is also contained in
+                  // the list of field names, and insert the associated
+                  // values to the correct index position.
+                  AssertThrow (field_name != field_names.end(),
+                               ExcMessage ("The keyword <"
+                                           + key_and_value[0]
+                                           + "> in "
+                                           + property_name
+                                           + " does not match any entries "
+                                           "from the list of field names"
+                                           + ((has_background_field)
+                                              ?
+                                              " (plus `background' for the background field). "
+                                              :
+                                              ". ")
+                                           + "Check that you have a value for "
+                                           "each field id in your list.\n\n"
+                                           "One example of where to check this is if "
+                                           "Compositional fields are used, "
+                                           "then check the id list "
+                                           "from `set Names of fields' in the"
+                                           "Compositional fields subsection. "
+                                           "Alternatively, if `set Names of fields' "
+                                           "is not set, the default names are "
+                                           "C_1, C_2, ..., C_n."));
+
+                  const unsigned int field_index = std::distance(field_names.begin(),field_name);
+
+                  // Throw an error if this index was already set ...there can be only one
+                  AssertThrow (std::isnan(return_values[field_index]) == true,
+                               ExcMessage ("The keyword <"
+                                           + key_and_value[0]
+                                           + "> in "
+                                           + property_name
+                                           + " is listed multiple times. "
+                                           "Check that you have only one value for "
+                                           "each field id in your list."
+                                           "\n\n"
+                                           "One example of where to check this is if "
+                                           "Compositional fields are used, "
+                                           "then check the id list "
+                                           "from `set Names of fields' in the"
+                                           "Compositional fields subsection. "
+                                           "Alternatively, if `set Names of fields' "
+                                           "is not set, the default names are "
+                                           "C_1, C_2, ..., C_n."));
+
+                  return_values[field_index] = Utilities::string_to_double(key_and_value[1]);
+                }
+            }
+        }
+      else if (Patterns::List(Patterns::Double(),1,n_fields).match(input_string))
+        {
+          // Handle the format of a comma separated list of doubles, with no keywords
+          return_values = possibly_extend_from_1_to_N (dealii::Utilities::string_to_double(dealii::Utilities::split_string_list(input_string)),
+                                                       n_fields,
+                                                       property_name);
+        }
+      else
+        {
+          // No Patterns matches were found!
+          AssertThrow (false,
+                       ExcMessage ("The required format for field <"
+                                   + property_name
+                                   + "> was not found. Specify a comma separated "
+                                   "list of `<double>' or `<id> : <double>'."));
+        }
+      return return_values;
+    }
+
+
 
     /**
      * Split the set of DoFs (typically locally owned or relevant) in @p whole_set into blocks
@@ -76,6 +263,53 @@ namespace aspect
         }
     }
 
+    template <int dim>
+    std::vector<std::string>
+    expand_dimensional_variable_names (const std::vector<std::string> &var_declarations)
+    {
+      std::string dim_names[3] = {"x", "y", "z"};
+      char fn_split = '(', fn_end = ')';
+      std::vector<std::string> var_name_list;
+
+      for (std::vector<std::string>::const_iterator var_decl_iterator = var_declarations.begin();
+           var_decl_iterator != var_declarations.end();
+           ++var_decl_iterator)
+        {
+          const std::string &var_decl = *var_decl_iterator;
+          if (var_decl.find(fn_split) != std::string::npos && var_decl[var_decl.length()-1]==fn_end)
+            {
+              const std::string fn_name = var_decl.substr(0, var_decl.find(fn_split));
+
+              // Cannot be const because will be manipulated to strip whitespace
+              std::string var_name = var_decl.substr(var_decl.find(fn_split)+1, var_decl.length()-2-var_decl.find(fn_split));
+              while ((var_name.length() != 0) && (var_name[0] == ' '))
+                var_name.erase(0, 1);
+              while ((var_name.length() != 0) && (var_name[var_name.length()-1] == ' '))
+                var_name.erase(var_name.length()-1, 1);
+              if (fn_name == "vector")
+                {
+                  for (int i=0; i<dim; ++i)
+                    var_name_list.push_back(var_name+"_"+dim_names[i]);
+                }
+              else if (fn_name == "tensor")
+                {
+                  for (int i=0; i<dim; ++i)
+                    for (int j=0; j< dim; ++j)
+                      var_name_list.push_back(var_name+"_"+dim_names[i]+dim_names[j]);
+                }
+              else
+                {
+                  var_name_list.push_back(var_decl);
+                }
+            }
+          else
+            {
+              var_name_list.push_back(var_decl);
+            }
+        }
+      return var_name_list;
+    }
+
 
     /**
     * This is an internal deal.II function stolen from dof_tools.cc
@@ -88,8 +322,8 @@ namespace aspect
     get_local_component_association (const FiniteElement<dim,spacedim>  &fe,
                                      const ComponentMask        & /*component_mask*/)
     {
-      std::vector<unsigned char> local_component_association (fe.dofs_per_cell,
-                                                              (unsigned char)(-1));
+      const unsigned char invalid = static_cast<unsigned char>(-1);
+      std::vector<unsigned char> local_component_association (fe.dofs_per_cell, invalid);
 
       // compute the component each local dof belongs to.
       // if the shape function is primitive, then this
@@ -105,7 +339,7 @@ namespace aspect
 
       Assert (std::find (local_component_association.begin(),
                          local_component_association.end(),
-                         (unsigned char)(-1))
+                         invalid)
               ==
               local_component_association.end(),
               ExcInternalError());
@@ -145,10 +379,10 @@ namespace aspect
     {
 
       template <int dim>
-      std_cxx11::array<double,dim>
+      std::array<double,dim>
       WGS84_coordinates(const Point<dim> &position)
       {
-        std_cxx11::array<double,dim> ecoord;
+        std::array<double,dim> ecoord;
 
         // Define WGS84 ellipsoid constants.
         const double radius = 6378137.;
@@ -186,10 +420,10 @@ namespace aspect
       }
 
       template <int dim>
-      std_cxx11::array<double,dim>
+      std::array<double,dim>
       cartesian_to_spherical_coordinates(const Point<dim> &position)
       {
-        std_cxx11::array<double,dim> scoord;
+        std::array<double,dim> scoord;
 
         scoord[0] = position.norm(); // R
         scoord[1] = std::atan2(position(1),position(0)); // Phi
@@ -207,7 +441,7 @@ namespace aspect
 
       template <int dim>
       Point<dim>
-      spherical_to_cartesian_coordinates(const std_cxx11::array<double,dim> &scoord)
+      spherical_to_cartesian_coordinates(const std::array<double,dim> &scoord)
       {
         Point<dim> ccoord;
 
@@ -235,7 +469,7 @@ namespace aspect
       }
 
       template <int dim>
-      std_cxx11::array<double,3>
+      std::array<double,3>
       cartesian_to_ellipsoidal_coordinates(const Point<3> &x,
                                            const double semi_major_axis_a,
                                            const double eccentricity)
@@ -251,7 +485,7 @@ namespace aspect
         const double R_bar = R / (std::sqrt(1 - eccentricity * eccentricity * std::sin(theta) * std::sin(theta)));
         const double R_plus_d = p / std::cos(theta);
 
-        std_cxx11::array<double,3> phi_theta_d;
+        std::array<double,3> phi_theta_d;
         phi_theta_d[0] = phi;
 
         phi_theta_d[1] = theta;
@@ -261,7 +495,7 @@ namespace aspect
 
       template <int dim>
       Point<3>
-      ellipsoidal_to_cartesian_coordinates(const std_cxx11::array<double,3> &phi_theta_d,
+      ellipsoidal_to_cartesian_coordinates(const std::array<double,3> &phi_theta_d,
                                            const double semi_major_axis_a,
                                            const double eccentricity)
       {
@@ -276,6 +510,60 @@ namespace aspect
                          (R_bar + d) * std::sin(phi) * std::cos(theta),
                          ((1 - eccentricity * eccentricity) * R_bar + d) * std::sin(theta));
 
+      }
+
+
+      template <int dim>
+      Tensor<1, dim>
+      spherical_to_cartesian_vector(const Tensor<1, dim> &spherical_vector,
+                                    const Point<dim> &position)
+      {
+        Tensor<1, dim> cartesian_vector;
+
+        const std::array<double, dim> r_phi_theta = cartesian_to_spherical_coordinates(position);
+
+        switch (dim)
+          {
+            case 2:
+            {
+              const double phi = r_phi_theta[1];
+
+              const double u_r   = spherical_vector[0];
+              const double u_phi = spherical_vector[1];
+
+              cartesian_vector[0] = std::cos(phi)*u_r
+                                    - std::sin(phi)*u_phi; // X
+              cartesian_vector[1] = std::sin(phi)*u_r
+                                    + std::cos(phi)*u_phi; // Y
+
+              break;
+            }
+            case 3:
+            {
+              const double phi   = r_phi_theta[1];
+              const double theta = r_phi_theta[2];
+
+              const double u_r     = spherical_vector[0];
+              const double u_phi   = spherical_vector[1];
+              const double u_theta = spherical_vector[2];
+
+              cartesian_vector[0] = std::cos(phi)*std::sin(theta)*u_r
+                                    - std::sin(phi)*u_phi
+                                    + std::cos(phi)*std::cos(theta)*u_theta; // X
+              cartesian_vector[1] = std::sin(phi)*std::sin(theta)*u_r
+                                    + std::cos(phi)*u_phi
+                                    + std::sin(phi)*std::cos(theta)*u_theta; // Y
+              cartesian_vector[2] = std::cos(theta)*u_r
+                                    - std::sin(theta)*u_theta; // Z
+              break;
+            }
+
+            default:
+              Assert (false, ExcNotImplemented());
+              break;
+          }
+
+        return cartesian_vector;
       }
 
 
@@ -435,42 +723,70 @@ namespace aspect
 
       for (unsigned int i = 0; i < n_poly_points; ++i)
         {
-          // Create vector along the polygon line segment
-          Tensor<1,2> vector_segment = shifted_point_list[i] - point_list[i];
-          // Create vector from point to the second segment point
-          Tensor<1,2> vector_point_segment = point - point_list[i];
-
-          // Compute dot products to get angles
-          const double c1 = vector_point_segment * vector_segment;
-          const double c2 = vector_segment * vector_segment;
-
-          // point lies closer to not-shifted polygon point, but perpendicular base line lies outside segment
-          if (c1 <= 0.0)
-            distances[i] = (Tensor<1,2> (point_list[i] - point)).norm();
-          // point lies closer to shifted polygon point, but perpendicular base line lies outside segment
-          else if (c2 <= c1)
-            distances[i] = (Tensor<1,2> (shifted_point_list[i] - point)).norm();
-          // perpendicular base line lies on segment
-          else
-            {
-              const Point<2> point_on_segment = point_list[i] + (c1/c2) * vector_segment;
-              distances[i] = (Tensor<1,2> (point - point_on_segment)).norm();
-            }
+          const std::array<Point<2>,2 > list = {{point_list[i], shifted_point_list[i]}};
+          distances[i] = distance_to_line(list, point);
         }
 
       // Return the minimum of the distances of the point to all polygon segments
       return *std::min_element(distances.begin(),distances.end()) * sign;
     }
 
+    double
+    distance_to_line(const std::array<dealii::Point<2>,2 > &point_list,
+                     const dealii::Point<2> &point)
+    {
+
+      /**
+       * This code is based on http://geomalgorithms.com/a02-_lines.html#Distance-to-Infinite-Line,
+       * and therefore requires the following copyright notice:
+       *
+       * Copyright 2000 softSurfer, 2012 Dan Sunday
+       * This code may be freely used and modified for any purpose
+       * providing that this copyright notice is included with it.
+       * SoftSurfer makes no warranty for this code, and cannot be held
+       * liable for any real or imagined damage resulting from its use.
+       * Users of this code must verify correctness for their application.
+       *
+       */
+
+      const unsigned int n_poly_points = point_list.size();
+      AssertThrow(n_poly_points == 2, ExcMessage("A list of points for a line segment should consist of 2 points."));
+
+      // Create vector along the polygon line segment P0 to P1
+      const Tensor<1,2> vector_segment = point_list[1] - point_list[0];
+      // Create vector from point P to the second segment point
+      const Tensor<1,2> vector_point_segment = point - point_list[0];
+
+      // Compute dot products to get angles
+      const double c1 = vector_point_segment * vector_segment;
+
+      // Point P's perpendicular base line lies outside segment, before P0.
+      // Return distance between points P and P0.
+      if (c1 <= 0.0)
+        return (Tensor<1,2> (point_list[0] - point)).norm();
+
+      const double c2 = vector_segment * vector_segment;
+
+      // Point P's perpendicular base line lies outside segment, after P1.
+      // Return distance between points P and P1.
+      if (c2 <= c1)
+        return (Tensor<1,2> (point_list[1] - point)).norm();
+
+      // Point P's perpendicular base line lies on the line segment.
+      // Return distance between point P and the base point.
+      const Point<2> point_on_segment = point_list[0] + (c1/c2) * vector_segment;
+      return (Tensor<1,2> (point - point_on_segment)).norm();
+    }
+
     template <int dim>
-    std_cxx11::array<Tensor<1,dim>,dim-1>
+    std::array<Tensor<1,dim>,dim-1>
     orthogonal_vectors (const Tensor<1,dim> &v)
     {
       Assert (v.norm() > 0,
               ExcMessage ("This function can not be called with a zero "
                           "input vector."));
 
-      std_cxx11::array<Tensor<1,dim>,dim-1> return_value;
+      std::array<Tensor<1,dim>,dim-1> return_value;
       switch (dim)
         {
           case 2:
@@ -523,14 +839,10 @@ namespace aspect
     }
 
 
-//Evaluate the cosine and sine terms of a real spherical harmonic.
-//This is a fully normalized harmonic, that is to say, inner products
-//of these functions should integrate to a kronecker delta over
-//the surface of a sphere.
-    std::pair<double,double> real_spherical_harmonic( const unsigned int l, // degree
-                                                      const unsigned int m, // order
-                                                      const double theta,   // colatitude (radians)
-                                                      const double phi )    // longitude (radians)
+    std::pair<double,double> real_spherical_harmonic( const unsigned int l,
+                                                      const unsigned int m,
+                                                      const double theta,
+                                                      const double phi)
     {
       const double sqrt_2 = numbers::SQRT2;
       const std::complex<double> sph_harm_val = boost::math::spherical_harmonic( l, m, theta, phi );
@@ -561,7 +873,7 @@ namespace aspect
 
       if (Utilities::MPI::this_mpi_process(comm) == 0)
         {
-          // set file size to an invalid size (signalling an error if we can not read it)
+          // set file size to an invalid size (signaling an error if we can not read it)
           unsigned int filesize = numbers::invalid_unsigned_int;
 
           std::ifstream filestream(filename.c_str());
@@ -654,7 +966,8 @@ namespace aspect
 
       if ((Utilities::MPI::this_mpi_process(comm) == 0))
         {
-          if (opendir(pathname.c_str()) == NULL)
+          DIR *output_directory = opendir(pathname.c_str());
+          if (output_directory == nullptr)
             {
               if (!silent)
                 std::cout << "\n"
@@ -670,7 +983,7 @@ namespace aspect
             }
           else
             {
-              error = 0;
+              error = closedir(output_directory);
             }
           // Broadcast error code
           MPI_Bcast (&error, 1, MPI_INT, 0, comm);
@@ -895,7 +1208,7 @@ namespace aspect
 
       std::vector<double> band_matrix::l_solve(const std::vector<double> &b) const
       {
-        assert( this->dim() == (int)b.size() );
+        assert( this->dim() == static_cast<int>(b.size()) );
         std::vector<double> x(this->dim());
         int j_start;
         double sum;
@@ -912,7 +1225,7 @@ namespace aspect
 
       std::vector<double> band_matrix::r_solve(const std::vector<double> &b) const
       {
-        assert( this->dim() == (int)b.size() );
+        assert( this->dim() == static_cast<int>(b.size()) );
         std::vector<double> x(this->dim());
         int j_stop;
         double sum;
@@ -929,7 +1242,7 @@ namespace aspect
       std::vector<double> band_matrix::lu_solve(const std::vector<double> &b,
                                                 bool is_lu_decomposed)
       {
-        assert(this->dim() == (int)b.size());
+        assert( this->dim() == static_cast<int>(b.size()) );
         std::vector<double>  x,y;
         // TODO: this is completely unsafe because you rely on the user
         // if the function is called more than once.
@@ -1131,16 +1444,24 @@ namespace aspect
       :
       components(components),
       data(components),
-      scale_factor(scale_factor)
+      maximum_component_value(components),
+      scale_factor(scale_factor),
+      coordinate_values_are_equidistant(false)
     {}
+
+
 
     template <int dim>
     AsciiDataLookup<dim>::AsciiDataLookup(const double scale_factor)
       :
       components(numbers::invalid_unsigned_int),
       data(),
-      scale_factor(scale_factor)
+      maximum_component_value(),
+      scale_factor(scale_factor),
+      coordinate_values_are_equidistant(false)
     {}
+
+
 
     template <int dim>
     std::vector<std::string>
@@ -1148,6 +1469,17 @@ namespace aspect
     {
       return data_component_names;
     }
+
+
+
+    template <int dim>
+    bool
+    AsciiDataLookup<dim>::has_equidistant_coordinates() const
+    {
+      return coordinate_values_are_equidistant;
+    }
+
+
 
     template <int dim>
     unsigned int
@@ -1177,6 +1509,13 @@ namespace aspect
     }
 
     template <int dim>
+    double
+    AsciiDataLookup<dim>::get_maximum_component_value(const unsigned int component) const
+    {
+      return maximum_component_value[component];
+    }
+
+    template <int dim>
     void
     AsciiDataLookup<dim>::load_file(const std::string &filename,
                                     const MPI_Comm &comm)
@@ -1188,7 +1527,7 @@ namespace aspect
       while (in.peek() == '#')
         {
           std::string line;
-          getline(in,line);
+          std::getline(in,line);
           std::stringstream linestream(line);
           std::string word;
           while (linestream >> word)
@@ -1221,7 +1560,6 @@ namespace aspect
         }
 
       // Read column lines if present
-      unsigned int field_index = 0;
       unsigned int name_column_index = 0;
       double temp_data;
 
@@ -1283,28 +1621,44 @@ namespace aspect
        * argument.
        */
       data.resize(components);
+      maximum_component_value.resize(components,-std::numeric_limits<double>::max());
       Table<dim,double> data_table;
       data_table.TableBase<dim,double>::reinit(table_points);
       std::vector<Table<dim,double> > data_tables(components+dim,data_table);
 
 
       // Read data lines
+      unsigned int read_data_entries = 0;
       do
         {
-          const unsigned int column_num = field_index%(components+dim);
+          const unsigned int column_num = read_data_entries%(components+dim);
 
           if (column_num >= dim)
-            temp_data *= scale_factor;
+            {
+              temp_data *= scale_factor;
+              maximum_component_value[column_num-dim] = std::max(maximum_component_value[column_num-dim], temp_data);
+            }
 
-          data_tables[column_num](compute_table_indices(field_index)) = temp_data;
+          data_tables[column_num](compute_table_indices(read_data_entries)) = temp_data;
 
-          ++field_index;
+          ++read_data_entries;
         }
       while (in >> temp_data);
 
+      AssertThrow(in.eof(),
+                  ExcMessage ("While reading the data file '" + filename + "' the ascii data "
+                              "plugin has encountered an error before the end of the file. "
+                              "Please check for malformed data values (e.g. NaN) or superfluous "
+                              "lines at the end of the data file."));
 
-      AssertThrow(field_index == (components + dim) * data_table.n_elements(),
-                  ExcMessage (std::string("Number of read in points does not match number of expected points. File corrupted?")));
+      const unsigned int n_expected_data_entries = (components + dim) * data_table.n_elements();
+      AssertThrow(read_data_entries == n_expected_data_entries,
+                  ExcMessage ("While reading the data file '" + filename + "' the ascii data "
+                              "plugin has reached the end of the file, but has not found the "
+                              "expected number of data values considering the spatial dimension, "
+                              "data columns, and number of lines prescribed by the POINTS header "
+                              "of the file. Please check the number of data "
+                              "lines against the POINTS header in the file."));
 
       // In case the data is specified on a grid that is equidistant
       // in each coordinate direction, we only need to store
@@ -1318,10 +1672,10 @@ namespace aspect
       // strictly ascending.
 
       // The number of intervals in each direction
-      std_cxx11::array<unsigned int,dim> table_intervals;
+      std::array<unsigned int,dim> table_intervals;
 
       // Whether or not the grid is equidistant
-      bool equidistant_grid = true;
+      coordinate_values_are_equidistant = true;
 
       for (unsigned int i = 0; i < dim; i++)
         {
@@ -1359,11 +1713,12 @@ namespace aspect
                   // Compare current grid spacing with first grid spacing,
                   // taking into account roundoff of the read-in coordinates
                   if (std::abs(current_grid_spacing - grid_spacing) > 0.005*(current_grid_spacing+grid_spacing))
-                    equidistant_grid = false;
+                    coordinate_values_are_equidistant = false;
                 }
 
               // Set the coordinate value
               coordinate_values[i].push_back(new_temp_coord);
+
               temp_coord = new_temp_coord;
             }
 
@@ -1375,20 +1730,15 @@ namespace aspect
       // its type depending on the read-in grid.
       for (unsigned int i = 0; i < components; i++)
         {
-          if (data[i])
-            delete data[i];
-
-          if (equidistant_grid)
-            data[i] = new Functions::InterpolatedUniformGridData<dim> (grid_extent,
-                                                                       table_intervals,
-                                                                       data_tables[dim+i]);
+          if (coordinate_values_are_equidistant)
+            data[i]
+              = std_cxx14::make_unique<Functions::InterpolatedUniformGridData<dim>> (grid_extent,
+                                                                                     table_intervals,
+                                                                                     data_tables[dim+i]);
           else
-            {
-              if (Utilities::MPI::this_mpi_process(comm) == 0)
-                std::cout << "   Ascii data file coordinates are not equidistant. " << std::endl << std::endl;
-              data[i] = new Functions::InterpolatedTensorProductGridData<dim> (coordinate_values,
-                                                                               data_tables[dim+i]);
-            }
+            data[i]
+              = std_cxx14::make_unique<Functions::InterpolatedTensorProductGridData<dim>> (coordinate_values,
+                                                                                           data_tables[dim+i]);
         }
     }
 
@@ -1435,38 +1785,36 @@ namespace aspect
     void
     AsciiDataBase<dim>::declare_parameters (ParameterHandler  &prm,
                                             const std::string &default_directory,
-                                            const std::string &default_filename)
+                                            const std::string &default_filename,
+                                            const std::string &subsection_name)
     {
-      prm.enter_subsection ("Ascii data model");
+      prm.enter_subsection (subsection_name);
       {
         prm.declare_entry ("Data directory",
                            default_directory,
                            Patterns::DirectoryName (),
                            "The name of a directory that contains the model data. This path "
-                           "may either be absolute (if starting with a '/') or relative to "
+                           "may either be absolute (if starting with a `/') or relative to "
                            "the current directory. The path may also include the special "
-                           "text '$ASPECT_SOURCE_DIR' which will be interpreted as the path "
+                           "text `$ASPECT_SOURCE_DIR' which will be interpreted as the path "
                            "in which the ASPECT source files were located when ASPECT was "
                            "compiled. This interpretation allows, for example, to reference "
-                           "files located in the 'data/' subdirectory of ASPECT. ");
+                           "files located in the `data/' subdirectory of ASPECT. ");
         prm.declare_entry ("Data file name",
                            default_filename,
                            Patterns::Anything (),
-                           "The file name of the material data. Provide file in format: "
+                           "The file name of the model data. Provide file in format: "
                            "(Velocity file name).\\%s\\%d where \\%s is a string specifying "
                            "the boundary of the model according to the names of the boundary "
-                           "indicators (of a box or a spherical shell).\\%d is any sprintf integer "
+                           "indicators (of the chosen geometry model).\\%d is any sprintf integer "
                            "qualifier, specifying the format of the current file number. ");
         prm.declare_entry ("Scale factor", "1",
-                           Patterns::Double (0),
-                           "Scalar factor, which is applied to the boundary velocity. "
-                           "You might want to use this to scale the velocities to a "
-                           "reference model (e.g. with free-slip boundary) or another "
-                           "plate reconstruction. Another way to use this factor is to "
-                           "convert units of the input files. The unit is assumed to be"
-                           "m/s or m/yr depending on the 'Use years in output instead of "
-                           "seconds' flag. If you provide velocities in cm/yr set this "
-                           "factor to 0.01.");
+                           Patterns::Double (),
+                           "Scalar factor, which is applied to the model data. "
+                           "You might want to use this to scale the input to a "
+                           "reference model. Another way to use this factor is to "
+                           "convert units of the input files. For instance, if you "
+                           "provide velocities in cm/yr set this factor to 0.01.");
       }
       prm.leave_subsection();
     }
@@ -1474,9 +1822,10 @@ namespace aspect
 
     template <int dim>
     void
-    AsciiDataBase<dim>::parse_parameters (ParameterHandler &prm)
+    AsciiDataBase<dim>::parse_parameters (ParameterHandler &prm,
+                                          const std::string &subsection_name)
     {
-      prm.enter_subsection("Ascii data model");
+      prm.enter_subsection (subsection_name);
       {
         // Get the path to the data files. If it contains a reference
         // to $ASPECT_SOURCE_DIR, replace it by what CMake has given us
@@ -1503,31 +1852,32 @@ namespace aspect
       old_lookups()
     {}
 
+
+
     template <int dim>
     void
     AsciiDataBoundary<dim>::initialize(const std::set<types::boundary_id> &boundary_ids,
                                        const unsigned int components)
     {
       AssertThrow ((dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()))
-                   || (dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model())) != 0
-                   || (dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model())) != 0,
+                   || (dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model())) != nullptr
+                   || (dynamic_cast<const GeometryModel::Sphere<dim>*> (&this->get_geometry_model())) != nullptr
+                   || (dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model())) != nullptr,
                    ExcMessage ("This ascii data plugin can only be used when using "
                                "a spherical shell, chunk or box geometry."));
 
 
-      for (typename std::set<types::boundary_id>::const_iterator
-           boundary_id = boundary_ids.begin();
-           boundary_id != boundary_ids.end(); ++boundary_id)
+      for (const auto &boundary_id : boundary_ids)
         {
-          std_cxx11::shared_ptr<Utilities::AsciiDataLookup<dim-1> > lookup;
-          lookup.reset(new Utilities::AsciiDataLookup<dim-1> (components,
-                                                              Utilities::AsciiDataBase<dim>::scale_factor));
-          lookups.insert(std::make_pair(*boundary_id,lookup));
+          lookups.insert(std::make_pair(boundary_id,
+                                        std_cxx14::make_unique<Utilities::AsciiDataLookup<dim-1>>
+                                        (components,
+                                         this->scale_factor)));
 
-          lookup.reset(new Utilities::AsciiDataLookup<dim-1> (components,
-                                                              Utilities::AsciiDataBase<dim>::scale_factor));
-          old_lookups.insert(std::make_pair(*boundary_id,lookup));
-
+          old_lookups.insert(std::make_pair(boundary_id,
+                                            std_cxx14::make_unique<Utilities::AsciiDataLookup<dim-1>>
+                                            (components,
+                                             this->scale_factor)));
 
           // Set the first file number and load the first files
           current_file_number = first_data_file_number;
@@ -1538,37 +1888,37 @@ namespace aspect
             :
             current_file_number + 1;
 
-          this->get_pcout() << std::endl << "   Loading Ascii data boundary file "
-                            << create_filename (current_file_number,*boundary_id) << "." << std::endl << std::endl;
+          const std::string filename (create_filename (current_file_number, boundary_id));
 
-          const std::string filename (create_filename (current_file_number,*boundary_id));
-          if (Utilities::fexists(filename))
-            lookups.find(*boundary_id)->second->load_file(filename,this->get_mpi_communicator());
-          else
-            AssertThrow(false,
-                        ExcMessage (std::string("Ascii data file <")
-                                    +
-                                    filename
-                                    +
-                                    "> not found!"));
+          this->get_pcout() << std::endl << "   Loading Ascii data boundary file "
+                            << filename << "." << std::endl << std::endl;
+
+
+          AssertThrow(Utilities::fexists(filename),
+                      ExcMessage (std::string("Ascii data file <")
+                                  +
+                                  filename
+                                  +
+                                  "> not found!"));
+          lookups.find(boundary_id)->second->load_file(filename,this->get_mpi_communicator());
 
           // If the boundary condition is constant, switch off time_dependence
           // immediately. If not, also load the second file for interpolation.
           // This catches the case that many files are present, but the
           // parameter file requests a single file.
-          if (create_filename (current_file_number,*boundary_id) == create_filename (current_file_number+1,*boundary_id))
+          if (filename == create_filename (current_file_number+1, boundary_id))
             {
               end_time_dependence ();
             }
           else
             {
-              const std::string filename (create_filename (next_file_number,*boundary_id));
+              const std::string filename (create_filename (next_file_number, boundary_id));
               this->get_pcout() << std::endl << "   Loading Ascii data boundary file "
                                 << filename << "." << std::endl << std::endl;
               if (Utilities::fexists(filename))
                 {
-                  lookups.find(*boundary_id)->second.swap(old_lookups.find(*boundary_id)->second);
-                  lookups.find(*boundary_id)->second->load_file(filename,this->get_mpi_communicator());
+                  lookups.find(boundary_id)->second.swap(old_lookups.find(boundary_id)->second);
+                  lookups.find(boundary_id)->second->load_file(filename, this->get_mpi_communicator());
                 }
               else
                 end_time_dependence ();
@@ -1577,11 +1927,12 @@ namespace aspect
     }
 
 
+
     template <int dim>
-    std_cxx11::array<unsigned int,dim-1>
+    std::array<unsigned int,dim-1>
     AsciiDataBoundary<dim>::get_boundary_dimensions (const types::boundary_id boundary_id) const
     {
-      std_cxx11::array<unsigned int,dim-1> boundary_dimensions;
+      std::array<unsigned int,dim-1> boundary_dimensions;
 
       switch (dim)
         {
@@ -1672,7 +2023,7 @@ namespace aspect
     AsciiDataBoundary<dim>::create_filename (const int filenumber,
                                              const types::boundary_id boundary_id) const
     {
-      std::string templ = Utilities::AsciiDataBase<dim>::data_directory + Utilities::AsciiDataBase<dim>::data_file_name;
+      std::string templ = this->data_directory + this->data_file_name;
 
       const std::string boundary_name = this->get_geometry_model().translate_id_to_symbol_name(boundary_id);
 
@@ -1695,10 +2046,10 @@ namespace aspect
 
       if (!fexists(result) && fexists(compatible_result))
         {
-          std::cout << "WARNING: Filename convention concerning geometry boundary "
-                    "names changed. Please rename '" << compatible_result << "'"
-                    << " to '" << result << "'"
-                    << std::endl;
+          this->get_pcout() << "WARNING: Filename convention concerning geometry boundary "
+                            "names changed. Please rename '" << compatible_result << "'"
+                            << " to '" << result << "'"
+                            << std::endl;
           return compatible_result;
         }
 
@@ -1743,11 +2094,8 @@ namespace aspect
 
               const bool load_both_files = std::abs(current_file_number - old_file_number) >= 1;
 
-              for (typename std::map<types::boundary_id,
-                   std_cxx11::shared_ptr<Utilities::AsciiDataLookup<dim-1> > >::iterator
-                   boundary_id = lookups.begin();
-                   boundary_id != lookups.end(); ++boundary_id)
-                update_data(boundary_id->first,load_both_files);
+              for (const auto &boundary_id : lookups)
+                update_data(boundary_id.first, load_both_files);
             }
 
           time_weight = time_steps_since_start
@@ -1833,17 +2181,18 @@ namespace aspect
         {
           Point<dim> internal_position = position;
 
-          if (dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()) != 0
-              || dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model()) != 0)
+          if (dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()) != nullptr
+              || dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model()) != nullptr
+              || dynamic_cast<const GeometryModel::Sphere<dim>*> (&this->get_geometry_model()) != nullptr)
             {
-              const std_cxx11::array<double,dim> spherical_position =
+              const std::array<double,dim> spherical_position =
                 Utilities::Coordinates::cartesian_to_spherical_coordinates(position);
 
               for (unsigned int i = 0; i < dim; i++)
                 internal_position[i] = spherical_position[i];
             }
 
-          const std_cxx11::array<unsigned int,dim-1> boundary_dimensions =
+          const std::array<unsigned int,dim-1> boundary_dimensions =
             get_boundary_dimensions(boundary_indicator);
 
           Point<dim-1> data_position;
@@ -1908,40 +2257,50 @@ namespace aspect
 
 
     template <int dim>
+    double
+    AsciiDataBoundary<dim>::get_maximum_component_value (const types::boundary_id boundary_indicator, const unsigned int component) const
+    {
+      return lookups.find(boundary_indicator)->second->get_maximum_component_value(component);
+    }
+
+
+    template <int dim>
     void
     AsciiDataBoundary<dim>::declare_parameters (ParameterHandler  &prm,
                                                 const std::string &default_directory,
-                                                const std::string &default_filename)
+                                                const std::string &default_filename,
+                                                const std::string &subsection_name)
     {
       Utilities::AsciiDataBase<dim>::declare_parameters(prm,
                                                         default_directory,
-                                                        default_filename);
+                                                        default_filename,
+                                                        subsection_name);
 
-      prm.enter_subsection ("Ascii data model");
+      prm.enter_subsection (subsection_name);
       {
         prm.declare_entry ("Data file time step", "1e6",
                            Patterns::Double (0),
-                           "Time step between following velocity files. "
-                           "Depending on the setting of the global 'Use years in output instead of seconds' flag "
+                           "Time step between following data files. "
+                           "Depending on the setting of the global `Use years in output instead of seconds' flag "
                            "in the input file, this number is either interpreted as seconds or as years. "
                            "The default is one million, i.e., either one million seconds or one million years.");
         prm.declare_entry ("First data file model time", "0",
                            Patterns::Double (0),
-                           "Time from which on the velocity file with number 'First velocity "
-                           "file number' is used as boundary condition. Previous to this "
-                           "time, a no-slip boundary condition is assumed. Depending on the setting "
-                           "of the global 'Use years in output instead of seconds' flag "
+                           "Time from which on the data file with number `First data "
+                           "file number' is used as boundary condition. Until this "
+                           "time, a boundary condition equal to zero everywhere is assumed. "
+                           "Depending on the setting of the global `Use years in output instead of seconds' flag "
                            "in the input file, this number is either interpreted as seconds or as years.");
         prm.declare_entry ("First data file number", "0",
                            Patterns::Integer (),
                            "Number of the first velocity file to be loaded when the model time "
-                           "is larger than 'First velocity file model time'.");
+                           "is larger than `First velocity file model time'.");
         prm.declare_entry ("Decreasing file order", "false",
                            Patterns::Bool (),
                            "In some cases the boundary files are not numbered in increasing "
-                           "but in decreasing order (e.g. 'Ma BP'). If this flag is set to "
-                           "'True' the plugin will first load the file with the number "
-                           "'First velocity file number' and decrease the file number during "
+                           "but in decreasing order (e.g. `Ma BP'). If this flag is set to "
+                           "`True' the plugin will first load the file with the number "
+                           "`First data file number' and decrease the file number during "
                            "the model run.");
       }
       prm.leave_subsection();
@@ -1950,15 +2309,17 @@ namespace aspect
 
     template <int dim>
     void
-    AsciiDataBoundary<dim>::parse_parameters (ParameterHandler &prm)
+    AsciiDataBoundary<dim>::parse_parameters (ParameterHandler &prm,
+                                              const std::string &subsection_name)
     {
-      Utilities::AsciiDataBase<dim>::parse_parameters(prm);
+      Utilities::AsciiDataBase<dim>::parse_parameters(prm,
+                                                      subsection_name);
 
-      prm.enter_subsection("Ascii data model");
+      prm.enter_subsection(subsection_name);
       {
         data_file_time_step             = prm.get_double ("Data file time step");
         first_data_file_model_time      = prm.get_double ("First data file model time");
-        first_data_file_number          = prm.get_double ("First data file number");
+        first_data_file_number          = prm.get_integer("First data file number");
         decreasing_file_order           = prm.get_bool   ("Decreasing file order");
 
         if (this->convert_output_to_years() == true)
@@ -1970,9 +2331,12 @@ namespace aspect
       prm.leave_subsection();
     }
 
+
+
     template <int dim>
     AsciiDataInitial<dim>::AsciiDataInitial ()
     {}
+
 
 
     template <int dim>
@@ -1980,30 +2344,30 @@ namespace aspect
     AsciiDataInitial<dim>::initialize (const unsigned int components)
     {
       AssertThrow ((dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()))
-                   || (dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model())) != 0
-                   || (dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model())) != 0,
+                   || (dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model())) != nullptr
+                   || (dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model())) != nullptr,
                    ExcMessage ("This ascii data plugin can only be used when using "
                                "a spherical shell, chunk or box geometry."));
 
-      lookup.reset(new Utilities::AsciiDataLookup<dim> (components,
-                                                        Utilities::AsciiDataBase<dim>::scale_factor));
+      lookup = std_cxx14::make_unique<Utilities::AsciiDataLookup<dim>> (components,
+                                                                        this->scale_factor);
 
-      const std::string filename = Utilities::AsciiDataBase<dim>::data_directory
-                                   + Utilities::AsciiDataBase<dim>::data_file_name;
+      const std::string filename = this->data_directory + this->data_file_name;
 
       this->get_pcout() << std::endl << "   Loading Ascii data initial file "
                         << filename << "." << std::endl << std::endl;
 
-      if (Utilities::fexists(filename))
-        lookup->load_file(filename,this->get_mpi_communicator());
-      else
-        AssertThrow(false,
-                    ExcMessage (std::string("Ascii data file <")
-                                +
-                                filename
-                                +
-                                "> not found!"));
+
+      AssertThrow(Utilities::fexists(filename),
+                  ExcMessage (std::string("Ascii data file <")
+                              +
+                              filename
+                              +
+                              "> not found!"));
+      lookup->load_file(filename, this->get_mpi_communicator());
     }
+
+
 
     template <int dim>
     double
@@ -2013,10 +2377,10 @@ namespace aspect
     {
       Point<dim> internal_position = position;
 
-      if (dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()) != 0
-          || (dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model())) != 0)
+      if (dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()) != nullptr
+          || (dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model())) != nullptr)
         {
-          const std_cxx11::array<double,dim> spherical_position =
+          const std::array<double,dim> spherical_position =
             Utilities::Coordinates::cartesian_to_spherical_coordinates(position);
 
           for (unsigned int i = 0; i < dim; i++)
@@ -2026,30 +2390,30 @@ namespace aspect
     }
 
 
+
     template <int dim>
     AsciiDataProfile<dim>::AsciiDataProfile ()
     {}
+
 
 
     template <int dim>
     void
     AsciiDataProfile<dim>::initialize (const MPI_Comm &communicator)
     {
-      lookup.reset(new Utilities::AsciiDataLookup<1> (Utilities::AsciiDataBase<dim>::scale_factor));
+      lookup = std_cxx14::make_unique<Utilities::AsciiDataLookup<1>> (this->scale_factor);
 
-      const std::string filename = Utilities::AsciiDataBase<dim>::data_directory
-                                   + Utilities::AsciiDataBase<dim>::data_file_name;
+      const std::string filename = this->data_directory + this->data_file_name;
 
-      if (Utilities::fexists(filename))
-        lookup->load_file(filename,communicator);
-      else
-        AssertThrow(false,
-                    ExcMessage (std::string("Ascii data file <")
-                                +
-                                filename
-                                +
-                                "> not found!"));
+      AssertThrow(Utilities::fexists(filename),
+                  ExcMessage (std::string("Ascii data file <")
+                              +
+                              filename
+                              +
+                              "> not found!"));
+      lookup->load_file(filename,communicator);
     }
+
 
 
     template <int dim>
@@ -2059,12 +2423,16 @@ namespace aspect
       return lookup->get_column_names();
     }
 
+
+
     template <int dim>
     unsigned int
     AsciiDataProfile<dim>::get_column_index_from_name(const std::string &column_name) const
     {
       return lookup->get_column_index_from_name(column_name);
     }
+
+
 
     template <int dim>
     unsigned int
@@ -2082,12 +2450,15 @@ namespace aspect
         }
     }
 
+
+
     template <int dim>
     std::string
     AsciiDataProfile<dim>::get_column_name_from_index(const unsigned int column_index) const
     {
       return lookup->get_column_name_from_index(column_index);
     }
+
 
 
     template <int dim>
@@ -2391,11 +2762,11 @@ namespace aspect
 
 
 
-    template<int dim>
+    template <int dim>
     double compute_spd_factor(const double eta,
                               const SymmetricTensor<2,dim> &strain_rate,
                               const SymmetricTensor<2,dim> &dviscosities_dstrain_rate,
-                              const double safety_factor)
+                              const double SPD_safety_factor)
     {
       // if the strain rate is zero, or the derivative is zero, then
       // the exact choice of alpha factor does not matter because the
@@ -2404,21 +2775,41 @@ namespace aspect
       if ((strain_rate.norm() == 0) || (dviscosities_dstrain_rate.norm() == 0))
         return 1;
 
-      const double norm_a_b = std::sqrt((strain_rate*strain_rate)*(dviscosities_dstrain_rate*dviscosities_dstrain_rate));
-      const double contract_a_b = (strain_rate*dviscosities_dstrain_rate);
-      const double one_minus_part = 1 - (contract_a_b / norm_a_b);
+      const double norm_a_b = std::sqrt((strain_rate*strain_rate)*(dviscosities_dstrain_rate*dviscosities_dstrain_rate));;//std::sqrt((deviator(strain_rate)*deviator(strain_rate))*(dviscosities_dstrain_rate*dviscosities_dstrain_rate));
+      const double contract_b_a = (dviscosities_dstrain_rate*strain_rate);
+      const double one_minus_part = 1 - (contract_b_a / norm_a_b);
       const double denom = one_minus_part * one_minus_part * norm_a_b;
 
-      if (denom == 0)
+      // the case denom == 0 (smallest eigenvalue is zero), should return one,
+      // and it does here, because C_safety * 2.0 * eta is always larger then zero.
+      if (denom <= SPD_safety_factor * 2.0 * eta)
         return 1.0;
       else
-        {
-          const double alpha = (2.0*eta)/denom;
-          if (alpha >= 1.0)
-            return 1.0;
-          else
-            return std::max(0.0,safety_factor*alpha);
-        }
+        return std::max(0.0, SPD_safety_factor * ((2.0 * eta) / denom));
+    }
+
+
+
+    template <int dim>
+    Point<dim> convert_array_to_point(const std::array<double,dim> &array)
+    {
+      Point<dim> point;
+      for (unsigned int i = 0; i < dim; i++)
+        point[i] = array[i];
+
+      return point;
+    }
+
+
+
+    template <int dim>
+    std::array<double,dim> convert_point_to_array(const Point<dim> &point)
+    {
+      std::array<double,dim> array;
+      for (unsigned int i = 0; i < dim; i++)
+        array[i] = point[i];
+
+      return array;
     }
 
 
@@ -2502,13 +2893,131 @@ namespace aspect
 
 
 
+    template <int dim>
+    SymmetricTensor<2,dim>
+    nth_basis_for_symmetric_tensors (const unsigned int k)
+    {
+      Assert((k < SymmetricTensor<2,dim>::n_independent_components),
+             ExcMessage("The component is larger then the amount of independent components in the matrix.") );
+
+      const TableIndices<2> indices_ij = SymmetricTensor<2,dim>::unrolled_to_component_indices (k);
+
+      Tensor<2,dim> result;
+      result[indices_ij] = 1;
+
+      return symmetrize(result);
+    }
+
+    template <int dim>
+    NaturalCoordinate<dim>::NaturalCoordinate(Point<dim> &position,
+                                              const GeometryModel::Interface<dim> &geometry_model)
+    {
+      coordinate_system = geometry_model.natural_coordinate_system();
+      coordinates = geometry_model.cartesian_to_natural_coordinates(position);
+    }
+
+    template <int dim>
+    NaturalCoordinate<dim>::NaturalCoordinate(const std::array<double, dim> &coord,
+                                              const Utilities::Coordinates::CoordinateSystem &coord_system) :
+      coordinate_system (coord_system), coordinates (coord)
+    {}
+
+
+
+    template <int dim>
+    std::array<double,dim> &NaturalCoordinate<dim>::get_coordinates()
+    {
+      return coordinates;
+    }
+
+    template <>
+    std::array<double,1> NaturalCoordinate<2>::get_surface_coordinates() const
+    {
+      std::array<double,1> coordinate;
+
+      switch (coordinate_system)
+        {
+          case Coordinates::CoordinateSystem::cartesian:
+            coordinate[0] = coordinates[0];
+            break;
+
+          case Coordinates::CoordinateSystem::spherical:
+            coordinate[0] = coordinates[1];
+            break;
+
+          case Coordinates::CoordinateSystem::ellipsoidal:
+            coordinate[0] = coordinates[1];
+            break;
+
+          default:
+            coordinate[0] = 0;
+            Assert (false, ExcNotImplemented());
+            break;
+        }
+
+      return coordinate;
+    }
+
+    template <>
+    std::array<double,2> NaturalCoordinate<3>::get_surface_coordinates() const
+    {
+      std::array<double,2> coordinate;
+
+      switch (coordinate_system)
+        {
+          case Coordinates::CoordinateSystem::cartesian:
+            coordinate[0] = coordinates[0];
+            coordinate[1] = coordinates[1];
+            break;
+
+          case Coordinates::CoordinateSystem::spherical:
+            coordinate[0] = coordinates[1];
+            coordinate[1] = coordinates[2];
+            break;
+
+          case Coordinates::CoordinateSystem::ellipsoidal:
+            coordinate[0] = coordinates[1];
+            coordinate[1] = coordinates[2];
+            break;
+
+          default:
+            Assert (false, ExcNotImplemented());
+        }
+
+      return coordinate;
+    }
+
+    template <int dim>
+    double NaturalCoordinate<dim>::get_depth_coordinate() const
+    {
+      switch (coordinate_system)
+        {
+          case Coordinates::CoordinateSystem::cartesian:
+            return coordinates[dim-1];
+
+          case Coordinates::CoordinateSystem::spherical:
+            return coordinates[0];
+
+          case Coordinates::CoordinateSystem::ellipsoidal:
+            return coordinates[0];
+
+          default:
+            Assert (false, ExcNotImplemented());
+        }
+
+      return 0;
+    }
+
 
 // Explicit instantiations
 
 #define INSTANTIATE(dim) \
   template \
   IndexSet extract_locally_active_dofs_with_component(const DoFHandler<dim> &, \
-                                                      const ComponentMask &);
+                                                      const ComponentMask &); \
+  template \
+  std::vector<std::string> \
+  expand_dimensional_variable_names<dim> (const std::vector<std::string> &var_declarations);
 
     ASPECT_INSTANTIATE(INSTANTIATE)
 
@@ -2527,15 +3036,20 @@ namespace aspect
     template class AsciiDataProfile<2>;
     template class AsciiDataProfile<3>;
 
-    template Point<2> Coordinates::spherical_to_cartesian_coordinates<2>(const std_cxx11::array<double,2> &scoord);
-    template Point<3> Coordinates::spherical_to_cartesian_coordinates<3>(const std_cxx11::array<double,3> &scoord);
+    template Point<2> Coordinates::spherical_to_cartesian_coordinates<2>(const std::array<double,2> &scoord);
+    template Point<3> Coordinates::spherical_to_cartesian_coordinates<3>(const std::array<double,3> &scoord);
 
-    template std_cxx11::array<double,2> Coordinates::cartesian_to_spherical_coordinates<2>(const Point<2> &position);
-    template std_cxx11::array<double,3> Coordinates::cartesian_to_spherical_coordinates<3>(const Point<3> &position);
+    template std::array<double,2> Coordinates::cartesian_to_spherical_coordinates<2>(const Point<2> &position);
+    template std::array<double,3> Coordinates::cartesian_to_spherical_coordinates<3>(const Point<3> &position);
+
+    template Tensor<1,2> Coordinates::spherical_to_cartesian_vector<2>(const Tensor<1,2> &spherical_vector,
+                                                                       const Point<2> &position);
+    template Tensor<1,3> Coordinates::spherical_to_cartesian_vector<3>(const Tensor<1,3> &spherical_vector,
+                                                                       const Point<3> &position);
 
 
-    template std_cxx11::array<double,2> Coordinates::WGS84_coordinates<2>(const Point<2> &position);
-    template std_cxx11::array<double,3> Coordinates::WGS84_coordinates<3>(const Point<3> &position);
+    template std::array<double,2> Coordinates::WGS84_coordinates<2>(const Point<2> &position);
+    template std::array<double,3> Coordinates::WGS84_coordinates<3>(const Point<3> &position);
 
     template bool polygon_contains_point<2>(const std::vector<Point<2> > &pointList, const dealii::Point<2> &point);
     template bool polygon_contains_point<3>(const std::vector<Point<2> > &pointList, const dealii::Point<2> &point);
@@ -2544,8 +3058,8 @@ namespace aspect
     template double signed_distance_to_polygon<3>(const std::vector<Point<2> > &pointList, const dealii::Point<2> &point);
 
 
-    template std_cxx11::array<Tensor<1,2>,1> orthogonal_vectors (const Tensor<1,2> &v);
-    template std_cxx11::array<Tensor<1,3>,2> orthogonal_vectors (const Tensor<1,3> &v);
+    template std::array<Tensor<1,2>,1> orthogonal_vectors (const Tensor<1,2> &v);
+    template std::array<Tensor<1,3>,2> orthogonal_vectors (const Tensor<1,3> &v);
 
     template double
     derivative_of_weighted_p_norm_average (const double averaged_parameter,
@@ -2578,5 +3092,22 @@ namespace aspect
                                        const SymmetricTensor<2,3> &dviscosities_dstrain_rate,
                                        const double safety_factor);
 
+    template Point<2> convert_array_to_point<2>(const std::array<double,2> &array);
+    template Point<3> convert_array_to_point<3>(const std::array<double,3> &array);
+
+    template std::array<double,2> convert_point_to_array<2>(const Point<2> &point);
+    template std::array<double,3> convert_point_to_array<3>(const Point<3> &point);
+
+    template SymmetricTensor<2,2> nth_basis_for_symmetric_tensors (const unsigned int k);
+    template SymmetricTensor<2,3> nth_basis_for_symmetric_tensors (const unsigned int k);
+
+    template class NaturalCoordinate<2>;
+    template class NaturalCoordinate<3>;
+
+
+    template Table<2,double> parse_input_table(const std::string &input_string,
+                                               const unsigned int n_rows,
+                                               const unsigned int n_columns,
+                                               const std::string &property_name);
   }
 }

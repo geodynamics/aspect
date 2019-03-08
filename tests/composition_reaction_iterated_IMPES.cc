@@ -1,4 +1,5 @@
 #include <aspect/material_model/composition_reaction.h>
+#include <aspect/geometry_model/interface.h>
 
 /**
  * This material model assumes three compositional fields

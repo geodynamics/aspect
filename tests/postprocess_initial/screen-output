@@ -7,7 +7,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving C_1 system ... 0 iterations.
    Solving C_2 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 22+0 iterations.
+   Solving Stokes system... 17+0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-postprocess_initial/solution/solution-00000
@@ -22,7 +22,7 @@ Number of degrees of freedom: 1,703 (646+88+323+323+323)
    Solving C_1 system ... 0 iterations.
    Solving C_2 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 22+0 iterations.
+   Solving Stokes system... 16+0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-postprocess_initial/solution/solution-00001
@@ -37,7 +37,7 @@ Number of degrees of freedom: 2,694 (1,022+139+511+511+511)
    Solving C_1 system ... 0 iterations.
    Solving C_2 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 22+0 iterations.
+   Solving Stokes system... 16+0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-postprocess_initial/solution/solution-00002
@@ -52,7 +52,7 @@ Number of degrees of freedom: 4,080 (1,550+205+775+775+775)
    Solving C_1 system ... 0 iterations.
    Solving C_2 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 22+0 iterations.
+   Solving Stokes system... 16+0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-postprocess_initial/solution/solution-00003

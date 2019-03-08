@@ -12,7 +12,7 @@ set Use years in output instead of seconds = false
 set Output directory                       = output-radiogenic_heating
 
 subsection Heating model
-  set Model name = constant heating
+  set List of model names = constant heating
 
   subsection Constant heating
     set Radiogenic heating rate = 1
@@ -37,36 +37,30 @@ subsection Gravity model
 end
 
 
-subsection Model settings
-
-  # As we only want to look at the effects of radiogenic, we disable all
-  # the other heating terms. 
-
-  # We only fix the temperature at the upper boundary, the other boundaries
-  # are isolating. To guarantuee a steady downward flow, we fix the velocity
-  # at the top and bottom, and set it to free slip on the sides. 
-  set Fixed temperature boundary indicators   = top
-  set Prescribed velocity boundary indicators = bottom:function, top:function
-  set Tangential velocity boundary indicators = left, right
-end
-
-
 ############### Boundary conditions
-# We set the top temperature to T1=1000K. 
+# We only fix the temperature at the upper boundary, the other boundaries
+# are isolating. 
 subsection Boundary temperature model
-  set Model name = box
+  set Fixed temperature boundary indicators   = top
+  set List of model names = box
+
   subsection Box
     set Top temperature = 1000
   end
 end
 
-# We prescribe a constant downward flow.
+# To guarantuee a steady downward flow, we fix the velocity
+# at the top and bottom, and set it to free slip on the sides. 
 subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = bottom:function, top:function
+  set Tangential velocity boundary indicators = left, right
+
   subsection Function
     set Function expression = 0;-1
     set Variable names      = x,y
   end
 end
+
 
 subsection Initial temperature model
   set Model name = function

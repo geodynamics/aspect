@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
@@ -27,25 +27,18 @@
 #include <aspect/parameters.h>
 
 #include <deal.II/base/parameter_handler.h>
-#include <deal.II/lac/constraint_matrix.h>
 
 #include <boost/signals2.hpp>
 
 namespace aspect
 {
-  namespace internal
+  namespace Assemblers
   {
-    namespace Assembly
-    {
-      namespace Assemblers
-      {
-        template <int dim>
-        class AssemblerBase;
-      }
+    template <int dim>
+    class Manager;
 
-      template <int dim>
-      struct AssemblerLists;
-    }
+    template <int dim>
+    class Interface;
   }
 
   /**
@@ -59,8 +52,7 @@ namespace aspect
    * not actually just pointers to functions, but std::function objects
    * that have a certain signature. Consequently, they can have much more
    * complicated types than just function pointers, such as objects with
-   * an <code>operator()</code> or function calls treated with things
-   * like std::bind.
+   * an <code>operator()</code> or lambda functions.
    *
    * The documentation of each of the signals below indicates when
    * exactly it is called.
@@ -263,8 +255,7 @@ namespace aspect
      * allows modification of the assembly objects active in this simulation.
      */
     boost::signals2::signal<void (const SimulatorAccess<dim> &,
-                                  aspect::internal::Assembly::AssemblerLists<dim> &,
-                                  std::vector<std_cxx11::shared_ptr<internal::Assembly::Assemblers::AssemblerBase<dim> > > &)>
+                                  aspect::Assemblers::Manager<dim> &)>
     set_assemblers;
   };
 
@@ -282,8 +273,8 @@ namespace aspect
        * of functions that the Simulator object will later go through when
        * letting plugins connect their slots to signals.
        */
-      void register_connector_function_2d (const std_cxx11::function<void (aspect::SimulatorSignals<2> &)> &connector);
-      void register_connector_function_3d (const std_cxx11::function<void (aspect::SimulatorSignals<3> &)> &connector);
+      void register_connector_function_2d (const std::function<void (aspect::SimulatorSignals<2> &)> &connector);
+      void register_connector_function_3d (const std::function<void (aspect::SimulatorSignals<3> &)> &connector);
 
       /**
        * A function that is called by the Simulator object and that goes

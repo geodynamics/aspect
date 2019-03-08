@@ -1,5 +1,6 @@
 #include <aspect/material_model/simple.h>
 #include <aspect/boundary_velocity/interface.h>
+#include <aspect/postprocess/interface.h>
 #include <aspect/simulator_access.h>
 #include <aspect/global.h>
 
@@ -338,14 +339,14 @@ namespace aspect
     std::pair<std::string,std::string>
     InclusionPostprocessor<dim>::execute (TableHandler &statistics)
     {
-      std_cxx1x::shared_ptr<Function<dim> > ref_func;
-      if (dynamic_cast<const InclusionMaterial<dim> *>(&this->get_material_model()) != NULL)
+      std::shared_ptr<Function<dim> > ref_func;
+      if (dynamic_cast<const InclusionMaterial<dim> *>(&this->get_material_model()) != nullptr)
         {
           const InclusionMaterial<dim> *
           material_model
             = dynamic_cast<const InclusionMaterial<dim> *>(&this->get_material_model());
 
-          ref_func.reset (new AnalyticSolutions::FunctionInclusion<dim>(material_model->get_eta_B()));
+          ref_func = std::make_shared<AnalyticSolutions::FunctionInclusion<dim>>(material_model->get_eta_B());
         }
       else
         {

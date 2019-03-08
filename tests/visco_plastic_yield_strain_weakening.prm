@@ -1,11 +1,10 @@
 # Global parameters
 set Dimension                              = 2
 set Start time                             = 0
-set End time                               = 0
+set End time                               = 1
 set Use years in output instead of seconds = true
-set Nonlinear solver scheme                = iterated Stokes
+set Nonlinear solver scheme                = single Advection, iterated Stokes
 set Max nonlinear iterations               = 1
-set Number of cheap Stokes solver steps    = 0
 set Output directory                       = visco_plastic_yield_strain_weakening
 set Timing output frequency                = 1
 
@@ -29,8 +28,15 @@ end
 
 
 # Boundary classifications (fixed T boundaries, prescribed velocity) 
-subsection Model settings
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary temperature model
   set Fixed temperature boundary indicators   = bottom, top, left, right
+end
+
+subsection Boundary velocity model
   set Prescribed velocity boundary indicators = bottom y: function, top y: function, left x: function, right x: function
 end
 
@@ -45,7 +51,7 @@ end
 
 # Temperature boundary and initial conditions
 subsection Boundary temperature model
-  set Model name = box
+  set List of model names = box
   subsection Box
     set Bottom temperature = 273
     set Left temperature   = 273
@@ -63,21 +69,21 @@ end
 # Compositional fields used to track finite strain invariant
 subsection Compositional fields
   set Number of fields = 1
-  set Names of fields = eii
+  set Names of fields = total_strain
 end
 
-# All compositional fields have an initial value of 0
+# We prescribe some initial strain at the center of the domain
 subsection Initial composition model
   set Model name = function
   subsection Function
     set Variable names      = x,y
-    set Function expression = 0;
+    set Function expression = if(x>=45e3&x<=55e3&y>=45.3e3&y<=55.e3,0.2,0);
   end
 end
 
 # Boundary composition specification
 subsection Boundary composition model
-  set Model name = initial composition
+  set List of model names = initial composition
 end
 
 # Material model (values for background material)
@@ -94,8 +100,8 @@ subsection Material model
     set Angles of internal friction = 0.
     set Cohesions = 1.e6
     set Use strain weakening = true
-    set Start strain weakening intervals = 0.
-    set End strain weakening intervals = 1.0
+    set Start plasticity strain weakening intervals = 0.
+    set End plasticity strain weakening intervals = 1.0
     set Cohesion strain weakening factors = 0.5
     set Friction strain weakening factors = 0.5
   end
@@ -110,6 +116,17 @@ subsection Gravity model
 end
 
 # Post processing
+# named additional outputs includes the weakened cohesions and friction angles
 subsection Postprocess
-  set List of postprocessors = velocity statistics, mass flux statistics
+  set List of postprocessors = velocity statistics, mass flux statistics, visualization
+  subsection Visualization
+    set List of output variables = viscosity, strain rate, named additional outputs
+    set Output format            = gnuplot
+  end
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Number of cheap Stokes solver steps = 0
+  end
 end

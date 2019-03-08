@@ -5,7 +5,7 @@ Number of degrees of freedom: 948 (578+81+289)
 *** Timestep 0:  t=0 seconds
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 17+0 iterations.
+   Solving Stokes system... 13+0 iterations.
 
    Postprocessing:
      RMS, max velocity:       6.6e-05 m/s, 0.000142 m/s
@@ -13,14 +13,14 @@ Number of degrees of freedom: 948 (578+81+289)
      Temperature min/avg/max: 0 K, 0.8632 K, 2 K
 
 *** Timestep 1:  t=400 seconds
-   Solving temperature system... 11 iterations.
+   Solving temperature system... 12 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 16+0 iterations.
+   Solving Stokes system... 12+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:       6.67e-05 m/s, 0.000141 m/s
-     Pressure min/avg/max:    -0.007651 Pa, 0.4999 Pa, 0.9937 Pa
-     Temperature min/avg/max: 0 K, 0.8639 K, 2 K
+     RMS, max velocity:       6.65e-05 m/s, 0.000141 m/s
+     Pressure min/avg/max:    -0.00737 Pa, 0.4999 Pa, 0.994 Pa
+     Temperature min/avg/max: 0 K, 0.8638 K, 2 K
 
 Termination requested by criterion: end time
 

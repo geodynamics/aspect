@@ -27,18 +27,20 @@ end
 
 
 subsection Boundary temperature model
-  set Model name = box
+  set List of model names = box
 end
 
 
-subsection Model settings
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary temperature model
   set Fixed temperature boundary indicators   = top,bottom
+end
 
-  set Zero velocity boundary indicators       =
+subsection Boundary velocity model
   set Prescribed velocity boundary indicators = bottom:ascii boundary member,left: ascii boundary member,right: ascii boundary member,top: ascii boundary member
-
-  set Tangential velocity boundary indicators = 
-
 end
 
 

@@ -7,20 +7,21 @@ Number of degrees of freedom: 22,216 (8,442+1,111+4,221+4,221+4,221)
    Skipping C_1 composition solve because RHS is zero.
    Solving C_2 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 25+0 iterations.
-      Relative Stokes residual after nonlinear iteration 1: 1
+   Solving Stokes system... 24+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 16+0 iterations.
-      Relative Stokes residual after nonlinear iteration 2: 0.00375062
+   Solving Stokes system... 17+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.00375062
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 9+0 iterations.
-      Relative Stokes residual after nonlinear iteration 3: 7.22703e-05
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 7.22761e-05
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 4+0 iterations.
-      Relative Stokes residual after nonlinear iteration 4: 9.38643e-07
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 9.38333e-07
+
 
    Postprocessing:
      Writing graphical output: output-zero_RHS/solution/solution-00000
@@ -32,7 +33,8 @@ Number of degrees of freedom: 22,216 (8,442+1,111+4,221+4,221+4,221)
    Solving C_2 system ... 18 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative Stokes residual after nonlinear iteration 1: 9.45741e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 6.70752e-08
+
 
    Postprocessing:
      Writing graphical output: output-zero_RHS/solution/solution-00001
@@ -44,7 +46,8 @@ Number of degrees of freedom: 22,216 (8,442+1,111+4,221+4,221+4,221)
    Solving C_2 system ... 20 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative Stokes residual after nonlinear iteration 1: 9.45741e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 6.70752e-08
+
 
    Postprocessing:
      Writing graphical output: output-zero_RHS/solution/solution-00002
@@ -56,7 +59,8 @@ Number of degrees of freedom: 22,216 (8,442+1,111+4,221+4,221+4,221)
    Solving C_2 system ... 19 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative Stokes residual after nonlinear iteration 1: 9.45741e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 6.70752e-08
+
 
    Postprocessing:
      Writing graphical output: output-zero_RHS/solution/solution-00003
@@ -68,7 +72,8 @@ Number of degrees of freedom: 22,216 (8,442+1,111+4,221+4,221+4,221)
    Solving C_2 system ... 18 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative Stokes residual after nonlinear iteration 1: 9.45741e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 6.70752e-08
+
 
    Postprocessing:
      Writing graphical output: output-zero_RHS/solution/solution-00004
@@ -80,7 +85,8 @@ Number of degrees of freedom: 22,216 (8,442+1,111+4,221+4,221+4,221)
    Solving C_2 system ... 10 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative Stokes residual after nonlinear iteration 1: 9.45741e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 6.70752e-08
+
 
    Postprocessing:
      Writing graphical output: output-zero_RHS/solution/solution-00005

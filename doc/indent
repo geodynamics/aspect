@@ -16,7 +16,7 @@
 ##  GNU General Public License for more details.
 ##
 ##  You should have received a copy of the GNU General Public License
-##  along with ASPECT; see the file doc/COPYING.  If not see
+##  along with ASPECT; see the file LICENSE.  If not see
 ##  <http://www.gnu.org/licenses/>.
 ##
 ## ---------------------------------------------------------------------
@@ -46,4 +46,19 @@ fi
 # with up to 10 in parallel
 echo "--- Indenting all ASPECT header and source files"
 
-find tests include source benchmarks cookbooks \( -name '*.cc' -o -name '*.h' \) -print | xargs -n 50 -P 10 astyle --options=doc/astyle.rc
+find tests include source benchmarks cookbooks unit_tests \( -name '*.cc' -o -name '*.h' \) -print | xargs -n 50 -P 10 astyle --options=doc/astyle.rc
+
+# remove execute permission on source files:
+find tests include source benchmarks cookbooks unit_tests \( -name '*.cc' -o -name '*.h' -o -name '*.prm' \) -print | xargs -n 50 -P 10 chmod -x
+
+# convert dos formatted files to unix file format by stripping out 
+# carriage returns (15=0x0D):
+dos_to_unix()
+{
+    f=$1
+    tr -d '\015' <$f >$f.tmp
+    diff -q $f $f.tmp >/dev/null || mv $f.tmp $f
+    rm -f $f.tmp
+}
+export -f dos_to_unix
+find tests include source unit_tests \( -name '*.cc' -o -name '*.h' -o -name '*.prm' \) -print | xargs -n 1 -P 10 -I {} bash -c 'dos_to_unix "$@"' _ {} 

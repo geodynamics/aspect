@@ -20,8 +20,6 @@ set Output directory                       = output-depth-dependent-box-function
 # be normalized. Here, we choose a zero average pressure
 # at the surface of the domain (for the current geometry, the
 # surface is defined as the top boundary).
-set Linear solver tolerance                = 1e-7
-set Temperature solver tolerance           = 1e-10
 
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
@@ -74,7 +72,7 @@ end
 # in the next section, the actual temperature prescribed here
 # at the left and right does not matter.)
 subsection Boundary temperature model
-  set Model name = box
+  set List of model names = box
 
   subsection Box
     set Bottom temperature = 2773
@@ -89,23 +87,16 @@ end
 # which boundaries actually carry a prescribed boundary temperature, whereas
 # all other parts of the boundary are insulated (i.e., no heat flux through
 # these boundaries; this is also often used to specify symmetry boundaries).
-subsection Model settings
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary temperature model
   set Fixed temperature boundary indicators   = bottom, top
+end
 
-  # The next parameters then describe on which parts of the
-  # boundary we prescribe a zero or nonzero velocity and
-  # on which parts the flow is allowed to be tangential.
-  # Here, all four sides of the box allow tangential
-  # unrestricted flow but with a zero normal component:
-  set Zero velocity boundary indicators       =
-  set Prescribed velocity boundary indicators =
+subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, right, bottom, top
-
-  # The final part of this section describes whether we
-  # want to include adiabatic heating (from a small
-  # compressibility of the medium) or from shear friction,
-  # as well as the rate of internal heating. We do not
-  # want to use any of these options here:
 end
 
 
@@ -172,3 +163,10 @@ subsection Postprocess
 
 end
 
+subsection Solver parameters
+  set Temperature solver tolerance = 1e-10
+
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-7
+  end
+end

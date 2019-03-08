@@ -9,7 +9,6 @@ Number of degrees of freedom: 948 (578+81+289)
 
    Postprocessing:
      Heating rate (average/total):  1 W/kg, 1 W
-     Total viscous dissipation:     1 W
 
 Termination requested by criterion: end time
 

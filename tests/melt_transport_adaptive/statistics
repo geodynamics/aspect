@@ -18,12 +18,16 @@
 # 18: Maximal pressure (Pa)
 # 19: Maximum velocity magnitude on boundary with indicator 0 ("left") (m/s)
 # 20: Minimum velocity magnitude on boundary with indicator 0 ("left") (m/s)
-# 21: Maximum velocity magnitude on boundary with indicator 1 ("right") (m/s)
-# 22: Minimum velocity magnitude on boundary with indicator 1 ("right") (m/s)
-# 23: Maximum velocity magnitude on boundary with indicator 2 ("bottom") (m/s)
-# 24: Minimum velocity magnitude on boundary with indicator 2 ("bottom") (m/s)
-# 25: Maximum velocity magnitude on boundary with indicator 3 ("top") (m/s)
-# 26: Minimum velocity magnitude on boundary with indicator 3 ("top") (m/s)
-0 0.000000000000e+00 0.000000000000e+00 256 2467 1089 1089 2 0 0 23 122 216 1.32072275e+00 1.96034039e+00 -3.98441320e-04 1.00035977e+00 2.00044962e+00 1.96746305e+00 1.41427468e+00 1.96746305e+00 1.41427468e+00 1.68615456e+00 1.36795198e+00 1.98103899e+00 1.71833958e+00 
-0 0.000000000000e+00 0.000000000000e+00 307 3138 1387 1387 2 0 0 23 143 289 1.32072374e+00 1.96034045e+00 -4.05692287e-04 1.00022516e+00 2.00052001e+00 1.96746305e+00 1.41427468e+00 1.96746305e+00 1.41427468e+00 1.68615456e+00 1.36795198e+00 1.98103899e+00 1.71833958e+00 
-0 0.000000000000e+00 0.000000000000e+00 448 4413 1953 1953 2 0 0 23 135 360 1.32073355e+00 1.96034043e+00 -3.05864810e-04 1.00039460e+00 2.00044718e+00 1.96746305e+00 1.41427468e+00 1.96746305e+00 1.41427468e+00 1.68615456e+00 1.36795198e+00 1.98103899e+00 1.71833958e+00 
+# 21: RMS velocity on boundary with indicator 0 ("left") (m/s)
+# 22: Maximum velocity magnitude on boundary with indicator 1 ("right") (m/s)
+# 23: Minimum velocity magnitude on boundary with indicator 1 ("right") (m/s)
+# 24: RMS velocity on boundary with indicator 1 ("right") (m/s)
+# 25: Maximum velocity magnitude on boundary with indicator 2 ("bottom") (m/s)
+# 26: Minimum velocity magnitude on boundary with indicator 2 ("bottom") (m/s)
+# 27: RMS velocity on boundary with indicator 2 ("bottom") (m/s)
+# 28: Maximum velocity magnitude on boundary with indicator 3 ("top") (m/s)
+# 29: Minimum velocity magnitude on boundary with indicator 3 ("top") (m/s)
+# 30: RMS velocity on boundary with indicator 3 ("top") (m/s)
+0 0.000000000000e+00 0.000000000000e+00 256 2467 1089 1089 2 0 0 21 103 261 1.32072285e+00 1.96034041e+00 -4.02680196e-04 1.00043714e+00 2.00045045e+00 1.96746305e+00 1.41427468e+00 1.55274123e+00 1.96746305e+00 1.41427468e+00 1.55274123e+00 1.68615456e+00 1.36795198e+00 1.48473146e+00 1.98103899e+00 1.71833958e+00 1.81268469e+00 
+0 0.000000000000e+00 0.000000000000e+00 325 3300 1459 1459 2 0 0 21 107 372 1.32073716e+00 1.96034045e+00 -4.36562387e-04 1.00036521e+00 2.00055524e+00 1.96746305e+00 1.41427468e+00 1.55274121e+00 1.96746305e+00 1.41427468e+00 1.55274123e+00 1.68615456e+00 1.36795198e+00 1.48473146e+00 1.98103899e+00 1.71833958e+00 1.81268469e+00 
+0 0.000000000000e+00 0.000000000000e+00 463 4571 2023 2023 2 0 0 21 107 449 1.32072729e+00 1.96034029e+00  9.71371136e-05 1.00012622e+00 2.00037960e+00 1.96746305e+00 1.41427468e+00 1.55274114e+00 1.96746305e+00 1.41427468e+00 1.55274123e+00 1.68615456e+00 1.36795198e+00 1.48473146e+00 1.98103899e+00 1.71833958e+00 1.81268469e+00 

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
@@ -69,7 +69,7 @@ namespace aspect
       return 1+(1/exp(position.distance(temporary2)) - 1/exp(position.distance(temporary1)));
     }
 
-    template<int dim>
+    template <int dim>
     double
     MandelBox<dim>::
     initial_temperature (const Point<dim> &position) const
@@ -104,7 +104,7 @@ namespace aspect
 
 
 
-    template<int dim>
+    template <int dim>
     double
     InclusionShapeBox<dim>::
     initial_temperature (const Point<dim> &position) const

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,12 +14,13 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
 
 #include <aspect/postprocess/visualization/maximum_horizontal_compressive_stress.h>
+#include <aspect/gravity_model/interface.h>
 #include <aspect/utilities.h>
 
 
@@ -77,7 +78,7 @@ namespace aspect
             // then find a set of (dim-1) horizontal, unit-length, mutually orthogonal vectors
             const Tensor<1,dim> gravity = this->get_gravity_model().gravity_vector (in.position[q]);
             const Tensor<1,dim> vertical_direction = gravity/gravity.norm();
-            std_cxx11::array<Tensor<1,dim>,dim-1 > orthogonal_directions
+            std::array<Tensor<1,dim>,dim-1 > orthogonal_directions
               = Utilities::orthogonal_vectors(vertical_direction);
             for (unsigned int i=0; i<orthogonal_directions.size(); ++i)
               orthogonal_directions[i] /= orthogonal_directions[i].norm();
@@ -199,7 +200,7 @@ namespace aspect
       UpdateFlags
       MaximumHorizontalCompressiveStress<dim>::get_needed_update_flags () const
       {
-        return update_gradients | update_values | update_q_points;
+        return update_gradients | update_values | update_quadrature_points;
       }
 
     }
@@ -285,7 +286,7 @@ namespace aspect
                                                   "a given location simply because the hydrostatic pressure "
                                                   "is the largest component of the overall stress. On the other "
                                                   "hand, the hydrostatic pressure does not determine any "
-                                                  "principle direction because it is an isotropic, anti-compressive "
+                                                  "principal direction because it is an isotropic, anti-compressive "
                                                   "force. As a consequence, there are often points in simulations "
                                                   "(e.g., at the center of convection rolls) where the stress has "
                                                   "no dominant horizontal direction, and the algorithm above will "

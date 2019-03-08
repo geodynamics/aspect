@@ -3,6 +3,7 @@
 
 #include <aspect/material_model/simple.h>
 #include <aspect/boundary_velocity/interface.h>
+#include <aspect/postprocess/interface.h>
 #include <aspect/simulator_access.h>
 #include <aspect/global.h>
 
@@ -53,7 +54,7 @@ namespace aspect
       {
         const double PI = numbers::PI;
         double Z, u1, u2, u3, u4, u5, u6, ZA, ZB;
-        double sum1, sum2, sum3, sum4, sum5, sum6, mag, x, z, xc;
+        double sum1, sum2, sum3, sum4, sum5, sum6, x, z, xc;
         double _C1A, _C2A, _C3A, _C4A, _C1B, _C2B, _C3B, _C4B, _C1, _C2, _C3, _C4;
         int n, nx;
 
@@ -2848,10 +2849,7 @@ namespace aspect
         u4 *= 2 * n * PI * sin(n * PI * z); /* zx stress */
         sum4 += u4;
 
-
-        mag = sqrt(sum1 * sum1 + sum2 * sum2);
-        /*printf("%0.7f %0.7f %0.7f %0.7f %0.7f %0.7f %0.7f %0.7f %0.7f\n",x,z,sum1,sum2,sum3,sum4,sum5,sum6,mag);*/
-
+        /*printf("%0.7f %0.7f %0.7f %0.7f %0.7f %0.7f %0.7f %0.7f\n",x,z,sum1,sum2,sum3,sum4,sum5,sum6);*/
 
         /* Output */
         if (vel != NULL)
@@ -2893,9 +2891,9 @@ namespace aspect
 
 
       /**
-      * The exact solution for the SolCx benchmark, given the value
-      * of the jump in viscosity $\eta_B$.
-      */
+       * The exact solution for the SolCx benchmark, given the value of the
+       * jump in viscosity $\eta_B$.
+       */
       template<int dim>
       class FunctionSolCx : public Function<dim>
       {
@@ -2904,7 +2902,7 @@ namespace aspect
                         const double background_density,
                         const unsigned int n_compositional_fields)
             :
-            Function<dim>(),
+            Function<dim>(dim+2+n_compositional_fields),
             eta_B_(eta_B),
             background_density(background_density),
             n_compositional_fields(n_compositional_fields) {}
@@ -2940,20 +2938,19 @@ namespace aspect
 
 
     /**
-    * A material model that describes the <i>SolCx</i> benchmark of the
-    * paper cited in the documentation of the DuretzEtAl namespace.
-    *
-    * @note The SolCx benchmark only talks about the flow field, not about
-    * a temperature field. All quantities related to the temperature are
-    * therefore set to zero in the implementation of this class.
-    *
-    * @note The analytic solution of this benchmark is implemented in the
-    * "SolCx error" postprocessor in
-    * aspect::Postprocessor::DuretzEtAl::SolCx class and can be used to
-    * assess the accuracy of the computed solution.
-    *
-    * @ingroup MaterialModels
-    */
+     * A material model that describes the <i>SolCx</i> benchmark of the paper
+     * cited in the documentation of the DuretzEtAl namespace.
+     *
+     * @note The SolCx benchmark only talks about the flow field, not about a
+     * temperature field. All quantities related to the temperature are
+     * therefore set to zero in the implementation of this class.
+     *
+     * @note The analytic solution of this benchmark is implemented in the
+     * "SolCx error" postprocessor in aspect::Postprocessor::DuretzEtAl::SolCx
+     * class and can be used to assess the accuracy of the computed solution.
+     *
+     * @ingroup MaterialModels
+     */
     template <int dim>
     class SolCxMaterial : public MaterialModel::Interface<dim>
     {
@@ -3115,11 +3112,11 @@ namespace aspect
 
 
     /**
-    * A postprocessor that evaluates the accuracy of the solution.
-    *
-    * The implementation of error evaluators that correspond to the
-    * benchmarks defined in the paper Duretz et al. reference above.
-    */
+     * A postprocessor that evaluates the accuracy of the solution.
+     *
+     * The implementation of error evaluators that correspond to the
+     * benchmarks defined in the paper Duretz et al. reference above.
+     */
     template <int dim>
     class SolCxPostprocessor : public Postprocess::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
@@ -3129,9 +3126,9 @@ namespace aspect
          */
         virtual
         std::pair<std::string,std::string>
-        execute (TableHandler &statistics)
+        execute (TableHandler &/*statistics*/)
         {
-          std_cxx1x::shared_ptr<Function<dim> > ref_func;
+          std::shared_ptr<Function<dim> > ref_func;
           if (dynamic_cast<const SolCxMaterial<dim> *>(&this->get_material_model()) != NULL)
             {
               const SolCxMaterial<dim> *

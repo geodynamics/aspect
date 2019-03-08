@@ -25,16 +25,16 @@ subsection Geometry model
 end
 
 
-subsection Model settings
+subsection Boundary velocity model
   set Zero velocity boundary indicators       = inner
   set Tangential velocity boundary indicators = outer, left, right
-  set Prescribed velocity boundary indicators = 
-  set Fixed temperature boundary indicators   = inner, outer
 end
 
 
 subsection Boundary temperature model
-  set Model name = spherical constant 
+  set Fixed temperature boundary indicators = inner, outer
+  set List of model names = spherical constant
+
   subsection Spherical constant
     set Inner temperature = 4273 
     set Outer temperature = 973 
@@ -53,7 +53,7 @@ end
 
 
 subsection Gravity model
-  set Model name = radial earth-like 
+  set Model name = ascii data
 end
 
 

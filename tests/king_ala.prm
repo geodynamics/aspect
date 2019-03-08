@@ -48,7 +48,6 @@ set Dimension                              = 2
 set CFL number = 10.0
 set Additional shared libraries                = ./libplugin.so
 
-set Use direct solver for Stokes system        = true#false
 
 
 set Adiabatic surface temperature              = 0.091 #0.100
@@ -75,8 +74,6 @@ end
 # be normalized. Here, we choose a zero average pressure
 # at the surface of the domain (for the current geometry, the
 # surface is defined as the top boundary).
-set Linear solver tolerance                = 1e-7
-set Temperature solver tolerance           = 1e-10
 
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
@@ -84,7 +81,6 @@ set Surface pressure                       = 0
 
 
 subsection Adiabatic conditions model
-  #set Model name = initial profile
   set Model name = function
 
   subsection Function
@@ -152,7 +148,7 @@ end
 # in the next section, the actual temperature prescribed here
 # at the left and right does not matter.)
 subsection Boundary temperature model
-  set Model name = box
+  set List of model names = box
 
 
   subsection Box
@@ -167,25 +163,16 @@ end
 # which boundaries actually carry a prescribed boundary temperature, whereas
 # all other parts of the boundary are insulated (i.e., no heat flux through
 # these boundaries; this is also often used to specify symmetry boundaries).
-subsection Model settings
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary temperature model
   set Fixed temperature boundary indicators   = top, bottom
+end
 
-  # The next parameters then describe on which parts of the
-  # boundary we prescribe a zero or nonzero velocity and
-  # on which parts the flow is allowed to be tangential.
-  # Here, all four sides of the box allow tangential
-  # unrestricted flow but with a zero normal component:
-  set Zero velocity boundary indicators       = 
-  set Prescribed velocity boundary indicators =
+subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, right, top, bottom
-
-  # The final part of this section describes whether we
-  # want to include adiabatic heating (from a small
-  # compressibility of the medium) or from shear friction,
-  # as well as the rate of internal heating. We do not
-  # want to use any of these options here:
-  set Include adiabatic heating               = false
-  set Include shear heating                   = false
 end
 
 subsection Heating model
@@ -227,15 +214,12 @@ end
 
 subsection Material model
   #set Model name = simple compressible # default:
-  set Model name = Material
-  subsection Tan Gurnis model
+  set Model name = king material
+  subsection King model
     set Reference density             = 1
 
     # The value of the specific heat $cp$. Units: $J/kg/K$. => H
     set Reference specific heat       = 1   # ??
-
-    # The reference temperature $T_0$. Units: $K$.
-    set Reference temperature         = 0
 
     # The value of the constant viscosity. Units: $kg/m/s$.
     set Ra                     = 1e4
@@ -284,3 +268,11 @@ subsection Postprocess
   end
 end
 
+subsection Solver parameters
+  set Temperature solver tolerance = 1e-10
+
+  subsection Stokes solver parameters
+    set Use direct solver for Stokes system = true#false
+    set Linear solver tolerance = 1e-7
+  end
+end

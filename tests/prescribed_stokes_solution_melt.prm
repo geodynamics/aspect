@@ -1,0 +1,129 @@
+# This test is a copy of the prescribed_stokes_solution test, 
+# except that is uses melt transport. 
+# The original test is based on depth_average_01, and is similar 
+# to cookbooks/convection_box.prm. 
+# We prescribe a circular Stokes flow. 
+
+
+set Dimension                              = 2
+
+set Use years in output instead of seconds = false
+set End time                               = 0.5
+set Output directory                       = output
+
+
+set Pressure normalization                 = surface
+set Surface pressure                       = 0
+set Use operator splitting                 = true
+
+subsection Melt settings
+  set Use discontinuous compaction pressure = false
+end
+
+subsection Compositional fields
+  set Number of fields = 2
+  set Names of fields = porosity, peridotite
+end
+
+subsection Prescribed Stokes solution  
+  set Model name = circle
+end
+set Nonlinear solver scheme                = single Advection, no Stokes
+
+subsection Discretization
+  set Temperature polynomial degree = 1
+end
+
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1
+    set Y extent = 1
+  end
+end
+
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,z
+    set Function constants  = p=0.01, L=1, pi=3.1415926536, k=1
+    set Function expression = (1.0-z) - p*cos(k*pi*x/L)*sin(pi*z)
+  end
+end
+
+
+subsection Boundary temperature model
+  set List of model names = box
+
+  subsection Box
+    set Bottom temperature = 1
+    set Left temperature   = 0
+    set Right temperature  = 0
+    set Top temperature    = 0
+  end
+end
+
+
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = bottom, top
+end
+
+subsection Melt settings
+  set Include melt transport                  = true
+end
+
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 1e14   # = Ra / Thermal expansion coefficient
+  end
+end
+
+
+subsection Material model
+  set Model name = melt simple # default:
+
+  subsection Melt simple
+    set Reference solid density       = 1
+    set Reference melt density        = 1
+    set Reference specific heat       = 1
+    set Reference temperature         = 0
+    set Thermal conductivity          = 1
+    set Thermal expansion coefficient = 1e-10
+    set Reference shear viscosity     = 1
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial global refinement                = 3
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 0
+end
+
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics
+
+  subsection Visualization
+    set Time between graphical output = 0.01
+  end
+end
+
+subsection Solver parameters
+  set Temperature solver tolerance = 1e-10
+
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-7
+  end
+end

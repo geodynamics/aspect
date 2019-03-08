@@ -4,11 +4,9 @@ set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 0
 set Use years in output instead of seconds = true
-set Linear solver tolerance                = 1e-9
-set Nonlinear solver scheme                = iterated Stokes
+set Nonlinear solver scheme                = single Advection, iterated Stokes
 set Nonlinear solver tolerance             = 1e-5
 set Max nonlinear iterations               = 1
-set Number of cheap Stokes solver steps    = 0
 set CFL number                             = 0.5
 set Output directory                       = dynamic_friction
 set Timing output frequency                = 1
@@ -26,9 +24,19 @@ subsection Geometry model
   end
 end
 
-subsection Model settings
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary velocity model
   set Prescribed velocity boundary indicators = left: function, right:function
+end
+
+subsection Boundary velocity model
   set Tangential velocity boundary indicators = bottom
+end
+
+subsection Free surface
   set Free surface boundary indicators        = top
 end
 
@@ -93,7 +101,7 @@ end
 # temperature boundary conditions.
 
 subsection Boundary temperature model
-  set Model name = box
+  set List of model names = box
 end
 
 subsection Initial temperature model
@@ -134,3 +142,9 @@ subsection Postprocess
   set List of postprocessors = velocity statistics, basic statistics
 end
 
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-9
+    set Number of cheap Stokes solver steps = 0
+  end
+end

@@ -12,7 +12,6 @@
 
 set Adiabatic surface temperature          = 1623               # default: 0
 set CFL number                             = 1.0
-set Composition solver tolerance           = 1e-12
 
 # The number of space dimensions you want to run this program in.
 set Dimension                              = 2
@@ -27,11 +26,18 @@ set Resume computation                     = false
 set Start time                             = 0
 
 set Use years in output instead of seconds = true
-set Use direct solver for Stokes system    = true
 
 subsection Compositional fields
   set Number of fields = 2
   set Names of fields = peridotite, porosity
+end
+
+set Use operator splitting                     = true
+subsection Solver parameters
+  subsection Operator splitting parameters
+    set Reaction time step                     = 1.5e7
+    set Reaction time steps per advection step = 1
+  end
 end
 
 subsection Discretization
@@ -40,7 +46,7 @@ subsection Discretization
 end
 
 subsection Boundary temperature model
-  set Model name = initial temperature
+  set List of model names = initial temperature
 
   subsection Initial temperature
     # Temperature at the inner boundary (core mantle boundary). Units: K.
@@ -53,7 +59,7 @@ subsection Boundary temperature model
 end
 
 subsection Boundary composition model
-  set Model name = initial composition
+  set List of model names = initial composition
 end
 
 
@@ -106,6 +112,7 @@ subsection Material model
     set Reference shear viscosity = 1e21
     set Reference solid density = 3300
     set Reference melt density = 3200
+    set Melting time scale for operator splitting = 1e100
   end 
 end
 
@@ -120,18 +127,24 @@ subsection Mesh refinement
 end
 
 
-subsection Model settings
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary temperature model
   set Fixed temperature boundary indicators   = 0,3        # default: 
-  set Prescribed velocity boundary indicators =  
+end
 
+subsection Boundary velocity model
   set Tangential velocity boundary indicators = 0,1,2,3
-  set Zero velocity boundary indicators       =           # default: 
+end
 
-  set Include melt transport                  = true
+subsection Boundary velocity model
+  set Zero velocity boundary indicators       =           # default: 
 end
 
 subsection Melt settings
-  set Melt transport threshold                = 1e-4
+  set Include melt transport                  = true
 end
 
 
@@ -164,3 +177,8 @@ end
 
 
 
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Use direct solver for Stokes system = true
+  end
+end

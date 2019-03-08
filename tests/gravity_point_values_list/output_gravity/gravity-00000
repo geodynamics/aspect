@@ -1,0 +1,30 @@
+# 1: position_satellite_r
+# 2: position_satellite_phi
+# 3: position_satellite_theta
+# 4: position_satellite_x
+# 5: position_satellite_y
+# 6: position_satellite_z
+# 7: gravity_x
+# 8: gravity_y
+# 9: gravity_z
+# 10: gravity_norm
+# 11: gravity_theory
+# 12: gravity potential
+# 13: gravity_anomaly_x
+# 14: gravity_anomaly_y
+# 15: gravity_anomaly_z
+# 16: gravity_anomaly_norm
+# 17: gravity_gradient_xx
+# 18: gravity_gradient_yy
+# 19: gravity_gradient_zz
+# 20: gravity_gradient_xy
+# 21: gravity_gradient_xz
+# 22: gravity_gradient_yz
+# 23: gravity_gradient_theory_xx
+# 24: gravity_gradient_theory_yy
+# 25: gravity_gradient_theory_zz
+# 26: gravity_gradient_theory_xy
+# 27: gravity_gradient_theory_xz
+# 28: gravity_gradient_theory_yz
+
+4 100 55 -0.568977 3.22683 2.29431 -1.72023818691990451e-05 9.818207242126239e-05 7.00940733929680912e-05 0.000121855736064112132 4.03604869268248844e-07 -0.000488632444 -1.71456367e-05 9.78582011e-05 6.98628554e-05 0.000121453773 -28523.0985 28510.8279 12.2705953 -10061.8458 -7402.03076 42070.7386 -94.7764843 96.0912489 -1.31476455 -34.7350868 -24.6969721 140.063489 

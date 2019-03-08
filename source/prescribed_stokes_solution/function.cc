@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
@@ -30,7 +30,10 @@ namespace aspect
     Function<dim>::Function ()
       :
       prescribed_velocity_function (dim),
-      prescribed_pressure_function (1)
+      prescribed_pressure_function (1),
+      prescribed_fluid_pressure_function (1),
+      prescribed_compaction_pressure_function (1),
+      prescribed_fluid_velocity_function (dim)
     {}
 
     template <int dim>
@@ -39,10 +42,38 @@ namespace aspect
     {
       // velocity
       for (unsigned int d=0; d<dim; ++d)
-        value[d] = prescribed_velocity_function.value(position,d);
+        {
+          value[d] = prescribed_velocity_function.value(position,d);
 
-      // pressure
-      value(dim) = prescribed_pressure_function.value(position);
+          if (this->convert_output_to_years())
+            value[d] /= year_in_seconds;
+        }
+
+      if (this->get_parameters().include_melt_transport)
+        {
+          // fluid pressure
+          value(dim) = prescribed_fluid_pressure_function.value(position);
+
+          // compaction pressure
+          value(dim+1) = prescribed_compaction_pressure_function.value(position);
+
+          // fluid velocity
+          for (unsigned int d=0; d<dim; ++d)
+            {
+              value[dim+2+d] = prescribed_fluid_velocity_function.value(position,d);
+
+              if (this->convert_output_to_years())
+                value[dim+2+d] /= year_in_seconds;
+            }
+
+          // pressure
+          value(2*dim+2) = prescribed_pressure_function.value(position);
+        }
+      else
+        {
+          // pressure
+          value(dim) = prescribed_pressure_function.value(position);
+        }
     }
 
     template <int dim>
@@ -55,11 +86,17 @@ namespace aspect
         {
           prescribed_velocity_function.set_time (this->get_time() / year_in_seconds);
           prescribed_pressure_function.set_time (this->get_time() / year_in_seconds);
+          prescribed_fluid_pressure_function.set_time (this->get_time() / year_in_seconds);
+          prescribed_compaction_pressure_function.set_time (this->get_time() / year_in_seconds);
+          prescribed_fluid_velocity_function.set_time (this->get_time() / year_in_seconds);
         }
       else
         {
           prescribed_velocity_function.set_time (this->get_time());
           prescribed_pressure_function.set_time (this->get_time());
+          prescribed_fluid_pressure_function.set_time (this->get_time());
+          prescribed_compaction_pressure_function.set_time (this->get_time());
+          prescribed_fluid_velocity_function.set_time (this->get_time());
         }
     }
 
@@ -77,6 +114,21 @@ namespace aspect
         prm.enter_subsection("Pressure function");
         {
           Functions::ParsedFunction<dim>::declare_parameters (prm, 1);
+        }
+        prm.leave_subsection();
+        prm.enter_subsection("Fluid pressure function");
+        {
+          Functions::ParsedFunction<dim>::declare_parameters (prm, 1);
+        }
+        prm.leave_subsection();
+        prm.enter_subsection("Compaction pressure function");
+        {
+          Functions::ParsedFunction<dim>::declare_parameters (prm, 1);
+        }
+        prm.leave_subsection();
+        prm.enter_subsection("Fluid velocity function");
+        {
+          Functions::ParsedFunction<dim>::declare_parameters (prm, dim);
         }
         prm.leave_subsection();
       }
@@ -98,7 +150,7 @@ namespace aspect
         catch (...)
           {
             std::cerr << "ERROR: FunctionParser failed to parse\n"
-                      << "\t'Initial conditions.Function.Velocity function'\n"
+                      << "\t'Prescribed Stokes solution.Function.Velocity function'\n"
                       << "with expression\n"
                       << "\t'" << prm.get("Function expression") << "'"
                       << "More information about the cause of the parse error \n"
@@ -114,7 +166,55 @@ namespace aspect
         catch (...)
           {
             std::cerr << "ERROR: FunctionParser failed to parse\n"
-                      << "\t'Initial conditions.Function.Pressure function'\n"
+                      << "\t'Prescribed Stokes solution.Function.Pressure function'\n"
+                      << "with expression\n"
+                      << "\t'" << prm.get("Function expression") << "'"
+                      << "More information about the cause of the parse error \n"
+                      << "is shown below.\n";
+            throw;
+          }
+        prm.leave_subsection();
+        prm.enter_subsection("Fluid pressure function");
+        try
+          {
+            prescribed_fluid_pressure_function.parse_parameters (prm);
+          }
+        catch (...)
+          {
+            std::cerr << "ERROR: FunctionParser failed to parse\n"
+                      << "\t'Initial conditions.Function.Fluid pressure function'\n"
+                      << "with expression\n"
+                      << "\t'" << prm.get("Function expression") << "'"
+                      << "More information about the cause of the parse error \n"
+                      << "is shown below.\n";
+            throw;
+          }
+        prm.leave_subsection();
+        prm.enter_subsection("Compaction pressure function");
+        try
+          {
+            prescribed_compaction_pressure_function.parse_parameters (prm);
+          }
+        catch (...)
+          {
+            std::cerr << "ERROR: FunctionParser failed to parse\n"
+                      << "\t'Initial conditions.Function.Compaction pressure function'\n"
+                      << "with expression\n"
+                      << "\t'" << prm.get("Function expression") << "'"
+                      << "More information about the cause of the parse error \n"
+                      << "is shown below.\n";
+            throw;
+          }
+        prm.leave_subsection();
+        prm.enter_subsection("Fluid velocity function");
+        try
+          {
+            prescribed_fluid_velocity_function.parse_parameters (prm);
+          }
+        catch (...)
+          {
+            std::cerr << "ERROR: FunctionParser failed to parse\n"
+                      << "\t'Initial conditions.Function.Fluid velocity function'\n"
                       << "with expression\n"
                       << "\t'" << prm.get("Function expression") << "'"
                       << "More information about the cause of the parse error \n"

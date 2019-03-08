@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
@@ -29,7 +29,6 @@
 #include <deal.II/base/function.h>
 
 #include <deal.II/lac/full_matrix.h>
-#include <deal.II/lac/constraint_matrix.h>
 #include <deal.II/grid/tria_iterator.h>
 #include <deal.II/dofs/dof_accessor.h>
 #include <deal.II/fe/fe_values.h>
@@ -91,21 +90,25 @@ namespace aspect
 
         std::vector<types::global_dof_index> local_dof_indices (finite_element.dofs_per_cell);
 
-        const VectorFunctionFromScalarFunctionObject<dim, double> &advf_init_function =
-          (advf.is_temperature()
-           ?
-           VectorFunctionFromScalarFunctionObject<dim, double>(std_cxx11::bind(&InitialTemperature::Manager<dim>::initial_temperature,
-                                                                               std_cxx11::ref(initial_temperature_manager),
-                                                                               std_cxx11::_1),
-                                                               introspection.component_indices.temperature,
-                                                               introspection.n_components)
-           :
-           VectorFunctionFromScalarFunctionObject<dim, double>(std_cxx11::bind(&InitialComposition::Manager<dim>::initial_composition,
-                                                                               std_cxx11::ref(initial_composition_manager),
-                                                                               std_cxx11::_1,
-                                                                               n-1),
-                                                               introspection.component_indices.compositional_fields[n-1],
-                                                               introspection.n_components));
+        const VectorFunctionFromScalarFunctionObject<dim, double> &advf_init_function
+          =
+            (advf.is_temperature()
+             ?
+             VectorFunctionFromScalarFunctionObject<dim, double>(
+               [&](const Point<dim> &p) -> double
+        {
+          return initial_temperature_manager.initial_temperature(p);
+        },
+        introspection.component_indices.temperature,
+        introspection.n_components)
+        :
+        VectorFunctionFromScalarFunctionObject<dim, double>(
+          [&](const Point<dim> &p) -> double
+        {
+          return initial_composition_manager.initial_composition(p, n-1);
+        },
+        introspection.component_indices.compositional_fields[n-1],
+        introspection.n_components));
 
         const ComponentMask advf_mask =
           (advf.is_temperature()
@@ -185,6 +188,7 @@ namespace aspect
         solution.block(blockidx) = initial_solution.block(blockidx);
         old_solution.block(blockidx) = initial_solution.block(blockidx);
         old_old_solution.block(blockidx) = initial_solution.block(blockidx);
+        current_linearization_point.block(blockidx) = initial_solution.block(blockidx);
       }
   }
 
@@ -192,7 +196,7 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::interpolate_particle_properties (const AdvectionField &advection_field)
   {
-    computing_timer.enter_section("Particles: Interpolate");
+    TimerOutput::Scope timer (computing_timer, "Particles: Interpolate");
 
     // below, we would want to call VectorTools::interpolate on the
     // entire FESystem. there currently is no way to restrict the
@@ -214,14 +218,11 @@ namespace aspect
     // need to write into it and we can not
     // write into vectors with ghost elements
 
-    const Postprocess::Particles<dim> *particle_postprocessor = postprocess_manager.template find_postprocessor<Postprocess::Particles<dim> >();
+    const Postprocess::Particles<dim> &particle_postprocessor =
+      postprocess_manager.template get_matching_postprocessor<Postprocess::Particles<dim> >();
 
-    AssertThrow(particle_postprocessor != 0,
-                ExcMessage("Did not find the <particles> postprocessor when trying to interpolate particle properties."));
-
-    const std::multimap<aspect::Particle::types::LevelInd, Particle::Particle<dim> > *particles = &particle_postprocessor->get_particle_world().get_particles();
-    const Particle::Interpolator::Interface<dim> *particle_interpolator = &particle_postprocessor->get_particle_world().get_interpolator();
-    const Particle::Property::Manager<dim> *particle_property_manager = &particle_postprocessor->get_particle_world().get_property_manager();
+    const Particle::Interpolator::Interface<dim> *particle_interpolator = &particle_postprocessor.get_particle_world().get_interpolator();
+    const Particle::Property::Manager<dim> *particle_property_manager = &particle_postprocessor.get_particle_world().get_property_manager();
 
     unsigned int particle_property;
 
@@ -272,7 +273,10 @@ namespace aspect
           property_mask.set(particle_property,true);
 
           const std::vector<std::vector<double> > particle_properties =
-            particle_interpolator->properties_at_points(*particles,quadrature_points,property_mask,cell);
+            particle_interpolator->properties_at_points(particle_postprocessor.get_particle_world().get_particle_handler(),
+                                                        quadrature_points,
+                                                        property_mask,
+                                                        cell);
 
           // go through the composition dofs and set their global values
           // to the particle field interpolated at these points
@@ -299,10 +303,16 @@ namespace aspect
     // overwrite the relevant composition block only
     const unsigned int blockidx = advection_field.block_index(introspection);
     solution.block(blockidx) = particle_solution.block(blockidx);
-    old_solution.block(blockidx) = particle_solution.block(blockidx);
-    old_old_solution.block(blockidx) = particle_solution.block(blockidx);
 
-    computing_timer.exit_section("");
+    // In the first timestep initialize all solution vectors with the initial
+    // particle solution, identical to the end of the
+    // Simulator<dim>::set_initial_temperature_and_compositional_fields ()
+    // function.
+    if (timestep_number == 0)
+      {
+        old_solution.block(blockidx) = particle_solution.block(blockidx);
+        old_old_solution.block(blockidx) = particle_solution.block(blockidx);
+      }
   }
 
 
@@ -331,31 +341,38 @@ namespace aspect
         LinearAlgebra::BlockVector system_tmp;
         system_tmp.reinit (system_rhs);
 
+        // First grab the correct pressure to work on:
+        const FEVariable<dim> &pressure_variable
+          = parameters.include_melt_transport ?
+            introspection.variable("fluid pressure")
+            : introspection.variable("pressure");
+        const unsigned int pressure_comp = pressure_variable.first_component_index;
+        const ComponentMask pressure_component_mask = pressure_variable.component_mask;
+
         // interpolate the pressure given by the adiabatic conditions
         // object onto the solution space. note that interpolate
         // wants a function that represents all components of the
         // solution vector, so create such a function object
         // that is simply zero for all velocity components
-        const unsigned int pressure_comp =
-          parameters.include_melt_transport ?
-          introspection.variable("fluid pressure").first_component_index
-          :
-          introspection.component_indices.pressure;
+        auto lambda = [&](const Point<dim> &p) -> double
+        {
+          return adiabatic_conditions->pressure(p);
+        };
+
+        VectorFunctionFromScalarFunctionObject<dim> vector_function_object(
+          lambda,
+          pressure_comp,
+          introspection.n_components);
 
         VectorTools::interpolate (*mapping, dof_handler,
-                                  VectorFunctionFromScalarFunctionObject<dim> (std_cxx11::bind (&AdiabaticConditions::Interface<dim>::pressure,
-                                                                               std_cxx11::cref (*adiabatic_conditions),
-                                                                               std_cxx11::_1),
-                                                                               pressure_comp,
-                                                                               introspection.n_components),
-                                  system_tmp);
+                                  vector_function_object,
+                                  system_tmp,
+                                  pressure_component_mask);
 
         // we may have hanging nodes, so apply constraints
         constraints.distribute (system_tmp);
 
-        const unsigned int pressure_block = (parameters.include_melt_transport ?
-                                             introspection.variable("fluid pressure").block_index
-                                             : introspection.block_indices.pressure);
+        const unsigned int pressure_block = pressure_variable.block_index;
         old_solution.block(pressure_block) = system_tmp.block(pressure_block);
       }
     else
@@ -388,9 +405,11 @@ namespace aspect
         std::vector<double> rhs_values(n_q_points);
 
         ScalarFunctionFromFunctionObject<dim>
-        adiabatic_pressure (std_cxx11::bind (&AdiabaticConditions::Interface<dim>::pressure,
-                                             std_cxx11::cref(*adiabatic_conditions),
-                                             std_cxx11::_1));
+        adiabatic_pressure (
+          [&](const Point<dim> &p) -> double
+        {
+          return adiabatic_conditions->pressure(p);
+        });
 
 
         typename DoFHandler<dim>::active_cell_iterator

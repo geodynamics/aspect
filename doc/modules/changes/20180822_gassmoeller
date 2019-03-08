@@ -1,0 +1,5 @@
+New: There is now a 'material statistics' postprocessor that computes the
+average density, average viscosity, and total mass in a
+model.
+<br>
+(Rene Gassmoeller, 2018/08/22)

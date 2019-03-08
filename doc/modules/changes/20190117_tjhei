@@ -1,0 +1,3 @@
+New: ASPECT now outputs a file named original.prm in the output directory with the exact content of the parameter it got started with.
+<br>
+(Timo Heister, 2019/01/17)

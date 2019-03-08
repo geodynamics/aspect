@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2019 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -14,12 +14,15 @@
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with ASPECT; see the file doc/COPYING.  If not see
+ along with ASPECT; see the file LICENSE.  If not see
  <http://www.gnu.org/licenses/>.
  */
 
-#include <aspect/particle/output/interface.h>
 
+#include <aspect/particle/output/interface.h>
+#include <aspect/simulator_access.h>
+
+#if !DEAL_II_VERSION_GTE(9,0,0)
 
 namespace aspect
 {
@@ -47,11 +50,6 @@ namespace aspect
       {}
 
       template <int dim>
-      template <class Archive>
-      void Interface<dim>::serialize (Archive &ar, const unsigned int)
-      {}
-
-      template <int dim>
       void
       Interface<dim>::save (std::ostringstream &) const
       {}
@@ -67,7 +65,7 @@ namespace aspect
 
       namespace
       {
-        std_cxx1x::tuple
+        std::tuple
         <void *,
         void *,
         aspect::internal::Plugins::PluginList<Interface<2> >,
@@ -83,10 +81,10 @@ namespace aspect
                                 void (*declare_parameters_function) (ParameterHandler &),
                                 Interface<dim> *(*factory_function) ())
       {
-        std_cxx1x::get<dim>(registered_plugins).register_plugin (name,
-                                                                 description,
-                                                                 declare_parameters_function,
-                                                                 factory_function);
+        std::get<dim>(registered_plugins).register_plugin (name,
+                                                           description,
+                                                           declare_parameters_function,
+                                                           factory_function);
       }
 
 
@@ -106,10 +104,10 @@ namespace aspect
         prm.leave_subsection ();
 
         if (name != "none")
-          return std_cxx1x::get<dim>(registered_plugins).create_plugin (name,
-                                                                        "Particle::Output name");
+          return std::get<dim>(registered_plugins).create_plugin (name,
+                                                                  "Particle::Output name");
         else
-          return NULL;
+          return nullptr;
       }
 
 
@@ -124,22 +122,32 @@ namespace aspect
           prm.enter_subsection ("Particles");
           {
             const std::string pattern_of_names
-              = std_cxx1x::get<dim>(registered_plugins).get_pattern_of_names ();
+              = std::get<dim>(registered_plugins).get_pattern_of_names ();
 
             prm.declare_entry ("Data output format", "vtu",
                                Patterns::Selection (pattern_of_names + "|none"),
                                "File format to output raw particle data in. "
-                               "If you select 'none' no output will be "
-                               "written."
+                               "If you select `none' no output will be "
+                               "written. "
                                "Select one of the following models:\n\n"
                                +
-                               std_cxx1x::get<dim>(registered_plugins).get_description_string());
+                               std::get<dim>(registered_plugins).get_description_string());
           }
           prm.leave_subsection ();
         }
         prm.leave_subsection ();
 
-        std_cxx1x::get<dim>(registered_plugins).declare_parameters (prm);
+        std::get<dim>(registered_plugins).declare_parameters (prm);
+      }
+
+
+
+      template <int dim>
+      void
+      write_plugin_graph (std::ostream &out)
+      {
+        std::get<dim>(registered_plugins).write_plugin_graph ("Particle output interface",
+                                                              out);
       }
     }
   }
@@ -180,6 +188,10 @@ namespace aspect
   declare_parameters<dim> (ParameterHandler &); \
   \
   template \
+  void \
+  write_plugin_graph<dim> (std::ostream &); \
+  \
+  template \
   Interface<dim> * \
   create_particle_output<dim> (ParameterHandler &prm);
 
@@ -187,3 +199,5 @@ namespace aspect
     }
   }
 }
+
+#endif

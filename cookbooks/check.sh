@@ -64,6 +64,10 @@ echo "Checking cookbooks using $BUILD/aspect ..."
 
 ( (cd sinker-with-averaging; run_all_prms ) || { echo "FAILED"; exit 1; } ) &
 
+( (cd morency_doin_2004; make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
+
+
+
 wait
 
 echo "all good! :-)"

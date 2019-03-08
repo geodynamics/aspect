@@ -15,7 +15,7 @@ subsection Initial temperature model
   set Model name = function
 end
 
-subsection Model settings
+subsection Boundary velocity model
   set Zero velocity boundary indicators = top
 end
 

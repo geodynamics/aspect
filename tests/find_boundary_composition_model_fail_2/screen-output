@@ -1,0 +1,20 @@
+
+Loading shared library <./libfind_boundary_composition_model_fail_2.so>
+
+Number of active cells: 64 (on 4 levels)
+Number of degrees of freedom: 1,526 (578+81+289+289+289)
+
+InitialComposition is Box:0
+ERROR: Uncaught exception in MPI_InitFinalize on proc 0. Skipping MPI_Finalize() to avoid a deadlock.
+
+
+Exception 'ExcMessage("You have requested to convert a plugin of type <" + boost::core::demangle(typeid(PluginType).name()) + "> into type <" + boost::core::demangle(typeid(TestType).name()) + ">, but this cast cannot be performed.")' on rank 0 on processing: 
+
+An error occurred in file <plugins.h> in function
+(line in output replaced by default.sh script)
+The violated condition was: 
+    plugin_type_matches<TestType>(object)
+Additional information: 
+    You have requested to convert a plugin of type <aspect::BoundaryComposition::InitialComposition<2>> into type <aspect::BoundaryComposition::Box<2>>, but this cast cannot be performed.
+
+Aborting!

@@ -1,0 +1,134 @@
+# This is case 1c from the Blankenbach Benchmark (Blankenbach 1989), but
+# computed with discontinuous temperature elements. There used to be a bug
+# in the computation of the face terms when combining DG elements with
+# Boussinesq approximation temperature equations. This test crashed due to
+# oscillations before the fix, but now gives accurate results.
+
+set End time                               = 1.0
+set Use years in output instead of seconds = false
+set CFL number = 5.0
+
+subsection Adiabatic conditions model
+  set Model name = function
+
+  subsection Function
+    set Function constants  = 
+    set Function expression = 0; 0; 1
+    set Variable names      = depth
+  end
+
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = bottom, top
+  set List of model names = box
+
+  subsection Box
+    set Bottom temperature = 1
+    set Left temperature   = 0
+    set Right temperature  = 0
+    set Top temperature    = 0
+  end
+end
+
+subsection Geometry model
+  set Model name = box 
+
+
+  subsection Box
+    set X extent = 1
+    set Y extent = 1
+  end
+end
+
+
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 1
+  end
+end
+
+
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Function constants  = z1=0.102367, z2=0.897633, pi=3.14159265359
+    set Function expression = if(z<z1,0.5+0.5*(z1-z)/z1,if(z>z2,0.5*(1-z)/(1-z2),0.5)) + 0.1 * cos(x*pi) * sin(z*pi)
+    set Variable names      = x,z
+  end
+
+  set Model name = ascii data
+  subsection Ascii data model
+    set Data directory = $ASPECT_SOURCE_DIR/benchmarks/blankenbach/
+    set Data file name = initial_temperature_case1c.txt
+  end
+end
+
+
+subsection Material model
+  set Model name = nondimensional
+  subsection Nondimensional model
+    set Di                      = 0.0
+    set Ra                      = 1e4
+    # Reference density $\rho_0$. Units: $kg/m^3$.
+    set Reference density       = 1
+
+    # The value of the specific heat $cp$. Units: $J/kg/K$.
+    set Reference specific heat = 1
+
+    # Whether to use the TALA instead of the ALA approximation.
+    set Use TALA                = false
+    set Viscosity temperature prefactor = 0.0
+    set Viscosity depth prefactor = 0.0
+    set gamma                   = 1.0
+  end 
+end
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 4
+  set Time steps between mesh refinement = 0
+  set Coarsening fraction                      = 0.0
+  set Refinement fraction                      = 1.0
+end
+
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = left, right, bottom, top
+end
+
+
+subsection Formulation
+  set Formulation          = custom # with this selection equivalent to BA
+  set Mass conservation    = incompressible
+  set Temperature equation = reference density profile
+end
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, heating statistics
+end
+
+subsection Termination criteria  
+  set Termination criteria      = steady state velocity
+
+  subsection Steady state velocity
+    set Maximum relative deviation = 1e-5
+    set Time in steady state       = 0.1
+  end
+end
+
+subsection Discretization
+  set Use discontinuous temperature discretization = true
+end
+
+subsection Material model
+  subsection Nondimensional model
+    set Ra                      = 1e6
+  end
+end
+
+subsection Mesh refinement
+  set Initial global refinement=3
+end

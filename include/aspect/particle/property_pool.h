@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2016 by the authors of the ASPECT code.
+ Copyright (C) 2016 - 2019 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with ASPECT; see the file doc/COPYING.  If not see
+ along with ASPECT; see the file LICENSE.  If not see
  <http://www.gnu.org/licenses/>.
  */
 
@@ -24,6 +24,8 @@
 #include <aspect/global.h>
 
 #include <deal.II/base/array_view.h>
+
+#if !DEAL_II_VERSION_GTE(9,0,0)
 
 namespace aspect
 {
@@ -83,6 +85,11 @@ namespace aspect
          */
         void reserve(const std::size_t size);
 
+        /**
+         * Returns how many properties are stored per slot in the pool.
+         */
+        unsigned int n_properties_per_slot() const;
+
       private:
         /**
          * The number of properties that are reserved per particle.
@@ -93,4 +100,5 @@ namespace aspect
   }
 }
 
+#endif
 #endif

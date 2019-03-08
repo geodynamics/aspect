@@ -1,0 +1,22 @@
+
+Number of active cells: 768 (on 5 levels)
+Number of degrees of freedom: 10,436 (6,402+833+3,201)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 43+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:           output-steinberger_latent_heat/solution/solution-00000
+     RMS, max velocity:                  0.454 m/year, 0.876 m/year
+     Temperature min/avg/max:            273 K, 2606 K, 4250 K
+     Heat fluxes through boundary parts: -3.57e+05 W, 1.595e+06 W, 0 W, 0 W
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

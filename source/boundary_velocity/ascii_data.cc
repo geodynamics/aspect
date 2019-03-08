@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,12 +14,13 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
  */
 
 
 #include <aspect/global.h>
+#include <aspect/geometry_model/box.h>
 #include <aspect/boundary_velocity/ascii_data.h>
 
 #include <deal.II/base/parameter_handler.h>
@@ -38,14 +39,16 @@ namespace aspect
     void
     AsciiData<dim>::initialize ()
     {
-      const std::map<types::boundary_id,std_cxx11::shared_ptr<BoundaryVelocity::Interface<dim> > >
-      bvs = this->get_prescribed_boundary_velocity();
-      for (typename std::map<types::boundary_id,std_cxx11::shared_ptr<BoundaryVelocity::Interface<dim> > >::const_iterator
+      const std::map<types::boundary_id,std::vector<std::shared_ptr<BoundaryVelocity::Interface<dim> > > >
+      bvs = this->get_boundary_velocity_manager().get_active_boundary_velocity_conditions();
+      for (typename std::map<types::boundary_id,std::vector<std::shared_ptr<BoundaryVelocity::Interface<dim> > > >::const_iterator
            p = bvs.begin();
            p != bvs.end(); ++p)
         {
-          if (p->second.get() == this)
-            boundary_ids.insert(p->first);
+          for (typename std::vector<std::shared_ptr<BoundaryVelocity::Interface<dim> > >::const_iterator
+               plugin = p->second.begin(); plugin != p->second.end(); ++plugin)
+            if (plugin->get() == this)
+              boundary_ids.insert(p->first);
         }
       AssertThrow(*(boundary_ids.begin()) != numbers::invalid_boundary_id,
                   ExcMessage("Did not find the boundary indicator for the prescribed data plugin."));
@@ -75,6 +78,9 @@ namespace aspect
         velocity[i] = Utilities::AsciiDataBoundary<dim>::get_data_component(*(boundary_ids.begin()),
                                                                             position,
                                                                             i);
+      if (use_spherical_unit_vectors)
+        velocity = Utilities::Coordinates::spherical_to_cartesian_vector(velocity, position);
+
       return velocity;
     }
 
@@ -88,6 +94,17 @@ namespace aspect
         Utilities::AsciiDataBoundary<dim>::declare_parameters(prm,
                                                               "$ASPECT_SOURCE_DIR/data/boundary-velocity/ascii-data/test/",
                                                               "box_2d_%s.%d.txt");
+        prm.enter_subsection("Ascii data model");
+        {
+          prm.declare_entry ("Use spherical unit vectors", "false",
+                             Patterns::Bool (),
+                             "Specify velocity as r, phi, and theta components "
+                             "instead of x, y, and z. Positive velocities point up, east, "
+                             "and north (in 3D) or out and clockwise (in 2D). "
+                             "This setting only makes sense for spherical geometries."
+                            );
+        }
+        prm.leave_subsection();
       }
       prm.leave_subsection();
     }
@@ -105,7 +122,15 @@ namespace aspect
           {
             this->scale_factor               /= year_in_seconds;
           }
-
+        prm.enter_subsection("Ascii data model");
+        {
+          use_spherical_unit_vectors = prm.get_bool("Use spherical unit vectors");
+          if (use_spherical_unit_vectors)
+            AssertThrow ((dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model())) == nullptr,
+                         ExcMessage ("Spherical unit vectors should not be used "
+                                     "when geometry model is not spherical."));
+        }
+        prm.leave_subsection();
       }
       prm.leave_subsection();
     }
@@ -124,31 +149,33 @@ namespace aspect
                                             "velocity is derived from files containing data "
                                             "in ascii format. Note the required format of the "
                                             "input data: The first lines may contain any number of comments "
-                                            "if they begin with '#', but one of these lines needs to "
+                                            "if they begin with `#', but one of these lines needs to "
                                             "contain the number of grid points in each dimension as "
-                                            "for example '# POINTS: 3 3'. "
+                                            "for example `# POINTS: 3 3'. "
                                             "The order of the data columns "
-                                            "has to be 'x', 'velocity_x', 'velocity_y' in a 2d model "
-                                            "or 'x', 'y', 'velocity_x', 'velocity_y', "
-                                            "'velocity_z' in a 3d model. "
+                                            "has to be `x', `velocity${}_x$', `velocity${}_y$' in a 2d model "
+                                            "or `x', `y', `velocity${}_x$', `velocity${}_y$', "
+                                            "`velocity${}_z$' in a 3d model. "
                                             "Note that the data in the input "
                                             "files need to be sorted in a specific order: "
                                             "the first coordinate needs to ascend first, "
                                             "followed by the second in order to "
                                             "assign the correct data to the prescribed coordinates."
                                             "If you use a spherical model, "
-                                            "then the velocities will still be handled as Cartesian, "
-                                            "however the assumed grid changes. 'x' will be replaced by "
+                                            "then the assumed grid changes. `x' will be replaced by "
                                             "the radial distance of the point to the bottom of the model, "
-                                            "'y' by the azimuth angle and 'z' by the polar angle measured "
+                                            "`y' by the azimuth angle and `z' by the polar angle measured "
                                             "positive from the north pole. The grid will be assumed to be "
                                             "a latitude-longitude grid. Note that the order "
-                                            "of spherical coordinates is 'r', 'phi', 'theta' "
-                                            "and not 'r', 'theta', 'phi', since this allows "
+                                            "of spherical coordinates is `r', `phi', `theta' "
+                                            "and not `r', `theta', `phi', since this allows "
                                             "for dimension independent expressions. "
+                                            "Velocities can be specified using cartesian "
+                                            "(by default) or spherical unit vectors. "
                                             "No matter which geometry model is chosen, "
                                             "the unit of the velocities is assumed to be "
-                                            "m/s or m/yr depending on the 'Use years in output "
-                                            "instead of seconds' flag.")
+                                            "m/s or m/yr depending on the `Use years in output "
+                                            "instead of seconds' flag. If you provide velocities "
+                                            "in cm/yr, set the `Scale factor' option to 0.01.")
   }
 }

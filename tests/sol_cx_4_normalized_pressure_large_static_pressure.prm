@@ -18,7 +18,6 @@ subsection Material model
   end
 end
 
-set Linear solver tolerance = 0.6e-9
 
 set Dimension = 2
 
@@ -39,11 +38,11 @@ set Pressure normalization                 = volume
 
 set Use years in output instead of seconds = false  # default: true
 
-set Nonlinear solver scheme                = Stokes only
+set Nonlinear solver scheme                = no Advection, iterated Stokes
 
 
 subsection Boundary temperature model
-  set Model name = box
+  set List of model names = box
 
 end
 
@@ -100,16 +99,16 @@ subsection Mesh refinement
 end
 
 
-subsection Model settings
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
 
-
+subsection Boundary temperature model
   set Fixed temperature boundary indicators   = 0, 1
+end
 
-  set Prescribed velocity boundary indicators =
-
+subsection Boundary velocity model
   set Tangential velocity boundary indicators = 0,1,2,3
-
-  set Zero velocity boundary indicators       =
 end
 
 
@@ -129,3 +128,8 @@ subsection Postprocess
   end
 end
 
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 0.6e-9
+  end
+end

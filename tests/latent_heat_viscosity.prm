@@ -38,13 +38,20 @@ subsection Geometry model
 end
 
 
-subsection Model settings
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary velocity model
   set Prescribed velocity boundary indicators = outer:gplates
+end
+
+subsection Boundary velocity model
   set Tangential velocity boundary indicators = inner
+end
 
+subsection Boundary temperature model
   set Fixed temperature boundary indicators   = inner, outer
-
-  set Include shear heating                   = false
 end
 
 
@@ -60,7 +67,7 @@ end
 
 
 subsection Boundary temperature model
-  set Model name = spherical constant
+  set List of model names = spherical constant
   subsection Spherical constant
     set Inner temperature = 2600 
     set Outer temperature = 273 

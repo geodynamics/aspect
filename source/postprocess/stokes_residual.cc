@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
@@ -92,7 +92,15 @@ namespace aspect
       data_point.time = this->get_time();
       data_point.solve_index = current_solve_index;
 
-      data_point.values = solver_control_cheap.get_history_data();
+      // If there were cheap iterations add them.
+#if DEAL_II_VERSION_GTE(9,0,0)
+      if (solver_control_cheap.last_step() != numbers::invalid_unsigned_int)
+#else
+      if (solver_control_cheap.last_step() != 0)
+#endif
+        {
+          data_point.values = solver_control_cheap.get_history_data();
+        }
 
 #if !DEAL_II_VERSION_GTE(9,0,0)
       // Pre deal.II 9.0 history_data contained 0 for all iterations
@@ -104,11 +112,17 @@ namespace aspect
       data_point.values.erase(zero_value,data_point.values.end());
 #endif
 
-      // If there were expensive iterations add them after a signalling -1.
-      if ((solver_control_cheap.last_check() == dealii::SolverControl::failure)
-          && (solver_control_cheap.last_step() == solver_control_cheap.max_steps()))
+      // If there were expensive iterations add them.
+#if DEAL_II_VERSION_GTE(9,0,0)
+      if (solver_control_expensive.last_step() != numbers::invalid_unsigned_int)
+#else
+      if (solver_control_expensive.last_step() != 0)
+#endif
         {
-          data_point.values.push_back(-1.0);
+          // If there were cheap iterations add the expensive iterations after a signalling -1.
+          if (data_point.values.size() > 0)
+            data_point.values.push_back(-1.0);
+
           data_point.values.insert(data_point.values.end(),
                                    solver_control_expensive.get_history_data().begin(),
                                    solver_control_expensive.get_history_data().end());
@@ -132,16 +146,14 @@ namespace aspect
     StokesResidual<dim>::initialize ()
     {
       this->get_signals().post_stokes_solver.connect(
-        std_cxx11::bind(&StokesResidual<dim>::stokes_solver_callback,
-                        this,
-                        /* do not need the first arguments
-                         * std_cxx11::_1,
-                         * std_cxx11::_2,
-                         * std_cxx11::_3,
-                         */
-                        std_cxx11::_4,
-                        std_cxx11::_5)
-      );
+        [&](const SimulatorAccess<dim> &,
+            const unsigned int /*number_S_iterations*/,
+            const unsigned int /*number_A_iterations*/,
+            const SolverControl &solver_control_cheap,
+            const SolverControl &solver_control_expensive)
+      {
+        this->stokes_solver_callback(solver_control_cheap,solver_control_expensive);
+      });
     }
 
     template <int dim>

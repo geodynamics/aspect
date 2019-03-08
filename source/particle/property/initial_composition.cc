@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2018 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -14,11 +14,12 @@
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with ASPECT; see the file doc/COPYING.  If not see
+ along with ASPECT; see the file LICENSE.  If not see
  <http://www.gnu.org/licenses/>.
  */
 
 #include <aspect/particle/property/initial_composition.h>
+#include <aspect/initial_composition/interface.h>
 
 namespace aspect
 {
@@ -51,7 +52,7 @@ namespace aspect
           {
             std::ostringstream field_name;
             field_name << "initial " << this->introspection().name_for_compositional_index(i);
-            property_information.push_back(std::make_pair(field_name.str(),1));
+            property_information.emplace_back(field_name.str(),1);
           }
 
         return property_information;

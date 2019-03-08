@@ -1,0 +1,342 @@
+
+Number of active cells: 1,024 (on 6 levels)
+Number of degrees of freedom: 32,196 (8,450+1,089+4,225+9,216+9,216)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 67+0 iterations.
+
+   Postprocessing:
+     Number of advected particles: 20000
+     RMS, max velocity:            0.355 m/s, 0.786 m/s
+     Compositions min/max/mass:    0/1/0.4 // 0/1/0.3994
+     Temperature min/avg/max:      0 K, 0.5 K, 1 K
+     Writing graphical output:     output-particle_interpolator_time_dependence/solution/solution-00000
+
+*** Timestep 1:  t=0.0198883 seconds
+   Solving temperature system... 11 iterations.
+   Solving Stokes system... 20+0 iterations.
+
+   Postprocessing:
+     Number of advected particles: 20000
+     RMS, max velocity:            0.355 m/s, 0.786 m/s
+     Compositions min/max/mass:    0/1/0.4 // 0/1/0.3994
+     Temperature min/avg/max:      0 K, 0.5001 K, 1 K
+     Writing graphical output:     output-particle_interpolator_time_dependence/solution/solution-00001
+
+*** Timestep 2:  t=0.0397766 seconds
+   Solving temperature system... 12 iterations.
+   Solving Stokes system... 62+0 iterations.
+
+   Postprocessing:
+     Number of advected particles: 20000
+     RMS, max velocity:            0.34 m/s, 0.749 m/s
+     Compositions min/max/mass:    0/1/0.3997 // 0/1/0.3996
+     Temperature min/avg/max:      0 K, 0.5001 K, 1 K
+     Writing graphical output:     output-particle_interpolator_time_dependence/solution/solution-00002
+
+*** Timestep 3:  t=0.0606247 seconds
+   Solving temperature system... 12 iterations.
+   Solving Stokes system... 60+0 iterations.
+
+   Postprocessing:
+     Number of advected particles: 20000
+     RMS, max velocity:            0.326 m/s, 0.719 m/s
+     Compositions min/max/mass:    0/1/0.3995 // 0/1/0.3991
+     Temperature min/avg/max:      0 K, 0.5002 K, 1 K
+     Writing graphical output:     output-particle_interpolator_time_dependence/solution/solution-00003
+
+*** Timestep 4:  t=0.0823503 seconds
+   Solving temperature system... 12 iterations.
+   Solving Stokes system... 60+0 iterations.
+
+   Postprocessing:
+     Number of advected particles: 20000
+     RMS, max velocity:            0.315 m/s, 0.695 m/s
+     Compositions min/max/mass:    0/1/0.4008 // 0/1/0.3996
+     Temperature min/avg/max:      0 K, 0.5002 K, 1 K
+     Writing graphical output:     output-particle_interpolator_time_dependence/solution/solution-00004
+
+*** Timestep 5:  t=0.104827 seconds
+   Solving temperature system... 12 iterations.
+   Solving Stokes system... 61+0 iterations.
+
+   Postprocessing:
+     Number of advected particles: 20000
+     RMS, max velocity:            0.301 m/s, 0.667 m/s
+     Compositions min/max/mass:    0/1/0.4003 // 0/1/0.3998
+     Temperature min/avg/max:      0 K, 0.5002 K, 1 K
+     Writing graphical output:     output-particle_interpolator_time_dependence/solution/solution-00005
+
+*** Timestep 6:  t=0.128243 seconds
+   Solving temperature system... 11 iterations.
+   Solving Stokes system... 60+0 iterations.
+
+   Postprocessing:
+     Number of advected particles: 20000
+     RMS, max velocity:            0.291 m/s, 0.647 m/s
+     Compositions min/max/mass:    0/1/0.4006 // 0/1/0.4
+     Temperature min/avg/max:      0 K, 0.5002 K, 1 K
+     Writing graphical output:     output-particle_interpolator_time_dependence/solution/solution-00006
+
+*** Timestep 7:  t=0.152407 seconds
+   Solving temperature system... 11 iterations.
+   Solving Stokes system... 60+0 iterations.
+
+   Postprocessing:
+     Number of advected particles: 20000
+     RMS, max velocity:            0.279 m/s, 0.623 m/s
+     Compositions min/max/mass:    0/1/0.4006 // 0/1/0.3987
+     Temperature min/avg/max:      0 K, 0.5002 K, 1 K
+     Writing graphical output:     output-particle_interpolator_time_dependence/solution/solution-00007
+
+*** Timestep 8:  t=0.177491 seconds
+   Solving temperature system... 11 iterations.
+   Solving Stokes system... 61+0 iterations.
+
+   Postprocessing:
+     Number of advected particles: 20000
+     RMS, max velocity:            0.269 m/s, 0.606 m/s
+     Compositions min/max/mass:    0/1/0.4007 // 0/1/0.3996
+     Temperature min/avg/max:      0 K, 0.5002 K, 1 K
+     Writing graphical output:     output-particle_interpolator_time_dependence/solution/solution-00008
+
+*** Timestep 9:  t=0.203289 seconds
+   Solving temperature system... 11 iterations.
+   Solving Stokes system... 60+0 iterations.
+
+   Postprocessing:
+     Number of advected particles: 20000
+     RMS, max velocity:            0.259 m/s, 0.585 m/s
+     Compositions min/max/mass:    0/1/0.4009 // 0/1/0.3989
+     Temperature min/avg/max:      0 K, 0.5002 K, 1 K
+     Writing graphical output:     output-particle_interpolator_time_dependence/solution/solution-00009
+
+*** Timestep 10:  t=0.230005 seconds
+   Solving temperature system... 12 iterations.
+   Solving Stokes system... 61+0 iterations.
+
+   Postprocessing:
+     Number of advected particles: 20000
+     RMS, max velocity:            0.248 m/s, 0.563 m/s
+     Compositions min/max/mass:    0/1/0.4004 // 0/1/0.3988
+     Temperature min/avg/max:      0 K, 0.5002 K, 1 K
+     Writing graphical output:     output-particle_interpolator_time_dependence/solution/solution-00010
+
+*** Timestep 11:  t=0.257777 seconds
+   Solving temperature system... 11 iterations.
+   Solving Stokes system... 60+0 iterations.
+
+   Postprocessing:
+     Number of advected particles: 20000
+     RMS, max velocity:            0.237 m/s, 0.541 m/s
+     Compositions min/max/mass:    0/1/0.4013 // 0/1/0.3987
+     Temperature min/avg/max:      0 K, 0.5002 K, 1 K
+     Writing graphical output:     output-particle_interpolator_time_dependence/solution/solution-00011
+
+*** Timestep 12:  t=0.286646 seconds
+   Solving temperature system... 11 iterations.
+   Solving Stokes system... 61+0 iterations.
+
+   Postprocessing:
+     Number of advected particles: 20000
+     RMS, max velocity:            0.228 m/s, 0.523 m/s
+     Compositions min/max/mass:    0/1/0.4009 // 0/1/0.3986
+     Temperature min/avg/max:      0 K, 0.5002 K, 1 K
+     Writing graphical output:     output-particle_interpolator_time_dependence/solution/solution-00012
+
+*** Timestep 13:  t=0.316533 seconds
+   Solving temperature system... 11 iterations.
+   Solving Stokes system... 61+0 iterations.
+
+   Postprocessing:
+     Number of advected particles: 20000
+     RMS, max velocity:            0.218 m/s, 0.502 m/s
+     Compositions min/max/mass:    0/1/0.4006 // 0/1/0.3987
+     Temperature min/avg/max:      0 K, 0.5002 K, 1 K
+     Writing graphical output:     output-particle_interpolator_time_dependence/solution/solution-00013
+
+*** Timestep 14:  t=0.347655 seconds
+   Solving temperature system... 11 iterations.
+   Solving Stokes system... 62+0 iterations.
+
+   Postprocessing:
+     Number of advected particles: 20000
+     RMS, max velocity:            0.21 m/s, 0.485 m/s
+     Compositions min/max/mass:    0/1/0.4007 // 0/1/0.3989
+     Temperature min/avg/max:      0 K, 0.5002 K, 1 K
+     Writing graphical output:     output-particle_interpolator_time_dependence/solution/solution-00014
+
+*** Timestep 15:  t=0.379876 seconds
+   Solving temperature system... 11 iterations.
+   Solving Stokes system... 61+0 iterations.
+
+   Postprocessing:
+     Number of advected particles: 20000
+     RMS, max velocity:            0.203 m/s, 0.47 m/s
+     Compositions min/max/mass:    0/1/0.4004 // 0/1/0.399
+     Temperature min/avg/max:      0 K, 0.5002 K, 1 K
+     Writing graphical output:     output-particle_interpolator_time_dependence/solution/solution-00015
+
+*** Timestep 16:  t=0.413083 seconds
+   Solving temperature system... 11 iterations.
+   Solving Stokes system... 61+0 iterations.
+
+   Postprocessing:
+     Number of advected particles: 20000
+     RMS, max velocity:            0.196 m/s, 0.456 m/s
+     Compositions min/max/mass:    0/1/0.401 // 0/1/0.3992
+     Temperature min/avg/max:      0 K, 0.5002 K, 1 K
+     Writing graphical output:     output-particle_interpolator_time_dependence/solution/solution-00016
+
+*** Timestep 17:  t=0.447314 seconds
+   Solving temperature system... 11 iterations.
+   Solving Stokes system... 61+0 iterations.
+
+   Postprocessing:
+     Number of advected particles: 20000
+     RMS, max velocity:            0.187 m/s, 0.436 m/s
+     Compositions min/max/mass:    0/1/0.4011 // 0/1/0.3993
+     Temperature min/avg/max:      0 K, 0.5002 K, 1 K
+     Writing graphical output:     output-particle_interpolator_time_dependence/solution/solution-00017
+
+*** Timestep 18:  t=0.483185 seconds
+   Solving temperature system... 11 iterations.
+   Solving Stokes system... 63+0 iterations.
+
+   Postprocessing:
+     Number of advected particles: 20000
+     RMS, max velocity:            0.179 m/s, 0.419 m/s
+     Compositions min/max/mass:    0/1/0.4016 // 0/1/0.3995
+     Temperature min/avg/max:      0 K, 0.5002 K, 1 K
+     Writing graphical output:     output-particle_interpolator_time_dependence/solution/solution-00018
+
+*** Timestep 19:  t=0.520441 seconds
+   Solving temperature system... 11 iterations.
+   Solving Stokes system... 62+0 iterations.
+
+   Postprocessing:
+     Number of advected particles: 20000
+     RMS, max velocity:            0.17 m/s, 0.4 m/s
+     Compositions min/max/mass:    0/1/0.4013 // 0/1/0.4001
+     Temperature min/avg/max:      0 K, 0.5002 K, 1 K
+     Writing graphical output:     output-particle_interpolator_time_dependence/solution/solution-00019
+
+*** Timestep 20:  t=0.559459 seconds
+   Solving temperature system... 11 iterations.
+   Solving Stokes system... 62+0 iterations.
+
+   Postprocessing:
+     Number of advected particles: 20000
+     RMS, max velocity:            0.162 m/s, 0.383 m/s
+     Compositions min/max/mass:    0/1/0.4008 // 0/1/0.4001
+     Temperature min/avg/max:      0 K, 0.5002 K, 1 K
+     Writing graphical output:     output-particle_interpolator_time_dependence/solution/solution-00020
+
+*** Timestep 21:  t=0.600223 seconds
+   Solving temperature system... 11 iterations.
+   Solving Stokes system... 63+0 iterations.
+
+   Postprocessing:
+     Number of advected particles: 20000
+     RMS, max velocity:            0.154 m/s, 0.369 m/s
+     Compositions min/max/mass:    0/1/0.3997 // 0/1/0.3992
+     Temperature min/avg/max:      0 K, 0.5002 K, 1 K
+     Writing graphical output:     output-particle_interpolator_time_dependence/solution/solution-00021
+
+*** Timestep 22:  t=0.642504 seconds
+   Solving temperature system... 11 iterations.
+   Solving Stokes system... 63+0 iterations.
+
+   Postprocessing:
+     Number of advected particles: 20000
+     RMS, max velocity:            0.147 m/s, 0.354 m/s
+     Compositions min/max/mass:    0/1/0.4 // 0/1/0.3991
+     Temperature min/avg/max:      0 K, 0.5002 K, 1 K
+     Writing graphical output:     output-particle_interpolator_time_dependence/solution/solution-00022
+
+*** Timestep 23:  t=0.686689 seconds
+   Solving temperature system... 11 iterations.
+   Solving Stokes system... 63+0 iterations.
+
+   Postprocessing:
+     Number of advected particles: 20000
+     RMS, max velocity:            0.141 m/s, 0.334 m/s
+     Compositions min/max/mass:    0/1/0.3996 // 0/1/0.3995
+     Temperature min/avg/max:      0 K, 0.5002 K, 1 K
+     Writing graphical output:     output-particle_interpolator_time_dependence/solution/solution-00023
+
+*** Timestep 24:  t=0.733399 seconds
+   Solving temperature system... 11 iterations.
+   Solving Stokes system... 63+0 iterations.
+
+   Postprocessing:
+     Number of advected particles: 20000
+     RMS, max velocity:            0.133 m/s, 0.316 m/s
+     Compositions min/max/mass:    0/1/0.3986 // 0/1/0.3995
+     Temperature min/avg/max:      0 K, 0.5002 K, 1 K
+     Writing graphical output:     output-particle_interpolator_time_dependence/solution/solution-00024
+
+*** Timestep 25:  t=0.782925 seconds
+   Solving temperature system... 11 iterations.
+   Solving Stokes system... 63+0 iterations.
+
+   Postprocessing:
+     Number of advected particles: 20000
+     RMS, max velocity:            0.125 m/s, 0.296 m/s
+     Compositions min/max/mass:    0/1/0.3998 // 0/1/0.3992
+     Temperature min/avg/max:      0 K, 0.5002 K, 1 K
+     Writing graphical output:     output-particle_interpolator_time_dependence/solution/solution-00025
+
+*** Timestep 26:  t=0.835704 seconds
+   Solving temperature system... 11 iterations.
+   Solving Stokes system... 63+0 iterations.
+
+   Postprocessing:
+     Number of advected particles: 20000
+     RMS, max velocity:            0.118 m/s, 0.277 m/s
+     Compositions min/max/mass:    0/1/0.3999 // 0/1/0.3995
+     Temperature min/avg/max:      0 K, 0.5002 K, 1 K
+     Writing graphical output:     output-particle_interpolator_time_dependence/solution/solution-00026
+
+*** Timestep 27:  t=0.892156 seconds
+   Solving temperature system... 11 iterations.
+   Solving Stokes system... 63+0 iterations.
+
+   Postprocessing:
+     Number of advected particles: 20000
+     RMS, max velocity:            0.11 m/s, 0.258 m/s
+     Compositions min/max/mass:    0/1/0.401 // 0/1/0.3998
+     Temperature min/avg/max:      0 K, 0.5002 K, 1 K
+     Writing graphical output:     output-particle_interpolator_time_dependence/solution/solution-00027
+
+*** Timestep 28:  t=0.952771 seconds
+   Solving temperature system... 11 iterations.
+   Solving Stokes system... 63+0 iterations.
+
+   Postprocessing:
+     Number of advected particles: 20000
+     RMS, max velocity:            0.102 m/s, 0.236 m/s
+     Compositions min/max/mass:    0/1/0.4004 // 0/1/0.399
+     Temperature min/avg/max:      0 K, 0.5002 K, 1 K
+     Writing graphical output:     output-particle_interpolator_time_dependence/solution/solution-00028
+
+*** Timestep 29:  t=1 seconds
+   Solving temperature system... 10 iterations.
+   Solving Stokes system... 62+0 iterations.
+
+   Postprocessing:
+     Number of advected particles: 20000
+     RMS, max velocity:            0.094 m/s, 0.219 m/s
+     Compositions min/max/mass:    0/1/0.3994 // 0/1/0.3986
+     Temperature min/avg/max:      0 K, 0.5001 K, 1 K
+     Writing graphical output:     output-particle_interpolator_time_dependence/solution/solution-00029
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

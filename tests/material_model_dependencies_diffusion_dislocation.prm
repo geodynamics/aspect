@@ -20,7 +20,7 @@ set Start time                             = 0
 set Adiabatic surface temperature          = 293
 set Surface pressure                       = 0
 set Use years in output instead of seconds = false  # default: true
-set Nonlinear solver scheme                = Stokes only
+set Nonlinear solver scheme                = no Advection, iterated Stokes
 
 subsection Discretization
   set Stokes velocity polynomial degree       = 2
@@ -69,7 +69,7 @@ end
 
 
 subsection Boundary temperature model
-  set Model name = initial temperature
+  set List of model names = initial temperature
 end
 
 
@@ -81,16 +81,16 @@ subsection Mesh refinement
 end
 
 
-subsection Model settings
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
 
-
+subsection Boundary temperature model
   set Fixed temperature boundary indicators   = 0, 1
+end
 
-  set Prescribed velocity boundary indicators =
-
+subsection Boundary velocity model
   set Tangential velocity boundary indicators = 0,1,2,3
-
-  set Zero velocity boundary indicators       =
 end
 
 

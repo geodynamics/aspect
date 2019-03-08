@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
@@ -23,13 +23,10 @@
 
 #include <aspect/global.h>
 
-// C++11 related includes. Can be removed when we require C++11.
-#include <deal.II/base/std_cxx11/array.h>
-#include <deal.II/base/std_cxx11/bind.h>
-#include <deal.II/base/std_cxx11/function.h>
-#include <deal.II/base/std_cxx11/shared_ptr.h>
-#include <deal.II/base/std_cxx11/unique_ptr.h>
-
+// C++11 related includes.
+#include <array>
+#include <functional>
+#include <memory>
 
 // We would like to use a function from SolverControl that was introduced after
 // deal.II 8.5. For older versions use this derived class instead that implements
@@ -61,6 +58,7 @@ namespace aspect
 
         if (step == 0)
           history_data.resize(history_data.size()+1);
+
         return return_value;
       }
 
@@ -114,7 +112,7 @@ namespace aspect
 }
 namespace aspect
 {
-  template<int dim>
+  template <int dim>
   inline
   ConeBoundary<dim>::ConeBoundary (const double radius_0,
                                    const double radius_1,
@@ -124,7 +122,7 @@ namespace aspect
     dealii::ConeBoundary<dim>(radius_0, radius_1, x_0, x_1)
   {}
 
-  template<int dim>
+  template <int dim>
   inline
   Tensor<1,dim>
   ConeBoundary<dim>::
@@ -144,6 +142,33 @@ namespace aspect
     return normal/normal.norm();
   }
 }
+#endif
+
+#if !DEAL_II_VERSION_GTE(9,0,0)
+namespace dealii
+{
+  namespace std_cxx14
+  {
+#ifdef DEAL_II_WITH_CXX14
+    using std::make_unique;
+#else
+    /**
+     * An implementation of std::make_unique(). Since we require C++11
+     * even if the compiler does not support C++14, we can implement
+     * everything that they forgot to put into C++11.
+     */
+    template <typename T, class... Args>
+    inline
+    std::unique_ptr<T>
+    make_unique(Args &&... args)
+    {
+      return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
+    }
+#endif
+  }
+}
+#else
+#include <deal.II/base/std_cxx14/memory.h>
 #endif
 
 

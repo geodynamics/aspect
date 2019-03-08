@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,15 +14,17 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
 #include <aspect/simulator.h>
-#include <aspect/assembly.h>
+#include <aspect/simulator/assemblers/interface.h>
 #include <aspect/melt.h>
 
+#include <deal.II/base/signaling_nan.h>
 #include <deal.II/fe/fe_values.h>
+
 
 namespace aspect
 {
@@ -39,11 +41,10 @@ namespace aspect
     // variation. otherwise return something that's obviously
     // nonsensical
     if (parameters.stabilization_alpha != 2)
-      return std::numeric_limits<double>::quiet_NaN();
+      return numbers::signaling_nan<double>();
 
-    // record maximal entropy on Gauss quadrature
-    // points
-    const QGauss<dim> quadrature_formula (parameters.temperature_degree+1);
+    // record maximal entropy on Gauss quadrature points
+    const QGauss<dim> quadrature_formula (advection_field.polynomial_degree(introspection)+1);
     const unsigned int n_q_points = quadrature_formula.size();
 
     const FEValuesExtractors::Scalar field = advection_field.scalar_extractor(introspection);
@@ -75,10 +76,10 @@ namespace aspect
                                                 old_old_field_values);
           for (unsigned int q=0; q<n_q_points; ++q)
             {
-              const double T = (old_field_values[q] +
-                                old_old_field_values[q]) / 2;
-              const double entropy = ((T-average_field) *
-                                      (T-average_field));
+              const double field_value = (old_field_values[q] +
+                                          old_old_field_values[q]) / 2;
+              const double entropy = ((field_value-average_field) *
+                                      (field_value-average_field));
 
               min_entropy = std::min (min_entropy, entropy);
               max_entropy = std::max (max_entropy, entropy);
@@ -126,9 +127,15 @@ namespace aspect
     if (advection_field.is_discontinuous(introspection))
       return 0.;
 
-    std::vector<double> residual = assemblers->compute_advection_system_residual(*scratch.material_model_inputs.cell,
-                                                                                 advection_field,
-                                                                                 scratch);
+    std::vector<double> residual = assemblers->advection_system[0]->compute_residual(scratch);
+
+    for (unsigned int i=1; i<assemblers->advection_system.size(); ++i)
+      {
+        const std::vector<double> new_residual = assemblers->advection_system[i]->compute_residual(scratch);
+        for (unsigned int j=0; j<residual.size(); ++j)
+          residual[j] += new_residual[j];
+      }
+
 
     double max_residual = 0;
     double max_velocity = 0;
@@ -136,10 +143,27 @@ namespace aspect
     double max_specific_heat = (advection_field.is_temperature()) ? 0.0 : 1.0;
     double max_conductivity = 0;
 
+    std::vector<Tensor<1,dim> > old_fluid_velocity_values(scratch.finite_element_values.n_quadrature_points);
+    std::vector<Tensor<1,dim> > old_old_fluid_velocity_values(scratch.finite_element_values.n_quadrature_points);
+    if (parameters.include_melt_transport)
+      {
+        const FEValuesExtractors::Vector ex_u_f = introspection.variable("fluid velocity").extractor_vector();
+        scratch.finite_element_values[ex_u_f].get_function_values (old_solution,old_fluid_velocity_values);
+        scratch.finite_element_values[ex_u_f].get_function_values (old_old_solution,old_old_fluid_velocity_values);
+      }
+
     for (unsigned int q=0; q < scratch.finite_element_values.n_quadrature_points; ++q)
       {
         const Tensor<1,dim> velocity = (scratch.old_velocity_values[q] +
                                         scratch.old_old_velocity_values[q]) / 2;
+        double velocity_norm = velocity.norm();
+
+        if (parameters.include_melt_transport)
+          {
+            const Tensor<1,dim> fluid_velocity = (old_fluid_velocity_values[q] +
+                                                  old_old_fluid_velocity_values[q]) / 2;
+            velocity_norm = std::max (fluid_velocity.norm(), velocity_norm);
+          }
 
         const double strain_rate = ((scratch.old_strain_rates[q]
                                      + scratch.old_old_strain_rates[q]) / 2).norm();
@@ -151,7 +175,7 @@ namespace aspect
           }
 
         max_residual = std::max (residual[q],     max_residual);
-        max_velocity = std::max (velocity.norm()
+        max_velocity = std::max (velocity_norm
                                  + parameters.stabilization_gamma * strain_rate * cell_diameter,
                                  max_velocity);
 
@@ -170,11 +194,11 @@ namespace aspect
     // surprising at first that only the conductivity remains, but remember
     // that this actually *is* an additional artificial diffusion.
     if (std::abs(global_u_infty) < 1e-50)
-      return parameters.stabilization_beta *
+      return parameters.stabilization_beta[advection_field.field_index()] *
              max_conductivity / geometry_model->length_scale() *
              cell_diameter;
 
-    const double max_viscosity = parameters.stabilization_beta *
+    const double max_viscosity = parameters.stabilization_beta[advection_field.field_index()] *
                                  max_density *
                                  max_specific_heat *
                                  max_velocity * cell_diameter;
@@ -191,12 +215,12 @@ namespace aspect
 
         double entropy_viscosity;
         if (parameters.stabilization_alpha == 2)
-          entropy_viscosity = (parameters.stabilization_c_R *
+          entropy_viscosity = (parameters.stabilization_c_R[advection_field.field_index()] *
                                cell_diameter * cell_diameter *
                                max_residual /
                                global_entropy_variation);
         else
-          entropy_viscosity = (parameters.stabilization_c_R *
+          entropy_viscosity = (parameters.stabilization_c_R[advection_field.field_index()] *
                                cell_diameter * global_Omega_diameter *
                                max_velocity * max_residual /
                                (global_u_infty * global_field_variation));
@@ -213,7 +237,8 @@ namespace aspect
   void
   Simulator<dim>::
   get_artificial_viscosity (Vector<T> &viscosity_per_cell,
-                            const AdvectionField &advection_field) const
+                            const AdvectionField &advection_field,
+                            const bool skip_interior_cells) const
   {
     Assert(viscosity_per_cell.size()==triangulation.n_active_cells(), ExcInternalError());
 
@@ -228,10 +253,10 @@ namespace aspect
 
     const std::pair<double,double>
     global_field_range = get_extrapolated_advection_field_range (advection_field);
-    double global_entropy_variation = get_entropy_variation ((global_field_range.first +
-                                                              global_field_range.second) / 2,
-                                                             advection_field);
-    double global_max_velocity = get_maximal_velocity(old_solution);
+    const double global_entropy_variation = get_entropy_variation ((global_field_range.first +
+                                                                    global_field_range.second) / 2,
+                                                                   advection_field);
+    const double global_max_velocity = get_maximal_velocity(old_solution);
 
     const UpdateFlags update_flags = update_values |
                                      update_gradients |
@@ -255,16 +280,43 @@ namespace aspect
                                   Quadrature<dim-1> (),
                                   update_flags,
                                   face_update_flags,
-                                  introspection.n_compositional_fields);
+                                  introspection.n_compositional_fields,
+                                  advection_field);
 
     typename DoFHandler<dim>::active_cell_iterator cell = dof_handler.begin_active();
     for (; cell<dof_handler.end(); ++cell)
       {
-        if (!cell->is_locally_owned()
-            || (parameters.use_artificial_viscosity_smoothing  == true  &&  cell->is_artificial()))
+        // Skip cells for which we can not/do not need to compute the
+        // stabilization. We need to compute the artificial viscosity
+        // on all locally owned cells, but if we want to
+        // smooth/average it over a neighborhood of a locally owned
+        // cell, then we also need it on ghost cells; we could get it
+        // there through parallel communication, but the easier way is
+        // to simply compute it there as well
+        if (cell->is_artificial()
+            ||
+            (cell->is_ghost() &&
+             parameters.use_artificial_viscosity_smoothing == false))
           {
-            viscosity_per_cell[cell->active_cell_index()]=-1;
+            viscosity_per_cell[cell->active_cell_index()] = numbers::signaling_nan<T>();
             continue;
+          }
+        // Also skip all interior cells if we are asked to do so. Do not
+        // skip neighbor cells of boundary cells if smoothing is on, because
+        // the smoothing uses both the boundary cell and its neighbor.
+        else if (skip_interior_cells && !cell->at_boundary())
+          {
+            bool neighbor_at_boundary = false;
+            for (unsigned int face_no=0; face_no<GeometryInfo<dim>::faces_per_cell; ++face_no)
+              if (cell->neighbor(face_no)->at_boundary() == true)
+                neighbor_at_boundary = true;
+
+            if (parameters.use_artificial_viscosity_smoothing == false ||
+                neighbor_at_boundary == false)
+              {
+                viscosity_per_cell[cell->active_cell_index()] = numbers::signaling_nan<T>();
+                continue;
+              }
           }
 
         const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
@@ -367,9 +419,17 @@ namespace aspect
               scratch.material_model_inputs.composition[q][c] = (scratch.old_composition_values[c][q] + scratch.old_old_composition_values[c][q]) / 2;
             scratch.material_model_inputs.strain_rate[q] = (scratch.old_strain_rates[q] + scratch.old_old_strain_rates[q]) / 2;
           }
-        scratch.material_model_inputs.cell = &cell;
-        create_additional_material_model_outputs(scratch.material_model_outputs);
+        scratch.material_model_inputs.current_cell = cell;
 
+        for (unsigned int i=0; i<assemblers->advection_system.size(); ++i)
+          assemblers->advection_system[i]->create_additional_material_model_outputs(scratch.material_model_outputs);
+        heating_model_manager.create_additional_material_model_inputs_and_outputs(scratch.material_model_inputs,
+                                                                                  scratch.material_model_outputs);
+
+        material_model->fill_additional_material_model_inputs(scratch.material_model_inputs,
+                                                              solution,
+                                                              scratch.finite_element_values,
+                                                              introspection);
         material_model->evaluate(scratch.material_model_inputs,scratch.material_model_outputs);
 
         if (parameters.formulation_temperature_equation
@@ -417,18 +477,23 @@ namespace aspect
         for (cell = dof_handler.begin_active(); cell!=end_cell; ++cell)
           {
             if (cell->is_locally_owned())
-              for (unsigned int face_no=0; face_no<GeometryInfo<dim>::faces_per_cell; ++face_no)
-                if (cell->at_boundary(face_no) == false)
-                  {
-                    if (cell->neighbor(face_no)->active())
-                      viscosity_per_cell[cell->active_cell_index()] = std::max(viscosity_per_cell[cell->active_cell_index()],
-                                                                               viscosity_per_cell_temp[cell->neighbor(face_no)->active_cell_index()]);
-                    else
-                      for (unsigned int l=0; l<cell->neighbor(face_no)->n_children(); l++)
-                        if (cell->neighbor(face_no)->child(l)->active())
-                          viscosity_per_cell[cell->active_cell_index()] = std::max(viscosity_per_cell[cell->active_cell_index()],
-                                                                                   viscosity_per_cell_temp[cell->neighbor(face_no)->child(l)->active_cell_index()]);
-                  }
+              {
+                if (skip_interior_cells && !cell->at_boundary())
+                  continue;
+
+                for (unsigned int face_no=0; face_no<GeometryInfo<dim>::faces_per_cell; ++face_no)
+                  if (cell->at_boundary(face_no) == false)
+                    {
+                      if (cell->neighbor(face_no)->active())
+                        viscosity_per_cell[cell->active_cell_index()] = std::max(viscosity_per_cell[cell->active_cell_index()],
+                                                                                 viscosity_per_cell_temp[cell->neighbor(face_no)->active_cell_index()]);
+                      else
+                        for (unsigned int l=0; l<cell->neighbor(face_no)->n_children(); ++l)
+                          if (cell->neighbor(face_no)->child(l)->active())
+                            viscosity_per_cell[cell->active_cell_index()] = std::max(viscosity_per_cell[cell->active_cell_index()],
+                                                                                     viscosity_per_cell_temp[cell->neighbor(face_no)->child(l)->active_cell_index()]);
+                    }
+              }
           }
       }
   }
@@ -440,9 +505,11 @@ namespace aspect
 {
 #define INSTANTIATE(dim) \
   template void Simulator<dim>::get_artificial_viscosity (Vector<double> &viscosity_per_cell,  \
-                                                          const AdvectionField &advection_field) const; \
+                                                          const AdvectionField &advection_field, \
+                                                          const bool skip_interior_cells) const; \
   template void Simulator<dim>::get_artificial_viscosity (Vector<float> &viscosity_per_cell,  \
-                                                          const AdvectionField &advection_field) const; \
+                                                          const AdvectionField &advection_field, \
+                                                          const bool skip_interior_cells) const; \
    
 
   ASPECT_INSTANTIATE(INSTANTIATE)

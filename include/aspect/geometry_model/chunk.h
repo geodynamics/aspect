@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
@@ -132,16 +132,23 @@ namespace aspect
         double depth(const Point<dim> &position) const;
 
         /**
-         * Whereas the depth function returns the depth with respect
-         * to the unperturbed surface, this function
-         * returns the depth with respect to the surface
-         * including the initial topography. For models without
-         * initial topography, the result will be the same.
-         *
-         * Note that the perturbed surface only considers the
-         * initially prescribed topography, not any perturbations
-         * due to a displacement of the free surface.
+         * Return the height of the given position relative to the outer
+         * radius.
          */
+        virtual
+        double height_above_reference_surface(const Point<dim> &position) const;
+
+       /**
+        * Whereas the depth function returns the depth with respect
+        * to the unperturbed surface, this function
+        * returns the depth with respect to the surface 
+        * including the initial topography. For models without
+        * initial topography, the result will be the same. 
+        *
+        * Note that the perturbed surface only considers the 
+        * initially prescribed topography, not any perturbations
+        * due to a displacement of the free surface.
+        */
         virtual
         double depth_wrt_topo(const Point<dim> &position) const;
 
@@ -150,64 +157,60 @@ namespace aspect
         Point<dim> representative_point(const double depth) const;
 
         /**
-         * Return the longitude at the western edge of the chunk
-         * Measured in radians
+         * Return the longitude at the western edge of the chunk measured in
+         * radians.
          */
         virtual
         double west_longitude() const;
 
         /**
-         * Return the longitude at the eastern edge of the chunk
-         * Measured in radians
+         * Return the longitude at the eastern edge of the chunk measured in
+         * radians.
          */
         virtual
         double east_longitude() const;
 
         /**
-         * Returns the longitude range of the chunk
-         * Measured in radians
+         * Return the longitude range of the chunk measured in radians.
          */
         virtual
         double longitude_range() const;
 
         /**
-         * Return the latitude at the southern edge of the chunk
-         * Measured in radians from the equator
+         * Return the latitude at the southern edge of the chunk measured in
+         * radians from the equator.
          */
         virtual
         double south_latitude() const;
 
         /**
-         * Return the latitude at the northern edge of the chunk
-         * Measured in radians from the equator
+         * Return the latitude at the northern edge of the chunk measured in
+         * radians from the equator.
          */
         virtual
         double north_latitude() const;
 
         /**
-         * Return the latitude range of the chunk
-         * Measured in radians
+         * Return the latitude range of the chunk Measured in radians
          */
         virtual
         double latitude_range() const;
 
         /**
-         * Return the maximum depth from the surface of the model
-         * Measured in meters
+         * Return the maximum depth from the surface of the model measured in
+         * meters.
          */
         virtual
         double maximal_depth() const;
 
         /**
-         * Return the inner radius of the chunk
-         * Measured in meters
+         * Return the inner radius of the chunk measured in meters.
          */
         virtual
         double inner_radius() const;
 
         /**
-         * Return the outer radius of the chunk
-         * Measured in meters
+         * Return the outer radius of the chunk measured in meters.
          */
         virtual
         double outer_radius() const;
@@ -230,6 +233,29 @@ namespace aspect
         virtual
         bool
         point_is_in_domain(const Point<dim> &p) const;
+
+        /*
+         * Returns what the natural coordinate system for this geometry model is,
+         * which for a chunk is Spherical.
+         */
+        virtual
+        aspect::Utilities::Coordinates::CoordinateSystem natural_coordinate_system() const;
+
+        /**
+         * Takes the Cartesian points (x,z or x,y,z) and returns standardized
+         * coordinates which are most 'natural' to the geometry model. For a chunk
+         * this is (radius, longitude) in 2d and (radius, longitude, latitude) in 3d.
+         */
+        virtual
+        std::array<double,dim> cartesian_to_natural_coordinates(const Point<dim> &position) const;
+
+        /**
+         * Undoes the action of cartesian_to_natural_coordinates, and turns the
+         * coordinate system which is most 'natural' to the geometry model into
+         * Cartesian coordinates.
+         */
+        virtual
+        Point<dim> natural_to_cartesian_coordinates(const std::array<double,dim> &position) const;
 
         /**
          * Declare the parameters this class takes through input files.
@@ -280,9 +306,17 @@ namespace aspect
         class ChunkGeometry : public ChartManifold<dim,dim>
         {
           public:
+            /**
+             * Constructor
+             */
             ChunkGeometry();
 
             /**
+             * Copy constructor
+             */
+            ChunkGeometry(const ChunkGeometry &other);
+
+            /*
              * An initialization function necessary to make sure that the
              * manifold has access to the topography plugins.
              */
@@ -347,6 +381,15 @@ namespace aspect
             virtual
             void
             set_min_longitude(const double p1_lon);
+
+#if DEAL_II_VERSION_GTE(9,0,0)
+            /**
+             * Return a copy of this manifold.
+             */
+            virtual
+            std::unique_ptr<Manifold<dim,dim> >
+            clone() const;
+#endif
 
             virtual
             void

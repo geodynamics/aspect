@@ -65,11 +65,8 @@ end
 # into account the effect of melting/freezing of material at 
 # the boundary of inner and outer core, and which is implemented
 # in the shared library. 
-subsection Model settings
-  set Zero velocity boundary indicators       = 
+subsection Boundary traction model
   set Prescribed traction boundary indicators = surface: zero traction
-  set Prescribed velocity boundary indicators =
-  set Fixed temperature boundary indicators   = surface
 end
 
 # We use a constant radiogenic heating rate.  
@@ -83,9 +80,11 @@ end
 
 # The (potential) temperature is set to zero at the outer boundary.
 subsection Boundary temperature model
-  set Model name = spherical constant
+  set Fixed temperature boundary indicators = surface
+  set List of model names = spherical constant
+
   subsection Spherical constant
-    set Inner temperature = 0.8
+    set Inner temperature = 0.1
     set Outer temperature = 0
   end
 end
@@ -103,6 +102,7 @@ subsection Gravity model
   set Model name = radial linear
 
   subsection Radial linear
+    set Magnitude at bottom = 0.0
     set Magnitude at surface = 2     # <-- Ra
   end
 end
@@ -116,7 +116,7 @@ subsection Mesh refinement
 
   subsection Minimum refinement function
     set Variable names = depth, phi, theta
-    set Function expression = if(depth>0.1,if(depth>0.3,5,6),7)
+    set Function expression = if(depth>0.1,if(depth>0.2,2,5),6)
   end
 end
 
@@ -131,7 +131,4 @@ subsection Postprocess
     set List of output variables      = strain rate, gravity, density, specific heat, heating
   end
 
-  subsection Depth average
-    set Time between graphical output = 1e6
-  end
 end

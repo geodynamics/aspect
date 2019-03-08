@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
@@ -36,15 +36,11 @@ namespace aspect
       std::pair<std::string, Vector<float> *>
       ParticleCount<dim>::execute() const
       {
-        const Postprocess::Particles<dim> *particle_postprocessor = this->template find_postprocessor<Postprocess::Particles<dim> >();
+        const Postprocess::Particles<dim> &particle_postprocessor =
+          this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::Particles<dim> >();
 
-        AssertThrow(particle_postprocessor != 0,
-                    ExcMessage("The <particles> postprocessor was not found in the list of "
-                               "active postprocessors. You need to select this postprocessor to "
-                               "be able to select the <particle count> visualization plugin."));
-
-        const std::multimap<aspect::Particle::types::LevelInd, aspect::Particle::Particle<dim> > &particles =
-          particle_postprocessor->get_particle_world().get_particles();
+        const Particle::ParticleHandler<dim> &particle_handler =
+          particle_postprocessor.get_particle_world().get_particle_handler();
 
         std::pair<std::string, Vector<float> *>
         return_value ("particles_per_cell",
@@ -55,18 +51,23 @@ namespace aspect
         cell = this->get_dof_handler().begin_active(),
         endc = this->get_dof_handler().end();
 
-        unsigned int cell_index = 0;
-        for (; cell!=endc; ++cell,++cell_index)
+        for (; cell!=endc; ++cell)
           if (cell->is_locally_owned())
             {
-              const aspect::Particle::types::LevelInd current_cell (cell->level(),cell->index());
-
-              (*return_value.second)(cell_index) = static_cast<float> (particles.count(current_cell));
+              (*return_value.second)(cell->active_cell_index()) = static_cast<float> (particle_handler.n_particles_in_cell(cell));
             }
 
         return return_value;
       }
 
+
+
+      template <int dim>
+      std::list<std::string>
+      ParticleCount<dim>::required_other_postprocessors() const
+      {
+        return std::list<std::string> (1, "particles");
+      }
     }
   }
 }

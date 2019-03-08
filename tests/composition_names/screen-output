@@ -7,7 +7,7 @@ Number of degrees of freedom: 49 (18+4+9+9+9)
    Skipping peridotite composition solve because RHS is zero.
    Skipping eclogite composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 6+0 iterations.
+   Solving Stokes system... 5+0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-composition_names/solution/solution-00000

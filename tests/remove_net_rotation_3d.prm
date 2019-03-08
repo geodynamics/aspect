@@ -1,0 +1,75 @@
+# This test is based on rotation_statistics_3D_asymmetric, with the modification
+# that we solve for the velocity solution and remove the net rotation.
+
+set Dimension                              = 3
+
+set Use years in output instead of seconds = false
+set End time                               = 1
+set Nonlinear solver scheme                = single Advection, single Stokes
+
+
+subsection Nullspace removal
+  set Remove nullspace = net rotation
+end
+
+
+subsection Geometry model
+  set Model name = sphere
+
+  subsection Sphere
+    set Radius = 1
+  end
+end
+
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = top
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = if (x>0, if (y>0, 1.0, 2.0), if (y<0, 1.0, 2.0))
+  end
+end
+
+
+subsection Gravity model
+  set Model name = radial constant
+
+  subsection Vertical
+    set Magnitude = 1
+  end
+end
+
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Reference density             = 2
+    set Reference specific heat       = 1
+    set Reference temperature         = 1
+    set Thermal conductivity          = 1
+    set Thermal expansion coefficient = 0.5
+    set Viscosity                     = 1
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial global refinement                = 2
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 0
+end
+
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, rotation statistics
+
+  subsection Rotation statistics
+    set Use constant density of one = true
+    set Output full moment of inertia tensor = true
+  end
+end

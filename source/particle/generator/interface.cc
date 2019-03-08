@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2019 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -14,13 +14,13 @@
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with ASPECT; see the file doc/COPYING.  If not see
+ along with ASPECT; see the file LICENSE.  If not see
  <http://www.gnu.org/licenses/>.
  */
 
 #include <aspect/particle/generator/interface.h>
 
-#include <deal.II/base/std_cxx1x/tuple.h>
+#include <tuple>
 #include <deal.II/grid/grid_tools.h>
 
 #include <boost/lexical_cast.hpp>
@@ -33,8 +33,6 @@ namespace aspect
     {
       template <int dim>
       Interface<dim>::Interface()
-        :
-        random_number_generator(5432)
       {}
 
       template <int dim>
@@ -44,10 +42,13 @@ namespace aspect
       template <int dim>
       void
       Interface<dim>::initialize ()
-      {}
+      {
+        const unsigned int my_rank = Utilities::MPI::this_mpi_process(this->get_mpi_communicator());
+        random_number_generator.seed(5432+my_rank);
+      }
 
       template <int dim>
-      std::pair<types::LevelInd,Particle<dim> >
+      std::pair<Particles::internal::LevelInd,Particle<dim> >
       Interface<dim>::generate_particle(const Point<dim> &position,
                                         const types::particle_index id) const
       {
@@ -65,7 +66,7 @@ namespace aspect
                         ExcParticlePointNotInDomain());
 
             const Particle<dim> particle(position, it.second, id);
-            const types::LevelInd cell(it.first->level(), it.first->index());
+            const Particles::internal::LevelInd cell(it.first->level(), it.first->index());
             return std::make_pair(cell,particle);
           }
         catch (GridTools::ExcPointNotFound<dim> &)
@@ -75,11 +76,11 @@ namespace aspect
           }
 
         // Avoid warnings about missing return
-        return std::pair<types::LevelInd,Particle<dim> >();
+        return std::pair<Particles::internal::LevelInd,Particle<dim> >();
       }
 
       template <int dim>
-      std::pair<types::LevelInd,Particle<dim> >
+      std::pair<Particles::internal::LevelInd,Particle<dim> >
       Interface<dim>::generate_particle (const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell,
                                          const types::particle_index id)
       {
@@ -123,7 +124,7 @@ namespace aspect
                   {
                     // Add the generated particle to the set
                     const Particle<dim> new_particle(particle_position, p_unit, id);
-                    const types::LevelInd cellid(cell->level(), cell->index());
+                    const Particles::internal::LevelInd cellid(cell->level(), cell->index());
                     return std::make_pair(cellid,new_particle);
                   }
               }
@@ -139,7 +140,7 @@ namespace aspect
                                  "generated and the actual cell volume is approximately: " +
                                  boost::lexical_cast<std::string>(cell->measure() / (max_bounds-min_bounds).norm_square())));
 
-        return std::make_pair(types::LevelInd(),Particle<dim>());
+        return std::make_pair(Particles::internal::LevelInd(),Particle<dim>());
       }
 
       template <int dim>
@@ -158,7 +159,7 @@ namespace aspect
 
       namespace
       {
-        std_cxx1x::tuple
+        std::tuple
         <void *,
         void *,
         aspect::internal::Plugins::PluginList<Interface<2> >,
@@ -174,10 +175,10 @@ namespace aspect
                                    void (*declare_parameters_function) (ParameterHandler &),
                                    Interface<dim> *(*factory_function) ())
       {
-        std_cxx1x::get<dim>(registered_plugins).register_plugin (name,
-                                                                 description,
-                                                                 declare_parameters_function,
-                                                                 factory_function);
+        std::get<dim>(registered_plugins).register_plugin (name,
+                                                           description,
+                                                           declare_parameters_function,
+                                                           factory_function);
       }
 
 
@@ -196,8 +197,8 @@ namespace aspect
         }
         prm.leave_subsection ();
 
-        return std_cxx1x::get<dim>(registered_plugins).create_plugin (name,
-                                                                      "Particle::Generator name");
+        return std::get<dim>(registered_plugins).create_plugin (name,
+                                                                "Particle::Generator name");
       }
 
 
@@ -212,19 +213,29 @@ namespace aspect
           prm.enter_subsection ("Particles");
           {
             const std::string pattern_of_names
-              = std_cxx1x::get<dim>(registered_plugins).get_pattern_of_names ();
+              = std::get<dim>(registered_plugins).get_pattern_of_names ();
 
             prm.declare_entry ("Particle generator name", "random uniform",
                                Patterns::Selection (pattern_of_names),
                                "Select one of the following models:\n\n"
                                +
-                               std_cxx1x::get<dim>(registered_plugins).get_description_string());
+                               std::get<dim>(registered_plugins).get_description_string());
           }
           prm.leave_subsection ();
         }
         prm.leave_subsection ();
 
-        std_cxx1x::get<dim>(registered_plugins).declare_parameters (prm);
+        std::get<dim>(registered_plugins).declare_parameters (prm);
+      }
+
+
+
+      template <int dim>
+      void
+      write_plugin_graph (std::ostream &out)
+      {
+        std::get<dim>(registered_plugins).write_plugin_graph ("Particle generator interface",
+                                                              out);
       }
     }
   }
@@ -263,6 +274,10 @@ namespace aspect
   template  \
   void \
   declare_parameters<dim> (ParameterHandler &); \
+  \
+  template \
+  void \
+  write_plugin_graph<dim> (std::ostream &); \
   \
   template \
   Interface<dim> * \

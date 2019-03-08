@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
@@ -65,7 +65,7 @@ namespace aspect
     minimal_composition (const std::set<types::boundary_id> &) const
     {
       const GeometryModel::Interface<dim> *geometry_model = &this->get_geometry_model();
-      if (dynamic_cast<const GeometryModel::Sphere<dim>*>(geometry_model) != 0)
+      if (dynamic_cast<const GeometryModel::Sphere<dim>*>(geometry_model) != nullptr)
         return outer_composition;
       else
         return std::min (inner_composition, outer_composition);
@@ -79,7 +79,7 @@ namespace aspect
     maximal_composition (const std::set<types::boundary_id> &) const
     {
       const GeometryModel::Interface<dim> *geometry_model = &this->get_geometry_model();
-      if (dynamic_cast<const GeometryModel::Sphere<dim>*>(geometry_model) != 0)
+      if (dynamic_cast<const GeometryModel::Sphere<dim>*>(geometry_model) != nullptr)
         return outer_composition;
       else
         return std::max (inner_composition, outer_composition);

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
@@ -41,43 +41,24 @@ namespace aspect
       AssertThrow(this->include_melt_transport(),
                   ExcMessage ("Heating model Adiabatic heating with melt only works if melt transport is enabled."));
 
-      // get the melt velocity from the solution vector
-      std::vector<Tensor<1,dim> > melt_velocity (material_model_inputs.position.size());
-
-      if (material_model_inputs.cell && this->get_timestep_number() > 0)
-        {
-          // we have to create a long vector, because that is the only way to extract the velocities
-          // from the solution vector
-          std::vector<std::vector<double> > melt_velocitiy_vector (dim, std::vector<double>(material_model_inputs.position.size()));
-          // Prepare the field function
-          Functions::FEFieldFunction<dim, DoFHandler<dim>, LinearAlgebra::BlockVector>
-          fe_value(this->get_dof_handler(), this->get_solution(), this->get_mapping());
-
-          fe_value.set_active_cell(*material_model_inputs.cell);
-
-          for (unsigned int d=0; d<dim; ++d)
-            fe_value.value_list(material_model_inputs.position,
-                                melt_velocitiy_vector[d],
-                                this->introspection().variable("fluid velocity").first_component_index+d);
-
-          for (unsigned int i=0; i<material_model_inputs.position.size(); ++i)
-            for (unsigned int d=0; d<dim; ++d)
-              melt_velocity[i][d] = melt_velocitiy_vector[d][i];
-        }
+      // get the melt velocity
+      const MaterialModel::MeltInputs<dim> *melt_in = material_model_inputs.template get_additional_input<MaterialModel::MeltInputs<dim> >();
+      AssertThrow(melt_in != nullptr,
+                  ExcMessage ("Need MeltInputs from the material model for adiabatic heating with melt!"));
 
       for (unsigned int q=0; q<heating_model_outputs.heating_source_terms.size(); ++q)
         {
           const double porosity = material_model_inputs.composition[q][this->introspection().compositional_index_for_name("porosity")];
 
           if (!simplified_adiabatic_heating)
-            heating_model_outputs.heating_source_terms[q] = ((-porosity * material_model_inputs.velocity[q] + porosity * melt_velocity[q])
+            heating_model_outputs.heating_source_terms[q] = ((-porosity * material_model_inputs.velocity[q] + porosity * melt_in->fluid_velocities[q])
                                                              * material_model_inputs.pressure_gradient[q])
                                                             * material_model_outputs.thermal_expansion_coefficients[q]
                                                             * material_model_inputs.temperature[q];
           else
             {
               const MaterialModel::MeltOutputs<dim> *melt_outputs = material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
-              Assert(melt_outputs != NULL, ExcMessage("Need MeltOutputs from the material model for adiabatic heating with melt."));
+              Assert(melt_outputs != nullptr, ExcMessage("Need MeltOutputs from the material model for adiabatic heating with melt."));
 
               heating_model_outputs.heating_source_terms[q] = (-porosity * material_model_inputs.velocity[q]
                                                                * this->get_gravity_model().gravity_vector(material_model_inputs.position[q]))
@@ -85,7 +66,7 @@ namespace aspect
                                                               * material_model_inputs.temperature[q]
                                                               * material_model_outputs.densities[q]
                                                               +
-                                                              ((porosity * melt_velocity[q])
+                                                              ((porosity * melt_in->fluid_velocities[q])
                                                                * this->get_gravity_model().gravity_vector(material_model_inputs.position[q]))
                                                               * material_model_outputs.thermal_expansion_coefficients[q]
                                                               * material_model_inputs.temperature[q]
@@ -141,6 +122,21 @@ namespace aspect
     {
       MeltHandler<dim>::create_material_model_outputs(output);
     }
+
+
+
+    template <int dim>
+    void
+    AdiabaticHeatingMelt<dim>::
+    create_additional_material_model_inputs(MaterialModel::MaterialModelInputs<dim> &inputs) const
+    {
+      // we need the melt inputs for this adiabatic heating of melt
+      if (inputs.template get_additional_input<MaterialModel::MeltInputs<dim> >() != nullptr)
+        return;
+
+      inputs.additional_inputs.push_back(
+        std::make_shared<MaterialModel::MeltInputs<dim>> (inputs.position.size()));
+    }
   }
 }
 
@@ -158,7 +154,7 @@ namespace aspect
                                   "+ \\alpha T (\\phi \\mathbf u_f \\cdot \nabla p)$.\n"
                                   "For full adiabatic heating, "
                                   "this has to be used in combination with the heating model "
-                                  "'adiabatic heating' to also include adiabatic heating for "
+                                  "`adiabatic heating' to also include adiabatic heating for "
                                   "the solid part, and the full heating term is then "
                                   "$\\alpha T ((1-\\phi) \\mathbf u_s \\cdot \\nabla p) "
                                   "+ \\alpha T (\\phi \\mathbf u_f \\cdot \\nabla p)$.")

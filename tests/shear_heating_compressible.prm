@@ -11,9 +11,8 @@ set End time                               = 0
 set Adiabatic surface temperature          = 0.5
 set Surface pressure                       = 0.0
 set Use years in output instead of seconds = false
-set Linear solver tolerance                = 1e-7
 set Pressure normalization                 = surface
-set Nonlinear solver scheme                = Advection only
+set Nonlinear solver scheme                = single Advection, no Stokes
 
 subsection Prescribed Stokes solution
   set Model name = function
@@ -30,7 +29,7 @@ subsection Prescribed Stokes solution
 end
 
 subsection Boundary temperature model
-  set Model name = box
+  set List of model names = box
   subsection Box
     set Top temperature = 0
     set Bottom temperature = 1
@@ -92,7 +91,11 @@ subsection Mesh refinement
 end
 
 
-subsection Model settings
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary temperature model
   set Fixed temperature boundary indicators   = 2,3
 end
 
@@ -117,4 +120,10 @@ subsection Postprocess
   end
 
 
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-7
+  end
 end

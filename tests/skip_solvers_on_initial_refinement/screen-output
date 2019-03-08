@@ -1,0 +1,33 @@
+
+Number of active cells: 4 (on 2 levels)
+Number of degrees of freedom: 84 (50+9+25)
+
+Number of active cells: 10 (on 3 levels)
+Number of degrees of freedom: 189 (114+18+57)
+
+Number of active cells: 40 (on 4 levels)
+Number of degrees of freedom: 634 (386+55+193)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 21+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: -2.356e+07 W, 2.356e+07 W, 0 W, 0 W
+
+*** Timestep 1:  t=1 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: -2.356e+07 W, 2.356e+07 W, 0 W, 0 W
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

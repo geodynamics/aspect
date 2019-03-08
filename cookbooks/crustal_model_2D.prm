@@ -5,12 +5,9 @@ set Dimension                                       = 2
 set Start time                                      = 0
 set End time                                        = 1e6
 set Use years in output instead of seconds          = true
-set Linear solver tolerance                         = 1e-9
-set Nonlinear solver scheme                         = iterated Stokes
+set Nonlinear solver scheme                         = single Advection, iterated Stokes
 set Nonlinear solver tolerance                      = 1e-8
 set Max nonlinear iterations                        = 100
-set Number of cheap Stokes solver steps             = 0
-set Maximum number of expensive Stokes solver steps = 5000
 set CFL number                                      = 0.5
 set Output directory                                = output-crustal_model_2D
 set Timing output frequency                         = 1
@@ -28,18 +25,15 @@ subsection Geometry model
   end
 end
 
-subsection Model settings
-  set Prescribed velocity boundary indicators = left: function, right:function, bottom:function
-  set Free surface boundary indicators        = top
-end
-
 
 # Advecting the free surface vertically rather than
 # in the surface normal direction can result in a
 # more stable mesh when the deformation is large
 subsection Free surface
+  set Free surface boundary indicators = top
   set Surface velocity projection = vertical
 end
+
 
 subsection Material model
 #  set Model name = viscoplastic 
@@ -60,6 +54,7 @@ subsection Material model
   end
 end
 
+
 subsection Gravity model
   set Model name = vertical
   subsection Vertical
@@ -69,6 +64,8 @@ end
 
 
 subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = left: function, right:function, bottom:function
+
   subsection Function
     set Variable names      = x,y
     set Function constants  = cm=0.01, year=1 
@@ -84,7 +81,7 @@ end
 # temperature boundary conditions.
 
 subsection Boundary temperature model
-  set Model name = box
+  set List of model names = box
 end
 
 subsection Initial temperature model
@@ -124,8 +121,16 @@ end
 subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, basic statistics
   subsection Visualization
-    set List of output variables = density, viscosity, strain rate, error indicator, friction heating, partition
+    set List of output variables = density, viscosity, strain rate, error indicator, heating, partition
     set Time between graphical output = 0
     set Interpolate output = true
+  end
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-9
+    set Number of cheap Stokes solver steps = 0
+    set Maximum number of expensive Stokes solver steps = 5000
   end
 end

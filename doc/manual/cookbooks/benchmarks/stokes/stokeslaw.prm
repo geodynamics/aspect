@@ -32,7 +32,7 @@ subsection Geometry model
 end
 
 
-subsection Model settings
+subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, right, front, back, bottom, top
 end
 
@@ -61,7 +61,7 @@ end
 # temperature boundary conditions.
 
 subsection Boundary temperature model
-  set Model name = box 
+  set List of model names = box 
 end
 
 subsection Initial temperature model

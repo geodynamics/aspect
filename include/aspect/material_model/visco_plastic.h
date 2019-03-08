@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
@@ -24,6 +24,8 @@
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>
 
+#include<deal.II/fe/component_mask.h>
+
 namespace aspect
 {
   namespace MaterialModel
@@ -31,12 +33,46 @@ namespace aspect
     using namespace dealii;
 
     /**
+     * Additional output fields for the plastic parameters weakened (or hardened)
+     * by strain to be added to the MaterialModel::MaterialModelOutputs structure
+     * and filled in the MaterialModel::Interface::evaluate() function.
+     */
+    template <int dim>
+    class PlasticAdditionalOutputs : public NamedAdditionalMaterialOutputs<dim>
+    {
+      public:
+        PlasticAdditionalOutputs(const unsigned int n_points);
+
+        virtual std::vector<double> get_nth_output(const unsigned int idx) const;
+
+        /**
+         * Cohesions at the evaluation points passed to
+         * the instance of MaterialModel::Interface::evaluate() that fills
+         * the current object.
+         */
+        std::vector<double> cohesions;
+
+        /**
+         * Internal angles of friction at the evaluation points passed to
+         * the instance of MaterialModel::Interface::evaluate() that fills
+         * the current object.
+         */
+        std::vector<double> friction_angles;
+
+        /**
+         * The area where the viscous stress exceeds the plastic yield strength,
+         * and viscosity is rescaled back to the yield envelope.
+         */
+        std::vector<double> yielding;
+    };
+
+    /**
      * A material model combining viscous and plastic deformation.
      *
      * Viscous deformation is defined by a viscous flow law describing
      * dislocation and diffusion creep:
-     *   $ v = 0.5 * A^{-\frac{1}{n}} * d^{\frac{m}{n}} *
-     *               \dot{\varepsilon}_{ii}^{\frac{1-n}{n}} *
+     *   $ v = \frac{1}{2}   A^{-\frac{1}{n}} d^{\frac{m}{n}}
+     *               \dot{\varepsilon}_{ii}^{\frac{1-n}{n}}
      *               \exp\left(\frac{E + PV}{nRT}\right) $
      * where
      *   where $A$ is the prefactor, $n$ is the stress exponent,
@@ -48,19 +84,19 @@ namespace aspect
      *
      * One may select to use the diffusion ($v_{diff}$; $n=1$, $m!=0$),
      * dislocation ($v_{disl}$, $n>1$, $m=0$) or composite
-     * $\frac{v_{diff}*v_{disl}}{v_{diff}+v_{disl}}$ equation form.
+     * $\frac{v_{diff}v_{disl}}{v_{diff}+v_{disl}}$ equation form.
      *
      * Viscous stress is limited by plastic deformation, which follows
      * a Drucker Prager yield criterion:
-     *  $\sigma_y = C*\cos(\phi) + P*\sin(\phi)$  (2D)
+     *  $\sigma_y = C\cos(\phi) + P\sin(\phi)$  (2D)
      * or in 3D
-     *  $\sigma_y = \frac{6*C*\cos(\phi) + 2*P*\sin(\phi)}{\sqrt(3)*(3+\sin(\phi))}$
+     *  $\sigma_y = \frac{6C\cos(\phi) + 2P\sin(\phi)}{\sqrt{3}(3+\sin(\phi))}$
      * where
      *   $\sigma_y$ is the yield stress, $C$ is cohesion, $phi$ is the angle
      *   of internal friction and $P$ is pressure.
-     * If the viscous stress ($2*v*{\varepsilon}_{ii})$) exceeds the yield
+     * If the viscous stress ($2v{\varepsilon}_{ii})$) exceeds the yield
      * stress ($\sigma_{y}$), the viscosity is rescaled back to the yield
-     * surface: $v_{y}=\sigma_{y}/(2.*{\varepsilon}_{ii})$
+     * surface: $v_{y}=\sigma_{y}/(2{\varepsilon}_{ii})$
      *
      * Several model parameters (reference densities, thermal expansivities
      * thermal diffusivities, heat capacities and rheology parameters) can
@@ -114,9 +150,13 @@ namespace aspect
         void
         parse_parameters (ParameterHandler &prm);
 
+        virtual
+        void
+        create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const;
+
         double get_min_strain_rate() const;
 
-      protected:
+      private:
 
         double reference_T;
 
@@ -128,8 +168,6 @@ namespace aspect
 
         double grain_size;
 
-        std::vector<double> compute_volume_fractions(
-          const std::vector<double> &compositional_fields) const;
         std::vector<double> densities;
         std::vector<double> thermal_expansivities;
         std::vector<double> thermal_diffusivities;
@@ -137,19 +175,8 @@ namespace aspect
 
         /**
          * Enumeration for selecting which viscosity averaging scheme to use.
-         * Select between harmonic, arithmetic, geometric, and
-         * maximum_composition. The max composition scheme simply uses the
-         * viscosity of whichever field has the highest volume fraction.
-         * For each quadrature point, averaging is conducted over the
-         * N compositional fields plus the background field.
          */
-        enum averaging_scheme
-        {
-          harmonic,
-          arithmetic,
-          geometric,
-          maximum_composition
-        } viscosity_averaging;
+        MaterialUtilities::CompositionalAveragingOperation viscosity_averaging;
 
         /**
          * Enumeration for selecting which type of viscous flow law to use.
@@ -172,11 +199,8 @@ namespace aspect
           drucker_prager
         } yield_mechanism;
 
-        double average_value (const std::vector<double> &composition,
-                              const std::vector<double> &parameter_values,
-                              const averaging_scheme &average_type) const;
 
-        std::vector<double>
+        std::pair<std::vector<double>, std::vector<bool> >
         calculate_isostrain_viscosities ( const std::vector<double> &volume_fractions,
                                           const double &pressure,
                                           const double &temperature,
@@ -185,16 +209,125 @@ namespace aspect
                                           const ViscosityScheme &viscous_type,
                                           const YieldScheme &yield_type) const;
 
+        /**
+         * A function that computes the strain weakened values
+         * of cohesion and internal friction angle for a given
+         * compositional field.
+         */
+        std::pair<double, double>
+        calculate_plastic_weakening ( const double strain_ii,
+                                      const unsigned int j ) const;
+
+        /**
+         * A function that computes the strain weakened values
+         * of the diffusion and dislocation prefactors for a given
+         * compositional field.
+         */
+        double
+        calculate_viscous_weakening ( const double strain_ii,
+                                      const unsigned int j ) const;
+
+        /**
+         * A function that fills the plastic additional output in the
+         * MaterialModelOutputs object that is handed over, if it exists.
+         * Does nothing otherwise.
+         */
+        void fill_plastic_outputs (const unsigned int point_index,
+                                   const std::vector<double> &volume_fractions,
+                                   const bool plastic_yielding,
+                                   const MaterialModel::MaterialModelInputs<dim> &in,
+                                   MaterialModel::MaterialModelOutputs<dim> &out) const;
+
+        /**
+         * A function that fills the viscosity derivatives in the
+         * MaterialModelOutputs object that is handed over, if they exist.
+         * Does nothing otherwise.
+         */
+        void compute_viscosity_derivatives(const unsigned int point_index,
+                                           const std::vector<double> &volume_fractions,
+                                           const std::vector<double> &composition_viscosities,
+                                           const MaterialModel::MaterialModelInputs<dim> &in,
+                                           MaterialModel::MaterialModelOutputs<dim> &out) const;
+
+        /**
+         * A function that fills the reaction terms for the finite strain tensor in
+         * MaterialModelOutputs object that is handed over. It assumes the first
+         * component of the finite strain tensor is named 's11' and all other
+         * components follow this compositional field.
+         */
+        void compute_finite_strain_reaction_terms (const MaterialModel::MaterialModelInputs<dim> &in,
+                                                   MaterialModel::MaterialModelOutputs<dim> &out) const;
+
+        /**
+         * A function that returns a ComponentMask that represents all compositional
+         * fields that should be considered 'volumetric', that is representing a
+         * physical proportion of the material, e.g. volume fraction of peridotite
+         * (as opposed to non-volumetric quantities like the amount of finite-strain).
+         */
+        ComponentMask get_volumetric_composition_mask() const;
+
+        /**
+         * Whether to use the accumulated strain to weaken
+         * plastic parameters cohesion and friction angle
+         * and/or viscous parameters diffusion and dislocation prefactor.
+         * Additional flags can be set to specifically use the plastic
+         * strain for the plastic parameters and the viscous strain
+         * for the viscous parameters, instead of the total strain
+         * for all of them.
+         */
         bool use_strain_weakening;
+        /**
+         * Whether to use only the accumulated plastic strain to weaken
+         * plastic parameters cohesion and friction angle.
+         */
+        bool use_plastic_strain_weakening;
+        /**
+         * Whether to use the accumulated viscous strain to weaken
+         * the viscous parameters diffusion and dislocation prefactor.
+         */
+        bool use_viscous_strain_weakening;
+
         bool use_finite_strain_tensor;
-        std::vector<double> start_strain_weakening_intervals;
-        std::vector<double> end_strain_weakening_intervals;
-        std::vector<double> viscous_strain_weakening_factors;
+
+        /**
+         * The start of the strain interval (plastic or total strain)
+         * within which cohesion and angle of friction should be weakened.
+         */
+        std::vector<double> start_plastic_strain_weakening_intervals;
+        /**
+         * The end of the strain interval (plastic or total strain)
+         * within which cohesion and angle of friction should be weakened.
+         */
+        std::vector<double> end_plastic_strain_weakening_intervals;
+        /**
+          * The factor specifying the amount of weakening of the
+          * cohesion over the prescribed strain interval (plastic or total strain).
+          */
         std::vector<double> cohesion_strain_weakening_factors;
+        /**
+          * The factor specifying the amount of weakening of the
+          * internal friction angles over the prescribed strain interval
+          * (plastic or total strain).
+          */
         std::vector<double> friction_strain_weakening_factors;
+        /**
+         * The start of the strain interval (viscous or total strain)
+         * within which cohesion and angle of friction should be weakened.
+         */
+        std::vector<double> start_viscous_strain_weakening_intervals;
+        /**
+         * The end of the strain interval (viscous or total strain)
+         * within which cohesion and angle of friction should be weakened.
+         */
+        std::vector<double> end_viscous_strain_weakening_intervals;
+        /**
+         * The factor specifying the amount of weakening over
+         * the prescribed strain interval (viscous or total strain).
+         */
+        std::vector<double> viscous_strain_weakening_factors;
+
 
         std::vector<double> prefactors_diffusion;
-        std::vector<double> stress_exponents_diffusion;
         std::vector<double> grain_size_exponents_diffusion;
         std::vector<double> activation_energies_diffusion;
         std::vector<double> activation_volumes_diffusion;
@@ -207,6 +340,16 @@ namespace aspect
         std::vector<double> angles_internal_friction;
         std::vector<double> cohesions;
         std::vector<double> exponents_stress_limiter;
+
+        /**
+        * Limit maximum yield stress from drucker-prager.
+        */
+        double max_yield_strength;
+
+        /**
+         * temperature gradient added to temperature used in the flow law.
+         */
+        double adiabatic_temperature_gradient_for_viscosity;
 
     };
 

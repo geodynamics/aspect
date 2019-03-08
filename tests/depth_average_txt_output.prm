@@ -7,8 +7,6 @@ set Use years in output instead of seconds = false
 set End time                               = 0.5
 set Output directory                       = output
 
-set Linear solver tolerance                = 1e-15
-set Temperature solver tolerance           = 1e-15
 
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
@@ -36,7 +34,7 @@ end
 
 
 subsection Boundary temperature model
-  set Model name = box
+  set List of model names = box
 
   subsection Box
     set Bottom temperature = 1
@@ -47,13 +45,16 @@ subsection Boundary temperature model
 end
 
 
-subsection Model settings
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary temperature model
   set Fixed temperature boundary indicators   = 2,3
+end
 
-  set Zero velocity boundary indicators       =
-  set Prescribed velocity boundary indicators =
+subsection Boundary velocity model
   set Tangential velocity boundary indicators = 0,1,2,3
-
 end
 
 
@@ -98,3 +99,10 @@ subsection Postprocess
   end
 end
 
+subsection Solver parameters
+  set Temperature solver tolerance = 1e-15
+
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-15
+  end
+end

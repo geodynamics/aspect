@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,15 +14,17 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
 
+#include <aspect/mesh_refinement/slope.h>
+#include <aspect/gravity_model/interface.h>
+
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
 
-#include <aspect/mesh_refinement/slope.h>
 
 namespace aspect
 {
@@ -87,7 +89,7 @@ namespace aspect
                                               "\n\n"
                                               "To use this refinement criterion, you may want to combine "
                                               "it with other refinement criteria, setting the 'Normalize "
-                                              "individual refinement criteria' flag and using the 'max' "
+                                              "individual refinement criteria' flag and using the `max' "
                                               "setting for 'Refinement criteria merge operation'.")
   }
 }

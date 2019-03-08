@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2015 - 2016 by the authors of the ASPECT code.
+ Copyright (C) 2015 - 2019 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with ASPECT; see the file doc/COPYING.  If not see
+ along with ASPECT; see the file LICENSE.  If not see
  <http://www.gnu.org/licenses/>.
  */
 
@@ -23,7 +23,7 @@
 
 #include <aspect/particle/generator/interface.h>
 
-#include <deal.II/base/std_cxx11/array.h>
+#include <array>
 
 namespace aspect
 {
@@ -60,7 +60,7 @@ namespace aspect
            */
           virtual
           void
-          generate_particles(std::multimap<types::LevelInd, Particle<dim> > &particles);
+          generate_particles(std::multimap<Particles::internal::LevelInd, Particle<dim> > &particles);
 
           /**
            * Declare the parameters this class takes through input files.
@@ -83,14 +83,14 @@ namespace aspect
            * the first radius, colatitude and longitude from the given
            * center position P_center where particles are generated.
            */
-          std_cxx11::array<double,dim> P_min;
+          std::array<double,dim> P_min;
 
           /**
            * The maximum spherical coordinates of the particle region, i.e.
            * the last radius, colatitude and longitude from the given
            * center position P_center where particles are generated.
            */
-          std_cxx11::array<double,dim> P_max;
+          std::array<double,dim> P_max;
 
           /**
            * The center of the particle region. Defaults to the origin.
@@ -100,7 +100,7 @@ namespace aspect
           /**
            * The number of radial layers of particles that will be generated.
            * In particular this parameter determines the radial spacing between
-           * particle layers as Pmax[0] - P_min[0] / radial$_$layers.
+           * particle layers as Pmax[0] - P_min[0] / radial_layers.
            */
           unsigned int radial_layers;
 

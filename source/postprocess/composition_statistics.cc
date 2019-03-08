@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
@@ -174,6 +174,6 @@ namespace aspect
                                   "In particular, it computes maximal and minimal values of "
                                   "each field, as well as the total mass contained in this "
                                   "field as defined by the integral "
-                                  "$m_i(t) = \\int_\\Omega c_i(\\mathbf x,t) \\; dx$.")
+                                  "$m_i(t) = \\int_\\Omega c_i(\\mathbf x,t) \\; \\text{d}x$.")
   }
 }

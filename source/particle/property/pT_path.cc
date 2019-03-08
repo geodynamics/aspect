@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2018 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -14,11 +14,13 @@
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with ASPECT; see the file doc/COPYING.  If not see
+ along with ASPECT; see the file LICENSE.  If not see
  <http://www.gnu.org/licenses/>.
  */
 
 #include <aspect/particle/property/pT_path.h>
+#include <aspect/adiabatic_conditions/interface.h>
+#include <aspect/initial_temperature/interface.h>
 
 namespace aspect
 {
@@ -66,7 +68,7 @@ namespace aspect
       PTPath<dim>::get_property_information() const
       {
         std::vector<std::pair<std::string,unsigned int> > property_information (1,std::make_pair("p",1));
-        property_information.push_back(std::make_pair("T",1));
+        property_information.emplace_back("T",1);
         return property_information;
       }
     }

@@ -17,18 +17,18 @@ Number of degrees of freedom: 7,248 (4,215+223+1,405+1,405)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 28+0 iterations.
 
-Number of active cells: 155 (on 5 levels)
-Number of degrees of freedom: 9,767 (5,682+297+1,894+1,894)
+Number of active cells: 148 (on 5 levels)
+Number of degrees of freedom: 9,299 (5,409+284+1,803+1,803)
 
 *** Timestep 0:  t=0 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+0 iterations.
+   Solving Stokes system... 33+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-viscous_dissipation_statistics/solution/solution-00000
-     RMS, max velocity:        7.2e-11 m/s, 1.09e-09 m/s
+     RMS, max velocity:        7.06e-11 m/s, 1.07e-09 m/s
 
 Termination requested by criterion: end time
 

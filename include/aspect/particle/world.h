@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2012 - 2016 by the authors of the ASPECT code.
+ Copyright (C) 2012 - 2019 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with ASPECT; see the file doc/COPYING.  If not see
+ along with ASPECT; see the file LICENSE.  If not see
  <http://www.gnu.org/licenses/>.
  */
 
@@ -22,13 +22,25 @@
 #define _aspect_particle_world_h
 
 #include <aspect/global.h>
+
+#if DEAL_II_VERSION_GTE(9,0,0)
+#include <deal.II/particles/particle.h>
+#include <deal.II/particles/particle_accessor.h>
+#include <deal.II/particles/particle_iterator.h>
+#include <deal.II/particles/particle_handler.h>
+#include <deal.II/particles/property_pool.h>
+#else
 #include <aspect/particle/particle.h>
+#include <aspect/particle/particle_accessor.h>
+#include <aspect/particle/particle_iterator.h>
+#include <aspect/particle/particle_handler.h>
+#include <aspect/particle/property_pool.h>
+#endif
 
 #include <aspect/particle/generator/interface.h>
 #include <aspect/particle/integrator/interface.h>
 #include <aspect/particle/interpolator/interface.h>
 #include <aspect/particle/property/interface.h>
-#include <aspect/particle/property_pool.h>
 #include <aspect/particle/output/interface.h>
 
 #include <aspect/simulator_access.h>
@@ -37,11 +49,17 @@
 #include <deal.II/base/timer.h>
 #include <deal.II/base/array_view.h>
 
+#include <boost/serialization/unique_ptr.hpp>
+
 namespace aspect
 {
   namespace Particle
   {
     using namespace dealii;
+#if DEAL_II_VERSION_GTE(9,0,0)
+    using namespace dealii::Particles;
+    using dealii::Particles::Particle;
+#endif
 
     /**
      * This class manages the storage and handling of particles. It provides
@@ -82,6 +100,14 @@ namespace aspect
         get_property_manager() const;
 
         /**
+         * Get the particle handler for this particle world.
+         *
+         * @return The particle handler for this world.
+         */
+        const ParticleHandler<dim> &
+        get_particle_handler() const;
+
+        /**
          * Do initial logic for handling pre-refinement steps
          */
         void setup_initial_state ();
@@ -104,26 +130,6 @@ namespace aspect
         void initialize_particles();
 
         /**
-         * Access to particles in this world.
-         */
-        std::multimap<types::LevelInd, Particle<dim> > &
-        get_particles();
-
-        /**
-         * Const access to particles in this world.
-         */
-        const std::multimap<types::LevelInd, Particle<dim> > &
-        get_particles() const;
-
-        /**
-         * Const access to ghost particles in this world.
-         * Ghost particles are all particles that are owned by another process
-         * and live in one of the ghost cells of the local subdomain.
-         */
-        const std::multimap<types::LevelInd, Particle<dim> > &
-        get_ghost_particles() const;
-
-        /**
          * Advance particles by the old timestep using the current
          * integration scheme. This accounts for the fact that the particles
          * are actually still at their old positions and the current timestep
@@ -135,7 +141,7 @@ namespace aspect
         /**
          * Return the total number of particles in the simulation. This
          * function is useful for monitoring how many particles have been
-         * lost by falling out of the domain. Not that this function does
+         * lost by falling out of the domain. Note that this function does
          * not compute the number of particles, because that is an expensive
          * global MPI operation. Instead it returns the number, which is
          * updated internally every time it might change by a call to
@@ -159,24 +165,6 @@ namespace aspect
         connect_to_signals(aspect::SimulatorSignals<dim> &signals);
 
         /**
-         * Callback function that is called from Simulator before every
-         * refinement and when writing checkpoints.
-         * Allows registering store_particles() in the triangulation.
-         */
-        void
-        register_store_callback_function(const bool serialization,
-                                         typename parallel::distributed::Triangulation<dim> &triangulation);
-
-        /**
-         * Callback function that is called from Simulator after every
-         * refinement and after resuming from a checkpoint.
-         * Allows registering load_particles() in the triangulation.
-         */
-        void
-        register_load_callback_function(const bool serialization,
-                                        typename parallel::distributed::Triangulation<dim> &triangulation);
-
-        /**
          * Called by listener functions from Triangulation for every cell
          * before a refinement step. A weight is attached to every cell
          * depending on the number of contained particles.
@@ -186,34 +174,17 @@ namespace aspect
                     const typename parallel::distributed::Triangulation<dim>::CellStatus status);
 
         /**
-         * Called by listener functions from Triangulation for every cell
-         * before a refinement step. All particles have to be attached to their
-         * element to be sent around to the new cell/processes.
-         */
-        void
-        store_particles(const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell,
-                        const typename parallel::distributed::Triangulation<dim>::CellStatus status,
-                        void *data);
-
-        /**
-         * Called by listener functions after a refinement step. The local map
-         * of particles has to be read from the triangulation user_pointer.
-         */
-        void
-        load_particles(const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell,
-                       const typename parallel::distributed::Triangulation<dim>::CellStatus status,
-                       const void *data);
-
-        /**
          * Update the particle properties if necessary.
          */
         void update_particles();
 
+#if !DEAL_II_VERSION_GTE(9,0,0)
         /**
          * Generate the selected particle output.
          */
         std::string
         generate_output() const;
+#endif
 
         /**
          * Serialize the contents of this class.
@@ -265,71 +236,37 @@ namespace aspect
         /**
          * Generation scheme for creating particles in this world
          */
-        std_cxx11::unique_ptr<Generator::Interface<dim> > generator;
+        std::unique_ptr<Generator::Interface<dim> > generator;
 
         /**
          * Integration scheme for moving particles in this world
          */
-        std_cxx11::unique_ptr<Integrator::Interface<dim> > integrator;
+        std::unique_ptr<Integrator::Interface<dim> > integrator;
 
         /**
-         * Integration scheme for moving particles in this world
+         * Interpolation scheme for moving particles in this world
          */
-        std_cxx11::unique_ptr<Interpolator::Interface<dim> > interpolator;
+        std::unique_ptr<Interpolator::Interface<dim> > interpolator;
 
         /**
          * The property manager stores information about the additional
          * particle properties and handles the initialization and update of
          * these properties.
          */
-        std_cxx11::unique_ptr<Property::Manager<dim> > property_manager;
+        std::unique_ptr<Property::Manager<dim> > property_manager;
 
+#if !DEAL_II_VERSION_GTE(9,0,0)
         /**
          * Pointer to an output object
          */
-        std_cxx11::unique_ptr<Output::Interface<dim> > output;
+        std::unique_ptr<Output::Interface<dim> > output;
+#endif
 
         /**
-         * Set of particles currently in the local domain, organized by
-         * the level/index of the cell they are in.
+         * Particle handler object that is responsible for storing and
+         * managing the internal particle structures.
          */
-        std::multimap<types::LevelInd, Particle<dim> > particles;
-
-        /**
-         * Set of particles currently in the ghost cells of the local domain,
-         * organized by the level/index of the cell they are in. These
-         * particles are marked read-only.
-         */
-        std::multimap<types::LevelInd, Particle<dim> > ghost_particles;
-
-        /**
-         * This variable stores how many particles are stored globally. It is
-         * calculated by update_n_global_particles().
-         */
-        types::particle_index global_number_of_particles;
-
-        /**
-         * The maximum number of particles per cell in the global domain. This
-         * variable is important to store and load particle data during
-         * repartition and serialization of the solution. Note that the
-         * variable is only updated when it is needed, e.g. before or after
-         * serialization (before/after mesh refinement, before creating a
-         * checkpoint and after resuming from a checkpoint).
-         */
-        unsigned int global_max_particles_per_cell;
-
-        /**
-         * This variable stores the next free particle index that is available
-         * globally in case new particles need to be generated.
-         */
-        types::particle_index next_free_particle_index;
-
-        /**
-         * This variable is set by the register_store_callback_function()
-         * function and used by the register_load_callback_function() function
-         * to check where the particle data was stored.
-         */
-        unsigned int data_offset;
+        std::unique_ptr<ParticleHandler<dim> > particle_handler;
 
         /**
          * Strategy for particle load balancing.
@@ -383,32 +320,6 @@ namespace aspect
         bool update_ghost_particles;
 
         /**
-         * Calculates the number of particles in the global model domain.
-         */
-        void
-        update_n_global_particles();
-
-        /**
-         * Calculates and stores the number of particles in the cell that
-         * contains the most particles in the global model (stored in the
-         * member variable global_max_particles_per_cell). This variable is a
-         * state variable, because it is needed to serialize and deserialize
-         * the particle data correctly in parallel (it determines the size of
-         * the data chunks per cell that are stored and read). Before accessing
-         * the variable this function has to be called, unless the state was
-         * read from another source (e.g. after resuming from a checkpoint).
-         */
-        void
-        update_global_max_particles_per_cell();
-
-        /**
-         * Calculates the next free particle index in the global model domain.
-         * This equals one plus the highest particle index currently active.
-         */
-        void
-        update_next_free_particle_index();
-
-        /**
          * Get a map between subdomain id and the neighbor index. In other words
          * the returned map answers the question: Given a subdomain id, which
          * neighbor of the current processor's domain (in terms of a contiguous
@@ -416,39 +327,6 @@ namespace aspect
          */
         std::map<types::subdomain_id, unsigned int>
         get_subdomain_id_to_neighbor_map() const;
-
-        /**
-         * Exchanges all particles that live in cells adjacent to ghost cells
-         * (i.e. cells that are ghosts to other processes) with the neighboring
-         * domains. Clears and re-populates the ghost_neighbors member variable.
-         */
-        void
-        exchange_ghost_particles();
-
-        /**
-         * Returns a vector that contains a tensor for every vertex-cell
-         * combination of the output of dealii::GridTools::vertex_to_cell_map()
-         * (which is expected as input parameter for this function).
-         * Each tensor represents a geometric vector from the vertex to the
-         * respective cell center.
-         */
-        std::vector<std::vector<Tensor<1,dim> > >
-        vertex_to_cell_centers_directions(const std::vector<std::set<typename parallel::distributed::Triangulation<dim>::active_cell_iterator> > &vertex_to_cells) const;
-
-        /**
-         * Finds the cells containing each particle for all particles in
-         * @p particles_to_sort. If particles moved out of the local subdomain
-         * they will be sent to their new process and inserted there.
-         * After this function call every particle is either on its current
-         * process and in its current cell, or deleted (if it could not find
-         * its new process or cell).
-         *
-         * @param [in] particles_to_sort Vector containing all pairs of
-         * particles and their old cells that will be sorted into the
-         * 'particles' member variable in this function.
-         */
-        void
-        sort_particles_in_subdomains_and_cells(const std::vector<std::pair<types::LevelInd, Particle<dim> > > &particles_to_sort);
 
         /**
          * Apply the bounds for the maximum and minimum number of particles
@@ -466,32 +344,7 @@ namespace aspect
          * that can not be found are discarded.
          */
         void
-        move_particles_back_into_mesh(const std::vector<std::pair<types::LevelInd, Particle<dim> > >         &lost_particles,
-                                      std::vector<std::pair<types::LevelInd, Particle<dim> > >               &moved_particles_cell,
-                                      std::vector<std::vector<std::pair<types::LevelInd, Particle<dim> > > > &moved_particles_domain);
-
-        /**
-         * Transfer particles that have crossed subdomain boundaries to other
-         * processors. The transfer occurs in two steps. As a first step all
-         * processes notify their neighbor processes how many particles will
-         * be sent to them. Because neighbor processes are defined as the owner
-         * of ghost cells of the current process, this also handles
-         * periodic boundaries correctly. Afterwards the transfer is done in the
-         * same way as local communication between neighbor processes.
-         * All received particles and their new cells will be appended to the
-         * @p received_particles vector.
-         *
-         * @param [in] sent_particles All particles that should be sent and
-         * their new subdomain_ids are in this map.
-         *
-         * @param [in,out] received_particles Vector that stores all received
-         * particles. Note that it is not required nor checked that the list
-         * is empty, received particles are simply attached to the end of
-         * the vector.
-         */
-        void
-        send_recv_particles(const std::vector<std::vector<std::pair<types::LevelInd,Particle <dim> > > > &sent_particles,
-                            std::vector<std::pair<types::LevelInd, Particle<dim> > >                     &received_particles);
+        move_particles_back_into_mesh();
 
         /**
          * Advect the particle positions by one integration step. Needs to be
@@ -503,16 +356,16 @@ namespace aspect
          * Initialize the particle properties of one cell.
          */
         void
-        local_initialize_particles(const typename std::multimap<types::LevelInd, Particle<dim> >::iterator &begin_particle,
-                                   const typename std::multimap<types::LevelInd, Particle<dim> >::iterator &end_particle);
+        local_initialize_particles(const typename ParticleHandler<dim>::particle_iterator &begin_particle,
+                                   const typename ParticleHandler<dim>::particle_iterator &end_particle);
 
         /**
          * Update the particle properties of one cell.
          */
         void
         local_update_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
-                               const typename std::multimap<types::LevelInd, Particle<dim> >::iterator &begin_particle,
-                               const typename std::multimap<types::LevelInd, Particle<dim> >::iterator &end_particle);
+                               const typename ParticleHandler<dim>::particle_iterator &begin_particle,
+                               const typename ParticleHandler<dim>::particle_iterator &end_particle);
 
         /**
          * Advect the particles of one cell. Performs only one step for
@@ -524,9 +377,8 @@ namespace aspect
          */
         void
         local_advect_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
-                               const typename std::multimap<types::LevelInd, Particle<dim> >::iterator &begin_particle,
-                               const typename std::multimap<types::LevelInd, Particle<dim> >::iterator &end_particle,
-                               std::vector<std::pair<types::LevelInd, Particle <dim> > >               &particles_out_of_cell);
+                               const typename ParticleHandler<dim>::particle_iterator &begin_particle,
+                               const typename ParticleHandler<dim>::particle_iterator &end_particle);
     };
 
     /* -------------------------- inline and template functions ---------------------- */
@@ -535,8 +387,11 @@ namespace aspect
     template <class Archive>
     void World<dim>::serialize (Archive &ar, const unsigned int)
     {
-      ar &global_max_particles_per_cell
-      &next_free_particle_index
+      // Note that although Boost claims to handle serialization of pointers
+      // correctly, at least for the case of unique_ptr it seems to not work.
+      // It works correctly when archiving the content of the pointer instead.
+      ar
+      &(*particle_handler)
       ;
     }
   }

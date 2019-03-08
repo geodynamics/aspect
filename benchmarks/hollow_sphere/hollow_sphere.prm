@@ -5,15 +5,13 @@
 ############### Global parameters
 
 set Additional shared libraries            = ./libhollow_sphere.so
-set Linear solver tolerance                = 1e-6
 set Dimension                              = 3
 set Start time                             = 0
 set End time                               = 0
 set Use years in output instead of seconds = false
-set Nonlinear solver scheme                = Stokes only
+set Nonlinear solver scheme                = no Advection, iterated Stokes
 set Output directory                       = output
 set Pressure normalization                 = surface
-set Number of cheap Stokes solver steps    = 0
 
 ############### Parameters describing the model
 # The setup is a 3D shell 
@@ -33,8 +31,8 @@ subsection Geometry model
 end
 
 #Boundary conditions
-subsection Model settings
 
+subsection Boundary velocity model
   set Prescribed velocity boundary indicators = bottom : HollowSphereBoundary, \
                                                 top : HollowSphereBoundary
 end
@@ -62,7 +60,7 @@ end
 # temperature boundary conditions.
 
 subsection Boundary temperature model
-  set Model name = box 
+  set List of model names = box 
 end
 
 subsection Initial temperature model 
@@ -104,3 +102,9 @@ subsection Postprocess
   end
 end
 
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-6
+    set Number of cheap Stokes solver steps = 0
+  end
+end

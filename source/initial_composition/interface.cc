@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
@@ -24,7 +24,7 @@
 #include <aspect/initial_composition/interface.h>
 
 #include <deal.II/base/exceptions.h>
-#include <deal.II/base/std_cxx11/tuple.h>
+#include <tuple>
 
 #include <list>
 
@@ -70,7 +70,7 @@ namespace aspect
 
     namespace
     {
-      std_cxx11::tuple
+      std::tuple
       <void *,
       void *,
       aspect::internal::Plugins::PluginList<Interface<2> >,
@@ -86,10 +86,10 @@ namespace aspect
                                                 void (*declare_parameters_function) (ParameterHandler &),
                                                 Interface<dim> *(*factory_function) ())
     {
-      std_cxx11::get<dim>(registered_plugins).register_plugin (name,
-                                                               description,
-                                                               declare_parameters_function,
-                                                               factory_function);
+      std::get<dim>(registered_plugins).register_plugin (name,
+                                                         description,
+                                                         declare_parameters_function,
+                                                         factory_function);
     }
 
 
@@ -142,8 +142,8 @@ namespace aspect
       // their own parameters
       for (unsigned int i=0; i<model_names.size(); ++i)
         {
-          initial_composition_objects.push_back (std_cxx11::shared_ptr<Interface<dim> >
-                                                 (std_cxx11::get<dim>(registered_plugins)
+          initial_composition_objects.push_back (std::shared_ptr<Interface<dim> >
+                                                 (std::get<dim>(registered_plugins)
                                                   .create_plugin (model_names[i],
                                                                   "Initial composition model::Model names")));
 
@@ -164,7 +164,7 @@ namespace aspect
       double composition = 0.0;
       int i = 0;
 
-      for (typename std::list<std_cxx11::shared_ptr<InitialComposition::Interface<dim> > >::const_iterator
+      for (typename std::list<std::shared_ptr<InitialComposition::Interface<dim> > >::const_iterator
            initial_composition_object = initial_composition_objects.begin();
            initial_composition_object != initial_composition_objects.end();
            ++initial_composition_object)
@@ -187,7 +187,7 @@ namespace aspect
 
 
     template <int dim>
-    const std::list<std_cxx11::shared_ptr<Interface<dim> > > &
+    const std::list<std::shared_ptr<Interface<dim> > > &
     Manager<dim>::get_active_initial_composition_conditions () const
     {
       return initial_composition_objects;
@@ -202,7 +202,7 @@ namespace aspect
       prm.enter_subsection ("Initial composition model");
       {
         const std::string pattern_of_names
-          = std_cxx11::get<dim>(registered_plugins).get_pattern_of_names ();
+          = std::get<dim>(registered_plugins).get_pattern_of_names ();
 
         prm.declare_entry("List of model names",
                           "",
@@ -214,7 +214,7 @@ namespace aspect
                           "in 'List of model operators'.\n\n"
                           "The following composition models are available:\n\n"
                           +
-                          std_cxx11::get<dim>(registered_plugins).get_description_string());
+                          std::get<dim>(registered_plugins).get_description_string());
 
         prm.declare_entry("List of model operators", "add",
                           Patterns::MultipleSelection("add|subtract|minimum|maximum"),
@@ -227,7 +227,7 @@ namespace aspect
                            Patterns::Selection (pattern_of_names+"|unspecified"),
                            "Select one of the following models:\n\n"
                            +
-                           std_cxx11::get<dim>(registered_plugins).get_description_string()
+                           std::get<dim>(registered_plugins).get_description_string()
                            + "\n\n" +
                            "\\textbf{Warning}: This parameter provides an old and "
                            "deprecated way of specifying "
@@ -236,7 +236,7 @@ namespace aspect
       }
       prm.leave_subsection ();
 
-      std_cxx11::get<dim>(registered_plugins).declare_parameters (prm);
+      std::get<dim>(registered_plugins).declare_parameters (prm);
     }
 
 
@@ -244,7 +244,17 @@ namespace aspect
     std::string
     get_valid_model_names_pattern ()
     {
-      return std_cxx11::get<dim>(registered_plugins).get_pattern_of_names ();
+      return std::get<dim>(registered_plugins).get_pattern_of_names ();
+    }
+
+
+
+    template <int dim>
+    void
+    Manager<dim>::write_plugin_graph (std::ostream &out)
+    {
+      std::get<dim>(registered_plugins).write_plugin_graph ("Initial composition interface",
+                                                            out);
     }
   }
 }

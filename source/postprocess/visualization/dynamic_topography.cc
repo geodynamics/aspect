@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 #include <aspect/simulator.h>
@@ -28,19 +28,66 @@ namespace aspect
     namespace VisualizationPostprocessors
     {
       template <int dim>
-      std::pair<std::string, Vector<float> *>
-      DynamicTopography<dim>::execute() const
-      {
-        Postprocess::DynamicTopography<dim> *dynamic_topography =
-          this->template find_postprocessor<Postprocess::DynamicTopography<dim> >();
-        AssertThrow(dynamic_topography != NULL,
-                    ExcMessage("Could not find the DynamicTopography postprocessor."));
-        std::pair<std::string, Vector<float> *>
-        return_value ("dynamic_topography",
-                      new Vector<float>(dynamic_topography->cellwise_topography()));
+      DynamicTopography<dim>::
+      DynamicTopography ()
+        :
+        DataPostprocessorScalar<dim> ("dynamic_topography",
+                                      update_quadrature_points)
+      {}
 
-        return return_value;
+      template <int dim>
+      void
+      DynamicTopography<dim>::
+      evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
+                            std::vector<Vector<double> > &computed_quantities) const
+      {
+        for (unsigned int q=0; q<computed_quantities.size(); ++q)
+          computed_quantities[q](0) = 0;
+
+        const Postprocess::DynamicTopography<dim> &dynamic_topography =
+          this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::DynamicTopography<dim> >();
+
+        auto cell = input_data.template get_cell<DoFHandler<dim> >();
+
+        // We only want to output dynamic topography at the top and bottom
+        // boundary, so only compute it if the current cell has
+        // a face at the top or bottom boundary.
+        bool cell_at_top_or_bottom_boundary = false;
+        for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+          if (cell->at_boundary(f) &&
+              (this->get_geometry_model().translate_id_to_symbol_name (cell->face(f)->boundary_id()) == "top" ||
+               this->get_geometry_model().translate_id_to_symbol_name (cell->face(f)->boundary_id()) == "bottom"))
+            cell_at_top_or_bottom_boundary = true;
+
+        if (cell_at_top_or_bottom_boundary)
+          {
+            std::vector<Point<dim>> quadrature_points(input_data.evaluation_points.size());
+            for (unsigned int i=0; i<input_data.evaluation_points.size(); ++i)
+              quadrature_points[i] = this->get_mapping().transform_real_to_unit_cell(cell,input_data.evaluation_points[i]);
+
+            const Quadrature<dim> quadrature_formula(quadrature_points);
+
+            FEValues<dim> fe_volume_values (this->get_mapping(),
+                                            this->get_fe(),
+                                            quadrature_formula,
+                                            update_values);
+
+            fe_volume_values.reinit(cell);
+
+            std::vector<double> dynamic_topography_values(quadrature_formula.size());
+
+            // It might seem unintuitive to use the extractor for the temperature block,
+            // but that is where dynamic_topography.topography_vector() stores the values.
+            // See the documentation of that function for more details.
+            fe_volume_values[this->introspection().extractors.temperature].get_function_values(dynamic_topography.topography_vector(),
+                dynamic_topography_values);
+
+            for (unsigned int q=0; q<quadrature_formula.size(); ++q)
+              computed_quantities[q](0) = dynamic_topography_values[q];
+          }
       }
+
+
 
       /**
        * Register the other postprocessor that we need: DynamicTopography

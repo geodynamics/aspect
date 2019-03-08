@@ -13,8 +13,7 @@ end
 
 set Adiabatic surface temperature          = 1623               # default: 0
 set CFL number                             = 1.0
-set Composition solver tolerance           = 1e-12
-set Nonlinear solver scheme                = iterated IMPES
+set Nonlinear solver scheme                = iterated Advection and Stokes
 set Max nonlinear iterations               = 1
 
 # The number of space dimensions you want to run this program in.
@@ -30,7 +29,6 @@ set Resume computation                     = false
 set Start time                             = 0
 
 set Use years in output instead of seconds = false
-set Use direct solver for Stokes system    = true
 
 subsection Compositional fields
   set Number of fields = 1
@@ -42,7 +40,7 @@ subsection Boundary fluid pressure model
 end
 
 subsection Boundary temperature model
-  set Model name = initial temperature
+  set List of model names = initial temperature
 
   subsection Initial temperature
     # Temperature at the inner boundary (core mantle boundary). Units: K.
@@ -55,7 +53,7 @@ subsection Boundary temperature model
 end
 
 subsection Boundary composition model
-  set Model name = initial composition
+  set List of model names = initial composition
 end
 
 
@@ -123,14 +121,27 @@ subsection Mesh refinement
 end
 
 
-subsection Model settings
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary temperature model
   set Fixed temperature boundary indicators   = 2,3        # default: 
+end
+
+subsection Boundary composition model
   set Fixed composition boundary indicators   = 0,1,2,3   
+end
+
+subsection Boundary velocity model
   set Prescribed velocity boundary indicators = 0:function, 1:function, 2:function, 3:function
+end
 
-  set Tangential velocity boundary indicators = 
+subsection Boundary velocity model
   set Zero velocity boundary indicators       =           # default: 
+end
 
+subsection Melt settings
   set Include melt transport                  = true
 end
 
@@ -151,3 +162,8 @@ end
 
 
 
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Use direct solver for Stokes system = true
+  end
+end

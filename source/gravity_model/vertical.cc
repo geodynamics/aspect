@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,12 +14,17 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
 
 #include <aspect/gravity_model/vertical.h>
+
+#include <aspect/geometry_model/sphere.h>
+#include <aspect/geometry_model/spherical_shell.h>
+#include <aspect/geometry_model/chunk.h>
+#include <aspect/geometry_model/ellipsoidal_chunk.h>
 
 #include <deal.II/base/tensor.h>
 
@@ -68,6 +73,15 @@ namespace aspect
         prm.leave_subsection ();
       }
       prm.leave_subsection ();
+
+      Assert (dynamic_cast<const GeometryModel::Sphere<dim>*> (&this->get_geometry_model()) == nullptr,
+              ExcMessage ("Gravity model 'vertical' should not be used with geometry model 'sphere'."));
+      Assert (dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()) == nullptr,
+              ExcMessage ("Gravity model 'vertical' should not be used with geometry model 'spherical shell'."));
+      Assert (dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model()) == nullptr,
+              ExcMessage ("Gravity model 'vertical' should not be used with geometry model 'chunk'."));
+      Assert (dynamic_cast<const GeometryModel::EllipsoidalChunk<dim>*> (&this->get_geometry_model()) == nullptr,
+              ExcMessage ("Gravity model 'vertical' should not be used with geometry model 'ellipsoidal chunk'."));
     }
   }
 }

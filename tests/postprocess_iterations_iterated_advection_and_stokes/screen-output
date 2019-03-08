@@ -1,0 +1,804 @@
+
+Number of active cells: 512 (on 5 levels)
+Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 58+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.89643e-16, 1.57797e-16, 1
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1
+
+   Postprocessing:
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00000.0000
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00000.0000
+     Pressure at top/bottom of domain: -2.002e-13 Pa, 6.444e+05 Pa
+     Computing dynamic topography      
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Solving Stokes system... 1+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.89643e-16, 1.57797e-16, 5.20807e-13
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 5.20807e-13
+
+   Postprocessing:
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00000.0001
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00000.0001
+     Pressure at top/bottom of domain: -2.173e-13 Pa, 6.444e+05 Pa
+     Computing dynamic topography      
+
+
+*** Timestep 1:  t=13251 years
+   Solving temperature system... 10 iterations.
+   Solving porosity system ... 9 iterations.
+   Solving Stokes system... 55+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.821377, 0.0571457, 0.75783
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.821377
+
+   Postprocessing:
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00001.0000
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00001.0000
+     Pressure at top/bottom of domain: -4.245e-13 Pa, 6.395e+05 Pa
+     Computing dynamic topography      
+
+   Solving temperature system... 10 iterations.
+   Solving porosity system ... 9 iterations.
+   Solving Stokes system... 53+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.0977331, 0.00375789, 0.113623
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.113623
+
+   Postprocessing:
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00001.0001
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00001.0001
+     Pressure at top/bottom of domain: 1.273e-13 Pa, 6.388e+05 Pa
+     Computing dynamic topography      
+
+   Solving temperature system... 9 iterations.
+   Solving porosity system ... 8 iterations.
+   Solving Stokes system... 49+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.0168861, 0.000513186, 0.0205037
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.0205037
+
+   Postprocessing:
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00001.0002
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00001.0002
+     Pressure at top/bottom of domain: -3.508e-13 Pa, 6.386e+05 Pa
+     Computing dynamic topography      
+
+   Solving temperature system... 9 iterations.
+   Solving porosity system ... 8 iterations.
+   Solving Stokes system... 46+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.00320707, 0.00010333, 0.00392882
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 0.00392882
+
+   Postprocessing:
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00001.0003
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00001.0003
+     Pressure at top/bottom of domain: 2.064e-13 Pa, 6.386e+05 Pa
+     Computing dynamic topography      
+
+   Solving temperature system... 8 iterations.
+   Solving porosity system ... 7 iterations.
+   Solving Stokes system... 43+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.000633249, 2.34421e-05, 0.000777886
+      Relative nonlinear residual (total system) after nonlinear iteration 5: 0.000777886
+
+   Postprocessing:
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00001.0004
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00001.0004
+     Pressure at top/bottom of domain: -4.68e-13 Pa, 6.386e+05 Pa
+     Computing dynamic topography      
+
+   Solving temperature system... 8 iterations.
+   Solving porosity system ... 7 iterations.
+   Solving Stokes system... 40+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.000127909, 5.42261e-06, 0.000157509
+      Relative nonlinear residual (total system) after nonlinear iteration 6: 0.000157509
+
+   Postprocessing:
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00001.0005
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00001.0005
+     Pressure at top/bottom of domain: -2.064e-13 Pa, 6.386e+05 Pa
+     Computing dynamic topography      
+
+   Solving temperature system... 7 iterations.
+   Solving porosity system ... 6 iterations.
+   Solving Stokes system... 37+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.62433e-05, 1.24498e-06, 3.24128e-05
+      Relative nonlinear residual (total system) after nonlinear iteration 7: 3.24128e-05
+
+   Postprocessing:
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00001.0006
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00001.0006
+     Pressure at top/bottom of domain: -3.795e-13 Pa, 6.386e+05 Pa
+     Computing dynamic topography      
+
+   Solving temperature system... 6 iterations.
+   Solving porosity system ... 6 iterations.
+   Solving Stokes system... 34+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 5.44567e-06, 2.82028e-07, 6.74805e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 8: 6.74805e-06
+
+   Postprocessing:
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00001.0007
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00001.0007
+     Pressure at top/bottom of domain: -3.694e-13 Pa, 6.386e+05 Pa
+     Computing dynamic topography      
+
+
+*** Timestep 2:  t=25357.2 years
+   Solving temperature system... 11 iterations.
+   Solving porosity system ... 12 iterations.
+   Solving Stokes system... 54+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.247282, 0.00789326, 0.455259
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.455259
+
+   Postprocessing:
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00002.0000
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00002.0000
+     Pressure at top/bottom of domain: 1.801e-13 Pa, 6.314e+05 Pa
+     Computing dynamic topography      
+
+   Solving temperature system... 10 iterations.
+   Solving porosity system ... 10 iterations.
+   Solving Stokes system... 52+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.015113, 0.000446344, 0.055206
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.055206
+
+   Postprocessing:
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00002.0001
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00002.0001
+     Pressure at top/bottom of domain: -9.003e-14 Pa, 6.311e+05 Pa
+     Computing dynamic topography      
+
+   Solving temperature system... 9 iterations.
+   Solving porosity system ... 9 iterations.
+   Solving Stokes system... 47+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.00209268, 7.85134e-05, 0.00922176
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.00922176
+
+   Postprocessing:
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00002.0002
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00002.0002
+     Pressure at top/bottom of domain: -3.26e-14 Pa, 6.31e+05 Pa
+     Computing dynamic topography      
+
+   Solving temperature system... 8 iterations.
+   Solving porosity system ... 8 iterations.
+   Solving Stokes system... 43+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.000380649, 2.13856e-05, 0.00168053
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 0.00168053
+
+   Postprocessing:
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00002.0003
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00002.0003
+     Pressure at top/bottom of domain: -5.122e-14 Pa, 6.31e+05 Pa
+     Computing dynamic topography      
+
+   Solving temperature system... 7 iterations.
+   Solving porosity system ... 7 iterations.
+   Solving Stokes system... 40+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 7.22582e-05, 5.57131e-06, 0.000317032
+      Relative nonlinear residual (total system) after nonlinear iteration 5: 0.000317032
+
+   Postprocessing:
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00002.0004
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00002.0004
+     Pressure at top/bottom of domain: -3.539e-13 Pa, 6.31e+05 Pa
+     Computing dynamic topography      
+
+   Solving temperature system... 6 iterations.
+   Solving porosity system ... 7 iterations.
+   Solving Stokes system... 37+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.39971e-05, 1.351e-06, 6.12444e-05
+      Relative nonlinear residual (total system) after nonlinear iteration 6: 6.12444e-05
+
+   Postprocessing:
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00002.0005
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00002.0005
+     Pressure at top/bottom of domain: -1.785e-13 Pa, 6.31e+05 Pa
+     Computing dynamic topography      
+
+   Solving temperature system... 6 iterations.
+   Solving porosity system ... 6 iterations.
+   Solving Stokes system... 34+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.7557e-06, 3.12297e-07, 1.2047e-05
+      Relative nonlinear residual (total system) after nonlinear iteration 7: 1.2047e-05
+
+   Postprocessing:
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00002.0006
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00002.0006
+     Pressure at top/bottom of domain: -1.599e-13 Pa, 6.31e+05 Pa
+     Computing dynamic topography      
+
+   Solving temperature system... 5 iterations.
+   Solving porosity system ... 5 iterations.
+   Solving Stokes system... 31+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 5.4958e-07, 6.99312e-08, 2.40272e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 8: 2.40272e-06
+
+   Postprocessing:
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00002.0007
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00002.0007
+     Pressure at top/bottom of domain: -5.2e-13 Pa, 6.31e+05 Pa
+     Computing dynamic topography      
+
+
+*** Timestep 3:  t=36192.1 years
+   Solving temperature system... 11 iterations.
+   Solving porosity system ... 12 iterations.
+   Solving Stokes system... 54+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.254258, 0.00608319, 0.647102
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.647102
+
+   Postprocessing:
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00003.0000
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00003.0000
+     Pressure at top/bottom of domain: -2.577e-13 Pa, 6.25e+05 Pa
+     Computing dynamic topography      
+
+   Solving temperature system... 9 iterations.
+   Solving porosity system ... 10 iterations.
+   Solving Stokes system... 48+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.00864642, 0.000460019, 0.0271297
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.0271297
+
+   Postprocessing:
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00003.0001
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00003.0001
+     Pressure at top/bottom of domain: 4.967e-14 Pa, 6.25e+05 Pa
+     Computing dynamic topography      
+
+   Solving temperature system... 8 iterations.
+   Solving porosity system ... 9 iterations.
+   Solving Stokes system... 44+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.000401659, 2.14864e-05, 0.00147209
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.00147209
+
+   Postprocessing:
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00003.0002
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00003.0002
+     Pressure at top/bottom of domain: -3.244e-13 Pa, 6.25e+05 Pa
+     Computing dynamic topography      
+
+   Solving temperature system... 7 iterations.
+   Solving porosity system ... 7 iterations.
+   Solving Stokes system... 40+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.45653e-05, 2.90915e-06, 0.000143673
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 0.000143673
+
+   Postprocessing:
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00003.0003
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00003.0003
+     Pressure at top/bottom of domain: -3.912e-13 Pa, 6.25e+05 Pa
+     Computing dynamic topography      
+
+   Solving temperature system... 6 iterations.
+   Solving porosity system ... 6 iterations.
+   Solving Stokes system... 36+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.35868e-06, 3.40281e-07, 1.83012e-05
+      Relative nonlinear residual (total system) after nonlinear iteration 5: 1.83012e-05
+
+   Postprocessing:
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00003.0004
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00003.0004
+     Pressure at top/bottom of domain: 2.173e-13 Pa, 6.25e+05 Pa
+     Computing dynamic topography      
+
+   Solving temperature system... 5 iterations.
+   Solving porosity system ... 5 iterations.
+   Solving Stokes system... 31+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 5.86969e-07, 3.66392e-08, 2.45329e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 6: 2.45329e-06
+
+   Postprocessing:
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00003.0005
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00003.0005
+     Pressure at top/bottom of domain: 1.459e-13 Pa, 6.25e+05 Pa
+     Computing dynamic topography      
+
+
+*** Timestep 4:  t=46125 years
+   Solving temperature system... 11 iterations.
+   Solving porosity system ... 12 iterations.
+   Solving Stokes system... 55+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.120332, 0.00649854, 0.594093
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.594093
+
+   Postprocessing:
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00004.0000
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00004.0000
+     Pressure at top/bottom of domain: -4.455e-13 Pa, 6.212e+05 Pa
+     Computing dynamic topography      
+
+   Solving temperature system... 9 iterations.
+   Solving porosity system ... 11 iterations.
+   Solving Stokes system... 49+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.00420756, 0.000824451, 0.0150718
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.0150718
+
+   Postprocessing:
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00004.0001
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00004.0001
+     Pressure at top/bottom of domain: -6.814e-13 Pa, 6.211e+05 Pa
+     Computing dynamic topography      
+
+   Solving temperature system... 8 iterations.
+   Solving porosity system ... 9 iterations.
+   Solving Stokes system... 44+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.000244847, 6.41437e-05, 0.00104033
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.00104033
+
+   Postprocessing:
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00004.0002
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00004.0002
+     Pressure at top/bottom of domain: -1.242e-13 Pa, 6.211e+05 Pa
+     Computing dynamic topography      
+
+   Solving temperature system... 7 iterations.
+   Solving porosity system ... 8 iterations.
+   Solving Stokes system... 39+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.29483e-05, 6.59889e-06, 9.98032e-05
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 9.98032e-05
+
+   Postprocessing:
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00004.0003
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00004.0003
+     Pressure at top/bottom of domain: -1.614e-13 Pa, 6.211e+05 Pa
+     Computing dynamic topography      
+
+   Solving temperature system... 6 iterations.
+   Solving porosity system ... 7 iterations.
+   Solving Stokes system... 35+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.3895e-06, 7.20227e-07, 1.05543e-05
+      Relative nonlinear residual (total system) after nonlinear iteration 5: 1.05543e-05
+
+   Postprocessing:
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00004.0004
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00004.0004
+     Pressure at top/bottom of domain: -9.468e-14 Pa, 6.211e+05 Pa
+     Computing dynamic topography      
+
+   Solving temperature system... 5 iterations.
+   Solving porosity system ... 5 iterations.
+   Solving Stokes system... 30+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.54344e-07, 7.39165e-08, 1.12433e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 6: 1.12433e-06
+
+   Postprocessing:
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00004.0005
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00004.0005
+     Pressure at top/bottom of domain: -1.506e-13 Pa, 6.211e+05 Pa
+     Computing dynamic topography      
+
+
+*** Timestep 5:  t=55855.4 years
+   Solving temperature system... 11 iterations.
+   Solving porosity system ... 12 iterations.
+   Solving Stokes system... 55+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.0801971, 0.00650811, 0.383226
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.383226
+
+   Postprocessing:
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00005.0000
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00005.0000
+     Pressure at top/bottom of domain: 1.63e-13 Pa, 6.186e+05 Pa
+     Computing dynamic topography      
+
+   Solving temperature system... 9 iterations.
+   Solving porosity system ... 11 iterations.
+   Solving Stokes system... 48+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.00260234, 0.000921972, 0.0120047
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.0120047
+
+   Postprocessing:
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00005.0001
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00005.0001
+     Pressure at top/bottom of domain: -1.04e-13 Pa, 6.186e+05 Pa
+     Computing dynamic topography      
+
+   Solving temperature system... 8 iterations.
+   Solving porosity system ... 9 iterations.
+   Solving Stokes system... 43+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.000185779, 0.000117988, 0.000929408
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.000929408
+
+   Postprocessing:
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00005.0002
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00005.0002
+     Pressure at top/bottom of domain: -1.692e-13 Pa, 6.186e+05 Pa
+     Computing dynamic topography      
+
+   Solving temperature system... 7 iterations.
+   Solving porosity system ... 8 iterations.
+   Solving Stokes system... 39+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.754e-05, 1.23398e-05, 9.01498e-05
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 9.01498e-05
+
+   Postprocessing:
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00005.0003
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00005.0003
+     Pressure at top/bottom of domain: -2.282e-13 Pa, 6.186e+05 Pa
+     Computing dynamic topography      
+
+   Solving temperature system... 6 iterations.
+   Solving porosity system ... 7 iterations.
+   Solving Stokes system... 34+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.74434e-06, 1.25013e-06, 9.03192e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 5: 9.03192e-06
+
+   Postprocessing:
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00005.0004
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00005.0004
+     Pressure at top/bottom of domain: 2.359e-13 Pa, 6.186e+05 Pa
+     Computing dynamic topography      
+
+
+*** Timestep 6:  t=65167.2 years
+   Solving temperature system... 11 iterations.
+   Solving porosity system ... 12 iterations.
+   Solving Stokes system... 55+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.0572412, 0.00689934, 0.258279
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.258279
+
+   Postprocessing:
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00006.0000
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00006.0000
+     Pressure at top/bottom of domain: -2.39e-13 Pa, 6.17e+05 Pa
+     Computing dynamic topography      
+
+   Solving temperature system... 9 iterations.
+   Solving porosity system ... 11 iterations.
+   Solving Stokes system... 48+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.00175675, 0.00107406, 0.00805902
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.00805902
+
+   Postprocessing:
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00006.0001
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00006.0001
+     Pressure at top/bottom of domain: -2.856e-13 Pa, 6.17e+05 Pa
+     Computing dynamic topography      
+
+   Solving temperature system... 8 iterations.
+   Solving porosity system ... 10 iterations.
+   Solving Stokes system... 43+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.000127417, 0.000112878, 0.000630225
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.000630225
+
+   Postprocessing:
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00006.0002
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00006.0002
+     Pressure at top/bottom of domain: -2.049e-13 Pa, 6.17e+05 Pa
+     Computing dynamic topography      
+
+   Solving temperature system... 7 iterations.
+   Solving porosity system ... 8 iterations.
+   Solving Stokes system... 38+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.18384e-05, 1.12086e-05, 6.03151e-05
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 6.03151e-05
+
+   Postprocessing:
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00006.0003
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00006.0003
+     Pressure at top/bottom of domain: -2.716e-13 Pa, 6.17e+05 Pa
+     Computing dynamic topography      
+
+   Solving temperature system... 6 iterations.
+   Solving porosity system ... 7 iterations.
+   Solving Stokes system... 34+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.14789e-06, 1.10076e-06, 5.95712e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 5: 5.95712e-06
+
+   Postprocessing:
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00006.0004
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00006.0004
+     Pressure at top/bottom of domain: -4.191e-14 Pa, 6.17e+05 Pa
+     Computing dynamic topography      
+
+
+*** Timestep 7:  t=73771.7 years
+   Solving temperature system... 11 iterations.
+   Solving porosity system ... 12 iterations.
+   Solving Stokes system... 54+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.038188, 0.00732507, 0.159808
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.159808
+
+   Postprocessing:
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00007.0000
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00007.0000
+     Pressure at top/bottom of domain: 2.266e-13 Pa, 6.16e+05 Pa
+     Computing dynamic topography      
+
+   Solving temperature system... 10 iterations.
+   Solving porosity system ... 11 iterations.
+   Solving Stokes system... 48+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.00121057, 0.000995593, 0.00550759
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.00550759
+
+   Postprocessing:
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00007.0001
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00007.0001
+     Pressure at top/bottom of domain: -3.632e-13 Pa, 6.161e+05 Pa
+     Computing dynamic topography      
+
+   Solving temperature system... 9 iterations.
+   Solving porosity system ... 10 iterations.
+   Solving Stokes system... 43+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 9.03844e-05, 9.45603e-05, 0.000439483
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.000439483
+
+   Postprocessing:
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00007.0002
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00007.0002
+     Pressure at top/bottom of domain: -3.104e-15 Pa, 6.161e+05 Pa
+     Computing dynamic topography      
+
+   Solving temperature system... 8 iterations.
+   Solving porosity system ... 8 iterations.
+   Solving Stokes system... 38+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 8.20473e-06, 8.8462e-06, 4.12574e-05
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 4.12574e-05
+
+   Postprocessing:
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00007.0003
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00007.0003
+     Pressure at top/bottom of domain: 2.406e-13 Pa, 6.161e+05 Pa
+     Computing dynamic topography      
+
+   Solving temperature system... 7 iterations.
+   Solving porosity system ... 7 iterations.
+   Solving Stokes system... 33+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 7.72319e-07, 8.30891e-07, 3.96441e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 5: 3.96441e-06
+
+   Postprocessing:
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00007.0004
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00007.0004
+     Pressure at top/bottom of domain: 1.521e-13 Pa, 6.161e+05 Pa
+     Computing dynamic topography      
+
+
+*** Timestep 8:  t=81630.4 years
+   Solving temperature system... 12 iterations.
+   Solving porosity system ... 12 iterations.
+   Solving Stokes system... 53+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.0247562, 0.00760225, 0.0961601
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0961601
+
+   Postprocessing:
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00008.0000
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00008.0000
+     Pressure at top/bottom of domain: -6.985e-14 Pa, 6.155e+05 Pa
+     Computing dynamic topography      
+
+   Solving temperature system... 11 iterations.
+   Solving porosity system ... 11 iterations.
+   Solving Stokes system... 47+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.000898388, 0.000855813, 0.00400586
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.00400586
+
+   Postprocessing:
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00008.0001
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00008.0001
+     Pressure at top/bottom of domain: 1.816e-13 Pa, 6.155e+05 Pa
+     Computing dynamic topography      
+
+   Solving temperature system... 9 iterations.
+   Solving porosity system ... 9 iterations.
+   Solving Stokes system... 42+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 7.01468e-05, 7.60177e-05, 0.000325253
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.000325253
+
+   Postprocessing:
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00008.0002
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00008.0002
+     Pressure at top/bottom of domain: 5.433e-14 Pa, 6.155e+05 Pa
+     Computing dynamic topography      
+
+   Solving temperature system... 8 iterations.
+   Solving porosity system ... 8 iterations.
+   Solving Stokes system... 37+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 6.16673e-06, 6.72049e-06, 2.93572e-05
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 2.93572e-05
+
+   Postprocessing:
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00008.0003
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00008.0003
+     Pressure at top/bottom of domain: -2.018e-13 Pa, 6.155e+05 Pa
+     Computing dynamic topography      
+
+   Solving temperature system... 7 iterations.
+   Solving porosity system ... 7 iterations.
+   Solving Stokes system... 32+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 5.54728e-07, 5.98863e-07, 2.67649e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 5: 2.67649e-06
+
+   Postprocessing:
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00008.0004
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00008.0004
+     Pressure at top/bottom of domain: -8.692e-14 Pa, 6.155e+05 Pa
+     Computing dynamic topography      
+
+
+*** Timestep 9:  t=88740.3 years
+   Solving temperature system... 12 iterations.
+   Solving porosity system ... 12 iterations.
+   Solving Stokes system... 52+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.0164665, 0.00766179, 0.0590716
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0590716
+
+   Postprocessing:
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00009.0000
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00009.0000
+     Pressure at top/bottom of domain: 6.209e-14 Pa, 6.152e+05 Pa
+     Computing dynamic topography      
+
+   Solving temperature system... 11 iterations.
+   Solving porosity system ... 11 iterations.
+   Solving Stokes system... 46+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.00068657, 0.000710171, 0.00294368
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.00294368
+
+   Postprocessing:
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00009.0001
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00009.0001
+     Pressure at top/bottom of domain: -1.816e-13 Pa, 6.152e+05 Pa
+     Computing dynamic topography      
+
+   Solving temperature system... 9 iterations.
+   Solving porosity system ... 9 iterations.
+   Solving Stokes system... 41+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 5.36425e-05, 5.79232e-05, 0.000236209
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.000236209
+
+   Postprocessing:
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00009.0002
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00009.0002
+     Pressure at top/bottom of domain: -4.936e-13 Pa, 6.152e+05 Pa
+     Computing dynamic topography      
+
+   Solving temperature system... 8 iterations.
+   Solving porosity system ... 8 iterations.
+   Solving Stokes system... 36+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.45823e-06, 4.77118e-06, 2.00694e-05
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 2.00694e-05
+
+   Postprocessing:
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00009.0003
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00009.0003
+     Pressure at top/bottom of domain: 1.242e-13 Pa, 6.152e+05 Pa
+     Computing dynamic topography      
+
+   Solving temperature system... 7 iterations.
+   Solving porosity system ... 7 iterations.
+   Solving Stokes system... 32+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.76583e-07, 3.98543e-07, 1.70762e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 5: 1.70762e-06
+
+   Postprocessing:
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00009.0004
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00009.0004
+     Pressure at top/bottom of domain: -1.009e-13 Pa, 6.152e+05 Pa
+     Computing dynamic topography      
+
+
+*** Timestep 10:  t=95202.3 years
+   Solving temperature system... 12 iterations.
+   Solving porosity system ... 12 iterations.
+   Solving Stokes system... 52+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.0123146, 0.00762178, 0.0416316
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0416316
+
+   Postprocessing:
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00010.0000
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00010.0000
+     Pressure at top/bottom of domain: 1.055e-13 Pa, 6.15e+05 Pa
+     Computing dynamic topography      
+
+   Solving temperature system... 11 iterations.
+   Solving porosity system ... 10 iterations.
+   Solving Stokes system... 44+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.00056907, 0.000605296, 0.00224469
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.00224469
+
+   Postprocessing:
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00010.0001
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00010.0001
+     Pressure at top/bottom of domain: -2.98e-13 Pa, 6.15e+05 Pa
+     Computing dynamic topography      
+
+   Solving temperature system... 9 iterations.
+   Solving porosity system ... 9 iterations.
+   Solving Stokes system... 41+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.14175e-05, 4.41337e-05, 0.000170268
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.000170268
+
+   Postprocessing:
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00010.0002
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00010.0002
+     Pressure at top/bottom of domain: -2.608e-13 Pa, 6.15e+05 Pa
+     Computing dynamic topography      
+
+   Solving temperature system... 8 iterations.
+   Solving porosity system ... 8 iterations.
+   Solving Stokes system... 36+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.17896e-06, 3.34472e-06, 1.33117e-05
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 1.33117e-05
+
+   Postprocessing:
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00010.0003
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00010.0003
+     Pressure at top/bottom of domain: 4.812e-14 Pa, 6.15e+05 Pa
+     Computing dynamic topography      
+
+   Solving temperature system... 7 iterations.
+   Solving porosity system ... 6 iterations.
+   Solving Stokes system... 31+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.47978e-07, 2.58616e-07, 1.04354e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 5: 1.04354e-06
+
+   Postprocessing:
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00010.0004
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00010.0004
+     Pressure at top/bottom of domain: -1.273e-13 Pa, 6.15e+05 Pa
+     Computing dynamic topography      
+
+
+*** Timestep 11:  t=100000 years
+   Solving temperature system... 11 iterations.
+   Solving porosity system ... 11 iterations.
+   Solving Stokes system... 52+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.00785454, 0.00556257, 0.0254169
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0254169
+
+   Postprocessing:
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00011.0000
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00011.0000
+     Pressure at top/bottom of domain: 8.537e-14 Pa, 6.149e+05 Pa
+     Computing dynamic topography      
+
+   Solving temperature system... 10 iterations.
+   Solving porosity system ... 10 iterations.
+   Solving Stokes system... 44+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.000300093, 0.000322736, 0.00111551
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.00111551
+
+   Postprocessing:
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00011.0001
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00011.0001
+     Pressure at top/bottom of domain: 3.57e-14 Pa, 6.149e+05 Pa
+     Computing dynamic topography      
+
+   Solving temperature system... 8 iterations.
+   Solving porosity system ... 8 iterations.
+   Solving Stokes system... 39+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.66866e-05, 1.763e-05, 6.51037e-05
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 6.51037e-05
+
+   Postprocessing:
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00011.0002
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00011.0002
+     Pressure at top/bottom of domain: -8.227e-14 Pa, 6.149e+05 Pa
+     Computing dynamic topography      
+
+   Solving temperature system... 7 iterations.
+   Solving porosity system ... 7 iterations.
+   Solving Stokes system... 33+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 9.88274e-07, 1.02788e-06, 3.9168e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 3.9168e-06
+
+   Postprocessing:
+     Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00011.0003
+     Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00011.0003
+     Pressure at top/bottom of domain: -1.211e-13 Pa, 6.149e+05 Pa
+     Computing dynamic topography      
+
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

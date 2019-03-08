@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2018 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with ASPECT; see the file doc/COPYING.  If not see
+ along with ASPECT; see the file LICENSE.  If not see
  <http://www.gnu.org/licenses/>.
  */
 
@@ -34,8 +34,8 @@ namespace aspect
 
       template <int dim>
       void
-      RK2<dim>::local_integrate_step(const typename std::multimap<types::LevelInd, Particle<dim> >::iterator &begin_particle,
-                                     const typename std::multimap<types::LevelInd, Particle<dim> >::iterator &end_particle,
+      RK2<dim>::local_integrate_step(const typename ParticleHandler<dim>::particle_iterator &begin_particle,
+                                     const typename ParticleHandler<dim>::particle_iterator &end_particle,
                                      const std::vector<Tensor<1,dim> > &old_velocities,
                                      const std::vector<Tensor<1,dim> > &velocities,
                                      const double dt)
@@ -53,19 +53,19 @@ namespace aspect
         typename std::vector<Tensor<1,dim> >::const_iterator old_velocity = old_velocities.begin();
         typename std::vector<Tensor<1,dim> >::const_iterator velocity = velocities.begin();
 
-        for (typename std::multimap<types::LevelInd, Particle<dim> >::iterator it = begin_particle;
+        for (typename ParticleHandler<dim>::particle_iterator it = begin_particle;
              it != end_particle; ++it, ++velocity, ++old_velocity)
           {
-            const types::particle_index particle_id = it->second.get_id();
-            const Point<dim> loc = it->second.get_location();
+            const types::particle_index particle_id = it->get_id();
+            const Point<dim> loc = it->get_location();
             if (integrator_substep == 0)
               {
                 loc0[particle_id] = loc;
-                it->second.set_location(loc + 0.5 * dt * (*old_velocity));
+                it->set_location(loc + 0.5 * dt * (*old_velocity));
               }
             else if (integrator_substep == 1)
               {
-                it->second.set_location(loc0[particle_id] + dt * (*old_velocity + *velocity) / 2.0);
+                it->set_location(loc0[particle_id] + dt * (*old_velocity + *velocity) / 2.0);
               }
             else
               {
@@ -87,7 +87,7 @@ namespace aspect
       }
 
       template <int dim>
-      unsigned int
+      std::size_t
       RK2<dim>::get_data_size() const
       {
         // If integration is finished, we do not need to transfer integrator
@@ -101,8 +101,8 @@ namespace aspect
 
       template <int dim>
       const void *
-      RK2<dim>::read_data(const void *data,
-                          const types::particle_index particle_id)
+      RK2<dim>::read_data(const typename ParticleHandler<dim>::particle_iterator &particle,
+                          const void *data)
       {
         // If integration is finished, we do not need to transfer integrator
         // data to other processors, because it will be deleted soon anyway.
@@ -114,15 +114,15 @@ namespace aspect
 
         // Read location data
         for (unsigned int i=0; i<dim; ++i)
-          loc0[particle_id](i) = *integrator_data++;
+          loc0[particle->get_id()](i) = *integrator_data++;
 
         return static_cast<const void *> (integrator_data);
       }
 
       template <int dim>
       void *
-      RK2<dim>::write_data(void *data,
-                           const types::particle_index particle_id) const
+      RK2<dim>::write_data(const typename ParticleHandler<dim>::particle_iterator &particle,
+                           void *data) const
       {
         // If integration is finished, we do not need to transfer integrator
         // data to other processors, because it will be deleted soon anyway.
@@ -133,7 +133,7 @@ namespace aspect
         double *integrator_data = static_cast<double *> (data);
 
         // Write location data
-        const typename std::map<types::particle_index, Point<dim> >::const_iterator it = loc0.find(particle_id);
+        const typename std::map<types::particle_index, Point<dim> >::const_iterator it = loc0.find(particle->get_id());
         for (unsigned int i=0; i<dim; ++i,++integrator_data)
           *integrator_data = it->second(i);
 
@@ -154,8 +154,8 @@ namespace aspect
       ASPECT_REGISTER_PARTICLE_INTEGRATOR(RK2,
                                           "rk2",
                                           "Second Order Runge Kutta integrator "
-                                          "$y_{n+1} = y_n + dt*v(t_{n+1/2}, y_{n} + 0.5*k_1)$ "
-                                          "where $k_1 = y_n + 0.5*dt*v(t_{n}, y_{n})$")
+                                          "$y_{n+1} = y_n + \\Delta t\\, v(t_{n+1/2}, y_{n} + \\frac{1}{2} k_1)$ "
+                                          "where $k_1 = \\Delta t\\, v(t_{n}, y_{n})$")
     }
   }
 }

@@ -1,7 +1,7 @@
 # test checkpoint/resume.
 
 # This test is controlled via the plugin in checkpoint_01.cc. The plugin will
-# first execute ASPECT with the this .prm and write the output into
+# first execute ASPECT with this .prm and write the output into
 # output1.tmp/. This will generate a snapshot that is then resumed from. The
 # output for this second run will be written into output2.tmp/. Finally,
 # output files will be copied into the main output folder for comparison.
@@ -15,12 +15,11 @@ set Start time                             = 0
 set Adiabatic surface temperature          = 0
 set Surface pressure                       = 0
 set Use years in output instead of seconds = false  # default: true
-set Nonlinear solver scheme                = IMPES
-set Use direct solver for Stokes system    = true
+set Nonlinear solver scheme                = single Advection, single Stokes
 
 
 subsection Boundary temperature model
-  set Model name = box
+  set List of model names = box
 end
 
 subsection Checkpointing
@@ -69,10 +68,15 @@ subsection Mesh refinement
 end
 
 
-subsection Model settings
-  set Fixed temperature boundary indicators   =
-  set Prescribed velocity boundary indicators =
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary velocity model
   set Tangential velocity boundary indicators = 1
+end
+
+subsection Boundary velocity model
   set Zero velocity boundary indicators       = 0, 2, 3
 end
 
@@ -91,3 +95,8 @@ subsection Termination criteria
   set Checkpoint on termination = false
 end
 
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Use direct solver for Stokes system = true
+  end
+end

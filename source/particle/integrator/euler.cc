@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2018 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with ASPECT; see the file doc/COPYING.  If not see
+ along with ASPECT; see the file LICENSE.  If not see
  <http://www.gnu.org/licenses/>.
  */
 
@@ -27,13 +27,13 @@ namespace aspect
     namespace Integrator
     {
       /**
-       * Euler scheme integrator, where $y_{n+1} = y_n + dt * v(y_n)$.
+       * Euler scheme integrator, where $y_{n+1} = y_n + \\Delta t\\, v(y_n)$.
        * This requires only one step per integration, and doesn't involve any extra data.
        */
       template <int dim>
       void
-      Euler<dim>::local_integrate_step(const typename std::multimap<types::LevelInd, Particle<dim> >::iterator &begin_particle,
-                                       const typename std::multimap<types::LevelInd, Particle<dim> >::iterator &end_particle,
+      Euler<dim>::local_integrate_step(const typename ParticleHandler<dim>::particle_iterator &begin_particle,
+                                       const typename ParticleHandler<dim>::particle_iterator &end_particle,
                                        const std::vector<Tensor<1,dim> > &old_velocities,
                                        const std::vector<Tensor<1,dim> > &,
                                        const double dt)
@@ -45,11 +45,11 @@ namespace aspect
 
         typename std::vector<Tensor<1,dim> >::const_iterator old_velocity = old_velocities.begin();
 
-        for (typename std::multimap<types::LevelInd, Particle<dim> >::iterator it = begin_particle;
+        for (typename ParticleHandler<dim>::particle_iterator it = begin_particle;
              it != end_particle; ++it, ++old_velocity)
           {
-            const Point<dim> loc = it->second.get_location();
-            it->second.set_location(loc + dt * (*old_velocity));
+            const Point<dim> loc = it->get_location();
+            it->set_location(loc + dt * (*old_velocity));
           }
       }
     }
@@ -66,7 +66,8 @@ namespace aspect
     {
       ASPECT_REGISTER_PARTICLE_INTEGRATOR(Euler,
                                           "euler",
-                                          "Explicit Euler scheme integrator, where $y_{n+1} = y_n + dt * v(y_n)$. "
+                                          "Explicit Euler scheme integrator, where "
+                                          "$y_{n+1} = y_n + \\Delta t \\, v(y_n)$. "
                                           "This requires only one integration substep per timestep.")
     }
   }

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
@@ -22,6 +22,7 @@
 #include <aspect/simulator.h>
 #include <aspect/utilities.h>
 #include <aspect/free_surface.h>
+#include <aspect/melt.h>
 
 #include <deal.II/base/mpi.h>
 #include <deal.II/grid/grid_tools.h>
@@ -68,10 +69,59 @@ namespace aspect
   }
 
 
+  namespace
+  {
+    /**
+     * Save a few of the critical parameters of the current run in the
+     * checkpoint file. We will load them again later during
+     * restart to verify that they are the same as the ones set
+     * in the input file active during restart.
+     */
+    template <int dim>
+    void save_critical_parameters (const Parameters<dim> &parameters,
+                                   aspect::oarchive &oa)
+    {
+      oa << parameters.n_compositional_fields;
+      oa << parameters.names_of_compositional_fields;
+    }
+
+
+
+    /**
+     * Load a few of the critical parameters from a checkpoint file during
+     * restart to verify that they are the same as the ones currently set
+     * in the input file active during restart.
+     */
+    template <int dim>
+    void load_and_check_critical_parameters (const Parameters<dim> &parameters,
+                                             aspect::iarchive &ia)
+    {
+      unsigned int n_compositional_fields;
+      ia >> n_compositional_fields;
+      AssertThrow (n_compositional_fields == parameters.n_compositional_fields,
+                   ExcMessage ("The number of compositional fields that were stored "
+                               "in the checkpoint file is not the same as the one "
+                               "you currently set in your input file. "
+                               "These need to be the same during restarting "
+                               "from a checkpoint."));
+
+      std::vector<std::string> names_of_compositional_fields;
+      ia >> names_of_compositional_fields;
+      AssertThrow (names_of_compositional_fields == parameters.names_of_compositional_fields,
+                   ExcMessage ("The names of compositional fields that were stored "
+                               "in the checkpoint file is not the same as the one "
+                               "you currently set in your input file. "
+                               "These need to be the same during restarting "
+                               "from a checkpoint."));
+
+    }
+  }
+
+
   template <int dim>
   void Simulator<dim>::create_snapshot()
   {
-    computing_timer.enter_section ("Create snapshot");
+    TimerOutput::Scope timer (computing_timer, "Create snapshot");
     unsigned int my_id = Utilities::MPI::this_mpi_process (mpi_communicator);
 
     if (my_id == 0)
@@ -115,11 +165,12 @@ namespace aspect
       // If we are using a free surface, also serialize the mesh vertices vector, which
       // uses its own dof handler
       std::vector<const LinearAlgebra::Vector *> x_fs_system (1);
-      std_cxx11::unique_ptr<parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector> > freesurface_trans;
+      std::unique_ptr<parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector> > freesurface_trans;
       if (parameters.free_surface_enabled)
         {
-          freesurface_trans.reset (new parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector>
-                                   (free_surface->free_surface_dof_handler));
+          freesurface_trans
+            = std_cxx14::make_unique<parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector>>
+              (free_surface->free_surface_dof_handler);
 
           x_fs_system[0] = &free_surface->mesh_displacements;
 
@@ -139,6 +190,7 @@ namespace aspect
 
       // serialize into a stringstream
       aspect::oarchive oa (oss);
+      save_critical_parameters (this->parameters, oa);
       oa << (*this);
 
       // compress with zlib and write to file on the root processor
@@ -166,18 +218,29 @@ namespace aspect
           std::ofstream f ((parameters.output_directory + "restart.resume.z").c_str());
           f.write((const char *)compression_header, 4 * sizeof(compression_header[0]));
           f.write((char *)&compressed_data[0], compressed_data_length);
+          f.close();
+
+          // We check the fail state of the stream _after_ closing the file to
+          // make sure the writes were completed correctly. This also catches
+          // the cases where the file could not be opened in the first place
+          // or one of the write() commands fails, as the fail state is
+          // "sticky".
+          if (!f)
+            AssertThrow(false, ExcMessage ("Writing of the checkpoint file '" + parameters.output_directory
+                                           + "restart.resume.z' with size "
+                                           + Utilities::to_string(4 * sizeof(compression_header[0])+compressed_data_length)
+                                           + " failed on processor 0."));
         }
 #else
       AssertThrow (false,
-                   ExcMessage ("You need to have deal.II configured with the 'libz' "
+                   ExcMessage ("You need to have deal.II configured with the `libz' "
                                "option to support checkpoint/restart, but deal.II "
-                               "did not detect its presence when you called 'cmake'."));
+                               "did not detect its presence when you called `cmake'."));
 #endif
 
     }
 
     pcout << "*** Snapshot created!" << std::endl << std::endl;
-    computing_timer.exit_section();
   }
 
 
@@ -295,14 +358,16 @@ namespace aspect
         {
           std::istringstream ss;
           ss.str(std::string (&uncompressed[0], uncompressed_size));
+
           aspect::iarchive ia (ss);
+          load_and_check_critical_parameters(this->parameters, ia);
           ia >> (*this);
         }
 #else
         AssertThrow (false,
-                     ExcMessage ("You need to have deal.II configured with the 'libz' "
+                     ExcMessage ("You need to have deal.II configured with the `libz' "
                                  "option to support checkpoint/restart, but deal.II "
-                                 "did not detect its presence when you called 'cmake'."));
+                                 "did not detect its presence when you called `cmake'."));
 #endif
         signals.post_resume_load_user_data(triangulation);
       }
@@ -317,6 +382,11 @@ namespace aspect
                                  +
                                  ">"));
       }
+
+    // We have to compute the constraints here because the vector that tells
+    // us if a cell is a melt cell is not saved between restarts.
+    if (parameters.include_melt_transport)
+      compute_current_constraints ();
   }
 
 }
@@ -330,7 +400,7 @@ namespace aspect
 {
 
   template <int dim>
-  template<class Archive>
+  template <class Archive>
   void Simulator<dim>::serialize (Archive &ar, const unsigned int)
   {
     ar &time;

@@ -1,0 +1,7 @@
+Fixed: The nullspace removal had a minor bug that caused a small
+remaining rotation in three dimensional models even if the net rotation
+or angular momentum should have been removed. The bug was fixed, and
+a new postprocessor called 'rotation statistics' was added that can be
+used to calculate net rotation and angular momentum.
+<br>
+(Rene Gassmoeller, Shangxin Liu, 2018/05/03)

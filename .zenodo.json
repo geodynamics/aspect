@@ -1,0 +1,24 @@
+{
+    "creators": [
+	{
+	    "name": "Wolfgang Bangerth",
+	    "affiliation": "Colorado State University",
+	    "orcid": "0000-0003-2311-9402"
+	},
+	{
+	    "name": "Juliane Dannberg",
+	    "affiliation": "Colorado State University",
+	    "orcid": "0000-0003-0357-7115"
+	},
+	{
+	    "name": "Rene Gassmoeller",
+	    "affiliation": "Colorado State University",
+	    "orcid": "0000-0001-7098-8198"
+	},
+	{
+	    "name": "Timo Heister",
+	    "affiliation": "Clemson University",
+	    "orcid": "0000-0002-8137-3903"
+	}
+    ]
+}

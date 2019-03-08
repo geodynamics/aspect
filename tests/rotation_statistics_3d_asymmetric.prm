@@ -1,0 +1,83 @@
+# This test is based on rotation_statistics_3D, with the modification
+# that we create a rotating sphere with an asymmetric density distribution.
+# More precisely the density is 2 if (x>0 && y>0) or (x<0 && y<0), and 1 otherwise.
+# This allows us to compute the xy entry of the moment of inertia tensor I as
+# a sum of a full sphere with density 1 (for which I_xy == 0) and two
+# anomalies in the first and third quadrant of the x-y plane with delta_rho=1:
+#
+# I_xy = -1 * \int_V delta_rho * x * y dV
+#      = -1 * \int_V (r*cos(phi)*sin(theta) * r*sin(phi)*sin(theta)) dV
+#      = -2 * \int_(phi=0)^(pi/2) \int_(theta=0)^(pi) \int_(r=0)^(R)
+#        r^2 sin(phi) cos(phi) sin^2(theta) * r^2 sin(theta) dr dtheta dphi
+#      = -4/15 R^5 = -0.266666
+#
+# This is mostly a test that the 'rotation statistics' postprocessor
+# correctly computes this moment of inertia tensor (including the correct
+# sign).
+
+set Dimension                              = 3
+
+set Use years in output instead of seconds = false
+set End time                               = 0.0
+
+subsection Prescribed Stokes solution  
+  set Model name = circle
+end
+set Nonlinear solver scheme                = single Advection, no Stokes
+
+
+subsection Geometry model
+  set Model name = sphere
+
+  subsection Sphere
+    set Radius = 1
+  end
+end
+
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = if (x>0, if (y>0, 1.0, 2.0), if (y<0, 1.0, 2.0))
+  end
+end
+
+
+subsection Gravity model
+  set Model name = radial constant
+
+  subsection Vertical
+    set Magnitude = 1
+  end
+end
+
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Reference density             = 2
+    set Reference specific heat       = 1
+    set Reference temperature         = 1
+    set Thermal conductivity          = 1
+    set Thermal expansion coefficient = 0.5
+    set Viscosity                     = 1
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial global refinement                = 2
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 0
+end
+
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, rotation statistics
+
+  subsection Rotation statistics
+    set Output full moment of inertia tensor = true
+  end
+end

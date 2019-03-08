@@ -1,7 +1,0 @@
-Changed: Entries about new contributions are no longer stored
-in doc/modules/changes.h, but instead each contribution is stored as
-a single file of the form YYYYMMDD_name in doc/modules/changes/.
-This creates less conflicts when multiple parallel branches are 
-merged.
-<br>
-(Rene Gassmoeller, 2017/04/17)

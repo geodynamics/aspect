@@ -5,12 +5,12 @@ Number of degrees of freedom: 527 (375+27+125)
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 37+0 iterations.
+   Solving Stokes system... 28+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  124 m/year, 298 m/year
      Temperature min/avg/max:            1613 K, 1613 K, 1613 K
-     Heat fluxes through boundary parts: 3.579e-06 W, 1.898e-05 W, 1.327e-05 W, 1.321e-05 W, 4.03e-06 W, 7.131e-06 W
+     Heat fluxes through boundary parts: -0.7859 W, 2.811 W, 0 W, 0 W, -4.863e+15 W, 4.539e+15 W
      Writing depth average:              output-depth_average_rounding_bug/depth_average.gnuplot
 
 Termination requested by criterion: end time

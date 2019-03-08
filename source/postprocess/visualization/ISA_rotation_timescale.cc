@@ -1,0 +1,118 @@
+/*
+  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
+
+  This file is part of ASPECT.
+
+  ASPECT is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2, or (at your option)
+  any later version.
+
+  ASPECT is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with ASPECT; see the file LICENSE.  If not see
+  <http://www.gnu.org/licenses/>.
+*/
+
+
+#include <aspect/postprocess/visualization/ISA_rotation_timescale.h>
+
+#include <deal.II/base/quadrature_lib.h>
+#include <deal.II/fe/fe_values.h>
+#include <deal.II/base/symmetric_tensor.h>
+
+
+
+namespace aspect
+{
+  namespace Postprocess
+  {
+    namespace VisualizationPostprocessors
+    {
+      template<int dim>
+      std::pair<std::string, Vector<float> *> ISARotationTimescale<dim>::execute() const
+      {
+        std::pair<std::string, Vector<float> *> return_value("ISA_rotation_timescale",
+                                                             new Vector<float>(this->get_triangulation().n_active_cells()));
+
+        const QMidpoint<dim> quadrature_formula;
+        const unsigned int n_q_points = quadrature_formula.size();
+
+        FEValues<dim> fe_values(this->get_mapping(), this->get_fe(),
+                                quadrature_formula,
+                                update_values | update_gradients | update_quadrature_points);
+
+        // Set up material models
+        MaterialModel::MaterialModelInputs<dim> in(n_q_points,
+                                                   this->n_compositional_fields());
+        MaterialModel::MaterialModelOutputs<dim> out(n_q_points,
+                                                     this->n_compositional_fields());
+
+        // Set up cell iterator for looping
+        typename DoFHandler<dim>::active_cell_iterator
+        cell = this->get_dof_handler().begin_active(),
+        endc = this->get_dof_handler().end();
+
+        // Loop over cells and calculate tauISA in each one
+        // Note that we start after timestep 0 because we need the strain rate,
+        // which doesn't exist during the initial step
+        for (; cell != endc; ++cell)
+          {
+            if (cell->is_locally_owned() && this->get_timestep_number() > 0)
+              {
+
+                // Fill the material model objects for the cell (for strain rate)
+                fe_values.reinit(cell);
+                in.reinit(fe_values, cell, this->introspection(),
+                          this->get_solution(), true);
+
+                // Calculate eigenvalues of strain rate and take maximum (absolute value)
+                // to get tauISA, the timescale for grain rotation toward the infinite strain axis
+#if DEAL_II_VERSION_GTE(9,0,0)
+                // eigenvalues() is not present in older dealii versions
+                const SymmetricTensor<2, dim> strain_rate = in.strain_rate[0];
+                const std::array<double, dim> strain_rate_eigenvalues = eigenvalues(
+                                                                          strain_rate);
+                const double lambda1 = std::max(std::abs(strain_rate_eigenvalues[0]),
+                                                std::abs(strain_rate_eigenvalues[dim-1]));
+                const double tauISA = 1.0 / lambda1;
+
+                (*return_value.second)(cell->active_cell_index()) = tauISA;
+#else
+                AssertThrow (false, ExcMessage ("This postprocessor cannot be used with deal.II versions before 9.0."));
+#endif
+              }
+          }
+
+        return return_value;
+      }
+    }
+  }
+}
+
+// explicit instantiations
+namespace aspect
+{
+  namespace Postprocess
+  {
+    namespace VisualizationPostprocessors
+    {
+      ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(ISARotationTimescale,
+                                                  "ISA rotation timescale",
+                                                  "A visualization output object that generates output "
+                                                  "showing the timescale for the rotation of grains "
+                                                  "toward the infinite strain axis. Kaminski and Ribe "
+                                                  "(2002, Gcubed) call this quantity $\\tau_{ISA}$ and "
+                                                  "define it as "
+                                                  "$\\tau_{ISA} \\approx \\frac{1}{\\dot{\\epsilon}}$ "
+                                                  "where $\\dot{\\epsilon}$ is the largest eigenvalue "
+                                                  "of the strain rate tensor. It can be used, "
+                                                  "along with the grain lag angle $\\Theta$, "
+                                                  "to calculate the grain orientation lag parameter.")
+    }
+  }
+}

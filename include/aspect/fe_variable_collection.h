@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
@@ -66,7 +66,7 @@ namespace aspect
      * component.
      */
     VariableDeclaration(const std::string &name,
-                        const std_cxx11::shared_ptr<FiniteElement<dim> > &fe,
+                        const std::shared_ptr<FiniteElement<dim> > &fe,
                         const unsigned int multiplicity,
                         const unsigned int n_blocks);
 
@@ -93,7 +93,7 @@ namespace aspect
     /**
      * The FiniteElement space.
      */
-    std_cxx11::shared_ptr<FiniteElement<dim> > fe;
+    std::shared_ptr<FiniteElement<dim> > fe;
 
     /**
      * The multiplicity used in FESystem: how many copies of @p fe are there?
@@ -112,7 +112,7 @@ namespace aspect
    * from an instance of VariableDeclaration<dim> but contains additional
    * information that can be queried.
    */
-  template<int dim>
+  template <int dim>
   struct FEVariable: public VariableDeclaration<dim>
   {
       /**
@@ -244,7 +244,7 @@ namespace aspect
 
     protected:
       /**
-       * std::vector that contains collection of variables.
+       * A std::vector that contains a collection of variables.
        */
       std::vector<FEVariable<dim> > variables;
 
@@ -252,18 +252,28 @@ namespace aspect
        * Total number of components of all variables, returned by n_components().
        */
       unsigned int n_components_;
+
       /**
        * Total number of blocks of all variables, returned by n_blocks().
        */
       unsigned int n_blocks_;
+
       /**
-       * Data to be used in the FESystem constructor, returned by get_fes().
+       * Data to be used in the FESystem constructor. The get_fes() function
+       * returns a reference to this array.
+       *
+       * The pointers stored in this area are not owned by the current object,
+       * but are instead pointers to the finite elements owned by the elements
+       * of the `variables` array. As a consequence, we do not need to
+       * explicitly manage the deallocation of these pointers.
        */
       std::vector<const FiniteElement<dim> *> fes;
+
       /**
-       * Data to be used in the FESystem constructor, returned by get_multiplicities().
-       */
+         * Data to be used in the FESystem constructor, returned by get_multiplicities().
+         */
       std::vector<unsigned int> multiplicities;
+
       /**
        * Mapping from component to block, returned by get_components_to_blocks().
        */

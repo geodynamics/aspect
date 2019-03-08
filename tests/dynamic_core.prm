@@ -1,0 +1,114 @@
+# A simple setup for Earth convection model in a 2d shell 
+# with the core mantle boundary (CMB) temperature dyanmically evolves through time. 
+# The 'dynamic core' boundary temperature plugin and 'core statistics' postprocessor 
+# are used to solving and tracing the core evolution.
+
+
+set Dimension                              = 2
+set Use years in output instead of seconds = true
+set End time                               = 1e6
+set Output directory                       = output
+#set Resume computation                     = true
+
+
+subsection Material model
+  set Model name = simple compressible
+
+  subsection Simple compressible model
+    set Thermal expansion coefficient = 4e-5
+    set Viscosity                     = 1e22
+  end
+end
+
+
+subsection Geometry model
+  set Model name = spherical shell
+
+  subsection Spherical shell
+    set Inner radius  = 3481000
+    set Outer radius  = 6336000
+  end
+end
+
+
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary velocity model
+  set Zero velocity boundary indicators       = inner
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = outer
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = inner, outer
+end
+
+
+subsection Heating model
+  set List of model names =  adiabatic heating
+end
+
+
+subsection Boundary temperature model
+  set List of model names = Dynamic core
+  subsection Dynamic core
+    set Inner temperature                 = 4100
+    set Outer temperature                 = 300
+    set Core density                      = 12.5e3
+    set Gravity acceleration              = 9.81    # For the core
+    set CMB pressure                      = 0.14e12
+    set Initial light composition         = 0.042   # wt% for light elements
+    set Max iteration                     = 30
+    set Core heat capacity                = 840
+    set K0                                = 4.111e11
+    set Alpha                             = 1.35e-5 # Themal expensivity for the core
+    set Core conductivity                 = 50
+    subsection Geotherm parameters
+        set Tm0=1695
+        set Tm1=10.9e-12
+        set Tm2=-8.0e-24
+        set Theta=0.11
+        set Composition dependency=false
+    end
+    subsection Radioactive heat source
+      #                                            100ppm K in core
+      set Number of radioactive heating elements = 1
+      set Heating rates                          = 2.92e-5
+      set Half life times                        = 1.25       #Unit: Gyr
+      set Initial concentrations                 = 0.1442962  
+    end
+  end  
+end
+
+
+subsection Initial temperature model
+  set Model name = spherical hexagonal perturbation
+end
+
+
+subsection Gravity model
+  set Model name = ascii data
+end
+
+
+subsection Mesh refinement
+  set Initial global refinement          = 3
+  set Initial adaptive refinement        = 0 #4
+  set Time steps between mesh refinement = 0 #15
+end
+
+
+subsection Postprocess
+  set List of postprocessors = core statistics
+
+  subsection Dynamic core statistics
+    set Excess entropy only = true
+  end
+end
+subsection Termination criteria
+  set Termination criteria      = user request
+end

@@ -12,11 +12,9 @@
 # ---------------------
 set Adiabatic surface temperature          = 1580               # default: 0
 set CFL number                             = 1.0
-set Composition solver tolerance           = 1e-10
-set Nonlinear solver scheme                = iterated IMPES
+set Nonlinear solver scheme                = iterated Advection and Stokes
 set Output directory                       = test
 set Max nonlinear iterations               = 6
-set Linear solver tolerance                = 1e-7
 
 # The number of space dimensions you want to run this program in.
 set Dimension                              = 2
@@ -33,8 +31,6 @@ set Resume computation                     = false
 set Start time                             = 0
 
 set Use years in output instead of seconds = true
-set Use direct solver for Stokes system    = false
-set Number of cheap Stokes solver steps    = 0
 
 subsection Compositional fields
   set Number of fields = 1
@@ -43,7 +39,7 @@ end
 
 
 subsection Boundary temperature model
-  set Model name = initial temperature
+  set List of model names = initial temperature
 
   subsection Box
     set Top temperature = 293 # default: 6000
@@ -52,7 +48,8 @@ subsection Boundary temperature model
 end
 
 subsection Boundary composition model
-  set Model name = initial composition
+  set Allow fixed composition on outflow boundaries = true
+  set List of model names = initial composition
 end
 
 subsection Boundary velocity model
@@ -135,15 +132,24 @@ subsection Boundary fluid pressure model
   end
 end
 
-subsection Model settings
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary temperature model
   set Fixed temperature boundary indicators   = 0,1,2,3
+end
+
+subsection Boundary composition model
   set Fixed composition boundary indicators   = 0,1,2,3
+end
+
+subsection Boundary velocity model
   set Prescribed velocity boundary indicators = 0:function, 1:function #,2:function, 3:function
+end
 
+subsection Boundary velocity model
   set Tangential velocity boundary indicators = 2,3
-  set Zero velocity boundary indicators       = 
-
-  set Include melt transport                  = false
 end
 
 
@@ -172,3 +178,12 @@ subsection Checkpointing
 end
 
 
+subsection Solver parameters
+  set Composition solver tolerance = 1e-10
+
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-7
+    set Use direct solver for Stokes system = false
+    set Number of cheap Stokes solver steps = 0
+  end
+end

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2019 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with ASPECT; see the file doc/COPYING.  If not see
+ along with ASPECT; see the file LICENSE.  If not see
  <http://www.gnu.org/licenses/>.
  */
 
@@ -35,7 +35,17 @@ namespace aspect
     {
       template <int dim>
       void
-      ProbabilityDensityFunction<dim>::generate_particles(std::multimap<types::LevelInd, Particle<dim> > &particles)
+      ProbabilityDensityFunction<dim>::initialize ()
+      {
+        const unsigned int my_rank = Utilities::MPI::this_mpi_process(this->get_mpi_communicator());
+        this->random_number_generator.seed(random_number_seed+my_rank);
+      }
+
+
+
+      template <int dim>
+      void
+      ProbabilityDensityFunction<dim>::generate_particles(std::multimap<Particles::internal::LevelInd, Particle<dim> > &particles)
       {
         // Get the local accumulated probabilities for every cell
         const std::vector<double> accumulated_cell_weights = compute_local_accumulated_cell_weights();
@@ -64,23 +74,48 @@ namespace aspect
         const types::particle_index start_id = llround(static_cast<double> (n_particles)  * local_start_weight / global_weight_integral);
         const types::particle_index n_local_particles = llround(static_cast<double> (n_particles) * local_weight_integral / global_weight_integral);
 
-        // Uniform distribution on the interval [0,local_weight_integral). This
-        // will be used to select cells for all particles.
-        boost::random::uniform_real_distribution<double> uniform_distribution(0.0, local_weight_integral);
-
-        // Loop over all particles to create locally and pick their cells
         std::vector<unsigned int> particles_per_cell(this->get_triangulation().n_locally_owned_active_cells(),0);
-        for (types::particle_index current_particle_index = 0; current_particle_index < n_local_particles; ++current_particle_index)
+
+        if (random_cell_selection)
           {
-            // Draw the random number that determines the cell of the particle
-            const double random_weight = uniform_distribution(this->random_number_generator);
+            // Uniform distribution on the interval [0,local_weight_integral).
+            // This will be used to randomly select cells for all local particles.
+            boost::random::uniform_real_distribution<double> uniform_distribution(0.0, local_weight_integral);
 
-            const std::vector<double>::const_iterator selected_cell = std::lower_bound(accumulated_cell_weights.begin(),
-                                                                                       accumulated_cell_weights.end(),
-                                                                                       random_weight);
-            const unsigned int cell_index = std::distance(accumulated_cell_weights.begin(),selected_cell);
+            // Loop over all particles to create locally and pick their cells
+            for (types::particle_index current_particle_index = 0; current_particle_index < n_local_particles; ++current_particle_index)
+              {
+                // Draw the random number that determines the cell of the particle
+                const double random_weight = uniform_distribution(this->random_number_generator);
 
-            ++particles_per_cell[cell_index];
+                const std::vector<double>::const_iterator selected_cell = std::lower_bound(accumulated_cell_weights.begin(),
+                                                                                           accumulated_cell_weights.end(),
+                                                                                           random_weight);
+                const unsigned int cell_index = std::distance(accumulated_cell_weights.begin(),selected_cell);
+
+                ++particles_per_cell[cell_index];
+              }
+          }
+        else
+          {
+            // Compute number of particles per cell according to the ratio
+            // between their weight and the local weight integral
+            unsigned int cell_index = 0;
+            types::particle_index particles_created = 0;
+            typename DoFHandler<dim>::active_cell_iterator
+            cell = this->get_dof_handler().begin_active(),
+            endc = this->get_dof_handler().end();
+            for (; cell!=endc; ++cell)
+              if (cell->is_locally_owned())
+                {
+                  const types::particle_index particles_to_create = llround(static_cast<double> (n_local_particles) *
+                                                                            accumulated_cell_weights[cell_index] / local_weight_integral);
+
+                  // We assume nobody creates more than 4 billion particles in one cell
+                  particles_per_cell[cell_index] = static_cast<unsigned int> (particles_to_create - particles_created);
+                  particles_created += particles_per_cell[cell_index];
+                  ++cell_index;
+                }
           }
 
         generate_particles_in_subdomain(particles_per_cell,start_id,n_local_particles,particles);
@@ -139,7 +174,7 @@ namespace aspect
       ProbabilityDensityFunction<dim>::generate_particles_in_subdomain (const std::vector<unsigned int> &particles_per_cell,
                                                                         const types::particle_index first_particle_index,
                                                                         const types::particle_index n_local_particles,
-                                                                        std::multimap<types::LevelInd, Particle<dim> > &particles)
+                                                                        std::multimap<Particles::internal::LevelInd, Particle<dim> > &particles)
       {
         // Generate particles per cell
         unsigned int cell_index = 0;
@@ -150,7 +185,7 @@ namespace aspect
         // order to be later transferred to the multimap with O(N) complexity.
         // If we would insert them into the multimap one-by-one it would
         // increase the complexity to O(N log(N)).
-        std::vector<std::pair<types::LevelInd, Particle<dim> > > local_particles;
+        std::vector<std::pair<Particles::internal::LevelInd, Particle<dim> > > local_particles;
         local_particles.reserve(n_local_particles);
         for (typename DoFHandler<dim>::active_cell_iterator cell = this->get_dof_handler().begin_active();
              cell!=this->get_dof_handler().end();
@@ -190,6 +225,27 @@ namespace aspect
               prm.enter_subsection("Probability density function");
               {
                 Functions::ParsedFunction<dim>::declare_parameters (prm, 1);
+
+                prm.declare_entry ("Random cell selection", "true",
+                                   Patterns::Bool(),
+                                   "If true, particle numbers per cell are calculated randomly "
+                                   "according to their respective probability density. "
+                                   "This means particle numbers per cell can deviate statistically from "
+                                   "the integral of the probability density. If false, "
+                                   "first determine how many particles each cell should have "
+                                   "based on the integral of the density over each of the cells, "
+                                   "and then once we know how many particles we want on each cell, "
+                                   "choose their locations randomly within each cell.");
+
+                prm.declare_entry ("Random number seed", "5432",
+                                   Patterns::Integer(0),
+                                   "The seed for the random number generator that controls "
+                                   "the particle generation. Keep constant to generate "
+                                   "identical particle distributions in subsequent model "
+                                   "runs. Change to get a different distribution. In parallel "
+                                   "computations the seed is further modified on each process "
+                                   "to ensure different particle patterns on different "
+                                   "processes.");
               }
               prm.leave_subsection();
             }
@@ -215,6 +271,9 @@ namespace aspect
             {
               prm.enter_subsection("Probability density function");
               {
+                random_cell_selection = prm.get_bool("Random cell selection");
+                random_number_seed = prm.get_integer("Random number seed");
+
                 try
                   {
                     function.parse_parameters (prm);

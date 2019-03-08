@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
@@ -25,7 +25,9 @@
 #include <aspect/plugins.h>
 #include <deal.II/base/parameter_handler.h>
 #include <deal.II/distributed/tria.h>
-#include <deal.II/base/std_cxx11/array.h>
+#include <array>
+#include <aspect/utilities.h>
+#include <aspect/coordinate_systems.h>
 
 #include <set>
 
@@ -131,6 +133,33 @@ namespace aspect
         double depth(const Point<dim> &position) const = 0;
 
         /**
+         * Return the height of the given position relative to the reference
+         * surface of the model. Positive returned value means that the point
+         * is above (i.e., farther from the center of the model) the reference
+         * surface, negative value means that the point is below the the
+         * reference surface.
+         *
+         * Same limitations as for the depth function, apply here.
+         */
+        virtual
+        double height_above_reference_surface(const Point<dim> &position) const = 0;
+
+        /**
+         * Converts a Cartesian Point into another coordinate system and returns it
+         * as a NaturalCoordinate.
+         */
+
+        Utilities::NaturalCoordinate<dim>
+        cartesian_to_other_coordinates(const Point<dim> &position,
+                                       const Utilities::Coordinates::CoordinateSystem &coordinate_system) const;
+
+        /**
+         * Returns what the natural coordinate system for this geometry model is.
+         */
+        virtual
+        aspect::Utilities::Coordinates::CoordinateSystem natural_coordinate_system() const = 0;
+
+        /**
          * Takes the Cartesian points (x,z or x,y,z) and returns standardized
          * coordinates which are most 'natural' to the geometry model. For a box
          * this will  be (x,z) in 2d or (x,y,z) in 3d, and for a spheroid geometry
@@ -138,7 +167,7 @@ namespace aspect
          * latitude) in 3d.
          */
         virtual
-        std_cxx11::array<double,dim> cartesian_to_natural_coordinates(const Point<dim> &position) const;
+        std::array<double,dim> cartesian_to_natural_coordinates(const Point<dim> &position) const;
 
         /**
          * Undoes the action of cartesian_to_natural_coordinates, and turns the
@@ -146,7 +175,7 @@ namespace aspect
          * Cartesian coordinates.
          */
         virtual
-        Point<dim> natural_to_cartesian_coordinates(const std_cxx11::array<double,dim> &position) const;
+        Point<dim> natural_to_cartesian_coordinates(const std::array<double,dim> &position) const;
 
         /**
          * Returns a representative point for a given depth. Such a point must
@@ -357,7 +386,6 @@ namespace aspect
     Interface<dim> *
     create_geometry_model (ParameterHandler &prm);
 
-
     /**
      * Declare the runtime parameters of the registered geometry models.
      *
@@ -366,6 +394,20 @@ namespace aspect
     template <int dim>
     void
     declare_parameters (ParameterHandler &prm);
+
+    /**
+     * For the current plugin subsystem, write a connection graph of all of the
+     * plugins we know about, in the format that the
+     * programs dot and neato understand. This allows for a visualization of
+     * how all of the plugins that ASPECT knows about are interconnected, and
+     * connect to other parts of the ASPECT code.
+     *
+     * @param output_stream The stream to write the output to.
+     */
+    template <int dim>
+    void
+    write_plugin_graph (std::ostream &output_stream);
+
 
 
     /**

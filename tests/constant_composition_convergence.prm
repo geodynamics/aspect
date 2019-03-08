@@ -17,21 +17,20 @@ subsection Geometry model
   end
 end
 
-subsection Model settings
-  set Fixed temperature boundary indicators   =
-  set Fixed composition boundary indicators   = 
-  set Zero velocity boundary indicators       = 
-  set Tangential velocity boundary indicators = 0, 1, 2 ,3
-  set Prescribed velocity boundary indicators = 
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
 
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = 0, 1, 2 ,3
 end
 
 subsection Boundary temperature model
-  set Model name = initial temperature
+  set List of model names = initial temperature
 end
 
 subsection Boundary composition model
-  set Model name = initial composition
+  set List of model names = initial composition
 end
 
 subsection Gravity model

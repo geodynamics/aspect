@@ -1,0 +1,37 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Number of nonlinear iterations
+# 9: Iterations for temperature solver
+# 10: Iterations for composition solver 1
+# 11: Iterations for composition solver 2
+# 12: Iterations for Stokes solver
+# 13: Velocity iterations in Stokes preconditioner
+# 14: Schur complement iterations in Stokes preconditioner
+# 15: Visualization file name
+# 16: Minimal value for composition porosity
+# 17: Maximal value for composition porosity
+# 18: Global mass for composition porosity
+# 19: Minimal value for composition peridotite
+# 20: Maximal value for composition peridotite
+# 21: Global mass for composition peridotite
+# 22: RMS velocity (m/year)
+# 23: Max. velocity (m/year)
+# 24: Minimal temperature (K)
+# 25: Average temperature (K)
+# 26: Maximal temperature (K)
+# 27: Average nondimensional temperature (K)
+# 28: Outward mass flux through boundary with indicator 0 ("left") (kg/yr)
+# 29: Outward mass flux through boundary with indicator 1 ("right") (kg/yr)
+# 30: Outward mass flux through boundary with indicator 2 ("bottom") (kg/yr)
+# 31: Outward mass flux through boundary with indicator 3 ("top") (kg/yr)
+0 0.000000000000e+00 0.000000000000e+00 256 2467 1089 578 1 0 0 0 34 35 520 output-melt_and_traction/solution/solution-00000.0000  0.00000000e+00 7.25333529e-02 9.98080758e+08 0.00000000e+00 0.00000000e+00 0.00000000e+00 4.45387118e-07 3.46316241e-06 2.93000000e+02 1.43291774e+03 1.67714044e+03 3.34581080e-01 0.00000000e+00  1.23139523e+02 -1.03720445e+02 0.00000000e+00 
+0 0.000000000000e+00 0.000000000000e+00 256 2467 1089 578 1 0 0 0  0  0   0 output-melt_and_traction/solution/solution-00000.0001  0.00000000e+00 7.25333529e-02 9.98080758e+08 0.00000000e+00 0.00000000e+00 0.00000000e+00 4.45387118e-07 3.46316241e-06 2.93000000e+02 1.43291774e+03 1.67714044e+03 3.34581080e-01 0.00000000e+00  1.23139523e+02 -1.03720445e+02 0.00000000e+00 
+1 1.000000000000e+05 1.000000000000e+05 256 2467 1089 578 1 6 4 0 16 17 249 output-melt_and_traction/solution/solution-00001.0000 -2.05344817e-04 7.22475138e-02 9.98069566e+08 0.00000000e+00 0.00000000e+00 0.00000000e+00 1.80031766e-06 1.26368574e-05 2.93000000e+02 1.43271401e+03 1.67714044e+03 3.34521282e-01 0.00000000e+00 -9.41717580e+02  9.62674972e+02 0.00000000e+00 
+1 1.000000000000e+05 1.000000000000e+05 256 2467 1089 578 1 4 3 0  1  2  28 output-melt_and_traction/solution/solution-00001.0001 -2.15175681e-04 7.22281642e-02 9.97996544e+08 0.00000000e+00 0.00000000e+00 0.00000000e+00 1.79867314e-06 1.26341447e-05 2.93000000e+02 1.43271385e+03 1.67714044e+03 3.34521237e-01 0.00000000e+00 -9.44920037e+02  9.55098153e+02 0.00000000e+00 
+1 1.000000000000e+05 1.000000000000e+05 256 2467 1089 578 1 2 2 0  0  0   0 output-melt_and_traction/solution/solution-00001.0002 -2.15163546e-04 7.22281685e-02 9.97996563e+08 0.00000000e+00 0.00000000e+00 0.00000000e+00 1.79867314e-06 1.26341447e-05 2.93000000e+02 1.43271385e+03 1.67714044e+03 3.34521237e-01 0.00000000e+00 -9.44920037e+02  9.55098153e+02 0.00000000e+00 
+1 1.000000000000e+05 1.000000000000e+05 256 2467 1089 578 1 0 0 0  0  0   0 output-melt_and_traction/solution/solution-00001.0003 -2.15163546e-04 7.22281685e-02 9.97996563e+08 0.00000000e+00 0.00000000e+00 0.00000000e+00 1.79867314e-06 1.26341447e-05 2.93000000e+02 1.43271385e+03 1.67714044e+03 3.34521237e-01 0.00000000e+00 -9.44920037e+02  9.55098153e+02 0.00000000e+00 

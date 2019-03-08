@@ -1,6 +1,0 @@
-subsection Model settings
-  set Fixed temperature boundary indicators   = bottom, top
-  set Zero velocity boundary indicators       =
-  set Tangential velocity boundary indicators = left, right, bottom
-  set Prescribed velocity boundary indicators = top: function
-end

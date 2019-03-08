@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
@@ -33,22 +33,71 @@ namespace aspect
     namespace VisualizationPostprocessors
     {
       /**
-       * A postprocessor that computes the pointwise heat flux density through the boundaries.
+       * A postprocessor that computes the heat flux density through the top and bottom boundaries.
        *
        * @ingroup Postprocessing
        */
       template <int dim>
       class HeatFluxMap
-        : public CellDataVectorCreator<dim>,
-          public SimulatorAccess<dim>
+        : public DataPostprocessorScalar<dim>,
+          public SimulatorAccess<dim>,
+          public Interface<dim>
       {
         public:
+          HeatFluxMap();
+
           /**
-           * Evaluate the solution for the heat flux.
+           * Fill the temporary storage variables with the
+           * heat flux for the current time step.
+           *
+           * @copydoc Interface<dim>::update()
+           */
+          void update();
+
+          /**
+           * Compute the heat flux for the given input cell.
+           *
+           * @copydoc DataPostprocessorScalar<dim>::evaluate_vector_field()
            */
           virtual
-          std::pair<std::string, Vector<float> *>
-          execute () const;
+          void
+          evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
+                                std::vector<Vector<double> > &computed_quantities) const;
+
+          /**
+           * @copydoc Interface<dim>::declare_parameters()
+           */
+          static
+          void
+          declare_parameters (ParameterHandler &prm);
+
+          /**
+           * @copydoc Interface<dim>::parse_parameters()
+           */
+          virtual
+          void
+          parse_parameters (ParameterHandler &prm);
+
+        private:
+          /**
+           * A flag that determines whether to use the point-wise
+           * heat flux calculation or the cell-wise averaged calculation.
+           */
+          bool output_point_wise_heat_flux;
+
+          /**
+           * A temporary storage place for the point-wise heat flux
+           * solution. Only initialized and used if output_point_wise_heat_flux
+           * is set to true.
+           */
+          LinearAlgebra::BlockVector heat_flux_density_solution;
+
+          /**
+           * A temporary storage place for the cell-wise heat flux
+           * solution. Only initialized and used if output_point_wise_heat_flux
+           * is set to false.
+           */
+          std::vector<std::vector<std::pair<double, double> > > heat_flux_and_area;
       };
     }
   }

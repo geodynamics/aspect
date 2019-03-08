@@ -1,0 +1,45 @@
+
+Number of active cells: 100 (on 1 levels)
+Number of degrees of freedom: 1,885 (882+121+441+441)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Solving upper system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 12+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -2879 W, 8236 W
+     Temperature min/avg/max:            273 K, 1016 K, 1543 K
+     Heating rate (average/total):       2.273e-10 W/kg, 7500 W
+
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+
+*** Timestep 1:  t=1e+09 years
+   Solving temperature system... 53 iterations.
+   Solving upper system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 15+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, 236.7 W, 7171 W
+     Temperature min/avg/max:            273 K, 1134 K, 1544 K
+     Heating rate (average/total):       2.273e-10 W/kg, 7500 W
+
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
@@ -23,7 +23,6 @@
 #include <aspect/global.h>
 
 #include <deal.II/lac/solver_gmres.h>
-#include <deal.II/lac/constraint_matrix.h>
 
 #ifdef ASPECT_USE_PETSC
 #include <deal.II/lac/solver_cg.h>
@@ -41,15 +40,12 @@ namespace aspect
 {
   namespace internal
   {
-    using namespace dealii;
-
-
 
     /**
      * A class we use when setting up the data structures for nullspace removal
      * of the rotations in spherical or annular shells.
      */
-    template<int dim>
+    template <int dim>
     class Rotation : public TensorFunction<1,dim>
     {
       private:
@@ -356,7 +352,7 @@ namespace aspect
 
     // compute and remove angular momentum from velocity field, by computing
     // \int \rho u \cdot r_orth = \omega  * \int \rho x^2    ( 2 dimensions)
-    // \int \rho r \times u =  I^{-1} \cdot \omega  (3 dimensions)
+    // \int \rho r \times u =  I \cdot \omega  (3 dimensions)
 
     QGauss<dim> quadrature(parameters.stokes_velocity_degree+1);
     const unsigned int n_q_points = quadrature.size();
@@ -396,7 +392,7 @@ namespace aspect
           if ( ! use_constant_density)
             {
               // Set use_strain_rates to false since we don't need viscosity
-              in.reinit(fe, &cell, introspection, solution, false);
+              in.reinit(fe, cell, introspection, solution, false);
               material_model->evaluate(in, out);
             }
 
@@ -425,12 +421,12 @@ namespace aspect
                     local_angular_momentum[i] += r_cross_v[i] * rho * fe.JxW(k);
 
                   // calculate moment of inertia
-                  local_moment_of_inertia[0][0] += (r_vec.square() - r_vec[0]*r_vec[0])*rho * fe.JxW(k);
-                  local_moment_of_inertia[1][1] += (r_vec.square() - r_vec[1]*r_vec[1])*rho * fe.JxW(k);
-                  local_moment_of_inertia[2][2] += (r_vec.square() - r_vec[2]*r_vec[2])*rho * fe.JxW(k);
-                  local_moment_of_inertia[0][1] += ( r_vec[0]*r_vec[1])*rho * fe.JxW(k);
-                  local_moment_of_inertia[0][2] += ( r_vec[0]*r_vec[2])*rho * fe.JxW(k);
-                  local_moment_of_inertia[1][2] += ( r_vec[1]*r_vec[2])*rho * fe.JxW(k);
+                  local_moment_of_inertia[0][0] += (r_vec.square() - r_vec[0] * r_vec[0]) * rho * fe.JxW(k);
+                  local_moment_of_inertia[1][1] += (r_vec.square() - r_vec[1] * r_vec[1]) * rho * fe.JxW(k);
+                  local_moment_of_inertia[2][2] += (r_vec.square() - r_vec[2] * r_vec[2]) * rho * fe.JxW(k);
+                  local_moment_of_inertia[0][1] -= (r_vec[0] * r_vec[1]) * rho * fe.JxW(k);
+                  local_moment_of_inertia[0][2] -= (r_vec[0] * r_vec[2]) * rho * fe.JxW(k);
+                  local_moment_of_inertia[1][2] -= (r_vec[1] * r_vec[2]) * rho * fe.JxW(k);
                 }
             }
         }
@@ -438,32 +434,33 @@ namespace aspect
     // vector for storing the correction to the velocity field
     LinearAlgebra::Vector correction(tmp_distributed_stokes.block(introspection.block_indices.velocities));
 
-    if ( dim == 2)
+    if (dim == 2)
       {
-        const double scalar_moment = Utilities::MPI::sum( local_scalar_moment, mpi_communicator);
-        const double scalar_angular_momentum = Utilities::MPI::sum( local_scalar_angular_momentum, mpi_communicator);
+        const double scalar_moment = Utilities::MPI::sum(local_scalar_moment, mpi_communicator);
+        const double scalar_angular_momentum = Utilities::MPI::sum(local_scalar_angular_momentum, mpi_communicator);
 
-        const double rotation_rate = scalar_angular_momentum/scalar_moment;  // solve for the rotation rate to cancel the angular momentum
+        // Solve for the rotation rate to cancel the angular momentum
+        const double rotation_rate = scalar_angular_momentum / scalar_moment;
 
         // Now construct a rotation vector with the desired rate and subtract it from our vector
-        internal::Rotation<dim> rot(0);
+        const internal::Rotation<dim> rot(0);
         interpolate_onto_velocity_system(rot, correction);
         tmp_distributed_stokes.block(introspection.block_indices.velocities).add(-1.0*rotation_rate,correction);
       }
     else
       {
         // sum up the local contributions to moment of inertia
-        const SymmetricTensor<2,dim> moment_of_inertia = Utilities::MPI::sum( local_moment_of_inertia,
-                                                                              mpi_communicator );
+        const SymmetricTensor<2,dim> moment_of_inertia = Utilities::MPI::sum(local_moment_of_inertia,
+                                                                             mpi_communicator);
         // sum up the local contributions to angular momentum
-        const Tensor<1,dim> angular_momentum = Utilities::MPI::sum( local_angular_momentum, mpi_communicator );
+        const Tensor<1,dim> angular_momentum = Utilities::MPI::sum(local_angular_momentum, mpi_communicator );
 
         // Solve for the rotation vector that cancels the net momentum
-        SymmetricTensor<2,dim> inverse_moment ( invert( Tensor<2,dim>(moment_of_inertia) ) );
-        Tensor<1,dim> omega = - inverse_moment * angular_momentum;
+        const SymmetricTensor<2,dim> inverse_moment (invert( Tensor<2,dim>(moment_of_inertia)));
+        const Tensor<1,dim> omega = - inverse_moment * angular_momentum;
 
         // Remove that rotation from the solution vector
-        internal::Rotation<dim> rot( omega );
+        const internal::Rotation<dim> rot(omega);
         interpolate_onto_velocity_system(rot, correction);
         tmp_distributed_stokes.block(introspection.block_indices.velocities).add(1.0,correction);
       }

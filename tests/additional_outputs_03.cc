@@ -2,7 +2,7 @@
 #include <deal.II/grid/tria.h>
 #include <aspect/material_model/simple.h>
 #include <aspect/simulator_access.h>
-#include <aspect/assembly.h>
+#include <aspect/simulator/assemblers/interface.h>
 
 #include <iostream>
 
@@ -81,7 +81,7 @@ namespace aspect
 
   template <int dim>
   class TestAssembler :
-    public aspect::internal::Assembly::Assemblers::AssemblerBase<dim>
+    public aspect::Assemblers::Interface<dim>
   {
     public:
 
@@ -89,7 +89,7 @@ namespace aspect
       {
         std::cout << "* create_additional_material_model_outputs() called" << std::endl;
 
-        if (out.template get_additional_output<MaterialModel::AdditionalOutputs1<dim> >() != NULL)
+        if (out.template get_additional_output<MaterialModel::AdditionalOutputs1<dim> >() != nullptr)
           return;
 
         std::cout << "   creating additional output!" << std::endl;
@@ -97,14 +97,16 @@ namespace aspect
 
       }
 
-      virtual void assemble_stokes(internal::Assembly::Scratch::StokesSystem<dim>        &scratch,
-                                   internal::Assembly::CopyData::StokesSystem<dim>       &copy)
+      virtual void execute(internal::Assembly::Scratch::ScratchBase<dim>        &scratch_base,
+                           internal::Assembly::CopyData::CopyDataBase<dim>       &/*data_base*/) const
       {
+        internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>& > (scratch_base);
+
         MaterialModel::AdditionalOutputs1<dim> *additional
           = scratch.material_model_outputs.template get_additional_output<MaterialModel::AdditionalOutputs1<dim> >();
 
-        std::cout << "* local_assemble_stokes call, have additional? " << (additional!=NULL) << std::endl;
-        if (additional!=NULL)
+        std::cout << "* local_assemble_stokes call, have additional? " << (additional!=nullptr) << std::endl;
+        if (additional!=nullptr)
           std::cout << "   value = " << additional->additional_material_output1[0]
                     << " " << additional->additional_material_output1[1] << std::endl;
 
@@ -117,8 +119,7 @@ namespace aspect
 
   template <int dim>
   void set_assemblers1(const SimulatorAccess<dim> &,
-                       internal::Assembly::AssemblerLists<dim> &assemblers,
-                       std::vector<dealii::std_cxx11::shared_ptr<internal::Assembly::Assemblers::AssemblerBase<dim> > > &assembler_objects)
+                       Assemblers::Manager<dim> &assemblers)
   {
     std::cout << "* set_assemblers()" << std::endl;
     std::cout << "called without: " << counter_without << " with: " << counter_with << std::endl;
@@ -127,19 +128,7 @@ namespace aspect
     quiet = false;
 
     TestAssembler<dim> *test_assembler = new TestAssembler<dim>();
-    assembler_objects.push_back(std_cxx11::shared_ptr<internal::Assembly::Assemblers::AssemblerBase<dim> >(test_assembler));
-
-    assemblers.local_assemble_stokes_system
-    .connect (std_cxx11::bind(&TestAssembler<dim>::assemble_stokes,
-                              std_cxx11::ref (*test_assembler),
-                              // discard cell,
-                              // discard pressure_scaling,
-                              // discard bool,
-
-                              std_cxx11::_4,
-                              std_cxx11::_5));
-
-
+    assemblers.stokes_system.push_back(std::unique_ptr<Assemblers::Interface<dim> >(test_assembler));
   }
 }
 

@@ -183,7 +183,8 @@ Boundary_velocity called with boundary_id =3
 Boundary_velocity called with boundary_id =3
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative Stokes residual after nonlinear iteration 1: 0
+      Relative  nonlinear residual (Stokes system) after nonlinear iteration 1: 0
+
 
    Postprocessing:
      Writing graphical output:      output-prescribed_velocity_boundary/solution/solution-00000

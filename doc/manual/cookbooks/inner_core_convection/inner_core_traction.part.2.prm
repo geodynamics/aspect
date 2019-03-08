@@ -7,6 +7,8 @@ subsection Gravity model
   set Model name = radial linear
 
   subsection Radial linear
+    set Magnitude at bottom = 0.0
+    set Magnitude at bottom = 0.0
     set Magnitude at surface = 2     # <-- Ra
   end
 end

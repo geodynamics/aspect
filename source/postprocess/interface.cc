@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
@@ -35,10 +35,21 @@ namespace aspect
     Interface<dim>::~Interface ()
     {}
 
+
+
     template <int dim>
     void
     Interface<dim>::initialize ()
     {}
+
+
+
+    template <int dim>
+    void
+    Interface<dim>::update ()
+    {}
+
+
 
     template <int dim>
     void
@@ -69,6 +80,7 @@ namespace aspect
     {}
 
 
+
     template <int dim>
     void
     Interface<dim>::load (const std::map<std::string,std::string> &)
@@ -86,12 +98,15 @@ namespace aspect
       // call the execute() functions of all postprocessor objects we have
       // here in turns
       std::list<std::pair<std::string,std::string> > output_list;
-      for (typename std::vector<std_cxx11::shared_ptr<Interface<dim> > >::iterator
+      for (typename std::vector<std::shared_ptr<Interface<dim> > >::iterator
            p = postprocessors.begin();
            p != postprocessors.end(); ++p)
         {
           try
             {
+              // first call the update() function.
+              (*p)->update();
+
               // call the execute() function. if it produces any output
               // then add it to the list
               std::pair<std::string,std::string> output
@@ -153,7 +168,7 @@ namespace aspect
 
     namespace
     {
-      std_cxx11::tuple
+      std::tuple
       <void *,
       void *,
       aspect::internal::Plugins::PluginList<Interface<2> >,
@@ -173,7 +188,7 @@ namespace aspect
         // construct a string for Patterns::MultipleSelection that
         // contains the names of all registered postprocessors
         const std::string pattern_of_names
-          = std_cxx11::get<dim>(registered_plugins).get_pattern_of_names ();
+          = std::get<dim>(registered_plugins).get_pattern_of_names ();
         prm.declare_entry("List of postprocessors",
                           "",
                           Patterns::MultipleSelection(pattern_of_names),
@@ -181,17 +196,17 @@ namespace aspect
                           "at the end of each time step. Some of these postprocessors will "
                           "declare their own parameters which may, for example, include that "
                           "they will actually do something only every so many time steps or "
-                          "years. Alternatively, the text 'all' indicates that all available "
+                          "years. Alternatively, the text `all' indicates that all available "
                           "postprocessors should be run after each time step.\n\n"
                           "The following postprocessors are available:\n\n"
                           +
-                          std_cxx11::get<dim>(registered_plugins).get_description_string());
+                          std::get<dim>(registered_plugins).get_description_string());
       }
       prm.leave_subsection();
 
       // now declare the parameters of each of the registered
       // postprocessors in turn
-      std_cxx11::get<dim>(registered_plugins).declare_parameters (prm);
+      std::get<dim>(registered_plugins).declare_parameters (prm);
     }
 
 
@@ -200,7 +215,7 @@ namespace aspect
     void
     Manager<dim>::parse_parameters (ParameterHandler &prm)
     {
-      Assert (std_cxx11::get<dim>(registered_plugins).plugins != 0,
+      Assert (std::get<dim>(registered_plugins).plugins != 0,
               ExcMessage ("No postprocessors registered!?"));
 
       // first find out which postprocessors are requested
@@ -224,9 +239,9 @@ namespace aspect
         {
           postprocessor_names.clear();
           for (typename std::list<typename internal::Plugins::PluginList<Interface<dim> >::PluginInfo>::const_iterator
-               p = std_cxx11::get<dim>(registered_plugins).plugins->begin();
-               p != std_cxx11::get<dim>(registered_plugins).plugins->end(); ++p)
-            postprocessor_names.push_back (std_cxx11::get<0>(*p));
+               p = std::get<dim>(registered_plugins).plugins->begin();
+               p != std::get<dim>(registered_plugins).plugins->end(); ++p)
+            postprocessor_names.push_back (std::get<0>(*p));
         }
 
       // see if the user specified "global statistics" somewhere; if so, remove it from the list
@@ -244,8 +259,8 @@ namespace aspect
       // their own parameters
       for (unsigned int name=0; name<postprocessor_names.size(); ++name)
         {
-          postprocessors.push_back (std_cxx11::shared_ptr<Interface<dim> >
-                                    (std_cxx11::get<dim>(registered_plugins)
+          postprocessors.push_back (std::shared_ptr<Interface<dim> >
+                                    (std::get<dim>(registered_plugins)
                                      .create_plugin (postprocessor_names[name],
                                                      "Postprocessor plugins")));
           if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*postprocessors.back()))
@@ -263,7 +278,7 @@ namespace aspect
           for (std::list<std::string>::const_iterator p = additional_postprocessors.begin();
                p != additional_postprocessors.end(); ++p)
             {
-              AssertThrow (Patterns::Selection(std_cxx11::get<dim>(registered_plugins).get_pattern_of_names ())
+              AssertThrow (Patterns::Selection(std::get<dim>(registered_plugins).get_pattern_of_names ())
                            .match (*p) == true,
                            ExcMessage ("Postprocessor <" + postprocessor_names[name] +
                                        "> states that it depends on another postprocessor, <"
@@ -302,13 +317,13 @@ namespace aspect
       // have found a cycle in the dependencies and that is clearly a problem
       std::vector<bool> already_assigned (postprocessors.size(), false);
       std::vector<std::string> sorted_names;
-      std::vector<std_cxx11::shared_ptr<Interface<dim> > > sorted_postprocessors;
+      std::vector<std::shared_ptr<Interface<dim> > > sorted_postprocessors;
       while (sorted_names.size() < postprocessors.size())
         {
           bool at_least_one_element_added = false;
 
           {
-            typename std::vector<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
+            typename std::vector<std::shared_ptr<Interface<dim> > >::const_iterator
             pp = postprocessors.begin();
             for (unsigned int i=0; i<postprocessor_names.size(); ++i, ++pp)
               if (already_assigned[i] == false)
@@ -348,7 +363,7 @@ namespace aspect
               out << "While sorting postprocessors by their dependencies, "
                   "ASPECT encountered a cycle in dependencies. The following "
                   "postprocessors are involved:\n";
-              typename std::vector<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
+              typename std::vector<std::shared_ptr<Interface<dim> > >::const_iterator
               pp = postprocessors.begin();
               for (unsigned int i=0; i<postprocessor_names.size(); ++i, ++pp)
                 if (already_assigned[i] == false)
@@ -383,10 +398,20 @@ namespace aspect
                                           void (*declare_parameters_function) (ParameterHandler &),
                                           Interface<dim> *(*factory_function) ())
     {
-      std_cxx11::get<dim>(registered_plugins).register_plugin (name,
-                                                               description,
-                                                               declare_parameters_function,
-                                                               factory_function);
+      std::get<dim>(registered_plugins).register_plugin (name,
+                                                         description,
+                                                         declare_parameters_function,
+                                                         factory_function);
+    }
+
+
+
+    template <int dim>
+    void
+    Manager<dim>::write_plugin_graph (std::ostream &out)
+    {
+      std::get<dim>(registered_plugins).write_plugin_graph ("Postprocessor interface",
+                                                            out);
     }
 
   }

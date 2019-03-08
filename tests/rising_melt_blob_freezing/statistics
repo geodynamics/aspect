@@ -1,0 +1,24 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Number of nonlinear iterations
+# 9: Iterations for temperature solver
+# 10: Iterations for composition solver 1
+# 11: Iterations for composition solver 2
+# 12: Iterations for Stokes solver
+# 13: Velocity iterations in Stokes preconditioner
+# 14: Schur complement iterations in Stokes preconditioner
+# 15: Minimal value for composition porosity
+# 16: Maximal value for composition porosity
+# 17: Global mass for composition porosity
+# 18: Minimal value for composition peridotite
+# 19: Maximal value for composition peridotite
+# 20: Global mass for composition peridotite
+# 21: Visualization file name
+0 0.000000000000e+00 0.000000000000e+00 1024 9539 4225 8450 2 0  0  0  32  33  1739 2.77758877e-12 2.00000000e-01 1.25663562e+08  0.00000000e+00  0.00000000e+00  0.00000000e+00 output-rising_melt_blob_freezing/solution/solution-00000 
+1 1.000000000000e+00 1.000000000000e+00 1024 9539 4225 8450 9 0 67 51 206 215 11550 1.38825136e-12 8.64593305e-02 5.37392712e+07 -1.25150684e-01 -1.39148030e-12 -6.96211406e+07 output-rising_melt_blob_freezing/solution/solution-00001 
+2 2.000000000000e+00 1.000000000000e+00 1024 9539 4225 8450 7 0 55 43 157 164  8285 6.93828776e-13 3.42517800e-02 2.11775779e+07 -1.78432205e-01 -2.08722693e-12 -9.89252497e+07 output-rising_melt_blob_freezing/solution/solution-00002 

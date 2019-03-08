@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2014 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
@@ -24,7 +24,7 @@
 
 #include <aspect/global.h>
 
-#include <deal.II/base/std_cxx11/array.h>
+#include <array>
 #include <deal.II/base/point.h>
 #include <deal.II/base/conditional_ostream.h>
 #include <deal.II/base/table_indices.h>
@@ -32,13 +32,18 @@
 #include <deal.II/dofs/dof_handler.h>
 #include <deal.II/fe/component_mask.h>
 
-#include <aspect/geometry_model/interface.h>
+#include <aspect/coordinate_systems.h>
 
 
 
 namespace aspect
 {
   template <int dim> class SimulatorAccess;
+
+  namespace GeometryModel
+  {
+    template <int dim> class Interface;
+  }
 
   /**
    * A namespace for utility functions that might be used in many different
@@ -67,6 +72,89 @@ namespace aspect
     possibly_extend_from_1_to_N (const std::vector<T> &values,
                                  const unsigned int N,
                                  const std::string &id_text);
+
+
+
+    /**
+     * This function takes a string argument that is interpreted as a map
+     * of the form "key1 : value1, key2 : value2, etc", and then parses
+     * it to return a vector of these values where the values are ordered
+     * in the same order as a given set of keys.
+     *
+     * This function also considers a number of special cases:
+     * - If the input string consists of only a comma separated
+     *   set of values "value1, value2, value3, ..." (i.e., without
+     *   the "keyx :" part), then the input string is interpreted
+     *   as if it had had the form "key1 : value1, key2 : value2, ..."
+     *   where "key1", "key2", ... are exactly the keys provided by the
+     *   @p list_of_keys in the same order as provided. In this situation,
+     *   if a background field is required, the background value is
+     *   assigned to the first element of the output vector.
+     * - Whether or not a background field is required depends on
+     *   the parameter being parsed. Requiring a background field
+     *   increases the size of the output vector by 1. For example,
+     *   some Material models require background fields, but input
+     *   files may not.
+     * - Three special keys are recognized:
+     *      all --> Assign the associated value to all fields.
+     *              Only one value is allowed in this case.
+     *      background --> Assign associated value to the background.
+     *
+     * @param[in] key_value_map The string representation of the map
+     *   to be parsed.
+     * @param[in] list_of_keys A list of valid key names that are allowed
+     *   to appear in the map. The order of these keys determines the order
+     *   of values that are returned by this function.
+     * @param[in] has_background_field If true, expect N+1 values and allow
+     *   setting of the background using the key "background".
+     * @param[in] property_name A name that identifies the type of property
+     *   that is being parsed by this function and that is used in generating
+     *   error messages if the map does not conform to the expected format.
+     *
+     * @return A vector of values that are parsed from the map, provided
+     *   in the order in which the keys appear in the @p list_of_keys argument.
+     */
+    std::vector<double>
+    parse_map_to_double_array (const std::string &key_value_map,
+                               const std::vector<std::string> &list_of_keys,
+                               const bool has_background_field,
+                               const std::string &property_name);
+
+    /**
+     * This function takes a string argument that is assumed to represent
+     * an input table, in which each row is separated by
+     * semicolons, and each column separated by commas. The function
+     * returns the parsed entries as a table. In addition this function
+     * utilizes the possibly_extend_from_1_to_N() function to accept
+     * inputs with only a single column/row, which will be extended
+     * to @p n_rows or @p n_columns respectively, to allow abbreviating
+     * the input string (e.g. you can provide a single value instead of
+     * n_rows by n_columns identical values). This function can for example
+     * be used by material models to read densities for different
+     * compositions and different phases for each composition.
+     */
+    template <typename T>
+    Table<2,T>
+    parse_input_table (const std::string &input_string,
+                       const unsigned int n_rows,
+                       const unsigned int n_columns,
+                       const std::string &property_name);
+
+    /**
+     * Given a vector @p var_declarations expand any entries of the form
+     * vector(str) or tensor(str) to sublists with component names of the form
+     * str_x, str_y, str_z or str_xx, str_xy... for the correct dimension
+     * value.
+     *
+     * This function is to be used for expanding lists of variable names where
+     * one or more such variable is actually intended to be a list of
+     * components.
+     *
+     * Returns the generated list of variable names
+     */
+    template <int dim>
+    std::vector<std::string>
+    expand_dimensional_variable_names (const std::vector<std::string> &var_declarations);
 
 
     /**
@@ -102,7 +190,7 @@ namespace aspect
        * the Earth with WGS84 parameters.
        */
       template <int dim>
-      std_cxx11::array<double,dim>
+      std::array<double,dim>
       WGS84_coordinates(const Point<dim> &position);
 
       /**
@@ -112,7 +200,7 @@ namespace aspect
        *
        */
       template <int dim>
-      std_cxx11::array<double,dim>
+      std::array<double,dim>
       cartesian_to_spherical_coordinates(const Point<dim> &position);
 
       /**
@@ -122,7 +210,18 @@ namespace aspect
        */
       template <int dim>
       Point<dim>
-      spherical_to_cartesian_coordinates(const std_cxx11::array<double,dim> &scoord);
+      spherical_to_cartesian_coordinates(const std::array<double,dim> &scoord);
+
+      /**
+       * Given a vector defined in the radius, phi and theta directions, return
+       * a vector defined in Cartesian coordinates. If the dimension is set to 2
+       * theta is omitted. Position is given as a Point in Cartesian coordinates.
+       */
+      template <int dim>
+      Tensor<1,dim>
+      spherical_to_cartesian_vector(const Tensor<1,dim> &spherical_vector,
+                                    const Point<dim> &position);
+
 
       /**
        * Returns ellipsoidal coordinates of a Cartesian point. The returned array
@@ -130,38 +229,20 @@ namespace aspect
        *
        */
       template <int dim>
-      std_cxx11::array<double,3>
+      std::array<double,3>
       cartesian_to_ellipsoidal_coordinates(const Point<3> &position,
                                            const double semi_major_axis_a,
                                            const double eccentricity);
 
       /**
        * Return the Cartesian point of a ellipsoidal position defined by phi,
-       * phi and radius.
+       * theta and radius.
        */
       template <int dim>
       Point<3>
-      ellipsoidal_to_cartesian_coordinates(const std_cxx11::array<double,3> &phi_theta_d,
+      ellipsoidal_to_cartesian_coordinates(const std::array<double,3> &phi_theta_d,
                                            const double semi_major_axis_a,
                                            const double eccentricity);
-
-      /**
-       * This enum lists available coordinate systems that can be used for
-       * the function variables. Allowed values are 'cartesian',
-       * 'spherical', and 'depth'. 'spherical' coordinates follow: r, phi
-       * (2D) or r, phi, theta (3D); where r is radius, phi is longitude,
-       * and theta is the polar angle (colatitude). The 'depth' is a
-       * one-dimensional coordinate system in which only the distance
-       * below the 'top' surface (depth) as defined by each geometry model,
-       * is used.
-       */
-      enum CoordinateSystem
-      {
-        depth,
-        cartesian,
-        spherical,
-        invalid
-      };
 
 
       /**
@@ -193,14 +274,26 @@ namespace aspect
     signed_distance_to_polygon(const std::vector<Point<2> > &point_list,
                                const dealii::Point<2> &point);
 
+
+    /**
+     * Given a 2d point and a list of two points that define a line, compute the smallest
+     * distance of the point to the line segment. When the point's perpendicular
+     * base does not lie on the line segment, the smallest distance to the segment's end
+     * points is calculated.
+     */
+    double
+    distance_to_line(const std::array<dealii::Point<2>,2 > &point_list,
+                     const dealii::Point<2> &point);
+
     /**
      * Given a vector @p v in @p dim dimensional space, return a set
      * of (dim-1) vectors that are orthogonal to @p v and to each
-     * other. The lengths of these vectors equals that of the original
-     * vector @p v to ensure a well-conditioned basis.
+     * other. The length of each of these vectors equals that of the original
+     * vector @p v to ensure that the resulting set of vectors
+     * represents a well-conditioned basis.
      */
     template <int dim>
-    std_cxx11::array<Tensor<1,dim>,dim-1>
+    std::array<Tensor<1,dim>,dim-1>
     orthogonal_vectors (const Tensor<1,dim> &v);
 
     /**
@@ -403,7 +496,8 @@ namespace aspect
           // Non-specified behavior
           AssertThrow(false,
                       ExcMessage("Length of " + id_text + " list must be " +
-                                 "either one or " + Utilities::to_string(N)));
+                                 "either one or " + Utilities::to_string(N) +
+                                 ". Currently it is " + Utilities::to_string(values.size()) + "."));
         }
 
       // This should never happen, but return an empty vector so the compiler
@@ -514,6 +608,14 @@ namespace aspect
         get_column_names() const;
 
         /**
+         * Returns whether the stored coordinates are equidistant. If
+         * coordinates are equidistant the lookup is more efficient. Returns
+         * false if no coordinates are loaded at the moment.
+         */
+        bool
+        has_equidistant_coordinates() const;
+
+        /**
          * Returns the column index of a column with the given name
          * @p column_name. Throws an exception if no such
          * column exists or no names were provided in the file.
@@ -528,6 +630,11 @@ namespace aspect
          */
         std::string
         get_column_name_from_index(const unsigned int column_index) const;
+
+        /**
+         * Return the maximum value of the component values.
+         */
+        double get_maximum_component_value(const unsigned int component) const;
 
       private:
         /**
@@ -547,17 +654,22 @@ namespace aspect
          * Either InterpolatedUniformGridData or InterpolatedTensorProductGridData;
          * the type is determined from the grid specified in the data file.
          */
-        std::vector<Function<dim> *> data;
+        std::vector<std::unique_ptr<Function<dim>>> data;
 
         /**
          * The coordinate values in each direction as specified in the data file.
          */
-        std_cxx11::array<std::vector<double>,dim> coordinate_values;
+        std::array<std::vector<double>,dim> coordinate_values;
+
+        /**
+         * The maximum value of each component
+         */
+        std::vector<double> maximum_component_value;
 
         /**
          * The min and max of the coordinates in the data file.
          */
-        std_cxx11::array<std::pair<double,double>,dim> grid_extent;
+        std::array<std::pair<double,double>,dim> grid_extent;
 
         /**
          * Number of points in the data grid as specified in the data file.
@@ -569,6 +681,12 @@ namespace aspect
          * to transform the unit of the data.
          */
         const double scale_factor;
+
+        /**
+         * Stores whether the coordinate values are equidistant or not,
+         * this determines the type of data function stored.
+         */
+        bool coordinate_values_are_equidistant;
 
         /**
          * Computes the table indices of each entry in the input data file.
@@ -599,13 +717,15 @@ namespace aspect
         void
         declare_parameters (ParameterHandler  &prm,
                             const std::string &default_directory,
-                            const std::string &default_filename);
+                            const std::string &default_filename,
+                            const std::string &subsection_name = "Ascii data model");
 
         /**
          * Read the parameters from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm,
+                          const std::string &subsection_name = "Ascii data model");
 
         /**
          * Directory in which the data files are present.
@@ -642,9 +762,9 @@ namespace aspect
         AsciiDataBoundary();
 
         /**
-          * Initialization function. This function is called once at the
-          * beginning of the program. Checks preconditions.
-          */
+         * Initialization function. This function is called once at the
+         * beginning of the program. Checks preconditions.
+         */
         virtual
         void
         initialize (const std::set<types::boundary_id> &boundary_ids,
@@ -668,6 +788,13 @@ namespace aspect
                             const unsigned int                   component) const;
 
         /**
+         * Returns the maximum value of the given data component.
+         */
+        double
+        get_maximum_component_value (const types::boundary_id boundary_indicator,
+                                     const unsigned int       component) const;
+
+        /**
          * Return the gradients of the parameters from the parameter file.
          */
         Tensor<1,dim-1>
@@ -682,13 +809,15 @@ namespace aspect
         void
         declare_parameters (ParameterHandler  &prm,
                             const std::string &default_directory,
-                            const std::string &default_filename);
+                            const std::string &default_filename,
+                            const std::string &subsection_name = "Ascii data model");
 
         /**
          * Read the parameters from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm,
+                          const std::string &subsection_name = "Ascii data model");
 
       protected:
 
@@ -705,14 +834,14 @@ namespace aspect
          * the actual position (the function returns [0,1,2] or [0,1]), but
          * for the boundary conditions it matters.
          */
-        std_cxx11::array<unsigned int,dim-1>
+        std::array<unsigned int,dim-1>
         get_boundary_dimensions (const types::boundary_id boundary_id) const;
 
         /**
          * A variable that stores the currently used data file of a series. It
          * gets updated if necessary by update().
          */
-        int  current_file_number;
+        int current_file_number;
 
         /**
          * Time from which on the data file with number 'First data file
@@ -761,13 +890,13 @@ namespace aspect
          * data we get from text files.
          */
         std::map<types::boundary_id,
-            std_cxx11::shared_ptr<aspect::Utilities::AsciiDataLookup<dim-1> > > lookups;
+            std::unique_ptr<aspect::Utilities::AsciiDataLookup<dim-1> > > lookups;
 
         /**
          * Map between the boundary id and the old data objects.
          */
         std::map<types::boundary_id,
-            std_cxx11::shared_ptr<aspect::Utilities::AsciiDataLookup<dim-1> > > old_lookups;
+            std::unique_ptr<aspect::Utilities::AsciiDataLookup<dim-1> > > old_lookups;
 
         /**
          * Handles the update of the data in lookup.
@@ -790,6 +919,8 @@ namespace aspect
         create_filename (const int timestep,
                          const types::boundary_id boundary_id) const;
     };
+
+
 
     /**
      * A base class that implements initial conditions determined from a
@@ -825,8 +956,10 @@ namespace aspect
          * Pointer to an object that reads and processes data we get from text
          * files.
          */
-        std_cxx11::shared_ptr<aspect::Utilities::AsciiDataLookup<dim> > lookup;
+        std::unique_ptr<aspect::Utilities::AsciiDataLookup<dim> > lookup;
     };
+
+
 
     /**
      * A base class that reads in a data profile and provides its values.
@@ -893,7 +1026,7 @@ namespace aspect
          * Pointer to an object that reads and processes data we get from text
          * files.
          */
-        std_cxx11::unique_ptr<aspect::Utilities::AsciiDataLookup<1> > lookup;
+        std::unique_ptr<aspect::Utilities::AsciiDataLookup<1> > lookup;
     };
 
 
@@ -948,7 +1081,7 @@ namespace aspect
      * average (p = 0), arithmetic average (p = 1), and maximum (p >= 1000) ) is, except for the harmonic
      * average even more tolerant of negative values, because they only require the sum of weights to be non-zero.
      */
-    template<typename T>
+    template <typename T>
     T derivative_of_weighted_p_norm_average (const double averaged_parameter,
                                              const std::vector<double> &weights,
                                              const std::vector<double> &values,
@@ -959,24 +1092,36 @@ namespace aspect
      * Jacobian remains positive definite.
      *
      * The goal of this function is to find a factor $\alpha$ so that
-     * $2\eta(\varepsilon(\bm u)) I \otimes I +  \alpha\left[a \otimes b + b \otimes a\right]$ remains a
-     * positive definite matrix. Here, $a=\varepsilon(\bm u)$ is the @p strain_rate
-     * and $b=\frac{\partial\eta(\varepsilon(\bm u),p)}{\partial \varepsilon}$ is the derivative of the viscosity
+     * $2\eta(\varepsilon(\mathbf u)) I \otimes I +  \alpha\left[a \otimes b + b \otimes a\right]$ remains a
+     * positive definite matrix. Here, $a=\varepsilon(\mathbf u)$ is the @p strain_rate
+     * and $b=\frac{\partial\eta(\varepsilon(\mathbf u),p)}{\partial \varepsilon}$ is the derivative of the viscosity
      * with respect to the strain rate and is given by @p dviscosities_dstrain_rate. Since the viscosity $\eta$
      * must be positive, there is always a value of $\alpha$ (possibly small) so that the result is a positive
      * definite matrix. In the best case, we want to choose $\alpha=1$ because that corresponds to the full Newton step,
      * and so the function never returns anything larger than one.
      *
      * The factor is defined by:
-     * $\frac{2\eta(\varepsilon(\bm u))}{\left[1-\frac{b:a}{\|a\| \|b\|} \right]^2\|a\|\|b\|}$. Alpha is
+     * $\frac{2\eta(\varepsilon(\mathbf u))}{\left[1-\frac{b:a}{\|a\| \|b\|} \right]^2\|a\|\|b\|}$. Alpha is
      * reset to a maximum of one, and if it is smaller then one, a safety_factor scales the alpha to make
      * sure that the 1-alpha won't get to close to zero.
      */
-    template<int dim>
+    template <int dim>
     double compute_spd_factor(const double eta,
                               const SymmetricTensor<2,dim> &strain_rate,
                               const SymmetricTensor<2,dim> &dviscosities_dstrain_rate,
-                              const double safety_factor);
+                              const double SPD_safety_factor);
+
+    /**
+     * Converts an array of size dim to a Point of size dim.
+     */
+    template <int dim>
+    Point<dim> convert_array_to_point(const std::array<double,dim> &array);
+
+    /**
+     * Converts a Point of size dim to an array of size dim.
+     */
+    template <int dim>
+    std::array<double,dim> convert_point_to_array(const Point<dim> &point);
 
     /**
      * A class that represents a binary operator between two doubles. The type of
@@ -1035,6 +1180,65 @@ namespace aspect
      * entry in the list must match one of the allowed operations.
      */
     std::vector<Operator> create_model_operator_list(const std::vector<std::string> &operator_names);
+
+    /**
+     * A function that returns a SymmetricTensor, whose entries are zero, except for
+     * the k'th component, which is set to one. If k is not on the main diagonal the
+     * resulting tensor is symmetrized.
+     */
+    template <int dim>
+    SymmetricTensor<2,dim> nth_basis_for_symmetric_tensors (const unsigned int k);
+
+    /*
+    * A class that represents a point in a chosen coordinate system.
+    */
+    template <int dim>
+    class NaturalCoordinate
+    {
+      public:
+        /**
+         * Constructor based on providing the geometry model as a pointer.
+         */
+        NaturalCoordinate(Point<dim> &position,
+                          const GeometryModel::Interface<dim> &geometry_model);
+
+        /**
+         * Constructor based on providing the coordinates and associated
+         * coordinate system.
+         */
+        NaturalCoordinate(const std::array<double, dim> &coord,
+                          const Utilities::Coordinates::CoordinateSystem &coord_system);
+
+        /**
+         * Returns the coordinates in the given coordinate system, which may
+         * not be Cartesian.
+         */
+        std::array<double,dim> &get_coordinates();
+
+        /**
+         * The coordinate that represents the 'surface' directions in the
+         * chosen coordinate system.
+         */
+        std::array<double,dim-1> get_surface_coordinates() const;
+
+        /**
+         * The coordinate that represents the 'depth' direction in the chosen
+         * coordinate system.
+         */
+        double get_depth_coordinate() const;
+
+      private:
+        /**
+         * An enum which stores the the coordinate system of this natural
+         * point
+         */
+        Utilities::Coordinates::CoordinateSystem coordinate_system;
+
+        /**
+         * An array which stores the coordinates in the coordinates system
+         */
+        std::array<double,dim> coordinates;
+    };
   }
 }
 

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
@@ -32,14 +32,15 @@ namespace aspect
     void
     ParticleDensity<dim>::execute(Vector<float> &indicators) const
     {
-      const Postprocess::Particles<dim> *particle_postprocessor = this->template find_postprocessor<Postprocess::Particles<dim> >();
-
-      AssertThrow(particle_postprocessor != 0,
-                  ExcMessage("The mesh refinement plugin 'particle density' requires the "
-                             "postprocessor plugin 'particles' to be selected. Please activate the "
+      AssertThrow(this->get_postprocess_manager().template has_matching_postprocessor<Postprocess::Particles<dim> >(),
+                  ExcMessage("The mesh refinement plugin `particle density' requires the "
+                             "postprocessor plugin `particles' to be selected. Please activate the "
                              "particles or deactivate this mesh refinement plugin."));
 
-      const std::multimap<Particle::types::LevelInd, Particle::Particle<dim> > *particles = &particle_postprocessor->get_particle_world().get_particles();
+      const Postprocess::Particles<dim> &particle_postprocessor =
+        this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::Particles<dim> >();
+
+      const Particle::ParticleHandler<dim> &particle_handler = particle_postprocessor.get_particle_world().get_particle_handler();
 
       unsigned int i = 0;
       typename DoFHandler<dim>::active_cell_iterator
@@ -48,14 +49,11 @@ namespace aspect
       for (; cell!=endc; ++cell,++i)
         if (cell->is_locally_owned())
           {
-            const Particle::types::LevelInd cell_index (cell->level(),cell->index());
-            const unsigned int n_particles = particles->count(cell_index);
-
             // Note  that this refinement indicator will level out the number
             // of particles per cell, therefore creating fine cells in regions
             // of high particle density and coarse cells in low particle
             // density regions.
-            indicators(i) = static_cast<float>(n_particles);
+            indicators(i) = static_cast<float>(particle_handler.n_particles_in_cell(cell));
           }
       return;
     }

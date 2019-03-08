@@ -6,7 +6,6 @@
 set Dimension                              = 2
 set Use years in output instead of seconds = true
 set End time                               = 2.63e8
-set Linear solver tolerance                = 1e-6
 set Output directory                       = output-burnman
 
 subsection Material model
@@ -65,15 +64,10 @@ end
 
 # The present-day plate velocities are imposed on the upper model
 # boundary.
-subsection Model settings
+subsection Boundary velocity model
   set Prescribed velocity boundary indicators = top:gplates
   set Tangential velocity boundary indicators = bottom
 
-  set Fixed temperature boundary indicators   = top, bottom
-end
-
-
-subsection Boundary velocity model
   subsection GPlates model
     set Data directory = $ASPECT_SOURCE_DIR/data/boundary-velocity/gplates/
     set Velocity file name = current_day.gpml
@@ -85,7 +79,9 @@ end
 
 
 subsection Boundary temperature model
-  set Model name = spherical constant
+  set Fixed temperature boundary indicators = top, bottom
+  set List of model names = spherical constant
+
   subsection Spherical constant
     set Inner temperature = 3500 
     set Outer temperature = 273
@@ -142,4 +138,10 @@ end
 
 subsection Checkpointing
   set Time between checkpoint  = 1800
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-6
+  end
 end

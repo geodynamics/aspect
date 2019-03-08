@@ -1,0 +1,18 @@
+
+Number of active cells: 448 (on 3 levels)
+Number of degrees of freedom: 15,785 (11,451+517+3,817)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                                     0.633 m/s, 0.973 m/s
+     Angular momentum, Moment of inertia, Angular velocity: 2.48 kg*m^2/s, 2.47 kg*m^2, 1 1/s
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,16 +14,17 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
 
 #include <aspect/global.h>
 #include <aspect/boundary_traction/interface.h>
+#include <aspect/simulator_access.h>
 
 #include <deal.II/base/exceptions.h>
-#include <deal.II/base/std_cxx1x/tuple.h>
+#include <tuple>
 
 #include <list>
 
@@ -102,7 +103,7 @@ namespace aspect
 
     namespace
     {
-      std_cxx1x::tuple
+      std::tuple
       <void *,
       void *,
       aspect::internal::Plugins::PluginList<Interface<2> >,
@@ -118,10 +119,10 @@ namespace aspect
                                 void (*declare_parameters_function) (ParameterHandler &),
                                 Interface<dim> *(*factory_function) ())
     {
-      std_cxx1x::get<dim>(registered_plugins).register_plugin (name,
-                                                               description,
-                                                               declare_parameters_function,
-                                                               factory_function);
+      std::get<dim>(registered_plugins).register_plugin (name,
+                                                         description,
+                                                         declare_parameters_function,
+                                                         factory_function);
     }
 
 
@@ -129,8 +130,8 @@ namespace aspect
     Interface<dim> *
     create_boundary_traction (const std::string &name)
     {
-      Interface<dim> *plugin = std_cxx1x::get<dim>(registered_plugins).create_plugin (name,
-                                                                                      "Boundary traction conditions");
+      Interface<dim> *plugin = std::get<dim>(registered_plugins).create_plugin (name,
+                                                                                "Boundary traction conditions");
       return plugin;
     }
 
@@ -140,15 +141,26 @@ namespace aspect
     std::string
     get_names ()
     {
-      return std_cxx1x::get<dim>(registered_plugins).get_pattern_of_names ();
+      return std::get<dim>(registered_plugins).get_pattern_of_names ();
     }
+
 
 
     template <int dim>
     void
     declare_parameters (ParameterHandler &prm)
     {
-      std_cxx1x::get<dim>(registered_plugins).declare_parameters (prm);
+      std::get<dim>(registered_plugins).declare_parameters (prm);
+    }
+
+
+
+    template <int dim>
+    void
+    write_plugin_graph (std::ostream &out)
+    {
+      std::get<dim>(registered_plugins).write_plugin_graph ("Boundary traction interface",
+                                                            out);
     }
   }
 }
@@ -184,6 +196,10 @@ namespace aspect
   template  \
   void \
   declare_parameters<dim> (ParameterHandler &); \
+  \
+  template \
+  void \
+  write_plugin_graph<dim> (std::ostream &); \
   \
   template  \
   std::string \

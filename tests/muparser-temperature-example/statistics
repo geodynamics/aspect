@@ -1,0 +1,18 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Iterations for temperature solver
+# 8: Iterations for Stokes solver
+# 9: Velocity iterations in Stokes preconditioner
+# 10: Schur complement iterations in Stokes preconditioner
+# 11: Visualization file name
+# 12: RMS velocity (m/year)
+# 13: Max. velocity (m/year)
+# 14: Minimal temperature (K)
+# 15: Average temperature (K)
+# 16: Maximal temperature (K)
+# 17: Average nondimensional temperature (K)
+0 0.000000000000e+00 0.000000000000e+00 110 1273 559 0 8 10 36 output-muparser-temperature-example/solution/solution-00000 2.99050860e-03 1.47808456e-02 2.73000000e+02 1.62183583e+03 1.67300000e+03 9.63454167e-01 

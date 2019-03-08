@@ -1,0 +1,37 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Number of nonlinear iterations
+# 9: Iterations for temperature solver
+# 10: Iterations for composition solver 1
+# 11: Iterations for composition solver 2
+# 12: Iterations for Stokes solver
+# 13: Velocity iterations in Stokes preconditioner
+# 14: Schur complement iterations in Stokes preconditioner
+# 15: Visualization file name
+# 16: Minimal value for composition porosity
+# 17: Maximal value for composition porosity
+# 18: Global mass for composition porosity
+# 19: Minimal value for composition peridotite
+# 20: Maximal value for composition peridotite
+# 21: Global mass for composition peridotite
+# 22: RMS velocity (m/year)
+# 23: Max. velocity (m/year)
+# 24: Minimal temperature (K)
+# 25: Average temperature (K)
+# 26: Maximal temperature (K)
+# 27: Average nondimensional temperature (K)
+# 28: Outward mass flux through boundary with indicator 0 ("left") (kg/yr)
+# 29: Outward mass flux through boundary with indicator 1 ("right") (kg/yr)
+# 30: Outward mass flux through boundary with indicator 2 ("bottom") (kg/yr)
+# 31: Outward mass flux through boundary with indicator 3 ("top") (kg/yr)
+0 0.000000000000e+00 0.000000000000e+00 512 4851 2145 1122 1 0 0 0 38 39 869 output-average_density_boundary_fluid_pressure/solution/solution-00000.0000  0.00000000e+00 7.25339508e-02 8.92259377e+08 0.00000000e+00 0.00000000e+00 0.00000000e+00 1.48091172e-07 1.10723081e-06 2.93000000e+02 1.21010849e+03 1.62359346e+03 2.69183589e-01 0.00000000e+00 -1.23674582e+01 1.08153885e+01 0.00000000e+00 
+0 0.000000000000e+00 0.000000000000e+00 512 4851 2145 1122 1 0 0 0  0  0   0 output-average_density_boundary_fluid_pressure/solution/solution-00000.0001  0.00000000e+00 7.25339508e-02 8.92259377e+08 0.00000000e+00 0.00000000e+00 0.00000000e+00 1.48091172e-07 1.10723081e-06 2.93000000e+02 1.21010849e+03 1.62359346e+03 2.69183589e-01 0.00000000e+00 -1.23674582e+01 1.08153885e+01 0.00000000e+00 
+1 1.000000000000e+05 1.000000000000e+05 512 4851 2145 1122 1 5 3 0 18 19 429 output-average_density_boundary_fluid_pressure/solution/solution-00001.0000 -6.88890580e-05 7.25432963e-02 8.92254361e+08 0.00000000e+00 0.00000000e+00 0.00000000e+00 9.12008671e-07 4.51762574e-06 2.93000000e+02 1.20972479e+03 1.62359346e+03 2.69070970e-01 0.00000000e+00 -3.60306500e+02 3.59739897e+02 0.00000000e+00 
+1 1.000000000000e+05 1.000000000000e+05 512 4851 2145 1122 1 3 3 0  2  3  67 output-average_density_boundary_fluid_pressure/solution/solution-00001.0001 -7.62596298e-05 7.25406101e-02 8.92244270e+08 0.00000000e+00 0.00000000e+00 0.00000000e+00 9.13948987e-07 4.52707232e-06 2.93000000e+02 1.20972468e+03 1.62359346e+03 2.69070937e-01 0.00000000e+00 -3.61975812e+02 3.60312241e+02 0.00000000e+00 
+1 1.000000000000e+05 1.000000000000e+05 512 4851 2145 1122 1 2 2 0  0  0   0 output-average_density_boundary_fluid_pressure/solution/solution-00001.0002 -7.62800938e-05 7.25406069e-02 8.92244205e+08 0.00000000e+00 0.00000000e+00 0.00000000e+00 9.13948987e-07 4.52707232e-06 2.93000000e+02 1.20972468e+03 1.62359346e+03 2.69070937e-01 0.00000000e+00 -3.61975812e+02 3.60312241e+02 0.00000000e+00 
+1 1.000000000000e+05 1.000000000000e+05 512 4851 2145 1122 1 0 0 0  0  0   0 output-average_density_boundary_fluid_pressure/solution/solution-00001.0003 -7.62800938e-05 7.25406069e-02 8.92244205e+08 0.00000000e+00 0.00000000e+00 0.00000000e+00 9.13948987e-07 4.52707232e-06 2.93000000e+02 1.20972468e+03 1.62359346e+03 2.69070937e-01 0.00000000e+00 -3.61975812e+02 3.60312241e+02 0.00000000e+00 

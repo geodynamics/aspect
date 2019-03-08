@@ -7,7 +7,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving C_1 system ... 0 iterations.
    Solving C_2 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 22+0 iterations.
+   Solving Stokes system... 17+0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-smoothing_composition_passive/solution/solution-00000
@@ -19,7 +19,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving C_1 system ... 9 iterations.
    Solving C_2 system ... 10 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 12+0 iterations.
+   Solving Stokes system... 9+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.4995 K, 1 K
@@ -30,7 +30,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving C_1 system ... 11 iterations.
    Solving C_2 system ... 9 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 22+0 iterations.
+   Solving Stokes system... 17+0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-smoothing_composition_passive/solution/solution-00001
@@ -42,7 +42,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving C_1 system ... 11 iterations.
    Solving C_2 system ... 10 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 22+0 iterations.
+   Solving Stokes system... 17+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.4985 K, 1 K
@@ -53,7 +53,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving C_1 system ... 11 iterations.
    Solving C_2 system ... 9 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 22+0 iterations.
+   Solving Stokes system... 17+0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-smoothing_composition_passive/solution/solution-00002
@@ -65,7 +65,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving C_1 system ... 11 iterations.
    Solving C_2 system ... 9 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 22+0 iterations.
+   Solving Stokes system... 17+0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-smoothing_composition_passive/solution/solution-00003
@@ -77,7 +77,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving C_1 system ... 10 iterations.
    Solving C_2 system ... 9 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 22+0 iterations.
+   Solving Stokes system... 16+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.4957 K, 1 K
@@ -88,7 +88,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving C_1 system ... 10 iterations.
    Solving C_2 system ... 9 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 22+0 iterations.
+   Solving Stokes system... 17+0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-smoothing_composition_passive/solution/solution-00004
@@ -100,7 +100,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving C_1 system ... 10 iterations.
    Solving C_2 system ... 10 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 22+0 iterations.
+   Solving Stokes system... 17+0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-smoothing_composition_passive/solution/solution-00005
@@ -112,7 +112,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving C_1 system ... 9 iterations.
    Solving C_2 system ... 9 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 22+0 iterations.
+   Solving Stokes system... 16+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.4926 K, 1 K
@@ -123,7 +123,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving C_1 system ... 9 iterations.
    Solving C_2 system ... 9 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 22+0 iterations.
+   Solving Stokes system... 16+0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-smoothing_composition_passive/solution/solution-00006
@@ -135,7 +135,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving C_1 system ... 9 iterations.
    Solving C_2 system ... 9 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 22+0 iterations.
+   Solving Stokes system... 17+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.4905 K, 1 K
@@ -146,7 +146,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving C_1 system ... 10 iterations.
    Solving C_2 system ... 10 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 22+0 iterations.
+   Solving Stokes system... 17+0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-smoothing_composition_passive/solution/solution-00007
@@ -158,7 +158,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving C_1 system ... 9 iterations.
    Solving C_2 system ... 9 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 8+0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-smoothing_composition_passive/solution/solution-00008
@@ -170,7 +170,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving C_1 system ... 9 iterations.
    Solving C_2 system ... 9 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 9+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.4884 K, 1 K
@@ -181,7 +181,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving C_1 system ... 9 iterations.
    Solving C_2 system ... 9 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 8+0 iterations.
+   Solving Stokes system... 6+0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-smoothing_composition_passive/solution/solution-00009
@@ -193,7 +193,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving C_1 system ... 9 iterations.
    Solving C_2 system ... 8 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 8+0 iterations.
+   Solving Stokes system... 6+0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-smoothing_composition_passive/solution/solution-00010

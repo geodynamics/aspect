@@ -29,14 +29,6 @@ subsection Geometry model
 end
 
 
-subsection Model settings
-  set Fixed temperature boundary indicators   = bottom, top
-  set Zero velocity boundary indicators       =
-  set Tangential velocity boundary indicators = left, right, bottom
-  set Prescribed velocity boundary indicators = top: function
-end
-
-
 subsection Compositional fields
   set Number of fields = 2
 end
@@ -45,7 +37,8 @@ end
 # We then set the temperature to one at the bottom and zero
 # at the top: 
 subsection Boundary temperature model
-  set Model name = box
+  set Fixed temperature boundary indicators = bottom, top
+  set List of model names = box
   
   subsection Box
     set Bottom temperature = 1
@@ -57,6 +50,9 @@ end
 # The velocity along the top boundary models a spreading
 # center that is moving left and right:
 subsection Boundary velocity model
+  set Tangential velocity boundary indicators = left, right, bottom
+  set Prescribed velocity boundary indicators = top: function
+
   subsection Function
     set Variable names      = x,z,t
     set Function constants  = pi=3.1415926

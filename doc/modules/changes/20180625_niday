@@ -1,0 +1,4 @@
+Fixed: The default latitude and longitude limits for the 'uniform radial' particle generator were set to (0, pi) even though they are measured in degrees.
+The new default limits correspond to the entire surface of the sphere, and the manual clarifies that latitude is in (0, 180) and not (-90, 90).
+<br>
+(Bart Niday, 2018/06/25)

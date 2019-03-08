@@ -9,10 +9,8 @@ set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 0
 set Use years in output instead of seconds = false
-set Linear solver tolerance                = 1e-7 
 set Nonlinear solver tolerance             = 1e-5
-set Nonlinear solver scheme                = iterated Stokes
-set Number of cheap Stokes solver steps    = 0
+set Nonlinear solver scheme                = single Advection, iterated Stokes
 set Max nonlinear iterations               = 10 # to localize deformation, more iterations are needed
 
 ############### Parameters describing the model
@@ -36,7 +34,11 @@ subsection Geometry model
 end
 
 
-subsection Model settings
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary velocity model
   set Prescribed velocity boundary indicators = 0 x:function,1 x:function, 2: function
 end
 
@@ -84,7 +86,7 @@ end
 # We set the temperature to zero, as it is not important.
 
 subsection Boundary temperature model
-  set Model name = box
+  set List of model names = box
   subsection Box
     set Left temperature = 0
   end
@@ -129,4 +131,11 @@ end
 
 subsection Postprocess
   set List of postprocessors = velocity statistics, mass flux statistics
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-7 
+    set Number of cheap Stokes solver steps = 0
+  end
 end

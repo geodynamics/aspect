@@ -6,7 +6,7 @@ Number of degrees of freedom: 70,789 (33,282+4,225+16,641+16,641)
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 33+0 iterations.
+   Solving Stokes system... 38+0 iterations.
 
    Postprocessing:
 
@@ -24,9 +24,9 @@ Number of degrees of freedom: 70,789 (33,282+4,225+16,641+16,641)
      Reference thermal diffusivity (m^2/s):         1.13276e-06
      Rayleigh number:                               0
 
-     RMS, max velocity:                         0.028 m/year, 0.0716 m/year
-     Max and min velocity along boundary parts: 0.04213 m/yr, 0.01887 m/yr, 0.007951 m/yr, 1.621e-05 m/yr, 0.04501 m/yr, 1.297e-05 m/yr, 0.04501 m/yr, 1.297e-05 m/yr
-     Pressure at top/bottom of domain:          -3.478e-08 Pa, 9.413e+10 Pa
+     RMS, max velocity:                               0.028 m/year, 0.0716 m/year
+     Max, min, and rms velocity along boundary parts: 0.04213 m/yr, 0.01887 m/yr, 0.03334 m/yr, 0.007951 m/yr, 1.621e-05 m/yr, 0.004741 m/yr, 0.04501 m/yr, 1.296e-05 m/yr, 0.02831 m/yr, 0.04501 m/yr, 1.297e-05 m/yr, 0.02831 m/yr
+     Pressure at top/bottom of domain:                -2.607e-08 Pa, 9.413e+10 Pa
 
 Termination requested by criterion: end time
 

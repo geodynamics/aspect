@@ -1,0 +1,5 @@
+Fixed: The 'named additional outputs' postprocessor used to only support
+a single named output from the material model due to an indexing bug. This
+is fixed now.
+<br>
+(Rene Gassmoeller, 2018/10/04)

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2014 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
@@ -45,6 +45,19 @@ namespace aspect
     class DepthDependent : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
+        /**
+         * Initialize the base model at the beginning of the run.
+         */
+        virtual
+        void initialize();
+
+        /**
+         * Update the base model and viscosity function at the beginning of
+         * each timestep.
+         */
+        virtual
+        void update();
+
         /**
          * Function to compute the material properties in @p out given the
          * inputs in @p in.
@@ -93,7 +106,7 @@ namespace aspect
 
         /**
          * Currently chosen source for the viscosity.
-         **/
+         */
         ViscositySource viscosity_source;
 
         /**
@@ -108,7 +121,7 @@ namespace aspect
          * Data structures to store depth and viscosity lookup tables as well as interpolating
          * function to calculate viscosity for File Depth dependence method
          */
-        std_cxx11::shared_ptr< Functions::InterpolatedTensorProductGridData<1> > viscosity_file_function;
+        std::shared_ptr< Functions::InterpolatedTensorProductGridData<1> > viscosity_file_function;
 
         /**
          * Function to calculate viscosity at depth using values provided as List input
@@ -143,7 +156,7 @@ namespace aspect
         /**
          * Pointer to the material model used as the base model
          */
-        std_cxx11::shared_ptr<MaterialModel::Interface<dim> > base_model;
+        std::shared_ptr<MaterialModel::Interface<dim> > base_model;
     };
   }
 }

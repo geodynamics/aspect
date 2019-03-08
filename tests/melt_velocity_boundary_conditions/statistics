@@ -1,0 +1,21 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Iterations for composition solver 1
+# 10: Iterations for Stokes solver
+# 11: Velocity iterations in Stokes preconditioner
+# 12: Schur complement iterations in Stokes preconditioner
+# 13: Minimum topography (m)
+# 14: Maximum topography (m)
+# 15: RMS velocity (m/year)
+# 16: Max. velocity (m/year)
+# 17: Visualization file name
+# 18: Minimal value for composition porosity
+# 19: Maximal value for composition porosity
+# 20: Global mass for composition porosity
+0 0.000000000000e+00 0.000000000000e+00 640 6043 2673 2673 0 0 10 55 114 0.00000000e+00 0.00000000e+00 2.65238410e-03 6.83495294e-03 output-melt_velocity_boundary_conditions/solution/solution-00000 0.00000000e+00 2.00000000e-02 1.00000000e+09 

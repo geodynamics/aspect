@@ -7,13 +7,13 @@ set Start time                             = 0
 set Adiabatic surface temperature          = 0
 set Surface pressure                       = 0
 set Pressure normalization = no
-set Linear solver tolerance = 1.e-7
-set Number of cheap Stokes solver steps    = 30
 set Use years in output instead of seconds = true
-set Nonlinear solver scheme                = IMPES
+set Nonlinear solver scheme                = single Advection, single Stokes
+
 
 subsection Boundary temperature model
-  set Model name = box
+  set Fixed temperature boundary indicators   = bottom, top
+  set List of model names = box
   subsection Box
     set Top temperature = 0.0
     set Bottom temperature = 0.0
@@ -90,15 +90,14 @@ subsection Mesh refinement
 end
 
 
-subsection Model settings
-  set Fixed temperature boundary indicators   = bottom, top
-  set Prescribed velocity boundary indicators = 
+subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, right
   set Zero velocity boundary indicators       = bottom
-  set Free surface boundary indicators = top
 end
 
+
 subsection Free surface
+  set Free surface boundary indicators = top
   # Theta from Kaus et al 2010
   set Free surface stabilization theta = 0.5
 end
@@ -123,5 +122,11 @@ subsection Postprocess
     set Number of grouped files       = 1
     set Output format                 = vtu
     set Time between graphical output = 1e6
+  end
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Number of cheap Stokes solver steps = 30
   end
 end

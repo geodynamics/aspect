@@ -31,7 +31,7 @@ subsection Compositional fields
 end
 
 subsection Boundary composition model
-  set Model name = ascii data
+  set List of model names = ascii data
 
   subsection Ascii data model
     set Data file name       = box_3d_%s.0.txt
@@ -39,19 +39,24 @@ subsection Boundary composition model
 end
 
 subsection Boundary temperature model
-  set Model name = box
+  set List of model names = box
 end
 
 
-subsection Model settings
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary temperature model
   set Fixed temperature boundary indicators   = top,bottom
+end
+
+subsection Boundary composition model
   set Fixed composition boundary indicators   = bottom,left,top,front,back
+end
 
-  set Zero velocity boundary indicators       =
+subsection Boundary velocity model
   set Prescribed velocity boundary indicators = bottom:function,left:function,right:function,top:function,front:function,back:function
-
-  set Tangential velocity boundary indicators = 
-
 end
 
 

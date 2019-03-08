@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2015 - 2017 by the authors of the ASPECT code.
+ Copyright (C) 2015 - 2019 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -14,12 +14,13 @@
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with ASPECT; see the file doc/COPYING.  If not see
+ along with ASPECT; see the file LICENSE.  If not see
  <http://www.gnu.org/licenses/>.
  */
 
 #ifndef _aspect_particle_particle_h
 #define _aspect_particle_particle_h
+
 
 #include <aspect/global.h>
 #include <aspect/particle/property_pool.h>
@@ -30,8 +31,22 @@
 
 #include <boost/serialization/vector.hpp>
 
+#if !DEAL_II_VERSION_GTE(9,0,0)
+
 namespace aspect
 {
+  namespace Particles
+  {
+    namespace internal
+    {
+      /**
+       * Typedef of cell level/index pair. TODO: replace this by the
+       * active_cell_index from deal.II 8.3 onwards.
+       */
+      typedef std::pair<int, int> LevelInd;
+    }
+  }
+
   namespace Particle
   {
     using namespace dealii;
@@ -42,12 +57,6 @@ namespace aspect
     namespace types
     {
       using namespace dealii::types;
-
-      /**
-       * Typedef of cell level/index pair. TODO: replace this by the
-       * active_cell_index from deal.II 8.3 onwards.
-       */
-      typedef std::pair<int, int> LevelInd;
 
       /* Type definitions */
 
@@ -92,6 +101,15 @@ namespace aspect
 #endif
     }
 
+    namespace internal
+    {
+      /**
+       * Typedef of cell level/index pair. TODO: replace this by the
+       * active_cell_index from deal.II 8.3 onwards.
+       */
+      typedef std::pair<int, int> LevelInd;
+    }
+
     /**
      * Base class of particles - represents a particle with position,
      * an ID number and a variable number of properties. This class
@@ -101,7 +119,7 @@ namespace aspect
      * @ingroup Particle
      *
      */
-    template <int dim>
+    template <int dim, int spacedim=dim>
     class Particle
     {
       public:
@@ -113,18 +131,18 @@ namespace aspect
 
         /**
          * Constructor for Particle, creates a particle with the specified
-         * ID at the specified location. Note that Aspect
-         * does not check for duplicate particle IDs so the generator must
+         * ID at the specified location. Note that there is no
+         * check for duplicate particle IDs so the user must
          * make sure the IDs are unique over all processes.
          *
-         * @param[in] new_location Initial location of particle.
-         * @param[in] new_reference_location Initial location of the particle
+         * @param[in] location Initial location of particle.
+         * @param[in] reference_location Initial location of the particle
          * in the coordinate system of the reference cell.
-         * @param[in] new_id Globally unique ID number of particle.
+         * @param[in] id Globally unique ID number of particle.
          */
-        Particle (const Point<dim> &new_location,
-                  const Point<dim> &new_reference_location,
-                  const types::particle_index new_id);
+        Particle (const Point<spacedim> &location,
+                  const Point<dim> &reference_location,
+                  const types::particle_index id);
 
         /**
          * Copy-Constructor for Particle, creates a particle with exactly the
@@ -133,48 +151,50 @@ namespace aspect
          * for registering and freeing this memory in the property pool this
          * constructor registers a new chunk, and copies the properties.
          */
-        Particle (const Particle<dim> &particle);
+        Particle (const Particle<dim,spacedim> &particle);
 
         /**
          * Constructor for Particle, creates a particle from a data vector.
-         * This constructor is usually called after sending a particle to a
-         * different process.
+         * This constructor is usually called after serializing a particle by
+         * calling the write_data function.
          *
          * @param[in,out] begin_data A pointer to a memory location from which
          * to read the information that completely describes a particle. This
          * class then de-serializes its data from this memory location and
          * advance the pointer accordingly.
          *
-         * @param[in,out] new_property_pool A property pool that is used to
-         * allocate the property data used by this particle.
+         * @param[in,out] property_pool An optional pointer to a property pool
+         * that is used to manage the property data used by this particle. Note that
+         * if a non-null pointer is handed over this constructor assumes @p begin_data
+         * contains serialized data of the same length and type that is allocated
+         * by @p property_pool.
          */
         Particle (const void *&begin_data,
-                  PropertyPool &new_property_pool);
+                  PropertyPool &property_pool);
 
 #ifdef DEAL_II_WITH_CXX11
         /**
          * Move constructor for Particle, creates a particle from an existing
          * one by stealing its state.
          */
-        Particle (Particle<dim> &&particle);
+        Particle (Particle<dim,spacedim> &&particle);
 
         /**
          * Copy assignment operator.
          */
-        Particle<dim> &operator=(const Particle<dim> &particle);
+        Particle<dim,spacedim> &operator=(const Particle<dim,spacedim> &particle);
 
         /**
          * Move assignment operator.
          */
-        Particle<dim> &operator=(Particle<dim> &&particle);
+        Particle<dim,spacedim> &operator=(Particle<dim,spacedim> &&particle);
 #endif
 
         /**
          * Destructor. Releases the property handle if it is valid, and
          * therefore frees that memory space for other particles. (Note:
-         * the memory is managed by the property_pool, and the memory is not
-         * deallocated by this function, it is kept in reserve for other
-         * particles).
+         * the memory is managed by the property pool, and the pool is responsible
+         * for what happens to the memory.
          */
         ~Particle ();
 
@@ -184,7 +204,7 @@ namespace aspect
          * point to the first element in which the data should be written. This
          * function is meant for serializing all particle properties and
          * afterwards de-serializing the properties by calling the appropriate
-         * constructor Particle(void *&data, const unsigned int data_size);
+         * constructor Particle(void *&data, PropertyPool *property_pool = nullptr);
          *
          * @param [in,out] data The memory location to write particle data
          * into. This pointer points to the begin of the memory, in which the
@@ -198,40 +218,36 @@ namespace aspect
          * Set the location of this particle. Note that this does not check
          * whether this is a valid location in the simulation domain.
          *
-         * @param [in] new_loc The new location for this particle.
+         * @param [in] new_location The new location for this particle.
          */
         void
-        set_location (const Point<dim> &new_loc);
+        set_location (const Point<spacedim> &new_location);
 
         /**
          * Get the location of this particle.
          *
          * @return The location of this particle.
          */
-        const Point<dim> &
+        const Point<spacedim> &
         get_location () const;
 
         /**
-         * Set the reference location of this particle. Note that this does not
-         * check whether this is a valid location in the simulation domain.
+         * Set the reference location of this particle.
          *
-         * @param [in] new_loc The new reference location for this particle.
+         * @param [in] new_reference_location The new reference location for
+         * this particle.
          */
         void
-        set_reference_location (const Point<dim> &new_loc);
+        set_reference_location (const Point<dim> &new_reference_location);
 
         /**
-         * Get the reference location of this particle in its current cell.
-         *
-         * @return The reference location of this particle.
+         * Return the reference location of this particle in its current cell.
          */
         const Point<dim> &
         get_reference_location () const;
 
         /**
-         * Get the ID number of this particle.
-         *
-         * @return The id of this particle.
+         * Return the ID number of this particle.
          */
         types::particle_index
         get_id () const;
@@ -245,6 +261,13 @@ namespace aspect
          */
         void
         set_property_pool(PropertyPool &property_pool);
+
+        /**
+         * Returns whether this particle has a valid property pool and a valid
+         * handle to properties.
+         */
+        bool
+        has_properties () const;
 
         /**
          * Set the properties of this particle.
@@ -272,16 +295,34 @@ namespace aspect
         get_properties () const;
 
         /**
-         * Serialize the contents of this class.
+         * Returns the size in bytes this particle occupies if all of its data is
+         * serialized (i.e. the number of bytes that is written by the write_data
+         * function of this class).
+         */
+        std::size_t
+        serialized_size_in_bytes() const;
+
+        /**
+         * Write the data of this object to a stream for the purpose of
+         * serialization.
          */
         template <class Archive>
-        void serialize (Archive &ar, const unsigned int version);
+        void save (Archive &ar, const unsigned int version) const;
+
+        /**
+         * Read the data of this object from a stream for the purpose of
+         * serialization.
+         */
+        template <class Archive>
+        void load (Archive &ar, const unsigned int version);
+
+        BOOST_SERIALIZATION_SPLIT_MEMBER()
 
       private:
         /**
          * Current particle location
          */
-        Point<dim>             location;
+        Point<spacedim>             location;
 
         /**
          * Current particle location in the reference cell.
@@ -309,17 +350,43 @@ namespace aspect
 
     /* -------------------------- inline and template functions ---------------------- */
 
-    template <int dim>
+    template <int dim, int spacedim>
     template <class Archive>
-    void Particle<dim>::serialize (Archive &ar, const unsigned int)
+    void Particle<dim,spacedim>::load (Archive &ar, const unsigned int)
     {
+      unsigned int n_properties = 0;
+
       ar &location
+      & reference_location
       & id
-      & properties
-      ;
+      & n_properties;
+
+      if (n_properties > 0)
+        {
+          properties = new double[n_properties];
+          ar &boost::serialization::make_array(properties, n_properties);
+        }
+    }
+
+    template <int dim, int spacedim>
+    template <class Archive>
+    void Particle<dim,spacedim>::save (Archive &ar, const unsigned int) const
+    {
+      unsigned int n_properties = 0;
+      if ((property_pool != nullptr) && (properties != PropertyPool::invalid_handle))
+        n_properties = get_properties().size();
+
+      ar &location
+      & reference_location
+      & id
+      & n_properties;
+
+      if (n_properties > 0)
+        ar &boost::serialization::make_array(properties, n_properties);
+
     }
   }
 }
 
 #endif
-
+#endif

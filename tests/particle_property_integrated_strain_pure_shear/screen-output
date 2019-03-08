@@ -5,7 +5,7 @@ Number of degrees of freedom: 268 (162+25+81)
 *** Timestep 0:  t=0 seconds
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 20+0 iterations.
+   Solving Stokes system... 15+0 iterations.
 
    Postprocessing:
      Writing particle output: output-particle_property_integrated_strain_pure_shear/particles/particle-00000
@@ -48,7 +48,7 @@ Number of degrees of freedom: 268 (162+25+81)
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
-     Number of advected particles: 7
+     Number of advected particles: 6
 
 *** Timestep 6:  t=0.75 seconds
    Skipping temperature solve because RHS is zero.
@@ -64,7 +64,7 @@ Number of degrees of freedom: 268 (162+25+81)
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
-     Number of advected particles: 5
+     Number of advected particles: 4
 
 *** Timestep 8:  t=1 seconds
    Skipping temperature solve because RHS is zero.

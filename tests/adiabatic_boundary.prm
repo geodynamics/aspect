@@ -5,12 +5,9 @@ set Dimension                              = 3
 
 set Use years in output instead of seconds = true
 set End time                               = 0
-set Nonlinear solver scheme                = iterated Stokes
+set Nonlinear solver scheme                = single Advection, iterated Stokes
 set Nonlinear solver tolerance             = 1e-4
-set Linear solver tolerance                = 1e-4
 set Max nonlinear iterations               = 6 
-set Temperature solver tolerance           = 1e-4
-set Number of cheap Stokes solver steps    = 0
 
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
@@ -40,7 +37,7 @@ end
 
 
 subsection Boundary temperature model
-  set Model name = box
+  set List of model names = box
 
   subsection Spherical constant
     set Inner temperature = 4273 # default: 6000
@@ -48,17 +45,17 @@ subsection Boundary temperature model
   end
 end
 
-subsection Model settings
-  set Fixed temperature boundary indicators   =
-  set Zero velocity boundary indicators       =  
-  set Prescribed velocity boundary indicators =
-  set Tangential velocity boundary indicators = 0,1,2,3,4,5 
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
 
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = 0,1,2,3,4,5 
 end
 
 
 subsection Gravity model
-  set Model name = radial earth-like
+  set Model name = ascii data
 end
 
 
@@ -79,4 +76,12 @@ end
 subsection Postprocess
   set List of postprocessors = velocity statistics
 end 
-   
+
+subsection Solver parameters
+  set Temperature solver tolerance = 1e-4
+
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-4
+    set Number of cheap Stokes solver steps = 0
+  end
+end

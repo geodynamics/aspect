@@ -7,12 +7,13 @@ set Start time                             = 0
 set Adiabatic surface temperature          = 0
 set Surface pressure                       = 0
 set Pressure normalization = no
-set Linear solver tolerance = 1.e-7
 set Use years in output instead of seconds = true
-set Nonlinear solver scheme                = IMPES
+set Nonlinear solver scheme                = single Advection, single Stokes
 
 subsection Boundary temperature model
-  set Model name = box
+  set Fixed temperature boundary indicators = bottom, top
+  set List of model names = box
+
   subsection Box
     set Top temperature = 0.0
     set Bottom temperature = 1000.0
@@ -84,11 +85,11 @@ subsection Mesh refinement
 end
 
 
-subsection Model settings
-  set Fixed temperature boundary indicators   = bottom, top
-  set Prescribed velocity boundary indicators =
+subsection Boundary velocity model
   set Tangential velocity boundary indicators = bottom, top
-  set Zero velocity boundary indicators       = 
+end
+
+subsection Nullspace removal
   set Remove nullspace                        = net x translation
 end
 

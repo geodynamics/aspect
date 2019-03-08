@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,13 +14,16 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
 
 #include <aspect/postprocess/heat_flux_statistics.h>
+#include <aspect/postprocess/heat_flux_map.h>
+
 #include <aspect/utilities.h>
+#include <aspect/geometry_model/interface.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
@@ -30,23 +33,12 @@ namespace aspect
 {
   namespace Postprocess
   {
-
     template <int dim>
     std::pair<std::string,std::string>
     HeatFluxStatistics<dim>::execute (TableHandler &statistics)
     {
-      // create a quadrature formula based on the temperature element alone.
-      const QGauss<dim-1> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.temperature).degree+1);
-
-      FEFaceValues<dim> fe_face_values (this->get_mapping(),
-                                        this->get_fe(),
-                                        quadrature_formula,
-                                        update_gradients      | update_values |
-                                        update_normal_vectors |
-                                        update_q_points       | update_JxW_values);
-
-      std::vector<Tensor<1,dim> > temperature_gradients (quadrature_formula.size());
-      std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (quadrature_formula.size()));
+      std::vector<std::vector<std::pair<double, double> > > heat_flux_and_area =
+        internal::compute_heat_flux_through_boundary_faces (*this);
 
       std::map<types::boundary_id, double> local_boundary_fluxes;
 
@@ -54,49 +46,14 @@ namespace aspect
       cell = this->get_dof_handler().begin_active(),
       endc = this->get_dof_handler().end();
 
-      MaterialModel::MaterialModelInputs<dim> in(fe_face_values.n_quadrature_points, this->n_compositional_fields());
-      MaterialModel::MaterialModelOutputs<dim> out(fe_face_values.n_quadrature_points, this->n_compositional_fields());
-
-      // for every surface face on which it makes sense to compute a
-      // heat flux and that is owned by this processor,
-      // integrate the normal heat flux given by the formula
-      //   j =  - k * n . grad T
-      //
-      // for the spherical shell geometry, note that for the inner boundary,
-      // the normal vector points *into* the core, i.e. we compute the flux
-      // *out* of the mantle, not into it. we fix this when we add the local
-      // contribution to the global flux
       for (; cell!=endc; ++cell)
         if (cell->is_locally_owned())
           for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
             if (cell->at_boundary(f))
               {
-                fe_face_values.reinit (cell, f);
-                // Set use_strain_rates to false since we don't need viscosity
-                in.reinit(fe_face_values, &cell, this->introspection(), this->get_solution(), false);
-
-                this->get_material_model().evaluate(in, out);
-
-                // Get the temperature gradients from the solution.
-                fe_face_values[this->introspection().extractors.temperature].get_function_gradients (this->get_solution(), temperature_gradients);
-
-                double local_normal_flux = 0;
-                for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)
-                  {
-                    const double thermal_conductivity
-                      = out.thermal_conductivities[q];
-
-                    local_normal_flux
-                    +=
-                      -thermal_conductivity *
-                      (temperature_gradients[q] *
-                       fe_face_values.normal_vector(q)) *
-                      fe_face_values.JxW(q);
-                  }
-
                 const types::boundary_id boundary_indicator
                   = cell->face(f)->boundary_id();
-                local_boundary_fluxes[boundary_indicator] += local_normal_flux;
+                local_boundary_fluxes[boundary_indicator] += heat_flux_and_area[cell->active_cell_index()][f].first;
               }
 
       // now communicate to get the global values
@@ -165,19 +122,23 @@ namespace aspect
   {
     ASPECT_REGISTER_POSTPROCESSOR(HeatFluxStatistics,
                                   "heat flux statistics",
-                                  "A postprocessor that computes some statistics about "
-                                  "the (conductive) heat flux across boundaries. For each boundary "
-                                  "indicator (see your geometry description for which boundary "
-                                  "indicators are used), the heat flux is computed in outward "
-                                  "direction, i.e., from the domain to the outside, using the "
-                                  "formula $\\int_{\\Gamma_i} -k \\nabla T \\cdot \\mathbf n$ "
-                                  "where $\\Gamma_i$ is the part of the boundary with indicator $i$, "
-                                  "$k$ is the thermal conductivity as reported by the material model, "
-                                  "$T$ is the temperature, and $\\mathbf n$ is the outward normal. "
-                                  "Note that the quantity so computed does not include any energy "
-                                  "transported across the boundary by material transport in cases "
-                                  "where $\\mathbf u \\cdot \\mathbf n \\neq 0$. The point-wise "
-                                  "heat flux can be obtained from the heat flux map postprocessor, "
+                                  "A postprocessor that computes some "
+                                  "statistics about the heat flux "
+                                  "density across each boundary in outward "
+                                  "direction, i.e., from the domain to the "
+                                  "outside. The heat flux is computed as sum "
+                                  "of advective heat flux and conductive heat "
+                                  "flux through Neumann boundaries, both "
+                                  "computed as integral over the boundary area, "
+                                  "and conductive heat flux through Dirichlet "
+                                  "boundaries, which is computed using the "
+                                  "consistent boundary flux method as described "
+                                  "in ``Gresho, Lee, Sani, Maslanik, Eaton (1987). "
+                                  "The consistent Galerkin FEM for computing "
+                                  "derived boundary quantities in thermal and or "
+                                  "fluids problems. International Journal for "
+                                  "Numerical Methods in Fluids, 7(4), 371-394.''"
+                                  "The point-wise heat flux can be obtained from the heat flux map postprocessor, "
                                   "which outputs the heat flux to a file, or the heat flux map "
                                   "visualization postprocessor, which outputs the heat flux for "
                                   "visualization. "

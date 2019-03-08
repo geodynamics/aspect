@@ -1,3 +1,23 @@
+/*
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
+
+  This file is part of ASPECT.
+
+  ASPECT is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2, or (at your option)
+  any later version.
+
+  ASPECT is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with ASPECT; see the file LICENSE.  If not see
+  <http://www.gnu.org/licenses/>.
+*/
+
 #include <deal.II/base/parameter_handler.h>
 #include <deal.II/base/parsed_function.h>
 #include <deal.II/fe/fe_values.h>
@@ -110,6 +130,77 @@ namespace aspect
   }
 
   /**
+   * This function retrieves the unit support points (in the unit cell) for the current element.
+   * The DGP element used when 'set Use locally conservative discretization = true' does not
+   * have support points. If these elements are in use, a fictitious support point at the cell
+   * center is returned for each shape function that corresponds to the pressure variable,
+   * whereas the support points for the velocity are correct; the fictitious points don't matter
+   * because we only use this function when interpolating the velocity variable, and ignore the
+   * evaluation at the pressure support points.
+   */
+  template <int dim>
+  std::vector< Point<dim> >
+  get_unit_support_points_for_velocity(const SimulatorAccess<dim> &simulator_access)
+  {
+    std::vector< Point<dim> > unit_support_points;
+    if ( !simulator_access.get_parameters().use_locally_conservative_discretization )
+      {
+        return simulator_access.get_fe().get_unit_support_points();
+      }
+    else
+      {
+        //special case for discontinuous pressure elements, which lack unit support points
+        std::vector< Point<dim> > unit_support_points;
+        const unsigned int dofs_per_cell = simulator_access.get_fe().dofs_per_cell;
+        for (unsigned int dof=0; dof < dofs_per_cell; ++dof)
+          {
+            // base will hold element, base_index holds node/shape function within that element
+            const unsigned int
+            base       = simulator_access.get_fe().system_to_base_index(dof).first.first,
+            base_index = simulator_access.get_fe().system_to_base_index(dof).second;
+            // get the unit support points for the relevant element
+            std::vector< Point<dim> > my_support_points = simulator_access.get_fe().base_element(base).get_unit_support_points();
+            if ( my_support_points.size() == 0 )
+              {
+                //manufacture a support point, arbitrarily at cell center
+                if ( dim==2 )
+                  unit_support_points.push_back( Point<dim> (0.5,0.5) );
+                if ( dim==3 )
+                  unit_support_points.push_back( Point<dim> (0.5,0.5,0.5) );
+              }
+            else
+              {
+                unit_support_points.push_back(my_support_points[base_index]);
+              }
+          }
+        return unit_support_points;
+      }
+  }
+
+  namespace
+  {
+    template <int dim>
+    const Point<2> &as_2d(const Point<dim> &p);
+
+    template <>
+    const Point<2> &as_2d(const Point<2> &p)
+    {
+      return p;
+    }
+
+    template <int dim>
+    const Point<3> &as_3d(const Point<dim> &p);
+
+    template <>
+    const Point<3> &as_3d(const Point<3> &p)
+    {
+      return p;
+    }
+
+  }
+
+
+  /**
    * This function is called by a signal which is triggered after the other constraints
    * have been calculated. This enables us to define additional constraints in the mass
    * matrix on any arbitrary degree of freedom in the model space.
@@ -120,8 +211,9 @@ namespace aspect
   {
     if (prescribe_internal_velocities)
       {
-        Quadrature<dim> quadrature (simulator_access.get_fe().get_unit_support_points());
-        FEValues<dim> fe_values (simulator_access.get_fe(), quadrature, update_q_points);
+        const std::vector< Point<dim> > points = get_unit_support_points_for_velocity(simulator_access);
+        const Quadrature<dim> quadrature (points);
+        FEValues<dim> fe_values (simulator_access.get_fe(), quadrature, update_quadrature_points);
         typename DoFHandler<dim>::active_cell_iterator cell;
 
         // Loop over all cells
@@ -174,29 +266,25 @@ namespace aspect
                         // function values. The function parser
                         // objects expect points of a certain
                         // dimension, but Point p will be compiled for
-                        // both 2d and 3d, so we need some careful
-                        // casts to make this compile. Casting Point
-                        // objects between 2d and 3d is somewhat
-                        // meaningless but the offending casts will
-                        // never actually be executed because they are
-                        // protected by the if/else statements.
+                        // both 2d and 3d, so we need to do some trickery
+                        // to make this compile.
                         double indicator, u_i;
                         if (dim == 2)
                           {
                             indicator = prescribed_velocity_indicator_function_2d.value
-                                        (reinterpret_cast<const Point<2>&>(p),
+                                        (as_2d(p),
                                          component_direction);
                             u_i       = prescribed_velocity_function_2d.value
-                                        (reinterpret_cast<const Point<2>&>(p),
+                                        (as_2d(p),
                                          component_direction);
                           }
                         else
                           {
                             indicator = prescribed_velocity_indicator_function_3d.value
-                                        (reinterpret_cast<const Point<3>&>(p),
+                                        (as_3d(p),
                                          component_direction);
                             u_i       = prescribed_velocity_function_3d.value
-                                        (reinterpret_cast<const Point<3>&>(p),
+                                        (as_3d(p),
                                          component_direction);
                           }
 

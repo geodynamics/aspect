@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,7 +14,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
+  along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
@@ -22,6 +22,8 @@
 #include <aspect/postprocess/visualization.h>
 #include <aspect/global.h>
 #include <aspect/utilities.h>
+#include <aspect/simulator_access.h>
+#include <aspect/geometry_model/interface.h>
 
 #include <deal.II/dofs/dof_tools.h>
 #include <deal.II/numerics/data_out.h>
@@ -32,6 +34,8 @@
 #include <math.h>
 #include <stdio.h>
 #include <unistd.h>
+
+#include <boost/lexical_cast.hpp>
 
 namespace aspect
 {
@@ -76,14 +80,14 @@ namespace aspect
 
             if (this->include_melt_transport())
               {
-                solution_names.push_back ("p_f");
-                solution_names.push_back ("p_c");
+                solution_names.emplace_back("p_f");
+                solution_names.emplace_back("p_c_bar");
                 for (unsigned int i=0; i<dim; ++i)
-                  solution_names.push_back ("u_f");
+                  solution_names.emplace_back("u_f");
               }
-            solution_names.push_back ("p");
+            solution_names.emplace_back("p");
 
-            solution_names.push_back ("T");
+            solution_names.emplace_back("T");
             for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
               solution_names.push_back (this->introspection().name_for_compositional_index(c));
 
@@ -163,6 +167,11 @@ namespace aspect
       Interface<dim>::initialize ()
       {}
 
+      template <int dim>
+      void
+      Interface<dim>::update ()
+      {}
+
 
       template <int dim>
       void
@@ -208,6 +217,8 @@ namespace aspect
       // initialize this to a nonsensical value; set it to the actual time
       // the first time around we get to check it
       last_output_time (std::numeric_limits<double>::quiet_NaN()),
+      maximum_timesteps_between_outputs (std::numeric_limits<int>::max()),
+      last_output_timestep (numbers::invalid_unsigned_int),
       output_file_number (numbers::invalid_unsigned_int),
       mesh_changed (true)
     {}
@@ -316,6 +327,17 @@ namespace aspect
     }
 
     template <int dim>
+    void
+    Visualization<dim>::update ()
+    {
+      //Call the .update() method for each visualization postprocessor.
+      for (typename std::list<std::shared_ptr<VisualizationPostprocessors::Interface<dim> > >::const_iterator
+           p = postprocessors.begin(); p!=postprocessors.end(); ++p)
+        (*p)->update();
+    }
+
+
+    template <int dim>
     std::pair<std::string,std::string>
     Visualization<dim>::execute (TableHandler &statistics)
     {
@@ -325,10 +347,20 @@ namespace aspect
       if (std::isnan(last_output_time))
         {
           last_output_time = this->get_time() - output_interval;
+          last_output_timestep = this->get_timestep_number();
         }
 
-      // return if graphical output is not requested at this time
+      // Return if graphical output is not requested at this time. Do not
+      // return in the first timestep, or if the last output was more than
+      // output_interval in time ago, or maximum_timesteps_between_outputs in
+      // number of timesteps ago.
+      // The comparison in number of timesteps is safe from integer overflow for
+      // at most 2 billion timesteps , which is not likely to
+      // be ever reached (both values are unsigned int,
+      // and the default value of maximum_timesteps_between_outputs is
+      // set to numeric_limits<int>::max())
       if ((this->get_time() < last_output_time + output_interval)
+          && (this->get_timestep_number() < last_output_timestep + maximum_timesteps_between_outputs)
           && (this->get_timestep_number() != 0))
         return std::pair<std::string,std::string>();
 
@@ -344,7 +376,7 @@ namespace aspect
       internal::BaseVariablePostprocessor<dim> base_variables;
       base_variables.initialize_simulator (this->get_simulator());
 
-      std_cxx1x::shared_ptr<internal::FreeSurfacePostprocessor<dim> > free_surface_variables;
+      std::shared_ptr<internal::FreeSurfacePostprocessor<dim> > free_surface_variables;
 
       // create a DataOut object on the heap; ownership of this
       // object will later be transferred to a different thread
@@ -358,7 +390,7 @@ namespace aspect
       // If there is a free surface, also attach the mesh velocity object
       if ( this->get_free_surface_boundary_indicators().empty() == false && output_mesh_velocity)
         {
-          free_surface_variables.reset( new internal::FreeSurfacePostprocessor<dim>);
+          free_surface_variables = std::make_shared<internal::FreeSurfacePostprocessor<dim>>();
           free_surface_variables->initialize_simulator(this->get_simulator());
           data_out.add_data_vector (this->get_mesh_velocity(),
                                     *free_surface_variables);
@@ -368,8 +400,8 @@ namespace aspect
       // add the computed quantity as well. keep a list of
       // pointers to data vectors created by cell data visualization
       // postprocessors that will later be deleted
-      std::list<std_cxx11::shared_ptr<Vector<float> > > cell_data_vectors;
-      for (typename std::list<std_cxx11::shared_ptr<VisualizationPostprocessors::Interface<dim> > >::const_iterator
+      std::list<std::shared_ptr<Vector<float> > > cell_data_vectors;
+      for (typename std::list<std::shared_ptr<VisualizationPostprocessors::Interface<dim> > >::const_iterator
            p = postprocessors.begin(); p!=postprocessors.end(); ++p)
         {
           try
@@ -399,7 +431,7 @@ namespace aspect
                                       "on the current processor."));
 
                   // store the pointer, then attach the vector to the DataOut object
-                  cell_data_vectors.push_back (std_cxx11::shared_ptr<Vector<float> >
+                  cell_data_vectors.push_back (std::shared_ptr<Vector<float> >
                                                (cell_data.second));
 
                   data_out.add_data_vector (*cell_data.second,
@@ -453,18 +485,19 @@ namespace aspect
         }
 
       // Now build the patches. If selected, increase the output resolution.
-      if (interpolate_output)
-        {
-          data_out.build_patches (this->get_mapping(),
-                                  this->get_stokes_velocity_degree(),
-                                  this->get_geometry_model().has_curved_elements()
-                                  ?
-                                  DataOut<dim>::curved_inner_cells
-                                  :
-                                  DataOut<dim>::no_curved_cells);
-        }
-      else
-        data_out.build_patches(this->get_mapping()); // Giving the mapping ensures that the case with mesh deformation works correctly.
+      // Giving the mapping ensures that the case with mesh deformation works correctly.
+      const unsigned int subdivisions = interpolate_output
+                                        ?
+                                        this->get_stokes_velocity_degree()
+                                        :
+                                        0;
+      data_out.build_patches (this->get_mapping(),
+                              subdivisions,
+                              this->get_geometry_model().has_curved_elements()
+                              ?
+                              DataOut<dim>::curved_inner_cells
+                              :
+                              DataOut<dim>::no_curved_cells);
 
       // Now prepare everything for writing the output and choose output format
       std::string solution_file_prefix = "solution-" + Utilities::int_to_string (output_file_number, 5);
@@ -480,8 +513,8 @@ namespace aspect
           const std::string h5_solution_file_name = "solution/" + solution_file_prefix + ".h5";
           const std::string xdmf_filename = "solution.xdmf";
 
-          // Filter redundant values
-          DataOutBase::DataOutFilter data_filter(DataOutBase::DataOutFilterFlags(true, true));
+          // Filter redundant values if requested in the input file
+          DataOutBase::DataOutFilter data_filter(DataOutBase::DataOutFilterFlags(filter_output, true));
 
           // If the mesh changed since the last output, make a new mesh file
           const std::string mesh_file_prefix = "mesh-" + Utilities::int_to_string (output_file_number, 5);
@@ -622,6 +655,7 @@ namespace aspect
 
       // up the next time we need output
       set_last_output_time (this->get_time());
+      last_output_timestep = this->get_timestep_number();
 
       // return what should be printed to the screen.
       return std::make_pair (std::string ("Writing graphical output:"),
@@ -643,11 +677,10 @@ namespace aspect
 
           // Create the temporary file; get at the actual filename
           // by using a C-style string that mkstemp will then overwrite
-          char *tmp_filename_x = new char[tmp_filename.size()+1];
-          std::strcpy(tmp_filename_x, tmp_filename.c_str());
-          int tmp_file_desc = mkstemp(tmp_filename_x);
-          tmp_filename = tmp_filename_x;
-          delete []tmp_filename_x;
+          std::vector<char> tmp_filename_x (tmp_filename.size()+1);
+          std::strcpy(tmp_filename_x.data(), tmp_filename.c_str());
+          const int tmp_file_desc = mkstemp(tmp_filename_x.data());
+          tmp_filename = tmp_filename_x.data();
 
           // If we failed to create the temp file, just write directly to the target file.
           // We also provide a warning about this fact. There are places where
@@ -703,7 +736,7 @@ namespace aspect
 
     namespace
     {
-      std_cxx11::tuple
+      std::tuple
       <void *,
       void *,
       aspect::internal::Plugins::PluginList<VisualizationPostprocessors::Interface<2> >,
@@ -728,10 +761,18 @@ namespace aspect
                              "'Use years in output instead of seconds' parameter is set; "
                              "seconds otherwise.");
 
+          prm.declare_entry ("Time steps between graphical output", boost::lexical_cast<std::string>(std::numeric_limits<int>::max()),
+                             Patterns::Integer(0,std::numeric_limits<int>::max()),
+                             "The maximum number of time steps between each generation of "
+                             "graphical output files.");
+
           // now also see about the file format we're supposed to write in
           prm.declare_entry ("Output format", "vtu",
                              Patterns::Selection (DataOutBase::get_output_format_names ()),
-                             "The file format to be used for graphical output.");
+                             "The file format to be used for graphical output. The list "
+                             "of possible output formats that can be given here is documented "
+                             "in the appendix of the manual where the current parameter "
+                             "is described.");
 
           prm.declare_entry ("Number of grouped files", "16",
                              Patterns::Integer(0),
@@ -747,7 +788,7 @@ namespace aspect
                              Patterns::Bool(),
                              "File operations can potentially take a long time, blocking the "
                              "progress of the rest of the model run. Setting this variable to "
-                             "'true' moves this process into a background thread, while the "
+                             "`true' moves this process into a background thread, while the "
                              "rest of the model continues.");
 
           prm.declare_entry ("Temporary output location", "",
@@ -796,6 +837,24 @@ namespace aspect
                              "and a factor of 8 in 3d, when using quadratic elements for the velocity, "
                              "and correspondingly more for even higher order elements.");
 
+          prm.declare_entry ("Filter output", "false",
+                             Patterns::Bool(),
+                             "deal.II offers the possibility to filter duplicate vertices for HDF5 "
+                             "output files. This merges the vertices of adjacent cells and "
+                             "therefore saves disk space, but misrepresents discontinuous "
+                             "output properties. Activating this function reduces the disk space "
+                             "by about a factor of $2^{dim}$ for HDF5 output, and currently has no "
+                             "effect on other output formats. "
+                             "\\note{\\textbf{Warning:} Setting this flag to true will result in "
+                             "visualization output that does not accurately represent discontinuous "
+                             "fields. This may be because you are using a discontinuous finite "
+                             "element for the pressure, temperature, or compositional variables, "
+                             "or because you use a visualization postprocessor that outputs "
+                             "quantities as discontinuous fields (e.g., the strain rate, viscosity, "
+                             "etc.). These will then all be visualized as \\textit{continuous} "
+                             "quantities even though, internally, \\aspect{} considers them as "
+                             "discontinuous fields.}");
+
           prm.declare_entry ("Output mesh velocity", "false",
                              Patterns::Bool(),
                              "For free surface computations Aspect uses an Arbitrary-Lagrangian-"
@@ -806,7 +865,7 @@ namespace aspect
           // finally also construct a string for Patterns::MultipleSelection that
           // contains the names of all registered visualization postprocessors
           const std::string pattern_of_names
-            = std_cxx11::get<dim>(registered_visualization_plugins).get_pattern_of_names ();
+            = std::get<dim>(registered_visualization_plugins).get_pattern_of_names ();
           prm.declare_entry("List of output variables",
                             "",
                             Patterns::MultipleSelection(pattern_of_names),
@@ -823,7 +882,7 @@ namespace aspect
                             "to have in your output file.\n\n"
                             "The following postprocessors are available:\n\n"
                             +
-                            std_cxx11::get<dim>(registered_visualization_plugins).get_description_string());
+                            std::get<dim>(registered_visualization_plugins).get_description_string());
         }
         prm.leave_subsection();
       }
@@ -831,7 +890,7 @@ namespace aspect
 
       // now declare the parameters of each of the registered
       // visualization postprocessors in turn
-      std_cxx11::get<dim>(registered_visualization_plugins).declare_parameters (prm);
+      std::get<dim>(registered_visualization_plugins).declare_parameters (prm);
     }
 
 
@@ -839,7 +898,7 @@ namespace aspect
     void
     Visualization<dim>::parse_parameters (ParameterHandler &prm)
     {
-      Assert (std_cxx11::get<dim>(registered_visualization_plugins).plugins != 0,
+      Assert (std::get<dim>(registered_visualization_plugins).plugins != 0,
               ExcMessage ("No postprocessors registered!?"));
       std::vector<std::string> viz_names;
 
@@ -855,6 +914,8 @@ namespace aspect
           output_interval = prm.get_double ("Time between graphical output");
           if (this->convert_output_to_years())
             output_interval *= year_in_seconds;
+
+          maximum_timesteps_between_outputs = prm.get_integer("Time steps between graphical output");
 
           if (output_interval > 0.0)
             {
@@ -886,6 +947,7 @@ namespace aspect
             }
 
           interpolate_output = prm.get_bool("Interpolate output");
+          filter_output = prm.get_bool("Filter output");
           output_mesh_velocity = prm.get_bool("Output mesh velocity");
 
           // now also see which derived quantities we are to compute
@@ -903,9 +965,9 @@ namespace aspect
             {
               viz_names.clear();
               for (typename std::list<typename aspect::internal::Plugins::PluginList<VisualizationPostprocessors::Interface<dim> >::PluginInfo>::const_iterator
-                   p = std_cxx11::get<dim>(registered_visualization_plugins).plugins->begin();
-                   p != std_cxx11::get<dim>(registered_visualization_plugins).plugins->end(); ++p)
-                viz_names.push_back (std_cxx11::get<0>(*p));
+                   p = std::get<dim>(registered_visualization_plugins).plugins->begin();
+                   p != std::get<dim>(registered_visualization_plugins).plugins->end(); ++p)
+                viz_names.push_back (std::get<0>(*p));
             }
         }
         prm.leave_subsection();
@@ -917,7 +979,7 @@ namespace aspect
       for (unsigned int name=0; name<viz_names.size(); ++name)
         {
           VisualizationPostprocessors::Interface<dim> *
-          viz_postprocessor = std_cxx11::get<dim>(registered_visualization_plugins)
+          viz_postprocessor = std::get<dim>(registered_visualization_plugins)
                               .create_plugin (viz_names[name],
                                               "Visualization plugins");
 
@@ -934,7 +996,7 @@ namespace aspect
                               "dealii::DataPostprocessor or "
                               "VisualizationPostprocessors::CellDataVectorCreator!?"));
 
-          postprocessors.push_back (std_cxx11::shared_ptr<VisualizationPostprocessors::Interface<dim> >
+          postprocessors.push_back (std::shared_ptr<VisualizationPostprocessors::Interface<dim> >
                                     (viz_postprocessor));
 
           if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*postprocessors.back()))
@@ -946,8 +1008,11 @@ namespace aspect
 
       // Finally also set up a listener to check when the mesh changes
       mesh_changed = true;
-      this->get_triangulation().signals.post_refinement
-      .connect(std_cxx11::bind(&Visualization::mesh_changed_signal, std_cxx11::ref(*this)));
+      this->get_triangulation().signals.post_refinement.connect(
+        [&]()
+      {
+        this->mesh_changed_signal();
+      });
     }
 
 
@@ -956,6 +1021,7 @@ namespace aspect
     void Visualization<dim>::serialize (Archive &ar, const unsigned int)
     {
       ar &last_output_time
+      & last_output_timestep
       & output_file_number
       & times_and_pvtu_names
       & output_file_names_by_timestep
@@ -1030,10 +1096,10 @@ namespace aspect
                                           void (*declare_parameters_function) (ParameterHandler &),
                                           VisualizationPostprocessors::Interface<dim> *(*factory_function) ())
     {
-      std_cxx11::get<dim>(registered_visualization_plugins).register_plugin (name,
-                                                                             description,
-                                                                             declare_parameters_function,
-                                                                             factory_function);
+      std::get<dim>(registered_visualization_plugins).register_plugin (name,
+                                                                       description,
+                                                                       declare_parameters_function,
+                                                                       factory_function);
     }
 
 
@@ -1047,7 +1113,7 @@ namespace aspect
       // loop over all of the viz postprocessors and collect what
       // they want. don't worry about duplicates, the postprocessor
       // manager will filter them out
-      for (typename std::list<std_cxx11::shared_ptr<VisualizationPostprocessors::Interface<dim> > >::const_iterator
+      for (typename std::list<std::shared_ptr<VisualizationPostprocessors::Interface<dim> > >::const_iterator
            p = postprocessors.begin();
            p != postprocessors.end(); ++p)
         {
@@ -1057,6 +1123,23 @@ namespace aspect
         }
 
       return requirements;
+    }
+
+
+
+    template <int dim>
+    void
+    Visualization<dim>::write_plugin_graph (std::ostream &out)
+    {
+      // in contrast to all other plugins, the visualization
+      // postprocessors do not actually connect to the central
+      // Simulator class, but they are a sub-system of
+      // the Postprocessor plugin system. indicate this
+      // through the last argument of the function call
+      std::get<dim>(registered_visualization_plugins)
+      .write_plugin_graph ("Visualization postprocessor interface",
+                           out,
+                           typeid(Visualization<dim>).name());
     }
 
 
