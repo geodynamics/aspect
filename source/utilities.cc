@@ -2228,14 +2228,14 @@ namespace aspect
           if (dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()) != 0
               || dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model()) != 0)
             {
-              const std_cxx11::array<double,dim> spherical_position =
+              const std::array<double,dim> spherical_position =
                 ::aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(position);
 
               for (unsigned int i = 0; i < dim; i++)
                 internal_position[i] = spherical_position[i];
             }
 
-          const std_cxx11::array<unsigned int,dim-1> boundary_dimensions =
+          const std::array<unsigned int,dim-1> boundary_dimensions =
             get_boundary_dimensions(boundary_indicator);
 
           Point<dim-1> data_position;

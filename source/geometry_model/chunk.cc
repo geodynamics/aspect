@@ -62,13 +62,6 @@ namespace aspect
 
 
     template <int dim>
-    void
-    Chunk<dim>::ChunkGeometry::initialize(const InitialTopographyModel::Interface<dim> *topo_pointer)
-    {
-      topo = topo_pointer;
-    }
-
-    template <int dim>
     DerivativeForm<1,dim,dim>
     Chunk<dim>::ChunkGeometry::
     push_forward_gradient(const Point<dim> &chart_point) const
@@ -269,29 +262,6 @@ namespace aspect
 #endif
     }
 
-    template <int dim>
-    Point<dim>
-    Chunk<dim>::ChunkGeometry::
-    push_forward(const Point<dim> &r_phi_theta) const
-    {
-#if !DEAL_II_VERSION_GTE(9,0,0)
-      return push_forward_sphere(r_phi_theta);
-#else
-      return push_forward_sphere(push_forward_topo(r_phi_theta));
-#endif
-    }
-
-    template <int dim>
-    Point<dim>
-    Chunk<dim>::ChunkGeometry::
-    pull_back(const Point<dim> &x_y_z) const
-    {
-#if !DEAL_II_VERSION_GTE(9,0,0)
-      return pull_back_sphere(x_y_z);
-#else
-      return pull_back_topo(pull_back_sphere(x_y_z));
-#endif
-    }
 
     template <int dim>
     Point<dim>
