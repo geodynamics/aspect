@@ -358,7 +358,7 @@ ENDIF()
 # Find the libdap package so that Aspect can connect to the OPeNDAP servers
 # Author: Kodi Neumiller
 # Added: 10/16/18
-IF(LIBDAP_ON) 
+IF(LIBDAP) 
 	LIST(APPEND CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}/cmake/modules")
 	MESSAGE(STATUS "cmake module path = ${CMAKE_MODULE_PATH}")
 	FIND_PACKAGE(LIBDAP)
@@ -369,11 +369,9 @@ IF(LIBDAP_ON)
 	  TARGET_LINK_LIBRARIES(${TARGET} ${LIBDAP_LIBRARIES} ${LIBXML2_LIBRARIES} ${CURL_LIBRARIES})
 	  ADD_DEFINITIONS(-DHAVE_LIBDAP=TRUE)
 	    MESSAGE(STATUS "libdap found at ${LIBDAP_LIBRARIES}")
-	  
 	ELSE()
 	  MESSAGE(STATUS "libdap package not found")
 	ENDIF()
-	
 ENDIF()
 
 # Check whether we can find the WorldBuilder files. If so, make sure we

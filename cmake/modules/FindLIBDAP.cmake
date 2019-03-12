@@ -1,25 +1,19 @@
 ## ---------------------------------------------------------------------
 ##
-## Copyright (C) 2014 - 2015 by the deal.II authors
-##
-## This file is part of the deal.II library.
-##
-## The deal.II library is free software; you can use it, redistribute
-## it, and/or modify it under the terms of the GNU Lesser General
-## Public License as published by the Free Software Foundation; either
-## version 2.1 of the License, or (at your option) any later version.
-## The full text of the license can be found in the file LICENSE.md at
-## the top level directory of deal.II.
+## Copyright (C) 2018 by Kodi Neumiller, James Gallagher
 ##
 ## ---------------------------------------------------------------------
 
 # Try to find the Libdap library
 
 # Use the environment variables if they are provided during cmake
-SET(LIBDAP_LIB "" CACHE PATH "An optional hint to a libdap directory")
+SET(LIBDAP_LIB "" CACHE PATH "An optional hint to the libdap lib directory")
 SET_IF_EMPTY(LIBDAP_LIB "$ENV{LIBDAP_LIB}")
 
-SET(LIBDAP_DIR "" CACHE PATH "An optional hint to a libdap directory")
+SET(LIBDAP_INC "" CACHE PATH "An optional hint to the libdap include directory")
+SET_IF_EMPTY(LIBDAP_DIR "$ENV{LIBDAP_INC}")
+
+SET(LIBDAP_DIR "" CACHE PATH "An optional hint to the libdap installation directory")
 SET_IF_EMPTY(LIBDAP_DIR "$ENV{LIBDAP_DIR}")
 
 # Clear the cache of previous values
@@ -30,17 +24,17 @@ UNSET (LIBDAP_CLIENT_LIBRARY CACHE)
 
 FIND_PATH(LIBDAP_INCLUDE_DIR 
   NAMES Connect.h
-  HINTS ${LIBDAP_DIR}
+  HINTS ${LIBDAP_INC} ${LIBDAP_DIR}/include/libdap 
   )
 
 FIND_LIBRARY(LIBDAP_LIBRARY 
   NAMES libdap.a 
-  HINTS ${LIBDAP_LIB}
+  HINTS ${LIBDAP_LIB} ${LIBDAP_DIR}/lib
   )
   
 FIND_LIBRARY(LIBDAP_CLIENT_LIBRARY
   NAMES libdapclient.a
-  HINTS ${LIBDAP_LIB}
+  HINTS ${LIBDAP_LIB} ${LIBDAP_DIR}/lib
   )
 
 SET(LIBDAP_FOUND TRUE)
