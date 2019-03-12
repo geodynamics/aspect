@@ -94,6 +94,11 @@ or
 
 > mpirun -np 4 ./aspect ../opendap/prm\_files/aspect\_url\_test.prm
 
+## Looking at the simulation
+
+I've used _visit_ to render the simulation runs. It can be found here:
+https://wci.llnl.gov/simulation/computer-codes/visit/.
+
 ## Making new data accessible to ASPECT using an OPeNDAP server
 
 ## About the modifications
