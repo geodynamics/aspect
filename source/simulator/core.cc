@@ -1210,7 +1210,7 @@ namespace aspect
                       // we must be in 3d, or 'z' should never have gotten through
                       Assert (dim==3, ExcInternalError());
                       if (dim==3)
-                        mask[introspection.component_indices.velocities[2]] = true;
+                        mask[introspection.component_indices.velocities[dim-1]] = true;
                       break;
                     default:
                       Assert (false, ExcInternalError());
