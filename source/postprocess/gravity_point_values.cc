@@ -422,9 +422,10 @@ namespace aspect
         {
           prm.declare_entry ("Sampling scheme", "map",
                              Patterns::Selection ("map|list"),
-                             "Choose which sampling scheme. A map is limited between "
-                             "a minimum and maximum radius, longitude and latitude. A "
-                             "A list contains specific coordinates of the satellites.");
+                             "Choose the sampling scheme. A map will produce a grid of "
+                             "equally spaced points between "
+                             "a minimum and maximum radius, longitude, and latitude. A "
+                             "list contains specific coordinates of the satellites.");
           prm.declare_entry ("Quadrature degree increase", "0",
                              Patterns::Double (0.0),
                              "Quadrature degree increase over the velocity element "
@@ -433,21 +434,21 @@ namespace aspect
                              "quadrature element adds accuracy to the gravity "
                              "solution from noise due to the model grid.");
           prm.declare_entry ("Number points radius", "1",
-                             Patterns::Double (0.0),
+                             Patterns::Integer (0),
                              "Parameter for the map sampling scheme: "
-                             "Gravity may be calculated for a set of points along "
+                             "This specifies the number of points along "
                              "the radius (e.g. depth profile) between a minimum and "
                              "maximum radius.");
           prm.declare_entry ("Number points longitude", "1",
-                             Patterns::Double (0.0),
+                             Patterns::Integer (0),
                              "Parameter for the map sampling scheme: "
-                             "Gravity may be calculated for a sets of points along "
+                             "This specifies the number of points along "
                              "the longitude (e.g. gravity map) between a minimum and "
                              "maximum longitude.");
           prm.declare_entry ("Number points latitude", "1",
-                             Patterns::Double (0.0),
+                             Patterns::Integer (0),
                              "Parameter for the map sampling scheme: "
-                             "Gravity may be calculated for a sets of points along "
+                             "This specifies the number of points along "
                              "the latitude (e.g. gravity map) between a minimum and "
                              "maximum latitude.");
           prm.declare_entry ("Minimum radius", "0",
@@ -544,9 +545,9 @@ namespace aspect
           else
             AssertThrow (false, ExcMessage ("Not a valid sampling scheme."));
           quadrature_degree_increase = prm.get_double ("Quadrature degree increase");
-          n_points_radius     = prm.get_double ("Number points radius");
-          n_points_longitude  = prm.get_double ("Number points longitude");
-          n_points_latitude   = prm.get_double ("Number points latitude");
+          n_points_radius     = prm.get_integer("Number points radius");
+          n_points_longitude  = prm.get_integer("Number points longitude");
+          n_points_latitude   = prm.get_integer("Number points latitude");
           minimum_radius      = prm.get_double ("Minimum radius");
           maximum_radius      = prm.get_double ("Maximum radius");
           minimum_colongitude = prm.get_double ("Minimum longitude") + 180;
