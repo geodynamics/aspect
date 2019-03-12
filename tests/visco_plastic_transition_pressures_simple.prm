@@ -44,6 +44,23 @@ subsection Initial temperature model
   end
 end
 
+subsection Compositional fields
+  set Number of fields = 1
+  set Names of fields = lower_layer
+end
+
+subsection Initial composition model
+  set Model name = function
+  subsection Function
+    set Variable names      = x,y
+    set Function expression = if (y<20.e3, 1, 0);
+  end
+end
+
+subsection Boundary composition model
+  set List of model names = initial composition
+end
+
 # Material model
 subsection Material model
   set Model name = visco plastic
@@ -53,12 +70,14 @@ subsection Material model
 
     set Define transition by depth instead of pressure = false
 
-    set Phase transition pressures = 2.9e9
-    set Phase transition pressure widths = 0.
-    set Phase transition temperatures = 273.
-    set Phase transition Clapeyron slopes = 0.
+    set Phase transition depths = 0., 0.
+    set Phase transition widths = 0., 0.
+    set Phase transition pressures = 2.9e9, 4.1e9
+    set Phase transition pressure widths = 0., 0.
+    set Phase transition temperatures = 273., 273.
+    set Phase transition Clapeyron slopes = 0., 0.
 
-    set Densities = 2700; 3400
+    set Densities = 2700, 2900; 2800, 3100
 
     set Viscous flow law = dislocation
     set Prefactors for dislocation creep = 5.e-23

@@ -76,64 +76,67 @@ namespace aspect
     }
 
     template <int dim>
-    std::vector<double>
+    double
     ViscoPlastic<dim>::
-    compute_phase_fractions (const Point<dim> &position,
-                             const double temperature,
-                             const double pressure) const
+    phase_function (const Point<dim> &position,
+                    const double temperature,
+                    const double pressure,
+                    const int phase,
+                    const int c) const
     {
-
-      std::vector<double> phase_fractions(number_of_phase_transitions + 1);
-
-      for (unsigned int i=1; i<(number_of_phase_transitions + 1); ++i)
+      // We need to convert the depth to pressure (depth-based phase transitions),
+      // or else use the pressure itself if the phase transition is defined based off a pressure.
+      if (!use_depth)
         {
-          // We need to convert the depth to pressure (depth-based phase transitions),
-          // or else use the pressure itself if the phase transition is defined based off a pressure.
+          // first, get the pressure at which the phase transition occurs normally
+          // and get the pressure change in the range of the phase transition
+
+          double transition_pressure;
+          double pressure_width;
+          double width_temp;
+
+          transition_pressure = transition_pressures[phase][c];
+          pressure_width = transition_pressure_widths[phase][c];
+          width_temp = transition_pressure_widths[phase][c];
+
+          // then calculate the deviation from the transition point (both in temperature
+          // and in pressure)
+          double pressure_deviation = pressure - transition_pressure
+                                      - transition_slopes[phase][c] * (temperature - transition_temperatures[phase][c]);
+
+          // last, calculate the percentage of material that has undergone the transition
+          // (also in dependence of the phase transition width - this is an input parameter)
           double phase_func;
-          if (!use_depth)
-            {
-
-              // First, calculate the deviation from the transition point (both in temperature
-              // and in pressure)
-              double pressure_deviation = pressure - transition_pressures[i-1]
-                                          - transition_slopes[i-1] * (temperature - transition_temperatures[i-1]);
-
-              // Next, calculate the percentage of material that has undergone the transition
-              // (also in dependence of the phase transition width - this is an input parameter)
-              // use delta function for width = 0
-              if (transition_pressure_widths[i-1]==0)
-                phase_func = (pressure_deviation > 0) ? 1 : 0;
-              else
-                phase_func = 0.5*(1.0 + std::tanh(pressure_deviation / transition_pressure_widths[i-1]));
-            }
-          // this part of the loop is only implemented for phase transitions based off of depth,
-          // since pressure-based transitions are included above.
+          // use delta function for width = 0
+          if (width_temp==0)
+            (pressure_deviation > 0) ? phase_func = 1 : phase_func = 0;
           else
-            {
-              double depth = this->get_geometry_model().depth(position);
-              double depth_deviation = (pressure > 0
-                                        ?
-                                        depth - transition_depths[i-1]
-                                        - transition_slopes[i-1] * (depth / pressure) * (temperature - transition_temperatures[i-1])
-                                        :
-                                        depth - transition_depths[i-1]
-                                        - (transition_slopes[i-1] / (this->get_gravity_model().gravity_vector(position).norm()
-                                                                       *  this->get_adiabatic_conditions().density(position)))
-                                        * (temperature - transition_temperatures[i-1]));
-              // use delta function for width = 0
-              if (transition_widths[i-1]==0)
-                phase_func = (depth_deviation > 0) ? 1 : 0;
-              else
-                phase_func = 0.5*(1.0 + std::tanh(depth_deviation / transition_widths[i-1]));
-            }
-
-          phase_fractions[i] = phase_func;
-          phase_fractions[i-1] = 1. - phase_func;
-
+            phase_func = 0.5*(1.0 + std::tanh(pressure_deviation / pressure_width));
+          return phase_func;
         }
-
-      return phase_fractions;
+      // this part of the loop is only implemented for phase transitions based off of depth,
+      // since pressure-based transitions are included above.
+      else
+        {
+          double depth = this->get_geometry_model().depth(position);
+          double depth_deviation = (pressure > 0
+                                    ?
+                                    depth - transition_depths[phase][c]
+                                    - transition_slopes[phase][c] * (depth / pressure) * (temperature - transition_temperatures[phase][c])
+                                    :
+                                    depth - transition_depths[phase][c]
+                                    - transition_slopes[phase][c] / (this->get_gravity_model().gravity_vector(position).norm() * 3300.)
+                                    * (temperature - transition_temperatures[phase][c]));
+          double phase_func;
+          // use delta function for width = 0
+          if (transition_widths[phase][c]==0)
+            phase_func = (depth_deviation > 0) ? 1 : 0;
+          else
+            phase_func = 0.5*(1.0 + std::tanh(depth_deviation / transition_widths[phase][c]));
+          return phase_func;
+        }
     }
+
 
     template <int dim>
     std::pair<std::vector<double>, std::vector<bool> >
@@ -592,10 +595,6 @@ namespace aspect
       for (unsigned int i=0; i < in.temperature.size(); ++i)
         {
 
-          const std::vector<double> phase_fractions = compute_phase_fractions(in.position[i],
-                                                                              in.temperature[i],
-                                                                              in.pressure[i]);
-
           // Compute the equation of state variables and thermodynamic properties
           out.densities[i] = 0.0;
           out.thermal_expansion_coefficients[i] = 0.0;
@@ -614,10 +613,30 @@ namespace aspect
               thermal_diffusivity += volume_fractions[j] * thermal_diffusivities[j];
 
               double reference_density = 0.;
-              for (unsigned int k=0; k < phase_fractions.size(); ++k)
+              for (unsigned int k=0; k < number_of_phase_transitions; ++k)
                 {
-                  reference_density += phase_fractions[k] * densities[k][j];
+                  const double phaseFunction = phase_function (in.position[i],
+                                                               in.temperature[i],
+                                                               in.pressure[i],
+                                                               k,
+                                                               j);
+                  if (k==0)
+                    {
+                      reference_density = densities[k][j]*(1. - phaseFunction) + densities[k+1][j]*phaseFunction;
+                    }
+                  else
+                    {
+                      if (phaseFunction==0.)
+                        {
+                          reference_density = reference_density;
+                        }
+                      else
+                        {
+                          reference_density = densities[k][j]*(1. - phaseFunction) + densities[k+1][j]*phaseFunction;
+                        }
+                    }
                 }
+
 
               out.densities[i] += volume_fractions[j] * reference_density * temperature_factor;
             }
@@ -765,12 +784,12 @@ namespace aspect
 
           // Phase change parameters
           prm.declare_entry ("Phase transition depths", "",
-                             Patterns::List (Patterns::Double(0)),
+                             Patterns::Anything(),
                              "A list of depths where phase transitions occur (i.e., phase function value of 0.5), "
                              "for a total of M values, where M is the number of phase changes. Values must "
                              "monotonically increase. Units: $m$.");
           prm.declare_entry ("Phase transition widths", "",
-                             Patterns::List (Patterns::Double(0)),
+                             Patterns::Anything(),
                              "A list of widths for each phase transition, in terms of depth, for a total, "
                              "of M values, where M is the number of phase changes. The phase functions "
                              "are scaled with these values, leading to a jump between phases "
@@ -779,13 +798,13 @@ namespace aspect
                              "List must have the same number of entries as Phase transition depths. "
                              "Units: $m$.");
           prm.declare_entry ("Phase transition pressures", "",
-                             Patterns::List (Patterns::Double(0)),
+                             Patterns::Anything(),
                              "A list of pressures where phase transitions occur (i.e. phase function value of 0.5), "
                              "for a total of M values, where M is the number of phase changes. Values must "
                              "monotonically increase. Define transition by depth instead of pressure must be set "
                              "to false to use this parameter. Units: $Pa$.");
           prm.declare_entry ("Phase transition pressure widths", "",
-                             Patterns::List (Patterns::Double(0)),
+                             Patterns::Anything(),
                              "A list of widths for each phase transition, in terms of pressure, for a "
                              "total of M values, where M is the number of phase changes. The phase "
                              "functions are scaled with these values leading to a jump between phases "
@@ -803,7 +822,7 @@ namespace aspect
                              "phase transition data from Phase transition pressures and "
                              "Phase transition pressure widths.");
           prm.declare_entry ("Phase transition temperatures", "",
-                             Patterns::List (Patterns::Double(0)),
+                             Patterns::Anything(),
                              "A list of temperatures where phase transitions occur, for a total of M "
                              "values, where M is the number of phase changes. Higher or lower "
                              "temperatures lead to phase transition occurring in smaller or greater "
@@ -812,7 +831,7 @@ namespace aspect
                              "List must have the same number of entries as Phase transition depths. "
                              "Units: $K$.");
           prm.declare_entry ("Phase transition Clapeyron slopes", "",
-                             Patterns::List (Patterns::Double()),
+                             Patterns::Anything(),
                              "A list of Clapeyron slopes for each phase transition, for a toal of M "
                              "values, where M is the number of phase changes. A positive Clapeyron "
                              "slope indicates that the phase transition will occur in a greater depth "
@@ -1053,27 +1072,29 @@ namespace aspect
           max_visc = prm.get_double ("Maximum viscosity");
           ref_visc = prm.get_double ("Reference viscosity");
 
-          // Phase change parameters
-          transition_depths = Utilities::string_to_double
-                              (Utilities::split_string_list(prm.get ("Phase transition depths")));
-          transition_widths= Utilities::string_to_double
-                             (Utilities::split_string_list(prm.get ("Phase transition widths")));
-          transition_pressures = Utilities::string_to_double
-                                 (Utilities::split_string_list(prm.get ("Phase transition pressures")));
-          transition_pressure_widths= Utilities::string_to_double
-                                      (Utilities::split_string_list(prm.get ("Phase transition pressure widths")));
-          use_depth                   = prm.get_bool ("Define transition by depth instead of pressure");
-          transition_temperatures = Utilities::string_to_double
-                                    (Utilities::split_string_list(prm.get ("Phase transition temperatures")));
-          transition_slopes = Utilities::string_to_double
-                              (Utilities::split_string_list(prm.get ("Phase transition Clapeyron slopes")));
+          // Phase transition parameters
+          transition_depths = Utilities::parse_input_table<double>
+                              (prm.get("Phase transition depths"),(number_of_phase_transitions + 1),n_fields,"Phase transition depths");
+          transition_widths = Utilities::parse_input_table<double>
+                              (prm.get("Phase transition widths"),(number_of_phase_transitions + 1),n_fields,"Phase transition widths");
+          transition_pressures = Utilities::parse_input_table<double>
+                                 (prm.get("Phase transition pressures"),(number_of_phase_transitions + 1),n_fields,"Phase transition pressures");
+          transition_pressure_widths  = Utilities::parse_input_table<double>
+                                        (prm.get("Phase transition pressure widths"),(number_of_phase_transitions + 1),n_fields,"Phase transition pressure widths");
+          use_depth = prm.get_bool ("Define transition by depth instead of pressure");
+          transition_temperatures  = Utilities::parse_input_table<double>
+                                     (prm.get("Phase transition temperatures"),(number_of_phase_transitions + 1),n_fields,"Phase transition temperatures");
+          transition_slopes  = Utilities::parse_input_table<double>
+                               (prm.get("Phase transition Clapeyron slopes"),(number_of_phase_transitions + 1),n_fields,"Phase transition Clayperon slopes");
 
-          // make sure to check against the depth lists for size errors, since using depth
+
+          // make sure to check against the depth lists for size errors,
+          // since depth is being used instead of pressure
           if (use_depth)
             {
-              if (transition_widths.size() != transition_depths.size() ||
-                  transition_temperatures.size() != transition_depths.size() ||
-                  transition_slopes.size() != transition_depths.size())
+              if (transition_widths.size(0) != transition_depths.size(0) ||
+                  transition_temperatures.size(0) != transition_depths.size(0) ||
+                  transition_slopes.size(0) != transition_depths.size(0))
                 AssertThrow(false, ExcMessage("Error: At least one list that gives input parameters for the phase "
                                               "transitions has the wrong size. Currently checking against transition depths. "
                                               "If phase transitions in terms of pressure inputs are desired, check to make sure "
@@ -1083,9 +1104,9 @@ namespace aspect
           // since pressure is being used instead of depth.
           else
             {
-              if (transition_pressure_widths.size() != transition_pressures.size() ||
-                  transition_temperatures.size() != transition_pressures.size() ||
-                  transition_slopes.size() != transition_pressures.size())
+              if (transition_pressure_widths.size(0) != transition_pressures.size(0) ||
+                  transition_temperatures.size(0) != transition_pressures.size(0) ||
+                  transition_slopes.size(0) != transition_pressures.size(0))
                 AssertThrow(false, ExcMessage("Error: At least one list that gives input parameters for the phase "
                                               "transitions has the wrong size. Currently checking against transition pressures. "
                                               "If phase transitions in terms of depth inputs are desired, check to make sure "
@@ -1094,9 +1115,9 @@ namespace aspect
 
           // Number of phase changes
           if (use_depth)
-            number_of_phase_transitions = transition_depths.size();
+            number_of_phase_transitions = transition_depths.size(0);
           else
-            number_of_phase_transitions = transition_pressures.size();
+            number_of_phase_transitions = transition_pressures.size(0);
 
           // Equation of state parameters
           thermal_diffusivities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Thermal diffusivities"))),

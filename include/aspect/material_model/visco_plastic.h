@@ -168,14 +168,17 @@ namespace aspect
 
         double grain_size;
 
-        // list of depth (or pressure), width and Clapeyron slopes
-        // for the different phase transitions
-        std::vector<double> transition_depths;
-        std::vector<double> transition_pressures;
-        std::vector<double> transition_temperatures;
-        std::vector<double> transition_widths;
-        std::vector<double> transition_pressure_widths;
-        std::vector<double> transition_slopes;
+        // Tbale of depth (or pressure), width and Clapeyron slopes
+        // for the different phase transitions. Values with a single
+        // row describe how a particular phase transition varies
+        // between compositional fields. Values between different
+        // phase transitions are separated by columns.
+        dealii::Table<2,double> transition_depths;
+        dealii::Table<2,double> transition_pressures;
+        dealii::Table<2,double> transition_temperatures;
+        dealii::Table<2,double> transition_widths;
+        dealii::Table<2,double> transition_pressure_widths;
+        dealii::Table<2,double> transition_slopes;
 
         // Number of phase changes
         unsigned int number_of_phase_transitions;
@@ -184,7 +187,7 @@ namespace aspect
         bool use_depth;
 
         // Table of densities. Each value in a given row represents the density
-        // of a specific compositional field, which may vary as a function of 
+        // of a specific compositional field, which may vary as a function of
         // phase transitions (columns).
         dealii::Table<2,double> densities;
 
@@ -194,15 +197,17 @@ namespace aspect
         std::vector<double> heat_capacities;
 
         /**
-         * Vector representing the percentage of each phase that is
-         * present at a given temperature and pressure (or depth). Note
-         * that this function will not work if there are overlapping 
-         * phase transitions.
+         * Percentage of material that has already undergone the phase
+         * transition to the higher-pressure material (this is done
+         * individually for each transition and summed up in the end)
          */
-        std::vector<double>
-        compute_phase_fractions (const Point<dim> &position,
-                                 const double temperature,
-                                 const double pressure) const;
+        double
+        phase_function (const Point<dim> &position,
+                        const double temperature,
+                        const double pressure,
+                        const int phase,
+                        const int c) const;
+
 
         /**
          * Enumeration for selecting which viscosity averaging scheme to use.
