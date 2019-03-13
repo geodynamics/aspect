@@ -20,6 +20,7 @@ Number of degrees of freedom: 5,541 (1,818+241+909+909+208+624+832)
    Postprocessing:
      Global volume of fluid volumes (m^3): 0.5
      VoF Calculation(IEstL1/FEstL1):       1.59633523e-16 / 0.00000000e+00
+     Writing graphical output:             output-vof_linear_amr/solution/solution-00000
 
 Number of active cells: 166 (on 5 levels)
 Number of degrees of freedom: 4,523 (1,498+199+749+749+166+498+664)
@@ -75,6 +76,7 @@ Number of degrees of freedom: 4,590 (1,518+202+759+759+169+507+676)
 
    Postprocessing:
      Global volume of fluid volumes (m^3): 0.396
+     Writing graphical output:             output-vof_linear_amr/solution/solution-00001
 
 Number of active cells: 169 (on 5 levels)
 Number of degrees of freedom: 4,590 (1,518+202+759+759+169+507+676)
@@ -86,7 +88,7 @@ Number of degrees of freedom: 4,590 (1,518+202+759+759+169+507+676)
 
    Postprocessing:
      Global volume of fluid volumes (m^3): 0.383
-     VoF Calculation(IEstL1/FEstL1):       7.81846986e-16 / 4.90367702e-16
+     VoF Calculation(IEstL1/FEstL1):       8.05265753e-16 / 5.02290538e-16
 
 Number of active cells: 169 (on 5 levels)
 Number of degrees of freedom: 4,590 (1,518+202+759+759+169+507+676)
