@@ -152,8 +152,8 @@ namespace aspect
           {
             prm.enter_subsection("Volume of Fluid");
             {
-              include_contour = prm.get_bool("Include internal reconstruction contour");
-              include_normal = prm.get_bool("Include normals");
+              include_contour = prm.get_bool("Output interface reconstruction contour");
+              include_normal = prm.get_bool("Output interface normals");
 
               for (unsigned int f=0; f<this->get_volume_of_fluid_handler().get_n_fields(); ++f)
                 {
