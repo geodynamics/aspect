@@ -573,6 +573,10 @@ namespace aspect
           vtk_flags.cycle = this->get_timestep_number();
           vtk_flags.time = time_in_years_or_seconds;
 
+#if DEAL_II_VERSION_GTE(9,1,0)
+          vtk_flags.write_higher_order_cells = write_higher_order_output;
+#endif
+
           data_out.set_flags (vtk_flags);
 
           // Write as many files as processes. For this case we support writing in a
@@ -838,6 +842,18 @@ namespace aspect
                              "and a factor of 8 in 3d, when using quadratic elements for the velocity, "
                              "and correspondingly more for even higher order elements.");
 
+          prm.declare_entry ("Write higher order output", "false",
+                             Patterns::Bool(),
+                             "deal.II offers the possibility to write vtu files with higher order "
+                             "representations of the output data. This means each cell will correctly "
+                             "show the higher order representation of the output data instead of the "
+                             "linear interpolation between vertices that ParaView and Visit usually show. "
+                             "Note that activating this option is safe and recommended, but requires that "
+                             "(i) ``Output format'' is set to ``vtu'', (ii) ``Interpolate output'' is "
+                             "set to true, and (iii) you use a sufficiently new version of Paraview "
+                             "or Visit to read the files (Paraview version 5.5 or newer, and Visit version "
+                             "to be determined).");
+
           prm.declare_entry ("Filter output", "false",
                              Patterns::Bool(),
                              "deal.II offers the possibility to filter duplicate vertices for HDF5 "
@@ -949,6 +965,25 @@ namespace aspect
 
           interpolate_output = prm.get_bool("Interpolate output");
           filter_output = prm.get_bool("Filter output");
+          write_higher_order_output = prm.get_bool("Write higher order output");
+
+#if DEAL_II_VERSION_GTE(9,1,0)
+#else
+          AssertThrow(write_higher_order_output == false, ExcMessage("The 'Write higher order output' functionality is only "
+                                                                     "available for deal.II version 9.1.0 or newer. Please update "
+                                                                     "your deal.II version if you need this option."));
+#endif
+
+          if (write_higher_order_output == true)
+            {
+              AssertThrow(output_format == "vtu",
+                          ExcMessage("The option 'Postprocess/Visualization/Write higher order output' requires the "
+                                     "data output format to be set to 'vtu'"));
+              AssertThrow(interpolate_output == true,
+                          ExcMessage("The input parameter 'Postprocess/Visualization/Write higher order output' "
+                                     "requires the input parameter 'Interpolate output' to be set to 'true'"));
+            }
+
           output_mesh_velocity = prm.get_bool("Output mesh velocity");
 
           // now also see which derived quantities we are to compute

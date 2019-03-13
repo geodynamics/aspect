@@ -1,0 +1,19 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Iterations for composition solver 1
+# 10: Iterations for Stokes solver
+# 11: Velocity iterations in Stokes preconditioner
+# 12: Schur complement iterations in Stokes preconditioner
+# 13: Visualization file name
+# 14: RMS velocity (m/s)
+# 15: Max. velocity (m/s)
+# 16: Minimal value for composition C_1
+# 17: Maximal value for composition C_1
+# 18: Global mass for composition C_1
+0 0.000000000000e+00 0.000000000000e+00 64 659 289 289 0 0 17 19 18 output-van_keken_smooth/solution/solution-00000 2.48863895e-04 5.88814545e-04 0.00000000e+00 1.00000000e+00 1.87415956e-01 

@@ -463,6 +463,19 @@ namespace aspect
         bool filter_output;
 
         /**
+         * deal.II offers the possibility to write vtu files with higher order
+         * representations of the output data. This means each cell will correctly
+         * show the higher order representation of the output data instead of the
+         * linear interpolation between vertices that ParaView and Visit usually show.
+         * Note that activating this option is safe and recommended, but requires that
+         * (i) ``Output format'' is set to ``vtu'', (ii) ``Interpolate output'' is
+         * set to true, and (iii) you use a sufficiently new version of Paraview
+         * or Visit to read the files (Paraview version 5.5 or newer, and Visit version
+         * to be determined).
+         */
+        bool write_higher_order_output;
+
+        /**
          * For free surface computations Aspect uses an Arbitrary-Lagrangian-
          * Eulerian formulation to handle deforming the domain, so the mesh
          * has its own velocity field.  This may be written as an output field
