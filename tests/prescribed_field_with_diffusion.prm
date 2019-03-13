@@ -106,6 +106,7 @@ subsection Postprocess
   set List of postprocessors = visualization, composition statistics
 
   subsection Visualization
+    set Interpolate output = false
 
     set List of output variables      = named additional outputs
     set Number of grouped files       = 0

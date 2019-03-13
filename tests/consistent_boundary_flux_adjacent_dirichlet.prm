@@ -83,6 +83,7 @@ end
 subsection Postprocess
   set List of postprocessors = temperature statistics, heat flux statistics
   subsection Visualization
+    set Interpolate output = false
     set List of output variables      =  heat flux map
   end
 end

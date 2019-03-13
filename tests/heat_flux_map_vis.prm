@@ -88,6 +88,7 @@ subsection Postprocess
   set List of postprocessors = visualization
 
   subsection Visualization
+    set Interpolate output = false
     set List of output variables      = heat flux map
     set Time between graphical output = 0.01
     set Output format                 = gnuplot

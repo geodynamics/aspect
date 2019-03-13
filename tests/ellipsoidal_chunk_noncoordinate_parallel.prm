@@ -90,6 +90,7 @@ subsection Postprocess
   set List of postprocessors = visualization, temperature statistics, velocity statistics, basic statistics
 
   subsection Visualization
+    set Interpolate output = false
     set List of output variables          = density
     set Output format                     = gnuplot
 

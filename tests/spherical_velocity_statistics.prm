@@ -117,6 +117,7 @@ subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, basic statistics,  temperature statistics, heat flux statistics, spherical velocity statistics
 
   subsection Visualization
+    set Interpolate output = false
      set Time between graphical output = 0
 
      end

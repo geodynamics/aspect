@@ -82,6 +82,7 @@ subsection Postprocess
   set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, visualization, depth average
 
   subsection Visualization
+    set Interpolate output = false
     set List of output variables = adiabat
     set Output format = gnuplot
   end

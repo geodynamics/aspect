@@ -96,6 +96,7 @@ subsection Postprocess
   set List of postprocessors = matrix statistics, particles
 
   subsection Visualization
+    set Interpolate output = false
     set Output format                 = gnuplot
 
     set Time between graphical output = 0   # default: 1e8

@@ -151,6 +151,7 @@ subsection Postprocess
   set List of postprocessors = visualization
 
   subsection Visualization
+    set Interpolate output = false
     set List of output variables      = melt material properties
     set Output format                 = gnuplot
 

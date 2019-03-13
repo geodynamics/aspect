@@ -211,7 +211,6 @@ subsection Postprocess
     end
 
     set Number of grouped files       = 0
-    set Interpolate output            = false
     set Output format                 = vtu
     set Time between graphical output = 0
     set Interpolate output            = true

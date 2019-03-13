@@ -98,6 +98,7 @@ end
 subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, topography
   subsection Visualization
+    set Interpolate output = false
     set List of output variables = boundary indicators, depth
     set Output format            = gnuplot
   end

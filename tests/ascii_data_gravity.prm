@@ -82,6 +82,7 @@ subsection Postprocess
   set List of postprocessors = visualization, depth average
 
   subsection Visualization
+    set Interpolate output = false
     set List of output variables = gravity
     set Output format = gnuplot
   end

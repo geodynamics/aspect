@@ -115,6 +115,7 @@ subsection Postprocess
   set List of postprocessors = velocity statistics, temperature statistics,  heating statistics
 
   subsection Visualization
+    set Interpolate output = false
     set List of output variables = heating, viscosity, strain rate
     set Time between graphical output = 0
   end

@@ -111,6 +111,7 @@ subsection Postprocess
   set List of postprocessors = velocity statistics, composition statistics,particles
 
   subsection Visualization
+    set Interpolate output = false
     set Time between graphical output = 70
   end
 

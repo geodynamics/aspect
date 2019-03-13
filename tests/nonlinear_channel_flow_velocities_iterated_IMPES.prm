@@ -130,6 +130,7 @@ subsection Postprocess
     set List of output variables = viscosity
   end
   subsection Visualization
+    set Interpolate output = false
     set List of output variables = material properties,strain rate
     set Output format = gnuplot
     set Time between graphical output = 2

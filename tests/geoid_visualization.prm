@@ -85,6 +85,7 @@ end
 subsection Postprocess
   set List of postprocessors = visualization
   subsection Visualization
+    set Interpolate output = false
     set List of output variables = geoid
     set Output format = gnuplot
   end

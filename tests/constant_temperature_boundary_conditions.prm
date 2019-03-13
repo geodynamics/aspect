@@ -75,6 +75,7 @@ end
 subsection Postprocess
   set List of postprocessors = visualization, temperature statistics, heat flux statistics
   subsection Visualization
+    set Interpolate output = false
     set Output format                 = gnuplot
   end
 end
