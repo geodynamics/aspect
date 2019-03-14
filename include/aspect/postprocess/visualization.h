@@ -469,9 +469,9 @@ namespace aspect
          * linear interpolation between vertices that ParaView and Visit usually show.
          * Note that activating this option is safe and recommended, but requires that
          * (i) ``Output format'' is set to ``vtu'', (ii) ``Interpolate output'' is
-         * set to true, and (iii) you use a sufficiently new version of Paraview
+         * set to true, (iii) you use a sufficiently new version of Paraview
          * or Visit to read the files (Paraview version 5.5 or newer, and Visit version
-         * to be determined).
+         * to be determined), and (iv) you use deal.II version 9.1.0 or newer.
          */
         bool write_higher_order_output;
 
