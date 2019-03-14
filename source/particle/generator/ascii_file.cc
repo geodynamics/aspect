@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -30,7 +30,7 @@ namespace aspect
     {
       template <int dim>
       void
-      AsciiFile<dim>::generate_particles(std::multimap<types::LevelInd, Particle<dim> > &particles)
+      AsciiFile<dim>::generate_particles(std::multimap<Particles::internal::LevelInd, Particle<dim> > &particles)
       {
         const std::string filename = data_directory+data_filename;
 
@@ -41,7 +41,7 @@ namespace aspect
         while (in.peek() == '#')
           {
             std::string temp;
-            getline(in,temp);
+            std::getline(in,temp);
           }
 
         // Read data lines

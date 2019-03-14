@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -523,7 +523,7 @@ namespace aspect
                                        this->get_fe(),
                                        quadrature_formula,
                                        update_values | update_gradients |
-                                       update_q_points | update_JxW_values);
+                                       update_quadrature_points | update_JxW_values);
       LinearAlgebra::BlockVector topo_vector = dynamic_topography.topography_vector();
       std::vector<double> topo_values(quadrature_formula.size());
 

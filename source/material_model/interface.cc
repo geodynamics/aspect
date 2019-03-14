@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -32,6 +32,11 @@
 
 #include <list>
 
+#ifdef DEBUG
+#ifdef ASPECT_USE_FP_EXCEPTIONS
+#include <fenv.h>
+#endif
+#endif
 
 namespace aspect
 {
@@ -455,6 +460,14 @@ namespace aspect
         if (values_out.size() == 0)
           return;
 
+#ifdef DEBUG
+#ifdef ASPECT_USE_FP_EXCEPTIONS
+        // disable floating point exceptions while averaging. Errors will be reported
+        // as soon as somebody will try to use the averaged values later.
+        fedisableexcept(FE_DIVBYZERO|FE_INVALID);
+#endif
+#endif
+
         const unsigned int N = values_out.size();
         const unsigned int P = expansion_matrix.n();
         Assert ((P==0) || (/*dim=2*/ P==4) || (/*dim=3*/ P==8),
@@ -602,6 +615,13 @@ namespace aspect
                            ExcMessage ("This averaging operation is not implemented."));
             }
           }
+
+#ifdef DEBUG
+#ifdef ASPECT_USE_FP_EXCEPTIONS
+        // enable floating point exceptions again:
+        feenableexcept(FE_DIVBYZERO|FE_INVALID);
+#endif
+#endif
       }
 
 

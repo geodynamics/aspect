@@ -1,0 +1,19 @@
+# This is a copy of the heat_flux_map_vis test that
+# uses the point-wise output of the heat_flux_map visualization postprocessor.
+
+set Dimension                              = 2
+
+include $ASPECT_SOURCE_DIR/tests/heat_flux_map_vis.prm
+
+subsection Postprocess
+  subsection Visualization
+    set Interpolate output = true
+# We only have dirichlet boundaries with tangential velocities, so we can
+# increase the output resolution as described in the documentation of the 'heat
+# flux map' postprocessor.
+    subsection Heat flux map
+      set Output point wise heat flux = true
+    end
+  end
+end
+

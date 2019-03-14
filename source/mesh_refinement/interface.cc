@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -93,7 +93,7 @@ namespace aspect
       // call the update() functions of all
       // refinement plugins.
       unsigned int index = 0;
-      for (typename std::list<std::shared_ptr<Interface<dim> > >::const_iterator
+      for (typename std::list<std::unique_ptr<Interface<dim> > >::const_iterator
            p = mesh_refinement_objects.begin();
            p != mesh_refinement_objects.end(); ++p, ++index)
         {
@@ -161,7 +161,7 @@ namespace aspect
       std::vector<Vector<float> > all_error_indicators (mesh_refinement_objects.size(),
                                                         Vector<float>(error_indicators.size()));
       unsigned int index = 0;
-      for (typename std::list<std::shared_ptr<Interface<dim> > >::const_iterator
+      for (typename std::list<std::unique_ptr<Interface<dim> > >::const_iterator
            p = mesh_refinement_objects.begin();
            p != mesh_refinement_objects.end(); ++p, ++index)
         {
@@ -268,7 +268,7 @@ namespace aspect
       // call the tag_additional_cells() functions of all
       // plugins we have here in turns.
       unsigned int index = 0;
-      for (typename std::list<std::shared_ptr<Interface<dim> > >::const_iterator
+      for (typename std::list<std::unique_ptr<Interface<dim> > >::const_iterator
            p = mesh_refinement_objects.begin();
            p != mesh_refinement_objects.end(); ++p, ++index)
         {
@@ -485,7 +485,7 @@ namespace aspect
                    ExcMessage ("You need to provide at least one mesh refinement criterion in the input file!"));
       for (unsigned int name=0; name<plugin_names.size(); ++name)
         {
-          mesh_refinement_objects.push_back (std::shared_ptr<Interface<dim> >
+          mesh_refinement_objects.push_back (std::unique_ptr<Interface<dim> >
                                              (std::get<dim>(registered_plugins)
                                               .create_plugin (plugin_names[name],
                                                               "Mesh refinement::Refinement criteria merge operation")));

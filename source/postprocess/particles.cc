@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -38,7 +38,8 @@ namespace aspect
       template<int dim>
       void
       ParticleOutput<dim>::build_patches(const Particle::ParticleHandler<dim> &particle_handler,
-                                         const aspect::Particle::Property::ParticlePropertyInformation &property_information)
+                                         const aspect::Particle::Property::ParticlePropertyInformation &property_information,
+                                         const bool only_group_3d_vectors)
       {
         // First store the names of the data fields
         dataset_names.reserve(property_information.n_components()+1);
@@ -48,8 +49,17 @@ namespace aspect
           {
             const unsigned n_components = property_information.get_components_by_field_index(field_index);
             const std::string field_name = property_information.get_field_name_by_index(field_index);
+
+            // HDF5 only supports 3D vector output, therefore only treat output fields as vector if we
+            // have a dimension of 3 and 3 components.
+            const bool field_is_vector = (!only_group_3d_vectors)
+                                         ?
+                                         n_components == dim
+                                         :
+                                         dim == 3 && n_components == 3;
+
             // If it is a 1D element, or a vector, print just the name, otherwise append the index after an underscore
-            if ((n_components == 1) || (n_components == dim))
+            if ((n_components == 1) || field_is_vector)
               for (unsigned int component_index=0; component_index<n_components; ++component_index)
                 dataset_names.push_back(field_name);
             else
@@ -79,7 +89,7 @@ namespace aspect
         // Third build the actual patch data
         patches.resize(particle_handler.n_locally_owned_particles());
 
-        typename Particle::ParticleHandler<dim>::particle_iterator particle = particle_handler.begin();
+        typename dealii::Particles::ParticleHandler<dim>::particle_iterator particle = particle_handler.begin();
 
         for (unsigned int i=0; particle != particle_handler.end(); ++particle, ++i)
           {
@@ -189,11 +199,10 @@ namespace aspect
 
           // Create the temporary file; get at the actual filename
           // by using a C-style string that mkstemp will then overwrite
-          char *tmp_filename_x = new char[tmp_filename.size()+1];
-          std::strcpy(tmp_filename_x, tmp_filename.c_str());
-          int tmp_file_desc = mkstemp(tmp_filename_x);
-          tmp_filename = tmp_filename_x;
-          delete []tmp_filename_x;
+          std::vector<char> tmp_filename_x (tmp_filename.size()+1);
+          std::strcpy(tmp_filename_x.data(), tmp_filename.c_str());
+          const int tmp_file_desc = mkstemp(tmp_filename_x.data());
+          tmp_filename = tmp_filename_x.data();
 
           // If we failed to create the temp file, just write directly to the target file.
           // We also provide a warning about this fact. There are places where
@@ -345,9 +354,11 @@ namespace aspect
         ++output_file_number;
 
       // Create the particle output
+      const bool output_hdf5 = std::find(output_formats.begin(), output_formats.end(),"hdf5") != output_formats.end();
       internal::ParticleOutput<dim> data_out;
       data_out.build_patches(world.get_particle_handler(),
-                             world.get_property_manager().get_data_info());
+                             world.get_property_manager().get_data_info(),
+                             output_hdf5);
 
       // Now prepare everything for writing the output and choose output format
       std::string particle_file_prefix = "particles-" + Utilities::int_to_string (output_file_number, 5);

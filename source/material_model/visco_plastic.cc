@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -105,6 +105,14 @@ namespace aspect
       // gradient used when calculating the viscosity. This allows the same activation volume
       // to be used in incompressible and compressible models.
       const double temperature_for_viscosity = temperature + adiabatic_temperature_gradient_for_viscosity*pressure;
+      Assert(temperature_for_viscosity != 0, ExcMessage(
+               "The temperature used in the calculation of the visco platic rheology is zero. "
+               "This is not allowed, because this value is used to divide through. It is probably "
+               "being caused by the temperature being zero somewhere in the model. The relevant "
+               "values for debugging are: temperature (" + Utilities::to_string(temperature) +
+               "), adiabatic_temperature_gradient_for_viscosity ("
+               + Utilities::to_string(adiabatic_temperature_gradient_for_viscosity) + ") and pressure ("
+               + Utilities::to_string(pressure) + ")."))
 
 
       // First step: viscous behavior
@@ -1133,8 +1141,7 @@ namespace aspect
         {
           const unsigned int n_points = out.viscosities.size();
           out.additional_outputs.push_back(
-            std::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
-            (new MaterialModel::PlasticAdditionalOutputs<dim> (n_points)));
+            std::make_shared<MaterialModel::PlasticAdditionalOutputs<dim>> (n_points));
         }
     }
 

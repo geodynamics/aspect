@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2017 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2017 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -22,6 +22,7 @@
 #include <aspect/simulator.h>
 #include <aspect/global.h>
 #include <aspect/free_surface.h>
+#include <aspect/volume_of_fluid/handler.h>
 #include <aspect/newton.h>
 #include <aspect/melt.h>
 
@@ -183,7 +184,7 @@ namespace aspect
               // if this is a prescribed field with diffusion, we first have to copy the material model
               // outputs into the prescribed field before we assemle and solve the equation
               if (method == Parameters<dim>::AdvectionFieldMethod::prescribed_field_with_diffusion)
-                interpolate_material_output_into_field(c);
+                interpolate_material_output_into_compositional_field(c);
 
               assemble_advection_system (adv_field);
 
@@ -192,10 +193,14 @@ namespace aspect
 
               current_residual[c] = solve_advection(adv_field);
 
-              // free matrix:
+              // Release the contents of the matrix block we used again:
               const unsigned int block_idx = adv_field.block_index(introspection);
               if (adv_field.compositional_variable!=0)
                 system_matrix.block(block_idx, block_idx).clear();
+
+              // No need to call the post_advection_solver signal here: It is
+              // automatically called from solve_advection() above.
+
               break;
             }
 
@@ -207,7 +212,7 @@ namespace aspect
 
             case Parameters<dim>::AdvectionFieldMethod::prescribed_field:
             {
-              interpolate_material_output_into_field(c);
+              interpolate_material_output_into_compositional_field(c);
 
               // Call the signal in case the user wants to do something with the variable:
               SolverControl dummy;
@@ -218,6 +223,10 @@ namespace aspect
               break;
             }
 
+            case Parameters<dim>::AdvectionFieldMethod::volume_of_fluid:
+              volume_of_fluid_handler->do_volume_of_fluid_update(adv_field);
+              break;
+
             case Parameters<dim>::AdvectionFieldMethod::static_field:
             {
               // Do nothing here, but at least call the signal in case the
@@ -227,8 +236,8 @@ namespace aspect
                                             adv_field.is_temperature(),
                                             adv_field.compositional_variable,
                                             dummy);
+              break;
             }
-            break;
 
             default:
               AssertThrow(false,ExcNotImplemented());
@@ -257,9 +266,13 @@ namespace aspect
   double Simulator<dim>::assemble_and_solve_stokes (const bool compute_initial_residual,
                                                     double *initial_nonlinear_residual)
   {
-    // If the Stokes matrix depends on the solution, or the boundary conditions
-    // for the Stokes system have changed rebuild the matrix and preconditioner
-    // before solving.
+    // If the Stokes matrix depends on the solution, or we have active
+    // velocity boundary conditions, we need to re-assemble the system matrix
+    // (and preconditioner) every time. If we have active boundary conditions,
+    // they could a) depend on the solution, or b) be inhomogeneous. In both
+    // cases, just assembling the RHS will be incorrect.  If no active
+    // boundaries exist, we only have no-slip or free slip conditions, so we
+    // don't need to force assembly of the matrix.
     if (stokes_matrix_depends_on_solution()
         ||
         (boundary_velocity_manager.get_active_boundary_velocity_conditions().size() > 0))
@@ -898,6 +911,17 @@ namespace aspect
 
     return;
   }
+
+
+
+  template <int dim>
+  void Simulator<dim>::solve_no_advection_no_stokes ()
+  {
+    if (parameters.run_postprocessors_on_nonlinear_iterations)
+      postprocess ();
+
+    return;
+  }
 }
 
 // explicit instantiation of the functions we implement in this file
@@ -913,7 +937,8 @@ namespace aspect
   template void Simulator<dim>::solve_single_advection_iterated_stokes(); \
   template void Simulator<dim>::solve_iterated_advection_and_newton_stokes(); \
   template void Simulator<dim>::solve_single_advection_no_stokes(); \
-  template void Simulator<dim>::solve_first_timestep_only_single_stokes();
+  template void Simulator<dim>::solve_first_timestep_only_single_stokes(); \
+  template void Simulator<dim>::solve_no_advection_no_stokes();
 
   ASPECT_INSTANTIATE(INSTANTIATE)
 }

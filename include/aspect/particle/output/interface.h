@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2015 - 2017 by the authors of the ASPECT code.
+ Copyright (C) 2015 - 2019 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -27,6 +27,8 @@
 
 #include <deal.II/base/parameter_handler.h>
 #include <deal.II/base/mpi.h>
+
+#if !DEAL_II_VERSION_GTE(9,0,0)
 
 namespace aspect
 {
@@ -219,4 +221,5 @@ namespace aspect
   }
 }
 
+#endif
 #endif

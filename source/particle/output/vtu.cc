@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2019 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -22,6 +22,8 @@
 #include <aspect/utilities.h>
 
 #include <deal.II/numerics/data_out.h>
+
+#if !DEAL_II_VERSION_GTE(9,0,0)
 
 namespace aspect
 {
@@ -297,4 +299,4 @@ namespace aspect
   }
 }
 
-
+#endif

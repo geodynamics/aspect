@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2017 by the authors of the ASPECT code.
+ Copyright (C) 2017 - 2019 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -24,6 +24,7 @@
 #include <aspect/global.h>
 #include <aspect/particle/particle_accessor.h>
 
+#if !DEAL_II_VERSION_GTE(9,0,0)
 
 namespace aspect
 {
@@ -47,8 +48,8 @@ namespace aspect
          * Constructor of the iterator. Takes a reference to the particle
          * container, and an iterator the the cell-particle pair.
          */
-        ParticleIterator (const std::multimap<types::LevelInd, Particle<dim,spacedim> > &map,
-                          const typename std::multimap<types::LevelInd, Particle<dim,spacedim> >::iterator &particle);
+        ParticleIterator (const std::multimap<Particles::internal::LevelInd, Particle<dim,spacedim> > &map,
+                          const typename std::multimap<Particles::internal::LevelInd, Particle<dim,spacedim> >::iterator &particle);
 
         /**
          * Dereferencing operator, returns a reference to an accessor. Usage is thus
@@ -126,4 +127,5 @@ namespace aspect
   }
 }
 
+#endif
 #endif

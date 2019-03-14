@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -137,6 +137,7 @@ namespace aspect
   }
 
   template <int dim> class MeltHandler;
+  template <int dim> class VolumeOfFluidHandler;
   template <int dim> class FreeSurfaceHandler;
 
   template <int dim> class NewtonHandler;
@@ -389,9 +390,16 @@ namespace aspect
       /**
        * Returns the entropy viscosity on each locally owned cell as it is
        * used to stabilize the temperature equation.
+       *
+       * @param viscosity_per_cell Output vector with as many entries as
+       * active cells. Each entry corresponding to a locally owned active
+       * cell index will contain the artificial viscosity for this cell.
+       * @param skip_interior_cells A boolean flag. If set to true the function
+       * will only compute the artificial viscosity in cells at boundaries.
        */
       void
-      get_artificial_viscosity(Vector<float> &viscosity_per_cell) const;
+      get_artificial_viscosity(Vector<float> &viscosity_per_cell,
+                               const bool skip_interior_cells = false) const;
 
       /**
        * Returns the entropy viscosity on each locally owned cell as it is
@@ -623,7 +631,7 @@ namespace aspect
        * Return a reference to the object that describes traction
        * boundary conditions.
        */
-      const std::map<types::boundary_id,std::shared_ptr<BoundaryTraction::Interface<dim> > > &
+      const std::map<types::boundary_id,std::unique_ptr<BoundaryTraction::Interface<dim> > > &
       get_boundary_traction () const;
 
       /**
@@ -729,6 +737,12 @@ namespace aspect
        */
       const MeltHandler<dim> &
       get_melt_handler () const;
+
+      /**
+       * Return a reference to the VolumeOfFluid handler.
+       */
+      const VolumeOfFluidHandler<dim> &
+      get_volume_of_fluid_handler () const;
 
       /**
        * Return a reference to the Newton handler that controls the Newton

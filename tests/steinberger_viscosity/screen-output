@@ -11,7 +11,7 @@ Number of degrees of freedom: 2,724 (1,666+225+833)
      Writing graphical output:           output-steinberger_viscosity/solution/solution-00000
      RMS, max velocity:                  0.581 m/year, 1.12 m/year
      Temperature min/avg/max:            273 K, 2254 K, 4250 K
-     Heat fluxes through boundary parts: -2.328e+05 W, 5.39e+05 W, 2170 W, 2170 W
+     Heat fluxes through boundary parts: 1.094e+06 W, -2.652e+06 W, 0 W, 0 W
      Writing depth average:              output-steinberger_viscosity/depth_average.gnuplot
 
 *** Timestep 1:  t=100000 years
@@ -23,7 +23,7 @@ Number of degrees of freedom: 2,724 (1,666+225+833)
      Writing graphical output:           output-steinberger_viscosity/solution/solution-00001
      RMS, max velocity:                  0.575 m/year, 1.11 m/year
      Temperature min/avg/max:            273 K, 2252 K, 4250 K
-     Heat fluxes through boundary parts: -2.207e+05 W, 5.147e+05 W, 1931 W, 1931 W
+     Heat fluxes through boundary parts: -8.22e+07 W, 9.928e+07 W, 0 W, 0 W
      Writing depth average:              output-steinberger_viscosity/depth_average.gnuplot
 
 Termination requested by criterion: end time

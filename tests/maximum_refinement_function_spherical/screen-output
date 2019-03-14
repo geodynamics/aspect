@@ -11,7 +11,7 @@ Number of degrees of freedom: 2,724 (1,666+225+833)
      Writing graphical output:           output-maximum_refinement_function_spherical/solution/solution-00000
      RMS, max velocity:                  8.28e-07 m/year, 1.47e-06 m/year
      Temperature min/avg/max:            1400 K, 1627 K, 1800 K
-     Heat fluxes through boundary parts: 996.9 W, 1994 W, 2479 W, 2479 W
+     Heat fluxes through boundary parts: 3200 W, 7721 W, 0 W, 0 W
      Writing depth average:              output-maximum_refinement_function_spherical/depth_average.gnuplot
 
 Number of active cells: 387 (on 5 levels)
@@ -26,7 +26,7 @@ Number of degrees of freedom: 5,823 (3,570+468+1,785)
      Writing graphical output:           output-maximum_refinement_function_spherical/solution/solution-00001
      RMS, max velocity:                  8.28e-07 m/year, 1.47e-06 m/year
      Temperature min/avg/max:            1400 K, 1627 K, 1800 K
-     Heat fluxes through boundary parts: 996.9 W, 1981 W, 2462 W, 2462 W
+     Heat fluxes through boundary parts: 3200 W, 5030 W, 0 W, 0 W
      Writing depth average:              output-maximum_refinement_function_spherical/depth_average.gnuplot
 
 Number of active cells: 726 (on 6 levels)
@@ -41,7 +41,7 @@ Number of degrees of freedom: 10,671 (6,546+852+3,273)
      Writing graphical output:           output-maximum_refinement_function_spherical/solution/solution-00002
      RMS, max velocity:                  8.28e-07 m/year, 1.47e-06 m/year
      Temperature min/avg/max:            1400 K, 1627 K, 1800 K
-     Heat fluxes through boundary parts: 987.1 W, 1975 W, 2454 W, 2453 W
+     Heat fluxes through boundary parts: 1511 W, 3914 W, 0 W, 0 W
      Writing depth average:              output-maximum_refinement_function_spherical/depth_average.gnuplot
 
 Number of active cells: 1,014 (on 6 levels)
@@ -56,7 +56,7 @@ Number of degrees of freedom: 14,900 (9,148+1,178+4,574)
      Writing graphical output:           output-maximum_refinement_function_spherical/solution/solution-00003
      RMS, max velocity:                  8.28e-07 m/year, 1.47e-06 m/year
      Temperature min/avg/max:            1400 K, 1627 K, 1800 K
-     Heat fluxes through boundary parts: 991.9 W, 1973 W, 2455 W, 2455 W
+     Heat fluxes through boundary parts: 2288 W, 3038 W, 0 W, 0 W
      Writing depth average:              output-maximum_refinement_function_spherical/depth_average.gnuplot
 
 Number of active cells: 1,254 (on 6 levels)
@@ -86,7 +86,7 @@ Number of degrees of freedom: 18,827 (11,560+1,487+5,780)
      Writing graphical output:           output-maximum_refinement_function_spherical/solution/solution-00004
      RMS, max velocity:                  8.28e-07 m/year, 1.47e-06 m/year
      Temperature min/avg/max:            1400 K, 1627 K, 1800 K
-     Heat fluxes through boundary parts: 986.7 W, 1973 W, 2452 W, 2452 W
+     Heat fluxes through boundary parts: 1354 W, 3064 W, 0 W, 0 W
      Writing depth average:              output-maximum_refinement_function_spherical/depth_average.gnuplot
 
 Number of active cells: 1,389 (on 6 levels)

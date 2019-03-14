@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -109,7 +109,7 @@ namespace aspect
       const double topo = topo_model->value(surface_point);
 
       // Compute the displacement of the z coordinate
-      const double ztopo = x_y_z[dim-1]/extents[dim-1] * topo;
+      const double ztopo = (x_y_z[dim-1] - box_origin[dim-1]) / extents[dim-1] * topo;
 
       // Compute the new point
       Point<dim> x_y_ztopo = x_y_z;

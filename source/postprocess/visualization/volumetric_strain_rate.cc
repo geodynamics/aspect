@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2017 by the authors of the ASPECT code.
+  Copyright (C) 2017 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -32,7 +32,7 @@ namespace aspect
       VolumetricStrainRate ()
         :
         DataPostprocessorScalar<dim> ("volumetric_strain_rate",
-                                      update_gradients | update_q_points)
+                                      update_gradients | update_quadrature_points)
       {}
 
 

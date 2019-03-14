@@ -27,7 +27,7 @@ Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
      Writing graphical output:           output-passive_comp/solution/solution-00000
      RMS, max velocity:                  5.11e-08 m/s, 6.3e-08 m/s
      Temperature min/avg/max:            0 K, 0 K, 0 K
-     Heat fluxes through boundary parts: 0 W, 0 W
+     Heat fluxes through boundary parts: 39.17 W, 12.56 W
      Writing depth average:              output-passive_comp/depth_average.gnuplot
 
 *** Timestep 1:  t=2.81625e+12 seconds
@@ -40,7 +40,7 @@ Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
      Writing graphical output:           output-passive_comp/solution/solution-00001
      RMS, max velocity:                  5.11e-08 m/s, 6.3e-08 m/s
      Temperature min/avg/max:            0 K, 0.0001673 K, 0.0008324 K
-     Heat fluxes through boundary parts: -0.07728 W, -0.06022 W
+     Heat fluxes through boundary parts: 282.2 W, 123.5 W
      Writing depth average:              output-passive_comp/depth_average.gnuplot
 
 *** Timestep 2:  t=5.6325e+12 seconds
@@ -53,7 +53,7 @@ Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
      Writing graphical output:           output-passive_comp/solution/solution-00002
      RMS, max velocity:                  5.11e-08 m/s, 6.3e-08 m/s
      Temperature min/avg/max:            0 K, 0.0003354 K, 0.001387 K
-     Heat fluxes through boundary parts: 0.01136 W, -0.03272 W
+     Heat fluxes through boundary parts: 172.1 W, 84.78 W
      Writing depth average:              output-passive_comp/depth_average.gnuplot
 
 *** Timestep 3:  t=8e+12 seconds
@@ -66,7 +66,7 @@ Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
      Writing graphical output:           output-passive_comp/solution/solution-00003
      RMS, max velocity:                  5.11e-08 m/s, 6.3e-08 m/s
      Temperature min/avg/max:            0 K, 0.000476 K, 0.00175 K
-     Heat fluxes through boundary parts: 0.1411 W, -0.05183 W
+     Heat fluxes through boundary parts: 294.4 W, 161.5 W
      Writing depth average:              output-passive_comp/depth_average.gnuplot
 
 Termination requested by criterion: end time

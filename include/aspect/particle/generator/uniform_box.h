@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2015 - 2017 by the authors of the ASPECT code.
+ Copyright (C) 2015 - 2019 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -52,7 +52,7 @@ namespace aspect
            */
           virtual
           void
-          generate_particles(std::multimap<types::LevelInd, Particle<dim> > &particles);
+          generate_particles(std::multimap<Particles::internal::LevelInd, Particle<dim> > &particles);
 
           /**
            * Declare the parameters this class takes through input files.

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2014 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -641,7 +641,7 @@ namespace aspect
          * Either InterpolatedUniformGridData or InterpolatedTensorProductGridData;
          * the type is determined from the grid specified in the data file.
          */
-        std::vector<Function<dim> *> data;
+        std::vector<std::unique_ptr<Function<dim>>> data;
 
         /**
          * The coordinate values in each direction as specified in the data file.
@@ -820,7 +820,7 @@ namespace aspect
          * A variable that stores the currently used data file of a series. It
          * gets updated if necessary by update().
          */
-        int  current_file_number;
+        int current_file_number;
 
         /**
          * Time from which on the data file with number 'First data file
@@ -869,13 +869,13 @@ namespace aspect
          * data we get from text files.
          */
         std::map<types::boundary_id,
-            std::shared_ptr<aspect::Utilities::AsciiDataLookup<dim-1> > > lookups;
+            std::unique_ptr<aspect::Utilities::AsciiDataLookup<dim-1> > > lookups;
 
         /**
          * Map between the boundary id and the old data objects.
          */
         std::map<types::boundary_id,
-            std::shared_ptr<aspect::Utilities::AsciiDataLookup<dim-1> > > old_lookups;
+            std::unique_ptr<aspect::Utilities::AsciiDataLookup<dim-1> > > old_lookups;
 
         /**
          * Handles the update of the data in lookup.
@@ -898,6 +898,8 @@ namespace aspect
         create_filename (const int timestep,
                          const types::boundary_id boundary_id) const;
     };
+
+
 
     /**
      * A base class that implements initial conditions determined from a
@@ -933,8 +935,10 @@ namespace aspect
          * Pointer to an object that reads and processes data we get from text
          * files.
          */
-        std::shared_ptr<aspect::Utilities::AsciiDataLookup<dim> > lookup;
+        std::unique_ptr<aspect::Utilities::AsciiDataLookup<dim> > lookup;
     };
+
+
 
     /**
      * A base class that reads in a data profile and provides its values.

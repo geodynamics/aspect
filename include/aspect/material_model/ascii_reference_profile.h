@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -19,8 +19,8 @@
 */
 
 
-#ifndef _aspect__model_ascii_reference_profile_h
-#define _aspect__model_ascii_reference_profile_h
+#ifndef _aspect_model_ascii_reference_profile_h
+#define _aspect_model_ascii_reference_profile_h
 
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -22,6 +22,8 @@
 
 #include <deal.II/grid/grid_tools.h>
 
+#if !DEAL_II_VERSION_GTE(9,0,0)
+
 namespace aspect
 {
   namespace Particle
@@ -30,13 +32,12 @@ namespace aspect
     ParticleHandler<dim,spacedim>::ParticleHandler()
       :
       triangulation(),
-      mpi_communicator(),
       particles(),
       ghost_particles(),
       global_number_of_particles(0),
       global_max_particles_per_cell(0),
       next_free_particle_index(0),
-      property_pool(new PropertyPool(0)),
+      property_pool(std_cxx14::make_unique<PropertyPool>(0)),
       size_callback(),
       store_callback(),
       load_callback(),
@@ -48,18 +49,16 @@ namespace aspect
     template <int dim,int spacedim>
     ParticleHandler<dim,spacedim>::ParticleHandler(const parallel::distributed::Triangulation<dim,spacedim> &triangulation,
                                                    const Mapping<dim,spacedim> &mapping,
-                                                   const MPI_Comm mpi_communicator,
                                                    const unsigned int n_properties)
       :
       triangulation(&triangulation, typeid(*this).name()),
       mapping(&mapping, typeid(*this).name()),
-      mpi_communicator(mpi_communicator),
       particles(),
       ghost_particles(),
       global_number_of_particles(0),
       global_max_particles_per_cell(0),
       next_free_particle_index(0),
-      property_pool(new PropertyPool(n_properties)),
+      property_pool(std_cxx14::make_unique<PropertyPool>(n_properties)),
       size_callback(),
       store_callback(),
       load_callback(),
@@ -78,15 +77,13 @@ namespace aspect
     void
     ParticleHandler<dim,spacedim>::initialize(const parallel::distributed::Triangulation<dim,spacedim> &tria,
                                               const Mapping<dim,spacedim> &mapp,
-                                              const MPI_Comm communicator,
                                               const unsigned int n_properties)
     {
       triangulation = &tria;
       mapping = &mapp;
-      mpi_communicator = communicator;
 
       // Create the memory pool that will store all particle properties
-      property_pool.reset(new PropertyPool(n_properties));
+      property_pool = std_cxx14::make_unique<PropertyPool>(n_properties);
     }
 
 
@@ -108,6 +105,7 @@ namespace aspect
     ParticleHandler<dim,spacedim>::clear_particles()
     {
       particles.clear();
+      update_cached_numbers();
     }
 
 
@@ -161,10 +159,10 @@ namespace aspect
     typename ParticleHandler<dim,spacedim>::particle_iterator_range
     ParticleHandler<dim,spacedim>::particles_in_cell(const active_cell_it &cell)
     {
-      const types::LevelInd level_index = std::make_pair<int, int> (cell->level(),cell->index());
+      const Particles::internal::LevelInd level_index = std::make_pair<int, int> (cell->level(),cell->index());
 
-      std::pair<typename std::multimap<types::LevelInd, Particle<dim,spacedim> >::iterator,
-          typename std::multimap<types::LevelInd, Particle<dim,spacedim> >::iterator> particles_in_cell;
+      std::pair<typename std::multimap<Particles::internal::LevelInd, Particle<dim,spacedim> >::iterator,
+          typename std::multimap<Particles::internal::LevelInd, Particle<dim,spacedim> >::iterator> particles_in_cell;
 
       if (!cell->is_ghost())
         particles_in_cell = particles.equal_range(level_index);
@@ -191,8 +189,8 @@ namespace aspect
     ParticleHandler<dim,spacedim>::insert_particle(const Particle<dim,spacedim> &particle,
                                                    const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell)
     {
-      typename std::multimap<types::LevelInd, Particle<dim,spacedim> >::iterator it =
-        particles.insert(std::make_pair(types::LevelInd(cell->level(),cell->index()),particle));
+      typename std::multimap<Particles::internal::LevelInd, Particle<dim,spacedim> >::iterator it =
+        particles.insert(std::make_pair(Particles::internal::LevelInd(cell->level(),cell->index()),particle));
 
       particle_iterator particle_it (particles,it);
       particle_it->set_property_pool(*property_pool);
@@ -208,9 +206,25 @@ namespace aspect
 
     template <int dim,int spacedim>
     void
-    ParticleHandler<dim,spacedim>::insert_particles(const std::multimap<types::LevelInd, Particle<dim,spacedim> > &new_particles)
+    ParticleHandler<dim,spacedim>::insert_particles(const std::multimap<Particles::internal::LevelInd, Particle<dim,spacedim> > &new_particles)
     {
       particles.insert(new_particles.begin(),new_particles.end());
+      update_cached_numbers();
+    }
+
+
+
+    template <int dim,int spacedim>
+    void
+    ParticleHandler<dim,spacedim>::insert_particles(const std::multimap<typename Triangulation<dim,spacedim>::active_cell_iterator,
+                                                    Particle<dim,spacedim> > &new_particles)
+    {
+      for (auto particle = new_particles.begin(); particle != new_particles.end(); ++particle)
+        particles.insert(particles.end(),
+                         std::make_pair(internal::LevelInd(particle->first->level(),particle->first->index()),
+                                        particle->second));
+
+      update_cached_numbers();
     }
 
 
@@ -244,9 +258,38 @@ namespace aspect
 
     template <int dim,int spacedim>
     void
+    ParticleHandler<dim,spacedim>::update_cached_numbers()
+    {
+      update_n_global_particles();
+      update_next_free_particle_index();
+      update_global_max_particles_per_cell();
+    }
+
+
+
+    template <int dim,int spacedim>
+    unsigned int
+    ParticleHandler<dim,spacedim>::n_global_max_particles_per_cell() const
+    {
+      return global_max_particles_per_cell;
+    }
+
+
+
+    template <int dim,int spacedim>
+    types::particle_index
+    ParticleHandler<dim,spacedim>::get_next_free_particle_index() const
+    {
+      return next_free_particle_index;
+    }
+
+
+
+    template <int dim,int spacedim>
+    void
     ParticleHandler<dim,spacedim>::update_n_global_particles()
     {
-      global_number_of_particles = dealii::Utilities::MPI::sum (particles.size(), mpi_communicator);
+      global_number_of_particles = dealii::Utilities::MPI::sum (particles.size(), triangulation->get_communicator());
     }
 
 
@@ -255,7 +298,7 @@ namespace aspect
     unsigned int
     ParticleHandler<dim,spacedim>::n_particles_in_cell(const typename Triangulation<dim,spacedim>::active_cell_iterator &cell) const
     {
-      const types::LevelInd found_cell = std::make_pair<int, int> (cell->level(),cell->index());
+      const Particles::internal::LevelInd found_cell = std::make_pair<int, int> (cell->level(),cell->index());
 
       if (cell->is_locally_owned())
         return particles.count(found_cell);
@@ -277,7 +320,7 @@ namespace aspect
       for (particle_iterator particle = begin(); particle != end(); ++particle)
         locally_highest_index = std::max(locally_highest_index,particle->get_id());
 
-      next_free_particle_index = dealii::Utilities::MPI::max (locally_highest_index, mpi_communicator) + 1;
+      next_free_particle_index = dealii::Utilities::MPI::max (locally_highest_index, triangulation->get_communicator()) + 1;
     }
 
 
@@ -295,7 +338,7 @@ namespace aspect
                                                     n_particles_in_cell(cell));
           }
 
-      global_max_particles_per_cell = dealii::Utilities::MPI::max(local_max_particles_per_cell,mpi_communicator);
+      global_max_particles_per_cell = dealii::Utilities::MPI::max(local_max_particles_per_cell,triangulation->get_communicator());
     }
 
 
@@ -449,7 +492,7 @@ namespace aspect
       // sorted_particles vector, particles that moved to another domain are
       // collected in the moved_particles_domain vector. Particles that left
       // the mesh completely are ignored and removed.
-      std::vector<std::pair<types::LevelInd, Particle<dim,spacedim> > > sorted_particles;
+      std::vector<std::pair<Particles::internal::LevelInd, Particle<dim,spacedim> > > sorted_particles;
       std::vector<std::vector<particle_iterator> > moved_particles;
       std::vector<std::vector<active_cell_it> > moved_cells;
 
@@ -570,7 +613,7 @@ namespace aspect
             // Mark it for MPI transfer otherwise
             if (current_cell->is_locally_owned())
               {
-                sorted_particles.push_back(std::make_pair(types::LevelInd(current_cell->level(),current_cell->index()),
+                sorted_particles.push_back(std::make_pair(Particles::internal::LevelInd(current_cell->level(),current_cell->index()),
                                                           (*it)->particle->second));
               }
             else
@@ -584,10 +627,10 @@ namespace aspect
 
       // Sort the updated particles. This pre-sort speeds up inserting
       // them into particles to O(N) complexity.
-      std::multimap<types::LevelInd,Particle <dim,spacedim> > sorted_particles_map;
+      std::multimap<Particles::internal::LevelInd,Particle <dim,spacedim> > sorted_particles_map;
 
       // Exchange particles between processors if we have more than one process
-      if (dealii::Utilities::MPI::n_mpi_processes(mpi_communicator) > 1)
+      if (dealii::Utilities::MPI::n_mpi_processes(triangulation->get_communicator()) > 1)
         send_recv_particles(moved_particles,sorted_particles_map,moved_cells);
 
       sorted_particles_map.insert(sorted_particles.begin(),sorted_particles.end());
@@ -596,6 +639,7 @@ namespace aspect
         remove_particle(particles_out_of_cell[i]);
 
       particles.insert(sorted_particles_map.begin(),sorted_particles_map.end());
+      update_cached_numbers();
     }
 
 
@@ -605,7 +649,7 @@ namespace aspect
     ParticleHandler<dim,spacedim>::exchange_ghost_particles()
     {
       // Nothing to do in serial computations
-      if (dealii::Utilities::MPI::n_mpi_processes(mpi_communicator) == 1)
+      if (dealii::Utilities::MPI::n_mpi_processes(triangulation->get_communicator()) == 1)
         return;
 
       // First clear the current ghost_particle information
@@ -664,7 +708,7 @@ namespace aspect
     template <int dim, int spacedim>
     void
     ParticleHandler<dim,spacedim>::send_recv_particles(const std::vector<std::vector<particle_iterator> > &particles_to_send,
-                                                       std::multimap<types::LevelInd,Particle <dim> >     &received_particles,
+                                                       std::multimap<Particles::internal::LevelInd,Particle <dim> >     &received_particles,
                                                        const std::vector<std::vector<active_cell_it> >    &send_cells)
     {
       // Determine the communication pattern
@@ -735,9 +779,9 @@ namespace aspect
       {
         std::vector<MPI_Request> n_requests(2*n_neighbors);
         for (unsigned int i=0; i<n_neighbors; ++i)
-          MPI_Irecv(&(n_recv_data[i]), 1, MPI_INT, neighbors[i], 0, mpi_communicator, &(n_requests[2*i]));
+          MPI_Irecv(&(n_recv_data[i]), 1, MPI_INT, neighbors[i], 0, triangulation->get_communicator(), &(n_requests[2*i]));
         for (unsigned int i=0; i<n_neighbors; ++i)
-          MPI_Isend(&(n_send_data[i]), 1, MPI_INT, neighbors[i], 0, mpi_communicator, &(n_requests[2*i+1]));
+          MPI_Isend(&(n_send_data[i]), 1, MPI_INT, neighbors[i], 0, triangulation->get_communicator(), &(n_requests[2*i+1]));
         MPI_Waitall(2*n_neighbors,&n_requests[0],MPI_STATUSES_IGNORE);
       }
 
@@ -761,14 +805,14 @@ namespace aspect
         for (unsigned int i=0; i<n_neighbors; ++i)
           if (n_recv_data[i] > 0)
             {
-              MPI_Irecv(&(recv_data[recv_offsets[i]]), n_recv_data[i], MPI_CHAR, neighbors[i], 1, mpi_communicator,&(requests[send_ops]));
+              MPI_Irecv(&(recv_data[recv_offsets[i]]), n_recv_data[i], MPI_CHAR, neighbors[i], 1, triangulation->get_communicator(),&(requests[send_ops]));
               send_ops++;
             }
 
         for (unsigned int i=0; i<n_neighbors; ++i)
           if (n_send_data[i] > 0)
             {
-              MPI_Isend(&(send_data[send_offsets[i]]), n_send_data[i], MPI_CHAR, neighbors[i], 1, mpi_communicator,&(requests[send_ops+recv_ops]));
+              MPI_Isend(&(send_data[send_offsets[i]]), n_send_data[i], MPI_CHAR, neighbors[i], 1, triangulation->get_communicator(),&(requests[send_ops+recv_ops]));
               recv_ops++;
             }
         MPI_Waitall(send_ops+recv_ops,&requests[0],MPI_STATUSES_IGNORE);
@@ -786,8 +830,8 @@ namespace aspect
 
           const active_cell_it cell = id.to_cell(*triangulation);
 
-          typename std::multimap<types::LevelInd,Particle <dim> >::iterator recv_particle =
-            received_particles.insert(std::make_pair(types::LevelInd(cell->level(),cell->index()),
+          typename std::multimap<Particles::internal::LevelInd,Particle <dim> >::iterator recv_particle =
+            received_particles.insert(std::make_pair(Particles::internal::LevelInd(cell->level(),cell->index()),
                                                      Particle<dim,spacedim>(recv_data_it,*property_pool)));
 
           if (load_callback)
@@ -869,8 +913,11 @@ namespace aspect
     ParticleHandler<dim,spacedim>::register_load_callback_function(const bool serialization)
     {
       // All particles have been stored, when we reach this point. Empty the
-      // particle data.
-      clear_particles();
+      // particle data and update cache. If we are resuming from checkpoint
+      // this is not necessary, and we need the cached information to decide
+      // if there is something to load.
+      if (!serialization)
+        clear_particles();
 
       parallel::distributed::Triangulation<dim,spacedim> *non_const_triangulation =
         const_cast<parallel::distributed::Triangulation<dim,spacedim> *> (&(*triangulation));
@@ -1004,7 +1051,7 @@ namespace aspect
       // particle map.
       if (status == parallel::distributed::Triangulation<dim,spacedim>::CELL_PERSIST)
         {
-          typename std::multimap<types::LevelInd,Particle<dim,spacedim> >::iterator position_hint = particles.end();
+          typename std::multimap<Particles::internal::LevelInd,Particle<dim,spacedim> >::iterator position_hint = particles.end();
           for (unsigned int i = 0; i < *n_particles_in_cell_ptr; ++i)
             {
               // Use std::multimap::emplace_hint to speed up insertion of
@@ -1026,7 +1073,7 @@ namespace aspect
 
       else if (status == parallel::distributed::Triangulation<dim,spacedim>::CELL_COARSEN)
         {
-          typename std::multimap<types::LevelInd,Particle<dim,spacedim> >::iterator position_hint = particles.end();
+          typename std::multimap<Particles::internal::LevelInd,Particle<dim,spacedim> >::iterator position_hint = particles.end();
           for (unsigned int i = 0; i < *n_particles_in_cell_ptr; ++i)
             {
               // Use std::multimap::emplace_hint to speed up insertion of
@@ -1049,7 +1096,7 @@ namespace aspect
         }
       else if (status == parallel::distributed::Triangulation<dim,spacedim>::CELL_REFINE)
         {
-          std::vector<typename std::multimap<types::LevelInd, Particle<dim,spacedim> >::iterator > position_hints(GeometryInfo<dim>::max_children_per_cell);
+          std::vector<typename std::multimap<Particles::internal::LevelInd, Particle<dim,spacedim> >::iterator > position_hints(GeometryInfo<dim>::max_children_per_cell);
           for (unsigned int child_index=0; child_index<GeometryInfo<dim>::max_children_per_cell; ++child_index)
             {
               const typename parallel::distributed::Triangulation<dim,spacedim>::cell_iterator child = cell->child(child_index);
@@ -1109,3 +1156,5 @@ namespace aspect
     ASPECT_INSTANTIATE(INSTANTIATE)
   }
 }
+
+#endif

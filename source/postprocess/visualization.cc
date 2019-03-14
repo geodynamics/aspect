@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -390,7 +390,7 @@ namespace aspect
       // If there is a free surface, also attach the mesh velocity object
       if ( this->get_free_surface_boundary_indicators().empty() == false && output_mesh_velocity)
         {
-          free_surface_variables.reset( new internal::FreeSurfacePostprocessor<dim>);
+          free_surface_variables = std::make_shared<internal::FreeSurfacePostprocessor<dim>>();
           free_surface_variables->initialize_simulator(this->get_simulator());
           data_out.add_data_vector (this->get_mesh_velocity(),
                                     *free_surface_variables);
@@ -485,18 +485,19 @@ namespace aspect
         }
 
       // Now build the patches. If selected, increase the output resolution.
-      if (interpolate_output)
-        {
-          data_out.build_patches (this->get_mapping(),
-                                  this->get_stokes_velocity_degree(),
-                                  this->get_geometry_model().has_curved_elements()
-                                  ?
-                                  DataOut<dim>::curved_inner_cells
-                                  :
-                                  DataOut<dim>::no_curved_cells);
-        }
-      else
-        data_out.build_patches(this->get_mapping()); // Giving the mapping ensures that the case with mesh deformation works correctly.
+      // Giving the mapping ensures that the case with mesh deformation works correctly.
+      const unsigned int subdivisions = interpolate_output
+                                        ?
+                                        this->get_stokes_velocity_degree()
+                                        :
+                                        0;
+      data_out.build_patches (this->get_mapping(),
+                              subdivisions,
+                              this->get_geometry_model().has_curved_elements()
+                              ?
+                              DataOut<dim>::curved_inner_cells
+                              :
+                              DataOut<dim>::no_curved_cells);
 
       // Now prepare everything for writing the output and choose output format
       std::string solution_file_prefix = "solution-" + Utilities::int_to_string (output_file_number, 5);
@@ -676,11 +677,10 @@ namespace aspect
 
           // Create the temporary file; get at the actual filename
           // by using a C-style string that mkstemp will then overwrite
-          char *tmp_filename_x = new char[tmp_filename.size()+1];
-          std::strcpy(tmp_filename_x, tmp_filename.c_str());
-          int tmp_file_desc = mkstemp(tmp_filename_x);
-          tmp_filename = tmp_filename_x;
-          delete []tmp_filename_x;
+          std::vector<char> tmp_filename_x (tmp_filename.size()+1);
+          std::strcpy(tmp_filename_x.data(), tmp_filename.c_str());
+          const int tmp_file_desc = mkstemp(tmp_filename_x.data());
+          tmp_filename = tmp_filename_x.data();
 
           // If we failed to create the temp file, just write directly to the target file.
           // We also provide a warning about this fact. There are places where

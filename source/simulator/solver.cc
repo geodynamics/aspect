@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -427,8 +427,8 @@ namespace aspect
     build_advection_preconditioner(advection_field, preconditioner);
 
     TimerOutput::Scope timer (computing_timer, (advection_field.is_temperature() ?
-                                                "   Solve temperature system" :
-                                                "   Solve composition system"));
+                                                "Solve temperature system" :
+                                                "Solve composition system"));
     if (advection_field.is_temperature())
       {
         pcout << "   Solving temperature system... " << std::flush;
@@ -524,7 +524,7 @@ namespace aspect
   std::pair<double,double>
   Simulator<dim>::solve_stokes ()
   {
-    TimerOutput::Scope timer (computing_timer, "   Solve Stokes system");
+    TimerOutput::Scope timer (computing_timer, "Solve Stokes system");
     pcout << "   Solving Stokes system... " << std::flush;
 
     // extract Stokes parts of solution vector, without any ghost elements
@@ -790,7 +790,7 @@ namespace aspect
             SolverFGMRES<LinearAlgebra::BlockVector>
             solver(solver_control_cheap, mem,
                    SolverFGMRES<LinearAlgebra::BlockVector>::
-                   AdditionalData(parameters.stokes_gmres_restart_length, true));
+                   AdditionalData(parameters.stokes_gmres_restart_length));
 
             solver.solve (stokes_block,
                           distributed_stokes_solution,
@@ -803,7 +803,7 @@ namespace aspect
         // step 1b: take the stronger solver in case
         // the simple solver failed and attempt solving
         // it in n_expensive_stokes_solver_steps steps or less.
-        catch (SolverControl::NoConvergence)
+        catch (const SolverControl::NoConvergence &)
           {
             // use the value defined by the user
             // OR
@@ -815,7 +815,7 @@ namespace aspect
             SolverFGMRES<LinearAlgebra::BlockVector>
             solver(solver_control_expensive, mem,
                    SolverFGMRES<LinearAlgebra::BlockVector>::
-                   AdditionalData(number_of_temporary_vectors, true));
+                   AdditionalData(number_of_temporary_vectors));
 
             try
               {

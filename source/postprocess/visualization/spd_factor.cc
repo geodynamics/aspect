@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2017 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2017 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -36,7 +36,7 @@ namespace aspect
       SPD_Factor ()
         :
         DataPostprocessorScalar<dim> ("spd_factor",
-                                      update_values | update_gradients | update_q_points)
+                                      update_values | update_gradients | update_quadrature_points)
       {}
 
 
@@ -58,8 +58,8 @@ namespace aspect
         MaterialModel::MaterialModelOutputs<dim> out(n_quadrature_points,
                                                      this->n_compositional_fields());
 
-        std::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> > mmd(new MaterialModel::MaterialModelDerivatives<dim> (n_quadrature_points));
-        out.additional_outputs.push_back(mmd);
+        out.additional_outputs.push_back(
+          std::make_shared<MaterialModel::MaterialModelDerivatives<dim>> (n_quadrature_points));
 
         this->get_material_model().evaluate(in, out);
 

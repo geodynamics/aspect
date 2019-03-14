@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2014 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -161,14 +161,17 @@ namespace aspect
                   {
                     for (unsigned int substep = 0; substep < n_substeps; ++substep)
                       {
+                        const double step_ratio = static_cast<double>(substep)/static_cast<double>(n_substeps);
+                        const double step_ratio_next = static_cast<double>(substep+1)/static_cast<double>(n_substeps);
+
                         const double current_pressure = pressures[q]
-                                                        + ((double)(substep)/(double)(n_substeps))
+                                                        + step_ratio
                                                         * (pressures[p]-pressures[q]);
                         const double T1_substep = temperatures[q]
-                                                  + ((double)(substep)/(double)(n_substeps))
+                                                  + step_ratio
                                                   * (temperatures[p]-temperatures[q]);
                         const double T2_substep = temperatures[q]
-                                                  + ((double)(substep+1)/(double)(n_substeps))
+                                                  + step_ratio_next
                                                   * (temperatures[p]-temperatures[q]);
                         const double enthalpy2 = enthalpy(T2_substep,current_pressure);
                         const double enthalpy1 = enthalpy(T1_substep,current_pressure);
@@ -180,14 +183,16 @@ namespace aspect
                   {
                     for (unsigned int substep = 0; substep < n_substeps; ++substep)
                       {
+                        const double step_ratio = static_cast<double>(substep)/static_cast<double>(n_substeps);
+                        const double step_ratio_next = static_cast<double>(substep+1)/static_cast<double>(n_substeps);
                         const double current_temperature = temperatures[q]
-                                                           + ((double)(substep)/(double)(n_substeps))
+                                                           + step_ratio
                                                            * (temperatures[p]-temperatures[q]);
                         const double p1_substep = pressures[q]
-                                                  + ((double)(substep)/(double)(n_substeps))
+                                                  + step_ratio
                                                   * (pressures[p]-pressures[q]);
                         const double p2_substep = pressures[q]
-                                                  + ((double)(substep+1)/(double)(n_substeps))
+                                                  + step_ratio_next
                                                   * (pressures[p]-pressures[q]);
                         const double enthalpy2 = enthalpy(current_temperature,p2_substep);
                         const double enthalpy1 = enthalpy(current_temperature,p1_substep);
@@ -328,7 +333,7 @@ namespace aspect
                     }
                 }
 
-              getline(in, temp);
+              std::getline(in, temp);
               if (in.eof())
                 break;
               i++;
@@ -406,7 +411,7 @@ namespace aspect
               else
                 h *= 1e6; // conversion from [kJ/g] to [J/kg]
 
-              getline(in, temp);
+              std::getline(in, temp);
               if (in.eof())
                 break;
 
@@ -477,7 +482,7 @@ namespace aspect
                   in.clear();
 
 
-                getline(in, temp);
+                std::getline(in, temp);
                 if (in.eof())
                   break;
 
@@ -508,28 +513,28 @@ namespace aspect
         // Read data from disk and distribute among processes
         std::istringstream in(Utilities::read_and_distribute_file_content(filename, comm));
 
-        getline(in, temp); // eat first line
-        getline(in, temp); // eat next line
-        getline(in, temp); // eat next line
-        getline(in, temp); // eat next line
+        std::getline(in, temp); // eat first line
+        std::getline(in, temp); // eat next line
+        std::getline(in, temp); // eat next line
+        std::getline(in, temp); // eat next line
 
         in >> min_temp;
-        getline(in, temp);
+        std::getline(in, temp);
         in >> delta_temp;
-        getline(in, temp);
+        std::getline(in, temp);
         in >> n_temperature;
-        getline(in, temp);
-        getline(in, temp);
+        std::getline(in, temp);
+        std::getline(in, temp);
         in >> min_press;
         min_press *= 1e5;  // conversion from [bar] to [Pa]
-        getline(in, temp);
+        std::getline(in, temp);
         in >> delta_press;
         delta_press *= 1e5; // conversion from [bar] to [Pa]
-        getline(in, temp);
+        std::getline(in, temp);
         in >> n_pressure;
-        getline(in, temp);
-        getline(in, temp);
-        getline(in, temp);
+        std::getline(in, temp);
+        std::getline(in, temp);
+        std::getline(in, temp);
 
         AssertThrow(min_temp >= 0.0, ExcMessage("Read in of Material header failed (mintemp)."));
         AssertThrow(delta_temp > 0, ExcMessage("Read in of Material header failed (delta_temp)."));
@@ -592,7 +597,7 @@ namespace aspect
                 h = enthalpy_values[(i-1)%n_temperature][(i-1)/n_temperature];
               }
 
-            getline(in, temp);
+            std::getline(in, temp);
             if (in.eof())
               break;
 
@@ -620,16 +625,16 @@ namespace aspect
       for (unsigned i = 0; i < n_material_data; i++)
         {
           if (material_file_format == perplex)
-            material_lookup.push_back(std::shared_ptr<Lookup::MaterialLookup>
-                                      (new Lookup::PerplexReader(datadirectory+material_file_names[i],
-                                                                 use_bilinear_interpolation,
-                                                                 this->get_mpi_communicator())));
+            material_lookup
+            .push_back(std::make_shared<Lookup::PerplexReader>(datadirectory+material_file_names[i],
+                                                               use_bilinear_interpolation,
+                                                               this->get_mpi_communicator()));
           else if (material_file_format == hefesto)
-            material_lookup.push_back(std::shared_ptr<Lookup::MaterialLookup>
-                                      (new Lookup::HeFESToReader(datadirectory+material_file_names[i],
-                                                                 datadirectory+derivatives_file_names[i],
-                                                                 use_bilinear_interpolation,
-                                                                 this->get_mpi_communicator())));
+            material_lookup
+            .push_back(std::make_shared<Lookup::HeFESToReader>(datadirectory+material_file_names[i],
+                                                               datadirectory+derivatives_file_names[i],
+                                                               use_bilinear_interpolation,
+                                                               this->get_mpi_communicator()));
           else
             AssertThrow (false, ExcNotImplemented());
         }
@@ -1980,8 +1985,7 @@ namespace aspect
         {
           const unsigned int n_points = out.viscosities.size();
           out.additional_outputs.push_back(
-            std::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
-            (new MaterialModel::DislocationViscosityOutputs<dim> (n_points)));
+            std::make_shared<MaterialModel::DislocationViscosityOutputs<dim>> (n_points));
         }
 
       // These properties are only output properties.
@@ -1989,8 +1993,7 @@ namespace aspect
         {
           const unsigned int n_points = out.viscosities.size();
           out.additional_outputs.push_back(
-            std::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
-            (new MaterialModel::SeismicAdditionalOutputs<dim> (n_points)));
+            std::make_shared<MaterialModel::SeismicAdditionalOutputs<dim>> (n_points));
         }
     }
   }

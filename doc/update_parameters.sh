@@ -64,6 +64,26 @@ grep '[^\\]%' parameters.tex && echo "Error, please remove '%'!" && exit 1
 
 cd ../..
 
+
+# next, run ASPECT so that it produces the parameters.xml file that
+# documents all parameters and that we use for the web view of parameters
+echo Creating parameters.xml
+rm -f output/parameters.xml
+$ASPECT --output-xml doc/manual/empty.prm >doc/parameter_view/parameters.bak 2>/dev/null \
+    || (echo "Running ASPECT for parameters.xml failed" ; exit 1)
+
+echo Patching parameters.xml
+cd doc/parameter_view
+head -n 1 parameters.bak > parameters.xml
+echo '<?xml-stylesheet type="application/xml" href="parameters.xsl"?>' >> parameters.xml
+echo '' >> parameters.xml
+tail -n +2 parameters.bak >> parameters.xml
+sed -i.bak 's/\(.\)</\1\n</g' parameters.xml
+sed -i.bak 's/>\(.\)/>\n\1/g' parameters.xml
+rm parameters.bak
+
+cd ../..
+
 # next, generate the output file that is used to create the
 # connection graph between all plugins and the core of ASPECT
 echo Creating plugin graph

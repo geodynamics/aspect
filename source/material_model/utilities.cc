@@ -142,10 +142,10 @@ namespace aspect
             }
             case maximum_composition:
             {
-              const unsigned int i = (unsigned int)(std::max_element( volume_fractions.begin(),
-                                                                      volume_fractions.end() )
-                                                    - volume_fractions.begin());
-              averaged_parameter = parameter_values[i];
+              const unsigned int idx = static_cast<unsigned int>(std::max_element( volume_fractions.begin(),
+                                                                                   volume_fractions.end() )
+                                                                 - volume_fractions.begin());
+              averaged_parameter = parameter_values[idx];
               break;
             }
             default:

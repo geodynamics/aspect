@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -255,10 +255,11 @@ namespace aspect
 
   template <int dim>
   void
-  SimulatorAccess<dim>::get_artificial_viscosity (Vector<float> &viscosity_per_cell) const
+  SimulatorAccess<dim>::get_artificial_viscosity (Vector<float> &viscosity_per_cell,
+                                                  const bool skip_interior_cells) const
   {
     const typename Simulator<dim>::AdvectionField advection_field = Simulator<dim>::AdvectionField::temperature();
-    simulator->get_artificial_viscosity(viscosity_per_cell, advection_field);
+    simulator->get_artificial_viscosity(viscosity_per_cell, advection_field, skip_interior_cells);
   }
 
   template <int dim>
@@ -378,7 +379,7 @@ namespace aspect
 
 
   template <int dim>
-  const std::map<types::boundary_id,std::shared_ptr<BoundaryTraction::Interface<dim> > > &
+  const std::map<types::boundary_id,std::unique_ptr<BoundaryTraction::Interface<dim> > > &
   SimulatorAccess<dim>::get_boundary_traction () const
   {
     return simulator->boundary_traction;
@@ -615,6 +616,15 @@ namespace aspect
     Assert (simulator->melt_handler.get() != 0,
             ExcMessage("You can not call this function if melt transport is not enabled."));
     return *(simulator->melt_handler);
+  }
+
+  template <int dim>
+  const VolumeOfFluidHandler<dim> &
+  SimulatorAccess<dim>::get_volume_of_fluid_handler () const
+  {
+    Assert (simulator->volume_of_fluid_handler.get() != nullptr,
+            ExcMessage("You can not call this function if volume of fluid interface tracking is not enabled."));
+    return *(simulator->volume_of_fluid_handler);
   }
 
   template <int dim>

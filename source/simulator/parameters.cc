@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -23,6 +23,7 @@
 #include <aspect/global.h>
 #include <aspect/utilities.h>
 #include <aspect/melt.h>
+#include <aspect/volume_of_fluid/handler.h>
 #include <aspect/newton.h>
 #include <aspect/free_surface.h>
 
@@ -182,7 +183,7 @@ namespace aspect
                                                "single Advection, iterated Stokes|no Advection, iterated Stokes|"
                                                "iterated Advection and Newton Stokes|single Advection, no Stokes|"
                                                "IMPES|iterated IMPES|iterated Stokes|Newton Stokes|Stokes only|Advection only|"
-                                               "first timestep only, single Stokes";
+                                               "first timestep only, single Stokes|no Advection, no Stokes";
 
     prm.declare_entry ("Nonlinear solver scheme", "single Advection, single Stokes",
                        Patterns::Selection (allowed_solver_schemes),
@@ -794,6 +795,9 @@ namespace aspect
                          "pressure, respectively (unless the `Use locally conservative "
                          "discretization' parameter is set, which modifies the pressure "
                          "element). "
+                         "\n\n"
+                         "Be careful if you choose 1 as the degree. The resulting element "
+                         "is not stable and it may lead to artifacts in the solution. "
                          "Units: None.");
       prm.declare_entry ("Temperature polynomial degree", "2",
                          Patterns::Integer (1),
@@ -804,12 +808,16 @@ namespace aspect
                          "discontinuous field. "
                          "Units: None.");
       prm.declare_entry ("Composition polynomial degree", "2",
-                         Patterns::Integer (1),
+                         Patterns::Integer (0),
                          "The polynomial degree to use for the composition variable(s). "
                          "As an example, a value of 2 for this parameter will yield "
                          "either the element $Q_2$ or $DGQ_2$ for the compositional "
                          "field(s), depending on whether we use continuous or "
                          "discontinuous field(s). "
+                         "\n\n"
+                         "For continuous elements, the value needs to be 1 or larger "
+                         "as $Q_1$ is the lowest order element, while $DGQ_0$ is a "
+                         "valid choice. "
                          "Units: None.");
       prm.declare_entry ("Use locally conservative discretization", "false",
                          Patterns::Bool (),
@@ -993,7 +1001,7 @@ namespace aspect
                          Patterns::List(Patterns::Anything()),
                          "A user-defined name for each of the compositional fields requested.");
       prm.declare_entry ("Compositional field methods", "",
-                         Patterns::List (Patterns::Selection("field|particles|static|melt field|prescribed field|prescribed field with diffusion")),
+                         Patterns::List (Patterns::Selection("field|particles|volume of fluid|static|melt field|prescribed field|prescribed field with diffusion")),
                          "A comma separated list denoting the solution method of each "
                          "compositional field. Each entry of the list must be "
                          "one of the currently implemented field types: "
@@ -1017,6 +1025,13 @@ namespace aspect
                          "and particle properties can react with each other as well. "
                          "See Section~\\ref{sec:particles} for more information about "
                          "how particles behave."
+                         "\n"
+                         "\\item ``volume of fluid``: If a compositional field "
+                         "is marked with this method, then its values are "
+                         "obtained in each timestep by reconstructing a "
+                         "polynomial finite element approximation on each cell "
+                         "from a volume of fluid interface tracking method, "
+                         "which is used to compute the advection updates."
                          "\n"
                          "\\item ``static'': If a compositional field is marked "
                          "this way, then it does not evolve at all. Its values are "
@@ -1045,8 +1060,8 @@ namespace aspect
                          "called the `PrescribedFieldOutputs' is interpolated onto the field, as in "
                          "the ``prescribed field'' method. Afterwards, the field is diffused based on "
                          "a solver parameter, the diffusion length scale, smoothing the field. "
-                         "Specifically, the field is updated following the equation "
-                         "$C_\\text{smoothed} = C\\text{prescribed} + \\nabla \\cdot l^2 \\nabla C\\text{prescribed}$, "
+                         "Specifically, the field is updated by solving the equation "
+                         "$(I-l^2 \\Delta) C_\\text{smoothed} = C_\\text{prescribed}$, "
                          "where $l$ is the diffusion length scale. Note that this means that the amount "
                          "of diffusion is independent of the time step size, and that the field is not "
                          "advected with the flow."
@@ -1108,6 +1123,17 @@ namespace aspect
     }
     prm.leave_subsection ();
 
+    prm.enter_subsection ("Volume of Fluid");
+    {
+      prm.declare_entry ("Enable interface tracking", "false",
+                         Patterns::Bool (),
+                         "When set to true, Volume of Fluid interface tracking will be used");
+    }
+    prm.leave_subsection ();
+
+    // declare the VolumeOfFluid parameters
+    VolumeOfFluidHandler<dim>::declare_parameters(prm);
+
     // also declare the parameters that the FreeSurfaceHandler needs
     FreeSurfaceHandler<dim>::declare_parameters (prm);
 
@@ -1162,6 +1188,8 @@ namespace aspect
         nonlinear_solver = NonlinearSolver::single_Advection_no_Stokes;
       else if (solver_scheme == "first timestep only, single Stokes")
         nonlinear_solver = NonlinearSolver::first_timestep_only_single_Stokes;
+      else if (solver_scheme == "no Advection, no Stokes")
+        nonlinear_solver = NonlinearSolver::no_Advection_no_Stokes;
       else
         AssertThrow (false, ExcNotImplemented());
     }
@@ -1432,6 +1460,11 @@ namespace aspect
         = prm.get_bool("Use discontinuous temperature discretization");
       use_discontinuous_composition_discretization
         = prm.get_bool("Use discontinuous composition discretization");
+
+      Assert(use_discontinuous_composition_discretization == true || composition_degree > 0,
+             ExcMessage("Using a composition polynomial degree of 0 (cell-wise constant composition) "
+                        "is only supported if a discontinuous composition discretization is selected."));
+
       prm.enter_subsection ("Stabilization parameters");
       {
         use_artificial_viscosity_smoothing  = prm.get_bool ("Use artificial viscosity smoothing");
@@ -1572,6 +1605,8 @@ namespace aspect
             compositional_field_methods[i] = AdvectionFieldMethod::fem_field;
           else if (x_compositional_field_methods[i] == "particles")
             compositional_field_methods[i] = AdvectionFieldMethod::particles;
+          else if (x_compositional_field_methods[i] == "volume of fluid")
+            compositional_field_methods[i] = AdvectionFieldMethod::volume_of_fluid;
           else if (x_compositional_field_methods[i] == "static")
             compositional_field_methods[i] = AdvectionFieldMethod::static_field;
           else if (x_compositional_field_methods[i] == "melt field")
@@ -1583,6 +1618,11 @@ namespace aspect
           else
             AssertThrow(false,ExcNotImplemented());
         }
+
+      // Enable Volume of Fluid field tracking if any compositional_field_methods are volume_of_fluid
+      volume_of_fluid_tracking_enabled =
+        (std::count(compositional_field_methods.begin(),compositional_field_methods.end(),AdvectionFieldMethod::volume_of_fluid)
+         > 0);
 
       if (std::find(compositional_field_methods.begin(), compositional_field_methods.end(), AdvectionFieldMethod::fem_melt_field)
           != compositional_field_methods.end())
@@ -1704,7 +1744,6 @@ namespace aspect
           (prm.get ("Material averaging"));
     }
     prm.leave_subsection ();
-
 
     // then, finally, let user additions that do not go through the usual
     // plugin mechanism, declare their parameters if they have subscribed

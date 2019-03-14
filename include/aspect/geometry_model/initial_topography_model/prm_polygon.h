@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -19,8 +19,8 @@
 */
 
 
-#ifndef _aspect_geometry_model__initial_topography_prm_polygon_h
-#define _aspect_geometry_model__initial_topography_prm_polygon_h
+#ifndef _aspect_geometry_model_initial_topography_prm_polygon_h
+#define _aspect_geometry_model_initial_topography_prm_polygon_h
 
 #include <aspect/geometry_model/initial_topography_model/interface.h>
 

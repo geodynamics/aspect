@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -71,7 +71,7 @@ namespace aspect
 
       /* The input viscosity file has two columns that are the viscosity and Depth */
       std::string header;
-      getline(in, header);/* Discard header line */
+      std::getline(in, header);/* Discard header line */
       std::vector<double> visc_vec;
       std::array< std::vector<double>, 1 > depth_table;
       while (!in.eof())
@@ -96,8 +96,11 @@ namespace aspect
         {
           viscosity_table[i] = visc_vec[i];
         }
-      viscosity_file_function.reset( new Functions::InterpolatedTensorProductGridData<1>(depth_table, viscosity_table) );
+      viscosity_file_function
+        = std::make_shared<Functions::InterpolatedTensorProductGridData<1>>(depth_table, viscosity_table);
     }
+
+
 
     template <int dim>
     double
@@ -106,6 +109,8 @@ namespace aspect
       const Point<1> dpoint(depth);
       return viscosity_file_function->value( dpoint );
     }
+
+
 
     template <int dim>
     double
@@ -117,6 +122,8 @@ namespace aspect
       while ( depth > depth_values[i] && i<nlayers ) i++; /* increment i until depth is above base of layer i */
       return viscosity_values[i];
     }
+
+
 
     template <int dim>
     double
@@ -152,6 +159,7 @@ namespace aspect
     }
 
 
+
     template <int dim>
     void
     DepthDependent<dim>::evaluate(const typename Interface<dim>::MaterialModelInputs &in,
@@ -168,6 +176,7 @@ namespace aspect
             }
         }
     }
+
 
 
     template <int dim>

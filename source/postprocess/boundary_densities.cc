@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -42,7 +42,7 @@ namespace aspect
                                         quadrature_formula_face,
                                         update_values |
                                         update_gradients |
-                                        update_q_points |
+                                        update_quadrature_points |
                                         update_JxW_values);
 
       double local_top_density = 0.;

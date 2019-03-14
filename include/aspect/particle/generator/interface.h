@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2015 - 2017 by the authors of the ASPECT code.
+ Copyright (C) 2015 - 2019 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -21,9 +21,14 @@
 #ifndef _aspect_particle_generator_interface_h
 #define _aspect_particle_generator_interface_h
 
-#include <aspect/particle/particle.h>
 #include <aspect/plugins.h>
 #include <aspect/simulator_access.h>
+
+#if DEAL_II_VERSION_GTE(9,0,0)
+#include <deal.II/particles/particle.h>
+#else
+#include <aspect/particle/particle.h>
+#endif
 
 #include <deal.II/base/parameter_handler.h>
 #include <deal.II/base/exceptions.h>
@@ -31,6 +36,8 @@
 DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
 #include <boost/random.hpp>
 DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
+
+#include <map>
 
 namespace aspect
 {
@@ -44,6 +51,11 @@ namespace aspect
      */
     namespace Generator
     {
+#if DEAL_II_VERSION_GTE(9,0,0)
+      using namespace dealii::Particles;
+      using dealii::Particles::Particle;
+#endif
+
       /**
        * Exception denoting a division by zero.
        */
@@ -100,7 +112,7 @@ namespace aspect
            */
           virtual
           void
-          generate_particles(std::multimap<types::LevelInd, Particle<dim> > &particles) = 0;
+          generate_particles(std::multimap<Particles::internal::LevelInd, Particle<dim> > &particles) = 0;
 
           /**
            * Generate one particle in the given cell. This function's main purpose
@@ -108,7 +120,7 @@ namespace aspect
            * after refinement. Of course it can also be utilized by derived classes
            * to generate the initial particle distribution.
            */
-          std::pair<types::LevelInd,Particle<dim> >
+          std::pair<Particles::internal::LevelInd,Particle<dim> >
           generate_particle (const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell,
                              const types::particle_index id);
 
@@ -142,7 +154,7 @@ namespace aspect
            * throws an exception of type ExcParticlePointNotInDomain, which
            * can be catched in the calling plugin.
            */
-          std::pair<types::LevelInd,Particle<dim> >
+          std::pair<Particles::internal::LevelInd,Particle<dim> >
           generate_particle(const Point<dim> &position,
                             const types::particle_index id) const;
 

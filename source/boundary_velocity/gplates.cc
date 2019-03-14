@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -226,9 +226,10 @@ namespace aspect
 
         for (unsigned int i = 0; i < 2; i++)
           {
-            velocities[i].reset(new Functions::InterpolatedUniformGridData<2> (grid_extent,
-                                                                               table_intervals,
-                                                                               velocity_values[i]));
+            velocities[i]
+              = std_cxx14::make_unique<Functions::InterpolatedUniformGridData<2>> (grid_extent,
+                                                                                   table_intervals,
+                                                                                   velocity_values[i]);
           }
 
         AssertThrow(i == n_points,
@@ -562,8 +563,8 @@ namespace aspect
       if (((dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model())) != nullptr)
           || ((dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model())) != nullptr))
         {
-          lookup.reset(new internal::GPlatesLookup<dim>(pointone,pointtwo));
-          old_lookup.reset(new internal::GPlatesLookup<dim>(pointone,pointtwo));
+          lookup = std::make_shared<internal::GPlatesLookup<dim>>(pointone, pointtwo);
+          old_lookup = std::make_shared<internal::GPlatesLookup<dim>>(pointone, pointtwo);
         }
       else
         AssertThrow (false,ExcMessage ("This gplates plugin can only be used when using "
@@ -626,10 +627,9 @@ namespace aspect
     {
       std::string templ = data_directory+velocity_file_name;
       const int size = templ.length();
-      char *filename = (char *) (malloc ((size + 10) * sizeof(char)));
-      snprintf (filename, size + 10, templ.c_str (), timestep);
-      std::string str_filename (filename);
-      free (filename);
+      std::vector<char> buffer(size+10);
+      snprintf (buffer.data(), size + 10, templ.c_str(), timestep);
+      std::string str_filename (buffer.data());
       return str_filename;
     }
 
@@ -855,15 +855,15 @@ namespace aspect
         {
           data_directory = Utilities::expand_ASPECT_SOURCE_DIR(prm.get ("Data directory"));
 
-          velocity_file_name              = prm.get ("Velocity file name");
-          data_file_time_step             = prm.get_double ("Data file time step");
-          first_data_file_model_time      = prm.get_double ("First data file model time");
-          first_data_file_number          = prm.get_double ("First data file number");
-          decreasing_file_order           = prm.get_bool   ("Decreasing file order");
-          scale_factor          = prm.get_double ("Scale factor");
-          point1                = prm.get ("Point one");
-          point2                = prm.get ("Point two");
-          lithosphere_thickness = prm.get_double ("Lithosphere thickness");
+          velocity_file_name         = prm.get        ("Velocity file name");
+          data_file_time_step        = prm.get_double ("Data file time step");
+          first_data_file_model_time = prm.get_double ("First data file model time");
+          first_data_file_number     = prm.get_integer("First data file number");
+          decreasing_file_order      = prm.get_bool   ("Decreasing file order");
+          scale_factor               = prm.get_double ("Scale factor");
+          point1                     = prm.get        ("Point one");
+          point2                     = prm.get        ("Point two");
+          lithosphere_thickness      = prm.get_double ("Lithosphere thickness");
 
           if (this->convert_output_to_years())
             {

@@ -1,0 +1,18 @@
+#!/bin/bash
+
+for refinement in 3; do # 4 5 6 7
+for averaging in none "harmonic average"; do # arithmetic/geometric/harmonic average
+for column in 8 9 10; do
+      	statistics="statistics_${refinement}_${averaging}_column_${column}"
+  echo "#sinker/DR 1e4 1e6 1e8 1e10" > "$statistics"
+  for nsinkers in 1 4 8 12 16 20 24 28; do
+    echo -n $nsinkers '' >> "$statistics"
+    for viscosity in 1e4 1e6 1e8 1e10; do
+	current_model="averaging${averaging}_nsinkers${nsinkers}_viscosity${viscosity}_refinement${refinement}"
+	cat "output-$current_model/statistics" | tail -n1 | gawk -v column=$column '{printf "%d ", $column}' >> "$statistics"
+      done
+      echo '' >> "$statistics"
+      done
+    done
+  done
+done

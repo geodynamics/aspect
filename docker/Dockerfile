@@ -1,4 +1,4 @@
-FROM dealii/dealii:v8.5.0-gcc-mpi-fulldepscandi-debugrelease
+FROM dealii/dealii:v8.5.1-gcc-mpi-fulldepscandi-debugrelease
 
 LABEL maintainer <rene.gassmoeller@mailbox.org>
 

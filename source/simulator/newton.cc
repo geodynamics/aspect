@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -140,8 +140,7 @@ namespace aspect
 
     const unsigned int n_points = output.viscosities.size();
     output.additional_outputs.push_back(
-      std::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
-      (new MaterialModel::MaterialModelDerivatives<dim> (n_points)));
+      std::make_shared<MaterialModel::MaterialModelDerivatives<dim>>(n_points));
   }
 
 

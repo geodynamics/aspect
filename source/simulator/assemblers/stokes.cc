@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -273,8 +273,7 @@ namespace aspect
           && outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >() == nullptr)
         {
           outputs.additional_outputs.push_back(
-            std::shared_ptr<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >
-            (new MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> (n_points)));
+            std::make_shared<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>> (n_points));
         }
 
       Assert(!this->get_parameters().enable_additional_stokes_rhs
@@ -286,8 +285,7 @@ namespace aspect
           outputs.template get_additional_output<MaterialModel::ElasticOutputs<dim> >() == nullptr)
         {
           outputs.additional_outputs.push_back(
-            std::shared_ptr<MaterialModel::ElasticOutputs<dim> >
-            (new MaterialModel::ElasticOutputs<dim> (n_points)));
+            std::make_shared<MaterialModel::ElasticOutputs<dim>> (n_points));
         }
 
       Assert(!this->get_parameters().enable_elasticity

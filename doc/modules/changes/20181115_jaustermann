@@ -1,0 +1,3 @@
+New: ASPECT now calculates gravity anomalies in addition to the geoid. This can be outputted in ascii format during postprocessing.
+<br>
+(Jacky Austermann, 2018/11/15)

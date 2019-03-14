@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2013, 2014 by Matthias Maier
+# Copyright (C) 2013 - 2019 by Matthias Maier
 #
 # This file is part of ASPECT.
 #
@@ -100,7 +100,7 @@
 # For details, consult the ./README file.
 #
 
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8.8)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8.12)
 MESSAGE("-- This is CTest ${CMAKE_VERSION}")
 
 #

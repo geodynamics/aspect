@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -19,8 +19,8 @@
 */
 
 
-#ifndef _aspect_geometry_model__initial_topography_model_zero_topography_h
-#define _aspect_geometry_model__initial_topography_model_zero_topography_h
+#ifndef _aspect_geometry_model_initial_topography_model_zero_topography_h
+#define _aspect_geometry_model_initial_topography_model_zero_topography_h
 
 #include <aspect/geometry_model/initial_topography_model/interface.h>
 

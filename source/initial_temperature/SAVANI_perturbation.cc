@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -55,7 +55,7 @@ namespace aspect
               std::istringstream in(Utilities::read_and_distribute_file_content(filename, comm));
 
               in >> order;
-              getline(in,temp);  // throw away the rest of the line
+              std::getline(in,temp);  // throw away the rest of the line
 
               const unsigned int num_layers = 28;
 
@@ -69,7 +69,7 @@ namespace aspect
                       in >> new_val;
                       coeffs.push_back(0.01*new_val);
                     }
-                  getline(in,temp);
+                  std::getline(in,temp);
                 }
 
               // reorder the coefficients into sin and cos coefficients. a_lm will be the cos coefficients
@@ -128,8 +128,8 @@ namespace aspect
               // Read data from disk and distribute among processes
               std::istringstream in(Utilities::read_and_distribute_file_content(filename, comm));
 
-              getline(in,temp);  // throw away the rest of the line
-              getline(in,temp);  // throw away the rest of the line
+              std::getline(in,temp);  // throw away the rest of the line
+              std::getline(in,temp);  // throw away the rest of the line
 
               const unsigned int num_splines = 28;
               depths.resize(num_splines);
@@ -161,8 +161,12 @@ namespace aspect
     void
     SAVANIPerturbation<dim>::initialize()
     {
-      spherical_harmonics_lookup.reset(new internal::SAVANI::SphericalHarmonicsLookup(data_directory+harmonics_coeffs_file_name,this->get_mpi_communicator()));
-      spline_depths_lookup.reset(new internal::SAVANI::SplineDepthsLookup(data_directory+spline_depth_file_name,this->get_mpi_communicator()));
+      spherical_harmonics_lookup
+        = std_cxx14::make_unique<internal::SAVANI::SphericalHarmonicsLookup>(data_directory+harmonics_coeffs_file_name,
+                                                                             this->get_mpi_communicator());
+      spline_depths_lookup
+        = std_cxx14::make_unique<internal::SAVANI::SplineDepthsLookup>(data_directory+spline_depth_file_name,
+                                                                       this->get_mpi_communicator());
 
       if (vs_to_density_method == file)
         {

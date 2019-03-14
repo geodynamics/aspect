@@ -1,4 +1,4 @@
-# Copyright (C) 2013 - 2018 by the authors of the ASPECT code.
+# Copyright (C) 2013 - 2019 by the authors of the ASPECT code.
 #
 # This file is part of ASPECT.
 #
@@ -16,6 +16,7 @@
 # along with ASPECT; see the file doc/COPYING.  If not see
 # <http://www.gnu.org/licenses/>.
 
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8.12)
 
 MESSAGE(STATUS "====================================================")
 MESSAGE(STATUS "============ Configuring ASPECT ====================")
@@ -24,10 +25,10 @@ MESSAGE(STATUS "====================================================")
 # Set the name of the project and target:
 SET(TARGET "aspect")
 
-FILE(GLOB_RECURSE TARGET_SRC  "source/*.cc" "unit_tests/*.cc" "include/*.h" "contrib/catch/catch.hpp" "contrib/WorldBuilder/source/*.cc")
-INCLUDE_DIRECTORIES(include ${CMAKE_BINARY_DIR}/include contrib/catch contrib/WorldBuilder/include/)
+FILE(GLOB_RECURSE TARGET_SRC  "source/*.cc" "unit_tests/*.cc" "include/*.h" "contrib/catch/catch.hpp")
+INCLUDE_DIRECTORIES(include ${CMAKE_BINARY_DIR}/include contrib/catch)
 
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8.8)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 LIST(APPEND CMAKE_MODULE_PATH
   ${CMAKE_SOURCE_DIR}
@@ -228,7 +229,7 @@ IF(EXISTS ${CMAKE_SOURCE_DIR}/tests/CMakeLists.txt)
     COMMAND ${CMAKE_COMMAND} -G ${ASPECT_TEST_GENERATOR}
         -D ASPECT_RUN_ALL_TESTS=${ASPECT_RUN_ALL_TESTS}
         -D ASPECT_COMPARE_TEST_RESULTS=${ASPECT_COMPARE_TEST_RESULTS}
-        -D ASPECT_DIR=${CMAKE_BINARY_DIR}
+        -D Aspect_DIR=${CMAKE_BINARY_DIR}
         -D CMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
         -D ASPECT_BINARY=${aspect_binary}
         ${CMAKE_CURRENT_SOURCE_DIR}/tests
@@ -261,6 +262,72 @@ ADD_CUSTOM_TARGET(indent
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
   COMMAND ./doc/indent
   COMMENT "Indenting all ASPECT header and source files..."
+  )
+
+IF(CMAKE_GENERATOR MATCHES "Ninja")
+  SET(_make_command "$ ninja")
+ELSE()
+  SET(_make_command " $ make")
+ENDIF()
+
+# Provide "release" and "debug" targets to switch compile mode
+IF(${DEAL_II_BUILD_TYPE} MATCHES "DebugRelease")
+ADD_CUSTOM_TARGET(release
+  COMMAND ${CMAKE_COMMAND} -D CMAKE_BUILD_TYPE=Release .
+  COMMAND ${CMAKE_COMMAND} -E echo "***"
+  COMMAND ${CMAKE_COMMAND} -E echo "*** Switched to Release mode. Now recompile with: ${_make_command}"
+  COMMAND ${CMAKE_COMMAND} -E echo "***"
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+  VERBATIM
+  COMMENT "switching to RELEASE mode..."
+  )
+ADD_CUSTOM_TARGET(debug
+  COMMAND ${CMAKE_COMMAND} -D CMAKE_BUILD_TYPE=Debug .
+  COMMAND ${CMAKE_COMMAND} -E echo "***"
+  COMMAND ${CMAKE_COMMAND} -E echo "*** Switched to Debug mode. Now recompile with: ${_make_command}"
+  COMMAND ${CMAKE_COMMAND} -E echo "***"
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+  VERBATIM
+  COMMENT "switching to DEBUG mode..."
+  )
+ENDIF()
+
+# Provide a "distclean" target (like it is done in deal.II):
+ADD_CUSTOM_TARGET(distclean
+  COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target clean
+  COMMAND ${CMAKE_COMMAND} -E remove_directory CMakeFiles
+  COMMAND ${CMAKE_COMMAND} -E remove
+    CMakeCache.txt cmake_install.cmake Makefile
+    build.ninja rules.ninja .ninja_deps .ninja_log
+  COMMENT "distclean invoked"
+  )
+
+
+
+FILE(WRITE ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/print_usage.cmake
+"MESSAGE(
+\"###
+#
+#  Project ${TARGET} set up with  ${DEAL_II_PACKAGE_NAME}-${DEAL_II_PACKAGE_VERSION}  found at
+#      ${DEAL_II_PATH}
+#
+#  CMAKE_BUILD_TYPE:          ${CMAKE_BUILD_TYPE}
+#
+#  You can now run
+#      ${_make_command}                - to compile and link ${TARGET}
+#      ${_make_command} debug          - to switch the build type to 'Debug'
+#      ${_make_command} release        - to switch the build type to 'Release'
+#      ${_make_command} clean          - to remove the generated executable as well as
+#                               all intermediate compilation files
+#      ${_make_command} distclean      - to clean the directory from all generated
+#                               files (includes clean, runclean and the removal
+#                               of the generated build system)
+#      ${_make_command} info           - to view this message again
+\")")
+
+# Provide "info" target
+ADD_CUSTOM_TARGET(info
+  COMMAND ${CMAKE_COMMAND} -P ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/print_usage.cmake
   )
 
 
@@ -337,8 +404,35 @@ IF (ASPECT_PRECOMPILE_HEADERS)
   LIST(INSERT TARGET_SRC 0 ${HELPER_PATH})
 ENDIF()
 
+# Check whether we can find the WorldBuilder and enable it.
+SET(ASPECT_WITH_WORLD_BUILDER ON CACHE BOOL "If ON the World Builder is compiled togheter with ASPECT.")
+IF (NOT EXISTS ${CMAKE_SOURCE_DIR}/contrib/WorldBuilder/VERSION)
+  MESSAGE("-- World Builder not found.")
+  SET(ASPECT_WITH_WORLD_BUILDER OFF CACHE BOOL "" FORCE)
+ENDIF()
+IF (ASPECT_WITH_WORLD_BUILDER)
+  SET(WORLD_BUILDER_SOURCE_DIR "${CMAKE_SOURCE_DIR}/contrib/WorldBuilder")
+  INCLUDE("${WORLD_BUILDER_SOURCE_DIR}/cmake/version.cmake")
+  MESSAGE("-- World Builder version ${WORLD_BUILDER_VERSION} found.")
 
-DEAL_II_INVOKE_AUTOPILOT()
+  # add source and include dirs:
+  FILE(GLOB_RECURSE _files "contrib/WorldBuilder/source/*.cc")
+  LIST(APPEND TARGET_SRC ${_files})
+  INCLUDE_DIRECTORIES("${WORLD_BUILDER_SOURCE_DIR}/include/")
+
+  # generate config.cc and include it:
+  CONFIGURE_FILE("${WORLD_BUILDER_SOURCE_DIR}/source/config.cc.in" "${CMAKE_BINARY_DIR}/world_builder_config.cc" @ONLY)
+  LIST(INSERT TARGET_SRC 0 "${CMAKE_BINARY_DIR}/world_builder_config.cc")
+
+  # set ASPECT_USE_WORLD_BUILDER define for all source files:
+  FOREACH(_source_file ${TARGET_SRC})
+    SET_PROPERTY(SOURCE ${_source_file}
+                 APPEND PROPERTY COMPILE_DEFINITIONS ASPECT_USE_WORLD_BUILDER=1)
+  ENDFOREACH()
+ENDIF()
+
+ADD_EXECUTABLE(${TARGET} ${TARGET_SRC})
+DEAL_II_SETUP_TARGET(${TARGET})
 
 FIND_PACKAGE(PerpleX QUIET HINTS ./contrib/perplex/install/ ../ ../../ $ENV{PERPLEX_DIR})
 IF(${PerpleX_FOUND})
@@ -355,24 +449,6 @@ ELSE()
 ENDIF()
 
 
-# Check whether we can find the WorldBuilder files. If so, make sure we
-# add a preprocessor #define that says that the WorldBuilder exists.
-EXECUTE_PROCESS(COMMAND ls ${CMAKE_SOURCE_DIR}/contrib/WorldBuilder/VERSION
-                RESULT_VARIABLE result
-                OUTPUT_QUIET ERROR_QUIET)
-IF (result)
-  MESSAGE("-- World Builder not found.")
-  SET(ASPECT_WITH_WORLD_BUILDER OFF CACHE BOOL "" FORCE)
-ELSE()
-  FILE(STRINGS "${CMAKE_SOURCE_DIR}/contrib/WorldBuilder/VERSION" WorldBuilderVersion)
-  MESSAGE("-- World Builder version ${WorldBuilderVersion} found.")
-  SET(ASPECT_WITH_WORLD_BUILDER ON CACHE BOOL "If ON the World Builder is compiled togheter with ASPECT.")
-
-  FOREACH(_source_file ${TARGET_SRC})
-    SET_PROPERTY(SOURCE ${_source_file}
-                 APPEND PROPERTY COMPILE_DEFINITIONS ASPECT_USE_WORLD_BUILDER=1)
-  ENDFOREACH()
-ENDIF()
 
 IF (ASPECT_USE_SHARED_LIBS)
   # some systems need to explicitly link to some libraries to use dlopen
@@ -487,3 +563,11 @@ INSTALL(FILES ${CMAKE_BINARY_DIR}/include/aspect/revision.h DESTINATION "include
 
 MESSAGE(STATUS "Writing config into detailed.log...")
 INCLUDE(cmake/write_config)
+
+# print "info" if run for the first time:
+IF(NOT USAGE_PRINTED)
+  INCLUDE(${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/print_usage.cmake)
+  SET(USAGE_PRINTED TRUE CACHE INTERNAL "")
+ELSE()
+  MESSAGE(STATUS "Run  ${_make_command} info  to print a detailed help message")
+ENDIF()

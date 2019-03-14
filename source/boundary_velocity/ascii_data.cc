@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -99,8 +99,8 @@ namespace aspect
           prm.declare_entry ("Use spherical unit vectors", "false",
                              Patterns::Bool (),
                              "Specify velocity as r, phi, and theta components "
-                             "instead of x, y, and z. Positive velocities point up, north, "
-                             "and east (in 3D) or out and clockwise (in 2D). "
+                             "instead of x, y, and z. Positive velocities point up, east, "
+                             "and north (in 3D) or out and clockwise (in 2D). "
                              "This setting only makes sense for spherical geometries."
                             );
         }

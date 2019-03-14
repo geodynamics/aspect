@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2013 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2013 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -365,7 +365,7 @@ namespace aspect
     Manager<dim>::get_matching_boundary_composition_model () const
     {
       AssertThrow(has_matching_boundary_composition_model<BoundaryCompositionType> (),
-                  ExcMessage("You asked BoundaryComposition:Manager::get_boundary_composition_model() for a "
+                  ExcMessage("You asked BoundaryComposition::Manager::get_boundary_composition_model() for a "
                              "boundary composition model of type <" + boost::core::demangle(typeid(BoundaryCompositionType).name()) + "> "
                              "that could not be found in the current model. Activate this "
                              "boundary composition model in the input file."));

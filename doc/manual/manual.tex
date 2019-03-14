@@ -3174,6 +3174,7 @@ aspect> ls -l output/
 total 932
 -rw-rw-r-- 1 bangerth bangerth  11134 Dec 11 10:08 depth_average.gnuplot
 -rw-rw-r-- 1 bangerth bangerth  11294 Dec 11 10:08 log.txt
+-rw-rw-r-- 1 bangerth bangerth     42 Dec 11 10:07 original.prm
 -rw-rw-r-- 1 bangerth bangerth 326074 Dec 11 10:07 parameters.prm
 -rw-rw-r-- 1 bangerth bangerth 577138 Dec 11 10:07 parameters.tex
 drwxr-xr-x 2 bangerth bangerth   4096 Dec 11 10:08 solution
@@ -3183,16 +3184,31 @@ drwxr-xr-x 2 bangerth bangerth   4096 Dec 11 10:08 solution
 \end{lstlisting}
 The purpose of these files is as follows:
 \begin{itemize}
-\item \textit{A listing of all run-time parameters:} The
-  \texttt{output/parameters.prm} file contains a complete listing of all
+
+\item \textit{Screen output:} The file \texttt{output/log.txt} contains a copy
+  of the output that is printed to the terminal when you run \aspect{}.
+
+\item \textit{A listing of all run-time parameters:} The file
+  \texttt{output/original.prm} is a copy of the parameter file that was used
+  in this computation. It is often useful to save this file together with
+  simulation data to allow for the easy reproduction of computations later on.
+
+  The \texttt{output/parameters.prm} file contains a complete listing of all
   run-time parameters. In particular, this includes the ones that have been
   specified in the input parameter file passed on the command line, but it
-  also includes those parameters for which defaults have been used. It is
-  often useful to save this file together with simulation data to allow for
-  the easy reproduction of computations later on.
+  also includes those parameters for which defaults have been used. This file
+  can also be used to explore all available parameters and possible options as
+  it contains the documentation of all parameters.
+
+  Finally, there is \texttt{output/parameters.tex}, that lists the parameters
+  like \texttt{output/parameters.prm} in \LaTeX{} format, and
+  \texttt{output/parameters.json} in JSON format.
   
-  There is a second file, \texttt{output/parameters.prm}, that lists these
-  parameters in \LaTeX{} format.
+  While \texttt{output/parameters.prm} contains all parameters (with their
+  default values if they were not specified), all formatting and comments are
+  lost. As \texttt{output/original.prm} is identical to the prm you started
+  \aspect{} with, it preserves comments and formatting while not outputting
+  the default values (or documentation).
 
 \item \textit{Graphical output files:} One of the postprocessors chosen
   in the parameter file used for this computation is the one that generates
@@ -4460,8 +4476,9 @@ Section~\ref{sec:extending}.}
 Basically, these are just regular text files you can edit with programs like
 \texttt{gedit}, \texttt{kwrite} or \texttt{kate} when working on Linux, or
 something as simple as \texttt{NotePad} on Windows. When setting up these input
-files, you basically have to describe everything that characterizes the
-computation you want to do. In particular, this includes the following:
+files for a model you have in mind, you have to describe everything
+that characterizes the situation you are considering. In particular,
+this includes the following:
 \begin{itemize}
   \item What internal forces act on the medium (the equation)?
   \item What external forces do we have (the right hand side)
@@ -6613,9 +6630,12 @@ can be much more expensive. Both approaches can be used to actively influence th
 \label{sec:geomio}
 \textit{This section was contributed by Juliane Dannberg}
 
+\note{This cookbook is based on a developer version of geomIO from July 2016. In the meantime, the development of 
+geomIO continued, and there is now a publication\cite{bauvillegeomio} that describes its features and how they can be used in more detail.}
+
 Many geophysical setups require initial conditions with several different materials and complex geometries. 
 Hence, sometimes it would be easier to generate the initial geometries of the materials as a drawing instead 
-of by writing code. The MATLAB-based library geomIO (\url{http://geomio.bitbucket.org/}) provides a convenient tool
+of by writing code. The MATLAB-based library geomIO (\url{https://bitbucket.org/geomio/geomio}, \cite{bauvillegeomio}) provides a convenient tool
 to convert a drawing generated with the vector graphics editor Inkscape (\url{https://inkscape.org/en/}) to a data 
 file that can be read into \aspect{}. Here, we will demonstrate how this can be done for a 2D setup for a model
 with one compositional field, but geomIO also has the capability to create 3D volumes based on a series of 2D vector 
@@ -7500,15 +7520,16 @@ One can see that subduction zones are visible as depressed surface topography
 due to the downward flow, while regions such as Iceland, Hawaii, or mid ocean 
 ridges are elevated due to (deep and) shallow upward flow. The core mantle boundary
 topography shows that the upwelling large low shear wave velocity 
-provinces deflect the core mantle boundary up. Lastly, Figure~\ref{fig:ic-2}e and 
-f show geoid perturbations for 2 and 4 global refinement steps, respectively. 
+provinces deflect the core mantle boundary up. Figure~\ref{fig:ic-2}e and 
+f shows geoid perturbations for 2 and 4 global refinement steps, respectively. 
 The geoid anomalies show a strong correlation with the surface dynamic topography. 
 This is in part expected given that the geoid anomalies are driven by the 
 deflection of the upper and lower surface
 as well as internal density variations. The relative importance of these different
 contributors is dictated by the Earth's viscosity profile. Due to the isoviscous
 assumption in this cookbook, we don't properly recover patterns of the observed
-geoid. 
+geoid. Lastly, Figure~\ref{fig:ic-2}g and h shows geoid perturbations for 2 and 4 
+global refinement steps, respectively.
 
 As discussed in the previous cookbook, dynamic topography does not necessarily 
 average to zero if the resolution is not high enough. While one can simply subtract
@@ -7521,13 +7542,15 @@ dynamic topography is closer to zero than the mean top dynamic topography. This 
 likely due to the larger magnitude of dynamic topography at the surface and the
 difference in resolution between the top and bottom domain
 (for a given refinement, the resolution at the core mantle boundary is
-higher than the resolution at the surface). The average geoid height is zero since
-the minimum degree in the geoid anomaly expansion is set to 2. 
+higher than the resolution at the surface). The average geoid height and gravity anomaly 
+is zero since the minimum degree in the geoid anomaly expansion is set to 2. 
 
 This model uses a highly simplified material model that is incompressible and 
 isoviscous and does therefore not represent real mantle flow. More realistic 
 material properties, density scaling as well as boundary conditions will affect the magnitudes
-and patterns shown here. 
+and patterns shown here. A comparison between surface dynamic topography, the geoid,
+and gravity anomalies from ASPECT and a spectral based code shows good agreement 
+(see \texttt{tests/spectral-comparison/} for figure and details).
 
 \begin{figure}
   \includegraphics[width=\textwidth]{cookbooks/initial-condition-S20RTS/Fig_cookbook_V4-01.png}
@@ -7550,8 +7573,10 @@ and patterns shown here.
   refinement of 2 (a, cookbook) and 4 (b). The colorbar ranges from -2400m to 400m for panel (a) and
   from -2000m to 1600m for panel (b). The second row shows the dynamic topography at
   the core mantle boundary for the same model and a refinement of 2 (c, cookbook) and 4 (d). Averages of the 
-  dynamic topography fields are indicated at the bottom left of each panel. The bottom row shows the
-  geoid anomalies from this model at the surface for refinement of 2 (e, cookbook) and 4 (f).}
+  dynamic topography fields are indicated at the bottom left of each panel. The third row shows the
+  geoid anomalies from this model at the surface for refinement of 2 (e, cookbook) and 4 (f). 
+  The fourth row shows the gravity anomalies from this model at the surface for refinement of 2 
+  (g, cookbook) and 4 (h)}
   \label{fig:ic-2}
 \end{figure}
 

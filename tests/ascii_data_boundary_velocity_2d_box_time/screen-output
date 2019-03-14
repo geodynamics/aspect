@@ -36,7 +36,7 @@ Number of degrees of freedom: 1,212 (738+105+369)
    Postprocessing:
      RMS, max velocity:                  0.349 m/year, 0.893 m/year
      Temperature min/avg/max:            0 K, 1488 K, 1913 K
-     Heat fluxes through boundary parts: 7.474e-12 W, 4.484e-12 W, 4.647e+05 W, 4.549e+05 W
+     Heat fluxes through boundary parts: 0 W, 0 W, 5.606e+05 W, 1.661e+05 W
 
 *** Timestep 1:  t=82500 years
    Solving temperature system... 10 iterations.
@@ -46,7 +46,7 @@ Number of degrees of freedom: 1,212 (738+105+369)
    Postprocessing:
      RMS, max velocity:                  0.349 m/year, 0.893 m/year
      Temperature min/avg/max:            0 K, 1456 K, 1959 K
-     Heat fluxes through boundary parts: 1091 W, -2138 W, 4.003e+05 W, 4.31e+05 W
+     Heat fluxes through boundary parts: 0 W, 0 W, 8.234e+07 W, 2.611e+07 W
 
 *** Timestep 2:  t=165000 years
    Solving temperature system... 9 iterations.
@@ -56,7 +56,7 @@ Number of degrees of freedom: 1,212 (738+105+369)
    Postprocessing:
      RMS, max velocity:                  0.535 m/year, 0.943 m/year
      Temperature min/avg/max:            0 K, 1409 K, 1929 K
-     Heat fluxes through boundary parts: 1358 W, -2636 W, 3.277e+05 W, 3.974e+05 W
+     Heat fluxes through boundary parts: -5.444e+07 W, 5.032e+07 W, 1.312e+08 W, 4.768e+07 W
 
 *** Timestep 3:  t=247500 years
    Solving temperature system... 20 iterations.
@@ -66,7 +66,7 @@ Number of degrees of freedom: 1,212 (738+105+369)
    Postprocessing:
      RMS, max velocity:                  0.549 m/year, 0.96 m/year
      Temperature min/avg/max:            0 K, 1364 K, 1818 K
-     Heat fluxes through boundary parts: -2156 W, 419.1 W, 2.736e+05 W, 3.62e+05 W
+     Heat fluxes through boundary parts: -5.368e+07 W, 4.843e+07 W, 1.124e+08 W, 5.169e+07 W
 
 *** Timestep 4:  t=330000 years
 
@@ -79,7 +79,7 @@ Number of degrees of freedom: 1,212 (738+105+369)
    Postprocessing:
      RMS, max velocity:                  0.559 m/year, 0.966 m/year
      Temperature min/avg/max:            0 K, 1315 K, 1726 K
-     Heat fluxes through boundary parts: -3588 W, 962.1 W, 2.339e+05 W, 3.217e+05 W
+     Heat fluxes through boundary parts: -5.048e+07 W, 4.686e+07 W, 1.01e+08 W, 7.421e+07 W
 
 *** Timestep 5:  t=412500 years
    Solving temperature system... 10 iterations.
@@ -89,7 +89,7 @@ Number of degrees of freedom: 1,212 (738+105+369)
    Postprocessing:
      RMS, max velocity:                  0.535 m/year, 0.943 m/year
      Temperature min/avg/max:            0 K, 1271 K, 1695 K
-     Heat fluxes through boundary parts: -3682 W, 712.7 W, 2.046e+05 W, 2.92e+05 W
+     Heat fluxes through boundary parts: -4.672e+07 W, 4.509e+07 W, 9.015e+07 W, 5.034e+07 W
 
 *** Timestep 6:  t=495000 years
    Solving temperature system... 10 iterations.
@@ -99,7 +99,7 @@ Number of degrees of freedom: 1,212 (738+105+369)
    Postprocessing:
      RMS, max velocity:                  0.548 m/year, 0.943 m/year
      Temperature min/avg/max:            0 K, 1230 K, 1669 K
-     Heat fluxes through boundary parts: -2154 W, 91.52 W, 1.827e+05 W, 2.67e+05 W
+     Heat fluxes through boundary parts: -4.327e+07 W, 4.25e+07 W, 8.035e+07 W, 5.087e+07 W
 
 *** Timestep 7:  t=577500 years
 
@@ -116,7 +116,7 @@ Number of degrees of freedom: 1,212 (738+105+369)
    Postprocessing:
      RMS, max velocity:                  0.551 m/year, 0.943 m/year
      Temperature min/avg/max:            0 K, 1187 K, 1635 K
-     Heat fluxes through boundary parts: -580.8 W, -274.1 W, 1.663e+05 W, 2.395e+05 W
+     Heat fluxes through boundary parts: -4.031e+07 W, 3.933e+07 W, 7.175e+07 W, 7.999e+07 W
 
 *** Timestep 8:  t=600000 years
    Solving temperature system... 8 iterations.
@@ -126,7 +126,7 @@ Number of degrees of freedom: 1,212 (738+105+369)
    Postprocessing:
      RMS, max velocity:                  0.551 m/year, 0.943 m/year
      Temperature min/avg/max:            0 K, 1175 K, 1632 K
-     Heat fluxes through boundary parts: -484.5 W, -75.44 W, 1.628e+05 W, 2.311e+05 W
+     Heat fluxes through boundary parts: -3.955e+07 W, 3.854e+07 W, 6.739e+07 W, 9.573e+07 W
 
 Termination requested by criterion: end time
 

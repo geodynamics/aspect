@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -19,8 +19,8 @@
 */
 
 
-#ifndef _aspect__adiabatic_conditions_ascii_data_h
-#define _aspect__adiabatic_conditions_ascii_data_h
+#ifndef _aspect_adiabatic_conditions_ascii_data_h
+#define _aspect_adiabatic_conditions_ascii_data_h
 
 
 #include <aspect/adiabatic_conditions/interface.h>

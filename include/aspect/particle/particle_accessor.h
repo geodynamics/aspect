@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2017 - 2018 by the authors of the ASPECT code.
+ Copyright (C) 2017 - 2019 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -26,6 +26,8 @@
 
 #include <deal.II/base/array_view.h>
 #include <deal.II/distributed/tria.h>
+
+#if !DEAL_II_VERSION_GTE(9,0,0)
 
 namespace aspect
 {
@@ -190,21 +192,21 @@ namespace aspect
          * This constructor is protected so that it can only be accessed by friend
          * classes.
          */
-        ParticleAccessor (const std::multimap<types::LevelInd, Particle<dim,spacedim> > &map,
-                          const typename std::multimap<types::LevelInd, Particle<dim,spacedim> >::iterator &particle);
+        ParticleAccessor (const std::multimap<Particles::internal::LevelInd, Particle<dim,spacedim> > &map,
+                          const typename std::multimap<Particles::internal::LevelInd, Particle<dim,spacedim> >::iterator &particle);
 
       private:
         /**
          * A pointer to the container that stores the particles. Obviously,
          * this accessor is invalidated if the container changes.
          */
-        std::multimap<types::LevelInd, Particle<dim,spacedim> >            *map;
+        std::multimap<Particles::internal::LevelInd, Particle<dim,spacedim> >            *map;
 
         /**
          * An iterator into the container of particles. Obviously, this
          * accessor is invalidated if the container changes.
          */
-        typename std::multimap<types::LevelInd, Particle<dim,spacedim> >::iterator  particle;
+        typename std::multimap<Particles::internal::LevelInd, Particle<dim,spacedim> >::iterator  particle;
 
         /**
          * Make ParticleIterator a friend to allow it constructing ParticleAccessors.
@@ -215,4 +217,5 @@ namespace aspect
   }
 }
 
+#endif
 #endif

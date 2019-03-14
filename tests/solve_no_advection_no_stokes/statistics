@@ -1,0 +1,13 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of nonlinear iterations
+# 8: Visualization file name
+# 9: Minimal temperature (K)
+# 10: Average temperature (K)
+# 11: Maximal temperature (K)
+# 12: Average nondimensional temperature (K)
+0 0.000000000000e+00 0.000000000000e+00 24 972 305 0 output-solve_no_advection_no_stokes/solution/solution-00000 3.00000000e+02 2.28878038e+03 3.96846847e+03 5.27108503e-01 

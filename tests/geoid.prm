@@ -104,6 +104,8 @@ subsection Postprocess
     set Also output the spherical harmonic coefficients of surface dynamic topography contribution = true
     set Also output the spherical harmonic coefficients of CMB dynamic topography contribution = true
     set Also output the spherical harmonic coefficients of density anomaly contribution = true
+
+    set Also output the gravity anomaly  = true
   end
 end
 

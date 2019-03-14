@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2017 by the authors of the ASPECT code.
+  Copyright (C) 2017 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -20,6 +20,8 @@
 
 #include <aspect/particle/particle_iterator.h>
 
+#if !DEAL_II_VERSION_GTE(9,0,0)
+
 namespace aspect
 {
   namespace Particle
@@ -33,8 +35,8 @@ namespace aspect
 
 
     template <int dim, int spacedim>
-    ParticleIterator<dim,spacedim>::ParticleIterator (const std::multimap<types::LevelInd, Particle<dim,spacedim> > &map,
-                                                      const typename std::multimap<types::LevelInd, Particle<dim,spacedim> >::iterator &particle)
+    ParticleIterator<dim,spacedim>::ParticleIterator (const std::multimap<Particles::internal::LevelInd, Particle<dim,spacedim> > &map,
+                                                      const typename std::multimap<Particles::internal::LevelInd, Particle<dim,spacedim> >::iterator &particle)
       :
       accessor (map, particle)
     {}
@@ -159,3 +161,5 @@ namespace aspect
     ASPECT_INSTANTIATE(INSTANTIATE)
   }
 }
+
+#endif

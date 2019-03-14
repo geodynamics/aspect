@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -34,7 +34,7 @@ namespace aspect
       StrainRateTensor ()
         :
         DataPostprocessorTensor<dim> ("strain_rate_tensor",
-                                      update_gradients | update_q_points)
+                                      update_gradients | update_quadrature_points)
       {}
 
       template <int dim>

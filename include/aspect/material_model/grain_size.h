@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2014 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__model_grain_size_h
-#define __aspect__model_grain_size_h
+#ifndef _aspect_model_grain_size_h
+#define _aspect_model_grain_size_h
 
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>

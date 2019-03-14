@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -308,7 +308,7 @@ namespace aspect
     Manager<dim>::get_matching_initial_composition_model () const
     {
       AssertThrow(has_matching_initial_composition_model<InitialCompositionType> (),
-                  ExcMessage("You asked InitialComposition:Manager::get_initial_composition_model() for a "
+                  ExcMessage("You asked InitialComposition::Manager::get_initial_composition_model() for a "
                              "initial composition model of type <" + boost::core::demangle(typeid(InitialCompositionType).name()) + "> "
                              "that could not be found in the current model. Activate this "
                              "initial composition model in the input file."));

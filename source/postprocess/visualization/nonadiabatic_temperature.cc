@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -34,7 +34,7 @@ namespace aspect
       NonadiabaticTemperature ()
         :
         DataPostprocessorScalar<dim> ("nonadiabatic_temperature",
-                                      update_values | update_q_points)
+                                      update_values | update_quadrature_points)
       {}
 
 

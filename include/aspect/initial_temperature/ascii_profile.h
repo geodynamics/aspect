@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -19,8 +19,8 @@
 */
 
 
-#ifndef _aspect__initial_temperature_ascii_profile_h
-#define _aspect__initial_temperature_ascii_profile_h
+#ifndef _aspect_initial_temperature_ascii_profile_h
+#define _aspect_initial_temperature_ascii_profile_h
 
 #include <aspect/initial_temperature/interface.h>
 #include <aspect/utilities.h>

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -303,21 +303,24 @@ namespace aspect
     {
       data_OES.clear();
       if (name_OES.size()==0) return;
-      std::istringstream in(Utilities::read_and_distribute_file_content(name_OES.c_str(), this->get_mpi_communicator()));
+      std::istringstream in(Utilities::read_and_distribute_file_content(name_OES.c_str(),
+                                                                        this->get_mpi_communicator()));
       if (in.good())
         {
           str_data_OES data_read;
-          const int buff_size = 1024;
-          char *line = new char [buff_size];
+          std::string line;
           while (!in.eof())
             {
-              in.getline(line, buff_size);
-              if (sscanf(line,"%le\t%le\n",&(data_read.t),&(data_read.w))==2)
+              std::getline(in, line);
+              if (sscanf(line.data(), "%le\t%le\n", &data_read.t, &data_read.w)==2)
                 data_OES.push_back(data_read);
             }
         }
       if (data_OES.size()!=0)
-        this->get_pcout()<<"Other energy source is in use ( "<<data_OES.size()<<" data points is read)."<<std::endl;
+        this->get_pcout() << "Other energy source is in use ( "
+                          << data_OES.size()
+                          << " data points is read)."
+                          << std::endl;
     }
 
     template <int dim>
@@ -650,7 +653,7 @@ namespace aspect
                                           quadrature_formula,
                                           update_gradients      | update_values |
                                           update_normal_vectors |
-                                          update_q_points       | update_JxW_values);
+                                          update_quadrature_points       | update_JxW_values);
 
         std::vector<Tensor<1,dim> > temperature_gradients (quadrature_formula.size());
         std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (quadrature_formula.size()));

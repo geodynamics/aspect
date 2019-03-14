@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2015 - 2018 by the authors of the ASPECT code.
+ Copyright (C) 2015 - 2019 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -21,10 +21,16 @@
 #ifndef _aspect_particle_interpolator_interface_h
 #define _aspect_particle_interpolator_interface_h
 
-#include <aspect/particle/particle.h>
-#include <aspect/particle/particle_handler.h>
 #include <aspect/plugins.h>
 #include <aspect/global.h>
+
+#if DEAL_II_VERSION_GTE(9,0,0)
+#include <deal.II/particles/particle.h>
+#include <deal.II/particles/particle_handler.h>
+#else
+#include <aspect/particle/particle.h>
+#include <aspect/particle/particle_handler.h>
+#endif
 
 #include <deal.II/base/point.h>
 #include <deal.II/base/parameter_handler.h>
@@ -38,6 +44,10 @@ namespace aspect
     namespace Interpolator
     {
       using namespace dealii;
+
+#if DEAL_II_VERSION_GTE(9,0,0)
+      using namespace dealii::Particles;
+#endif
 
       /**
        * An abstract class defining virtual methods for performing

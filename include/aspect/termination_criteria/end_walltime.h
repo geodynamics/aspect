@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011- 2018 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019- 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__termination_criteria_end_walltime_h
-#define __aspect__termination_criteria_end_walltime_h
+#ifndef _aspect_termination_criteria_end_walltime_h
+#define _aspect_termination_criteria_end_walltime_h
 
 #include <aspect/termination_criteria/interface.h>
 #include <aspect/simulator.h>

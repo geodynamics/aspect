@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -32,6 +32,7 @@
 #include <aspect/geometry_model/chunk.h>
 #include <aspect/geometry_model/ellipsoidal_chunk.h>
 #include <aspect/geometry_model/box.h>
+#include <aspect/geometry_model/two_merged_boxes.h>
 
 namespace aspect
 {
@@ -45,14 +46,10 @@ namespace aspect
       // Ensure the initial lithostatic pressure traction boundary conditions are used,
       // and register for which boundary indicators these conditions are set.
       std::set<types::boundary_id> traction_bi;
-      const std::map<types::boundary_id,std::shared_ptr<BoundaryTraction::Interface<dim> > >
-      bvs = this->get_boundary_traction();
-      for (typename std::map<types::boundary_id,std::shared_ptr<BoundaryTraction::Interface<dim> > >::const_iterator
-           p = bvs.begin();
-           p != bvs.end(); ++p)
+      for (const auto &p : this->get_boundary_traction())
         {
-          if (p->second.get() == this)
-            traction_bi.insert(p->first);
+          if (p.second.get() == this)
+            traction_bi.insert(p.first);
         }
       AssertThrow(*(traction_bi.begin()) != numbers::invalid_boundary_id,
                   ExcMessage("Did not find any boundary indicators for the initial lithostatic pressure plugin."));
@@ -125,7 +122,8 @@ namespace aspect
 
       // Where to calculate the density
       // for spherical domains
-      if (dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model()) == nullptr)
+      if (dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model()) == nullptr &&
+          dynamic_cast<const GeometryModel::TwoMergedBoxes<dim>*> (&this->get_geometry_model()) == nullptr)
         in0.position[0] = Utilities::Coordinates::spherical_to_cartesian_coordinates<dim>(spherical_representative_point);
       // and for cartesian domains
       else

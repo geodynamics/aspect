@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -164,11 +164,8 @@ namespace aspect
   template <int dim>
   void FreeSurfaceHandler<dim>::set_assemblers()
   {
-    aspect::Assemblers::ApplyStabilization<dim> *surface_stabilization
-      = new aspect::Assemblers::ApplyStabilization<dim>();
-
     sim.assemblers->stokes_system.push_back(
-      std::unique_ptr<aspect::Assemblers::ApplyStabilization<dim> > (surface_stabilization));
+      std_cxx14::make_unique<aspect::Assemblers::ApplyStabilization<dim>> ());
 
     // Note that we do not want face_material_model_data, because we do not
     // connect to a face assembler. We instead connect to a normal assembler,
@@ -181,6 +178,8 @@ namespace aspect
         update_normal_vectors |
         update_JxW_values);
   }
+
+
 
   template <int dim>
   void FreeSurfaceHandler<dim>::declare_parameters(ParameterHandler &prm)
@@ -753,8 +752,9 @@ namespace aspect
     mesh_vertex_constraints.close();
 
     // Now reset the mapping of the simulator to be something that captures mesh deformation in time.
-    sim.mapping.reset (new MappingQ1Eulerian<dim, LinearAlgebra::Vector> (free_surface_dof_handler,
-                                                                          mesh_displacements));
+    sim.mapping
+      = std_cxx14::make_unique<MappingQ1Eulerian<dim, LinearAlgebra::Vector>> (free_surface_dof_handler,
+                                                                               mesh_displacements);
   }
 
   template <int dim>

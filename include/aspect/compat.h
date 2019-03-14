@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -152,16 +152,17 @@ namespace dealii
 #ifdef DEAL_II_WITH_CXX14
     using std::make_unique;
 #else
-    /* This is a simplified form of std::make_unique that only allows the default
-     * constructor (we would need C++11 for parameter forwarding), but this is
-     * sufficient for most cases.
+    /**
+     * An implementation of std::make_unique(). Since we require C++11
+     * even if the compiler does not support C++14, we can implement
+     * everything that they forgot to put into C++11.
      */
-    template <typename T>
+    template <typename T, class... Args>
     inline
     std::unique_ptr<T>
-    make_unique()
+    make_unique(Args &&... args)
     {
-      return std::unique_ptr<T>(new T());
+      return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
     }
 #endif
   }

@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2015 - 2017 by the authors of the ASPECT code.
+ Copyright (C) 2015 - 2019 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -19,8 +19,8 @@
  */
 
 
-#ifndef _aspect__postprocess_geoid_h
-#define _aspect__postprocess_geoid_h
+#ifndef _aspect_postprocess_geoid_h
+#define _aspect_postprocess_geoid_h
 
 #include <aspect/postprocess/interface.h>
 #include <aspect/simulator_access.h>
@@ -107,6 +107,11 @@ namespace aspect
          * A parameter to control whether to output the spherical harmonic coefficients of the density anomaly
          */
         bool also_output_density_anomaly_contribution_SH_coes;
+
+        /**
+         * A parameter to control whether to output the free-air gravity anomaly
+         */
+        bool also_output_gravity_anomaly;
 
         /**
          * Parameters to set the density value out of the surface and CMB boundary

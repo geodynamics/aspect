@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -95,7 +95,8 @@ namespace aspect
 
           try
             {
-              function.reset (new Functions::ParsedFunction<dim>(this->n_compositional_fields()));
+              function
+                = std_cxx14::make_unique<Functions::ParsedFunction<dim>>(this->n_compositional_fields());
               function->parse_parameters (prm);
             }
           catch (...)

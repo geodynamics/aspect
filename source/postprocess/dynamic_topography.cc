@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -67,7 +67,7 @@ namespace aspect
                                       quadrature_formula,
                                       update_values |
                                       update_gradients |
-                                      update_q_points |
+                                      update_quadrature_points |
                                       update_JxW_values);
 
       FEFaceValues<dim> fe_face_values (this->get_mapping(),
@@ -76,7 +76,7 @@ namespace aspect
                                         update_JxW_values |
                                         update_values |
                                         update_gradients |
-                                        update_q_points);
+                                        update_quadrature_points);
 
       // Storage for shape function values for the current solution.
       // Used for constructing the known side of the CBF system.
@@ -225,7 +225,7 @@ namespace aspect
                                            this->get_fe(),
                                            support_quadrature,
                                            update_values | update_normal_vectors
-                                           | update_gradients | update_q_points);
+                                           | update_gradients | update_quadrature_points);
 
       std::vector<Tensor<1,dim> > stress_support_values( support_quadrature.size() );
       std::vector<double> topo_values( support_quadrature.size() );
@@ -238,7 +238,7 @@ namespace aspect
                                           this->get_fe(),
                                           output_quadrature,
                                           update_values | update_normal_vectors | update_gradients |
-                                          update_q_points | update_JxW_values);
+                                          update_quadrature_points | update_JxW_values);
       std::vector<Tensor<1,dim> > stress_output_values( output_quadrature.size() );
 
 

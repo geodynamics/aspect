@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2012 - 2017 by the authors of the ASPECT code.
+ Copyright (C) 2012 - 2019 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -22,16 +22,25 @@
 #define _aspect_particle_world_h
 
 #include <aspect/global.h>
+
+#if DEAL_II_VERSION_GTE(9,0,0)
+#include <deal.II/particles/particle.h>
+#include <deal.II/particles/particle_accessor.h>
+#include <deal.II/particles/particle_iterator.h>
+#include <deal.II/particles/particle_handler.h>
+#include <deal.II/particles/property_pool.h>
+#else
 #include <aspect/particle/particle.h>
 #include <aspect/particle/particle_accessor.h>
 #include <aspect/particle/particle_iterator.h>
 #include <aspect/particle/particle_handler.h>
+#include <aspect/particle/property_pool.h>
+#endif
 
 #include <aspect/particle/generator/interface.h>
 #include <aspect/particle/integrator/interface.h>
 #include <aspect/particle/interpolator/interface.h>
 #include <aspect/particle/property/interface.h>
-#include <aspect/particle/property_pool.h>
 #include <aspect/particle/output/interface.h>
 
 #include <aspect/simulator_access.h>
@@ -47,6 +56,10 @@ namespace aspect
   namespace Particle
   {
     using namespace dealii;
+#if DEAL_II_VERSION_GTE(9,0,0)
+    using namespace dealii::Particles;
+    using dealii::Particles::Particle;
+#endif
 
     /**
      * This class manages the storage and handling of particles. It provides
@@ -165,11 +178,13 @@ namespace aspect
          */
         void update_particles();
 
+#if !DEAL_II_VERSION_GTE(9,0,0)
         /**
          * Generate the selected particle output.
          */
         std::string
         generate_output() const;
+#endif
 
         /**
          * Serialize the contents of this class.
@@ -240,10 +255,12 @@ namespace aspect
          */
         std::unique_ptr<Property::Manager<dim> > property_manager;
 
+#if !DEAL_II_VERSION_GTE(9,0,0)
         /**
          * Pointer to an output object
          */
         std::unique_ptr<Output::Interface<dim> > output;
+#endif
 
         /**
          * Particle handler object that is responsible for storing and
