@@ -263,8 +263,8 @@ namespace aspect
       const double Fe_mantle_melting_temperature = 3470.0;    // Kelvin at the reference pressure - reference melting temperature for Fe mantle endmember
       const double Mg_mantle_melting_temperature = 4821.2;    // Kelvin at reference pressure - reference melting temperature for Mg mantle endmember
 
-      const double Fe_mantle_melting_entropies = 33.77;       // molar entropy change of melting in J/mol K
-      const double Mg_mantle_melting_entropies = 34.33;       // molar entropy change of melting in J/mol K
+      const double Fe_mantle_melting_entropy = 33.77;       // molar entropy change of melting in J/mol K
+      const double Mg_mantle_melting_entropy = 34.33;       // molar entropy change of melting in J/mol K
 
       const double Fe_mantle_melting_volume = 1.51e-07;       // molar volume change of melting of solid Fe mantle endmember in m3/mol
       const double Mg_mantle_melting_volume = 9.29e-08;       // molar volume change of melting volume of solid Mg mantle endmember in m3/mol
@@ -274,9 +274,9 @@ namespace aspect
 
 
       // Free Energy Change Delta_G due to Melting as a function of temperature and pressure
-      const double dG_Fe_mantle = (Fe_mantle_melting_temperature - T) * Fe_mantle_melting_entropies
+      const double dG_Fe_mantle = (Fe_mantle_melting_temperature - T) * Fe_mantle_melting_entropy
                                   + (P - melting_reference_pressure) * Fe_mantle_melting_volume;
-      const double dG_Mg_mantle = (Mg_mantle_melting_temperature - T) * Mg_mantle_melting_entropies
+      const double dG_Mg_mantle = (Mg_mantle_melting_temperature - T) * Mg_mantle_melting_entropy
                                   + (P - melting_reference_pressure) * Mg_mantle_melting_volume;
 
       // Mole composition of the solid and liquid (corresponds to the molar fraction of iron)
@@ -286,12 +286,12 @@ namespace aspect
 
 
       double melt_fraction;
-      if (molar_composition_of_solid <= molar_composition_of_bulk)     // below the solidus
+      if (molar_composition_of_solid >= molar_composition_of_bulk)     // below the solidus
         {
           melt_fraction = 0;
           new_molar_composition_of_solid = molar_composition_of_bulk;
         }
-      else if (molar_composition_of_melt >= molar_composition_of_bulk) // above the liquidus
+      else if (molar_composition_of_melt <= molar_composition_of_bulk) // above the liquidus
         {
           melt_fraction = 1;
           new_molar_composition_of_melt = molar_composition_of_bulk;
@@ -1098,7 +1098,7 @@ namespace aspect
                                      "compositional field called magnesium_fraction_in_the_melt."));
               AssertThrow(this->introspection().compositional_name_exists("iron_fraction_in_the_melt"),
                           ExcMessage("Material model melt boukare only works if there is a "
-                                     "compositional field called magnesium_fraction_in_the_melt."));
+                                     "compositional field called iron_fraction_in_the_melt."));
             }
         }
         prm.leave_subsection();
