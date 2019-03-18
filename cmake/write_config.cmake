@@ -69,5 +69,12 @@ _detailed("#
 #        COMPILE_FLAGS:             ${_COMPILE_FLAGS}
 ")
 
+_detailed("#
+#        _WITH_CXX14:               ${DEAL_II_WITH_CXX14}
+#        _WITH_CXX17:               ${DEAL_II_WITH_CXX17}
+#        _MPI_VERSION:              ${DEAL_II_MPI_VERSION}
+#        _WITH_64BIT_INDICES:       ${DEAL_II_WITH_64BIT_INDICES}
+")
+
 
 _detailed("#\n###")
