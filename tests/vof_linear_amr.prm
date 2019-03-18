@@ -71,7 +71,7 @@ end
 set Nonlinear solver scheme                   = Advection only
 
 subsection Postprocess
-  set List of postprocessors = volume of fluid statistics, volume of fluid mms
+  set List of postprocessors = volume of fluid statistics, volume of fluid mms, visualization
 
   subsection VoF MMS
     set Number error samples = 16
@@ -85,7 +85,7 @@ subsection Postprocess
   end
 
   subsection Visualization
-    set Time between graphical output = 1.0
+    set Time between graphical output = 0.2
 
     set List of output variables = volume of fluid values
 
