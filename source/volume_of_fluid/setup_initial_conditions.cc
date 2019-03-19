@@ -103,7 +103,7 @@ namespace aspect
         for (unsigned int i = 0; i < fe_init.n_quadrature_points; ++i)
           {
             const double fraction_at_point = this->get_initial_composition_manager().initial_composition(fe_init.quadrature_point(i),
-                    field.composition_index);
+                                             field.composition_index);
             volume_of_fluid_val += fraction_at_point * fe_init.JxW (i);
             cell_vol += fe_init.JxW(i);
           }
@@ -164,7 +164,7 @@ namespace aspect
 
         const double cell_diam = cell->diameter();
         const double d_func = this->get_initial_composition_manager().initial_composition(cell->barycenter(),
-                field.composition_index);
+                              field.composition_index);
         fe_init.reinit (cell);
 
         double volume_of_fluid_val = 0.0;
@@ -198,9 +198,9 @@ namespace aspect
                     xH[di] += 0.5*h;
                     xL[di] -= 0.5*h;
                     const double dH = this->get_initial_composition_manager().initial_composition(cell->intermediate_point(xH),
-                            field.composition_index);
+                                                                                                  field.composition_index);
                     const double dL = this->get_initial_composition_manager().initial_composition(cell->intermediate_point(xL),
-                            field.composition_index);
+                                                                                                  field.composition_index);
                     grad[di] = (dL-dH);
                     d += (0.5/dim)*(dH+dL);
                   }
