@@ -12,6 +12,7 @@ Number of degrees of freedom: 2,550 (578+81+289+289+289+64+192+256+64+192+256)
    Solving volume of fluid system... 0 iterations.
 
    Postprocessing:
+     Compositions min/max/mass:            0/1/0.4818 // 0/1/0.2669
      Global volume of fluid volumes (m^3): 0.5/0.281
      VoF Calculation(IEstL1/FEstL1):       1.51815409e-16 / 0.00000000e+00 // 8.37749466e-17 / 0.00000000e+00
 
@@ -23,6 +24,7 @@ Number of degrees of freedom: 2,550 (578+81+289+289+289+64+192+256+64+192+256)
    Solving volume of fluid system... 1 iterations.
 
    Postprocessing:
+     Compositions min/max/mass:            0/1/0.4306 // 0/1/0.2299
      Global volume of fluid volumes (m^3): 0.457/0.249
 
 *** Timestep 2:  t=0.176777 seconds
@@ -33,6 +35,7 @@ Number of degrees of freedom: 2,550 (578+81+289+289+289+64+192+256+64+192+256)
    Solving volume of fluid system... 1 iterations.
 
    Postprocessing:
+     Compositions min/max/mass:            0/1/0.3906 // 0/1/0.2012
      Global volume of fluid volumes (m^3): 0.416/0.219
 
 *** Timestep 3:  t=0.265165 seconds
@@ -43,8 +46,9 @@ Number of degrees of freedom: 2,550 (578+81+289+289+289+64+192+256+64+192+256)
    Solving volume of fluid system... 1 iterations.
 
    Postprocessing:
+     Compositions min/max/mass:            -2.907e-15/1/0.3577 // -2.907e-15/1/0.1779
      Global volume of fluid volumes (m^3): 0.376/0.191
-     VoF Calculation(IEstL1/FEstL1):       3.11998240e-16 / 2.92300906e-16 // 2.21635511e-16 / 2.07299455e-16
+     VoF Calculation(IEstL1/FEstL1):       3.20632626e-16 / 2.99239800e-16 // 2.27700012e-16 / 2.14238349e-16
 
 *** Timestep 4:  t=0.353553 seconds
    Skipping temperature solve because RHS is zero.
@@ -54,6 +58,7 @@ Number of degrees of freedom: 2,550 (578+81+289+289+289+64+192+256+64+192+256)
    Solving volume of fluid system... 1 iterations.
 
    Postprocessing:
+     Compositions min/max/mass:            -2.907e-15/1/0.3156 // -2.907e-15/1/0.1488
      Global volume of fluid volumes (m^3): 0.339/0.164
 
 *** Timestep 5:  t=0.441942 seconds
@@ -64,6 +69,7 @@ Number of degrees of freedom: 2,550 (578+81+289+289+289+64+192+256+64+192+256)
    Solving volume of fluid system... 1 iterations.
 
    Postprocessing:
+     Compositions min/max/mass:            -2.907e-15/1/0.2831 // -2.907e-15/1/0.1267
      Global volume of fluid volumes (m^3): 0.303/0.14
 
 *** Timestep 6:  t=0.5 seconds
@@ -74,8 +80,9 @@ Number of degrees of freedom: 2,550 (578+81+289+289+289+64+192+256+64+192+256)
    Solving volume of fluid system... 1 iterations.
 
    Postprocessing:
+     Compositions min/max/mass:            -2.925e-15/1/0.2669 // -2.92e-15/1/0.1159
      Global volume of fluid volumes (m^3): 0.281/0.125
-     VoF Calculation(IEstL1/FEstL1):       1.20569380e-15 / 8.62523486e-16 // 7.87876166e-16 / 5.93234771e-16
+     VoF Calculation(IEstL1/FEstL1):       1.25079661e-15 / 8.85413704e-16 // 8.08692848e-16 / 6.03521139e-16
 
 Termination requested by criterion: end time
 
