@@ -104,14 +104,12 @@ namespace aspect
       /**
        * Initialize specified field based on a composition field initial conditon
        */
-      void initialize_from_composition_field (const VolumeOfFluidField<dim> &field,
-                                              const unsigned int field_index);
+      void initialize_from_composition_field (const VolumeOfFluidField<dim> &field);
 
       /**
        * Initialize specified field based on a level set initial condition
        */
-      void initialize_from_level_set (const VolumeOfFluidField<dim> &field,
-                                      const unsigned int field_index);
+      void initialize_from_level_set (const VolumeOfFluidField<dim> &field);
 
       /**
        * Do interface reconstruction for specified field and cache result in solution vector
