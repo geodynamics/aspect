@@ -1,0 +1,66 @@
+
+Number of active cells: 1,024 (on 6 levels)
+Number of degrees of freedom: 17,989 (8,450+1,089+4,225+4,225)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 27+0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass:       0.1/0.5/0.1785
+     Temperature min/avg/max:         0.1 K, 0.1785 K, 0.5 K
+     Max / average entropy viscosity: 0 W/(m*K), 0 W/(m*K)
+
+*** Timestep 1:  t=0.0015625 years
+   Solving temperature system... 11 iterations.
+   Solving porosity system ... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass:       0.08469/0.5172/0.1785
+     Temperature min/avg/max:         0.08469 K, 0.1785 K, 0.5172 K
+     Max / average entropy viscosity: 0.000227 W/(m*K), 0.000227 W/(m*K)
+
+*** Timestep 2:  t=0.003125 years
+   Solving temperature system... 10 iterations.
+   Solving porosity system ... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass:       0.07308/0.532/0.1785
+     Temperature min/avg/max:         0.07308 K, 0.1785 K, 0.532 K
+     Max / average entropy viscosity: 0.000453 W/(m*K), 9.43e-05 W/(m*K)
+
+*** Timestep 3:  t=0.0046875 years
+   Solving temperature system... 10 iterations.
+   Solving porosity system ... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass:       0.06781/0.5407/0.1785
+     Temperature min/avg/max:         0.06781 K, 0.1785 K, 0.5407 K
+     Max / average entropy viscosity: 0.000453 W/(m*K), 8.81e-05 W/(m*K)
+
+*** Timestep 4:  t=0.005 years
+   Solving temperature system... 9 iterations.
+   Solving porosity system ... 9 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass:       0.06754/0.5416/0.1785
+     Temperature min/avg/max:         0.06754 K, 0.1785 K, 0.5416 K
+     Max / average entropy viscosity: 0.000453 W/(m*K), 8.62e-05 W/(m*K)
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+
