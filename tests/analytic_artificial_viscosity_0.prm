@@ -1,0 +1,100 @@
+# This is a test for the artificial viscosity. 
+# In particaluar, it checks that the value for the maximum viscosity is computed
+# as described in the ASPECT publication.
+
+set Adiabatic surface temperature          = 1600               # default: 0
+set Dimension                              = 2
+set End time                               = 1
+set Use years in output instead of seconds = false
+set Pressure normalization                 = surface
+set Surface pressure                       = 0
+
+subsection Discretization
+  subsection Stabilization parameters
+    set cR  = 1e100
+    set beta  = 1.0
+  end
+end
+
+subsection Compositional fields
+  set Number of fields = 1
+  set Names of fields = porosity
+end
+
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = left, right
+  set List of model names = initial temperature
+end
+
+# we apply simple shear here, so that the top and bottom boundaries 
+# move with the same speed u0, but in opposite directions
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = top:function, bottom:function, left:function, right:function
+  subsection Function
+    set Function constants = u0=0.01,ymid=0.5
+    set Function expression = 1.0;0
+  end
+end
+
+subsection Geometry model
+  set Model name = box # default: 
+
+  subsection Box
+    set X extent  = 1.0
+    set Y extent  = 1.0
+  end
+
+end
+
+
+subsection Gravity model
+  set Model name = vertical # default: 
+
+  subsection Vertical
+    # Magnitude of the gravity vector in $m/s^2$. The direction is always
+    # radially outward from the center of the earth.
+    set Magnitude = 0.0 # default: 30
+  end
+
+end
+
+
+subsection Initial temperature model
+  set Model name = function # default: 
+  subsection Function
+    set Function constants  = l=64000
+    set Function expression = x #if(sqrt((x-0.5)*(x-0.5)+(y-0.5)*(y-0.5))<0.25,0.5,0.1)
+    set Variable names      = x,y
+  end
+end
+
+subsection Material model
+  set Model name = simpler
+
+  subsection Simpler model
+    set Reference density = 1.0
+    set Reference specific heat = 1.0
+    set Thermal expansion coefficient = 0.0
+    set Thermal conductivity          = 0.0
+  end
+
+end
+
+subsection Mesh refinement
+  set Coarsening fraction                      = 0.0
+  set Refinement fraction                      = 0.0
+
+  set Initial adaptive refinement              = 0
+  set Initial global refinement                = 0
+  set Time steps between mesh refinement       = 0
+end
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, temperature statistics, visualization, entropy viscosity statistics
+
+  subsection Visualization
+    set List of output variables      = artificial viscosity
+    set Time between graphical output = 0.0
+  end
+end
