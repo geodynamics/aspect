@@ -33,6 +33,10 @@
 #include <deal.II/grid/tria_boundary_lib.h>
 #endif
 
+#if DEAL_II_VERSION_GTE(9,0,0)
+#include <deal.II/grid/tria.h>
+#endif
+
 
 namespace aspect
 {
@@ -41,7 +45,9 @@ namespace aspect
     template <int dim>
     Chunk<dim>::ChunkGeometry::ChunkGeometry()
       :
-      point1_lon(0.0)
+      point1_lon(0.0),
+      inner_radius(3471e3),
+      max_depth(2900e3)
     {}
 
 
@@ -49,8 +55,12 @@ namespace aspect
     Chunk<dim>::ChunkGeometry::ChunkGeometry(const ChunkGeometry &other)
       :
       ChartManifold<dim,dim>(other),
-      point1_lon(other.point1_lon)
-    {}
+      point1_lon(other.point1_lon),
+      inner_radius(other.inner_radius),
+      max_depth(other.max_depth)
+    {
+      this->initialize(other.topo);
+    }
 
 
     template <int dim>
@@ -58,6 +68,15 @@ namespace aspect
     Chunk<dim>::ChunkGeometry::initialize(const InitialTopographyModel::Interface<dim> *topo_pointer)
     {
       topo = topo_pointer;
+    }
+
+    template <int dim>
+    void
+    Chunk<dim>::ChunkGeometry::set_topography_pointer(const InitialTopographyModel::Interface<dim> *topo_pointer)
+    {
+      topo = topo_pointer;
+      std::cout << "Pointer set" << std::endl;
+      std::cout << topo->value(Point<dim-1>()) << std::endl;
     }
 
 
@@ -141,11 +160,11 @@ namespace aspect
         {
           case 2:
           {
-        	// R_topo = R + topo(phi) * ((R-R_0)/(R_1-R_0))
-        	// phi_topo = phi
+            // R_topo = R + topo(phi) * ((R-R_0)/(R_1-R_0)) = R + topo(phi) * ((R-R_0)/max_depth)
+            // phi_topo = phi
             //dR_topo/dR
             Dtopo[0][0] = (d_topo / max_depth) + 1.;
-            //dR_topo/dphi
+            //dR_topo/dphi = dR_topo/dtopo * dtopo/dphi
             Dtopo[0][1] = (R-inner_radius)/max_depth * topo_derivatives[0];
             //dphi_topo/dR
             Dtopo[1][0] = 0.;
@@ -200,7 +219,7 @@ namespace aspect
             // The derivatives of the cartesian points to topo_point
             DX[0][0] =      std::cos(theta_topo) * std::cos(phi_topo);
             DX[0][1] = -R_topo * std::cos(theta_topo) * std::sin(phi_topo);
-            DX[0][2] = -R_topo * std::sin(theta_topo) * std::cos(phi_topo);
+            DX[0][2] = -R_topo * std::sin(theta_topo) * std::cos(phi_topo); //reorder
             DX[1][0] =      std::cos(theta_topo) * std::sin(phi_topo);
             DX[1][1] =  R_topo * std::cos(theta_topo) * std::cos(phi_topo);
             DX[1][2] = -R_topo * std::sin(theta_topo) * std::sin(phi_topo);
@@ -383,6 +402,7 @@ namespace aspect
       // return the point with adjusted radius
       Point<dim> topor_phi_theta = r_phi_theta;
       topor_phi_theta[0] = topo_radius;
+
       return topor_phi_theta;
     }
 
@@ -454,13 +474,14 @@ namespace aspect
       // Call function to connect the set/clear manifold id functions
       // to the right signal
       connect_to_signal(this->get_signals());
-      AssertThrow(dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(&this->get_initial_topography_model()) != 0,
+      AssertThrow(dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(&this->get_initial_topography_model()) != nullptr,
                   ExcMessage("Only with deal.II 9 or higher, an initial topography model can be used."));
 #endif
-      AssertThrow(dynamic_cast<const InitialTopographyModel::AsciiData<dim>*>(&this->get_initial_topography_model()) != 0 ||
-                  dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(&this->get_initial_topography_model()) != 0,
+      AssertThrow(dynamic_cast<const InitialTopographyModel::AsciiData<dim>*>(&this->get_initial_topography_model()) != nullptr ||
+                  dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(&this->get_initial_topography_model()) != nullptr,
                   ExcMessage("At the moment, only the Zero or AsciiData initial topography model can be used."));
       manifold.initialize(&(this->get_initial_topography_model()));
+//      connect_to_signal(this->get_signals());
     }
 
 
@@ -607,11 +628,13 @@ namespace aspect
           if (cell->face(f)->at_boundary())
             cell->face(f)->set_all_manifold_ids (numbers::flat_manifold_id);
     }
+#endif
 
     template <int dim>
     void
     Chunk<dim>::connect_to_signal (SimulatorSignals<dim> &signals)
     {
+#if !DEAL_II_VERSION_GTE(9,0,0)
       // Connect the topography function to the signal
       signals.pre_compute_no_normal_flux_constraints.connect (
         [&](typename parallel::distributed::Triangulation<dim> &tria)
@@ -631,8 +654,46 @@ namespace aspect
       //signals.post_compute_no_normal_flux_constraints.connect (std_cxx11::bind (&Chunk<dim>::set_manifold_ids,
       //                                                                          std_cxx11::ref(*this),
       //                                                                          std_cxx11::_1));
-    }
+#else
+//      signals.pre_distributed_refinement.connect (
+//          [&](typename parallel::distributed::Triangulation<dim> &tria)
+//          {
+//        manifold.set_topography_pointer(&(this->get_initial_topography_model()));
+//          });
+//      this->get_triangulation().signals.pre_distributed_refinement.connect (&aspect::GeometryModel::Chunk<dim>::print_pre_ref);
+
+
+//      this->get_triangulation().signals.pre_refinement.connect (
+//          [&] ()
+//          {
+//             this->print_pre_ref();
+//          });
+//      this->get_triangulation().signals.pre_distributed_refinement.connect (
+//          [&] ()
+//          {
+//             this->print_pre_ref();
+//          });
+//      this->get_triangulation().signals.post_refinement.connect (
+//          [&] ()
+//          {
+//             this->print_pre_ref();
+//          });
+//      this->get_triangulation().signals.post_distributed_refinement.connect (
+//          [&] ()
+//          {
+//             this->print_pre_ref();
+//          });
 #endif
+    }
+
+    template <int dim>
+    void
+    Chunk<dim>::
+    print_pre_ref ()
+    {
+      std::cout << "Triangulation will be refined." << std::endl;
+      manifold.set_topography_pointer(&(this->get_initial_topography_model()));
+    }
 
     template <int dim>
     std::set<types::boundary_id>
@@ -711,7 +772,8 @@ namespace aspect
     {
       // depth is defined wrt the reference surface point2[0]
       // positive topography therefore has a negative depth and vv.
-      return std::min (std::max (point2[0]-position.norm(), 0.), maximal_depth());
+      std::cout << "Depth function called " << std::endl;
+      return std::min (point2[0]-position.norm(), maximal_depth());
     }
 
     template <int dim>
@@ -969,6 +1031,7 @@ namespace aspect
     void
     Chunk<dim>::parse_parameters (ParameterHandler &prm)
     {
+      std::cout << "Test parse" << std::endl;
       prm.enter_subsection("Geometry model");
       {
         prm.enter_subsection("Chunk");
