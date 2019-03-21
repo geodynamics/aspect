@@ -902,7 +902,7 @@ namespace aspect
                            "approach is discussed in \\cite{GPP11}.) Note that this is not the "
                            "thermal expansion coefficient, also commonly referred to as $\\alpha$."
                            "Units: None.");
-        prm.declare_entry ("cR", "0.33",
+        prm.declare_entry ("cR", "0.11",
                            Patterns::List(Patterns::Double (0)),
                            "The $c_R$ factor in the entropy viscosity "
                            "stabilization. This parameter controls the part of the entropy viscosity "
@@ -919,16 +919,15 @@ namespace aspect
                            "Heister and Bangerth that describes ASPECT, see \\cite{KHB12}. "
                            "This parameter corresponds "
                            "to the factor $\\alpha_E$ in the formulas following equation (15) of "
-                           "the paper. After further experiments, we have also chosen to use a "
-                           "different value than described there.) Units: None.");
-        prm.declare_entry ("beta", "0.078",
+                           "the paper.) Units: None.");
+        prm.declare_entry ("beta", "0.052",
                            Patterns::List(Patterns::Double (0)),
                            "The $\\beta$ factor in the artificial viscosity "
                            "stabilization. This parameter controls the maximum dissipation of the "
                            "entropy viscosity, which is the part that only scales with the cell diameter "
                            "and the maximum velocity in the cell, but does not depend on the solution "
-                           "field itself or its residual. An appropriate value for 2d is 0.078 and "
-                           "0.117 for 3d. (For historical reasons, the name used here is different "
+                           "field itself or its residual. An appropriate value for 2d is 0.052 and "
+                           "0.78 for 3d. (For historical reasons, the name used here is different "
                            "from the one used in the 2012 paper by Kronbichler, "
                            "Heister and Bangerth that describes ASPECT, see \\cite{KHB12}. "
                            "This parameter can be given as a single value or as a list with as "
@@ -939,10 +938,7 @@ namespace aspect
                            "for the temperature, which already has some physical diffusion. "
                            "This parameter corresponds "
                            "to the factor $\\alpha_{\\text{max}}$ in the formulas following equation (15) of "
-                           "the paper. After further experiments, we have also chosen to use a "
-                           "different value than described there: It can be chosen as stated there for "
-                           "uniformly refined meshes, but it needs to be chosen larger if the mesh has "
-                           "cells that are not squares or cubes.) Units: None.");
+                           "the paper.) Units: None.");
         prm.declare_entry ("gamma", "0.0",
                            Patterns::Double (0),
                            "The strain rate scaling factor in the artificial viscosity "
