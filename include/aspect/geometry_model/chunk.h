@@ -63,17 +63,15 @@ namespace aspect
         virtual
         void create_coarse_mesh (parallel::distributed::Triangulation<dim> &coarse_grid) const;
 
-//#if !DEAL_II_VERSION_GTE(9,0,0)
+#if !DEAL_II_VERSION_GTE(9,0,0)
         /**
          * Connect the set/clear manifold id functions to the post/pre_compute_no_normal_flux signals.
          * Or for dealii 9 and above, to set the pointer to the initial topography model again.
          */
         void
         connect_to_signal(SimulatorSignals<dim> &signals);
-//#endif
+#endif
 
-        void
-        print_pre_ref ();
 
         /**
          * Return the set of boundary indicators that are used by this model.

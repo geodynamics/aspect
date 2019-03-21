@@ -86,7 +86,6 @@ namespace aspect
     push_forward_gradient(const Point<dim> &chart_point) const
     {
       const double R = chart_point[0]; // Radius
-      const double phi = chart_point[1]; // Longitude
 
       Assert (R > 0.0, ExcMessage("Negative radius for given point."));
 
@@ -94,6 +93,8 @@ namespace aspect
 
       // prior to deal.II 9, we do not apply initial topography
 #if !DEAL_II_VERSION_GTE(9,0,0)
+      const double phi = chart_point[1]; // Longitude
+
       switch (dim)
         {
           case 2:
@@ -476,12 +477,12 @@ namespace aspect
       connect_to_signal(this->get_signals());
       AssertThrow(dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(&this->get_initial_topography_model()) != nullptr,
                   ExcMessage("Only with deal.II 9 or higher, an initial topography model can be used."));
-#endif
+#else
       AssertThrow(dynamic_cast<const InitialTopographyModel::AsciiData<dim>*>(&this->get_initial_topography_model()) != nullptr ||
                   dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(&this->get_initial_topography_model()) != nullptr,
                   ExcMessage("At the moment, only the Zero or AsciiData initial topography model can be used."));
+#endif
       manifold.initialize(&(this->get_initial_topography_model()));
-//      connect_to_signal(this->get_signals());
     }
 
 
@@ -628,13 +629,11 @@ namespace aspect
           if (cell->face(f)->at_boundary())
             cell->face(f)->set_all_manifold_ids (numbers::flat_manifold_id);
     }
-#endif
 
     template <int dim>
     void
     Chunk<dim>::connect_to_signal (SimulatorSignals<dim> &signals)
     {
-#if !DEAL_II_VERSION_GTE(9,0,0)
       // Connect the topography function to the signal
       signals.pre_compute_no_normal_flux_constraints.connect (
         [&](typename parallel::distributed::Triangulation<dim> &tria)
@@ -654,46 +653,9 @@ namespace aspect
       //signals.post_compute_no_normal_flux_constraints.connect (std_cxx11::bind (&Chunk<dim>::set_manifold_ids,
       //                                                                          std_cxx11::ref(*this),
       //                                                                          std_cxx11::_1));
-#else
-//      signals.pre_distributed_refinement.connect (
-//          [&](typename parallel::distributed::Triangulation<dim> &tria)
-//          {
-//        manifold.set_topography_pointer(&(this->get_initial_topography_model()));
-//          });
-//      this->get_triangulation().signals.pre_distributed_refinement.connect (&aspect::GeometryModel::Chunk<dim>::print_pre_ref);
-
-
-//      this->get_triangulation().signals.pre_refinement.connect (
-//          [&] ()
-//          {
-//             this->print_pre_ref();
-//          });
-//      this->get_triangulation().signals.pre_distributed_refinement.connect (
-//          [&] ()
-//          {
-//             this->print_pre_ref();
-//          });
-//      this->get_triangulation().signals.post_refinement.connect (
-//          [&] ()
-//          {
-//             this->print_pre_ref();
-//          });
-//      this->get_triangulation().signals.post_distributed_refinement.connect (
-//          [&] ()
-//          {
-//             this->print_pre_ref();
-//          });
+    }
 #endif
-    }
 
-    template <int dim>
-    void
-    Chunk<dim>::
-    print_pre_ref ()
-    {
-      std::cout << "Triangulation will be refined." << std::endl;
-      manifold.set_topography_pointer(&(this->get_initial_topography_model()));
-    }
 
     template <int dim>
     std::set<types::boundary_id>
@@ -919,7 +881,8 @@ namespace aspect
     Chunk<dim>::point_is_in_domain(const Point<dim> &point) const
     {
       AssertThrow(this->get_free_surface_boundary_indicators().size() == 0 ||
-                  this->get_timestep_number() == 0,
+                  // we are still before the first time step has started
+                  this->get_timestep_number() == numbers::invalid_unsigned_int,
                   ExcMessage("After displacement of the free surface, this function can no longer be used to determine whether a point lies in the domain or not."));
 
       AssertThrow(dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(&this->get_initial_topography_model()) != nullptr,
