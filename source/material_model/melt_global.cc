@@ -211,7 +211,15 @@ namespace aspect
                 }
 
               const double porosity = std::min(1.0, std::max(in.composition[i][porosity_idx],0.0));
-              out.viscosities[i] = eta_0 * exp(- alpha_phi * porosity);
+
+              // find depletion = peridotite, which might affect shear viscosity:
+              const double depletion_visc = std::min(1.0, std::max(in.composition[i][peridotite_idx],0.0));
+
+              // calculate strengthening due to depletion:
+              const double depletion_strengthening = std::min(exp(alpha_depletion*depletion_visc),delta_eta_depletion_max);
+
+              // calculate viscosity change due to local melt and depletion:
+              out.viscosities[i] = eta_0 * exp(- alpha_phi * porosity) * depletion_strengthening;
             }
           else
             {
@@ -416,6 +424,24 @@ namespace aspect
                              "computed. If the model does not use operator splitting, this parameter is not used. "
                              "Units: yr or s, depending on the ``Use years "
                              "in output instead of seconds'' parameter.");
+          prm.declare_entry ("Exponential depletion strengthening factor", "0.0",
+                             Patterns::Double (0),
+                             "$\\alpha_F$: exponential dependency of viscosity on the depletion "
+                             "field $F$ (called peridotite). "
+                             "Dimensionless factor. With a value of 0.0 (the default) the "
+                             "viscosity does not depend on the depletion. The effective viscosity increase"
+                             "due to depletion is defined as $exp( \\alpha_F * F)$. "
+                             "Rationale: melting dehydrates the source rock by removing most of the volatiles,"
+                             "and makes it stronger. Hirth and Kohlstedt (1996) report typical values around a "
+                             "factor 100 to 1000 viscosity contrast between wet and dry rocks, although some "
+                             "experimental studies report a smaller (factor 10) contrast (e.g. Fei et al., 2013).");
+          prm.declare_entry ("Maximum Depletion viscosity change", "1.0e3",
+                             Patterns::Double (0),
+                             "$\\Delta \\eta_{F,max}$: maximum depletion strengthening of viscosity. "
+                             "Rationale: melting dehydrates the source rock by removing most of the volatiles,"
+                             "and makes it stronger. Hirth and Kohlstedt (1996) report typical values around a "
+                             "factor 100 to 1000 viscosity contrast between wet and dry rocks, although some "
+                             "experimental studies report a smaller (factor 10) contrast (e.g. Fei et al., 2013).");
         }
         prm.leave_subsection();
       }
@@ -453,6 +479,8 @@ namespace aspect
           melt_compressibility              = prm.get_double ("Melt compressibility");
           include_melting_and_freezing      = prm.get_bool ("Include melting and freezing");
           melting_time_scale                = prm.get_double ("Melting time scale for operator splitting");
+          alpha_depletion                   = prm.get_double ("Exponential depletion strengthening factor");
+          delta_eta_depletion_max           = prm.get_double ("Maximum Depletion viscosity change");
 
           if (thermal_viscosity_exponent!=0.0 && reference_T == 0.0)
             AssertThrow(false, ExcMessage("Error: Material model Melt simple with Thermal viscosity exponent can not have reference_T=0."));
