@@ -319,6 +319,22 @@ namespace aspect
               }
           }
 
+        bool cell_at_dirichlet_boundary = false;
+        for (unsigned int face_no=0; face_no<GeometryInfo<dim>::faces_per_cell; ++face_no)
+          if (cell->at_boundary(face_no) == true)
+            {
+              const std::set<types::boundary_id> &fixed_temperature_boundaries =
+                  boundary_temperature_manager.get_fixed_temperature_boundary_indicators();
+              if (fixed_temperature_boundaries.find(cell->face(face_no)->boundary_id()) != fixed_temperature_boundaries.end())
+                cell_at_dirichlet_boundary = true;
+            }
+
+        if (cell_at_dirichlet_boundary)
+          {
+            viscosity_per_cell[cell->active_cell_index()] = 0.0;
+            continue;
+          }
+
         const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
 
         // also have the number of dofs that correspond just to the element for
