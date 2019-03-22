@@ -430,10 +430,18 @@ namespace aspect
                              "field $F$ (called peridotite). "
                              "Dimensionless factor. With a value of 0.0 (the default) the "
                              "viscosity does not depend on the depletion. The effective viscosity increase"
-                             "due to depletion is defined as $exp( \\alpha_F * F)$. ");
+                             "due to depletion is defined as $exp( \\alpha_F * F)$. "
+                             "Rationale: melting dehydrates the source rock by removing most of the volatiles,"
+                             "and makes it stronger. Hirth and Kohlstedt (1996) report typical values around a "
+                             "factor 100 to 1000 viscosity contrast between wet and dry rocks, although some "
+                             "experimental studies report a smaller (factor 10) contrast (e.g. Fei et al., 2013).");
           prm.declare_entry ("Maximum Depletion viscosity change", "1.0e3",
                              Patterns::Double (0),
-                             "$\\Delta \\eta_{F,max}$: maximum depletion strengthening of viscosity. ");
+                             "$\\Delta \\eta_{F,max}$: maximum depletion strengthening of viscosity. "
+                             "Rationale: melting dehydrates the source rock by removing most of the volatiles,"
+                             "and makes it stronger. Hirth and Kohlstedt (1996) report typical values around a "
+                             "factor 100 to 1000 viscosity contrast between wet and dry rocks, although some "
+                             "experimental studies report a smaller (factor 10) contrast (e.g. Fei et al., 2013).");
         }
         prm.leave_subsection();
       }
