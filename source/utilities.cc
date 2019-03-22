@@ -1587,9 +1587,9 @@ namespace aspect
                 AssertThrow (components == name_column_index,
                              ExcMessage("The number of expected data columns and the "
                                         "list of column names at the beginning of the data file "
-                                        + filename + " does not match. The file should contain "
+                                        + filename + " do not match. The file should contain "
                                         "one column name per column (one for each dimension "
-                                        "and one per data column."));
+                                        "and one per data column)."));
 
               break;
             }
