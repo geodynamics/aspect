@@ -1,14 +1,19 @@
-# This is a test for the artificial viscosity. 
+# This is a test for the entropy viscosity. 
 # In particaluar, it checks that the value for the maximum viscosity is computed
 # as described in the ASPECT publication.
 
-set Adiabatic surface temperature          = 1600               # default: 0
+set Adiabatic surface temperature          = 1600
 set Dimension                              = 2
 set End time                               = 1
 set Use years in output instead of seconds = false
-set Pressure normalization                 = surface
-set Surface pressure                       = 0
 
+
+# The settings below will cause the residual based entropy viscosity to always
+# be higher than the maximum viscosity. Since the minimum of both is chosen as
+# the applied stabilization, the output will be equal to the latter. For a
+# uniform box, and all material parameters and velocity chosen as one, the
+# maximum viscosity should be equal to the cell diameter (i.e. sqrt(1+1)),
+# which was verified for this test.
 subsection Discretization
   subsection Stabilization parameters
     set cR  = 1e100
@@ -16,29 +21,22 @@ subsection Discretization
   end
 end
 
-subsection Compositional fields
-  set Number of fields = 1
-  set Names of fields = porosity
-end
-
 
 subsection Boundary temperature model
-  set Fixed temperature boundary indicators = left, right
+  set Fixed temperature boundary indicators = left
   set List of model names = initial temperature
 end
 
-# we apply simple shear here, so that the top and bottom boundaries 
-# move with the same speed u0, but in opposite directions
 subsection Boundary velocity model
   set Prescribed velocity boundary indicators = top:function, bottom:function, left:function, right:function
   subsection Function
-    set Function constants = u0=0.01,ymid=0.5
     set Function expression = 1.0;0
   end
 end
 
+
 subsection Geometry model
-  set Model name = box # default: 
+  set Model name = box
 
   subsection Box
     set X extent  = 1.0
@@ -49,23 +47,19 @@ end
 
 
 subsection Gravity model
-  set Model name = vertical # default: 
+  set Model name = vertical
 
   subsection Vertical
-    # Magnitude of the gravity vector in $m/s^2$. The direction is always
-    # radially outward from the center of the earth.
-    set Magnitude = 0.0 # default: 30
+    set Magnitude = 0.0
   end
 
 end
 
 
 subsection Initial temperature model
-  set Model name = function # default: 
+  set Model name = function
   subsection Function
-    set Function constants  = l=64000
-    set Function expression = x #if(sqrt((x-0.5)*(x-0.5)+(y-0.5)*(y-0.5))<0.25,0.5,0.1)
-    set Variable names      = x,y
+    set Function expression = (x<0.5) ? 0.0 : 1.0
   end
 end
 
@@ -91,10 +85,11 @@ subsection Mesh refinement
 end
 
 subsection Postprocess
-  set List of postprocessors = velocity statistics, temperature statistics, visualization, entropy viscosity statistics
+  set List of postprocessors = velocity statistics, temperature statistics, entropy viscosity statistics, visualization
 
   subsection Visualization
-    set List of output variables      = artificial viscosity
-    set Time between graphical output = 0.0
+    set Time between graphical output = 0
+    set Interpolate output = true
+    set List of output variables = material properties, thermal conductivity, artificial viscosity
   end
 end

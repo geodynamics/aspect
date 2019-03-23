@@ -264,11 +264,14 @@ namespace aspect
                                      update_quadrature_points |
                                      update_JxW_values;
 
-    /* Because we can only get here in the continuous case, which never requires
-     * face integrals, we supply no face_update_flags and an invalid
-     * face_quadrature to the scratch object to reduce the initialization cost.
-     */
-    const UpdateFlags face_update_flags = update_default;
+    // We need the face integrals to determine if a dirichlet boundary is conduction
+    // dominated in which case we disable stabilization to get the most accurate
+    // heat flux, or still advection dominated (e.g. a boundary with normal flow) in
+    // which case we still need stabilization.
+    const UpdateFlags face_update_flags = update_values |
+                                          update_quadrature_points |
+                                          update_normal_vectors |
+                                          update_JxW_values;
 
     internal::Assembly::Scratch::
     AdvectionSystem<dim> scratch (finite_element,
@@ -277,11 +280,14 @@ namespace aspect
                                   QGauss<dim>(advection_field.polynomial_degree(introspection)
                                               +
                                               (parameters.stokes_velocity_degree+1)/2),
-                                  Quadrature<dim-1> (),
+                                  QTrapez<dim-1> (),
                                   update_flags,
                                   face_update_flags,
                                   introspection.n_compositional_fields,
                                   advection_field);
+
+    std::vector<Tensor<1,dim> > face_old_velocity_values (scratch.face_finite_element_values->n_quadrature_points);
+    std::vector<Tensor<1,dim> > face_old_old_velocity_values (scratch.face_finite_element_values->n_quadrature_points);
 
     typename DoFHandler<dim>::active_cell_iterator cell = dof_handler.begin_active();
     for (; cell<dof_handler.end(); ++cell)
@@ -319,20 +325,79 @@ namespace aspect
               }
           }
 
-        bool cell_at_dirichlet_boundary = false;
-        for (unsigned int face_no=0; face_no<GeometryInfo<dim>::faces_per_cell; ++face_no)
-          if (cell->at_boundary(face_no) == true)
-            {
-              const std::set<types::boundary_id> &fixed_temperature_boundaries =
-                  boundary_temperature_manager.get_fixed_temperature_boundary_indicators();
-              if (fixed_temperature_boundaries.find(cell->face(face_no)->boundary_id()) != fixed_temperature_boundaries.end())
-                cell_at_dirichlet_boundary = true;
-            }
-
-        if (cell_at_dirichlet_boundary)
+        // For fields that have physical diffusion (e.g. temperature), we can disable artificial
+        // viscosity stabilization at dirichlet boundaries, because the boundary is conduction
+        // dominated anyway. Moreover, the residual we would compute would be erroneously large,
+        // because it does not take into account the boundary constraints. This would lead to
+        // unnecessary large diffusion in the cells that matter most for the overall energy
+        // balance of the system. However, we sometimes have Dirichlet temperature boundary conditions
+        // with prescribed non-tangential velocities, in these cases we need the stabilization, because
+        // the boundary cells can be advection dominated. Hence, only disable artificial viscosity if flow
+        // through the boundary is slow, or tangential.
+        if (advection_field.is_temperature())
           {
-            viscosity_per_cell[cell->active_cell_index()] = 0.0;
-            continue;
+            const std::set<types::boundary_id> &fixed_temperature_boundaries =
+              boundary_temperature_manager.get_fixed_temperature_boundary_indicators();
+            const std::set<types::boundary_id> &tangential_velocity_boundaries =
+              boundary_velocity_manager.get_tangential_boundary_velocity_indicators();
+            const std::set<types::boundary_id> &zero_velocity_boundaries =
+              boundary_velocity_manager.get_zero_boundary_velocity_indicators();
+
+            bool cell_at_conduction_dominated_dirichlet_boundary = false;
+            for (unsigned int face_no=0; face_no<GeometryInfo<dim>::faces_per_cell; ++face_no)
+              if (cell->at_boundary(face_no) == true &&
+                  fixed_temperature_boundaries.find(cell->face(face_no)->boundary_id()) != fixed_temperature_boundaries.end())
+                {
+                  // If the velocity is tangential or zero we can always disable stabilization, except if there is another
+                  // face at a different boundary. Therefore continue with the next face rather than break the loop.
+                  if (tangential_velocity_boundaries.find(cell->face(face_no)->boundary_id()) != tangential_velocity_boundaries.end() ||
+                      zero_velocity_boundaries.find(cell->face(face_no)->boundary_id()) != zero_velocity_boundaries.end())
+                    {
+                      cell_at_conduction_dominated_dirichlet_boundary = true;
+                      continue;
+                    }
+
+                  scratch.face_finite_element_values->reinit (cell, face_no);
+                  (*scratch.face_finite_element_values)[introspection.extractors.velocities].get_function_values(old_solution,
+                      face_old_velocity_values);
+                  (*scratch.face_finite_element_values)[introspection.extractors.velocities].get_function_values(old_old_solution,
+                      face_old_old_velocity_values);
+
+                  // ... check if the face is an boundary with normal flow by integrating the normal velocities
+                  // (flux through the boundary) as: int u*n ds = Sum_q u(x_q)*n(x_q) JxW(x_q)...
+                  double normal_flow = 0.0;
+                  double flow = 0.0;
+                  double area = 0.0;
+                  for (unsigned int q=0; q<scratch.face_finite_element_values->n_quadrature_points; ++q)
+                    {
+                      normal_flow += ((face_old_velocity_values[q]+face_old_old_velocity_values[q])/2.0 *
+                                      scratch.face_finite_element_values->normal_vector(q)) *
+                                     scratch.face_finite_element_values->JxW(q);
+                      flow += ((face_old_velocity_values[q]+face_old_old_velocity_values[q])/2.0).norm() *
+                              scratch.face_finite_element_values->JxW(q);
+                      area += scratch.face_finite_element_values->JxW(q);
+                    }
+
+                  // Disable stabilization for boundaries with slow flow, or tangential flow.
+                  // Break the loop in case a face is at multiple boundaries, some with flow, some without.
+                  // In those cases we can not disable stabilization.
+                  if ((std::abs(flow/area) < std::sqrt(std::numeric_limits<double>::epsilon()) * area) ||
+                      std::abs(normal_flow) < std::sqrt(std::numeric_limits<double>::epsilon()) * std::abs(flow))
+                    {
+                      cell_at_conduction_dominated_dirichlet_boundary = true;
+                    }
+                  else
+                    {
+                      cell_at_conduction_dominated_dirichlet_boundary = false;
+                      break;
+                    }
+                }
+
+            if (cell_at_conduction_dominated_dirichlet_boundary)
+              {
+                viscosity_per_cell[cell->active_cell_index()] = 0.0;
+                continue;
+              }
           }
 
         const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;

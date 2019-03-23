@@ -1,42 +1,36 @@
 
 Number of active cells: 1 (on 1 levels)
-Number of degrees of freedom: 40 (18+4+9+9)
+Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 0:  t=0 seconds
    Solving temperature system... 0 iterations.
-   Skipping porosity composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 2+0 iterations.
 
    Postprocessing:
      RMS, max velocity:               1 m/s, 1 m/s
      Temperature min/avg/max:         0 K, 0.5 K, 1 K
-     Writing graphical output:        output-analytic_artificial_viscosity_0/solution/solution-00000
      Max / average entropy viscosity: 0 W/(m*K), 0 W/(m*K)
 
 *** Timestep 1:  t=0.5 seconds
    Solving temperature system... 1 iterations.
-   Skipping porosity composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
      RMS, max velocity:               1 m/s, 1 m/s
-     Temperature min/avg/max:         0 K, 0.4484 K, 1 K
-     Writing graphical output:        output-analytic_artificial_viscosity_0/solution/solution-00001
-     Max / average entropy viscosity: 1.41 W/(m*K), 1.41 W/(m*K)
+     Temperature min/avg/max:         -0.125 K, 0.08333 K, 1 K
+     Max / average entropy viscosity: 0 W/(m*K), 0 W/(m*K)
 
 *** Timestep 2:  t=1 seconds
-   Solving temperature system... 1 iterations.
-   Skipping porosity composition solve because RHS is zero.
+   Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
      RMS, max velocity:               1 m/s, 1 m/s
-     Temperature min/avg/max:         0 K, 0.4393 K, 1 K
-     Writing graphical output:        output-analytic_artificial_viscosity_0/solution/solution-00002
-     Max / average entropy viscosity: 1.41 W/(m*K), 1.41 W/(m*K)
+     Temperature min/avg/max:         -0.75 K, -0.3333 K, 1 K
+     Max / average entropy viscosity: 0 W/(m*K), 0 W/(m*K)
 
 Termination requested by criterion: end time
 

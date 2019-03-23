@@ -4,21 +4,18 @@
 # 4: Number of mesh cells
 # 5: Number of Stokes degrees of freedom
 # 6: Number of temperature degrees of freedom
-# 7: Number of degrees of freedom for all compositions
-# 8: Iterations for temperature solver
-# 9: Iterations for composition solver 1
-# 10: Iterations for Stokes solver
-# 11: Velocity iterations in Stokes preconditioner
-# 12: Schur complement iterations in Stokes preconditioner
-# 13: RMS velocity (m/s)
-# 14: Max. velocity (m/s)
-# 15: Minimal temperature (K)
-# 16: Average temperature (K)
-# 17: Maximal temperature (K)
-# 18: Average nondimensional temperature (K)
-# 19: Visualization file name
-# 20: Max entropy viscosity (W/(m*K))
-# 21: Average entropy viscosity (W/(m*K))
-0 0.000000000000e+00 0.000000000000e+00 1 22 9 9 0 0 2 3 3 1.00000000e+00 1.00000000e+00 0.00000000e+00 5.00000000e-01 1.00000000e+00 1.32520541e-04 output-analytic_artificial_viscosity_0/solution/solution-00000 0.00000000e+00 0.00000000e+00 
-1 5.000000000000e-01 5.000000000000e-01 1 22 9 9 1 0 0 0 0 1.00000000e+00 1.00000000e+00 0.00000000e+00 4.48375274e-01 1.00000000e+00 1.18837867e-04 output-analytic_artificial_viscosity_0/solution/solution-00001 1.41421354e+00 1.41421354e+00 
-2 1.000000000000e+00 5.000000000000e-01 1 22 9 9 1 0 0 0 0 1.00000000e+00 1.00000000e+00 0.00000000e+00 4.39340566e-01 1.00000000e+00 1.16443299e-04 output-analytic_artificial_viscosity_0/solution/solution-00002 1.41421354e+00 1.41421354e+00 
+# 7: Iterations for temperature solver
+# 8: Iterations for Stokes solver
+# 9: Velocity iterations in Stokes preconditioner
+# 10: Schur complement iterations in Stokes preconditioner
+# 11: RMS velocity (m/s)
+# 12: Max. velocity (m/s)
+# 13: Minimal temperature (K)
+# 14: Average temperature (K)
+# 15: Maximal temperature (K)
+# 16: Average nondimensional temperature (K)
+# 17: Max entropy viscosity (W/(m*K))
+# 18: Average entropy viscosity (W/(m*K))
+0 0.000000000000e+00 0.000000000000e+00 1 22 9 0 2 3 3 1.00000000e+00 1.00000000e+00  0.00000000e+00  5.00000000e-01 1.00000000e+00 1.32520541e-04 0.00000000e+00 0.00000000e+00 
+1 5.000000000000e-01 5.000000000000e-01 1 22 9 1 0 0 0 1.00000000e+00 1.00000000e+00 -1.25000000e-01  8.33333333e-02 1.00000000e+00 5.52168920e-05 0.00000000e+00 0.00000000e+00 
+2 1.000000000000e+00 5.000000000000e-01 1 22 9 0 0 0 0 1.00000000e+00 1.00000000e+00 -7.50000000e-01 -3.33333333e-01 1.00000000e+00 1.10433784e-04 0.00000000e+00 0.00000000e+00 
