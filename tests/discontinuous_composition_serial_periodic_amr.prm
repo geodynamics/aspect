@@ -74,6 +74,7 @@ subsection Postprocess
   set List of postprocessors = visualization
 
   subsection Visualization
+    set Interpolate output = false
     set Time between graphical output = 0.0
   end
 end

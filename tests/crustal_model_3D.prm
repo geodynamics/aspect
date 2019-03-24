@@ -126,6 +126,7 @@ end
 subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, topography, pressure statistics
   subsection Visualization
+    set Interpolate output = false
     set List of output variables = density, viscosity, strain rate, error indicator
   end
 end

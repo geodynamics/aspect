@@ -86,6 +86,7 @@ subsection Postprocess
 
   subsection Visualization
     set Time between graphical output = 0.2
+    set Interpolate output = false
 
     set List of output variables = volume of fluid values
 

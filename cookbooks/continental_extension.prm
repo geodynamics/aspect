@@ -235,7 +235,6 @@ subsection Postprocess
     set List of output variables = density, viscosity, strain rate, error indicator
     set Output format = vtu
     set Time between graphical output = 1e6
-    set Interpolate output = true
   end
 end
 

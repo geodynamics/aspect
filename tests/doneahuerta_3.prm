@@ -77,6 +77,7 @@ end
 subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, DoneaHuertaPostprocessor
   subsection Visualization
+    set Interpolate output = false
     set List of output variables = density, viscosity, strain rate, gravity
   end
 end

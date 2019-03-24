@@ -145,6 +145,7 @@ end
 subsection Postprocess
   set List of postprocessors = velocity statistics, pressure statistics, visualization
   subsection Visualization
+    set Interpolate output = false
     set Output format = gnuplot
     set List of output variables = stress, strain rate, nonadiabatic pressure
   end

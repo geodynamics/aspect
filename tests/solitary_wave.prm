@@ -159,6 +159,7 @@ subsection Postprocess
   set List of postprocessors = visualization,composition statistics,velocity statistics,solitary wave statistics
 
   subsection Visualization
+    set Interpolate output = false
 
     set List of output variables      = density, viscosity, thermal expansivity, melt material properties 
 

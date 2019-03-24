@@ -132,6 +132,7 @@ subsection Postprocess
   set List of postprocessors = temperature statistics
 
   subsection Visualization
+    set Interpolate output = false
     set Time between graphical output = 0.01
     set List of output variables = melt fraction, viscosity, density, nonadiabatic temperature
 

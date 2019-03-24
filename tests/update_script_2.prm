@@ -122,6 +122,7 @@ subsection Postprocess
   end
 
   subsection Visualization
+    set Interpolate output = false
     set Output format                 = vtu
     set List of output variables      = density, friction heating
     set Time between graphical output = 0

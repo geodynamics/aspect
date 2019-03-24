@@ -799,7 +799,7 @@ namespace aspect
                              "set to a non-empty string it will be interpreted as a "
                              "temporary storage location.");
 
-          prm.declare_entry ("Interpolate output", "false",
+          prm.declare_entry ("Interpolate output", "true",
                              Patterns::Bool(),
                              "deal.II offers the possibility to linearly interpolate "
                              "output fields of higher order elements to a finer resolution. "
@@ -826,9 +826,10 @@ namespace aspect
                              "  \\includegraphics[width=0.5\\textwidth]{viz/parameters/build-patches}"
                              "\\end{center}"
                              "Here, the left picture shows one visualization cell per "
-                             "computational cell (i.e., the option is switch off, as is the "
-                             "default), and the right picture shows the same simulation with the "
-                             "option switched on. The images show the same data, demonstrating "
+                             "computational cell (i.e., the option is switched off), "
+                             "and the right picture shows the same simulation with the "
+                             "option switched on (which is the default). The images "
+                             "show the same data, demonstrating "
                              "that interpolating the solution onto bilinear shape functions as is "
                              "commonly done in visualizing data loses information."
                              "\n\n"

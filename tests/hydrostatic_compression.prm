@@ -118,6 +118,7 @@ subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, pressure statistics, velocity boundary statistics, error calculation
 
   subsection Visualization
+    set Interpolate output = false
     set List of output variables      = material properties, gravity
   end
 end

@@ -158,7 +158,6 @@ subsection Postprocess
   set List of postprocessors = visualization,composition statistics,velocity statistics, mass flux statistics
 
   subsection Visualization
-
     set List of output variables      = material properties, nonadiabatic temperature, melt fraction, strain rate
 
     subsection Material properties

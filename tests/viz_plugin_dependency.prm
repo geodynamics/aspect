@@ -104,6 +104,7 @@ subsection Postprocess
   end
 
   subsection Visualization
+    set Interpolate output = false
     # choose a postprocessor that will in turn require another one
     # to run as well (here, velocity statistics)
     set List of output variables = my postprocessor

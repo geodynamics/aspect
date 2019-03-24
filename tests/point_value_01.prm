@@ -100,6 +100,7 @@ subsection Postprocess
   end
 
   subsection Visualization
+    set Interpolate output = false
     set Output format                 = vtu
     set Time between graphical output = 0
     set List of output variables = density, viscosity

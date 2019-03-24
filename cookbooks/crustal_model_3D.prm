@@ -120,7 +120,6 @@ subsection Postprocess
   subsection Visualization
     set List of output variables = density, viscosity, strain rate, error indicator, partition
     set Time between graphical output = 0
-    set Interpolate output = true
   end
 end
 

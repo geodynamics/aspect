@@ -118,6 +118,7 @@ end
 subsection Postprocess
   set List of postprocessors = visualization
   subsection Visualization
+    set Interpolate output = false
     set List of output variables = viscosity,density
     set Number of grouped files       = 1
     set Output format                 = vtu

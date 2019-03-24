@@ -37,6 +37,7 @@ end
 subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, basic statistics,  temperature statistics, heat flux statistics, depth average
   subsection Visualization
+    set Interpolate output = false
     set List of output variables = adiabat
   end
 
