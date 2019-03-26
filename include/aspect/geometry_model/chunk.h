@@ -149,7 +149,9 @@ namespace aspect
         *
         * Note that the perturbed surface only considers the 
         * initially prescribed topography, not any perturbations
-        * due to a displacement of the free surface.
+        * due to a displacement of the free surface. Therefore,
+        * be careful with using this function if the surface changes
+        * over time.
         */
         virtual
         double depth_wrt_topo(const Point<dim> &position) const;
@@ -300,9 +302,8 @@ namespace aspect
          * The push_forward_gradient provides derivatives of the
          * reference coordinates to the real space coordinates,
          * which are used in computing normal vectors.
-         * In set_min_longitude the minimum longitude is set,
-         * which is used to test the quadrant of returned longitudes
-         * in the pull_back function.
+         * The transformations can include topography added
+         * to the initially radially symmetric mesh.
          */
 
         class ChunkGeometry : public ChartManifold<dim,dim>
@@ -319,13 +320,14 @@ namespace aspect
             ChunkGeometry(const ChunkGeometry &other);
 
             /*
-             * An initialization function necessary to make sure that the
+             * An initialization function to make sure that the
              * manifold has access to the topography plugins.
              */
             void
             initialize(const InitialTopographyModel::Interface<dim> *topography);
-            void
-            set_topography_pointer(const InitialTopographyModel::Interface<dim> *topography);
+            // TODO remove?
+//            void
+//            set_topography_pointer(const InitialTopographyModel::Interface<dim> *topography);
 
             /**
              * This function receives a point in cartesian coordinates x, y and z,
