@@ -1,0 +1,5 @@
+New: There is a new postprocessor 'entropy viscosity statistics' that
+computes the maximum and average entropy viscosity stabilization for
+the temperature equation for diagnostic purposes.
+
+(Rene Gassmoeller, 2019/03/22)
