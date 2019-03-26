@@ -6,7 +6,7 @@ Number of degrees of freedom: 17,989 (8,450+1,089+4,225+4,225)
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 27+0 iterations.
+   Solving Stokes system... 0+8 iterations.
 
    Postprocessing:
      Compositions min/max/mass:       0.1/0.5/0.1785
@@ -14,8 +14,8 @@ Number of degrees of freedom: 17,989 (8,450+1,089+4,225+4,225)
      Max / average entropy viscosity: 0 W/(m*K), 0 W/(m*K)
 
 *** Timestep 1:  t=0.0015625 years
-   Solving temperature system... 11 iterations.
-   Solving porosity system ... 11 iterations.
+   Solving temperature system... 6 iterations.
+   Solving porosity system ... 6 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
@@ -25,8 +25,8 @@ Number of degrees of freedom: 17,989 (8,450+1,089+4,225+4,225)
      Max / average entropy viscosity: 0.000227 W/(m*K), 0.000227 W/(m*K)
 
 *** Timestep 2:  t=0.003125 years
-   Solving temperature system... 10 iterations.
-   Solving porosity system ... 10 iterations.
+   Solving temperature system... 6 iterations.
+   Solving porosity system ... 6 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
@@ -36,8 +36,8 @@ Number of degrees of freedom: 17,989 (8,450+1,089+4,225+4,225)
      Max / average entropy viscosity: 0.000453 W/(m*K), 9.43e-05 W/(m*K)
 
 *** Timestep 3:  t=0.0046875 years
-   Solving temperature system... 10 iterations.
-   Solving porosity system ... 10 iterations.
+   Solving temperature system... 6 iterations.
+   Solving porosity system ... 6 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
@@ -47,8 +47,8 @@ Number of degrees of freedom: 17,989 (8,450+1,089+4,225+4,225)
      Max / average entropy viscosity: 0.000453 W/(m*K), 8.81e-05 W/(m*K)
 
 *** Timestep 4:  t=0.005 years
-   Solving temperature system... 9 iterations.
-   Solving porosity system ... 9 iterations.
+   Solving temperature system... 5 iterations.
+   Solving porosity system ... 5 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
