@@ -1,19 +1,19 @@
 
 # The OPeNDAP extension to ASPECT
 
-The OPeNDAP client extension to ASPECT has been tested on OSX
-(10.13, 10.14) and is currently available in source form only. In this
-document you will find a description of the prerequisites for the
+The OPeNDAP client extension to ASPECT has been tested on OSX (10.13,
+10.14) and CentOS 7. It is currently available in source form only. In
+this document you will find a description of the prerequisites for the
 software, how to run the tests we have included and how to make data
 available from OPeNDAP servers so that ASPECT can use it.
 
 While OPeNDAP makes its own open-source data server (called _Hyrax_),
-that's certainly not the only viable server that supports the _Data
-Access Protocol_. Other servers include the THREDDS Data Server,
-ERDDAP, and PyDAP. Any of these a can be used to provide data for use
-with ASPECT (or any other software configured to work as a DAP
-client). For more information, visit _www.opendap.org_, or the Unidata
-TDS, ERDDAP or PyDAP sites (via Google).
+that's not the only viable server that supports the _Data Access
+Protocol_. Other servers include the THREDDS Data Server, ERDDAP, and
+PyDAP. Any of these a can be used to provide data for use with ASPECT
+(or any other software configured to work as a DAP client). For more
+information, visit _www.opendap.org_, or the Unidata TDS, ERDDAP or
+PyDAP sites (via Google).
 
 ## Building the software
 
@@ -35,7 +35,7 @@ _bison_. Run
 
 > bison --version
 
-and look at the version number. If it's less than 3.1 (or if there's
+and look at the version number. If it's less than 2.4 (or if there's
 no such program installed on your computer), download, unpack, build
 and install a recent version of _bison_ from
 https://ftp.gnu.org/gnu/bison/. We have used version 3.2 and
@@ -66,6 +66,12 @@ button/link to get a pre-built dmg for OSX. To install the binary,
 open the dmg and drag the 'deal.II' icon to the Applications
 directory.
 
+For CentOS, it's a bit more complicated. Follow the instructions
+in the ASPECT manual regarding the deal.II build. It will tell you
+to use git to clone 'candi' and use that to build deal.II. Do that.
+It can take a long time, and using a large machine (one with a fair
+number of cores will speed up the process). 
+
 ### Compiling ASPECT
 
 The only thing done differently to build the 'OPeNDAP enabled' version
@@ -76,7 +82,12 @@ LIBDAP\_ON options combined with the DEAL\_II\_DIR option as follows:
 > mkdir build
 > cd build
 > cmake .. -DLIBDAP\_DIR=/usr/local/ -DLIBDAP=ON
->               -DDEAL\_II\_DIR=/Applications/deal.II-9.0.0.app/Contents/Resources/
+>       -DDEAL\_II\_DIR=/Applications/deal.II-9.0.0.app/Contents/Resources/
+
+For any platform where you built the dependencies using candi, the 
+DEAL_II_DIR will be the place where candi build the library. Also,
+since CentOS, et c., don't come with MPI, you'll need to follow the 
+directions to get those from yum, rpm, apt-get or build from source.
 
 ## Running the tests
 
