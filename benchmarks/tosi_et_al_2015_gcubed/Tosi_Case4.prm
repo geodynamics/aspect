@@ -1,5 +1,7 @@
 include Tosi_base.prm
 
+set Additional shared libraries            = ./libtosi_benchmark.so
+
 set Output directory                       = Case4_6
 
 # Between the cases the "Pressure viscosity parameter" ($\Delta_{\eta}_z$),

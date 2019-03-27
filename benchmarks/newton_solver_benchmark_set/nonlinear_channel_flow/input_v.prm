@@ -2,7 +2,7 @@
 # flow benchmark. This is used to test the velocity boundary conditions 
 # of the Newton Stokes solver.
 
-set Output directory = a2_itIMPES_ST1e-20_UFSfalse_NSP-SPD_NSA-none_C0_g6_ag0_AEWfalse_SF9e-1_NLT1e-14_ABT1e-2_LT1e-5_mLT9e-1_I150_P3_EW1_theta1_LS5_RSMfalse_AV-1_n5
+set Output directory = a2_itsingle Advection, single Stokes_ST1e-20_UFSfalse_NSP-SPD_NSA-none_C0_g6_ag0_AEWfalse_SF9e-1_NLT1e-14_ABT1e-2_LT1e-5_mLT9e-1_I150_P3_EW1_theta1_LS5_RSMfalse_AV-1_n5
 set Dimension = 2
 set CFL number                             = 1.0
 set Maximum time step                      = 1
@@ -11,13 +11,16 @@ set Start time                             = 0
 set Adiabatic surface temperature          = 0
 set Surface pressure                       = 0
 set Use years in output instead of seconds = false  # default: true
-set Nonlinear solver scheme = iterated IMPES #Newton Stokes
+set Nonlinear solver scheme = iterated Advection and Stokes #Newton Stokes
 set Max nonlinear iterations = 150
 set Nonlinear solver tolerance = 1e-14
-set Linear solver tolerance = 1e-15
-set Additional shared libraries = ../../../../benchmarks/nonlinear_channel_flow/libsimple_nonlinear.so
+set Additional shared libraries = ../../nonlinear_channel_flow/libsimple_nonlinear.so
 
 subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-15
+  end
+
   subsection Newton solver parameters
     set Max pre-Newton nonlinear iterations = 3
     set Nonlinear Newton solver switch tolerance = 1e-20 
@@ -85,12 +88,12 @@ subsection Mesh refinement
 end
 
 
-subsection Model settings
+subsection Boundary temperature model
   set Fixed temperature boundary indicators   = 2, 3
-#  set Prescribed traction boundary indicators = 2 y: function, 3 y: function # pressure bc: Prescribe a horizontal traction on the vertical boundaries
-  set Tangential velocity boundary indicators = 
+end
+
+subsection Boundary velocity model
   set Zero velocity boundary indicators       = 0, 1
-#  set Prescribed velocity boundary indicators = 2 x: function, 3 x: function # pressure bc: Prescribe a zero vertical velocity component on the vertical boundaries 
   set Prescribed velocity boundary indicators = 2: function, 3: function # velocity bc
 end
 
@@ -129,7 +132,7 @@ subsection Postprocess
     set List of output variables = viscosity
   end
   subsection Visualization
-    set List of output variables = material properties,strain rate, spd factor
+    set List of output variables = material properties,strain rate#, spd factor
 #    set Output format = gnuplot
     set Time between graphical output = 2
   end

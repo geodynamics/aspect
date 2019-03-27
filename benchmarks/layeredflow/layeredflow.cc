@@ -66,7 +66,7 @@ namespace aspect
       double
       LayeredFlow_pressure (const Point<2> &,
                             const double &,
-                            const double epsilon)
+                            const double)
       {
         return 0;
       }
