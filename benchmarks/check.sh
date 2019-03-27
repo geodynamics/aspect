@@ -62,7 +62,14 @@ make_lib ()
 echo "Checking benchmarks using $BUILD/aspect"
 echo "Please be patient..."
 
+if false; then
+
+( (cd annulus; make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
+
 ( (cd blankenbach/plugin; make_lib && cd .. && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
+
+#TODO: broken
+#( (cd buiter_et_al_2008_jgr; run_all_prms ) || { echo "FAILED"; exit 1; } ) &
 
 ( (cd burstedde; make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
 
@@ -72,19 +79,50 @@ echo "Please be patient..."
 
 ( (cd davies_et_al; cd case-2.3-plugin; make_lib && cd .. && run_prm "case-2.1.prm" && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
 
+( (cd doneahuerta/; make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
+
 ( (cd finite_strain && make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
 
+( (cd geoid-spectral-comparison; run_all_prms ) || { echo "FAILED"; exit 1; } ) &
+
+( (cd hollow_sphere; make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
+
 ( (cd inclusion; make_lib && run_prm "global.prm.base" "adaptive.prm.base") || { echo "FAILED"; exit 1; } ) &
+
+wait
 
 ( (cd inclusion/compositional_fields; make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
 
 ( (cd king2dcompressible && make_lib && run_prm "ala.prm" ) || { echo "FAILED"; exit 1; } ) &
+
+( (cd layeredflow && make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
+
+# TODO: no .prm in folder:
+( (cd nonlinear_channel_flow && make_lib ) || { echo "FAILED"; exit 1; } ) &
+
+wait # newton_solver_benchmark_set/nonlinear_channel_flow depends on nonlinear_channel_flow/
+
+( (cd newton_solver_benchmark_set/nonlinear_channel_flow/ && run_prm "input_v.prm" ) || { echo "FAILED"; exit 1; } ) &
+
+# TODO: broken
+#( (cd newton_solver_benchmark_set/tosi_et_al_2015/ && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
+
+( (cd nsinker && make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
+
+# TODO: prm doesn't run without replacing values:
+#( (cd onset-of-convection && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
+
+( (cd operator_splitting/advection_reaction && make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
+
+( (cd operator_splitting/exponential_decay/ && make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
 
 ( (cd shear_bands; make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
 
 ( (cd solcx; make_lib && run_prm "solcx.prm" ) || { echo "FAILED"; exit 1; } ) &
 
 ( (cd solcx/compositional_fields; make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
+
+fi
 
 ( (cd solitary_wave; make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
 
@@ -93,6 +131,16 @@ echo "Please be patient..."
 ( (cd solkz/compositional_fields; make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
 
 ( (cd tangurnis; cd code; make_lib && cd .. && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
+
+( (cd time_dependent_annulus/plugin && make_lib && cd .. && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
+
+( (cd tosi_et_al_2015_gcubed/ && make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
+
+( (cd viscoelastic_bending_beam && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
+
+( (cd viscoelastic_stress_build-up && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
+
+( (cd zhong_et_al_93 && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
 
 wait
 
