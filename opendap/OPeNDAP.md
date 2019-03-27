@@ -61,11 +61,43 @@ Get and install _libdap_
 To build ASPECT you will also need the DEAL.II library and it's
 dependencies.
 
+#### OSX
 For OSX, go to https://www.dealii.org/ and follow the Download
 button/link to get a pre-built dmg for OSX. To install the binary,
 open the dmg and drag the 'deal.II' icon to the Applications
 directory.
 
+#### CentOS7
+For CentOS 7, Build using candi as per the ASPECT manual. For me that meant 
+getting candi from GitHub (git clone https://github.com/aspect/candi)
+and running
+
+> ./candi.sh --platform=deal.II-toolchain/platforms/supported/centos7.platform
+
+and then following its directions before proceeding with the actual
+build. That meant installing a list of packages:
+
+> sudo yum install patch svn git wget @development-tools gcc-c++ cmake \
+> openmpi openmpi-devel patch  libtool libtool-ltdl libtool-ltdl-devel \
+> lua lua-devel blas blas-devel lapack lapack-devel  doxygen graphviz \
+> graphviz-devel qt-devel
+
+Then get a new shell and run:
+
+> module load mpi/openmpi-x86_64
+
+(apparently the 'module' tcl program is part of @development-tools. You
+need to get a new shell for the command to work.)
+
+Then you need to add the following env vars to the shell:
+
+> export CC=mpicc; export CXX=mpicxx; export FC=mpif90; export FF=mpif77
+
+Now actually run candi (use "./candi --platform=deal.II-toolchain/platforms
+/supported/centos7.platform" again) this time hitting return when prompted
+to continue (assuming you have done the various things). You will need to
+run candi once, make a list, do the stuff and then run it again.
+  
 ### Compiling ASPECT
 
 The only thing done differently to build the 'OPeNDAP enabled' version
