@@ -62,14 +62,11 @@ make_lib ()
 echo "Checking benchmarks using $BUILD/aspect"
 echo "Please be patient..."
 
-if false; then
-
 ( (cd annulus; make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
 
 ( (cd blankenbach/plugin; make_lib && cd .. && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
 
-#TODO: broken
-#( (cd buiter_et_al_2008_jgr; run_all_prms ) || { echo "FAILED"; exit 1; } ) &
+( (cd buiter_et_al_2008_jgr; run_all_prms ) || { echo "FAILED"; exit 1; } ) &
 
 ( (cd burstedde; make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
 
@@ -88,8 +85,6 @@ if false; then
 ( (cd hollow_sphere; make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
 
 ( (cd inclusion; make_lib && run_prm "global.prm.base" "adaptive.prm.base") || { echo "FAILED"; exit 1; } ) &
-
-wait
 
 ( (cd inclusion/compositional_fields; make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
 
@@ -121,8 +116,6 @@ wait # newton_solver_benchmark_set/nonlinear_channel_flow depends on nonlinear_c
 ( (cd solcx; make_lib && run_prm "solcx.prm" ) || { echo "FAILED"; exit 1; } ) &
 
 ( (cd solcx/compositional_fields; make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
-
-fi
 
 ( (cd solitary_wave; make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
 
