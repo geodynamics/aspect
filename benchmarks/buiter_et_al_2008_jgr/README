@@ -24,12 +24,10 @@ In this benchmark, input files are provided for lower crustal viscosities
 of 1e20 and 1e22 Pa s.
 
 Localization of deformation is aided by strain weakening, with the cohesion
-and internal angle of friction reducing between finite strain invariant values
-of 0.5 and 1.5. The attached parameter files use a plugin to calculate the
-finite strain invariant, which is accessed through the material model class.
-Notably, finite strain in this case is determined by the magnitude of the
-deviatoric stress second invariant and time step size. This single measure
-of the finite strain magnitude differs from other measures of finite strain
-magnitude that use/calculate an invariant from the full finite strain tensor 
-(see finite strain cookbook and integrated strain particle property).   
+and internal angle of friction reducing between plastic finite strain invariant
+values of 0.5 and 1.5. Notably, This single measure of the plastic finite strain 
+magnitude is commonly used in long-term tectonic simulations, but differs from 
+other measures of finite strain magnitude that use/calculate an invariant from 
+the full finite strain tensor (see finite strain cookbook and integrated strain 
+particle property).   
  
