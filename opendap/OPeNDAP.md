@@ -1,19 +1,19 @@
 
 # The OPeNDAP extension to ASPECT
 
-The OPeNDAP client extension to ASPECT has been tested on OSX
-(10.13, 10.14) and is currently available in source form only. In this
-document you will find a description of the prerequisites for the
+The OPeNDAP client extension to ASPECT has been tested on OSX (10.13,
+10.14) and CentOS 7. It is currently available in source form only. In
+this document you will find a description of the prerequisites for the
 software, how to run the tests we have included and how to make data
 available from OPeNDAP servers so that ASPECT can use it.
 
 While OPeNDAP makes its own open-source data server (called _Hyrax_),
-that's certainly not the only viable server that supports the _Data
-Access Protocol_. Other servers include the THREDDS Data Server,
-ERDDAP, and PyDAP. Any of these a can be used to provide data for use
-with ASPECT (or any other software configured to work as a DAP
-client). For more information, visit _www.opendap.org_, or the Unidata
-TDS, ERDDAP or PyDAP sites (via Google).
+that's not the only viable server that supports the _Data Access
+Protocol_. Other servers include the THREDDS Data Server, ERDDAP, and
+PyDAP. Any of these a can be used to provide data for use with ASPECT
+(or any other software configured to work as a DAP client). For more
+information, visit _www.opendap.org_, or the Unidata TDS, ERDDAP or
+PyDAP sites (via Google).
 
 ## Building the software
 
@@ -35,7 +35,7 @@ _bison_. Run
 
 > bison --version
 
-and look at the version number. If it's less than 3.1 (or if there's
+and look at the version number. If it's less than 2.4 (or if there's
 no such program installed on your computer), download, unpack, build
 and install a recent version of _bison_ from
 https://ftp.gnu.org/gnu/bison/. We have used version 3.2 and
@@ -89,7 +89,7 @@ Then get a new shell and run:
 (apparently the 'module' tcl program is part of @development-tools. You
 need to get a new shell for the command to work.)
 
-Then you need to add the following env vars to the shell:
+Then you need to add the following environment variables to the shell:
 
 > export CC=mpicc; export CXX=mpicxx; export FC=mpif90; export FF=mpif77
 
@@ -97,7 +97,7 @@ Now actually run candi (use "./candi --platform=deal.II-toolchain/platforms
 /supported/centos7.platform" again) this time hitting return when prompted
 to continue (assuming you have done the various things). You will need to
 run candi once, make a list, do the stuff and then run it again.
-  
+
 ### Compiling ASPECT
 
 The only thing done differently to build the 'OPeNDAP enabled' version
@@ -108,7 +108,12 @@ LIBDAP\_ON options combined with the DEAL\_II\_DIR option as follows:
 > mkdir build
 > cd build
 > cmake .. -DLIBDAP\_DIR=/usr/local/ -DLIBDAP=ON
->               -DDEAL\_II\_DIR=/Applications/deal.II-9.0.0.app/Contents/Resources/
+>       -DDEAL\_II\_DIR=/Applications/deal.II-9.0.0.app/Contents/Resources/
+
+For any platform where you built the dependencies using candi, the 
+DEAL_II_DIR will be the place where candi build the library. Also,
+since CentOS, et c., don't come with MPI, you'll need to follow the 
+directions to get those from yum, rpm, apt-get or build from source.
 
 ## Running the tests
 
@@ -117,7 +122,7 @@ supplied _prm_ files. The file _opendap/prm\_files/aspect\_url\_test.prm_
 will access data for lithospheric thickness for East Africa from a
 data server running at OPeNDAP HQ; the _prm_ file named
 _aspect\_test.prm_ (without _url_ in the name) will run the same
-modle using local data (those data can be found in
+module using local data (those data can be found in
 _opendap/input\_files/..._
 
 > ./aspect -j ../opendap/prm\_files/aspect\_url\_test.prm
@@ -135,4 +140,3 @@ https://wci.llnl.gov/simulation/computer-codes/visit/.
 
 ## About the modifications
 
-## Detailed information about building
