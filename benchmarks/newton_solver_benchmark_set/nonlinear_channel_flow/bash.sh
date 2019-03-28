@@ -49,7 +49,7 @@ SOLVER="NS"
 if [ $SOLVER_SHORT == "NS" ]; then
  SOLVER="Newton Stokes"
 elif [ $SOLVER_SHORT == "itIMPES" ]; then
- SOLVER="iterated IMPES"
+ SOLVER="iterated Advection and Stokes"
 fi
 
 

@@ -66,6 +66,10 @@ echo "Checking cookbooks using $BUILD/aspect ..."
 
 ( (cd morency_doin_2004; make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
 
+( (cd geomio; run_all_prms ) || { echo "FAILED"; exit 1; } ) &
+
+( (cd muparser_temperature_example; run_all_prms ) || { echo "FAILED"; exit 1; } ) &
+
 
 
 wait

@@ -490,7 +490,6 @@ namespace aspect
             // calculate the local viscous dissipation integral and local rate of work against gravity
             for (unsigned int q = 0; q < n_q_points; ++q)
               {
-                const double div_v = trace(in.strain_rate[q]);
                 const SymmetricTensor<2,dim> strain_rate_dev = deviator(in.strain_rate[q]);
                 local_dissipation_integral += 2.0 * out.viscosities[q] * strain_rate_dev * strain_rate_dev * fe_values.JxW(q);
                 local_work += in.temperature[q] * velocities[q][dim-1] * fe_values.JxW(q);
