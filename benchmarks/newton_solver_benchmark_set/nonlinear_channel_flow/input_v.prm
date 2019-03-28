@@ -2,7 +2,7 @@
 # flow benchmark. This is used to test the velocity boundary conditions 
 # of the Newton Stokes solver.
 
-set Output directory = a2_itsingle Advection, single Stokes_ST1e-20_UFSfalse_NSP-SPD_NSA-none_C0_g6_ag0_AEWfalse_SF9e-1_NLT1e-14_ABT1e-2_LT1e-5_mLT9e-1_I150_P3_EW1_theta1_LS5_RSMfalse_AV-1_n5
+set Output directory = a2_itIMPES_ST1e-20_UFSfalse_NSP-SPD_NSA-none_C0_g6_ag0_AEWfalse_SF9e-1_NLT1e-14_ABT1e-2_LT1e-5_mLT9e-1_I150_P3_EW1_theta1_LS5_RSMfalse_AV-1_n5
 set Dimension = 2
 set CFL number                             = 1.0
 set Maximum time step                      = 1
