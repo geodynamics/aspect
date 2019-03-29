@@ -255,11 +255,16 @@ namespace aspect
                                                                    advection_field);
     const double global_max_velocity = get_maximal_velocity(old_solution);
 
-    const UpdateFlags update_flags = update_values |
-                                     update_gradients |
-                                     (advection_field.is_temperature() ? update_hessians : update_default) |
-                                     update_quadrature_points |
-                                     update_JxW_values;
+    UpdateFlags update_flags = update_values |
+                               update_gradients |
+                               update_quadrature_points |
+                               update_JxW_values;
+
+    if (advection_field.is_temperature())
+      update_flags = update_flags | update_hessians;
+
+    for (unsigned int i = 0; i < assemblers->advection_system_assembler_properties.size(); ++i)
+      update_flags = update_flags | assemblers->advection_system_assembler_properties[i].needed_update_flags;
 
     // We need the face integrals to determine if a Dirichlet boundary
     // is conduction dominated in which case we disable stabilization
@@ -482,7 +487,7 @@ namespace aspect
         scratch.finite_element_values[solution_field].get_function_gradients (old_old_solution,
                                                                               scratch.old_old_field_grads);
 
-        if (advection_field.is_temperature())
+        if (update_flags & update_hessians)
           {
             scratch.finite_element_values[solution_field].get_function_laplacians (old_solution,
                                                                                    scratch.old_field_laplacians);

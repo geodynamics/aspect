@@ -1,0 +1,4 @@
+# This is a data table for orthopyroxene computed using HeFESTo.
+# Independent variables are entropy and pressure.
+# POINTS: 49 141
+# s,J/kg/K P(bar) T(K) rho,kg/m3 alpha,1/K cp,J/K/kg vp,km/s vs,km/s h,J/kg

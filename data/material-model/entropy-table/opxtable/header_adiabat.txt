@@ -1,0 +1,7 @@
+# This is an exemplary isentrope for an opx mantle composition, exported
+# from HeFESTo, for a surface adiabatic temperature of 1600 K. Temperature
+# column contains entropy for this table.
+#
+# POINTS: 1401
+# depth (m), pressure (Pa), temperature (K), density (kg/m^3)
+depth             pressure          temperature       density
