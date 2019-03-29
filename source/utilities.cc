@@ -2219,9 +2219,9 @@ namespace aspect
                                              const unsigned int                   component) const
     {
       if (this->get_time() - first_data_file_model_time >= 0.0||
-              (dynamic_cast<const GeometryModel::Chunk<dim>*>(&this->get_geometry_model()) != 0 &&
-               dynamic_cast<const InitialTopographyModel::AsciiData<dim>*>(&this->get_initial_topography_model()) != 0 &&
-               isnan(this->get_time())))
+          (dynamic_cast<const GeometryModel::Chunk<dim>*>(&this->get_geometry_model()) != 0 &&
+           dynamic_cast<const InitialTopographyModel::AsciiData<dim>*>(&this->get_initial_topography_model()) != 0 &&
+           isnan(this->get_time())))
         {
           Point<dim> internal_position = position;
 

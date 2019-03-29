@@ -70,13 +70,6 @@ namespace aspect
       topo = topo_pointer;
     }
 
-    template <int dim>
-    void
-    Chunk<dim>::ChunkGeometry::set_topography_pointer(const InitialTopographyModel::Interface<dim> *topo_pointer)
-    {
-      topo = topo_pointer;
-    }
-
 
     template <int dim>
     DerivativeForm<1,dim,dim>
@@ -87,7 +80,6 @@ namespace aspect
 
       Assert (R > 0.0, ExcMessage("Negative radius for given point."));
 
-//      DerivativeForm<1, dim, dim> DX;
       Tensor<2,dim> DX;
 
       // prior to deal.II 9, we do not apply initial topography
@@ -131,7 +123,7 @@ namespace aspect
       // They are zero for the ZeroTopography model
       Tensor<1,dim-1> topo_derivatives;
       if (const InitialTopographyModel::AsciiData<dim> *itm = dynamic_cast<const InitialTopographyModel::AsciiData<dim> *> (topo))
-       topo_derivatives = itm->vector_gradient(push_forward_sphere(chart_point));
+        topo_derivatives = itm->vector_gradient(push_forward_sphere(chart_point));
 
       // Construct surface point in lon(,lat) coordinates
       Point<dim-1> surface_point;
@@ -151,7 +143,6 @@ namespace aspect
       const double phi_topo = topo_point[1];
 
       // The derivatives of topo_point to chart_point
-//      DerivativeForm<1, dim, dim> Dtopo;
       Tensor<2, dim> Dtopo;
       // The derivatives of the cartesian point to chart_point
       DerivativeForm<1, dim, dim> Dtotal;
@@ -181,22 +172,13 @@ namespace aspect
             //dy/dphi_topo
             DX[1][1] =  R_topo * std::cos(phi_topo);
 
-//            // dx/dR   = dx/dR_topo * dR_topo/dR   + dx/dphi_topo * dphi_topo/dR
-//            Dtotal[0][0] = DX[0][0] * Dtopo[0][0] + DX[0][1] * Dtopo[1][0];
-//            // dx/dphi = dx/dR_topo * dR_topo/dphi + dx/dphi_topo * dphi_topo/dphi
-//            Dtotal[0][1] = DX[0][0] * Dtopo[0][1] + DX[0][1] * Dtopo[1][1];
-//            // dy/dR   = dy/dR_topo * dR_topo/dR + dy/dphi_topo * dphi_topo/dR
-//            Dtotal[1][0] = DX[1][0] * Dtopo[0][0] + DX[1][1] * Dtopo[1][0];
-//            // dy/dphi = dy/dR_topo * dR_topo/dphi + dy/dphi_topo * dphi_topo/dphi
-//            Dtotal[1][1] = DX[1][0] * Dtopo[0][1] + DX[1][1] * Dtopo[1][1];
-
             break;
           }
           case 3:
           {
-          	// R_topo = R + topo(phi,theta) * ((R-R_0)/(R_1-R_0))
-          	// phi_topo = phi
-        	// theta_topo = theta
+            // R_topo = R + topo(phi,theta) * ((R-R_0)/(R_1-R_0))
+            // phi_topo = phi
+            // theta_topo = theta
             //dR_topo/dR
             Dtopo[0][0] = (d_topo / max_depth) + 1.;
             //dR_topo/dphi
@@ -229,25 +211,6 @@ namespace aspect
             DX[2][1] = 0;
             DX[2][2] =  R_topo * std::cos(theta_topo);
 
-//            // dx/dR     = dx/dR_topo * dR_topo/dR   + dx/dphi_topo * dphi_topo/dR  + dx/dtheta_topo * dtheta_topo/dR
-//            Dtotal[0][0] = DX[0][0] * Dtopo[0][0] + DX[0][1] * Dtopo[1][0] + DX[0][2] * Dtopo[2][0];
-//            // dx/dphi   = dx/dR_topo * dR_topo/dphi + dx/dphi_topo * dphi_topo/dphi + dx/dtheta_topo * dtheta_topo/dphi
-//            Dtotal[0][1] = DX[0][0] * Dtopo[0][1] + DX[0][1] * Dtopo[1][1] + DX[0][2] * Dtopo[2][1];
-//            // dx/dtheta = dx/dR_topo * dR_topo/dtheta + dx/dphi_topo * dphi_topo/dtheta + dx/dtheta_topo * dtheta_topo/dtheta
-//            Dtotal[0][2] = DX[0][0] * Dtopo[0][2] + DX[0][1] * Dtopo[1][2] + DX[0][2] * Dtopo[2][2];
-//            // dy/dR     = dy/dR_topo * dR_topo/dR   + dy/dphi_topo * dphi_topo/dR  + dy/dtheta_topo * dtheta_topo/dR
-//            Dtotal[1][0] = DX[1][0] * Dtopo[0][0] + DX[0][1] * Dtopo[1][0] + DX[0][2] * Dtopo[2][0];
-//            // dy/dphi   = dy/dR_topo * dR_topo/dphi + dy/dphi_topo * dphi_topo/dphi + dy/dtheta_topo * dtheta_topo/dphi
-//            Dtotal[1][1] = DX[1][0] * Dtopo[0][1] + DX[0][1] * Dtopo[1][1] + DX[0][2] * Dtopo[2][1];
-//            // dy/dtheta = dy/dR_topo * dR_topo/dtheta + dy/dphi_topo * dphi_topo/dtheta + dy/dtheta_topo * dtheta_topo/dtheta
-//            Dtotal[1][2] = DX[1][0] * Dtopo[0][2] + DX[0][1] * Dtopo[1][2] + DX[0][2] * Dtopo[2][2];
-//            // dz/dR     = dz/dR_topo * dR_topo/dR   + dz/dphi_topo * dphi_topo/dR  + dz/dtheta_topo * dtheta_topo/dR
-//            Dtotal[2][0] = DX[2][0] * Dtopo[0][0] + DX[0][1] * Dtopo[1][0] + DX[0][2] * Dtopo[2][0];
-//            // dz/dphi   = dz/dR_topo * dR_topo/dphi + dz/dphi_topo * dphi_topo/dphi + dz/dtheta_topo * dtheta_topo/dphi
-//            Dtotal[2][1] = DX[2][0] * Dtopo[0][1] + DX[0][1] * Dtopo[1][1] + DX[0][2] * Dtopo[2][1];
-//            // dz/dtheta = dz/dR_topo * dR_topo/dtheta + dz/dphi_topo * dphi_topo/dtheta + dz/dtheta_topo * dtheta_topo/dtheta
-//            Dtotal[2][2] = DX[2][0] * Dtopo[0][2] + DX[0][1] * Dtopo[1][2] + DX[0][2] * Dtopo[2][2];
-
             break;
           }
           default:
@@ -270,9 +233,9 @@ namespace aspect
 #else
       // Only take into account topography when we're not using the ZeroTopography plugin
       if (dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(topo) != nullptr)
-         return push_forward_sphere(r_phi_theta);
+        return push_forward_sphere(r_phi_theta);
       else
-         return push_forward_sphere(push_forward_topo(r_phi_theta));
+        return push_forward_sphere(push_forward_topo(r_phi_theta));
 #endif
     }
 
@@ -286,9 +249,9 @@ namespace aspect
 #else
       // Only take into account topography when we're not using the ZeroTopography plugin
       if (dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(topo) != nullptr)
-         return pull_back_sphere(x_y_z);
+        return pull_back_sphere(x_y_z);
       else
-         return pull_back_topo(pull_back_sphere(x_y_z));
+        return pull_back_topo(pull_back_sphere(x_y_z));
 #endif
     }
 
@@ -656,13 +619,6 @@ namespace aspect
       {
         this->set_manifold_ids(tria);
       });
-      // Connect the manifold id functions to the signals
-      //signals.pre_compute_no_normal_flux_constraints.connect (std_cxx11::bind (&Chunk<dim>::clear_manifold_ids,
-      //                                                                         std_cxx11::ref(*this),
-      //                                                                         std_cxx11::_1));
-      //signals.post_compute_no_normal_flux_constraints.connect (std_cxx11::bind (&Chunk<dim>::set_manifold_ids,
-      //                                                                          std_cxx11::ref(*this),
-      //                                                                          std_cxx11::_1));
     }
 #endif
 

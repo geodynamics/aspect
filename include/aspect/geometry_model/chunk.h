@@ -140,19 +140,19 @@ namespace aspect
         virtual
         double height_above_reference_surface(const Point<dim> &position) const;
 
-       /**
-        * Whereas the depth function returns the depth with respect
-        * to the unperturbed surface, this function
-        * returns the depth with respect to the surface 
-        * including the initial topography. For models without
-        * initial topography, the result will be the same. 
-        *
-        * Note that the perturbed surface only considers the 
-        * initially prescribed topography, not any perturbations
-        * due to a displacement of the free surface. Therefore,
-        * be careful with using this function if the surface changes
-        * over time.
-        */
+        /**
+         * Whereas the depth function returns the depth with respect
+         * to the unperturbed surface, this function
+         * returns the depth with respect to the surface
+         * including the initial topography. For models without
+         * initial topography, the result will be the same.
+         *
+         * Note that the perturbed surface only considers the
+         * initially prescribed topography, not any perturbations
+         * due to a displacement of the free surface. Therefore,
+         * be careful with using this function if the surface changes
+         * over time.
+         */
         virtual
         double depth_wrt_topo(const Point<dim> &position) const;
 
@@ -325,9 +325,6 @@ namespace aspect
              */
             void
             initialize(const InitialTopographyModel::Interface<dim> *topography);
-            // TODO remove?
-//            void
-//            set_topography_pointer(const InitialTopographyModel::Interface<dim> *topography);
 
             /**
              * This function receives a point in cartesian coordinates x, y and z,
