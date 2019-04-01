@@ -161,7 +161,8 @@ namespace aspect
           {
             // Add this field as the next volume of fluid field
             volume_of_fluid_field_names.push_back(names_of_compositional_fields[i]);
-            volume_of_fluid_composition_map_index[i] = n_volume_of_fluid_fields;
+            // Note that compositional field indicies include temperature as field 0, so increase index by 1
+            volume_of_fluid_composition_map_index[i+1] = n_volume_of_fluid_fields;
             ++n_volume_of_fluid_fields;
           }
       }
@@ -233,10 +234,10 @@ namespace aspect
           const std::string value = split_parts[1];
 
           if (value == "composition")
-            initialization_data_type[volume_of_fluid_composition_map_index[compositional_field_index]]
+            initialization_data_type[volume_of_fluid_composition_map_index[compositional_field_index+1]]
               = VolumeOfFluid::VolumeOfFluidInputType::composition;
           else if (value == "level set")
-            initialization_data_type[volume_of_fluid_composition_map_index[compositional_field_index]]
+            initialization_data_type[volume_of_fluid_composition_map_index[compositional_field_index+1]]
               = VolumeOfFluid::VolumeOfFluidInputType::level_set;
           else
             AssertThrow(false,ExcNotImplemented());
