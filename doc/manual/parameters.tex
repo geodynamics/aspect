@@ -11359,6 +11359,23 @@ Units: $Pa \, s$
 
 
 {\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Exponential depletion strengthening factor}
+\phantomsection\label{parameters:Material model/Melt global/Exponential depletion strengthening factor}
+\label{parameters:Material_20model/Melt_20global/Exponential_20depletion_20strengthening_20factor}
+
+
+\index[prmindex]{Exponential depletion strengthening factor}
+\index[prmindexfull]{Material model!Melt global!Exponential depletion strengthening factor}
+{\it Value:} 0.0
+
+
+{\it Default:} 0.0
+
+
+{\it Description:} $\alpha_F$: exponential dependency of viscosity on the depletion field $F$ (called peridotite). Dimensionless factor. With a value of 0.0 (the default) the viscosity does not depend on the depletion. The effective viscosity increasedue to depletion is defined as $exp( \alpha_F * F)$. Rationale: melting dehydrates the source rock by removing most of the volatiles,and makes it stronger. Hirth and Kohlstedt (1996) report typical values around a factor 100 to 1000 viscosity contrast between wet and dry rocks, although some experimental studies report a smaller (factor 10) contrast (e.g. Fei et al., 2013).
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
 \item {\it Parameter name:} {\tt Exponential melt weakening factor}
 \phantomsection\label{parameters:Material model/Melt global/Exponential melt weakening factor}
 \label{parameters:Material_20model/Melt_20global/Exponential_20melt_20weakening_20factor}
@@ -11393,6 +11410,23 @@ Units: $Pa \, s$
 
 
 {\it Possible values:} A boolean value (true or false)
+\item {\it Parameter name:} {\tt Maximum Depletion viscosity change}
+\phantomsection\label{parameters:Material model/Melt global/Maximum Depletion viscosity change}
+\label{parameters:Material_20model/Melt_20global/Maximum_20Depletion_20viscosity_20change}
+
+
+\index[prmindex]{Maximum Depletion viscosity change}
+\index[prmindexfull]{Material model!Melt global!Maximum Depletion viscosity change}
+{\it Value:} 1.0e3
+
+
+{\it Default:} 1.0e3
+
+
+{\it Description:} $\Delta \eta_{F,max}$: maximum depletion strengthening of viscosity. Rationale: melting dehydrates the source rock by removing most of the volatiles,and makes it stronger. Hirth and Kohlstedt (1996) report typical values around a factor 100 to 1000 viscosity contrast between wet and dry rocks, although some experimental studies report a smaller (factor 10) contrast (e.g. Fei et al., 2013).
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
 \item {\it Parameter name:} {\tt Melt bulk modulus derivative}
 \phantomsection\label{parameters:Material model/Melt global/Melt bulk modulus derivative}
 \label{parameters:Material_20model/Melt_20global/Melt_20bulk_20modulus_20derivative}
@@ -15120,6 +15154,8 @@ The file format then consists of lines with Euclidean coordinates followed by th
 
 (As a side note, the postprocessor chooses the cell center instead of the center of the cell face at the surface, where we really are interested in the quantity, since this often gives better accuracy. The results should in essence be the same, though.)
 
+`entropy viscosity statistics': A postprocessor that computes the maximum and volume averagedentropy viscosity stabilization for the temperature field.
+
 `geoid': A postprocessor that computes a representation of the geoid based on the density structure in the mantle, as well as the dynamic topography at the surface and core mantle boundary (CMB). The geoid is computed from a spherical harmonic expansion, so the geometry of the domain must be a 3D spherical shell.
 
 `global statistics': A postprocessor that outputs all the global statistics information, e.g. the time of the simulation, the timestep number, number of degrees of freedom and solver iterations for each timestep. The postprocessor can output different formats, the first printing one line in the statistics file per nonlinear solver iteration (if a nonlinear solver scheme is selected). The second prints one line per timestep, summing the information about all nonlinear iterations in this line. Note that this postprocessor is always active independent on whether or not it is selected in the parameter file.
@@ -15186,7 +15222,7 @@ The file format then consists of lines with Euclidean coordinates followed by th
 `volume of fluid statistics': A postprocessor that computes some statistics about the volume-of-fluid fields.
 
 
-{\it Possible values:} A comma-separated list of any of Stokes residual, basic statistics, boundary densities, boundary pressures, command, composition statistics, core statistics, depth average, dynamic topography, geoid, global statistics, gravity calculation, heat flux densities, heat flux map, heat flux statistics, heating statistics, mass flux statistics, material statistics, matrix statistics, melt statistics, memory statistics, particle count statistics, particles, point values, pressure statistics, rotation statistics, spherical velocity statistics, temperature statistics, topography, velocity boundary statistics, velocity statistics, visualization, volume of fluid statistics
+{\it Possible values:} A comma-separated list of any of Stokes residual, basic statistics, boundary densities, boundary pressures, command, composition statistics, core statistics, depth average, dynamic topography, entropy viscosity statistics, geoid, global statistics, gravity calculation, heat flux densities, heat flux map, heat flux statistics, heating statistics, mass flux statistics, material statistics, matrix statistics, melt statistics, memory statistics, particle count statistics, particles, point values, pressure statistics, rotation statistics, spherical velocity statistics, temperature statistics, topography, velocity boundary statistics, velocity statistics, visualization, volume of fluid statistics
 \item {\it Parameter name:} {\tt Run postprocessors on nonlinear iterations}
 \phantomsection\label{parameters:Postprocess/Run postprocessors on nonlinear iterations}
 \label{parameters:Postprocess/Run_20postprocessors_20on_20nonlinear_20iterations}
@@ -15807,10 +15843,10 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 {\it Default:} 1
 
 
-{\it Description:} Parameter for the map sampling scheme: Gravity may be calculated for a sets of points along the latitude (e.g. gravity map) between a minimum and maximum latitude.
+{\it Description:} Parameter for the map sampling scheme: This specifies the number of points along the latitude (e.g. gravity map) between a minimum and maximum latitude.
 
 
-{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+{\it Possible values:} An integer $n$ such that $0\leq n \leq 2147483647$
 \item {\it Parameter name:} {\tt Number points longitude}
 \phantomsection\label{parameters:Postprocess/Gravity calculation/Number points longitude}
 \label{parameters:Postprocess/Gravity_20calculation/Number_20points_20longitude}
@@ -15824,10 +15860,10 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 {\it Default:} 1
 
 
-{\it Description:} Parameter for the map sampling scheme: Gravity may be calculated for a sets of points along the longitude (e.g. gravity map) between a minimum and maximum longitude.
+{\it Description:} Parameter for the map sampling scheme: This specifies the number of points along the longitude (e.g. gravity map) between a minimum and maximum longitude.
 
 
-{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+{\it Possible values:} An integer $n$ such that $0\leq n \leq 2147483647$
 \item {\it Parameter name:} {\tt Number points radius}
 \phantomsection\label{parameters:Postprocess/Gravity calculation/Number points radius}
 \label{parameters:Postprocess/Gravity_20calculation/Number_20points_20radius}
@@ -15841,10 +15877,10 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 {\it Default:} 1
 
 
-{\it Description:} Parameter for the map sampling scheme: Gravity may be calculated for a set of points along the radius (e.g. depth profile) between a minimum and maximum radius.
+{\it Description:} Parameter for the map sampling scheme: This specifies the number of points along the radius (e.g. depth profile) between a minimum and maximum radius.
 
 
-{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+{\it Possible values:} An integer $n$ such that $0\leq n \leq 2147483647$
 \item {\it Parameter name:} {\tt Quadrature degree increase}
 \phantomsection\label{parameters:Postprocess/Gravity calculation/Quadrature degree increase}
 \label{parameters:Postprocess/Gravity_20calculation/Quadrature_20degree_20increase}
@@ -15892,7 +15928,7 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 {\it Default:} map
 
 
-{\it Description:} Choose which sampling scheme. A map is limited between a minimum and maximum radius, longitude and latitude. A A list contains specific coordinates of the satellites.
+{\it Description:} Choose the sampling scheme. A map will produce a grid of equally spaced points between a minimum and maximum radius, longitude, and latitude. A list contains specific coordinates of the satellites.
 
 
 {\it Possible values:} Any one of map, list
@@ -17049,17 +17085,17 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Interpolate output}
 \index[prmindexfull]{Postprocess!Visualization!Interpolate output}
-{\it Value:} false
+{\it Value:} true
 
 
-{\it Default:} false
+{\it Default:} true
 
 
 {\it Description:} deal.II offers the possibility to linearly interpolate output fields of higher order elements to a finer resolution. This somewhat compensates the fact that most visualization software only offers linear interpolation between grid points and therefore the output file is a very coarse representation of the actual solution field. Activating this option increases the spatial resolution in each dimension by a factor equal to the polynomial degree used for the velocity finite element (usually 2). In other words, instead of showing one quadrilateral or hexahedron in the visualization per cell on which \aspect{} computes, it shows multiple (for quadratic elements, it will describe each cell of the mesh on which we compute as $2\times 2$ or $2\times 2\times 2$ cells in 2d and 3d, respectively; correspondingly more subdivisions are used if you use cubic, quartic, or even higher order elements for the velocity).
 
 The effect of using this option can be seen in the following picture showing a variation of the output produced with the input files from Section~\ref{sec:shell-simple-2d}:
 
-\begin{center}  \includegraphics[width=0.5\textwidth]{viz/parameters/build-patches}\end{center}Here, the left picture shows one visualization cell per computational cell (i.e., the option is switch off, as is the default), and the right picture shows the same simulation with the option switched on. The images show the same data, demonstrating that interpolating the solution onto bilinear shape functions as is commonly done in visualizing data loses information.
+\begin{center}  \includegraphics[width=0.5\textwidth]{viz/parameters/build-patches}\end{center}Here, the left picture shows one visualization cell per computational cell (i.e., the option is switched off), and the right picture shows the same simulation with the option switched on (which is the default). The images show the same data, demonstrating that interpolating the solution onto bilinear shape functions as is commonly done in visualizing data loses information.
 
 Of course, activating this option also greatly increases the amount of data \aspect{} will write to disk: approximately by a factor of 4 in 2d, and a factor of 8 in 3d, when using quadratic elements for the velocity, and correspondingly more for even higher order elements.
 
@@ -17114,7 +17150,7 @@ Strictly speaking, the dynamic topography is of course a quantity that is only o
 
 `gravity': A visualization output object that outputs the gravity vector.
 
-`heat flux map': A visualization output object that generates output for the heat flux density across the top and bottom boundary in outward direction. The heat flux is computed as sum of advective heat flux and conductive heat flux through Neumann boundaries, both computed as integral over the boundary area, and conductive heat flux through Dirichlet boundaries, which is computed using the consistent boundary flux method as described in ``Gresho, Lee, Sani, Maslanik, Eaton (1987). The consistent Galerkin FEM for computing derived boundary quantities in thermal and or fluids problems. International Journal for Numerical Methods in Fluids, 7(4), 371-394.''
+`heat flux map': A visualization output object that generates output for the heat flux density across the top and bottom boundary in outward direction. The heat flux is computed as sum of advective heat flux and conductive heat flux through Neumann boundaries, both computed as integral over the boundary area, and conductive heat flux through Dirichlet boundaries, which is computed using the consistent boundary flux method as described in ``Gresho, Lee, Sani, Maslanik, Eaton (1987). The consistent Galerkin FEM for computing derived boundary quantities in thermal and or fluids problems. International Journal for Numerical Methods in Fluids, 7(4), 371-394.'' If only conductive heat flux through Dirichlet boundaries is of interest, the postprocessor can produce output of higher resolution by evaluating the CBF solution vector point-wise instead of computing cell-wise averaged values.
 
 `heating': A visualization output object that generates output for all the heating terms used in the energy equation.
 
@@ -17288,6 +17324,26 @@ The variable that is outputted this way is computed by taking the pressure at ea
 
 
 {\it Possible values:} An integer $n$ such that $0\leq n \leq 2147483647$
+\item {\it Parameter name:} {\tt Write higher order output}
+\phantomsection\label{parameters:Postprocess/Visualization/Write higher order output}
+\label{parameters:Postprocess/Visualization/Write_20higher_20order_20output}
+
+
+\index[prmindex]{Write higher order output}
+\index[prmindexfull]{Postprocess!Visualization!Write higher order output}
+{\it Value:} false
+
+
+{\it Default:} false
+
+
+{\it Description:} deal.II offers the possibility to write vtu files with higher order representations of the output data. This means each cell will correctly show the higher order representation of the output data instead of the linear interpolation between vertices that ParaView and Visit usually show. Note that activating this option is safe and recommended, but requires that (i) ``Output format'' is set to ``vtu'', (ii) ``Interpolate output'' is set to true, (iii) you use a sufficiently new version of Paraview or Visit to read the files (Paraview version 5.5 or newer, and Visit version to be determined), and (iv) you use deal.II version 9.1.0 or newer. 
+The effect of using this option can be seen in the following picture:
+
+\begin{center}  \includegraphics[width=0.5\textwidth]{viz/parameters/higher-order-output}\end{center}The top figure shows the plain output without interpolation or higher order output. The middle figure shows output that was interpolated as discussed for the ``Interpolate output'' option. The bottom panel shows higher order output that achieves better accuracy than the interpolated output at a lower memory cost.
+
+
+{\it Possible values:} A boolean value (true or false)
 \item {\it Parameter name:} {\tt Write in background thread}
 \phantomsection\label{parameters:Postprocess/Visualization/Write in background thread}
 \label{parameters:Postprocess/Visualization/Write_20in_20background_20thread}
@@ -17370,6 +17426,29 @@ The variable that is outputted this way is computed by taking the pressure at ea
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [Any string]
+\end{itemize}
+
+\subsection{Parameters in section \tt Postprocess/Visualization/Heat flux map}
+\label{parameters:Postprocess/Visualization/Heat_20flux_20map}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Output point wise heat flux}
+\phantomsection\label{parameters:Postprocess/Visualization/Heat flux map/Output point wise heat flux}
+\label{parameters:Postprocess/Visualization/Heat_20flux_20map/Output_20point_20wise_20heat_20flux}
+
+
+\index[prmindex]{Output point wise heat flux}
+\index[prmindexfull]{Postprocess!Visualization!Heat flux map/Output point wise heat flux}
+{\it Value:} false
+
+
+{\it Default:} false
+
+
+{\it Description:} A boolean flag that controls whether to output the heat flux map as a point wise value, or as a cell-wise averaged value. The point wise output is more accurate, but it currently omits prescribed heat flux values at boundaries and advective heat flux that is caused by velocities non-tangential to boundaries. If you do not use these two features it is recommended to switch this setting on to benefit from the increased output resolution.
+
+
+{\it Possible values:} A boolean value (true or false)
 \end{itemize}
 
 \subsection{Parameters in section \tt Postprocess/Visualization/Material properties}
