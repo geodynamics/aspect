@@ -262,6 +262,18 @@ namespace aspect
                                                     double &molar_FeO_in_ferropericlase,
                                                     double &mass_bridgmanite_in_solid) const;
 
+        /**
+         * Convert from the mole fraction of iron in the solid to the mole fraction of iron in the
+         * two solid phases, bridgmanite and ferropericlase, and the mass fraction of bridgmanite
+         * in the solid.
+         */
+        virtual
+        double
+        compute_melt_molar_fraction (const double porosity,
+                                     const double bridgmanite_molar_fraction_in_solid,
+                                     EndmemberProperties &properties,
+                                     const std::vector<double> &endmember_mole_fractions_per_phase) const;
+
         virtual
         double
         melt_fraction (const double temperature,

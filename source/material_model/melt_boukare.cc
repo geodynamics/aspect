@@ -306,6 +306,40 @@ namespace aspect
     }
 
 
+
+    template <int dim>
+    double
+    MeltBoukare<dim>::
+    compute_melt_molar_fraction (const double porosity,
+                                 const double bridgmanite_molar_fraction_in_solid,
+                                 EndmemberProperties &endmembers,
+                                 const std::vector<double> &endmember_mole_fractions_per_phase) const
+    {
+      double melt_molar_volume = 0.0;
+      double solid_molar_volume = 0.0;
+      for (unsigned int i=0; i<endmember_names.size(); ++i)
+      {
+        const double endmember_phase_fraction_in_solid = i<2 ? bridgmanite_molar_fraction_in_solid : 1.0 - bridgmanite_molar_fraction_in_solid;
+
+        if (endmember_states[i] == EndmemberState::melt)
+          melt_molar_volume += endmember_mole_fractions_per_phase[i] * endmembers.volumes[i];
+        else if (endmember_states[i] == EndmemberState::solid)
+          solid_molar_volume += endmember_phase_fraction_in_solid * endmember_mole_fractions_per_phase[i] * endmembers.volumes[i];
+        else
+          AssertThrow (false, ExcNotImplemented());
+      }
+
+      double melt_molar_fraction = 0.0;
+      if (melt_molar_volume > 0)
+        {
+          const double n_moles_total = porosity / melt_molar_volume + (1.0 - porosity) / solid_molar_volume;
+          melt_molar_fraction = porosity / (melt_molar_volume * n_moles_total);
+        }
+
+      return melt_molar_fraction;
+    }
+
+
     template <int dim>
     double
     MeltBoukare<dim>::
@@ -572,15 +606,12 @@ namespace aspect
           out.compressibilities[q] = 0.0;
 
 
-          // TODO: more descriptive variable names and remove excess brackets once we have a unit test
           fill_endmember_properties(in, q, endmembers);
-
 
           // Average the individual endmember properties
 
-          // First, convert from porosity to melt molar fraction
-          // TODO: make this a separate function
-          // output: melt molar fraction; input: porosity, endmember_mole_fractions_per_phase, bridgmanite_mass_fraction, periclase_mass_fraction
+          /*------------------------------------------------------------------*/
+          // TODO: this will go once we have the new variables
           const double n_moles_in_bridgmanite = bridgmanite_mass_fraction / (endmember_mole_fractions_per_phase[mgbdg_idx] * molar_masses[mgbdg_idx]
                                                                              + endmember_mole_fractions_per_phase[febdg_idx] * molar_masses[febdg_idx]);
           const double n_moles_in_ferropericlase = periclase_mass_fraction / (endmember_mole_fractions_per_phase[per_idx] * molar_masses[per_idx]
@@ -590,34 +621,19 @@ namespace aspect
           const double bridgmanite_molar_fraction_in_solid = n_moles_in_bridgmanite / n_moles_in_the_solid;
           const double ferropericlase_molar_fraction_in_solid = 1.0 - bridgmanite_molar_fraction_in_solid;
 
-          double solid_molar_volume = bridgmanite_molar_fraction_in_solid * endmember_mole_fractions_per_phase[mgbdg_idx] * endmembers.volumes[mgbdg_idx]
-                                      + bridgmanite_molar_fraction_in_solid * endmember_mole_fractions_per_phase[febdg_idx] * endmembers.volumes[febdg_idx]
-                                      + ferropericlase_molar_fraction_in_solid * endmember_mole_fractions_per_phase[per_idx] * endmembers.volumes[per_idx]
-                                      + ferropericlase_molar_fraction_in_solid * endmember_mole_fractions_per_phase[wus_idx] * endmembers.volumes[wus_idx];
+          /*------------------------------------------------------------------*/
 
-          double melt_molar_volume = 0.0;
-          for (unsigned int i=0; i<n_endmembers; ++i)
-            if (endmember_states[i] == EndmemberState::melt)
-              melt_molar_volume += endmember_mole_fractions_per_phase[i] * endmembers.volumes[i];
-
-          double melt_molar_fraction = 0.0;
-          if (melt_molar_volume > 0)
-            {
-              const double n_moles_total = porosity / melt_molar_volume + (1.0 - porosity) / solid_molar_volume;
-              melt_molar_fraction = porosity / (melt_molar_volume * n_moles_total);
-            }
-
+          // First, convert from porosity to melt molar fraction
+          double melt_molar_fraction = compute_melt_molar_fraction(porosity, bridgmanite_molar_fraction_in_solid, endmembers, endmember_mole_fractions_per_phase);
           const double solid_molar_fraction = 1.0 - melt_molar_fraction;
-
 
 
           // Second, compute endmember molar fractions in the composite
           std::vector<double> phase_mole_fractions_in_composite(n_endmembers);
           double solid_molar_mass = 0.0;
           double melt_molar_mass = 0.0;
-
-          melt_molar_volume = 0.0;
-          solid_molar_volume = 0.0;
+          double melt_molar_volume = 0.0;
+          double solid_molar_volume = 0.0;
 
           for (unsigned int i=0; i<n_endmembers; ++i)
             {
@@ -643,7 +659,7 @@ namespace aspect
             }
 
           const double total_molar_mass = melt_molar_mass + solid_molar_mass;
-          double total_volume = melt_molar_volume + solid_molar_volume;
+          const double total_volume = melt_molar_volume + solid_molar_volume;
 
           for (unsigned int i=0; i<n_endmembers; ++i)
             {
