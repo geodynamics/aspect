@@ -444,9 +444,22 @@ namespace aspect
 
       // TODO: write a separate function that gets the bulk composition from porosity, solid and melt composition
 
+      const unsigned int n_endmembers = endmember_names.size();
+      EndmemberProperties endmembers(n_endmembers);
 
       for (unsigned int q=0; q<in.temperature.size(); ++q)
         {
+          std::vector<double> endmember_mole_fractions_per_phase(n_endmembers);
+          std::vector<double> endmember_mole_fractions_in_composite(n_endmembers);
+          std::vector<double> phase_mass_fractions(n_endmembers);
+
+          endmember_mole_fractions_per_phase[febdg_idx] = in.composition[q][Fe_in_bridgmanite_idx];
+          endmember_mole_fractions_per_phase[mgbdg_idx] = 1.0 - endmember_mole_fractions_per_phase[febdg_idx];
+          endmember_mole_fractions_per_phase[wus_idx] = in.composition[q][Fe_in_periclase_idx];
+          endmember_mole_fractions_per_phase[per_idx] = 1.0 - endmember_mole_fractions_per_phase[wus_idx];
+
+
+          /*-----------------------------------------------------------------------*/
           const double molar_mass_fper = in.composition[q][Fe_in_periclase_idx] * molar_masses[wus_idx]
                                          + (1. - in.composition[q][Fe_in_periclase_idx]) * molar_masses[per_idx];
           const double molar_mass_bdg = in.composition[q][Fe_in_bridgmanite_idx] * molar_masses[febdg_idx]
@@ -458,6 +471,7 @@ namespace aspect
 
           solid_composition = f_pv * in.composition[q][Fe_in_bridgmanite_idx]
                               + (1. - f_pv) * in.composition[q][Fe_in_periclase_idx];
+          /*-----------------------------------------------------------------------*/
 
 
           // TODO: this is copied from evaluate, make it nice
@@ -467,37 +481,14 @@ namespace aspect
               const unsigned int Fe_in_melt_idx = this->introspection().compositional_index_for_name("iron_fraction_in_the_melt");
               const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
 
-              const unsigned int femelt_idx = distance(endmember_names.begin(), find(endmember_names.begin(), endmember_names.end(), "FeO_melt"));
-              const unsigned int mgmelt_idx = distance(endmember_names.begin(), find(endmember_names.begin(), endmember_names.end(), "MgO_melt"));
-
               // For now, we only consider the fraction of Fe in the melt
               melt_composition = in.composition[q][Fe_in_melt_idx];
 
-              // TODO: For now, only two components in the melt
-              // Average the individual endmember properties
-              std::vector<double> endmember_volumes(endmember_names.size());
-              for (unsigned int i=0; i<endmember_names.size(); ++i)
-                {
-                  const double a = tait_parameters_a[i];
-                  const double b = tait_parameters_b[i];
-                  const double c = tait_parameters_c[i];
-                  const double Pth = endmember_thermal_pressure(in.temperature[q], i) - endmember_thermal_pressure(reference_temperature, i);
-                  endmember_volumes[i] = reference_volumes[i]*(1 - a * (1. - std::pow(1. + b * (in.pressure[q] - Pth), -c)));
-                }
-
-
-              double melt_molar_volume = in.composition[q][Fe_in_melt_idx] * endmember_volumes[femelt_idx]
-                                         + (1. - in.composition[q][Fe_in_melt_idx]) * endmember_volumes[mgmelt_idx];
-
-              double solid_molar_volume = f_pv * (1.0 - in.composition[q][Fe_in_bridgmanite_idx]) * endmember_volumes[mgbdg_idx]
-                                          + f_pv * in.composition[q][Fe_in_bridgmanite_idx] * endmember_volumes[febdg_idx]
-                                          + (1. - f_pv) * (1.0 - in.composition[q][Fe_in_periclase_idx]) * endmember_volumes[per_idx]
-                                          + (1. - f_pv) * in.composition[q][Fe_in_periclase_idx] * endmember_volumes[wus_idx];
-
-              if (melt_molar_volume > 0)
-                melt_molar_fraction = in.composition[q][porosity_idx]
-                                      / (melt_molar_volume * (in.composition[q][porosity_idx] / melt_molar_volume
-                                                              + (1.0 - in.composition[q][porosity_idx]) / solid_molar_volume));
+              fill_endmember_properties(in, q, endmembers);
+              melt_molar_fraction = compute_melt_molar_fraction(in.composition[q][porosity_idx],
+            		                                            f_pv,
+																endmembers,
+																endmember_mole_fractions_per_phase);
             }
 
           const double solid_molar_fraction = 1.0 - melt_molar_fraction;
@@ -551,7 +542,6 @@ namespace aspect
       const unsigned int Fe_in_periclase_idx = this->introspection().compositional_index_for_name("iron_fraction_in_periclase");
 
       // get indices of the different endmembers
-      // TODO: also get the opposite (name of index)
       const unsigned int febdg_idx = distance(endmember_names.begin(), find(endmember_names.begin(), endmember_names.end(), "FeSiO3_bridgmanite"));
       const unsigned int mgbdg_idx = distance(endmember_names.begin(), find(endmember_names.begin(), endmember_names.end(), "MgSiO3_bridgmanite"));
       const unsigned int wus_idx = distance(endmember_names.begin(), find(endmember_names.begin(), endmember_names.end(), "FeO_periclase"));
@@ -566,7 +556,6 @@ namespace aspect
       for (unsigned int q=0; q<in.position.size(); ++q)
         {
           // TODO: get a vector of endmember phases?
-
           std::vector<double> endmember_mole_fractions_per_phase(n_endmembers);
           std::vector<double> endmember_mole_fractions_in_composite(n_endmembers);
           std::vector<double> phase_mass_fractions(n_endmembers);
@@ -623,12 +612,12 @@ namespace aspect
 
           /*------------------------------------------------------------------*/
 
-          // First, convert from porosity to melt molar fraction
+          // First, convert from porosity to melt molar fraction.
           double melt_molar_fraction = compute_melt_molar_fraction(porosity, bridgmanite_molar_fraction_in_solid, endmembers, endmember_mole_fractions_per_phase);
           const double solid_molar_fraction = 1.0 - melt_molar_fraction;
 
 
-          // Second, compute endmember molar fractions in the composite
+          // Second, compute endmember molar fractions in the composite.
           std::vector<double> phase_mole_fractions_in_composite(n_endmembers);
           double solid_molar_mass = 0.0;
           double melt_molar_mass = 0.0;
@@ -661,6 +650,7 @@ namespace aspect
           const double total_molar_mass = melt_molar_mass + solid_molar_mass;
           const double total_volume = melt_molar_volume + solid_molar_volume;
 
+          // Third, do the actual averaging.
           for (unsigned int i=0; i<n_endmembers; ++i)
             {
               out.thermal_expansion_coefficients[q] += (endmember_mole_fractions_in_composite[i] * endmembers.volumes[i] * endmembers.thermal_expansivities[i]) / total_volume;
@@ -680,10 +670,14 @@ namespace aspect
             {
               double melt_compressiblity = 0;
               for (unsigned int i=0; i<n_endmembers; ++i)
-                if (endmember_states[i] == EndmemberState::melt)
+                if (endmember_states[i] == EndmemberState::melt && melt_molar_volume > 0)
                   melt_compressiblity += (endmember_mole_fractions_in_composite[i] * endmembers.volumes[i]) / (melt_molar_volume * endmembers.bulk_moduli[i]);
 
-              melt_out->fluid_densities[q] = melt_molar_mass / melt_molar_volume;
+              if (melt_molar_volume > 0)
+                melt_out->fluid_densities[q] = melt_molar_mass / melt_molar_volume;
+              else
+            	melt_out->fluid_densities[q] = out.densities[q];
+
               // TODO: this does not take into account the volume change due to thermal expansion of melt
               melt_out->fluid_density_gradients[q] = melt_out->fluid_densities[q] * melt_out->fluid_densities[q]
                                                      * melt_compressiblity
