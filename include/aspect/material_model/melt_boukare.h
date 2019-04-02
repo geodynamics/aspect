@@ -158,6 +158,39 @@ namespace aspect
         // entropy change upon melting
         double peridotite_melting_entropy_change;
 
+        // melting model parameters
+        const double molar_MgO_in_Mg_mantle_endmember = 0.581;
+        const double molar_SiO2_in_Mg_mantle_endmember = 0.419;
+        const double molar_FeO_in_Fe_mantle_endmember = 0.908;
+        const double molar_SiO2_in_Fe_mantle_endmember = 0.092;
+
+        struct EndmemberProperties
+        {
+          /**
+           * Constructor. Initialize the various arrays of this structure with the
+           * given number of endmembers.
+           */
+          EndmemberProperties(const unsigned int n_endmembers);
+
+          std::vector<double> volumes;
+          std::vector<double> gibbs_energies;
+          std::vector<double> entropies;
+          std::vector<double> thermal_expansivities;
+          std::vector<double> bulk_moduli;
+          std::vector<double> heat_capacities;
+        };
+
+
+        /**
+         * Fill the endmember properties at a single quadrature point.
+         */
+        virtual
+        void
+        fill_endmember_properties (const typename Interface<dim>::MaterialModelInputs &in,
+                                   const unsigned int q,
+                                   EndmemberProperties &properties) const;
+
+
         struct EndmemberState
         {
           enum Kind
@@ -212,6 +245,7 @@ namespace aspect
         double
         endmember_entropy_thermal_addition (const double temperature,
                                             const unsigned int endmember_index) const;
+
 
         /**
          * Convert from the mole fraction of iron in the solid to the mole fraction of iron in the
