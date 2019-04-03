@@ -1,0 +1,13 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Global volume of fluid volumes for F_1
+# 10: Minimal value for composition F_1
+# 11: Maximal value for composition F_1
+# 12: Global mass for composition F_1
+0 0.000000000000e+00 0.000000000000e+00 16 187 81 81 0 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 
