@@ -108,10 +108,12 @@ namespace aspect
             cell_vol += fe_init.JxW(i);
           }
 
+        volume_of_fluid_val /= cell_vol;
+
         volume_of_fluid_val = std::min(volume_of_fluid_val, 1.0);
         volume_of_fluid_val = std::max(volume_of_fluid_val, 0.0);
 
-        initial_solution (local_dof_indices[volume_of_fluid_ind]) = volume_of_fluid_val/cell_vol;
+        initial_solution (local_dof_indices[volume_of_fluid_ind]) = volume_of_fluid_val;
       }
 
     initial_solution.compress(VectorOperation::insert);
