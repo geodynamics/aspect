@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------------
 -- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
---     . version 2.1.0-pre (master, 230ee9a53)
+--     . version 2.1.0-pre (ULVZ_partial_melting, 6c7ef8f27)
 --     . using deal.II 9.0.0
 --     . using Trilinos 12.10.1
 --     . using p4est 2.0.0
@@ -10,14 +10,15 @@
 
 -----------------------------------------------------------------------------
 -- For information on how to cite ASPECT, see:
---   https://aspect.geodynamics.org/citing.html?ver=2.1.0-pre&sha=230ee9a53&src=code
+--   https://aspect.geodynamics.org/citing.html?ver=2.1.0-pre&melt=1&sha=6c7ef8f27&src=code
 -----------------------------------------------------------------------------
 Number of active cells: 4 (on 2 levels)
-Number of degrees of freedom: 184 (50+9+25+25+25+25+25)
+Number of degrees of freedom: 230 (50+21+50+9+25+25+25+25)
 
 *** Timestep 0:  t=0 years
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 12+0 iterations.
+   Solving Stokes system... 10+0 iterations.
+   Solving for u_f in 1 iterations.
 
    Postprocessing:
      Writing graphical output: output-melt_boukare_EOS/solution/solution-00000
@@ -26,20 +27,20 @@ Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |    0.0376s |            |
+| Total wallclock time elapsed since start    |    0.0682s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         1 |    0.0016s |       4.2% |
-| Build Stokes preconditioner     |         1 |   0.00313s |       8.3% |
-| Initialization                  |         1 |    0.0195s |        52% |
-| Postprocessing                  |         1 |    0.0007s |       1.9% |
-| Setup dof systems               |         1 |   0.00215s |       5.7% |
-| Setup initial conditions        |         1 |   0.00434s |        12% |
-| Solve Stokes system             |         1 |   0.00139s |       3.7% |
+| Assemble Stokes system          |         1 |   0.00326s |       4.8% |
+| Build Stokes preconditioner     |         1 |   0.00602s |       8.8% |
+| Initialization                  |         1 |    0.0256s |        38% |
+| Postprocessing                  |         1 |   0.00149s |       2.2% |
+| Setup dof systems               |         1 |    0.0031s |       4.5% |
+| Setup initial conditions        |         1 |   0.00878s |        13% |
+| Solve Stokes system             |         1 |   0.00678s |       9.9% |
 +---------------------------------+-----------+------------+------------+
 
 -----------------------------------------------------------------------------
 -- For information on how to cite ASPECT, see:
---   https://aspect.geodynamics.org/citing.html?ver=2.1.0-pre&sha=230ee9a53&src=code
+--   https://aspect.geodynamics.org/citing.html?ver=2.1.0-pre&melt=1&sha=6c7ef8f27&src=code
 -----------------------------------------------------------------------------

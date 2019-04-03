@@ -4,7 +4,7 @@
 -----------------------------------------------------------------------------
 -----------------------------------------------------------------------------
 Number of active cells: 4 (on 2 levels)
-Number of degrees of freedom: 305 (50+21+50+9+25+25+25+25+25+25+25)
+Number of degrees of freedom: 230 (50+21+50+9+25+25+25+25)
 
 *** Timestep 0:  t=0 years
    Rebuilding Stokes preconditioner...

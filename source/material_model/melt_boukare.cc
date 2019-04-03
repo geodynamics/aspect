@@ -55,6 +55,14 @@ namespace aspect
                                  (std::pow(bulk_modulus_pressure_derivatives[i],2) + bulk_modulus_pressure_derivatives[i]
                                   - reference_bulk_moduli[i] * bulk_modulus_second_pressure_derivatives[i]);
         }
+
+      febdg_idx = distance(endmember_names.begin(), find(endmember_names.begin(), endmember_names.end(), "FeSiO3_bridgmanite"));
+      mgbdg_idx = distance(endmember_names.begin(), find(endmember_names.begin(), endmember_names.end(), "MgSiO3_bridgmanite"));
+      wus_idx = distance(endmember_names.begin(), find(endmember_names.begin(), endmember_names.end(), "FeO_periclase"));
+      per_idx = distance(endmember_names.begin(), find(endmember_names.begin(), endmember_names.end(), "MgO_periclase"));
+      femelt_idx = distance(endmember_names.begin(), find(endmember_names.begin(), endmember_names.end(), "FeO_melt"));
+      mgmelt_idx = distance(endmember_names.begin(), find(endmember_names.begin(), endmember_names.end(), "MgO_melt"));
+      simelt_idx = distance(endmember_names.begin(), find(endmember_names.begin(), endmember_names.end(), "SiO2_melt"));
     }
 
     template <int dim>
@@ -121,8 +129,8 @@ namespace aspect
                                    - in.temperature[q] * (reference_entropies[i] + endmember_entropy_thermal_addition(in.temperature[q], i));
 
           // Integrate the gibbs free energy along the isothermal path from (P_ref, T_final) to (P_final, T_final)
-          double intVdP = 0.;
-          double dintVdpdT = 0.;
+          long double intVdP = 0.;
+          long double dintVdpdT = 0.;
 
           if (in.pressure[q] != reference_pressure && in.pressure[q] > 0.0)
             {
@@ -154,7 +162,7 @@ namespace aspect
                                 + specific_heat_second_coefficients[i] * std::pow(in.temperature[q], -2.)
                                 + specific_heat_third_coefficients[i] * std::pow(in.temperature[q], -0.5);
 
-          const double dSdT0 = reference_volumes[i] * reference_bulk_moduli[i] * std::pow(heat_capacity_ratio * reference_thermal_expansivities[i], 2.0)
+          const long double dSdT0 = reference_volumes[i] * reference_bulk_moduli[i] * std::pow(heat_capacity_ratio * reference_thermal_expansivities[i], 2.0)
                                * (std::pow(1. + b * (pressure - Pth), -1.-c) - std::pow(1. + b * (reference_pressure - Pth), -1.- c));
 
           const double relative_T = Einstein_temperatures[i] / in.temperature[q];
@@ -259,24 +267,14 @@ namespace aspect
                                                 const std::vector<double> &endmember_gibbs_energies,
                                                 double &molar_FeSiO3_in_bridgmanite,
                                                 double &molar_FeO_in_ferropericlase,
-                                                double &mass_fraction_bridgmanite_in_solid) const
+                                                double &f_pv) const
     {
-      const double molar_MgO_in_mgbdg = 0.581;
-      const double molar_SiO2_in_mgbdg = 0.419;
-      const double molar_FeO_in_febdg = 0.908;
-      const double molar_SiO2_in_febdg = 0.092;
-
-      const double x_FeO = molar_Fe_in_solid * molar_FeO_in_febdg;
-      const double x_MgO = (1. - molar_Fe_in_solid) * molar_MgO_in_mgbdg;
-      const double x_SiO2 = molar_Fe_in_solid * molar_SiO2_in_febdg + (1. - molar_Fe_in_solid) * molar_SiO2_in_mgbdg;
+      const double x_FeO = molar_Fe_in_solid * molar_FeO_in_Fe_mantle_endmember;
+      const double x_MgO = (1. - molar_Fe_in_solid) * molar_MgO_in_Mg_mantle_endmember;
+      const double x_SiO2 = molar_Fe_in_solid * molar_SiO2_in_Fe_mantle_endmember + (1. - molar_Fe_in_solid) * molar_SiO2_in_Mg_mantle_endmember;
 
       const double molar_fraction_FeO = x_FeO/(x_MgO + x_FeO);
       const double molar_fraction_SiO2 = x_SiO2/(x_MgO + x_FeO);
-
-      const unsigned int febdg_idx = distance(endmember_names.begin(), find(endmember_names.begin(), endmember_names.end(), "FeSiO3_bridgmanite"));
-      const unsigned int mgbdg_idx = distance(endmember_names.begin(), find(endmember_names.begin(), endmember_names.end(), "MgSiO3_bridgmanite"));
-      const unsigned int wus_idx = distance(endmember_names.begin(), find(endmember_names.begin(), endmember_names.end(), "FeO_periclase"));
-      const unsigned int per_idx = distance(endmember_names.begin(), find(endmember_names.begin(), endmember_names.end(), "MgO_periclase"));
 
       const double gibbs_energy_of_reaction = endmember_gibbs_energies[mgbdg_idx] + endmember_gibbs_energies[wus_idx]
                                               - endmember_gibbs_energies[febdg_idx] - endmember_gibbs_energies[per_idx];
@@ -293,15 +291,8 @@ namespace aspect
 
       molar_FeO_in_ferropericlase = molar_FeSiO3_in_bridgmanite / (((1. - molar_FeSiO3_in_bridgmanite) * partition_coefficient) + molar_FeSiO3_in_bridgmanite);
 
-      const double f_pv = molar_fraction_SiO2; // molar fraction of bridgmanite in the solid
+      f_pv = molar_fraction_SiO2; // molar fraction of bridgmanite in the solid
 
-      // finally, convert to mass fraction of bridgmanite in the solid
-      const double molar_mass_fper = molar_FeO_in_ferropericlase*molar_masses[wus_idx] + (1. - molar_FeO_in_ferropericlase)*molar_masses[per_idx];
-      const double molar_mass_pv = molar_FeSiO3_in_bridgmanite*molar_masses[febdg_idx] + (1. - molar_FeSiO3_in_bridgmanite)*molar_masses[mgbdg_idx];
-
-      mass_fraction_bridgmanite_in_solid = f_pv * molar_mass_pv / (f_pv * molar_mass_pv + (1. - f_pv) * molar_mass_fper);
-
-      //return p_wus, p_fpv, mass_fraction_pv # f_pv is the molar fraction of pv;
       return;
     }
 
@@ -318,16 +309,16 @@ namespace aspect
       double melt_molar_volume = 0.0;
       double solid_molar_volume = 0.0;
       for (unsigned int i=0; i<endmember_names.size(); ++i)
-      {
-        const double endmember_phase_fraction_in_solid = i<2 ? bridgmanite_molar_fraction_in_solid : 1.0 - bridgmanite_molar_fraction_in_solid;
+        {
+          const double endmember_phase_fraction_in_solid = i<2 ? bridgmanite_molar_fraction_in_solid : 1.0 - bridgmanite_molar_fraction_in_solid;
 
-        if (endmember_states[i] == EndmemberState::melt)
-          melt_molar_volume += endmember_mole_fractions_per_phase[i] * endmembers.volumes[i];
-        else if (endmember_states[i] == EndmemberState::solid)
-          solid_molar_volume += endmember_phase_fraction_in_solid * endmember_mole_fractions_per_phase[i] * endmembers.volumes[i];
-        else
-          AssertThrow (false, ExcNotImplemented());
-      }
+          if (endmember_states[i] == EndmemberState::melt)
+            melt_molar_volume += endmember_mole_fractions_per_phase[i] * endmembers.volumes[i];
+          else if (endmember_states[i] == EndmemberState::solid)
+            solid_molar_volume += endmember_phase_fraction_in_solid * endmember_mole_fractions_per_phase[i] * endmembers.volumes[i];
+          else
+            AssertThrow (false, ExcNotImplemented());
+        }
 
       double melt_molar_fraction = 0.0;
       if (melt_molar_volume > 0)
@@ -428,78 +419,65 @@ namespace aspect
     melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
                     std::vector<double> &melt_fractions) const
     {
-      const unsigned int bridgmanite_idx = this->introspection().compositional_index_for_name("bridgmanite");
-      const unsigned int Fe_in_bridgmanite_idx = this->introspection().compositional_index_for_name("iron_fraction_in_bridgmanite");
-      const unsigned int Fe_in_periclase_idx = this->introspection().compositional_index_for_name("iron_fraction_in_periclase");
-
-      const unsigned int febdg_idx = distance(endmember_names.begin(), find(endmember_names.begin(), endmember_names.end(), "FeSiO3_bridgmanite"));
-      const unsigned int mgbdg_idx = distance(endmember_names.begin(), find(endmember_names.begin(), endmember_names.end(), "MgSiO3_bridgmanite"));
-      const unsigned int wus_idx = distance(endmember_names.begin(), find(endmember_names.begin(), endmember_names.end(), "FeO_periclase"));
-      const unsigned int per_idx = distance(endmember_names.begin(), find(endmember_names.begin(), endmember_names.end(), "MgO_periclase"));
-
-
-      double bulk_composition = 0.11;
-      double solid_composition = 0.11;
-      double melt_composition = 0.11;
-
-      // TODO: write a separate function that gets the bulk composition from porosity, solid and melt composition
-
+      const unsigned int Fe_solid_idx = this->introspection().compositional_index_for_name("molar_Fe_in_solid");
       const unsigned int n_endmembers = endmember_names.size();
       EndmemberProperties endmembers(n_endmembers);
 
       for (unsigned int q=0; q<in.temperature.size(); ++q)
         {
-          std::vector<double> endmember_mole_fractions_per_phase(n_endmembers);
-          std::vector<double> endmember_mole_fractions_in_composite(n_endmembers);
-          std::vector<double> phase_mass_fractions(n_endmembers);
+          double solid_composition = in.composition[q][Fe_solid_idx];
 
-          endmember_mole_fractions_per_phase[febdg_idx] = in.composition[q][Fe_in_bridgmanite_idx];
-          endmember_mole_fractions_per_phase[mgbdg_idx] = 1.0 - endmember_mole_fractions_per_phase[febdg_idx];
-          endmember_mole_fractions_per_phase[wus_idx] = in.composition[q][Fe_in_periclase_idx];
-          endmember_mole_fractions_per_phase[per_idx] = 1.0 - endmember_mole_fractions_per_phase[wus_idx];
-
-
-          /*-----------------------------------------------------------------------*/
-          const double molar_mass_fper = in.composition[q][Fe_in_periclase_idx] * molar_masses[wus_idx]
-                                         + (1. - in.composition[q][Fe_in_periclase_idx]) * molar_masses[per_idx];
-          const double molar_mass_bdg = in.composition[q][Fe_in_bridgmanite_idx] * molar_masses[febdg_idx]
-                                        + (1. - in.composition[q][Fe_in_bridgmanite_idx]) * molar_masses[mgbdg_idx];
-
-          // convert to molar fraction of bridgmanite
-          const double f_pv = (in.composition[q][bridgmanite_idx] / molar_mass_bdg)
-                              / (in.composition[q][bridgmanite_idx] / molar_mass_bdg + (1.-in.composition[q][bridgmanite_idx]) / molar_mass_fper);
-
-          solid_composition = f_pv * in.composition[q][Fe_in_bridgmanite_idx]
-                              + (1. - f_pv) * in.composition[q][Fe_in_periclase_idx];
-          /*-----------------------------------------------------------------------*/
-
-
-          // TODO: this is copied from evaluate, make it nice
-          double melt_molar_fraction = 0.0;
+          double melt_composition, melt_molar_fraction = 0.0;
           if (this->include_melt_transport())
             {
-              const unsigned int Fe_in_melt_idx = this->introspection().compositional_index_for_name("iron_fraction_in_the_melt");
+              const unsigned int Fe_melt_idx = this->introspection().compositional_index_for_name("molar_Fe_in_melt");
               const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
 
-              // For now, we only consider the fraction of Fe in the melt
-              melt_composition = in.composition[q][Fe_in_melt_idx];
-
               fill_endmember_properties(in, q, endmembers);
+              std::vector<double> endmember_mole_fractions_per_phase(n_endmembers);
+
+              double bridgmanite_molar_fraction;
+              convert_to_fraction_of_endmembers_in_solid(in.temperature[q],
+                                                         this->get_adiabatic_conditions().pressure(in.position[q]),
+                                                         solid_composition,
+                                                         endmembers.gibbs_energies,
+                                                         endmember_mole_fractions_per_phase[febdg_idx],
+                                                         endmember_mole_fractions_per_phase[wus_idx],
+                                                         bridgmanite_molar_fraction);
+
+              endmember_mole_fractions_per_phase[mgbdg_idx] = 1.0 - endmember_mole_fractions_per_phase[febdg_idx];
+              endmember_mole_fractions_per_phase[per_idx] = 1.0 - endmember_mole_fractions_per_phase[wus_idx];
+
+              // For now, we only consider the fraction of Fe in the melt
+              melt_composition = in.composition[q][Fe_melt_idx];
+              endmember_mole_fractions_per_phase[mgmelt_idx] = (1. - melt_composition);
+              endmember_mole_fractions_per_phase[femelt_idx] = melt_composition;
+              endmember_mole_fractions_per_phase[simelt_idx] = 0.0;
+
               melt_molar_fraction = compute_melt_molar_fraction(in.composition[q][porosity_idx],
-            		                                            f_pv,
-																endmembers,
-																endmember_mole_fractions_per_phase);
+                                                                bridgmanite_molar_fraction,
+                                                                endmembers,
+                                                                endmember_mole_fractions_per_phase);
             }
 
           const double solid_molar_fraction = 1.0 - melt_molar_fraction;
-          bulk_composition = melt_composition * melt_molar_fraction + solid_composition * solid_molar_fraction;
+          double bulk_composition = melt_composition * melt_molar_fraction + solid_composition * solid_molar_fraction;
 
+          double eq_melt_molar_fraction = this->melt_fraction(in.temperature[q],
+                                                              std::max(0.0, in.pressure[q]),
+                                                              bulk_composition,
+                                                              solid_composition,
+                                                              melt_composition);
 
-          melt_fractions[q] = this->melt_fraction(in.temperature[q],
-                                                  std::max(0.0, in.pressure[q]),
-                                                  bulk_composition,
-                                                  solid_composition,
-                                                  melt_composition);
+          // convert from melt molar fraction to porosity
+          // TODO: This is only valid if there is only one solid and one liquid phase, each with two endmembers
+          double solid_molar_volume = (1.0 - solid_composition) * endmembers.volumes[mgbdg_idx]
+                                      + solid_composition * endmembers.volumes[febdg_idx];
+          double melt_molar_volume = (1.0 - melt_composition) * endmembers.volumes[mgmelt_idx]
+                                     + melt_composition * endmembers.volumes[femelt_idx];
+
+          melt_fractions[q] = eq_melt_molar_fraction * melt_molar_volume
+                              / (eq_melt_molar_fraction * melt_molar_volume + (1.0 - eq_melt_molar_fraction) * solid_molar_volume);
         }
       return;
     }
@@ -534,90 +512,54 @@ namespace aspect
             }
         }
 
-
-
-      // get the indices for the different components and phases we track
-      const unsigned int bridgmanite_idx = this->introspection().compositional_index_for_name("bridgmanite");
-      const unsigned int Fe_in_bridgmanite_idx = this->introspection().compositional_index_for_name("iron_fraction_in_bridgmanite");
-      const unsigned int Fe_in_periclase_idx = this->introspection().compositional_index_for_name("iron_fraction_in_periclase");
-
-      // get indices of the different endmembers
-      const unsigned int febdg_idx = distance(endmember_names.begin(), find(endmember_names.begin(), endmember_names.end(), "FeSiO3_bridgmanite"));
-      const unsigned int mgbdg_idx = distance(endmember_names.begin(), find(endmember_names.begin(), endmember_names.end(), "MgSiO3_bridgmanite"));
-      const unsigned int wus_idx = distance(endmember_names.begin(), find(endmember_names.begin(), endmember_names.end(), "FeO_periclase"));
-      const unsigned int per_idx = distance(endmember_names.begin(), find(endmember_names.begin(), endmember_names.end(), "MgO_periclase"));
-      const unsigned int femelt_idx = distance(endmember_names.begin(), find(endmember_names.begin(), endmember_names.end(), "FeO_melt"));
-      const unsigned int mgmelt_idx = distance(endmember_names.begin(), find(endmember_names.begin(), endmember_names.end(), "MgO_melt"));
-      const unsigned int simelt_idx = distance(endmember_names.begin(), find(endmember_names.begin(), endmember_names.end(), "SiO2_melt"));
-
+      const unsigned int Fe_solid_idx = this->introspection().compositional_index_for_name("molar_Fe_in_solid");
       const unsigned int n_endmembers = endmember_names.size();
       EndmemberProperties endmembers(n_endmembers);
 
-      for (unsigned int q=0; q<in.position.size(); ++q)
+      for (unsigned int q=0; q<in.temperature.size(); ++q)
         {
           // TODO: get a vector of endmember phases?
           std::vector<double> endmember_mole_fractions_per_phase(n_endmembers);
           std::vector<double> endmember_mole_fractions_in_composite(n_endmembers);
-          std::vector<double> phase_mass_fractions(n_endmembers);
 
-          double porosity = 0.0;
-
-          // the two solid phases are bridgmanite and periclase
-          // all mass fractions represent the fraction of mass in the solid phase
-          const double bridgmanite_mass_fraction = in.composition[q][bridgmanite_idx];
-          phase_mass_fractions[mgbdg_idx] = bridgmanite_mass_fraction;
-          phase_mass_fractions[febdg_idx] = bridgmanite_mass_fraction;
-
-          const double periclase_mass_fraction = 1.0 - bridgmanite_mass_fraction;
-          phase_mass_fractions[per_idx] = periclase_mass_fraction;
-          phase_mass_fractions[wus_idx] = periclase_mass_fraction;
-
-          // we need the bulk composition of both solid phases
-          endmember_mole_fractions_per_phase[febdg_idx] = in.composition[q][Fe_in_bridgmanite_idx];
-          endmember_mole_fractions_per_phase[mgbdg_idx] = 1.0 - endmember_mole_fractions_per_phase[febdg_idx];
-          endmember_mole_fractions_per_phase[wus_idx] = in.composition[q][Fe_in_periclase_idx];
-          endmember_mole_fractions_per_phase[per_idx] = 1.0 - endmember_mole_fractions_per_phase[wus_idx];
-
-          if (this->include_melt_transport())
-            {
-              const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
-              const unsigned int Mg_in_melt_idx = this->introspection().compositional_index_for_name("magnesium_fraction_in_the_melt");
-              const unsigned int Fe_in_melt_idx = this->introspection().compositional_index_for_name("iron_fraction_in_the_melt");
-
-              porosity = in.composition[q][porosity_idx];
-              endmember_mole_fractions_per_phase[mgmelt_idx] = in.composition[q][Mg_in_melt_idx];
-              endmember_mole_fractions_per_phase[femelt_idx] = in.composition[q][Fe_in_melt_idx];
-              endmember_mole_fractions_per_phase[simelt_idx] = 1.0 - endmember_mole_fractions_per_phase[mgmelt_idx] - endmember_mole_fractions_per_phase[femelt_idx];
-            }
-
-          out.thermal_expansion_coefficients[q] = 0.0;
-          out.specific_heat[q] = 0.0;
-          out.compressibilities[q] = 0.0;
-
+          double solid_composition = in.composition[q][Fe_solid_idx];
 
           fill_endmember_properties(in, q, endmembers);
 
-          // Average the individual endmember properties
+          // we need the bulk composition of both solid phases
+          double bridgmanite_molar_fraction_in_solid;
+          convert_to_fraction_of_endmembers_in_solid(in.temperature[q],
+                                                     this->get_adiabatic_conditions().pressure(in.position[q]),
+                                                     solid_composition,
+                                                     endmembers.gibbs_energies,
+                                                     endmember_mole_fractions_per_phase[febdg_idx],
+                                                     endmember_mole_fractions_per_phase[wus_idx],
+                                                     bridgmanite_molar_fraction_in_solid);
 
-          /*------------------------------------------------------------------*/
-          // TODO: this will go once we have the new variables
-          const double n_moles_in_bridgmanite = bridgmanite_mass_fraction / (endmember_mole_fractions_per_phase[mgbdg_idx] * molar_masses[mgbdg_idx]
-                                                                             + endmember_mole_fractions_per_phase[febdg_idx] * molar_masses[febdg_idx]);
-          const double n_moles_in_ferropericlase = periclase_mass_fraction / (endmember_mole_fractions_per_phase[per_idx] * molar_masses[per_idx]
-                                                                              + endmember_mole_fractions_per_phase[wus_idx] * molar_masses[wus_idx]);
-          const double n_moles_in_the_solid = n_moles_in_bridgmanite + n_moles_in_ferropericlase;
+          endmember_mole_fractions_per_phase[mgbdg_idx] = 1.0 - endmember_mole_fractions_per_phase[febdg_idx];
+          endmember_mole_fractions_per_phase[per_idx] = 1.0 - endmember_mole_fractions_per_phase[wus_idx];
 
-          const double bridgmanite_molar_fraction_in_solid = n_moles_in_bridgmanite / n_moles_in_the_solid;
-          const double ferropericlase_molar_fraction_in_solid = 1.0 - bridgmanite_molar_fraction_in_solid;
+          double melt_molar_fraction = 0.0;
+          if (this->include_melt_transport())
+            {
+              const unsigned int Fe_melt_idx = this->introspection().compositional_index_for_name("molar_Fe_in_melt");
+              const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
 
-          /*------------------------------------------------------------------*/
+              // For now, we only consider the fraction of Fe in the melt
+              // TODO: For now, we don't have an simelt endmember...
+              endmember_mole_fractions_per_phase[mgmelt_idx] = (1. - in.composition[q][Fe_melt_idx]);
+              endmember_mole_fractions_per_phase[femelt_idx] = in.composition[q][Fe_melt_idx];
+              endmember_mole_fractions_per_phase[simelt_idx] = 0.0;
 
-          // First, convert from porosity to melt molar fraction.
-          double melt_molar_fraction = compute_melt_molar_fraction(porosity, bridgmanite_molar_fraction_in_solid, endmembers, endmember_mole_fractions_per_phase);
+              melt_molar_fraction = compute_melt_molar_fraction(in.composition[q][porosity_idx],
+                                                                bridgmanite_molar_fraction_in_solid,
+                                                                endmembers,
+                                                                endmember_mole_fractions_per_phase);
+            }
+
           const double solid_molar_fraction = 1.0 - melt_molar_fraction;
 
-
-          // Second, compute endmember molar fractions in the composite.
+          // Compute endmember molar fractions in the composite.
           std::vector<double> phase_mole_fractions_in_composite(n_endmembers);
           double solid_molar_mass = 0.0;
           double melt_molar_mass = 0.0;
@@ -627,7 +569,7 @@ namespace aspect
           for (unsigned int i=0; i<n_endmembers; ++i)
             {
               // TODO: fix this using a phase vector (phase == 'bridgmanite')
-              const double endmember_phase_fraction_in_solid = i<2 ? bridgmanite_molar_fraction_in_solid : ferropericlase_molar_fraction_in_solid;
+              const double endmember_phase_fraction_in_solid = i<2 ? bridgmanite_molar_fraction_in_solid : (1.0 - bridgmanite_molar_fraction_in_solid);
 
               if (endmember_states[i] == EndmemberState::solid)
                 {
@@ -650,7 +592,11 @@ namespace aspect
           const double total_molar_mass = melt_molar_mass + solid_molar_mass;
           const double total_volume = melt_molar_volume + solid_molar_volume;
 
-          // Third, do the actual averaging.
+          out.thermal_expansion_coefficients[q] = 0.0;
+          out.specific_heat[q] = 0.0;
+          out.compressibilities[q] = 0.0;
+
+          // Average the individual endmember properties
           for (unsigned int i=0; i<n_endmembers; ++i)
             {
               out.thermal_expansion_coefficients[q] += (endmember_mole_fractions_in_composite[i] * endmembers.volumes[i] * endmembers.thermal_expansivities[i]) / total_volume;
@@ -676,7 +622,7 @@ namespace aspect
               if (melt_molar_volume > 0)
                 melt_out->fluid_densities[q] = melt_molar_mass / melt_molar_volume;
               else
-            	melt_out->fluid_densities[q] = out.densities[q];
+                melt_out->fluid_densities[q] = out.densities[q];
 
               // TODO: this does not take into account the volume change due to thermal expansion of melt
               melt_out->fluid_density_gradients[q] = melt_out->fluid_densities[q] * melt_out->fluid_densities[q]
@@ -688,40 +634,29 @@ namespace aspect
           if (this->include_melt_transport())
             {
               // Calculate the melting rate
+              const unsigned int Fe_solid_idx = this->introspection().compositional_index_for_name("molar_Fe_in_solid");
+              const unsigned int Fe_melt_idx = this->introspection().compositional_index_for_name("molar_Fe_in_melt");
               const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
 
+              // TODO: Alternatively, this could also be done by summing over endmember_mole_fractions_in_composite
               const double old_porosity = in.composition[q][porosity_idx];
-              const double old_solid_composition = endmember_mole_fractions_in_composite[febdg_idx] + endmember_mole_fractions_in_composite[wus_idx];
-              const double old_melt_composition = endmember_mole_fractions_in_composite[femelt_idx];
-
-              double solid_composition = std::min(1.0, std::max(old_solid_composition,0.0));
-              double melt_composition = std::min(1.0, std::max(old_melt_composition,0.0));
+              const double old_solid_composition = in.composition[q][Fe_solid_idx];
+              const double old_melt_composition = in.composition[q][Fe_melt_idx];
 
               // in this simple model, the bulk composition is just one number, namely
               // the molar fraction of the combined iron endmembers
-              const double bulk_composition = endmember_mole_fractions_in_composite[febdg_idx]
-                                              + endmember_mole_fractions_in_composite[wus_idx]
-                                              + endmember_mole_fractions_in_composite[femelt_idx];
+              const double bulk_composition = old_melt_composition * melt_molar_fraction + old_solid_composition * solid_molar_fraction;
 
               // calculate the melting rate as difference between the equilibrium melt fraction
               // and the solution of the previous time step, and also update melt and solid composition
+              double solid_composition, melt_composition;
               melt_molar_fraction = melt_fraction(in.temperature[q],
                                                   this->get_adiabatic_conditions().pressure(in.position[q]),
                                                   bulk_composition,
                                                   solid_composition,
                                                   melt_composition);
 
-              // to compute the reaction rates, we need the reactions for all compositional fields we track
-              double new_molar_FeSiO3_in_bridgmanite, new_molar_FeO_in_ferropericlase, new_bridgmanite_mass_fraction_in_solid;
-              convert_to_fraction_of_endmembers_in_solid(in.temperature[q],
-                                                         this->get_adiabatic_conditions().pressure(in.position[q]),
-                                                         solid_composition,
-                                                         endmembers.gibbs_energies,
-                                                         new_molar_FeSiO3_in_bridgmanite,
-                                                         new_molar_FeO_in_ferropericlase,
-                                                         new_bridgmanite_mass_fraction_in_solid);
-
-              // These outputs are the molar compositions
+              // Convert from melt molar fraction to porosity
               // TODO: This is only valid if there is only one solid and one liquid phase, each with two endmembers
               solid_molar_volume = (1.0 - solid_composition) * endmembers.volumes[mgbdg_idx]
                                    + solid_composition * endmembers.volumes[febdg_idx];
@@ -735,19 +670,10 @@ namespace aspect
               // do not allow negative porosity or porosity > 1
               const double porosity_change = limit_update_to_0_and_1(old_porosity, new_porosity - old_porosity);
               const double change_of_melt_composition = limit_update_to_0_and_1(old_melt_composition, melt_composition - old_melt_composition);
-
-              // TODO: remove this part
-              const double molar_FeSiO3_in_bridgmanite = in.composition[q][Fe_in_bridgmanite_idx];
-              const double molar_FeO_in_periclase = in.composition[q][Fe_in_periclase_idx];
-
-              const double change_of_FeSiO3_in_bridgmanite = limit_update_to_0_and_1(molar_FeSiO3_in_bridgmanite, new_molar_FeSiO3_in_bridgmanite - molar_FeSiO3_in_bridgmanite);
-              const double change_of_FeO_in_ferropericlase = limit_update_to_0_and_1(molar_FeO_in_periclase, new_molar_FeO_in_ferropericlase - molar_FeO_in_periclase);
-              const double change_of_bridgmanite_mass_fraction = limit_update_to_0_and_1(bridgmanite_mass_fraction, new_bridgmanite_mass_fraction_in_solid - bridgmanite_mass_fraction);
+              const double change_of_solid_composition = limit_update_to_0_and_1(old_solid_composition, solid_composition - old_solid_composition);
 
               // For this simple model, we only track the iron in the solid (bridgmanite) and the iron in the melt
               // TODO: make this more general to work with the full equation of state
-              const unsigned int melt_composition_idx = this->introspection().compositional_index_for_name("iron_fraction_in_the_melt");
-
               for (unsigned int c=0; c<in.composition[q].size(); ++c)
                 {
                   // fill reaction rate outputs
@@ -755,13 +681,9 @@ namespace aspect
                     {
                       if (!include_melting_and_freezing)
                         reaction_rate_out->reaction_rates[q][c] = 0.0;
-                      if (c == Fe_in_bridgmanite_idx && this->get_timestep_number() > 0)
-                        reaction_rate_out->reaction_rates[q][c] = change_of_FeSiO3_in_bridgmanite / melting_time_scale;
-                      if (c == Fe_in_periclase_idx && this->get_timestep_number() > 0)
-                        reaction_rate_out->reaction_rates[q][c] = change_of_FeO_in_ferropericlase / melting_time_scale;
-                      if (c == bridgmanite_idx && this->get_timestep_number() > 0)
-                        reaction_rate_out->reaction_rates[q][c] = change_of_bridgmanite_mass_fraction / melting_time_scale;
-                      else if (c == melt_composition_idx && this->get_timestep_number() > 0)
+                      else if (c == Fe_solid_idx && this->get_timestep_number() > 0)
+                        reaction_rate_out->reaction_rates[q][c] = change_of_solid_composition / melting_time_scale;
+                      else if (c == Fe_melt_idx && this->get_timestep_number() > 0)
                         reaction_rate_out->reaction_rates[q][c] = change_of_melt_composition / melting_time_scale;
                       else if (c == porosity_idx && this->get_timestep_number() > 0)
                         reaction_rate_out->reaction_rates[q][c] = porosity_change / melting_time_scale;
@@ -924,40 +846,40 @@ namespace aspect
                              Patterns::List(Patterns::Double(0)),
                              "Number of atoms per in the formula of each endmember."
                              "Units: none.");
-          prm.declare_entry ("Reference volumes", "2.534e-05, 2.445e-05, 1.206e-05, 1.125e-05, 1.233e-05, 1.218e-05, 1.218e-05",
+          prm.declare_entry ("Reference volumes", "2.534e-05, 2.445e-05, 1.206e-05, 1.125e-05, 1.2325484447664221e-05, 1.218e-05, 1.218e-05",
                              Patterns::List(Patterns::Double(0)),
                              "Reference volumes of the different endmembers."
                              "Units: $m^3$.");
-          prm.declare_entry ("Reference thermal expansivities", "1.87e-05, 1.87e-05, 3.22e-05, 3.11e-05, 2.96e-05, 2.06e-05, 2.06e-05",
+          prm.declare_entry ("Reference thermal expansivities", "1.87e-05, 1.87e-05, 3.22e-05, 3.11e-05, 2.9614332469401705e-05, 2.06e-05, 2.06e-05",
                              Patterns::List(Patterns::Double(0)),
                              "List of thermal expansivities for each different endmember at the reference temperature "
                              "and reference pressure."
                              "Units: 1/K.");
-          prm.declare_entry ("Reference bulk moduli", "2.81e11, 2.51e+11, 1.52e11, 1.616e11, 1.667e11, 2.317e11, 2.317e11",
+          prm.declare_entry ("Reference bulk moduli", "2.81e11, 2.51e+11, 1.52e11, 1.616e11, 166652774642.11273, 2.317e11, 2.317e11",
                              Patterns::List(Patterns::Double(0)),
                              "List of bulk moduli for each different endmember at the reference temperature "
                              "and reference pressure."
                              "Units: Pa.");
-          prm.declare_entry ("First derivatives of the bulk modulus", "4.14, 4.14, 4.9, 3.95, 5.08, 4.25, 4.25",
+          prm.declare_entry ("First derivatives of the bulk modulus", "4.14, 4.14, 4.9, 3.95, 5.0802472229003905, 4.25, 4.25",
                              Patterns::List(Patterns::Double()),
                              "The pressure derivative of the bulk modulus at the reference temperature and reference "
                              "pressure for each different endmember component."
                              "Units: none.");
-          prm.declare_entry ("Second derivatives of the bulk modulus", "-1.6e-11, -1.6e-11, -3.2e-11, -2.4e-11, -3.97e-11, -2.14e-11, -2.14e-11",
+          prm.declare_entry ("Second derivatives of the bulk modulus", "-1.6e-11, -1.6e-11, -3.2e-11, -2.4e-11, -3.9742163085937504e-11, -2.14e-11, -2.14e-11",
                              Patterns::List(Patterns::Double()),
                              "The second pressure derivative of the bulk modulus at the reference temperature and reference "
                              "pressure for each different endmember component."
                              "Units: 1/Pa.");
-          prm.declare_entry ("Einstein temperatures", "418.1, 561.0, 297.6, 540.2, 505.8, 558.1, 558.1",
+          prm.declare_entry ("Einstein temperatures", "418.1, 561.0, 297.6, 540.2, 505.75, 558.1, 558.1",
                              Patterns::List(Patterns::Double(0)),
                              "List of Einstein temperatures for each different endmember."
                              "Units: K.");
-          prm.declare_entry ("Reference enthalpies", "-1082910.0, -1442310.0, -262240.0, -601570.0, -195245.4, -538009.8, -538009.8",
+          prm.declare_entry ("Reference enthalpies", "-1082910.0, -1442310.0, -262240.0, -601570.0, -195245.49100022088, -538009.8, -538009.8",
                              Patterns::List(Patterns::Double()),
                              "List of enthalpies at the reference temperature and reference "
                              "pressure for each different endmember component."
                              "Units: J/mol.");
-          prm.declare_entry ("Reference entropies", "95.0, 62.6, 58.6, 26.5, 95.0, 64.9, 64.9",
+          prm.declare_entry ("Reference entropies", "95.0, 62.6, 58.6, 26.5, 95.0299295525918, 64.9, 64.9",
                              Patterns::List(Patterns::Double(0)),
                              "List of entropies at the reference temperature and reference "
                              "pressure for each different endmember component."
@@ -1107,27 +1029,18 @@ namespace aspect
 
           // All of these are molar fractions
           // Check that all compositional fields we need exist
-          AssertThrow(this->introspection().compositional_name_exists("bridgmanite"),
+          AssertThrow(this->introspection().compositional_name_exists("molar_Fe_in_solid"),
                       ExcMessage("Material model melt boukare only works if there is a "
-                                 "compositional field called bridgmanite."));
-          AssertThrow(this->introspection().compositional_name_exists("iron_fraction_in_bridgmanite"),
-                      ExcMessage("Material model melt boukare with melt transport only "
-                                 "works if there is a compositional field called iron_fraction_in_bridgmanite."));
-          AssertThrow(this->introspection().compositional_name_exists("iron_fraction_in_periclase"),
-                      ExcMessage("Material model melt boukare with melt transport only "
-                                 "works if there is a compositional field called iron_fraction_in_periclase."));
+                                 "compositional field called 'molar_Fe_in_solid'."));
 
           if (this->include_melt_transport())
             {
               AssertThrow(this->introspection().compositional_name_exists("porosity"),
                           ExcMessage("Material model melt boukare only works if there is a "
                                      "compositional field called porosity."));
-              AssertThrow(this->introspection().compositional_name_exists("magnesium_fraction_in_the_melt"),
+              AssertThrow(this->introspection().compositional_name_exists("molar_Fe_in_melt"),
                           ExcMessage("Material model melt boukare only works if there is a "
-                                     "compositional field called magnesium_fraction_in_the_melt."));
-              AssertThrow(this->introspection().compositional_name_exists("iron_fraction_in_the_melt"),
-                          ExcMessage("Material model melt boukare only works if there is a "
-                                     "compositional field called iron_fraction_in_the_melt."));
+                                     "compositional field called 'molar_Fe_in_melt'."));
             }
         }
         prm.leave_subsection();

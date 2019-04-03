@@ -164,6 +164,15 @@ namespace aspect
         const double molar_FeO_in_Fe_mantle_endmember = 0.908;
         const double molar_SiO2_in_Fe_mantle_endmember = 0.092;
 
+        // names of the endmembers
+        unsigned int febdg_idx;
+        unsigned int mgbdg_idx;
+        unsigned int wus_idx;
+        unsigned int per_idx;
+        unsigned int femelt_idx;
+        unsigned int mgmelt_idx;
+        unsigned int simelt_idx;
+
         struct EndmemberProperties
         {
           /**
@@ -249,7 +258,7 @@ namespace aspect
 
         /**
          * Convert from the mole fraction of iron in the solid to the mole fraction of iron in the
-         * two solid phases, bridgmanite and ferropericlase, and the mass fraction of bridgmanite
+         * two solid phases, bridgmanite and ferropericlase, and the molar fraction of bridgmanite
          * in the solid.
          */
         virtual
@@ -260,7 +269,7 @@ namespace aspect
                                                     const std::vector<double> &endmember_gibbs_energies,
                                                     double &molar_FeSiO3_in_bridgmanite,
                                                     double &molar_FeO_in_ferropericlase,
-                                                    double &mass_bridgmanite_in_solid) const;
+                                                    double &molar_bridgmanite_in_solid) const;
 
         /**
          * Convert from the mole fraction of iron in the solid to the mole fraction of iron in the

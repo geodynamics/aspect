@@ -16,14 +16,18 @@ set Nonlinear solver scheme                = first timestep only, single Stokes
 set Max nonlinear iterations               = 5
 
 set Pressure normalization                 = surface
-set Surface pressure                       = 100.e9
-set Adiabatic surface temperature          = 2000
+set Surface pressure                       = 110.e9
+set Adiabatic surface temperature          = 4000
 set Use conduction timestep                = true
 set Use operator splitting = true
 
+subsection Melt settings
+  set Include melt transport = true
+end
+
 subsection Compositional fields
-  set Number of fields = 4
-  set Names of fields  = bridgmanite, iron_fraction_in_bridgmanite, iron_fraction_in_periclase, porosity
+  set Number of fields = 3
+  set Names of fields  = molar_Fe_in_solid, molar_Fe_in_melt, porosity
 end
 
 
@@ -49,14 +53,14 @@ subsection Initial temperature model
   set List of model names = function
 
   subsection Function
-    set Function expression = 2000
+    set Function expression = 4000
   end
 end
 
 subsection Initial composition model
   set Model name = function
   subsection Function
-   set Function expression = 1.0; 0.0; 0.0; 0 #mpv
+   set Function expression = 0.0; 1; 0.9999999 #fe_mantle_endmember
   end
 end
 
@@ -70,7 +74,7 @@ subsection Boundary temperature model
   set Fixed temperature boundary indicators   = bottom, top
   set List of model names = initial temperature
   subsection Initial temperature
-    set Maximal temperature = 2000
+    set Maximal temperature = 3000
   end
 end
 
@@ -134,11 +138,15 @@ subsection Postprocess
 
   subsection Visualization
     set Time between graphical output = 0
-    set List of output variables = material properties
+    set List of output variables = material properties, melt material properties
     set Output format = gnuplot
 
     subsection Material properties
       set List of material properties = density,thermal expansivity,specific heat,compressibility
+    end
+
+    subsection Melt material properties
+      set List of properties = fluid density
     end
   end
 end
