@@ -8,8 +8,8 @@ Number of degrees of freedom: 477 (162+25+81+81+16+48+64)
    Solving volume of fluid system... 0 iterations.
 
    Postprocessing:
-     Global volume of fluid volumes (m^3): 0
-     Compositions min/max/mass:            0/0/0
+     Global volume of fluid volumes (m^3): 5e+03
+     Compositions min/max/mass:            0/1/4583
 
 Termination requested by criterion: end time
 

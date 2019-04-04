@@ -51,8 +51,7 @@ subsection Initial composition model
 
   subsection Function
     set Variable names = x,y,t
-    set Function constants = init=1.25, x0=1.0, y0=0.0, xv=-0.25, yv=-0.25
-    set Function expression = cos(init*pi)*(x-x0-xv*t)+sin(init*pi)*(y-y0-yv*t)
+    set Function expression = 50-y
   end
 end
 
