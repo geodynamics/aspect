@@ -2177,7 +2177,7 @@ namespace aspect
       if (this->get_time() - first_data_file_model_time >= 0.0 ||
           (dynamic_cast<const GeometryModel::Chunk<dim>*>(&this->get_geometry_model()) != 0 &&
            dynamic_cast<const InitialTopographyModel::AsciiData<dim>*>(&this->get_initial_topography_model()) != 0 &&
-           isnan(this->get_time())))
+           std::isnan(this->get_time())))
         {
           Point<dim> internal_position = position;
 
@@ -2221,7 +2221,7 @@ namespace aspect
       if (this->get_time() - first_data_file_model_time >= 0.0||
           (dynamic_cast<const GeometryModel::Chunk<dim>*>(&this->get_geometry_model()) != 0 &&
            dynamic_cast<const InitialTopographyModel::AsciiData<dim>*>(&this->get_initial_topography_model()) != 0 &&
-           isnan(this->get_time())))
+           std::isnan(this->get_time())))
         {
           Point<dim> internal_position = position;
 
