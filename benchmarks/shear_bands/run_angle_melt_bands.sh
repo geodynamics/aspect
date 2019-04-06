@@ -22,7 +22,7 @@ cp magmatic_shear_bands.prm temp.prm
 echo "subsection Mesh refinement" >>temp.prm
 echo "set Initial global refinement = 7" >> temp.prm
 echo "end" >> temp.prm
-echo "subsection Compositional initial conditions" >>temp.prm
+echo "subsection Initial composition model" >>temp.prm
 echo "subsection Plane wave melt bands initial condition" >>temp.prm
 echo "set Wave number = 4000" >>temp.prm
 echo "set Initial band angle = $a" >>temp.prm
