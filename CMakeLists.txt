@@ -26,7 +26,7 @@ MESSAGE(STATUS "====================================================")
 SET(TARGET "aspect")
 
 FILE(GLOB_RECURSE TARGET_SRC  "source/*.cc" "unit_tests/*.cc" "include/*.h" "contrib/catch/catch.hpp")
-INCLUDE_DIRECTORIES(include ${CMAKE_BINARY_DIR}/include contrib/catch)
+INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR}/include include  contrib/catch)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
