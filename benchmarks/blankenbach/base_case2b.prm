@@ -2,7 +2,7 @@
 
 set Additional shared libraries            = ./plugin/libblankenbach.so
 
-set End time                               = 0.5
+set End time                               = 1.0
 set Use years in output instead of seconds = false
 set CFL number = 5.0
 
@@ -115,10 +115,15 @@ end
 
 subsection Termination criteria  
   set Termination criteria      = steady state velocity
+  set Checkpoint on termination = true
 
   subsection Steady state velocity
     set Maximum relative deviation = 1e-5
     set Time in steady state       = 0.1
   end
+end
+
+subsection Checkpointing
+  set Time between checkpoint = 600
 end
 
