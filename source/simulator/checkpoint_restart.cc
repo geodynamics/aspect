@@ -160,7 +160,11 @@ namespace aspect
       parallel::distributed::SolutionTransfer<dim, LinearAlgebra::BlockVector>
       system_trans (dof_handler);
 
+#if DEAL_II_VERSION_GTE(9,1,0)
+      system_trans.prepare_for_serialization (x_system);
+#else
       system_trans.prepare_serialization (x_system);
+#endif
 
       // If we are using a free surface, also serialize the mesh vertices vector, which
       // uses its own dof handler
@@ -174,7 +178,11 @@ namespace aspect
 
           x_fs_system[0] = &free_surface->mesh_displacements;
 
+#if DEAL_II_VERSION_GTE(9,1,0)
+          freesurface_trans->prepare_for_serialization(x_fs_system);
+#else
           freesurface_trans->prepare_serialization(x_fs_system);
+#endif
         }
 
       signals.pre_checkpoint_store_user_data(triangulation);
