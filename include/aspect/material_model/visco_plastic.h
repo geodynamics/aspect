@@ -342,8 +342,8 @@ namespace aspect
         std::vector<double> exponents_stress_limiter;
 
         /**
-        * Limit maximum yield stress from drucker-prager.
-        */
+         * Limit maximum yield stress from drucker-prager.
+         */
         double max_yield_strength;
 
         /**

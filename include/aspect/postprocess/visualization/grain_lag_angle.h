@@ -55,7 +55,7 @@ namespace aspect
        * to step forward in time. Basically, the calculation of GOL would have to lag one
        * timestep behind the other quantities in order to get the gradients, but we're
        * often interested in GOL in a steady-state flow anyway.
-      */
+       */
       template<int dim>
       class GrainLagAngle: public CellDataVectorCreator<dim>, public SimulatorAccess<dim>
       {

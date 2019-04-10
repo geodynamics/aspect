@@ -123,10 +123,10 @@ namespace aspect
       struct DruckerPragerInputs
       {
         /**
-        * Constructor. Initializes the various variables of this
-        * structure with the input values. By default, there is no
-        * maximum yield strength, so the parameter is set to infinity.
-        */
+         * Constructor. Initializes the various variables of this structure
+         * with the input values. By default, there is no maximum yield
+         * strength, so the parameter is set to infinity.
+         */
         DruckerPragerInputs(const double cohesion,
                             const double friction_angle,
                             const double pressure,
@@ -149,9 +149,9 @@ namespace aspect
       struct DruckerPragerOutputs
       {
         /**
-        * Constructor. Initializes the various variables of this
-        * structure to NaNs.
-        */
+         * Constructor. Initializes the various variables of this structure to
+         * NaNs.
+         */
         DruckerPragerOutputs();
 
         double yield_strength;

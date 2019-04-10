@@ -270,8 +270,9 @@ namespace aspect
       std::vector<const FiniteElement<dim> *> fes;
 
       /**
-         * Data to be used in the FESystem constructor, returned by get_multiplicities().
-         */
+       * Data to be used in the FESystem constructor, returned by
+       * get_multiplicities().
+       */
       std::vector<unsigned int> multiplicities;
 
       /**

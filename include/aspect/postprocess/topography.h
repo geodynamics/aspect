@@ -33,7 +33,7 @@ namespace aspect
 
     /**
      * A postprocessor that outputs the surface topography to file.
-
+     *
      * @ingroup Postprocessing
      */
     template <int dim>

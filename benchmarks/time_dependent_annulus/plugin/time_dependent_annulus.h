@@ -304,9 +304,9 @@ namespace aspect
   namespace Postprocess
   {
     /**
-      * A postprocessor that evaluates the accuracy of the solution.
-      *
-      */
+     * A postprocessor that evaluates the accuracy of the solution.
+     *
+     */
     template <int dim>
     class TimeDependentAnnulus : public Postprocess::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
