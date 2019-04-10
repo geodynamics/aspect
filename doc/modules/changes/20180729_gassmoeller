@@ -1,9 +1,0 @@
-Fixed: Fixed a bug in the 'Steinberger' material model that caused ASPECT
-to use wrong compressibilities when only a single compositional field, and
-a single material data file were prescribed. The correct behavior would have
-been to ignore the compositional field and use the data file as background
-material, but instead the compositional field was interpreted as volume
-fraction and multiplied with the compressibility calculated from the
-data file. This is fixed now.
-<br>
-(Rene Gassmoeller, 2018/07/29)

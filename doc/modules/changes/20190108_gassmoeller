@@ -1,4 +1,0 @@
-Fixed: If using an initial topography for box geometries with a non-default
-box origin the topography was computed incorrectly. This is fixed now.
-<br>
-(Rene Gassmoeller, Juliane Dannberg, Eva Bredow, 2019/01/08)

@@ -1,8 +1,0 @@
-New: There is now an option to output visualization data as higher order
-polynomials. This is an improvement in accuracy and requires less disk space
-than the 'Interpolate output' option that was available before (the new option
-requires the old option to be set, which it is by default). However the new
-output can only be read by ParaView version 5.5 and newer and is therefore
-disabled by default.
-<br>
-(Rene Gassmoeller, 2019/03/13)

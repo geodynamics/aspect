@@ -1,8 +1,0 @@
-New: Compositional fields can now be prescribed to a value that is 
-computed in the material model as an additional output at every time 
-step and then interpolated and copied into the solution vector (as 
-opposed to advecting the compositional field). This option can be 
-used by selecting the 'prescribed field' compositional field method 
-in the input file.
-<br>
-(Juliane Dannberg, 2018/10/01)
