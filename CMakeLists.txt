@@ -393,15 +393,19 @@ ENDIF()
 
 # Check if we want to use cotire to precompile header files and prepare a
 # unity build target. This speeds up compile time, but can fail on some
-# machines, therefore it is disabled by default.
-SET(ASPECT_PRECOMPILE_HEADERS OFF CACHE BOOL "Precompile external header files using cotire to speedup compile time.")
+# machines, therefore it is disabled by default. Also cotire currently
+# has issues with cmake generator expressions used in deal.II for cmake
+# version 3.9 and above. Disable cotire for cmake >= 3.9.
+IF(CMAKE_VERSION VERSION_LESS 3.9)
+  SET(ASPECT_PRECOMPILE_HEADERS OFF CACHE BOOL "Precompile external header files using cotire to speedup compile time.")
 
-IF (ASPECT_PRECOMPILE_HEADERS)
-# For the unity build we need to compile helper_functions.cc before core.cc
-# ensure this by reordering the files
-  FIND_FILE(HELPER_PATH helper_functions.cc HINTS "${CMAKE_SOURCE_DIR}/source/simulator")
-  LIST(REMOVE_ITEM TARGET_SRC ${HELPER_PATH})
-  LIST(INSERT TARGET_SRC 0 ${HELPER_PATH})
+  IF (ASPECT_PRECOMPILE_HEADERS)
+    # For the unity build we need to compile helper_functions.cc before core.cc
+    # ensure this by reordering the files
+    FIND_FILE(HELPER_PATH helper_functions.cc HINTS "${CMAKE_SOURCE_DIR}/source/simulator")
+    LIST(REMOVE_ITEM TARGET_SRC ${HELPER_PATH})
+    LIST(INSERT TARGET_SRC 0 ${HELPER_PATH})
+  ENDIF()
 ENDIF()
 
 # Check whether we can find the WorldBuilder and enable it.
@@ -486,7 +490,7 @@ IF (ASPECT_USE_FP_EXCEPTIONS)
   ENDIF()
 ENDIF()
 
-IF (ASPECT_PRECOMPILE_HEADERS)
+IF (CMAKE_VERSION VERSION_LESS 3.9 AND ASPECT_PRECOMPILE_HEADERS)
   MESSAGE(STATUS "Enabling cotire to precompile external header files.")
   INCLUDE(cmake/cotire)
 
