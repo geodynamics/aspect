@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -33,7 +33,7 @@ namespace aspect
 
     /**
      * A postprocessor that outputs the surface topography to file.
-
+     *
      * @ingroup Postprocessing
      */
     template <int dim>

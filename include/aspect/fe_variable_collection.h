@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -270,8 +270,9 @@ namespace aspect
       std::vector<const FiniteElement<dim> *> fes;
 
       /**
-         * Data to be used in the FESystem constructor, returned by get_multiplicities().
-         */
+       * Data to be used in the FESystem constructor, returned by
+       * get_multiplicities().
+       */
       std::vector<unsigned int> multiplicities;
 
       /**

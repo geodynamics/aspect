@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -342,8 +342,8 @@ namespace aspect
         std::vector<double> exponents_stress_limiter;
 
         /**
-        * Limit maximum yield stress from drucker-prager.
-        */
+         * Limit maximum yield stress from drucker-prager.
+         */
         double max_yield_strength;
 
         /**
