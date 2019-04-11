@@ -118,7 +118,7 @@ subsection Mesh refinement
   set Refinement fraction                      = 1.0
 
   set Initial adaptive refinement              = 0                    # default: 2
-  set Initial global refinement                = 3                    # default: 2
+  set Initial global refinement                = 4                    # default: 2
   set Strategy                                 = composition
   set Time steps between mesh refinement       = 0
   set Run postprocessors on initial refinement = true
@@ -162,7 +162,7 @@ end
 subsection Solver parameters
   subsection Stokes solver parameters
     set Linear solver tolerance = 1e-5
-    set Number of cheap Stokes solver steps = 500
     set Use direct solver for Stokes system = false
+    set GMRES solver restart length = 200
   end
 end
