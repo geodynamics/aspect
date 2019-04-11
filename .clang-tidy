@@ -5,19 +5,24 @@
 
 # Usage:
 #
-# set DEAL_II_DIR to an installation made with clang
+# set DEAL_II_DIR to an installation made with clang:
+#
+# export SRC=$PWD
 # rm -rf build; mkdir build; cd build
-# CXX=clang++ CC=clang cmake -DCMAKE_CXX_CLANG_TIDY="clang-tidy;-fix;-quiet;-header-filter=$(realpath ..)"  ..
+# CXX=clang++ CC=clang cmake -DCMAKE_CXX_CLANG_TIDY="clang-tidy;-fix;-quiet;-header-filter=$(realpath ..)" $SRC
 # make -j 4
+#
+# alternatively (older cmake versions):
+# export SRC=$PWD
+# rm -rf build; mkdir build; cd build
+# cmake -G Ninja -D CMAKE_EXPORT_COMPILE_COMMANDS=ON $SRC
+# run-clang-tidy.py -p . -quiet -header-filter="$SRC/include/*"
+
 
 # enabled checks:
-Checks: '-*,modernize-use-emplace,modernize-make-shared,mpi-*'
+Checks: '-*,modernize-use-emplace,modernize-make-shared,mpi-*,modernize-use-nullptr,modernize-replace-autoptr,modernize-make-unique,performance-*,-performance-inefficient-string-concatenation'
 
 
 # other options to be used in the future as soon as we compile cleanly:
-
-# performance-*,-performance-inefficient-string-concatenation
+#
 # modernize-avoid-bind
-# modernize-make-unique,
-# modernize-replace-autoptr,
-# modernize-use-nullptr
