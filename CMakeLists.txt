@@ -393,15 +393,20 @@ ENDIF()
 
 # Check if we want to use cotire to precompile header files and prepare a
 # unity build target. This speeds up compile time, but can fail on some
-# machines, therefore it is disabled by default.
-SET(ASPECT_PRECOMPILE_HEADERS OFF CACHE BOOL "Precompile external header files using cotire to speedup compile time.")
-
+# machines, therefore it is disabled by default. Also cotire currently
+# has issues with cmake generator expressions used in deal.II for cmake
+# version 3.9 and above. Disable cotire for cmake >= 3.9.
+SET(ASPECT_PRECOMPILE_HEADERS OFF CACHE BOOL "Precompile external header files using cotire to speedup compile time. Currently only supported for cmake versions older than 3.9.")
 IF (ASPECT_PRECOMPILE_HEADERS)
-# For the unity build we need to compile helper_functions.cc before core.cc
-# ensure this by reordering the files
-  FIND_FILE(HELPER_PATH helper_functions.cc HINTS "${CMAKE_SOURCE_DIR}/source/simulator")
-  LIST(REMOVE_ITEM TARGET_SRC ${HELPER_PATH})
-  LIST(INSERT TARGET_SRC 0 ${HELPER_PATH})
+  IF(CMAKE_VERSION VERSION_LESS 3.9)
+    # For the unity build we need to compile helper_functions.cc before core.cc
+    # ensure this by reordering the files
+    FIND_FILE(HELPER_PATH helper_functions.cc HINTS "${CMAKE_SOURCE_DIR}/source/simulator")
+    LIST(REMOVE_ITEM TARGET_SRC ${HELPER_PATH})
+    LIST(INSERT TARGET_SRC 0 ${HELPER_PATH})
+  ELSE()
+    MESSAGE(FATAL_ERROR "ASPECT_PRECOMPILE_HEADERS is currently only supported for CMake version 3.8 or less.")
+  ENDIF()
 ENDIF()
 
 # Check whether we can find the WorldBuilder and enable it.
