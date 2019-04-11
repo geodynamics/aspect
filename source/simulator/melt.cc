@@ -105,12 +105,12 @@ namespace aspect
       const MaterialModel::MeltOutputs<dim> *melt_outputs = outputs.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
       const double ref_K_D = this->reference_darcy_coefficient();
 
-      double K_D = 1.0;
+      double K_D = 0.0;
       double max_K_D = 0.0;
       const unsigned int N = melt_outputs->permeabilities.size();
       for (unsigned int q=0; q<N; ++q)
         {
-          K_D *= std::pow (std::max(melt_outputs->permeabilities[q], 0.0)  / melt_outputs->fluid_viscosities[q], 1./N);
+          K_D += std::max(melt_outputs->permeabilities[q], 0.0) / (melt_outputs->fluid_viscosities[q] * N);
           max_K_D = std::max(max_K_D, melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q]);
         }
 
