@@ -268,10 +268,10 @@ namespace aspect
     {
       template <>
       std::list<internal::Plugins::PluginList<InitialComposition::Interface<2> >::PluginInfo> *
-      internal::Plugins::PluginList<InitialComposition::Interface<2> >::plugins = 0;
+      internal::Plugins::PluginList<InitialComposition::Interface<2> >::plugins = nullptr;
       template <>
       std::list<internal::Plugins::PluginList<InitialComposition::Interface<3> >::PluginInfo> *
-      internal::Plugins::PluginList<InitialComposition::Interface<3> >::plugins = 0;
+      internal::Plugins::PluginList<InitialComposition::Interface<3> >::plugins = nullptr;
     }
   }
 

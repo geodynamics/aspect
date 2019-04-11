@@ -41,7 +41,7 @@ namespace aspect
                                           this->get_solution(),
                                           indicators,
                                           this->introspection().component_masks.velocities,
-                                          0,
+                                          nullptr,
                                           0,
                                           this->get_triangulation().locally_owned_subdomain());
     }

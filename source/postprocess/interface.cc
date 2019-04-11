@@ -215,7 +215,7 @@ namespace aspect
     void
     Manager<dim>::parse_parameters (ParameterHandler &prm)
     {
-      Assert (std::get<dim>(registered_plugins).plugins != 0,
+      Assert (std::get<dim>(registered_plugins).plugins != nullptr,
               ExcMessage ("No postprocessors registered!?"));
 
       // first find out which postprocessors are requested
@@ -427,10 +427,10 @@ namespace aspect
     {
       template <>
       std::list<internal::Plugins::PluginList<Postprocess::Interface<2> >::PluginInfo> *
-      internal::Plugins::PluginList<Postprocess::Interface<2> >::plugins = 0;
+      internal::Plugins::PluginList<Postprocess::Interface<2> >::plugins = nullptr;
       template <>
       std::list<internal::Plugins::PluginList<Postprocess::Interface<3> >::PluginInfo> *
-      internal::Plugins::PluginList<Postprocess::Interface<3> >::plugins = 0;
+      internal::Plugins::PluginList<Postprocess::Interface<3> >::plugins = nullptr;
     }
   }
 

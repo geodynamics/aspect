@@ -399,7 +399,7 @@ namespace aspect
       const GeometryModel::Box<dim> *geometry
         = dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model());
 
-      if (geometry != 0)
+      if (geometry != nullptr)
         {
           const Point<dim> origin = geometry->get_origin();
           const Point<dim> extent = geometry->get_extents();

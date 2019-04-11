@@ -414,7 +414,7 @@ namespace aspect
         this->get_material_model().create_additional_named_outputs(out);
 
         const bool material_model_provides_seismic_output =
-          (out.template get_additional_output<MaterialModel::SeismicAdditionalOutputs<dim> >() != 0);
+          (out.template get_additional_output<MaterialModel::SeismicAdditionalOutputs<dim> >() != nullptr);
 
         AssertThrow(material_model_provides_seismic_output,
                     ExcMessage("You requested the 'Vs anomaly' postprocessor, "
@@ -493,7 +493,7 @@ namespace aspect
         this->get_material_model().create_additional_named_outputs(out);
 
         const bool material_model_provides_seismic_output =
-          (out.template get_additional_output<MaterialModel::SeismicAdditionalOutputs<dim> >() != 0);
+          (out.template get_additional_output<MaterialModel::SeismicAdditionalOutputs<dim> >() != nullptr);
 
         AssertThrow(material_model_provides_seismic_output,
                     ExcMessage("You requested the 'Vp anomaly' postprocessor, "

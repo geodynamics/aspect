@@ -462,7 +462,7 @@ namespace aspect
       void
       Manager<dim>::parse_parameters (ParameterHandler &prm)
       {
-        Assert (std::get<dim>(registered_plugins).plugins != 0,
+        Assert (std::get<dim>(registered_plugins).plugins != nullptr,
                 ExcMessage ("No postprocessors registered!?"));
         std::vector<std::string> prop_names;
 
@@ -550,10 +550,10 @@ namespace aspect
     {
       template <>
       std::list<internal::Plugins::PluginList<Particle::Property::Interface<2> >::PluginInfo> *
-      internal::Plugins::PluginList<Particle::Property::Interface<2> >::plugins = 0;
+      internal::Plugins::PluginList<Particle::Property::Interface<2> >::plugins = nullptr;
       template <>
       std::list<internal::Plugins::PluginList<Particle::Property::Interface<3> >::PluginInfo> *
-      internal::Plugins::PluginList<Particle::Property::Interface<3> >::plugins = 0;
+      internal::Plugins::PluginList<Particle::Property::Interface<3> >::plugins = nullptr;
     }
   }
 

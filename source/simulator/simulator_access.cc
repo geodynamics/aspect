@@ -355,7 +355,7 @@ namespace aspect
   const MaterialModel::Interface<dim> &
   SimulatorAccess<dim>::get_material_model () const
   {
-    Assert (simulator->material_model.get() != 0,
+    Assert (simulator->material_model.get() != nullptr,
             ExcMessage("You can not call this function if no such model is actually available."));
     return *simulator->material_model.get();
   }
@@ -420,7 +420,7 @@ namespace aspect
   const BoundaryHeatFlux::Interface<dim> &
   SimulatorAccess<dim>::get_boundary_heat_flux () const
   {
-    Assert (simulator->boundary_heat_flux.get() != 0,
+    Assert (simulator->boundary_heat_flux.get() != nullptr,
             ExcMessage("You can not call this function if no such model is actually available."));
     return *simulator->boundary_heat_flux.get();
   }
@@ -524,7 +524,7 @@ namespace aspect
   const InitialTopographyModel::Interface<dim> &
   SimulatorAccess<dim>::get_initial_topography_model () const
   {
-    Assert (simulator->initial_topography_model.get() != 0,
+    Assert (simulator->initial_topography_model.get() != nullptr,
             ExcMessage("You can not call this function if no such model is actually available."));
     return *simulator->initial_topography_model.get();
   }
@@ -534,7 +534,7 @@ namespace aspect
   const GeometryModel::Interface<dim> &
   SimulatorAccess<dim>::get_geometry_model () const
   {
-    Assert (simulator->geometry_model.get() != 0,
+    Assert (simulator->geometry_model.get() != nullptr,
             ExcMessage("You can not call this function if no such model is actually available."));
     return *simulator->geometry_model.get();
   }
@@ -543,7 +543,7 @@ namespace aspect
   const GravityModel::Interface<dim> &
   SimulatorAccess<dim>::get_gravity_model () const
   {
-    Assert (simulator->gravity_model.get() != 0,
+    Assert (simulator->gravity_model.get() != nullptr,
             ExcMessage("You can not call this function if no such model is actually available."));
     return *simulator->gravity_model.get();
   }
@@ -553,7 +553,7 @@ namespace aspect
   const AdiabaticConditions::Interface<dim> &
   SimulatorAccess<dim>::get_adiabatic_conditions () const
   {
-    Assert (simulator->adiabatic_conditions.get() != 0,
+    Assert (simulator->adiabatic_conditions.get() != nullptr,
             ExcMessage("You can not call this function if no such model is actually available."));
     return *simulator->adiabatic_conditions.get();
   }
@@ -613,7 +613,7 @@ namespace aspect
   const MeltHandler<dim> &
   SimulatorAccess<dim>::get_melt_handler () const
   {
-    Assert (simulator->melt_handler.get() != 0,
+    Assert (simulator->melt_handler.get() != nullptr,
             ExcMessage("You can not call this function if melt transport is not enabled."));
     return *(simulator->melt_handler);
   }
@@ -631,7 +631,7 @@ namespace aspect
   const NewtonHandler<dim> &
   SimulatorAccess<dim>::get_newton_handler () const
   {
-    Assert (simulator->newton_handler.get() != 0,
+    Assert (simulator->newton_handler.get() != nullptr,
             ExcMessage("You can not call this function if the Newton solver is not enabled."));
     return *(simulator->newton_handler);
   }
@@ -661,7 +661,7 @@ namespace aspect
   const FreeSurfaceHandler<dim> &
   SimulatorAccess<dim>::get_free_surface_handler () const
   {
-    Assert (simulator->free_surface.get() != 0,
+    Assert (simulator->free_surface.get() != nullptr,
             ExcMessage("You can not call this function if the free surface is not enabled."));
 
     return *(simulator->free_surface);
@@ -724,7 +724,7 @@ namespace aspect
   bool
   SimulatorAccess<dim>::model_has_prescribed_stokes_solution () const
   {
-    return (simulator->prescribed_stokes_solution.get() != 0);
+    return (simulator->prescribed_stokes_solution.get() != nullptr);
   }
 
   template <int dim>

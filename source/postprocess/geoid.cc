@@ -315,7 +315,7 @@ namespace aspect
       // Current geoid code only works for spherical shell geometry
       const GeometryModel::SphericalShell<dim> *geometry_model = dynamic_cast<const GeometryModel::SphericalShell<dim> *>
                                                                  (&this->get_geometry_model());
-      AssertThrow (geometry_model != 0 && dim == 3,
+      AssertThrow (geometry_model != nullptr && dim == 3,
                    ExcMessage("The geoid postprocessor is currently only implemented for the 3D spherical shell geometry model."));
 
       // Get the value of the outer radius and inner radius
