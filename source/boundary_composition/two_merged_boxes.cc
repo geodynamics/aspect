@@ -41,7 +41,7 @@ namespace aspect
       // verify that the geometry is a box since only for this geometry
       // do we know for sure what boundary indicators it uses and what they mean
       Assert (dynamic_cast<const GeometryModel::TwoMergedBoxes<dim>*>(&this->get_geometry_model())
-              != 0,
+              != nullptr,
               ExcMessage ("This boundary model is only useful if the geometry is "
                           "a box with additional lithosphere boundary indicators."));
 

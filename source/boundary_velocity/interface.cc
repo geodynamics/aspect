@@ -440,10 +440,10 @@ namespace aspect
     {
       template <>
       std::list<internal::Plugins::PluginList<BoundaryVelocity::Interface<2> >::PluginInfo> *
-      internal::Plugins::PluginList<BoundaryVelocity::Interface<2> >::plugins = 0;
+      internal::Plugins::PluginList<BoundaryVelocity::Interface<2> >::plugins = nullptr;
       template <>
       std::list<internal::Plugins::PluginList<BoundaryVelocity::Interface<3> >::PluginInfo> *
-      internal::Plugins::PluginList<BoundaryVelocity::Interface<3> >::plugins = 0;
+      internal::Plugins::PluginList<BoundaryVelocity::Interface<3> >::plugins = nullptr;
     }
   }
 

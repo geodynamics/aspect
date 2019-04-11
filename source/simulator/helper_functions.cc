@@ -1775,7 +1775,7 @@ namespace aspect
       = out.template get_additional_output<MaterialModel::PrescribedFieldOutputs<dim> >();
 
     // check if the material model computes prescribed field outputs
-    AssertThrow(prescribed_field_out != NULL,
+    AssertThrow(prescribed_field_out != nullptr,
                 ExcMessage("You are trying to use a prescribed advection field, "
                            "but the material model you use does not support interpolating properties "
                            "(it does not create PrescribedFieldOutputs, which is required for this "

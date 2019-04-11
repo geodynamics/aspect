@@ -927,7 +927,7 @@ namespace aspect
     void
     Visualization<dim>::parse_parameters (ParameterHandler &prm)
     {
-      Assert (std::get<dim>(registered_visualization_plugins).plugins != 0,
+      Assert (std::get<dim>(registered_visualization_plugins).plugins != nullptr,
               ExcMessage ("No postprocessors registered!?"));
       std::vector<std::string> viz_names;
 
@@ -969,7 +969,7 @@ namespace aspect
               // null pointer. System is guaranteed to return non-zero if it finds
               // a terminal and zero if there is none (like on the compute nodes of
               // some cluster architectures, e.g. IBM BlueGene/Q)
-              AssertThrow(system((char *)0) != 0,
+              AssertThrow(system((char *)nullptr) != 0,
                           ExcMessage("Usage of a temporary storage location is only supported if "
                                      "there is a terminal available to move the files to their final location "
                                      "after writing. The system() command did not succeed in finding such a terminal."));
@@ -1035,10 +1035,10 @@ namespace aspect
           // dealii::DataPostprocessor or of type
           // VisualizationPostprocessors::CellDataVectorCreator
           Assert ((dynamic_cast<DataPostprocessor<dim>*>(viz_postprocessor)
-                   != 0)
+                   != nullptr)
                   ||
                   (dynamic_cast<VisualizationPostprocessors::CellDataVectorCreator<dim>*>(viz_postprocessor)
-                   != 0)
+                   != nullptr)
                   ,
                   ExcMessage ("Can't convert visualization postprocessor to type "
                               "dealii::DataPostprocessor or "
@@ -1215,10 +1215,10 @@ namespace aspect
     {
       template <>
       std::list<internal::Plugins::PluginList<Postprocess::VisualizationPostprocessors::Interface<2> >::PluginInfo> *
-      internal::Plugins::PluginList<Postprocess::VisualizationPostprocessors::Interface<2> >::plugins = 0;
+      internal::Plugins::PluginList<Postprocess::VisualizationPostprocessors::Interface<2> >::plugins = nullptr;
       template <>
       std::list<internal::Plugins::PluginList<Postprocess::VisualizationPostprocessors::Interface<3> >::PluginInfo> *
-      internal::Plugins::PluginList<Postprocess::VisualizationPostprocessors::Interface<3> >::plugins = 0;
+      internal::Plugins::PluginList<Postprocess::VisualizationPostprocessors::Interface<3> >::plugins = nullptr;
     }
   }
 

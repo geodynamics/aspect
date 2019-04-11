@@ -49,7 +49,7 @@ namespace aspect
       // for this geometry do we know for sure what boundary indicators it
       // uses and what they mean
       Assert (dynamic_cast<const GeometryModel::SphericalShell<dim>*>(&this->get_geometry_model())
-              != 0,
+              != nullptr,
               ExcMessage ("This boundary model is only implemented if the geometry is "
                           "in fact a spherical shell."));
 

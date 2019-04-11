@@ -36,7 +36,7 @@ namespace aspect
       // Box. verify that it is indeed
       const GeometryModel::Box<dim> *geometry
         = dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model());
-      AssertThrow (geometry != 0,
+      AssertThrow (geometry != nullptr,
                    ExcMessage ("This initial condition can only be used if the geometry "
                                "is a box."));
 
@@ -55,7 +55,7 @@ namespace aspect
       // Box. verify that it is indeed
       const GeometryModel::Box<dim> *geometry
         = dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model());
-      AssertThrow (geometry != 0,
+      AssertThrow (geometry != nullptr,
                    ExcMessage ("This initial condition can only be used if the geometry "
                                "is a box."));
 
@@ -78,7 +78,7 @@ namespace aspect
       // box. verify that it is indeed
       const GeometryModel::Box<dim> *geometry
         = dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model());
-      AssertThrow (geometry != 0,
+      AssertThrow (geometry != nullptr,
                    ExcMessage ("This initial condition can only be used if the geometry "
                                "is a box."));
 
@@ -113,7 +113,7 @@ namespace aspect
       // box. verify that it is indeed
       const GeometryModel::Box<dim> *geometry
         = dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model());
-      AssertThrow (geometry != 0,
+      AssertThrow (geometry != nullptr,
                    ExcMessage ("This initial condition can only be used if the geometry "
                                "is a box."));
 
