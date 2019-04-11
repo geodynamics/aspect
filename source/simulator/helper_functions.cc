@@ -203,7 +203,7 @@ namespace aspect
      * it, so we need to work on a copy. This copy is deleted at the end
      * of this function.
      */
-    void do_output_statistics (const std::string &stat_file_name,
+    void do_output_statistics (const std::string stat_file_name,
                                const TableHandler *copy_of_table)
     {
       // write into a temporary file for now so that we don't

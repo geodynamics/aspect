@@ -188,8 +188,8 @@ namespace aspect
 
 #if DEAL_II_VERSION_GTE(9,0,0)
     template <int dim>
-    void Particles<dim>::writer (const std::string &filename,
-                                 const std::string &temporary_output_location,
+    void Particles<dim>::writer (const std::string filename,
+                                 const std::string temporary_output_location,
                                  const std::string *file_contents)
     {
       std::string tmp_filename = filename;
