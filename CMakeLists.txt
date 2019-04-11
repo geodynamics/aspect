@@ -396,9 +396,8 @@ ENDIF()
 # machines, therefore it is disabled by default. Also cotire currently
 # has issues with cmake generator expressions used in deal.II for cmake
 # version 3.9 and above. Disable cotire for cmake >= 3.9.
+SET(ASPECT_PRECOMPILE_HEADERS OFF CACHE BOOL "Precompile external header files using cotire to speedup compile time. Currently only supported for cmake versions older than 3.9.")
 IF(CMAKE_VERSION VERSION_LESS 3.9)
-  SET(ASPECT_PRECOMPILE_HEADERS OFF CACHE BOOL "Precompile external header files using cotire to speedup compile time.")
-
   IF (ASPECT_PRECOMPILE_HEADERS)
     # For the unity build we need to compile helper_functions.cc before core.cc
     # ensure this by reordering the files
@@ -406,6 +405,8 @@ IF(CMAKE_VERSION VERSION_LESS 3.9)
     LIST(REMOVE_ITEM TARGET_SRC ${HELPER_PATH})
     LIST(INSERT TARGET_SRC 0 ${HELPER_PATH})
   ENDIF()
+ELSE()
+  SET(ASPECT_PRECOMPILE_HEADERS OFF CACHE BOOL "" FORCE)
 ENDIF()
 
 # Check whether we can find the WorldBuilder and enable it.
@@ -490,7 +491,7 @@ IF (ASPECT_USE_FP_EXCEPTIONS)
   ENDIF()
 ENDIF()
 
-IF (CMAKE_VERSION VERSION_LESS 3.9 AND ASPECT_PRECOMPILE_HEADERS)
+IF (ASPECT_PRECOMPILE_HEADERS)
   MESSAGE(STATUS "Enabling cotire to precompile external header files.")
   INCLUDE(cmake/cotire)
 
