@@ -80,7 +80,7 @@ namespace aspect
                             std::vector<Vector<double> > &computed_quantities) const
       {
         const unsigned int n_quadrature_points = input_data.solution_values.size();
-        const std::list<std::shared_ptr<HeatingModel::Interface<dim> > > &heating_model_objects = this->get_heating_model_manager().get_active_heating_models();
+        const auto &heating_model_objects = this->get_heating_model_manager().get_active_heating_models();
 
         // we do not want to write any output if there are no heating models
         // used in the computation
@@ -144,7 +144,7 @@ namespace aspect
           AssertThrow(false, ExcNotImplemented());
 
         unsigned int index = 0;
-        for (typename std::list<std::shared_ptr<HeatingModel::Interface<dim> > >::const_iterator
+        for (typename std::list<std::unique_ptr<HeatingModel::Interface<dim> > >::const_iterator
              heating_model = heating_model_objects.begin();
              heating_model != heating_model_objects.end(); ++heating_model, ++index)
           {
