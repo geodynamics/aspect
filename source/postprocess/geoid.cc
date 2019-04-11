@@ -165,7 +165,7 @@ namespace aspect
         this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::DynamicTopography<dim> >();
 
       // Get the already-computed dynamic topography solution.
-      const LinearAlgebra::BlockVector topo_vector = dynamic_topography.topography_vector();
+      const LinearAlgebra::BlockVector &topo_vector = dynamic_topography.topography_vector();
 
       // Get a pointer to the boundary densities postprocessor.
       const Postprocess::BoundaryDensities<dim> &boundary_densities =

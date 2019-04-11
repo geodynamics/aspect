@@ -670,8 +670,8 @@ namespace aspect
 
 
     template <int dim>
-    void Visualization<dim>::writer (const std::string filename,
-                                     const std::string temporary_output_location,
+    void Visualization<dim>::writer (const std::string &filename,
+                                     const std::string &temporary_output_location,
                                      const std::string *file_contents)
     {
       std::string tmp_filename = filename;

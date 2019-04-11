@@ -532,8 +532,8 @@ namespace aspect
          * of these arguments and deletes them at the end of its work.
          */
         static
-        void writer (const std::string filename,
-                     const std::string temporary_filename,
+        void writer (const std::string &filename,
+                     const std::string &temporary_filename,
                      const std::string *file_contents);
 
         /**

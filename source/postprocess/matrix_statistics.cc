@@ -31,7 +31,7 @@ namespace
 {
   const std::string
   get_stats(const aspect::LinearAlgebra::BlockSparseMatrix &matrix,
-            const std::string matrix_name,
+            const std::string &matrix_name,
             const MPI_Comm &comm)
   {
     std::ostringstream output;
