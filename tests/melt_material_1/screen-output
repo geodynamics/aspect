@@ -14,7 +14,7 @@ Number of degrees of freedom: 34,825 (12,611+8,450+1,089+4,225+4,225+4,225)
    Postprocessing:
      Compositions min/max/mass: 0/0.3/3.749e+10 // 0/0.3/3.008e+10
 
-*** Timestep 1:  t=1.01992e-09 years
+*** Timestep 1:  t=1.01999e-09 years
    Solving temperature system... 15 iterations.
    Solving peridotite system ... 16 iterations.
    Solving porosity system ... 17 iterations.
@@ -24,7 +24,7 @@ Number of degrees of freedom: 34,825 (12,611+8,450+1,089+4,225+4,225+4,225)
    Postprocessing:
      Compositions min/max/mass: -0.02425/0.3251/3.749e+10 // -0.01782/0.3164/3.008e+10
 
-*** Timestep 2:  t=2.02252e-09 years
+*** Timestep 2:  t=2.02259e-09 years
    Solving temperature system... 15 iterations.
    Solving peridotite system ... 17 iterations.
    Solving porosity system ... 17 iterations.
@@ -34,7 +34,7 @@ Number of degrees of freedom: 34,825 (12,611+8,450+1,089+4,225+4,225+4,225)
    Postprocessing:
      Compositions min/max/mass: -0.01758/0.3181/3.749e+10 // -0.01236/0.3145/3.008e+10
 
-*** Timestep 3:  t=3.00968e-09 years
+*** Timestep 3:  t=3.00975e-09 years
    Solving temperature system... 14 iterations.
    Solving peridotite system ... 16 iterations.
    Solving porosity system ... 16 iterations.
@@ -42,9 +42,9 @@ Number of degrees of freedom: 34,825 (12,611+8,450+1,089+4,225+4,225+4,225)
    Solving for u_f in 11 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: -0.009622/0.3166/3.749e+10 // -0.004662/0.3142/3.008e+10
+     Compositions min/max/mass: -0.009621/0.3166/3.749e+10 // -0.004664/0.3142/3.008e+10
 
-*** Timestep 4:  t=3.98292e-09 years
+*** Timestep 4:  t=3.98298e-09 years
    Solving temperature system... 14 iterations.
    Solving peridotite system ... 16 iterations.
    Solving porosity system ... 16 iterations.
@@ -52,7 +52,7 @@ Number of degrees of freedom: 34,825 (12,611+8,450+1,089+4,225+4,225+4,225)
    Solving for u_f in 11 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: -0.007624/0.312/3.749e+10 // -0.004643/0.3119/3.008e+10
+     Compositions min/max/mass: -0.007623/0.312/3.749e+10 // -0.004624/0.3119/3.008e+10
 
 *** Timestep 5:  t=4e-09 years
    Solving temperature system... 7 iterations.
@@ -62,7 +62,7 @@ Number of degrees of freedom: 34,825 (12,611+8,450+1,089+4,225+4,225+4,225)
    Solving for u_f in 11 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: -0.00748/0.3119/3.749e+10 // -0.004625/0.3117/3.008e+10
+     Compositions min/max/mass: -0.00748/0.3119/3.749e+10 // -0.004606/0.3117/3.008e+10
 
 Termination requested by criterion: end time
 
