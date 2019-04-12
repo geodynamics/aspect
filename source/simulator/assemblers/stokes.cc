@@ -176,9 +176,9 @@ namespace aspect
               for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
                 for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
                   {
-                    data.local_matrix(i,j) += ( pressure_scaling * pressure_scaling / eta *
-                                                   (scratch.phi_p[i] - average_pressure_shape_function[i]) *
-                                                   (scratch.phi_p[j] - average_pressure_shape_function[j]))
+                    data.local_matrix(i,j) += ( one_over_eta * pressure_scaling * pressure_scaling *
+                                                (scratch.phi_p[i] - average_pressure_shape_function[i]) *
+                                                (scratch.phi_p[j] - average_pressure_shape_function[j]))
                                               * JxW;
                   }
             }
@@ -338,6 +338,13 @@ namespace aspect
                               scratch.material_model_outputs.viscosities[q]
                               :
                               numbers::signaling_nan<double>());
+          const double one_over_eta = (scratch.rebuild_stokes_matrix
+                                       &&
+                                       this->get_parameters().use_equal_order_interpolation_for_stokes
+                                       ?
+                                       1./eta
+                                       :
+                                       numbers::signaling_nan<double>());
 
           const Tensor<1,dim>
           gravity = this->get_gravity_model().gravity_vector (scratch.finite_element_values.quadrature_point(q));
@@ -384,7 +391,7 @@ namespace aspect
               for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
                 for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
                   {
-                    data.local_matrix(i,j) += ( - (pressure_scaling * pressure_scaling / eta *
+                    data.local_matrix(i,j) += ( - (one_over_eta * pressure_scaling * pressure_scaling *
                                                    (scratch.phi_p[i] - average_pressure_shape_function[i]) *
                                                    (scratch.phi_p[j] - average_pressure_shape_function[j])))
                                               * JxW;
