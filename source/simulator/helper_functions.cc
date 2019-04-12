@@ -203,7 +203,8 @@ namespace aspect
      * it, so we need to work on a copy. This copy is deleted at the end
      * of this function.
      */
-    void do_output_statistics (const std::string stat_file_name,
+    // We need to pass the arguments by value, as this function can be called on a separate thread:
+    void do_output_statistics (const std::string stat_file_name, //NOLINT(performance-unnecessary-value-param)
                                const TableHandler *copy_of_table)
     {
       // write into a temporary file for now so that we don't
