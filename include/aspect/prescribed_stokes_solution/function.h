@@ -53,7 +53,7 @@ namespace aspect
          */
         virtual
         void
-        stokes_solution (const Point<dim> &p, Vector<double> &value) const;
+        stokes_solution (const Point<dim> &position, Vector<double> &value) const;
 
         /**
          * A function that is called at the beginning of each time step to

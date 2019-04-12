@@ -53,7 +53,7 @@ namespace aspect
                                const Mapping<dim>       &mapping,
                                const Quadrature<dim>    &quadrature,
                                const Quadrature<dim-1>  &face_quadrature);
-          VolumeOfFluidSystem (const VolumeOfFluidSystem &data);
+          VolumeOfFluidSystem (const VolumeOfFluidSystem &scratch);
 
           FEValues<dim>          finite_element_values;
           FEValues<dim>          neighbor_finite_element_values;

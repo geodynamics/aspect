@@ -45,7 +45,7 @@ namespace aspect
       /**
        * Standard initial constructor
        */
-      VolumeOfFluidHandler(Simulator<dim> &sim, ParameterHandler &prm);
+      VolumeOfFluidHandler(Simulator<dim> &simulator, ParameterHandler &prm);
 
       /**
        * Add the Volume of Fluid field declaration to the list to be included

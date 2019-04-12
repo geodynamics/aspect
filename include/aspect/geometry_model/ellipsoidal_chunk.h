@@ -211,7 +211,7 @@ namespace aspect
          */
         virtual
         bool
-        point_is_in_domain(const Point<dim> &p) const;
+        point_is_in_domain(const Point<dim> &point) const;
 
         /**
          * Returns the bottom depth which was used to create the geometry and
@@ -283,7 +283,7 @@ namespace aspect
          * Calculate radius at current position.
          */
         double
-        get_radius(const Point<dim> &point) const;
+        get_radius(const Point<dim> &position) const;
 
         /**
          * Retrieve the semi minor axis b value.
