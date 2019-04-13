@@ -400,7 +400,7 @@ namespace aspect
 
     std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (n_q_points));
 
-    const std::list<std::shared_ptr<HeatingModel::Interface<dim> > > &heating_model_objects = this->get_heating_model_manager().get_active_heating_models();
+    const std::list<std::unique_ptr<HeatingModel::Interface<dim> > > &heating_model_objects = this->get_heating_model_manager().get_active_heating_models();
 
     std::vector<HeatingModel::HeatingModelOutputs> heating_model_outputs (heating_model_objects.size(),
                                                                           HeatingModel::HeatingModelOutputs (n_q_points, this->n_compositional_fields()));
@@ -441,7 +441,7 @@ namespace aspect
           }
 
         unsigned int index = 0;
-        for (typename std::list<std::shared_ptr<HeatingModel::Interface<dim> > >::const_iterator
+        for (typename std::list<std::unique_ptr<HeatingModel::Interface<dim> > >::const_iterator
              heating_model = heating_model_objects.begin();
              heating_model != heating_model_objects.end(); ++heating_model, ++index)
           {
