@@ -1733,7 +1733,7 @@ namespace aspect
     {
       prm.enter_subsection ("Melt settings");
       {
-        prm.declare_entry ("Melt scaling factor threshold", "1e-3",
+        prm.declare_entry ("Melt scaling factor threshold", "1e-7",
                            Patterns::Double (),
                            "The factor by how much the Darcy coefficient K\\_D in a cell can be smaller than "
                            "the reference Darcy coefficient for this cell still to be considered a melt cell "

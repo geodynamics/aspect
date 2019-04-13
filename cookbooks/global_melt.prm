@@ -311,7 +311,7 @@ subsection Mesh refinement
 
   # refine where the porosity is bigger than 1e-5
   subsection Composition threshold
-    set Compositional field thresholds = 1e-5,1.0
+    set Compositional field thresholds = 1e-8,1.0
   end
 end
 

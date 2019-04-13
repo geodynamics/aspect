@@ -33,6 +33,12 @@ subsection Solver parameters
     # steps in each model time step, to accurately compute the reactions. 
     set Reaction time steps per advection step = 10
   end
+
+  # Because this model includes strong localized viscosity contrasts we
+  # increase the robustness of the solver at the cost of memory consumption.
+  subsection Stokes solver parameters
+    set GMRES solver restart length = 200
+  end
 end
 
 # We use the melt simple material model that includes melting and freezing of
@@ -43,6 +49,9 @@ end
 # of 5e-3/year), which should be substantially shorter than the time step size, 
 # so that the melt fraction will always be close to equilibrium. 
 # As the model includes melting and freezing, we do not have to extract any melt. 
+# We also slightly reduce the dependence of shear viscosity on the melt
+# fraction, because the model is relatively coarse and would otherwise develop
+# velocity oscillations in the region of highest melt content.
 
 subsection Material model
   set Model name = melt simple 
@@ -51,6 +60,7 @@ subsection Material model
     set Melt extraction depth = 0.0
     set Freezing rate         = 0.005
     set Melting time scale for operator splitting = 2e2
+    set Exponential melt weakening factor = 20
   end
 end
 
