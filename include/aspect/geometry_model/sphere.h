@@ -127,7 +127,7 @@ namespace aspect
          */
         virtual
         bool
-        point_is_in_domain(const Point<dim> &p) const;
+        point_is_in_domain(const Point<dim> &point) const;
 
         static
         void

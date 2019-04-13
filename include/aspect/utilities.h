@@ -895,7 +895,7 @@ namespace aspect
          * Create a filename out of the name template.
          */
         std::string
-        create_filename (const int timestep,
+        create_filename (const int filenumber,
                          const types::boundary_id boundary_id) const;
     };
 

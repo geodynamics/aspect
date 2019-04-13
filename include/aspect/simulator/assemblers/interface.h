@@ -100,7 +100,7 @@ namespace aspect
                                 const unsigned int        n_compositional_fields,
                                 const unsigned int        stokes_dofs_per_cell,
                                 const bool                add_compaction_pressure,
-                                const bool                rebuild_stokes_matrix);
+                                const bool                rebuild_matrix);
           StokesPreconditioner (const StokesPreconditioner &scratch);
 
           virtual ~StokesPreconditioner ();
@@ -154,11 +154,11 @@ namespace aspect
                         const unsigned int        n_compositional_fields,
                         const unsigned int        stokes_dofs_per_cell,
                         const bool                add_compaction_pressure,
-                        const bool                use_reference_profile,
+                        const bool                use_reference_density_profile,
                         const bool                rebuild_stokes_matrix,
-                        const bool                rebuild_stokes_newton_matrix);
+                        const bool                rebuild_newton_stokes_matrix);
 
-          StokesSystem (const StokesSystem<dim> &data);
+          StokesSystem (const StokesSystem<dim> &scratch);
 
           FEFaceValues<dim> face_finite_element_values;
 
@@ -218,8 +218,8 @@ namespace aspect
                            const UpdateFlags         update_flags,
                            const UpdateFlags         face_update_flags,
                            const unsigned int        n_compositional_fields,
-                           const typename Simulator<dim>::AdvectionField     &advection_field);
-          AdvectionSystem (const AdvectionSystem &data);
+                           const typename Simulator<dim>::AdvectionField     &field);
+          AdvectionSystem (const AdvectionSystem &scratch);
 
           FEValues<dim> finite_element_values;
 

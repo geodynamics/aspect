@@ -66,7 +66,7 @@ namespace aspect
          * @copydoc aspect::InitialTopographyModel::Interface::value()
          */
         double
-        value (const Point<dim-1> &p) const;
+        value (const Point<dim-1> &surface_point) const;
 
         /**
          * Return the maximum value of the elevation.

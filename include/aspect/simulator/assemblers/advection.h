@@ -40,12 +40,12 @@ namespace aspect
       public:
         virtual
         void
-        execute(internal::Assembly::Scratch::ScratchBase<dim>  &scratch,
-                internal::Assembly::CopyData::CopyDataBase<dim> &data) const;
+        execute(internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base,
+                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const;
 
         virtual
         std::vector<double>
-        compute_residual(internal::Assembly::Scratch::ScratchBase<dim>  &scratch) const;
+        compute_residual(internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base) const;
     };
 
     /**
@@ -59,11 +59,11 @@ namespace aspect
       public:
         virtual
         void
-        execute(internal::Assembly::Scratch::ScratchBase<dim>  &scratch,
-                internal::Assembly::CopyData::CopyDataBase<dim> &data) const;
+        execute(internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base,
+                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const;
         virtual
         std::vector<double>
-        compute_residual(internal::Assembly::Scratch::ScratchBase<dim>  &scratch) const;
+        compute_residual(internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base) const;
     };
 
     /**
@@ -78,8 +78,8 @@ namespace aspect
       public:
         virtual
         void
-        execute(internal::Assembly::Scratch::ScratchBase<dim>  &scratch,
-                internal::Assembly::CopyData::CopyDataBase<dim> &data) const;
+        execute(internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base,
+                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const;
     };
 
     /**
@@ -93,8 +93,8 @@ namespace aspect
       public:
         virtual
         void
-        execute(internal::Assembly::Scratch::ScratchBase<dim>  &scratch,
-                internal::Assembly::CopyData::CopyDataBase<dim> &data) const;
+        execute(internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base,
+                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const;
     };
 
     /**
@@ -108,8 +108,8 @@ namespace aspect
       public:
         virtual
         void
-        execute(internal::Assembly::Scratch::ScratchBase<dim>  &scratch,
-                internal::Assembly::CopyData::CopyDataBase<dim> &data) const;
+        execute(internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base,
+                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const;
     };
   }
 }

@@ -51,8 +51,8 @@ namespace aspect
            * Initialize all members and calculates any necessary rotation
            * parameters for a 2D model.
            */
-          GPlatesLookup(const Tensor<1,2> &pointone,
-                        const Tensor<1,2> &pointtwo);
+          GPlatesLookup(const Tensor<1,2> &surface_point_one,
+                        const Tensor<1,2> &surface_point_two);
 
           /**
            * Outputs the GPlates module information at model start.
@@ -336,7 +336,7 @@ namespace aspect
          * time step.
          */
         void
-        update_data (const bool reload_both_files);
+        update_data (const bool load_both_files);
 
         /**
          * Handles settings and user notification in case the time-dependent

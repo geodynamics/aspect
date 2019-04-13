@@ -39,8 +39,8 @@ namespace aspect
       public:
         virtual
         void
-        execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
-                internal::Assembly::CopyData::CopyDataBase<dim> &data) const;
+        execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
+                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const;
     };
 
     /**
@@ -54,8 +54,8 @@ namespace aspect
       public:
         virtual
         void
-        execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
-                internal::Assembly::CopyData::CopyDataBase<dim> &data) const;
+        execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
+                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const;
     };
 
     /**
@@ -69,8 +69,8 @@ namespace aspect
       public:
         virtual
         void
-        execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
-                internal::Assembly::CopyData::CopyDataBase<dim> &data) const;
+        execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
+                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const;
 
         /**
          * Create AdditionalMaterialOutputsStokesRHS if we need to do so.
@@ -89,8 +89,8 @@ namespace aspect
       public:
         virtual
         void
-        execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
-                internal::Assembly::CopyData::CopyDataBase<dim> &data) const;
+        execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
+                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const;
     };
 
     /**
@@ -109,8 +109,8 @@ namespace aspect
       public:
         virtual
         void
-        execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
-                internal::Assembly::CopyData::CopyDataBase<dim> &data) const;
+        execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
+                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const;
     };
 
     /**
@@ -129,8 +129,8 @@ namespace aspect
       public:
         virtual
         void
-        execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
-                internal::Assembly::CopyData::CopyDataBase<dim> &data) const;
+        execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
+                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const;
     };
 
     /**
@@ -149,8 +149,8 @@ namespace aspect
       public:
         virtual
         void
-        execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
-                internal::Assembly::CopyData::CopyDataBase<dim> &data) const;
+        execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
+                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const;
     };
 
 
@@ -173,8 +173,8 @@ namespace aspect
       public:
         virtual
         void
-        execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
-                internal::Assembly::CopyData::CopyDataBase<dim> &data) const;
+        execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
+                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const;
     };
 
     /**
@@ -188,8 +188,8 @@ namespace aspect
       public:
         virtual
         void
-        execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
-                internal::Assembly::CopyData::CopyDataBase<dim> &data) const;
+        execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
+                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const;
     };
 
     /**
@@ -206,8 +206,8 @@ namespace aspect
       public:
         virtual
         void
-        execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
-                internal::Assembly::CopyData::CopyDataBase<dim> &data) const;
+        execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
+                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const;
     };
   }
 }

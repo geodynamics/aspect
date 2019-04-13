@@ -185,7 +185,7 @@ namespace aspect
          */
         double p_c_scale (const MaterialModel::MaterialModelInputs<dim> &inputs,
                           const MaterialModel::MaterialModelOutputs<dim> &outputs,
-                          const MeltHandler<dim> &handler,
+                          const MeltHandler<dim> &melt_handler,
                           const bool consider_is_melt_cell) const;
     };
 
@@ -226,8 +226,8 @@ namespace aspect
       public:
         virtual
         void
-        execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
-                internal::Assembly::CopyData::CopyDataBase<dim> &data) const;
+        execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
+                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const;
     };
 
     /**
@@ -240,8 +240,8 @@ namespace aspect
       public:
         virtual
         void
-        execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
-                internal::Assembly::CopyData::CopyDataBase<dim> &data) const;
+        execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
+                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const;
     };
 
 
@@ -256,8 +256,8 @@ namespace aspect
       public:
         virtual
         void
-        execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
-                internal::Assembly::CopyData::CopyDataBase<dim> &data) const;
+        execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
+                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const;
     };
 
     /**
@@ -270,8 +270,8 @@ namespace aspect
       public:
         virtual
         void
-        execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
-                internal::Assembly::CopyData::CopyDataBase<dim> &data) const;
+        execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
+                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const;
 
         /**
          * Compute the residual of the advection system on a single cell in
@@ -279,7 +279,7 @@ namespace aspect
          */
         virtual
         std::vector<double>
-        compute_residual(internal::Assembly::Scratch::ScratchBase<dim> &scratch) const;
+        compute_residual(internal::Assembly::Scratch::ScratchBase<dim> &scratch_base) const;
     };
 
     /**
@@ -293,8 +293,8 @@ namespace aspect
       public:
         virtual
         void
-        execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
-                internal::Assembly::CopyData::CopyDataBase<dim> &data) const;
+        execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
+                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const;
     };
 
     /**
@@ -306,8 +306,8 @@ namespace aspect
       public:
         virtual
         void
-        execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
-                internal::Assembly::CopyData::CopyDataBase<dim> &data) const;
+        execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
+                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const;
     };
   }
 

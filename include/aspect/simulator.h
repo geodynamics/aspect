@@ -644,7 +644,7 @@ namespace aspect
        * <code>source/simulator/solver_schemes.cc</code>.
        */
       double assemble_and_solve_stokes (const bool compute_initial_residual = false,
-                                        double *initial_residual = nullptr);
+                                        double *initial_nonlinear_residual = nullptr);
 
       /**
        * Initiate the assembly of one advection matrix and right hand side and
@@ -1320,7 +1320,7 @@ namespace aspect
        * This function is implemented in
        * <code>source/simulator/assembly.cc</code>.
        */
-      double get_entropy_variation (const double average_value,
+      double get_entropy_variation (const double average_field,
                                     const AdvectionField &advection_field) const;
 
       /**
@@ -1405,8 +1405,8 @@ namespace aspect
       double
       compute_viscosity(internal::Assembly::Scratch::AdvectionSystem<dim> &scratch,
                         const double                        global_u_infty,
-                        const double                        global_T_variation,
-                        const double                        average_temperature,
+                        const double                        global_field_variation,
+                        const double                        average_field,
                         const double                        global_entropy_variation,
                         const double                        cell_diameter,
                         const AdvectionField     &advection_field) const;
