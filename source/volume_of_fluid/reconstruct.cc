@@ -144,7 +144,7 @@ namespace aspect
                     // Not on center column, so obtain the center cell of the appropriate row
                     const unsigned int neighbor_no = (i/2);
                     const typename DoFHandler<dim>::face_iterator face = cell->face (neighbor_no);
-                    if (face->at_boundary() && !cell->has_periodic_neighbor(neighbor_no)||
+                    if ((face->at_boundary() && !cell->has_periodic_neighbor(neighbor_no)) ||
                         face->has_children())
                       cen = endc;
                     else
@@ -181,7 +181,7 @@ namespace aspect
                             //
                             const unsigned int neighbor_no = 2+(j/2);
                             const typename DoFHandler<dim>::face_iterator face = cen->face (neighbor_no);
-                            if (face->at_boundary() && !cen->has_periodic_neighbor(neighbor_no)||
+                            if ((face->at_boundary() && !cen->has_periodic_neighbor(neighbor_no)) ||
                                 face->has_children())
                               curr = endc;
                             else
