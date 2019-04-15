@@ -1,0 +1,17 @@
+[
+    {
+        "label": "$2^{4}$",
+        "A":["output/interpolated_values_4_a_*.dat"],
+        "B":["output/interpolated_values_4_c_*.dat"]
+    },
+    {
+        "label": "$2^{5}$",
+        "A":["output/interpolated_values_5_a_*.dat"],
+        "B":["output/interpolated_values_5_c_*.dat"]
+    },
+    {
+        "label": "$2^{6}$",
+        "A":["output/interpolated_values_6_a_*.dat"],
+        "B":["output/interpolated_values_6_c_*.dat"]
+    }
+]
