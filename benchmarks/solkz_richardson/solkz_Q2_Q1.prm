@@ -10,7 +10,7 @@ set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 0
 
-set Output directory                       = output
+set Output directory                       = ::OUTPUT_DIR::
 
 set Pressure normalization                 = volume
 set Nonlinear solver scheme                = no Advection, iterated Stokes
@@ -66,7 +66,7 @@ end
 
 
 subsection Mesh refinement
-  set Initial global refinement                = 6
+  set Initial global refinement                = ::GLOBAL_REFINEMENT::
   set Initial adaptive refinement              = 0
   set Strategy = velocity
 end
@@ -78,6 +78,7 @@ subsection Postprocess
   set List of postprocessors = SolKzPostprocessor, visualization, state quadrature
   subsection State quadrature
     set File name prefix for interpolated data = interpolated_values
+    set AMR comparison = false
     set Refinement comparison = true
   end
 end

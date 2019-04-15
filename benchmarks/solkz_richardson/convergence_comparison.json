@@ -1,17 +1,17 @@
 [
     {
         "label": "$2^{4}$",
-        "A":["output/interpolated_values_3_r_0.dat"],
-        "B":["output/interpolated_values_4_c_0.dat"]
+        "A":["output_u_3/interpolated_values_3_r_*.dat"],
+        "B":["output_u_4/interpolated_values_4_c_*.dat"]
     },
     {
         "label": "$2^{5}$",
-        "A":["output/interpolated_values_4_r_0.dat"],
-        "B":["output/interpolated_values_5_c_0.dat"]
+        "A":["output_u_4/interpolated_values_4_r_*.dat"],
+        "B":["output_u_5/interpolated_values_5_c_*.dat"]
     },
     {
         "label": "$2^{6}$",
-        "A":["output/interpolated_values_5_r_0.dat"],
-        "B":["output/interpolated_values_6_c_0.dat"]
+        "A":["output_u_5/interpolated_values_5_r_*.dat"],
+        "B":["output_u_6/interpolated_values_6_c_*.dat"]
     }
 ]
