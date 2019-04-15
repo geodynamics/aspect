@@ -670,8 +670,9 @@ namespace aspect
 
 
     template <int dim>
-    void Visualization<dim>::writer (const std::string filename,
-                                     const std::string temporary_output_location,
+    // We need to pass the arguments by value, as this function can be called on a separate thread:
+    void Visualization<dim>::writer (const std::string filename, //NOLINT(performance-unnecessary-value-param)
+                                     const std::string temporary_output_location, //NOLINT(performance-unnecessary-value-param)
                                      const std::string *file_contents)
     {
       std::string tmp_filename = filename;

@@ -188,8 +188,9 @@ namespace aspect
 
 #if DEAL_II_VERSION_GTE(9,0,0)
     template <int dim>
-    void Particles<dim>::writer (const std::string filename,
-                                 const std::string temporary_output_location,
+    // We need to pass the arguments by value, as this function can be called on a separate thread:
+    void Particles<dim>::writer (const std::string filename, //NOLINT(performance-unnecessary-value-param)
+                                 const std::string temporary_output_location, //NOLINT(performance-unnecessary-value-param)
                                  const std::string *file_contents)
     {
       std::string tmp_filename = filename;
