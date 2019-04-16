@@ -17,12 +17,22 @@ PyDAP sites (via Google).
 
 ## Building the software
 
-To build the OPeNDAP extension to ASPECT, first build the prerequisites
-and then then the modified version of ASPECT. The prerequisites need to
-be built before the ASPECT build is configured the  _cmake_
-configuration tool will find them.
+To build the OPeNDAP extension to ASPECT, first get or build the
+prerequisites and then then the modified version of ASPECT. The
+prerequisites need to be installed before the ASPECT build is
+configured the _cmake_ configuration tool will find them.
 
-### Prerequisites - Building libdap
+### Prerequisites
+
+#### Install a binary copy of the lindap library.
+
+On OSX, teh easy way is to use homebrew:
+
+> brew install libdap
+
+Skip down to the section on installing DEAL.II
+
+#### Building libdap
 
 If there are problems with any of the following steps, or you want to
 install the software in a location other than the default, see the
@@ -48,7 +58,8 @@ version 3.3 These instructions will accomplish this:
 > make
 > sudo make install
 
-Get and install _libdap_
+Get, build and install _libdap_ from source (but, of course, you don't
+need to do this if you've installed a binary version of the library).
 
 > wget https://www.opendap.org/pub/source/libdap-3.20.3.tar.gz
 > tar -xzf libdap-3.20.3.tar.gz
