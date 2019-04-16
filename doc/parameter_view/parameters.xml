@@ -953,10 +953,10 @@ Whether to include the transport of melt into the model or not. If this is set t
 </Include_20melt_20transport>
 <Melt_20scaling_20factor_20threshold>
 <value>
-1e-3
+1e-7
 </value>
 <default_value>
-1e-3
+1e-7
 </default_value>
 <documentation>
 The factor by how much the Darcy coefficient K\_D in a cell can be smaller than the reference Darcy coefficient for this cell still to be considered a melt cell (for which the melt transport equations are solved). For smaller Darcy coefficients, the Stokes equations (without melt) are solved instead. Only used if ``Include melt transport&apos;&apos; is true. 
@@ -4134,7 +4134,7 @@ In two space dimensions, $\mathbf n$ is simply a vector that is horizontal (we c
 
 In three space dimensions, given two horizontal, perpendicular, unit length, but otherwise arbitrarily chosen vectors $\mathbf u,\mathbf v$, we can express $\mathbf n = (\cos \alpha)\mathbf u + (\sin\alpha)\mathbf v$ where $\alpha$ maximizes the expression \begin{align*}  f(\alpha) = \mathbf n^T \sigma_c \mathbf n  = (\mathbf u^T \sigma_c \mathbf u)(\cos\alpha)^2    +2(\mathbf u^T \sigma_c \mathbf v)(\cos\alpha)(\sin\alpha)    +(\mathbf v^T \sigma_c \mathbf v)(\sin\alpha)^2.\end{align*}
 
-The maximum of $f(\alpha)$ is attained where $f&apos;(\alpha)=0$. Evaluating the derivative and using trigonometric identities, one finds that $\alpha$ has to satisfy the equation \begin{align*}  \tan(2\alpha) = \frac{\mathbf u^T \sigma_c \mathbf v}                          {\mathbf u^T \sigma_c \mathbf u                            - \mathbf v^T \sigma_c \mathbf v}.\end{align*}Since the transform $\alpha\mapsto\alpha+\pi$ flips the direction of $\mathbf n$, we only need to seek a solution to this equation in the interval $\alpha\in[0,\pi)$. These are given by $\alpha_1=\frac 12 \arctan \frac{\mathbf u^T \sigma_c \mathbf v}{\mathbf u^T \sigma_c \mathbf u - \mathbf v^T \sigma_c \mathbf v}$ and $\alpha_2=\alpha_1+\frac{\pi}{2}$, one of which will correspond to a minimum and the other to a maximum of $f(\alpha)$. One checks the sign of $f&apos;&apos;(\alpha)=-2(\mathbf u^T \sigma_c \mathbf u - \mathbf v^T \sigma_c \mathbf v)\cos(2\alpha) - 2 (\mathbf u^T \sigma_c \mathbf v) \sin(2\alpha)$ for each of these to determine the $\alpha$ that maximizes $f(\alpha)$, and from this immediately arrives at the correct form for the maximum horizontal stress $\mathbf n$.
+The maximum of $f(\alpha)$ is attained where $f&apos;(\alpha)=0$. Evaluating the derivative and using trigonometric identities, one finds that $\alpha$ has to satisfy the equation \begin{align*}  \tan(2\alpha) = \frac{2.0\mathbf u^T \sigma_c \mathbf v}                          {\mathbf u^T \sigma_c \mathbf u                            - \mathbf v^T \sigma_c \mathbf v}.\end{align*}Since the transform $\alpha\mapsto\alpha+\pi$ flips the direction of $\mathbf n$, we only need to seek a solution to this equation in the interval $\alpha\in[0,\pi)$. These are given by $\alpha_1=\frac 12 \arctan \frac{\mathbf u^T \sigma_c \mathbf v}{\mathbf u^T \sigma_c \mathbf u - \mathbf v^T \sigma_c \mathbf v}$ and $\alpha_2=\alpha_1+\frac{\pi}{2}$, one of which will correspond to a minimum and the other to a maximum of $f(\alpha)$. One checks the sign of $f&apos;&apos;(\alpha)=-2(\mathbf u^T \sigma_c \mathbf u - \mathbf v^T \sigma_c \mathbf v)\cos(2\alpha) - 2 (\mathbf u^T \sigma_c \mathbf v) \sin(2\alpha)$ for each of these to determine the $\alpha$ that maximizes $f(\alpha)$, and from this immediately arrives at the correct form for the maximum horizontal stress $\mathbf n$.
 
 The description above computes a 3d \textit{direction} vector $\mathbf n$. If one were to scale this vector the same way as done in 2d, i.e., with the magnitude of the stress in this direction, one will typically get vectors whose length is principally determined by the hydrostatic pressure at a given location simply because the hydrostatic pressure is the largest component of the overall stress. On the other hand, the hydrostatic pressure does not determine any principal direction because it is an isotropic, anti-compressive force. As a consequence, there are often points in simulations (e.g., at the center of convection rolls) where the stress has no dominant horizontal direction, and the algorithm above will then in essence choose a random direction because the stress is approximately equal in all horizontal directions. If one scaled the output by the magnitude of the stress in this direction (i.e., approximately equal to the hydrostatic pressure at this point), one would get randomly oriented vectors at these locations with significant lengths.
 
@@ -4874,11 +4874,13 @@ false
 <documentation>
 Whether to use a Stokes discretization that is locally conservative at the expense of a larger number of degrees of freedom (true), or to go with a cheaper discretization that does not locally conserve mass, although it is globally conservative (false).
 
-When using a locally conservative discretization, the finite element space for the pressure is discontinuous between cells and is the polynomial space $P_ {-q}$ of polynomials of degree $q$ in each variable separately. Here, $q$ is one less than the value given in the parameter ``Stokes velocity polynomial degree&apos;&apos;. As a consequence of choosing this element, it can be shown if the medium is considered incompressible that the computed discrete velocity field $\mathbf u_h$ satisfies the property $\int_ {\partial K} \mathbf u_h \cdot \mathbf n = 0$ for every cell $K$, i.e., for each cell inflow and outflow exactly balance each other as one would expect for an incompressible medium. In other words, the velocity field is locally conservative.
+When using a locally conservative discretization, the finite element space for the pressure is discontinuous between cells and is the polynomial space $P_{-(k-1)}$ of polynomials of degree $k-1$ in each variable separately. Here, $k$ is the value given in the parameter ``Stokes velocity polynomial degree&apos;&apos;, and consequently the polynomial degree for the pressure, $k-1$, is one lower than that for the velocity.
 
-On the other hand, if this parameter is set to ``false&apos;&apos;, then the finite element space is chosen as $Q_q$. This choice does not yield the local conservation property but has the advantage of requiring fewer degrees of freedom. Furthermore, the error is generally smaller with this choice.
+As a consequence of choosing this element for the pressure rather than the more commonly used $Q_{k-1}$ element that is continuous, it can be shown that if the medium is considered incompressible then the computed discrete velocity field $\mathbf u_h$ satisfies the property $\int_ {\partial K} \mathbf u_h \cdot \mathbf n = 0$ for every cell $K$, i.e., for each cell inflow and outflow exactly balance each other as one would expect for an incompressible medium. In other words, the velocity field is \textit{locally conservative}.
 
-For an in-depth discussion of these issues and a quantitative evaluation of the different choices, see \cite {KHB12} .
+On the other hand, if this parameter is set to ``false&apos;&apos;(the default), then the finite element space is chosen as $Q_{k-1}$. This choice does not yield the local conservation property but has the advantage of requiring fewer degrees of freedom. Furthermore, the error is generally smaller with this choice.
+
+For an in-depth discussion of these issues and a quantitative evaluation of the different choices, see \cite {KHB12}.
 </documentation>
 <pattern>
 65
@@ -11678,12 +11680,14 @@ The following composition models are available:
 `function&apos;: Specify the composition in terms of an explicit formula. The format of these functions follows the syntax understood by the muparser library, see Section~\ref{sec:muparser-format}.
 
 `porosity&apos;: A class that implements initial conditions for the porosity field by computing the equilibrium melt fraction for the given initial condition and reference pressure profile. Note that this plugin only works if there is a compositional field called `porosity&apos;, and the used material model implements the &apos;MeltFractionModel&apos; interface. For all compositional fields except porosity this plugin returns 0.0, and they are therefore not changed as long as the default `add&apos; operator is selected for this plugin.
+
+`world builder&apos;: Specify the initial composition through the World Builder. More information on the World Builder can be found at \url{https://geodynamicworldbuilder.github.io}. Make sure to specify the location of the World Builder file in the parameter &apos;World builder file&apos;.
 </documentation>
 <pattern>
 825
 </pattern>
 <pattern_description>
-[MultipleSelection ascii data|function|porosity ]
+[MultipleSelection ascii data|function|porosity|world builder ]
 </pattern_description>
 </List_20of_20model_20names>
 <List_20of_20model_20operators>
@@ -11719,13 +11723,15 @@ Select one of the following models:
 
 `porosity&apos;: A class that implements initial conditions for the porosity field by computing the equilibrium melt fraction for the given initial condition and reference pressure profile. Note that this plugin only works if there is a compositional field called `porosity&apos;, and the used material model implements the &apos;MeltFractionModel&apos; interface. For all compositional fields except porosity this plugin returns 0.0, and they are therefore not changed as long as the default `add&apos; operator is selected for this plugin.
 
+`world builder&apos;: Specify the initial composition through the World Builder. More information on the World Builder can be found at \url{https://geodynamicworldbuilder.github.io}. Make sure to specify the location of the World Builder file in the parameter &apos;World builder file&apos;.
+
 \textbf{Warning}: This parameter provides an old and deprecated way of specifying initial composition models and shouldn&apos;t be used. Please use &apos;List of model names&apos; instead.
 </documentation>
 <pattern>
 827
 </pattern>
 <pattern_description>
-[Selection ascii data|function|porosity|unspecified ]
+[Selection ascii data|function|porosity|world builder|unspecified ]
 </pattern_description>
 </Model_20name>
 <Function>
@@ -13683,12 +13689,14 @@ Note the required file format if the vs to density scaling is read in from a fil
 `spherical gaussian perturbation&apos;: An initial temperature field in which the temperature is perturbed by a single Gaussian added to an otherwise spherically symmetric state. Additional parameters are read from the parameter file in subsection &apos;Spherical gaussian perturbation&apos;.
 
 `spherical hexagonal perturbation&apos;: An initial temperature field in which the temperature is perturbed following an $N$-fold pattern in a specified direction from an otherwise spherically symmetric state. The class&apos;s name comes from previous versions when the only option was $N=6$.
+
+`world builder&apos;: Specify the initial temperature through the World Builder. More information on the World Builder can be found at \url{https://geodynamicworldbuilder.github.io}. Make sure to specify the location of the World Builder file in the parameter &apos;World builder file&apos;.
 </documentation>
 <pattern>
 741
 </pattern>
 <pattern_description>
-[MultipleSelection S40RTS perturbation|SAVANI perturbation|adiabatic|adiabatic boundary|ascii data|ascii profile|function|harmonic perturbation|inclusion shape perturbation|mandelbox|patch on S40RTS|perturbed box|polar box|spherical gaussian perturbation|spherical hexagonal perturbation ]
+[MultipleSelection S40RTS perturbation|SAVANI perturbation|adiabatic|adiabatic boundary|ascii data|ascii profile|function|harmonic perturbation|inclusion shape perturbation|mandelbox|patch on S40RTS|perturbed box|polar box|spherical gaussian perturbation|spherical hexagonal perturbation|world builder ]
 </pattern_description>
 </List_20of_20model_20names>
 <List_20of_20model_20operators>
@@ -13750,13 +13758,15 @@ Note the required file format if the vs to density scaling is read in from a fil
 
 `spherical hexagonal perturbation&apos;: An initial temperature field in which the temperature is perturbed following an $N$-fold pattern in a specified direction from an otherwise spherically symmetric state. The class&apos;s name comes from previous versions when the only option was $N=6$.
 
+`world builder&apos;: Specify the initial temperature through the World Builder. More information on the World Builder can be found at \url{https://geodynamicworldbuilder.github.io}. Make sure to specify the location of the World Builder file in the parameter &apos;World builder file&apos;.
+
 \textbf{Warning}: This parameter provides an old and deprecated way of specifying initial temperature models and shouldn&apos;t be used. Please use &apos;List of model names&apos; instead.
 </documentation>
 <pattern>
 743
 </pattern>
 <pattern_description>
-[Selection S40RTS perturbation|SAVANI perturbation|adiabatic|adiabatic boundary|ascii data|ascii profile|function|harmonic perturbation|inclusion shape perturbation|mandelbox|patch on S40RTS|perturbed box|polar box|spherical gaussian perturbation|spherical hexagonal perturbation|unspecified ]
+[Selection S40RTS perturbation|SAVANI perturbation|adiabatic|adiabatic boundary|ascii data|ascii profile|function|harmonic perturbation|inclusion shape perturbation|mandelbox|patch on S40RTS|perturbed box|polar box|spherical gaussian perturbation|spherical hexagonal perturbation|world builder|unspecified ]
 </pattern_description>
 </Model_20name>
 <Spherical_20hexagonal_20perturbation>
