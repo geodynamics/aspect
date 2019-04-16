@@ -643,7 +643,7 @@ namespace aspect
   SimulatorAccess<dim>::get_world_builder () const
   {
 #ifdef ASPECT_USE_WORLD_BUILDER
-    Assert (simulator->world_builder.get() != 0,
+    Assert (simulator->world_builder.get() != nullptr,
             ExcMessage("You can not call this function if the World Builder is not enabled. "
                        "Enable it by providing a path to a world builder file."));
 #else
