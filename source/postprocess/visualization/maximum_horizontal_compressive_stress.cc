@@ -111,7 +111,7 @@ namespace aspect
                   const double b = orthogonal_directions[1] *
                                    (compressive_stress *
                                     orthogonal_directions[1]);
-                  const double c = orthogonal_directions[0] *
+                  const double c = 2.0*orthogonal_directions[0] *
                                    (compressive_stress *
                                     orthogonal_directions[1]);
 
@@ -257,7 +257,7 @@ namespace aspect
                                                   "Evaluating the derivative and using trigonometric identities, "
                                                   "one finds that $\\alpha$ has to satisfy the equation "
                                                   "\\begin{align*}"
-                                                  "  \\tan(2\\alpha) = \\frac{\\mathbf u^T \\sigma_c \\mathbf v}"
+                                                  "  \\tan(2\\alpha) = \\frac{2.0\\mathbf u^T \\sigma_c \\mathbf v}"
                                                   "                          {\\mathbf u^T \\sigma_c \\mathbf u "
                                                   "                           - \\mathbf v^T \\sigma_c \\mathbf v}."
                                                   "\\end{align*}"
