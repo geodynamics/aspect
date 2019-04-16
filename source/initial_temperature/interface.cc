@@ -102,17 +102,6 @@ namespace aspect
                                "'Initial temperature model/List of model names' contains entries more than once. "
                                "This is not allowed. Please check your parameter file."));
 
-        const std::string model_name = prm.get ("Model name");
-
-        AssertThrow (model_name == "unspecified" || model_names.size() == 0,
-                     ExcMessage ("The parameter 'Model name' is only used for reasons"
-                                 "of backwards compatibility and can not be used together with "
-                                 "the new functionality 'List of model names'. Please add your "
-                                 "initial temperature model to the list instead."));
-
-        if (!(model_name == "unspecified"))
-          model_names.push_back(model_name);
-
         // create operator list
         const std::vector<std::string> model_operator_names =
           Utilities::possibly_extend_from_1_to_N (Utilities::split_string_list(prm.get("List of model operators")),
@@ -202,17 +191,6 @@ namespace aspect
                           "will be used to append the listed temperature models onto "
                           "the previous models. If only one operator is given, "
                           "the same operator is applied to all models.");
-
-        prm.declare_entry ("Model name", "unspecified",
-                           Patterns::Selection (pattern_of_names+"|unspecified"),
-                           "Select one of the following models:\n\n"
-                           +
-                           std::get<dim>(registered_plugins).get_description_string()
-                           + "\n\n" +
-                           "\\textbf{Warning}: This parameter provides an old and "
-                           "deprecated way of specifying "
-                           "initial temperature models and shouldn't be used. "
-                           "Please use 'List of model names' instead.");
       }
       prm.leave_subsection ();
 
