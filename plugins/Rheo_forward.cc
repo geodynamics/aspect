@@ -1166,3 +1166,8 @@ double intgrate_j1p(double limL, double limH, double omega, double tauP, double 
 	return yy[xx.size()-1]; // Only return the last element
 }
 
+
+int main ()
+{
+  return 0;
+}
