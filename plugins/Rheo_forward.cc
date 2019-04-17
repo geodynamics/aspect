@@ -1169,5 +1169,7 @@ double intgrate_j1p(double limL, double limH, double omega, double tauP, double 
 
 int main ()
 {
+  std::pair<double, double> VsQ = PTd_VsQ(1.0,0.0,1000,1e-4, 3300, "M11", 1.0, std::numeric_limits<double>::quiet_NaN());
+  std::cout << VsQ.first << " " << VsQ.second << std::endl;
   return 0;
 }
