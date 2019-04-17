@@ -24,9 +24,9 @@ configured the _cmake_ configuration tool will find them.
 
 ### Prerequisites
 
-#### Install a binary copy of the lindap library.
+#### Install a binary copy of the libdap library.
 
-On OSX, teh easy way is to use homebrew:
+On OSX, the easy way is to use homebrew:
 
 > brew install libdap
 
@@ -36,7 +36,7 @@ Skip down to the section on installing DEAL.II
 
 If there are problems with any of the following steps, or you want to
 install the software in a location other than the default, see the
-detailed installation instructions. SKim over the instructions that
+detailed installation instructions. Skim over the instructions that
 follow before you start to save some time.
 
 The _libdap_ library has one prerequisite that is not commonly found
@@ -79,7 +79,7 @@ open the dmg and drag the 'deal.II' icon to the Applications
 directory.
 
 #### CentOS7
-For CentOS 7, Build using candi as per the ASPECT manual. For me that meant 
+For CentOS 7, Build using _candi_ as per the ASPECT manual. For me that meant 
 getting candi from GitHub (git clone https://github.com/aspect/candi)
 and running
 
