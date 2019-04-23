@@ -3,7 +3,7 @@
 pipeline {
   agent {
     docker {
-        image 'tjhei/dealii:v9.0.1-full-v9.0.1-r4'
+        image 'tjhei/dealii:v9.0.1-full-v9.0.1-r5-gcc5'
 	// We mount /repos into the docker image. This allows us to cache
 	// the git repo by setting "advanced clone behaviors". If the
 	// directory does not exist, this will be ignored.
