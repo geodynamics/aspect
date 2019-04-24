@@ -107,6 +107,70 @@
        dealii@googlegroups.com
 
 
+Announcement for 2.1.0 (April 29, 2019)
+-----------------------------------------
+We are pleased to announce the release of ASPECT 2.1.0. ASPECT is the Advanced
+Solver for Problems in Earth's ConvecTion. It uses modern numerical methods such
+as adaptive mesh refinement, multigrid, and a modular software design to
+provide a fast, flexible, and extensible mantle convection solver. ASPECT is
+available from
+
+                   https://aspect.geodynamics.org/
+
+and the release is available from
+
+        https://github.com/geodynamics/aspect/releases/tag/v2.1.0
+
+This release includes the following significant changes:
+- New: Compositional fields can optionally be advected with the melt velocity.
+- New: There is now a visualization postprocessor that outputs the compaction
+  length, the characteristic length scale of melt transport.
+- New: ASPECT can now read in a depth-dependent vs to density conversion file, which
+  can be used with the included tomography model plugins.
+- New: ASPECT can now read in a depth-dependent initial temperature from file.
+- New: The 'ascii data' and 'function' boundary velocity plugins now allow
+  velocities to be specified along spherical (up, east, north) unit vectors.
+- New: Added a visualization plugin that directly outputs the strain rate tensor.
+- New: ASPECT can now call PerpleX to calculate material properties, phase
+  amounts and compositions on-the-fly. This model is provided as a
+  proof-of-concept; more efficient procedures are required for production runs.
+- New: ASPECT now outputs a dynamically generated URL based on used features to
+  ask people to cite appropriate papers.
+- New: ASPECT has two visualization postprocessors which calculate and output
+  the grain lag angle and the infinite strain axis (ISA) rotation timescale,
+  respectively. These two quantities can be used to calculate the grain
+  orientation lag parameter of Kaminski and Ribe (G3, 2002).
+- Improved: The artificial diffusion term that is added in the entropy
+  viscosity method to the temperature and composition equations is now computed
+  as the maximum of the physical diffusion and entropy viscosity instead of the
+  sum. This reduces numerical diffusion for the temperature field.
+- New: Compositional fields can now be prescribed to a value that is computed
+  in the material model as an additional output at every time step.
+- Changed: The heat flux through boundary cells is now computed using the
+  consistent boundary flux method as described in Gresho, et al. (1987), which
+  is much more accurate than the previously used method.
+- New: ASPECT can now calculate gravity anomalies in addition to the geoid.
+- New: ASPECT now outputs a file named original.prm in the output directory
+  with the exact content of the parameter it got started with.
+- New: Added basic support for a volume-of-fluid interface tracking advection
+  method in 2D incompressible box models. The VoF method is an efficient method
+  to track a distinct compositional field without artificial diffusion.
+- New: There is now an option to output visualization data as higher order
+  polynomials. This is an improvement in accuracy and requires less disk space
+  than the 'Interpolate output' option that was available before. However the
+  new output can only be read by ParaView version 5.5 and newer and is
+  therefore disabled by default.
+- New: Several new benchmark cases were added.
+- Many other fixes and smaller improvements.
+
+A complete list of changes and their contributing authors can be found at
+  https://aspect.geodynamics.org/doc/doxygen/changes_between_2_80_80_and_2_81_80.html
+
+Wolfgang Bangerth, Juliane Dannberg, Rene Gassmoeller, Timo Heister,
+Jacqueline Austermann, Menno Fraters, Anne Glerum, John Naliboff,
+and many other contributors.
+
+
 Announcement for 2.0.1 (June 21, 2018)
 -----------------------------------------
 We are pleased to announce the release of ASPECT 2.0.1. ASPECT is the Advanced
