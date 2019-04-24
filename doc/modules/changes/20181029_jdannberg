@@ -1,9 +1,0 @@
-New: There is now a new method for compositional fields that allows
-to prescribe them to a value that is computed in the material model 
-and then, in a second step, to diffuse them based on a length scale 
-given as an input parameter. This option can be used by selecting the 
-'prescribed field with diffusion' compositional field method in the 
-input file, and allows it to smooth quantities that are computed in 
-the material model.
-<br>
-(Juliane Dannberg, 2018/10/29)

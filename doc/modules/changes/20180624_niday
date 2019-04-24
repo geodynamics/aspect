@@ -1,7 +1,0 @@
-New: The ascii data and function boundary velocity plugins now allow velocities to be specified along spherical (up, east, north) unit vectors.
-<br>
-(Bart Niday, 2018/06/24)
-<br>
-New: Added a visualization plugin that directly outputs the strain rate tensor.
-<br>
-(Bart Niday, 2018/06/24)
