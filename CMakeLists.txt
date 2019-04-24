@@ -88,7 +88,7 @@ IF (NOT _DEALII_GOOD)
 ENDIF()
 
 DEAL_II_INITIALIZE_CACHED_VARIABLES()
-PROJECT(${TARGET})
+PROJECT(${TARGET} CXX)
 
 IF (ASPECT_USE_PETSC)
 FOREACH(_source_file ${TARGET_SRC})
@@ -378,8 +378,8 @@ ENDIF()
 # See whether we can verify that every plugin we load is compiled against
 # the same deal.II library
 SET(ASPECT_HAVE_LINK_H ON CACHE BOOL "If ON, link.h exists and is usable.")
-INCLUDE (CheckIncludeFiles)
-CHECK_INCLUDE_FILES ("link.h" _HAVE_LINK_H)
+INCLUDE (CheckIncludeFileCXX)
+CHECK_INCLUDE_FILE_CXX ("link.h" _HAVE_LINK_H)
 IF (NOT _HAVE_LINK_H)
   SET(ASPECT_HAVE_LINK_H OFF CACHE BOOL "" FORCE)
 ENDIF()
