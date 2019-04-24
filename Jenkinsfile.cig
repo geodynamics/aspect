@@ -3,7 +3,7 @@
 pipeline {
   agent {
     docker {
-      image 'gassmoeller/aspect-tester:8.5.0'
+      image 'tjhei/dealii:v9.0.1-full-v9.0.1-r5-gcc5'
     }
   }
 
