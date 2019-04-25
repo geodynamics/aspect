@@ -7,7 +7,8 @@
  *
  * <ol>
  *
- * <li> New: ASPECT can optionally compile with the Geodynamic World Builder. There 
+ * <li> New: ASPECT can optionally compile with the Geodynamic World Builder
+ * (https://github.com/GeodynamicWorldBuilder/WorldBuilder/). There 
  * are new initial conditions plugins for temperature and composition which use the 
  * Geodynamic World Builder to construct initial conditions.
  * 
