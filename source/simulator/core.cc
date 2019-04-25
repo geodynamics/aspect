@@ -823,6 +823,18 @@ namespace aspect
 
 #if DEAL_II_VERSION_GTE(9,0,0)
     current_constraints.copy_from(new_current_constraints);
+
+#ifdef DEBUG
+    IndexSet locally_active_dofs;
+    DoFTools::extract_locally_active_dofs(dof_handler, locally_active_dofs);
+    Assert(current_constraints.is_consistent_in_parallel(
+             dof_handler.locally_owned_dofs_per_processor(),
+             locally_active_dofs,
+             mpi_communicator,
+             false /*verbose=false*/),
+           ExcMessage("Inconsistent Constraints detected!"));
+#endif
+
 #else
     current_constraints.clear ();
     current_constraints.reinit (introspection.index_sets.system_relevant_set);
