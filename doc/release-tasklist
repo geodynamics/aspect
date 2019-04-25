@@ -122,6 +122,8 @@ and the release is available from
         https://github.com/geodynamics/aspect/releases/tag/v2.1.0
 
 This release includes the following significant changes:
+- New: ASPECT has a new plugin system that allows it to prescribe a fixed
+  heat flux (instead of prescribing the temperature) at the model boundaries.
 - New: Compositional fields can optionally be advected with the melt velocity.
 - New: There is now a visualization postprocessor that outputs the compaction
   length, the characteristic length scale of melt transport.

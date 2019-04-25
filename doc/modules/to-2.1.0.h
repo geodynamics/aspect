@@ -205,6 +205,11 @@
  * <br>
  * (Menno Fraters and Rene Gassmoeller, 2018/06/26)
  *
+ * <li> New: Created a new plugin system that allows it to prescribe a fixed
+ * heat flux (instead of prescribing the temperature) at the model boundaries.
+ * <br>
+ * (Juliane Dannberg and Rene Gassmoeller, 2018/06/25)
+ *
  * <li> Fixed: The default latitude and longitude limits for the 'uniform radial' particle generator were set to (0, pi) even though they are measured in degrees.
  * The new default limits correspond to the entire surface of the sphere, and the manual clarifies that latitude is in (0, 180) and not (-90, 90).
  * <br>
