@@ -125,6 +125,9 @@ This release includes the following significant changes:
 - New: Compositional fields can optionally be advected with the melt velocity.
 - New: There is now a visualization postprocessor that outputs the compaction
   length, the characteristic length scale of melt transport.
+- New: ASPECT can optionally use the Geodynamic World Builder
+  (https://github.com/GeodynamicWorldBuilder/WorldBuilder/) to create complex
+  initial conditions for temperature and composition.
 - New: ASPECT can now read in a depth-dependent vs to density conversion file, which
   can be used with the included tomography model plugins.
 - New: ASPECT can now read in a depth-dependent initial temperature from file.
