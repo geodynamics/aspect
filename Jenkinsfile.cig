@@ -90,10 +90,6 @@ pipeline {
       }
       steps {
         sh '''
-          # This export avoids a warning about
-          # a discovered, but unconnected infiniband network.
-          export OMPI_MCA_btl=self,tcp
-
           cd build-gcc-fast/tests
 
           # Let ninja prebuild the test libraries and run
@@ -106,9 +102,6 @@ pipeline {
         '''
 
         sh '''
-          # Avoid the warning described above
-          export OMPI_MCA_btl=self,tcp
-
           cd build-gcc-fast
 
           # Output the test results using ctest. Since
@@ -130,14 +123,9 @@ pipeline {
 
           // Update the reference test output with the new test results
           sh '''
-            export OMPI_MCA_btl=self,tcp
             cd build-gcc-fast
             ninja generate_reference_output
           '''
-
-          // Revert the change to the mpirun command we made above, so
-          // that the modification does not show up in the 'git diff' command
-          sh 'git checkout tests/CMakeLists.txt'
 
           // Generate the 'Artifacts' diff-file that can be
           // used to update the test results
