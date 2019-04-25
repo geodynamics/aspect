@@ -309,15 +309,15 @@ namespace aspect
     mesh_displacement_constraints.clear();
     mesh_displacement_constraints.reinit(mesh_locally_relevant);
 
-    // mesh_displacement_constraints can use the same hanging node
-    // information that was used for mesh_vertex constraints.
-    mesh_displacement_constraints.merge(mesh_vertex_constraints);
-
-    // Add the vanilla periodic boundary constraints
+    // Set the vanilla periodic boundary constraints
     typedef std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int> > periodic_boundary_pairs;
     periodic_boundary_pairs pbp = sim.geometry_model->get_periodic_boundary_pairs();
     for (periodic_boundary_pairs::iterator p = pbp.begin(); p != pbp.end(); ++p)
       DoFTools::make_periodicity_constraints(free_surface_dof_handler, (*p).first.first, (*p).first.second, (*p).second, mesh_displacement_constraints);
+
+    // mesh_displacement_constraints can use the same hanging node
+    // information that was used for mesh_vertex constraints.
+    mesh_displacement_constraints.merge(mesh_vertex_constraints);
 
     // Zero out the displacement for the zero-velocity boundary indicators
     for (std::set<types::boundary_id>::const_iterator p = sim.boundary_velocity_manager.get_zero_boundary_velocity_indicators().begin();
@@ -417,15 +417,18 @@ namespace aspect
     // stuff for getting the velocity values
     std::vector<Tensor<1,dim> > velocity_values(n_face_q_points);
 
-    // set up constraints
+    // set up constraints:
     ConstraintMatrix mass_matrix_constraints(mesh_locally_relevant);
-    DoFTools::make_hanging_node_constraints(free_surface_dof_handler, mass_matrix_constraints);
-
     typedef std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int> > periodic_boundary_pairs;
     periodic_boundary_pairs pbp = sim.geometry_model->get_periodic_boundary_pairs();
     for (periodic_boundary_pairs::iterator p = pbp.begin(); p != pbp.end(); ++p)
       DoFTools::make_periodicity_constraints(free_surface_dof_handler,
                                              (*p).first.first, (*p).first.second, (*p).second, mass_matrix_constraints);
+
+    // Note: periodic constraints have to be added _before_ we do hanging node
+    // constraints, because inconsistent contraints could be generated in
+    // parallel otherwise.
+    DoFTools::make_hanging_node_constraints(free_surface_dof_handler, mass_matrix_constraints);
 
     mass_matrix_constraints.close();
 

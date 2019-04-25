@@ -1288,14 +1288,14 @@ namespace aspect
       free_surface->setup_dofs();
 
 
-    // reinit the constraints matrix and make hanging node constraints
+    // Reconstruct the constraint-matrix:
     constraints.clear();
     constraints.reinit(introspection.index_sets.system_relevant_set);
 
-    DoFTools::make_hanging_node_constraints (dof_handler,
-                                             constraints);
+    // Set up the constraints for periodic boundary conditions:
 
-    // Now set up the constraints for periodic boundary conditions
+    // Note: this has to happen _before_ we do hanging node constraints,
+    // because inconsistent contraints could be generated in parallel otherwise.
     {
       typedef std::set< std::pair< std::pair< types::boundary_id, types::boundary_id>, unsigned int> >
       periodic_boundary_set;
@@ -1309,9 +1309,11 @@ namespace aspect
                                                  (*p).second,       // cartesian direction for translational symmetry
                                                  constraints);
         }
-
-
     }
+
+    //  Make hanging node constraints:
+    DoFTools::make_hanging_node_constraints (dof_handler,
+                                             constraints);
 
 
     compute_initial_velocity_boundary_constraints(constraints);
