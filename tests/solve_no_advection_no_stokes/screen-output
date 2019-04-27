@@ -6,7 +6,7 @@ Number of degrees of freedom: 1,277 (915+57+305)
 
    Postprocessing:
      Writing graphical output: output-solve_no_advection_no_stokes/solution/solution-00000
-     Temperature min/avg/max:  300 K, 2289 K, 3968 K
+     Temperature min/avg/max:  300 K, 2293 K, 3968 K
 
 Termination requested by criterion: end time
 

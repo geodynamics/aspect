@@ -6,7 +6,7 @@ Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 54+0 iterations.
+   Solving Stokes system... 55+0 iterations.
 
    Postprocessing:
 
@@ -27,46 +27,46 @@ Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
      Writing graphical output:           output-passive_comp/solution/solution-00000
      RMS, max velocity:                  5.11e-08 m/s, 6.3e-08 m/s
      Temperature min/avg/max:            0 K, 0 K, 0 K
-     Heat fluxes through boundary parts: 39.17 W, 12.56 W
+     Heat fluxes through boundary parts: 39.09 W, 12.3 W
      Writing depth average:              output-passive_comp/depth_average.gnuplot
 
 *** Timestep 1:  t=2.81625e+12 seconds
    Solving temperature system... 18 iterations.
    Solving C_1 system ... 18 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 5+0 iterations.
+   Solving Stokes system... 3+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-passive_comp/solution/solution-00001
      RMS, max velocity:                  5.11e-08 m/s, 6.3e-08 m/s
-     Temperature min/avg/max:            0 K, 0.0001673 K, 0.0008324 K
-     Heat fluxes through boundary parts: 282.2 W, 123.5 W
+     Temperature min/avg/max:            0 K, 0.0001672 K, 0.0008288 K
+     Heat fluxes through boundary parts: 282.1 W, 123.1 W
      Writing depth average:              output-passive_comp/depth_average.gnuplot
 
 *** Timestep 2:  t=5.6325e+12 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 19 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 4+0 iterations.
+   Solving Stokes system... 5+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-passive_comp/solution/solution-00002
      RMS, max velocity:                  5.11e-08 m/s, 6.3e-08 m/s
-     Temperature min/avg/max:            0 K, 0.0003354 K, 0.001387 K
-     Heat fluxes through boundary parts: 172.1 W, 84.78 W
+     Temperature min/avg/max:            0 K, 0.0003351 K, 0.001383 K
+     Heat fluxes through boundary parts: 171.9 W, 81 W
      Writing depth average:              output-passive_comp/depth_average.gnuplot
 
 *** Timestep 3:  t=8e+12 seconds
    Solving temperature system... 11 iterations.
    Solving C_1 system ... 18 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 1+0 iterations.
+   Solving Stokes system... 3+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-passive_comp/solution/solution-00003
      RMS, max velocity:                  5.11e-08 m/s, 6.3e-08 m/s
-     Temperature min/avg/max:            0 K, 0.000476 K, 0.00175 K
-     Heat fluxes through boundary parts: 294.4 W, 161.5 W
+     Temperature min/avg/max:            0 K, 0.0004757 K, 0.001746 K
+     Heat fluxes through boundary parts: 294.1 W, 158.4 W
      Writing depth average:              output-passive_comp/depth_average.gnuplot
 
 Termination requested by criterion: end time

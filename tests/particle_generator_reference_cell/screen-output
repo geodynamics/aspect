@@ -11,7 +11,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
    Postprocessing:
      RMS, max velocity:         0.000133 m/s, 0.000331 m/s
      Compositions min/max/mass: 0/1/0.1914
-     Writing particle output:   output-particle_generator_reference_cell/particles/particle-00000
+     Writing particle output:   output-particle_generator_reference_cell/particles/particles-00000
 
 Termination requested by criterion: end time
 

@@ -12,9 +12,9 @@
 # 12: Schur complement iterations in Stokes preconditioner
 # 13: Number of advected particles
 # 14: Particle file name
-0 0.000000000000e+00 0.000000000000e+00 64 659 289 289 0  0 18 19 18 10 output-particle_load_balancing_refinement_02/output-particle_load_balancing_refinement_02/particles/particle-00000 
-1 1.008967273745e+02 1.008967273745e+02 25 296 129 129 0 10 17 18 61 10 output-particle_load_balancing_refinement_02/output-particle_load_balancing_refinement_02/particles/particle-00001 
-2 2.744184567818e+02 1.735217294072e+02 10 132  57  57 0  9 18 19 76 10 output-particle_load_balancing_refinement_02/output-particle_load_balancing_refinement_02/particles/particle-00002 
-3 3.822474857173e+02 1.078290289355e+02 16 209  91  91 0 10 18 19 85 10 output-particle_load_balancing_refinement_02/output-particle_load_balancing_refinement_02/particles/particle-00003 
-4 4.427290866664e+02 6.048160094903e+01 10 132  57  57 0  9 16 17 68 10 output-particle_load_balancing_refinement_02/output-particle_load_balancing_refinement_02/particles/particle-00004 
-5 5.000000000000e+02 5.727091333364e+01 10 132  57  57 0  9 16 17 68 10 output-particle_load_balancing_refinement_02/output-particle_load_balancing_refinement_02/particles/particle-00005 
+0 0.000000000000e+00 0.000000000000e+00 64 659 289 289 0  0 17 19 18 10 output-particle_load_balancing_refinement_02/particles/particles-00000 
+1 1.008967273746e+02 1.008967273746e+02 25 296 129 129 0 10 16 18 61 10 output-particle_load_balancing_refinement_02/particles/particles-00001 
+2 2.744184567818e+02 1.735217294072e+02 10 132  57  57 0  9 17 19 76 10 output-particle_load_balancing_refinement_02/particles/particles-00002 
+3 3.822474857174e+02 1.078290289356e+02 16 209  91  91 0 10 17 19 85 10 output-particle_load_balancing_refinement_02/particles/particles-00003 
+4 4.427290866664e+02 6.048160094905e+01 10 132  57  57 0  9 15 17 68 10 output-particle_load_balancing_refinement_02/particles/particles-00004 
+5 5.000000000000e+02 5.727091333357e+01 10 132  57  57 0  9 15 17 68 10 output-particle_load_balancing_refinement_02/particles/particles-00005 

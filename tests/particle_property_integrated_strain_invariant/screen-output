@@ -10,7 +10,7 @@ Number of degrees of freedom: 1,444 (882+121+441)
 
 
    Postprocessing:
-     Writing particle output: output-particle_property_integrated_strain_invariant/particles/particle-00000
+     Writing particle output: output-particle_property_integrated_strain_invariant/particles/particles-00000
 
 
 
@@ -22,11 +22,11 @@ Number of degrees of freedom: 1,444 (882+121+441)
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 5.0337e-15
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 4.85356e-15
 
 
    Postprocessing:
-     Writing particle output: output-particle_property_integrated_strain_invariant/particles/particle-00001
+     Writing particle output: output-particle_property_integrated_strain_invariant/particles/particles-00001
 
 
 

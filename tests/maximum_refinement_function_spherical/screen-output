@@ -20,11 +20,11 @@ Number of degrees of freedom: 5,823 (3,570+468+1,785)
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 106+0 iterations.
+   Solving Stokes system... 200+18 iterations.
 
    Postprocessing:
      Writing graphical output:           output-maximum_refinement_function_spherical/solution/solution-00001
-     RMS, max velocity:                  8.28e-07 m/year, 1.47e-06 m/year
+     RMS, max velocity:                  8.27e-07 m/year, 1.47e-06 m/year
      Temperature min/avg/max:            1400 K, 1627 K, 1800 K
      Heat fluxes through boundary parts: 3200 W, 5030 W, 0 W, 0 W
      Writing depth average:              output-maximum_refinement_function_spherical/depth_average.gnuplot
@@ -35,7 +35,7 @@ Number of degrees of freedom: 10,671 (6,546+852+3,273)
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+15 iterations.
+   Solving Stokes system... 47+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-maximum_refinement_function_spherical/solution/solution-00002
@@ -50,7 +50,7 @@ Number of degrees of freedom: 14,900 (9,148+1,178+4,574)
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+16 iterations.
+   Solving Stokes system... 49+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-maximum_refinement_function_spherical/solution/solution-00003
@@ -65,7 +65,7 @@ Number of degrees of freedom: 18,827 (11,560+1,487+5,780)
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+16 iterations.
+   Solving Stokes system... 52+0 iterations.
 
    Postprocessing:
 

@@ -10,7 +10,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving Stokes system... 21+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: -2.929e-16/10/0.2083 // 1/10/1.187
+     Compositions min/max/mass: -2.315e-16/10/0.2083 // 1/10/1.187
 
 *** Timestep 1:  t=0.0625 seconds
    Solving temperature system... 15 iterations.

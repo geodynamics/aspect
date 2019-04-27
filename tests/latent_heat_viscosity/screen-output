@@ -33,7 +33,7 @@ Number of degrees of freedom: 38,784 (23,808+3,072+11,904)
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 124+0 iterations.
+   Solving Stokes system... 122+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-latent_heat_viscosity/solution/solution-00000
@@ -45,7 +45,7 @@ Number of degrees of freedom: 38,784 (23,808+3,072+11,904)
 *** Timestep 1:  t=1.15653e+06 years
    Solving temperature system... 12 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 93+0 iterations.
+   Solving Stokes system... 92+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-latent_heat_viscosity/solution/solution-00001

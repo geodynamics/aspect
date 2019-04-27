@@ -11,7 +11,7 @@ Number of degrees of freedom: 14,505 (4,290+2,097+4,290+561+2,145+561+561)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 22+0 iterations.
    Solving for u_f in 12 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.77121e-16, 1.4111e-16, 1.4111e-16, 0.168325
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.77541e-16, 1.34525e-16, 1.34525e-16, 0.168325
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.168325
 
    Solving temperature system... 0 iterations.
@@ -20,7 +20,7 @@ Number of degrees of freedom: 14,505 (4,290+2,097+4,290+561+2,145+561+561)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
    Solving for u_f in 12 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.77121e-16, 1.4111e-16, 1.4111e-16, 6.14908e-08
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.77541e-16, 1.34525e-16, 1.34525e-16, 6.14908e-08
       Relative nonlinear residual (total system) after nonlinear iteration 2: 6.14908e-08
 
 
@@ -30,7 +30,7 @@ Number of degrees of freedom: 14,505 (4,290+2,097+4,290+561+2,145+561+561)
      RMS, max velocity:         0.00292 m/year, 0.00958 m/year
      Temperature min/avg/max:   293 K, 1519 K, 1625 K
      Writing depth average:     output-particle_melt_advection/depth_average.gnuplot
-     Writing particle output:   output-particle_melt_advection/particles/particle-00000
+     Writing particle output:   output-particle_melt_advection/particles/particles-00000
 
 *** Timestep 1:  t=3221.68 years
    Solving temperature system... 7 iterations.
@@ -75,7 +75,7 @@ Number of degrees of freedom: 14,505 (4,290+2,097+4,290+561+2,145+561+561)
      Compositions min/max/mass: -6.192e-07/0.1974/1.257e+08 // -2.807e-09/0.1976/1.256e+08
      RMS, max velocity:         0.00293 m/year, 0.00964 m/year
      Temperature min/avg/max:   293 K, 1518 K, 1625 K
-     Writing particle output:   output-particle_melt_advection/particles/particle-00001
+     Writing particle output:   output-particle_melt_advection/particles/particles-00001
 
 *** Timestep 2:  t=6396.64 years
    Solving temperature system... 7 iterations.
@@ -111,7 +111,7 @@ Number of degrees of freedom: 14,505 (4,290+2,097+4,290+561+2,145+561+561)
      Compositions min/max/mass: -2.406e-06/0.1939/1.257e+08 // -1.94e-08/0.1944/1.256e+08
      RMS, max velocity:         0.00293 m/year, 0.00966 m/year
      Temperature min/avg/max:   293 K, 1518 K, 1625 K
-     Writing particle output:   output-particle_melt_advection/particles/particle-00002
+     Writing particle output:   output-particle_melt_advection/particles/particles-00002
 
 *** Timestep 3:  t=9540.55 years
    Solving temperature system... 6 iterations.
@@ -147,7 +147,7 @@ Number of degrees of freedom: 14,505 (4,290+2,097+4,290+561+2,145+561+561)
      Compositions min/max/mass: -4.284e-06/0.1902/1.257e+08 // -2.254e-08/0.1906/1.256e+08
      RMS, max velocity:         0.00294 m/year, 0.00965 m/year
      Temperature min/avg/max:   293 K, 1518 K, 1625 K
-     Writing particle output:   output-particle_melt_advection/particles/particle-00003
+     Writing particle output:   output-particle_melt_advection/particles/particles-00003
 
 *** Timestep 4:  t=12647.8 years
    Solving temperature system... 6 iterations.
@@ -183,7 +183,7 @@ Number of degrees of freedom: 14,505 (4,290+2,097+4,290+561+2,145+561+561)
      Compositions min/max/mass: -7.613e-06/0.1868/1.257e+08 // -3.478e-08/0.1867/1.255e+08
      RMS, max velocity:         0.00294 m/year, 0.00964 m/year
      Temperature min/avg/max:   293 K, 1518 K, 1625 K
-     Writing particle output:   output-particle_melt_advection/particles/particle-00004
+     Writing particle output:   output-particle_melt_advection/particles/particles-00004
 
 *** Timestep 5:  t=15718.5 years
    Solving temperature system... 6 iterations.
@@ -219,7 +219,7 @@ Number of degrees of freedom: 14,505 (4,290+2,097+4,290+561+2,145+561+561)
      Compositions min/max/mass: -1.52e-05/0.1838/1.257e+08 // -4.951e-08/0.1831/1.255e+08
      RMS, max velocity:         0.00294 m/year, 0.0097 m/year
      Temperature min/avg/max:   293 K, 1518 K, 1625 K
-     Writing particle output:   output-particle_melt_advection/particles/particle-00005
+     Writing particle output:   output-particle_melt_advection/particles/particles-00005
 
 *** Timestep 6:  t=18754.4 years
    Solving temperature system... 6 iterations.
@@ -255,7 +255,7 @@ Number of degrees of freedom: 14,505 (4,290+2,097+4,290+561+2,145+561+561)
      Compositions min/max/mass: -2.693e-05/0.1812/1.257e+08 // -6.669e-08/0.18/1.254e+08
      RMS, max velocity:         0.00295 m/year, 0.00973 m/year
      Temperature min/avg/max:   293 K, 1518 K, 1625 K
-     Writing particle output:   output-particle_melt_advection/particles/particle-00006
+     Writing particle output:   output-particle_melt_advection/particles/particles-00006
 
 *** Timestep 7:  t=20000 years
    Solving temperature system... 6 iterations.
@@ -282,7 +282,7 @@ Number of degrees of freedom: 14,505 (4,290+2,097+4,290+561+2,145+561+561)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 1+0 iterations.
    Solving for u_f in 12 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.47937e-11, 1.72201e-07, 7.68501e-09, 1.14394e-07
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.47936e-11, 1.72201e-07, 7.68501e-09, 1.14394e-07
       Relative nonlinear residual (total system) after nonlinear iteration 3: 1.72201e-07
 
 
@@ -291,7 +291,7 @@ Number of degrees of freedom: 14,505 (4,290+2,097+4,290+561+2,145+561+561)
      Compositions min/max/mass: -4.328e-05/0.1802/1.257e+08 // -7.47e-08/0.1789/1.254e+08
      RMS, max velocity:         0.00295 m/year, 0.00974 m/year
      Temperature min/avg/max:   293 K, 1518 K, 1625 K
-     Writing particle output:   output-particle_melt_advection/particles/particle-00007
+     Writing particle output:   output-particle_melt_advection/particles/particles-00007
 
 Termination requested by criterion: end time
 

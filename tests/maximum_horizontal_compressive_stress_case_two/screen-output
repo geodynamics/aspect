@@ -9,12 +9,12 @@ Number of degrees of freedom: 3,041 (2,187+125+729)
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 3.74461e-10
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 3.7446e-10
 
 
    Postprocessing:
      Writing graphical output: output-maximum_horizontal_compressive_stress_case_two/solution/solution-00000
-     RMS, max velocity:        1.09 m/year, 2.08 m/year
+     RMS, max velocity:        1.07 m/year, 2 m/year
      Topography min/max:       0 m, 0 m
      Pressure min/avg/max:     -3.635e+18 Pa, -6.338e+17 Pa, 2.367e+18 Pa
 

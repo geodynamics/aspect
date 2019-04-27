@@ -11,7 +11,7 @@ Number of degrees of freedom: 13,764 (9,539+4,225)
    Postprocessing:
      Temperature min/avg/max: 1.007 K, 1.041 K, 1.088 K
      RMS, max velocity:       4.45e-09 m/s, 1.06e-08 m/s
-     Writing particle output: output2.tmp/particles/particle-00008
+     Writing particle output: output2.tmp/particles/particles-00008
 
 *** Timestep 9:  t=1e+07 seconds
    Solving temperature system... 9 iterations.
@@ -20,7 +20,7 @@ Number of degrees of freedom: 13,764 (9,539+4,225)
    Postprocessing:
      Temperature min/avg/max: 1.007 K, 1.041 K, 1.087 K
      RMS, max velocity:       4.41e-09 m/s, 1.05e-08 m/s
-     Writing particle output: output2.tmp/particles/particle-00009
+     Writing particle output: output2.tmp/particles/particles-00009
 
 Termination requested by criterion: end time
 

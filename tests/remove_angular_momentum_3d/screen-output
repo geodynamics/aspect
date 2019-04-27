@@ -5,27 +5,27 @@ Number of degrees of freedom: 15,785 (11,451+517+3,817)
 *** Timestep 0:  t=0 seconds
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+12 iterations.
+   Solving Stokes system... 93+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                                     0.0865 m/s, 0.19 m/s
-     Angular momentum, Moment of inertia, Angular velocity: 3.63e-07 kg*m^2/s, 2.48 kg*m^2, 1.46e-07 1/s
+     RMS, max velocity:                                     0.0872 m/s, 0.196 m/s
+     Angular momentum, Moment of inertia, Angular velocity: 1.08e-07 kg*m^2/s, 2.62 kg*m^2, 4.12e-08 1/s
 
-*** Timestep 1:  t=0.278269 seconds
+*** Timestep 1:  t=0.269919 seconds
    Solving temperature system... 53 iterations.
-   Solving Stokes system... 172+0 iterations.
+   Solving Stokes system... 88+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                                     0.0218 m/s, 0.0486 m/s
-     Angular momentum, Moment of inertia, Angular velocity: 3.33e-07 kg*m^2/s, 2.67 kg*m^2, 1.25e-07 1/s
+     RMS, max velocity:                                     0.0228 m/s, 0.0532 m/s
+     Angular momentum, Moment of inertia, Angular velocity: 1.02e-07 kg*m^2/s, 2.72 kg*m^2, 3.74e-08 1/s
 
 *** Timestep 2:  t=1 seconds
-   Solving temperature system... 56 iterations.
-   Solving Stokes system... 200+13 iterations.
+   Solving temperature system... 58 iterations.
+   Solving Stokes system... 94+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                                     0.0074 m/s, 0.0189 m/s
-     Angular momentum, Moment of inertia, Angular velocity: 1.29e-06 kg*m^2/s, 3.09 kg*m^2, 4.18e-07 1/s
+     RMS, max velocity:                                     0.00798 m/s, 0.0214 m/s
+     Angular momentum, Moment of inertia, Angular velocity: 2.72e-07 kg*m^2/s, 3.12 kg*m^2, 8.73e-08 1/s
 
 Termination requested by criterion: end time
 

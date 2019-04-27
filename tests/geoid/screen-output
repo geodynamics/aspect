@@ -4,11 +4,14 @@ Number of degrees of freedom: 28,690 (20,790+970+6,930)
 
 *** Timestep 0:  t=0 years
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 131+0 iterations.
-      Relative  nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+   Solving Stokes system... 102+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
-   Solving Stokes system... 11+0 iterations.
-      Relative  nonlinear residual (Stokes system) after nonlinear iteration 2: 5.22911e-06
+   Solving Stokes system... 13+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 1.19695e-05
+
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 3.11642e-08
 
 
    Postprocessing:
@@ -28,7 +31,7 @@ Number of degrees of freedom: 28,690 (20,790+970+6,930)
      Rayleigh number:                               0
 
      Density at top/bottom of domain:  1 kg/m^3, 1 kg/m^3
-     Pressure at top/bottom of domain: -0.002656 Pa, 1.96e+06 Pa
+     Pressure at top/bottom of domain: -0.002065 Pa, 1.96e+06 Pa
      Computing dynamic topography      
      Writing geoid anomaly:            output-geoid/geoid_anomaly.00000
 
