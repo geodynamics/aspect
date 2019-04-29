@@ -1,8 +1,8 @@
 ASPECT - Advanced Solver for Problems in Earth's ConvecTion
 ===========================================================
 [![License GPL2:](https://img.shields.io/aur/license/yaourt.svg)](https://github.com/geodynamics/aspect/blob/master/LICENSE)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1297145.svg)](https://doi.org/10.5281/zenodo.1297145)
-
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.2653531.svg)](https://doi.org/10.5281/zenodo.2653531)
+[![pdf manual](https://img.shields.io/badge/get-PDF-green.svg)](https://doi.org/10.6084/m9.figshare.4865333)
 
 About
 -----
