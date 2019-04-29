@@ -905,7 +905,12 @@ namespace aspect
               coupling[x.pressure][x.velocities[d]] = DoFTools::always;
             }
         }
-      coupling[x.temperature][x.temperature] = DoFTools::always;
+      // Do not allocate a temperature matrix if no temperature
+      // solves are going to be performed.
+      if (!(parameters.nonlinear_solver == NonlinearSolver::Kind::no_Advection_iterated_Stokes
+            ||
+            parameters.nonlinear_solver == NonlinearSolver::Kind::no_Advection_no_Stokes))
+        coupling[x.temperature][x.temperature] = DoFTools::always;
 
       // If we have at least one compositional field that is a FEM field, we
       // create a matrix block in the first compositional block. Its sparsity
