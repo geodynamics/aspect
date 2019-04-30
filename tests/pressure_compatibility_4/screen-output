@@ -14,36 +14,36 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
      Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -459.7 kg/s, 459.3 kg/s
 
 *** Timestep 1:  t=1.85687e-05 seconds
-   Solving temperature system... 16 iterations.
+   Solving temperature system... 15 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 33+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  488 m/s, 839 m/s
      Pressure min/avg/max:               -4350 Pa, 0.5 Pa, 6522 Pa
-     Temperature min/avg/max:            0 K, 8.689 K, 34.39 K
+     Temperature min/avg/max:            0 K, 8.687 K, 34.29 K
      Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -459.7 kg/s, 459.3 kg/s
 
 *** Timestep 2:  t=3.71373e-05 seconds
-   Solving temperature system... 15 iterations.
+   Solving temperature system... 17 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 33+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  488 m/s, 839 m/s
      Pressure min/avg/max:               -4350 Pa, 0.5 Pa, 6522 Pa
-     Temperature min/avg/max:            0 K, 16.86 K, 67.7 K
+     Temperature min/avg/max:            0 K, 16.86 K, 67.83 K
      Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -459.7 kg/s, 459.3 kg/s
 
 *** Timestep 3:  t=5e-05 seconds
-   Solving temperature system... 15 iterations.
+   Solving temperature system... 16 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 6+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  488 m/s, 839 m/s
      Pressure min/avg/max:               -4350 Pa, 0.5 Pa, 6522 Pa
-     Temperature min/avg/max:            0 K, 22.52 K, 90.49 K
+     Temperature min/avg/max:            0 K, 22.53 K, 90.91 K
      Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -459.7 kg/s, 459.3 kg/s
 
 Termination requested by criterion: end time

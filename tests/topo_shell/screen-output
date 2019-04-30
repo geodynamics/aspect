@@ -10,11 +10,11 @@ Number of free surface degrees of freedom: 1666
    Solving Stokes system... 45+0 iterations.
 
    Postprocessing:
-     Topography min/max: -1.863e-09 m, 1.863e-09 m
+     Topography min/max: -9.313e-10 m, 9.313e-10 m
 
 *** Timestep 1:  t=241061 years
    Solving mesh velocity system... 1 iterations.
-   Solving temperature system... 12 iterations.
+   Solving temperature system... 11 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 50+0 iterations.
 

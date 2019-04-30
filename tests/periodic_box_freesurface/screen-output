@@ -48,7 +48,7 @@ Number of free surface degrees of freedom: 3246
      RMS, max velocity:  0.438 m/year, 1 m/year
      Topography min/max: -464.4 m, 509.8 m
 
-*** Timestep 2:  t=1527.12 years
+*** Timestep 2:  t=1527.22 years
    Solving mesh velocity system... 11 iterations.
    Solving temperature system... 10 iterations.
    Rebuilding Stokes preconditioner...
@@ -58,7 +58,7 @@ Number of free surface degrees of freedom: 3246
      RMS, max velocity:  0.405 m/year, 0.954 m/year
      Topography min/max: -641 m, 752.3 m
 
-*** Timestep 3:  t=2468.45 years
+*** Timestep 3:  t=2468.71 years
    Solving mesh velocity system... 11 iterations.
    Solving temperature system... 10 iterations.
    Rebuilding Stokes preconditioner...
@@ -66,9 +66,9 @@ Number of free surface degrees of freedom: 3246
 
    Postprocessing:
      RMS, max velocity:  0.393 m/year, 0.935 m/year
-     Topography min/max: -727.4 m, 907.2 m
+     Topography min/max: -727.3 m, 907.2 m
 
-*** Timestep 4:  t=3442.05 years
+*** Timestep 4:  t=3442.49 years
    Solving mesh velocity system... 11 iterations.
    Solving temperature system... 10 iterations.
    Rebuilding Stokes preconditioner...
@@ -76,7 +76,7 @@ Number of free surface degrees of freedom: 3246
 
    Postprocessing:
      RMS, max velocity:  0.387 m/year, 0.925 m/year
-     Topography min/max: -773.4 m, 1009 m
+     Topography min/max: -773.3 m, 1009 m
 
 Termination requested by criterion: end step
 

@@ -22,14 +22,14 @@ Number of degrees of freedom: 2,104 (578+81+289+289+289+289+289)
    Skipping temperature solve because RHS is zero.
    Solving strain_xx system ... 0 iterations.
    Solving strain_xy system ... 11 iterations.
-   Solving strain_yx system ... 12 iterations.
+   Solving strain_yx system ... 11 iterations.
    Solving strain_yy system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
      Number of advected particles: 1
-     Compositions min/max/mass:    1/1/1 // 0.05/0.05/0.05 // -2.359e-17/2.641e-17/5.742e-32 // 1/1/1
+     Compositions min/max/mass:    1/1/1 // 0.05/0.05/0.05 // -2.289e-17/2.561e-17/1.839e-31 // 1/1/1
 
 Termination requested by criterion: end time
 

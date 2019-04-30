@@ -20,16 +20,16 @@ Number of degrees of freedom: 7,912 (2,178+289+1,089+1,089+1,089+1,089+1,089)
 
 *** Timestep 1:  t=0.025 seconds
    Skipping temperature solve because RHS is zero.
-   Solving strain_xx system ... 12 iterations.
-   Solving strain_xy system ... 14 iterations.
-   Solving strain_yx system ... 14 iterations.
-   Solving strain_yy system ... 12 iterations.
+   Solving strain_xx system ... 11 iterations.
+   Solving strain_xy system ... 13 iterations.
+   Solving strain_yx system ... 13 iterations.
+   Solving strain_yy system ... 11 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
      Number of advected particles: 1
-     Compositions min/max/mass:    0.9931/1.031/1.012 // -0.03311/-1.203e-06/-0.01392 // 1.197e-06/0.03164/0.01385 // 0.9687/1.002/0.9875
+     Compositions min/max/mass:    0.9958/1.031/1.012 // -0.03297/-1.541e-06/-0.01392 // -1.498e-07/0.03158/0.01385 // 0.9687/1.002/0.9875
 
 Termination requested by criterion: end time
 

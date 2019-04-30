@@ -12,12 +12,12 @@ Number of degrees of freedom: 948 (659+289)
      RMS, max velocity:                  0.353 m/s, 1.02 m/s
 
 *** Timestep 1:  t=0.0625 seconds
-   Solving temperature system... 13 iterations.
+   Solving temperature system... 12 iterations.
    Solving Stokes system... done.
 
    Postprocessing:
-     Temperature min/avg/max:            0 K, 0.4995 K, 1 K
-     Heat fluxes through boundary parts: 0 W, 0 W, -2.422e+04 W, 9.061e+04 W
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -5141 W, 9603 W
      RMS, max velocity:                  0.352 m/s, 1.02 m/s
 
 *** Timestep 2:  t=0.1 seconds
@@ -25,8 +25,8 @@ Number of degrees of freedom: 948 (659+289)
    Solving Stokes system... done.
 
    Postprocessing:
-     Temperature min/avg/max:            0 K, 0.4994 K, 1 K
-     Heat fluxes through boundary parts: 0 W, 0 W, -5252 W, 3.989e+04 W
+     Temperature min/avg/max:            0 K, 0.5001 K, 1 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -1524 W, 1680 W
      RMS, max velocity:                  0.352 m/s, 1.02 m/s
 
 Termination requested by criterion: end time

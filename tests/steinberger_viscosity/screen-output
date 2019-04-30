@@ -11,19 +11,19 @@ Number of degrees of freedom: 2,724 (1,666+225+833)
      Writing graphical output:           output-steinberger_viscosity/solution/solution-00000
      RMS, max velocity:                  0.582 m/year, 1.12 m/year
      Temperature min/avg/max:            273 K, 2254 K, 4250 K
-     Heat fluxes through boundary parts: 1.092e+06 W, -2.652e+06 W, 0 W, 0 W
+     Heat fluxes through boundary parts: 1.535e+06 W, -3.985e+06 W, 0 W, 0 W
      Writing depth average:              output-steinberger_viscosity/depth_average.gnuplot
 
 *** Timestep 1:  t=100000 years
-   Solving temperature system... 12 iterations.
+   Solving temperature system... 14 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 15+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-steinberger_viscosity/solution/solution-00001
-     RMS, max velocity:                  0.575 m/year, 1.11 m/year
-     Temperature min/avg/max:            273 K, 2252 K, 4250 K
-     Heat fluxes through boundary parts: -8.228e+07 W, 9.931e+07 W, 0 W, 0 W
+     RMS, max velocity:                  0.574 m/year, 1.11 m/year
+     Temperature min/avg/max:            273 K, 2253 K, 4250 K
+     Heat fluxes through boundary parts: -2.976e+06 W, -1.233e+06 W, 0 W, 0 W
      Writing depth average:              output-steinberger_viscosity/depth_average.gnuplot
 
 Termination requested by criterion: end time

@@ -55,7 +55,7 @@ Number of free surface degrees of freedom: 3082
      Topography min/max:        -124.8 m, 135 m
      RMS, max velocity:         0.0103 m/year, 0.0173 m/year
      Writing graphical output:  output-free_surface_blob_nonzero_melt/solution/solution-00001
-     Compositions min/max/mass: -6.602e-07/0.0201/5.948e+08
+     Compositions min/max/mass: -6.114e-07/0.02008/5.948e+08
 
 *** Timestep 2:  t=10000 years
    Solving mesh velocity system... 8 iterations.
@@ -66,10 +66,10 @@ Number of free surface degrees of freedom: 3082
    Solving for u_f in 12 iterations.
 
    Postprocessing:
-     Topography min/max:        -186.8 m, 203.7 m
+     Topography min/max:        -186.8 m, 203.6 m
      RMS, max velocity:         0.0097 m/year, 0.0161 m/year
      Writing graphical output:  output-free_surface_blob_nonzero_melt/solution/solution-00002
-     Compositions min/max/mass: -1.022e-06/0.02006/5.948e+08
+     Compositions min/max/mass: -9.65e-07/0.02005/5.948e+08
 
 Termination requested by criterion: end time
 

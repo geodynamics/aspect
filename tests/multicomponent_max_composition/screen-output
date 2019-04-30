@@ -25,22 +25,22 @@ Number of degrees of freedom: 32,097 (10,258+1,323+5,129+5,129+5,129+5,129)
      Writing graphical output: output-multicomponent_max_composition/solution/solution-00000
 
 *** Timestep 1:  t=58765.3 years
-   Solving temperature system... 11 iterations.
-   Solving C_1 system ... 11 iterations.
-   Solving C_2 system ... 15 iterations.
-   Solving C_3 system ... 11 iterations.
+   Solving temperature system... 10 iterations.
+   Solving C_1 system ... 10 iterations.
+   Solving C_2 system ... 12 iterations.
+   Solving C_3 system ... 10 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 30+11 iterations.
 
    Postprocessing:
 
-*** Timestep 2:  t=117432 years
+*** Timestep 2:  t=117527 years
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 11 iterations.
-   Solving C_2 system ... 11 iterations.
+   Solving C_2 system ... 12 iterations.
    Solving C_3 system ... 10 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+11 iterations.
+   Solving Stokes system... 30+12 iterations.
 
    Postprocessing:
 

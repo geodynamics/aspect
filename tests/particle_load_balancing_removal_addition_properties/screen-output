@@ -16,7 +16,7 @@ Number of degrees of freedom: 246 (114+18+57+57)
 
 *** Timestep 1:  t=248.486 seconds
    Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 9 iterations.
+   Solving C_1 system ... 8 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 15+0 iterations.
 
@@ -26,11 +26,11 @@ Number of degrees of freedom: 246 (114+18+57+57)
 Number of active cells: 10 (on 3 levels)
 Number of degrees of freedom: 246 (114+18+57+57)
 
-*** Timestep 2:  t=446.771 seconds
+*** Timestep 2:  t=456.236 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 8 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 14+0 iterations.
+   Solving Stokes system... 15+0 iterations.
 
    Postprocessing:
      Number of advected particles: 72
@@ -40,7 +40,7 @@ Number of degrees of freedom: 246 (114+18+57+57)
 
 *** Timestep 3:  t=500 seconds
    Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 7 iterations.
+   Solving C_1 system ... 8 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 14+0 iterations.
 
