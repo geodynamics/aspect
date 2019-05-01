@@ -132,10 +132,12 @@ pipeline {
           sh 'git diff tests > changes-test-results.diff'
           archiveArtifacts artifacts: 'changes-test-results.diff', fingerprint: true
         }
-        cleanup {
-          cleanWs()
-        }
       }
+    }
+  }
+  post {
+    cleanup {
+      cleanWs()
     }
   }
 }
