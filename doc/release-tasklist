@@ -116,9 +116,7 @@
        ... (to be completed when we go through the 2.0 release process)
   . announce on
        cig-all@geodynamics.org
-       aspect-devel@geodynamics.org
-       cig-mc@geodynamics.org
-       cig-cs@geodynamics.org
+       https://community.geodynamics.org/c/aspect
        dealii@googlegroups.com
 
 
@@ -133,6 +131,10 @@ available from
                    https://aspect.geodynamics.org/
 
 and the release is available from
+
+        https://geodynamics.org/cig/software/aspect/
+
+and
 
         https://github.com/geodynamics/aspect/releases/tag/v2.1.0
 
