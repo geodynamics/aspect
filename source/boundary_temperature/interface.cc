@@ -193,7 +193,7 @@ namespace aspect
       for (unsigned int i=0; i<model_names.size(); ++i)
         {
           // create boundary temperature objects
-          boundary_temperature_objects.push_back (std::shared_ptr<Interface<dim> >
+          boundary_temperature_objects.push_back (std::unique_ptr<Interface<dim> >
                                                   (std::get<dim>(registered_plugins)
                                                    .create_plugin (model_names[i],
                                                                    "Boundary temperature::Model names")));
@@ -264,7 +264,7 @@ namespace aspect
 
 
     template <int dim>
-    const std::vector<std::shared_ptr<Interface<dim> > > &
+    const std::vector<std::unique_ptr<Interface<dim> > > &
     Manager<dim>::get_active_boundary_temperature_conditions () const
     {
       return boundary_temperature_objects;
