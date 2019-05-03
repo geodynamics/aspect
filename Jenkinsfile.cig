@@ -8,7 +8,7 @@ pipeline {
   }
 
   options {
-    timeout(time: 2, unit: 'HOURS')
+    timeout(time: 3, unit: 'HOURS')
   }
 
   stages {
@@ -58,7 +58,7 @@ pipeline {
 
     stage('Build') {
       options {
-        timeout(time: 15, unit: 'MINUTES')
+        timeout(time: 30, unit: 'MINUTES')
       }
       steps {
         sh 'mkdir build-gcc-fast'
@@ -86,7 +86,7 @@ pipeline {
 
     stage('Test') {
       options {
-        timeout(time: 90, unit: 'MINUTES')
+        timeout(time: 150, unit: 'MINUTES')
       }
       steps {
         sh '''
@@ -133,6 +133,11 @@ pipeline {
           archiveArtifacts artifacts: 'changes-test-results.diff', fingerprint: true
         }
       }
+    }
+  }
+  post {
+    cleanup {
+      cleanWs()
     }
   }
 }
