@@ -21,7 +21,11 @@
 #include <aspect/lateral_averaging.h>
 #include <aspect/material_model/interface.h>
 #include <aspect/gravity_model/interface.h>
-#include <aspect/geometry_model/interface.h>
+#include <aspect/geometry_model/box.h>
+#include <aspect/geometry_model/chunk.h>
+#include <aspect/geometry_model/ellipsoidal_chunk.h>
+#include <aspect/geometry_model/spherical_shell.h>
+#include <aspect/geometry_model/two_merged_boxes.h>
 
 #include <deal.II/fe/fe_values.h>
 #include <deal.II/base/quadrature_lib.h>
@@ -290,6 +294,50 @@ namespace aspect
     void
     FunctorBase<dim>::setup(const unsigned int /*q_points*/)
     {}
+
+    template <int dim>
+    QAnisotropic<dim>
+    get_quadrature_formula(const unsigned int lateral_quadrature_degree,
+                           const unsigned int depth_dimension);
+
+    template <>
+    QAnisotropic<3>
+    get_quadrature_formula(const unsigned int lateral_quadrature_degree,
+                           const unsigned int depth_dimension)
+    {
+      const unsigned int dim = 3;
+
+      if (depth_dimension == dim)
+        return QAnisotropic<dim> (QGauss<1>(lateral_quadrature_degree),
+                                  QGauss<1>(lateral_quadrature_degree),
+                                  QIterated<1>(QMidpoint<1>(),10));
+      else if (depth_dimension == 1)
+        return QAnisotropic<dim> (QIterated<1>(QMidpoint<1>(),10),
+                                  QGauss<1>(lateral_quadrature_degree),
+                                  QGauss<1>(lateral_quadrature_degree));
+
+      return QAnisotropic<dim>(QGauss<1>(lateral_quadrature_degree),
+                               QGauss<1>(lateral_quadrature_degree),
+                               QIterated<1>(QMidpoint<1>(),10));
+    }
+
+    template <>
+    QAnisotropic<2>
+    get_quadrature_formula(const unsigned int lateral_quadrature_degree,
+                           const unsigned int depth_dimension)
+    {
+      const unsigned int dim = 2;
+
+      if (depth_dimension == dim)
+        return QAnisotropic<dim> (QGauss<1>(lateral_quadrature_degree),
+                                  QIterated<1>(QMidpoint<1>(),10));
+      else if (depth_dimension == 1)
+        return QAnisotropic<dim> (QIterated<1>(QMidpoint<1>(),10),
+                                  QGauss<1>(lateral_quadrature_degree));
+
+      return QAnisotropic<dim>(QGauss<1>(lateral_quadrature_degree),
+                               QIterated<1>(QMidpoint<1>(),10));
+    }
   }
 
 
@@ -312,22 +360,54 @@ namespace aspect
                                              std::vector<double>(n_slices,0.0));
     std::vector<double> volume(n_slices,0.0);
 
-    // this yields 10^dim quadrature points evenly distributed in the interior of the cell.
-    // We avoid points on the faces, as they would be counted more than once.
-    const QIterated<dim> quadrature_formula (QMidpoint<1>(),
-                                             10);
-    const unsigned int n_q_points = quadrature_formula.size();
+    // We would like to use a quadrature formula that is appropriately accurate laterally,
+    // but has a high resolution in depth (to populate all depth slices for the averages).
+    // For that we need to know the depth direction in the unit cell coordinate system, which
+    // is only unique (= the same for all cells) in some geometries. In these geometries we
+    // can optimize the quadrature, otherwise we need to use a high-resolution quadrature in
+    // all directions, which is more expensive.
+    const bool geometry_model_has_unique_depth_direction = Plugins::plugin_type_matches<GeometryModel::Box<dim> >(this->get_geometry_model()) ||
+                                                           Plugins::plugin_type_matches<GeometryModel::Chunk<dim> >(this->get_geometry_model()) ||
+                                                           Plugins::plugin_type_matches<GeometryModel::EllipsoidalChunk<dim> >(this->get_geometry_model()) ||
+                                                           Plugins::plugin_type_matches<GeometryModel::SphericalShell<dim> >(this->get_geometry_model()) ||
+                                                           Plugins::plugin_type_matches<GeometryModel::TwoMergedBoxes<dim> >(this->get_geometry_model());
+
+    unsigned int depth_direction = numbers::invalid_unsigned_int;
+
+    // The Chunk geometry model has depth as first dimension (radius, lon, lat),
+    // all others with unique direction have it last.
+    if (geometry_model_has_unique_depth_direction)
+      {
+        depth_direction = (Plugins::plugin_type_matches<GeometryModel::Chunk<dim> >(this->get_geometry_model()))
+                          ?
+                          1
+                          :
+                          dim;
+      }
+
+    const unsigned int max_fe_degree = std::max(this->introspection().polynomial_degree.velocities,
+                                                std::max(this->introspection().polynomial_degree.temperature,
+                                                         this->introspection().polynomial_degree.compositional_fields));
+
+    std::unique_ptr<Quadrature<dim> > quadrature_formula;
+    if (geometry_model_has_unique_depth_direction)
+      quadrature_formula = std::make_unique<Quadrature<dim> >(internal::get_quadrature_formula<dim>(max_fe_degree+1,
+                                                              depth_direction));
+    else
+      quadrature_formula = std::make_unique<Quadrature<dim> >(QIterated<dim>(QMidpoint<1>(),10));
+
+    const unsigned int n_q_points = quadrature_formula->size();
     const double max_depth = this->get_geometry_model().maximal_depth();
 
     FEValues<dim> fe_values (this->get_mapping(),
                              this->get_fe(),
-                             quadrature_formula,
+                             *quadrature_formula,
                              update_values | update_gradients | update_quadrature_points | update_JxW_values);
 
     std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),
                                                           std::vector<double> (n_q_points));
     std::vector<std::vector<double> > output_values(n_properties,
-                                                    std::vector<double>(quadrature_formula.size()));
+                                                    std::vector<double>(n_q_points));
 
     MaterialModel::MaterialModelInputs<dim> in(n_q_points,
                                                this->n_compositional_fields());
@@ -337,7 +417,7 @@ namespace aspect
     bool functors_need_material_output = false;
     for (unsigned int i=0; i<n_properties; ++i)
       {
-        functors[i]->setup(quadrature_formula.size());
+        functors[i]->setup(n_q_points);
         if (functors[i]->need_material_properties())
           functors_need_material_output = true;
 
