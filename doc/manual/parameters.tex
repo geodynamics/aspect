@@ -3721,11 +3721,13 @@ Be careful if you choose 1 as the degree. The resulting element is not stable an
 
 {\it Description:} Whether to use a Stokes discretization that is locally conservative at the expense of a larger number of degrees of freedom (true), or to go with a cheaper discretization that does not locally conserve mass, although it is globally conservative (false).
 
-When using a locally conservative discretization, the finite element space for the pressure is discontinuous between cells and is the polynomial space $P_ {-q}$ of polynomials of degree $q$ in each variable separately. Here, $q$ is one less than the value given in the parameter ``Stokes velocity polynomial degree''. As a consequence of choosing this element, it can be shown if the medium is considered incompressible that the computed discrete velocity field $\mathbf u_h$ satisfies the property $\int_ {\partial K} \mathbf u_h \cdot \mathbf n = 0$ for every cell $K$, i.e., for each cell inflow and outflow exactly balance each other as one would expect for an incompressible medium. In other words, the velocity field is locally conservative.
+When using a locally conservative discretization, the finite element space for the pressure is discontinuous between cells and is the polynomial space $P_{-(k-1)}$ of polynomials of degree $k-1$ in each variable separately. Here, $k$ is the value given in the parameter ``Stokes velocity polynomial degree'', and consequently the polynomial degree for the pressure, $k-1$, is one lower than that for the velocity.
 
-On the other hand, if this parameter is set to ``false'', then the finite element space is chosen as $Q_q$. This choice does not yield the local conservation property but has the advantage of requiring fewer degrees of freedom. Furthermore, the error is generally smaller with this choice.
+As a consequence of choosing this element for the pressure rather than the more commonly used $Q_{k-1}$ element that is continuous, it can be shown that if the medium is considered incompressible then the computed discrete velocity field $\mathbf u_h$ satisfies the property $\int_ {\partial K} \mathbf u_h \cdot \mathbf n = 0$ for every cell $K$, i.e., for each cell inflow and outflow exactly balance each other as one would expect for an incompressible medium. In other words, the velocity field is \textit{locally conservative}.
 
-For an in-depth discussion of these issues and a quantitative evaluation of the different choices, see \cite {KHB12} .
+On the other hand, if this parameter is set to ``false''(the default), then the finite element space is chosen as $Q_{k-1}$. This choice does not yield the local conservation property but has the advantage of requiring fewer degrees of freedom. Furthermore, the error is generally smaller with this choice.
+
+For an in-depth discussion of these issues and a quantitative evaluation of the different choices, see \cite {KHB12}.
 
 
 {\it Possible values:} A boolean value (true or false)
@@ -5891,8 +5893,10 @@ The following composition models are available:
 
 `porosity': A class that implements initial conditions for the porosity field by computing the equilibrium melt fraction for the given initial condition and reference pressure profile. Note that this plugin only works if there is a compositional field called `porosity', and the used material model implements the 'MeltFractionModel' interface. For all compositional fields except porosity this plugin returns 0.0, and they are therefore not changed as long as the default `add' operator is selected for this plugin.
 
+`world builder': Specify the initial composition through the World Builder. More information on the World Builder can be found at \url{https://geodynamicworldbuilder.github.io}. Make sure to specify the location of the World Builder file in the parameter 'World builder file'.
 
-{\it Possible values:} A comma-separated list of any of ascii data, function, porosity
+
+{\it Possible values:} A comma-separated list of any of ascii data, function, porosity, world builder
 \item {\it Parameter name:} {\tt List of model operators}
 \phantomsection\label{parameters:Initial composition model/List of model operators}
 \label{parameters:Initial_20composition_20model/List_20of_20model_20operators}
@@ -5931,10 +5935,12 @@ The following composition models are available:
 
 `porosity': A class that implements initial conditions for the porosity field by computing the equilibrium melt fraction for the given initial condition and reference pressure profile. Note that this plugin only works if there is a compositional field called `porosity', and the used material model implements the 'MeltFractionModel' interface. For all compositional fields except porosity this plugin returns 0.0, and they are therefore not changed as long as the default `add' operator is selected for this plugin.
 
+`world builder': Specify the initial composition through the World Builder. More information on the World Builder can be found at \url{https://geodynamicworldbuilder.github.io}. Make sure to specify the location of the World Builder file in the parameter 'World builder file'.
+
 \textbf{Warning}: This parameter provides an old and deprecated way of specifying initial composition models and shouldn't be used. Please use 'List of model names' instead.
 
 
-{\it Possible values:} Any one of ascii data, function, porosity, unspecified
+{\it Possible values:} Any one of ascii data, function, porosity, world builder, unspecified
 \item {\it Parameter name:} {\tt Volume of fluid intialization type}
 \phantomsection\label{parameters:Initial composition model/Volume of fluid intialization type}
 \label{parameters:Initial_20composition_20model/Volume_20of_20fluid_20intialization_20type}
@@ -6148,8 +6154,10 @@ Note the required file format if the vs to density scaling is read in from a fil
 
 `spherical hexagonal perturbation': An initial temperature field in which the temperature is perturbed following an $N$-fold pattern in a specified direction from an otherwise spherically symmetric state. The class's name comes from previous versions when the only option was $N=6$.
 
+`world builder': Specify the initial temperature through the World Builder. More information on the World Builder can be found at \url{https://geodynamicworldbuilder.github.io}. Make sure to specify the location of the World Builder file in the parameter 'World builder file'.
 
-{\it Possible values:} A comma-separated list of any of S40RTS perturbation, SAVANI perturbation, adiabatic, adiabatic boundary, ascii data, ascii profile, function, harmonic perturbation, inclusion shape perturbation, mandelbox, patch on S40RTS, perturbed box, polar box, spherical gaussian perturbation, spherical hexagonal perturbation
+
+{\it Possible values:} A comma-separated list of any of S40RTS perturbation, SAVANI perturbation, adiabatic, adiabatic boundary, ascii data, ascii profile, function, harmonic perturbation, inclusion shape perturbation, mandelbox, patch on S40RTS, perturbed box, polar box, spherical gaussian perturbation, spherical hexagonal perturbation, world builder
 \item {\it Parameter name:} {\tt List of model operators}
 \phantomsection\label{parameters:Initial temperature model/List of model operators}
 \label{parameters:Initial_20temperature_20model/List_20of_20model_20operators}
@@ -6214,10 +6222,12 @@ Note the required file format if the vs to density scaling is read in from a fil
 
 `spherical hexagonal perturbation': An initial temperature field in which the temperature is perturbed following an $N$-fold pattern in a specified direction from an otherwise spherically symmetric state. The class's name comes from previous versions when the only option was $N=6$.
 
+`world builder': Specify the initial temperature through the World Builder. More information on the World Builder can be found at \url{https://geodynamicworldbuilder.github.io}. Make sure to specify the location of the World Builder file in the parameter 'World builder file'.
+
 \textbf{Warning}: This parameter provides an old and deprecated way of specifying initial temperature models and shouldn't be used. Please use 'List of model names' instead.
 
 
-{\it Possible values:} Any one of S40RTS perturbation, SAVANI perturbation, adiabatic, adiabatic boundary, ascii data, ascii profile, function, harmonic perturbation, inclusion shape perturbation, mandelbox, patch on S40RTS, perturbed box, polar box, spherical gaussian perturbation, spherical hexagonal perturbation, unspecified
+{\it Possible values:} Any one of S40RTS perturbation, SAVANI perturbation, adiabatic, adiabatic boundary, ascii data, ascii profile, function, harmonic perturbation, inclusion shape perturbation, mandelbox, patch on S40RTS, perturbed box, polar box, spherical gaussian perturbation, spherical hexagonal perturbation, world builder, unspecified
 \end{itemize}
 
 
@@ -14336,10 +14346,10 @@ Units: $Pa \, s$
 
 \index[prmindex]{Melt scaling factor threshold}
 \index[prmindexfull]{Melt settings!Melt scaling factor threshold}
-{\it Value:} 1e-3
+{\it Value:} 1e-7
 
 
-{\it Default:} 1e-3
+{\it Default:} 1e-7
 
 
 {\it Description:} The factor by how much the Darcy coefficient K\_D in a cell can be smaller than the reference Darcy coefficient for this cell still to be considered a melt cell (for which the melt transport equations are solved). For smaller Darcy coefficients, the Stokes equations (without melt) are solved instead. Only used if ``Include melt transport'' is true. 
@@ -17164,7 +17174,7 @@ In two space dimensions, $\mathbf n$ is simply a vector that is horizontal (we c
 
 In three space dimensions, given two horizontal, perpendicular, unit length, but otherwise arbitrarily chosen vectors $\mathbf u,\mathbf v$, we can express $\mathbf n = (\cos \alpha)\mathbf u + (\sin\alpha)\mathbf v$ where $\alpha$ maximizes the expression \begin{align*}  f(\alpha) = \mathbf n^T \sigma_c \mathbf n  = (\mathbf u^T \sigma_c \mathbf u)(\cos\alpha)^2    +2(\mathbf u^T \sigma_c \mathbf v)(\cos\alpha)(\sin\alpha)    +(\mathbf v^T \sigma_c \mathbf v)(\sin\alpha)^2.\end{align*}
 
-The maximum of $f(\alpha)$ is attained where $f'(\alpha)=0$. Evaluating the derivative and using trigonometric identities, one finds that $\alpha$ has to satisfy the equation \begin{align*}  \tan(2\alpha) = \frac{\mathbf u^T \sigma_c \mathbf v}                          {\mathbf u^T \sigma_c \mathbf u                            - \mathbf v^T \sigma_c \mathbf v}.\end{align*}Since the transform $\alpha\mapsto\alpha+\pi$ flips the direction of $\mathbf n$, we only need to seek a solution to this equation in the interval $\alpha\in[0,\pi)$. These are given by $\alpha_1=\frac 12 \arctan \frac{\mathbf u^T \sigma_c \mathbf v}{\mathbf u^T \sigma_c \mathbf u - \mathbf v^T \sigma_c \mathbf v}$ and $\alpha_2=\alpha_1+\frac{\pi}{2}$, one of which will correspond to a minimum and the other to a maximum of $f(\alpha)$. One checks the sign of $f''(\alpha)=-2(\mathbf u^T \sigma_c \mathbf u - \mathbf v^T \sigma_c \mathbf v)\cos(2\alpha) - 2 (\mathbf u^T \sigma_c \mathbf v) \sin(2\alpha)$ for each of these to determine the $\alpha$ that maximizes $f(\alpha)$, and from this immediately arrives at the correct form for the maximum horizontal stress $\mathbf n$.
+The maximum of $f(\alpha)$ is attained where $f'(\alpha)=0$. Evaluating the derivative and using trigonometric identities, one finds that $\alpha$ has to satisfy the equation \begin{align*}  \tan(2\alpha) = \frac{2.0\mathbf u^T \sigma_c \mathbf v}                          {\mathbf u^T \sigma_c \mathbf u                            - \mathbf v^T \sigma_c \mathbf v}.\end{align*}Since the transform $\alpha\mapsto\alpha+\pi$ flips the direction of $\mathbf n$, we only need to seek a solution to this equation in the interval $\alpha\in[0,\pi)$. These are given by $\alpha_1=\frac 12 \arctan \frac{\mathbf u^T \sigma_c \mathbf v}{\mathbf u^T \sigma_c \mathbf u - \mathbf v^T \sigma_c \mathbf v}$ and $\alpha_2=\alpha_1+\frac{\pi}{2}$, one of which will correspond to a minimum and the other to a maximum of $f(\alpha)$. One checks the sign of $f''(\alpha)=-2(\mathbf u^T \sigma_c \mathbf u - \mathbf v^T \sigma_c \mathbf v)\cos(2\alpha) - 2 (\mathbf u^T \sigma_c \mathbf v) \sin(2\alpha)$ for each of these to determine the $\alpha$ that maximizes $f(\alpha)$, and from this immediately arrives at the correct form for the maximum horizontal stress $\mathbf n$.
 
 The description above computes a 3d \textit{direction} vector $\mathbf n$. If one were to scale this vector the same way as done in 2d, i.e., with the magnitude of the stress in this direction, one will typically get vectors whose length is principally determined by the hydrostatic pressure at a given location simply because the hydrostatic pressure is the largest component of the overall stress. On the other hand, the hydrostatic pressure does not determine any principal direction because it is an isotropic, anti-compressive force. As a consequence, there are often points in simulations (e.g., at the center of convection rolls) where the stress has no dominant horizontal direction, and the algorithm above will then in essence choose a random direction because the stress is approximately equal in all horizontal directions. If one scaled the output by the magnitude of the stress in this direction (i.e., approximately equal to the hydrostatic pressure at this point), one would get randomly oriented vectors at these locations with significant lengths.
 
@@ -18945,6 +18955,8 @@ The default value should be good for relatively simple models, but in particular
 
 `end time': Terminate the simulation once the end time specified in the input file has been reached. Unlike all other termination criteria, this criterion is \textit{always} active, whether it has been explicitly selected or not in the input file (this is done to preserve historical behavior of \aspect{}, but it also likely does not inconvenience anyone since it is what would be selected in most cases anyway).
 
+`steady state temperature': A criterion that terminates the simulation when the global integral of the temperature field stays within a certain range for a specified period of time.
+
 `steady state velocity': A criterion that terminates the simulation when the RMS of the velocity field stays within a certain range for a specified period of time.
 
 `user request': Terminate the simulation gracefully when a file with a specified name appears in the output directory. This allows the user to gracefully exit the simulation at any time by simply creating such a file using, for example, \texttt{touch output/terminate}. The file's location is chosen to be in the output directory, rather than in a generic location such as the Aspect directory, so that one can run multiple simulations at the same time (which presumably write to different output directories) and can selectively terminate a particular one.
@@ -18952,7 +18964,7 @@ The default value should be good for relatively simple models, but in particular
 `wall time': Terminate the simulation once the wall time limit has reached.
 
 
-{\it Possible values:} A comma-separated list of any of end step, end time, steady state velocity, user request, wall time
+{\it Possible values:} A comma-separated list of any of end step, end time, steady state temperature, steady state velocity, user request, wall time
 \item {\it Parameter name:} {\tt Wall time}
 \phantomsection\label{parameters:Termination criteria/Wall time}
 \label{parameters:Termination_20criteria/Wall_20time}
@@ -18973,6 +18985,46 @@ The default value should be good for relatively simple models, but in particular
 \end{itemize}
 
 
+
+\subsection{Parameters in section \tt Termination criteria/Steady state temperature}
+\label{parameters:Termination_20criteria/Steady_20state_20temperature}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Maximum relative deviation}
+\phantomsection\label{parameters:Termination criteria/Steady state temperature/Maximum relative deviation}
+\label{parameters:Termination_20criteria/Steady_20state_20temperature/Maximum_20relative_20deviation}
+
+
+\index[prmindex]{Maximum relative deviation}
+\index[prmindexfull]{Termination criteria!Steady state temperature!Maximum relative deviation}
+{\it Value:} 0.05
+
+
+{\it Default:} 0.05
+
+
+{\it Description:} The maximum relative deviation of the temperature in recent simulation time for the system to be considered in steady state. If the actual deviation is smaller than this number, then the simulation will be terminated.
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Time in steady state}
+\phantomsection\label{parameters:Termination criteria/Steady state temperature/Time in steady state}
+\label{parameters:Termination_20criteria/Steady_20state_20temperature/Time_20in_20steady_20state}
+
+
+\index[prmindex]{Time in steady state}
+\index[prmindexfull]{Termination criteria!Steady state temperature!Time in steady state}
+{\it Value:} 1e7
+
+
+{\it Default:} 1e7
+
+
+{\it Description:} The minimum length of simulation time that the system should be in steady state before termination.Units: years if the 'Use years in output instead of seconds' parameter is set; seconds otherwise.
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\end{itemize}
 
 \subsection{Parameters in section \tt Termination criteria/Steady state velocity}
 \label{parameters:Termination_20criteria/Steady_20state_20velocity}
