@@ -102,7 +102,7 @@ f.write("// Do not edit!\n\n")
 f.write("var papers = {")
 
 id=0
-for w in want:
+for w in sorted(want):
     id += 1
     f.write("entry{}:".format(id))
     f.write("{\n")
