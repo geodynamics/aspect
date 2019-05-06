@@ -367,16 +367,18 @@ namespace aspect
     // can optimize the quadrature, otherwise we need to use a high-resolution quadrature in
     // all directions, which is more expensive.
     // The Chunk geometry model has depth as first dimension (radius, lon, lat),
-    // all others with unique direction have it last.
-    unsigned int geometry_unique_depth_direction;
+    // all others with unique direction have it last; however, the Chunk and
+    // EllipsoidalChunk geometry have not been successfully tested with
+    // the lower quadrature, so we leave it at the conservative quadrature for now.
 
-    if (Plugins::plugin_type_matches<GeometryModel::Chunk<dim> >(this->get_geometry_model()))
-      geometry_unique_depth_direction = 1;
-    else if (Plugins::plugin_type_matches<GeometryModel::Box<dim> >(this->get_geometry_model()) ||
-             Plugins::plugin_type_matches<GeometryModel::EllipsoidalChunk<dim> >(this->get_geometry_model()) ||
-             Plugins::plugin_type_matches<GeometryModel::SphericalShell<dim> >(this->get_geometry_model()) ||
-             Plugins::plugin_type_matches<GeometryModel::TwoMergedBoxes<dim> >(this->get_geometry_model()))
+    unsigned int geometry_unique_depth_direction;
+    if (Plugins::plugin_type_matches<GeometryModel::Box<dim> >(this->get_geometry_model()) ||
+        Plugins::plugin_type_matches<GeometryModel::SphericalShell<dim> >(this->get_geometry_model()) ||
+        Plugins::plugin_type_matches<GeometryModel::TwoMergedBoxes<dim> >(this->get_geometry_model()))
       geometry_unique_depth_direction = dim;
+    else if (Plugins::plugin_type_matches<GeometryModel::Chunk<dim> >(this->get_geometry_model()) ||
+             Plugins::plugin_type_matches<GeometryModel::EllipsoidalChunk<dim> >(this->get_geometry_model()))
+      geometry_unique_depth_direction = numbers::invalid_unsigned_int;
     else
       geometry_unique_depth_direction = numbers::invalid_unsigned_int;
 
