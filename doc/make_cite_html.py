@@ -74,8 +74,20 @@ want.remove("KHB12")
 want.append("KHB12")
 
 bibformated = {
-    "gassmoeller_particles" : "R. Gassmoeller, E. Heien, E. G. Puckett, W. Bangerth (2017). Flexible and scalable particle-in-cell methods for massively parallel computations. arXiv:1612.03369"}
+        "He_2017_DG" : "Ying He, Elbridge Gerry Puckett, and Magali I. Billen. 2017. “A Discontinuous Galerkin Method with a Bound Preserving Limiter for the Advection of Non-Diffusive Fields in Solid Earth Geodynamics.” Physics of the Earth and Planetary Interiors 263 (February): 23–37. doi:10.1016/j.pepi.2016.12.001. http://dx.doi.org/10.1016/j.pepi.2016.12.001.",
+        "KHB12" : "Martin Kronbichler, Timo Heister, and Wolfgang Bangerth. 2012. “High Accuracy Mantle Convection Simulation through Modern Numerical Methods.” Geophysical Journal International 191 (1) (August 21): 12–29. doi:10.1111/j.1365-246x.2012.05609.x. http://dx.doi.org/10.1111/j.1365-246X.2012.05609.x.",
+        "aspect-doi-v1.5.0" : "Wolfgang Bangerth, Juliane Dannberg, Rene Gassmoeller, Timo Heister, and others. 2017, March 1. Aspect V1.5.0. Zenodo. https://doi.org/10.5281/zenodo.344623",
+        "aspect-doi-v2.0.0" : "Wolfgang Bangerth, Juliane Dannberg, Rene Gassmoeller, and Timo Heister. 2018, May 10. Aspect V2.0.0. Zenodo. https://doi.org/10.5281/zenodo.1244587",
+        "aspect-doi-v2.0.1" : "Wolfgang Bangerth, Juliane Dannberg, Rene Gassmoeller, and Timo Heister. 2018, June 24. Aspect V2.0.1. Zenodo. https://doi.org/10.5281/zenodo.1297145",
+        "aspect-doi-v2.1.0" : "Wolfgang Bangerth, Juliane Dannberg, Rene Gassmoeller, and Timo Heister. 2019, April 29. ASPECT v2.1.0. Zenodo. https://doi.org/10.5281/zenodo.2653531",
+        "aspectmanual" : "Wolfgang Bangerth, Juliane Dannberg, Rene Gassmoeller, Timo Heister, and others. 2019. ASPECT: Advanced Solver for Problems in Earth's ConvecTion, User Manual. <i>Figshare</i>. https://doi.org/10.6084/m9.figshare.4865333",
+        "dannberg_melt" : "Juliane Dannberg, and Timo Heister. 2016. “Compressible Magma/mantle Dynamics: 3-D, Adaptive Simulations in ASPECT.” Geophysical Journal International 207 (3) (September 4): 1343–1366. doi:10.1093/gji/ggw329. http://dx.doi.org/10.1093/gji/ggw329.",
+        "gassmoeller_particles" : "Rene Gassmoeller, Eric Heien, Elbridge Gerry Puckett, and Wolfgang Bangerth. 2017. “Flexible and scalable particle-in-cell methods for massively parallel computations.” arXiv:1612.03369",
+        "heister_aspect_methods2" : "Timo Heister, Juliane Dannberg, Rene Gassmöller, and Wolfgang Bangerth. 2017. “High Accuracy Mantle Convection Simulation through Modern Numerical Methods – II: Realistic Models and Problems.” Geophysical Journal International 210 (2) (May 9): 833–851. doi:10.1093/gji/ggx195. http://dx.doi.org/10.1093/gji/ggx195.",
+        "rose_freesurface" : "Ian Rose, Bruce Buffett, and Timo Heister. 2017. “Stability and Accuracy of Free Surface Time Integration in Viscous Flows.” Physics of the Earth and Planetary Interiors 262 (January): 90–100. doi:10.1016/j.pepi.2016.11.007. http://dx.doi.org/10.1016/j.pepi.2016.11.007."
+}
 
+downloaded = False
 for w in want:
     print()
     print ("{}:".format(w))
@@ -87,13 +99,26 @@ for w in want:
     if w in bibformated:
         continue
     
-    headers={"Accept" : "text/x-bibliography; style=apa"}
+    headers={"Accept" : "text/x-bibliography; style=chicago-author-date"}
     r = requests.get(url, headers=headers)
     r.encoding = 'utf-8'
     bibformated[w] = r.text.strip('\n')
+    print (bibformated[w])
     print ("\tbib clear text OK")
-    
+    downloaded = True
+
 print()
+print("bibformated = {")
+entries = []
+for e in sorted(bibformated):
+    entries.append("\t\"{}\" : \"{}\"".format(e,bibformated[e]))
+print(",\n".join(entries))
+print("}")
+print()
+
+if downloaded:
+    print("please update the database with the new entry.")
+    exit(0)
 
 f=open("database.js", "w+")
 
@@ -102,7 +127,7 @@ f.write("// Do not edit!\n\n")
 f.write("var papers = {")
 
 id=0
-for w in want:
+for w in sorted(want):
     id += 1
     f.write("entry{}:".format(id))
     f.write("{\n")
@@ -118,3 +143,4 @@ for w in want:
 f.write("}")
 f.close()
 
+print("Done writing database.js")
