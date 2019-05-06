@@ -366,33 +366,32 @@ namespace aspect
     // is only unique (= the same for all cells) in some geometries. In these geometries we
     // can optimize the quadrature, otherwise we need to use a high-resolution quadrature in
     // all directions, which is more expensive.
-    const bool geometry_model_has_unique_depth_direction = Plugins::plugin_type_matches<GeometryModel::Box<dim> >(this->get_geometry_model()) ||
-                                                           Plugins::plugin_type_matches<GeometryModel::Chunk<dim> >(this->get_geometry_model()) ||
-                                                           Plugins::plugin_type_matches<GeometryModel::EllipsoidalChunk<dim> >(this->get_geometry_model()) ||
-                                                           Plugins::plugin_type_matches<GeometryModel::SphericalShell<dim> >(this->get_geometry_model()) ||
-                                                           Plugins::plugin_type_matches<GeometryModel::TwoMergedBoxes<dim> >(this->get_geometry_model());
-
-    unsigned int depth_direction = numbers::invalid_unsigned_int;
-
     // The Chunk geometry model has depth as first dimension (radius, lon, lat),
     // all others with unique direction have it last.
-    if (geometry_model_has_unique_depth_direction)
-      {
-        depth_direction = (Plugins::plugin_type_matches<GeometryModel::Chunk<dim> >(this->get_geometry_model()))
-                          ?
-                          1
-                          :
-                          dim;
-      }
+    unsigned int geometry_unique_depth_direction;
+
+    if (Plugins::plugin_type_matches<GeometryModel::Chunk<dim> >(this->get_geometry_model()))
+      geometry_unique_depth_direction = 1;
+    else if (Plugins::plugin_type_matches<GeometryModel::Box<dim> >(this->get_geometry_model()) ||
+             Plugins::plugin_type_matches<GeometryModel::EllipsoidalChunk<dim> >(this->get_geometry_model()) ||
+             Plugins::plugin_type_matches<GeometryModel::SphericalShell<dim> >(this->get_geometry_model()) ||
+             Plugins::plugin_type_matches<GeometryModel::TwoMergedBoxes<dim> >(this->get_geometry_model()))
+      geometry_unique_depth_direction = dim;
+    else
+      geometry_unique_depth_direction = numbers::invalid_unsigned_int;
 
     const unsigned int max_fe_degree = std::max(this->introspection().polynomial_degree.velocities,
                                                 std::max(this->introspection().polynomial_degree.temperature,
                                                          this->introspection().polynomial_degree.compositional_fields));
 
+    // We want to integrate over a polynomial of degree p = max_fe_degree, for which we
+    // need a quadrature of at least q, with p <= 2q-1 --> q >= (p+1)/2
+    const unsigned int lateral_quadrature_degree = static_cast<unsigned int>(std::ceil((max_fe_degree+1.0)/2.0));
+
     std::unique_ptr<Quadrature<dim> > quadrature_formula;
-    if (geometry_model_has_unique_depth_direction)
-      quadrature_formula = std::make_unique<Quadrature<dim> >(internal::get_quadrature_formula<dim>(max_fe_degree+1,
-                                                              depth_direction));
+    if (geometry_unique_depth_direction != numbers::invalid_unsigned_int)
+      quadrature_formula = std::make_unique<Quadrature<dim> >(internal::get_quadrature_formula<dim>(lateral_quadrature_degree,
+                                                              geometry_unique_depth_direction));
     else
       quadrature_formula = std::make_unique<Quadrature<dim> >(QIterated<dim>(QMidpoint<1>(),10));
 
