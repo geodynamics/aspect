@@ -4,6 +4,8 @@ pipeline {
   agent {
     docker {
       image 'tjhei/dealii:v9.0.1-full-v9.0.1-r5-gcc5'
+      label 'tmpfs_capable'
+      args '--mount type=tmpfs,destination=/home'
     }
   }
 
