@@ -114,6 +114,10 @@
        create entry for the new release
        update the list of contributors
        ... (to be completed when we go through the 2.0 release process)
+  . update docker image geodynamics/aspect:
+    - modify docker/Dockerfile and docker/build.sh to checkout the release
+      cd docker && ./build.sh
+      docker push geodynamics/aspect:v$TAG
   . announce on
        cig-all@geodynamics.org
        https://community.geodynamics.org/c/aspect

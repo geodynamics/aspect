@@ -2691,7 +2691,7 @@ precompiled \aspect{} image from Docker Hub is as simple as typing in a
 terminal:
 
 \begin{lstlisting}[frame=single,language=ksh]
-docker pull gassmoeller/aspect
+docker pull geodynamics/aspect
 \end{lstlisting}
 
 Note that the transfer size of the compressed image containing \aspect{} and
@@ -2727,7 +2727,7 @@ different versions see Section~\ref{sec:debug-mode}, in essence: You should run
 To sum up, the steps you will want to execute are:
 \begin{lstlisting}[frame=single,language=ksh,showstringspaces=false]
 docker run -it -v "$(pwd):/home/dealii/aspect/model_input:ro" \
-  gassmoeller/aspect:latest bash
+  geodynamics/aspect:latest bash
 \end{lstlisting}
 
 Within the container, simply run your model by executing:
