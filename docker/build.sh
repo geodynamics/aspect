@@ -7,4 +7,4 @@
 # Note: This container is build from the developer version on Github, it does not use
 # the local ASPECT folder. Therefore local changes are not included in the container.
 
-docker build -t gassmoeller/aspect .
+docker build -t geodynamics/aspect .
