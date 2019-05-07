@@ -236,7 +236,7 @@ namespace aspect
                      "all") != postprocessor_names.end())
         {
           postprocessor_names.clear();
-          for (typename std::list<typename internal::Plugins::PluginList<Interface<dim> >::PluginInfo>::const_iterator
+          for (typename std::list<typename aspect::internal::Plugins::PluginList<Interface<dim> >::PluginInfo>::const_iterator
                p = std::get<dim>(registered_plugins).plugins->begin();
                p != std::get<dim>(registered_plugins).plugins->end(); ++p)
             postprocessor_names.push_back (std::get<0>(*p));
