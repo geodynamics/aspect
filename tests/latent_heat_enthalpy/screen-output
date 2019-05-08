@@ -1,5 +1,3 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
 Loading shared library <./liblatent_heat_enthalpy.so>
 
@@ -15,7 +13,7 @@ Number of degrees of freedom: 23,632 (14,418+2,005+7,209)
      Temperature min/avg/max: 999 K, 999.5 K, 1000 K
 
 *** Timestep 1:  t=5.83511e+13 seconds
-   Solving temperature system... 63 iterations.
+   Solving temperature system... 62 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 13+0 iterations.
 
@@ -39,7 +37,7 @@ Number of degrees of freedom: 23,632 (14,418+2,005+7,209)
      Temperature min/avg/max: 999 K, 999.8 K, 1003 K
 
 *** Timestep 4:  t=2.33404e+14 seconds
-   Solving temperature system... 45 iterations.
+   Solving temperature system... 44 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 9+0 iterations.
 

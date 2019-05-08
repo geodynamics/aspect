@@ -39,9 +39,9 @@ Number of active cells: 1,213 (on 7 levels)
 Number of degrees of freedom: 27,211 (10,356+1,321+5,178+5,178+5,178)
 
 *** Timestep 3:  t=0.0617841 seconds
-   Solving temperature system... 38 iterations.
+   Solving temperature system... 37 iterations.
    Solving Alice system ... 27 iterations.
-   Solving Bob system ... 45 iterations.
+   Solving Bob system ... 41 iterations.
 
    Postprocessing:
      Writing graphical output:  output-refinement_composition_threshold/solution/solution-00003

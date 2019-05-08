@@ -21,7 +21,7 @@ Number of degrees of freedom: 1,581 (738+105+369+369)
      Compositions min/max/mass:          0/0.033/3.594e+10
 
 *** Timestep 1:  t=81806.7 years
-   Solving temperature system... 51 iterations.
+   Solving temperature system... 34 iterations.
    Solving C_1 system ... 18 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 22+0 iterations.

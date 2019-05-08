@@ -16,7 +16,7 @@ Number of degrees of freedom: 15,785 (11,451+517+3,817)
      Heat fluxes through boundary parts: 109.5 W
 
 *** Timestep 1:  t=50 seconds
-   Solving temperature system... 56 iterations.
+   Solving temperature system... 50 iterations.
    Solving Stokes system... 69+0 iterations.
 
    Postprocessing:
