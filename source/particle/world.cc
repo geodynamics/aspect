@@ -114,28 +114,7 @@ namespace aspect
       return *interpolator;
     }
 
-#if !DEAL_II_VERSION_GTE(9,0,0)
-    template <int dim>
-    std::string
-    World<dim>::generate_output() const
-    {
-      // If we do not write output
-      // return early with the number of particles that were advected
-      if (!output)
-        return "";
 
-      TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Output");
-      const double output_time = (this->convert_output_to_years() ?
-                                  this->get_time() / year_in_seconds :
-                                  this->get_time());
-
-      const std::string filename = output->output_particle_data(*particle_handler,
-                                                                property_manager->get_data_info(),
-                                                                output_time);
-
-      return filename;
-    }
-#endif
 
     template <int dim>
     types::particle_index
@@ -254,10 +233,8 @@ namespace aspect
 
 #if DEAL_II_VERSION_GTE(9,1,0)
               MPI_Scan(&particles_to_add_locally, &local_start_index, 1, DEAL_II_PARTICLE_INDEX_MPI_TYPE, MPI_SUM, this->get_mpi_communicator());
-#elif DEAL_II_VERSION_GTE(9,0,0)
-              MPI_Scan(&particles_to_add_locally, &local_start_index, 1, PARTICLE_INDEX_MPI_TYPE, MPI_SUM, this->get_mpi_communicator());
 #else
-              MPI_Scan(&particles_to_add_locally, &local_start_index, 1, ASPECT_PARTICLE_INDEX_MPI_TYPE, MPI_SUM, this->get_mpi_communicator());
+              MPI_Scan(&particles_to_add_locally, &local_start_index, 1, PARTICLE_INDEX_MPI_TYPE, MPI_SUM, this->get_mpi_communicator());
 #endif
 
               local_start_index -= particles_to_add_locally;
@@ -762,10 +739,6 @@ namespace aspect
     {
       aspect::oarchive oa (os);
       oa << (*this);
-#if !DEAL_II_VERSION_GTE(9,0,0)
-      if (output)
-        output->save(os);
-#endif
     }
 
     template <int dim>
@@ -774,10 +747,6 @@ namespace aspect
     {
       aspect::iarchive ia (is);
       ia >> (*this);
-#if !DEAL_II_VERSION_GTE(9,0,0)
-      if (output)
-        output->load(is);
-#endif
     }
 
     template <int dim>
@@ -843,12 +812,6 @@ namespace aspect
       prm.leave_subsection ();
 
       Generator::declare_parameters<dim>(prm);
-
-      // Output of particle related data has been moved to deal.II from version 9.0 on
-      // The relevant code now lives in postprocess/particles.cc
-#if !DEAL_II_VERSION_GTE(9,0,0)
-      Output::declare_parameters<dim>(prm);
-#endif
       Integrator::declare_parameters<dim>(prm);
       Interpolator::declare_parameters<dim>(prm);
       Property::Manager<dim>::declare_parameters(prm);
@@ -942,24 +905,6 @@ namespace aspect
         sim->initialize_simulator (this->get_simulator());
       generator->parse_parameters(prm);
       generator->initialize();
-
-      // Output of particle related data has been moved to deal.II from version 9.0 on
-      // The relevant code now lives in postprocess/particles.cc
-#if !DEAL_II_VERSION_GTE(9,0,0)
-      // Create an output object depending on what the parameters specify
-      output.reset(Output::create_particle_output<dim>
-                   (prm));
-
-      // We allow to not generate any output plugin, in which case output is
-      // a null pointer. Only initialize output if it was created.
-      if (output)
-        {
-          if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(output.get()))
-            sim->initialize_simulator (this->get_simulator());
-          output->parse_parameters(prm);
-          output->initialize();
-        }
-#endif
 
       // Create an integrator object depending on the specified parameter
       integrator.reset(Integrator::create_particle_integrator<dim> (prm));
