@@ -101,7 +101,7 @@ namespace aspect
     }
 
     template <int dim>
-    const ParticleHandler<dim> &
+    const Particles::ParticleHandler<dim> &
     World<dim>::get_particle_handler() const
     {
       return *particle_handler.get();
@@ -269,7 +269,7 @@ namespace aspect
                   {
                     for (unsigned int i = n_particles_in_cell; i < min_particles_per_cell; ++i,++local_next_particle_index)
                       {
-                        std::pair<aspect::Particles::internal::LevelInd,Particle<dim> > new_particle = generator->generate_particle(cell,local_next_particle_index);
+                        std::pair<Particles::internal::LevelInd,Particles::Particle<dim> > new_particle = generator->generate_particle(cell,local_next_particle_index);
 
                         const std::vector<double> particle_properties =
                           property_manager->initialize_late_particle(new_particle.second.get_location(),
@@ -578,12 +578,12 @@ namespace aspect
     {
       TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Generate");
 
-      std::multimap<Particles::internal::LevelInd, Particle<dim> > particles;
+      std::multimap<Particles::internal::LevelInd, Particles::Particle<dim> > particles;
       generator->generate_particles(particles);
 
-      std::multimap<typename Triangulation<dim>::active_cell_iterator, Particle<dim> > new_particles;
+      std::multimap<typename Triangulation<dim>::active_cell_iterator, Particles::Particle<dim> > new_particles;
 
-      for (typename std::multimap<Particles::internal::LevelInd, Particle<dim> >::const_iterator particle = particles.begin();
+      for (typename std::multimap<Particles::internal::LevelInd, Particles::Particle<dim> >::const_iterator particle = particles.begin();
            particle != particles.end(); ++particle)
         new_particles.insert(new_particles.end(),
                              std::make_pair(typename Triangulation<dim>::active_cell_iterator(&this->get_triangulation(),

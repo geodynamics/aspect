@@ -47,6 +47,7 @@ namespace aspect
   namespace Particle
   {
     using namespace dealii;
+    using namespace dealii::Particles;
 
     /**
      * This class manages the storage and handling of particles. It provides
@@ -91,7 +92,7 @@ namespace aspect
          *
          * @return The particle handler for this world.
          */
-        const ParticleHandler<dim> &
+        const Particles::ParticleHandler<dim> &
         get_particle_handler() const;
 
         /**
@@ -238,7 +239,7 @@ namespace aspect
          * Particle handler object that is responsible for storing and
          * managing the internal particle structures.
          */
-        std::unique_ptr<ParticleHandler<dim> > particle_handler;
+        std::unique_ptr<Particles::ParticleHandler<dim> > particle_handler;
 
         /**
          * Strategy for particle load balancing.

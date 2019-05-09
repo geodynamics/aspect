@@ -39,10 +39,8 @@ namespace aspect
 
 #if DEAL_II_VERSION_GTE(9,1,0)
         MPI_Scan(&n_particles_to_generate, &prefix_sum, 1, DEAL_II_PARTICLE_INDEX_MPI_TYPE, MPI_SUM, this->get_mpi_communicator());
-#elif DEAL_II_VERSION_GTE(9,0,0)
-        MPI_Scan(&n_particles_to_generate, &prefix_sum, 1, PARTICLE_INDEX_MPI_TYPE, MPI_SUM, this->get_mpi_communicator());
 #else
-        MPI_Scan(&n_particles_to_generate, &prefix_sum, 1, ASPECT_PARTICLE_INDEX_MPI_TYPE, MPI_SUM, this->get_mpi_communicator());
+        MPI_Scan(&n_particles_to_generate, &prefix_sum, 1, PARTICLE_INDEX_MPI_TYPE, MPI_SUM, this->get_mpi_communicator());
 #endif
 
         types::particle_index particle_index = prefix_sum - n_particles_to_generate;

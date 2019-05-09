@@ -26,12 +26,7 @@
 
 #include <aspect/simulator_access.h>
 
-#if !DEAL_II_VERSION_GTE(9,0,0)
-#include <aspect/particle/particle.h>
-#else
 #include <deal.II/particles/particle_handler.h>
-#endif
-
 #include <deal.II/base/data_out_base.h>
 #include <tuple>
 
@@ -39,7 +34,6 @@ namespace aspect
 {
   namespace Postprocess
   {
-#if DEAL_II_VERSION_GTE(9,0,0)
     namespace internal
     {
       /**
@@ -59,7 +53,7 @@ namespace aspect
            * internally until the destructor is called. This function needs to be called before one of the
            * write function of the base class can be called to write the output data.
            */
-          void build_patches(const Particle::ParticleHandler<dim> &particle_handler,
+          void build_patches(const Particles::ParticleHandler<dim> &particle_handler,
                              const aspect::Particle::Property::ParticlePropertyInformation &property_information,
                              const bool only_group_3d_vectors);
 
@@ -100,7 +94,6 @@ namespace aspect
           std::vector<std::tuple<unsigned int, unsigned int, std::string> > vector_datasets;
       };
     }
-#endif
 
     /**
      * A Postprocessor that creates particles, which follow the
@@ -239,7 +232,6 @@ namespace aspect
          */
         void set_last_output_time (const double current_time);
 
-#if DEAL_II_VERSION_GTE(9,0,0)
         /**
          * Consecutively counted number indicating the how-manyth time we will
          * create output the next time we get to it.
@@ -345,7 +337,6 @@ namespace aspect
         void write_master_files (const internal::ParticleOutput<dim> &data_out,
                                  const std::string &solution_file_prefix,
                                  const std::vector<std::string> &filenames);
-#endif
     };
   }
 }
