@@ -36,10 +36,10 @@ Output:
 1.01930353e+01 4.75819129e+02 case2a_ref5.stat
 1.00711673e+01 4.80164721e+02 case2a_ref6.stat
 1.00660000e+01 4.80433400e+02 case2a_reference.stat
-6.58763055e+00 1.69457755e+02 case2b_ref3.stat
-6.94483804e+00 1.69976884e+02 case2b_ref4.stat
-6.92990946e+00 1.71555149e+02 case2b_ref5.stat
-6.92964919e+00 1.71744538e+02 case2b_ref6.stat
+6.44510878e+00 1.68574818e+02 case2b_ref3.stat
+6.94481365e+00 1.69976109e+02 case2b_ref4.stat
+6.92988247e+00 1.71554254e+02 case2b_ref5.stat
+6.92964921e+00 1.71744538e+02 case2b_ref6.stat
 6.92990000e+00 1.71755000e+02 case2b_reference.stat
 
 steps needed:
@@ -59,7 +59,7 @@ steps needed:
 3088 output-case2a_ref4/statistics
 6638 output-case2a_ref5/statistics
 13593 output-case2a_ref6/statistics
-2720 output-case2b_ref3/statistics
-5518 output-case2b_ref4/statistics
+4076 output-case2b_ref3/statistics
+8404 output-case2b_ref4/statistics
 17034 output-case2b_ref5/statistics
-34166 output-case2b_ref6/statistics
+34164 output-case2b_ref6/statistics
