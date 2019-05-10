@@ -240,7 +240,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
 
 *** Timestep 23:  t=3.42235e-05 years
    Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 98 iterations.
+   Solving C_1 system ... 47 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 24+0 iterations.
 
@@ -333,7 +333,7 @@ Number of degrees of freedom: 109 (50+9+25+25)
 
 *** Timestep 32:  t=0.1 years
    Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 49 iterations.
+   Solving C_1 system ... 25 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 14+0 iterations.
 

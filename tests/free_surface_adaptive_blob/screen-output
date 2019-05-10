@@ -130,7 +130,7 @@ Number of free surface degrees of freedom: 1594
 
 *** Timestep 8:  t=8.84988e+06 years
    Solving mesh velocity system... 1 iterations.
-   Solving temperature system... 34 iterations.
+   Solving temperature system... 33 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+15 iterations.
 

@@ -13,10 +13,10 @@ Number of degrees of freedom: 3,556 (2,467+1,089)
      Temperature min/avg/max:            0.091 K, 0.591 K, 1.091 K
      Heat fluxes through boundary parts: 0 W, 0 W, -1 W, 1 W
      Writing depth average:              output-king_ala/depth_average.gnuplot
-     Heating rate (average/total):       -3.737e-09 W/kg, -4.245e-09 W
+     Heating rate (average/total):       -3.737e-09 W/kg, -4.246e-09 W
 
 *** Timestep 1:  t=0.107179 seconds
-   Solving temperature system... 65 iterations.
+   Solving temperature system... 53 iterations.
    Solving Stokes system... done.
 
    Postprocessing:
@@ -26,7 +26,7 @@ Number of degrees of freedom: 3,556 (2,467+1,089)
      Heating rate (average/total):       3.028e-05 W/kg, 3.441e-05 W
 
 *** Timestep 2:  t=0.118913 seconds
-   Solving temperature system... 64 iterations.
+   Solving temperature system... 62 iterations.
    Solving Stokes system... done.
 
    Postprocessing:
@@ -36,7 +36,7 @@ Number of degrees of freedom: 3,556 (2,467+1,089)
      Heating rate (average/total):       0.0009923 W/kg, 0.001127 W
 
 *** Timestep 3:  t=0.123495 seconds
-   Solving temperature system... 61 iterations.
+   Solving temperature system... 60 iterations.
    Solving Stokes system... done.
 
    Postprocessing:
@@ -46,7 +46,7 @@ Number of degrees of freedom: 3,556 (2,467+1,089)
      Heating rate (average/total):       0.004537 W/kg, 0.005154 W
 
 *** Timestep 4:  t=0.126803 seconds
-   Solving temperature system... 55 iterations.
+   Solving temperature system... 53 iterations.
    Solving Stokes system... done.
 
    Postprocessing:
@@ -56,7 +56,7 @@ Number of degrees of freedom: 3,556 (2,467+1,089)
      Heating rate (average/total):       0.002425 W/kg, 0.002755 W
 
 *** Timestep 5:  t=0.129864 seconds
-   Solving temperature system... 46 iterations.
+   Solving temperature system... 45 iterations.
    Solving Stokes system... done.
 
    Postprocessing:
@@ -66,7 +66,7 @@ Number of degrees of freedom: 3,556 (2,467+1,089)
      Heating rate (average/total):       -2.18e-06 W/kg, -2.476e-06 W
 
 *** Timestep 6:  t=0.133143 seconds
-   Solving temperature system... 42 iterations.
+   Solving temperature system... 41 iterations.
    Solving Stokes system... done.
 
    Postprocessing:
@@ -76,7 +76,7 @@ Number of degrees of freedom: 3,556 (2,467+1,089)
      Heating rate (average/total):       -0.0003042 W/kg, -0.0003456 W
 
 *** Timestep 7:  t=0.136969 seconds
-   Solving temperature system... 38 iterations.
+   Solving temperature system... 37 iterations.
    Solving Stokes system... done.
 
    Postprocessing:
@@ -86,7 +86,7 @@ Number of degrees of freedom: 3,556 (2,467+1,089)
      Heating rate (average/total):       0.0001029 W/kg, 0.0001169 W
 
 *** Timestep 8:  t=0.141597 seconds
-   Solving temperature system... 35 iterations.
+   Solving temperature system... 34 iterations.
    Solving Stokes system... done.
 
    Postprocessing:

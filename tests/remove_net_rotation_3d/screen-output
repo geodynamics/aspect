@@ -12,7 +12,7 @@ Number of degrees of freedom: 15,785 (11,451+517+3,817)
      Angular momentum, Moment of inertia, Angular velocity: 6.85e-08 kg*m^2/s, 1.68 kg*m^2, 4.09e-08 1/s
 
 *** Timestep 1:  t=0.269926 seconds
-   Solving temperature system... 53 iterations.
+   Solving temperature system... 46 iterations.
    Solving Stokes system... 88+0 iterations.
 
    Postprocessing:
@@ -20,7 +20,7 @@ Number of degrees of freedom: 15,785 (11,451+517+3,817)
      Angular momentum, Moment of inertia, Angular velocity: 6.16e-08 kg*m^2/s, 1.68 kg*m^2, 3.68e-08 1/s
 
 *** Timestep 2:  t=1 seconds
-   Solving temperature system... 58 iterations.
+   Solving temperature system... 49 iterations.
    Solving Stokes system... 94+0 iterations.
 
    Postprocessing:
