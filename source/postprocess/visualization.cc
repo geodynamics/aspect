@@ -898,7 +898,7 @@ namespace aspect
           // to keep compatibility with input files. These will be filtered out in parse_parameters().
           const std::string pattern_of_names
             = std::get<dim>(registered_visualization_plugins).get_pattern_of_names ()
-            + "|density|specific heat|thermal conductivity|thermal diffusivity|thermal expansivity|viscosity";
+              + "|density|specific heat|thermal conductivity|thermal diffusivity|thermal expansivity|viscosity";
           prm.declare_entry("List of output variables",
                             "",
                             Patterns::MultipleSelection(pattern_of_names),
@@ -1027,16 +1027,17 @@ namespace aspect
           prm.enter_subsection("Material properties");
           {
             const bool material_properties_explicitly_enabled = std::find(viz_names.begin(),
-                                                                            viz_names.end(),
-                                                                            "material properties") != viz_names.end() ;
+                                                                          viz_names.end(),
+                                                                          "material properties") != viz_names.end() ;
             bool material_properties_enabled = material_properties_explicitly_enabled;
 
             std::set<std::string> deprecated_postprocessors = {"density",
-                                                                  "specific heat",
-                                                                  "thermal conductivity",
-                                                                  "thermal diffusivity",
-                                                                  "thermal expansivity",
-                                                                  "viscosity"};
+                                                               "specific heat",
+                                                               "thermal conductivity",
+                                                               "thermal diffusivity",
+                                                               "thermal expansivity",
+                                                               "viscosity"
+                                                              };
 
             auto plugin_name = viz_names.begin();
             while (plugin_name != viz_names.end())
@@ -1060,8 +1061,8 @@ namespace aspect
                 else
                   ++plugin_name;
               }
-            }
-            prm.leave_subsection();
+          }
+          prm.leave_subsection();
         }
         prm.leave_subsection();
       }
