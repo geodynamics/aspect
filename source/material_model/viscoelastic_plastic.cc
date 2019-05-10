@@ -67,58 +67,6 @@ namespace aspect
     }
 
     template <int dim>
-    double
-    ViscoelasticPlastic<dim>::
-    average_value (const std::vector<double> &volume_fractions,
-                   const std::vector<double> &parameter_values,
-                   const enum AveragingScheme &average_type) const
-    {
-      double averaged_parameter = 0.0;
-
-      switch (average_type)
-        {
-          case arithmetic:
-          {
-            for (unsigned int i=0; i< volume_fractions.size(); ++i)
-              averaged_parameter += volume_fractions[i]*parameter_values[i];
-            break;
-          }
-          case harmonic:
-          {
-            for (unsigned int i=0; i< volume_fractions.size(); ++i)
-              {
-                AssertThrow(parameter_values[i] != 0,
-                            ExcMessage ("All values must be greater than 0 during harmonic averaging"));
-                averaged_parameter += volume_fractions[i]/(parameter_values[i]);
-              }
-            averaged_parameter = 1.0/averaged_parameter;
-            break;
-          }
-          case geometric:
-          {
-            for (unsigned int i=0; i < volume_fractions.size(); ++i)
-              averaged_parameter += volume_fractions[i]*std::log(parameter_values[i]);
-            averaged_parameter = std::exp(averaged_parameter);
-            break;
-          }
-          case maximum_composition:
-          {
-            const unsigned int i = (unsigned int)(std::max_element( volume_fractions.begin(),
-                                                                    volume_fractions.end() )
-                                                  - volume_fractions.begin());
-            averaged_parameter = parameter_values[i];
-            break;
-          }
-          default:
-          {
-            AssertThrow( false, ExcNotImplemented() );
-            break;
-          }
-        }
-      return averaged_parameter;
-    }
-
-    template <int dim>
     void
     ViscoelasticPlastic<dim>::
     evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
@@ -154,15 +102,15 @@ namespace aspect
           const std::vector<double> composition = in.composition[i];
           const double pressure = in.pressure[i];
           const SymmetricTensor<2,dim> strain_rate = in.strain_rate[i];
-          const std::vector<double> volume_fractions = compute_volume_fractions(composition, composition_mask);
+          const std::vector<double> volume_fractions = MaterialUtilities::compute_volume_fractions(composition, composition_mask);
 
           // Arithmetic averaging of specific heat.
           // This may not be strictly the most reasonable thing, but for most Earth materials we hope
           // that they do not vary so much that it is a big problem. This statement also applies to
           // the arithmetic averaging of density and thermal conductivity below.
-          out.specific_heat[i] = average_value(volume_fractions, specific_heats, arithmetic);
+          out.specific_heat[i] = MaterialUtilities::average_value(volume_fractions, specific_heats, MaterialUtilities::arithmetic);
 
-          out.thermal_conductivities[i] = average_value(volume_fractions, thermal_conductivities, arithmetic);
+          out.thermal_conductivities[i] = MaterialUtilities::average_value(volume_fractions, thermal_conductivities, MaterialUtilities::arithmetic);
 
           double density = 0.0;
           for (unsigned int j=0; j < volume_fractions.size(); ++j)
@@ -174,7 +122,7 @@ namespace aspect
             }
           out.densities[i] = density;
 
-          out.thermal_expansion_coefficients[i] = average_value(volume_fractions, thermal_expansivities, arithmetic);
+          out.thermal_expansion_coefficients[i] = MaterialUtilities::average_value(volume_fractions, thermal_expansivities, MaterialUtilities::arithmetic);
 
           // Compressibility at the given positions.
           // The compressibility is given as
@@ -245,11 +193,11 @@ namespace aspect
 
                 }
 
-              out.viscosities[i] = average_value(volume_fractions,viscosities_viscoelastic,viscosity_averaging);
+              out.viscosities[i] = MaterialUtilities::average_value(volume_fractions,viscosities_viscoelastic,viscosity_averaging);
 
               if (ElasticAdditionalOutputs<dim> *elastic_out = out.template get_additional_output<ElasticAdditionalOutputs<dim> >())
                 {
-                  elastic_out->elastic_shear_moduli[i] = average_value(volume_fractions,elastic_shear_moduli,viscosity_averaging);
+                  elastic_out->elastic_shear_moduli[i] = MaterialUtilities::average_value(volume_fractions,elastic_shear_moduli,viscosity_averaging);
                 }
 
               // Fill elastic force outputs (assumed to be zero during initial time step)
@@ -287,7 +235,7 @@ namespace aspect
             {
 
               const std::vector<double> composition = in.composition[i];
-              const std::vector<double> volume_fractions = compute_volume_fractions(composition, composition_mask);
+              const std::vector<double> volume_fractions = MaterialUtilities::compute_volume_fractions(composition, composition_mask);
 
               // Get old stresses from compositional fields
               SymmetricTensor<2,dim> stress_old;
@@ -299,9 +247,9 @@ namespace aspect
               const Tensor<2,dim> rotation = 0.5 * ( old_velocity_gradients[i] - transpose(old_velocity_gradients[i]) );
 
               // Recalculate average elastic shear modulus
-              const double elastic_shear_modulus = average_value(volume_fractions,
-                                                                 elastic_shear_moduli,
-                                                                 viscosity_averaging);
+              const double elastic_shear_modulus = MaterialUtilities::average_value(volume_fractions,
+                                                                                    elastic_shear_moduli,
+                                                                                    viscosity_averaging);
 
               // Average viscoelastic viscosity (viscoplastic viscosity modified for elastic contributions)
               const double viscoelastic_viscosity = out.viscosities[i];
@@ -503,16 +451,8 @@ namespace aspect
           maximum_viscosity = prm.get_double ("Maximum viscosity");
           input_reference_viscosity = prm.get_double ("Reference viscosity");
 
-          if (prm.get ("Viscosity averaging scheme") == "harmonic")
-            viscosity_averaging = harmonic;
-          else if (prm.get ("Viscosity averaging scheme") == "arithmetic")
-            viscosity_averaging = arithmetic;
-          else if (prm.get ("Viscosity averaging scheme") == "geometric")
-            viscosity_averaging = geometric;
-          else if (prm.get ("Viscosity averaging scheme") == "maximum composition")
-            viscosity_averaging = maximum_composition;
-          else
-            AssertThrow(false, ExcMessage("Not a valid viscosity averaging scheme"));
+          viscosity_averaging = MaterialUtilities::parse_compositional_averaging_operation ("Viscosity averaging scheme",
+                                prm);
 
 
           // Plasticity parameters
