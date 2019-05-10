@@ -28,7 +28,7 @@ Number of degrees of freedom: 10,656 (6,528+864+3,264)
    Solving Stokes system... 63+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  0.0257 m/year, 0.0769 m/year
+     RMS, max velocity:                  0.0251 m/year, 0.077 m/year
      Temperature min/avg/max:            273 K, 1579 K, 2600 K
      Heat fluxes through boundary parts: -2.111e+06 W, 6.353e+06 W
 

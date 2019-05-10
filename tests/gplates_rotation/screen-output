@@ -25,10 +25,10 @@ Number of degrees of freedom: 10,656 (6,528+864+3,264)
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 60+0 iterations.
+   Solving Stokes system... 61+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  0.0192 m/year, 0.0765 m/year
+     RMS, max velocity:                  0.0204 m/year, 0.0706 m/year
      Temperature min/avg/max:            273 K, 1579 K, 2600 K
      Heat fluxes through boundary parts: -2.111e+06 W, 6.353e+06 W
 

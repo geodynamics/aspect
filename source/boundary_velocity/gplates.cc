@@ -178,7 +178,7 @@ namespace aspect
          * velocity_values[0] is the table for the theta component, whereas
          * velocity_values[1] is the table for the phi component.
          */
-        Table<2,double> velocity_values[2] = {Table<2,double>(n_theta,n_phi), Table<2,double>(n_theta,n_phi)};
+        Table<2,double> velocity_values[2] = {Table<2,double>(n_theta,n_phi+1), Table<2,double>(n_theta,n_phi+1)};
 
         std::string velos = pt.get<std::string>("gpml:FeatureCollection.gml:featureMember.gpml:VelocityField.gml:rangeSet.gml:DataBlock.gml:tupleList");
         std::stringstream in(velos, std::ios::in);
@@ -208,10 +208,18 @@ namespace aspect
             i++;
           }
 
+        // Pad the longitude data with values for phi == 2*pi (== 0),
+        // this simplifies interpolation later.
+        for (unsigned int i=0; i<n_theta; ++i)
+          {
+            velocity_values[0][i][n_phi] = velocity_values[0][i][0];
+            velocity_values[1][i][n_phi] = velocity_values[1][i][0];
+          }
+
         // number of intervals in the direction of theta and phi
         std::array<unsigned int,2> table_intervals;
         table_intervals[0] = n_theta - 1;
-        table_intervals[1] = n_phi - 1;
+        table_intervals[1] = n_phi;
 
         // Min and Max coordinates in data file
         std::array<std::pair<double,double>,2> grid_extent;
