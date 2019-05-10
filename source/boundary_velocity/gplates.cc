@@ -208,10 +208,12 @@ namespace aspect
             i++;
           }
 
+        // Pad the longitude data with values for phi == 2*pi (== 0),
+        // this simplifies interpolation later.
         for (unsigned int i=0; i<n_theta; ++i)
           {
-            velocity_values[0][i][n_phi]= velocity_values[0][i][0];
-            velocity_values[1][i][n_phi]= velocity_values[1][i][0];
+            velocity_values[0][i][n_phi] = velocity_values[0][i][0];
+            velocity_values[1][i][n_phi] = velocity_values[1][i][0];
           }
 
         // number of intervals in the direction of theta and phi
