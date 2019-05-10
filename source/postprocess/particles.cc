@@ -32,12 +32,11 @@ namespace aspect
 {
   namespace Postprocess
   {
-#if DEAL_II_VERSION_GTE(9,0,0)
     namespace internal
     {
       template<int dim>
       void
-      ParticleOutput<dim>::build_patches(const Particle::ParticleHandler<dim> &particle_handler,
+      ParticleOutput<dim>::build_patches(const dealii::Particles::ParticleHandler<dim> &particle_handler,
                                          const aspect::Particle::Property::ParticlePropertyInformation &property_information,
                                          const bool only_group_3d_vectors)
       {
@@ -131,7 +130,6 @@ namespace aspect
       }
 
     }
-#endif
 
     template <int dim>
     Particles<dim>::Particles ()
@@ -141,21 +139,17 @@ namespace aspect
       // initialize this to a nonsensical value; set it to the actual time
       // the first time around we get to check it
       last_output_time (std::numeric_limits<double>::quiet_NaN())
-#if DEAL_II_VERSION_GTE(9,0,0)
       ,output_file_number (numbers::invalid_unsigned_int),
       group_files(0),
       write_in_background_thread(false)
-#endif
     {}
 
     template <int dim>
     Particles<dim>::~Particles ()
     {
-#if DEAL_II_VERSION_GTE(9,0,0)
       // make sure a thread that may still be running in the background,
       // writing data, finishes
       background_thread.join ();
-#endif
     }
 
     template <int dim>
@@ -186,7 +180,6 @@ namespace aspect
       return world;
     }
 
-#if DEAL_II_VERSION_GTE(9,0,0)
     template <int dim>
     // We need to pass the arguments by value, as this function can be called on a separate thread:
     void Particles<dim>::writer (const std::string filename, //NOLINT(performance-unnecessary-value-param)
@@ -317,7 +310,6 @@ namespace aspect
                                                              output_file_names_by_timestep[timestep]));
       DataOutBase::write_visit_record (global_visit_master, times_and_output_file_names);
     }
-#endif
 
     template <int dim>
     std::pair<std::string,std::string>
@@ -348,7 +340,6 @@ namespace aspect
       if (world.get_property_manager().need_update() == Particle::Property::update_output_step)
         world.update_particles();
 
-#if DEAL_II_VERSION_GTE(9,0,0)
       if (output_file_number == numbers::invalid_unsigned_int)
         output_file_number = 0;
       else
@@ -520,21 +511,6 @@ namespace aspect
       statistics.add_value ("Particle file name",
                             particle_output);
       return std::make_pair("Writing particle output:", particle_output);
-#else
-      set_last_output_time (this->get_time());
-      const std::string data_file_name = world.generate_output();
-
-      // If we do not write output return early with the number of particles
-      // that were advected
-      if (data_file_name == "")
-        return std::make_pair("Number of advected particles:",
-                              Utilities::int_to_string(world.n_global_particles()));
-
-      // record the file base file name in the output file
-      statistics.add_value ("Particle file name",
-                            this->get_output_directory() + data_file_name);
-      return std::make_pair("Writing particle output:", data_file_name);
-#endif
     }
 
 
@@ -564,12 +540,10 @@ namespace aspect
     void Particles<dim>::serialize (Archive &ar, const unsigned int)
     {
       ar &last_output_time
-#if DEAL_II_VERSION_GTE(9,0,0)
       & output_file_number
       & times_and_pvtu_file_names
       & output_file_names_by_timestep
       & xdmf_entries
-#endif
       ;
     }
 
@@ -623,7 +597,6 @@ namespace aspect
                              "'Use years in output instead of seconds' parameter is set; "
                              "seconds otherwise.");
 
-#if DEAL_II_VERSION_GTE(9,0,0)
           // now also see about the file format we're supposed to write in
           // Note: "ascii" is a legacy format used by ASPECT before particle output
           // in deal.II was implemented. It is nearly identical to the gnuplot format, thus
@@ -659,7 +632,6 @@ namespace aspect
                              "move this file to a network file system. If this variable is "
                              "set to a non-empty string it will be interpreted as a "
                              "temporary storage location.");
-#endif
         }
         prm.leave_subsection ();
       }
@@ -685,7 +657,6 @@ namespace aspect
                       ExcMessage("Postprocessing nonlinear iterations in models with "
                                  "particles is currently not supported."));
 
-#if DEAL_II_VERSION_GTE(9,0,0)
           output_formats   = Utilities::split_string_list(prm.get ("Data output format"));
           AssertThrow(Utilities::has_unique_entries(output_formats),
                       ExcMessage("The list of strings for the parameter "
@@ -731,7 +702,6 @@ namespace aspect
                                      "there is a terminal available to move the files to their final location "
                                      "after writing. The system() command did not succeed in finding such a terminal."));
             }
-#endif
         }
         prm.leave_subsection ();
       }
@@ -752,7 +722,6 @@ namespace aspect
 {
   namespace Postprocess
   {
-#if DEAL_II_VERSION_GTE(9,0,0)
     namespace internal
     {
 #define INSTANTIATE(dim) \
@@ -760,7 +729,6 @@ namespace aspect
 
       ASPECT_INSTANTIATE(INSTANTIATE)
     }
-#endif
 
     ASPECT_REGISTER_POSTPROCESSOR(Particles,
                                   "particles",
