@@ -31,7 +31,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
      Writing depth average:              output-diffusion/depth_average.gnuplot
 
 *** Timestep 3:  t=2.75704e+07 seconds
-   Solving temperature system... 80 iterations.
+   Solving temperature system... 83 iterations.
    Solving Stokes system... 33+0 iterations.
 
    Postprocessing:

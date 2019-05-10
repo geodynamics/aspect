@@ -16,12 +16,12 @@ Number of degrees of freedom: 15,785 (11,451+517+3,817)
      Heat fluxes through boundary parts: 109.5 W
 
 *** Timestep 1:  t=50 seconds
-   Solving temperature system... 50 iterations.
-   Solving Stokes system... 69+0 iterations.
+   Solving temperature system... 51 iterations.
+   Solving Stokes system... 70+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-inner_core/solution/solution-00001
-     RMS, max velocity:                  4.22e-05 m/s, 0.000104 m/s
+     RMS, max velocity:                  4.24e-05 m/s, 0.000104 m/s
      Temperature min/avg/max:            0 K, 0.3996 K, 0.999 K
      Heat fluxes through boundary parts: 25.12 W
 
