@@ -347,7 +347,10 @@ namespace aspect
     double                         temperature_solver_tolerance;
     double                         composition_solver_tolerance;
 
-    // subsection: Stokes parameters
+    // subsection: Advection solver parameters
+    unsigned int                   advection_gmres_restart_length;
+
+    // subsection: Stokes solver parameters
     bool                           use_direct_stokes_solver;
     double                         linear_stokes_solver_tolerance;
     unsigned int                   n_cheap_stokes_solver_steps;

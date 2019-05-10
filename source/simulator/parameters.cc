@@ -316,6 +316,19 @@ namespace aspect
                          "the composition system gets solved. See `Stokes solver "
                          "parameters/Linear solver tolerance' for more details.");
 
+      prm.enter_subsection ("Advection solver parameters");
+      {
+        prm.declare_entry ("GMRES solver restart length", "50",
+                           Patterns::Integer(1),
+                           "This is the number of iterations that define the GMRES solver restart length. "
+                           "Increasing this parameter helps with convergence issues arising from high localized "
+                           "viscosity jumps in the domain. Be aware that increasing this number increases the "
+                           "memory usage of the Advection solver, and makes individual advection iterations more "
+                           "expensive.");
+      }
+      prm.leave_subsection();
+
+
       prm.enter_subsection ("Stokes solver parameters");
       {
         prm.declare_entry ("Use direct solver for Stokes system", "false",
@@ -1202,6 +1215,12 @@ namespace aspect
     {
       temperature_solver_tolerance    = prm.get_double ("Temperature solver tolerance");
       composition_solver_tolerance    = prm.get_double ("Composition solver tolerance");
+
+      prm.enter_subsection ("Advection solver parameters");
+      {
+        advection_gmres_restart_length     = prm.get_integer("GMRES solver restart length");
+      }
+      prm.leave_subsection ();
 
       prm.enter_subsection ("Stokes solver parameters");
       {
