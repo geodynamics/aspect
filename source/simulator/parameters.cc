@@ -320,11 +320,13 @@ namespace aspect
       {
         prm.declare_entry ("GMRES solver restart length", "50",
                            Patterns::Integer(1),
-                           "This is the number of iterations that define the GMRES solver restart length. "
-                           "Increasing this parameter helps with convergence issues arising from high localized "
-                           "viscosity jumps in the domain. Be aware that increasing this number increases the "
-                           "memory usage of the Advection solver, and makes individual advection iterations more "
-                           "expensive.");
+                           "This is the number of iterations that define the "
+                           "GMRES solver restart length. Increasing this "
+                           "parameter makes the solver more robust and decreases "
+                           "the number of iterations. Be aware that "
+                           "increasing this number increases the memory usage "
+                           "of the advection solver, and makes individual "
+                           "iterations more expensive.");
       }
       prm.leave_subsection();
 
