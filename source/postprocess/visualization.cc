@@ -1026,10 +1026,9 @@ namespace aspect
           // plugin to avoid duplicated code and multiple calls to the material model
           prm.enter_subsection("Material properties");
           {
-            const bool material_properties_explicitly_enabled = std::find(viz_names.begin(),
-                                                                          viz_names.end(),
-                                                                          "material properties") != viz_names.end() ;
-            bool material_properties_enabled = material_properties_explicitly_enabled;
+            bool material_properties_enabled = std::find(viz_names.begin(),
+                                                         viz_names.end(),
+                                                         "material properties") != viz_names.end() ;
 
             std::set<std::string> deprecated_postprocessors = {"density",
                                                                "specific heat",
@@ -1039,22 +1038,29 @@ namespace aspect
                                                                "viscosity"
                                                               };
 
+            // For all selected visualization plugins
             auto plugin_name = viz_names.begin();
             while (plugin_name != viz_names.end())
               {
+                // Check if the current name is in the set of the deprecated names
                 if (deprecated_postprocessors.count(*plugin_name) != 0)
                   {
+                    // If there is no 'material properties' yet
                     if (material_properties_enabled == false)
                       {
+                        // Set the current property name as the parameter for 'material properties'
                         prm.set("List of material properties",*plugin_name);
+                        // Then replace the currently selected plugin with 'material properties'
                         *plugin_name = "material properties";
                         material_properties_enabled = true;
                         ++plugin_name;
                       }
                     else
                       {
+                        // Add the current property name to the parameter of 'material properties'
                         std::string new_property_names = prm.get("List of material properties") + ", " + *plugin_name;
                         prm.set("List of material properties",new_property_names);
+                        // Then delete the current plugin
                         plugin_name = viz_names.erase(plugin_name);
                       }
                   }
