@@ -1,7 +1,7 @@
 # Test to check the status of the random initial composition perturbation
 # plugin.
 
-subsection Model settings
+subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, right, bottom, top
 end
 
