@@ -1081,7 +1081,7 @@ namespace aspect
                 SolverFGMRES<LinearAlgebra::BlockVector>
                 solver(solver_control_cheap, mem,
                        SolverFGMRES<LinearAlgebra::BlockVector>::
-                   AdditionalData(parameters.stokes_gmres_restart_length));
+                       AdditionalData(parameters.stokes_gmres_restart_length));
 
                 solver.solve (stokes_block,
                               distributed_stokes_solution,
@@ -1094,7 +1094,7 @@ namespace aspect
             // step 1b: take the stronger solver in case
             // the simple solver failed and attempt solving
             // it in n_expensive_stokes_solver_steps steps or less.
-        catch (const SolverControl::NoConvergence &)
+            catch (const SolverControl::NoConvergence &)
               {
                 // use the value defined by the user
                 // OR
@@ -1106,7 +1106,7 @@ namespace aspect
                 SolverFGMRES<LinearAlgebra::BlockVector>
                 solver(solver_control_expensive, mem,
                        SolverFGMRES<LinearAlgebra::BlockVector>::
-                   AdditionalData(number_of_temporary_vectors));
+                       AdditionalData(number_of_temporary_vectors));
 
                 try
                   {
