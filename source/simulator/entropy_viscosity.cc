@@ -363,7 +363,7 @@ namespace aspect
                   (*scratch.face_finite_element_values)[introspection.extractors.velocities].get_function_values(old_old_solution,
                       face_old_old_velocity_values);
 
-                  // ... check if the face is an boundary with normal flow by integrating the normal velocities
+                  // ... check if the face is a boundary with normal flow by integrating the normal velocities
                   // (flux through the boundary) as: int u*n ds = Sum_q u(x_q)*n(x_q) JxW(x_q)...
                   double normal_flow = 0.0;
                   double flow = 0.0;
