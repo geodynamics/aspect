@@ -892,10 +892,13 @@ namespace aspect
                              "has its own velocity field.  This may be written as an output field "
                              "by setting this parameter to true.");
 
-          // finally also construct a string for Patterns::MultipleSelection that
-          // contains the names of all registered visualization postprocessors
+          // Finally also construct a string for Patterns::MultipleSelection that
+          // contains the names of all registered visualization postprocessors.
+          // Also add a number of removed plugins that are now combined in 'material properties'
+          // to keep compatibility with input files. These will be filtered out in parse_parameters().
           const std::string pattern_of_names
-            = std::get<dim>(registered_visualization_plugins).get_pattern_of_names ();
+            = std::get<dim>(registered_visualization_plugins).get_pattern_of_names ()
+              + "|density|specific heat|thermal conductivity|thermal diffusivity|thermal expansivity|viscosity";
           prm.declare_entry("List of output variables",
                             "",
                             Patterns::MultipleSelection(pattern_of_names),
@@ -1018,6 +1021,54 @@ namespace aspect
                    p != std::get<dim>(registered_visualization_plugins).plugins->end(); ++p)
                 viz_names.push_back (std::get<0>(*p));
             }
+
+          // Unify material property visualization plugins into the 'material properties'
+          // plugin to avoid duplicated code and multiple calls to the material model
+          prm.enter_subsection("Material properties");
+          {
+            bool material_properties_enabled = std::find(viz_names.begin(),
+                                                         viz_names.end(),
+                                                         "material properties") != viz_names.end() ;
+
+            std::set<std::string> deprecated_postprocessors = {"density",
+                                                               "specific heat",
+                                                               "thermal conductivity",
+                                                               "thermal diffusivity",
+                                                               "thermal expansivity",
+                                                               "viscosity"
+                                                              };
+
+            // For all selected visualization plugins
+            auto plugin_name = viz_names.begin();
+            while (plugin_name != viz_names.end())
+              {
+                // Check if the current name is in the set of the deprecated names
+                if (deprecated_postprocessors.count(*plugin_name) != 0)
+                  {
+                    // If there is no 'material properties' yet
+                    if (material_properties_enabled == false)
+                      {
+                        // Set the current property name as the parameter for 'material properties'
+                        prm.set("List of material properties",*plugin_name);
+                        // Then replace the currently selected plugin with 'material properties'
+                        *plugin_name = "material properties";
+                        material_properties_enabled = true;
+                        ++plugin_name;
+                      }
+                    else
+                      {
+                        // Add the current property name to the parameter of 'material properties'
+                        std::string new_property_names = prm.get("List of material properties") + ", " + *plugin_name;
+                        prm.set("List of material properties",new_property_names);
+                        // Then delete the current plugin
+                        plugin_name = viz_names.erase(plugin_name);
+                      }
+                  }
+                else
+                  ++plugin_name;
+              }
+          }
+          prm.leave_subsection();
         }
         prm.leave_subsection();
       }
