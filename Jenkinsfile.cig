@@ -56,6 +56,30 @@ pipeline {
       }
     }
 
+    stage('Unity Build') {
+      options {
+        timeout(time: 30, unit: 'MINUTES')
+      }
+      steps {
+        sh 'mkdir build-gcc-unity'
+
+        sh '''
+          cd build-gcc-unity
+
+          # Set up build system and compile ASPECT
+          cmake \
+            -D ASPECT_USE_PETSC='OFF' \
+            -D ASPECT_PRECOMPILE_HEADERS='ON' \
+            ..
+        '''
+
+        sh '''
+          cd build-gcc-unity
+          make aspect_unity
+        '''
+      }
+    }
+
     stage('Build') {
       options {
         timeout(time: 30, unit: 'MINUTES')
