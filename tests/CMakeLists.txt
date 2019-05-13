@@ -275,6 +275,11 @@ FOREACH(_test ${_tests})
       SET(_output_files ${_output_files} ${_path_and_name})
     ENDFOREACH()
 
+    # fail is the user forgot to create reference files instead of silently passing the test
+    IF("${_output_files}" STREQUAL "")
+      MESSAGE(FATAL_ERROR "test ${_testname}.prm is missing a folder with reference data")
+    ENDIF()
+
     # run command
     IF("${_mpi_count}" STREQUAL "1")
       ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/screen-output
