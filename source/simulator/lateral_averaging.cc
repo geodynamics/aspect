@@ -361,7 +361,8 @@ namespace aspect
     std::vector<double> volume(n_slices,0.0);
 
     // We would like to use a quadrature formula that is appropriately accurate laterally,
-    // but has a high resolution in depth (to populate all depth slices for the averages).
+    // but has a higher resolution in depth (to have values for all depth slices, even if there
+    // are adaptively coarsened cells that are much bigger than individual slices).
     // For that we need to know the depth direction in the unit cell coordinate system, which
     // is only unique (= the same for all cells) in some geometries. In these geometries we
     // can optimize the quadrature, otherwise we need to use a high-resolution quadrature in
