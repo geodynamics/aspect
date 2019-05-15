@@ -10276,12 +10276,12 @@ All five benchmarks solve for Boussinesq convection in a box of $1 \times 1$ dim
 \begin{align}
   \eta_\text{linear}(T,z) &= \exp(-\ln(\eta_T) T + \ln(\eta_Z) z)
   \label{eq:tosi-benchmark-lin-visc} \\
-  \eta_\text{plastic}(\dot\epsilon) &= \eta^\ast + \frac{\sigma_y}{\sqrt(\dot\epsilon:\dot\epsilon)}
+  \eta_\text{plastic}(\dot\epsilon) &= \eta^\ast + \frac{\sigma_y}{\sqrt{\dot\epsilon:\dot\epsilon}}
   \label{eq:tosi-benchmark-plast-visc}
 \end{align}
 where $\eta^\ast$ is the constant effective viscosity at high stresses and $\sigma_y$ the yield stress.
 
-\paragraph{Case 1: Temparature-dependent convection.}
+\paragraph{Case 1: Temperature-dependent convection.}
 \label{sec:benchmark-tosi-case-1}
 
 The first benchmark considers a viscosity that only depends on temperature (Eq. \eqref{eq:tosi-benchmark-lin-visc}, with $\gamma_Z=0$). When run to steady-state, this produces one convection cell with a high viscosity, stagnant lid insulating the fluid below (see Fig. 1 of \cite{T15}). In \cite{T15}, results of different codes are compared by looking at the average temperature, the Nusselt number at the top and bottom of the domain, the RMS velocity at the top boundary and in the whole domain, and the maximum velocity at the surface. These quantities can be queried by using several of the \aspect{} postprocessors, but the additional postprocessor in \url{benchmarks/tosi_et_al_2015_gcubed/tosi.cc} is needed to compute the average rate of work done against gravity, the average rate of viscous dissipation, and the error between them. Differences between these diagnostic quantities of the 11 codes that participated in the benchmark effort are smaller than 5\% for their preferred mesh resolution.
