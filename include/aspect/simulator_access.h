@@ -138,7 +138,11 @@ namespace aspect
 
   template <int dim> class MeltHandler;
   template <int dim> class VolumeOfFluidHandler;
-  template <int dim> class FreeSurfaceHandler;
+
+  namespace MeshDeformation
+  {
+    template <int dim> class MeshDeformationHandler;
+  }
 
   template <int dim> class NewtonHandler;
 
@@ -756,7 +760,7 @@ namespace aspect
        * Return a reference to the free surface handler. This function will
        * throw an exception if no free surface is activated.
        */
-      const FreeSurfaceHandler<dim> &
+      const MeshDeformation::MeshDeformationHandler<dim> &
       get_free_surface_handler () const;
 
       /**

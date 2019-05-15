@@ -27,7 +27,7 @@
 #include <aspect/simulator/assemblers/interface.h>
 #include <aspect/melt.h>
 #include <aspect/newton.h>
-#include <aspect/free_surface.h>
+#include <aspect/mesh_deformation/free_surface.h>
 #include <aspect/simulator/assemblers/stokes.h>
 #include <aspect/simulator/assemblers/advection.h>
 
@@ -253,28 +253,16 @@ namespace aspect
         && !assemble_newton_stokes_system)
       {
         set_default_assemblers();
-
-        // Let the free surface add its assembler:
-        if (parameters.free_surface_enabled)
-          free_surface->set_assemblers();
       }
     else if (parameters.include_melt_transport
              && !assemble_newton_stokes_system)
       {
         melt_handler->set_assemblers(*assemblers);
-
-        // Let the free surface add its assembler:
-        if (parameters.free_surface_enabled)
-          free_surface->set_assemblers();
       }
     else if (!parameters.include_melt_transport
              && assemble_newton_stokes_system)
       {
         newton_handler->set_assemblers(*assemblers);
-
-        // Let the free surface add its assembler:
-        if (parameters.free_surface_enabled)
-          free_surface->set_assemblers();
       }
     else if (parameters.include_melt_transport
              && assemble_newton_stokes_system)

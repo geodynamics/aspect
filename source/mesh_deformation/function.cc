@@ -69,7 +69,7 @@ namespace aspect
     template <int dim>
     void Function<dim>::declare_parameters(ParameterHandler &prm)
     {
-      prm.enter_subsection ("Free surface");
+      prm.enter_subsection ("Mesh deformation");
       {
         prm.enter_subsection ("Function");
         {
@@ -83,7 +83,7 @@ namespace aspect
     template <int dim>
     void Function<dim>::parse_parameters(ParameterHandler &prm)
     {
-      prm.enter_subsection ("Free surface");
+      prm.enter_subsection ("Mesh deformation");
       {
         prm.enter_subsection("Function");
         try

@@ -111,7 +111,7 @@ namespace aspect
     };
 
     template<int dim>
-    class FreeSurfaceHandler: public SimulatorAccess<dim>
+    class MeshDeformationHandler: public SimulatorAccess<dim>
     {
       public:
         /**
@@ -120,12 +120,12 @@ namespace aspect
          * Simulator that owns it, since it needs to make fairly extensive
          * changes to the internals of the simulator.
          */
-        FreeSurfaceHandler(Simulator<dim> &simulator);
+        MeshDeformationHandler(Simulator<dim> &simulator);
 
         /**
          * Destructor for the free surface handler.
          */
-        ~FreeSurfaceHandler();
+        ~MeshDeformationHandler();
 
         void initialize();
 
@@ -141,7 +141,7 @@ namespace aspect
         void execute();
 
         /**
-         * Allocates and sets up the members of the FreeSurfaceHandler. This
+         * Allocates and sets up the members of the MeshDeformationHandler. This
          * is called by Simulator<dim>::setup_dofs()
          */
         void setup_dofs();
@@ -163,7 +163,7 @@ namespace aspect
          * know them by name. This allows the files in which individual
          * plugins are implemented to register these plugins, rather than also
          * having to modify the Manager class by adding the new initial
-         * temperature plugin class.
+         * mesh deformation plugin class.
          *
          * @param name A string that identifies the mesh deformation model
          * @param description A text description of what this model does and that
@@ -194,7 +194,7 @@ namespace aspect
          * Return a list of pointers to all mesh deformation models
          * currently used in the computation, as specified in the input file.
          */
-        const std::vector<std_cxx11::shared_ptr<Interface<dim> > > &
+        const std::vector<std::shared_ptr<Interface<dim> > > &
         get_active_mesh_deformation_models () const;
 
         /**
@@ -235,7 +235,7 @@ namespace aspect
          * A list of mesh deformation objects that have been requested in the
          * parameter file.
          */
-        std::vector<std_cxx11::shared_ptr<Interface<dim> > > mesh_deformation_objects;
+        std::vector<std::shared_ptr<Interface<dim> > > mesh_deformation_objects;
 
         /**
          * A list of names of mesh deformation objects that have been requested
@@ -247,11 +247,13 @@ namespace aspect
          * Set the boundary conditions for the solution of the elliptic
          * problem, which computes the displacements of the internal
          * vertices so that the mesh does not become too distorted due to
-         * motion of the free surface.  Velocities of vertices on the
+         * motion of the free surface. Velocities of vertices on the
          * deforming surface are fixed according to the selected deformation
-         * plugins.  Velocities of vertices on free-slip
-         * boundaries are constrained to be tangential to those boundaries.
-         * Velocities of vertices on no-slip boundaries are set to be zero.
+         * plugins. Velocities of vertices on free-slip boundaries are
+         * constrained to be tangential to those boundaries. Velocities of
+         * vertices on no-slip boundaries are set to be zero. If a no-slip
+         * boundary is marked as additional tangential, then vertex velocities
+         * are constrained as tangential.
          */
         void make_constraints ();
 
@@ -266,7 +268,7 @@ namespace aspect
         void interpolate_mesh_velocity ();
 
         /**
-         * Reference to the Simulator object to which a FreeSurfaceHandler
+         * Reference to the Simulator object to which a MeshDeformationHandler
          * instance belongs.
          */
         Simulator<dim> &sim;
@@ -349,9 +351,9 @@ namespace aspect
     template <typename MeshDeformationType>
     inline
     MeshDeformationType *
-    FreeSurfaceHandler<dim>::find_mesh_deformation_model () const
+    MeshDeformationHandler<dim>::find_mesh_deformation_model () const
     {
-      for (typename std::list<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
+      for (typename std::list<std::shared_ptr<Interface<dim> > >::const_iterator
            p = mesh_deformation_objects.begin();
            p != mesh_deformation_objects.end(); ++p)
         if (MeshDeformationType *x = dynamic_cast<MeshDeformationType *> ( (*p).get()) )
@@ -386,10 +388,10 @@ namespace aspect
   namespace ASPECT_REGISTER_MESH_DEFORMATION_MODEL_ ## classname \
   { \
     aspect::internal::Plugins::RegisterHelper<aspect::MeshDeformation::Interface<2>,classname<2> > \
-    dummy_ ## classname ## _2d (&aspect::MeshDeformation::FreeSurfaceHandler<2>::register_mesh_deformation, \
+    dummy_ ## classname ## _2d (&aspect::MeshDeformation::MeshDeformationHandler<2>::register_mesh_deformation, \
                                 name, description); \
     aspect::internal::Plugins::RegisterHelper<aspect::MeshDeformation::Interface<3>,classname<3> > \
-    dummy_ ## classname ## _3d (&aspect::MeshDeformation::FreeSurfaceHandler<3>::register_mesh_deformation, \
+    dummy_ ## classname ## _3d (&aspect::MeshDeformation::MeshDeformationHandler<3>::register_mesh_deformation, \
                                 name, description); \
   }
   }

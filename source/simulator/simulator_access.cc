@@ -20,7 +20,7 @@
 
 
 #include <aspect/simulator.h>
-#include <aspect/free_surface.h>
+#include <aspect/mesh_deformation/free_surface.h>
 
 namespace aspect
 {
@@ -637,7 +637,7 @@ namespace aspect
 
 
   template <int dim>
-  const FreeSurfaceHandler<dim> &
+  const MeshDeformation::MeshDeformationHandler<dim> &
   SimulatorAccess<dim>::get_free_surface_handler () const
   {
     Assert (simulator->free_surface.get() != nullptr,

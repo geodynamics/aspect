@@ -140,10 +140,10 @@ namespace aspect
     void
     FreeSurface<dim>::initialize ()
     {
-      this->get_signals().set_assemblers.connect(std_cxx11::bind(&FreeSurface<dim>::set_assemblers,
-                                                                 std_cxx11::cref(*this),
-                                                                 std_cxx11::_1,
-                                                                 std_cxx11::_2));
+      this->get_signals().set_assemblers.connect(std::bind(&FreeSurface<dim>::set_assemblers,
+                                                           std::cref(*this),
+                                                           std::placeholders::_1,
+                                                           std::placeholders::_2));
     }
 
 
@@ -156,7 +156,7 @@ namespace aspect
         = new aspect::Assemblers::ApplyStabilization<dim>(free_surface_theta);
 
       assemblers.stokes_system.push_back(
-        std_cxx11::unique_ptr<aspect::Assemblers::ApplyStabilization<dim> > (surface_stabilization));
+        std::unique_ptr<aspect::Assemblers::ApplyStabilization<dim> > (surface_stabilization));
 
       // Note that we do not want face_material_model_data, because we do not
       // connect to a face assembler. We instead connect to a normal assembler,
@@ -349,7 +349,7 @@ namespace aspect
     template <int dim>
     void FreeSurface<dim>::declare_parameters(ParameterHandler &prm)
     {
-      prm.enter_subsection ("Free surface");
+      prm.enter_subsection ("Mesh deformation");
       {
         prm.declare_entry("Free surface stabilization theta", "0.5",
                           Patterns::Double(0,1),
@@ -382,7 +382,7 @@ namespace aspect
     template <int dim>
     void FreeSurface<dim>::parse_parameters(ParameterHandler &prm)
     {
-      prm.enter_subsection ("Free surface");
+      prm.enter_subsection ("Mesh deformation");
       {
         free_surface_theta = prm.get_double("Free surface stabilization theta");
         std::string advection_dir = prm.get("Surface velocity projection");

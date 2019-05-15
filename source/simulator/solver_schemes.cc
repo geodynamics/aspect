@@ -21,7 +21,7 @@
 
 #include <aspect/simulator.h>
 #include <aspect/global.h>
-#include <aspect/free_surface.h>
+#include <aspect/mesh_deformation/free_surface.h>
 #include <aspect/volume_of_fluid/handler.h>
 #include <aspect/newton.h>
 #include <aspect/melt.h>
