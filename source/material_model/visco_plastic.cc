@@ -171,13 +171,13 @@ namespace aspect
 
           // Calculate the strain weakened cohesion, friction and viscosity factors
           const std::array<double, 3> weakened_values = compute_weakened_yield_parameters(j, composition);
-          // Reduce the viscosity by the viscous strain weakening factor, 
+          // Reduce the viscosity by the viscous strain weakening factor,
           // which is 1 if no viscous strain-softening is specified.
           viscosity_pre_yield *= weakened_values[2];
 
           // Weakened friction and cohesion values
           std::pair<double, double> yield_parameters (weakened_values[0], weakened_values[1]);
-          
+
           // Third step: plastic yielding
 
           // Calculate Drucker-Prager yield strength (i.e. yield stress)
@@ -290,9 +290,9 @@ namespace aspect
           }
         }
 
-        std::array<double, 3> weakened_values = {yield_parameters.first,yield_parameters.second,viscous_weakening};
+      std::array<double, 3> weakened_values = {yield_parameters.first,yield_parameters.second,viscous_weakening};
 
-        return weakened_values;
+      return weakened_values;
 
     }
 
@@ -350,7 +350,7 @@ namespace aspect
           // set to weakened values, or unweakened values when strain weakening is not used
           for (unsigned int j=0; j < volume_fractions.size(); ++j)
             {
-    
+
               // Calculate the strain weakened cohesion, friction and viscosity factors
               const std::array<double, 3> weakened_values = compute_weakened_yield_parameters(j, in.composition[i]);
               // Weakened friction and cohesion values
