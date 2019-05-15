@@ -23,34 +23,13 @@
 
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>
+#include <aspect/material_model/viscoelastic.h>
 
 namespace aspect
 {
   namespace MaterialModel
   {
     using namespace dealii;
-
-    /**
-    * Additional output fields for the elastic shear modulus to be added to
-    * the MaterialModel::MaterialModelOutputs structure and filled in the
-    * MaterialModel::Interface::evaluate() function.
-    */
-    template <int dim>
-    class ElasticAdditionalOutputs : public NamedAdditionalMaterialOutputs<dim>
-    {
-      public:
-        ElasticAdditionalOutputs(const unsigned int n_points);
-
-        virtual std::vector<double> get_nth_output(const unsigned int idx) const;
-
-        /**
-         * Elastic shear moduli at the evaluation points passed to
-         * the instance of MaterialModel::Interface::evaluate() that fills
-         * the current object.
-         */
-        std::vector<double> elastic_shear_moduli;
-    };
-
     /**
      * A material model that combines non-linear plasticity with a simple linear
      * viscoelastic material behavior. The model is incompressible. Note that
@@ -102,7 +81,7 @@ namespace aspect
      * However, an important distinction between this material model and
      * the studies above is the use of compositional fields, rather than
      * tracers, to track individual components of the viscoelastic stress
-     * tensor. The material model will be udpated when an option to track
+     * tensor. The material model will be updated when an option to track
      * and calculate viscoelastic stresses with tracers is implemented.
      *
      * Moresi et al. (2003) begins (eqn. 23) by writing the deviatoric
@@ -136,12 +115,12 @@ namespace aspect
      * W^{t}\tau^{t} + \tau^{t}W^{t}$.
      * In this material model, the size of the time step above ($\\Delta t^{e}$)
      * can be specified as the numerical time step size or an independent fixed time
-     * step. If the latter case is a selected, the user has an option to apply a
+     * step. If the latter case is selected, the user has an option to apply a
      * stress averaging scheme to account for the differences between the numerical
      * and fixed elastic time step (eqn. 32). If one selects to use a fixed elastic time
      * step throughout the model run, an equal numerical and elastic time step can be
      * achieved by using CFL and maximum time step values that restrict the numerical
-     * time step to a specific time.
+     * time step to the fixed elastic time step.
      *
      * The formulation above allows rewriting the total rate of deformation (eqn. 29) as
      * $\tau^{t + \Delta t^{e}} = \eta_{eff} \left (

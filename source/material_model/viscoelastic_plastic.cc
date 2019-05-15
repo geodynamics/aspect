@@ -23,7 +23,6 @@
 #include <aspect/utilities.h>
 #include <deal.II/fe/fe_values.h>
 #include <deal.II/base/quadrature_lib.h>
-#include <aspect/global.h>
 #include <numeric>
 #include <deal.II/base/signaling_nan.h>
 
@@ -31,40 +30,6 @@ namespace aspect
 {
   namespace MaterialModel
   {
-
-    namespace
-    {
-      std::vector<std::string> make_elastic_additional_outputs_names()
-      {
-        std::vector<std::string> names;
-        names.push_back("elastic_shear_modulus");
-        return names;
-      }
-    }
-
-    template <int dim>
-    ElasticAdditionalOutputs<dim>::ElasticAdditionalOutputs (const unsigned int n_points)
-      :
-      NamedAdditionalMaterialOutputs<dim>(make_elastic_additional_outputs_names()),
-      elastic_shear_moduli(n_points, numbers::signaling_nan<double>())
-    {}
-
-    template <int dim>
-    std::vector<double>
-    ElasticAdditionalOutputs<dim>::get_nth_output(const unsigned int idx) const
-    {
-      AssertIndexRange (idx, 1);
-      switch (idx)
-        {
-          case 0:
-            return elastic_shear_moduli;
-
-          default:
-            AssertThrow(false, ExcInternalError());
-        }
-      // we will never get here, so just return something
-      return elastic_shear_moduli;
-    }
 
     template <int dim>
     void
@@ -124,18 +89,10 @@ namespace aspect
 
           out.thermal_expansion_coefficients[i] = MaterialUtilities::average_value(volume_fractions, thermal_expansivities, MaterialUtilities::arithmetic);
 
-          // Compressibility at the given positions.
-          // The compressibility is given as
-          // $\frac 1\rho \frac{\partial\rho}{\partial p}$.
-          // (here we use an incompressible medium)
+          // Set properties that are not relevant for this material model to 0
           out.compressibilities[i] = 0.0;
-          // Pressure derivative of entropy at the given positions.
           out.entropy_derivative_pressure[i] = 0.0;
-          // Temperature derivative of entropy at the given positions.
           out.entropy_derivative_temperature[i] = 0.0;
-          // Change in composition due to chemical reactions at the
-          // given positions. The term reaction_terms[i][c] is the
-          // change in compositional field c at point i.
           for (unsigned int c=0; c<in.composition[i].size(); ++c)
             out.reaction_terms[i][c] = 0.0;
 
@@ -168,6 +125,7 @@ namespace aspect
               for (unsigned int j=0; j < volume_fractions.size(); ++j)
                 {
 
+                  // Note that edot_ii is the full computed strain rate, which includes elastic stresses
                   stresses_viscous[j] = 2. * viscosities_pre_yield[j] * edot_ii;
 
                   stresses_yield[j] = ( (dim==3)
@@ -373,7 +331,6 @@ namespace aspect
                              "with different viscosities, we need to come up with an average "
                              "viscosity at that point.  Select a weighted harmonic, arithmetic, "
                              "geometric, or maximum composition.");
-
           prm.declare_entry ("Linear viscosities", "1.e21",
                              Patterns::List(Patterns::Double(0)),
                              "List of linear (fixed) viscosities for background material and compositional fields, "
@@ -466,7 +423,7 @@ namespace aspect
                                                               n_fields,
                                                               "Cohesions");
 
-          // Parse viscoelastic properties
+          // Parse additional material properties
           densities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Densities"))),
                                                               n_fields,
                                                               "Densities");
@@ -543,9 +500,6 @@ namespace aspect
           else
             ExcNotImplemented();
 
-          // It does not make sense to use this material with the 'no Advection, iterated Stokes'
-          // 'single Advection, no Stokes', 'iterated Advection and Stokes' or 'iterated Advection
-          // and Newton Stokes' solver schemes.
           AssertThrow((this->get_parameters().nonlinear_solver ==
                        Parameters<dim>::NonlinearSolver::single_Advection_single_Stokes
                        ||
