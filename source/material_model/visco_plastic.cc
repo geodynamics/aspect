@@ -166,70 +166,20 @@ namespace aspect
               }
             }
 
-          std::pair<double, double> yield_parameters (cohesions[j], angles_internal_friction[j]);
-
 
           // Second step: strain weakening
-          // Calculate and/or constrain the strain invariant of the previous timestep
-          if (weakening_mechanism != none)
-            {
-              switch (weakening_mechanism)
-                {
-                  case finite_strain_tensor:
-                  {
-                    // Calculate second invariant of left stretching tensor "L"
-                    Tensor<2,dim> strain;
-                    for (unsigned int q = 0; q < Tensor<2,dim>::n_independent_components ; ++q)
-                      strain[Tensor<2,dim>::unrolled_to_component_indices(q)] = composition[q];
-                    const SymmetricTensor<2,dim> L = symmetrize( strain * transpose(strain) );
 
-                    const double strain_ii = std::fabs(second_invariant(L));
-                    yield_parameters = calculate_plastic_weakening(strain_ii, j);
-                    viscosity_pre_yield *= calculate_viscous_weakening(strain_ii, j);
-                    break;
-                  }
-                  case total_strain:
-                  {
-                    const unsigned int total_strain_index = this->introspection().compositional_index_for_name("total_strain");
-                    yield_parameters = calculate_plastic_weakening(composition[total_strain_index], j);
-                    viscosity_pre_yield *= calculate_viscous_weakening(composition[total_strain_index], j);
-                    break;
-                  }
-                  case plastic_weakening_with_total_strain_only:
-                  {
-                    const unsigned int total_strain_index = this->introspection().compositional_index_for_name("total_strain");
-                    yield_parameters = calculate_plastic_weakening(composition[total_strain_index], j);
-                    break;
-                  }
-                  case plastic_weakening_with_plastic_strain_only:
-                  {
-                    const unsigned int plastic_strain_index = this->introspection().compositional_index_for_name("plastic_strain");
-                    yield_parameters = calculate_plastic_weakening(composition[plastic_strain_index], j);
-                    break;
-                  }
-                  case plastic_weakening_with_plastic_strain_and_viscous_weakening_with_viscous_strain:
-                  {
-                    const unsigned int plastic_strain_index = this->introspection().compositional_index_for_name("plastic_strain");
-                    yield_parameters = calculate_plastic_weakening(composition[plastic_strain_index], j);
-                    const unsigned int viscous_strain_index = this->introspection().compositional_index_for_name("viscous_strain");
-                    viscosity_pre_yield *= calculate_viscous_weakening(composition[viscous_strain_index], j);
-                    break;
-                  }
-                  case viscous_weakening_with_viscous_strain_only:
-                  {
-                    const unsigned int viscous_strain_index = this->introspection().compositional_index_for_name("viscous_strain");
-                    viscosity_pre_yield *= calculate_viscous_weakening(composition[viscous_strain_index], j);
-                    break;
-                  }
-                  default:
-                  {
-                    AssertThrow(false, ExcNotImplemented());
-                    break;
-                  }
-                }
-            }
+          // Calculate the strain weakened cohesion, friction and viscosity factors
+          const std::array<double, 3> weakened_values = compute_weakened_yield_parameters(j, composition);
+          // Reduce the viscosity by the viscous strain weakening factor, 
+          // which is 1 if no viscous strain-softening is specified.
+          viscosity_pre_yield *= weakened_values[2];
 
+          // Weakened friction and cohesion values
+          std::pair<double, double> yield_parameters (weakened_values[0], weakened_values[1]);
+          
           // Third step: plastic yielding
+
           // Calculate Drucker-Prager yield strength (i.e. yield stress)
           const MaterialUtilities::DruckerPragerInputs plastic_in(yield_parameters.first, yield_parameters.second, std::max(pressure,0.0), edot_ii, max_yield_strength);
           MaterialUtilities::DruckerPragerOutputs plastic_out;
@@ -272,6 +222,79 @@ namespace aspect
       return std::make_pair (composition_viscosities, composition_yielding);
     }
 
+    template <int dim>
+    std::array<double, 3>
+    ViscoPlastic<dim>::
+    compute_weakened_yield_parameters(const unsigned int j,
+                                      const std::vector<double> &composition ) const
+    {
+      double viscous_weakening = 1.0;
+      std::pair<double, double> yield_parameters (cohesions[j], angles_internal_friction[j]);
+
+      switch (weakening_mechanism)
+        {
+          case none:
+          {
+            break;
+          }
+          case finite_strain_tensor:
+          {
+            // Calculate second invariant of left stretching tensor "L"
+            Tensor<2,dim> strain;
+            for (unsigned int q = 0; q < Tensor<2,dim>::n_independent_components ; ++q)
+              strain[Tensor<2,dim>::unrolled_to_component_indices(q)] = composition[q];
+            const SymmetricTensor<2,dim> L = symmetrize( strain * transpose(strain) );
+
+            const double strain_ii = std::fabs(second_invariant(L));
+            yield_parameters = calculate_plastic_weakening(strain_ii, j);
+            viscous_weakening = calculate_viscous_weakening(strain_ii, j);
+            break;
+          }
+          case total_strain:
+          {
+            const unsigned int total_strain_index = this->introspection().compositional_index_for_name("total_strain");
+            yield_parameters = calculate_plastic_weakening(composition[total_strain_index], j);
+            viscous_weakening = calculate_viscous_weakening(composition[total_strain_index], j);
+            break;
+          }
+          case plastic_weakening_with_total_strain_only:
+          {
+            const unsigned int total_strain_index = this->introspection().compositional_index_for_name("total_strain");
+            yield_parameters = calculate_plastic_weakening(composition[total_strain_index], j);
+            break;
+          }
+          case plastic_weakening_with_plastic_strain_only:
+          {
+            const unsigned int plastic_strain_index = this->introspection().compositional_index_for_name("plastic_strain");
+            yield_parameters = calculate_plastic_weakening(composition[plastic_strain_index], j);
+            break;
+          }
+          case plastic_weakening_with_plastic_strain_and_viscous_weakening_with_viscous_strain:
+          {
+            const unsigned int plastic_strain_index = this->introspection().compositional_index_for_name("plastic_strain");
+            yield_parameters = calculate_plastic_weakening(composition[plastic_strain_index], j);
+            const unsigned int viscous_strain_index = this->introspection().compositional_index_for_name("viscous_strain");
+            viscous_weakening = calculate_viscous_weakening(composition[viscous_strain_index], j);
+            break;
+          }
+          case viscous_weakening_with_viscous_strain_only:
+          {
+            const unsigned int viscous_strain_index = this->introspection().compositional_index_for_name("viscous_strain");
+            viscous_weakening = calculate_viscous_weakening(composition[viscous_strain_index], j);
+            break;
+          }
+          default:
+          {
+            AssertThrow(false, ExcNotImplemented());
+            break;
+          }
+        }
+
+        std::array<double, 3> weakened_values = {yield_parameters.first,yield_parameters.second,viscous_weakening};
+
+        return weakened_values;
+
+    }
 
     template <int dim>
     std::pair<double, double>
@@ -327,60 +350,11 @@ namespace aspect
           // set to weakened values, or unweakened values when strain weakening is not used
           for (unsigned int j=0; j < volume_fractions.size(); ++j)
             {
-              std::pair<double, double> yield_parameters (cohesions[j], angles_internal_friction[j]);
-
-              switch (weakening_mechanism)
-                {
-                  case none:
-                  {
-                    break;
-                  }
-                  case finite_strain_tensor:
-                  {
-                    // Calculate second invariant of left stretching tensor "L"
-                    Tensor<2,dim> strain;
-                    for (unsigned int q = 0; q < Tensor<2,dim>::n_independent_components ; ++q)
-                      strain[Tensor<2,dim>::unrolled_to_component_indices(q)] = in.composition[i][q];
-                    const SymmetricTensor<2,dim> L = symmetrize( strain * transpose(strain) );
-
-                    const double strain_ii = std::fabs(second_invariant(L));
-                    yield_parameters = calculate_plastic_weakening(strain_ii, j);
-                    break;
-                  }
-                  case total_strain:
-                  {
-                    const unsigned int total_strain_index = this->introspection().compositional_index_for_name("total_strain");
-                    yield_parameters = calculate_plastic_weakening(in.composition[i][total_strain_index], j);
-                    break;
-                  }
-                  case plastic_weakening_with_total_strain_only:
-                  {
-                    const unsigned int total_strain_index = this->introspection().compositional_index_for_name("total_strain");
-                    yield_parameters = calculate_plastic_weakening(in.composition[i][total_strain_index], j);
-                    break;
-                  }
-                  case plastic_weakening_with_plastic_strain_only:
-                  {
-                    const unsigned int plastic_strain_index = this->introspection().compositional_index_for_name("plastic_strain");
-                    yield_parameters = calculate_plastic_weakening(in.composition[i][plastic_strain_index], j);
-                    break;
-                  }
-                  case plastic_weakening_with_plastic_strain_and_viscous_weakening_with_viscous_strain:
-                  {
-                    const unsigned int plastic_strain_index = this->introspection().compositional_index_for_name("plastic_strain");
-                    yield_parameters = calculate_plastic_weakening(in.composition[i][plastic_strain_index], j);
-                    break;
-                  }
-                  case viscous_weakening_with_viscous_strain_only:
-                  {
-                    break;
-                  }
-                  default:
-                  {
-                    AssertThrow(false, ExcNotImplemented());
-                    break;
-                  }
-                }
+    
+              // Calculate the strain weakened cohesion, friction and viscosity factors
+              const std::array<double, 3> weakened_values = compute_weakened_yield_parameters(j, in.composition[i]);
+              // Weakened friction and cohesion values
+              std::pair<double, double> yield_parameters (weakened_values[0], weakened_values[1]);
 
               C   += volume_fractions[j] * yield_parameters.first;
               phi += volume_fractions[j] * yield_parameters.second;

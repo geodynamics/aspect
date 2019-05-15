@@ -230,6 +230,13 @@ namespace aspect
                                           const YieldScheme &yield_type) const;
 
         /**
+         *
+         */
+        std::array<double, 3>
+        compute_weakened_yield_parameters(  const unsigned int j,
+                                            const std::vector<double> &composition) const;
+
+        /**
          * A function that computes the strain weakened values
          * of cohesion and internal friction angle for a given
          * compositional field.
