@@ -36,7 +36,7 @@ subsection Gravity model
   set Model name = function
 
   subsection Function
-    set Function expression = 0.0;4.0 * pi * pi * cos(pi*x)/sin(pi*x)
+    set Function expression = 0.0;-4.0 * pi * pi * cos(pi*x)/sin(pi*x)
   end
 end
 

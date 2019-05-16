@@ -1,10 +1,11 @@
 #!/bin/bash
 
-# Run all models in this directory. Note that resolution 7/8 require a workstation or cluster
+# Run all models in this directory. Modify the loops below for running only a
+# subset of models
 
-for stokes_degree in 2 3; do #3
+for stokes_degree in 2 3; do # 2 3
   for discontinuous_pressure in false; do # true
-    for refinement in 3 4 5 6 7; do # 7 8
+    for refinement in 2 3 4 5 6 7 8; do # 2 3 4 5 6 7 8
         echo "subsection Discretization" > current.prm
         echo "  set Stokes velocity polynomial degree = $stokes_degree" >> current.prm
         echo "  set Use locally conservative discretization = $discontinuous_pressure" >> current.prm
@@ -16,7 +17,7 @@ for stokes_degree in 2 3; do #3
 
         echo "set Output directory = Q${stokes_degree}_P${discontinuous_pressure}_refinement${refinement}" >> current.prm
         echo "Starting Q${stokes_degree}_P${discontinuous_pressure}_refinement${refinement}"
-        cat rigid_shear.prm current.prm | mpirun -oversubscribe -np 12 ./aspect --
+        cat rigid_shear.prm current.prm | ../plugin/aspect --
     done
   done
 done

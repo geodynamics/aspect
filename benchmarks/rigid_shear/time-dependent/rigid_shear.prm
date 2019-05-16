@@ -52,7 +52,7 @@ subsection Gravity model
   set Model name = function
 
   subsection Function
-    set Function expression = 0.0; (x<0.00001) ? 0.0 : (x>0.99999) ? 0.0 : 4.0 * pi * pi * cos(pi*x)/sin(pi*x)
+    set Function expression = 0.0; (x<0.00001) ? 0.0 : (x>0.99999) ? 0.0 : -4.0 * pi * pi * cos(pi*x)/sin(pi*x)
   end
 end
 
@@ -93,8 +93,10 @@ subsection Postprocess
     set List of particle properties = initial composition
     set Integration scheme = rk2
     set Interpolation scheme = bilinear least squares
-    set Maximum particles per cell = 16384
     set Update ghost particles = true
+    set Minimum particles per cell = 9
+    set Maximum particles per cell = 16384
+#    set Load balancing strategy = add particles
     set Particle generator name = reference cell #random uniform
     set Number of particles = 8192 
 

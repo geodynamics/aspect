@@ -53,9 +53,9 @@ namespace aspect
                                     Vector<double> &values) const
           {
             const double pi = dealii::numbers::PI;
-            values[0] = -std::sin(pi*p[0]) * std::cos(pi*p[1]);
-            values[1] =  std::cos(pi*p[0]) * std::sin(pi*p[1]);
-            values[2] = - 2.0 * pi * std::cos(pi*p[0]) * std::cos(pi*p[1]);
+            values[0] = std::sin(pi*p[0]) * std::cos(pi*p[1]);
+            values[1] = -std::cos(pi*p[0]) * std::sin(pi*p[1]);
+            values[2] = 2.0 * pi * std::cos(pi*p[0]) * std::cos(pi*p[1]);
             return;
           }
       };
