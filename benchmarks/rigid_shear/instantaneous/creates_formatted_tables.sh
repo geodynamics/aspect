@@ -14,9 +14,10 @@ for stokes_degree in ${stokes_degrees[@]}; do
       echo $current_dir
 
       if [ -f ${current_dir}/log.txt ]; then
-        #3 for velocity, 4 for pressure
+        #3 for velocity, 4 for pressure, 5 for density
         grep -i "Error" ${current_dir}/log.txt | cut -d':' -f2 | cut -d',' -f3 | tr -d '\n' >> results.txt
         grep -i "Error" ${current_dir}/log.txt | cut -d':' -f2 | cut -d',' -f4 | tr -d '\n' >> results.txt
+        grep -i "Error" ${current_dir}/log.txt | cut -d':' -f2 | cut -d',' -f5 | tr -d '\n' >> results.txt
       fi
     done
     echo "" >> results.txt

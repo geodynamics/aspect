@@ -8,7 +8,9 @@ set End time                               = 0.0
 set Output directory                       = output
 
 set Pressure normalization                 = no
-set Nonlinear solver scheme                = single Advection, single Stokes
+set Nonlinear solver scheme                = no Advection, iterated Stokes
+set Max nonlinear iterations               = 1
+
 set Use years in output instead of seconds = false
 
 
@@ -24,6 +26,20 @@ end
 
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, right, bottom, top
+end
+
+
+subsection Compositional fields
+  set Names of fields = density_comp
+  set Number of fields = 1
+end
+
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Function expression = sin(pi*x)*sin(pi*y)
+  end
 end
 
 
@@ -68,6 +84,9 @@ subsection Postprocess
 
   subsection Visualization
     set Time between graphical output = 0.0
-    set List of output variables = material properties
+    set List of output variables = material properties, artificial viscosity composition
+    subsection Artificial viscosity composition
+      set Name of compositional field = density_comp
+    end
   end
 end

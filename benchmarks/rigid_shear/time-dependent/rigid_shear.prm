@@ -4,7 +4,7 @@
 set Additional shared libraries            = ../plugin/librigid_shear.so
 
 set Dimension                              = 2
-set End time                               = 2.0 
+set End time                               = 0.1
 set Output directory                       = output
 
 set Pressure normalization                 = no
@@ -22,23 +22,27 @@ subsection Geometry model
 end
 
 
+subsection Discretization
+  set Use discontinuous composition discretization = true
+end
+
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, right, bottom, top
 end
 
 
 subsection Compositional fields
-  set Number of fields = 1
-  set Names of fields = density_comp
-  set Compositional field methods = particles
-  set Mapped particle properties = density_comp:initial density_comp
+  set Number of fields = 2
+  set Names of fields = density_comp, forcing_term_y
+  set Compositional field methods = particles, particles
+  set Mapped particle properties = density_comp:function, forcing_term_y:forcing_term_y
 end
 
 
 subsection Initial composition model
   set Model name = function
   subsection Function
-    set Function expression = sin(pi*x)*sin(pi*y)
+    set Function expression = sin(pi*x)*sin(pi*y); - 4.0 * pi * pi * cos(pi*x)*sin(pi*y) 
   end
 end
 
@@ -52,7 +56,7 @@ subsection Gravity model
   set Model name = function
 
   subsection Function
-    set Function expression = 0.0; (x<0.00001) ? 0.0 : (x>0.99999) ? 0.0 : -4.0 * pi * pi * cos(pi*x)/sin(pi*x)
+    set Function expression = 0.0; 1.0
   end
 end
 
@@ -74,7 +78,7 @@ end
 
 subsection Mesh refinement
   set Initial adaptive refinement              = 0
-  set Initial global refinement                = 5
+  set Initial global refinement                = 3
   set Time steps between mesh refinement       = 0
 end
 
@@ -83,20 +87,24 @@ subsection Postprocess
   set List of postprocessors = visualization, particles, rigid shear
 
   subsection Visualization
-    set Time between graphical output = 0.0
+    set Time between graphical output = 0.1
     set List of output variables = material properties, gravity
   end
 
   subsection Particles
-    set Time between data output = 0
+    set Time between data output = 0.1
     set Data output format = vtu
-    set List of particle properties = initial composition
+    set List of particle properties = function, rigid shear forcing term
+
+    subsection Function
+      set Function expression = sin(pi*x)*sin(pi*y)
+    end
+
     set Integration scheme = rk2
     set Interpolation scheme = bilinear least squares
     set Update ghost particles = true
     set Minimum particles per cell = 9
     set Maximum particles per cell = 16384
-#    set Load balancing strategy = add particles
     set Particle generator name = reference cell #random uniform
     set Number of particles = 8192 
 
