@@ -22,10 +22,10 @@ Number of degrees of freedom: 28,553 (12,611+8,450+1,089+4,225+1,089+1,089)
    Solving for u_f in 11 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: -0.02189/0.3214/3.739e+10 // 0/0/0
+     Compositions min/max/mass: -0.01666/0.3185/3.739e+10 // 0/0/0
      RMS, max velocity:         0.000529 m/year, 0.00146 m/year
 
-*** Timestep 2:  t=1.01555e+07 years
+*** Timestep 2:  t=1.01594e+07 years
    Solving composition reactions in 1 substep(s).
    Solving temperature system... 19 iterations.
    Solving peridotite system ... 5 iterations.
@@ -34,7 +34,7 @@ Number of degrees of freedom: 28,553 (12,611+8,450+1,089+4,225+1,089+1,089)
    Solving for u_f in 11 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: -0.02428/0.3288/3.739e+10 // 0/0/0
+     Compositions min/max/mass: -0.02469/0.3288/3.739e+10 // 0/0/0
      RMS, max velocity:         0.000504 m/year, 0.00132 m/year
 
 *** Timestep 3:  t=1.5e+07 years
@@ -46,7 +46,7 @@ Number of degrees of freedom: 28,553 (12,611+8,450+1,089+4,225+1,089+1,089)
    Solving for u_f in 11 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: -0.01956/0.3267/3.739e+10 // 0/0/0
+     Compositions min/max/mass: -0.02118/0.3303/3.739e+10 // 0/0/0
      RMS, max velocity:         0.000483 m/year, 0.00122 m/year
 
 Termination requested by criterion: end time

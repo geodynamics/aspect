@@ -8,9 +8,9 @@ Number of degrees of freedom: 268 (162+25+81)
    Solving Stokes system... 2+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  5.82e-13 m/year, 1.51e-12 m/year
+     RMS, max velocity:                  5.49e-13 m/year, 1.2e-12 m/year
      Temperature min/avg/max:            3 K, 3.5 K, 4 K
-     Heat fluxes through boundary parts: 0 W, 0 W, -12.96 W, 12.96 W
+     Heat fluxes through boundary parts: 0 W, 0 W, -4.7 W, 4.7 W
      Writing graphical output:           output-ascii_data_adiabatic_conditions/solution/solution-00000
      Writing depth average:              output-ascii_data_adiabatic_conditions/depth_average.gnuplot
 
@@ -19,7 +19,7 @@ Number of degrees of freedom: 268 (162+25+81)
    Solving Stokes system... 16+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  1.19e-14 m/year, 2.17e-14 m/year
+     RMS, max velocity:                  1.73e-14 m/year, 2.87e-14 m/year
      Temperature min/avg/max:            3 K, 3.5 K, 4 K
      Heat fluxes through boundary parts: 0 W, 0 W, -4.7 W, 4.7 W
 

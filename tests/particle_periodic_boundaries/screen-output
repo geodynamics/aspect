@@ -15,12 +15,12 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
 
 *** Timestep 1:  t=70 seconds
    Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 14 iterations.
+   Solving C_1 system ... 13 iterations.
    Solving Stokes system... 36+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:         0.000341 m/s, 0.000841 m/s
-     Compositions min/max/mass: -0.003566/1.005/0.1821
+     RMS, max velocity:         0.00034 m/s, 0.000839 m/s
+     Compositions min/max/mass: -0.00258/1.003/0.1821
      Writing particle output:   output-particle_periodic_boundaries/particles/particles-00001
 
 Termination requested by criterion: end time

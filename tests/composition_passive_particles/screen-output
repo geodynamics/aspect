@@ -15,8 +15,8 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
 
 *** Timestep 1:  t=0.0625 seconds
    Solving temperature system... 10 iterations.
-   Solving C_1 system ... 10 iterations.
-   Solving C_2 system ... 11 iterations.
+   Solving C_1 system ... 9 iterations.
+   Solving C_2 system ... 10 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 9+0 iterations.
 
@@ -24,9 +24,9 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
      Number of advected particles: 10
 
 *** Timestep 2:  t=0.125 seconds
-   Solving temperature system... 10 iterations.
-   Solving C_1 system ... 11 iterations.
-   Solving C_2 system ... 10 iterations.
+   Solving temperature system... 11 iterations.
+   Solving C_1 system ... 12 iterations.
+   Solving C_2 system ... 12 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 17+0 iterations.
 
@@ -35,9 +35,9 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
      Writing particle output:  output-composition_passive_particles/particles/particles-00001
 
 *** Timestep 3:  t=0.1875 seconds
-   Solving temperature system... 10 iterations.
+   Solving temperature system... 12 iterations.
    Solving C_1 system ... 12 iterations.
-   Solving C_2 system ... 11 iterations.
+   Solving C_2 system ... 12 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 17+0 iterations.
 
@@ -45,8 +45,8 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
      Number of advected particles: 10
 
 *** Timestep 4:  t=0.25 seconds
-   Solving temperature system... 10 iterations.
-   Solving C_1 system ... 11 iterations.
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 12 iterations.
    Solving C_2 system ... 11 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 17+0 iterations.
@@ -56,9 +56,9 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
      Writing particle output:  output-composition_passive_particles/particles/particles-00002
 
 *** Timestep 5:  t=0.3125 seconds
-   Solving temperature system... 10 iterations.
-   Solving C_1 system ... 11 iterations.
-   Solving C_2 system ... 11 iterations.
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 12 iterations.
+   Solving C_2 system ... 12 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 17+0 iterations.
 
@@ -67,9 +67,9 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
      Writing particle output:  output-composition_passive_particles/particles/particles-00003
 
 *** Timestep 6:  t=0.375 seconds
-   Solving temperature system... 9 iterations.
-   Solving C_1 system ... 11 iterations.
-   Solving C_2 system ... 10 iterations.
+   Solving temperature system... 11 iterations.
+   Solving C_1 system ... 12 iterations.
+   Solving C_2 system ... 11 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 16+0 iterations.
 
@@ -77,9 +77,9 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
      Number of advected particles: 10
 
 *** Timestep 7:  t=0.4375 seconds
-   Solving temperature system... 10 iterations.
-   Solving C_1 system ... 11 iterations.
-   Solving C_2 system ... 10 iterations.
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 12 iterations.
+   Solving C_2 system ... 11 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 17+0 iterations.
 
@@ -88,9 +88,9 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
      Writing particle output:  output-composition_passive_particles/particles/particles-00004
 
 *** Timestep 8:  t=0.5 seconds
-   Solving temperature system... 10 iterations.
-   Solving C_1 system ... 10 iterations.
-   Solving C_2 system ... 11 iterations.
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 12 iterations.
+   Solving C_2 system ... 12 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 17+0 iterations.
 
@@ -99,9 +99,9 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
      Writing particle output:  output-composition_passive_particles/particles/particles-00005
 
 *** Timestep 9:  t=0.5625 seconds
-   Solving temperature system... 10 iterations.
-   Solving C_1 system ... 10 iterations.
-   Solving C_2 system ... 10 iterations.
+   Solving temperature system... 11 iterations.
+   Solving C_1 system ... 12 iterations.
+   Solving C_2 system ... 11 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 16+0 iterations.
 
@@ -109,9 +109,9 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
      Number of advected particles: 10
 
 *** Timestep 10:  t=0.625 seconds
-   Solving temperature system... 10 iterations.
-   Solving C_1 system ... 10 iterations.
-   Solving C_2 system ... 10 iterations.
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 11 iterations.
+   Solving C_2 system ... 11 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 16+0 iterations.
 
@@ -120,9 +120,9 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
      Writing particle output:  output-composition_passive_particles/particles/particles-00006
 
 *** Timestep 11:  t=0.6875 seconds
-   Solving temperature system... 10 iterations.
-   Solving C_1 system ... 10 iterations.
-   Solving C_2 system ... 10 iterations.
+   Solving temperature system... 11 iterations.
+   Solving C_1 system ... 11 iterations.
+   Solving C_2 system ... 11 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 17+0 iterations.
 
@@ -130,9 +130,9 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
      Number of advected particles: 10
 
 *** Timestep 12:  t=0.75 seconds
-   Solving temperature system... 11 iterations.
-   Solving C_1 system ... 11 iterations.
-   Solving C_2 system ... 11 iterations.
+   Solving temperature system... 13 iterations.
+   Solving C_1 system ... 12 iterations.
+   Solving C_2 system ... 12 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 17+0 iterations.
 
@@ -141,9 +141,9 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
      Writing particle output:  output-composition_passive_particles/particles/particles-00007
 
 *** Timestep 13:  t=0.8125 seconds
-   Solving temperature system... 10 iterations.
-   Solving C_1 system ... 10 iterations.
-   Solving C_2 system ... 10 iterations.
+   Solving temperature system... 11 iterations.
+   Solving C_1 system ... 11 iterations.
+   Solving C_2 system ... 11 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 7+0 iterations.
 
@@ -152,9 +152,9 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
      Writing particle output:  output-composition_passive_particles/particles/particles-00008
 
 *** Timestep 14:  t=0.875 seconds
-   Solving temperature system... 10 iterations.
-   Solving C_1 system ... 10 iterations.
-   Solving C_2 system ... 10 iterations.
+   Solving temperature system... 11 iterations.
+   Solving C_1 system ... 11 iterations.
+   Solving C_2 system ... 11 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 7+0 iterations.
 
@@ -162,20 +162,20 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
      Number of advected particles: 10
 
 *** Timestep 15:  t=0.9375 seconds
-   Solving temperature system... 10 iterations.
-   Solving C_1 system ... 10 iterations.
-   Solving C_2 system ... 9 iterations.
+   Solving temperature system... 11 iterations.
+   Solving C_1 system ... 11 iterations.
+   Solving C_2 system ... 11 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 6+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-composition_passive_particles/solution/solution-00009
      Writing particle output:  output-composition_passive_particles/particles/particles-00009
 
 *** Timestep 16:  t=1 seconds
-   Solving temperature system... 10 iterations.
-   Solving C_1 system ... 10 iterations.
-   Solving C_2 system ... 10 iterations.
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 11 iterations.
+   Solving C_2 system ... 11 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 7+0 iterations.
 

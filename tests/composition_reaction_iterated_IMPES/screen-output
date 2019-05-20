@@ -11,7 +11,7 @@ Number of degrees of freedom: 26,439 (8,450+1,089+4,225+4,225+4,225+4,225)
    Skipping C_3 composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 61+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.73321e-16, 0, 1, 0, 1
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.62191e-16, 0, 1, 0, 1
       Relative nonlinear residual (total system) after nonlinear iteration 1: 1
 
    Solving temperature system... 0 iterations.
@@ -20,7 +20,7 @@ Number of degrees of freedom: 26,439 (8,450+1,089+4,225+4,225+4,225+4,225)
    Solving C_3 system ... 11 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 40+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.72329e-16, 0, 5.7186e-13, 0, 0.00772709
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.68836e-16, 0, 5.71852e-13, 0, 0.00772709
       Relative nonlinear residual (total system) after nonlinear iteration 2: 0.00772709
 
    Solving temperature system... 0 iterations.
@@ -29,7 +29,7 @@ Number of degrees of freedom: 26,439 (8,450+1,089+4,225+4,225+4,225+4,225)
    Solving C_3 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.82797e-16, 0, 5.7186e-13, 0, 8.29714e-08
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.68359e-16, 0, 5.71852e-13, 0, 8.29714e-08
       Relative nonlinear residual (total system) after nonlinear iteration 3: 8.29714e-08
 
 
@@ -38,32 +38,32 @@ Number of degrees of freedom: 26,439 (8,450+1,089+4,225+4,225+4,225+4,225)
      Writing graphical output:  output-composition_reaction_iterated_IMPES/solution/solution-00000
 
 *** Timestep 1:  t=0.01 seconds
-   Solving temperature system... 9 iterations.
+   Solving temperature system... 11 iterations.
    Solving C_1 system ... 11 iterations.
    Solving C_2 system ... 11 iterations.
    Solving C_3 system ... 11 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 14+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.003938, 0.5, 0.5, 0.5, 1.17264e-06
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.00396167, 0.5, 0.5, 0.5, 1.17683e-06
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.5
 
-   Solving temperature system... 5 iterations.
+   Solving temperature system... 4 iterations.
    Solving C_1 system ... 11 iterations.
    Solving C_2 system ... 0 iterations.
    Solving C_3 system ... 11 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 40+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.89051e-07, 0.5, 9.41726e-13, 0.5, 0.00783271
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.89261e-07, 0.5, 2.16118e-13, 0.5, 0.00783271
       Relative nonlinear residual (total system) after nonlinear iteration 2: 0.5
 
-   Solving temperature system... 5 iterations.
+   Solving temperature system... 6 iterations.
    Solving C_1 system ... 0 iterations.
    Solving C_2 system ... 0 iterations.
    Solving C_3 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.40557e-07, 9.41813e-13, 9.41721e-13, 9.41813e-13, 8.42599e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 3: 1.40557e-07
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.94026e-07, 2.16177e-13, 2.16121e-13, 2.16177e-13, 8.42636e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 4.94026e-07
 
 
    Postprocessing:

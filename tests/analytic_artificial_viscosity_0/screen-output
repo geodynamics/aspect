@@ -1,0 +1,44 @@
+
+Number of active cells: 1 (on 1 levels)
+Number of degrees of freedom: 31 (18+4+9)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 2+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:               1 m/s, 1 m/s
+     Temperature min/avg/max:         0 K, 0.8333 K, 1 K
+     Max / average entropy viscosity: 0 W/(m*K), 0 W/(m*K)
+     Writing graphical output:        output-analytic_artificial_viscosity_0/solution/solution-00000
+
+*** Timestep 1:  t=0.5 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:               1 m/s, 1 m/s
+     Temperature min/avg/max:         0 K, 0.2467 K, 0.3875 K
+     Max / average entropy viscosity: 1.41 W/(m*K), 1.41 W/(m*K)
+     Writing graphical output:        output-analytic_artificial_viscosity_0/solution/solution-00001
+
+*** Timestep 2:  t=1 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:               1 m/s, 1 m/s
+     Temperature min/avg/max:         0 K, 0.02209 K, 0.04182 K
+     Max / average entropy viscosity: 1.41 W/(m*K), 1.41 W/(m*K)
+     Writing graphical output:        output-analytic_artificial_viscosity_0/solution/solution-00002
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

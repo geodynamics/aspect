@@ -25,22 +25,22 @@ Number of degrees of freedom: 32,097 (10,258+1,323+5,129+5,129+5,129+5,129)
      Writing graphical output: output-multicomponent_harmonic/solution/solution-00000
 
 *** Timestep 1:  t=56886.5 years
-   Solving temperature system... 11 iterations.
-   Solving C_1 system ... 11 iterations.
-   Solving C_2 system ... 14 iterations.
-   Solving C_3 system ... 11 iterations.
+   Solving temperature system... 10 iterations.
+   Solving C_1 system ... 10 iterations.
+   Solving C_2 system ... 12 iterations.
+   Solving C_3 system ... 10 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 30+8 iterations.
 
    Postprocessing:
 
-*** Timestep 2:  t=112725 years
+*** Timestep 2:  t=112496 years
    Solving temperature system... 10 iterations.
-   Solving C_1 system ... 11 iterations.
+   Solving C_1 system ... 10 iterations.
    Solving C_2 system ... 11 iterations.
    Solving C_3 system ... 10 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+7 iterations.
+   Solving Stokes system... 30+6 iterations.
 
    Postprocessing:
 

@@ -12,8 +12,8 @@ Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
      Heating rate (average/total):  1.865e-12 W/kg, 4.949e+05 W
 
 *** Timestep 1:  t=1e+06 years
-   Solving temperature system... 11 iterations.
-   Solving C_1 system ... 12 iterations.
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 11 iterations.
    Solving Stokes system... 64+0 iterations.
 
    Postprocessing:

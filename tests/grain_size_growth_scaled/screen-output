@@ -26,7 +26,7 @@ Number of degrees of freedom: 17,989 (8,450+1,089+4,225+4,225)
 
 *** Timestep 2:  t=31250 years
    Solving temperature system... 0 iterations.
-   Solving grain_size system ... 14 iterations.
+   Solving grain_size system ... 15 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
@@ -48,7 +48,7 @@ Number of degrees of freedom: 17,989 (8,450+1,089+4,225+4,225)
 
 *** Timestep 4:  t=50000 years
    Solving temperature system... 0 iterations.
-   Solving grain_size system ... 5 iterations.
+   Solving grain_size system ... 6 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 

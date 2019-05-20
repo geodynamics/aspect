@@ -35,15 +35,15 @@ Number of active cells: 867 (on 6 levels)
 Number of degrees of freedom: 12,176 (7,470+971+3,735)
 
 *** Timestep 1:  t=1e+13 seconds
-   Solving temperature system... 15 iterations.
+   Solving temperature system... 20 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 41+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                               1.24e-09 m/s, 3.71e-09 m/s
-     Temperature min/avg/max:                         -198.5 K, 101.2 K, 1613 K
-     Heat fluxes through boundary parts:              -5.744e+06 W, -1.751e+06 W, 0 W, 0 W
-     Max, min, and rms velocity along boundary parts: 3.692e-09 m/s, 4.323e-12 m/s, 2.064e-09 m/s, 0 m/s, 0 m/s, 0 m/s, 1.764e-10 m/s, 2.122e-12 m/s, 1.117e-10 m/s, 1.442e-09 m/s, 1.778e-12 m/s, 9.186e-10 m/s
+     Temperature min/avg/max:                         -213.9 K, 100.4 K, 1613 K
+     Heat fluxes through boundary parts:              -8.114e+04 W, -7.363e+04 W, 0 W, 0 W
+     Max, min, and rms velocity along boundary parts: 3.693e-09 m/s, 4.272e-12 m/s, 2.064e-09 m/s, 0 m/s, 0 m/s, 0 m/s, 1.754e-10 m/s, 2.121e-12 m/s, 1.11e-10 m/s, 1.441e-09 m/s, 1.768e-12 m/s, 9.181e-10 m/s
 
 Termination requested by criterion: end time
 *** Snapshot created!

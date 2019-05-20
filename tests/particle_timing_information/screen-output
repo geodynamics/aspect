@@ -43,12 +43,12 @@ Number of degrees of freedom: 673 (314+45+157+157)
 
 *** Timestep 1:  t=70 seconds
    Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 15 iterations.
+   Solving C_1 system ... 14 iterations.
    Solving Stokes system... 18+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:         0.000294 m/s, 0.000754 m/s
-     Compositions min/max/mass: -0.03271/1.126/0.1805
+     RMS, max velocity:         0.000293 m/s, 0.00075 m/s
+     Compositions min/max/mass: -0.01897/1.122/0.1806
      Writing particle output:   output-particle_timing_information/particles/particles-00001
 
 Termination requested by criterion: end time

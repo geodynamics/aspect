@@ -15,7 +15,7 @@ Number of degrees of freedom: 32,196 (8,450+1,089+4,225+9,216+9,216)
      Writing graphical output:     output-particle_interpolator_time_dependence/solution/solution-00000
 
 *** Timestep 1:  t=0.0198883 seconds
-   Solving temperature system... 11 iterations.
+   Solving temperature system... 12 iterations.
    Solving Stokes system... 20+0 iterations.
 
    Postprocessing:
@@ -48,7 +48,7 @@ Number of degrees of freedom: 32,196 (8,450+1,089+4,225+9,216+9,216)
      Writing graphical output:     output-particle_interpolator_time_dependence/solution/solution-00003
 
 *** Timestep 4:  t=0.0823503 seconds
-   Solving temperature system... 12 iterations.
+   Solving temperature system... 11 iterations.
    Solving Stokes system... 60+0 iterations.
 
    Postprocessing:
@@ -59,7 +59,7 @@ Number of degrees of freedom: 32,196 (8,450+1,089+4,225+9,216+9,216)
      Writing graphical output:     output-particle_interpolator_time_dependence/solution/solution-00004
 
 *** Timestep 5:  t=0.104827 seconds
-   Solving temperature system... 12 iterations.
+   Solving temperature system... 11 iterations.
    Solving Stokes system... 61+0 iterations.
 
    Postprocessing:
@@ -114,7 +114,7 @@ Number of degrees of freedom: 32,196 (8,450+1,089+4,225+9,216+9,216)
      Writing graphical output:     output-particle_interpolator_time_dependence/solution/solution-00009
 
 *** Timestep 10:  t=0.230005 seconds
-   Solving temperature system... 12 iterations.
+   Solving temperature system... 11 iterations.
    Solving Stokes system... 61+0 iterations.
 
    Postprocessing:
@@ -311,7 +311,7 @@ Number of degrees of freedom: 32,196 (8,450+1,089+4,225+9,216+9,216)
      Temperature min/avg/max:      0 K, 0.5002 K, 1 K
      Writing graphical output:     output-particle_interpolator_time_dependence/solution/solution-00027
 
-*** Timestep 28:  t=0.952771 seconds
+*** Timestep 28:  t=0.952772 seconds
    Solving temperature system... 11 iterations.
    Solving Stokes system... 63+0 iterations.
 
@@ -319,7 +319,7 @@ Number of degrees of freedom: 32,196 (8,450+1,089+4,225+9,216+9,216)
      Number of advected particles: 20000
      RMS, max velocity:            0.102 m/s, 0.236 m/s
      Compositions min/max/mass:    0/1/0.4004 // 0/1/0.399
-     Temperature min/avg/max:      0 K, 0.5002 K, 1 K
+     Temperature min/avg/max:      0 K, 0.5001 K, 1 K
      Writing graphical output:     output-particle_interpolator_time_dependence/solution/solution-00028
 
 *** Timestep 29:  t=1 seconds

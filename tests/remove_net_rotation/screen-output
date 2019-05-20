@@ -30,457 +30,337 @@ Number of active cells: 192 (on 3 levels)
 Number of degrees of freedom: 2,832 (1,728+240+864)
 
 *** Timestep 1:  t=636369 years
-   Solving temperature system... 12 iterations.
+   Solving temperature system... 15 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 18+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                                     0.78 m/year, 1.17 m/year
-     Angular momentum, Moment of inertia, Angular velocity: 3.5e+05 kg*m^2/year, 2.3e+27 kg*m^2, 1.52e-22 1/year
+     RMS, max velocity:                                     0.777 m/year, 1.16 m/year
+     Angular momentum, Moment of inertia, Angular velocity: 3.51e+05 kg*m^2/year, 2.3e+27 kg*m^2, 1.53e-22 1/year
 
 Number of active cells: 192 (on 3 levels)
 Number of degrees of freedom: 2,832 (1,728+240+864)
 
-*** Timestep 2:  t=871668 years
-   Solving temperature system... 12 iterations.
+*** Timestep 2:  t=873067 years
+   Solving temperature system... 17 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 17+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                                     1.24 m/year, 1.86 m/year
-     Angular momentum, Moment of inertia, Angular velocity: 6.92e+04 kg*m^2/year, 2.3e+27 kg*m^2, 3.01e-23 1/year
+     RMS, max velocity:                                     1.24 m/year, 1.87 m/year
+     Angular momentum, Moment of inertia, Angular velocity: 8.05e+04 kg*m^2/year, 2.3e+27 kg*m^2, 3.5e-23 1/year
 
 Number of active cells: 192 (on 3 levels)
 Number of degrees of freedom: 2,832 (1,728+240+864)
 
-*** Timestep 3:  t=1.0194e+06 years
-   Solving temperature system... 13 iterations.
+*** Timestep 3:  t=1.02013e+06 years
+   Solving temperature system... 16 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 17+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                                     1.64 m/year, 2.49 m/year
-     Angular momentum, Moment of inertia, Angular velocity: 1.35e+05 kg*m^2/year, 2.3e+27 kg*m^2, 5.85e-23 1/year
-
-Number of active cells: 192 (on 3 levels)
-Number of degrees of freedom: 2,832 (1,728+240+864)
-
-*** Timestep 4:  t=1.13024e+06 years
-   Solving temperature system... 13 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 16+0 iterations.
-
-   Postprocessing:
-     RMS, max velocity:                                     1.98 m/year, 3.01 m/year
-     Angular momentum, Moment of inertia, Angular velocity: 1.25e+05 kg*m^2/year, 2.3e+27 kg*m^2, 5.43e-23 1/year
-
-Number of active cells: 192 (on 3 levels)
-Number of degrees of freedom: 2,832 (1,728+240+864)
-
-*** Timestep 5:  t=1.22198e+06 years
-   Solving temperature system... 12 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 16+0 iterations.
-
-   Postprocessing:
-     RMS, max velocity:                                     2.23 m/year, 3.4 m/year
-     Angular momentum, Moment of inertia, Angular velocity: 1.28e+05 kg*m^2/year, 2.3e+27 kg*m^2, 5.57e-23 1/year
-
-Number of active cells: 192 (on 3 levels)
-Number of degrees of freedom: 2,832 (1,728+240+864)
-
-*** Timestep 6:  t=1.30309e+06 years
-   Solving temperature system... 11 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 16+0 iterations.
-
-   Postprocessing:
-     RMS, max velocity:                                     2.39 m/year, 3.67 m/year
-     Angular momentum, Moment of inertia, Angular velocity: 1.19e+05 kg*m^2/year, 2.3e+27 kg*m^2, 5.16e-23 1/year
-
-Number of active cells: 192 (on 3 levels)
-Number of degrees of freedom: 2,832 (1,728+240+864)
-
-*** Timestep 7:  t=1.37842e+06 years
-   Solving temperature system... 10 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 16+0 iterations.
-
-   Postprocessing:
-     RMS, max velocity:                                     2.45 m/year, 3.78 m/year
-     Angular momentum, Moment of inertia, Angular velocity: 1.28e+05 kg*m^2/year, 2.3e+27 kg*m^2, 5.57e-23 1/year
-
-Number of active cells: 192 (on 3 levels)
-Number of degrees of freedom: 2,832 (1,728+240+864)
-
-*** Timestep 8:  t=1.45156e+06 years
-   Solving temperature system... 9 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 16+0 iterations.
-
-   Postprocessing:
-     RMS, max velocity:                                     2.44 m/year, 3.74 m/year
-     Angular momentum, Moment of inertia, Angular velocity: 1.81e+05 kg*m^2/year, 2.3e+27 kg*m^2, 7.86e-23 1/year
-
-Number of active cells: 192 (on 3 levels)
-Number of degrees of freedom: 2,832 (1,728+240+864)
-
-*** Timestep 9:  t=1.52508e+06 years
-   Solving temperature system... 9 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 16+0 iterations.
-
-   Postprocessing:
-     RMS, max velocity:                                     2.37 m/year, 3.62 m/year
-     Angular momentum, Moment of inertia, Angular velocity: 1.64e+05 kg*m^2/year, 2.3e+27 kg*m^2, 7.11e-23 1/year
-
-Number of active cells: 192 (on 3 levels)
-Number of degrees of freedom: 2,832 (1,728+240+864)
-
-*** Timestep 10:  t=1.60075e+06 years
-   Solving temperature system... 8 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 16+0 iterations.
-
-   Postprocessing:
-     RMS, max velocity:                                     2.26 m/year, 3.45 m/year
-     Angular momentum, Moment of inertia, Angular velocity: 1.17e+05 kg*m^2/year, 2.3e+27 kg*m^2, 5.08e-23 1/year
-
-Number of active cells: 192 (on 3 levels)
-Number of degrees of freedom: 2,832 (1,728+240+864)
-
-*** Timestep 11:  t=1.67983e+06 years
-   Solving temperature system... 8 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 16+0 iterations.
-
-   Postprocessing:
-     RMS, max velocity:                                     2.12 m/year, 3.25 m/year
-     Angular momentum, Moment of inertia, Angular velocity: 1.25e+05 kg*m^2/year, 2.3e+27 kg*m^2, 5.44e-23 1/year
-
-Number of active cells: 192 (on 3 levels)
-Number of degrees of freedom: 2,832 (1,728+240+864)
-
-*** Timestep 12:  t=1.76323e+06 years
-   Solving temperature system... 8 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 15+0 iterations.
-
-   Postprocessing:
-     RMS, max velocity:                                     1.97 m/year, 3.05 m/year
-     Angular momentum, Moment of inertia, Angular velocity: 1.2e+05 kg*m^2/year, 2.3e+27 kg*m^2, 5.21e-23 1/year
-
-Number of active cells: 192 (on 3 levels)
-Number of degrees of freedom: 2,832 (1,728+240+864)
-
-*** Timestep 13:  t=1.85166e+06 years
-   Solving temperature system... 8 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 16+0 iterations.
-
-   Postprocessing:
-     RMS, max velocity:                                     1.82 m/year, 2.85 m/year
-     Angular momentum, Moment of inertia, Angular velocity: 1.44e+05 kg*m^2/year, 2.3e+27 kg*m^2, 6.26e-23 1/year
-
-Number of active cells: 192 (on 3 levels)
-Number of degrees of freedom: 2,832 (1,728+240+864)
-
-*** Timestep 14:  t=1.94587e+06 years
-   Solving temperature system... 8 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 16+0 iterations.
-
-   Postprocessing:
-     RMS, max velocity:                                     1.68 m/year, 2.65 m/year
-     Angular momentum, Moment of inertia, Angular velocity: 1.54e+05 kg*m^2/year, 2.3e+27 kg*m^2, 6.7e-23 1/year
-
-Number of active cells: 192 (on 3 levels)
-Number of degrees of freedom: 2,832 (1,728+240+864)
-
-*** Timestep 15:  t=2.04659e+06 years
-   Solving temperature system... 8 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 16+0 iterations.
-
-   Postprocessing:
-     RMS, max velocity:                                     1.55 m/year, 2.47 m/year
-     Angular momentum, Moment of inertia, Angular velocity: 1.08e+05 kg*m^2/year, 2.3e+27 kg*m^2, 4.71e-23 1/year
-
-Number of active cells: 192 (on 3 levels)
-Number of degrees of freedom: 2,832 (1,728+240+864)
-
-*** Timestep 16:  t=2.15429e+06 years
-   Solving temperature system... 8 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 16+0 iterations.
-
-   Postprocessing:
-     RMS, max velocity:                                     1.44 m/year, 2.31 m/year
-     Angular momentum, Moment of inertia, Angular velocity: 1.52e+05 kg*m^2/year, 2.3e+27 kg*m^2, 6.6e-23 1/year
-
-Number of active cells: 192 (on 3 levels)
-Number of degrees of freedom: 2,832 (1,728+240+864)
-
-*** Timestep 17:  t=2.269e+06 years
-   Solving temperature system... 8 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 16+0 iterations.
-
-   Postprocessing:
-     RMS, max velocity:                                     1.34 m/year, 2.17 m/year
-     Angular momentum, Moment of inertia, Angular velocity: 1.58e+05 kg*m^2/year, 2.3e+27 kg*m^2, 6.88e-23 1/year
-
-Number of active cells: 192 (on 3 levels)
-Number of degrees of freedom: 2,832 (1,728+240+864)
-
-*** Timestep 18:  t=2.39027e+06 years
-   Solving temperature system... 8 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 15+0 iterations.
-
-   Postprocessing:
-     RMS, max velocity:                                     1.27 m/year, 2.07 m/year
-     Angular momentum, Moment of inertia, Angular velocity: 1.2e+05 kg*m^2/year, 2.3e+27 kg*m^2, 5.21e-23 1/year
-
-Number of active cells: 192 (on 3 levels)
-Number of degrees of freedom: 2,832 (1,728+240+864)
-
-*** Timestep 19:  t=2.51708e+06 years
-   Solving temperature system... 8 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 15+0 iterations.
-
-   Postprocessing:
-     RMS, max velocity:                                     1.21 m/year, 2 m/year
-     Angular momentum, Moment of inertia, Angular velocity: 1.28e+05 kg*m^2/year, 2.3e+27 kg*m^2, 5.55e-23 1/year
-
-Number of active cells: 192 (on 3 levels)
-Number of degrees of freedom: 2,832 (1,728+240+864)
-
-*** Timestep 20:  t=2.64812e+06 years
-   Solving temperature system... 8 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 15+0 iterations.
-
-   Postprocessing:
-     RMS, max velocity:                                     1.16 m/year, 1.95 m/year
-     Angular momentum, Moment of inertia, Angular velocity: 1.27e+05 kg*m^2/year, 2.3e+27 kg*m^2, 5.53e-23 1/year
-
-Number of active cells: 192 (on 3 levels)
-Number of degrees of freedom: 2,832 (1,728+240+864)
-
-*** Timestep 21:  t=2.78213e+06 years
-   Solving temperature system... 8 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 15+0 iterations.
-
-   Postprocessing:
-     RMS, max velocity:                                     1.14 m/year, 1.92 m/year
-     Angular momentum, Moment of inertia, Angular velocity: 1.18e+05 kg*m^2/year, 2.3e+27 kg*m^2, 5.14e-23 1/year
-
-Number of active cells: 192 (on 3 levels)
-Number of degrees of freedom: 2,832 (1,728+240+864)
-
-*** Timestep 22:  t=2.91808e+06 years
-   Solving temperature system... 8 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 15+0 iterations.
-
-   Postprocessing:
-     RMS, max velocity:                                     1.12 m/year, 1.91 m/year
-     Angular momentum, Moment of inertia, Angular velocity: 1.33e+05 kg*m^2/year, 2.3e+27 kg*m^2, 5.76e-23 1/year
-
-Number of active cells: 192 (on 3 levels)
-Number of degrees of freedom: 2,832 (1,728+240+864)
-
-*** Timestep 23:  t=3.05525e+06 years
-   Solving temperature system... 8 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 15+0 iterations.
-
-   Postprocessing:
-     RMS, max velocity:                                     1.11 m/year, 1.9 m/year
-     Angular momentum, Moment of inertia, Angular velocity: 1.19e+05 kg*m^2/year, 2.3e+27 kg*m^2, 5.16e-23 1/year
-
-Number of active cells: 192 (on 3 levels)
-Number of degrees of freedom: 2,832 (1,728+240+864)
-
-*** Timestep 24:  t=3.19311e+06 years
-   Solving temperature system... 8 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 15+0 iterations.
-
-   Postprocessing:
-     RMS, max velocity:                                     1.11 m/year, 1.9 m/year
-     Angular momentum, Moment of inertia, Angular velocity: 1.25e+05 kg*m^2/year, 2.3e+27 kg*m^2, 5.45e-23 1/year
-
-Number of active cells: 192 (on 3 levels)
-Number of degrees of freedom: 2,832 (1,728+240+864)
-
-*** Timestep 25:  t=3.33127e+06 years
-   Solving temperature system... 8 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 14+0 iterations.
-
-   Postprocessing:
-     RMS, max velocity:                                     1.11 m/year, 1.91 m/year
-     Angular momentum, Moment of inertia, Angular velocity: 9.76e+04 kg*m^2/year, 2.3e+27 kg*m^2, 4.24e-23 1/year
-
-Number of active cells: 192 (on 3 levels)
-Number of degrees of freedom: 2,832 (1,728+240+864)
-
-*** Timestep 26:  t=3.4694e+06 years
-   Solving temperature system... 8 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 14+0 iterations.
-
-   Postprocessing:
-     RMS, max velocity:                                     1.11 m/year, 1.92 m/year
-     Angular momentum, Moment of inertia, Angular velocity: 1.06e+05 kg*m^2/year, 2.3e+27 kg*m^2, 4.59e-23 1/year
-
-Number of active cells: 192 (on 3 levels)
-Number of degrees of freedom: 2,832 (1,728+240+864)
-
-*** Timestep 27:  t=3.60717e+06 years
-   Solving temperature system... 8 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 14+0 iterations.
-
-   Postprocessing:
-     RMS, max velocity:                                     1.12 m/year, 1.94 m/year
-     Angular momentum, Moment of inertia, Angular velocity: 1.27e+05 kg*m^2/year, 2.3e+27 kg*m^2, 5.53e-23 1/year
-
-Number of active cells: 192 (on 3 levels)
-Number of degrees of freedom: 2,832 (1,728+240+864)
-
-*** Timestep 28:  t=3.74426e+06 years
-   Solving temperature system... 8 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 14+0 iterations.
-
-   Postprocessing:
-     RMS, max velocity:                                     1.13 m/year, 1.95 m/year
-     Angular momentum, Moment of inertia, Angular velocity: 1.23e+05 kg*m^2/year, 2.3e+27 kg*m^2, 5.33e-23 1/year
-
-Number of active cells: 192 (on 3 levels)
-Number of degrees of freedom: 2,832 (1,728+240+864)
-
-*** Timestep 29:  t=3.88043e+06 years
-   Solving temperature system... 8 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 14+0 iterations.
-
-   Postprocessing:
-     RMS, max velocity:                                     1.15 m/year, 1.97 m/year
+     RMS, max velocity:                                     1.65 m/year, 2.5 m/year
      Angular momentum, Moment of inertia, Angular velocity: 1.2e+05 kg*m^2/year, 2.3e+27 kg*m^2, 5.23e-23 1/year
 
 Number of active cells: 192 (on 3 levels)
 Number of degrees of freedom: 2,832 (1,728+240+864)
 
-*** Timestep 30:  t=4.01573e+06 years
-   Solving temperature system... 8 iterations.
+*** Timestep 4:  t=1.13024e+06 years
+   Solving temperature system... 16 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 14+0 iterations.
+   Solving Stokes system... 16+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                                     1.16 m/year, 1.99 m/year
-     Angular momentum, Moment of inertia, Angular velocity: 1.29e+05 kg*m^2/year, 2.3e+27 kg*m^2, 5.6e-23 1/year
+     RMS, max velocity:                                     1.98 m/year, 3.02 m/year
+     Angular momentum, Moment of inertia, Angular velocity: 1.43e+05 kg*m^2/year, 2.3e+27 kg*m^2, 6.23e-23 1/year
 
 Number of active cells: 192 (on 3 levels)
 Number of degrees of freedom: 2,832 (1,728+240+864)
 
-*** Timestep 31:  t=4.15025e+06 years
-   Solving temperature system... 8 iterations.
+*** Timestep 5:  t=1.22141e+06 years
+   Solving temperature system... 15 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 14+0 iterations.
+   Solving Stokes system... 16+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                                     1.18 m/year, 2 m/year
-     Angular momentum, Moment of inertia, Angular velocity: 1.25e+05 kg*m^2/year, 2.3e+27 kg*m^2, 5.41e-23 1/year
+     RMS, max velocity:                                     2.23 m/year, 3.43 m/year
+     Angular momentum, Moment of inertia, Angular velocity: 1.57e+05 kg*m^2/year, 2.3e+27 kg*m^2, 6.83e-23 1/year
 
 Number of active cells: 192 (on 3 levels)
 Number of degrees of freedom: 2,832 (1,728+240+864)
 
-*** Timestep 32:  t=4.28403e+06 years
-   Solving temperature system... 8 iterations.
+*** Timestep 6:  t=1.30191e+06 years
+   Solving temperature system... 14 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 14+0 iterations.
+   Solving Stokes system... 16+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                                     1.2 m/year, 2.02 m/year
-     Angular momentum, Moment of inertia, Angular velocity: 1.17e+05 kg*m^2/year, 2.3e+27 kg*m^2, 5.08e-23 1/year
+     RMS, max velocity:                                     2.39 m/year, 3.7 m/year
+     Angular momentum, Moment of inertia, Angular velocity: 1.3e+05 kg*m^2/year, 2.3e+27 kg*m^2, 5.66e-23 1/year
 
 Number of active cells: 192 (on 3 levels)
 Number of degrees of freedom: 2,832 (1,728+240+864)
 
-*** Timestep 33:  t=4.41693e+06 years
-   Solving temperature system... 8 iterations.
+*** Timestep 7:  t=1.37643e+06 years
+   Solving temperature system... 13 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 14+0 iterations.
+   Solving Stokes system... 16+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                                     1.22 m/year, 2.04 m/year
-     Angular momentum, Moment of inertia, Angular velocity: 1.15e+05 kg*m^2/year, 2.3e+27 kg*m^2, 4.99e-23 1/year
+     RMS, max velocity:                                     2.46 m/year, 3.83 m/year
+     Angular momentum, Moment of inertia, Angular velocity: 1.44e+05 kg*m^2/year, 2.3e+27 kg*m^2, 6.28e-23 1/year
 
 Number of active cells: 192 (on 3 levels)
 Number of degrees of freedom: 2,832 (1,728+240+864)
 
-*** Timestep 34:  t=4.54872e+06 years
-   Solving temperature system... 8 iterations.
+*** Timestep 8:  t=1.44807e+06 years
+   Solving temperature system... 13 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 14+0 iterations.
+   Solving Stokes system... 16+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                                     1.24 m/year, 2.06 m/year
-     Angular momentum, Moment of inertia, Angular velocity: 1.12e+05 kg*m^2/year, 2.3e+27 kg*m^2, 4.88e-23 1/year
+     RMS, max velocity:                                     2.46 m/year, 3.84 m/year
+     Angular momentum, Moment of inertia, Angular velocity: 1.37e+05 kg*m^2/year, 2.3e+27 kg*m^2, 5.96e-23 1/year
 
 Number of active cells: 192 (on 3 levels)
 Number of degrees of freedom: 2,832 (1,728+240+864)
 
-*** Timestep 35:  t=4.67911e+06 years
-   Solving temperature system... 8 iterations.
+*** Timestep 9:  t=1.51938e+06 years
+   Solving temperature system... 12 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 14+0 iterations.
+   Solving Stokes system... 16+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                                     1.26 m/year, 2.08 m/year
-     Angular momentum, Moment of inertia, Angular velocity: 9.59e+04 kg*m^2/year, 2.3e+27 kg*m^2, 4.17e-23 1/year
+     RMS, max velocity:                                     2.4 m/year, 3.73 m/year
+     Angular momentum, Moment of inertia, Angular velocity: 1.31e+05 kg*m^2/year, 2.3e+27 kg*m^2, 5.68e-23 1/year
 
 Number of active cells: 192 (on 3 levels)
 Number of degrees of freedom: 2,832 (1,728+240+864)
 
-*** Timestep 36:  t=4.8079e+06 years
-   Solving temperature system... 8 iterations.
+*** Timestep 10:  t=1.59162e+06 years
+   Solving temperature system... 12 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 13+0 iterations.
+   Solving Stokes system... 16+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                                     1.28 m/year, 2.11 m/year
-     Angular momentum, Moment of inertia, Angular velocity: 1.17e+05 kg*m^2/year, 2.3e+27 kg*m^2, 5.11e-23 1/year
+     RMS, max velocity:                                     2.28 m/year, 3.55 m/year
+     Angular momentum, Moment of inertia, Angular velocity: 1.37e+05 kg*m^2/year, 2.3e+27 kg*m^2, 5.97e-23 1/year
 
 Number of active cells: 192 (on 3 levels)
 Number of degrees of freedom: 2,832 (1,728+240+864)
 
-*** Timestep 37:  t=4.93499e+06 years
-   Solving temperature system... 8 iterations.
+*** Timestep 11:  t=1.66616e+06 years
+   Solving temperature system... 12 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 13+0 iterations.
+   Solving Stokes system... 16+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                                     1.3 m/year, 2.14 m/year
-     Angular momentum, Moment of inertia, Angular velocity: 1.1e+05 kg*m^2/year, 2.3e+27 kg*m^2, 4.77e-23 1/year
+     RMS, max velocity:                                     2.13 m/year, 3.34 m/year
+     Angular momentum, Moment of inertia, Angular velocity: 1.37e+05 kg*m^2/year, 2.3e+27 kg*m^2, 5.93e-23 1/year
 
 Number of active cells: 192 (on 3 levels)
 Number of degrees of freedom: 2,832 (1,728+240+864)
 
-*** Timestep 38:  t=5e+06 years
-   Solving temperature system... 8 iterations.
+*** Timestep 12:  t=1.74439e+06 years
+   Solving temperature system... 12 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 13+0 iterations.
+   Solving Stokes system... 16+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                                     1.31 m/year, 2.15 m/year
-     Angular momentum, Moment of inertia, Angular velocity: 1.12e+05 kg*m^2/year, 2.3e+27 kg*m^2, 4.85e-23 1/year
+     RMS, max velocity:                                     1.94 m/year, 3.1 m/year
+     Angular momentum, Moment of inertia, Angular velocity: 1.54e+05 kg*m^2/year, 2.3e+27 kg*m^2, 6.68e-23 1/year
+
+Number of active cells: 192 (on 3 levels)
+Number of degrees of freedom: 2,832 (1,728+240+864)
+
+*** Timestep 13:  t=1.82787e+06 years
+   Solving temperature system... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 16+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                                     1.75 m/year, 2.86 m/year
+     Angular momentum, Moment of inertia, Angular velocity: 1.58e+05 kg*m^2/year, 2.3e+27 kg*m^2, 6.87e-23 1/year
+
+Number of active cells: 192 (on 3 levels)
+Number of degrees of freedom: 2,832 (1,728+240+864)
+
+*** Timestep 14:  t=1.91846e+06 years
+   Solving temperature system... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 16+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                                     1.54 m/year, 2.59 m/year
+     Angular momentum, Moment of inertia, Angular velocity: 1.27e+05 kg*m^2/year, 2.3e+27 kg*m^2, 5.5e-23 1/year
+
+Number of active cells: 192 (on 3 levels)
+Number of degrees of freedom: 2,832 (1,728+240+864)
+
+*** Timestep 15:  t=2.01834e+06 years
+   Solving temperature system... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 16+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                                     1.33 m/year, 2.32 m/year
+     Angular momentum, Moment of inertia, Angular velocity: 1.34e+05 kg*m^2/year, 2.3e+27 kg*m^2, 5.82e-23 1/year
+
+Number of active cells: 192 (on 3 levels)
+Number of degrees of freedom: 2,832 (1,728+240+864)
+
+*** Timestep 16:  t=2.12998e+06 years
+   Solving temperature system... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 16+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                                     1.13 m/year, 2.04 m/year
+     Angular momentum, Moment of inertia, Angular velocity: 1.42e+05 kg*m^2/year, 2.3e+27 kg*m^2, 6.19e-23 1/year
+
+Number of active cells: 192 (on 3 levels)
+Number of degrees of freedom: 2,832 (1,728+240+864)
+
+*** Timestep 17:  t=2.25648e+06 years
+   Solving temperature system... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 16+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                                     0.935 m/year, 1.76 m/year
+     Angular momentum, Moment of inertia, Angular velocity: 1.45e+05 kg*m^2/year, 2.3e+27 kg*m^2, 6.31e-23 1/year
+
+Number of active cells: 192 (on 3 levels)
+Number of degrees of freedom: 2,832 (1,728+240+864)
+
+*** Timestep 18:  t=2.40101e+06 years
+   Solving temperature system... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 16+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                                     0.762 m/year, 1.49 m/year
+     Angular momentum, Moment of inertia, Angular velocity: 1.47e+05 kg*m^2/year, 2.3e+27 kg*m^2, 6.4e-23 1/year
+
+Number of active cells: 192 (on 3 levels)
+Number of degrees of freedom: 2,832 (1,728+240+864)
+
+*** Timestep 19:  t=2.5675e+06 years
+   Solving temperature system... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 16+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                                     0.611 m/year, 1.25 m/year
+     Angular momentum, Moment of inertia, Angular velocity: 1.27e+05 kg*m^2/year, 2.3e+27 kg*m^2, 5.51e-23 1/year
+
+Number of active cells: 192 (on 3 levels)
+Number of degrees of freedom: 2,832 (1,728+240+864)
+
+*** Timestep 20:  t=2.7605e+06 years
+   Solving temperature system... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 16+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                                     0.484 m/year, 1.04 m/year
+     Angular momentum, Moment of inertia, Angular velocity: 1.35e+05 kg*m^2/year, 2.3e+27 kg*m^2, 5.89e-23 1/year
+
+Number of active cells: 192 (on 3 levels)
+Number of degrees of freedom: 2,832 (1,728+240+864)
+
+*** Timestep 21:  t=2.98388e+06 years
+   Solving temperature system... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 16+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                                     0.383 m/year, 0.855 m/year
+     Angular momentum, Moment of inertia, Angular velocity: 1.46e+05 kg*m^2/year, 2.3e+27 kg*m^2, 6.36e-23 1/year
+
+Number of active cells: 192 (on 3 levels)
+Number of degrees of freedom: 2,832 (1,728+240+864)
+
+*** Timestep 22:  t=3.23858e+06 years
+   Solving temperature system... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 16+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                                     0.306 m/year, 0.73 m/year
+     Angular momentum, Moment of inertia, Angular velocity: 1.33e+05 kg*m^2/year, 2.3e+27 kg*m^2, 5.76e-23 1/year
+
+Number of active cells: 192 (on 3 levels)
+Number of degrees of freedom: 2,832 (1,728+240+864)
+
+*** Timestep 23:  t=3.52167e+06 years
+   Solving temperature system... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 16+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                                     0.25 m/year, 0.656 m/year
+     Angular momentum, Moment of inertia, Angular velocity: 1.39e+05 kg*m^2/year, 2.3e+27 kg*m^2, 6.03e-23 1/year
+
+Number of active cells: 192 (on 3 levels)
+Number of degrees of freedom: 2,832 (1,728+240+864)
+
+*** Timestep 24:  t=3.83066e+06 years
+   Solving temperature system... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 16+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                                     0.21 m/year, 0.586 m/year
+     Angular momentum, Moment of inertia, Angular velocity: 1.41e+05 kg*m^2/year, 2.3e+27 kg*m^2, 6.11e-23 1/year
+
+Number of active cells: 192 (on 3 levels)
+Number of degrees of freedom: 2,832 (1,728+240+864)
+
+*** Timestep 25:  t=4.1692e+06 years
+   Solving temperature system... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 16+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                                     0.18 m/year, 0.516 m/year
+     Angular momentum, Moment of inertia, Angular velocity: 1.36e+05 kg*m^2/year, 2.3e+27 kg*m^2, 5.92e-23 1/year
+
+Number of active cells: 192 (on 3 levels)
+Number of degrees of freedom: 2,832 (1,728+240+864)
+
+*** Timestep 26:  t=4.54982e+06 years
+   Solving temperature system... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 15+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                                     0.157 m/year, 0.448 m/year
+     Angular momentum, Moment of inertia, Angular velocity: 1.24e+05 kg*m^2/year, 2.3e+27 kg*m^2, 5.39e-23 1/year
+
+Number of active cells: 192 (on 3 levels)
+Number of degrees of freedom: 2,832 (1,728+240+864)
+
+*** Timestep 27:  t=4.96395e+06 years
+   Solving temperature system... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 15+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                                     0.141 m/year, 0.41 m/year
+     Angular momentum, Moment of inertia, Angular velocity: 1.31e+05 kg*m^2/year, 2.3e+27 kg*m^2, 5.71e-23 1/year
+
+Number of active cells: 192 (on 3 levels)
+Number of degrees of freedom: 2,832 (1,728+240+864)
+
+*** Timestep 28:  t=5e+06 years
+   Solving temperature system... 8 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 12+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                                     0.14 m/year, 0.409 m/year
+     Angular momentum, Moment of inertia, Angular velocity: 1.06e+05 kg*m^2/year, 2.3e+27 kg*m^2, 4.6e-23 1/year
 
 Number of active cells: 192 (on 3 levels)
 Number of degrees of freedom: 2,832 (1,728+240+864)

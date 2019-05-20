@@ -13,50 +13,50 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Compositions min/max/mass: 0.1/1/0.1692 // 1/1.999/1.156
 
 *** Timestep 1:  t=0.0220971 seconds
-   Solving temperature system... 14 iterations.
-   Solving Alice system ... 11 iterations.
-   Solving Bob system ... 14 iterations.
+   Solving temperature system... 13 iterations.
+   Solving Alice system ... 10 iterations.
+   Solving Bob system ... 12 iterations.
 
    Postprocessing:
      Writing graphical output:  output-refinement_composition_threshold/solution/solution-00001
-     Temperature min/avg/max:   0.07516 K, 0.1773 K, 0.5338 K
-     Compositions min/max/mass: 0.06713/1.053/0.1693 // 1/1.99/1.156
+     Temperature min/avg/max:   0.08232 K, 0.1773 K, 0.5277 K
+     Compositions min/max/mass: 0.06856/1.039/0.1693 // 1/1.989/1.156
 
 Number of active cells: 463 (on 6 levels)
 Number of degrees of freedom: 10,599 (4,030+524+2,015+2,015+2,015)
 
 *** Timestep 2:  t=0.0441942 seconds
-   Solving temperature system... 18 iterations.
+   Solving temperature system... 19 iterations.
    Solving Alice system ... 15 iterations.
-   Solving Bob system ... 21 iterations.
+   Solving Bob system ... 22 iterations.
 
    Postprocessing:
      Writing graphical output:  output-refinement_composition_threshold/solution/solution-00002
-     Temperature min/avg/max:   0.07117 K, 0.1773 K, 0.5413 K
-     Compositions min/max/mass: 0.0349/1.087/0.1693 // 1/1.988/1.156
+     Temperature min/avg/max:   0.07288 K, 0.1773 K, 0.5372 K
+     Compositions min/max/mass: 0.03501/1.084/0.1693 // 1/1.987/1.156
 
 Number of active cells: 1,213 (on 7 levels)
 Number of degrees of freedom: 27,211 (10,356+1,321+5,178+5,178+5,178)
 
 *** Timestep 3:  t=0.0617841 seconds
-   Solving temperature system... 37 iterations.
+   Solving temperature system... 40 iterations.
    Solving Alice system ... 27 iterations.
    Solving Bob system ... 41 iterations.
 
    Postprocessing:
      Writing graphical output:  output-refinement_composition_threshold/solution/solution-00003
-     Temperature min/avg/max:   0.07072 K, 0.1773 K, 0.5316 K
-     Compositions min/max/mass: 0.04309/1.082/0.1694 // 1/1.987/1.156
+     Temperature min/avg/max:   0.07119 K, 0.1773 K, 0.5314 K
+     Compositions min/max/mass: 0.03465/1.082/0.1694 // 1/1.986/1.156
 
 *** Timestep 4:  t=0.07 seconds
-   Solving temperature system... 15 iterations.
+   Solving temperature system... 16 iterations.
    Solving Alice system ... 11 iterations.
    Solving Bob system ... 16 iterations.
 
    Postprocessing:
      Writing graphical output:  output-refinement_composition_threshold/solution/solution-00004
-     Temperature min/avg/max:   0.07267 K, 0.1773 K, 0.5264 K
-     Compositions min/max/mass: 0.03914/1.079/0.1695 // 1/1.988/1.156
+     Temperature min/avg/max:   0.07214 K, 0.1773 K, 0.5274 K
+     Compositions min/max/mass: 0.02855/1.08/0.1695 // 1/1.986/1.156
 
 Termination requested by criterion: end time
 

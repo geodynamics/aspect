@@ -14,17 +14,17 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
 
 *** Timestep 1:  t=3.85098e-08 years
    Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 16 iterations.
+   Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 85+0 iterations.
+   Solving Stokes system... 81+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02/solution/solution-00001
      Writing point values:     output-point_value_02/point_values.txt
 
-*** Timestep 2:  t=8.43635e-08 years
+*** Timestep 2:  t=8.48811e-08 years
    Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 14 iterations.
+   Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 83+0 iterations.
 
@@ -32,316 +32,37 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
      Writing graphical output: output-point_value_02/solution/solution-00002
      Writing point values:     output-point_value_02/point_values.txt
 
-*** Timestep 3:  t=1.33523e-07 years
+*** Timestep 3:  t=1.33884e-07 years
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 15 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 85+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-point_value_02/solution/solution-00003
+     Writing point values:     output-point_value_02/point_values.txt
+
+*** Timestep 4:  t=1.85115e-07 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 86+0 iterations.
 
    Postprocessing:
-     Writing graphical output: output-point_value_02/solution/solution-00003
-     Writing point values:     output-point_value_02/point_values.txt
-
-*** Timestep 4:  t=1.85895e-07 years
-   Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 15 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 81+0 iterations.
-
-   Postprocessing:
      Writing graphical output: output-point_value_02/solution/solution-00004
      Writing point values:     output-point_value_02/point_values.txt
 
-*** Timestep 5:  t=2.4208e-07 years
+*** Timestep 5:  t=2.39036e-07 years
    Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 15 iterations.
+   Solving C_1 system ... 16 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 81+0 iterations.
+   Solving Stokes system... 83+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02/solution/solution-00005
      Writing point values:     output-point_value_02/point_values.txt
 
-*** Timestep 6:  t=3.02674e-07 years
-   Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 15 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 43+0 iterations.
-
-   Postprocessing:
-     Writing graphical output: output-point_value_02/solution/solution-00006
-     Writing point values:     output-point_value_02/point_values.txt
-
-*** Timestep 7:  t=3.68562e-07 years
-   Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 14 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 83+0 iterations.
-
-   Postprocessing:
-     Writing graphical output: output-point_value_02/solution/solution-00007
-     Writing point values:     output-point_value_02/point_values.txt
-
-*** Timestep 8:  t=4.4072e-07 years
-   Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 14 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 82+0 iterations.
-
-   Postprocessing:
-     Writing graphical output: output-point_value_02/solution/solution-00008
-     Writing point values:     output-point_value_02/point_values.txt
-
-*** Timestep 9:  t=5.21042e-07 years
-   Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 14 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 90+0 iterations.
-
-   Postprocessing:
-     Writing graphical output: output-point_value_02/solution/solution-00009
-     Writing point values:     output-point_value_02/point_values.txt
-
-*** Timestep 10:  t=6.12069e-07 years
-   Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 14 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 93+0 iterations.
-
-   Postprocessing:
-     Writing graphical output: output-point_value_02/solution/solution-00010
-     Writing point values:     output-point_value_02/point_values.txt
-
-Number of active cells: 64 (on 4 levels)
-Number of degrees of freedom: 1,237 (578+81+289+289)
-
-*** Timestep 11:  t=7.15292e-07 years
-   Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 10 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+0 iterations.
-
-   Postprocessing:
-     Writing graphical output: output-point_value_02/solution/solution-00011
-     Writing point values:     output-point_value_02/point_values.txt
-
-*** Timestep 12:  t=9.44845e-07 years
-   Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 11 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+0 iterations.
-
-   Postprocessing:
-     Writing graphical output: output-point_value_02/solution/solution-00012
-     Writing point values:     output-point_value_02/point_values.txt
-
-*** Timestep 13:  t=1.29715e-06 years
-   Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 9 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 41+0 iterations.
-
-   Postprocessing:
-     Writing graphical output: output-point_value_02/solution/solution-00013
-     Writing point values:     output-point_value_02/point_values.txt
-
-*** Timestep 14:  t=2.0387e-06 years
-   Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 11 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 40+0 iterations.
-
-   Postprocessing:
-     Writing graphical output: output-point_value_02/solution/solution-00014
-     Writing point values:     output-point_value_02/point_values.txt
-
-*** Timestep 15:  t=3.24612e-06 years
-   Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 9 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 37+0 iterations.
-
-   Postprocessing:
-     Writing graphical output: output-point_value_02/solution/solution-00015
-     Writing point values:     output-point_value_02/point_values.txt
-
-*** Timestep 16:  t=4.5336e-06 years
-   Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 11 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 31+0 iterations.
-
-   Postprocessing:
-     Writing graphical output: output-point_value_02/solution/solution-00016
-     Writing point values:     output-point_value_02/point_values.txt
-
-*** Timestep 17:  t=5.94223e-06 years
-   Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 11 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 28+0 iterations.
-
-   Postprocessing:
-     Writing graphical output: output-point_value_02/solution/solution-00017
-     Writing point values:     output-point_value_02/point_values.txt
-
-*** Timestep 18:  t=7.55685e-06 years
-   Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 10 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 27+0 iterations.
-
-   Postprocessing:
-     Writing graphical output: output-point_value_02/solution/solution-00018
-     Writing point values:     output-point_value_02/point_values.txt
-
-*** Timestep 19:  t=9.38709e-06 years
-   Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 10 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 26+0 iterations.
-
-   Postprocessing:
-     Writing graphical output: output-point_value_02/solution/solution-00019
-     Writing point values:     output-point_value_02/point_values.txt
-
-*** Timestep 20:  t=1.14364e-05 years
-   Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 10 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 26+0 iterations.
-
-   Postprocessing:
-     Writing graphical output: output-point_value_02/solution/solution-00020
-     Writing point values:     output-point_value_02/point_values.txt
-
-Number of active cells: 16 (on 3 levels)
-Number of degrees of freedom: 349 (162+25+81+81)
-
-*** Timestep 21:  t=1.3728e-05 years
-   Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 9 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 24+0 iterations.
-
-   Postprocessing:
-     Writing graphical output: output-point_value_02/solution/solution-00021
-     Writing point values:     output-point_value_02/point_values.txt
-
-*** Timestep 22:  t=1.74579e-05 years
-   Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 14 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 23+0 iterations.
-
-   Postprocessing:
-     Writing graphical output: output-point_value_02/solution/solution-00022
-     Writing point values:     output-point_value_02/point_values.txt
-
-*** Timestep 23:  t=3.42235e-05 years
-   Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 47 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 24+0 iterations.
-
-   Postprocessing:
-     Writing graphical output: output-point_value_02/solution/solution-00023
-     Writing point values:     output-point_value_02/point_values.txt
-
-*** Timestep 24:  t=3.91962e-05 years
-   Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 13 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 22+0 iterations.
-
-   Postprocessing:
-     Writing graphical output: output-point_value_02/solution/solution-00024
-     Writing point values:     output-point_value_02/point_values.txt
-
-*** Timestep 25:  t=4.6318e-05 years
-   Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 7 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 22+0 iterations.
-
-   Postprocessing:
-     Writing graphical output: output-point_value_02/solution/solution-00025
-     Writing point values:     output-point_value_02/point_values.txt
-
-*** Timestep 26:  t=5.7143e-05 years
-   Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 6 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 22+0 iterations.
-
-   Postprocessing:
-     Writing graphical output: output-point_value_02/solution/solution-00026
-     Writing point values:     output-point_value_02/point_values.txt
-
-*** Timestep 27:  t=7.54303e-05 years
-   Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 6 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 22+0 iterations.
-
-   Postprocessing:
-     Writing graphical output: output-point_value_02/solution/solution-00027
-     Writing point values:     output-point_value_02/point_values.txt
-
-*** Timestep 28:  t=0.000105193 years
-   Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 6 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 21+0 iterations.
-
-   Postprocessing:
-     Writing graphical output: output-point_value_02/solution/solution-00028
-     Writing point values:     output-point_value_02/point_values.txt
-
-*** Timestep 29:  t=0.000163954 years
-   Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 8 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 21+0 iterations.
-
-   Postprocessing:
-     Writing graphical output: output-point_value_02/solution/solution-00029
-     Writing point values:     output-point_value_02/point_values.txt
-
-*** Timestep 30:  t=0.000188969 years
-   Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 10 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 22+0 iterations.
-
-   Postprocessing:
-     Writing graphical output: output-point_value_02/solution/solution-00030
-     Writing point values:     output-point_value_02/point_values.txt
-
-Number of active cells: 4 (on 2 levels)
-Number of degrees of freedom: 109 (50+9+25+25)
-
-*** Timestep 31:  t=0.000243808 years
-   Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 10 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 10+0 iterations.
-
-   Postprocessing:
-     Writing graphical output: output-point_value_02/solution/solution-00031
-     Writing point values:     output-point_value_02/point_values.txt
-
-*** Timestep 32:  t=0.1 years
-   Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 25 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 14+0 iterations.
-
-   Postprocessing:
-     Writing graphical output: output-point_value_02/solution/solution-00032
-     Writing point values:     output-point_value_02/point_values.txt
-
-Termination requested by criterion: end time
+Termination requested by criterion: end step
 
 
 +---------------------------------------------+------------+------------+

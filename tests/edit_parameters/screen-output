@@ -40,102 +40,102 @@ Number of degrees of freedom: 844 (514+73+257)
 Number of active cells: 49 (on 4 levels)
 Number of degrees of freedom: 808 (492+70+246)
 
-*** Timestep 3:  t=1.95827e+06 seconds
+*** Timestep 3:  t=1.9585e+06 seconds
    Solving temperature system... 8 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 21+0 iterations.
 
    Postprocessing:
-     Temperature min/avg/max: 0 K, 1.327 K, 10 K
-     RMS, max velocity:       3.5e-08 m/s, 1.28e-07 m/s
+     Temperature min/avg/max: 0 K, 1.328 K, 10 K
+     RMS, max velocity:       3.44e-08 m/s, 1.26e-07 m/s
 
 Number of active cells: 52 (on 4 levels)
 Number of degrees of freedom: 844 (514+73+257)
 
-*** Timestep 4:  t=2.40268e+06 seconds
+*** Timestep 4:  t=2.40911e+06 seconds
    Solving temperature system... 9 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 20+0 iterations.
 
    Postprocessing:
-     Temperature min/avg/max: 0 K, 1.355 K, 10 K
-     RMS, max velocity:       3.75e-08 m/s, 1.34e-07 m/s
+     Temperature min/avg/max: 0 K, 1.357 K, 10 K
+     RMS, max velocity:       3.67e-08 m/s, 1.32e-07 m/s
 
 Number of active cells: 52 (on 4 levels)
 Number of degrees of freedom: 844 (514+73+257)
 
-*** Timestep 5:  t=2.85156e+06 seconds
+*** Timestep 5:  t=2.86541e+06 seconds
    Solving temperature system... 9 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 20+0 iterations.
 
    Postprocessing:
-     Temperature min/avg/max: 0 K, 1.38 K, 10 K
-     RMS, max velocity:       3.93e-08 m/s, 1.38e-07 m/s
+     Temperature min/avg/max: 0 K, 1.382 K, 10 K
+     RMS, max velocity:       3.85e-08 m/s, 1.35e-07 m/s
 
 Reducing CFL number!
 Number of active cells: 52 (on 4 levels)
 Number of degrees of freedom: 844 (514+73+257)
 
-*** Timestep 6:  t=3.28925e+06 seconds
+*** Timestep 6:  t=3.30995e+06 seconds
    Solving temperature system... 9 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 19+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 1.404 K, 10 K
-     RMS, max velocity:       4.1e-08 m/s, 1.41e-07 m/s
+     RMS, max velocity:       4.03e-08 m/s, 1.39e-07 m/s
 
 Number of active cells: 52 (on 4 levels)
 Number of degrees of freedom: 844 (514+73+257)
 
-*** Timestep 7:  t=3.50338e+06 seconds
+*** Timestep 7:  t=3.52713e+06 seconds
    Solving temperature system... 9 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 18+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 1.415 K, 10 K
-     RMS, max velocity:       4.19e-08 m/s, 1.42e-07 m/s
+     RMS, max velocity:       4.13e-08 m/s, 1.4e-07 m/s
 
 Number of active cells: 52 (on 4 levels)
 Number of degrees of freedom: 844 (514+73+257)
 
-*** Timestep 8:  t=3.71548e+06 seconds
-   Solving temperature system... 8 iterations.
+*** Timestep 8:  t=3.74203e+06 seconds
+   Solving temperature system... 9 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 18+0 iterations.
 
    Postprocessing:
-     Temperature min/avg/max: 0 K, 1.427 K, 10 K
-     RMS, max velocity:       4.29e-08 m/s, 1.44e-07 m/s
+     Temperature min/avg/max: 0 K, 1.425 K, 10 K
+     RMS, max velocity:       4.23e-08 m/s, 1.42e-07 m/s
 
 Number of active cells: 52 (on 4 levels)
 Number of degrees of freedom: 844 (514+73+257)
 
-*** Timestep 9:  t=3.92562e+06 seconds
-   Solving temperature system... 8 iterations.
+*** Timestep 9:  t=3.95461e+06 seconds
+   Solving temperature system... 9 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 18+0 iterations.
 
    Postprocessing:
-     Temperature min/avg/max: 0 K, 1.439 K, 10 K
-     RMS, max velocity:       4.4e-08 m/s, 1.46e-07 m/s
+     Temperature min/avg/max: 0 K, 1.435 K, 10 K
+     RMS, max velocity:       4.36e-08 m/s, 1.44e-07 m/s
 
 Number of active cells: 52 (on 4 levels)
 Number of degrees of freedom: 844 (514+73+257)
 
-*** Timestep 10:  t=4.13371e+06 seconds
-   Solving temperature system... 8 iterations.
+*** Timestep 10:  t=4.16473e+06 seconds
+   Solving temperature system... 9 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 18+0 iterations.
 
    Postprocessing:
-     Temperature min/avg/max: 0 K, 1.451 K, 10 K
-     RMS, max velocity:       4.53e-08 m/s, 1.48e-07 m/s
+     Temperature min/avg/max: 0 K, 1.445 K, 10 K
+     RMS, max velocity:       4.51e-08 m/s, 1.46e-07 m/s
 
-Number of active cells: 52 (on 4 levels)
-Number of degrees of freedom: 844 (514+73+257)
+Number of active cells: 49 (on 4 levels)
+Number of degrees of freedom: 808 (492+70+246)
 
 Termination requested by criterion: end step
 

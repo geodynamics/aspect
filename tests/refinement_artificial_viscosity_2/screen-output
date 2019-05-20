@@ -13,47 +13,47 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Compositions min/max/mass: 0.1/1/0.1692 // 0/100/80.37
 
 *** Timestep 1:  t=0.0220971 seconds
-   Solving temperature system... 14 iterations.
-   Solving Alice system ... 11 iterations.
-   Solving Bob system ... 16 iterations.
+   Solving temperature system... 13 iterations.
+   Solving Alice system ... 10 iterations.
+   Solving Bob system ... 14 iterations.
 
    Postprocessing:
      Writing graphical output:  output-refinement_artificial_viscosity_2/solution/solution-00001
-     Temperature min/avg/max:   0.07516 K, 0.1773 K, 0.5338 K
-     Compositions min/max/mass: 0.06713/1.053/0.1693 // -6.407/102.3/79.27
+     Temperature min/avg/max:   0.08232 K, 0.1773 K, 0.5277 K
+     Compositions min/max/mass: 0.06856/1.039/0.1693 // -4.204/101.8/79.26
 
 *** Timestep 2:  t=0.0441942 seconds
-   Solving temperature system... 15 iterations.
+   Solving temperature system... 16 iterations.
    Solving Alice system ... 13 iterations.
-   Solving Bob system ... 17 iterations.
+   Solving Bob system ... 19 iterations.
 
    Postprocessing:
      Writing graphical output:  output-refinement_artificial_viscosity_2/solution/solution-00002
-     Temperature min/avg/max:   0.08098 K, 0.1773 K, 0.5329 K
-     Compositions min/max/mass: 0.04618/1.053/0.1693 // -4.878/100.5/78.14
+     Temperature min/avg/max:   0.08147 K, 0.1773 K, 0.5327 K
+     Compositions min/max/mass: 0.04343/1.054/0.1693 // -4.415/100.6/78.14
 
-Number of active cells: 280 (on 6 levels)
-Number of degrees of freedom: 6,423 (2,440+323+1,220+1,220+1,220)
+Number of active cells: 256 (on 5 levels)
+Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
 
 *** Timestep 3:  t=0.0662913 seconds
-   Solving temperature system... 15 iterations.
-   Solving Alice system ... 13 iterations.
-   Solving Bob system ... 17 iterations.
+   Solving temperature system... 16 iterations.
+   Solving Alice system ... 14 iterations.
+   Solving Bob system ... 19 iterations.
 
    Postprocessing:
      Writing graphical output:  output-refinement_artificial_viscosity_2/solution/solution-00003
-     Temperature min/avg/max:   0.09119 K, 0.1773 K, 0.5187 K
-     Compositions min/max/mass: 0.04108/1.05/0.1695 // -3.859/102.6/77
+     Temperature min/avg/max:   0.08667 K, 0.1773 K, 0.522 K
+     Compositions min/max/mass: 0.02777/1.057/0.1695 // -4.441/100.3/77
 
 *** Timestep 4:  t=0.08 seconds
    Solving temperature system... 13 iterations.
-   Solving Alice system ... 10 iterations.
-   Solving Bob system ... 11 iterations.
+   Solving Alice system ... 11 iterations.
+   Solving Bob system ... 13 iterations.
 
    Postprocessing:
      Writing graphical output:  output-refinement_artificial_viscosity_2/solution/solution-00004
-     Temperature min/avg/max:   0.09233 K, 0.1773 K, 0.5151 K
-     Compositions min/max/mass: 0.04383/1.041/0.1695 // -3.165/102.4/76.28
+     Temperature min/avg/max:   0.08818 K, 0.1773 K, 0.5161 K
+     Compositions min/max/mass: 0.02209/1.053/0.1695 // -6.034/100.2/76.28
 
 Termination requested by criterion: end time
 
