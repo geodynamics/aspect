@@ -220,7 +220,7 @@ namespace aspect
       // *** First calculate the number of satellites according to the sampling scheme:
       unsigned int n_satellites;
       if (sampling_scheme == map)
-        n_satellites = n_points_radius * n_points_longitude * n_points_latitude;
+        n_satellites = n_points_radius * n_points_longitude * (n_points_latitude+1);
       else if (sampling_scheme == list)
         n_satellites = longitude_list.size();
       else n_satellites = 1;
@@ -234,7 +234,7 @@ namespace aspect
             {
               for (unsigned int i=0; i < n_points_longitude; ++i)
                 {
-                  for (unsigned int j=0; j < n_points_latitude; ++j)
+                  for (unsigned int j=0; j < n_points_latitude+1; ++j)
                     {
                       satellites_coordinate[p][0] = minimum_radius + ((maximum_radius - minimum_radius) / n_points_radius) * h;
                       satellites_coordinate[p][1] = (minimum_colongitude + ((maximum_colongitude - minimum_colongitude) / n_points_longitude) * i) * numbers::PI / 180.;
