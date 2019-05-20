@@ -381,7 +381,7 @@ namespace aspect
                   // Disable stabilization for boundaries with slow flow, or tangential flow.
                   // Break the loop in case a face is at multiple boundaries, some with flow, some without.
                   // In those cases we can not disable stabilization.
-                  if ((std::abs(flow/area) < std::sqrt(std::numeric_limits<double>::epsilon()) * area) ||
+                  if ((std::abs(flow/area) * time_step < std::sqrt(std::numeric_limits<double>::epsilon()) * cell->diameter()) ||
                       std::abs(normal_flow) < std::sqrt(std::numeric_limits<double>::epsilon()) * std::abs(flow))
                     {
                       cell_at_conduction_dominated_dirichlet_boundary = true;
@@ -395,6 +395,7 @@ namespace aspect
 
             if (cell_at_conduction_dominated_dirichlet_boundary)
               {
+                // if we set the viscosity to zero, we don't need any further computation on this cell
                 viscosity_per_cell[cell->active_cell_index()] = 0.0;
                 continue;
               }
