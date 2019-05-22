@@ -527,18 +527,18 @@ namespace aspect
     {
       // Store which components to exclude during volume fraction computation.
       ComponentMask composition_mask(this->n_compositional_fields(),true);
-      if (use_strain_weakening == true)
+      if (weakening_mechanism != none)
         {
-          if (use_plastic_strain_weakening)
+          if (weakening_mechanism == plastic_weakening_with_plastic_strain_only || weakening_mechanism == plastic_weakening_with_plastic_strain_and_viscous_weakening_with_viscous_strain)
             composition_mask.set(this->introspection().compositional_index_for_name("plastic_strain"),false);
 
-          if (use_viscous_strain_weakening)
+          if (weakening_mechanism == viscous_weakening_with_viscous_strain_only || weakening_mechanism == plastic_weakening_with_plastic_strain_and_viscous_weakening_with_viscous_strain)
             composition_mask.set(this->introspection().compositional_index_for_name("viscous_strain"),false);
 
-          if (!use_plastic_strain_weakening && !use_viscous_strain_weakening && !use_finite_strain_tensor)
+          if (weakening_mechanism == total_strain || weakening_mechanism == plastic_weakening_with_total_strain_only)
             composition_mask.set(this->introspection().compositional_index_for_name("total_strain"),false);
 
-          if (use_finite_strain_tensor)
+          if (weakening_mechanism == finite_strain_tensor)
             {
               const unsigned int n_start = this->introspection().compositional_index_for_name("s11");
               for (unsigned int i = n_start; i < n_start + Tensor<2,dim>::n_independent_components ; ++i)
