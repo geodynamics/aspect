@@ -30,12 +30,8 @@
 #include <deal.II/base/function_lib.h>
 #include <deal.II/base/exceptions.h>
 #include <deal.II/base/signaling_nan.h>
-
-#if DEAL_II_VERSION_GTE(9,0,0)
 #include <deal.II/base/patterns.h>
-#else
-#include <deal.II/base/parameter_handler.h>
-#endif
+
 
 #include <aspect/geometry_model/box.h>
 #include <aspect/geometry_model/spherical_shell.h>
