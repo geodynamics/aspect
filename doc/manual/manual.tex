@@ -8825,7 +8825,7 @@ for the lack of convergence.
 In this section we extend the van Keken cookbook following up the work previously completed by Cedric Thieulot, Juliane Dannberg,
 Timo Heister and Wolfgang Bangerth.  \textit{This section contributed by Grant Euen, Tahiry Rajaonarison, and Shangxin Liu as part of the Geodynamics and ASPECT class at Virginia Tech.}  
 
-As already mentioned above, using a half width parameter proportional to the mesh size allows for more accurate results.  We test the effect of the half width size of the smoothed discontinuity by changing the division by 0.02, the smoothing parameter, in the formula for the smoothed initial conditions into values proportional to the mesh size.  We use 7 global refinements because the root mean square velocity converges at greater resolution while keeping average runtime around 5 to 25 minutes.  These runtimes were produced by the BlueRidge cluster of the Advanced Research Computing (ARC) program at Virginia Tech.  BlueRidge is a 408-node Cray CS-300 cluster; each node outfitted with two octa-core Intel Sandy Bridge CPUs and 64 GB of memory.  A chart of average runtimes for 5 through 10 global refinements on one node can be seen in Table~\ref{tab:runtime-table}.  For 7 global refinements (128$\times$128 mesh size), the size of the mesh is 0.0078 corresponding to a half width parameter of 0.0039.  The smooth model allows for much better convergence of the secondary plumes, although they are still more scattered than the primary plumes.
+As already mentioned above, using a half width parameter proportional to the mesh size allows for more accurate results.  We test the effect of the half width size of the smoothed discontinuity by changing the smoothing parameter to values proportional to the mesh size.  In the formula for the smoothed initial conditions, this parameter is the division by 0.02.  We use 7 global refinements because the root mean square velocity converges at greater resolution while keeping average runtime around 5 to 25 minutes.  These runtimes were produced by the BlueRidge cluster of the Advanced Research Computing (ARC) program at Virginia Tech.  BlueRidge is a 408-node Cray CS-300 cluster; each node outfitted with two octa-core Intel Sandy Bridge CPUs and 64 GB of memory.  Average runtimes for global refinements 5 through 10 using one node can be seen in Table~\ref{tab:runtime-table}.  For 7 global refinements (128$\times$128 mesh size), the size of the mesh is 0.0078 corresponding to a half width parameter of 0.0039.  The smooth model allows for much better convergence of the secondary plumes, although they are still more scattered than the primary plumes.
 
 \begin{table}[htb]
         \center
@@ -8845,7 +8845,7 @@ As already mentioned above, using a half width parameter proportional to the mes
         \label{tab:runtime-table}
 \end{table}
 
-This convergence is due to changing the smoothing parameter, which controls how much of the problem is smoothed over.  As the parameter is increased, the smoothed boundary grows and vice versa.  As the smoothed boundary shrinks it becomes sharper until the original discontinuous behavior is revealed.  As it grows, the two layers eventually become one large, transitioning layer rather than two distinct layers separated by a boundary.  These effects can be seen in Fig.~\ref{fig:vk-5}.  The overall effect is that the secondary rise is at different times based on these conditions.  In general, as the smoothing parameter is decreased, the smoothed boundary shrinks and the plumes rise more quickly.  As it is increased, the boundary grows and the plumes rise more slowly.  This trend can be used to force a more accurate convergence from the secondary plumes.
+This convergence is due to changing the smoothing parameter, which controls how much of the problem is smoothed over.  As the parameter is increased the smoothed boundary grows; as the smoothed boundary shrinks it becomes sharper until the original discontinuous behavior is revealed.  As the boundary grows, the two distinct layers eventually become one large, transitioning layer.  These effects can be seen in Fig.~\ref{fig:vk-5}.  The overall effect is that the secondary rise is at different times based on these conditions.  In general, as the smoothing parameter is decreased the smoothed boundary shrinks, and the plumes rise more quickly.  As it is increased the boundary grows, and the plumes rise more slowly.  This trend can be used to force a more accurate convergence from the secondary plumes.
 
 \begin{figure}
         \centering
@@ -8854,7 +8854,7 @@ This convergence is due to changing the smoothing parameter, which controls how 
         \label{fig:vk-5}
 \end{figure}
 
-The evolution in time of the resulting compositional fields (Fig.~\ref{fig:vk-6}) shows that the first peak converges as the smoothed interface decreases. There is a good agreement for the first peak for all smoothing parameters.  As the width of the discontinuity increases, the second peak rises both later and more slowly.
+The evolution in time of the resulting compositional fields (Fig.~\ref{fig:vk-6}) shows that the first peak converges as the smoothed interface decreases. There is a good agreement for the first peak for all smoothing parameters.  As the width of the discontinuity increases, the second peak rises more slowly and later in the run.
 
 \begin{figure}
         \centering
@@ -8863,25 +8863,25 @@ The evolution in time of the resulting compositional fields (Fig.~\ref{fig:vk-6}
         \label{fig:vk-6}
 \end{figure}
 
-Now let us further add a two-layer viscosity model to the domain. This is done to recreate the two nonisoviscous Rayleigh-Taylor instability cases (``cases 1b and 1c'') published in van Keken \textit{et al.} in \cite{KKSCND97}.  Let's assume the viscosity value of the upper heavier layer is $\eta_{t}$ and the viscosity value of the lower lighter layer is $\eta_{b}$. Based on the initial constant viscosity value 1$\times10^{2}$ Pa~s, we set the viscosity proportion $\frac{\eta_{t}}{\eta_{b}}=0.1, 0.01$, meaning the viscosity of the upper, heavier layer is still 1$\times10^{2}$ Pa~s, but the viscosity of the lower, lighter layer is now either 10 or 1 Pa~s, respectively. The viscosity profiles of the discontinuous and smooth models are shown in Fig.~\ref{fig:vk-7}.
+Now let us further add a two-layer viscosity model to the domain. This is done to recreate the two nonisoviscous Rayleigh-Taylor instability cases (``cases 1b and 1c'') published in van Keken \textit{et al.} in \cite{KKSCND97}.  Let's assume the viscosity value of the upper, heavier layer is $\eta_{t}$ and the viscosity value of the lower, lighter layer is $\eta_{b}$. Based on the initial constant viscosity value 1$\times10^{2}$ Pa~s, we set the viscosity proportion $\frac{\eta_{t}}{\eta_{b}}=0.1, 0.01$, meaning the viscosity of the upper, heavier layer is still 1$\times10^{2}$ Pa~s, but the viscosity of the lower, lighter layer is now either 10 or 1 Pa~s, respectively. The viscosity profiles of the discontinuous and smooth models are shown in Fig.~\ref{fig:vk-7}.
 
 \begin{figure}
         \centering
         \includegraphics[width=0.7\textwidth]{cookbooks/benchmarks/van-keken/contrast_viscosity.png}
-        \caption{\it Van Keken benchmark using layers of different viscosities. The left image is the discontinuous case, while right is the smooth.  Both are shown at t=0.}
+        \caption{\it Van Keken benchmark using different-viscosity layers. The left image is the discontinuous case, while right is the smooth.  Both are shown at $t=0$.}
         \label{fig:vk-7}
 \end{figure}
 
-For both benchmark cases, discontinuous and smooth, and both viscosity proportions, 0.1 and 0.01, the results are shown at the end time step number, 2000, in Fig.~\ref{fig:vk-8}.  This was generated using the original input parameter file, running the cases with 8 global refinement steps, and also adding the two-layer viscosity model.
+For both cases, discontinuous and smooth, and both viscosity proportions, 0.1 and 0.01, the results are shown at the end time step number, $t=2000$, in Fig.~\ref{fig:vk-8}.  This was generated using the original input parameter file, running the cases with 8 global refinements, and also adding the two-layer viscosity model.
 
 \begin{figure}
         \centering
         \includegraphics[width=0.5\textwidth]{cookbooks/benchmarks/van-keken/2viscosities-final.png}
-        \caption{\it Van Keken benchmark two-layer viscosity model at final time step number, 2000. These images show layers of different compositions and viscosities. Discontinuous cases are the left images, smooth cases are the right. The upper images are $\frac{\eta_{t}}{\eta_{b}}=0.1$, and the lower are $\frac{\eta_{t}}{\eta_{b}}=0.01$.}
+        \caption{\it Van Keken benchmark two-layer viscosity model at final time step number, $t=2000$. These images show layers of different compositions and viscosities. Discontinuous cases are the left images, smooth cases are the right. The upper images are $\frac{\eta_{t}}{\eta_{b}}=0.1$, and the lower are $\frac{\eta_{t}}{\eta_{b}}=0.01$.}
         \label{fig:vk-8}
 \end{figure}
 
-Compared to the results of the constant viscosity throughout the domain, the plumes rise faster when adding the two-layer viscosity model. Also, the larger the viscosity difference is, the earlier the plumes appear and the faster their ascent. To further reveal the effect of the two-layer viscosity model, we also plot the evolution of the fluids' average velocity over time, as shown in Fig.~\ref{fig:vk-9}.
+Compared to the results of the models using constant viscosity throughout the domain, the plumes rise faster when adding the two-layer viscosity. Also, the larger the viscosity difference is the earlier the plumes appear, and the faster their ascent. To further reveal the effect of the two-layer viscosity model, we also plot the evolution of the fluids' root mean square velocity over time, as shown in Fig.~\ref{fig:vk-9}.
 
 \begin{figure}
         \centering
