@@ -81,8 +81,22 @@ namespace aspect
     void save_critical_parameters (const Parameters<dim> &parameters,
                                    aspect::oarchive &oa)
     {
+      oa << parameters.convert_to_years;
+      oa << parameters.surface_pressure;
+      oa << parameters.use_operator_splitting;
+      oa << parameters.include_melt_transport;
+      oa << parameters.enable_additional_stokes_rhs;
+      oa << parameters.stokes_velocity_degree;
+      oa << parameters.use_locally_conservative_discretization;
+      oa << parameters.use_discontinuous_temperature_discretization;
+      oa << parameters.use_discontinuous_composition_discretization;
+      oa << parameters.temperature_degree;
+      oa << parameters.composition_degree;
+      oa << parameters.pressure_normalization;
       oa << parameters.n_compositional_fields;
       oa << parameters.names_of_compositional_fields;
+      oa << parameters.normalized_fields;
+      oa << parameters.free_surface_enabled;
     }
 
 
@@ -96,10 +110,90 @@ namespace aspect
     void load_and_check_critical_parameters (const Parameters<dim> &parameters,
                                              aspect::iarchive &ia)
     {
+      bool convert_to_years;
+      ia >> convert_to_years;
+      AssertThrow (convert_to_years == parameters.convert_to_years,
+                   ExcMessage ("The value provided for `Use years in output instead of seconds' that was stored "
+                               "in the checkpoint file is not the same as the one "
+                               "you currently set in your input file. "
+                               "These need to be the same during restarting "
+                               "from a checkpoint."));
+
+      double surface_pressure;
+      ia >> surface_pressure;
+      AssertThrow (surface_pressure == parameters.surface_pressure,
+                   ExcMessage ("The value of surface pressure that was stored "
+                               "in the checkpoint file is not the same as the one "
+                               "you currently set in your input file. "
+                               "These need to be the same during restarting "
+                               "from a checkpoint."));
+
+      // It is conceivable that one could change this setting from one time
+      // step to another, but it is, at best, not tested. So disallow it for
+      // now, until someone tests it.
+      bool use_locally_conservative_discretization;
+      ia >> use_locally_conservative_discretization;
+      AssertThrow (use_locally_conservative_discretization == parameters.use_locally_conservative_discretization,
+                   ExcMessage ("The value provided for `Use locally conservative discretization' that was stored "
+                               "in the checkpoint file is not the same as the one "
+                               "you currently set in your input file. "
+                               "These need to be the same during restarting "
+                               "from a checkpoint."));
+
+      bool use_discontinuous_temperature_discretization;
+      ia >> use_discontinuous_temperature_discretization;
+      AssertThrow (use_discontinuous_temperature_discretization == parameters.use_discontinuous_temperature_discretization,
+                   ExcMessage ("The value provided for `Use discontinuous temperature discretization' that was stored "
+                               "in the checkpoint file is not the same as the one "
+                               "you currently set in your input file. "
+                               "These need to be the same during restarting "
+                               "from a checkpoint."));
+
+      bool use_discontinuous_composition_discretization;
+      ia >> use_discontinuous_composition_discretization;
+      AssertThrow (use_discontinuous_composition_discretization == parameters.use_discontinuous_composition_discretization,
+                   ExcMessage ("The value provided for `Use discontinuous composition discretization' that was stored "
+                               "in the checkpoint file is not the same as the one "
+                               "you currently set in your input file. "
+                               "These need to be the same during restarting "
+                               "from a checkpoint."));
+
+      unsigned int temperature_degree;
+      ia >> temperature_degree;
+      AssertThrow (temperature_degree == parameters.temperature_degree,
+                   ExcMessage ("The temperature polynomial degree that was stored "
+                               "in the checkpoint file is not the same as the one "
+                               "you currently set in your input file. "
+                               "These need to be the same during restarting "
+                               "from a checkpoint."));
+
+      unsigned int composition_degree;
+      ia >> composition_degree;
+      AssertThrow (composition_degree == parameters.composition_degree,
+                   ExcMessage ("The composition polynomial degree that was stored "
+                               "in the checkpoint file is not the same as the one "
+                               "you currently set in your input file. "
+                               "These need to be the same during restarting "
+                               "from a checkpoint."));
+
+      // One could allow changing the pressure normalization between runs, but
+      // the change would then lead to a jump in pressure from one time step
+      // to the next when we, for example, change from requiring the *surface*
+      // average to be zero, to requiring the *domain* average to be zero.
+      // That's unlikely what the user really wanted.
+      std::string pressure_normalization;
+      ia >> pressure_normalization;
+      AssertThrow (pressure_normalization == parameters.pressure_normalization,
+                   ExcMessage ("The pressure normalization method that was stored "
+                               "in the checkpoint file is not the same as the one "
+                               "you currently set in your input file. "
+                               "These need to be the same during restarting "
+                               "from a checkpoint."));
+
       unsigned int n_compositional_fields;
       ia >> n_compositional_fields;
       AssertThrow (n_compositional_fields == parameters.n_compositional_fields,
-                   ExcMessage ("The number of compositional fields that were stored "
+                   ExcMessage ("The number of compositional fields that was stored "
                                "in the checkpoint file is not the same as the one "
                                "you currently set in your input file. "
                                "These need to be the same during restarting "
@@ -109,6 +203,24 @@ namespace aspect
       ia >> names_of_compositional_fields;
       AssertThrow (names_of_compositional_fields == parameters.names_of_compositional_fields,
                    ExcMessage ("The names of compositional fields that were stored "
+                               "in the checkpoint file are not the same as the one "
+                               "you currently set in your input file. "
+                               "These need to be the same during restarting "
+                               "from a checkpoint."));
+
+      std::vector<unsigned int> normalized_fields;
+      ia >> normalized_fields;
+      AssertThrow (normalized_fields == parameters.normalized_fields,
+                   ExcMessage ("The list of normalized fields that was stored "
+                               "in the checkpoint file is not the same as the one "
+                               "you currently set in your input file. "
+                               "These need to be the same during restarting "
+                               "from a checkpoint."));
+
+      bool free_surface_enabled;
+      ia >> free_surface_enabled;
+      AssertThrow (free_surface_enabled == parameters.free_surface_enabled,
+                   ExcMessage ("The enable free surface setting that were stored "
                                "in the checkpoint file is not the same as the one "
                                "you currently set in your input file. "
                                "These need to be the same during restarting "
