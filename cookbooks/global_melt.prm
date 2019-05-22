@@ -304,12 +304,10 @@ subsection Mesh refinement
 
   # minimum of 4 global refinements
   subsection Minimum refinement function
-    set Coordinate system   = depth
     set Function expression = 4
-    set Variable names      = depth,phi
   end
 
-  # refine where the porosity is bigger than 1e-5
+  # refine where the porosity is bigger than 1e-8
   subsection Composition threshold
     set Compositional field thresholds = 1e-8,1.0
   end
