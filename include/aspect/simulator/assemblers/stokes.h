@@ -43,6 +43,16 @@ namespace aspect
                 internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const;
     };
 
+    template <int dim>
+    class StokesBFBTPreconditioner : public Assemblers::Interface<dim>,
+      public SimulatorAccess<dim>
+    {
+      public:
+        virtual
+        void
+        execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
+                internal::Assembly::CopyData::CopyDataBase<dim> &data) const;
+    };
     /**
      * A class containing the functions to assemble the compressible adjustment
      * to the Stokes preconditioner.

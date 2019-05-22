@@ -361,6 +361,7 @@ namespace aspect
           virtual ~StokesPreconditioner ();
 
           FullMatrix<double> local_matrix;
+          Vector<double> local_lumped_mass_approximation;
           std::vector<types::global_dof_index> local_dof_indices;
 
           /**

@@ -1802,6 +1802,7 @@ namespace aspect
 
       // only used if is_compressible()
       LinearAlgebra::BlockVector                                pressure_shape_function_integrals;
+      LinearAlgebra::BlockVector                                preconditioner_velocity_mass_lump;
 
       // only used if operator split is enabled
       LinearAlgebra::BlockVector                                operator_split_reaction_vector;

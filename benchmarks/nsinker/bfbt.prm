@@ -1,0 +1,18 @@
+############### Global parameters
+
+
+
+set Dimension                              = 3
+
+include nsinker.prm
+
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Number of cheap Stokes solver steps             = 100
+    set Use weighted BFBT Stokes approximation          = true
+  end
+end
+
+
+set Additional shared libraries            = ./libnsinker.so

@@ -115,7 +115,78 @@ namespace aspect
         }
     }
 
+    template <int dim>
+    void
+    StokesBFBTPreconditioner<dim>::
+    execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
+             internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
+    {
+      internal::Assembly::Scratch::StokesPreconditioner<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesPreconditioner<dim>& > (scratch_base);
+      internal::Assembly::CopyData::StokesPreconditioner<dim> &data = dynamic_cast<internal::Assembly::CopyData::StokesPreconditioner<dim>& > (data_base);
 
+      const Introspection<dim> &introspection = this->introspection();
+      const FiniteElement<dim> &fe = this->get_fe();
+      const unsigned int stokes_dofs_per_cell = data.local_dof_indices.size();
+      const unsigned int n_q_points           = scratch.finite_element_values.n_quadrature_points;
+      const double pressure_scaling = this->get_pressure_scaling();
+
+      // First loop over all dofs and find those that are in the Stokes system
+      // save the component (pressure and dim velocities) each belongs to.
+      for (unsigned int i = 0, i_stokes = 0; i_stokes < stokes_dofs_per_cell; /*increment at end of loop*/)
+        {
+          if (introspection.is_stokes_component(fe.system_to_component_index(i).first))
+            {
+              scratch.dof_component_indices[i_stokes] = fe.system_to_component_index(i).first;
+              ++i_stokes;
+            }
+          ++i;
+        }
+
+      // Loop over all quadrature points and assemble their contributions to
+      // the preconditioner matrix
+      for (unsigned int q = 0; q < n_q_points; ++q)
+        {
+          const double eta = scratch.material_model_outputs.viscosities[q];
+          const double sqrt_eta = std::sqrt(eta);
+          const double one_over_sqrt_eta = 1.0/sqrt_eta;
+
+          for (unsigned int i = 0, i_stokes = 0; i_stokes < stokes_dofs_per_cell; /*increment at end of loop*/)
+            {
+              if (introspection.is_stokes_component(fe.system_to_component_index(i).first))
+                {
+                  scratch.grads_phi_u[i_stokes] =
+                    scratch.finite_element_values[introspection.extractors
+                                                  .velocities].symmetric_gradient(i, q);
+                  scratch.grad_phi_p[i_stokes] = scratch.finite_element_values[introspection
+                                                                               .extractors.pressure].gradient(i, q);
+                  // TODO: is this correctly using all velocity components?
+                  const unsigned int c = fe.system_to_component_index(i).first;
+                  if (c<dim)
+                    data.local_lumped_mass_approximation(i_stokes) += sqrt_eta
+                                                                      * scratch.finite_element_values[introspection.extractors.velocities].value(i,q)[c]
+                                                                      * scratch.finite_element_values[introspection.extractors.velocities].value(i,q)[c]
+                                                                      * scratch.finite_element_values.JxW(q);
+
+                  ++i_stokes;
+                }
+              ++i;
+            }
+
+          const double JxW = scratch.finite_element_values.JxW(q);
+
+          for (unsigned int i = 0; i < stokes_dofs_per_cell; ++i)
+            for (unsigned int j = 0; j < stokes_dofs_per_cell; ++j)
+              if (scratch.dof_component_indices[i] ==
+                  scratch.dof_component_indices[j])
+                data.local_matrix(i, j) += ((2.0 * eta * (scratch.grads_phi_u[i]
+                                                          * scratch.grads_phi_u[j]))
+                                            + one_over_sqrt_eta * pressure_scaling
+                                            * pressure_scaling
+                                            * (scratch.grad_phi_p[i]
+                                               * scratch.grad_phi_p[j]))
+                                           * JxW;
+        }
+    }
 
     template <int dim>
     void
@@ -663,6 +734,7 @@ namespace aspect
   {
 #define INSTANTIATE(dim) \
   template class StokesPreconditioner<dim>; \
+  template class StokesBFBTPreconditioner<dim>; \
   template class StokesCompressiblePreconditioner<dim>; \
   template class StokesIncompressibleTerms<dim>; \
   template class StokesCompressibleStrainRateViscosityTerm<dim>; \

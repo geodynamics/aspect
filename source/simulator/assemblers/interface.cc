@@ -54,7 +54,7 @@ namespace aspect
           div_phi_u (stokes_dofs_per_cell, numbers::signaling_nan<double>()),
           phi_p (stokes_dofs_per_cell, numbers::signaling_nan<double>()),
           phi_p_c (add_compaction_pressure ? stokes_dofs_per_cell : 0, numbers::signaling_nan<double>()),
-          grad_phi_p (add_compaction_pressure ? stokes_dofs_per_cell : 0, numbers::signaling_nan<Tensor<1,dim> >()),
+          grad_phi_p (stokes_dofs_per_cell /* tmp: 0*/, numbers::signaling_nan<Tensor<1,dim> >()),
           material_model_inputs(quadrature.size(), n_compositional_fields),
           material_model_outputs(quadrature.size(), n_compositional_fields),
           rebuild_stokes_matrix(rebuild_matrix)
@@ -377,6 +377,7 @@ namespace aspect
           :
           local_matrix (stokes_dofs_per_cell,
                         stokes_dofs_per_cell),
+          local_lumped_mass_approximation (stokes_dofs_per_cell),
           local_dof_indices (stokes_dofs_per_cell)
         {}
 
@@ -387,6 +388,7 @@ namespace aspect
         StokesPreconditioner (const StokesPreconditioner &data)
           :
           local_matrix (data.local_matrix),
+          local_lumped_mass_approximation (data.local_lumped_mass_approximation),
           local_dof_indices (data.local_dof_indices)
         {}
 
