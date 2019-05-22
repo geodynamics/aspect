@@ -2174,8 +2174,8 @@ namespace aspect
                         const unsigned int                   component) const
     {
       // For initial ascii data topography, we need access to the data before get_time() is set
-      if ( (dynamic_cast<const GeometryModel::Chunk<dim>*>(&this->get_geometry_model()) != 0 &&
-            dynamic_cast<const InitialTopographyModel::AsciiData<dim>*>(&this->get_initial_topography_model()) != 0 &&
+      if ( (dynamic_cast<const GeometryModel::Chunk<dim>*>(&this->get_geometry_model()) != nullptr &&
+            dynamic_cast<const InitialTopographyModel::AsciiData<dim>*>(&this->get_initial_topography_model()) != nullptr &&
             !(this->time_is_initialized())) ||
            this->get_time() - first_data_file_model_time >= 0.0)
         {
@@ -2218,8 +2218,8 @@ namespace aspect
                                              const Point<dim>                    &position,
                                              const unsigned int                   component) const
     {
-      if ((dynamic_cast<const GeometryModel::Chunk<dim>*>(&this->get_geometry_model()) != 0 &&
-           dynamic_cast<const InitialTopographyModel::AsciiData<dim>*>(&this->get_initial_topography_model()) != 0 &&
+      if ((dynamic_cast<const GeometryModel::Chunk<dim>*>(&this->get_geometry_model()) != nullptr &&
+           dynamic_cast<const InitialTopographyModel::AsciiData<dim>*>(&this->get_initial_topography_model()) != nullptr &&
            !(this->time_is_initialized())) ||
           this->get_time() - first_data_file_model_time >= 0.0 )
         {
