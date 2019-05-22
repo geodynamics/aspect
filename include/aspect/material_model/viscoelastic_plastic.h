@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2014 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -45,9 +45,9 @@ namespace aspect
      * where
      *  $\sigma_y$ is the yield stress, $C$ is cohesion, $phi$ is the angle
      *  of internal friction and $P$ is pressure.
-     * If the viscous stress ($2v{\varepsilon}_{ii})$) exceeds the yield
+     * If the viscous stress ($2\eta{\varepsilon}_{ii})$) exceeds the yield
      * stress ($\sigma_{y}$), the viscosity is rescaled back to the yield
-     * surface: $v_{y}=\sigma_{y}/(2.{\varepsilon}_{ii})$
+     * surface: $\eta_{y}=\sigma_{y}/(2{\varepsilon}_{ii})$
      * This form of plasticity is commonly used in geodynamic models.
      * See, for example, Thieulot, C. (2011), PEPI 188, pp. 47-68. "
      *
