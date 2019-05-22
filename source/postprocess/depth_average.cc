@@ -204,7 +204,7 @@ namespace aspect
                           DataOutBase::default_suffix(output_format));
               std::ofstream f (filename.c_str());
 
-#if DEAL_II_VERSION_GTE(9,0,0)
+
               if (output_format == DataOutBase::gnuplot)
                 {
                   DataOutBase::GnuplotFlags gnuplot_flags;
@@ -213,7 +213,6 @@ namespace aspect
                   gnuplot_flags.space_dimension_labels[1] = "time";
                   data_out_stack.set_flags(gnuplot_flags);
                 }
-#endif
               data_out_stack.write (f, output_format);
 
               AssertThrow (f, ExcMessage("Writing data to <" + filename +
