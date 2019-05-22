@@ -394,7 +394,7 @@ namespace aspect
     std::unique_ptr<Quadrature<dim> > quadrature_formula;
     if (geometry_unique_depth_direction != numbers::invalid_unsigned_int)
       quadrature_formula = std_cxx14::make_unique<Quadrature<dim> >(internal::get_quadrature_formula<dim>(lateral_quadrature_degree,
-                                                              geometry_unique_depth_direction));
+                                                                    geometry_unique_depth_direction));
     else
       quadrature_formula = std_cxx14::make_unique<Quadrature<dim> >(QIterated<dim>(QMidpoint<1>(),10));
 
