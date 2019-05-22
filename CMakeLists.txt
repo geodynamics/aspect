@@ -322,6 +322,7 @@ FILE(WRITE ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/print_usage.cmake
 #      ${_make_command} distclean      - to clean the directory from all generated
 #                               files (includes clean, runclean and the removal
 #                               of the generated build system)
+#      ${_make_command} setup_tests    - enable all tests
 #      ${_make_command} info           - to view this message again
 \")")
 
