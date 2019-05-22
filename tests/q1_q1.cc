@@ -1,3 +1,5 @@
+// Check the Donea-Huerta benchmark using the Q1 x Q1 element
+
 #include <aspect/simulator.h>
 #include <aspect/material_model/simple.h>
 #include <aspect/boundary_velocity/interface.h>

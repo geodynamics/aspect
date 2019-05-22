@@ -1,3 +1,6 @@
+# Check the Donea-Huerta benchmark using the Q1 x Q1 element
+
+
 ############### Global parameters
 # We use a 2d setup. Since we are only interested
 # in a steady state solution, we set the end time
