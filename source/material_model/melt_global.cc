@@ -157,16 +157,19 @@ namespace aspect
                                    0.0;
           out.densities[i] = (reference_rho_s + delta_rho) * temperature_dependence
                              * std::exp(compressibility * (in.pressure[i] - this->get_surface_pressure()));
+           
+	  AssertThrow(this->introspection().compositional_name_exists("porosity"),
+                      ExcMessage("Material model Melt simple with melt transport only "
+                                 "works if there is a compositional field called porosity."));
+
+          const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
+          const double porosity = std::min(1.0, std::max(in.composition[i][porosity_idx],0.0));
 
           if (this->include_melt_transport() && include_melting_and_freezing && in.strain_rate.size())
             {
               AssertThrow(this->introspection().compositional_name_exists("peridotite"),
                           ExcMessage("Material model Melt simple only works if there is a "
                                      "compositional field called peridotite."));
-              AssertThrow(this->introspection().compositional_name_exists("porosity"),
-                          ExcMessage("Material model Melt simple with melt transport only "
-                                     "works if there is a compositional field called porosity."));
-              const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
               const unsigned int peridotite_idx = this->introspection().compositional_index_for_name("peridotite");
 
               // Calculate the melting rate as difference between the equilibrium melt fraction
@@ -210,8 +213,6 @@ namespace aspect
                     }
                 }
 
-              const double porosity = std::min(1.0, std::max(in.composition[i][porosity_idx],0.0));
-
               // find depletion = peridotite, which might affect shear viscosity:
               const double depletion_visc = std::min(1.0, std::max(in.composition[i][peridotite_idx],0.0));
 
@@ -223,14 +224,6 @@ namespace aspect
             }
           else
             {
-	      AssertThrow(this->introspection().compositional_name_exists("porosity"),
-                          ExcMessage("Material model Melt simple with melt transport only "
-                                     "works if there is a compositional field called porosity."));
-
-              const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
-
-              const double porosity = std::min(1.0, std::max(in.composition[i][porosity_idx],0.0));
-
               // calculate viscosity based on local melt -- useful if melt exist at the beginning
               out.viscosities[i] = eta_0  * exp(- alpha_phi * porosity);
 
