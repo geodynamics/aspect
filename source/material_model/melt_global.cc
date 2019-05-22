@@ -99,7 +99,6 @@ namespace aspect
                                                   std::max(0.0, in.pressure[q]),
                                                   depletion);
         }
-      return;
     }
 
 

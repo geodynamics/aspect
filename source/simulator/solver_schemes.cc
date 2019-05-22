@@ -336,8 +336,6 @@ namespace aspect
 
     if (parameters.run_postprocessors_on_nonlinear_iterations)
       postprocess ();
-
-    return;
   }
 
 
@@ -373,8 +371,6 @@ namespace aspect
         ++nonlinear_iteration;
       }
     while (nonlinear_iteration < max_nonlinear_iterations);
-
-    return;
   }
 
 
@@ -384,8 +380,6 @@ namespace aspect
   {
     if (timestep_number == 0)
       assemble_and_solve_stokes();
-
-    return;
   }
 
 
@@ -455,8 +449,6 @@ namespace aspect
         ++nonlinear_iteration;
       }
     while (nonlinear_iteration < max_nonlinear_iterations);
-
-    return;
   }
 
 
@@ -500,8 +492,6 @@ namespace aspect
         ++nonlinear_iteration;
       }
     while (nonlinear_iteration < max_nonlinear_iterations);
-
-    return;
   }
 
 
@@ -908,8 +898,6 @@ namespace aspect
 
     if (parameters.run_postprocessors_on_nonlinear_iterations)
       postprocess ();
-
-    return;
   }
 
 
@@ -919,8 +907,6 @@ namespace aspect
   {
     if (parameters.run_postprocessors_on_nonlinear_iterations)
       postprocess ();
-
-    return;
   }
 }
 

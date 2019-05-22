@@ -97,7 +97,6 @@ namespace aspect
         {
           boundary_composition_objects[i]->update();
         }
-      return;
     }
 
 
