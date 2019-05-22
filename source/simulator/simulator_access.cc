@@ -707,6 +707,13 @@ namespace aspect
   }
 
   template <int dim>
+  bool
+  SimulatorAccess<dim>::time_is_initialized () const
+  {
+    return (simulator->time_is_initialized);
+  }
+
+  template <int dim>
   double
   SimulatorAccess<dim>::get_pressure_scaling () const
   {
