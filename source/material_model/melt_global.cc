@@ -223,6 +223,15 @@ namespace aspect
             }
           else
             {
+	      AssertThrow(this->introspection().compositional_name_exists("porosity"),
+                          ExcMessage("Material model Melt simple with melt transport only "
+                                     "works if there is a compositional field called porosity."));
+
+              const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
+
+              const double porosity = std::min(1.0, std::max(in.composition[i][porosity_idx],0.0));
+
+              // calculate viscosity based on local melt -- useful if melt exist at the beginning
               out.viscosities[i] = eta_0  * exp(- alpha_phi * porosity);
 
               // no melting/freezing is used in the model --> set all reactions to zero
