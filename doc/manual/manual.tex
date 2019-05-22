@@ -8205,14 +8205,20 @@ as temperature variations associated with lithospheric thinning exert a first-or
 \textit{This section was contributed by Juliane Dannberg, and the model setup was inspired 
 by discussions with John Rudge. Additional materials and comments by Mathilde Kervazo and Marine Lasbleis.}
 
-This is an example of convection in the inner core of the Earth. The model is based on a spherical geometry, with a single material. Three main particularities are constitutive of this inner core dynamics modeling: it consists of a self-gravitating sphere where the gravity decreases linearly from the boundary to zero at the center of the inner core; the boundary conditions combine normal stress and normal velocity, and take into account the rate of phase change (melting/freezing) at the inner-outer core boundary; the material has a temperature dependent density that makes the density profile unstably stratified as temperature increases towards the center of the core.
+This is an example of convection in the inner core of the Earth. The model is based on a spherical geometry, with a single material. Three main particularities are constitutive of this inner core dynamics modeling: it consists of a sphere where the gravity decreases linearly (to mimic self-gravitation) from the boundary to zero at the center of the inner core; the boundary conditions combine normal stress and normal velocity, and take into account the rate of phase change (melting/freezing) at the inner-outer core boundary; the material has a temperature dependent density that makes the density profile unstably stratified as temperature increases towards the center of the core.
 Note that we do not actually compute self-gravitation, but instead define a linear gravity profile. Since the density variations are very small, this is a good approximation.
 
 The setup is analogous to the models described in \cite{Deguen2013}, and all material properties 
 are chosen in a way so that the equations are non-dimensional.
 
 The required heating model and changes to the material model are implemented in a shared library
-(\url{cookbooks/inner_core_convection/inner_core_convection.cc}). 
+(\url{cookbooks/inner_core_convection/inner_core_convection.cc}). To compile the file, do
+
+\begin{verbatim}
+ $ cmake -DAspect_DIR=/path/to/aspect .
+ 
+ make
+\end{verbatim}
 
 In the non-dimensional form of the equations derived by \cite{Deguen2013}, we solve for the potential temperature $T = \tilde{T}-T_{\text{is}}$ ($\tilde{T}$ is the temperature field, $T_{\text{is}}$ the isentropic -- also called adiabatic -- temperature). This allows to solve the temperature field with simple boundary conditions ($T=0$), even if the temperature of the inner core boundary evolves with time, defined as the intersection between the isentrope and the liquidus of the material in the outer core.  
 The equations for inner core convection in the approximation of no growth (equation 59 for the potential temperature) are
