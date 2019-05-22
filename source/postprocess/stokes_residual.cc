@@ -93,31 +93,13 @@ namespace aspect
       data_point.solve_index = current_solve_index;
 
       // If there were cheap iterations add them.
-#if DEAL_II_VERSION_GTE(9,0,0)
       if (solver_control_cheap.last_step() != numbers::invalid_unsigned_int)
-#else
-      if (solver_control_cheap.last_step() != 0)
-#endif
         {
           data_point.values = solver_control_cheap.get_history_data();
         }
 
-#if !DEAL_II_VERSION_GTE(9,0,0)
-      // Pre deal.II 9.0 history_data contained 0 for all iterations
-      // up to max steps (e.g. because the solver converged earlier).
-      // Remove those entries.
-      std::vector<double>::iterator zero_value = std::find(data_point.values.begin(),
-                                                           data_point.values.end(),
-                                                           0);
-      data_point.values.erase(zero_value,data_point.values.end());
-#endif
 
-      // If there were expensive iterations add them.
-#if DEAL_II_VERSION_GTE(9,0,0)
       if (solver_control_expensive.last_step() != numbers::invalid_unsigned_int)
-#else
-      if (solver_control_expensive.last_step() != 0)
-#endif
         {
           // If there were cheap iterations add the expensive iterations after a signalling -1.
           if (data_point.values.size() > 0)
@@ -128,15 +110,6 @@ namespace aspect
                                    solver_control_expensive.get_history_data().end());
         }
 
-#if !DEAL_II_VERSION_GTE(9,0,0)
-      // Pre deal.II 9.0 history_data contained 0 for all iterations
-      // up to max steps (e.g. because the solver converged earlier).
-      // Remove those entries.
-      zero_value = std::find(data_point.values.begin(),
-                             data_point.values.end(),
-                             0);
-      data_point.values.erase(zero_value,data_point.values.end());
-#endif
 
       entries.push_back(data_point);
     }
