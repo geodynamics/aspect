@@ -529,18 +529,18 @@ namespace aspect
     {
       // Store which components to exclude during volume fraction computation.
       ComponentMask composition_mask(this->n_compositional_fields(),true);
-      if (use_strain_weakening == true)
+      if (weakening_mechanism != none)
         {
-          if (use_plastic_strain_weakening)
+          if (weakening_mechanism == plastic_weakening_with_plastic_strain_only || weakening_mechanism == plastic_weakening_with_plastic_strain_and_viscous_weakening_with_viscous_strain)
             composition_mask.set(this->introspection().compositional_index_for_name("plastic_strain"),false);
 
-          if (use_viscous_strain_weakening)
+          if (weakening_mechanism == viscous_weakening_with_viscous_strain_only || weakening_mechanism == plastic_weakening_with_plastic_strain_and_viscous_weakening_with_viscous_strain)
             composition_mask.set(this->introspection().compositional_index_for_name("viscous_strain"),false);
 
-          if (!use_plastic_strain_weakening && !use_viscous_strain_weakening && !use_finite_strain_tensor)
+          if (weakening_mechanism == total_strain || weakening_mechanism == plastic_weakening_with_total_strain_only)
             composition_mask.set(this->introspection().compositional_index_for_name("total_strain"),false);
 
-          if (use_finite_strain_tensor)
+          if (weakening_mechanism == finite_strain_tensor)
             {
               const unsigned int n_start = this->introspection().compositional_index_for_name("s11");
               for (unsigned int i = n_start; i < n_start + Tensor<2,dim>::n_independent_components ; ++i)
@@ -639,15 +639,15 @@ namespace aspect
           // If plastic strain is tracked (so not the total strain), only overwrite
           // when plastically yielding.
           // If viscous strain is also tracked, overwrite the second reaction term as well.
-          if  (use_strain_weakening == true && use_finite_strain_tensor == false && this->get_timestep_number() > 0 && in.strain_rate.size())
+          if  (weakening_mechanism != none && weakening_mechanism != finite_strain_tensor && this->get_timestep_number() > 0 && in.strain_rate.size())
             {
               const double edot_ii = std::max(sqrt(std::fabs(second_invariant(deviator(in.strain_rate[i])))),min_strain_rate);
               const double e_ii = edot_ii*this->get_timestep();
-              if (use_plastic_strain_weakening == true && plastic_yielding == true)
+              if (weakening_mechanism == plastic_weakening_with_plastic_strain_only || weakening_mechanism == plastic_weakening_with_plastic_strain_and_viscous_weakening_with_viscous_strain)
                 out.reaction_terms[i][this->introspection().compositional_index_for_name("plastic_strain")] = e_ii;
-              if (use_viscous_strain_weakening == true && plastic_yielding == false)
+              if (weakening_mechanism == viscous_weakening_with_viscous_strain_only || weakening_mechanism == plastic_weakening_with_plastic_strain_and_viscous_weakening_with_viscous_strain)
                 out.reaction_terms[i][this->introspection().compositional_index_for_name("viscous_strain")] = e_ii;
-              if (use_plastic_strain_weakening == false && use_viscous_strain_weakening == false)
+              if (weakening_mechanism == total_strain || weakening_mechanism == plastic_weakening_with_total_strain_only)
                 out.reaction_terms[i][this->introspection().compositional_index_for_name("total_strain")] = e_ii;
             }
 
@@ -656,8 +656,8 @@ namespace aspect
         }
 
       // If we use the full strain tensor, compute the change in the individual tensor components.
-      if (in.current_cell.state() == IteratorState::valid && use_strain_weakening == true
-          && use_finite_strain_tensor == true && this->get_timestep_number() > 0 && in.strain_rate.size())
+      if (in.current_cell.state() == IteratorState::valid && weakening_mechanism == finite_strain_tensor
+          && this->get_timestep_number() > 0 && in.strain_rate.size())
         compute_finite_strain_reaction_terms(in, out);
     }
 
