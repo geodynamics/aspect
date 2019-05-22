@@ -788,7 +788,6 @@ namespace aspect
       {
         bool constrained_dofs_set_changed = false;
 
-#if DEAL_II_VERSION_GTE(9,0,0)
         for (auto &row: current_constraints.get_lines())
           {
             if (!new_current_constraints.is_constrained(row.index))
@@ -797,23 +796,6 @@ namespace aspect
                 break;
               }
           }
-#else
-        for (const auto row: current_constraints.get_local_lines())
-          {
-            // Decide if we need to construct a new sparsity pattern.
-            // This is only necessary if at least one of the DoFs that were
-            // constrained in the previous time step are not constrained any more,
-            // because in this case we will need additionl matrix entries.
-            // The matrices will be reassembled in each timestep regardless,
-            // so the values of the constraints do not matter for the sparsity pattern.
-            if (current_constraints.is_constrained(row)
-                != new_current_constraints.is_constrained(row))
-              {
-                constrained_dofs_set_changed = true;
-                break;
-              }
-          }
-#endif
 
         const bool any_constrained_dofs_set_changed = Utilities::MPI::sum(constrained_dofs_set_changed ? 1 : 0,
                                                                           mpi_communicator) > 0;
