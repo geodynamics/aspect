@@ -85,7 +85,6 @@ namespace aspect
       oa << parameters.surface_pressure;
       oa << parameters.use_operator_splitting;
       oa << parameters.include_melt_transport;
-      oa << parameters.enable_additional_stokes_rhs;
       oa << parameters.stokes_velocity_degree;
       oa << parameters.use_locally_conservative_discretization;
       oa << parameters.use_discontinuous_temperature_discretization;
@@ -127,6 +126,35 @@ namespace aspect
                                "you currently set in your input file. "
                                "These need to be the same during restarting "
                                "from a checkpoint."));
+
+      bool use_operator_splitting;
+      ia >> use_operator_splitting;
+      AssertThrow (use_operator_splitting == parameters.use_operator_splitting,
+                   ExcMessage ("The operator splitting mode that was stored "
+                               "in the checkpoint file is not the same as the one "
+                               "you currently set in your input file. "
+                               "These need to be the same during restarting "
+                               "from a checkpoint."));
+
+      bool include_melt_transport;
+      ia >> include_melt_transport;
+      AssertThrow (include_melt_transport == parameters.include_melt_transport,
+                   ExcMessage ("The melt transport mode that was stored "
+                               "in the checkpoint file is not the same as the one "
+                               "you currently set in your input file. "
+                               "These need to be the same during restarting "
+                               "from a checkpoint."));
+
+      unsigned int stokes_velocity_degree;
+      ia >> stokes_velocity_degree;
+      AssertThrow (stokes_velocity_degree == parameters.stokes_velocity_degree,
+                   ExcMessage ("The polynomial degree used for the Stokes "
+                               "finite element that was stored "
+                               "in the checkpoint file is not the same as the one "
+                               "you currently set in your input file. "
+                               "These need to be the same during restarting "
+                               "from a checkpoint."));
+
 
       // It is conceivable that one could change this setting from one time
       // step to another, but it is, at best, not tested. So disallow it for
