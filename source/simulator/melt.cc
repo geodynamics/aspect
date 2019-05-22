@@ -578,11 +578,7 @@ namespace aspect
         face->boundary_id(),
         scratch.face_material_model_inputs,
         scratch.face_material_model_outputs,
-#if DEAL_II_VERSION_GTE(9,0,0)
         scratch.face_finite_element_values.get_normal_vectors(),
-#else
-        scratch.face_finite_element_values.get_all_normal_vectors(),
-#endif
         grad_p_f);
 
       for (unsigned int q=0; q<n_face_q_points; ++q)
