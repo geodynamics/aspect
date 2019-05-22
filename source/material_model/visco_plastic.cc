@@ -645,7 +645,7 @@ namespace aspect
                 out.reaction_terms[i][this->introspection().compositional_index_for_name("plastic_strain")] = e_ii;
               if (weakening_mechanism == viscous_weakening_with_viscous_strain_only && plastic_yielding == false)
                 out.reaction_terms[i][this->introspection().compositional_index_for_name("viscous_strain")] = e_ii;
-              if (weakening_mechanism == total_strain)
+              if (weakening_mechanism == total_strain || weakening_mechanism == plastic_weakening_with_total_strain_only)
                 out.reaction_terms[i][this->introspection().compositional_index_for_name("total_strain")] = e_ii;
               if (weakening_mechanism == plastic_weakening_with_plastic_strain_and_viscous_weakening_with_viscous_strain)
                 {
