@@ -7446,7 +7446,7 @@ $a_{10}$ $a_{11}$ $b_{11}$ \\
 $a_{20}$ $a_{21}$ $b_{21}$ $a_{22}$ $b_{22}$ \\
 ... \\
 
-$a_{yz}$ is the cosine coefficient of degree $y$ and order $z$ and $b_{yz}$ is 
+$a_{yz}$ is the cosine coefficient of degree $y$ and order $z$; $b_{yz}$ is 
 the sine coefficient of degree $y$ and order $z$. The depth layers are specified 
 in the file \texttt{Spline\_knots.txt} by a normalized depth value ranging from the CMB (3480km, 
 normalized to -1) to the Moho (6346km, normalized to 1). This is the original
@@ -7460,7 +7460,10 @@ code. A further note of caution when switching to a different input model
 concerns the normalization of the spherical harmonics, which might differ.  
 After reading in the shear wave velocity perturbation one has several options
 to scale this into temperature differences, which are then used to initialize 
-the temperature field. 
+the temperature field. It should be noted that the shear wave velocity perturbations in 
+S20RTS and S40RTS are expressed in terms of percentage deviation from PREM. Wavespeed perturbations
+in other models may be referenced to other absolute values and this should be taken into account
+when interpreting absolute values of temperature, density and other physical parameters in ASPECT.
 
 \paragraph{Setting up the \aspect{} model.}
 
