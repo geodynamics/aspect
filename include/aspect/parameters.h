@@ -76,6 +76,38 @@ namespace aspect
     };
 
     /**
+     * A struct that contains the enums to decide what to do when a nonlinear solver fails.
+     */
+    struct NonlinearSolverFailureStrategy
+    {
+      enum Kind
+      {
+        continue_with_next_timestep,
+        cut_timestep_size,
+        abort_program
+      };
+
+      /**
+       * parse the enum value from a string
+       */
+      static
+      Kind
+      parse(const std::string &input)
+      {
+        if (input == "continue with next timestep")
+          return continue_with_next_timestep;
+        else if (input == "cut timestep size")
+          return cut_timestep_size;
+        else if (input == "abort program")
+          return abort_program;
+        else
+          AssertThrow(false, ExcNotImplemented());
+
+        return Kind();
+      }
+    };
+
+    /**
      * @brief The NullspaceRemoval struct
      */
     struct NullspaceRemoval
@@ -209,7 +241,7 @@ namespace aspect
             AssertThrow(false, ExcNotImplemented());
 
           return Formulation::MassConservation::Kind();
-        };
+        }
       };
 
       /**
@@ -316,6 +348,7 @@ namespace aspect
      * @{
      */
     typename NonlinearSolver::Kind nonlinear_solver;
+    typename NonlinearSolverFailureStrategy::Kind nonlinear_solver_failure_strategy;
 
     double                         nonlinear_tolerance;
     bool                           resume_computation;

@@ -1794,15 +1794,53 @@ namespace aspect
     // start the principal loop over time steps:
     do
       {
-        // Only solve if we are not in pre-refinement, or we do not want to skip
-        // solving in pre-refinement.
+        // During pre-refinement, do not solve if we are asked to skip it:
         if (! (parameters.skip_solvers_on_initial_refinement
                && pre_refinement_step < parameters.initial_adaptive_refinement))
           {
             start_timestep ();
 
             // then do the core work: assemble systems and solve
-            solve_timestep ();
+            try
+              {
+                solve_timestep ();
+              }
+            catch (...)
+              {
+                pcout << "ERROR: the solver in the current timestep failed to converge." << std::endl;
+
+                if (parameters.nonlinear_solver_failure_strategy
+                    == Parameters<dim>::NonlinearSolverFailureStrategy::continue_with_next_timestep)
+                  {
+                    // do nothing and continue
+                  }
+                else if (parameters.nonlinear_solver_failure_strategy
+                         == Parameters<dim>::NonlinearSolverFailureStrategy::cut_timestep_size)
+                  {
+                    if (timestep_number == 0)
+                      {
+                        pcout << "Note: we can not cut the timestep in step 0, so we are aborting."
+                              << std::endl;
+                        throw;
+                      }
+
+                    // reduce timestep size and update time to "go back":
+                    const double new_time_step = 0.5*time_step;
+                    pcout << "\tReducing timestep to " << new_time_step << '\n' << std::endl;
+
+                    time -= time_step - new_time_step;
+                    time_step = new_time_step;
+                    continue; // skip the rest of the main loop that would advance in time
+                  }
+                else if (parameters.nonlinear_solver_failure_strategy
+                         == Parameters<dim>::NonlinearSolverFailureStrategy::abort_program)
+                  {
+                    // rethrow the current exception
+                    throw;
+                  }
+                else
+                  AssertThrow(false, ExcNotImplemented());
+              }
           }
 
         // see if we have to start over with a new adaptive refinement cycle

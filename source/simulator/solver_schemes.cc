@@ -368,12 +368,13 @@ namespace aspect
           postprocess ();
 
         if (relative_nonlinear_stokes_residual < parameters.nonlinear_tolerance)
-          break;
+          return;
 
         ++nonlinear_iteration;
       }
     while (nonlinear_iteration < max_nonlinear_iterations);
 
+    AssertThrow(false, ExcNonlinearSolverNoConvergence());
     return;
   }
 
@@ -450,12 +451,13 @@ namespace aspect
           postprocess ();
 
         if (max < parameters.nonlinear_tolerance)
-          break;
+          return;
 
         ++nonlinear_iteration;
       }
     while (nonlinear_iteration < max_nonlinear_iterations);
 
+    AssertThrow(false, ExcNonlinearSolverNoConvergence());
     return;
   }
 
@@ -495,12 +497,13 @@ namespace aspect
 
         // if reached convergence, exit nonlinear iterations.
         if (relative_nonlinear_stokes_residual < parameters.nonlinear_tolerance)
-          break;
+          return;
 
         ++nonlinear_iteration;
       }
     while (nonlinear_iteration < max_nonlinear_iterations);
 
+    AssertThrow(false, ExcNonlinearSolverNoConvergence());
     return;
   }
 
@@ -854,16 +857,21 @@ namespace aspect
           }
       }
 
-    // Reset the Newton stabilization at the end of the timestep.
-    newton_handler->parameters.preconditioner_stabilization = starting_preconditioner_stabilization;
-    newton_handler->parameters.velocity_block_stabilization = starting_velocity_block_stabilization;
+    if (residual/initial_residual < parameters.nonlinear_tolerance)
+      {
+        // Reset the Newton stabilization at the end of the timestep.
+        newton_handler->parameters.preconditioner_stabilization = starting_preconditioner_stabilization;
+        newton_handler->parameters.velocity_block_stabilization = starting_velocity_block_stabilization;
 
-    // Reset the linear tolerance to what it was at the beginning of the time step.
-    parameters.linear_stokes_solver_tolerance = begin_linear_tolerance;
+        // Reset the linear tolerance to what it was at the beginning of the time step.
+        parameters.linear_stokes_solver_tolerance = begin_linear_tolerance;
 
-    // When we are finished iterating, we need to set the final solution to the current linearization point,
-    // because the solution vector is used in the postprocess.
-    solution = current_linearization_point;
+        // When we are finished iterating, we need to set the final solution to the current linearization point,
+        // because the solution vector is used in the postprocess.
+        solution = current_linearization_point;
+      }
+    else
+      AssertThrow(false, ExcNonlinearSolverNoConvergence());
   }
 
 
