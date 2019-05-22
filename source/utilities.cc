@@ -2794,6 +2794,12 @@ namespace aspect
           {
             return std::max(x,y);
           }
+          case Utilities::Operator::replace_if_valid:
+		  {
+        	  if (std::isnan(y))
+			  return x;
+			  else return y;
+		  }
           default:
           {
             Assert (false, ExcInternalError());
@@ -2826,10 +2832,12 @@ namespace aspect
             operator_list[i] = Operator(Operator::minimum);
           else if (operator_names[i] == "maximum")
             operator_list[i] = Operator(Operator::maximum);
+          else if (operator_names[i] == "replace if valid")
+            operator_list[i] = Operator(Operator::replace_if_valid);
           else
             AssertThrow(false,
                         ExcMessage ("ASPECT only accepts the following operators: "
-                                    "add, subtract, minimum and maximum. But your parameter file "
+                                    "add, subtract, minimum, maximum and replace if valid. But your parameter file "
                                     "contains: " + operator_names[i] + ". Please check your parameter file.") );
         }
 
