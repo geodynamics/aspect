@@ -1,6 +1,6 @@
 # astyle indentation style for ASPECT
 # Run astyle on all files with:
-#    astyle --options=doc/astyle.rc `find include source | egrep '\.(h|cc)$'`
+#    astyle --options=contrib/utilities/astyle.rc `find include source | egrep '\.(h|cc)$'`
 #
 # Note: you NEED to use astyle version 2.04 for correct results (older
 # versions or 2.05 will not work)!
