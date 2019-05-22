@@ -55,7 +55,7 @@ pipeline {
 
     stage('Check indentation') {
       steps {
-        sh './doc/indent'
+        sh './contrib/utilities/indent'
         sh 'git diff > changes-astyle.diff'
         archiveArtifacts artifacts: 'changes-astyle.diff', fingerprint: true
         sh '''
