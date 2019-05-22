@@ -309,7 +309,7 @@ subsection Mesh refinement
     set Variable names      = depth,phi
   end
 
-  # refine where the porosity is bigger than 1e-5
+  # refine where the porosity is bigger than 1e-8
   subsection Composition threshold
     set Compositional field thresholds = 1e-8,1.0
   end
