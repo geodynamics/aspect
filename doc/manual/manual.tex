@@ -3261,7 +3261,7 @@ The purpose of these files is as follows:
   doesn't appear to be an agreed upon way to describe which files jointly make
   up for the simulation data of a single time step (i.e., all files with the
   same \texttt{XXXXX} but different \texttt{YYYY} in the example above). Visit
-  and Paraview both have their method of doing things, through \texttt{.pvtu} and
+  and ParaView both have their method of doing things, through \texttt{.pvtu} and
   \texttt{.visit} files. To make it easy for you to view data, \aspect{}
   simply creates both kinds of files in each time step in which graphical data
   is produced, and these are then also placed into the subdirectories as
@@ -3270,7 +3270,7 @@ The purpose of these files is as follows:
 
   The final two files of this kind, \texttt{output/solution.pvd} and
   \texttt{output/solution.visit}, are files that
-  describes to Paraview and Visit, respectively, which
+  describes to ParaView and Visit, respectively, which
   \texttt{output/solution/solution-XXXXX.pvtu} and
   \texttt{output/solution/solution-XXXXX.YYYY.vtu} jointly form a complete
   simulation.
@@ -3280,7 +3280,7 @@ The purpose of these files is as follows:
   simulation, grouped by the timestep they correspond to.
   To visualize an entire simulation, not just a single time step, it is
   therefore simplest to just load one of these files, depending on whether you
-  use Paraview or Visit.%
+  use ParaView or Visit.%
   \footnote{At the time of writing this, current versions of Visit (starting
     with version 2.5.1) actually have a bug that prevents them from
     successfully reading the \texttt{output/solution.visit} or
@@ -3641,7 +3641,7 @@ More information on all of these topics can be found in the Visit
 documentation, see \url{https://visit.llnl.gov/}. We have also recorded
 video lectures demonstrating this process interactively at
 \url{http://www.youtube.com/watch?v=3ChnUxqtt08} for Visit, and at
-\url{http://www.youtube.com/watch?v=w-65jufR-bc} for Paraview.
+\url{http://www.youtube.com/watch?v=w-65jufR-bc} for ParaView.
 
 
 \subsubsection{Visualizing statistical data}
@@ -6709,12 +6709,12 @@ and one compositional field. We choose the \texttt{ascii data} compositional ini
 want to read in our jellyfish. The relevant parts of the input file are listed below:
 \lstinputlisting[language=prmfile]{cookbooks/geomio/geomIO.prm.out}
 
-If we look at the output in \texttt{paraview}, we can see our jellyfish, with the mesh refined at the 
+If we look at the output in \texttt{ParaView}, we can see our jellyfish, with the mesh refined at the 
 boundaries between the different phases (Figure~\ref{fig:jelly-paraview}). 
 \begin{figure}[tb]
     \centering
     \includegraphics[width=0.55\textwidth]{cookbooks/geomio/jelly-paraview.pdf}
-    \caption{\aspect{} model output of the jellyfish and corresponding mesh in paraview.}
+    \caption{\aspect{} model output of the jellyfish and corresponding mesh in ParaView.}
     \label{fig:jelly-paraview}
 \end{figure}
 
@@ -9461,7 +9461,7 @@ ways, one of it being ParaView and shown in
 Fig.~\ref{fig:stokes-falling-sphere-2d} (an alternative is to use Visit as
 described in Section~\ref{sec:viz}; 3d images of this simulation using Visit
 are shown in Fig.~\ref{fig:stokes-falling-sphere-3d}).
-Here, Paraview has the advantage that you can calculate the average velocity
+Here, ParaView has the advantage that you can calculate the average velocity
 of the sphere using the following filters:
 \begin{enumerate}
  \item Threshold (Scalars: C\_1, Lower Threshold 0.5, Upper Threshold 1),
@@ -11069,7 +11069,7 @@ To give you some guidelines on how to write the section in the manual, you can f
   For representing data that deviates around zero, they recommend diverging color palettes
   where two different colors change in lightness and meet at an unsaturated color in the middle 
   such as ``BrBG'' and ``RdBu''. 
-  If you use a recent version of Paraview or VisIt, these color palettes are included with the preset
+  If you use a recent version of ParaView or VisIt, these color palettes are included with the preset
   color maps under the names given above, and you may want to choose one of these options rather than the default. 
 \item Finally, mention some ways the users could modify or extend the cookbook, such as
   parameters to vary to get new and interesting results, or to better understand
