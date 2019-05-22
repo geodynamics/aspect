@@ -98,7 +98,7 @@ namespace aspect
           data_point.values = solver_control_cheap.get_history_data();
         }
 
-
+      // If there were expensive iterations add them.
       if (solver_control_expensive.last_step() != numbers::invalid_unsigned_int)
         {
           // If there were cheap iterations add the expensive iterations after a signalling -1.
