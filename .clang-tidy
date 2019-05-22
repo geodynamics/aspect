@@ -5,6 +5,12 @@
 
 # Usage:
 #
+# see ./contrib/utilities/run_clang_tidy.sh
+#
+#
+#
+# alternatively:
+#
 # set DEAL_II_DIR to an installation made with clang:
 #
 # export SRC=$PWD
