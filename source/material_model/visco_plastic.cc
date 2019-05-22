@@ -106,13 +106,13 @@ namespace aspect
       // to be used in incompressible and compressible models.
       const double temperature_for_viscosity = temperature + adiabatic_temperature_gradient_for_viscosity*pressure;
       Assert(temperature_for_viscosity != 0, ExcMessage(
-               "The temperature used in the calculation of the visco platic rheology is zero. "
+               "The temperature used in the calculation of the visco-plastic rheology is zero. "
                "This is not allowed, because this value is used to divide through. It is probably "
                "being caused by the temperature being zero somewhere in the model. The relevant "
                "values for debugging are: temperature (" + Utilities::to_string(temperature) +
                "), adiabatic_temperature_gradient_for_viscosity ("
                + Utilities::to_string(adiabatic_temperature_gradient_for_viscosity) + ") and pressure ("
-               + Utilities::to_string(pressure) + ")."))
+               + Utilities::to_string(pressure) + ")."));
 
 
       // First step: viscous behavior
@@ -222,11 +222,12 @@ namespace aspect
       return std::make_pair (composition_viscosities, composition_yielding);
     }
 
+
     template <int dim>
     std::array<double, 3>
     ViscoPlastic<dim>::
     compute_weakened_yield_parameters(const unsigned int j,
-                                      const std::vector<double> &composition ) const
+                                      const std::vector<double> &composition) const
     {
       double viscous_weakening = 1.0;
       std::pair<double, double> yield_parameters (cohesions[j], angles_internal_friction[j]);
@@ -296,6 +297,7 @@ namespace aspect
 
     }
 
+
     template <int dim>
     std::pair<double, double>
     ViscoPlastic<dim>::
@@ -314,6 +316,7 @@ namespace aspect
       return std::make_pair (current_coh, current_phi);
     }
 
+
     template <int dim>
     double
     ViscoPlastic<dim>::
@@ -323,13 +326,12 @@ namespace aspect
       // Constrain the second strain invariant of the previous timestep by the strain interval
       const double cut_off_strain_ii = std::max(std::min(strain_ii,end_viscous_strain_weakening_intervals[j]),start_viscous_strain_weakening_intervals[j]);
 
-      // Linear strain weakening of cohesion and internal friction angle between specified strain values
-      const double strain_fraction = ( cut_off_strain_ii - start_viscous_strain_weakening_intervals[j] ) /
-                                     ( start_viscous_strain_weakening_intervals[j] - end_viscous_strain_weakening_intervals[j] );
-      const double weakening = 1. + ( 1. - viscous_strain_weakening_factors[j] ) * strain_fraction;
-
-      return weakening;
+      // Linear strain weakening of the viscous flow law prefactors between specified strain values
+      const double strain_fraction = (cut_off_strain_ii - start_viscous_strain_weakening_intervals[j]) /
+                                     (start_viscous_strain_weakening_intervals[j] - end_viscous_strain_weakening_intervals[j]);
+      return 1. + ( 1. - viscous_strain_weakening_factors[j] ) * strain_fraction;
     }
+
 
     template <int dim>
     void
@@ -350,16 +352,12 @@ namespace aspect
           // set to weakened values, or unweakened values when strain weakening is not used
           for (unsigned int j=0; j < volume_fractions.size(); ++j)
             {
-
               // Calculate the strain weakened cohesion, friction and viscosity factors
               const std::array<double, 3> weakened_values = compute_weakened_yield_parameters(j, in.composition[i]);
-              // Weakened friction and cohesion values
-              std::pair<double, double> yield_parameters (weakened_values[0], weakened_values[1]);
-
-              C   += volume_fractions[j] * yield_parameters.first;
-              phi += volume_fractions[j] * yield_parameters.second;
-
+              C   += volume_fractions[j] * weakened_values[0];
+              phi += volume_fractions[j] * weakened_values[1];
             }
+
           plastic_out->cohesions[i] = C;
           plastic_out->friction_angles[i] = phi * 180. / numbers::PI;
           plastic_out->yielding[i] = plastic_yielding ? 1 : 0;
@@ -639,16 +637,23 @@ namespace aspect
           // If plastic strain is tracked (so not the total strain), only overwrite
           // when plastically yielding.
           // If viscous strain is also tracked, overwrite the second reaction term as well.
-          if  (use_strain_weakening == true && use_finite_strain_tensor == false && this->get_timestep_number() > 0 && in.strain_rate.size())
+          if  (this->get_timestep_number() > 0 && in.strain_rate.size())
             {
               const double edot_ii = std::max(sqrt(std::fabs(second_invariant(deviator(in.strain_rate[i])))),min_strain_rate);
               const double e_ii = edot_ii*this->get_timestep();
-              if (use_plastic_strain_weakening == true && plastic_yielding == true)
+              if (weakening_mechanism == plastic_weakening_with_plastic_strain_only && plastic_yielding == true)
                 out.reaction_terms[i][this->introspection().compositional_index_for_name("plastic_strain")] = e_ii;
-              if (use_viscous_strain_weakening == true && plastic_yielding == false)
+              if (weakening_mechanism == viscous_weakening_with_viscous_strain_only && plastic_yielding == false)
                 out.reaction_terms[i][this->introspection().compositional_index_for_name("viscous_strain")] = e_ii;
-              if (use_plastic_strain_weakening == false && use_viscous_strain_weakening == false)
+              if (weakening_mechanism == total_strain)
                 out.reaction_terms[i][this->introspection().compositional_index_for_name("total_strain")] = e_ii;
+              if (weakening_mechanism == plastic_weakening_with_plastic_strain_and_viscous_weakening_with_viscous_strain)
+                {
+                  if (plastic_yielding == true)
+                    out.reaction_terms[i][this->introspection().compositional_index_for_name("plastic_strain")] = e_ii;
+                  else
+                    out.reaction_terms[i][this->introspection().compositional_index_for_name("viscous_strain")] = e_ii;
+                }
             }
 
           // Fill plastic outputs if they exist.
@@ -656,8 +661,8 @@ namespace aspect
         }
 
       // If we use the full strain tensor, compute the change in the individual tensor components.
-      if (in.current_cell.state() == IteratorState::valid && use_strain_weakening == true
-          && use_finite_strain_tensor == true && this->get_timestep_number() > 0 && in.strain_rate.size())
+      if (in.current_cell.state() == IteratorState::valid && weakening_mechanism == finite_strain_tensor
+          && this->get_timestep_number() > 0 && in.strain_rate.size())
         compute_finite_strain_reaction_terms(in, out);
     }
 

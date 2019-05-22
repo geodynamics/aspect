@@ -230,11 +230,16 @@ namespace aspect
                                           const YieldScheme &yield_type) const;
 
         /**
-         *
+         * A function that computes the how the rheologic parameters change
+         * if strain weakening is applied. Given a compositional field with
+         * the index j and a vector of all compositional fields, it returns
+         * the weakened cohesion, friction angle and a reduction factor for
+         * the prefactor of the viscous flow law(s) used in the computation
+         * for that composition.
          */
         std::array<double, 3>
-        compute_weakened_yield_parameters(  const unsigned int j,
-                                            const std::vector<double> &composition) const;
+        compute_weakened_yield_parameters(const unsigned int j,
+                                          const std::vector<double> &composition) const;
 
         /**
          * A function that computes the strain weakened values
@@ -242,17 +247,17 @@ namespace aspect
          * compositional field.
          */
         std::pair<double, double>
-        calculate_plastic_weakening ( const double strain_ii,
-                                      const unsigned int j ) const;
+        calculate_plastic_weakening (const double strain_ii,
+                                     const unsigned int j) const;
 
         /**
-         * A function that computes the strain weakened values
-         * of the diffusion and dislocation prefactors for a given
-         * compositional field.
+         * A function that computes by how much the diffusion and dislocation
+         * prefactors for a given compositional field are weakened under the
+         * influence of a given strain.
          */
         double
-        calculate_viscous_weakening ( const double strain_ii,
-                                      const unsigned int j ) const;
+        calculate_viscous_weakening (const double strain_ii,
+                                     const unsigned int j) const;
 
         /**
          * A function that fills the plastic additional output in the
