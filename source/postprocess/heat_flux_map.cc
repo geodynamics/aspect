@@ -254,11 +254,7 @@ namespace aspect
                                     boundary_id,
                                     face_in,
                                     face_out,
-#if DEAL_II_VERSION_GTE(9,0,0)
                                     fe_face_values.get_normal_vectors()
-#else
-                                    fe_face_values.get_all_normal_vectors()
-#endif
                                   );
 
                       // For inhomogeneous Neumann boundaries we know the heat flux across the boundary at each point,
