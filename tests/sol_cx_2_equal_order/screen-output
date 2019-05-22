@@ -1,20 +1,20 @@
 
-Loading shared library <./libsol_cx_2_conservative.so>
+Loading shared library <./libsol_cx_2_equal_order.so>
 
 Number of active cells: 16 (on 3 levels)
-Number of degrees of freedom: 291 (162+48+81)
+Number of degrees of freedom: 100 (50+25+25)
 
 *** Timestep 0:  t=0 years
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 15+0 iterations.
-      Relative  nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+   Solving Stokes system... 10+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
    Solving Stokes system... 0+0 iterations.
-      Relative  nonlinear residual (Stokes system) after nonlinear iteration 2: 4.99721e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 3.06182e-09
 
 
    Postprocessing:
-     Errors u_L1, p_L1, u_L2, p_L2: 6.986211e-05, 1.148187e-01, 1.007147e-04, 1.149644e-01
+     Errors u_L1, p_L1, u_L2, p_L2: 1.191777e-03, 1.043043e-01, 1.813599e-03, 1.066981e-01
 
 Termination requested by criterion: end time
 
