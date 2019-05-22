@@ -698,15 +698,6 @@ namespace aspect
       get_free_surface_boundary_indicators () const;
 
       /**
-       * Return the map of prescribed_boundary_velocity
-       *
-       * @deprecated: Use get_boundary_velocity_manager() instead.
-       */
-      DEAL_II_DEPRECATED
-      const std::map<types::boundary_id,std::shared_ptr<BoundaryVelocity::Interface<dim> > >
-      get_prescribed_boundary_velocity () const;
-
-      /**
        * Return an reference to the manager of the boundary velocity models.
        * This can then, for example, be used to get the names of the boundary velocity
        * models used in a computation, or to compute the boundary velocity

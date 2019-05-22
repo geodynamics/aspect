@@ -80,13 +80,9 @@ namespace aspect
     void
     Manager<dim>::update ()
     {
-      for (typename std::map<types::boundary_id,std::vector<std::shared_ptr<BoundaryVelocity::Interface<dim> > > >::const_iterator
-           boundary = boundary_velocity_objects.begin();
-           boundary != boundary_velocity_objects.end(); ++boundary)
-        for (typename std::vector<std::shared_ptr<BoundaryVelocity::Interface<dim>>>::const_iterator
-             p = boundary->second.begin();
-             p != boundary->second.end(); ++p)
-          (*p)->update();
+      for (const auto &boundary : boundary_velocity_objects)
+        for (const auto &p : boundary.second)
+          p->update();
     }
 
 
@@ -121,7 +117,7 @@ namespace aspect
     Manager<dim>::boundary_velocity (const types::boundary_id boundary_indicator,
                                      const Point<dim> &position) const
     {
-      typename std::map<types::boundary_id,std::vector<std::shared_ptr<BoundaryVelocity::Interface<dim> > > >::const_iterator boundary_plugins =
+      typename std::map<types::boundary_id,std::vector<std::unique_ptr<BoundaryVelocity::Interface<dim> > > >::const_iterator boundary_plugins =
         boundary_velocity_objects.find(boundary_indicator);
 
       Assert(boundary_plugins != boundary_velocity_objects.end(),
@@ -131,11 +127,9 @@ namespace aspect
 
       Tensor<1,dim> velocity = Tensor<1,dim>();
 
-      for (typename std::vector<std::shared_ptr<BoundaryVelocity::Interface<dim> > >::const_iterator
-           plugin = boundary_plugins->second.begin();
-           plugin != boundary_plugins->second.end(); ++plugin)
-        velocity += (*plugin)->boundary_velocity(boundary_indicator,
-                                                 position);
+      for (const auto &plugin : boundary_plugins->second)
+        velocity += plugin->boundary_velocity(boundary_indicator,
+                                              position);
 
       return velocity;
     }
@@ -152,7 +146,7 @@ namespace aspect
 
 
     template <int dim>
-    const std::map<types::boundary_id,std::vector<std::shared_ptr<BoundaryVelocity::Interface<dim> > > > &
+    const std::map<types::boundary_id,std::vector<std::unique_ptr<BoundaryVelocity::Interface<dim> > > > &
     Manager<dim>::get_active_boundary_velocity_conditions () const
     {
       return boundary_velocity_objects;
@@ -404,7 +398,7 @@ namespace aspect
                name != boundary_id->second.second.end(); ++name)
             {
               boundary_velocity_objects[boundary_id->first].push_back(
-                std::shared_ptr<Interface<dim> > (std::get<dim>(registered_plugins)
+                std::unique_ptr<Interface<dim> > (std::get<dim>(registered_plugins)
                                                   .create_plugin (*name,
                                                                   "Boundary velocity::Model names")));
 
