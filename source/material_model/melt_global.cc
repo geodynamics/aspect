@@ -223,7 +223,7 @@ namespace aspect
             }
           else
             {
-              out.viscosities[i] = eta_0;
+              out.viscosities[i] = eta_0  * exp(- alpha_phi * porosity);
 
               // no melting/freezing is used in the model --> set all reactions to zero
               for (unsigned int c=0; c<in.composition[i].size(); ++c)
