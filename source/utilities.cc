@@ -2837,7 +2837,7 @@ namespace aspect
           else
             AssertThrow(false,
                         ExcMessage ("ASPECT only accepts the following operators: "
-                                    "add, subtract, minimum, maximum and replace if valid. But your parameter file "
+                                    "add, subtract, minimum, maximum, and replace if valid. But your parameter file "
                                     "contains: " + operator_names[i] + ". Please check your parameter file.") );
         }
 
