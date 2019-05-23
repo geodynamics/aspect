@@ -49,7 +49,7 @@ namespace aspect
      * input file are the inner and outer radii of the shell, the minimum
      * and maximum longitude, minimum and maximum longitude, and the
      * number of cells initialised in each dimension.
-     *   
+     *
      * Initial topography can be added through a radial displacement of the
      * mesh nodes.
      */
@@ -376,10 +376,10 @@ namespace aspect
             get_radius(const Point<dim> &space_point) const;
 
             /**
-             * Set the minimum longitude of the domain, 
+             * Set the minimum longitude of the domain,
              * which is used in pulling back cartesian coordinates
              * to spherical to get the longitude in the correct
-             * quarter. 
+             * quarter.
              */
             virtual
             void
@@ -417,7 +417,7 @@ namespace aspect
             /**
              * The maximum depth not taking into account
              * topography (outer radius minus inner radius).
-             */  
+             */
             double max_depth;
 
             /**

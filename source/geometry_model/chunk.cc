@@ -44,7 +44,7 @@ namespace aspect
     {}
 
 
-    
+
     template <int dim>
     Chunk<dim>::ChunkGeometry::ChunkGeometry(const ChunkGeometry &other)
       :
@@ -180,7 +180,7 @@ namespace aspect
 
       return Dtotal;
     }
- 
+
 
 
     template <int dim>
