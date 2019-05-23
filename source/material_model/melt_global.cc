@@ -155,7 +155,7 @@ namespace aspect
           out.densities[i] = (reference_rho_s + delta_rho) * temperature_dependence
                              * std::exp(compressibility * (in.pressure[i] - this->get_surface_pressure()));
 
-          out.viscosities[i] = eta_0
+          out.viscosities[i] = eta_0;
           // By default, no melting or freezing --> set all reactions to zero
           for (unsigned int c=0; c<in.composition[i].size(); ++c)
             {
@@ -495,20 +495,20 @@ namespace aspect
                       ExcMessage("Material model Melt simple with melt transport only "
                                  "works if there is a compositional field called porosity."));
             }
-          
+
           if (this->include_melt_transport())
             {
               AssertThrow(this->introspection().compositional_name_exists("porosity"),
                       ExcMessage("Material model Melt simple with melt transport only "
                                  "works if there is a compositional field called porosity."));
+              if (include_melting_and_freezing)
+                {
+                  AssertThrow(this->introspection().compositional_name_exists("peridotite"),
+                              ExcMessage("Material model Melt simple only works if there is a "
+                                        "compositional field called peridotite."));
+                }
             }
-          
-          if (include_melting_and_freezing)
-            {
-              AssertThrow(this->introspection().compositional_name_exists("peridotite"),
-                          ExcMessage("Material model Melt simple only works if there is a "
-                                     "compositional field called peridotite."));
-            }
+
         }
         prm.leave_subsection();
       }
