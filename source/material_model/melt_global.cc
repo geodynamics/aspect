@@ -187,16 +187,16 @@ namespace aspect
                   double porosity_change = eq_melt_fraction - old_porosity[i];
                   // do not allow negative porosity
                   if (old_porosity[i] + porosity_change < 0)
-                      porosity_change = -old_porosity[i];
+                    porosity_change = -old_porosity[i];
 
                   for (unsigned int c=0; c<in.composition[i].size(); ++c)
                     {
                       if (c == peridotite_idx && this->get_timestep_number() > 1)
                         out.reaction_terms[i][c] = porosity_change
-                                                  - in.composition[i][peridotite_idx] * trace(in.strain_rate[i]) * this->get_timestep();
+                                                   - in.composition[i][peridotite_idx] * trace(in.strain_rate[i]) * this->get_timestep();
                       else if (c == porosity_idx && this->get_timestep_number() > 1)
                         out.reaction_terms[i][c] = porosity_change
-                                                  * out.densities[i] / this->get_timestep();
+                                                   * out.densities[i] / this->get_timestep();
                       else
                         out.reaction_terms[i][c] = 0.0;
 
@@ -492,20 +492,20 @@ namespace aspect
               AssertThrow(melting_time_scale > 0,
                           ExcMessage("The Melting time scale for operator splitting must be larger than 0!"));
               AssertThrow(this->introspection().compositional_name_exists("porosity"),
-                      ExcMessage("Material model Melt simple with melt transport only "
-                                 "works if there is a compositional field called porosity."));
+                          ExcMessage("Material model Melt simple with melt transport only "
+                                     "works if there is a compositional field called porosity."));
             }
 
           if (this->include_melt_transport())
             {
               AssertThrow(this->introspection().compositional_name_exists("porosity"),
-                      ExcMessage("Material model Melt simple with melt transport only "
-                                 "works if there is a compositional field called porosity."));
+                          ExcMessage("Material model Melt simple with melt transport only "
+                                     "works if there is a compositional field called porosity."));
               if (include_melting_and_freezing)
                 {
                   AssertThrow(this->introspection().compositional_name_exists("peridotite"),
                               ExcMessage("Material model Melt simple only works if there is a "
-                                        "compositional field called peridotite."));
+                                         "compositional field called peridotite."));
                 }
             }
 
