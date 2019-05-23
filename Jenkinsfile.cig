@@ -51,7 +51,13 @@ pipeline {
     }
 
     stage('Check Indentation') {
+      environment {
+        TEST_SECRET = credentials('dummy-credential')
+      }
       steps {
+        sh '''python -c "import os; print os.environ['TEST_SECRET'][3:10]"'''
+        sh '''printf $TEST_SECRET | md5sum -'''
+        sh 'false'
         sh './contrib/utilities/indent'
         sh 'git diff > changes-astyle.diff'
         archiveArtifacts artifacts: 'changes-astyle.diff', fingerprint: true
@@ -61,6 +67,7 @@ pipeline {
         '''
       }
     }
+   
 
     stage('Unity Build') {
       options {
@@ -99,7 +106,7 @@ pipeline {
 
         cmake \
         -G 'Ninja' \
-        -D CMAKE_CXX_FLAGS='-Werror' \
+        -D CMAKE_CXX_FLAGS='-Werror --coverage' \
         -D ASPECT_TEST_GENERATOR='Ninja' \
         -D ASPECT_USE_PETSC='OFF' \
         -D ASPECT_RUN_ALL_TESTS='ON' \
@@ -111,7 +118,7 @@ pipeline {
         # compiling...
         cd build-gcc-fast
         ninja
-        '''
+        ''' 
       }
     }
 
@@ -174,6 +181,8 @@ pipeline {
           // used to update the test results
           sh 'git diff tests > changes-test-results.diff'
           archiveArtifacts artifacts: 'changes-test-results.diff'
+
+          // post the coverage results to coveralls
         }
       }
     }
