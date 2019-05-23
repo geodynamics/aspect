@@ -60,6 +60,8 @@ namespace aspect
 
         void initialize ();
 
+        void initialize_for_test (const InitialTopographyModel::Interface<dim> *topo_pointer);
+
         /**
          * Generate a coarse mesh for the geometry described by this class.
          */

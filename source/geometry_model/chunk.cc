@@ -253,6 +253,7 @@ namespace aspect
           {
             output_vertex[1] = std::atan2(v[1], v[0]);
             output_vertex[0] = v.norm();
+
             // We must guarantee that all returned points have a longitude coordinate
             // value that is larger than (or equal to) the longitude of point1.
             // For example:
@@ -410,11 +411,19 @@ namespace aspect
     void
     Chunk<dim>::initialize ()
     {
-      AssertThrow(dynamic_cast<const InitialTopographyModel::AsciiData<dim>*>(&this->get_initial_topography_model()) != nullptr ||
-                  dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(&this->get_initial_topography_model()) != nullptr,
+      AssertThrow(dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(&this->get_initial_topography_model()) != nullptr ||
+                  dynamic_cast<const InitialTopographyModel::AsciiData<dim>*>(&this->get_initial_topography_model()) != nullptr,
                   ExcMessage("At the moment, only the Zero or AsciiData initial topography model can be used."));
 
       manifold.initialize(&(this->get_initial_topography_model()));
+    }
+
+
+    template <int dim>
+    void
+    Chunk<dim>::initialize_for_test (const InitialTopographyModel::Interface<dim> *topo_pointer)
+    {
+      manifold.initialize(topo_pointer);
     }
 
 
