@@ -413,6 +413,48 @@ namespace aspect
     {}
 
 
+    template <int dim>
+    MaterialModelOutputs<dim>::MaterialModelOutputs(const MaterialModelOutputs<dim> &source)
+      :
+      viscosities(source.viscosities),
+      densities(source.densities),
+      thermal_expansion_coefficients(source.thermal_expansion_coefficients),
+      specific_heat(source.specific_heat),
+      thermal_conductivities(source.thermal_conductivities),
+      compressibilities(source.compressibilities),
+      entropy_derivative_pressure(source.entropy_derivative_pressure),
+      entropy_derivative_temperature(source.entropy_derivative_temperature),
+      reaction_terms(source.reaction_terms),
+      additional_outputs()
+    {
+      Assert (source.additional_outputs.size() == 0,
+              ExcMessage ("You can not copy MaterialModelOutputs objects that have "
+                          "additional output objects attached"));
+    }
+
+
+    template <int dim>
+    MaterialModelOutputs<dim> &
+    MaterialModelOutputs<dim>::operator= (const MaterialModelOutputs<dim> &source)
+    {
+      viscosities = source.viscosities;
+      densities = source.densities;
+      thermal_expansion_coefficients = source.thermal_expansion_coefficients;
+      specific_heat = source.specific_heat;
+      thermal_conductivities = source.thermal_conductivities;
+      compressibilities = source.compressibilities;
+      entropy_derivative_pressure = source.entropy_derivative_pressure;
+      entropy_derivative_temperature = source.entropy_derivative_temperature;
+      reaction_terms = source.reaction_terms;
+      additional_outputs = {};
+      Assert (source.additional_outputs.size() == 0,
+              ExcMessage ("You can not copy MaterialModelOutputs objects that have "
+                          "additional output objects attached"));
+
+      return *this;
+    }
+
+
     namespace MaterialAveraging
     {
       std::string get_averaging_operation_names ()
