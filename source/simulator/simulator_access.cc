@@ -490,27 +490,6 @@ namespace aspect
   }
 
 
-  template <int dim>
-  const std::map<types::boundary_id,std::shared_ptr<BoundaryVelocity::Interface<dim> > >
-  SimulatorAccess<dim>::get_prescribed_boundary_velocity () const
-  {
-    const std::map<types::boundary_id,std::vector<std::shared_ptr<BoundaryVelocity::Interface<dim> > > > &
-    boundary_map = simulator->boundary_velocity_manager.get_active_boundary_velocity_conditions();
-
-    std::map<types::boundary_id,std::shared_ptr<BoundaryVelocity::Interface<dim> > >
-    legacy_map;
-
-    for (typename std::map<types::boundary_id,std::vector<std::shared_ptr<BoundaryVelocity::Interface<dim> > > >::const_iterator
-         boundary = boundary_map.begin(); boundary != boundary_map.end(); ++boundary)
-      {
-        Assert (boundary->second.size() <= 1,
-                ExcMessage("You can only use this function if there is at most one boundary velocity plugin per boundary."));
-        legacy_map[boundary->first] = boundary->second.front();
-      }
-
-    return legacy_map;
-  }
-
 
   template <int dim>
   const BoundaryVelocity::Manager<dim> &
