@@ -118,13 +118,16 @@ namespace aspect
                 ++non_empty_neighbors;
               }
 
-            AssertThrow(non_empty_neighbors != 0,
-                        ExcMessage("A cell and all of its neighbors do not contain any particles. "
-                                   "The `harmonic average' interpolation scheme does not support this case."));
 
             for (unsigned int i = 0; i < n_particle_properties; ++i)
-              if (selected_properties[i])
-                cell_properties[i] = non_empty_neighbors/cell_properties[i];
+              {
+                if (selected_properties[i] && non_empty_neighbors !=0)
+                  cell_properties[i] = non_empty_neighbors/cell_properties[i];
+                // Assume property is zero for any areas with no particles
+                else
+                  cell_properties[i] = 0;
+              }
+
           }
 
         return std::vector<std::vector<double> > (positions.size(),cell_properties);
