@@ -2795,11 +2795,11 @@ namespace aspect
             return std::max(x,y);
           }
           case Utilities::Operator::replace_if_valid:
-		  {
-        	  if (std::isnan(y))
-			  return x;
-			  else return y;
-		  }
+          {
+            if (std::isnan(y))
+              return x;
+            else return y;
+          }
           default:
           {
             Assert (false, ExcInternalError());
