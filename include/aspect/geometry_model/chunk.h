@@ -63,15 +63,6 @@ namespace aspect
         virtual
         void create_coarse_mesh (parallel::distributed::Triangulation<dim> &coarse_grid) const;
 
-#if !DEAL_II_VERSION_GTE(9,0,0)
-        /**
-         * Connect the set/clear manifold id functions to the post/pre_compute_no_normal_flux signals.
-         * Or for dealii 9 and above, to set the pointer to the initial topography model again.
-         */
-        void
-        connect_to_signal(SimulatorSignals<dim> &signals);
-#endif
-
 
         /**
          * Return the set of boundary indicators that are used by this model.
@@ -385,14 +376,12 @@ namespace aspect
             void
             set_min_longitude(const double p1_lon);
 
-#if DEAL_II_VERSION_GTE(9,0,0)
             /**
              * Return a copy of this manifold.
              */
             virtual
             std::unique_ptr<Manifold<dim,dim> >
             clone() const;
-#endif
 
             virtual
             void
@@ -436,10 +425,6 @@ namespace aspect
          */
         ChunkGeometry manifold;
 
-#if !DEAL_II_VERSION_GTE(9,0,0)
-        void set_manifold_ids (typename parallel::distributed::Triangulation<dim> &triangulation);
-        void clear_manifold_ids (typename parallel::distributed::Triangulation<dim> &triangulation);
-#endif
     };
   }
 }
