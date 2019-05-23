@@ -202,11 +202,11 @@ namespace aspect
         /**
          * Enumeration for selecting which type of weakening mechanism to use.
          * For none, no strain weakening occurs.
-         * Otherwise, the material can be weakened based on the full finite
-         * strain tensor, the total accumulated strain, or the plastic strain
-         * and viscous strain can be tracked separately and used only for
-         * the corresponding (plastic or viscous) part of the viscosity
-         * computation.
+         * Otherwise, the material can be weakened based on the second
+         * invariant of the full finite strain tensor, the total accumulated
+         * strain, or the plastic strain and viscous strain can be tracked
+         * separately and used only for the corresponding (plastic or viscous)
+         * part of the viscosity computation.
          */
         enum WeakeningMechanism
         {
@@ -230,7 +230,7 @@ namespace aspect
                                           const YieldScheme &yield_type) const;
 
         /**
-         * A function that computes the how the rheologic parameters change
+         * A function that computes how the rheologic parameters change
          * if strain weakening is applied. Given a compositional field with
          * the index j and a vector of all compositional fields, it returns
          * the weakened cohesion, friction angle and a reduction factor for
