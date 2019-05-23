@@ -1019,8 +1019,7 @@ namespace aspect
                          Patterns::List (Patterns::Selection("field|particles|volume of fluid|static|melt field|prescribed field|prescribed field with diffusion")),
                          "A comma separated list denoting the solution method of each "
                          "compositional field. Each entry of the list must be "
-                         "one of the currently implemented field types: "
-                         "``field'', ``particles'', or ``static''."
+                         "one of the currently implemented field types."
                          "\n\n"
                          "These choices correspond to the following methods by which "
                          "compositional fields gain their values:"
