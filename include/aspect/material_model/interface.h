@@ -658,8 +658,11 @@ namespace aspect
     class AdditionalMaterialOutputs
     {
       public:
-        virtual ~AdditionalMaterialOutputs()
-        {}
+        /**
+         * Destructor. Made virtual to enable storing pointers to this
+         * base class.
+         */
+        virtual ~AdditionalMaterialOutputs() = default;
 
         virtual void average (const MaterialAveraging::AveragingOperation /*operation*/,
                               const FullMatrix<double>  &/*projection_matrix*/,
