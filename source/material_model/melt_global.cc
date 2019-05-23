@@ -158,7 +158,7 @@ namespace aspect
           out.densities[i] = (reference_rho_s + delta_rho) * temperature_dependence
                              * std::exp(compressibility * (in.pressure[i] - this->get_surface_pressure()));
            
-	  AssertThrow(this->introspection().compositional_name_exists("porosity"),
+	        AssertThrow(this->introspection().compositional_name_exists("porosity"),
                       ExcMessage("Material model Melt simple with melt transport only "
                                  "works if there is a compositional field called porosity."));
 
@@ -500,6 +500,9 @@ namespace aspect
                                      + Utilities::to_string(melting_time_scale) + "."));
               AssertThrow(melting_time_scale > 0,
                           ExcMessage("The Melting time scale for operator splitting must be larger than 0!"));
+              AssertThrow(this->introspection().compositional_name_exists("porosity"),
+                      ExcMessage("Material model Melt simple with melt transport only "
+                                 "works if there is a compositional field called porosity."));
             }
         }
         prm.leave_subsection();
