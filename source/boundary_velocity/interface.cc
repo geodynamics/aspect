@@ -87,8 +87,6 @@ namespace aspect
              p = boundary->second.begin();
              p != boundary->second.end(); ++p)
           (*p)->update();
-
-      return;
     }
 
 

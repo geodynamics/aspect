@@ -42,7 +42,8 @@ namespace aspect
     {
 
       //Break early if DoFs do not exist
-      if (this->get_dof_handler().n_dofs() == 0) return;
+      if (this->get_dof_handler().n_dofs() == 0)
+        return;
 
 
       const QMidpoint<dim> qMidC;

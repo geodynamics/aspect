@@ -55,7 +55,6 @@ namespace aspect
             // density regions.
             indicators(i) = static_cast<float>(particle_handler.n_particles_in_cell(cell));
           }
-      return;
     }
   }
 }

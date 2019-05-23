@@ -184,7 +184,6 @@ namespace aspect
       for (unsigned int q=0; q<in.temperature.size(); ++q)
         melt_fractions[q] = this->melt_fraction(in.temperature[q],
                                                 this->get_adiabatic_conditions().pressure(in.position[q]));
-      return;
     }
 
 

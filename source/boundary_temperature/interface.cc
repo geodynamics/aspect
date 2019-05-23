@@ -96,7 +96,6 @@ namespace aspect
         {
           boundary_temperature_objects[i]->update();
         }
-      return;
     }
 
 

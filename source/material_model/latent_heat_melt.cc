@@ -252,7 +252,6 @@ namespace aspect
                                           std::max(0.0, in.pressure[q]),
                                           in.composition[q],
                                           in.position[q]);
-      return;
     }
 
     template <int dim>
