@@ -62,10 +62,7 @@ namespace
 
         additional = out.template get_additional_output<AdditionalOutputs1<dim> >();
         additional->additional_material_output1[0] = 42.0;
-
       }
-
-
   };
 }
 
@@ -81,7 +78,7 @@ TEST_CASE("AdditionalOutputs works")
 
   REQUIRE(out.get_additional_output<AdditionalOutputs1<dim> >() == NULL);
 
-  out.additional_outputs.push_back(std::make_shared<AdditionalOutputs1<dim> > (1, 1));
+  out.additional_outputs.push_back(std_cxx14::make_unique<AdditionalOutputs1<dim> > (1, 1));
 
   REQUIRE(out.get_additional_output<AdditionalOutputs1<dim> >() != NULL);
 

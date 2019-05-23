@@ -560,7 +560,7 @@ namespace aspect
          * A list of postprocessor objects that have been requested in the
          * parameter file.
          */
-        std::list<std::shared_ptr<VisualizationPostprocessors::Interface<dim> > > postprocessors;
+        std::list<std::unique_ptr<VisualizationPostprocessors::Interface<dim> > > postprocessors;
 
         /**
          * A list of pairs (time, pvtu_filename) that have so far been written

@@ -97,7 +97,7 @@ namespace aspect
           viscosity_table[i] = visc_vec[i];
         }
       viscosity_file_function
-        = std::make_shared<Functions::InterpolatedTensorProductGridData<1>>(depth_table, viscosity_table);
+        = std_cxx14::make_unique<Functions::InterpolatedTensorProductGridData<1>>(depth_table, viscosity_table);
     }
 
 

@@ -182,7 +182,7 @@ namespace aspect
                                                   MaterialModel::MaterialModelOutputs<dim> &outputs) const
         {
           outputs.additional_outputs.push_back(
-            std::make_shared<MaterialModel::SeismicAdditionalOutputs<dim>> (n_points));
+            std_cxx14::make_unique<MaterialModel::SeismicAdditionalOutputs<dim>> (n_points));
         }
 
         void operator()(const MaterialModel::MaterialModelInputs<dim> &,

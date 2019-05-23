@@ -509,7 +509,7 @@ namespace aspect
         {
           const unsigned int n_points = out.viscosities.size();
           out.additional_outputs.push_back(
-            std::make_shared<MaterialModel::ElasticAdditionalOutputs<dim>> (n_points));
+            std_cxx14::make_unique<MaterialModel::ElasticAdditionalOutputs<dim>> (n_points));
         }
     }
   }
