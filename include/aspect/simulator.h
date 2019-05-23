@@ -333,6 +333,25 @@ namespace aspect
 
     private:
 
+      /**
+       * A member variable that tracks whether we are completely done
+       * with initialization and have started the time loop. This
+       * variable needs to be the first one that is initialized in
+       * the constructor, so that its value correctly tracks the
+       * status of the overall object. As a consequence, it has to
+       * be the first one declared in this class.
+       *
+       * The variable is set to @p true just before we start the time
+       * stepping loop, but may be temporarily reset to @p false
+       * if, for example, we are during the initial mesh refinement
+       * steps where we start the time loop, but then go back to
+       * initialization steps (mesh refinement, interpolation of initial
+       * conditions, etc.) before re-starting the time loop.
+       *
+       * This variable is queried by
+       * SimulatorAccess::simulator_is_past_initialization().
+       */
+      bool simulator_is_initialized;
 
       /**
        * A class that is empty but that can be used as a member variable and

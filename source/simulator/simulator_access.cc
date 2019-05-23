@@ -685,6 +685,18 @@ namespace aspect
     return (simulator != nullptr);
   }
 
+
+
+  template <int dim>
+  bool
+  SimulatorAccess<dim>::simulator_is_past_initialization () const
+  {
+    return (simulator_is_initialized()
+            &&
+            (simulator->simulator_is_initialized == true));
+  }
+
+
   template <int dim>
   double
   SimulatorAccess<dim>::get_pressure_scaling () const
