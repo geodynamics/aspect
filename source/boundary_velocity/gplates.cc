@@ -571,8 +571,8 @@ namespace aspect
       if (((dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model())) != nullptr)
           || ((dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model())) != nullptr))
         {
-          lookup = std::make_shared<internal::GPlatesLookup<dim>>(pointone, pointtwo);
-          old_lookup = std::make_shared<internal::GPlatesLookup<dim>>(pointone, pointtwo);
+          lookup = std_cxx14::make_unique<internal::GPlatesLookup<dim>>(pointone, pointtwo);
+          old_lookup = std_cxx14::make_unique<internal::GPlatesLookup<dim>>(pointone, pointtwo);
         }
       else
         AssertThrow (false,ExcMessage ("This gplates plugin can only be used when using "
