@@ -626,15 +626,15 @@ namespace aspect
         {
           if (material_file_format == perplex)
             material_lookup
-            .push_back(std::make_shared<Lookup::PerplexReader>(datadirectory+material_file_names[i],
-                                                               use_bilinear_interpolation,
-                                                               this->get_mpi_communicator()));
+            .push_back(std_cxx14::make_unique<Lookup::PerplexReader>(datadirectory+material_file_names[i],
+                                                                     use_bilinear_interpolation,
+                                                                     this->get_mpi_communicator()));
           else if (material_file_format == hefesto)
             material_lookup
-            .push_back(std::make_shared<Lookup::HeFESToReader>(datadirectory+material_file_names[i],
-                                                               datadirectory+derivatives_file_names[i],
-                                                               use_bilinear_interpolation,
-                                                               this->get_mpi_communicator()));
+            .push_back(std_cxx14::make_unique<Lookup::HeFESToReader>(datadirectory+material_file_names[i],
+                                                                     datadirectory+derivatives_file_names[i],
+                                                                     use_bilinear_interpolation,
+                                                                     this->get_mpi_communicator()));
           else
             AssertThrow (false, ExcNotImplemented());
         }
@@ -1985,7 +1985,7 @@ namespace aspect
         {
           const unsigned int n_points = out.viscosities.size();
           out.additional_outputs.push_back(
-            std::make_shared<MaterialModel::DislocationViscosityOutputs<dim>> (n_points));
+            std_cxx14::make_unique<MaterialModel::DislocationViscosityOutputs<dim>> (n_points));
         }
 
       // These properties are only output properties.
@@ -1993,7 +1993,7 @@ namespace aspect
         {
           const unsigned int n_points = out.viscosities.size();
           out.additional_outputs.push_back(
-            std::make_shared<MaterialModel::SeismicAdditionalOutputs<dim>> (n_points));
+            std_cxx14::make_unique<MaterialModel::SeismicAdditionalOutputs<dim>> (n_points));
         }
     }
   }

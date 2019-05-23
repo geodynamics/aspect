@@ -331,7 +331,7 @@ namespace aspect
     Visualization<dim>::update ()
     {
       //Call the .update() method for each visualization postprocessor.
-      for (typename std::list<std::shared_ptr<VisualizationPostprocessors::Interface<dim> > >::const_iterator
+      for (typename std::list<std::unique_ptr<VisualizationPostprocessors::Interface<dim> > >::const_iterator
            p = postprocessors.begin(); p!=postprocessors.end(); ++p)
         (*p)->update();
     }
@@ -376,7 +376,7 @@ namespace aspect
       internal::BaseVariablePostprocessor<dim> base_variables;
       base_variables.initialize_simulator (this->get_simulator());
 
-      std::shared_ptr<internal::FreeSurfacePostprocessor<dim> > free_surface_variables;
+      std::unique_ptr<internal::FreeSurfacePostprocessor<dim> > free_surface_variables;
 
       // create a DataOut object on the heap; ownership of this
       // object will later be transferred to a different thread
@@ -390,7 +390,7 @@ namespace aspect
       // If there is a free surface, also attach the mesh velocity object
       if ( this->get_free_surface_boundary_indicators().empty() == false && output_mesh_velocity)
         {
-          free_surface_variables = std::make_shared<internal::FreeSurfacePostprocessor<dim>>();
+          free_surface_variables = std_cxx14::make_unique<internal::FreeSurfacePostprocessor<dim>>();
           free_surface_variables->initialize_simulator(this->get_simulator());
           data_out.add_data_vector (this->get_mesh_velocity(),
                                     *free_surface_variables);
@@ -400,8 +400,8 @@ namespace aspect
       // add the computed quantity as well. keep a list of
       // pointers to data vectors created by cell data visualization
       // postprocessors that will later be deleted
-      std::list<std::shared_ptr<Vector<float> > > cell_data_vectors;
-      for (typename std::list<std::shared_ptr<VisualizationPostprocessors::Interface<dim> > >::const_iterator
+      std::list<std::unique_ptr<Vector<float> > > cell_data_vectors;
+      for (typename std::list<std::unique_ptr<VisualizationPostprocessors::Interface<dim> > >::const_iterator
            p = postprocessors.begin(); p!=postprocessors.end(); ++p)
         {
           try
@@ -431,7 +431,7 @@ namespace aspect
                                       "on the current processor."));
 
                   // store the pointer, then attach the vector to the DataOut object
-                  cell_data_vectors.push_back (std::shared_ptr<Vector<float> >
+                  cell_data_vectors.push_back (std::unique_ptr<Vector<float> >
                                                (cell_data.second));
 
                   data_out.add_data_vector (*cell_data.second,
@@ -1096,7 +1096,7 @@ namespace aspect
                               "dealii::DataPostprocessor or "
                               "VisualizationPostprocessors::CellDataVectorCreator!?"));
 
-          postprocessors.push_back (std::shared_ptr<VisualizationPostprocessors::Interface<dim> >
+          postprocessors.push_back (std::unique_ptr<VisualizationPostprocessors::Interface<dim> >
                                     (viz_postprocessor));
 
           if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*postprocessors.back()))
@@ -1213,7 +1213,7 @@ namespace aspect
       // loop over all of the viz postprocessors and collect what
       // they want. don't worry about duplicates, the postprocessor
       // manager will filter them out
-      for (typename std::list<std::shared_ptr<VisualizationPostprocessors::Interface<dim> > >::const_iterator
+      for (typename std::list<std::unique_ptr<VisualizationPostprocessors::Interface<dim> > >::const_iterator
            p = postprocessors.begin();
            p != postprocessors.end(); ++p)
         {

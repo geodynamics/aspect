@@ -168,7 +168,7 @@ namespace aspect
           && outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >() == nullptr)
         {
           outputs.additional_outputs.push_back(
-            std::make_shared<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >(n_points));
+            std_cxx14::make_unique<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >(n_points));
         }
 
       Assert(!this->get_parameters().enable_additional_stokes_rhs
@@ -1843,7 +1843,7 @@ namespace aspect
     const unsigned int n_points = output.viscosities.size();
     const unsigned int n_comp = output.reaction_terms[0].size();
     output.additional_outputs.push_back(
-      std::make_shared<MaterialModel::MeltOutputs<dim>> (n_points, n_comp));
+      std_cxx14::make_unique<MaterialModel::MeltOutputs<dim>> (n_points, n_comp));
   }
 
 

@@ -132,7 +132,7 @@ namespace aspect
       for (unsigned int i=0; i<model_names.size(); ++i)
         {
           // create initial temperature objects
-          initial_temperature_objects.push_back (std::shared_ptr<Interface<dim> >
+          initial_temperature_objects.push_back (std::unique_ptr<Interface<dim> >
                                                  (std::get<dim>(registered_plugins)
                                                   .create_plugin (model_names[i],
                                                                   "Initial temperature model::Model names")));
@@ -153,7 +153,7 @@ namespace aspect
       double temperature = 0.0;
       int i = 0;
 
-      for (typename std::list<std::shared_ptr<InitialTemperature::Interface<dim> > >::const_iterator initial_temperature_object = initial_temperature_objects.begin();
+      for (typename std::list<std::unique_ptr<InitialTemperature::Interface<dim> > >::const_iterator initial_temperature_object = initial_temperature_objects.begin();
            initial_temperature_object != initial_temperature_objects.end();
            ++initial_temperature_object)
         {
@@ -174,7 +174,7 @@ namespace aspect
 
 
     template <int dim>
-    const std::list<std::shared_ptr<Interface<dim> > > &
+    const std::list<std::unique_ptr<Interface<dim> > > &
     Manager<dim>::get_active_initial_temperature_conditions () const
     {
       return initial_temperature_objects;
