@@ -1,6 +1,3 @@
-##### simple test for using multiple initial temperature plugins
-# This tests whether the 'replace if valid' operator is working
-'
 set Dimension                              = 2
 
 set Use years in output instead of seconds = true
