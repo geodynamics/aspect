@@ -289,8 +289,7 @@ namespace aspect
     std::vector<Tensor<1,dim> > face_old_velocity_values (scratch.face_finite_element_values->n_quadrature_points);
     std::vector<Tensor<1,dim> > face_old_old_velocity_values (scratch.face_finite_element_values->n_quadrature_points);
 
-    typename DoFHandler<dim>::active_cell_iterator cell = dof_handler.begin_active();
-    for (; cell<dof_handler.end(); ++cell)
+    for (const auto &cell : dof_handler.active_cell_iterators())
       {
         // Skip cells for which we can not/do not need to compute the
         // stabilization. We need to compute the artificial viscosity
@@ -350,11 +349,14 @@ namespace aspect
                 {
                   // If the velocity is tangential or zero we can always disable stabilization, except if there is another
                   // face at a different boundary. Therefore continue with the next face rather than break the loop.
-                  if (tangential_velocity_boundaries.find(cell->face(face_no)->boundary_id()) != tangential_velocity_boundaries.end() ||
-                      zero_velocity_boundaries.find(cell->face(face_no)->boundary_id()) != zero_velocity_boundaries.end())
+                  if ((tangential_velocity_boundaries.find(cell->face(face_no)->boundary_id())
+                       != tangential_velocity_boundaries.end())
+                      ||
+                      (zero_velocity_boundaries.find(cell->face(face_no)->boundary_id())
+                       != zero_velocity_boundaries.end()))
                     {
                       cell_at_conduction_dominated_dirichlet_boundary = true;
-                      continue;
+                      continue;   // test next face
                     }
 
                   scratch.face_finite_element_values->reinit (cell, face_no);
@@ -381,23 +383,26 @@ namespace aspect
                   // Disable stabilization for boundaries with slow flow, or tangential flow.
                   // Break the loop in case a face is at multiple boundaries, some with flow, some without.
                   // In those cases we can not disable stabilization.
-                  if ((std::abs(flow/area) * time_step < std::sqrt(std::numeric_limits<double>::epsilon()) * cell->diameter()) ||
-                      std::abs(normal_flow) < std::sqrt(std::numeric_limits<double>::epsilon()) * std::abs(flow))
+                  if ((std::abs(flow/area) * time_step
+                       < std::sqrt(std::numeric_limits<double>::epsilon()) * cell->diameter())
+                      ||
+                      (std::abs(normal_flow)
+                       < std::sqrt(std::numeric_limits<double>::epsilon()) * std::abs(flow)))
                     {
                       cell_at_conduction_dominated_dirichlet_boundary = true;
                     }
                   else
                     {
                       cell_at_conduction_dominated_dirichlet_boundary = false;
-                      break;
+                      break; // no need to check any other face
                     }
                 }
 
             if (cell_at_conduction_dominated_dirichlet_boundary)
               {
-                // if we set the viscosity to zero, we don't need any further computation on this cell
+                // If we set the viscosity to zero, we don't need any further computation on this cell
                 viscosity_per_cell[cell->active_cell_index()] = 0.0;
-                continue;
+                continue;   // next cell
               }
           }
 
