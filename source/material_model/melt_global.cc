@@ -121,9 +121,6 @@ namespace aspect
           Functions::FEFieldFunction<dim, DoFHandler<dim>, LinearAlgebra::BlockVector>
           fe_value(this->get_dof_handler(), this->get_old_solution(), this->get_mapping());
 
-          AssertThrow(this->introspection().compositional_name_exists("porosity"),
-                      ExcMessage("Material model Melt simple with melt transport only "
-                                 "works if there is a compositional field called porosity."));
           const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
 
           fe_value.set_active_cell(in.current_cell);
@@ -157,83 +154,77 @@ namespace aspect
                                    0.0;
           out.densities[i] = (reference_rho_s + delta_rho) * temperature_dependence
                              * std::exp(compressibility * (in.pressure[i] - this->get_surface_pressure()));
-           
-	        AssertThrow(this->introspection().compositional_name_exists("porosity"),
-                      ExcMessage("Material model Melt simple with melt transport only "
-                                 "works if there is a compositional field called porosity."));
 
-          const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
-          const double porosity = std::min(1.0, std::max(in.composition[i][porosity_idx],0.0));
-
-          if (this->include_melt_transport() && include_melting_and_freezing && in.strain_rate.size())
+          out.viscosities[i] = eta_0
+          // By default, no melting or freezing --> set all reactions to zero
+          for (unsigned int c=0; c<in.composition[i].size(); ++c)
             {
-              AssertThrow(this->introspection().compositional_name_exists("peridotite"),
-                          ExcMessage("Material model Melt simple only works if there is a "
-                                     "compositional field called peridotite."));
-              const unsigned int peridotite_idx = this->introspection().compositional_index_for_name("peridotite");
+              out.reaction_terms[i][c] = 0.0;
 
-              // Calculate the melting rate as difference between the equilibrium melt fraction
-              // and the solution of the previous time step (or the current solution, in case
-              // operator splitting is used).
-              // The solidus is lowered by previous melting events (fractional melting).
-              const double eq_melt_fraction = melt_fraction(in.temperature[i],
-                                                            this->get_adiabatic_conditions().pressure(in.position[i]),
-                                                            in.composition[i][peridotite_idx] - in.composition[i][porosity_idx]);
-              double porosity_change = eq_melt_fraction - old_porosity[i];
-
-              // do not allow negative porosity
-              if (old_porosity[i] + porosity_change < 0)
-                porosity_change = -old_porosity[i];
-
-              for (unsigned int c=0; c<in.composition[i].size(); ++c)
-                {
-                  if (c == peridotite_idx && this->get_timestep_number() > 1)
-                    out.reaction_terms[i][c] = porosity_change
-                                               - in.composition[i][peridotite_idx] * trace(in.strain_rate[i]) * this->get_timestep();
-                  else if (c == porosity_idx && this->get_timestep_number() > 1)
-                    out.reaction_terms[i][c] = porosity_change
-                                               * out.densities[i] / this->get_timestep();
-                  else
-                    out.reaction_terms[i][c] = 0.0;
-
-                  // fill reaction rate outputs if the model uses operator splitting
-                  if (this->get_parameters().use_operator_splitting)
-                    {
-                      if (reaction_rate_out != nullptr)
-                        {
-                          if (c == peridotite_idx && this->get_timestep_number() > 0)
-                            reaction_rate_out->reaction_rates[i][c] = porosity_change / melting_time_scale
-                                                                      - in.composition[i][peridotite_idx] * trace(in.strain_rate[i]);
-                          else if (c == porosity_idx && this->get_timestep_number() > 0)
-                            reaction_rate_out->reaction_rates[i][c] = porosity_change / melting_time_scale;
-                          else
-                            reaction_rate_out->reaction_rates[i][c] = 0.0;
-                        }
-                      out.reaction_terms[i][c] = 0.0;
-                    }
-                }
-
-              // find depletion = peridotite, which might affect shear viscosity:
-              const double depletion_visc = std::min(1.0, std::max(in.composition[i][peridotite_idx],0.0));
-
-              // calculate strengthening due to depletion:
-              const double depletion_strengthening = std::min(exp(alpha_depletion*depletion_visc),delta_eta_depletion_max);
-
-              // calculate viscosity change due to local melt and depletion:
-              out.viscosities[i] = eta_0 * exp(- alpha_phi * porosity) * depletion_strengthening;
+              if (this->get_parameters().use_operator_splitting && reaction_rate_out != nullptr)
+                reaction_rate_out->reaction_rates[i][c] = 0.0;
             }
-          else
+
+          if (this->include_melt_transport())
             {
-              // calculate viscosity based on local melt -- useful if melt exist at the beginning
-              out.viscosities[i] = eta_0  * exp(- alpha_phi * porosity);
+              const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
+              const double porosity = std::min(1.0, std::max(in.composition[i][porosity_idx],0.0));
 
-              // no melting/freezing is used in the model --> set all reactions to zero
-              for (unsigned int c=0; c<in.composition[i].size(); ++c)
+              // calculate viscosity based on local melt
+              out.viscosities[i] *= exp(- alpha_phi * porosity);
+
+              if (include_melting_and_freezing && in.strain_rate.size())
                 {
-                  out.reaction_terms[i][c] = 0.0;
+                  const unsigned int peridotite_idx = this->introspection().compositional_index_for_name("peridotite");
 
-                  if (this->get_parameters().use_operator_splitting && reaction_rate_out != nullptr)
-                    reaction_rate_out->reaction_rates[i][c] = 0.0;
+                  // Calculate the melting rate as difference between the equilibrium melt fraction
+                  // and the solution of the previous time step (or the current solution, in case
+                  // operator splitting is used).
+                  // The solidus is lowered by previous melting events (fractional melting).
+                  const double eq_melt_fraction = melt_fraction(in.temperature[i],
+                                                                this->get_adiabatic_conditions().pressure(in.position[i]),
+                                                                in.composition[i][peridotite_idx] - in.composition[i][porosity_idx]);
+                  double porosity_change = eq_melt_fraction - old_porosity[i];
+                  // do not allow negative porosity
+                  if (old_porosity[i] + porosity_change < 0)
+                      porosity_change = -old_porosity[i];
+
+                  for (unsigned int c=0; c<in.composition[i].size(); ++c)
+                    {
+                      if (c == peridotite_idx && this->get_timestep_number() > 1)
+                        out.reaction_terms[i][c] = porosity_change
+                                                  - in.composition[i][peridotite_idx] * trace(in.strain_rate[i]) * this->get_timestep();
+                      else if (c == porosity_idx && this->get_timestep_number() > 1)
+                        out.reaction_terms[i][c] = porosity_change
+                                                  * out.densities[i] / this->get_timestep();
+                      else
+                        out.reaction_terms[i][c] = 0.0;
+
+                      // fill reaction rate outputs if the model uses operator splitting
+                      if (this->get_parameters().use_operator_splitting)
+                        {
+                          if (reaction_rate_out != nullptr)
+                            {
+                              if (c == peridotite_idx && this->get_timestep_number() > 0)
+                                reaction_rate_out->reaction_rates[i][c] = porosity_change / melting_time_scale
+                                                                          - in.composition[i][peridotite_idx] * trace(in.strain_rate[i]);
+                              else if (c == porosity_idx && this->get_timestep_number() > 0)
+                                reaction_rate_out->reaction_rates[i][c] = porosity_change / melting_time_scale;
+                              else
+                                reaction_rate_out->reaction_rates[i][c] = 0.0;
+                            }
+                          out.reaction_terms[i][c] = 0.0;
+                        }
+                    }
+
+                  // find depletion = peridotite, which might affect shear viscosity:
+                  const double depletion_visc = std::min(1.0, std::max(in.composition[i][peridotite_idx],0.0));
+
+                  // calculate strengthening due to depletion:
+                  const double depletion_strengthening = std::min(exp(alpha_depletion*depletion_visc),delta_eta_depletion_max);
+
+                  // calculate viscosity change due to local melt and depletion:
+                  out.viscosities[i] *= depletion_strengthening;
                 }
             }
 
@@ -503,6 +494,20 @@ namespace aspect
               AssertThrow(this->introspection().compositional_name_exists("porosity"),
                       ExcMessage("Material model Melt simple with melt transport only "
                                  "works if there is a compositional field called porosity."));
+            }
+          
+          if (this->include_melt_transport())
+            {
+              AssertThrow(this->introspection().compositional_name_exists("porosity"),
+                      ExcMessage("Material model Melt simple with melt transport only "
+                                 "works if there is a compositional field called porosity."));
+            }
+          
+          if (include_melting_and_freezing)
+            {
+              AssertThrow(this->introspection().compositional_name_exists("peridotite"),
+                          ExcMessage("Material model Melt simple only works if there is a "
+                                     "compositional field called peridotite."));
             }
         }
         prm.leave_subsection();
