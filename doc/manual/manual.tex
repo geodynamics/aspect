@@ -964,7 +964,7 @@ Gibbs free energy:
   \gamma &=& \frac{\alpha }{\beta_T \rho C_V}. 
 \end{eqnarray}
 where $S$ is the specific entropy, $C_p$ and $C_V$ are the specific isobaric
-and isenchoric heat capacities, $\beta_T$ and $\beta_S$ are the isothermal and isotropic
+and isochoric heat capacities, $\beta_T$ and $\beta_S$ are the isothermal and isotropic
 compressibilities, and $\gamma$ is the thermodynamic Gr\"{u}neisen parameter. The subscript
 indicates the thermodynamic variable ($p$ or $T$) that is held constant.
 
@@ -5829,7 +5829,7 @@ information to particles, and how to visualize these.
 
 \paragraph{Using particle properties.}
 
-The particles in the above example only fulfil the purpose of
+The particles in the above example only fulfill the purpose of
 visualizing the convection pattern. A more meaningful use for
 particles is to attach ``properties'' to them. A property consists of
 one or more numbers (or vectors or tensors) that may either be set at
@@ -6752,7 +6752,7 @@ The boundary conditions are insulating (zero flux) side-walls and fixed temperat
 \caption{\it Initial temperature condition for the lazy-expression syntax cookbook. \label{lazy-expression-tempic}}
 \end{figure}
 
-The structure and refinement of the mesh are determined in two subsections of the parameter file. First, because the model domain is not a square, it is necessary to subdivide the domain into sections that are equidimensional (or as close as possible): this is done using the \texttt{repetitions} parameters in the \texttt{Geometry} section. In this case because the model domain has an aspect ratio of 5:1, we use 5 repetitions in the x direction, dividing the domain into 5 equi-dimensional elements each 1000 by 1000 km.
+The structure and refinement of the mesh are determined in two subsections of the parameter file. First, because the model domain is not a square, it is necessary to subdivide the domain into sections that are equidimensional (or as close as possible): this is done using the \texttt{repetitions} parameters in the \texttt{Geometry} section. In this case because the model domain has an aspect ratio of 5:1, we use 5 repetitions in the x direction, dividing the domain into 5 equidimensional elements each 1000 by 1000 km.
 \lstinputlisting[language=prmfile]{cookbooks/muparser-temperature-example/repetitions.part.prm}
 Further refinements will divide each sub-region multiple times keeping the aspect ratio of the sub-region. In this case, we refine the elements in each subregion 3 more times. We then use the \texttt{minimum refinement function} strategy and use the function expression to refine 4 more times to a refinement level of 7, but only where the depth is less than 150 km.
 \lstinputlisting[language=prmfile]{cookbooks/muparser-temperature-example/mesh-refinement.part.prm}
@@ -7381,7 +7381,7 @@ bottom surface (Figure~\ref{fig:pp}).
 In Figure~\ref{fig:pp} c, d we have subtracted the mean dynamic topography from
 the output field as a postproceesing step outside of Aspect. Since mass is 
 conserved within the Earth, the mean dynamic topography
-should always be zero, however, the outputted values might not fullfill this 
+should always be zero, however, the outputted values might not fulfill this 
 constraint if the resolution of the model is not high enough to provide an
 accurate solution. This cookbook only uses a refinement of 2, which is relatively
 low resolution. 
@@ -7527,7 +7527,7 @@ Figure~\ref{fig:ic-1}c and d shows the heat flux density at the surface for
 4 refinement steps (d, colorbar ranges from 35 to 95 mW/$m^2$). A first order correlation
 with upper mantle features such as high heat flow at mid ocean ridges and low
 heat flow at cratons is correctly initialized by the tomography model. 
-The mantle flow and bouyancy variations produce dynamic topography on the 
+The mantle flow and buoyancy variations produce dynamic topography on the 
 top and bottom surface, which is shown for 2 refinement steps (\ref{fig:ic-2}a and c, respectively) 
 and 4 refinement steps (\ref{fig:ic-2}b and d, respectively). 
 One can see that subduction zones are visible as depressed surface topography 
@@ -8651,7 +8651,7 @@ and
 \alpha'=\frac{\kappa}{b^2}\left[\frac{\rho_0 g \alpha b^3 \Delta T}{\mu \kappa}\left(\frac{\frac{4\pi^2 b^2}{\lambda^2}}{\left(\frac{4\pi^2 b^2}{\lambda^2}+\pi^2\right)^2}\right) -\left(\pi^2+\frac{4\pi^2b^2}{\lambda^2}\right)\right].
 \end{align*}
 
-We use bisection to determine $Ra_c$ for specific choices of the domain geometry, keeping the depth $b$ constant and varying the domain width $\lambda$. If the vertical velocity increases from the first to the second timetsp, the system is unstable to convection. Otherwise, it is stable and convection will not occur. Each calculation is terminated after the second timestep. Fig.~\ref{fig:onset-1} shows the numerically-determined threshold for the onset of convection, which can be compared directly with the theoretical prediction (green curve) and Fig.~6.39 of \cite{TS14}. The relative error between the numerically-determined value of $Ra_c$ and the analytic solution are shown in the right panel of Fig.~\ref{fig:onset-1}.
+We use bisection to determine $Ra_c$ for specific choices of the domain geometry, keeping the depth $b$ constant and varying the domain width $\lambda$. If the vertical velocity increases from the first to the second timestep, the system is unstable to convection. Otherwise, it is stable and convection will not occur. Each calculation is terminated after the second timestep. Fig.~\ref{fig:onset-1} shows the numerically-determined threshold for the onset of convection, which can be compared directly with the theoretical prediction (green curve) and Fig.~6.39 of \cite{TS14}. The relative error between the numerically-determined value of $Ra_c$ and the analytic solution are shown in the right panel of Fig.~\ref{fig:onset-1}.
 
 \begin{figure}
  \includegraphics[width=0.49\textwidth]{cookbooks/benchmarks/onset-of-convection/racr.png}
