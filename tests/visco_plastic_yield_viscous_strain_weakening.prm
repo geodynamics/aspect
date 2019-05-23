@@ -105,8 +105,7 @@ subsection Material model
     set Yield mechanism = drucker
     set Angles of internal friction = 0.
     set Cohesions = 1.e6
-    set Use strain weakening = true
-    set Use viscous strain weakening = true
+    set Strain weakening mechanism = viscous weakening with viscous strain only
     set Start prefactor strain weakening intervals = 0.
     set End prefactor strain weakening intervals = 1.0
     set Prefactor strain weakening factors = 0.5
