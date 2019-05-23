@@ -24,14 +24,15 @@
 #
 # This script runs the clang-tidy tool on the ASPECT code base.
 #
-# This is stolen from deal.II ./contrib/utilities/run_clang_tidy.sh
+# This is based on the deal.II script
+# https://github.com/dealii/dealii/blob/master/contrib/utilities/run_clang_tidy.sh
 #
 # Usage:
 # /contrib/utilities/run_clang_tidy.sh SRC_DIR OPTIONAL_CMAKE_ARGS
 #   with:
 #     SRC_DIR points to an ASPECT source directory
 #     OPTIONAL_CMAKE_ARGS are optional arguments to pass to CMake
-#   make sure to run this script in an empty build directory
+#  Make sure to run this script in an empty build directory
 #
 # Requirements:
 # Clang 5.0.1+ and have clang, clang++, and run-clang-tidy.py in
