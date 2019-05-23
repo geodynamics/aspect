@@ -2798,7 +2798,8 @@ namespace aspect
           {
             if (std::isnan(y))
               return x;
-            else return y;
+            else
+              return y;
           }
           default:
           {
