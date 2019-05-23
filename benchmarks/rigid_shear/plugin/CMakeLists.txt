@@ -1,4 +1,4 @@
-# Copyright (C) 2015 - 2017 by the authors of the ASPECT code.
+# Copyright (C) 2019 by the authors of the ASPECT code.
 #
 # This file is part of ASPECT.
 #
@@ -22,11 +22,11 @@ FIND_PACKAGE(Aspect 2.1.0 QUIET HINTS ${Aspect_DIR} ../ ../../ $ENV{ASPECT_DIR})
 
 IF (NOT Aspect_FOUND)
   MESSAGE(FATAL_ERROR "\n"
-	"Could not find a valid ASPECT build/installation directory. "
-	"Please specify the directory where you are building ASPECT by passing\n"
-	"   -D Aspect_DIR=<path to ASPECT>\n"
-	"to cmake or by setting the environment variable ASPECT_DIR in your shell "
-	"before calling cmake. See the section 'How to write a plugin' in the "
+  "Could not find a valid ASPECT build/installation directory. "
+  "Please specify the directory where you are building ASPECT by passing\n"
+  "   -D Aspect_DIR=<path to ASPECT>\n"
+  "to cmake or by setting the environment variable ASPECT_DIR in your shell "
+  "before calling cmake. See the section 'How to write a plugin' in the "
         "manual for more information.")
 ENDIF ()
 
@@ -36,4 +36,4 @@ SET(TARGET "rigid_shear")
 PROJECT(${TARGET})
 
 ADD_LIBRARY(${TARGET} SHARED rigid_shear.cc)
-ASPECT_SETUP_PLUGIN(${TARGET})	
+ASPECT_SETUP_PLUGIN(${TARGET})  

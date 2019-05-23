@@ -5,6 +5,7 @@ stokes_degrees=('2' '3')
 
 for stokes_degree in ${stokes_degrees[@]}; do
   rm -f results.txt
+  echo "h                     Q2Q1 e_u_L2  Q2Q1 e_p_L2  Q2Q1 e_rho_L2 Q3Q2 e_u_L2 Q3Q2 e_p_L2  Q3Q2 e_rho_L2" > results.txt
   for grid_res in ${grid_resolution[@]}; do
     h=`echo "1/(2^${grid_res})" | bc -l`
     echo -n $h >> results.txt

@@ -1,6 +1,7 @@
 #!/bin/bash
 
-# Run all models in this directory. Note that resolution 8 and ppd 96 requires 192-384 GB of RAM
+# Run all models in this directory. Note that the highest resolutions and ppd require
+# a high-end laptop or better to run (32 GB RAM).
 
 for stokes_degree in 2 3; do #2 3
   for discontinuous_pressure in false; do # true
@@ -16,15 +17,18 @@ for stokes_degree in 2 3; do #2 3
         echo "end" >> current.prm
 
         number_of_particles=`echo "$particles_per_direction * $particles_per_direction * 2 ^ (2 * $refinement)" | bc -l`
-        #ppc=`expr $particles_per_direction \* $particles_per_direction`
-        #min_ppc=`expr $ppc / 2`
         echo "subsection Postprocess" >> current.prm
         echo "  subsection Particles" >> current.prm
         echo "  set Number of particles = $number_of_particles" >> current.prm
         echo "  set Particle generator name = $generator" >> current.prm
-        #echo "  set Minimum particles per cell = $min_ppc" >> current.prm
+
+        # If using longer runtimes it is necessary to add particles to
+        # prevent empty cells. Compute an appropriate number.
+        #ppc=`expr $particles_per_direction \* $particles_per_direction`
+        #min_ppc=`expr $ppc / 2`
         #echo "  set Minimum particles per cell = $min_ppc" >> current.prm
         #echo "  set Load balancing strategy = add particles" >> current.prm
+
         echo "  set Interpolation scheme = $interpolator" >> current.prm
         echo "  set Integration scheme = $integrator" >> current.prm
         echo "    subsection Generator" >> current.prm

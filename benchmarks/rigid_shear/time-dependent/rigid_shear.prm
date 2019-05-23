@@ -1,5 +1,7 @@
-# A description of the SolKZ benchmark for which a known solution
-# is available. See the manual for more information.
+# A description of the time-dependent "Rigid shear" benchmark for which a known
+# solution is available. See Gassmoeller et al. "Evaluating the Accuracy of
+# Hybrid Finite Element/Particle-In-Cell Methods for Modeling Incompressible
+# Stokes Flow" for a discussion.
 
 set Additional shared libraries            = ../plugin/librigid_shear.so
 

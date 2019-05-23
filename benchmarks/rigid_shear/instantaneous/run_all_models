@@ -17,7 +17,7 @@ for stokes_degree in 2 3; do # 2 3
 
         echo "set Output directory = Q${stokes_degree}_P${discontinuous_pressure}_refinement${refinement}" >> current.prm
         echo "Starting Q${stokes_degree}_P${discontinuous_pressure}_refinement${refinement}"
-        cat rigid_shear.prm current.prm | mpirun -oversubscribe -np 12 ../plugin/aspect --
+        cat rigid_shear.prm current.prm | mpirun -np 4 ../plugin/aspect --
     done
   done
 done
