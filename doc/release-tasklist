@@ -29,7 +29,7 @@
   . fix formatting, copyright years:
       find . -name "*.h" -print | while read file;do $DEALSRCDIR/contrib/utilities/wrapcomments.py $file >temp;mv temp $file;done
       . note: we started ignoring the rewrapping of comments, but we should still fix wrong indentation or other problems
-      ./doc/indent
+      ./contrib/utilities/indent
       ./doc/update_copyright.sh
       git commit -a -m "doxygen formatting, comment wrapping"
       # create a pull-request

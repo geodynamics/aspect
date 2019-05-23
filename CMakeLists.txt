@@ -260,7 +260,7 @@ ADD_CUSTOM_TARGET(generate_reference_output
 # Provide "indent" target for indenting all headers and source files
 ADD_CUSTOM_TARGET(indent
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-  COMMAND ./doc/indent
+  COMMAND ./contrib/utilities/indent
   COMMENT "Indenting all ASPECT header and source files..."
   )
 
@@ -323,6 +323,7 @@ FILE(WRITE ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/print_usage.cmake
 #                               files (includes clean, runclean and the removal
 #                               of the generated build system)
 #      ${_make_command} setup_tests    - enable all tests
+#      ${_make_command} indent         - fix indentation of all source files
 #      ${_make_command} info           - to view this message again
 \")")
 
