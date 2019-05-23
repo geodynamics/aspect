@@ -50,7 +50,7 @@ end
 subsection Initial composition model
   set Model name = function
   subsection Function
-    set Function expression = 1.0; 0.0
+    set Function expression = 0.1; 0.0
   end
 end
 

@@ -134,6 +134,7 @@ subsection Material model
     set Surface solidus          = 10000.0
     set Include melting and freezing = false
     set Reference permeability   = 1.2345679e-10
+    set Exponential melt weakening factor = 0.
   end
 end
 
