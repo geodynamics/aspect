@@ -476,7 +476,7 @@ namespace aspect
           delta_eta_depletion_max           = prm.get_double ("Maximum Depletion viscosity change");
 
           if (thermal_viscosity_exponent!=0.0 && reference_T == 0.0)
-            AssertThrow(false, ExcMessage("Error: Material model Melt simple with Thermal viscosity exponent can not have reference_T=0."));
+            AssertThrow(false, ExcMessage("Error: Material model Melt global with Thermal viscosity exponent can not have reference_T=0."));
 
           if (this->convert_output_to_years() == true)
             melting_time_scale *= year_in_seconds;
@@ -492,19 +492,19 @@ namespace aspect
               AssertThrow(melting_time_scale > 0,
                           ExcMessage("The Melting time scale for operator splitting must be larger than 0!"));
               AssertThrow(this->introspection().compositional_name_exists("porosity"),
-                          ExcMessage("Material model Melt simple with melt transport only "
+                          ExcMessage("Material model Melt global with melt transport only "
                                      "works if there is a compositional field called porosity."));
             }
 
           if (this->include_melt_transport())
             {
               AssertThrow(this->introspection().compositional_name_exists("porosity"),
-                          ExcMessage("Material model Melt simple with melt transport only "
+                          ExcMessage("Material model Melt global with melt transport only "
                                      "works if there is a compositional field called porosity."));
               if (include_melting_and_freezing)
                 {
                   AssertThrow(this->introspection().compositional_name_exists("peridotite"),
-                              ExcMessage("Material model Melt simple only works if there is a "
+                              ExcMessage("Material model Melt global only works if there is a "
                                          "compositional field called peridotite."));
                 }
             }
