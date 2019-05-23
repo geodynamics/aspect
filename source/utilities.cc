@@ -2178,7 +2178,7 @@ namespace aspect
       // as this is when the grid including topography is constructed for the chunk geometry.
       if ( (dynamic_cast<const GeometryModel::Chunk<dim>*>(&this->get_geometry_model()) != nullptr &&
             dynamic_cast<const InitialTopographyModel::AsciiData<dim>*>(&this->get_initial_topography_model()) != nullptr &&
-            !(this->time_is_initialized())) ||
+            this->get_timestep_number() == numbers::invalid_unsigned_int) ||
            this->get_time() - first_data_file_model_time >= 0.0)
         {
           Point<dim> internal_position = position;
@@ -2225,7 +2225,7 @@ namespace aspect
       // as this is when the grid including topography is constructed for the chunk geometry.
       if ((dynamic_cast<const GeometryModel::Chunk<dim>*>(&this->get_geometry_model()) != nullptr &&
            dynamic_cast<const InitialTopographyModel::AsciiData<dim>*>(&this->get_initial_topography_model()) != nullptr &&
-           !(this->time_is_initialized())) ||
+           this->get_timestep_number() == invalid_unsigned_int) ||
           this->get_time() - first_data_file_model_time >= 0.0 )
         {
           Point<dim> internal_position = position;

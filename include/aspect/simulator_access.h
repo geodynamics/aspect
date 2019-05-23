@@ -789,13 +789,6 @@ namespace aspect
        */
       bool simulator_is_initialized () const;
 
-
-      /**
-       * Return whether or not the variable time has been set to something other (a double)
-       * than a signalling NaN.
-       */
-      bool time_is_initialized () const;
-
       /**
        * Return the value used for rescaling the pressure in the linear
        * solver.

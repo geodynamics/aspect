@@ -197,7 +197,6 @@ namespace aspect
     old_time_step (numbers::signaling_nan<double>()),
     timestep_number (numbers::invalid_unsigned_int),
     nonlinear_iteration (numbers::invalid_unsigned_int),
-    time_is_initialized (false),
 
     triangulation (mpi_communicator,
                    typename Triangulation<dim>::MeshSmoothing
@@ -1754,7 +1753,6 @@ namespace aspect
     if (parameters.resume_computation == true)
       {
         resume_from_snapshot();
-        time_is_initialized = true;
         // we need to remove additional_refinement_times that are in the past
         // and adjust max_refinement_level which is not written to file
         while ((parameters.additional_refinement_times.size() > 0)
@@ -1769,7 +1767,6 @@ namespace aspect
     else
       {
         time = parameters.start_time;
-        time_is_initialized = true;
 
         // Instead of calling global_refine(n) we flag all cells for
         // refinement and then allow the mesh refinement plugins to unflag
