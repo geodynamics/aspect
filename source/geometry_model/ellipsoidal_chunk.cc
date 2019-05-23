@@ -548,7 +548,7 @@ namespace aspect
           if (missing == 2)
             {
               AssertThrow ((present[0] == true && present[2] == true) || (present[1] == true && present[3] == true),
-                           ExcMessage ("Please provide to opposing corners."));
+                           ExcMessage ("Please provide two opposing corners."));
 
               if (present[0] == true && present[2] == true)
                 AssertThrow (corners[0][0] > corners[2][0] && corners[0][1] > corners[2][1],
