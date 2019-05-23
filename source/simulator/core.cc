@@ -212,6 +212,7 @@ namespace aspect
     dof_handler (triangulation),
 
     last_pressure_normalization_adjustment (numbers::signaling_nan<double>()),
+    pressure_scaling (numbers::signaling_nan<double>()),
 
     rebuild_stokes_matrix (true),
     assemble_newton_stokes_matrix (true),
@@ -399,12 +400,6 @@ namespace aspect
         bv->parse_parameters (prm);
         bv->initialize ();
       }
-
-    // determine how to treat the pressure. we have to scale it for the solver
-    // to make velocities and pressures of roughly the same (numerical) size,
-    // and we may have to fix up the right hand side vector before solving for
-    // compressible models if there are no in-/outflow boundaries
-    pressure_scaling = material_model->reference_viscosity() / geometry_model->length_scale();
 
     std::set<types::boundary_id> open_velocity_boundary_indicators
       = geometry_model->get_used_boundary_indicators();
@@ -621,6 +616,21 @@ namespace aspect
 
     nonlinear_iteration = 0;
 
+    // Re-compute the pressure scaling factor. In some sense, it would be nice
+    // if we did this not just once per time step, but once for each solve --
+    // i.e., multiple times per time step if we iterate out the nonlinearity
+    // during a Newton or Picard iteration. But that's more work,
+    // and the function would need to be called in more different places.
+    // Unless we have evidence that that's necessary, let's assume that
+    // the reference viscosity does not change too much between nonlinear
+    // iterations and that it's ok to update it only once per time step.
+    //
+    // The call to this function must precede the one to the computation
+    // of constraints because some kinds of constraints require scaling
+    // pressure degrees of freedom to a size adjusted by the pressure_scaling
+    // factor.
+    compute_pressure_scaling_factor();
+
     // then interpolate the current boundary velocities. copy constraints
     // into current_constraints and then add to current_constraints
     compute_current_constraints ();
@@ -656,6 +666,7 @@ namespace aspect
     for (auto &p : boundary_traction)
       p.second->update ();
   }
+
 
 
   template <int dim>
