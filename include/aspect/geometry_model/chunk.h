@@ -49,6 +49,9 @@ namespace aspect
      * input file are the inner and outer radii of the shell, the minimum
      * and maximum longitude, minimum and maximum longitude, and the
      * number of cells initialised in each dimension.
+     *   
+     * Initial topography can be added through a radial displacement of the
+     * mesh nodes.
      */
     template <int dim>
     class Chunk : public Interface<dim>, public SimulatorAccess<dim>
@@ -186,7 +189,7 @@ namespace aspect
         double north_latitude() const;
 
         /**
-         * Return the latitude range of the chunk Measured in radians
+         * Return the latitude range of the chunk measured in radians
          */
         virtual
         double latitude_range() const;
@@ -372,6 +375,12 @@ namespace aspect
             double
             get_radius(const Point<dim> &space_point) const;
 
+            /**
+             * Set the minimum longitude of the domain, 
+             * which is used in pulling back cartesian coordinates
+             * to spherical to get the longitude in the correct
+             * quarter. 
+             */
             virtual
             void
             set_min_longitude(const double p1_lon);
@@ -383,20 +392,32 @@ namespace aspect
             std::unique_ptr<Manifold<dim,dim> >
             clone() const;
 
+            /**
+             * Set the minimal radius of the domain.
+             */
             virtual
             void
             set_min_radius(const double p1_rad);
 
+            /**
+             * Set the maximum depth of the domain.
+             */
             virtual
             void
             set_max_depth(const double p2_rad_minus_p1_rad);
 
 
           private:
-            // The minimum longitude of the domain
+            // The minimum longitude of the domain.
             double point1_lon;
+
+            // The inner radius of the domain.
             double inner_radius;
 
+            /**
+             * The maximum depth not taking into account
+             * topography (outer radius minus inner radius).
+             */  
             double max_depth;
 
             /**
@@ -417,6 +438,9 @@ namespace aspect
             Point<dim>
             push_forward_topo(const Point<dim> &chart_point) const;
 
+            /**
+             * A pointer to the topography model.
+             */
             const InitialTopographyModel::Interface<dim> *topo;
         };
 

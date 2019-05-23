@@ -588,7 +588,7 @@ namespace aspect
         /**
          * Returns the gradient of the function based on the bilinear
          * interpolation of the data (velocity, temperature, etc. - according
-         * to the used plugin) in Cartesian coordinates. TOOD Cartesian??
+         * to the used plugin) in Cartesian coordinates. 
          *
          * @param position The current position to compute the data (velocity,
          * temperature, etc.)

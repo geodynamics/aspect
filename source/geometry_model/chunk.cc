@@ -44,6 +44,7 @@ namespace aspect
     {}
 
 
+    
     template <int dim>
     Chunk<dim>::ChunkGeometry::ChunkGeometry(const ChunkGeometry &other)
       :
@@ -56,12 +57,14 @@ namespace aspect
     }
 
 
+
     template <int dim>
     void
     Chunk<dim>::ChunkGeometry::initialize(const InitialTopographyModel::Interface<dim> *topo_pointer)
     {
       topo = topo_pointer;
     }
+
 
 
     template <int dim>
@@ -83,7 +86,7 @@ namespace aspect
 
       // Construct surface point in lon(,lat) coordinates
       Point<dim-1> surface_point;
-      for (unsigned int d=0; d<dim-1; d++)
+      for (unsigned int d=0; d<dim-1; ++d)
         surface_point[d] = chart_point[d+1];
 
       // Convert latitude to colatitude
@@ -177,6 +180,8 @@ namespace aspect
 
       return Dtotal;
     }
+ 
+
 
     template <int dim>
     Point<dim>
@@ -188,7 +193,10 @@ namespace aspect
         return push_forward_sphere(r_phi_theta);
       else
         return push_forward_sphere(push_forward_topo(r_phi_theta));
+
     }
+
+
 
     template <int dim>
     Point<dim>
@@ -201,6 +209,7 @@ namespace aspect
       else
         return pull_back_topo(pull_back_sphere(x_y_z));
     }
+
 
 
     template <int dim>
@@ -287,6 +296,7 @@ namespace aspect
     }
 
 
+
     template <int dim>
     std::unique_ptr<Manifold<dim,dim> >
     Chunk<dim>::ChunkGeometry::
@@ -294,6 +304,7 @@ namespace aspect
     {
       return std_cxx14::make_unique<ChunkGeometry>(*this);
     }
+
 
 
     template <int dim>
@@ -306,7 +317,7 @@ namespace aspect
 
       // Grab lon,lat coordinates
       Point<dim-1> surface_point;
-      for (unsigned int d=0; d<dim-1; d++)
+      for (unsigned int d=0; d<dim-1; ++d)
         surface_point[d] = r_phi_theta[d+1];
       // Convert latitude to colatitude
       if (dim == 3)
@@ -325,6 +336,8 @@ namespace aspect
       return topor_phi_theta;
     }
 
+
+
     template <int dim>
     Point<dim>
     Chunk<dim>::ChunkGeometry::
@@ -335,7 +348,7 @@ namespace aspect
 
       // Grab lon,lat coordinates
       Point<dim-1> surface_point;
-      for (unsigned int d=0; d<dim-1; d++)
+      for (unsigned int d=0; d<dim-1; ++d)
         surface_point[d] = topor_phi_theta[d+1];
       // Convert latitude to colatitude
       if (dim == 3)
@@ -351,6 +364,8 @@ namespace aspect
       return r_phi_theta;
     }
 
+
+
     template <int dim>
     double
     Chunk<dim>::ChunkGeometry::
@@ -358,7 +373,7 @@ namespace aspect
     {
       const Point<dim> r_phi_theta = pull_back(x_y_z);
       Point<dim-1> surface_point;
-      for (unsigned int d=0; d<dim-1; d++)
+      for (unsigned int d=0; d<dim-1; ++d)
         surface_point[d] = r_phi_theta[d+1];
       // Convert latitude to colatitude
       if (dim == 3)
@@ -369,6 +384,8 @@ namespace aspect
       return topography + inner_radius + max_depth;
     }
 
+
+
     template <int dim>
     void
     Chunk<dim>::ChunkGeometry::
@@ -377,6 +394,8 @@ namespace aspect
       inner_radius = p1_rad;
     }
 
+
+
     template <int dim>
     void
     Chunk<dim>::ChunkGeometry::
@@ -384,6 +403,8 @@ namespace aspect
     {
       max_depth = p2_p1_rad;
     }
+
+
 
     template <int dim>
     void
@@ -395,6 +416,7 @@ namespace aspect
 
       manifold.initialize(&(this->get_initial_topography_model()));
     }
+
 
 
     template <int dim>
@@ -507,6 +529,8 @@ namespace aspect
       return std::max (0., std::min (point2[0]-position.norm(), maximal_depth()));
     }
 
+
+
     template <int dim>
     double
     Chunk<dim>::depth_wrt_topo(const Point<dim> &position) const
@@ -520,12 +544,14 @@ namespace aspect
     }
 
 
+
     template <int dim>
     double
     Chunk<dim>::height_above_reference_surface(const Point<dim> &position) const
     {
       return position.norm()-point2[0];
     }
+
 
 
     template <int dim>
@@ -545,6 +571,8 @@ namespace aspect
       // Now convert to Cartesian coordinates
       return manifold.push_forward_sphere(p);
     }
+
+
 
     template <int dim>
     double
@@ -659,7 +687,7 @@ namespace aspect
 
       const Point<dim> spherical_point = manifold.pull_back(point);
 
-      for (unsigned int d = 0; d < dim; d++)
+      for (unsigned int d = 0; d < dim; ++d)
         if (spherical_point[d] > point2[d]+std::numeric_limits<double>::epsilon()*std::abs(point2[d]) ||
             spherical_point[d] < point1[d]-std::numeric_limits<double>::epsilon()*std::abs(point2[d]))
           return false;

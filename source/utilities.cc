@@ -2166,6 +2166,7 @@ namespace aspect
                         << std::endl << std::endl;
     }
 
+
     template <int dim>
     double
     AsciiDataBoundary<dim>::
@@ -2173,7 +2174,8 @@ namespace aspect
                         const Point<dim>                    &position,
                         const unsigned int                   component) const
     {
-      // For initial ascii data topography, we need access to the data before get_time() is set
+      // For initial ascii data topography, we need access to the data before get_time() is set,
+      // as this is when the grid including topography is constructed for the chunk geometry.
       if ( (dynamic_cast<const GeometryModel::Chunk<dim>*>(&this->get_geometry_model()) != nullptr &&
             dynamic_cast<const InitialTopographyModel::AsciiData<dim>*>(&this->get_initial_topography_model()) != nullptr &&
             !(this->time_is_initialized())) ||
@@ -2212,12 +2214,15 @@ namespace aspect
         return 0.0;
     }
 
+
     template <int dim>
     Tensor<1,dim-1>
     AsciiDataBoundary<dim>::vector_gradient (const types::boundary_id             boundary_indicator,
                                              const Point<dim>                    &position,
                                              const unsigned int                   component) const
     {
+      // For initial ascii data topography, we need access to the data before get_time() is set,
+      // as this is when the grid including topography is constructed for the chunk geometry.
       if ((dynamic_cast<const GeometryModel::Chunk<dim>*>(&this->get_geometry_model()) != nullptr &&
            dynamic_cast<const InitialTopographyModel::AsciiData<dim>*>(&this->get_initial_topography_model()) != nullptr &&
            !(this->time_is_initialized())) ||
