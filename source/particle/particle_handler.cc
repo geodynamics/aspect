@@ -434,16 +434,9 @@ namespace aspect
           try
             {
               const Point<dim> p_unit = mapping->transform_real_to_unit_cell(cell, it->get_location());
-              const Point<dim> old_p_unit = it->get_reference_location();
-              const Point<dim> p_location = it->get_location();
-              const Point<dim> mapped_p_location = mapping->transform_unit_to_real_cell(cell, old_p_unit);
-              const unsigned int id = it->get_id();
 
-              //AssertThrow(mapped_p_location[0] > p_location[0] - 1e-6*cell->diameter() && mapped_p_location[0] < p_location[0]+1e-6*cell->diameter(), ExcMessage("Panic"));
               if (GeometryInfo<dim>::is_inside_unit_cell(p_unit))
                 {
-                std::cout << "id " << id << " Mapped " << mapped_p_location[0] << ", " << mapped_p_location[1] << " real " << p_location[0] << ", " << p_location[1] << std::endl;
-                std::cout << "id " << id << " Reference loc old " << old_p_unit[0] << ", " << old_p_unit[1] << ", " << " new " << p_unit[0] << ", " << p_unit[1] << std::endl;
                   it->set_reference_location(p_unit);
                 }
               else
@@ -613,15 +606,6 @@ namespace aspect
 
       particles.insert(sorted_particles_map.begin(),sorted_particles_map.end());
 
-      for (particle_iterator it=begin(); it!=end(); ++it)
-      {
-        const typename parallel::distributed::Triangulation<dim,spacedim>::cell_iterator cell = it->get_surrounding_cell(*triangulation);
-        const Point<dim> p_unit = mapping->transform_real_to_unit_cell(cell, it->get_location());
-        const Point<dim> old_p_unit = it->get_reference_location();
-        const Point<dim> p_location = it->get_location();
-        const Point<dim> mapped_p_location = mapping->transform_unit_to_real_cell(cell, old_p_unit);
-        std::cout << it->get_id() << " Mapped " << mapped_p_location[0] << ", " << mapped_p_location[1] << " real " << p_location[0] << ", " << p_location[1] << std::endl;
-      }
     }
 
 
