@@ -560,34 +560,36 @@ namespace aspect
           }
         else if (parameters.advection_stabilization_method == Parameters<dim>::AdvectionStabilizationMethod::supg)
           {
-            // things needed for the calculating of tau for SUPG loop
-            // Compute norm of advection field
+            // things needed for calculating tau for SUPG loop
             double norm_of_advection_term = 0.0;
             double max_conductivity_on_cell = 0.0;
 
-            for (unsigned int q=0; q<n_q_points; ++q)
-              {
-                if (advection_field.is_temperature())
-                  {
-                    norm_of_advection_term =
-                      std::max(scratch.current_velocity_values[q].norm()*
-                               (scratch.material_model_outputs.densities[q] *
-                                scratch.material_model_outputs.specific_heat[q] +
-                                scratch.heating_model_outputs.lhs_latent_heat_terms[q]),
-                               norm_of_advection_term);
+            {
+              for (unsigned int q=0; q<n_q_points; ++q)
+                {
+                  if (advection_field.is_temperature())
+                    {
+                      norm_of_advection_term =
+                        std::max(scratch.current_velocity_values[q].norm()*
+                                 (scratch.material_model_outputs.densities[q] *
+                                  scratch.material_model_outputs.specific_heat[q] +
+                                  scratch.heating_model_outputs.lhs_latent_heat_terms[q]),
+                                 norm_of_advection_term);
 
-                    max_conductivity_on_cell =
-                      std::max(scratch.material_model_outputs.thermal_conductivities[q],max_conductivity_on_cell);
-                  }
-                else
-                  {
-                    norm_of_advection_term =
-                      std::max(scratch.current_velocity_values[q].norm(),norm_of_advection_term);
+                      max_conductivity_on_cell =
+                        std::max(scratch.material_model_outputs.thermal_conductivities[q],max_conductivity_on_cell);
+                    }
+                  else
+                    {
+                      norm_of_advection_term =
+                        std::max(scratch.current_velocity_values[q].norm(),norm_of_advection_term);
 
-                    max_conductivity_on_cell = 0.0;
-                  }
-              }
-            norm_of_advection_term = std::max(norm_of_advection_term,1e-8);
+                      max_conductivity_on_cell = 0.0;
+                    }
+                }
+              // TODO: this needs replacing with a more sophisticated check
+              norm_of_advection_term = std::max(norm_of_advection_term,1e-8);
+            }
 
             const double fe_order
               = (advection_field.is_temperature()

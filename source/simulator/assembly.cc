@@ -1138,11 +1138,15 @@ namespace aspect
     const bool allocate_neighbor_contributions = !assemblers->advection_system_on_interior_face.empty() &&
                                                  assemblers->advection_system_assembler_on_face_properties[advection_field.field_index()].need_face_finite_element_evaluation;;
 
+    const bool use_supg = (parameters.advection_stabilization_method
+                           == Parameters<dim>::AdvectionStabilizationMethod::supg);
+
+    // When using SUPG, we need to compute hessians to be able to compute the residual:
     const UpdateFlags update_flags = update_values |
                                      update_gradients |
-                                     update_hessians |
                                      update_quadrature_points |
-                                     update_JxW_values;
+                                     update_JxW_values |
+                                     ((use_supg) ? update_hessians : UpdateFlags(0));
 
     const UpdateFlags face_update_flags = (allocate_face_quadrature ?
                                            update_values |

@@ -887,7 +887,8 @@ namespace aspect
         prm.declare_entry ("Stabilization method", "entropy viscosity",
                            Patterns::Selection("entropy viscosity|SUPG"),
                            "Select the method for stabilizing the advection equation. The original "
-                           "method implemented is 'entropy viscosity' as described in \\cite {KGB12}.");
+                           "method implemented is 'entropy viscosity' as described in \\cite {KHB12}. "
+                           "SUPG is currently experimental.");
 
         prm.declare_entry ("Use artificial viscosity smoothing", "false",
                            Patterns::Bool (),

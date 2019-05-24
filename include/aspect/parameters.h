@@ -250,7 +250,7 @@ namespace aspect
     };
 
     /**
-     *
+     * A struct to provide the setting for "Stabilization method"
      */
     struct AdvectionStabilizationMethod
     {
