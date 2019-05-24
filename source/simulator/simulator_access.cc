@@ -678,20 +678,13 @@ namespace aspect
     return simulator->current_constraints;
   }
 
-  template <int dim>
-  bool
-  SimulatorAccess<dim>::simulator_is_initialized () const
-  {
-    return (simulator != nullptr);
-  }
-
 
 
   template <int dim>
   bool
   SimulatorAccess<dim>::simulator_is_past_initialization () const
   {
-    return (simulator_is_initialized()
+    return ((simulator != nullptr)
             &&
             (simulator->simulator_is_initialized == true));
   }

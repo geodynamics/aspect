@@ -66,9 +66,14 @@ namespace aspect
               // The negative of the second principle invariant is equal to 0.5 e_dot_dev_ij e_dot_dev_ji,
               // where e_dot_dev is the deviatoric strain rate tensor. The square root of this quantity
               // gives the common definition of effective strain rate.
-              const double edot_ii_strict = (this->simulator_is_initialized() == false
+              const double edot_ii_strict = (this->simulator_is_past_initialization() == false
                                              ?
-                                             // no simulator object available -- we are probably in a unit test
+                                             // no simulator object available via
+                                             // the SimulatorAccess base class, or the
+                                             // Simulator itself has not been completely
+                                             // initialized. This might mean that we are
+                                             // in a unit test, or at least that we can't
+                                             // rely on any simulator information
                                              std::fabs(second_invariant(strain_rate_deviator))
                                              :
                                              // simulator object is available, but we need to treat the

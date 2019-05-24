@@ -775,12 +775,6 @@ namespace aspect
       get_current_constraints () const;
 
       /**
-       * Return whether or not the current object has been initialized by providing it with
-       * a pointer to a Simulator class object.
-       */
-      bool simulator_is_initialized () const;
-
-      /**
        * Return whether the Simulator object has been completely initialized
        * and has started to run its time stepping loop.
        *
