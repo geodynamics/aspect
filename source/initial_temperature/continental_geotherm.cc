@@ -59,7 +59,7 @@ namespace aspect
     initial_temperature (const Point<dim> &position) const
     {
       const double depth = this->get_geometry_model().depth(position);
-      
+
       return temperature(depth);
     }
 
@@ -75,27 +75,27 @@ namespace aspect
       const double b = 1./(conductivities[0]/thicknesses[0]+conductivities[1]/thicknesses[1]);
       const double c = 0.5*densities[1]*heat_productivities[1]*thicknesses[1] + conductivities[2]/thicknesses[2]*LAB_isotherm;
       const double d = 1./(conductivities[1]/thicknesses[1]+conductivities[2]/thicknesses[2]);
-      
+
       //Temperature at boundary between layer 1 and 2
       const double T1 = (a*b + conductivities[1]/thicknesses[1]*c*d*b) / (1.-(conductivities[1]*conductivities[1])/(thicknesses[1]*thicknesses[1])*d*b);
       //Temperature at boundary between layer 2 and 3
       const double T2 = (c + conductivities[1]/thicknesses[1]*T1) * d;
 
       // Temperature in layer 1
-      if(depth <= thicknesses[0])
-          return -0.5*densities[0]*heat_productivities[0]/conductivities[0]*std::pow(depth,2) + (0.5*densities[0]*heat_productivities[0]*thicknesses[0]/conductivities[0] + (T1-T0)/thicknesses[0])*depth + T0;
+      if (depth <= thicknesses[0])
+        return -0.5*densities[0]*heat_productivities[0]/conductivities[0]*std::pow(depth,2) + (0.5*densities[0]*heat_productivities[0]*thicknesses[0]/conductivities[0] + (T1-T0)/thicknesses[0])*depth + T0;
       // Temperature in layer 2
       else if (depth <= thicknesses[0]+thicknesses[1])
-          return -0.5*densities[1]*heat_productivities[1]/conductivities[1]*std::pow(depth-thicknesses[0],2.) + (0.5*densities[1]*heat_productivities[1]*thicknesses[1]/conductivities[1] + (T2-T1)/thicknesses[1])*(depth-thicknesses[0]) + T1;
+        return -0.5*densities[1]*heat_productivities[1]/conductivities[1]*std::pow(depth-thicknesses[0],2.) + (0.5*densities[1]*heat_productivities[1]*thicknesses[1]/conductivities[1] + (T2-T1)/thicknesses[1])*(depth-thicknesses[0]) + T1;
       // Temperature in layer 3
       else if (depth <= thicknesses[0]+thicknesses[1]+thicknesses[2])
-          return (LAB_isotherm-T2)/thicknesses[2] *(depth-thicknesses[0]-thicknesses[1]) + T2;
+        return (LAB_isotherm-T2)/thicknesses[2] *(depth-thicknesses[0]-thicknesses[1]) + T2;
       // Return a constant sublithospheric temperature of 10*LAB_isotherm.
       // This way we can combine the continental geotherm with an adiabatic profile from the input file
       // using the "minimum" operator on the "List of initial temperature models"
       else
         return 10.*LAB_isotherm;
- 
+
     }
 
     template <int dim>
@@ -116,17 +116,17 @@ namespace aspect
       const double T2 = (c + conductivities[1]/layer_thicknesses[1]*T1) * d;
 
       // Temperature in layer 1
-      if(depth < layer_thicknesses[0])
-          return -0.5*densities[0]*heat_productivities[0]/conductivities[0]*std::pow(depth,2) + (0.5*densities[0]*heat_productivities[0]*layer_thicknesses[0]/conductivities[0] + (T1-T0)/layer_thicknesses[0])*depth + T0;
+      if (depth < layer_thicknesses[0])
+        return -0.5*densities[0]*heat_productivities[0]/conductivities[0]*std::pow(depth,2) + (0.5*densities[0]*heat_productivities[0]*layer_thicknesses[0]/conductivities[0] + (T1-T0)/layer_thicknesses[0])*depth + T0;
       // Temperature in layer 2
       else if (depth < layer_thicknesses[0]+layer_thicknesses[1])
-          return -0.5*densities[1]*heat_productivities[1]/conductivities[1]*std::pow(depth-layer_thicknesses[0],2.) + (0.5*densities[1]*heat_productivities[1]*layer_thicknesses[1]/conductivities[1] + (T2-T1)/layer_thicknesses[1])*(depth-layer_thicknesses[0]) + T1;
+        return -0.5*densities[1]*heat_productivities[1]/conductivities[1]*std::pow(depth-layer_thicknesses[0],2.) + (0.5*densities[1]*heat_productivities[1]*layer_thicknesses[1]/conductivities[1] + (T2-T1)/layer_thicknesses[1])*(depth-layer_thicknesses[0]) + T1;
       // Temperature in layer 3
       else if (depth < layer_thicknesses[0]+layer_thicknesses[1]+layer_thicknesses[2])
-          return (LAB_isotherm-T2)/layer_thicknesses[2] *(depth-layer_thicknesses[0]-layer_thicknesses[1]) + T2;
+        return (LAB_isotherm-T2)/layer_thicknesses[2] *(depth-layer_thicknesses[0]-layer_thicknesses[1]) + T2;
       // Return a constant sublithospheric temperature of 10*LAB_isotherm.
       // This way we can combine the continental geotherm with an adiabatic profile from the input file
-      // using the "minimum" operator on the "List of initial temperature models"
+      // using the "minimum" operator on the "List of initial temperature models".
       else
         return 10.*LAB_isotherm;
 
@@ -168,7 +168,7 @@ namespace aspect
       unsigned int n_fields = 0;
       prm.enter_subsection ("Compositional fields");
       {
-       n_fields = prm.get_integer ("Number of fields");
+        n_fields = prm.get_integer ("Number of fields");
       }
       prm.leave_subsection();
 
@@ -180,8 +180,8 @@ namespace aspect
           LAB_isotherm = prm.get_double ("LAB isotherm temperature");
           T0 = prm.get_double ("Surface temperature");
           thicknesses = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Layer thicknesses"))),
-                                                              3,
-                                                              "Layer thicknesses");
+                                                                3,
+                                                                "Layer thicknesses");
         }
         prm.leave_subsection();
       }
@@ -198,8 +198,8 @@ namespace aspect
       const unsigned int id_lower = this->introspection().compositional_index_for_name("lower");
       const unsigned int id_mantle_L = this->introspection().compositional_index_for_name("mantle_L");
 
-            // Retrieve other material properties set in different sections such that there
-            // is no need to set them twice.
+      // Retrieve other material properties set in different sections such that there
+      // is no need to set them twice.
 
       prm.enter_subsection("Heating model");
       {
@@ -207,8 +207,8 @@ namespace aspect
         {
           // The heating model compositional heating prefixes an entry for the background material
           const std::vector<double> temp_heat_productivities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Compositional heating values"))),
-                                                                   n_fields+1,
-                                                                   "Compositional heating values");
+                                                               n_fields+1,
+                                                               "Compositional heating values");
           // This sets the heat productivity in W/m3 units
           heat_productivities.push_back(temp_heat_productivities[id_upper+1]);
           heat_productivities.push_back(temp_heat_productivities[id_lower+1]);
@@ -224,14 +224,14 @@ namespace aspect
         {
           // The material model viscoplastic prefixes an entry for the background material
           const std::vector<double> temp_densities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Densities"))),
-                                                                   n_fields+1,
-                                                                   "Densities");
+                                                     n_fields+1,
+                                                     "Densities");
           const std::vector<double> temp_thermal_diffusivities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Thermal diffusivities"))),
-                                                                                  n_fields+1,
-                                                                         "Thermal diffusivities");
+                                                                 n_fields+1,
+                                                                 "Thermal diffusivities");
           const std::vector<double> temp_heat_capacities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Heat capacities"))),
-                                                                           n_fields+1,
-                                                                        "Heat capacities");
+                                                           n_fields+1,
+                                                           "Heat capacities");
 
           densities.push_back(temp_densities[id_upper+1]);
           densities.push_back(temp_densities[id_lower+1]);
@@ -247,7 +247,7 @@ namespace aspect
                       ExcMessage("The entries for density, conductivity and heat production do not match with the expected number of layers (3)."))
 
           for (unsigned int i = 0; i<3; ++i)
-          heat_productivities[i] /= densities[i];
+            heat_productivities[i] /= densities[i];
         }
         prm.leave_subsection();
       }
@@ -271,9 +271,18 @@ namespace aspect
                                               "This is a temperature initial condition that "
                                               "computes a continental geotherm based on the "
                                               "conductive equations of Turcotte and Schubert Ch. 4.6. "
-                                              "The geotherm can be computed for any number of crustal "
-                                              "layers, for each of which a density, heat production and thermal "
-                                              "conductivity should be supplied. "
+                                              "The geotherm is computed for a homogeneous lithosphere "
+                                              "composed of an upper crust, lower crust and mantle layer. "
+                                              "Layer thicknesses, surface temperature and LAB temperature "
+                                              "should be specified by the user. "
+                                              "For consistency, the density, heat production and thermal "
+                                              "conductivity of each layer are read from the visco plastic material model "
+                                              "and the compositional heating model. "
+                                              "\n"
+                                              "For any depths below the depth of the LAB, a unrealistically high "
+                                              "temperature is returned, such that this plugin can be combined with "
+                                              "another temperature plugin through the 'minimum' operator. "
+                                              "\n"
                                               "Make sure the top and bottom temperatures of the lithosphere "
                                               "agree with temperatures set in for example the temperature "
                                               "boundary conditions.")

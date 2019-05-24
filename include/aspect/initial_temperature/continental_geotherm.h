@@ -60,7 +60,9 @@ namespace aspect
         double initial_temperature (const Point<dim> &position) const;
 
         /**
-         * Return the initial temperature as a function of position.
+         * Return the initial temperature as a function of depth,
+         * based on the solution of the steady-state heat conduction
+         * differential equation.
          */
         virtual
         double temperature (const double depth) const;
@@ -95,24 +97,24 @@ namespace aspect
         double LAB_isotherm;
 
         /**
-         * Vector for field heat production rates, read from parameter file .
+         * Vector for field depths
+         */
+        std::vector<double> thicknesses;
+
+        /**
+         * Vector for field heat production rates, read from parameter file.
          */
         std::vector<double> heat_productivities;
 
         /**
-         * Vector for thermal conductivities, read from parameter file .
+         * Vector for thermal conductivities, read from parameter file.
          */
         std::vector<double> conductivities;
 
         /**
-         * Vector for field densities, read from parameter file .
+         * Vector for field densities, read from parameter file.
          */
         std::vector<double> densities;
-
-        /**
-         * Vector for field depths, read from parameter file .
-         */
-        std::vector<double> thicknesses;
     };
   }
 }

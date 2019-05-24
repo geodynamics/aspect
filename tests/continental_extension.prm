@@ -1,6 +1,15 @@
 #### 
 # This test is based on the Continental Extension Cookbook
-# There, the initial temperature is computed from a function
+# There, the initial temperature is computed through a
+# somewhat cumbersome function specified in the input file. 
+# With the continental geotherm plugin, one only has to 
+# specify the boundary temperature constraints and layer
+# thicknesses of the upper crust, lower crust and mantle
+# lithosphere. Other parameters such as layer densities
+# are read from other sections in the input file, ensuring
+# consistency between the parameters set for the initial
+# temperature and those in the material model and compositional
+# heating plugins. 
 
 ####  Global parameters
 set Dimension                              = 2
@@ -228,11 +237,6 @@ end
 # Post processing
 subsection Postprocess
   set List of postprocessors = temperature statistics
-  subsection Visualization
-    set List of output variables = density, viscosity, strain rate, error indicator
-    set Output format = vtu
-    set Time between graphical output = 1e6
-  end
 end
 
 subsection Solver parameters
