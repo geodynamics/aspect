@@ -19,7 +19,7 @@ subsection Discretization
   set Temperature polynomial degree = 2
 
   subsection Stabilization parameters
-set Use SUPG = true
+    set Stabilization method = SUPG
   end
 end
 

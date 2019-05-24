@@ -17,7 +17,7 @@ set Output directory                       = output
 
 subsection Discretization
   subsection Stabilization parameters
-set Use SUPG = true
+    set Stabilization method = SUPG
   end
 end
 
