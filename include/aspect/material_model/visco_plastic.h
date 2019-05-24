@@ -157,14 +157,14 @@ namespace aspect
         double get_min_strain_rate() const;
 
         /**
-         * A function that computes the plastic yielding
-         * if needed outside material model (e.g., particles).
+         * A function that returns whether the material is plastically yielding at
+         * the given pressure, temperature, composition, and strain rate.
          */
         bool
-        get_plastic_yielding ( const double &pressure,
-                               const double &temperature,
-                               const std::vector<double> &composition,
-                               const SymmetricTensor<2,dim> &strain_rate) const;
+        is_yielding ( const double &pressure,
+                      const double &temperature,
+                      const std::vector<double> &composition,
+                      const SymmetricTensor<2,dim> &strain_rate) const;
 
       private:
 

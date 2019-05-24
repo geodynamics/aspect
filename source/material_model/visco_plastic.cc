@@ -45,11 +45,14 @@ namespace aspect
     template <int dim>
     bool
     ViscoPlastic<dim>::
-    get_plastic_yielding (const double &pressure,
-                          const double &temperature,
-                          const std::vector<double> &composition,
-                          const SymmetricTensor<2,dim> &strain_rate) const
+    is_yielding (const double &pressure,
+                 const double &temperature,
+                 const std::vector<double> &composition,
+                 const SymmetricTensor<2,dim> &strain_rate) const
     {
+      /* The following returns whether or not the material is plastically yielding
+       * as documented in evaluate.
+       */
       bool plastic_yielding = false;
 
       const std::vector<double> volume_fractions = MaterialUtilities::compute_volume_fractions(composition, get_volumetric_composition_mask());

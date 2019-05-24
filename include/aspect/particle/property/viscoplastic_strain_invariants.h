@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2015 - 2017 by the authors of the ASPECT code.
+ Copyright (C) 2015 - 2019 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -33,11 +33,12 @@ namespace aspect
     {
       /**
        * A class that calculates the finite strain invariant a particle has
-       * experienced and assigns it to the plastic, viscous, or total strain fields
-       * used in the visco_plastic material model. The implementation of this property
+       * experienced and assigns it to either the plastic and/or viscous strain field based
+       * on whether the material is plastically yielding, or the total strain field
+       * used in the visco plastic material model. The implementation of this property
        * is equivalent to the implementation for compositional fields that is located in
-       * the plugin <code>benchmarks/buiter_et_al_2008_jgr/plugin/finite_strain_invariant.cc</code>.
-       *
+       * the plugin <code>benchmarks/buiter_et_al_2008_jgr/plugin/finite_strain_invariant.cc</code>,
+       * and is effectively the same as what the visco plastic material model uses for compositional fields.
        * @ingroup ParticleProperties
        */
       template <int dim>
@@ -53,43 +54,16 @@ namespace aspect
 
 
           /**
-           * Initialization function. This function is called once at the
-           * creation of every particle for every property to initialize its
-           * value.
-           *
-           * @param [in] position The current particle position.
-           * @param [in,out] particle_properties The properties of the particle
-           * that is initialized within the call of this function. The purpose
-           * of this function should be to extend this vector by a number of
-           * properties.
-           */
+          * @copydoc aspect::Particle::Property::Interface::initialize_one_particle_property()
+          **/
           virtual
           void
           initialize_one_particle_property (const Point<dim> &position,
                                             std::vector<double> &particle_properties) const;
 
           /**
-           * Update function. This function is called every time an update is
-           * request by need_update() for every particle for every property.
-           *
-           * @param [in] data_position An unsigned integer that denotes which
-           * component of the particle property vector is associated with the
-           * current property. For properties that own several components it
-           * denotes the first component of this property, all other
-           * components fill consecutive entries in the @p particle_properties
-           * vector.
-           *
-           * @param [in] position The current particle position.
-           *
-           * @param [in] solution The values of the solution variables at the
-           * current particle position.
-           *
-           * @param [in] gradients The gradients of the solution variables at
-           * the current particle position.
-           *
-           * @param [in,out] particle_properties The properties of the particle
-           * that is updated within the call of this function.
-           */
+          * @copydoc aspect::Particle::Property::Interface::update_one_particle_property()
+          **/
           virtual
           void
           update_one_particle_property (const unsigned int data_position,
@@ -99,27 +73,21 @@ namespace aspect
                                         const ArrayView<double> &particle_properties) const;
 
           /**
-           * This implementation tells the particle manager that
-           * we need to update particle properties every time step.
-           */
+          * @copydoc aspect::Particle::Property::Interface::need_update()
+          **/
           UpdateTimeFlags
           need_update () const;
 
           /**
-           * Return which data has to be provided to update the property.
-           * The integrated strains needs the gradients of the velocity.
-           */
+          * @copydoc aspect::Particle::Property::Interface::get_needed_update_flags()
+          **/
           virtual
           UpdateFlags
           get_needed_update_flags () const;
 
           /**
-           * Set up the information about the names and number of components
-           * this property requires.
-           *
-           * @return A vector that contains pairs of the property names and the
-           * number of components this property plugin defines.
-           */
+          * @copydoc aspect::Particle::Property::Interface::get_property_information()
+          **/
           virtual
           std::vector<std::pair<std::string, unsigned int> >
           get_property_information() const;

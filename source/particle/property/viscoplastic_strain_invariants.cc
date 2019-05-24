@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2019 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -49,8 +49,9 @@ namespace aspect
 
         if (this->introspection().compositional_name_exists("viscous_strain"))
           n_components += 1;
-        else if (this->introspection().compositional_name_exists("total_strain") && !this->introspection().compositional_name_exists("plastic_strain"))
-          n_components = 1;
+
+        if (this->introspection().compositional_name_exists("total_strain"))
+          n_components += 1;
 
         if (n_components == 0)
           AssertThrow(false, ExcMessage("This particle property requires a compositional strain field (plastic_strain, viscous_strain, or total_strain)."));
@@ -68,7 +69,8 @@ namespace aspect
 
         if (this->introspection().compositional_name_exists("viscous_strain"))
           data.push_back(this->get_initial_composition_manager().initial_composition(position,this->introspection().compositional_index_for_name("viscous_strain")));
-        else if (this->introspection().compositional_name_exists("total_strain") && !this->introspection().compositional_name_exists("plastic_strain"))
+
+        if (this->introspection().compositional_name_exists("total_strain"))
           data.push_back(this->get_initial_composition_manager().initial_composition(position,this->introspection().compositional_index_for_name("total_strain")));
 
       }
@@ -93,7 +95,7 @@ namespace aspect
         const SymmetricTensor<2,dim> strain_rate = symmetrize (grad_u);
 
 
-        //Put compositional fields into single variable
+        // Put compositional fields into single variable
         std::vector<double> composition(this->n_compositional_fields());
         for (unsigned int i = 0; i < this->n_compositional_fields(); i++)
           {
@@ -105,14 +107,17 @@ namespace aspect
           = dynamic_cast<const MaterialModel::ViscoPlastic<dim> *>(&this->get_material_model());
 
         bool plastic_yielding = false;
-        plastic_yielding = viscoplastic->get_plastic_yielding(solution[this->introspection().component_indices.pressure],
-                                                              solution[this->introspection().component_indices.temperature],
-                                                              composition,
-                                                              strain_rate);
+        plastic_yielding = viscoplastic->is_yielding(solution[this->introspection().component_indices.pressure],
+                                                     solution[this->introspection().component_indices.temperature],
+                                                     composition,
+                                                     strain_rate);
 
 
-        /* Integrated strain invariant from prior time step, grab second data component
-         * for viscous strain if both viscous and plastic are used.
+        /* Next take the integrated strain invariant from the prior time step. When
+         * there are two fields (plastic and viscous), this assumes plastic
+         * strain is always in data position one and viscous strain in position two.
+         * In this case old_strain will first be given the plastic strain, and then,
+         * if there is no plastic yielding it will update to the viscous strain instead.
          */
         double old_strain = data[data_position];
         if (n_components == 2 && plastic_yielding == false)
@@ -126,13 +131,18 @@ namespace aspect
         const double new_strain = old_strain + dt*edot_ii;
 
 
-        // Put strain into correct data position.
+        /* Once we know whether the particle underwent plastic, viscous, or
+         * total strain assign the new strain to the correct data position.
+         * NOTE: This assumes that total strain cannot be used in combination with the
+         * other fields. If this changes in the future, this will need to be updated.
+         * */
         if (this->introspection().compositional_name_exists("plastic_strain") && plastic_yielding == true)
           data[data_position] = new_strain;
 
         if (this->introspection().compositional_name_exists("viscous_strain") && plastic_yielding == false)
           data[data_position+(n_components-1)] = new_strain;
-        else if (this->introspection().compositional_name_exists("total_strain") && !this->introspection().compositional_name_exists("plastic_strain"))
+
+        if (this->introspection().compositional_name_exists("total_strain"))
           data[data_position] = new_strain;
 
       }
@@ -166,7 +176,8 @@ namespace aspect
 
         if (this->introspection().compositional_name_exists("viscous_strain"))
           property_information.emplace_back("viscous_strain",1);
-        else if (this->introspection().compositional_name_exists("total_strain") && !this->introspection().compositional_name_exists("plastic_strain"))
+
+        if (this->introspection().compositional_name_exists("total_strain"))
           property_information.emplace_back("total_strain",1);
 
         return property_information;
@@ -186,10 +197,13 @@ namespace aspect
     {
       ASPECT_REGISTER_PARTICLE_PROPERTY(ViscoPlasticStrainInvariant,
                                         "viscoplastic strain invariants",
-                                        "A plugin which calculates the the integrated strain invariant "
-                                        "(as described in the integrated_strain_invariant particle property) "
-                                        "and assigns the strain to the plastic, viscous, or total strain fields "
-                                        "used in the visco_plastic material model.")
+                                        "A plugin that calculates the finite strain invariant a particle has "
+                                        "experienced and assigns it to either the plastic and/or viscous strain field based "
+                                        "on whether the material is plastically yielding, or the total strain field "
+                                        "used in the visco plastic material model. The implementation of this property "
+                                        "is equivalent to the implementation for compositional fields that is located in "
+                                        "the plugin <code>benchmarks/buiter_et_al_2008_jgr/plugin/finite_strain_invariant.cc</code>,"
+                                        "and is effectively the same as what the visco plastic material model uses for compositional fields.")
     }
   }
 }
