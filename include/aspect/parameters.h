@@ -209,7 +209,7 @@ namespace aspect
             AssertThrow(false, ExcNotImplemented());
 
           return Formulation::MassConservation::Kind();
-        };
+        }
       };
 
       /**
@@ -245,7 +245,7 @@ namespace aspect
             AssertThrow(false, ExcNotImplemented());
 
           return Formulation::TemperatureEquation::Kind();
-        };
+        }
       };
     };
 
