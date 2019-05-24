@@ -168,29 +168,29 @@ namespace aspect
 
 
     /**
-             * Implement the block Schur preconditioner for the Stokes system.
-             */
+     * Implement the block Schur preconditioner for the Stokes system.
+     */
     template <class ABlockMatrixType, class StokesMatrixType, class MassMatrixType, class PreconditionerMp,class PreconditionerA>
     class BlockSchurPreconditioner : public Subscriptor
     {
       public:
         /**
-                   * @brief Constructor
-                   *
-                   * @param S The entire Stokes matrix
-                   * @param Spre The matrix whose blocks are used in the definition of
-                   *     the preconditioning of the Stokes matrix, i.e. containing approximations
-                   *     of the A and S blocks.
-                   * @param Mppreconditioner Preconditioner object for the Schur complement,
-                   *     typically chosen as the mass matrix.
-                   * @param Apreconditioner Preconditioner object for the matrix A.
-                   * @param do_solve_A A flag indicating whether we should actually solve with
-                   *     the matrix $A$, or only apply one preconditioner step with it.
-                   * @param A_block_tolerance The tolerance for the CG solver which computes
-                   *     the inverse of the A block.
-                   * @param S_block_tolerance The tolerance for the CG solver which computes
-                   *     the inverse of the S block (Schur complement matrix).
-                   **/
+         * @brief Constructor
+         *
+         * @param S The entire Stokes matrix
+         * @param Spre The matrix whose blocks are used in the definition of
+         *     the preconditioning of the Stokes matrix, i.e. containing approximations
+         *     of the A and S blocks.
+         * @param Mppreconditioner Preconditioner object for the Schur complement,
+         *     typically chosen as the mass matrix.
+         * @param Apreconditioner Preconditioner object for the matrix A.
+         * @param do_solve_A A flag indicating whether we should actually solve with
+         *     the matrix $A$, or only apply one preconditioner step with it.
+         * @param A_block_tolerance The tolerance for the CG solver which computes
+         *     the inverse of the A block.
+         * @param S_block_tolerance The tolerance for the CG solver which computes
+         *     the inverse of the S block (Schur complement matrix).
+         */
         BlockSchurPreconditioner (const StokesMatrixType  &S,
                                   const ABlockMatrixType  &A,
                                   const MassMatrixType  &Mass,
@@ -201,8 +201,8 @@ namespace aspect
                                   const double                                S_block_tolerance);
 
         /**
-                   * Matrix vector product with this preconditioner object.
-                   */
+         * Matrix vector product with this preconditioner object.
+         */
         void vmult (dealii::LinearAlgebra::distributed::BlockVector<double>       &dst,
                     const dealii::LinearAlgebra::distributed::BlockVector<double> &src) const;
 
@@ -212,8 +212,8 @@ namespace aspect
 
       private:
         /**
-                   * References to the various matrix object this preconditioner works on.
-                   */
+         * References to the various matrix object this preconditioner works on.
+         */
         const StokesMatrixType &stokes_matrix;
         const ABlockMatrixType &velocity_matrix;
         const MassMatrixType &mass_matrix;
@@ -221,9 +221,9 @@ namespace aspect
         const PreconditionerA                     &a_preconditioner;
 
         /**
-                   * Whether to actually invert the $\tilde A$ part of the preconditioner matrix
-                   * or to just apply a single preconditioner step with it.
-                   **/
+         * Whether to actually invert the $\tilde A$ part of the preconditioner matrix
+         * or to just apply a single preconditioner step with it.
+         */
         const bool do_solve_A;
         mutable unsigned int n_iterations_A_;
         mutable unsigned int n_iterations_S_;
