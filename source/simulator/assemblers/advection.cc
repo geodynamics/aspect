@@ -65,6 +65,8 @@ namespace aspect
       const unsigned int n_q_points = scratch.finite_element_values.n_quadrature_points;
       const unsigned int advection_dofs_per_cell = data.local_dof_indices.size();
 
+      const bool use_supg = (this->get_parameters().advection_stabilization_method
+                             == Parameters<dim>::AdvectionStabilizationMethod::supg);
       const bool   use_bdf2_scheme = (this->get_timestep_number() > 1);
       const double time_step = this->get_timestep();
       const double old_time_step = this->get_old_timestep();
@@ -91,6 +93,9 @@ namespace aspect
             {
               if (fe.system_to_component_index(i).first == solution_component)
                 {
+                  if (use_supg)
+                    scratch.laplacian_phi_field[i_advection] = trace(scratch.finite_element_values[solution_field].hessian (i,q));
+
                   scratch.grad_phi_field[i_advection] = scratch.finite_element_values[solution_field].gradient (i,q);
                   scratch.phi_field[i_advection]      = scratch.finite_element_values[solution_field].value (i,q);
                   ++i_advection;
@@ -169,8 +174,14 @@ namespace aspect
                                        scratch.material_model_outputs.thermal_conductivities[q]
                                        :
                                        0.0);
-          const double diffusion_constant = std::max (conductivity,
-                                                      scratch.artificial_viscosity);
+
+          const double diffusion_constant = (use_supg)
+                                            ?
+                                            conductivity
+                                            :
+                                            std::max (conductivity, scratch.artificial_viscosity);
+
+          const double tau = (use_supg) ? scratch.artificial_viscosity : 0.0;
 
           // do the actual assembly. note that we only need to loop over the advection
           // shape functions because these are the only contributions we compute here
@@ -186,6 +197,22 @@ namespace aspect
                  *
                  JxW;
 
+              if (use_supg)
+                data.local_rhs(i)
+                += tau *
+                   (
+                     (current_u * (density_c_P + latent_heat_LHS)) *
+                     scratch.grad_phi_field[i] *
+                     (
+                       field_term_for_rhs
+                       +
+                       time_step * gamma
+                       +
+                       reaction_term
+                     )
+                   ) * JxW;
+
+
               for (unsigned int j=0; j<advection_dofs_per_cell; ++j)
                 {
                   data.local_matrix(i,j)
@@ -197,6 +224,31 @@ namespace aspect
                        (density_c_P + latent_heat_LHS)
                      )
                      * JxW;
+                }
+
+              if (use_supg)
+                {
+                  for (unsigned int j=0; j<advection_dofs_per_cell; ++j)
+                    {
+                      // Note that we assume that the conductivity is constant, otherwise we would need to
+                      // compute div (kappa grad T), which we don't have access to.
+                      data.local_matrix(i,j)
+                      += tau *
+                         (
+                           (current_u * (density_c_P + latent_heat_LHS)) *
+                           scratch.grad_phi_field[i] *
+                           (
+                             -time_step * conductivity * scratch.laplacian_phi_field[j]
+                             +
+                             (
+                               (time_step * current_u * scratch.grad_phi_field[j])
+                               +
+                               (bdf2_factor * scratch.phi_field[j])
+                             ) *
+                             (density_c_P + latent_heat_LHS)
+                           )
+                         ) * JxW;
+                    }
                 }
             }
         }
@@ -236,6 +288,8 @@ namespace aspect
               const double density       = scratch.material_model_outputs.densities[q];
               const double conductivity  = scratch.material_model_outputs.thermal_conductivities[q];
               const double c_P           = scratch.material_model_outputs.specific_heat[q];
+              // Note that we assume that the conductivity is constant, otherwise we would need to
+              // compute div (kappa grad T), which we don't have access to.
               const double k_Delta_field = conductivity * (scratch.old_field_laplacians[q] +
                                                            scratch.old_old_field_laplacians[q]) / 2;
 

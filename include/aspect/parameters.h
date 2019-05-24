@@ -250,6 +250,40 @@ namespace aspect
     };
 
     /**
+     * A struct to provide the setting for "Stabilization method"
+     */
+    struct AdvectionStabilizationMethod
+    {
+      enum Kind
+      {
+        entropy_viscosity,
+        supg
+      };
+
+      /**
+       * This function translates an input string into the
+       * available enum options.
+       */
+      static
+      Kind
+      parse(const std::string &input)
+      {
+        if (input == "entropy viscosity")
+          return entropy_viscosity;
+        else if (input == "SUPG")
+          return supg;
+        else
+          AssertThrow(false, ExcNotImplemented());
+
+        return Kind();
+      }
+      static std::string get_options_string()
+      {
+        return "entropy viscosity|SUPG";
+      }
+    };
+
+    /**
      * Constructor. Fills the values of member functions from the given
      * parameter object.
      *
@@ -317,6 +351,7 @@ namespace aspect
      */
     typename NonlinearSolver::Kind nonlinear_solver;
 
+    typename AdvectionStabilizationMethod::Kind advection_stabilization_method;
     double                         nonlinear_tolerance;
     bool                           resume_computation;
     double                         start_time;

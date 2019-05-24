@@ -923,6 +923,12 @@ namespace aspect
 
       prm.enter_subsection ("Stabilization parameters");
       {
+        prm.declare_entry ("Stabilization method", "entropy viscosity",
+                           Patterns::Selection("entropy viscosity|SUPG"),
+                           "Select the method for stabilizing the advection equation. The original "
+                           "method implemented is 'entropy viscosity' as described in \\cite {KHB12}. "
+                           "SUPG is currently experimental.");
+
         prm.declare_entry ("Use artificial viscosity smoothing", "false",
                            Patterns::Bool (),
                            "If set to false, the artificial viscosity of a cell is computed and "
@@ -930,6 +936,7 @@ namespace aspect
                            "If set to true, the maximum of the artificial viscosity in "
                            "the cell as well as the neighbors of the cell is computed and used "
                            "instead.");
+
         prm.declare_entry ("alpha", "2",
                            Patterns::Integer (1, 2),
                            "The exponent $\\alpha$ in the entropy viscosity stabilization. Valid "
@@ -1528,6 +1535,7 @@ namespace aspect
 
       prm.enter_subsection ("Stabilization parameters");
       {
+        advection_stabilization_method = AdvectionStabilizationMethod::parse(prm.get("Stabilization method"));
         use_artificial_viscosity_smoothing  = prm.get_bool ("Use artificial viscosity smoothing");
         stabilization_alpha                 = prm.get_integer ("alpha");
 

@@ -241,6 +241,7 @@ namespace aspect
            */
           std::vector<double>         phi_field;
           std::vector<Tensor<1,dim> > grad_phi_field;
+          std::vector<double>         laplacian_phi_field;
           std::vector<double>         face_phi_field;
           std::vector<Tensor<1,dim> > face_grad_phi_field;
           std::vector<double>         neighbor_face_phi_field;

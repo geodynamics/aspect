@@ -524,6 +524,7 @@ namespace aspect
                                                               scratch.finite_element_values,
                                                               introspection);
         material_model->evaluate(scratch.material_model_inputs,scratch.material_model_outputs);
+        heating_model_manager.evaluate(scratch.material_model_inputs,scratch.material_model_outputs,scratch.heating_model_outputs);
 
         if (parameters.formulation_temperature_equation
             == Parameters<dim>::Formulation::TemperatureEquation::reference_density_profile)
@@ -547,13 +548,69 @@ namespace aspect
                                                    scratch.finite_element_values.get_mapping(),
                                                    scratch.material_model_outputs);
 
-        viscosity_per_cell[cell->active_cell_index()] = compute_viscosity(scratch,
-                                                                          global_max_velocity,
-                                                                          global_field_range.second - global_field_range.first,
-                                                                          0.5 * (global_field_range.second + global_field_range.first),
-                                                                          global_entropy_variation,
-                                                                          cell->diameter(),
-                                                                          advection_field);
+        if (parameters.advection_stabilization_method == Parameters<dim>::AdvectionStabilizationMethod::entropy_viscosity)
+          {
+            viscosity_per_cell[cell->active_cell_index()] = compute_viscosity(scratch,
+                                                                              global_max_velocity,
+                                                                              global_field_range.second - global_field_range.first,
+                                                                              0.5 * (global_field_range.second + global_field_range.first),
+                                                                              global_entropy_variation,
+                                                                              cell->diameter(),
+                                                                              advection_field);
+          }
+        else if (parameters.advection_stabilization_method == Parameters<dim>::AdvectionStabilizationMethod::supg)
+          {
+            // things needed for calculating tau for SUPG loop
+            double norm_of_advection_term = 0.0;
+            double max_conductivity_on_cell = 0.0;
+
+            {
+              for (unsigned int q=0; q<n_q_points; ++q)
+                {
+                  if (advection_field.is_temperature())
+                    {
+                      norm_of_advection_term =
+                        std::max(scratch.current_velocity_values[q].norm()*
+                                 (scratch.material_model_outputs.densities[q] *
+                                  scratch.material_model_outputs.specific_heat[q] +
+                                  scratch.heating_model_outputs.lhs_latent_heat_terms[q]),
+                                 norm_of_advection_term);
+
+                      max_conductivity_on_cell =
+                        std::max(scratch.material_model_outputs.thermal_conductivities[q],max_conductivity_on_cell);
+                    }
+                  else
+                    {
+                      norm_of_advection_term =
+                        std::max(scratch.current_velocity_values[q].norm(),norm_of_advection_term);
+
+                      max_conductivity_on_cell = 0.0;
+                    }
+                }
+              // TODO: this needs replacing with a more sophisticated check
+              norm_of_advection_term = std::max(norm_of_advection_term,1e-8);
+            }
+
+            const double fe_order
+              = (advection_field.is_temperature()
+                 ?
+                 parameters.temperature_degree
+                 :
+                 parameters.composition_degree
+                );
+            const double h = cell->diameter();
+
+            // Compute tau for SUPG
+            viscosity_per_cell[cell->active_cell_index()] = (h/fe_order)/(2*norm_of_advection_term);
+
+            if (max_conductivity_on_cell>1e-8)
+              viscosity_per_cell[cell->active_cell_index()] *= (1.0/tanh(norm_of_advection_term*(h/fe_order)/(2.0*max_conductivity_on_cell))
+                                                                - 1.0/(norm_of_advection_term*(h/fe_order)/(2.0*max_conductivity_on_cell)));
+
+            Assert (viscosity_per_cell[cell->active_cell_index()] >= 0, ExcMessage ("tau for SUPG needs to be a nonnegative constant."));
+          }
+        else
+          AssertThrow(false, ExcNotImplemented());
       }
 
     // if set to true, the maximum of the artificial viscosity in the cell as well
