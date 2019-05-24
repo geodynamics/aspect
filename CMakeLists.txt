@@ -25,7 +25,7 @@ MESSAGE(STATUS "====================================================")
 # Set the name of the project and target:
 SET(TARGET "aspect")
 
-FILE(GLOB_RECURSE TARGET_SRC
+FILE(GLOB_RECURSE target_src
      "source/*.cc" "unit_tests/*.cc" "include/*.h" "contrib/catch/catch.hpp")
 
 # Set up include directories. Put the ASPECT header files
@@ -97,7 +97,7 @@ DEAL_II_INITIALIZE_CACHED_VARIABLES()
 PROJECT(${TARGET} CXX)
 
 IF (ASPECT_USE_PETSC)
-FOREACH(_source_file ${TARGET_SRC})
+FOREACH(_source_file ${target_src})
   SET_PROPERTY(SOURCE ${_source_file}
     APPEND PROPERTY COMPILE_DEFINITIONS ASPECT_USE_PETSC="1")
 ENDFOREACH()
@@ -107,7 +107,7 @@ ENDIF()
 # Pass down the source directory to the sources. This can be used
 # to hard-code the location of data files, such as in
 # $ASPECT_SOURCE_DIR/data/velocity-boundary-conditions/gplates/*
-FOREACH(_source_file ${TARGET_SRC})
+FOREACH(_source_file ${target_src})
   SET_PROPERTY(SOURCE ${_source_file}
     APPEND PROPERTY COMPILE_DEFINITIONS ASPECT_SOURCE_DIR="${CMAKE_SOURCE_DIR}")
 ENDFOREACH()
@@ -371,13 +371,13 @@ ENDIF()
 
 IF (ASPECT_USE_SHARED_LIBS)
   MESSAGE(STATUS "Enabling dynamic loading of plugins from the input file")
-  FOREACH(_source_file ${TARGET_SRC})
+  FOREACH(_source_file ${target_src})
     SET_PROPERTY(SOURCE ${_source_file}
       APPEND PROPERTY COMPILE_DEFINITIONS ASPECT_USE_SHARED_LIBS=1)
   ENDFOREACH()
 ELSE()
   MESSAGE(STATUS "Disabling dynamic loading of plugins from the input file")
-  FOREACH(_source_file ${TARGET_SRC})
+  FOREACH(_source_file ${target_src})
     SET_PROPERTY(SOURCE ${_source_file}
       APPEND PROPERTY COMPILE_DEFINITIONS ASPECT_USE_SHARED_LIBS=0)
   ENDFOREACH()
@@ -393,7 +393,7 @@ IF (NOT _HAVE_LINK_H)
 ENDIF()
 IF (ASPECT_HAVE_LINK_H)
   MESSAGE(STATUS "Enabling checking of compatible deal.II library when loading plugins")
-  FOREACH(_source_file ${TARGET_SRC})
+  FOREACH(_source_file ${target_src})
     SET_PROPERTY(SOURCE ${_source_file}
       APPEND PROPERTY COMPILE_DEFINITIONS ASPECT_HAVE_LINK_H=1)
   ENDFOREACH()
@@ -410,8 +410,8 @@ IF (ASPECT_PRECOMPILE_HEADERS)
     # For the unity build we need to compile helper_functions.cc before core.cc
     # ensure this by reordering the files
     FIND_FILE(HELPER_PATH helper_functions.cc HINTS "${CMAKE_SOURCE_DIR}/source/simulator")
-    LIST(REMOVE_ITEM TARGET_SRC ${HELPER_PATH})
-    LIST(INSERT TARGET_SRC 0 ${HELPER_PATH})
+    LIST(REMOVE_ITEM target_src ${HELPER_PATH})
+    LIST(INSERT target_src 0 ${HELPER_PATH})
   ELSE()
     MESSAGE(FATAL_ERROR "ASPECT_PRECOMPILE_HEADERS is currently only supported for CMake version 3.8 or less.")
   ENDIF()
@@ -430,21 +430,21 @@ IF (ASPECT_WITH_WORLD_BUILDER)
 
   # add source and include dirs:
   FILE(GLOB_RECURSE _files "contrib/WorldBuilder/source/*.cc")
-  LIST(APPEND TARGET_SRC ${_files})
+  LIST(APPEND target_src ${_files})
   INCLUDE_DIRECTORIES("${WORLD_BUILDER_SOURCE_DIR}/include/")
 
   # generate config.cc and include it:
   CONFIGURE_FILE("${WORLD_BUILDER_SOURCE_DIR}/source/config.cc.in" "${CMAKE_BINARY_DIR}/world_builder_config.cc" @ONLY)
-  LIST(INSERT TARGET_SRC 0 "${CMAKE_BINARY_DIR}/world_builder_config.cc")
+  LIST(INSERT target_src 0 "${CMAKE_BINARY_DIR}/world_builder_config.cc")
 
   # set ASPECT_USE_WORLD_BUILDER define for all source files:
-  FOREACH(_source_file ${TARGET_SRC})
+  FOREACH(_source_file ${target_src})
     SET_PROPERTY(SOURCE ${_source_file}
                  APPEND PROPERTY COMPILE_DEFINITIONS ASPECT_USE_WORLD_BUILDER=1)
   ENDFOREACH()
 ENDIF()
 
-ADD_EXECUTABLE(${TARGET} ${TARGET_SRC})
+ADD_EXECUTABLE(${TARGET} ${target_src})
 DEAL_II_SETUP_TARGET(${TARGET})
 
 FIND_PACKAGE(PerpleX QUIET HINTS ./contrib/perplex/install/ ../ ../../ $ENV{PERPLEX_DIR})
@@ -453,7 +453,7 @@ IF(${PerpleX_FOUND})
   INCLUDE_DIRECTORIES(${PerpleX_INCLUDE_DIR})
   TARGET_LINK_LIBRARIES(${TARGET} ${PerpleX_LIBRARIES})
   SET(ASPECT_WITH_PERPLEX ON)
-  FOREACH(_source_file ${TARGET_SRC})
+  FOREACH(_source_file ${target_src})
     SET_PROPERTY(SOURCE ${_source_file}
       APPEND PROPERTY COMPILE_DEFINITIONS ASPECT_WITH_PERPLEX="1")
   ENDFOREACH()
@@ -489,7 +489,7 @@ IF (ASPECT_USE_FP_EXCEPTIONS)
 
   IF (HAVE_FP_EXCEPTIONS)
     MESSAGE(STATUS "Runtime floating point checks enabled.")
-    FOREACH(_source_file ${TARGET_SRC})
+    FOREACH(_source_file ${target_src})
       SET_PROPERTY(SOURCE ${_source_file}
         APPEND PROPERTY COMPILE_DEFINITIONS ASPECT_USE_FP_EXCEPTIONS=1)
     ENDFOREACH()
@@ -510,7 +510,7 @@ IF (ASPECT_PRECOMPILE_HEADERS)
   SET_TARGET_PROPERTIES (aspect PROPERTIES
       COTIRE_PREFIX_HEADER_IGNORE_PATH
       "/usr/include/;${CMAKE_SOURCE_DIR};${CMAKE_BINARY_DIR}")
-  SET_SOURCE_FILES_PROPERTIES (${TARGET_SRC} PROPERTIES
+  SET_SOURCE_FILES_PROPERTIES (${target_src} PROPERTIES
       COTIRE_UNITY_SOURCE_POST_UNDEFS "INSTANTIATE")
 
   # This line activates the cotire module for the aspect target, 
