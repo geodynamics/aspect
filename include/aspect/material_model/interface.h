@@ -382,6 +382,38 @@ namespace aspect
                             const unsigned int n_comp);
 
       /**
+       * Copy constructor. This constructor copies all data members of the
+       * source object except for the additional output data (of type
+       * AdditionalMaterialOutputs) pointers, stored in the
+       * `source.additional_outputs` member variable.
+       *
+       * This is because these pointers can not be copied (they
+       * are unique to the @p source object). Since they can also not
+       * be recreated without the original code that created these objects
+       * in the first place, this constructor throws an exception if the
+       * @p source object had any additional input or output data objects
+       * associated with it.
+       */
+      MaterialModelOutputs (const MaterialModelOutputs &source);
+
+      /**
+       * Move constructor. This constructor simply moves all members.
+       */
+      MaterialModelOutputs (MaterialModelOutputs &&) = default;
+
+      /**
+       * Copy operator. This operator has the same restriction on the
+       * additional output data pointers as the copy constructor.
+       */
+      MaterialModelOutputs &operator= (const MaterialModelOutputs &source);
+
+      /**
+       * Move operator.
+       */
+      MaterialModelOutputs &operator= (MaterialModelOutputs &&) = default;
+
+
+      /**
        * Viscosity $\eta$ values at the given positions.
        */
       std::vector<double> viscosities;
