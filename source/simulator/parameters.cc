@@ -335,7 +335,10 @@ namespace aspect
       {
         prm.declare_entry ("Stokes solver type", "block AMG",
                            Patterns::Selection(StokesSolverType::pattern()),
-                           "");
+                           "This is the type of solver used on the Stokes system. The block geometric "
+                           "multigrid solver currently has a limited implementation and therefore the user "
+                           "may trigger Asserts in the code when using this solver. If this is the case, "
+                           "the user should switch to block AMG.");
 
         prm.declare_entry ("Use direct solver for Stokes system", "false",
                            Patterns::Bool(),

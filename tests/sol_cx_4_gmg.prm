@@ -1,5 +1,6 @@
-
-
+# The Solcx benchmark solved with the block
+# GMG preconditioner and harmonic averaging
+# for 4 global refinements
 
 set Dimension = 2
 

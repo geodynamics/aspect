@@ -47,40 +47,85 @@ namespace aspect
 {
   using namespace dealii;
 
+  /**
+   * This namespace contains all matrix-free operators used in the Stokes solver.
+   */
   namespace MatrixFreeStokesOperators
   {
-
+    /**
+     * Operator for the entire Stokes block.
+     */
     template <int dim, int degree_v, typename number>
     class StokesOperator
       : public MatrixFreeOperators::Base<dim, dealii::LinearAlgebra::distributed::BlockVector<number> >
     {
       public:
+
+        /**
+         * Constructor.
+         */
         StokesOperator ();
+
+        /**
+         * Reset the viscosity table.
+         */
         void clear ();
-        void fill_viscosities_and_pressure_scaling(const dealii::LinearAlgebra::distributed::Vector<number> &visc_vals,
-                                                   const double scaling,
+
+        /**
+         * Fills in the viscosity table and set the value for the pressure scaling constant.
+         */
+        void fill_viscosities_and_pressure_scaling(const dealii::LinearAlgebra::distributed::Vector<number> &viscosity_values,
+                                                   const double pressure_scaling,
                                                    const Triangulation<dim> &tria,
                                                    const DoFHandler<dim> &dof_handler_for_projection);
-        Table<2, VectorizedArray<number> > get_visc_table();
+
+        /**
+         * Returns the viscosity table.
+         */
+        const Table<2, VectorizedArray<number> > &
+        get_viscosity_x_2_table();
+
+        /**
+         * Computes the diagonal of the matrix. Since matrix-free operators have not access
+         * to matrix elements, we must apply the matrix-free operator to the unit vectors to
+         * recover the diagonal.
+         */
         virtual void compute_diagonal ();
 
       private:
+
+        /**
+         * Performs the application of the matrix-free operator. This function is called by
+         * vmult() functions MatrixFreeOperators::Base.
+         */
         virtual void apply_add (dealii::LinearAlgebra::distributed::BlockVector<number> &dst,
                                 const dealii::LinearAlgebra::distributed::BlockVector<number> &src) const;
 
+        /**
+         * Defines the application of the cell matrix.
+         */
         void local_apply (const dealii::MatrixFree<dim, number> &data,
                           dealii::LinearAlgebra::distributed::BlockVector<number> &dst,
                           const dealii::LinearAlgebra::distributed::BlockVector<number> &src,
                           const std::pair<unsigned int, unsigned int> &cell_range) const;
 
+        /**
+         * Table which stores the viscosity on each quadrature point.
+         */
         Table<2, VectorizedArray<number> > viscosity_x_2;
+
+        /**
+         * Pressure scaling constant.
+         */
         double pressure_scaling;
     };
+
     template <int dim, int degree_v, typename number>
     StokesOperator<dim,degree_v,number>::StokesOperator ()
       :
       MatrixFreeOperators::Base<dim, dealii::LinearAlgebra::distributed::BlockVector<number> >()
     {}
+
     template <int dim, int degree_v, typename number>
     void
     StokesOperator<dim,degree_v,number>::clear ()
@@ -92,8 +137,8 @@ namespace aspect
     template <int dim, int degree_v, typename number>
     void
     StokesOperator<dim,degree_v,number>::
-    fill_viscosities_and_pressure_scaling (const dealii::LinearAlgebra::distributed::Vector<number> &visc_vals,
-                                           const double scaling,
+    fill_viscosities_and_pressure_scaling (const dealii::LinearAlgebra::distributed::Vector<number> &viscosity_values,
+                                           const double pressure_scaling,
                                            const Triangulation<dim> &tria,
                                            const DoFHandler<dim> &dof_handler_for_projection)
     {
@@ -115,14 +160,14 @@ namespace aspect
             //TODO: projection with higher degree
             Assert(local_dof_indices.size() == 1, ExcNotImplemented());
             for (unsigned int q=0; q<velocity.n_q_points; ++q)
-              viscosity_x_2(cell,q)[i] = 2.0*visc_vals(local_dof_indices[0]);
+              viscosity_x_2(cell,q)[i] = 2.0*viscosity_values(local_dof_indices[0]);
           }
-      pressure_scaling = scaling;
+      this->pressure_scaling = pressure_scaling;
     }
 
     template <int dim, int degree_v, typename number>
-    Table<2, VectorizedArray<number> >
-    StokesOperator<dim,degree_v,number>::get_visc_table()
+    const Table<2, VectorizedArray<number> > &
+    StokesOperator<dim,degree_v,number>::get_viscosity_x_2_table()
     {
       return viscosity_x_2;
     }
@@ -170,6 +215,7 @@ namespace aspect
           pressure.distribute_local_to_global (dst.block(1));
         }
     }
+
     template <int dim, int degree_v, typename number>
     void
     StokesOperator<dim,degree_v,number>
@@ -184,45 +230,90 @@ namespace aspect
     StokesOperator<dim,degree_v,number>
     ::compute_diagonal ()
     {
+      // There is currently no need in the code for the diagonal of the entire stokes
+      // block. If needed, one could easily construct based on the diagonal of the A
+      // block and append zeros to the end for the number of pressure DoFs.
       Assert(false, ExcNotImplemented());
     }
 
-
+    /**
+     * Operator for the pressure mass matrix used in the block preconditioner
+     */
     template <int dim, int degree_p, typename number>
     class MassMatrixOperator
       : public MatrixFreeOperators::Base<dim, dealii::LinearAlgebra::distributed::Vector<number>>
     {
       public:
+
+        /**
+         * Constructor
+         */
         MassMatrixOperator ();
+
+        /**
+         * Reset the viscosity table.
+         */
         void clear ();
-        void fill_viscosities_and_pressure_scaling (const dealii::LinearAlgebra::distributed::Vector<number> &visc_vals,
-                                                    const double scaling,
+
+        /**
+         * Fills in the viscosity table and set the value for the pressure scaling constant.
+         */
+        void fill_viscosities_and_pressure_scaling (const dealii::LinearAlgebra::distributed::Vector<number> &viscosity_values,
+                                                    const double pressure_scaling,
                                                     const Triangulation<dim> &tria,
                                                     const DoFHandler<dim> &dof_handler_for_projection);
+
+
+        /**
+         * Computes the diagonal of the matrix. Since matrix-free operators have not access
+         * to matrix elements, we must apply the matrix-free operator to the unit vectors to
+         * recover the diagonal.
+         */
         virtual void compute_diagonal ();
 
       private:
+
+        /**
+         * Performs the application of the matrix-free operator. This function is called by
+         * vmult() functions MatrixFreeOperators::Base.
+         */
         virtual void apply_add (dealii::LinearAlgebra::distributed::Vector<number> &dst,
                                 const dealii::LinearAlgebra::distributed::Vector<number> &src) const;
 
+        /**
+         * Defines the application of the cell matrix.
+         */
         void local_apply (const dealii::MatrixFree<dim, number> &data,
                           dealii::LinearAlgebra::distributed::Vector<number> &dst,
                           const dealii::LinearAlgebra::distributed::Vector<number> &src,
                           const std::pair<unsigned int, unsigned int> &cell_range) const;
 
+
+        /**
+         * Computes the diagonal contribution from a cell matrix.
+         */
         void local_compute_diagonal (const MatrixFree<dim,number>                     &data,
                                      dealii::LinearAlgebra::distributed::Vector<number>  &dst,
                                      const unsigned int                               &dummy,
                                      const std::pair<unsigned int,unsigned int>       &cell_range) const;
 
+        /**
+         * Table which stores the viscosity on each quadrature point.
+         */
         Table<2, VectorizedArray<number> > one_over_viscosity;
+
+        /**
+         * Pressure scaling constant.
+         */
         double pressure_scaling;
     };
+
     template <int dim, int degree_p, typename number>
     MassMatrixOperator<dim,degree_p,number>::MassMatrixOperator ()
       :
       MatrixFreeOperators::Base<dim, dealii::LinearAlgebra::distributed::Vector<number> >()
     {}
+
     template <int dim, int degree_p, typename number>
     void
     MassMatrixOperator<dim,degree_p,number>::clear ()
@@ -234,8 +325,8 @@ namespace aspect
     template <int dim, int degree_p, typename number>
     void
     MassMatrixOperator<dim,degree_p,number>::
-    fill_viscosities_and_pressure_scaling (const dealii::LinearAlgebra::distributed::Vector<number> &visc_vals,
-                                           const double scaling,
+    fill_viscosities_and_pressure_scaling (const dealii::LinearAlgebra::distributed::Vector<number> &viscosity_values,
+                                           const double pressure_scaling,
                                            const Triangulation<dim> &tria,
                                            const DoFHandler<dim> &dof_handler_for_projection)
     {
@@ -257,9 +348,9 @@ namespace aspect
             //TODO: projection with higher degree
             Assert(local_dof_indices.size() == 1, ExcNotImplemented());
             for (unsigned int q=0; q<pressure.n_q_points; ++q)
-              one_over_viscosity(cell,q)[i] = 1.0/visc_vals(local_dof_indices[0]);
+              one_over_viscosity(cell,q)[i] = 1.0/viscosity_values(local_dof_indices[0]);
           }
-      pressure_scaling = scaling;
+      this->pressure_scaling = pressure_scaling;
     }
 
     template <int dim, int degree_p, typename number>
@@ -287,6 +378,7 @@ namespace aspect
           pressure.distribute_local_to_global (dst);
         }
     }
+
     template <int dim, int degree_p, typename number>
     void
     MassMatrixOperator<dim,degree_p,number>
@@ -296,6 +388,7 @@ namespace aspect
       MatrixFreeOperators::Base<dim,dealii::LinearAlgebra::distributed::Vector<number> >::
       data->cell_loop(&MassMatrixOperator::local_apply, this, dst, src);
     }
+
     template <int dim, int degree_p, typename number>
     void
     MassMatrixOperator<dim,degree_p,number>
@@ -330,6 +423,7 @@ namespace aspect
             =1./inverse_diagonal.local_element(i);
         }
     }
+
     template <int dim, int degree_p, typename number>
     void
     MassMatrixOperator<dim,degree_p,number>
@@ -364,36 +458,71 @@ namespace aspect
         }
     }
 
-
-
+    /**
+     * Operator for the A block of the Stokes matrix. The same class is used for both
+     * active and level mesh operators.
+     */
     template <int dim, int degree_v, typename number>
     class ABlockOperator
       : public MatrixFreeOperators::Base<dim, dealii::LinearAlgebra::distributed::Vector<number>>
     {
       public:
+
+        /**
+         * Constructor
+         */
         ABlockOperator ();
+
+        /**
+         * Reset the viscosity table.
+         */
         void clear ();
-        void fill_viscosities(const dealii::LinearAlgebra::distributed::Vector<number> &visc_vals,
+
+        /**
+         * Fills in the viscosity table.
+         */
+        void fill_viscosities(const dealii::LinearAlgebra::distributed::Vector<number> &viscosity_values,
                               const Triangulation<dim> &tria,
                               const DoFHandler<dim> &dof_handler_for_projection,
                               const bool for_mg);
+
+        /**
+         * Computes the diagonal of the matrix. Since matrix-free operators have not access
+         * to matrix elements, we must apply the matrix-free operator to the unit vectors to
+         * recover the diagonal.
+         */
         virtual void compute_diagonal ();
 
       private:
+
+        /**
+         * Performs the application of the matrix-free operator. This function is called by
+         * vmult() functions MatrixFreeOperators::Base.
+         */
         virtual void apply_add (dealii::LinearAlgebra::distributed::Vector<number> &dst,
                                 const dealii::LinearAlgebra::distributed::Vector<number> &src) const;
 
+        /**
+         * Defines the application of the cell matrix.
+         */
         void local_apply (const dealii::MatrixFree<dim, number> &data,
                           dealii::LinearAlgebra::distributed::Vector<number> &dst,
                           const dealii::LinearAlgebra::distributed::Vector<number> &src,
                           const std::pair<unsigned int, unsigned int> &cell_range) const;
 
+        /**
+         * Computes the diagonal contribution from a cell matrix.
+         */
         void local_compute_diagonal (const MatrixFree<dim,number>                     &data,
                                      dealii::LinearAlgebra::distributed::Vector<number>  &dst,
                                      const unsigned int                               &dummy,
                                      const std::pair<unsigned int,unsigned int>       &cell_range) const;
 
+        /**
+         * Table which stores the viscosity on each quadrature point.
+         */
         Table<2, VectorizedArray<number> > viscosity_x_2;
+
     };
     template <int dim, int degree_v, typename number>
     ABlockOperator<dim,degree_v,number>::ABlockOperator ()
@@ -411,7 +540,7 @@ namespace aspect
     template <int dim, int degree_v, typename number>
     void
     ABlockOperator<dim,degree_v,number>::
-    fill_viscosities (const dealii::LinearAlgebra::distributed::Vector<number> &visc_vals,
+    fill_viscosities (const dealii::LinearAlgebra::distributed::Vector<number> &viscosity_values,
                       const Triangulation<dim> &tria,
                       const DoFHandler<dim> &dof_handler_for_projection,
                       const bool for_mg)
@@ -447,7 +576,7 @@ namespace aspect
             //TODO: projection with higher degree
             Assert(local_dof_indices.size() == 1, ExcNotImplemented());
             for (unsigned int q=0; q<velocity.n_q_points; ++q)
-              viscosity_x_2(cell,q)[i] = 2.0*visc_vals(local_dof_indices[0]);
+              viscosity_x_2(cell,q)[i] = 2.0*viscosity_values(local_dof_indices[0]);
           }
     }
 
@@ -556,57 +685,57 @@ namespace aspect
   {
     public:
       /**
-                 * Initialize this class, allowing it to read in
-                 * relevant parameters as well as giving it a reference to the
-                 * Simulator that owns it, since it needs to make fairly extensive
-                 * changes to the internals of the simulator.
-                 */
+       * Initialize this class, allowing it to read in
+       * relevant parameters as well as giving it a reference to the
+       * Simulator that owns it, since it needs to make fairly extensive
+       * changes to the internals of the simulator.
+       */
       StokesMatrixFreeHandler(Simulator<dim> &, ParameterHandler &prm);
 
       /**
-                 * Destructor
-                 */
+       * Destructor.
+       */
       ~StokesMatrixFreeHandler();
 
       /**
-                 * Solves the Stokes linear system matrix-free. This is called
-                 * by Simulator<dim>::solve_stokes().
-                 */
+       * Solves the Stokes linear system matrix-free. This is called
+       * by Simulator<dim>::solve_stokes().
+       */
       std::pair<double,double> solve();
 
       /**
-                 * Allocates and sets up the members of the StokesMatrixFreeHandler. This
-                 * is called by Simulator<dim>::setup_dofs()
-                 */
+       * Allocates and sets up the members of the StokesMatrixFreeHandler. This
+       * is called by Simulator<dim>::setup_dofs()
+       */
       void setup_dofs();
 
       /**
-             * Evalute the MaterialModel to query for the viscosity on the active cells,
-             * project this viscosity to the multigrid hierarchy, and cache the information
-             * for later usage.
-             */
+       * Evalute the MaterialModel to query for the viscosity on the active cells,
+       * project this viscosity to the multigrid hierarchy, and cache the information
+       * for later usage.
+       */
       void evaluate_viscosity();
 
       /**
        * Get the workload imbalance of the distribution
-       * of the level hierarchy
+       * of the level hierarchy.
        */
       double get_workload_imbalance();
 
       /**
-             * Add correction to system RHS for non-zero boundary condition
-             */
+       * Add correction to system RHS for non-zero boundary condition.
+       */
       void correct_stokes_rhs();
 
       /**
-                 * Declare parameters. (No actual parameters at the moment)
-                 */
+       * Declare parameters. (No actual parameters at the moment).
+       */
       static
       void declare_parameters (ParameterHandler &prm);
 
       /**
-                 * Parse parameters. (No actual parameters at the moment)
-                 */
+       * Parse parameters. (No actual parameters at the moment).
+       */
       void parse_parameters (ParameterHandler &prm);
 
 
@@ -626,7 +755,7 @@ namespace aspect
       FESystem<dim> stokes_fe;
       FESystem<dim> fe_v;
       FESystem<dim> fe_p;
-      const FESystem<dim> fe_projection;
+      FESystem<dim> fe_projection;
 
       StokesMatrixType stokes_matrix;
       ABlockMatrixType velocity_matrix;

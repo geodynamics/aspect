@@ -1,3 +1,7 @@
+# The Solcx benchmark solved with the block
+# GMG preconditioner and harmonic averaging
+# for 2 global refinements
+
 
 set Additional shared libraries            = ./libsolcx.so
 

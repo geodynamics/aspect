@@ -1,5 +1,5 @@
-# The 3D HollowSphere benchmark, for which an 
-# analytical solution is available (Thieulot, in prep). 
+# The 3D HollowSphere benchmark solved with the block
+# GMG preconditioner and harmonic averaging
 
 
 ############### Global parameters

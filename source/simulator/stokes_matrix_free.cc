@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2018 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -373,11 +373,11 @@ namespace aspect
   template <int dim>
   StokesMatrixFreeHandler<dim>::StokesMatrixFreeHandler (Simulator<dim> &simulator,
                                                          ParameterHandler &prm)
-    : dof_handler_v(simulator.triangulation),
+    : sim(simulator),
+
+      dof_handler_v(simulator.triangulation),
       dof_handler_p(simulator.triangulation),
       dof_handler_projection(simulator.triangulation),
-
-      sim(simulator),
 
       stokes_fe (FE_Q<dim>(sim.parameters.stokes_velocity_degree),dim,
                  FE_Q<dim>(sim.parameters.stokes_velocity_degree-1),1),
@@ -576,7 +576,7 @@ namespace aspect
     sim.current_constraints.distribute(u0);
     u0.update_ghost_values();
 
-    const Table<2, VectorizedArray<double>> viscosity_table = stokes_matrix.get_visc_table();
+    const Table<2, VectorizedArray<double>> viscosity_x_2_table = stokes_matrix.get_viscosity_x_2_table();
     FEEvaluation<dim,2,3,dim,double>
     velocity (*stokes_matrix.get_matrix_free(), 0);
     FEEvaluation<dim,1,3,1,double>
@@ -599,7 +599,7 @@ namespace aspect
             VectorizedArray<double> div = -trace(sym_grad_u);
             pressure.submit_value   (-1.0*sim.pressure_scaling*div, q);
 
-            sym_grad_u *= viscosity_table(cell,q);
+            sym_grad_u *= viscosity_x_2_table(cell,q);
 
             for (unsigned int d=0; d<dim; ++d)
               sym_grad_u[d][d] -= sim.pressure_scaling*pres;
