@@ -264,10 +264,11 @@ namespace aspect
                                      update_quadrature_points |
                                      update_JxW_values;
 
-    // We need the face integrals to determine if a dirichlet boundary is conduction
-    // dominated in which case we disable stabilization to get the most accurate
-    // heat flux, or still advection dominated (e.g. a boundary with normal flow) in
-    // which case we still need stabilization.
+    // We need the face integrals to determine if a Dirichlet boundary
+    // is conduction dominated in which case we disable stabilization
+    // to get the most accurate heat flux, or still advection
+    // dominated (e.g. a boundary with normal flow) in which case we
+    // still need stabilization.
     const UpdateFlags face_update_flags = update_values |
                                           update_quadrature_points |
                                           update_normal_vectors |
@@ -325,15 +326,20 @@ namespace aspect
               }
           }
 
-        // For fields that have physical diffusion (e.g. temperature), we can disable artificial
-        // viscosity stabilization at dirichlet boundaries, because the boundary is conduction
-        // dominated anyway. Moreover, the residual we would compute would be erroneously large,
-        // because it does not take into account the boundary constraints. This would lead to
-        // unnecessary large diffusion in the cells that matter most for the overall energy
-        // balance of the system. However, we sometimes have Dirichlet temperature boundary conditions
-        // with prescribed non-tangential velocities, in these cases we need the stabilization, because
-        // the boundary cells can be advection dominated. Hence, only disable artificial viscosity if flow
-        // through the boundary is slow, or tangential.
+        // For fields that have physical diffusion (e.g. temperature),
+        // we can disable artificial viscosity stabilization at
+        // Dirichlet boundaries, because the boundary is conduction
+        // dominated anyway. Moreover, the residual we would compute
+        // would be erroneously large, because it does not take into
+        // account the boundary constraints. This would lead to
+        // unnecessary large diffusion in the cells that matter most
+        // for the overall energy balance of the system. However, we
+        // sometimes have Dirichlet temperature boundary conditions
+        // with prescribed non-tangential velocities, in these cases
+        // we need the stabilization, because the boundary cells can
+        // be advection dominated. Hence, only disable artificial
+        // viscosity if flow through the boundary is slow, or
+        // tangential.
         if (advection_field.is_temperature())
           {
             const std::set<types::boundary_id> &fixed_temperature_boundaries =
