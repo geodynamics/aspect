@@ -25,8 +25,14 @@ MESSAGE(STATUS "====================================================")
 # Set the name of the project and target:
 SET(TARGET "aspect")
 
-FILE(GLOB_RECURSE TARGET_SRC  "source/*.cc" "unit_tests/*.cc" "include/*.h" "contrib/catch/catch.hpp")
-INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR}/include include  contrib/catch)
+FILE(GLOB_RECURSE TARGET_SRC
+     "source/*.cc" "unit_tests/*.cc" "include/*.h" "contrib/catch/catch.hpp")
+
+# Set up include directories. Put the ASPECT header files
+# to the front of the list, whereas the 'catch' headers can
+# be preempted by the system
+INCLUDE_DIRECTORIES(BEFORE ${CMAKE_BINARY_DIR}/include include)
+INCLUDE_DIRECTORIES(AFTER  contrib/catch)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
