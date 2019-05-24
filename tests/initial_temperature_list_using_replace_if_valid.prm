@@ -25,7 +25,7 @@ subsection Initial temperature model
   subsection Function
     set Variable names = x,y
     set Function constants = Xmax=330000
-    set Function expression = if(x<Xmax,Nan,1600)
+    set Function expression = if(x<Xmax,nan,1600)
   end
 end
 
