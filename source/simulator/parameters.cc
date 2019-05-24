@@ -884,12 +884,11 @@ namespace aspect
 
       prm.enter_subsection ("Stabilization parameters");
       {
-        prm.declare_entry ("Use SUPG", "false",
-                           Patterns::Bool (),
-                           "If set to false, the artificial viscosity of a cell is computed and used "
-                           "like normal using the Entropy Viscosity method. If set to true, this "
-                           "value of artificial viscosity is set to zero on each cell and SUPG is "
-                           "used instead for stabilization.");
+        prm.declare_entry ("Stabilization method", "entropy viscosity",
+                           Patterns::Selection("entropy viscosity|SUPG"),
+                           "Select the method for stabilizing the advection equation. The original "
+                           "method implemented is 'entropy viscosity' as described in \\cite {KGB12}.");
+
         prm.declare_entry ("Use artificial viscosity smoothing", "false",
                            Patterns::Bool (),
                            "If set to false, the artificial viscosity of a cell is computed and "
@@ -1494,8 +1493,8 @@ namespace aspect
 
       prm.enter_subsection ("Stabilization parameters");
       {
+        advection_stabilization_method = AdvectionStabilizationMethod::parse(prm.get("Stabilization method"));
         use_artificial_viscosity_smoothing  = prm.get_bool ("Use artificial viscosity smoothing");
-        use_supg                            = prm.get_bool ("Use SUPG");
         stabilization_alpha                 = prm.get_integer ("alpha");
 
         stabilization_c_R                   = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("cR"))),

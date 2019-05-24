@@ -548,7 +548,7 @@ namespace aspect
                                                    scratch.finite_element_values.get_mapping(),
                                                    scratch.material_model_outputs);
 
-        if (parameters.use_supg == false)
+        if (parameters.advection_stabilization_method == Parameters<dim>::AdvectionStabilizationMethod::entropy_viscosity)
           {
             viscosity_per_cell[cell->active_cell_index()] = compute_viscosity(scratch,
                                                                               global_max_velocity,
@@ -558,7 +558,7 @@ namespace aspect
                                                                               cell->diameter(),
                                                                               advection_field);
           }
-        else
+        else if (parameters.advection_stabilization_method == Parameters<dim>::AdvectionStabilizationMethod::supg)
           {
             // things needed for the calculating of tau for SUPG loop
             // Compute norm of advection field
@@ -605,8 +605,10 @@ namespace aspect
               viscosity_per_cell[cell->active_cell_index()] *= (1.0/tanh(norm_of_advection_term*(h/fe_order)/(2.0*max_conductivity_on_cell))
                                                                 - 1.0/(norm_of_advection_term*(h/fe_order)/(2.0*max_conductivity_on_cell)));
 
-            Assert (viscosity_per_cell[cell->active_cell_index()] >= 0, ExcMessage ("tau (for SUPG) needs to be a nonnegative constant."));
+            Assert (viscosity_per_cell[cell->active_cell_index()] >= 0, ExcMessage ("tau for SUPG needs to be a nonnegative constant."));
           }
+        else
+          AssertThrow(false, ExcNotImplemented());
       }
 
     // if set to true, the maximum of the artificial viscosity in the cell as well
