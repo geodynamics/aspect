@@ -70,7 +70,7 @@ namespace aspect
     temperature (const double depth) const
     {
       // Compute some constants to calculate the temperatures T1 and T2 at the interfaces
-      // between the layers.
+      // between the layers upper crust/lower crust and lower crust/lithospheric mantle.
       const double a = 0.5*densities[0]*heat_productivities[0]*thicknesses[0] + 0.5*densities[1]*heat_productivities[1]*thicknesses[1] + conductivities[0]/thicknesses[0]*T0;
       const double b = 1./(conductivities[0]/thicknesses[0]+conductivities[1]/thicknesses[1]);
       const double c = 0.5*densities[1]*heat_productivities[1]*thicknesses[1] + conductivities[2]/thicknesses[2]*LAB_isotherm;

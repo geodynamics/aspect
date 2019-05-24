@@ -1,0 +1,426 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+Number of active cells: 400 (on 1 levels)
+Number of degrees of freedom: 12,358 (3,402+451+1,701+1,701+1,701+1,701+1,701)
+
+Number of free surface degrees of freedom: 902
+*** Timestep 0:  t=0 years
+   Solving mesh velocity system... 0 iterations.
+   Solving temperature system... 0 iterations.
+   Solving upper system ... 0 iterations.
+   Solving lower system ... 0 iterations.
+   Solving mantle_L system ... 0 iterations.
+   Solving seed system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+20 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+20 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.064316
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+17 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 0.0250548
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+16 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 0.0079803
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+15 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 0.00318284
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+14 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 6: 0.00138678
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+13 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 7: 0.000848317
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+13 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 8: 0.000630804
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+12 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 9: 0.000552774
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+12 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 10: 0.000506245
+
+
+   Postprocessing:
+     Temperature min/avg/max: 273 K, 1011 K, 1573 K
+
+*** Timestep 1:  t=894427 years
+   Solving mesh velocity system... 1 iterations.
+   Solving temperature system... 16 iterations.
+   Solving upper system ... 10 iterations.
+   Solving lower system ... 11 iterations.
+   Solving mantle_L system ... 10 iterations.
+   Solving seed system ... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+19 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.0202742
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+17 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.0117997
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+16 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 0.00691254
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+16 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 0.00527826
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+16 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 0.00432803
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+16 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 6: 0.00371805
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+16 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 7: 0.00330801
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+16 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 8: 0.00298398
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+16 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 9: 0.00281096
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+16 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 10: 0.00274468
+
+
+   Postprocessing:
+     Temperature min/avg/max: 273 K, 1017 K, 1573 K
+
+*** Timestep 2:  t=1.78885e+06 years
+   Solving mesh velocity system... 1 iterations.
+   Solving temperature system... 13 iterations.
+   Solving upper system ... 12 iterations.
+   Solving lower system ... 13 iterations.
+   Solving mantle_L system ... 12 iterations.
+   Solving seed system ... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+22 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.223523
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+20 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.037296
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+19 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 0.0166467
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+19 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 0.0108013
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+18 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 0.00956856
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+18 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 6: 0.0108413
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+18 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 7: 0.0143483
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+17 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 8: 0.0244157
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+17 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 9: 0.0151932
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+16 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 10: 0.00333107
+
+
+   Postprocessing:
+     Temperature min/avg/max: 273 K, 1022 K, 1573 K
+
+*** Timestep 3:  t=2.49664e+06 years
+   Solving mesh velocity system... 1 iterations.
+   Solving temperature system... 11 iterations.
+   Solving upper system ... 14 iterations.
+   Solving lower system ... 14 iterations.
+   Solving mantle_L system ... 13 iterations.
+   Solving seed system ... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+26 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.194755
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+20 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.0339422
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+18 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 0.0238607
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+18 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 0.0425339
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+18 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 0.014996
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+18 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 6: 0.00698543
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+17 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 7: 0.00717049
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+17 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 8: 0.0084805
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+17 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 9: 0.00422415
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+16 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 10: 0.00363903
+
+
+   Postprocessing:
+     Temperature min/avg/max: 273 K, 1026 K, 1573 K
+
+*** Timestep 4:  t=3.28887e+06 years
+   Solving mesh velocity system... 1 iterations.
+   Solving temperature system... 12 iterations.
+   Solving upper system ... 12 iterations.
+   Solving lower system ... 13 iterations.
+   Solving mantle_L system ... 12 iterations.
+   Solving seed system ... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+21 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.104072
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+19 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.0236251
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+19 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 0.0158286
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+18 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 0.0124648
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+18 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 0.0105516
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+18 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 6: 0.00934151
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+17 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 7: 0.00854758
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+17 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 8: 0.00804449
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+17 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 9: 0.00775929
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+16 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 10: 0.0054997
+
+
+   Postprocessing:
+     Temperature min/avg/max: 273 K, 1031 K, 1573 K
+
+*** Timestep 5:  t=3.95688e+06 years
+   Solving mesh velocity system... 1 iterations.
+   Solving temperature system... 11 iterations.
+   Solving upper system ... 12 iterations.
+   Solving lower system ... 13 iterations.
+   Solving mantle_L system ... 12 iterations.
+   Solving seed system ... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+24 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.107371
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+19 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.0165869
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+18 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 0.00915583
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+14 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 0.0058291
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+16 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 0.00474472
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+14 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 6: 0.00402919
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+15 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 7: 0.00353
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+15 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 8: 0.00316202
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+15 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 9: 0.00287333
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+15 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 10: 0.0026331
+
+
+   Postprocessing:
+     Temperature min/avg/max: 273 K, 1034 K, 1573 K
+
+*** Timestep 6:  t=4.7025e+06 years
+   Solving mesh velocity system... 1 iterations.
+   Solving temperature system... 11 iterations.
+   Solving upper system ... 12 iterations.
+   Solving lower system ... 13 iterations.
+   Solving mantle_L system ... 12 iterations.
+   Solving seed system ... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+21 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.0399946
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+19 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.0126535
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+19 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 0.00788756
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+18 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 0.00561024
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+18 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 0.00440457
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+16 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 6: 0.00342965
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+12 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 7: 0.00273732
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+15 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 8: 0.00227152
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+15 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 9: 0.00195021
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+15 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 10: 0.00171431
+
+
+   Postprocessing:
+     Temperature min/avg/max: 273 K, 1038 K, 1573 K
+
+*** Timestep 7:  t=5e+06 years
+   Solving mesh velocity system... 1 iterations.
+   Solving temperature system... 7 iterations.
+   Solving upper system ... 10 iterations.
+   Solving lower system ... 10 iterations.
+   Solving mantle_L system ... 10 iterations.
+   Solving seed system ... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+19 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.00696143
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+15 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.00424427
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+14 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 0.00263566
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+14 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 0.00186445
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+13 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 0.00125046
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+12 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 6: 0.000918941
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+11 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 7: 0.000734186
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+10 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 8: 0.000636112
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+10 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 9: 0.000583122
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+10 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 10: 0.000554344
+
+
+   Postprocessing:
+     Temperature min/avg/max: 273 K, 1039 K, 1573 K
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
