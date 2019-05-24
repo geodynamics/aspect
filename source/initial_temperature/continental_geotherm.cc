@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -58,6 +58,8 @@ namespace aspect
     ContinentalGeotherm<dim>::
     initial_temperature (const Point<dim> &position) const
     {
+      // Return the temperature based on the depth of the point with
+      // respect to the reference surface.
       const double depth = this->get_geometry_model().depth(position);
 
       return temperature(depth);
@@ -70,15 +72,20 @@ namespace aspect
     temperature (const double depth) const
     {
       // Compute some constants to calculate the temperatures T1 and T2 at the interfaces
-      // between the layers upper crust/lower crust and lower crust/lithospheric mantle.
+      // between the layers upper crust/lower crust (depth y=h1) and lower crust/lithospheric mantle (depth y=h1+h2).
+      // T1 = (ab + k2/h2 cdb) / (1 - k2^2/h2^2 db)
+      // T2 = (c + k2/h2 T1) d
+      // These derivations are based on the assumption that at the boundary between
+      // the layers, the heat flows of the two layers are equal, so
+      // at y=h1, q1(h1)=q2(h2)=k1 dT1/dy|h1 = k2 dT2/dy|h2 etc.
       const double a = 0.5*densities[0]*heat_productivities[0]*thicknesses[0] + 0.5*densities[1]*heat_productivities[1]*thicknesses[1] + conductivities[0]/thicknesses[0]*T0;
       const double b = 1./(conductivities[0]/thicknesses[0]+conductivities[1]/thicknesses[1]);
       const double c = 0.5*densities[1]*heat_productivities[1]*thicknesses[1] + conductivities[2]/thicknesses[2]*LAB_isotherm;
       const double d = 1./(conductivities[1]/thicknesses[1]+conductivities[2]/thicknesses[2]);
 
-      //Temperature at boundary between layer 1 and 2
+      // Temperature at boundary between layer 1 and 2
       const double T1 = (a*b + conductivities[1]/thicknesses[1]*c*d*b) / (1.-(conductivities[1]*conductivities[1])/(thicknesses[1]*thicknesses[1])*d*b);
-      //Temperature at boundary between layer 2 and 3
+      // Temperature at boundary between layer 2 and 3
       const double T2 = (c + conductivities[1]/thicknesses[1]*T1) * d;
 
       // Temperature in layer 1
@@ -90,11 +97,11 @@ namespace aspect
       // Temperature in layer 3
       else if (depth <= thicknesses[0]+thicknesses[1]+thicknesses[2])
         return (LAB_isotherm-T2)/thicknesses[2] *(depth-thicknesses[0]-thicknesses[1]) + T2;
-      // Return a constant sublithospheric temperature of 10*LAB_isotherm.
+      // Return a constant sublithospheric temperature of 100*LAB_isotherm.
       // This way we can combine the continental geotherm with an adiabatic profile from the input file
       // using the "minimum" operator on the "List of initial temperature models"
       else
-        return 10.*LAB_isotherm;
+        return 100.*LAB_isotherm;
 
     }
 
@@ -236,10 +243,16 @@ namespace aspect
     ASPECT_REGISTER_INITIAL_TEMPERATURE_MODEL(ContinentalGeotherm,
                                               "continental geotherm",
                                               "This is a temperature initial condition that "
-                                              "computes a continental geotherm based on the "
-                                              "conductive equations of Turcotte and Schubert Ch. 4.6. "
+                                              "computes a continental geotherm based on the solution of the "
+                                              "steady-state conductive equation $k\frac{d^2 T}{dy^2}+\rho H = 0$ "
+                                              "as described in e.g. Turcotte and Schubert, "
+                                              "Ch. 4.6, or Chapman (1986). As boundary conditions, we take the surface temperature and "
+                                              "the temperature of the Lithosphere-Asthenosphere Boundary (LAB). "
+                                              "\n"
                                               "The geotherm is computed for a homogeneous lithosphere "
                                               "composed of an upper crust, lower crust and mantle layer. "
+                                              "The crustal layers are assumed to have a constant radioactive heating, "
+                                              "and all layers are assumed to have a constant thermal conductivity. "
                                               "Layer thicknesses, surface temperature and LAB temperature "
                                               "should be specified by the user. "
                                               "For consistency, the density, heat production and thermal "
@@ -249,6 +262,12 @@ namespace aspect
                                               "For any depths below the depth of the LAB, a unrealistically high "
                                               "temperature is returned, such that this plugin can be combined with "
                                               "another temperature plugin through the 'minimum' operator. "
+                                              "\n"
+                                              "Note that the current implementation only works for a 3-layer lithosphere, "
+                                              "even though in principle the heat conduction equation can be solved "
+                                              "for any number of layers. The naming of the compositional fields "
+                                              "that represent the layers is also very specific, namely 'upper', "
+                                              "'lower', and 'mantle_L'. "
                                               "\n"
                                               "Make sure the top and bottom temperatures of the lithosphere "
                                               "agree with temperatures set in for example the temperature "

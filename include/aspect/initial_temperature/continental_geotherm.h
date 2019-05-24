@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2014 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -93,7 +93,8 @@ namespace aspect
         double LAB_isotherm;
 
         /**
-         * Vector for field depths
+         * Vector for the thicknesses of the compositional fields
+         * representing the layers `upper`, `lower` and `mantle_L`.
          */
         std::vector<double> thicknesses;
 
