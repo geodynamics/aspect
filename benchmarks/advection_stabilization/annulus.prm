@@ -1,0 +1,135 @@
+# The 2D Stokes in an annulus benchmark, for which an 
+# analytical solution is available. 
+# 
+# See the manual for more information.
+
+############### Global parameters
+# We use a 2d setup. Since we are only interested
+# in a steady state solution, we set the end time
+# equal to the start time to force a single time
+# step before the program terminates.
+
+set Additional shared libraries            = ./libannulus.so
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 1
+set Use years in output instead of seconds = false
+set Nonlinear solver scheme                = single Advection, no Stokes
+set Output directory                       = /home/geuen/aspect/benchmarks/advection_stabilization/output_ref2
+set Pressure normalization                 = surface
+set Timing output frequency                = 10
+
+subsection Prescribed Stokes solution
+  set Model name = advection benchmark
+end
+
+############### Parameters describing the model
+# Because the temperature plays no role in this model we need not
+# bother to describe temperature boundary conditions or
+# the material parameters that pertain to the temperature.
+
+subsection Geometry model
+  set Model name = spherical shell
+  # NOTE: the analytical solutions are hard-coded
+  # to these geometry values: do not change them.
+  subsection Spherical shell
+    set Inner radius = 1 
+    set Outer radius = 2
+    set Opening angle = 360 
+  end 
+end
+
+#Boundary conditions
+
+#subsection Boundary velocity model
+#  set Prescribed velocity boundary indicators = 0  : AnnulusBoundary, \
+                                                1  : AnnulusBoundary
+#end
+
+#subsection Discretization
+#set Stokes velocity polynomial degree = 1
+#set Use locally conservative discretization = true
+#end
+
+subsection Material model
+  set Model name = simpler
+  subsection Simpler model
+    set Reference density = 1.0
+    set Reference temperature = 1.0
+    set Viscosity = 1.0
+    set Thermal conductivity = 1e-2
+    set Reference specific heat = 1.0
+    set Thermal expansion coefficient = 0
+  end
+end
+
+subsection Gravity model
+  set Model name = radial constant
+  subsection Radial constant
+    set Magnitude =  1
+  end
+end
+
+#Viscosity parameter is k, which controls the number
+#of mantle convection cells
+
+subsection Annulus benchmark
+   set Viscosity parameter             = 4
+end 
+
+############### Parameters describing the temperature field
+# As above, there is no need to set anything for the
+# temperature boundary conditions.
+
+subsection Boundary temperature model
+  set List of model names = function
+  subsection Function
+    set Function expression = 0
+  end
+  set Fixed temperature boundary indicators = 1
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 1
+  end
+end
+
+
+############### Parameters describing the discretization
+# The following parameters describe how often we want to refine
+# the mesh globally and adaptively, what fraction of cells should
+# be refined in each adaptive refinement step, and what refinement
+# indicator to use when refining the mesh adaptively. 
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 2
+  set Refinement fraction                = 0.2
+  set Strategy                           = velocity
+end
+
+############### Parameters describing what to do with the solution
+# The final section allows us to choose which postprocessors to
+# run at the end of each time step. 
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, temperature statistics, depth average, memory statistics
+  subsection Dynamic topography
+    set Density above = 0
+    set Density below = 0
+  end
+  subsection Visualization
+    set List of output variables = density, viscosity, strain rate, dynamic topography
+    set Time steps between graphical output = 10
+  end
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-12
+    set Number of cheap Stokes solver steps = 0
+  end
+end
