@@ -354,7 +354,7 @@ namespace aspect
        * objects that can be added to MaterialModelInputs. By default,
        * no inputs are added.
        */
-      std::vector<std::shared_ptr<AdditionalMaterialInputs<dim> > > additional_inputs;
+      std::vector<std::unique_ptr<AdditionalMaterialInputs<dim> > > additional_inputs;
 
       /**
        * Given an additional material model input class as explicitly specified
@@ -520,7 +520,7 @@ namespace aspect
        * objects that can then be added to MaterialModelOutputs. By default,
        * no outputs are added.
        */
-      std::vector<std::shared_ptr<AdditionalMaterialOutputs<dim> > > additional_outputs;
+      std::vector<std::unique_ptr<AdditionalMaterialOutputs<dim> > > additional_outputs;
 
       /**
        * Given an additional material model output class as explicitly specified

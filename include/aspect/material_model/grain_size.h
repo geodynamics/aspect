@@ -558,7 +558,7 @@ namespace aspect
          * material data files. There is one pointer/object per compositional
          * field provided.
          */
-        std::vector<std::shared_ptr<MaterialModel::Lookup::MaterialLookup> > material_lookup;
+        std::vector<std::unique_ptr<MaterialModel::Lookup::MaterialLookup> > material_lookup;
     };
 
   }
