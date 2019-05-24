@@ -1,3 +1,22 @@
+#include <aspect/introspection.h>
+#include <aspect/material_model/interface.h>
+#include <aspect/plugins.h>
+#include <aspect/simulator/assemblers/interface.h>
+#include <deal.II/base/exceptions.h>
+#include <deal.II/base/parameter_handler.h>
+#include <deal.II/base/patterns.h>
+#include <deal.II/base/point.h>
+#include <deal.II/base/table_indices.h>
+#include <deal.II/base/tensor.h>
+#include <deal.II/base/utilities.h>
+#include <deal.II/fe/fe.h>
+#include <deal.II/fe/fe_update_flags.h>
+#include <deal.II/grid/tria_iterator_base.h>
+#include <functional>
+#include <iostream>
+#include <string>
+#include <vector>
+
 #ifndef __aspect__av_material_h
 #define __aspect__av_material_h
 
@@ -53,11 +72,28 @@ namespace aspect
                    */
                   std::vector<SymmetricTensor<4,dim> > stress_strain_directors;
               };
+              namespace
+                  {
+              template <int dim>
               
+                    std::vector<std::string> make_AnisotropicViscosity_additional_outputs_names()
+                    {
+                      std::vector<std::string> names;
+
+                      for (unsigned int i = 0; i < Tensor<4,dim>::n_independent_components ; ++i)
+                      {
+                    	  TableIndices<4> indices(Tensor<4,dim>::unrolled_to_component_indices(i));
+                          names.push_back("anisotropic_viscosity"+std::to_string(indices[0])+std::to_string(indices[1])+std::to_string(indices[2])+std::to_string(indices[3]));
+                      }
+                          return names;
+                    }
+                  }
+
               template <int dim>
               AnisotropicViscosity<dim>::AnisotropicViscosity (const unsigned int n_points)
               :
-              NamedAdditionalMaterialOutputs<dim>(std::vector<std::string>(1,"anisotropic_viscosity")),
+
+              NamedAdditionalMaterialOutputs<dim>(make_AnisotropicViscosity_additional_outputs_names<dim>()),
               stress_strain_directors(n_points, dealii::identity_tensor<dim> ())
               {}
               
@@ -65,26 +101,17 @@ namespace aspect
               
               template <int dim>
               std::vector<double>
-              AnisotropicViscosity<dim>::get_nth_output(const unsigned int /*idx*/) const
+              AnisotropicViscosity<dim>::get_nth_output(const unsigned int idx) const
               {
-                  return std::vector<double>();
+            	  std::vector<double> output(stress_strain_directors.size());
+            	  for (unsigned int i = 0; i < stress_strain_directors.size() ; ++i)
+            	  {
+            	  output[i]= stress_strain_directors[i][Tensor<4,dim>::unrolled_to_component_indices(idx)];
+            	  }
+            	  return output;
               }
       
-    template <int dim>
-    class AV : public MaterialModel::Simple<dim>
-    {
-      public:
-        virtual void evaluate (const MaterialModel::MaterialModelInputs<dim> &in,
-                               MaterialModel::MaterialModelOutputs<dim> &out) const;
-        static void declare_parameters (ParameterHandler &prm);
-        virtual void parse_parameters (ParameterHandler &prm);
-        virtual bool is_compressible () const;
-        virtual double reference_viscosity () const;
-        virtual double reference_density () const;
-      private:
-        double eta_N, eta_0;
-        static double delta (const unsigned int i, const unsigned int j);
-    };
+
   }
 }
 
@@ -92,183 +119,6 @@ namespace aspect
 
 namespace aspect
 {
-  namespace MaterialModel
-  {
-    template <int dim>
-    void
-    AV<dim>::evaluate (const MaterialModel::MaterialModelInputs<dim> &in,
-                        MaterialModel::MaterialModelOutputs<dim> &out) const
-    {
-        MaterialModel::AnisotropicViscosity<dim> *anisotropic_viscosity =
-        out.template get_additional_output<MaterialModel::AnisotropicViscosity<dim> >();
-        
-        Simple<dim>::evaluate(in,out);
-
-      AssertThrow((this->introspection().compositional_name_exists("gamma")),
-                  ExcMessage("AV material model only works if there is a compositional field called gamma."));
-      AssertThrow(this->introspection().compositional_name_exists("ni"),
-                  ExcMessage("AV material model only works if there is a compositional field called ni."));
-      AssertThrow(this->introspection().compositional_name_exists("nj"),
-                  ExcMessage("AV material model only works if there is a compositional field called nj."));
-      if (dim == 3)
-        AssertThrow(this->introspection().compositional_name_exists("nk"),
-                    ExcMessage("AV material model only works if there is a compositional field called nk."));
-
-      const unsigned int c_idx_gamma = this->introspection().compositional_index_for_name("gamma");
-
-      std::vector<unsigned int> c_idx_n;
-      c_idx_n.push_back (this->introspection().compositional_index_for_name("ni"));
-      c_idx_n.push_back (this->introspection().compositional_index_for_name("nj"));
-      if (dim == 3)
-        c_idx_n.push_back (this->introspection().compositional_index_for_name("nk"));
-
-      // Get the grad_u tensor, at the center of this cell, if possible.
-      Tensor<2,dim> grad_u;
-      if (in.current_cell.state() == IteratorState::valid)
-        {
-          const QMidpoint<dim> quadrature_formula;
-          FEValues<dim> fe_values (this->get_mapping(),
-                                   this->get_fe(),
-                                   quadrature_formula,
-                                   update_gradients);
-          fe_values.reinit(in.current_cell);
-          std::vector<Tensor<2,dim> > velocity_gradients (quadrature_formula.size());
-          fe_values[this->introspection().extractors.velocities]
-          .get_function_gradients(this->get_solution(), velocity_gradients);
-
-          grad_u = velocity_gradients[0];
-        }
-
-      for (unsigned int q=0; q<in.position.size(); ++q)
-        {
-          out.densities[q] = (in.composition[q][c_idx_gamma] > 0.1 ? 1 : 0);
-          out.viscosities[q] = eta_N;
-          out.thermal_expansion_coefficients[q] = 0;
-          out.specific_heat[q] = 0;
-          out.thermal_conductivities[q] = 0;
-          out.compressibilities[q] = 0.0;
-          out.entropy_derivative_pressure[q] = 0.0;
-          out.entropy_derivative_temperature[q] = 0.0;
-          for (unsigned int c=0; c<in.composition[q].size(); ++c)
-              out.reaction_terms[q][c] = 0.0;
-
-          Point<dim> n;
-          for (unsigned int i=0; i<dim; ++i)
-            n[i] = in.composition[q][c_idx_n[i]];
-
-          // Symmetric and anti-symmetric parts of grad_u
-          const SymmetricTensor<2,dim> D = symmetrize(grad_u);
-          Tensor<2,dim> W;
-          for (unsigned int i=0; i<dim; ++i)
-            for (unsigned int j=0; j<dim; ++j)
-              W[i][j] = grad_u[i][j] - D[i][j];
-
-          Point<dim> n_dot;
-          for (unsigned int i=0; i<dim; ++i)
-            {
-              n_dot[i] = 0.0;
-              // outer summation over each value of j.
-              for (unsigned int j=0; j<dim; ++j)
-              {
-                float Wn = W[i][j];
-                for (unsigned int k=0; k<dim; ++k)
-                  {
-                    Wn -= D[k][i]*n[k]*n[j] - D[k][j]*n[k]*n[i];
-                  }
-                n_dot[i] += Wn * n[j];
-              }
-            }
-
-          for (unsigned int i=0; i<dim; ++i)
-            out.reaction_terms[q][c_idx_n[i]] = n_dot[i] * this->get_timestep();
-
-          if ((n[0] != 0) || (n[1] != 0) || (dim == 3 && n[2] != 0))
-            {
-              SymmetricTensor<4,dim> Lambda;
-              for (unsigned int i=0; i<dim; ++i)
-                for (unsigned int j=0; j<dim; ++j)
-                  for (unsigned int k=0; k<dim; ++k)
-                    for (unsigned int l=0; l<dim; ++l)
-                      Lambda[i][j][k][l] = 1./2. * (n[i]*n[k]*delta(l,j)
-                                                    + n[j]*n[k]*delta(i,l)
-                                                    + n[i]*n[l]*delta(k,j)
-                                                    + n[j]*n[l]*delta(i,k))
-                                           - 2*n[i]*n[j]*n[k]*n[l];
-
-                if (anisotropic_viscosity != nullptr)
-                    anisotropic_viscosity->stress_strain_directors[q] =dealii::identity_tensor<dim> ()
-                    - (1. - eta_0) * Lambda;
-            }
-        }
-    }
-
-    template <int dim>
-    double
-    AV<dim>::delta (const unsigned int i,
-                     const unsigned int j)
-    {
-      return (i == j ? 1 : 0);
-    }
-
-    template <int dim>
-    bool
-    AV<dim>::is_compressible () const
-    {
-      return false;
-    }
-
-    template <int dim>
-    double
-    AV<dim>::reference_density () const
-    {
-      return 1.0;
-    }
-
-    template <int dim>
-    double
-    AV<dim>::reference_viscosity () const
-    {
-      return 1.0;
-    }
-
-    template <int dim>
-    void
-    AV<dim>::parse_parameters (ParameterHandler &prm)
-    {
-      prm.enter_subsection("Material model");
-      {
-        prm.enter_subsection("AV");
-        {
-          eta_N = prm.get_double("Normal viscosity");
-          eta_0 = prm.get_double("Shear viscosity")/eta_N;
-        }
-        prm.leave_subsection();
-      }
-      prm.leave_subsection();
-    }
-
-    template <int dim>
-    void
-    AV<dim>::declare_parameters (ParameterHandler &prm)
-    {
-      prm.enter_subsection("Material model");
-      {
-        prm.enter_subsection("AV");
-        {
-          prm.declare_entry ("Normal viscosity", "1e-3",
-                             Patterns::Double(),
-                             "Magnitude of normal viscosity.");
-          prm.declare_entry ("Shear viscosity", "1e-4",
-                             Patterns::Double(),
-                             "Magnitude of shear viscosity.");
-        }
-        prm.leave_subsection();
-      }
-      prm.leave_subsection();
-    }
-  }
-
-
 
 
     
@@ -351,7 +201,7 @@ namespace aspect
         {
             internal::Assembly::Scratch::StokesPreconditioner<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesPreconditioner<dim>& > (scratch_base);
             internal::Assembly::CopyData::StokesPreconditioner<dim> &data = dynamic_cast<internal::Assembly::CopyData::StokesPreconditioner<dim>& > (data_base);
-            
+            //std::cout<<"StokesPreconditioner was called";
             const MaterialModel::AnisotropicViscosity<dim> *anisotropic_viscosity =
             scratch.material_model_outputs.template get_additional_output<MaterialModel::AnisotropicViscosity<dim> >();
             
@@ -828,12 +678,255 @@ namespace aspect
             // Constitutive tensor
             SymmetricTensor<4,dim> C;
         };
+        template <int dim>
+        class AV : public MaterialModel::Simple<dim>
+            {
+              public:
+            	virtual void initialize();
+                virtual void evaluate (const MaterialModel::MaterialModelInputs<dim> &in,
+                                       MaterialModel::MaterialModelOutputs<dim> &out) const;
+                static void declare_parameters (ParameterHandler &prm);
+                virtual void parse_parameters (ParameterHandler &prm);
+                virtual bool is_compressible () const;
+                virtual double reference_viscosity () const;
+                virtual double reference_density () const;
+                virtual void create_additional_named_outputs(MaterialModel::MaterialModelOutputs<dim> &out) const;
+              private:
+                double eta_N, eta_0;
+                static double delta (const unsigned int i, const unsigned int j);
+                void set_assemblers(const SimulatorAccess<dim> &,
+                                                Assemblers::Manager<dim> &assemblers) const;
+            };
         
     }
 }
 
 namespace aspect
 {
+
+//Next session is a more evolved implementation of anisotropic viscosity in the material model by Jonathan Perry-Houts
+namespace MaterialModel
+{
+	template <int dim>
+	void
+		AV<dim>::set_assemblers(const SimulatorAccess<dim> &,
+        Assemblers::Manager<dim> &assemblers) const
+		{
+		for (unsigned int i=0; i<assemblers.stokes_preconditioner.size(); ++i)
+			{
+			if (dynamic_cast<Assemblers::StokesPreconditioner<dim> *>(assemblers.stokes_preconditioner[i].get()) != nullptr)
+            assemblers.stokes_preconditioner[i] = std_cxx14::make_unique<Assemblers::StokesPreconditionerAnisotropicViscosity<dim> > ();
+			if (dynamic_cast<Assemblers::StokesCompressiblePreconditioner<dim> *>(assemblers.stokes_preconditioner[i].get()) != nullptr)
+            assemblers.stokes_preconditioner[i] = std_cxx14::make_unique<Assemblers::StokesCompressiblePreconditionerAnisotropicViscosity<dim> > ();
+			}
+
+		for (unsigned int i=0; i<assemblers.stokes_system.size(); ++i)
+			{
+			if (dynamic_cast<Assemblers::StokesIncompressibleTerms<dim> *>(assemblers.stokes_system[i].get()) != nullptr)
+            assemblers.stokes_system[i] = std_cxx14::make_unique<Assemblers::StokesIncompressibleTermsAnisotropicViscosity<dim> > ();
+			if (dynamic_cast<Assemblers::StokesCompressibleStrainRateViscosityTerm<dim> *>(assemblers.stokes_system[i].get()) != nullptr)
+            assemblers.stokes_system[i] = std_cxx14::make_unique<Assemblers::StokesCompressibleStrainRateViscosityTermAnisotropicViscosity<dim> > ();
+			}
+		}
+
+	template <int dim>
+	void
+	AV<dim>::
+	initialize()
+		{
+		this->get_signals().set_assemblers.connect (std::bind(&AV<dim>::set_assemblers,
+                                                          std::cref(*this),
+                                                          std::placeholders::_1,
+                                                          std::placeholders::_2));
+		}
+	template <int dim>
+	void
+	AV<dim>::evaluate (const MaterialModel::MaterialModelInputs<dim> &in,
+                      MaterialModel::MaterialModelOutputs<dim> &out) const
+	{
+      MaterialModel::AnisotropicViscosity<dim> *anisotropic_viscosity =
+      out.template get_additional_output<MaterialModel::AnisotropicViscosity<dim> >();
+
+      Simple<dim>::evaluate(in,out);
+
+    AssertThrow((this->introspection().compositional_name_exists("gamma")),
+                ExcMessage("AV material model only works if there is a compositional field called gamma."));
+    AssertThrow(this->introspection().compositional_name_exists("ni"),
+                ExcMessage("AV material model only works if there is a compositional field called ni."));
+    AssertThrow(this->introspection().compositional_name_exists("nj"),
+                ExcMessage("AV material model only works if there is a compositional field called nj."));
+    if (dim == 3)
+      AssertThrow(this->introspection().compositional_name_exists("nk"),
+                  ExcMessage("AV material model only works if there is a compositional field called nk."));
+
+    const unsigned int c_idx_gamma = this->introspection().compositional_index_for_name("gamma");
+
+    std::vector<unsigned int> c_idx_n;
+    c_idx_n.push_back (this->introspection().compositional_index_for_name("ni"));
+    c_idx_n.push_back (this->introspection().compositional_index_for_name("nj"));
+    if (dim == 3)
+      c_idx_n.push_back (this->introspection().compositional_index_for_name("nk"));
+
+    // Get the grad_u tensor, at the center of this cell, if possible.
+    Tensor<2,dim> grad_u;
+    if (in.current_cell.state() == IteratorState::valid)
+      {
+        const QMidpoint<dim> quadrature_formula;
+        FEValues<dim> fe_values (this->get_mapping(),
+                                 this->get_fe(),
+                                 quadrature_formula,
+                                 update_gradients);
+        fe_values.reinit(in.current_cell);
+        std::vector<Tensor<2,dim> > velocity_gradients (quadrature_formula.size());
+        fe_values[this->introspection().extractors.velocities]
+        .get_function_gradients(this->get_solution(), velocity_gradients);
+
+        grad_u = velocity_gradients[0];
+      }
+
+    for (unsigned int q=0; q<in.position.size(); ++q)
+      {
+        out.densities[q] = (in.composition[q][c_idx_gamma] > 0.8 ? 1 : 0);
+        out.viscosities[q] = eta_N;
+        out.thermal_expansion_coefficients[q] = 0;
+        out.specific_heat[q] = 0;
+        out.thermal_conductivities[q] = 0;
+        out.compressibilities[q] = 0.0;
+        out.entropy_derivative_pressure[q] = 0.0;
+        out.entropy_derivative_temperature[q] = 0.0;
+        for (unsigned int c=0; c<in.composition[q].size(); ++c)
+            out.reaction_terms[q][c] = 0.0;
+
+        Point<dim> n;
+        for (unsigned int i=0; i<dim; ++i)
+          n[i] = in.composition[q][c_idx_n[i]];
+
+        // Symmetric and anti-symmetric parts of grad_u
+        const SymmetricTensor<2,dim> D = symmetrize(grad_u);
+        Tensor<2,dim> W;
+        for (unsigned int i=0; i<dim; ++i)
+          for (unsigned int j=0; j<dim; ++j)
+            W[i][j] = grad_u[i][j] - D[i][j];
+
+        Point<dim> n_dot;
+        for (unsigned int i=0; i<dim; ++i)
+          {
+            n_dot[i] = 0.0;
+            // outer summation over each value of j.
+            for (unsigned int j=0; j<dim; ++j)
+            {
+              float Wn = W[i][j];
+              for (unsigned int k=0; k<dim; ++k)
+                {
+                  Wn -= D[k][i]*n[k]*n[j] - D[k][j]*n[k]*n[i];
+                }
+              n_dot[i] += Wn * n[j];
+            }
+          }
+
+        for (unsigned int i=0; i<dim; ++i)
+          out.reaction_terms[q][c_idx_n[i]] = n_dot[i] * this->get_timestep();
+
+        if ((n[0] != 0) || (n[1] != 0) || (dim == 3 && n[2] != 0))
+          {
+            SymmetricTensor<4,dim> Lambda;
+            for (unsigned int i=0; i<dim; ++i)
+              for (unsigned int j=0; j<dim; ++j)
+                for (unsigned int k=0; k<dim; ++k)
+                  for (unsigned int l=0; l<dim; ++l)
+                    Lambda[i][j][k][l] = 1./2. * (n[i]*n[k]*delta(l,j)
+                                                  + n[j]*n[k]*delta(i,l)
+                                                  + n[i]*n[l]*delta(k,j)
+                                                  + n[j]*n[l]*delta(i,k))
+                                         - 2*n[i]*n[j]*n[k]*n[l];
+
+              if (anisotropic_viscosity != nullptr)
+                  anisotropic_viscosity->stress_strain_directors[q] =dealii::identity_tensor<dim> ()
+                  - (1. - eta_0) * Lambda;
+          }
+      }
+  }
+
+  template <int dim>
+  double
+  AV<dim>::delta (const unsigned int i,
+                   const unsigned int j)
+  {
+    return (i == j ? 1 : 0);
+  }
+
+  template <int dim>
+  bool
+  AV<dim>::is_compressible () const
+  {
+    return false;
+  }
+
+  template <int dim>
+  double
+  AV<dim>::reference_density () const
+  {
+    return 1.0;
+  }
+
+  template <int dim>
+  double
+  AV<dim>::reference_viscosity () const
+  {
+    return 1.0;
+  }
+
+  template <int dim>
+  void
+  AV<dim>::parse_parameters (ParameterHandler &prm)
+  {
+    prm.enter_subsection("Material model");
+    {
+      prm.enter_subsection("AV");
+      {
+        eta_N = prm.get_double("Normal viscosity");
+        eta_0 = prm.get_double("Shear viscosity")/eta_N;
+      }
+      prm.leave_subsection();
+    }
+    prm.leave_subsection();
+  }
+
+  template <int dim>
+  void
+  AV<dim>::declare_parameters (ParameterHandler &prm)
+  {
+    prm.enter_subsection("Material model");
+    {
+      prm.enter_subsection("AV");
+      {
+        prm.declare_entry ("Normal viscosity", "1e-3",
+                           Patterns::Double(),
+                           "Magnitude of normal viscosity.");
+        prm.declare_entry ("Shear viscosity", "1e-4",
+                           Patterns::Double(),
+                           "Magnitude of shear viscosity.");
+      }
+      prm.leave_subsection();
+    }
+    prm.leave_subsection();
+  }
+    template <int dim>
+    void
+
+    AV<dim>::create_additional_named_outputs(MaterialModel::MaterialModelOutputs<dim> &out) const
+    {
+        if (out.template get_additional_output<AnisotropicViscosity<dim> >() == nullptr)
+        {
+            const unsigned int n_points = out.viscosities.size();
+            out.additional_outputs.push_back(
+                                             std::make_shared<MaterialModel::AnisotropicViscosity<dim>> (n_points));
+        }
+    }
+}
+
+
+//a simple material model for Anisotropic viscosity with a constant tensor
     namespace MaterialModel
     {
         template <int dim>
