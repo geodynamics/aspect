@@ -772,7 +772,7 @@ namespace aspect
        * constraints for the time step we are currently solving.
        */
       const ConstraintMatrix &
-      get_current_constraints() const;
+      get_current_constraints () const;
 
       /**
        * Return whether or not the current object has been initialized by providing it with
