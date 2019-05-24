@@ -245,10 +245,10 @@ namespace aspect
       MaterialModelInputs (MaterialModelInputs &&) = default;
 
       /**
-       * Copy operator. This operator has the same restriction on the
-       * additional input data pointers as the copy constructor.
+       * Copy operator. Copying these objects is expensive and
+       * consequently prohibited
        */
-      MaterialModelInputs &operator= (const MaterialModelInputs &source);
+      MaterialModelInputs &operator= (const MaterialModelInputs &source) = delete;
 
       /**
        * Move operator.
@@ -419,10 +419,10 @@ namespace aspect
       MaterialModelOutputs (MaterialModelOutputs &&) = default;
 
       /**
-       * Copy operator. This operator has the same restriction on the
-       * additional output data pointers as the copy constructor.
+       * Copy operator. Copying these objects is expensive, and consequently
+       * prohibited.
        */
-      MaterialModelOutputs &operator= (const MaterialModelOutputs &source);
+      MaterialModelOutputs &operator= (const MaterialModelOutputs &source) = delete;
 
       /**
        * Move operator.
