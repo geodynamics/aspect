@@ -148,20 +148,15 @@ namespace aspect
               *
               (density_c_P + latent_heat_LHS);
 
-          double fe_order
-            = (advection_field.is_temperature()
-               ?
-               this->get_parameters().temperature_degree
-               :
-               this->get_parameters().composition_degree
-              );
-
           Tensor<1,dim> current_u = scratch.current_velocity_values[q];
           // Subtract off the mesh velocity for ALE corrections if necessary
           if (this->get_parameters().free_surface_enabled)
             current_u -= scratch.mesh_velocity_values[q];
 
           const double JxW = scratch.finite_element_values.JxW(q);
+
+          const bool use_supg = (this->get_parameters().advection_stabilization_method
+              == Parameters<dim>::AdvectionStabilizationMethod::supg);
 
           // For the diffusion constant, use the larger of the physical
           // and the artificial viscosity/conductivity/diffusion constant.
@@ -178,12 +173,14 @@ namespace aspect
                                        scratch.material_model_outputs.thermal_conductivities[q]
                                        :
                                        0.0);
-          const double diffusion_constant = (this->get_parameters().use_supg) ?
-					    conductivity
-					    :
-					    std::max (conductivity, scratch.artificial_viscosity);
-          const double tau = (this->get_parameters().use_supg) ? scratch.artificial_viscosity : 0.0;
 
+          const double diffusion_constant = (use_supg)
+                                            ?
+                                            conductivity
+                                            :
+                                            std::max (conductivity, scratch.artificial_viscosity);
+
+          const double tau = (use_supg) ? scratch.artificial_viscosity : 0.0;
 
           // do the actual assembly. note that we only need to loop over the advection
           // shape functions because these are the only contributions we compute here
@@ -199,7 +196,7 @@ namespace aspect
                  *
                  JxW;
 
-              if (this->get_parameters().use_supg == true)
+              if (use_supg)
                 data.local_rhs(i)
                 += tau *
                    (
@@ -228,7 +225,7 @@ namespace aspect
                      * JxW;
                 }
 
-              if (this->get_parameters().use_supg)
+              if (use_supg)
                 {
                   for (unsigned int j=0; j<advection_dofs_per_cell; ++j)
                     {
