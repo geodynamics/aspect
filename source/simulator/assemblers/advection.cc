@@ -156,7 +156,7 @@ namespace aspect
           const double JxW = scratch.finite_element_values.JxW(q);
 
           const bool use_supg = (this->get_parameters().advection_stabilization_method
-              == Parameters<dim>::AdvectionStabilizationMethod::supg);
+                                 == Parameters<dim>::AdvectionStabilizationMethod::supg);
 
           // For the diffusion constant, use the larger of the physical
           // and the artificial viscosity/conductivity/diffusion constant.
