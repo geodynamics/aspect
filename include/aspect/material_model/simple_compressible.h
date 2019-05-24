@@ -22,6 +22,7 @@
 #define _aspect_material_model_simple_compressible_h
 
 #include <aspect/material_model/interface.h>
+#include <aspect/material_model/rheology/constant.h>
 #include <aspect/simulator_access.h>
 
 namespace aspect
@@ -114,11 +115,6 @@ namespace aspect
         double reference_rho;
 
         /**
-         * The constant viscosity
-         */
-        double eta;
-
-        /**
          * The constant thermal expansivity
          */
         double thermal_alpha;
@@ -138,6 +134,10 @@ namespace aspect
          */
         double k_value;
 
+        /**
+         * The constant rheology model.
+         */
+        Rheology::Constant constant_rheology;
     };
 
   }

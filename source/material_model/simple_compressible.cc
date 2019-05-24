@@ -38,7 +38,7 @@ namespace aspect
           const double temperature = in.temperature[i];
           const double pressure = in.pressure[i];
 
-          out.viscosities[i] = eta;
+          out.viscosities[i] = constant_rheology.compute_viscosity();
           out.specific_heat[i] = reference_specific_heat;
           out.thermal_conductivities[i] = k_value;
           out.thermal_expansion_coefficients[i] = thermal_alpha;
@@ -63,7 +63,7 @@ namespace aspect
     SimpleCompressible<dim>::
     reference_viscosity () const
     {
-      return eta;
+      return constant_rheology.compute_viscosity();
     }
 
 
@@ -89,9 +89,6 @@ namespace aspect
           prm.declare_entry ("Reference density", "3300",
                              Patterns::Double (0),
                              "Reference density $\\rho_0$. Units: $kg/m^3$.");
-          prm.declare_entry ("Viscosity", "1e21",
-                             Patterns::Double (0),
-                             "The value of the constant viscosity $\\eta_0$. Units: $kg/m/s$.");
           prm.declare_entry ("Thermal conductivity", "4.7",
                              Patterns::Double (0),
                              "The value of the thermal conductivity $k$. "
@@ -108,6 +105,8 @@ namespace aspect
                              Patterns::Double (0),
                              "The value of the reference compressibility. "
                              "Units: $1/Pa$.");
+
+          Rheology::Constant::declare_parameters(prm);
         }
         prm.leave_subsection();
       }
@@ -125,11 +124,12 @@ namespace aspect
         prm.enter_subsection("Simple compressible model");
         {
           reference_rho              = prm.get_double ("Reference density");
-          eta                        = prm.get_double ("Viscosity");
           k_value                    = prm.get_double ("Thermal conductivity");
           reference_specific_heat    = prm.get_double ("Reference specific heat");
           thermal_alpha              = prm.get_double ("Thermal expansion coefficient");
           reference_compressibility  = prm.get_double ("Reference compressibility");
+
+          constant_rheology.parse_parameters(prm);
         }
         prm.leave_subsection();
       }

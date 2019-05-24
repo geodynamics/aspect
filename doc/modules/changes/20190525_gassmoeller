@@ -1,0 +1,5 @@
+New: The material models can now outsource the computation of the viscosity
+into a separate rheology model. This can be used to remove duplicated code
+between material models.
+<br>
+(Rene Gassmoeller, 2019/05/25)
