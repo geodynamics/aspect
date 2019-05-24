@@ -2288,7 +2288,7 @@ namespace aspect
                    || (dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model())) != nullptr
                    || (dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model())) != nullptr,
                    ExcMessage ("This ascii data plugin can only be used when using "
-                               "a spherical shell, chunk or box geometry."));
+                               "a spherical shell, chunk, or box geometry."));
 
       lookup = std_cxx14::make_unique<Utilities::AsciiDataLookup<dim>> (components,
                                                                         this->scale_factor);
