@@ -56,6 +56,52 @@ namespace aspect
           ++i;
         }
 
+      // When using the Q1-Q1 equal order element, we need to compute the
+      // projection of the Q1 pressure shape functions onto the constants
+      // and use this projection in the computation of matrix terms.
+      // Do this here by computing the integral of the shape functions
+      // over the cell and then dividing by the area of the cell.
+      std::vector<double> average_pressure_shape_function (this->get_parameters().use_equal_order_interpolation_for_stokes
+                                                           ?
+                                                           stokes_dofs_per_cell
+                                                           :
+                                                           0,
+                                                           numbers::signaling_nan<double>());
+      if (this->get_parameters().use_equal_order_interpolation_for_stokes)
+        {
+          // Check that we are really only using a Q1-Q1 element and
+          // not a Q2-Q2 element. This is because in the latter case, the
+          // projection isn't just on the piecewise constants, but onto
+          // the piecewise (bi,tri)linears, and this is going to be a bit
+          // more involved than just computing a single number per shape
+          // function.
+          Assert (this->get_parameters().stokes_velocity_degree==1,
+                  ExcNotImplemented());
+
+          double area       = 0;
+          for (unsigned int q=0; q<n_q_points; ++q)
+            area += scratch.finite_element_values.JxW(q);
+
+          for (unsigned int i=0, i_stokes=0; i_stokes<stokes_dofs_per_cell; /*increment at end of loop*/)
+            {
+              if (introspection.is_stokes_component(fe.system_to_component_index(i).first))
+                {
+                  double int_over_p = 0;
+
+                  for (unsigned int q=0; q<n_q_points; ++q)
+                    {
+                      int_over_p += scratch.finite_element_values[introspection.extractors.pressure].value(i,q)
+                                    *
+                                    scratch.finite_element_values.JxW(q);
+                    }
+
+                  average_pressure_shape_function[i_stokes] = int_over_p/area;
+                  ++i_stokes;
+                }
+              ++i;
+            }
+        }
+
       // Loop over all quadrature points and assemble their contributions to
       // the preconditioner matrix
       for (unsigned int q = 0; q < n_q_points; ++q)
@@ -112,6 +158,30 @@ namespace aspect
                                                    * JxW;
                       }
             }
+
+          // If we are using the equal order Q1-Q1 element, then we also need
+          // to add the stabilization term to the (P,P) block of the matrix.
+          // Note the change in sign from the one in the assembly of the
+          // system matrix, which is due to the fact that the Schur complement
+          // of the matrix
+          //    [ A   B ]
+          //    [ B^T C ]
+          // is actually
+          //    S  =  B^T A^{-1} B - C
+          // with the minus sign in front of C. Because C is defined in the
+          // method of Dohrmann and Bochev as a *negative* definite operator,
+          // we here need to add the *positive* operator.
+          if (this->get_parameters().use_equal_order_interpolation_for_stokes)
+            {
+              for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
+                for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
+                  {
+                    data.local_matrix(i,j) += ( one_over_eta * pressure_scaling * pressure_scaling *
+                                                (scratch.phi_p[i] - average_pressure_shape_function[i]) *
+                                                (scratch.phi_p[j] - average_pressure_shape_function[j]))
+                                              * JxW;
+                  }
+            }
         }
     }
 
@@ -123,6 +193,9 @@ namespace aspect
     execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
              internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
     {
+      Assert (this->get_parameters().use_equal_order_interpolation_for_stokes == false,
+              ExcNotImplemented());
+
       internal::Assembly::Scratch::StokesPreconditioner<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesPreconditioner<dim>& > (scratch_base);
       internal::Assembly::CopyData::StokesPreconditioner<dim> &data = dynamic_cast<internal::Assembly::CopyData::StokesPreconditioner<dim>& > (data_base);
 
@@ -196,6 +269,53 @@ namespace aspect
       const MaterialModel::ElasticOutputs<dim>
       *elastic_outputs = scratch.material_model_outputs.template get_additional_output<MaterialModel::ElasticOutputs<dim> >();
 
+      // When using the Q1-Q1 equal order element, we need to compute the
+      // projection of the Q1 pressure shape functions onto the constants
+      // and use this projection in the computation of matrix terms.
+      // Do this here by computing the integral of the shape functions
+      // over the cell and then dividing by the area of the cell.
+      std::vector<double> average_pressure_shape_function (this->get_parameters().use_equal_order_interpolation_for_stokes
+                                                           ?
+                                                           stokes_dofs_per_cell
+                                                           :
+                                                           0,
+                                                           numbers::signaling_nan<double>());
+      if (this->get_parameters().use_equal_order_interpolation_for_stokes)
+        {
+          // Check that we are really only using a Q1-Q1 element and
+          // not a Q2-Q2 element. This is because in the latter case, the
+          // projection isn't just on the piecewise constants, but onto
+          // the piecewise (bi,tri)linears, and this is going to be a bit
+          // more involved than just computing a single number per shape
+          // function.
+          Assert (this->get_parameters().stokes_velocity_degree==1,
+                  ExcNotImplemented());
+
+          double area       = 0;
+          for (unsigned int q=0; q<n_q_points; ++q)
+            area += scratch.finite_element_values.JxW(q);
+
+          for (unsigned int i=0, i_stokes=0; i_stokes<stokes_dofs_per_cell; /*increment at end of loop*/)
+            {
+              if (introspection.is_stokes_component(fe.system_to_component_index(i).first))
+                {
+                  double int_over_p = 0;
+
+                  for (unsigned int q=0; q<n_q_points; ++q)
+                    {
+                      int_over_p += scratch.finite_element_values[introspection.extractors.pressure].value(i,q)
+                                    *
+                                    scratch.finite_element_values.JxW(q);
+                    }
+
+                  average_pressure_shape_function[i_stokes] = int_over_p/area;
+                  ++i_stokes;
+                }
+              ++i;
+            }
+        }
+
+      // Next, do the integration of matrix and right hand side terms.
       for (unsigned int q=0; q<n_q_points; ++q)
         {
           for (unsigned int i=0, i_stokes=0; i_stokes<stokes_dofs_per_cell; /*increment at end of loop*/)
@@ -221,6 +341,13 @@ namespace aspect
                               scratch.material_model_outputs.viscosities[q]
                               :
                               numbers::signaling_nan<double>());
+          const double one_over_eta = (scratch.rebuild_stokes_matrix
+                                       &&
+                                       this->get_parameters().use_equal_order_interpolation_for_stokes
+                                       ?
+                                       1./eta
+                                       :
+                                       numbers::signaling_nan<double>());
 
           const Tensor<1,dim>
           gravity = this->get_gravity_model().gravity_vector (scratch.finite_element_values.quadrature_point(q));
@@ -254,6 +381,22 @@ namespace aspect
                                                 // operator adjoint to the grad p term:
                                                 - (pressure_scaling *
                                                    scratch.phi_p[i] * scratch.div_phi_u[j]))
+                                              * JxW;
+                  }
+            }
+
+          // If we are using the equal order Q1-Q1 element, then we also need
+          // to put the stabilization term into the (P,P) block of the matrix:
+          if (scratch.rebuild_stokes_matrix
+              &&
+              this->get_parameters().use_equal_order_interpolation_for_stokes)
+            {
+              for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
+                for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
+                  {
+                    data.local_matrix(i,j) += ( - (one_over_eta * pressure_scaling * pressure_scaling *
+                                                   (scratch.phi_p[i] - average_pressure_shape_function[i]) *
+                                                   (scratch.phi_p[j] - average_pressure_shape_function[j])))
                                               * JxW;
                   }
             }
