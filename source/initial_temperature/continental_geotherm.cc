@@ -98,39 +98,6 @@ namespace aspect
 
     }
 
-    template <int dim>
-    double
-    ContinentalGeotherm<dim>::
-    temperature (const double depth,
-                 const std::vector<double> layer_thicknesses) const
-    {
-      // Compute some constants
-      const double a = 0.5*densities[0]*heat_productivities[0]*layer_thicknesses[0] + 0.5*densities[1]*heat_productivities[1]*layer_thicknesses[1] + conductivities[0]/layer_thicknesses[0]*T0;
-      const double b = 1./(conductivities[0]/layer_thicknesses[0]+conductivities[1]/layer_thicknesses[1]);
-      const double c = 0.5*densities[1]*heat_productivities[1]*layer_thicknesses[1] + conductivities[2]/layer_thicknesses[2]*LAB_isotherm;
-      const double d = 1./(conductivities[1]/layer_thicknesses[1]+conductivities[2]/layer_thicknesses[2]);
-
-      //Temperature at boundary between layer 1 and 2
-      const double T1 = (a*b + conductivities[1]/layer_thicknesses[1]*c*d*b) / (1.-(conductivities[1]*conductivities[1])/(layer_thicknesses[1]*layer_thicknesses[1])*d*b);
-      //Temperature at boundary between layer 2 and 3
-      const double T2 = (c + conductivities[1]/layer_thicknesses[1]*T1) * d;
-
-      // Temperature in layer 1
-      if (depth < layer_thicknesses[0])
-        return -0.5*densities[0]*heat_productivities[0]/conductivities[0]*std::pow(depth,2) + (0.5*densities[0]*heat_productivities[0]*layer_thicknesses[0]/conductivities[0] + (T1-T0)/layer_thicknesses[0])*depth + T0;
-      // Temperature in layer 2
-      else if (depth < layer_thicknesses[0]+layer_thicknesses[1])
-        return -0.5*densities[1]*heat_productivities[1]/conductivities[1]*std::pow(depth-layer_thicknesses[0],2.) + (0.5*densities[1]*heat_productivities[1]*layer_thicknesses[1]/conductivities[1] + (T2-T1)/layer_thicknesses[1])*(depth-layer_thicknesses[0]) + T1;
-      // Temperature in layer 3
-      else if (depth < layer_thicknesses[0]+layer_thicknesses[1]+layer_thicknesses[2])
-        return (LAB_isotherm-T2)/layer_thicknesses[2] *(depth-layer_thicknesses[0]-layer_thicknesses[1]) + T2;
-      // Return a constant sublithospheric temperature of 10*LAB_isotherm.
-      // This way we can combine the continental geotherm with an adiabatic profile from the input file
-      // using the "minimum" operator on the "List of initial temperature models".
-      else
-        return 10.*LAB_isotherm;
-
-    }
 
 
     template <int dim>
