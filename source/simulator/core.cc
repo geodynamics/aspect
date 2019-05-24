@@ -824,7 +824,7 @@ namespace aspect
              dof_handler.locally_owned_dofs_per_processor(),
              locally_active_dofs,
              mpi_communicator,
-             false /*verbose=false*/),
+             /*verbose = */ false),
            ExcMessage("Inconsistent Constraints detected!"));
 #endif
 
