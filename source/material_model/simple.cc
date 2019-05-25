@@ -56,28 +56,32 @@ namespace aspect
                                :
                                temperature_dependence * eta;
 
-          const double c = (in.composition[i].size()>0)
-                           ?
-                           std::max(0.0, in.composition[i][0])
-                           :
-                           0.0;
+          // The Simple model only has two compositional fields influencing material properties
+          EquationOfStateOutputs<dim> eos_outputs (in.composition[i].size()==0 ? 1 : 2);
+          equation_of_state.evaluate(in, i, eos_outputs);
 
-          out.densities[i] = reference_rho * (1 - thermal_alpha * (in.temperature[i] - reference_T))
-                             + compositional_delta_rho * c;
-
-          out.thermal_expansion_coefficients[i] = thermal_alpha;
-          out.specific_heat[i] = reference_specific_heat;
+          // except for the density, all material properties are constant across compositions
+          out.thermal_expansion_coefficients[i] = eos_outputs.thermal_expansion_coefficients[0];
+          out.specific_heat[i] = eos_outputs.specific_heat[0];
           out.thermal_conductivities[i] = k_value;
-          out.compressibilities[i] = 0.0;
-          // Pressure derivative of entropy at the given positions.
-          out.entropy_derivative_pressure[i] = 0.0;
-          // Temperature derivative of entropy at the given positions.
-          out.entropy_derivative_temperature[i] = 0.0;
+          out.compressibilities[i] = eos_outputs.compressibilities[0];
+          out.entropy_derivative_pressure[i] = eos_outputs.entropy_derivative_pressure[0];
+          out.entropy_derivative_temperature[i] = eos_outputs.entropy_derivative_temperature[0];
+
           // Change in composition due to chemical reactions at the
           // given positions. The term reaction_terms[i][c] is the
           // change in compositional field c at point i.
           for (unsigned int c=0; c<in.composition[i].size(); ++c)
             out.reaction_terms[i][c] = 0.0;
+
+          std::vector<double> volume_fractions (eos_outputs.densities.size(), 1.0);
+          if (in.composition[i].size()>0)
+            {
+              volume_fractions[1] = std::max(0.0, in.composition[i][0]);
+              volume_fractions[0] = 1.0 - volume_fractions[1];
+            }
+
+          out.densities[i] = MaterialUtilities::average_value(volume_fractions, eos_outputs.densities, MaterialUtilities::arithmetic);
         }
     }
 
@@ -97,7 +101,7 @@ namespace aspect
     Simple<dim>::
     is_compressible () const
     {
-      return false;
+      return equation_of_state.is_compressible ();
     }
 
 
@@ -110,9 +114,8 @@ namespace aspect
       {
         prm.enter_subsection("Simple model");
         {
-          prm.declare_entry ("Reference density", "3300",
-                             Patterns::Double (0),
-                             "Reference density $\\rho_0$. Units: $kg/m^3$.");
+          EquationOfState::LinearizedIncompressible<dim>::declare_parameters (prm);
+
           prm.declare_entry ("Reference temperature", "293",
                              Patterns::Double (0),
                              "The reference temperature $T_0$. The reference temperature is used "
@@ -146,25 +149,6 @@ namespace aspect
                              Patterns::Double (0),
                              "The value of the thermal conductivity $k$. "
                              "Units: $W/m/K$.");
-          prm.declare_entry ("Reference specific heat", "1250",
-                             Patterns::Double (0),
-                             "The value of the specific heat $C_p$. "
-                             "Units: $J/kg/K$.");
-          prm.declare_entry ("Thermal expansion coefficient", "2e-5",
-                             Patterns::Double (0),
-                             "The value of the thermal expansion coefficient $\\alpha$. "
-                             "Units: $1/K$.");
-          prm.declare_entry ("Density differential for compositional field 1", "0",
-                             Patterns::Double(),
-                             "If compositional fields are used, then one would frequently want "
-                             "to make the density depend on these fields. In this simple material "
-                             "model, we make the following assumptions: if no compositional fields "
-                             "are used in the current simulation, then the density is simply the usual "
-                             "one with its linear dependence on the temperature. If there are compositional "
-                             "fields, then the density only depends on the first one in such a way that "
-                             "the density has an additional term of the kind $+\\Delta \\rho \\; c_1(\\mathbf x)$. "
-                             "This parameter describes the value of $\\Delta \\rho$. Units: $kg/m^3/\\textrm{unit "
-                             "change in composition}$.");
         }
         prm.leave_subsection();
       }
@@ -181,7 +165,8 @@ namespace aspect
       {
         prm.enter_subsection("Simple model");
         {
-          reference_rho              = prm.get_double ("Reference density");
+          equation_of_state.parse_parameters (prm);
+
           reference_T                = prm.get_double ("Reference temperature");
           eta                        = prm.get_double ("Viscosity");
           composition_viscosity_prefactor = prm.get_double ("Composition viscosity prefactor");
@@ -192,12 +177,10 @@ namespace aspect
           if ( minimum_thermal_prefactor == 0.0 ) minimum_thermal_prefactor = std::numeric_limits<double>::min();
 
           k_value                    = prm.get_double ("Thermal conductivity");
-          reference_specific_heat    = prm.get_double ("Reference specific heat");
-          thermal_alpha              = prm.get_double ("Thermal expansion coefficient");
-          compositional_delta_rho    = prm.get_double ("Density differential for compositional field 1");
 
           if (thermal_viscosity_exponent!=0.0 && reference_T == 0.0)
             AssertThrow(false, ExcMessage("Error: Material model simple with Thermal viscosity exponent can not have reference_T=0."));
+
         }
         prm.leave_subsection();
       }
@@ -208,17 +191,12 @@ namespace aspect
       this->model_dependence.specific_heat = NonlinearDependence::none;
       this->model_dependence.thermal_conductivity = NonlinearDependence::none;
       this->model_dependence.viscosity = NonlinearDependence::none;
-      this->model_dependence.density = NonlinearDependence::none;
+      this->model_dependence.density = NonlinearDependence::temperature|NonlinearDependence::compositional_fields;
 
       if (thermal_viscosity_exponent != 0)
         this->model_dependence.viscosity |= NonlinearDependence::temperature;
       if (composition_viscosity_prefactor != 1.0)
         this->model_dependence.viscosity |= NonlinearDependence::compositional_fields;
-
-      if (thermal_alpha != 0)
-        this->model_dependence.density |=NonlinearDependence::temperature;
-      if (compositional_delta_rho != 0)
-        this->model_dependence.density |=NonlinearDependence::compositional_fields;
     }
   }
 }
