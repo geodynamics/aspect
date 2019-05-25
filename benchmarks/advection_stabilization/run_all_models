@@ -3,29 +3,26 @@
 # Instructions for how to use this scipt are provided in the README.
 
 for temperature_degree in 1 2 3; do #3
-#  for discontinuous_pressure in false; do # true
-    for refinement in 2 3 4; do
-      for thermal_conductivity in 1e-2 1e-3; do # 6 7 10 15 20
-        echo "subsection Discretization" > current.prm
-        echo "  set Temperature polynomial degree = $temperature_degree" >> current.prm
-#        echo "  set Use locally conservative discretization = $discontinuous_pressure" >> current.prm
-        echo "end" >> current.prm
+  for refinement in 2 3 4; do
+    for thermal_conductivity in 1e-2 1e-3; do # 6 7 10 15 20
+      echo "subsection Discretization" > current.prm
+      echo "  set Temperature polynomial degree = $temperature_degree" >> current.prm
+      echo "end" >> current.prm
 
-        echo "subsection Material model" >> current.prm
-        echo "  subsection Simpler model" >> current.prm
-        echo "    set Thermal conductivity = $thermal_conductivity" >> current.prm
-        echo "  end" >> current.prm
-        echo "end" >> current.prm
+      echo "subsection Material model" >> current.prm
+      echo "  subsection Simpler model" >> current.prm
+      echo "    set Thermal conductivity = $thermal_conductivity" >> current.prm
+      echo "  end" >> current.prm
+      echo "end" >> current.prm
 
-        echo "subsection Mesh refinement" >> current.prm
-        echo "  set Initial global refinement = $refinement" >> current.prm
-        echo "end" >> current.prm
+      echo "subsection Mesh refinement" >> current.prm
+      echo "  set Initial global refinement = $refinement" >> current.prm
+      echo "end" >> current.prm
 
 
-        echo "set Output directory = Q${temperature_degree}_refinement${refinement}_${thermal_conductivity}" >> current.prm
-        echo "Starting Q${temperature_degree}_refinement${refinement}_${thermal_conductivity}"
-        cat annulus.prm current.prm | ./aspect --
-      done
+      echo "set Output directory = Q${temperature_degree}_refinement${refinement}_${thermal_conductivity}" >> current.prm
+      echo "Starting Q${temperature_degree}_refinement${refinement}_${thermal_conductivity}"
+      cat advection_stabilization.prm current.prm | ./aspect --
     done
-#  done
+  done
 done

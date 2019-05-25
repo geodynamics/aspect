@@ -17,13 +17,10 @@ for temperature_degree in ${temperature_degrees[@]}; do
         echo $current_dir
 
         if [ -f ${current_dir}/log.txt ]; then
-          # 1 L1_velocity, 2 L1_pressure, 3 L2_velocity, 4 L2_pressure, 5 L2_density
+          # 1 average temperature, 2 maximum temperature
           grep -i "Temperature min/avg/max" ${current_dir}/log.txt | tail -n 1 | cut -d':' -f2 | cut -d',' -f2 | cut -d' ' -f2 | tr -d '\n' >> $outputfile
           echo -n  ' ' >> $outputfile
           grep -i "Temperature min/avg/max" ${current_dir}/log.txt | tail -n 1 | cut -d':' -f2 | cut -d',' -f3 | cut -d' ' -f2 | tr -d '\n' >> $outputfile
-#          grep -i "Temperature" ${current_dir}/log.txt | tail -n 1 | cut -d':' -f2 | cut -d',' -f3 | tr -d '\n' >> $outputfile
-#          grep -i "Temperature" ${current_dir}/log.txt | tail -n 1 | cut -d':' -f2 | cut -d',' -f4 | tr -d '\n' >> $outputfile
-#          grep -i "Temperature" ${current_dir}/log.txt | tail -n 1 | cut -d':' -f2 | cut -d',' -f5 | tr -d '\n' >> $outputfile
         fi
 	echo '' >> $outputfile
 

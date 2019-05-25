@@ -17,7 +17,7 @@ set Use years in output instead of seconds = false
 set Nonlinear solver scheme                = single Advection, no Stokes
 set Output directory                       = /home/geuen/aspect/benchmarks/advection_stabilization/output_ref2
 set Pressure normalization                 = surface
-set Timing output frequency                = 10
+set Timing output frequency                = 100
 
 subsection Prescribed Stokes solution
   set Model name = advection benchmark
@@ -57,7 +57,7 @@ subsection Material model
     set Reference density = 1.0
     set Reference temperature = 1.0
     set Viscosity = 1.0
-    set Thermal conductivity = 1e-2
+    set Thermal conductivity = 1e-3
     set Reference specific heat = 1.0
     set Thermal expansion coefficient = 0
   end
@@ -106,7 +106,7 @@ end
 
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
-  set Initial global refinement          = 2
+  set Initial global refinement          = 4
   set Refinement fraction                = 0.2
   set Strategy                           = velocity
 end
@@ -123,7 +123,7 @@ subsection Postprocess
   end
   subsection Visualization
     set List of output variables = density, viscosity, strain rate, dynamic topography
-    set Time steps between graphical output = 10
+    set Time steps between graphical output = 20
   end
 end
 
