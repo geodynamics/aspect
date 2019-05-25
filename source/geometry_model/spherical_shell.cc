@@ -33,10 +33,6 @@ namespace aspect
     SphericalShell<dim>::SphericalShell()
       :
       spherical_manifold()
-#if !DEAL_II_VERSION_GTE(9,0,0)
-      , boundary_shell(),
-      straight_boundary()
-#endif
     {}
 
     template <int dim>
@@ -97,32 +93,6 @@ namespace aspect
 
       // Boundary objects are no longer necessary for deal.II 9.0,
       // because everything is handled by the manifold.
-#if !DEAL_II_VERSION_GTE(9,0,0)
-      coarse_grid.signals.pre_refinement.connect (
-        [&]()
-      {
-        this->set_manifold_ids(coarse_grid);
-      });
-      coarse_grid.signals.post_refinement.connect (
-        [&]()
-      {
-        this->clear_manifold_ids(coarse_grid);
-      });
-
-      clear_manifold_ids(coarse_grid);
-
-      // deal.II wants boundary objects even for the straight boundaries
-      // when using manifolds in the interior:
-      std::set<types::boundary_id> ids = get_used_boundary_indicators();
-      for (std::set<types::boundary_id>::iterator it = ids.begin();
-           it!=ids.end(); ++it)
-        if (*it > 1)
-          coarse_grid.set_boundary (*it, straight_boundary);
-
-      // attach boundary objects to the curved boundaries:
-      coarse_grid.set_boundary (0, boundary_shell);
-      coarse_grid.set_boundary (1, boundary_shell);
-#endif
     }
 
 
@@ -137,22 +107,6 @@ namespace aspect
     }
 
 
-#if !DEAL_II_VERSION_GTE(9,0,0)
-    template <int dim>
-    void
-    SphericalShell<dim>::clear_manifold_ids (parallel::distributed::Triangulation<dim> &triangulation) const
-    {
-      // clear the manifold id from objects for which we have boundary
-      // objects (and need boundary objects because previous to deal.II 9.0,
-      // only boundary objects provide normal vectors)
-      for (typename Triangulation<dim>::active_cell_iterator
-           cell = triangulation.begin_active();
-           cell != triangulation.end(); ++cell)
-        for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
-          if (cell->at_boundary(f))
-            cell->face(f)->set_all_manifold_ids (numbers::invalid_manifold_id);
-    }
-#endif
 
 
 
