@@ -25,9 +25,6 @@
 #include <aspect/geometry_model/interface.h>
 #include <aspect/simulator_access.h>
 
-#if !DEAL_II_VERSION_GTE(9,0,0)
-#include <deal.II/grid/tria_boundary_lib.h>
-#endif
 #include <deal.II/grid/manifold_lib.h>
 
 namespace aspect
@@ -214,23 +211,6 @@ namespace aspect
          */
         void set_manifold_ids (parallel::distributed::Triangulation<dim> &triangulation) const;
 
-#if !DEAL_II_VERSION_GTE(9,0,0)
-        /**
-         * Clear manifold ids from boundaries after refinement so that
-         * the boundary objects can take over for versions of deal.II,
-         * in which manifolds could not provide the normal vectors that
-         * are necessary at boundaries.
-         */
-        void clear_manifold_ids (parallel::distributed::Triangulation<dim> &triangulation) const;
-
-        /**
-         * Boundary objects that are required until deal.II 9.0,
-         * because the manifold could not provide normal vectors
-         * up to this version.
-         */
-        const HyperShellBoundary<dim> boundary_shell;
-        const StraightBoundary<dim> straight_boundary;
-#endif
     };
   }
 }
