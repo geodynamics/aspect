@@ -133,7 +133,7 @@ namespace aspect
     Steinberger<dim>::initialize()
     {
       for (unsigned i = 0; i < material_file_names.size(); i++)
-        material_lookup.push_back(std_cxx14::make_unique<Lookup::PerplexReader>
+        material_lookup.push_back(std_cxx14::make_unique<MaterialModel::MaterialUtilities::Lookup::PerplexReader>
                                   (data_directory+material_file_names[i],interpolation,this->get_mpi_communicator()));
       lateral_viscosity_lookup
         = std_cxx14::make_unique<internal::LateralViscosityLookup>(data_directory+lateral_viscosity_file_name,
