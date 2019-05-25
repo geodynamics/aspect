@@ -145,14 +145,14 @@ namespace aspect
       // https://gssc.esa.int/navipedia/index.php/Ellipsoidal_and_Cartesian_Coordinates_Conversion
 
       AssertThrow (dim == 3,ExcMessage ("This can currently only be used in 3d."));
-      const double R    = semi_major_axis_a; // semi-major axis
+      const double R      = semi_major_axis_a; // semi-major axis
       const double b      = R * std::sqrt(1 - eccentricity * eccentricity); // semi-minor axis
       const double p      = std::sqrt(x(0) * x(0) + x(1) * x(1)); // distance from origin projected onto x-y plane
       const double th     = std::atan2(R * x(2), b * p); // starting guess for theta
       const double phi    = std::atan2(x(1), x(0)); // azimuth (geodetic longitude)
       const double theta  = std::atan2(x(2) + (R * R - b * b) / b * std::pow(std::sin(th),3),
                                        (p - (eccentricity * eccentricity * R  * std::pow(std::cos(th),3)))); // first iterate for theta
-      const double R_bar = R / (std::sqrt(1 - eccentricity * eccentricity * std::sin(theta) * std::sin(theta))); // first iterate for R_bar
+      const double R_bar  = R / (std::sqrt(1 - eccentricity * eccentricity * std::sin(theta) * std::sin(theta))); // first iterate for R_bar
 
       Point<3> phi_theta_d;
       phi_theta_d[0] = phi;
@@ -852,9 +852,10 @@ namespace aspect
                                    "chunk geometry will be created. 2) by defining three points a non-coordinate "
                                    "parallel ellipsoidal chunk will be created. The points are defined in the input "
                                    "file by longitude:latitude. It is also possible to define additional subdivisions "
-                                   "of the mesh in each direction. The boundary of the domain joining two adjacent points "
-                                   "satisfies the expression [lon, lat](f) = [lon1*f + lon2*(1-f), lat1*f + lat2*(1-f)], "
-                                   "where f is a value between 0 and 1. Faces of the model are defined as "
+                                   "of the mesh in each direction. The boundary of the domain is formed by linear "
+                                   "interpolation in longitude-latitude space between adjacent points "
+                                   "(i.e. [lon, lat](f) = [lon1*f + lon2*(1-f), lat1*f + lat2*(1-f)], "
+                                   "where f is a value between 0 and 1). Faces of the model are defined as "
                                    "0, west; 1,east; 2, south; 3, north; 4, inner; 5, outer.\n\n"
                                    "This geometry model supports initial topography for deforming the initial mesh.")
   }
