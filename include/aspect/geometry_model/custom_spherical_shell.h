@@ -25,6 +25,10 @@
 #include <aspect/geometry_model/interface.h>
 #include <aspect/simulator_access.h>
 
+#if !DEAL_II_VERSION_GTE(9,0,0)
+#include <deal.II/grid/tria_boundary_lib.h>
+#endif
+>>>>>>> copy spherical_shell header and source file into custom_spherical_shell
 #include <deal.II/grid/manifold_lib.h>
 
 namespace aspect
@@ -178,6 +182,15 @@ namespace aspect
         double
         outer_radius () const;
 
+<<<<<<< HEAD
+=======
+        /**
+         * Return the opening angle of the shell sector.
+         */
+        double
+        opening_angle () const;
+
+>>>>>>> copy spherical_shell header and source file into custom_spherical_shell
       private:
         /**
          * Inner and outer radii of the spherical shell.
