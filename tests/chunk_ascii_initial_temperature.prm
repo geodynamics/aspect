@@ -55,8 +55,8 @@ end
 
 subsection Material model
   set Model name = simpler
-  subsection Simple model
-    set Viscosity = 1e21
+  subsection Simpler model
+    set Viscosity = 5e24
   end
 end
 

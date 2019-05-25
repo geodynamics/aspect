@@ -25,7 +25,11 @@ end
 
 
 subsection Material model
-  set Model name = simpler 
+  set Model name = simpler
+
+  subsection Simpler model
+    set Viscosity = 5e24
+  end
 end
 
 subsection Gravity model
