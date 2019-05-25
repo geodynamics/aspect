@@ -223,7 +223,7 @@ namespace aspect
       if (outputs.template get_additional_output<MaterialModel::AnisotropicViscosity<dim> >() == nullptr)
         {
           outputs.additional_outputs.push_back(
-            std::make_shared<MaterialModel::AnisotropicViscosity<dim>> (n_points));
+            std_cxx14::make_unique<MaterialModel::AnisotropicViscosity<dim>> (n_points));
         }
     }
 
@@ -405,14 +405,14 @@ namespace aspect
       if (outputs.template get_additional_output<MaterialModel::AnisotropicViscosity<dim> >() == nullptr)
         {
           outputs.additional_outputs.push_back(
-            std::make_shared<MaterialModel::AnisotropicViscosity<dim>> (n_points));
+            std_cxx14::make_unique<MaterialModel::AnisotropicViscosity<dim>> (n_points));
         }
 
       if (this->get_parameters().enable_additional_stokes_rhs
           && outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >() == nullptr)
         {
           outputs.additional_outputs.push_back(
-            std::make_shared<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>> (n_points));
+            std_cxx14::make_unique<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>> (n_points));
         }
       Assert(!this->get_parameters().enable_additional_stokes_rhs
              ||
@@ -578,7 +578,7 @@ namespace aspect
       if (material_model_outputs.template get_additional_output<MaterialModel::AnisotropicViscosity<dim> >() == nullptr)
         {
           material_model_outputs.additional_outputs.push_back(
-            std::make_shared<MaterialModel::AnisotropicViscosity<dim>> (n_points));
+            std_cxx14::make_unique<MaterialModel::AnisotropicViscosity<dim>> (n_points));
         }
 
       this->get_material_model().create_additional_named_outputs(material_model_outputs);
