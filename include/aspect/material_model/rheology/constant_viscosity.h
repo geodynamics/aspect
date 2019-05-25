@@ -18,8 +18,8 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#ifndef _aspect_material_model_rheology_constant_h
-#define _aspect_material_model_rheology_constant_h
+#ifndef _aspect_material_model_rheology_constant_viscosity_h
+#define _aspect_material_model_rheology_constant_viscosity_h
 
 #include <aspect/global.h>
 
@@ -31,7 +31,7 @@ namespace aspect
 
     namespace Rheology
     {
-      class Constant
+      class ConstantViscosity
       {
         public:
           /**

@@ -22,7 +22,7 @@
 #define _aspect_material_model_simpler_h
 
 #include <aspect/material_model/interface.h>
-#include <aspect/material_model/rheology/constant.h>
+#include <aspect/material_model/rheology/constant_viscosity.h>
 
 namespace aspect
 {
@@ -81,7 +81,7 @@ namespace aspect
         double reference_specific_heat;
         double k_value;
 
-        Rheology::Constant constant_rheology;
+        Rheology::ConstantViscosity constant_rheology;
     };
 
   }

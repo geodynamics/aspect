@@ -106,7 +106,7 @@ namespace aspect
                              "The value of the reference compressibility. "
                              "Units: $1/Pa$.");
 
-          Rheology::Constant::declare_parameters(prm);
+          Rheology::ConstantViscosity::declare_parameters(prm);
         }
         prm.leave_subsection();
       }

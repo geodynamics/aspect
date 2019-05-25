@@ -19,7 +19,7 @@
 */
 
 
-#include <aspect/material_model/rheology/constant.h>
+#include <aspect/material_model/rheology/constant_viscosity.h>
 
 
 namespace aspect
@@ -29,7 +29,7 @@ namespace aspect
     namespace Rheology
     {
       double
-      Constant::compute_viscosity () const
+      ConstantViscosity::compute_viscosity () const
       {
         return eta;
       }
@@ -37,7 +37,7 @@ namespace aspect
 
 
       void
-      Constant::declare_parameters (ParameterHandler &prm)
+      ConstantViscosity::declare_parameters (ParameterHandler &prm)
       {
         prm.declare_entry ("Viscosity", "1e21",
                            Patterns::Double (0),
@@ -47,7 +47,7 @@ namespace aspect
 
 
       void
-      Constant::parse_parameters (ParameterHandler &prm)
+      ConstantViscosity::parse_parameters (ParameterHandler &prm)
       {
         eta = prm.get_double ("Viscosity");
       }
