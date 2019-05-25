@@ -10,9 +10,9 @@ Number of free surface degrees of freedom: 902
 *** Timestep 0:  t=0 years
    Solving mesh velocity system... 0 iterations.
    Solving temperature system... 0 iterations.
-   Solving upper system ... 0 iterations.
-   Solving lower system ... 0 iterations.
-   Solving mantle_L system ... 0 iterations.
+   Solving upper_crust system ... 0 iterations.
+   Solving lower_crust system ... 0 iterations.
+   Solving lithospheric_mantle system ... 0 iterations.
    Solving seed system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+20 iterations.
@@ -61,9 +61,9 @@ Number of free surface degrees of freedom: 902
 *** Timestep 1:  t=894427 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 16 iterations.
-   Solving upper system ... 10 iterations.
-   Solving lower system ... 11 iterations.
-   Solving mantle_L system ... 10 iterations.
+   Solving upper_crust system ... 10 iterations.
+   Solving lower_crust system ... 11 iterations.
+   Solving lithospheric_mantle system ... 10 iterations.
    Solving seed system ... 11 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+19 iterations.
@@ -112,9 +112,9 @@ Number of free surface degrees of freedom: 902
 *** Timestep 2:  t=1.78885e+06 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 13 iterations.
-   Solving upper system ... 12 iterations.
-   Solving lower system ... 13 iterations.
-   Solving mantle_L system ... 12 iterations.
+   Solving upper_crust system ... 12 iterations.
+   Solving lower_crust system ... 13 iterations.
+   Solving lithospheric_mantle system ... 12 iterations.
    Solving seed system ... 11 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+22 iterations.
@@ -163,9 +163,9 @@ Number of free surface degrees of freedom: 902
 *** Timestep 3:  t=2.49664e+06 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 11 iterations.
-   Solving upper system ... 14 iterations.
-   Solving lower system ... 14 iterations.
-   Solving mantle_L system ... 13 iterations.
+   Solving upper_crust system ... 14 iterations.
+   Solving lower_crust system ... 14 iterations.
+   Solving lithospheric_mantle system ... 13 iterations.
    Solving seed system ... 11 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+26 iterations.
@@ -214,9 +214,9 @@ Number of free surface degrees of freedom: 902
 *** Timestep 4:  t=3.28887e+06 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 12 iterations.
-   Solving upper system ... 12 iterations.
-   Solving lower system ... 13 iterations.
-   Solving mantle_L system ... 12 iterations.
+   Solving upper_crust system ... 12 iterations.
+   Solving lower_crust system ... 13 iterations.
+   Solving lithospheric_mantle system ... 12 iterations.
    Solving seed system ... 11 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+21 iterations.
@@ -265,9 +265,9 @@ Number of free surface degrees of freedom: 902
 *** Timestep 5:  t=3.95688e+06 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 11 iterations.
-   Solving upper system ... 12 iterations.
-   Solving lower system ... 13 iterations.
-   Solving mantle_L system ... 12 iterations.
+   Solving upper_crust system ... 12 iterations.
+   Solving lower_crust system ... 13 iterations.
+   Solving lithospheric_mantle system ... 12 iterations.
    Solving seed system ... 10 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+24 iterations.
@@ -316,9 +316,9 @@ Number of free surface degrees of freedom: 902
 *** Timestep 6:  t=4.7025e+06 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 11 iterations.
-   Solving upper system ... 12 iterations.
-   Solving lower system ... 13 iterations.
-   Solving mantle_L system ... 12 iterations.
+   Solving upper_crust system ... 12 iterations.
+   Solving lower_crust system ... 13 iterations.
+   Solving lithospheric_mantle system ... 12 iterations.
    Solving seed system ... 11 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+21 iterations.
@@ -367,9 +367,9 @@ Number of free surface degrees of freedom: 902
 *** Timestep 7:  t=5e+06 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 7 iterations.
-   Solving upper system ... 10 iterations.
-   Solving lower system ... 10 iterations.
-   Solving mantle_L system ... 10 iterations.
+   Solving upper_crust system ... 10 iterations.
+   Solving lower_crust system ... 10 iterations.
+   Solving lithospheric_mantle system ... 10 iterations.
    Solving seed system ... 10 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+19 iterations.

@@ -28,8 +28,6 @@
 
 namespace aspect
 {
-
-
   namespace InitialTemperature
   {
 
@@ -54,18 +52,12 @@ namespace aspect
         initialize ();
 
         /**
-         * Return the initial temperature as a function of position.
-         */
-        virtual
-        double initial_temperature (const Point<dim> &position) const;
-
-        /**
          * Return the initial temperature as a function of depth,
          * based on the solution of the steady-state heat conduction
          * differential equation.
          */
         virtual
-        double temperature (const double depth) const;
+        double initial_temperature (const Point<dim> &position) const;
 
         /**
          * Declare the parameters this class takes through input files.
@@ -88,7 +80,8 @@ namespace aspect
         double T0;
 
         /**
-         * LAB isotherm temperature
+         * Value of the isotherm defining the
+         * Lithosphere-Asthenosphere boundary.
          */
         double LAB_isotherm;
 
@@ -99,17 +92,20 @@ namespace aspect
         std::vector<double> thicknesses;
 
         /**
-         * Vector for field heat production rates, read from parameter file.
+         * Vector for the heat production rates of the different
+         * compositional fields, read from parameter file.
          */
         std::vector<double> heat_productivities;
 
         /**
-         * Vector for thermal conductivities, read from parameter file.
+         * Vector for the thermal conductivities of the different
+         * compositional fields, read from parameter file.
          */
         std::vector<double> conductivities;
 
         /**
-         * Vector for field densities, read from parameter file.
+         * Vector for the densities of the different compositional
+         * fields, read from parameter file.
          */
         std::vector<double> densities;
     };

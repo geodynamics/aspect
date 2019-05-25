@@ -42,7 +42,7 @@ end
 # and a 'seed' placed in the mantle to help localize deformation.
 subsection Compositional fields
   set Number of fields = 4
-  set Names of fields = upper, lower, mantle_L, seed
+  set Names of fields = upper_crust, lower_crust, lithospheric_mantle, seed
 end
 
 
@@ -65,7 +65,7 @@ end
 subsection Initial temperature model
   set Model name = continental geotherm
   subsection Continental geotherm
-          set LAB isotherm temperature = 1573.
+          set Lithosphere-Asthenosphere boundary isotherm = 1573.
           set Surface temperature = 273.
           set Layer thicknesses = 20000., 10000., 70000.
   end
