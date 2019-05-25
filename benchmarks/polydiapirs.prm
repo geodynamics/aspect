@@ -1,10 +1,16 @@
+# This is the setup of a polydiapirs experiment, i.e.
+# multiwavelength gravity structures. 
+# It consists of three layers of Newtonian fluids
+# set in motion by gravitational instability, as in 
+# case II of Weinberg and Schmeling 1992.
+
 set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 250
 set Use years in output instead of seconds = false
 set CFL number                             = 1.
 set Maximum time step                      = 0.1 
-set Output directory                       = output_polydiapirs_7_harmonic
+set Output directory                       = output_polydiapirs
 
 subsection Geometry model
   set Model name = box
