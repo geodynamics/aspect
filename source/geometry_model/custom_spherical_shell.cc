@@ -238,7 +238,7 @@ namespace aspect
 
     template <int dim>
     double
-    SphericalShell<dim>::height_above_reference_surface(const Point<dim> &position) const
+    CustomSphericalShell<dim>::height_above_reference_surface(const Point<dim> &position) const
     {
       return position.norm()-outer_radius();
     }
