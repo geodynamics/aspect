@@ -224,6 +224,12 @@ namespace aspect
       {
         public:
           /**
+           * Destructor.
+           */
+          virtual
+          ~CellDataVectorCreator () = default;
+
+          /**
            * The function classes have to implement that want to output
            * cell-wise data.
            *
