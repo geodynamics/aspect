@@ -277,9 +277,44 @@ namespace aspect
 
         return Kind();
       }
+
       static std::string get_options_string()
       {
         return "entropy viscosity|SUPG";
+      }
+    };
+
+    /**
+     * This enum represents the different choices for the linear solver
+     * for the Stoke system. See @p stokes_solver_type.
+     */
+    struct StokesSolverType
+    {
+      enum Kind
+      {
+        block_amg,
+        direct_solver,
+        block_gmg
+      };
+
+      static const std::string pattern()
+      {
+        return "block AMG|direct solver|block geometric multigrid";
+      }
+
+      static Kind
+      parse(const std::string &input)
+      {
+        if (input == "block AMG")
+          return block_amg;
+        else if (input == "direct solver")
+          return direct_solver;
+        else if (input == "block geometric multigrid")
+          return block_gmg;
+        else
+          AssertThrow(false, ExcNotImplemented());
+
+        return Kind();
       }
     };
 
@@ -387,6 +422,8 @@ namespace aspect
 
     // subsection: Stokes solver parameters
     bool                           use_direct_stokes_solver;
+    typename StokesSolverType::Kind stokes_solver_type;
+
     double                         linear_stokes_solver_tolerance;
     unsigned int                   n_cheap_stokes_solver_steps;
     unsigned int                   n_expensive_stokes_solver_steps;

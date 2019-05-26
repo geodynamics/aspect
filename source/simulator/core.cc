@@ -26,6 +26,7 @@
 #include <aspect/volume_of_fluid/handler.h>
 #include <aspect/newton.h>
 #include <aspect/free_surface.h>
+#include <aspect/stokes_matrix_free.h>
 #include <aspect/citation_info.h>
 
 #ifdef ASPECT_USE_WORLD_BUILDER
@@ -195,10 +196,24 @@ namespace aspect
     nonlinear_iteration (numbers::invalid_unsigned_int),
 
     triangulation (mpi_communicator,
-                   typename Triangulation<dim>::MeshSmoothing
-                   (Triangulation<dim>::smoothing_on_refinement |
-                    Triangulation<dim>::smoothing_on_coarsening),
-                   parallel::distributed::Triangulation<dim>::mesh_reconstruction_after_repartitioning),
+                   (parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::block_gmg
+                    ?
+                    typename Triangulation<dim>::MeshSmoothing
+                    (Triangulation<dim>::smoothing_on_refinement |
+                     Triangulation<dim>::smoothing_on_coarsening |
+                     Triangulation<dim>::limit_level_difference_at_vertices)
+                    :
+                    typename Triangulation<dim>::MeshSmoothing
+                    (Triangulation<dim>::smoothing_on_refinement |
+                     Triangulation<dim>::smoothing_on_coarsening))
+                   ,
+                   (parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::block_gmg
+                    ?
+                    typename parallel::distributed::Triangulation<dim>::Settings
+                    (parallel::distributed::Triangulation<dim>::mesh_reconstruction_after_repartitioning |
+                     parallel::distributed::Triangulation<dim>::construct_multigrid_hierarchy)
+                    :
+                    parallel::distributed::Triangulation<dim>::mesh_reconstruction_after_repartitioning)),
 
     mapping(construct_mapping<dim>(*geometry_model,*initial_topography_model)),
 
@@ -359,6 +374,11 @@ namespace aspect
         assemble_newton_stokes_system = true;
         newton_handler->initialize_simulator(*this);
         newton_handler->parameters.parse_parameters(prm);
+      }
+
+    if (parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::block_gmg)
+      {
+        stokes_matrix_free = std_cxx14::make_unique<StokesMatrixFreeHandler<dim>>(*this, prm);
       }
 
     postprocess_manager.initialize_simulator (*this);
@@ -934,6 +954,19 @@ namespace aspect
                                                      .volume_fraction.first_component_index;
           coupling[volume_of_fluid_block][volume_of_fluid_block] = DoFTools::always;
         }
+      if (stokes_matrix_free)
+        {
+          // do not allocate memory for the Stokes matrix:
+          Assert(!parameters.include_melt_transport, ExcNotImplemented());
+          for (unsigned int c=0; c<dim; ++c)
+            for (unsigned int d=0; d<dim; ++d)
+              coupling[x.velocities[c]][x.velocities[d]] = DoFTools::none;
+          for (unsigned int d=0; d<dim; ++d)
+            {
+              coupling[x.velocities[d]][x.pressure] = DoFTools::none;
+              coupling[x.pressure][x.velocities[d]] = DoFTools::none;
+            }
+        }
     }
 
     LinearAlgebra::BlockDynamicSparsityPattern sp;
@@ -1025,10 +1058,17 @@ namespace aspect
     Mp_preconditioner.reset ();
     system_preconditioner_matrix.clear ();
 
-    // The preconditioner matrix is only used for the Stokes block (velocity and Schur complement) and is of course not
-    // used if we use a direct solver.
-    if (parameters.use_direct_stokes_solver)
+    // The preconditioner matrix is only used for the Stokes block (velocity and Schur complement) and only needed if we actually solve iteratively and matrix-based
+    if (parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::block_gmg)
       return;
+    else if (parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::block_amg)
+      {
+        // continue below
+      }
+    else if (parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::direct_solver)
+      return;
+    else
+      AssertThrow(false, ExcNotImplemented());
 
     Table<2,DoFTools::Coupling> coupling (introspection.n_components,
                                           introspection.n_components);
@@ -1350,6 +1390,10 @@ namespace aspect
 
     rebuild_stokes_matrix         = true;
     rebuild_stokes_preconditioner = true;
+
+    // Setup matrix-free dofs
+    if (stokes_matrix_free)
+      stokes_matrix_free->setup_dofs();
   }
 
 
@@ -1883,6 +1927,8 @@ namespace aspect
     computing_timer.print_summary ();
 
     CitationInfo::print_info_block (pcout);
+
+    stokes_matrix_free.reset();
   }
 }
 

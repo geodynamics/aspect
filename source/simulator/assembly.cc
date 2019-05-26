@@ -358,6 +358,9 @@ namespace aspect
   void
   Simulator<dim>::assemble_stokes_preconditioner ()
   {
+    if (stokes_matrix_free)
+      return;
+
     system_preconditioner_matrix = 0;
 
     const QGauss<dim> quadrature_formula(parameters.stokes_velocity_degree+1);
@@ -423,8 +426,16 @@ namespace aspect
     if (rebuild_stokes_preconditioner == false)
       return;
 
-    if (parameters.use_direct_stokes_solver)
+    if (parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::block_gmg)
       return;
+    else if (parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::block_amg)
+      {
+        // continue below
+      }
+    else if (parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::direct_solver)
+      return;
+    else
+      AssertThrow(false, ExcNotImplemented());
 
     TimerOutput::Scope timer (computing_timer, "Build Stokes preconditioner");
     pcout << "   Rebuilding Stokes preconditioner..." << std::flush;
@@ -673,15 +684,24 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::assemble_stokes_system ()
   {
+    // Matrix-free, only assemble RHS
+    if (stokes_matrix_free)
+      {
+        rebuild_stokes_matrix = false;
+      }
+
     TimerOutput::Scope timer (computing_timer,
-                              (!assemble_newton_stokes_system ?
-                               "Assemble Stokes system" :
-                               (assemble_newton_stokes_matrix ?
-                                (newton_handler->parameters.newton_derivative_scaling_factor == 0 ?
-                                 "Assemble Stokes system Picard" :
-                                 "Assemble Stokes system Newton")
-                                :
-                                "Assemble Stokes system rhs")));
+                              (stokes_matrix_free ?
+                               "Assemble Stokes system rhs" :
+                               (!assemble_newton_stokes_system ?
+                                "Assemble Stokes system" :
+                                (assemble_newton_stokes_matrix ?
+                                 (newton_handler->parameters.newton_derivative_scaling_factor == 0 ?
+                                  "Assemble Stokes system Picard" :
+                                  "Assemble Stokes system Newton")
+                                 :
+                                 "Assemble Stokes system rhs"))));
+
 
     if (rebuild_stokes_matrix == true)
       system_matrix = 0;
@@ -692,8 +712,12 @@ namespace aspect
     // this situation (no active boundary conditions means that only
     // no-slip/free slip are used). This should not happen as we set this up
     // correctly before calling this function.
-    Assert(rebuild_stokes_matrix || boundary_velocity_manager.get_active_boundary_velocity_conditions().size()==0,
-           ExcInternalError("If we have inhomogeneous constraints, we must re-assemble the system matrix."));
+    // Note that for Dirichlet boundary conditions in matrix-free computations,
+    // we will update the right-hand side with boundary information in
+    // StokesMatrixFreeHandler::correct_stokes_rhs().
+    if (!stokes_matrix_free)
+      Assert(rebuild_stokes_matrix || boundary_velocity_manager.get_active_boundary_velocity_conditions().size()==0,
+             ExcInternalError("If we have inhomogeneous constraints, we must re-assemble the system matrix."));
 
     system_rhs = 0;
     if (do_pressure_rhs_compatibility_modification)
