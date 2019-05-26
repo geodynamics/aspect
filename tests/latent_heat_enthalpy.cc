@@ -20,7 +20,7 @@
 
 
 #include <aspect/material_model/interface.h>
-#include <aspect/material_model/grain_size.h>
+//#include <aspect/material_model/grain_size.h>
 #include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/simulator_access.h>
 #include <aspect/utilities.h>
@@ -46,7 +46,7 @@ namespace aspect
           const std::string datadirectory = Utilities::expand_ASPECT_SOURCE_DIR("$ASPECT_SOURCE_DIR/data/material-model/latent-heat-enthalpy-test/");
           const std::string material_file_names  = "testdata.txt";
 
-          material_lookup = std_cxx14::make_unique<Lookup::PerplexReader>(datadirectory+material_file_names,
+		  material_lookup = std_cxx14::make_unique<MaterialModel::MaterialUtilities::Lookup::PerplexReader>(datadirectory+material_file_names,
                                                                           true,
                                                                           this->get_mpi_communicator());
         }
