@@ -53,7 +53,7 @@ namespace aspect
         {
           const unsigned int n_points = out.viscosities.size();
           out.additional_outputs.push_back(
-            std::make_shared<MaterialModel::PrescribedFieldOutputs<dim>> (n_points, this->n_compositional_fields()));
+            std_cxx14::make_unique<MaterialModel::PrescribedFieldOutputs<dim>> (n_points, this->n_compositional_fields()));
         }
     }
   }

@@ -441,7 +441,6 @@ namespace aspect
     }
 
 
-
     namespace MaterialAveraging
     {
       std::string get_averaging_operation_names ()

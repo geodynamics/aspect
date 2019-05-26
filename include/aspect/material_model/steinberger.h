@@ -308,19 +308,19 @@ namespace aspect
          * List of pointers to objects that read and process data we get from
          * Perplex files.
          */
-        std::vector<std::shared_ptr<Lookup::PerplexReader> > material_lookup;
+        std::vector<std::unique_ptr<Lookup::PerplexReader> > material_lookup;
 
         /**
          * Pointer to an object that reads and processes data for the lateral
          * temperature dependency of viscosity.
          */
-        std::shared_ptr<internal::LateralViscosityLookup> lateral_viscosity_lookup;
+        std::unique_ptr<internal::LateralViscosityLookup> lateral_viscosity_lookup;
 
         /**
          * Pointer to an object that reads and processes data for the radial
          * viscosity profile.
          */
-        std::shared_ptr<internal::RadialViscosityLookup> radial_viscosity_lookup;
+        std::unique_ptr<internal::RadialViscosityLookup> radial_viscosity_lookup;
 
     };
   }

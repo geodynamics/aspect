@@ -118,7 +118,7 @@ int f(double parameter)
   if (out_base.template get_additional_output<MaterialModelDerivatives<dim> >() != nullptr)
     throw "error";
 
-  out_base.additional_outputs.push_back(std::make_shared<MaterialModelDerivatives<dim> > (5));
+  out_base.additional_outputs.push_back(std_cxx14::make_unique<MaterialModelDerivatives<dim> > (5));
 
   // initialize the material we want to test.
   SimpleNonlinear<dim> mat;

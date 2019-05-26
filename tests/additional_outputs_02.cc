@@ -79,7 +79,7 @@ namespace aspect
           return;
 
         std::cout << "   creating additional output!" << std::endl;
-        out.additional_outputs.push_back(std::make_shared<MaterialModel::AdditionalOutputs1<dim> > (1));
+        out.additional_outputs.push_back(std_cxx14::make_unique<MaterialModel::AdditionalOutputs1<dim> > (1));
 
       }
 
