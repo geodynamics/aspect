@@ -39,7 +39,7 @@ namespace aspect
     Simpler<dim>::
     reference_viscosity () const
     {
-      return eta;
+      return constant_rheology.compute_viscosity();
     }
 
     template <int dim>
@@ -50,7 +50,7 @@ namespace aspect
     {
       for (unsigned int i=0; i<in.position.size(); ++i)
         {
-          out.viscosities[i] = eta;
+          out.viscosities[i] = constant_rheology.compute_viscosity();
           out.densities[i] = reference_rho * (1.0 - thermal_alpha * (in.temperature[i] - reference_T));
           out.thermal_expansion_coefficients[i] = thermal_alpha;
           out.specific_heat[i] = reference_specific_heat;
@@ -79,9 +79,6 @@ namespace aspect
                              Patterns::Double (0),
                              "The reference temperature $T_0$. The reference temperature is used "
                              "in the density formula. Units: $K$.");
-          prm.declare_entry ("Viscosity", "5e24",
-                             Patterns::Double (0),
-                             "The value of the viscosity $\\eta$. Units: $kg/m/s$.");
           prm.declare_entry ("Thermal conductivity", "4.7",
                              Patterns::Double (0),
                              "The value of the thermal conductivity $k$. "
@@ -95,6 +92,7 @@ namespace aspect
                              "The value of the thermal expansion coefficient $\\beta$. "
                              "Units: $1/K$.");
 
+          Rheology::ConstantViscosity::declare_parameters(prm,5e24);
         }
         prm.leave_subsection();
       }
@@ -113,10 +111,11 @@ namespace aspect
         {
           reference_rho              = prm.get_double ("Reference density");
           reference_T                = prm.get_double ("Reference temperature");
-          eta                        = prm.get_double ("Viscosity");
           k_value                    = prm.get_double ("Thermal conductivity");
           reference_specific_heat    = prm.get_double ("Reference specific heat");
           thermal_alpha              = prm.get_double ("Thermal expansion coefficient");
+
+          constant_rheology.parse_parameters(prm);
         }
         prm.leave_subsection();
       }

@@ -22,6 +22,7 @@
 #define _aspect_material_model_simpler_h
 
 #include <aspect/material_model/interface.h>
+#include <aspect/material_model/rheology/constant_viscosity.h>
 
 namespace aspect
 {
@@ -76,10 +77,11 @@ namespace aspect
       private:
         double reference_rho;
         double reference_T;
-        double eta;
         double thermal_alpha;
         double reference_specific_heat;
         double k_value;
+
+        Rheology::ConstantViscosity constant_rheology;
     };
 
   }
