@@ -2149,9 +2149,12 @@ namespace aspect
       time_dependent = false;
       // Give warning if first processor
       this->get_pcout() << std::endl
-                        << "   Loading new data file did not succeed." << std::endl
-                        << "   Assuming constant boundary conditions for rest of model run."
-                        << std::endl << std::endl;
+                        << "   From this timestep onwards, ASPECT will not attempt to load new Ascii data files." << std::endl
+                        << "   This is either because ASPECT has already read all the files necessary to impose" << std::endl
+                        << "   the requested boundary condition, or that the last available file has been read." << std::endl
+                        << "   If the Ascii data represented a time-dependent boundary condition," << std::endl
+                        << "   that time-dependence ends at this timestep  (i.e. the boundary condition" << std::endl
+                        << "   will continue unchanged from the last known state into the future)." << std::endl << std::endl;
     }
 
     template <int dim>
