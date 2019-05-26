@@ -220,7 +220,7 @@ namespace aspect
       // *** First calculate the number of satellites according to the sampling scheme:
       unsigned int n_satellites;
       if (sampling_scheme == map)
-        n_satellites = n_points_radius * n_points_longitude * (n_points_latitude+1);
+        n_satellites = n_points_radius * (n_points_longitude+1) * (n_points_latitude+1);
       else if (sampling_scheme == list)
         n_satellites = longitude_list.size();
       else n_satellites = 1;
@@ -232,7 +232,7 @@ namespace aspect
           unsigned int p = 0;
           for (unsigned int h=0; h < n_points_radius; ++h)
             {
-              for (unsigned int i=0; i < n_points_longitude; ++i)
+              for (unsigned int i=0; i < n_points_longitude+1; ++i)
                 {
                   for (unsigned int j=0; j < n_points_latitude+1; ++j)
                     {
