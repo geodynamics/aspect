@@ -37,19 +37,16 @@ namespace aspect
     {
       namespace Lookup
       {
-
-
-
         double
-        MaterialLookup::specific_heat(double temperature,
-                                      double pressure) const
+        MaterialLookup::specific_heat(const double temperature,
+                                      const double pressure) const
         {
           return value(temperature,pressure,specific_heat_values,interpolation);
         }
 
         double
-        MaterialLookup::density(double temperature,
-                                double pressure) const
+        MaterialLookup::density(const double temperature,
+                                const double pressure) const
         {
           return value(temperature,pressure,density_values,interpolation);
         }
@@ -752,9 +749,6 @@ namespace aspect
 
         return;
       }
-
-
-
     }
   }
 }

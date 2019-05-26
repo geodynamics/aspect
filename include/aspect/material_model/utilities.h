@@ -43,9 +43,6 @@ namespace aspect
     {
       namespace Lookup
       {
-
-
-
         /**
          * A base class that can be used to look up material data from an external
          * data source (e.g. a table in a file). The class consists of data members
@@ -57,12 +54,12 @@ namespace aspect
           public:
 
             double
-            specific_heat(double temperature,
-                          double pressure) const;
+            specific_heat(const double temperature,
+                          const double pressure) const;
 
             double
-            density(double temperature,
-                    double pressure) const;
+            density(const double temperature,
+                    const double pressure) const;
 
             double
             thermal_expansivity(const double temperature,
@@ -325,8 +322,6 @@ namespace aspect
       void
       compute_drucker_prager_yielding (const DruckerPragerInputs &in,
                                        DruckerPragerOutputs &out);
-
-
 
     }
   }
