@@ -6,7 +6,7 @@
 # folder (the one containing include/, cmake/, source/, and tests/).
 # Navigate to that folder and run the following command in a terminal:
 #
-# docker run -v $PWD:/home/dealii/aspect --name=aspect-tester --rm -it dealii/dealii:v8.5.0-gcc-mpi-fulldepscandi-debugrelease bash /home/dealii/aspect/cmake/compile_and_update_tests.sh
+# docker run -v $PWD:/home/dealii/aspect --name=aspect-tester --rm -it tjhei/dealii:v9.0.1-full-v9.0.1-r5-gcc5 bash /home/dealii/aspect/contrib/utilities/compile_and_update_tests.sh
 
 # This command executes the following shell script *inside* the docker container
 # that contains the official ASPECT test system. Note that by mounting your
@@ -18,7 +18,7 @@
 echo "Starting official tester and compiling source ..."
 
 SRC_PATH=`dirname $0`
-SRC_PATH=`cd $SRC_PATH/..;pwd`
+SRC_PATH=`cd $SRC_PATH/../..;pwd`
 
 mkdir -p ${SRC_PATH}/tester-build
 cd ${SRC_PATH}/tester-build
