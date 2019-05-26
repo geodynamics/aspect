@@ -69,7 +69,11 @@ namespace aspect
       : sim(simulator),  // reference to the simulator that owns the MeshDeformationHandler
         mesh_deformation_fe (FE_Q<dim>(1),dim), // Q1 elements which describe the mesh geometry
         mesh_deformation_dof_handler (sim.triangulation)
-    {}
+    {
+      // Now reset the mapping of the simulator to be something that captures mesh deformation in time.
+      sim.mapping.reset (new MappingQ1Eulerian<dim, LinearAlgebra::Vector> (mesh_deformation_dof_handler,
+                                                                            mesh_displacements));
+    }
 
     template <int dim>
     MeshDeformationHandler<dim>::~MeshDeformationHandler ()
@@ -678,10 +682,6 @@ namespace aspect
 
       // We can safely close this now
       mesh_vertex_constraints.close();
-
-      // Now reset the mapping of the simulator to be something that captures mesh deformation in time.
-      sim.mapping.reset (new MappingQ1Eulerian<dim, LinearAlgebra::Vector> (mesh_deformation_dof_handler,
-                                                                            mesh_displacements));
     }
 
 
