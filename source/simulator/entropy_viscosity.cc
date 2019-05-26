@@ -339,7 +339,9 @@ namespace aspect
         // be advection dominated. Hence, only disable artificial
         // viscosity if flow through the boundary is slow, or
         // tangential.
-        if (advection_field.is_temperature())
+        if (parameters.advection_stabilization_method
+            == Parameters<dim>::AdvectionStabilizationMethod::entropy_viscosity
+            && advection_field.is_temperature())
           {
             const std::set<types::boundary_id> &fixed_temperature_boundaries =
               boundary_temperature_manager.get_fixed_temperature_boundary_indicators();
