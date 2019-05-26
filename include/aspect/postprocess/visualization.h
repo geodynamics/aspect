@@ -490,6 +490,14 @@ namespace aspect
         bool output_mesh_velocity;
 
         /**
+         * File operations can potentially take a long time, blocking the
+         * progress of the rest of the model run. Setting this variable to
+         * 'true' moves this process into a background thread, while the
+         * rest of the model continues.
+         */
+        bool write_in_background_thread;
+
+        /**
          * Set the time output was supposed to be written. In the simplest
          * case, this is the previous last output time plus the interval, but
          * in general we'd like to ensure that it is the largest supposed
@@ -517,16 +525,9 @@ namespace aspect
         std::string last_mesh_file_name;
 
         /**
-         * File operations can potentially take a long time, blocking the
-         * progress of the rest of the model run. Setting this variable to
-         * 'true' moves this process into a background thread, while the
-         * rest of the model continues.
-         */
-        bool write_in_background_thread;
-
-        /**
          * Handle to a thread that is used to write data in the background.
-         * The writer() function runs on this background thread.
+         * The writer() function runs on this background thread when outputting
+         * data for the `data_out` object.
          */
         Threads::Thread<void> background_thread;
 
@@ -561,6 +562,19 @@ namespace aspect
         void write_master_files (const DataOut<dim> &data_out,
                                  const std::string &solution_file_prefix,
                                  const std::vector<std::string> &filenames);
+
+
+        /**
+         * A function, called from the execute() function, that takes a
+         * DataOut object, does some preliminary work with it, and then
+         * writes the result out to files via the writer() function (in the
+         * case of VTU output) or through the XDMF facilities.
+         *
+         * The function returns the base name of the output files produced,
+         * which can then be used for the statistics file and screen output.
+         */
+        template <typename DataOutType>
+        std::string write_data_out_data(DataOutType &data_out);
 
         /**
          * A list of postprocessor objects that have been requested in the

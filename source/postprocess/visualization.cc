@@ -252,9 +252,8 @@ namespace aspect
       const double time_in_years_or_seconds = (this->convert_output_to_years() ?
                                                this->get_time() / year_in_seconds :
                                                this->get_time());
-      const std::string
-      pvtu_master_filename = (solution_file_prefix +
-                              ".pvtu");
+      const std::string pvtu_master_filename = (solution_file_prefix +
+                                                ".pvtu");
       std::ofstream pvtu_master ((this->get_output_directory() + "solution/" +
                                   pvtu_master_filename).c_str());
       data_out.write_pvtu_record (pvtu_master, filenames);
@@ -337,6 +336,149 @@ namespace aspect
       for (typename std::list<std::unique_ptr<VisualizationPostprocessors::Interface<dim> > >::const_iterator
            p = postprocessors.begin(); p!=postprocessors.end(); ++p)
         (*p)->update();
+    }
+
+
+
+    template <int dim>
+    template <typename DataOutType>
+    std::string
+    Visualization<dim>::write_data_out_data(DataOutType &data_out)
+    {
+      const double time_in_years_or_seconds = (this->convert_output_to_years() ?
+                                               this->get_time() / year_in_seconds :
+                                               this->get_time());
+
+      std::string solution_file_prefix = "solution-" + Utilities::int_to_string (output_file_number, 5);
+      if (this->get_parameters().run_postprocessors_on_nonlinear_iterations)
+        solution_file_prefix.append("." + Utilities::int_to_string (this->get_nonlinear_iteration(), 4));
+
+      if (output_format == "hdf5")
+        {
+          XDMFEntry new_xdmf_entry;
+          const std::string h5_solution_file_name = "solution/"
+                                                    + solution_file_prefix + ".h5";
+          const std::string xdmf_filename = "solution.xdmf";
+          // Filter redundant values if requested in the input file
+          DataOutBase::DataOutFilter data_filter(
+            DataOutBase::DataOutFilterFlags(filter_output, true));
+          // If the mesh changed since the last output, make a new mesh file
+          const std::string mesh_file_prefix = "mesh-"
+                                               + Utilities::int_to_string(output_file_number, 5);
+          if (mesh_changed)
+            last_mesh_file_name = "solution/" + mesh_file_prefix + ".h5";
+
+          data_out.write_filtered_data(data_filter);
+          data_out.write_hdf5_parallel(data_filter, mesh_changed,
+                                       this->get_output_directory() + last_mesh_file_name,
+                                       this->get_output_directory() + h5_solution_file_name,
+                                       this->get_mpi_communicator());
+          new_xdmf_entry = data_out.create_xdmf_entry(data_filter,
+                                                      last_mesh_file_name, h5_solution_file_name,
+                                                      time_in_years_or_seconds, this->get_mpi_communicator());
+          xdmf_entries.push_back(new_xdmf_entry);
+          data_out.write_xdmf_file(xdmf_entries,
+                                   this->get_output_directory() + xdmf_filename,
+                                   this->get_mpi_communicator());
+          mesh_changed = false;
+        }
+      else if (output_format == "vtu")
+        {
+          // Write master files (.pvtu,.pvd,.visit) on the master process
+          const int my_id = Utilities::MPI::this_mpi_process(
+                              this->get_mpi_communicator());
+          if (my_id == 0)
+            {
+              std::vector<std::string> filenames;
+              const unsigned int n_processes = Utilities::MPI::n_mpi_processes(
+                                                 this->get_mpi_communicator());
+              const unsigned int n_files =
+                (group_files == 0) ?
+                n_processes : std::min(group_files, n_processes);
+              for (unsigned int i = 0; i < n_files; ++i)
+                filenames.push_back(
+                  solution_file_prefix + "."
+                  + Utilities::int_to_string(i, 4) + ".vtu");
+              write_master_files(data_out, solution_file_prefix, filenames);
+            }
+          const unsigned int n_processes = Utilities::MPI::n_mpi_processes(
+                                             this->get_mpi_communicator());
+          const unsigned int my_file_id = (
+                                            group_files == 0 ? my_id : my_id % group_files);
+          const std::string filename = this->get_output_directory() + "solution/"
+                                       + solution_file_prefix + "."
+                                       + Utilities::int_to_string(my_file_id, 4) + ".vtu";
+          // pass time step number and time as metadata into the output file
+          DataOutBase::VtkFlags vtk_flags;
+          vtk_flags.cycle = this->get_timestep_number();
+          vtk_flags.time = time_in_years_or_seconds;
+
+#if DEAL_II_VERSION_GTE(9,1,0)
+          vtk_flags.write_higher_order_cells = write_higher_order_output;
+#endif
+
+          data_out.set_flags(vtk_flags);
+          // Write as many files as processes. For this case we support writing in a
+          // background thread and to a temporary location, so we first write everything
+          // into a string that is written to disk in a writer function
+          if ((group_files == 0) || (group_files >= n_processes))
+            {
+              // Put the content we want to write into a string object that
+              // we can then write in the background
+              const std::string *file_contents;
+              {
+                std::ostringstream tmp;
+                data_out.write(tmp,
+                               DataOutBase::parse_output_format(output_format));
+                file_contents = new std::string(tmp.str());
+              }
+              if (write_in_background_thread)
+                {
+                  // Wait for all previous write operations to finish, should
+                  // any be still active,
+                  background_thread.join();
+                  // then continue with writing our own data.
+                  background_thread = Threads::new_thread(&writer,
+                                                          filename, temporary_output_location, file_contents);
+                }
+              else
+                writer(filename, temporary_output_location, file_contents);
+            }
+          else
+            // Just write one data file in parallel
+            if (group_files == 1)
+              {
+                data_out.write_vtu_in_parallel(filename.c_str(),
+                                               this->get_mpi_communicator());
+              }
+            else               // Write as many output files as 'group_files' groups
+              {
+                int color = my_id % group_files;
+                MPI_Comm comm;
+                MPI_Comm_split(this->get_mpi_communicator(), color, my_id, &comm);
+                data_out.write_vtu_in_parallel(filename.c_str(), comm);
+                MPI_Comm_free(&comm);
+              }
+        }
+      else   // Write in a different format than hdf5 or vtu. This case is supported, but is not
+        // optimized for parallel output in that every process will write one file directly
+        // into the output directory. This may or may not affect performance depending on
+        // the model setup and the network file system type.
+        {
+          const unsigned int myid = Utilities::MPI::this_mpi_process(
+                                      this->get_mpi_communicator());
+          const std::string filename = this->get_output_directory() + "solution/"
+                                       + solution_file_prefix + "." + Utilities::int_to_string(myid, 4)
+                                       + DataOutBase::default_suffix(
+                                         DataOutBase::parse_output_format(output_format));
+          std::ofstream out(filename.c_str());
+          AssertThrow(out,
+                      ExcMessage(
+                        "Unable to open file for writing: " + filename + "."));
+          data_out.write(out, DataOutBase::parse_output_format(output_format));
+        }
+
+      return solution_file_prefix;
     }
 
 
@@ -509,163 +651,17 @@ namespace aspect
                               :
                               DataOut<dim>::no_curved_cells);
 
-      // Now prepare everything for writing the output and choose output format
-      std::string solution_file_prefix = "solution-" + Utilities::int_to_string (output_file_number, 5);
-      if (this->get_parameters().run_postprocessors_on_nonlinear_iterations)
-        solution_file_prefix.append("." + Utilities::int_to_string (this->get_nonlinear_iteration(), 4));
-
-      const double time_in_years_or_seconds = (this->convert_output_to_years() ?
-                                               this->get_time() / year_in_seconds :
-                                               this->get_time());
-      if (output_format=="hdf5")
-        {
-          XDMFEntry new_xdmf_entry;
-          const std::string h5_solution_file_name = "solution/" + solution_file_prefix + ".h5";
-          const std::string xdmf_filename = "solution.xdmf";
-
-          // Filter redundant values if requested in the input file
-          DataOutBase::DataOutFilter data_filter(DataOutBase::DataOutFilterFlags(filter_output, true));
-
-          // If the mesh changed since the last output, make a new mesh file
-          const std::string mesh_file_prefix = "mesh-" + Utilities::int_to_string (output_file_number, 5);
-          if (mesh_changed)
-            last_mesh_file_name = "solution/" + mesh_file_prefix + ".h5";
-
-          data_out.write_filtered_data(data_filter);
-          data_out.write_hdf5_parallel(data_filter,
-                                       mesh_changed,
-                                       this->get_output_directory()+last_mesh_file_name,
-                                       this->get_output_directory()+h5_solution_file_name,
-                                       this->get_mpi_communicator());
-          new_xdmf_entry = data_out.create_xdmf_entry(data_filter,
-                                                      last_mesh_file_name,
-                                                      h5_solution_file_name,
-                                                      time_in_years_or_seconds,
-                                                      this->get_mpi_communicator());
-          xdmf_entries.push_back(new_xdmf_entry);
-          data_out.write_xdmf_file(xdmf_entries, this->get_output_directory() + xdmf_filename,
-                                   this->get_mpi_communicator());
-          mesh_changed = false;
-        }
-      else if (output_format=="vtu")
-        {
-          // Write master files (.pvtu,.pvd,.visit) on the master process
-          const int my_id = Utilities::MPI::this_mpi_process(this->get_mpi_communicator());
-
-          if (my_id == 0)
-            {
-              std::vector<std::string> filenames;
-              const unsigned int n_processes = Utilities::MPI::n_mpi_processes(this->get_mpi_communicator());
-              const unsigned int n_files = (group_files == 0) ? n_processes : std::min(group_files,n_processes);
-              for (unsigned int i=0; i<n_files; ++i)
-                filenames.push_back (solution_file_prefix
-                                     + "." + Utilities::int_to_string(i, 4)
-                                     + ".vtu");
-              write_master_files (data_out, solution_file_prefix, filenames);
-            }
-
-          const unsigned int n_processes = Utilities::MPI::n_mpi_processes(this->get_mpi_communicator());
-
-          const unsigned int my_file_id = (group_files == 0
-                                           ?
-                                           my_id
-                                           :
-                                           my_id % group_files);
-          const std::string filename = this->get_output_directory()
-                                       + "solution/"
-                                       + solution_file_prefix
-                                       + "."
-                                       + Utilities::int_to_string (my_file_id, 4)
-                                       + ".vtu";
-
-          // pass time step number and time as metadata into the output file
-          DataOutBase::VtkFlags vtk_flags;
-          vtk_flags.cycle = this->get_timestep_number();
-          vtk_flags.time = time_in_years_or_seconds;
-
-#if DEAL_II_VERSION_GTE(9,1,0)
-          vtk_flags.write_higher_order_cells = write_higher_order_output;
-#endif
-
-          data_out.set_flags (vtk_flags);
-
-          // Write as many files as processes. For this case we support writing in a
-          // background thread and to a temporary location, so we first write everything
-          // into a string that is written to disk in a writer function
-          if ((group_files == 0) || (group_files >= n_processes))
-            {
-              // Put the content we want to write into a string object that
-              // we can then write in the background
-              const std::string *file_contents;
-              {
-                std::ostringstream tmp;
-
-                data_out.write (tmp, DataOutBase::parse_output_format(output_format));
-                file_contents = new std::string (tmp.str());
-              }
-
-              if (write_in_background_thread)
-                {
-                  // Wait for all previous write operations to finish, should
-                  // any be still active,
-                  background_thread.join ();
-
-                  // then continue with writing our own data.
-                  background_thread = Threads::new_thread (&writer,
-                                                           filename,
-                                                           temporary_output_location,
-                                                           file_contents);
-                }
-              else
-                writer(filename,temporary_output_location,file_contents);
-            }
-          // Just write one data file in parallel
-          else if (group_files == 1)
-            {
-              data_out.write_vtu_in_parallel(filename.c_str(),
-                                             this->get_mpi_communicator());
-            }
-          // Write as many output files as 'group_files' groups
-          else
-            {
-              int color = my_id % group_files;
-
-              MPI_Comm comm;
-              MPI_Comm_split(this->get_mpi_communicator(), color, my_id, &comm);
-
-              data_out.write_vtu_in_parallel(filename.c_str(), comm);
-              MPI_Comm_free(&comm);
-            }
-        }
-      // Write in a different format than hdf5 or vtu. This case is supported, but is not
-      // optimized for parallel output in that every process will write one file directly
-      // into the output directory. This may or may not affect performance depending on
-      // the model setup and the network file system type.
-      else
-        {
-          const unsigned int myid = Utilities::MPI::this_mpi_process(this->get_mpi_communicator());
-
-          const std::string filename = this->get_output_directory()
-                                       + "solution/"
-                                       + solution_file_prefix
-                                       + "."
-                                       +  Utilities::int_to_string (myid, 4)
-                                       + DataOutBase::default_suffix
-                                       (DataOutBase::parse_output_format(output_format));
-
-          std::ofstream out (filename.c_str());
-
-          AssertThrow(out,
-                      ExcMessage("Unable to open file for writing: " + filename +"."));
-
-          data_out.write (out, DataOutBase::parse_output_format(output_format));
-        }
-
-      // record the file base file name in the output file
-      statistics.add_value ("Visualization file name",
-                            this->get_output_directory()
-                            + "solution/"
-                            + solution_file_prefix);
+      // Now get everything written for the DataOut case, and record this
+      // in the statistics file
+      std::string solution_file_prefix;
+      {
+        solution_file_prefix
+          = write_data_out_data(data_out);
+        statistics.add_value ("Visualization file name",
+                              this->get_output_directory()
+                              + "solution/"
+                              + solution_file_prefix);
+      }
 
       // up the next time we need output
       set_last_output_time (this->get_time());
