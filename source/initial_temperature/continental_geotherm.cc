@@ -153,9 +153,9 @@ namespace aspect
 
 
       // Retrieve the indices of the fields that represent the lithospheric layers.
-      AssertThrow(this->introspection().compositional_name_exists("upper_crust"),ExcMessage("We need a compositional field called 'upper' representing the upper crust."));
-      AssertThrow(this->introspection().compositional_name_exists("lower_crust"),ExcMessage("We need a compositional field called 'lower' representing the lower crust."));
-      AssertThrow(this->introspection().compositional_name_exists("lithospheric_mantle"),ExcMessage("We need a compositional field called 'mantle_L' representing the lithospheric part of the mantle."));
+      AssertThrow(this->introspection().compositional_name_exists("upper_crust"),ExcMessage("We need a compositional field called 'upper_crust' representing the upper crust."));
+      AssertThrow(this->introspection().compositional_name_exists("lower_crust"),ExcMessage("We need a compositional field called 'lower_crust' representing the lower crust."));
+      AssertThrow(this->introspection().compositional_name_exists("lithospheric_mantle"),ExcMessage("We need a compositional field called 'lithospheric_mantle' representing the lithospheric part of the mantle."));
 
       // For now, we assume a 3-layer system with an upper crust, lower crust and lithospheric mantle
       const unsigned int id_upper_crust = this->introspection().compositional_index_for_name("upper_crust");
@@ -259,8 +259,8 @@ namespace aspect
                                               "Note that the current implementation only works for a 3-layer lithosphere, "
                                               "even though in principle the heat conduction equation can be solved "
                                               "for any number of layers. The naming of the compositional fields "
-                                              "that represent the layers is also very specific, namely 'upper', "
-                                              "'lower', and 'mantle_L'. "
+                                              "that represent the layers is also very specific, namely `upper_crust', "
+                                              "`lower_crust', and `lithospheric_mantle'. "
                                               "\n"
                                               "Make sure the top and bottom temperatures of the lithosphere "
                                               "agree with temperatures set in for example the temperature "

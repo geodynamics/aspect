@@ -87,7 +87,7 @@ namespace aspect
 
         /**
          * Vector for the thicknesses of the compositional fields
-         * representing the layers `upper`, `lower` and `mantle_L`.
+         * representing the layers 'upper_crust', 'lower_crust' and 'lithospheric_mantle'.
          */
         std::vector<double> thicknesses;
 
