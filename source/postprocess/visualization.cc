@@ -242,6 +242,7 @@ namespace aspect
     }
 
 
+
     template <int dim>
     void
     Visualization<dim>::write_master_files (const DataOut<dim> &data_out,
@@ -326,6 +327,8 @@ namespace aspect
       DataOutBase::write_visit_record (global_visit_master, times_and_output_file_names);
     }
 
+
+
     template <int dim>
     void
     Visualization<dim>::update ()
@@ -335,6 +338,7 @@ namespace aspect
            p = postprocessors.begin(); p!=postprocessors.end(); ++p)
         (*p)->update();
     }
+
 
 
     template <int dim>
@@ -378,10 +382,6 @@ namespace aspect
 
       std::unique_ptr<internal::FreeSurfacePostprocessor<dim> > free_surface_variables;
 
-      // create a DataOut object on the heap; ownership of this
-      // object will later be transferred to a different thread
-      // that will write data in the background. the other thread
-      // will then also destroy the object
       DataOut<dim> data_out;
       data_out.attach_dof_handler (this->get_dof_handler());
       data_out.add_data_vector (this->get_solution(),
@@ -661,7 +661,10 @@ namespace aspect
       set_last_output_time (this->get_time());
       last_output_timestep = this->get_timestep_number();
 
-      // return what should be printed to the screen.
+      // Return what should be printed to the screen. This is a bit
+      // late (the output has already been written, and this probably took
+      // a good long while), but it's still good to provide a status
+      // update.
       return std::make_pair (std::string ("Writing graphical output:"),
                              this->get_output_directory()
                              + "solution/"
