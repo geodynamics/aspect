@@ -441,17 +441,6 @@ namespace aspect
     }
 
 
-    template <int dim>
-    EquationOfStateOutputs<dim>::EquationOfStateOutputs(const unsigned int n_points)
-      :
-      densities(n_points, numbers::signaling_nan<double>()),
-      thermal_expansion_coefficients(n_points, numbers::signaling_nan<double>()),
-      specific_heat(n_points, numbers::signaling_nan<double>()),
-      compressibilities(n_points, numbers::signaling_nan<double>()),
-      entropy_derivative_pressure(n_points, numbers::signaling_nan<double>()),
-      entropy_derivative_temperature(n_points, numbers::signaling_nan<double>())
-    {}
-
     namespace MaterialAveraging
     {
       std::string get_averaging_operation_names ()
@@ -994,8 +983,6 @@ namespace aspect
   template struct MaterialModelInputs<dim>; \
   \
   template struct MaterialModelOutputs<dim>; \
-  \
-  template struct EquationOfStateOutputs<dim>; \
   \
   template class AdditionalMaterialOutputs<dim>; \
   \

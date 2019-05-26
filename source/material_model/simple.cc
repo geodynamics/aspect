@@ -20,6 +20,7 @@
 
 
 #include <aspect/material_model/simple.h>
+#include <aspect/material_model/equation_of_state/interface.h>
 
 
 namespace aspect

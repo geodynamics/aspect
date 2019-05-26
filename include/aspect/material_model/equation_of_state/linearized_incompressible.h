@@ -23,6 +23,8 @@
 
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>
+#include <aspect/material_model/equation_of_state/interface.h>
+
 
 namespace aspect
 {

@@ -21,6 +21,7 @@
 
 #include <aspect/material_model/composition_reaction.h>
 #include <aspect/geometry_model/interface.h>
+#include <aspect/material_model/equation_of_state/interface.h>
 
 
 namespace aspect
