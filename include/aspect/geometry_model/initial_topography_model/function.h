@@ -35,7 +35,8 @@ namespace aspect
     using namespace dealii;
 
     /**
-     * A class that implements zero initial topography.
+     * A class that implements initial topography based
+     * on a user-defined function..
      *
      * @ingroup InitialTopographyModels
      */
@@ -49,8 +50,8 @@ namespace aspect
         Function ();
 
         /**
-         * Return the value of the initial topography as a function of position.
-         *
+         * Return the value of the initial topography as a function
+         * of surface position.
          */
         virtual
         double
@@ -72,16 +73,19 @@ namespace aspect
 
       private:
 
+        /**
+         * The maximum value the topography can take.
+         */
         double max_topo;
 
         /**
-         * A function object representing the components of the traction.
+         * A function object representing the topography.
          */
         Functions::ParsedFunction<dim> initial_topography_function;
 
         /**
          * The coordinate representation to evaluate the function. Possible
-         * choices are depth, cartesian and spherical.
+         * choices are cartesian and spherical.
          */
         Utilities::Coordinates::CoordinateSystem coordinate_system;
     };
@@ -90,3 +94,4 @@ namespace aspect
 
 
 #endif
+

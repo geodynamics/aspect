@@ -35,7 +35,7 @@ namespace aspect
     template <int dim>
     Function<dim>::Function ()
       :
-    max_topo(0),
+      max_topo(0),
       initial_topography_function (1),
       coordinate_system(Utilities::Coordinates::CoordinateSystem::cartesian)
     {}
@@ -46,16 +46,16 @@ namespace aspect
     value (const Point<dim-1> &surface_point) const
     {
       Point<dim> global_point;
-      if (dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model()) != nullptr)
+      if (Plugins::plugin_type_matches<GeometryModel::Box<dim> >(this->get_geometry_model()))
         {
           // No need to set the vertical coordinate correctly,
           // because it will be thrown away in get_data_component anyway
           for (unsigned int d=0; d<dim-1; d++)
             global_point[d] = surface_point[d];
         }
-      else if (dynamic_cast<const GeometryModel::Sphere<dim>*> (&this->get_geometry_model()) != nullptr ||
-               dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()) != nullptr ||
-               dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model()) != nullptr)
+      else if (Plugins::plugin_type_matches<GeometryModel::Sphere<dim> >(this->get_geometry_model()) ||
+               Plugins::plugin_type_matches<GeometryModel::SphericalShell<dim> >(this->get_geometry_model()) ||
+               Plugins::plugin_type_matches<GeometryModel::Chunk<dim> >(this->get_geometry_model()) )
         {
           // No need to set the radial coordinate correctly,
           // because it will be thrown away in get_data_component anyway
@@ -69,9 +69,6 @@ namespace aspect
       else
         AssertThrow(false, ExcNotImplemented());
 
-//      Utilities::NaturalCoordinate<dim> point =
-//        this->get_geometry_model().cartesian_to_other_coordinates(position, coordinate_system);
-//      const double topo = initial_topography_function.value(Utilities::convert_array_to_point<dim>(point.get_coordinates()));
       const double topo = initial_topography_function.value(global_point);
 
       return topo;
@@ -86,33 +83,34 @@ namespace aspect
       return 0;
     }
 
+
     template <int dim>
     void
     Function<dim>::declare_parameters (ParameterHandler &prm)
     {
       prm.enter_subsection("Geometry model");
       {
-      prm.enter_subsection("Initial topography model");
-      {
-        prm.enter_subsection("Function");
+        prm.enter_subsection("Initial topography model");
         {
-          prm.declare_entry ("Maximum topography value", "2000",
-                             Patterns::Double (0),
-                             "The maximum value the topography given by "
-                             "the function can take. ");
-          prm.declare_entry ("Coordinate system", "cartesian",
-                             Patterns::Selection ("cartesian|spherical"),
-                             "A selection that determines the assumed coordinate "
-                             "system for the function variables. Allowed values "
-                             "are `cartesian', `spherical', and `depth'. `spherical' coordinates "
-                             "are interpreted as r,phi or r,phi,theta in 2D/3D "
-                             "respectively with theta being the polar angle. "); 
+          prm.enter_subsection("Function");
+          {
+            prm.declare_entry ("Maximum topography value", "2000",
+                               Patterns::Double (0),
+                               "The maximum value the topography given by "
+                               "the function can take. ");
+            prm.declare_entry ("Coordinate system", "cartesian",
+                               Patterns::Selection ("cartesian|spherical"),
+                               "A selection that determines the assumed coordinate "
+                               "system for the function variables. Allowed values "
+                               "are `cartesian' and `spherical'. `spherical' coordinates "
+                               "are interpreted as r,phi or r,phi,theta in 2D/3D "
+                               "respectively with theta being the polar angle. ");
 
-          Functions::ParsedFunction<dim>::declare_parameters (prm, 1);
+            Functions::ParsedFunction<dim>::declare_parameters (prm, 1);
+          }
+          prm.leave_subsection();
         }
         prm.leave_subsection();
-      }
-      prm.leave_subsection();
       }
       prm.leave_subsection();
     }
@@ -124,30 +122,30 @@ namespace aspect
     {
       prm.enter_subsection("Geometry model");
       {
-      prm.enter_subsection("Initial topography model");
-      {
-        prm.enter_subsection("Function");
+        prm.enter_subsection("Initial topography model");
         {
-          coordinate_system = Utilities::Coordinates::string_to_coordinate_system(prm.get("Coordinate system"));
+          prm.enter_subsection("Function");
+          {
+            coordinate_system = Utilities::Coordinates::string_to_coordinate_system(prm.get("Coordinate system"));
+          }
+          max_topo = prm.get_double("Maximum topography value");
+          try
+            {
+              initial_topography_function.parse_parameters (prm);
+            }
+          catch (...)
+            {
+              std::cerr << "ERROR: FunctionParser failed to parse\n"
+                        << "\t'Boundary traction model.Function'\n"
+                        << "with expression\n"
+                        << "\t'" << prm.get("Function expression") << "'"
+                        << "More information about the cause of the parse error \n"
+                        << "is shown below.\n";
+              throw;
+            }
+          prm.leave_subsection();
         }
-        max_topo = prm.get_double("Maximum topography value");
-        try
-          {
-            initial_topography_function.parse_parameters (prm);
-          }
-        catch (...)
-          {
-            std::cerr << "ERROR: FunctionParser failed to parse\n"
-                      << "\t'Boundary traction model.Function'\n"
-                      << "with expression\n"
-                      << "\t'" << prm.get("Function expression") << "'"
-                      << "More information about the cause of the parse error \n"
-                      << "is shown below.\n";
-            throw;
-          }
         prm.leave_subsection();
-      }
-      prm.leave_subsection();
       }
       prm.leave_subsection();
     }
@@ -162,6 +160,6 @@ namespace aspect
     ASPECT_REGISTER_INITIAL_TOPOGRAPHY_MODEL(Function,
                                              "function",
                                              "Implementation of a model in which the initial topography "
-                                             "is described by a function. ")
+                                             "is described by a function in cartesian or spherical coordinates. ")
   }
 }
