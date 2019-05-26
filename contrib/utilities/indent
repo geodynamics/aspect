@@ -61,4 +61,15 @@ dos_to_unix()
     rm -f $f.tmp
 }
 export -f dos_to_unix
-find tests include source unit_tests \( -name '*.cc' -o -name '*.h' -o -name '*.prm' \) -print | xargs -n 1 -P 10 -I {} bash -c 'dos_to_unix "$@"' _ {} 
+find tests include source unit_tests cookbooks benchmarks \( -name '*.cc' -o -name '*.h' -o -name '*.prm' \) -print | xargs -n 1 -P 10 -I {} bash -c 'dos_to_unix "$@"' _ {} 
+
+# convert tabs to two spaces:
+tab_to_space()
+{
+    f=$1
+    sed -e 's/\t/  /g' $f >$f.tmp
+    diff -q $f $f.tmp >/dev/null || mv $f.tmp $f
+    rm -f $f.tmp
+}
+export -f tab_to_space
+find tests include source unit_tests cookbooks benchmarks \( -name '*.cc' -o -name '*.h' -o -name '*.prm' -o -name 'CMakeLists.txt' -o -name '*.cmake' \) -print | xargs -n 1 -P 10 -I {} bash -c 'tab_to_space "$@"' _ {} 
