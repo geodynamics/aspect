@@ -48,7 +48,7 @@ namespace aspect
     {
       public:
         /**
-         *
+         * Constructor.
          */
         SphericalShell();
 
