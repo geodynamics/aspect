@@ -620,6 +620,19 @@ namespace aspect
                  const unsigned int component) const;
 
         /**
+         * Returns the gradient of the function based on the bilinear
+         * interpolation of the data (velocity, temperature, etc. - according
+         * to the used plugin) in Cartesian coordinates.
+         *
+         * @param position The current position to compute the data (velocity,
+         * temperature, etc.)
+         * @param component The index of the data column to be returned.
+         */
+        Tensor<1,dim>
+        get_gradients(const Point<dim> &position,
+                      const unsigned int component);
+
+        /**
          * Returns a vector that contains the names of all data columns in the
          * order of their appearance in the data file (and their order in the
          * memory data table). Returns an empty vector if no names are provided
@@ -814,6 +827,14 @@ namespace aspect
         double
         get_maximum_component_value (const types::boundary_id boundary_indicator,
                                      const unsigned int       component) const;
+
+        /**
+         * Return the gradients of the parameters from the parameter file.
+         */
+        Tensor<1,dim-1>
+        vector_gradient(const types::boundary_id boundary_indicator,
+                        const Point<dim>        &p,
+                        const unsigned int       component) const;
 
         /**
          * Declare the parameters all derived classes take from input files.
