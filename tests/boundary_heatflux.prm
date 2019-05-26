@@ -7,11 +7,11 @@
 
 #           Ts = 90 K
 #      ------------------
-#      |		|
-#      |		|   flux = 0 at sides
-#      |		|
+#      |                |
+#      |                |   flux = 0 at sides
+#      |                |
 #      ------------------
-#	 q = 4 mW / m^2
+#        q = 4 mW / m^2
 #
 
 # At the top, we define the number of space dimensions we would like to

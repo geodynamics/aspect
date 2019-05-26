@@ -5,7 +5,7 @@ set Adiabatic surface temperature          = 1600.0
 set Surface pressure                       = 0
 set Use years in output instead of seconds = true
 set Nonlinear solver scheme                = single Advection, single Stokes
-set Output directory 					   = topo_chunk
+set Output directory              = topo_chunk
 set Pressure normalization = no
 
 subsection Gravity model
@@ -76,13 +76,13 @@ end
 
 subsection Postprocess
   set List of postprocessors = topography
-  	subsection Topography
-		set Time between text output 			= 0
-		set Output to file = true
-	end  
+  subsection Topography
+    set Time between text output       = 0
+    set Output to file = true
+  end
 end
 
 subsection Termination criteria
-	set Termination criteria = end step
-	set End step                               = 1
+  set Termination criteria = end step
+  set End step                               = 1
 end

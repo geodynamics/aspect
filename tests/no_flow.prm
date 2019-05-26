@@ -11,7 +11,7 @@ set Dimension = 2
 
 set CFL number                             = 1.0
 
-set Use conduction timestep		   = true
+set Use conduction timestep       = true
 
 set End time                               = 1
 
