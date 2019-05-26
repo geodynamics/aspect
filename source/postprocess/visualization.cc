@@ -438,6 +438,16 @@ namespace aspect
                                             cell_data.first,
                                             DataOut<dim>::type_cell_data);
                 }
+              else
+                // A viz postprocessor not derived from either DataPostprocessor
+                // or CellDataVectorCreator? We don't know what to do with that!
+                Assert (false,
+                        ExcMessage("The visualization system found a visualization "
+                                   "postprocessor class that is not either derived from "
+                                   "DataPostprocessor or "
+                                   "VisualizationPostprocessors::CellDataVectorCreator. "
+                                   "ASPECT does not know what to do with these kinds of "
+                                   "classes."));
             }
           // viz postprocessors that throw exceptions usually do not result in
           // anything good because they result in an unwinding of the stack
