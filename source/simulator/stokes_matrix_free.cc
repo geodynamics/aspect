@@ -171,7 +171,7 @@ namespace aspect
      * Implement the block Schur preconditioner for the Stokes system.
      */
     template <class ABlockMatrixType, class StokesMatrixType, class MassMatrixType, class PreconditionerMp,class PreconditionerA>
-    class BlockSchurPreconditioner : public Subscriptor
+    class BlockSchurGMGPreconditioner : public Subscriptor
     {
       public:
         /**
@@ -191,14 +191,14 @@ namespace aspect
          * @param S_block_tolerance The tolerance for the CG solver which computes
          *     the inverse of the S block (Schur complement matrix).
          */
-        BlockSchurPreconditioner (const StokesMatrixType  &S,
-                                  const ABlockMatrixType  &A,
-                                  const MassMatrixType  &Mass,
-                                  const PreconditionerMp                     &Mppreconditioner,
-                                  const PreconditionerA                      &Apreconditioner,
-                                  const bool                                  do_solve_A,
-                                  const double                                A_block_tolerance,
-                                  const double                                S_block_tolerance);
+        BlockSchurGMGPreconditioner (const StokesMatrixType  &S,
+                                     const ABlockMatrixType  &A,
+                                     const MassMatrixType  &Mass,
+                                     const PreconditionerMp                     &Mppreconditioner,
+                                     const PreconditionerA                      &Apreconditioner,
+                                     const bool                                  do_solve_A,
+                                     const double                                A_block_tolerance,
+                                     const double                                S_block_tolerance);
 
         /**
          * Matrix vector product with this preconditioner object.
@@ -232,15 +232,15 @@ namespace aspect
     };
 
     template <class ABlockMatrixType, class StokesMatrixType, class MassMatrixType, class PreconditionerMp,class PreconditionerA>
-    BlockSchurPreconditioner<ABlockMatrixType, StokesMatrixType, MassMatrixType, PreconditionerMp, PreconditionerA>::
-    BlockSchurPreconditioner (const StokesMatrixType  &S,
-                              const ABlockMatrixType  &A,
-                              const MassMatrixType  &Mass,
-                              const PreconditionerMp                     &Mppreconditioner,
-                              const PreconditionerA                      &Apreconditioner,
-                              const bool                                  do_solve_A,
-                              const double                                A_block_tolerance,
-                              const double                                S_block_tolerance)
+    BlockSchurGMGPreconditioner<ABlockMatrixType, StokesMatrixType, MassMatrixType, PreconditionerMp, PreconditionerA>::
+    BlockSchurGMGPreconditioner (const StokesMatrixType  &S,
+                                 const ABlockMatrixType  &A,
+                                 const MassMatrixType  &Mass,
+                                 const PreconditionerMp                     &Mppreconditioner,
+                                 const PreconditionerA                      &Apreconditioner,
+                                 const bool                                  do_solve_A,
+                                 const double                                A_block_tolerance,
+                                 const double                                S_block_tolerance)
       :
       stokes_matrix     (S),
       velocity_matrix   (A),
@@ -256,7 +256,7 @@ namespace aspect
 
     template <class ABlockMatrixType, class StokesMatrixType, class MassMatrixType, class PreconditionerMp,class PreconditionerA>
     unsigned int
-    BlockSchurPreconditioner<ABlockMatrixType, StokesMatrixType, MassMatrixType, PreconditionerMp, PreconditionerA>::
+    BlockSchurGMGPreconditioner<ABlockMatrixType, StokesMatrixType, MassMatrixType, PreconditionerMp, PreconditionerA>::
     n_iterations_A() const
     {
       return n_iterations_A_;
@@ -264,7 +264,7 @@ namespace aspect
 
     template <class ABlockMatrixType, class StokesMatrixType, class MassMatrixType, class PreconditionerMp,class PreconditionerA>
     unsigned int
-    BlockSchurPreconditioner<ABlockMatrixType, StokesMatrixType, MassMatrixType, PreconditionerMp, PreconditionerA>::
+    BlockSchurGMGPreconditioner<ABlockMatrixType, StokesMatrixType, MassMatrixType, PreconditionerMp, PreconditionerA>::
     n_iterations_S() const
     {
       return n_iterations_S_;
@@ -272,7 +272,7 @@ namespace aspect
 
     template <class ABlockMatrixType, class StokesMatrixType, class MassMatrixType, class PreconditionerMp,class PreconditionerA>
     void
-    BlockSchurPreconditioner<ABlockMatrixType, StokesMatrixType, MassMatrixType, PreconditionerMp, PreconditionerA>::
+    BlockSchurGMGPreconditioner<ABlockMatrixType, StokesMatrixType, MassMatrixType, PreconditionerMp, PreconditionerA>::
     vmult (dealii::LinearAlgebra::distributed::BlockVector<double>       &dst,
            const dealii::LinearAlgebra::distributed::BlockVector<double>  &src) const
     {
@@ -307,7 +307,7 @@ namespace aspect
               {
                 if (Utilities::MPI::this_mpi_process(src.block(0).get_mpi_communicator()) == 0)
                   AssertThrow (false,
-                               ExcMessage (std::string("The iterative (bottom right) solver in BlockSchurPreconditioner::vmult "
+                               ExcMessage (std::string("The iterative (bottom right) solver in BlockSchurGMGPreconditioner::vmult "
                                                        "did not converge to a tolerance of "
                                                        + Utilities::to_string(solver_control.tolerance()) +
                                                        ". It reported the following error:\n\n")
@@ -349,7 +349,7 @@ namespace aspect
             {
               if (Utilities::MPI::this_mpi_process(src.block(0).get_mpi_communicator()) == 0)
                 AssertThrow (false,
-                             ExcMessage (std::string("The iterative (top left) solver in BlockSchurPreconditioner::vmult "
+                             ExcMessage (std::string("The iterative (top left) solver in BlockSchurGMGPreconditioner::vmult "
                                                      "did not converge to a tolerance of "
                                                      + Utilities::to_string(solver_control.tolerance()) +
                                                      ". It reported the following error:\n\n")
@@ -876,7 +876,7 @@ namespace aspect
 
 
     // create a cheap preconditioner that consists of only a single V-cycle
-    const internal::BlockSchurPreconditioner<ABlockMatrixType, StokesMatrixType, MassMatrixType, MassPreconditioner, APreconditioner>
+    const internal::BlockSchurGMGPreconditioner<ABlockMatrixType, StokesMatrixType, MassMatrixType, MassPreconditioner, APreconditioner>
     preconditioner_cheap (stokes_matrix, velocity_matrix, mass_matrix,
                           prec_S, prec_A,
                           false,
@@ -884,7 +884,7 @@ namespace aspect
                           sim.parameters.linear_solver_S_block_tolerance);
 
     // create an expensive preconditioner that solves for the A block with CG
-    const internal::BlockSchurPreconditioner<ABlockMatrixType, StokesMatrixType, MassMatrixType, MassPreconditioner, APreconditioner>
+    const internal::BlockSchurGMGPreconditioner<ABlockMatrixType, StokesMatrixType, MassMatrixType, MassPreconditioner, APreconditioner>
     preconditioner_expensive (stokes_matrix, velocity_matrix, mass_matrix,
                               prec_S, prec_A,
                               true,
