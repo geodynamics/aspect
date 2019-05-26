@@ -268,7 +268,7 @@ namespace aspect
     bool
     Box<dim>::point_is_in_domain(const Point<dim> &point) const
     {
-      AssertThrow(this->get_free_surface_boundary_indicators().size() == 0 ||
+      AssertThrow(this->get_mesh_deformation_boundary_indicators().size() == 0 ||
                   this->simulator_is_past_initialization() == false,
                   ExcMessage("After displacement of the free surface, this function can no longer be used to determine whether a point lies in the domain or not."));
 

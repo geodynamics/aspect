@@ -479,7 +479,7 @@ namespace aspect
 
       /**
        * Return a reference to the vector that has the mesh velocity for
-       * simulations with a free surface.
+       * simulations with mesh deformation.
        *
        * @note In general the vector is a distributed vector; however, it
        * contains ghost elements for all locally relevant degrees of freedom.
@@ -696,10 +696,12 @@ namespace aspect
 
       /**
        * Return a set of boundary indicators that describes which of the
-       * boundaries have a free surface boundary condition
+       * boundaries have a mesh deformation boundary condition. Note that
+       * it does not specify which boundaries have which mesh deformation
+       * condition, only which boundaries have a mesh deformation condition.
        */
       const std::set<types::boundary_id> &
-      get_free_surface_boundary_indicators () const;
+      get_mesh_deformation_boundary_indicators () const;
 
       /**
        * Return an reference to the manager of the boundary velocity models.
@@ -757,11 +759,11 @@ namespace aspect
       get_world_builder () const;
 
       /**
-       * Return a reference to the free surface handler. This function will
-       * throw an exception if no free surface is activated.
+       * Return a reference to the mesh deformation handler. This function will
+       * throw an exception if mesh deformation is not activated.
        */
       const MeshDeformation::MeshDeformationHandler<dim> &
-      get_free_surface_handler () const;
+      get_mesh_deformation_handler () const;
 
       /**
        * Return a reference to the lateral averaging object owned

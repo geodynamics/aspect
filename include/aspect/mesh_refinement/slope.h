@@ -32,7 +32,7 @@ namespace aspect
 
     /**
      * A class that implements a mesh refinement criterion that refines the
-     * mesh on a free surface.  Specifically, it calculates the slope of the
+     * mesh with a deforming surface.  Specifically, it calculates the slope of the
      * surface by comparing the local normal and gravity vectors.
      * Cells with steeper slopes get refined. This is useful for cases where
      * there is steep topography which needs to be tracked better.

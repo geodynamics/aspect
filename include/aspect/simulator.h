@@ -1870,10 +1870,10 @@ namespace aspect
 
       /**
        * Unique pointer for an instance of the MeshDeformationHandler. this way,
-       * if we do not need the machinery for doing free surface stuff, we do
+       * if we do not need the machinery for doing mesh deformation stuff, we do
        * not even allocate it.
        */
-      std::unique_ptr<MeshDeformation::MeshDeformationHandler<dim> > free_surface;
+      std::unique_ptr<MeshDeformation::MeshDeformationHandler<dim> > mesh_deformation;
 
       /**
        * Unique pointer for the matrix-free Stokes solver

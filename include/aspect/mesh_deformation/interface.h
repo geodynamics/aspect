@@ -60,12 +60,14 @@ namespace aspect
          * Destructor. Made virtual to enforce that derived classes also have
          * virtual destructors.
          */
-        virtual ~Interface();
+        virtual ~Interface() = default;
 
         /**
          * Initialization function. This function is called once at the
          * beginning of the program after parse_parameters is run and after
          * the SimulatorAccess (if applicable) is initialized.
+         *
+         * The default implementation of this function does nothing.
          */
         virtual void initialize ();
 
@@ -81,13 +83,15 @@ namespace aspect
 
         /**
          * A function that creates constraints for the velocity of certain mesh
-         * vertices (e.g. the surface vertices). The calling class will respect
+         * vertices (e.g. the surface vertices) for a specific set of boundaries.
+         * The calling class will respect
          * these constraints when computing the new vertex positions.
          */
         virtual
         void
-        deformation_constraints(const DoFHandler<dim> &free_surface_dof_handler,
-                                ConstraintMatrix &mesh_velocity_constraints) const = 0;
+        compute_velocity_constraints_on_boundary(const DoFHandler<dim> &mesh_deformation_dof_handler,
+                                                 ConstraintMatrix &mesh_velocity_constraints,
+                                                 std::set<types::boundary_id> boundary_id) const = 0;
 
         /**
          * Declare the parameters this class takes through input files. The
@@ -110,12 +114,19 @@ namespace aspect
         parse_parameters (ParameterHandler &prm);
     };
 
+
+
+    /**
+     * The MeshDeformationHandler that handles the motion
+     * of the surface, the internal nodes and computes the
+     * Arbitrary-Lagrangian-Eulerian correction terms.
+     */
     template<int dim>
     class MeshDeformationHandler: public SimulatorAccess<dim>
     {
       public:
         /**
-         * Initialize the free surface handler, allowing it to read in
+         * Initialize the mesh deformation handler, allowing it to read in
          * relevant parameters as well as giving it a reference to the
          * Simulator that owns it, since it needs to make fairly extensive
          * changes to the internals of the simulator.
@@ -123,17 +134,26 @@ namespace aspect
         MeshDeformationHandler(Simulator<dim> &simulator);
 
         /**
-         * Destructor for the free surface handler.
+         * Destructor for the mesh deformation handler.
          */
         ~MeshDeformationHandler();
 
+        /**
+         * Initialization function of the MeshDeformationHandler.
+         *
+         * The default implementation of this function does nothing.
+         */
         void initialize();
 
+        /**
+         * Update function of the MeshDeformationHandler. This function
+         * allows the individual mesh deformation objects to update.
+         */
         void update();
 
         /**
-         * The main execution step for the free surface implementation. This
-         * computes the motion of the free surface, moves the boundary nodes
+         * The main execution step for the mesh deformation implementation. This
+         * computes the motion of the surface, moves the boundary nodes
          * accordingly, redistributes the internal nodes in order to
          * preserve mesh regularity, and calculates the Arbitrary-
          * Lagrangian-Eulerian correction terms for advected quantities.
@@ -147,13 +167,13 @@ namespace aspect
         void setup_dofs();
 
         /**
-         * Declare parameters for the free surface handling.
+         * Declare parameters for the mesh deformation handling.
          */
         static
         void declare_parameters (ParameterHandler &prm);
 
         /**
-         * Parse parameters for the free surface handling.
+         * Parse parameters for the mesh deformation handling.
          */
         void parse_parameters (ParameterHandler &prm);
 
@@ -182,31 +202,63 @@ namespace aspect
          void (*declare_parameters_function) (ParameterHandler &),
          Interface<dim> *(*factory_function) ());
 
-
         /**
-         * Return a list of names of all mesh deformation models currently
+         * Return a map of boundary indicators to the names of all mesh deformation models currently
          * used in the computation, as specified in the input file.
          */
-        const std::vector<std::string> &
+        const std::map<types::boundary_id, std::vector<std::string> > &
         get_active_mesh_deformation_names () const;
 
         /**
-         * Return a list of pointers to all mesh deformation models
+         * Return a map of boundary indicators to vectors of pointers to all mesh deformation models
          * currently used in the computation, as specified in the input file.
          */
-        const std::vector<std::shared_ptr<Interface<dim> > > &
+        const std::map<types::boundary_id,std::vector<std::unique_ptr<Interface<dim> > > > &
         get_active_mesh_deformation_models () const;
 
         /**
-         * Go through the list of all mesh deformation models that have been selected in
-         * the input file (and are consequently currently active) and see if one
-         * of them has the desired type specified by the template argument. If so,
-         * return a pointer to it. If no mesh deformation model is active
-         * that matches the given type, return a NULL pointer.
+         * Return a set of all the indicators of boundaries with
+         * mesh deformation objects on them.
+         */
+        const std::set<types::boundary_id> &
+        get_active_mesh_deformation_boundary_indicators () const;
+
+        /**
+         * Return the boundary id of the surface that has a free surface
+         * mesh deformation object. If no free surface is used,
+         * an empty set is returned.
+         */
+        const std::set<types::boundary_id>
+        get_free_surface_boundary_indicators () const;
+
+        /**
+         * Return the mesh displacements stored on
+         * the mesh deformation element.
+         */
+        const LinearAlgebra::Vector &
+        get_mesh_displacements () const;
+
+        /**
+         * Go through the list of all mesh deformation objects that have been selected
+         * in the input file (and are consequently currently active) and return
+         * true if one of them has the desired type specified by the template
+         * argument.
          */
         template <typename MeshDeformationType>
-        MeshDeformationType *
-        find_mesh_deformation_model () const;
+        bool
+        has_matching_postprocessor () const;
+
+        /**
+         * Go through the list of all mesh deformation objects that have been selected
+         * in the input file (and are consequently currently active) and see
+         * if one of them has the type specified by the template
+         * argument or can be casted to that type. If so, return a reference
+         * to it. If no postprocessor is active that matches the given type,
+         * throw an exception.
+         */
+        template <typename MeshDeformationType>
+        const MeshDeformationType &
+        get_matching_postprocessor () const;
 
         /**
          * For the current plugin subsystem, write a connection graph of all of the
@@ -232,22 +284,16 @@ namespace aspect
 
       private:
         /**
-         * A list of mesh deformation objects that have been requested in the
-         * parameter file.
-         */
-        std::vector<std::shared_ptr<Interface<dim> > > mesh_deformation_objects;
-
-        /**
-         * A list of names of mesh deformation objects that have been requested
+         * A map of boundary ids to mesh deformation objects that have been requested
          * in the parameter file.
          */
-        std::vector<std::string> model_names;
+        std::map<types::boundary_id,std::vector<std::unique_ptr<Interface<dim> > > > mesh_deformation_objects_map;
 
         /**
          * Set the boundary conditions for the solution of the elliptic
          * problem, which computes the displacements of the internal
          * vertices so that the mesh does not become too distorted due to
-         * motion of the free surface. Velocities of vertices on the
+         * motion of the surface. Velocities of vertices on the
          * deforming surface are fixed according to the selected deformation
          * plugins. Velocities of vertices on free-slip boundaries are
          * constrained to be tangential to those boundaries. Velocities of
@@ -274,18 +320,19 @@ namespace aspect
         Simulator<dim> &sim;
 
         /**
-        * Finite element for the free surface implementation, which is
+        * Finite element for the mesh deformation implementation, which is
         * used for tracking mesh deformation.
         */
-        const FESystem<dim> free_surface_fe;
+        const FESystem<dim> mesh_deformation_fe;
 
         /**
-         * DoFHandler for the free surface implementation.
+         * DoFHandler for the mesh deformation implementation.
          */
-        DoFHandler<dim> free_surface_dof_handler;
+        DoFHandler<dim> mesh_deformation_dof_handler;
 
         /**
-         * BlockVector which stores the mesh velocity.
+         * BlockVector which stores the mesh velocity in the
+         * Stokes finite element space.
          * This is used for ALE corrections.
          */
         LinearAlgebra::BlockVector mesh_velocity;
@@ -299,10 +346,10 @@ namespace aspect
         LinearAlgebra::Vector mesh_displacements;
 
         /**
-         * Vector for storing the mesh velocity in the free surface finite
+         * Vector for storing the mesh velocity in the mesh deformation finite
          * element space, which is, in general, not the same finite element
          * space as the Stokes system. This is used for interpolating
-         * the mesh velocity in the free surface finite element space onto
+         * the mesh velocity in the mesh deformation finite element space onto
          * the velocity in the Stokes finite element space, which is then
          * used for making the ALE correction in the advection equations.
          */
@@ -319,10 +366,10 @@ namespace aspect
         IndexSet mesh_locally_relevant;
 
         /**
-         * Storage for the mesh displacement constraints for solving the
-         * elliptic problem
+         * Storage for the mesh velocity constraints for solving the
+         * elliptic problem.
          */
-        ConstraintMatrix mesh_displacement_constraints;
+        ConstraintMatrix mesh_velocity_constraints;
 
         /**
          * Storage for the mesh vertex constraints for keeping the mesh conforming
@@ -341,6 +388,23 @@ namespace aspect
          */
         std::set<types::boundary_id> tangential_mesh_boundary_indicators;
 
+        /**
+         * Map from boundary id to a vector of names representing
+         * mesh deformation objects.
+         */
+        std::map<types::boundary_id, std::vector<std::string> > mesh_deformation_boundary_indicators_map;
+
+        /**
+         * The set of boundary indicators for which mesh deformation
+         * objects are set.
+         */
+        std::set<types::boundary_id> mesh_deformation_boundary_indicators_set;
+
+        /**
+         * The boundary indicator(s) of the free surface(s).
+         */
+        std::set<types::boundary_id> free_surface_boundary_ids;
+
         friend class Simulator<dim>;
         friend class SimulatorAccess<dim>;
     };
@@ -350,17 +414,48 @@ namespace aspect
     template <int dim>
     template <typename MeshDeformationType>
     inline
-    MeshDeformationType *
-    MeshDeformationHandler<dim>::find_mesh_deformation_model () const
+    bool
+    MeshDeformationHandler<dim>::has_matching_postprocessor () const
     {
-      for (typename std::list<std::shared_ptr<Interface<dim> > >::const_iterator
-           p = mesh_deformation_objects.begin();
-           p != mesh_deformation_objects.end(); ++p)
-        if (MeshDeformationType *x = dynamic_cast<MeshDeformationType *> ( (*p).get()) )
-          return x;
-      return NULL;
+      for (typename std::map<types::boundary_id, std::vector<std::unique_ptr<Interface<dim> > > >::iterator boundary_id
+           = mesh_deformation_objects_map.begin();
+           boundary_id != mesh_deformation_objects_map.end(); ++boundary_id)
+        for (const auto &p : boundary_id->second)
+          if (Plugins::plugin_type_matches<MeshDeformationType>(*p))
+            return true;
+
+      return false;
     }
 
+
+
+    template <int dim>
+    template <typename MeshDeformationType>
+    inline
+    const MeshDeformationType &
+    MeshDeformationHandler<dim>::get_matching_postprocessor () const
+    {
+      AssertThrow(has_matching_postprocessor<MeshDeformationType> (),
+                  ExcMessage("You asked MeshDeformation::MeshDeformationHandler::get_matching_postprocessor() for a "
+                             "mesh deformation object of type <" + boost::core::demangle(typeid(MeshDeformationType).name()) + "> "
+                             "that could not be found in the current model. Activate this "
+                             "mesh deformation in the input file."));
+
+      for (typename std::map<types::boundary_id, std::vector<std::unique_ptr<Interface<dim> > > >::iterator boundary_id
+           = mesh_deformation_objects_map.begin();
+           boundary_id != mesh_deformation_objects_map.end(); ++boundary_id)
+        {
+          typename std::vector<std::unique_ptr<Interface<dim> > >::const_iterator mesh_def;
+          for (const auto &p : boundary_id->second)
+            {
+              if (Plugins::plugin_type_matches<MeshDeformationType>(*p))
+                return Plugins::get_plugin_as_type<MeshDeformationType>(*p);
+              else
+                // We will never get here, because we had the Assert above. Just to avoid warnings.
+                return Plugins::get_plugin_as_type<MeshDeformationType>(*(*mesh_def));
+            }
+        }
+    }
 
 
     /**

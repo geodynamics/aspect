@@ -21,7 +21,7 @@
 
 #include <aspect/simulator.h>
 #include <aspect/utilities.h>
-#include <aspect/mesh_deformation/free_surface.h>
+#include <aspect/mesh_deformation/interface.h>
 #include <aspect/melt.h>
 
 #include <deal.II/base/mpi.h>
@@ -293,9 +293,9 @@ namespace aspect
       x_system[1] = &old_solution;
       x_system[2] = &old_old_solution;
 
-      // If we are using a free surface, include the mesh velocity, which uses the system dof handler
-      if (parameters.free_surface_enabled)
-        x_system.push_back( &free_surface->mesh_velocity );
+      // If we are using a deforming mesh, include the mesh velocity, which uses the system dof handler
+      if (parameters.mesh_deformation_enabled)
+        x_system.push_back( &mesh_deformation->mesh_velocity );
 
       parallel::distributed::SolutionTransfer<dim, LinearAlgebra::BlockVector>
       system_trans (dof_handler);
@@ -306,22 +306,22 @@ namespace aspect
       system_trans.prepare_serialization (x_system);
 #endif
 
-      // If we are using a free surface, also serialize the mesh vertices vector, which
+      // If we are deforming the mesh, also serialize the mesh vertices vector, which
       // uses its own dof handler
       std::vector<const LinearAlgebra::Vector *> x_fs_system (1);
-      std::unique_ptr<parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector> > freesurface_trans;
-      if (parameters.free_surface_enabled)
+      std::unique_ptr<parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector> > mesh_deformation_trans;
+      if (parameters.mesh_deformation_enabled)
         {
-          freesurface_trans
+          mesh_deformation_trans
             = std_cxx14::make_unique<parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector>>
-              (free_surface->free_surface_dof_handler);
+              (mesh_deformation->mesh_deformation_dof_handler);
 
-          x_fs_system[0] = &free_surface->mesh_displacements;
+          x_fs_system[0] = &mesh_deformation->mesh_displacements;
 
 #if DEAL_II_VERSION_GTE(9,1,0)
-          freesurface_trans->prepare_for_serialization(x_fs_system);
+          mesh_deformation_trans->prepare_for_serialization(x_fs_system);
 #else
-          freesurface_trans->prepare_serialization(x_fs_system);
+          mesh_deformation_trans->prepare_serialization(x_fs_system);
 #endif
         }
 
@@ -451,7 +451,7 @@ namespace aspect
 
     // If necessary, also include the mesh velocity for deserialization
     // with the system dof handler
-    if (parameters.free_surface_enabled)
+    if (parameters.mesh_deformation_enabled)
       x_system.push_back(&distributed_mesh_velocity);
 
     parallel::distributed::SolutionTransfer<dim, LinearAlgebra::BlockVector>
@@ -463,20 +463,20 @@ namespace aspect
     old_solution = old_distributed_system;
     old_old_solution = old_old_distributed_system;
 
-    if (parameters.free_surface_enabled)
+    if (parameters.mesh_deformation_enabled)
       {
         // copy the mesh velocity which uses the system dof handler
-        free_surface->mesh_velocity = distributed_mesh_velocity;
+        mesh_deformation->mesh_velocity = distributed_mesh_velocity;
 
-        // deserialize and copy the vectors using the free surface dof handler
-        parallel::distributed::SolutionTransfer<dim, LinearAlgebra::Vector> freesurface_trans( free_surface->free_surface_dof_handler );
-        LinearAlgebra::Vector distributed_mesh_displacements( free_surface->mesh_locally_owned,
+        // deserialize and copy the vectors using the mesh deformation dof handler
+        parallel::distributed::SolutionTransfer<dim, LinearAlgebra::Vector> mesh_deformation_trans( mesh_deformation->mesh_deformation_dof_handler );
+        LinearAlgebra::Vector distributed_mesh_displacements( mesh_deformation->mesh_locally_owned,
                                                               mpi_communicator );
         std::vector<LinearAlgebra::Vector *> fs_system(1);
         fs_system[0] = &distributed_mesh_displacements;
 
-        freesurface_trans.deserialize (fs_system);
-        free_surface->mesh_displacements = distributed_mesh_displacements;
+        mesh_deformation_trans.deserialize (fs_system);
+        mesh_deformation->mesh_displacements = distributed_mesh_displacements;
       }
 
     // read zlib compressed resume.z

@@ -56,8 +56,8 @@ namespace aspect
                 const types::boundary_id boundary_indicator
                   = cell->face(face_no)->boundary_id();
 
-                if ( this->get_free_surface_boundary_indicators().find(boundary_indicator) !=
-                     this->get_free_surface_boundary_indicators().end() )
+                if ( this->get_mesh_deformation_boundary_indicators().find(boundary_indicator) !=
+                     this->get_mesh_deformation_boundary_indicators().end() )
                   {
                     fe_face_values.reinit(cell, face_no);
 
@@ -83,7 +83,8 @@ namespace aspect
     ASPECT_REGISTER_MESH_REFINEMENT_CRITERION(Slope,
                                               "slope",
                                               "A class that implements a mesh refinement criterion intended for "
-                                              "use with a free surface. It calculates a local slope based on "
+                                              "use with deforming mesh boundaries, like the free surface. "
+                                              "It calculates a local slope based on "
                                               "the angle between the surface normal and the local gravity vector. "
                                               "Cells with larger angles are marked for refinement."
                                               "\n\n"

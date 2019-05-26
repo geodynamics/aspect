@@ -48,8 +48,8 @@ namespace aspect
       internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>& > (scratch_base);
       internal::Assembly::CopyData::StokesSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::StokesSystem<dim>& > (data_base);
 
-      if (!this->get_parameters().free_surface_enabled)
-        return;
+      AssertThrow(!this->get_mesh_deformation_handler().get_free_surface_boundary_indicators().empty(),
+                  ExcMessage("Applying free surface stabilization, even though no free surface is active. "));
 
       if (this->get_parameters().include_melt_transport)
         {
@@ -79,8 +79,8 @@ namespace aspect
               const types::boundary_id boundary_indicator
                 = cell->face(face_no)->boundary_id();
 
-              if (this->get_parameters().free_surface_boundary_indicators.find(boundary_indicator)
-                  == this->get_parameters().free_surface_boundary_indicators.end())
+              if (this->get_mesh_deformation_handler().get_free_surface_boundary_indicators().find(boundary_indicator)
+                  == this->get_mesh_deformation_handler().get_free_surface_boundary_indicators().end())
                 continue;
 
               scratch.face_finite_element_values.reinit(cell, face_no);
@@ -107,7 +107,7 @@ namespace aspect
 
                   const Tensor<1,dim>
                   gravity = this->get_gravity_model().gravity_vector(scratch.face_finite_element_values.quadrature_point(q_point));
-                  double g_norm = gravity.norm();
+                  const double g_norm = gravity.norm();
 
                   // construct the relevant vectors
                   const Tensor<1,dim> n_hat = scratch.face_finite_element_values.normal_vector(q_point);
@@ -140,6 +140,37 @@ namespace aspect
     void
     FreeSurface<dim>::initialize ()
     {
+      // Pressure normalization doesn't really make sense with a free surface, and if we do
+      // use it, we can run into problems with geometry_model->depth().
+      AssertThrow ( this->get_parameters().pressure_normalization == "no",
+                    ExcMessage("The free surface scheme can only be used with no pressure normalization") );
+
+      // Check that we do not use the free surface on a boundary that has zero slip,
+      // free slip or prescribed velocity boundary conditions on it.
+
+      // Get the zero velocity boundary indicators
+      std::set<types::boundary_id> velocity_boundary_indicators = this->get_boundary_velocity_manager().get_zero_boundary_velocity_indicators();
+
+      // Get the tangential velocity boundary indicators
+      const std::set<types::boundary_id> tmp_tangential_vel_boundary_indicators = this->get_boundary_velocity_manager().get_tangential_boundary_velocity_indicators();
+      velocity_boundary_indicators.insert(tmp_tangential_vel_boundary_indicators.begin(),
+                                          tmp_tangential_vel_boundary_indicators.end());
+
+      // Get the active velocity boundary indicators
+      const std::map<types::boundary_id, std::pair<std::string,std::vector<std::string> > >
+      tmp_active_vel_boundary_indicators = this->get_boundary_velocity_manager().get_active_boundary_velocity_names();
+
+      for (std::map<types::boundary_id, std::pair<std::string, std::vector<std::string> > >::const_iterator p = tmp_active_vel_boundary_indicators.begin();
+           p != tmp_active_vel_boundary_indicators.end(); ++p)
+        velocity_boundary_indicators.insert(p->first);
+
+      // Get the mesh deformation boundary indicators
+      const std::set<types::boundary_id> tmp_mesh_deformation_boundary_indicators = this->get_mesh_deformation_boundary_indicators();
+      for (std::set<types::boundary_id>::const_iterator p = tmp_mesh_deformation_boundary_indicators.begin();
+           p != tmp_mesh_deformation_boundary_indicators.end(); ++p)
+        AssertThrow(velocity_boundary_indicators.find(*p) == velocity_boundary_indicators.end(),
+                    ExcMessage("The free surface mesh deformation plugin cannot be used with the current velocity boundary conditions"));
+
       this->get_signals().set_assemblers.connect(std::bind(&FreeSurface<dim>::set_assemblers,
                                                            std::cref(*this),
                                                            std::placeholders::_1,
@@ -173,7 +204,7 @@ namespace aspect
 
 
     template <int dim>
-    void FreeSurface<dim>::project_velocity_onto_boundary(const DoFHandler<dim> &free_surface_dof_handler,
+    void FreeSurface<dim>::project_velocity_onto_boundary(const DoFHandler<dim> &mesh_deformation_dof_handler,
                                                           const IndexSet &mesh_locally_owned,
                                                           const IndexSet &mesh_locally_relevant,
                                                           LinearAlgebra::Vector &output) const
@@ -181,10 +212,10 @@ namespace aspect
       // TODO: should we use the extrapolated solution?
 
       // stuff for iterating over the mesh
-      QGauss<dim-1> face_quadrature(free_surface_dof_handler.get_fe().degree+1);
+      QGauss<dim-1> face_quadrature(mesh_deformation_dof_handler.get_fe().degree+1);
       UpdateFlags update_flags = UpdateFlags(update_values | update_quadrature_points
                                              | update_normal_vectors | update_JxW_values);
-      FEFaceValues<dim> fs_fe_face_values (this->get_mapping(), free_surface_dof_handler.get_fe(), face_quadrature, update_flags);
+      FEFaceValues<dim> fs_fe_face_values (this->get_mapping(), mesh_deformation_dof_handler.get_fe(), face_quadrature, update_flags);
       FEFaceValues<dim> fe_face_values (this->get_mapping(), this->get_fe(), face_quadrature, update_flags);
       const unsigned int n_face_q_points = fe_face_values.n_quadrature_points,
                          dofs_per_cell = fs_fe_face_values.dofs_per_cell;
@@ -199,12 +230,12 @@ namespace aspect
 
       // set up constraints
       ConstraintMatrix mass_matrix_constraints(mesh_locally_relevant);
-      DoFTools::make_hanging_node_constraints(free_surface_dof_handler, mass_matrix_constraints);
+      DoFTools::make_hanging_node_constraints(mesh_deformation_dof_handler, mass_matrix_constraints);
 
       typedef std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int> > periodic_boundary_pairs;
       periodic_boundary_pairs pbp = this->get_geometry_model().get_periodic_boundary_pairs();
       for (periodic_boundary_pairs::iterator p = pbp.begin(); p != pbp.end(); ++p)
-        DoFTools::make_periodicity_constraints(free_surface_dof_handler,
+        DoFTools::make_periodicity_constraints(mesh_deformation_dof_handler,
                                                (*p).first.first, (*p).first.second, (*p).second, mass_matrix_constraints);
 
       mass_matrix_constraints.close();
@@ -220,11 +251,11 @@ namespace aspect
                                             mesh_locally_relevant,
                                             this->get_mpi_communicator());
 #endif
-      DoFTools::make_sparsity_pattern (free_surface_dof_handler, sp, mass_matrix_constraints, false,
+      DoFTools::make_sparsity_pattern (mesh_deformation_dof_handler, sp, mass_matrix_constraints, false,
                                        Utilities::MPI::this_mpi_process(this->get_mpi_communicator()));
 #ifdef ASPECT_USE_PETSC
       SparsityTools::distribute_sparsity_pattern(sp,
-                                                 free_surface_dof_handler.n_locally_owned_dofs_per_processor(),
+                                                 mesh_deformation_dof_handler.n_locally_owned_dofs_per_processor(),
                                                  this->get_mpi_communicator(), mesh_locally_relevant);
 
       sp.compress();
@@ -244,7 +275,7 @@ namespace aspect
       typename DoFHandler<dim>::active_cell_iterator
       cell = this->get_dof_handler().begin_active(), endc= this->get_dof_handler().end();
       typename DoFHandler<dim>::active_cell_iterator
-      fscell = free_surface_dof_handler.begin_active();
+      fscell = mesh_deformation_dof_handler.begin_active();
 
       for (; cell!=endc; ++cell, ++fscell)
         if (cell->at_boundary() && cell->is_locally_owned())
@@ -253,8 +284,9 @@ namespace aspect
               {
                 const types::boundary_id boundary_indicator
                   = cell->face(face_no)->boundary_id();
-                if (this->get_parameters().free_surface_boundary_indicators.find(boundary_indicator)
-                    == this->get_parameters().free_surface_boundary_indicators.end())
+                // Only project onto the free surface boundary/boundaries.
+                if (this->get_mesh_deformation_handler().get_free_surface_boundary_indicators().find(boundary_indicator)
+                    == this->get_mesh_deformation_handler().get_free_surface_boundary_indicators().end())
                   continue;
 
                 fscell->get_dof_indices (cell_dof_indices);
@@ -313,25 +345,38 @@ namespace aspect
     }
 
 
+
+    /**
+     * A function that creates constraints for the velocity of certain mesh
+     * vertices (e.g. the surface vertices) for a specific boundary.
+     * The calling class will respect
+     * these constraints when computing the new vertex positions.
+     */
     template <int dim>
     void
-    FreeSurface<dim>::deformation_constraints(const DoFHandler<dim> &free_surface_dof_handler,
-                                              ConstraintMatrix &mesh_velocity_constraints) const
+    FreeSurface<dim>::compute_velocity_constraints_on_boundary(const DoFHandler<dim> &mesh_deformation_dof_handler,
+                                                               ConstraintMatrix &mesh_velocity_constraints,
+                                                               std::set<types::boundary_id> boundary_id) const
     {
       // For the free surface indicators we constrain the displacement to be v.n
       LinearAlgebra::Vector boundary_velocity;
 
-      const IndexSet mesh_locally_owned = free_surface_dof_handler.locally_owned_dofs();
+      const IndexSet mesh_locally_owned = mesh_deformation_dof_handler.locally_owned_dofs();
       IndexSet mesh_locally_relevant;
-      DoFTools::extract_locally_relevant_dofs (free_surface_dof_handler,
+      DoFTools::extract_locally_relevant_dofs (mesh_deformation_dof_handler,
                                                mesh_locally_relevant);
-      boundary_velocity.reinit(mesh_locally_owned, mesh_locally_relevant, this->get_mpi_communicator());
-      project_velocity_onto_boundary(free_surface_dof_handler,mesh_locally_owned,mesh_locally_relevant,boundary_velocity);
+      boundary_velocity.reinit(mesh_locally_owned, mesh_locally_relevant,
+                               this->get_mpi_communicator());
+      project_velocity_onto_boundary(mesh_deformation_dof_handler, mesh_locally_owned,
+                                     mesh_locally_relevant, boundary_velocity);
 
       // now insert the relevant part of the solution into the mesh constraints
       IndexSet constrained_dofs;
-      DoFTools::extract_boundary_dofs(free_surface_dof_handler, ComponentMask(dim, true),
-                                      constrained_dofs, this->get_parameters().free_surface_boundary_indicators);
+      DoFTools::extract_boundary_dofs(mesh_deformation_dof_handler,
+                                      ComponentMask(dim, true),
+                                      constrained_dofs,
+                                      boundary_id);
+
       for (unsigned int i = 0; i < constrained_dofs.n_elements();  ++i)
         {
           types::global_dof_index index = constrained_dofs.nth_index_in_set(i);
@@ -342,8 +387,8 @@ namespace aspect
                 mesh_velocity_constraints.set_inhomogeneity(index, boundary_velocity[index]);
               }
         }
-    }
 
+    }
 
 
     template <int dim>
@@ -351,30 +396,34 @@ namespace aspect
     {
       prm.enter_subsection ("Mesh deformation");
       {
-        prm.declare_entry("Free surface stabilization theta", "0.5",
-                          Patterns::Double(0,1),
-                          "Theta parameter described in Kaus et. al. 2010. "
-                          "An unstabilized free surface can overshoot its "
-                          "equilibrium position quite easily and generate "
-                          "unphysical results.  One solution is to use a "
-                          "quasi-implicit correction term to the forces near the "
-                          "free surface.  This parameter describes how much "
-                          "the free surface is stabilized with this term, "
-                          "where zero is no stabilization, and one is fully "
-                          "implicit.");
-        prm.declare_entry("Surface velocity projection", "normal",
-                          Patterns::Selection("normal|vertical"),
-                          "After each time step the free surface must be "
-                          "advected in the direction of the velocity field. "
-                          "Mass conservation requires that the mesh velocity "
-                          "is in the normal direction of the surface. However, "
-                          "for steep topography or large curvature, advection "
-                          "in the normal direction can become ill-conditioned, "
-                          "and instabilities in the mesh can form. Projection "
-                          "of the mesh velocity onto the local vertical direction "
-                          "can preserve the mesh quality better, but at the "
-                          "cost of slightly poorer mass conservation of the "
-                          "domain.");
+        prm.enter_subsection ("Free surface");
+        {
+          prm.declare_entry("Free surface stabilization theta", "0.5",
+                            Patterns::Double(0,1),
+                            "Theta parameter described in \\cite{KMM2010}. "
+                            "An unstabilized free surface can overshoot its "
+                            "equilibrium position quite easily and generate "
+                            "unphysical results.  One solution is to use a "
+                            "quasi-implicit correction term to the forces near the "
+                            "free surface.  This parameter describes how much "
+                            "the free surface is stabilized with this term, "
+                            "where zero is no stabilization, and one is fully "
+                            "implicit.");
+          prm.declare_entry("Surface velocity projection", "normal",
+                            Patterns::Selection("normal|vertical"),
+                            "After each time step the free surface must be "
+                            "advected in the direction of the velocity field. "
+                            "Mass conservation requires that the mesh velocity "
+                            "is in the normal direction of the surface. However, "
+                            "for steep topography or large curvature, advection "
+                            "in the normal direction can become ill-conditioned, "
+                            "and instabilities in the mesh can form. Projection "
+                            "of the mesh velocity onto the local vertical direction "
+                            "can preserve the mesh quality better, but at the "
+                            "cost of slightly poorer mass conservation of the "
+                            "domain.");
+        }
+        prm.leave_subsection ();
       }
       prm.leave_subsection ();
     }
@@ -384,16 +433,19 @@ namespace aspect
     {
       prm.enter_subsection ("Mesh deformation");
       {
-        free_surface_theta = prm.get_double("Free surface stabilization theta");
-        std::string advection_dir = prm.get("Surface velocity projection");
+        prm.enter_subsection ("Free surface");
+        {
+          free_surface_theta = prm.get_double("Free surface stabilization theta");
+          std::string advection_dir = prm.get("Surface velocity projection");
 
-        if ( advection_dir == "normal")
-          advection_direction = SurfaceAdvection::normal;
-        else if ( advection_dir == "vertical")
-          advection_direction = SurfaceAdvection::vertical;
-        else
-          AssertThrow(false, ExcMessage("The surface velocity projection must be ``normal'' or ``vertical''."));
-
+          if ( advection_dir == "normal")
+            advection_direction = SurfaceAdvection::normal;
+          else if ( advection_dir == "vertical")
+            advection_direction = SurfaceAdvection::vertical;
+          else
+            AssertThrow(false, ExcMessage("The surface velocity projection must be ``normal'' or ``vertical''."));
+        }
+        prm.leave_subsection ();
       }
       prm.leave_subsection ();
     }
@@ -412,6 +464,8 @@ namespace aspect
                                            "vertices according to the solution of the flow problem. "
                                            "In particular this means if the surface of the domain is "
                                            "left open to flow, this flow will carry the mesh with it. "
-                                           "TODO add more documentation.")
+                                           "The implementation was described in \\cite{rose_freesurface}, "
+                                           "with the stabilization of the free surface originally described "
+                                           "in \\cite{KMM2010}.")
   }
 }

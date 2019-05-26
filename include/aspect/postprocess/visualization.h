@@ -475,7 +475,7 @@ namespace aspect
         bool write_higher_order_output;
 
         /**
-         * For free surface computations Aspect uses an Arbitrary-Lagrangian-
+         * For mesh deformation computations Aspect uses an Arbitrary-Lagrangian-
          * Eulerian formulation to handle deforming the domain, so the mesh
          * has its own velocity field.  This may be written as an output field
          * by setting output_mesh_velocity to true.

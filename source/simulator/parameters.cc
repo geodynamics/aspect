@@ -1865,24 +1865,11 @@ namespace aspect
   {
     prm.enter_subsection ("Mesh deformation");
     {
-      try
-        {
-          const std::vector<types::boundary_id> x_free_surface_boundary_indicators
-            = geometry_model.translate_symbolic_boundary_names_to_ids(Utilities::split_string_list
-                                                                      (prm.get ("Mesh deformation boundary indicators")));
-          free_surface_boundary_indicators
-            = std::set<types::boundary_id> (x_free_surface_boundary_indicators.begin(),
-                                            x_free_surface_boundary_indicators.end());
-
-          free_surface_enabled = !free_surface_boundary_indicators.empty();
-        }
-      catch (const std::string &error)
-        {
-          AssertThrow (false, ExcMessage ("While parsing the entry <Mesh deformation/Mesh deformation "
-                                          "boundary indicators>, there was an error. Specifically, "
-                                          "the conversion function complained as follows: "
-                                          + error));
-        }
+      // Test here for whether there are any boundary indicators active
+      // for which mesh deformation objects are to be set.
+      const std::vector<std::string> x_mesh_deformation_boundary_indicators
+        = Utilities::split_string_list(prm.get("Mesh deformation boundary indicators"),";");
+      mesh_deformation_enabled = !x_mesh_deformation_boundary_indicators.empty();
     }
     prm.leave_subsection();
 

@@ -23,6 +23,7 @@
 #include <aspect/simulator.h>
 #include <aspect/utilities.h>
 #include <aspect/citation_info.h>
+#include <aspect/mesh_deformation/interface.h>
 #include <deal.II/base/signaling_nan.h>
 
 #include <deal.II/dofs/dof_tools.h>
@@ -781,7 +782,7 @@ namespace aspect
 
           Tensor<1,dim> current_u = scratch.current_velocity_values[q];
           // Subtract off the mesh velocity for ALE corrections if necessary
-          if (this->get_parameters().free_surface_enabled)
+          if (this->get_parameters().mesh_deformation_enabled)
             current_u -= scratch.mesh_velocity_values[q];
 
           const double melt_transport_LHS =
@@ -1855,7 +1856,8 @@ namespace aspect
                                               internal::Assembly::Scratch::StokesSystem<dim>       &scratch,
                                               internal::Assembly::CopyData::StokesSystem<dim>      &data) const
   {
-    if (!this->get_parameters().free_surface_enabled)
+    const std::set<types::boundary_id> free_surface_boundary_indicators = this->get_mesh_deformation_handler().get_free_surface_boundary_indicators();
+    if (free_surface_boundary_indicators.empty())
       return;
 
     const unsigned int n_face_q_points = scratch.face_finite_element_values.n_quadrature_points;
@@ -1869,8 +1871,7 @@ namespace aspect
             const types::boundary_id boundary_indicator
               = cell->face(face_no)->boundary_id();
 
-            if (this->get_parameters().free_surface_boundary_indicators.find(boundary_indicator)
-                == this->get_parameters().free_surface_boundary_indicators.end())
+            if (free_surface_boundary_indicators.find(boundary_indicator) == free_surface_boundary_indicators.end())
               continue;
 
             scratch.face_finite_element_values.reinit(cell, face_no);

@@ -154,7 +154,7 @@ namespace aspect
 
           Tensor<1,dim> current_u = scratch.current_velocity_values[q];
           // Subtract off the mesh velocity for ALE corrections if necessary
-          if (this->get_parameters().free_surface_enabled)
+          if (this->get_parameters().mesh_deformation_enabled)
             current_u -= scratch.mesh_velocity_values[q];
 
           const double JxW = scratch.finite_element_values.JxW(q);
@@ -595,7 +595,7 @@ namespace aspect
 
               Tensor<1,dim> current_u = scratch.face_current_velocity_values[q];
               // Subtract off the mesh velocity for ALE corrections if necessary
-              if (parameters.free_surface_enabled)
+              if (parameters.mesh_deformation_enabled)
                 current_u -= scratch.face_mesh_velocity_values[q];
 
               /**
@@ -848,7 +848,7 @@ namespace aspect
 
                   Tensor<1,dim> current_u = scratch.face_current_velocity_values[q];
                   // Subtract off the mesh velocity for ALE corrections if necessary
-                  if (parameters.free_surface_enabled)
+                  if (parameters.mesh_deformation_enabled)
                     current_u -= scratch.face_mesh_velocity_values[q];
 
                   const double neighbor_density_c_P              =
@@ -1080,7 +1080,7 @@ namespace aspect
                   scratch.face_current_velocity_values);
 
               // get the mesh velocity, as we need to subtract it off of the advection systems
-              if (parameters.free_surface_enabled)
+              if (parameters.mesh_deformation_enabled)
                 (*scratch.subface_finite_element_values)[introspection.extractors.velocities].get_function_values(this->get_mesh_velocity(),
                     scratch.face_mesh_velocity_values);
 
@@ -1204,7 +1204,7 @@ namespace aspect
 
                   Tensor<1,dim> current_u = scratch.face_current_velocity_values[q];
                   // Subtract off the mesh velocity for ALE corrections if necessary
-                  if (parameters.free_surface_enabled)
+                  if (parameters.mesh_deformation_enabled)
                     current_u -= scratch.face_mesh_velocity_values[q];
 
                   const double neighbor_density_c_P              =

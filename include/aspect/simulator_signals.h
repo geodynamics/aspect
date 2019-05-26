@@ -147,7 +147,7 @@ namespace aspect
      * conditions for which normal vectors are needed, i.e. calls to the
      * compute_no_normal_flux_constraints function for both the
      * velocity variable in the main simulator and the mesh velocity
-     * variable in the free surface model.
+     * variable in models with mesh deformation.
      *
      * The functions that connect to this signal must take a reference
      * to a parallel::distributed::Triangulation object as
@@ -161,7 +161,7 @@ namespace aspect
      * conditions for which normal vectors are needed, i.e. calls to the
      * compute_no_normal_flux_constraints function for both the
      * velocity variable in the main simulator and the mesh velocity
-     * variable in the free surface model.
+     * variable in models with mesh deformation.
      *
      * The functions that connect to this signal must take a reference
      * to a parallel::distributed::Triangulation object as

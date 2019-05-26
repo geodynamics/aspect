@@ -21,8 +21,8 @@ subsection Boundary velocity model
   set Zero velocity boundary indicators       = bottom
 end
 
-subsection Free surface
-  set Free surface boundary indicators = top
+subsection Mesh deformation
+  set Mesh deformation boundary indicators = top: free surface
 end
 
 subsection Material model

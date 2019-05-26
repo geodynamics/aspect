@@ -60,7 +60,7 @@ namespace aspect
          * zero and one. A value of zero means no stabilization. See Kaus
          * et. al. 2010 for more details.
          */
-        double free_surface_theta;
+        const double free_surface_theta;
     };
   }
 
@@ -90,15 +90,16 @@ namespace aspect
                             aspect::Assemblers::Manager<dim> &assemblers) const;
 
         /**
-         * A function that creates constraints for the velocity of surface
-         * vertices based on the solution velocity. This is equivalent to
-         * having a free surface, as the velocity essentially carries the
-         * nodes with it.
+         * A function that creates constraints for the velocity of certain mesh
+         * vertices (e.g. the surface vertices) for a specific boundary.
+         * The calling class will respect
+         * these constraints when computing the new vertex positions.
          */
         virtual
         void
-        deformation_constraints(const DoFHandler<dim> &free_surface_dof_handler,
-                                ConstraintMatrix &mesh_velocity_constraints) const;
+        compute_velocity_constraints_on_boundary(const DoFHandler<dim> &mesh_deformation_dof_handler,
+                                                 ConstraintMatrix &mesh_velocity_constraints,
+                                                 std::set<types::boundary_id> boundary_id) const;
 
         /**
          * Declare parameters for the free surface handling.

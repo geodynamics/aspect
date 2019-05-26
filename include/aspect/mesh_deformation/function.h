@@ -19,8 +19,8 @@
 */
 
 
-#ifndef _aspect_mesh_deformation_function_h
-#define _aspect_mesh_deformation_function_h
+#ifndef _aspect_mesh_deformation_boundary_function_h
+#define _aspect_mesh_deformation_boundary_function_h
 
 #include <aspect/mesh_deformation/interface.h>
 #include <aspect/simulator_access.h>
@@ -34,17 +34,24 @@ namespace aspect
   namespace MeshDeformation
   {
     template<int dim>
-    class Function : public Interface<dim>, public SimulatorAccess<dim>
+    class BoundaryFunction : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
-        Function();
+        BoundaryFunction();
 
         virtual void update();
 
+        /**
+         * A function that creates constraints for the velocity of certain mesh
+         * vertices (e.g. the surface vertices) for a specific boundary.
+         * The calling class will respect
+         * these constraints when computing the new vertex positions.
+         */
         virtual
         void
-        deformation_constraints(const DoFHandler<dim> &free_surface_dof_handler,
-                                ConstraintMatrix &mesh_constraints) const;
+        compute_velocity_constraints_on_boundary(const DoFHandler<dim> &mesh_deformation_dof_handler,
+                                                 ConstraintMatrix &mesh_velocity_constraints,
+                                                 std::set<types::boundary_id> boundary_id) const;
 
         /**
          * Declare parameters for the free surface handling.

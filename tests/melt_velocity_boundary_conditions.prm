@@ -123,10 +123,6 @@ subsection Melt settings
   set Include melt transport                  = true
 end
 
-subsection Free surface
-  set Free surface stabilization theta = 0.5
-end
-
 subsection Compositional fields
   set Number of fields = 1
   set Names of fields = porosity

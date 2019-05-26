@@ -27,7 +27,7 @@
 #include <aspect/simulator/assemblers/interface.h>
 #include <aspect/melt.h>
 #include <aspect/newton.h>
-#include <aspect/mesh_deformation/free_surface.h>
+#include <aspect/mesh_deformation/interface.h>
 #include <aspect/simulator/assemblers/stokes.h>
 #include <aspect/simulator/assemblers/advection.h>
 
@@ -513,7 +513,8 @@ namespace aspect
         Mp_preconditioner_AMG->initialize (system_preconditioner_matrix.block(1,1), Amg_data);
       }
 
-    if (parameters.free_surface_enabled || parameters.include_melt_transport || parameters.use_full_A_block_preconditioner)
+    // TODO only needed for free surface, or for all mesh deformations?
+    if (parameters.mesh_deformation_enabled || parameters.include_melt_transport || parameters.use_full_A_block_preconditioner)
       Amg_preconditioner->initialize (system_matrix.block(0,0),
                                       Amg_data);
     else
@@ -878,8 +879,8 @@ namespace aspect
           scratch.current_velocity_divergences);
 
     // get the mesh velocity, as we need to subtract it off of the advection systems
-    if (parameters.free_surface_enabled)
-      scratch.finite_element_values[introspection.extractors.velocities].get_function_values(free_surface->mesh_velocity,
+    if (parameters.mesh_deformation_enabled)
+      scratch.finite_element_values[introspection.extractors.velocities].get_function_values(mesh_deformation->mesh_velocity,
           scratch.mesh_velocity_values);
 
     // compute material properties and heating terms
@@ -989,8 +990,8 @@ namespace aspect
                 scratch.face_current_velocity_values);
 
             // get the mesh velocity, as we need to subtract it off of the advection systems
-            if (parameters.free_surface_enabled)
-              (*scratch.face_finite_element_values)[introspection.extractors.velocities].get_function_values(free_surface->mesh_velocity,
+            if (parameters.mesh_deformation_enabled)
+              (*scratch.face_finite_element_values)[introspection.extractors.velocities].get_function_values(mesh_deformation->mesh_velocity,
                   scratch.face_mesh_velocity_values);
 
             if (assemblers->advection_system_assembler_on_face_properties[advection_field.field_index()].need_face_material_model_data)

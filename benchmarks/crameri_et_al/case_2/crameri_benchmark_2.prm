@@ -96,10 +96,12 @@ subsection Boundary velocity model
 end
 
 
-subsection Free surface
-  set Free surface boundary indicators = top
-  # Theta from Kaus et al 2010
-  set Free surface stabilization theta = 0.5
+subsection Mesh deformation
+  set Mesh deformation boundary indicators = top: free surface
+  subsection Free surface
+    # Theta from Kaus et al 2010
+    set Free surface stabilization theta = 0.5
+  end
 end
 
 

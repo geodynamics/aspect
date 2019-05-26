@@ -28,7 +28,7 @@ namespace aspect
   namespace MeshDeformation
   {
     template <int dim>
-    Function<dim>::Function()
+    BoundaryFunction<dim>::BoundaryFunction()
       :
       function(dim)
     {}
@@ -37,7 +37,7 @@ namespace aspect
 
     template <int dim>
     void
-    Function<dim>::update ()
+    BoundaryFunction<dim>::update ()
     {
       // we get time passed as seconds (always) but may want
       // to reinterpret it in years
@@ -49,29 +49,35 @@ namespace aspect
 
 
 
+    /**
+     * A function that creates constraints for the velocity of certain mesh
+     * vertices (e.g. the surface vertices) for a specific boundary.
+     * The calling class will respect
+     * these constraints when computing the new vertex positions.
+     */
     template <int dim>
     void
-    Function<dim>::deformation_constraints(const DoFHandler<dim> &free_surface_dof_handler,
-                                           ConstraintMatrix &mesh_constraints) const
+    BoundaryFunction<dim>::compute_velocity_constraints_on_boundary(const DoFHandler<dim> &mesh_deformation_dof_handler,
+                                                                    ConstraintMatrix &mesh_velocity_constraints,
+                                                                    std::set<types::boundary_id> boundary_ids) const
     {
-      for (std::set<types::boundary_id>::const_iterator p = this->get_parameters().free_surface_boundary_indicators.begin();
-           p != this->get_parameters().free_surface_boundary_indicators.end(); ++p)
-        {
-          VectorTools::interpolate_boundary_values (free_surface_dof_handler,
-                                                    *p,
-                                                    function,
-                                                    mesh_constraints);
-        }
+      // Loop over all boundary indicators to set the velocity constraints
+      for (std::set<types::boundary_id>::const_iterator boundary_id = boundary_ids.begin();
+           boundary_id != boundary_ids.end(); ++boundary_id)
+        VectorTools::interpolate_boundary_values (mesh_deformation_dof_handler,
+                                                  *boundary_id,
+                                                  function,
+                                                  mesh_velocity_constraints);
     }
 
 
 
     template <int dim>
-    void Function<dim>::declare_parameters(ParameterHandler &prm)
+    void BoundaryFunction<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection ("Mesh deformation");
       {
-        prm.enter_subsection ("Function");
+        prm.enter_subsection ("Boundary function");
         {
           Functions::ParsedFunction<dim>::declare_parameters (prm, dim);
         }
@@ -81,27 +87,28 @@ namespace aspect
     }
 
     template <int dim>
-    void Function<dim>::parse_parameters(ParameterHandler &prm)
+    void BoundaryFunction<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection ("Mesh deformation");
       {
-        prm.enter_subsection("Function");
-        try
-          {
-            function.parse_parameters (prm);
-          }
-        catch (...)
-          {
-            std::cerr << "ERROR: FunctionParser failed to parse\n"
-                      << "\t'Mesh deformation.Function'\n"
-                      << "with expression\n"
-                      << "\t'" << prm.get("Function expression") << "'"
-                      << "More information about the cause of the parse error \n"
-                      << "is shown below.\n";
-            throw;
-          }
+        prm.enter_subsection("Boundary function");
+        {
+          try
+            {
+              function.parse_parameters (prm);
+            }
+          catch (...)
+            {
+              std::cerr << "ERROR: FunctionParser failed to parse\n"
+                        << "\t'Mesh deformation.BoundaryFunction'\n"
+                        << "with expression\n"
+                        << "\t'" << prm.get("Function expression") << "'"
+                        << "More information about the cause of the parse error \n"
+                        << "is shown below.\n";
+              throw;
+            }
+        }
         prm.leave_subsection();
-
       }
       prm.leave_subsection ();
     }
@@ -114,8 +121,8 @@ namespace aspect
 {
   namespace MeshDeformation
   {
-    ASPECT_REGISTER_MESH_DEFORMATION_MODEL(Function,
-                                           "function",
+    ASPECT_REGISTER_MESH_DEFORMATION_MODEL(BoundaryFunction,
+                                           "boundary function",
                                            "A plugin, which prescribes the surface mesh to "
                                            "deform according to an analytically prescribed "
                                            "function. Note that the function prescribes a "
