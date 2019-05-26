@@ -520,6 +520,11 @@ namespace aspect
 {
   namespace MaterialModel
   {
+#define INSTANTIATE(dim) \
+  template class ElasticAdditionalOutputs<dim>;
+
+    ASPECT_INSTANTIATE(INSTANTIATE)
+
     ASPECT_REGISTER_MATERIAL_MODEL(Viscoelastic,
                                    "viscoelastic",
                                    "An implementation of a simple linear viscoelastic rheology that "
