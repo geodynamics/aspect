@@ -1,0 +1,52 @@
+#!/bin/bash
+# licence
+
+# To make it as easy as possible for ASPECT developers to contribute to the 
+# World Builder, the same indenting program (astyle) and version (2.04) is used
+# to indent the files of the World Builder.
+
+if test ! -d source -o ! -d include ; then
+  echo "Error: The indenting script must be run from the top level directory of the World Builder."
+  exit
+fi
+
+if test ! -f doc/astyle-2.04.rc ; then
+	echo "Error: No style file found at 'doc/astyle-2.04.rc'."
+	exit
+fi
+
+if test -z "`which astyle`" ; then
+	echo "Error: Could not find the astyle program. You will need version 2.04 of astyle which "
+	echo "       can be found at https://sourceforge.net/projects/astyle/files/astyle/astyle%202.04/."
+	echo "       For more information on astyle see: http://astyle.sourceforge.net/."
+	exit
+fi
+
+if test "`astyle --version 2>&1`" != "Artistic Style Version 2.04" ; then
+	echo "Error: Found a different version of astyle then 2.04. Because different versions "
+	echo "       of astyle produce different styling output, only version 2.04 of astyle is "
+	echo "       allowed. It can be found at "
+	echo "       https://sourceforge.net/projects/astyle/files/astyle/astyle%202.04/."
+	echo "       For more information on astyle see: http://astyle.sourceforge.net/."
+	exit
+fi
+
+# collect all header and source files and process them in batches of 50 files
+# with up to 10 in parallel
+
+find include source app visualization tests/unit_tests \( -name '*.cc' -o -name '*.h' \) -print | xargs -n 50 -P 10 astyle --options=doc/astyle-2.04.rc
+# remove execute permission on source files:
+find include source app visualization tests/unit_tests \( -name '*.cc' -o -name '*.h' -o -name '*.prm' \) -print | xargs -n 50 -P 10 chmod -x
+
+# convert dos formatted files to unix file format by stripping out
+# carriage returns (15=0x0D):
+dos_to_unix()
+{
+    f=$1
+    tr -d '\015' <$f >$f.tmp
+    diff -q $f $f.tmp >/dev/null || mv $f.tmp $f
+    rm -f $f.tmp
+}
+export -f dos_to_unix
+find include source \( -name '*.cc' -o -name '*.h' -o -name '*.prm' \) -print | xargs -n 1 -P 10 -I {} bash -c 'dos_to_unix "$@"' _ {}
+

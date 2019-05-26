@@ -1,0 +1,30 @@
+{
+"version":"0.2",
+"cross section": [[100e3,100e3],[400e3,500e3]],
+"coordinate system":{"model":"spherical", "depth method":"starting point"},
+"features":
+[
+     {"model":"oceanic plate", "name":"First oceanic plate", "max depth":250e3, "coordinates":[[-10,-10],[-1,-10],[-1,-1],[-10,-1]],
+         "temperature models":[{"model":"uniform", "temperature":150}]},
+     
+     {"model":"oceanic plate", "name":"Second oceanic plate", "max depth":250e3, "coordinates":[[10,-10],[1,-10],[1,-1],[10,-1]],
+         "temperature models":[{"model":"uniform", "temperature":20}],
+         "composition models":[{"model":"uniform", "compositions":[2]}]},
+
+     {"model":"oceanic plate", "name":"Third oceanic plate", "max depth":250e3, "coordinates":[[-10,10],[-1,10],[-1,1],[-10,1]],
+         "composition models":[{"model":"uniform", "compositions":[3]}]},
+
+     {"model":"oceanic plate", "name":"Fourth oceanic plate", "max depth":250e3, "coordinates":[[10,10],[1,10],[1,1],[10,1]],
+         "temperature models":[{"model":"linear", "max depth":250e3}],
+         "composition models":[{"model":"uniform", "compositions":[4]}]},
+
+     {"model":"oceanic plate", "name":"Fifth oceanic plate", "max depth":250e3, "coordinates":[[-20,-20],[-11,-20],[-11,-11],[-20,-11]],
+         "temperature models":[{"model":"linear", "max depth":250e3, "top temperature":10, "bottom temperature":50}],
+         "composition models":[{"model":"uniform", "compositions":[5,6], "fractions":[0.25,0.75]}]},
+     
+     {"model":"oceanic plate", "name":"First oceanic plate", "max depth":250e3, "coordinates":[[20,-20],[-10,-20],[-10,-11],[20,-11]],
+         "temperature models":[{"model":"plate model", "max depth":250e3, "spreading velocity":0.01, "ridge coordinates":[[15,-20],[15,-15],[10,-10]]}],
+         "composition models":[{"model":"uniform", "compositions":[6]}]}
+     
+]
+}

@@ -1,0 +1,32 @@
+{
+"unsigned int":4,
+"double":"1.23456e2",
+"string":"mystring 0",
+"2d point": ["10", "11"],
+"3d point": ["12", "13", "14"],
+"double array" :[25,26,27],
+"point<2> array": [[10,11], [12,13], [14,15]],
+"point<3> array": [[20,21,22], [23,24,25], [26,27,28]],
+"subsection 1":
+{
+    "unsigned int":5,
+    "double":"2.23456e2",
+    "string":"mystring 1",
+    "2d point": ["15", "16"],
+    "3d point": ["17", "18", "19"],
+    "double array":[35,36,37],
+    "point<2> array": [[20,21], [22,23], [24,25]],
+    "point<3> array": [[30,31,32], [33,34,35], [36,37,38]],
+    "subsection 2": 
+    {
+        "unsigned int":6,
+        "double":"3.23456e2",
+        "string":"mystring 2",
+        "2d point": ["20", "21"],
+        "3d point": ["22", "23", "24"],
+        "double array":[45,46,47],
+        "point<2> array": [[40,41], [42,43], [44,45]],
+        "point<3> array": [[40,41,42], [43,44,45], [46,47,48]]
+     }
+}
+}

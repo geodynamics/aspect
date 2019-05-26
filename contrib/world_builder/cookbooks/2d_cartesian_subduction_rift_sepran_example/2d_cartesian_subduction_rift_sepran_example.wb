@@ -1,0 +1,104 @@
+{
+  "version":"0.2",
+  "cross section":[[0,0],[100,0]],
+  "features":
+  [
+    // defining an oceanic plate on the left side of the model
+    {
+      "model":"oceanic plate", "name":"oceanic plate", "max depth":95e3, 
+      "coordinates":[[-1e3,-1e3],[1000e3,-1e3],[1000e3,1e3],[-1e3,1e3]],
+      "temperature models":
+      [
+        {
+          "model":"plate model", "max depth":95e3, "bottom temperature":1600, 
+          "spreading velocity":0.01, 
+          "ridge coordinates":[[100e3,-1e3],[0e3,1e3]]
+        }
+      ],
+      "composition models":
+      [
+        {"model":"uniform", "compositions":[0], "max depth":10e3}
+      ]
+    },
+    // defining a weakzone oceanic plate at the first 100 km
+    {
+      "model":"oceanic plate", "name":"weak zone left", "max depth":95e3, 
+      "coordinates":[[-1e3,-1e3],[100e3,-1e3],[100e3,1e3],[-1e3,1e3]],
+      "temperature models":
+      [
+        {
+          "model":"linear", "max depth":95e3, "bottom temperature":1600, 
+          "top temperature":1573
+        }
+      ]
+    },
+    // defining a continental plate at the right side of the model
+    {
+      "model":"continental plate", "name":"continental plate", "max depth":95e3, 
+      "coordinates":[[1000e3,-1e3],[2001e3,-1e3],[2001e3,1e3],[1000e3,1e3]],
+      "temperature models":
+      [
+        {"model":"linear", "max depth":95e3, "bottom temperature":1600}
+      ]
+    },
+    // defining an oceanic plate as weakzone at the rightmost side of the model
+    {
+      "model":"oceanic plate", "name":"weak zone right", "max depth":95e3, 
+      "coordinates":[[1900e3,-1e3],[2000e3,-1e3],[2000e3,1e3],[1900e3,1e3]],
+      "temperature models":
+      [
+        {
+          "model":"linear", "max depth":95e3, "bottom temperature":1600, 
+          "top temperature":1573
+        }
+      ]
+    },
+    // defining the upper mantle
+    {
+      "model":"mantle layer", "name":"upper mantle", 
+      "min depth":95e3, "max depth":660e3, 
+      "coordinates":[[-1e3,-1e3],[2001e3,-1e3],[2001e3,1e3],[-1e3,1e3]],
+      "temperature models":
+      [
+        {"model":"linear", "max depth":660e3, 
+         "top temperature":1600, "bottom temperature":1820}
+      ]
+    },
+    // defining the lower mantle
+    {
+      "model":"mantle layer", "name":"lower mantle", 
+      "min depth":660e3, "max depth":1160e3, 
+      "coordinates":[[-1e3,-1e3],[2001e3,-1e3],[2001e3,1e3],[-1e3,1e3]],
+      "temperature models":
+      [
+        {"model":"linear", "max depth":1160e3, 
+        "top temperature":1820, "bottom temperature":2000}
+      ]
+    },
+    // defining the subducting plate
+    {
+      "model":"subducting plate", "name":"Subducting plate", 
+      "coordinates":[[1000e3,-1e3],[1000e3,1e3]], "dip point":[2000e3,0],
+      "segments":
+      [
+        {"length":200e3, "thickness":[95e3], "angle":[0,45]}, 
+        {"length":200e3, "thickness":[95e3], "angle":[45]}
+      ],
+      "temperature models":
+      [
+        {"model":"plate model", "density":3300, "plate velocity":0.01 }
+      ],
+      "composition models":
+      [
+        {"model":"uniform", "compositions":[0], "max distance slab top":10e3}
+      ]
+    },
+    // defining a continental plate on top of the slab to force 293.15 K at 
+    // the surface near the slab
+    {
+      "model":"continental plate", "name":"top on slab", "max depth":1,
+      "coordinates":[[900e3,-1e3],[1100e3,-1e3],[1100e3,1e3],[900e3,1e3]],
+      "temperature models":[{"model":"uniform", "temperature":293.15}]
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+"version":"0.2",
+"cross section": [[0,0],[400e3,500e3]],
+"coordinate system":{"model":"cartesian"},
+"features":
+[
+  {"model":"oceanic plate", "name":"First oceanic plate", "max depth":250e3, "coordinates":[[-1e3,500e3],[500e3,500e3],[500e3,1000e3],[-1e3,1000e3]],
+     "temperature models":[{"model":"uniform", "temperature":150}]},
+     
+  {"model":"oceanic plate", "name":"Second oceanic plate", "max depth":250e3, "coordinates":[[2000e3,2000e3],[1000e3,2000e3],[1000e3,1000e3],[2000e3,1000e3]],
+     "temperature models":[{"model":"uniform", "temperature":20}],
+     "composition models":[{"model":"uniform", "compositions":[2]}]},
+
+  {"model":"oceanic plate", "name":"Third oceanic plate", "max depth":250e3, "coordinates":[[-1e3,500e3],[500e3,500e3],[500e3,1000e3],[-1e3,1000e3]],
+     "composition models":[{"model":"uniform", "compositions":[3]}]},
+
+  {"model":"oceanic plate", "name":"Fourth oceanic plate", "max depth":250e3, "coordinates":[[-1e3,1500e3],[500e3,1500e3],[500e3,2000e3],[-1e3,2000e3]],
+     "temperature models":[{"model":"linear", "max depth":250e3}],
+     "composition models":[{"model":"uniform", "compositions":[4]}]},
+
+  {"model":"oceanic plate", "name":"Fifth oceanic plate", "max depth":250e3, "coordinates":[[500e3,-1e3],[500e3,500e3],[1000e3,500e3],[1000e3,-1e3]],
+     "temperature models":[{"model":"linear", "max depth":250e3, "top temperature":10, "bottom temperature":50}],
+     "composition models":[{"model":"uniform", "compositions":[5,6], "fractions":[0.25,0.75]}]},
+     
+  {"model":"oceanic plate", "name":"Sixth oceanic plate", "max depth":250e3, "coordinates":[[1100e3,-1e3],[1100e3,750e3],[2500e3,750e3],[2500e3,-1e3]],
+     "temperature models":[{"model":"plate model", "max depth":250e3, "spreading velocity":0.01, "ridge coordinates":[[1500e3,-1e3],[1500e3,750e3]]}]},
+     
+  {"model":"oceanic plate", "name":"Seventh oceanic plate", "max depth":250e3, "coordinates":[[50e3,-1e3],[400e3,-1e3],[400e3,400e3],[50e3,400e3]],
+     "temperature models":[{"model":"plate model", "max depth":250e3, "spreading velocity":0.01, "ridge coordinates":[[1500e3,-1e3],[1500e3,750e3]]}],
+     "composition models":[{"model":"uniform", "compositions":[6], "max depth":75e3},
+                          {"model":"uniform", "compositions":[7], "min depth":75e3, "max depth":150e3},
+                           {"model":"uniform", "compositions":[8,9], "fractions":[0.25,0.75], "min depth":150e3, "max depth":225e3}]}
+]
+}

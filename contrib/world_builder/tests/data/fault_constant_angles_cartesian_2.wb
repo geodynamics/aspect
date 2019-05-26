@@ -1,0 +1,51 @@
+{
+"version":"0.2",
+"cross section": [[100e3,100e3],[400e3,100e3]],
+"coordinate system":{"model":"cartesian"},
+"features":
+[
+     {"model":"fault", "name":"First subducting plate", "coordinates":[[0e3,500e3],[500e3,500e3],[501e3,500e3],[1000e3,750e3]], "dip point":[2200e3,2200e3],
+         "segments":[{"length":200e3, "thickness":[100e3,100e3], "angle":[45,45], "temperature models":[{"model":"linear", "max distance fault center":100e3, "top temperature":1, "bottom temperature":7}],"composition models":[{"model":"uniform", "compositions":[3]}]}, 
+                     {"length":200e3, "thickness":[100e3,100e3], "angle":[60,60], "temperature models":[{"model":"uniform", "temperature":2}]}, 
+                     {"length":150e3, "thickness":[100e3,100e3], "angle":[90,90], "temperature models":[{"model":"uniform", "temperature":3}]}],
+         "sections":
+         [
+           {"coordinate":2, "segments":[{"length":200e3, "thickness":[100e3,100e3], "top truncation":[0], "angle":[45],"temperature models":[{"model":"uniform", "temperature":4}],"composition models":[{"model":"uniform", "compositions":[5]}]}, 
+                                        {"length":150e3, "thickness":[100e3], "top truncation":[0], "angle":[40],"temperature models":[{"model":"uniform", "temperature":5}]}, 
+                                        {"length":150e3, "thickness":[100e3], "angle":[30],"temperature models":[{"model":"uniform", "temperature":6}]}]},
+           {"coordinate":3, "segments":[{"length":200e3, "thickness":[200e3,100e3], "angle":[30], "top truncation":[0,100e3],"temperature models":[{"model":"uniform", "temperature":5}]}, 
+                                        {"length":150e3, "thickness":[100e3], "angle":[40], "top truncation":[100e3,0],"temperature models":[{"model":"uniform", "temperature":6}]}, 
+                                        {"length":150e3, "thickness":[100e3,0], "angle":[70],"temperature models":[{"model":"uniform", "temperature":7}]}]}
+         ],
+         "temperature models":[{"model":"uniform", "temperature":8}],
+         "composition models":[{"model":"uniform", "compositions":[3,4], "fractions":[0.25,0.75]}]},
+
+    {"model":"fault", "name":"none fault", "coordinates":[[0e3,150e3],[500e3,150e3],[500e3,150e3],[1000e3,200e3]], "dip point":[0,-1],
+         "min depth":0, "max depth":1e10,
+         "segments":[{"length":200e3, "thickness":[200e3,200e3], "angle":[45]}, {"length":200e3, "thickness":[100e3], "angle":[60]}, {"length":150e3, "thickness":[200e3,200e3], "angle":[90]}],
+         "sections":[
+          {"coordinate":2, "segments":[{"length":200e3, "thickness":[100e3,200e3], "angle":[45], 
+                                        "temperature models":[{"model":"uniform", "max distance fault center":66e3, "temperature":10},
+                                                              {"model":"uniform", "min distance fault center":66e3, "max distance fault center":133e3, "temperature":11},
+                                                              {"model":"uniform", "min distance fault center":133e3, "max distance fault center":199e3, "temperature":12}]}, 
+                                       {"length":100e3, "thickness":[100e3], "angle":[30]}, {"length":150e3, "thickness":[100e3], "angle":[30]}]},
+          {"coordinate":3, "segments":[{"length":200e3, "thickness":[200e3,200e3], "angle":[30],
+                                        "temperature models":[{"model":"uniform", "max distance fault center":66e3, "temperature":10},
+                                                              {"model":"uniform", "min distance fault center":66e3, "max distance fault center":133e3, "temperature":11},
+                                                              {"model":"uniform", "min distance fault center":133e3, "max distance fault center":199e3, "temperature":12}]}, 
+                                       {"length":100e3, "thickness":[100e3], "angle":[30]}, {"length":150e3, "thickness":[100e3,0], "angle":[70]}]}
+         ]},
+
+     {"model":"fault", "name":"uniform subducting plate", "coordinates":[[0e3,500e3],[500e3,500e3],[1000e3,750e3]], "dip point":[0e3,0e3],
+         "segments":[{"length":200e3, "thickness":[100e3,100e3], "angle":[45]}, {"length":200e3, "thickness":[100e3], "angle":[60]}, {"length":150e3, "thickness":[100e3,100e3], "angle":[90]}],
+         "temperature models":[{"model":"adiabatic"}],
+         "composition models":[{"model":"uniform", "max distance fault center":33e3, "compositions":[0]},
+                               {"model":"uniform", "min distance fault center":33e3, "max distance fault center":66e3, "compositions":[1]},
+                               {"model":"uniform", "min distance fault center":66e3, "max distance fault center":99e3, "compositions":[2,3], "fractions":[0.25,0.75]}]},
+
+    {"model":"fault", "name":"zero thickness", "coordinates":[[0e3,250e3],[500e3,250e3],[1000e3,500e3]], "dip point":[0,1],
+         "min depth":0, "max depth":1e10,
+         "segments":[{"length":200e3, "thickness":[0e3], "angle":[45]}, {"length":200e3, "thickness":[0e3], "angle":[60]}, {"length":150e3, "thickness":[0e3,100e3], "angle":[90]}]}
+
+]
+}

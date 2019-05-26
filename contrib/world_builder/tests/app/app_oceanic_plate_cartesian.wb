@@ -1,0 +1,36 @@
+{
+"version":"0.2",
+"cross section": [[100e3,100e3],[400e3,500e3]],
+"coordinate system":{"model":"cartesian"},
+"features":
+[
+  {"model":"oceanic plate", "name":"First continental plate", "max depth":250e3, "coordinates":[[-1e3,500e3],[500e3,500e3],[500e3,1000e3],[-1e3,1000e3]],
+    "temperature models":[{"model":"uniform", "max depth":75e3, "temperature":150},
+                          {"model":"uniform", "min depth":75e3, "max depth":150e3, "temperature":100},
+                          {"model":"uniform", "min depth":150e3, "max depth":22.5e3, "temperature":50}]},
+     
+  {"model":"oceanic plate", "name":"Second continental plate", "coordinates":[[2000e3,2000e3],[1000e3,2000e3],[1000e3,1000e3],[2000e3,1000e3]],
+    "temperature models":[{"model":"adiabatic", "potential mantle temperature":20}],
+    "composition models":[{"model":"uniform", "compositions":[2]}]},
+
+  {"model":"oceanic plate", "name":"Third continental plate", "max depth":250e3, "coordinates":[[-1e3,500e3],[500e3,500e3],[500e3,1000e3],[-1e3,1000e3]],
+    "composition models":[{"model":"uniform", "compositions":[3]}]},
+
+  {"model":"oceanic plate", "name":"Fourth continental plate", "max depth":250e3, "coordinates":[[-1e3,1500e3],[500e3,1500e3],[500e3,2000e3],[-1e3,2000e3]],
+    "temperature models":[{"model":"linear", "max depth":250e3}],
+    "composition models":[{"model":"uniform", "compositions":[4]}]},
+
+   {"model":"oceanic plate", "name":"Fifth continental plate", "max depth":250e3, "coordinates":[[150e3,-1e3],[150e3,500e3],[1000e3,500e3],[1000e3,-1e3]],
+    "temperature models":[{"model":"linear", "top temperature":12, "bottom temperature":50, "max depth":250e3}],
+    "composition models":[{"model":"uniform", "compositions":[5,6], "fractions":[0.25,0.75]}]},
+
+   {"model":"oceanic plate", "name":"Sixth continental plate", "max depth":250e3, "coordinates":[[150e3,-1e3],[150e3,500e3],[250e3,500e3],[250e3,-1e3]],
+     "temperature models":[{"model":"uniform", "max depth":75e3, "temperature":6},
+                           {"model":"uniform", "min depth":75e3, "max depth":225e3, "max depth":150e3, "temperature":7},
+                           {"model":"uniform", "min depth":150e3, "temperature":8}],
+     "composition models":[{"model":"uniform", "max depth":75e3, "compositions":[6,7], "fractions":[0.25,0.75]},
+                           {"model":"uniform", "min depth":75e3, "max depth":150e3, "compositions":[7]},
+                           {"model":"uniform", "min depth":150e3, "max depth":225e3, "compositions":[8]}]}
+     
+]
+}

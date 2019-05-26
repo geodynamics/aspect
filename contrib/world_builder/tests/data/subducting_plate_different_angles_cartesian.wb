@@ -1,0 +1,17 @@
+{
+"version":"0.2",
+"cross section": [[100e3,100e3],[400e3,500e3]],
+"coordinate system":{"model":"cartesian"},
+"features":
+[
+     {"model":"subducting plate", "name":"First subducting plate", "coordinates":[[0e3,500e3],[500e3,500e3],[1000e3,750e3]], "dip point":[1200e3,1200e3],
+         "segments":[{"length":200e3, "thickness":[100e3,100e3], "angle":[0,60]}, {"length":200e3, "thickness":[100e3], "angle":[60,0]}, {"length":200e3, "thickness":[100e3], "angle":[0,60]}],
+         "sections":
+         [
+           {"coordinate":1, "segments":[{"length":200e3, "thickness":[100e3,0], "angle":[0,60]}, {"length":100e3, "thickness":[0,100e3], "angle":[60,90]}, {"length":150e3, "thickness":[100e3], "angle":[90,90]}]},
+           {"coordinate":1, "segments":[{"length":200e3, "thickness":[100e3,100e3], "angle":[0,60]}, {"length":100e3, "thickness":[100e3,100e3], "angle":[60,0]}, {"length":150e3, "thickness":[100e3], "angle":[0]}]}
+         ],
+         "temperature models":[{"model":"plate model", "density":3300, "plate velocity":0.01 }],
+         "composition models":[{"model":"uniform", "compositions":[0]}]}
+]
+}
