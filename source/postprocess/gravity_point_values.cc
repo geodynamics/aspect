@@ -220,7 +220,7 @@ namespace aspect
       // *** First calculate the number of satellites according to the sampling scheme:
       unsigned int n_satellites;
       if (sampling_scheme == map)
-        n_satellites = n_points_radius * (n_points_longitude+1) * (n_points_latitude+1);
+        n_satellites = n_points_radius * n_points_longitude * n_points_latitude;
       else if (sampling_scheme == list)
         n_satellites = longitude_list.size();
       else n_satellites = 1;
@@ -232,13 +232,13 @@ namespace aspect
           unsigned int p = 0;
           for (unsigned int h=0; h < n_points_radius; ++h)
             {
-              for (unsigned int i=0; i < n_points_longitude+1; ++i)
+              for (unsigned int i=0; i < n_points_longitude; ++i)
                 {
-                  for (unsigned int j=0; j < n_points_latitude+1; ++j)
+                  for (unsigned int j=0; j < n_points_latitude; ++j)
                     {
                       satellites_coordinate[p][0] = minimum_radius + ((maximum_radius - minimum_radius) / n_points_radius) * h;
-                      satellites_coordinate[p][1] = (minimum_colongitude + ((maximum_colongitude - minimum_colongitude) / n_points_longitude) * i) * numbers::PI / 180.;
-                      satellites_coordinate[p][2] = (minimum_colatitude + ((maximum_colatitude - minimum_colatitude) / n_points_latitude) * j) * numbers::PI / 180.;
+                      satellites_coordinate[p][1] = (minimum_colongitude + ((maximum_colongitude - minimum_colongitude) / (n_points_longitude-1)) * i) * numbers::PI / 180.;
+                      satellites_coordinate[p][2] = (minimum_colatitude + ((maximum_colatitude - minimum_colatitude) / (n_points_latitude-1)) * j) * numbers::PI / 180.;
                       ++p;
                     }
                 }
