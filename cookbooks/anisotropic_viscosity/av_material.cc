@@ -738,6 +738,9 @@ namespace MaterialModel
                                                           std::cref(*this),
                                                           std::placeholders::_1,
                                                           std::placeholders::_2));
+		AssertThrow((dim==2),
+		                ExcMessage("For now this works only in 2D"));
+
 		}
 	template <int dim>
 	void
@@ -783,6 +786,8 @@ namespace MaterialModel
 
         grad_u = velocity_gradients[0];
       }
+
+    std::vector<std::array<double,3> > Viscoeigenvalues(in.position.size());
 
     for (unsigned int q=0; q<in.position.size(); ++q)
       {
@@ -841,8 +846,28 @@ namespace MaterialModel
                                          - 2*n[i]*n[j]*n[k]*n[l];
 
               if (anisotropic_viscosity != nullptr)
+              {
                   anisotropic_viscosity->stress_strain_directors[q] =dealii::identity_tensor<dim> ()
                   - (1. - eta_0) * Lambda;
+                  SymmetricTensor<2,3> ViscoTensor;
+                  ViscoTensor[0][0]=anisotropic_viscosity->stress_strain_directors[q][0][0][0][0];
+                  ViscoTensor[0][1]=anisotropic_viscosity->stress_strain_directors[q][0][0][1][1];
+                  ViscoTensor[0][2]=anisotropic_viscosity->stress_strain_directors[q][0][0][0][1];
+                  ViscoTensor[1][0]=anisotropic_viscosity->stress_strain_directors[q][1][1][0][0];
+                  ViscoTensor[1][1]=anisotropic_viscosity->stress_strain_directors[q][1][1][1][1];
+                  ViscoTensor[1][2]=anisotropic_viscosity->stress_strain_directors[q][1][1][0][1];
+                  ViscoTensor[2][0]=anisotropic_viscosity->stress_strain_directors[q][0][1][0][0];
+                  ViscoTensor[2][1]=anisotropic_viscosity->stress_strain_directors[q][0][1][1][1];
+                  ViscoTensor[2][2]=anisotropic_viscosity->stress_strain_directors[q][0][1][0][1];
+
+                  Viscoeigenvalues[q] = eigenvalues(ViscoTensor);
+                  for (unsigned int i=0; i<3; ++i)
+                  {
+                	  AssertThrow((Viscoeigenvalues[q][i]>0),
+                	  		                ExcMessage("Error! Negative eigenvalue in the viscosity tensor"));
+                  //Assert (anisotropic_viscosity->stress_strain_directors[q] has only positive eigenvalues);
+                  }
+              }
           }
       }
   }
@@ -960,6 +985,7 @@ namespace MaterialModel
                                                                   std::cref(*this),
                                                                   std::placeholders::_1,
                                                                   std::placeholders::_2));
+
         }
         
         template <int dim>
