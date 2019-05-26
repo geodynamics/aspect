@@ -76,7 +76,6 @@ namespace aspect
       {
         prm.enter_subsection("Simpler model");
         {
-          EquationOfState::LinearizedIncompressible<dim>::set_number_of_compositions(0);
           EquationOfState::LinearizedIncompressible<dim>::declare_parameters (prm);
 
           prm.declare_entry ("Reference temperature", "293",
@@ -104,7 +103,6 @@ namespace aspect
       {
         prm.enter_subsection("Simpler model");
         {
-          equation_of_state.set_number_of_compositions(0);
           equation_of_state.parse_parameters (prm);
 
           reference_T                = prm.get_double ("Reference temperature");

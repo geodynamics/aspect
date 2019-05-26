@@ -29,9 +29,6 @@ namespace aspect
     namespace EquationOfState
     {
       template <int dim>
-      unsigned int LinearizedIncompressible<dim>::number_of_compositions;
-
-      template <int dim>
       void
       LinearizedIncompressible<dim>::
       evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
@@ -78,7 +75,8 @@ namespace aspect
 
       template <int dim>
       void
-      LinearizedIncompressible<dim>::declare_parameters (ParameterHandler &prm)
+      LinearizedIncompressible<dim>::declare_parameters (ParameterHandler &prm,
+                                                         const unsigned int n_compositions)
       {
         prm.declare_entry ("Reference density", "3300",
                            Patterns::Double (0),
@@ -95,7 +93,7 @@ namespace aspect
                            Patterns::Double (0),
                            "The value of the thermal expansion coefficient $\\alpha$. "
                            "Units: $1/K$.");
-        if (number_of_compositions > 0)
+        if (n_compositions > 0)
           prm.declare_entry ("Density differential for compositional field 1", "0",
                              Patterns::Double(),
                              "If compositional fields are used, then one would frequently want "
@@ -107,7 +105,7 @@ namespace aspect
                              "The composition-dependence adds a term of the kind $+\\Delta \\rho \\; c_1(\\mathbf x)$. "
                              "This parameter describes the value of $\\Delta \\rho$. Units: $kg/m^3/\\textrm{unit "
                              "change in composition}$.");
-        if (number_of_compositions > 1)
+        if (n_compositions > 1)
           prm.declare_entry ("Density differential for compositional field 2", "0",
                              Patterns::Double(),
                              "If compositional fields are used, then one would frequently want "
@@ -125,13 +123,15 @@ namespace aspect
 
       template <int dim>
       void
-      LinearizedIncompressible<dim>::parse_parameters (ParameterHandler &prm)
+      LinearizedIncompressible<dim>::parse_parameters (ParameterHandler &prm,
+                                                       const unsigned int n_compositions)
       {
         reference_rho              = prm.get_double ("Reference density");
         reference_T                = prm.get_double ("Reference temperature");
         reference_specific_heat    = prm.get_double ("Reference specific heat");
         thermal_alpha              = prm.get_double ("Thermal expansion coefficient");
 
+        number_of_compositions = n_compositions;
         compositional_delta_rhos.resize(number_of_compositions);
         if (number_of_compositions > 0)
           compositional_delta_rhos[0]    = prm.get_double ("Density differential for compositional field 1");
@@ -139,14 +139,6 @@ namespace aspect
           compositional_delta_rhos[1]    = prm.get_double ("Density differential for compositional field 2");
       }
 
-      template <int dim>
-      void
-      LinearizedIncompressible<dim>::
-      set_number_of_compositions (const unsigned int n_comp)
-      {
-        number_of_compositions = n_comp;
-        return;
-      }
     }
   }
 }

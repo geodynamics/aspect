@@ -144,8 +144,7 @@ namespace aspect
       {
         prm.enter_subsection("Composition reaction model");
         {
-          EquationOfState::LinearizedIncompressible<dim>::set_number_of_compositions(2);
-          EquationOfState::LinearizedIncompressible<dim>::declare_parameters (prm);
+          EquationOfState::LinearizedIncompressible<dim>::declare_parameters (prm, 2);
 
           prm.declare_entry ("Reference temperature", "293",
                              Patterns::Double (0),
@@ -191,8 +190,7 @@ namespace aspect
       {
         prm.enter_subsection("Composition reaction model");
         {
-          equation_of_state.set_number_of_compositions(2);
-          equation_of_state.parse_parameters (prm);
+          equation_of_state.parse_parameters (prm, 2);
 
           reference_T                = prm.get_double ("Reference temperature");
           eta                        = prm.get_double ("Viscosity");

@@ -63,25 +63,23 @@ namespace aspect
            */
           static
           void
-          declare_parameters (ParameterHandler &prm);
+          declare_parameters (ParameterHandler &prm,
+                              const unsigned int n_compositions = 0);
 
           /**
            * Read the parameters this class declares from the parameter file.
            */
           void
-          parse_parameters (ParameterHandler &prm);
+          parse_parameters (ParameterHandler &prm,
+                            const unsigned int n_compositions = 0);
 
-          static
-          void
-          set_number_of_compositions (const unsigned int n_comp);
-
-          static unsigned int number_of_compositions;
 
         private:
           double reference_rho;
           double reference_T;
           double thermal_alpha;
           double reference_specific_heat;
+          unsigned int number_of_compositions;
           std::vector<double> compositional_delta_rhos;
       };
     }
