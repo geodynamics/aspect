@@ -152,6 +152,7 @@ CONFIGURE_FILE(
 # Next, set up the testsuite
 
 SET(ASPECT_RUN_ALL_TESTS OFF CACHE BOOL "Set up complete test suite to run.")
+SET(ASPECT_NEED_TEST_CONFIGURE ON CACHE BOOL "If true, reconfigure test project.")
 SET(ASPECT_COMPARE_TEST_RESULTS ON CACHE BOOL "Compare test results with high accuracy.")
 
 CONFIGURE_FILE(
@@ -165,8 +166,9 @@ CONFIGURE_FILE(
   @ONLY
 )
 
+# enable all tests and force a re-run of the cmake configuration in the test/ folder:
 ADD_CUSTOM_TARGET(setup_tests
-  COMMAND ${CMAKE_COMMAND} -D ASPECT_RUN_ALL_TESTS=ON -D PRINT_TEST_SUMMARY_AS_IMPORTANT=ON . >/dev/null
+  COMMAND ${CMAKE_COMMAND} -D ASPECT_RUN_ALL_TESTS=ON -D ASPECT_NEED_TEST_CONFIGURE=ON -D PRINT_TEST_SUMMARY_AS_IMPORTANT=ON . >/dev/null
   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
   COMMENT "Enabling all tests ...")
 
@@ -222,13 +224,18 @@ IF(EXISTS ${CMAKE_SOURCE_DIR}/unit_tests/CMakeLists.txt)
   ADD_DEPENDENCIES(test run_unit_tests)
 ENDIF()
 
-IF(EXISTS ${CMAKE_SOURCE_DIR}/tests/CMakeLists.txt)
+IF(EXISTS ${CMAKE_SOURCE_DIR}/tests/CMakeLists.txt
+  AND ${ASPECT_NEED_TEST_CONFIGURE})
+
   # Hook up the tests:
   FILE(APPEND ${CMAKE_BINARY_DIR}/CTestTestfile.cmake "SUBDIRS(tests)\n")
 
   FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests)
 
   SET(aspect_binary ${CMAKE_BINARY_DIR}/aspect)
+
+  # set a flag so we don't need to rerun this configuration step every time:
+  SET(ASPECT_NEED_TEST_CONFIGURE OFF CACHE BOOL "" FORCE)
 
   MESSAGE(STATUS "Setting up test project, see tests/setup_tests.log for details.")
   EXECUTE_PROCESS(
@@ -328,7 +335,7 @@ FILE(WRITE ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/print_usage.cmake
 #      ${_make_command} distclean      - to clean the directory from all generated
 #                               files (includes clean, runclean and the removal
 #                               of the generated build system)
-#      ${_make_command} setup_tests    - enable all tests
+#      ${_make_command} setup_tests    - enable all tests and re-run test detection
 #      ${_make_command} indent         - fix indentation of all source files
 #      ${_make_command} info           - to view this message again
 \")")
