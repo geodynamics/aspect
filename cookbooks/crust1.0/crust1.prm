@@ -1,0 +1,146 @@
+# Define the number of space dimensions we would like to 
+# work in:
+set Dimension                              = 3 
+
+# Specify the time you want to let the model run for in 
+# years and the output directory. Here we only calculate
+# the instantaneous solution.
+set End time                               = 0
+set CFL number                             = 0.1
+set Use years in output instead of seconds = true
+set Output directory = output_crust1
+set Nonlinear solver scheme = no Advection, no Stokes 
+#set Nonlinear solver scheme = single Advection, single Stokes
+
+# The following variables describe how the pressure should
+# be normalized. Here, we choose a zero average pressure
+# at the surface of the domain 
+set Pressure normalization                 = surface
+set Surface pressure                       = 0
+#set Surface adiabatic temperature         = 0
+
+# Element types
+subsection Discretization
+  set Composition polynomial degree     = 1
+  set Stokes velocity polynomial degree = 1
+  set Temperature polynomial degree     = 1
+  set Use locally conservative discretization = true
+end
+
+
+# This section specifies the temperature at the boundary of 
+# the domain. Here we set the temperature to be constant,
+# but different from the reference temperature to approximate
+# boundary layers.
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = top, bottom
+  set List of model names = spherical constant
+  subsection Spherical constant
+    set Inner temperature = 293
+    set Outer temperature = 293
+  end
+end
+
+# This section describes the gravity field, which is pointing
+# towards the Earth's center with the same magnitude of 10 m/s^2
+# everywhere
+subsection Gravity model
+  set Model name = radial constant
+  subsection Radial constant
+    set Magnitude = 10
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function 
+  subsection Function
+    set Function expression = 293
+  end
+end
+
+subsection Material model
+  set Model name = crust1
+    subsection Crust1
+    set Reference density                 = 3300
+    set Viscosities                       = 1e22
+    set Reference temperature             = 293
+  end
+end
+
+# Here we specify the geometry of the domain, which is 
+# a spherical shell with inner radius of 3481km and 
+# outer radius of 6371km
+subsection Geometry model
+  set Model name = spherical shell
+  subsection Spherical shell
+    set Inner radius  = 6310000
+    set Outer radius  = 6377000
+    set Cells along circumference = 12 
+  end
+end
+
+# I use a compositional field to directly represent density
+subsection Compositional fields
+  set Number of fields = 1
+  set Names of fields = crust1_density
+end
+
+# Read in winterc file
+subsection Initial composition model
+  set Model name = crust1
+end
+
+
+# For this calculation we only do 2 global refinement steps. This resolution
+# is too low to fully resolve the mantle flow, however it does capture
+# the main features.
+subsection Mesh refinement
+  set Initial global refinement             = 4
+  set Initial adaptive refinement           = 0
+  set Skip solvers on initial refinement    = true
+  set Skip setup initial conditions on initial refinement = true
+  set Strategy                              = minimum refinement function
+  subsection Minimum refinement function
+    set Function constants                  = pi = 3.141592
+    set Coordinate system                   = spherical
+    set Variable names                      = depth, phi, theta
+    set Function expression                 = if (depth>6366000, 9, 8)
+    #set Function expression                 = if (depth>5976000,if(depth>6300000, 8, 6),5)
+    #set Function expression                 = if ((depth>6350000) && (phi>65*pi/180) && (phi<95*pi/180) && (theta>50*pi/180) && (theta<85*pi/180), 8, 4)
+  end
+end
+
+# We assume free slip at the inner and outer boundary
+subsection Boundary velocity model
+  #set Tangential velocity boundary indicators = top, bottom
+  set Zero velocity boundary indicators = top, bottom
+end
+
+
+# We output the density, velocity, dynamic topography, geoid and heat flux density
+# for plotting. 
+subsection Postprocess
+  set List of postprocessors = visualization, basic statistics, gravity calculation, composition statistics
+
+  subsection Visualization
+    set Output format                 = vtu
+    set List of output variables      = density
+    set Time between graphical output = 0
+    set Number of grouped files       = 1 
+  end
+
+  subsection Gravity calculation
+    #set Time between gravity output = 200
+    set Time steps between gravity output = 10
+    set Sampling scheme             = map
+    set Quadrature degree increase  = 0
+    set Minimum radius              = 6596000
+    set Number points longitude     = 360
+    set Number points latitude      = 180
+  end
+
+ # subsection Geoid
+ #   set Also output the gravity anomaly = true
+  #end
+
+end
