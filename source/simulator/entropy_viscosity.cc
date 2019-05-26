@@ -601,8 +601,7 @@ namespace aspect
             // SUPG parameter design from "On Discontinuity-Capturing Methods
             // for Convection-Diffusion Equations" by Volker John and Petr
             // Knobloch. Also see deal.II step-63:
-            // delta_k = h / (2 \|u\|) * (coth(Pe) - 1/Pe)
-
+            // delta_k = h / (2 \|u\| k) * (coth(Pe) - 1/Pe)
             // Pe = \| u \| h/(2 p eps)
             const double peclet_times_eps = norm_of_advection_term * h / (2.0 * fe_order);
 
@@ -619,7 +618,7 @@ namespace aspect
                 // is only important if \|u\| and eps are zero.
                 const double peclet = peclet_times_eps / (eps + 1e-100);
                 const double coth_of_peclet = (1.0 + exp(-2.0*peclet)) / (1.0 - exp(-2.0*peclet));
-                const double delta = h/2.0/norm_of_advection_term * (coth_of_peclet - 1.0/peclet);
+                const double delta = h/(2.0*norm_of_advection_term*fe_order) * (coth_of_peclet - 1.0/peclet);
                 viscosity_per_cell[cell->active_cell_index()] = delta;
               }
             Assert (viscosity_per_cell[cell->active_cell_index()] >= 0, ExcMessage ("tau for SUPG needs to be a nonnegative constant."));
