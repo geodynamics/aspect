@@ -8913,14 +8913,16 @@ We can observe that when the two-layer viscosity model is added, there is only o
 \subsubsection{Polydiapirism}
 \label{sec:benchmark-polydiapirism}
 
-Diapirs are a type of geologic intrusion in which a more mobile and ductily deformable material (e.g. salt)
+\textit{This section was contributed by Cedric Thieulot.}
+
+Diapirs are a type of geologic intrusion in which a more mobile and ductily deformable material (e.g., salt)
 is emplaced into (brittle) overlying rocks. As salt domes are capable of trapping petroleum and 
 natural gas these structures have been extensively studied \cite{jahu17}.
 
 We consider in this experiment the three-layer viscous Rayleigh-Taylor instability proposed 
 by Weinberg and Schmeling \cite{wesc92} 
-and we focus in what follows on the case II of this publication.
-The domain is a 2D Cartesian box of size 2.24m$\times$1m. Gravity is Earth-like (9.81m/s$^2$).
+and we focus in what follows on the case II of that publication.
+The domain is a 2D Cartesian box of size 2.24m$\times$1m. Gravity is Earth-like ($9.81\text{m}/\text{s}^2$).
 Boundary conditions are free-slip on the sides and top and no-slip at the bottom.
 All three layers are initially horizontal. The top layer (fluid 1) has a thickness of 
 0.75m, a viscosity $\eta_1=100$ Pa$\cdot$s and a density $\rho_1=100$kg/m$^3$. 
@@ -8930,7 +8932,7 @@ The two interfaces between the layers are perturbed by a random noise of amplitu
 3 is lighter than fluid 2 and fluid 2 is lighter than fluid 1, both interfaces are unstable.
 We observe that interface 2-3 deforms first, produces domes which are subsequently incorporated in the domes 
 being generated at the interface 1-2, as shown in Figure~\ref{fig:polydiapirs_density}.
-The root mean square velocity (Figure~\ref{fig:polydiapirs_vrms}) shows two slopes in the early stages (t$<$50s)
+The root mean square velocity (Figure~\ref{fig:polydiapirs_vrms}) shows two slopes in the early stages ($t<50\text{s}$)
 corresponding to the 
 two different growth rates of the interfaces, 
 as explained by linear stability analysis \cite{wesc92,ramb81}.
@@ -8941,14 +8943,14 @@ as explained by linear stability analysis \cite{wesc92,ramb81}.
     \includegraphics[width=0.48\textwidth]{cookbooks/polydiapirism/diapirs0005}
     \includegraphics[width=0.48\textwidth]{cookbooks/polydiapirism/diapirs0010}
     \includegraphics[width=0.48\textwidth]{cookbooks/polydiapirism/diapirs0015}
-    \caption{Density field at t=0,25,50,75s}
+    \caption{Polydiapirism benchmark: Density field at $t=0,25,50,75\text{s}$.}
     \label{fig:polydiapirs_density}
 \end{figure}
 
 \begin{figure}
     \centering
     \includegraphics[width=0.75\textwidth]{cookbooks/polydiapirism/vrms}
-    \caption{Root mean square velocity as a function of time}
+    \caption{Polydiapirism benchmark: Root mean square velocity as a function of time}
     \label{fig:polydiapirs_vrms}
 \end{figure}
 

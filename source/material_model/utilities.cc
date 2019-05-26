@@ -122,6 +122,7 @@ namespace aspect
             {
               for (unsigned int i=0; i<volume_fractions.size(); ++i)
                 {
+                  //std::cout << parameter_values[i] << std::endl;
                   AssertThrow(parameter_values[i] > 0,
                               ExcMessage ("All parameter values must be greater than 0 for harmonic averaging!"));
                   averaged_parameter += volume_fractions[i]/(parameter_values[i]);
