@@ -1,0 +1,103 @@
+# This input file tests the box geometry in
+# combination with the ascii data initial
+# topography model.
+
+set Dimension = 2
+set CFL number                             = 1.0
+set End time                               = 0
+set Start time                             = 0
+set Adiabatic surface temperature          = 1613.0
+set Surface pressure                       = 0
+set Use years in output instead of seconds = true
+set Nonlinear solver scheme                = single Advection, single Stokes
+
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 10
+  end
+end
+
+
+# We take a box geometry and increase the repetitions
+# of the coarse mesh to capture the initial topography.
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 660000
+    set Y extent = 660000
+    set X repetitions = 1
+    set Y repetitions = 1
+  end
+# We specify the name and directory of the ascii data file
+  subsection Initial topography model
+    set Model name = function
+    subsection Function
+      set Function constants = L=660000, R=20000
+      set Function expression = R * cos(pi*x/(2*L))
+      set Maximum topography value = 20000
+    end
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Function expression = 1613.0
+  end
+end
+
+subsection Boundary temperature model
+  set List of model names = function 
+  subsection Function
+    set Function expression = 1613.0
+  end
+end
+
+subsection Material model
+  set Model name = simple
+  subsection Simple model
+    set Reference density = 3340
+    set Reference specific heat = 1200
+    set Thermal expansion coefficient = 3e-5
+    set Viscosity = 1e21
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 1
+  set Initial global refinement          = 1
+  set Strategy                           = minimum refinement function
+  subsection Minimum refinement function 
+     set Function expression             = if(x<300000, 2,1)
+  end
+end
+
+
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = top
+end
+
+subsection Boundary velocity model
+  set Zero velocity boundary indicators       = left, right, top, bottom
+end
+
+# The maximum topography of the function is 20 km and the minimum is 0 km.
+# The topography statistics should not exceed these bounds.
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, topography
+  subsection Visualization
+    set Interpolate output = false
+    set List of output variables = boundary indicators, depth
+    set Output format            = gnuplot
+  end
+end
+
