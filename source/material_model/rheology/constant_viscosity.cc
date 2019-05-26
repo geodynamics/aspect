@@ -44,8 +44,8 @@ namespace aspect
 
 
       void
-      ConstantViscosity::declare_parameters (const double default_viscosity,
-                                             ParameterHandler &prm)
+      ConstantViscosity::declare_parameters (ParameterHandler &prm,
+                                             const double default_viscosity)
       {
         prm.declare_entry ("Viscosity", std::to_string(default_viscosity),
                            Patterns::Double (0),

@@ -44,8 +44,8 @@ namespace aspect
            */
           static
           void
-          declare_parameters (const double default_viscosity,
-                              ParameterHandler &prm);
+          declare_parameters (ParameterHandler &prm,
+                              const double default_viscosity = 1e21);
 
           /**
            * Read the parameters from the parameter file.
