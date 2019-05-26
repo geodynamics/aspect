@@ -289,7 +289,7 @@ namespace aspect
         std::pair<std::string,std::string>
         execute (TableHandler &/*statistics*/)
         {
-          std::shared_ptr<Function<dim> > ref_func;
+          std::unique_ptr<Function<dim> > ref_func;
           if (dynamic_cast<const InclusionMaterial<dim> *>(&this->get_material_model()) != NULL)
             {
               const InclusionMaterial<dim> *

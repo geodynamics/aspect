@@ -377,13 +377,13 @@ namespace aspect
     std::pair<std::string,std::string>
     BursteddePostprocessor<dim>::execute (TableHandler &statistics)
     {
-      std::shared_ptr<Function<dim> > ref_func;
+      std::unique_ptr<Function<dim> > ref_func;
       {
         const BursteddeMaterial<dim> *
         material_model
           = dynamic_cast<const BursteddeMaterial<dim> *>(&this->get_material_model());
 
-        ref_func = std::make_shared<AnalyticSolutions::FunctionBurstedde<dim>>(material_model->get_beta());
+        ref_func = std_cxx14::make_unique<AnalyticSolutions::FunctionBurstedde<dim>>(material_model->get_beta());
       }
 
       const QGauss<dim> quadrature_formula (this->introspection().polynomial_degree.velocities+2);
