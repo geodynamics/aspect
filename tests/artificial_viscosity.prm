@@ -93,7 +93,6 @@ subsection Material model
 
   subsection Simpler model
     set Thermal conductivity          = 0.0
-    set Viscosity = 5e24
   end
 
 end

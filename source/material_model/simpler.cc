@@ -92,7 +92,7 @@ namespace aspect
                              "The value of the thermal expansion coefficient $\\beta$. "
                              "Units: $1/K$.");
 
-          Rheology::ConstantViscosity::declare_parameters(prm);
+          Rheology::ConstantViscosity::declare_parameters(5e24,prm);
         }
         prm.leave_subsection();
       }

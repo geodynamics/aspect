@@ -35,16 +35,21 @@ namespace aspect
       {
         public:
           /**
+           * Constructor. Initializes viscosity to NaN.
+           */
+          ConstantViscosity();
+
+          /**
            * Declare the parameters this function takes through input files.
            */
           static
           void
-          declare_parameters (ParameterHandler &prm);
+          declare_parameters (const double default_viscosity,
+                              ParameterHandler &prm);
 
           /**
            * Read the parameters from the parameter file.
            */
-          virtual
           void
           parse_parameters (ParameterHandler &prm);
 
@@ -55,8 +60,12 @@ namespace aspect
           compute_viscosity () const;
 
         private:
-
-          double eta;
+          /**
+           * The constant viscosity that defines this rheology. It
+           * is read from the input file by the parse_parameters()
+           * function.
+           */
+          double viscosity;
       };
     }
   }
