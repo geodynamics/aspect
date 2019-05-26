@@ -1,21 +1,26 @@
-# The 2D Stokes in an annulus benchmark, for which an 
-# analytical solution is available. 
+# The advection benchmark creates a simple, 2d annulus
+# with prescribed Stokes flow creating 4 convection cells.
+# Various parameters can be changed to test their effect
+# on the overall cooling of the model.
 # 
-# See the manual for more information.
+# See run_all_models.sh for running multiple iterations
+# of various parameters in a row.
+#
+# Also see creates_formatted_tables for grabbing specific
+# data points from the log file.
 
 ############### Global parameters
-# We use a 2d setup. Since we are only interested
-# in a steady state solution, we set the end time
-# equal to the start time to force a single time
-# step before the program terminates.
+# We use a 2d setup. We are only interested in
+# advection, so we prescribe a Stokes flow and
+# solve only for advection.
 
-set Additional shared libraries            = ./libannulus.so
+set Additional shared libraries            = ./libadvection_stabilization.so
 set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 1
 set Use years in output instead of seconds = false
 set Nonlinear solver scheme                = single Advection, no Stokes
-set Output directory                       = /home/geuen/aspect/benchmarks/advection_stabilization/output_ref2
+set Output directory                       = output_advection_stabilization
 set Pressure normalization                 = surface
 set Timing output frequency                = 100
 
@@ -24,12 +29,17 @@ subsection Prescribed Stokes solution
 end
 
 ############### Parameters describing the model
-# Because the temperature plays no role in this model we need not
-# bother to describe temperature boundary conditions or
-# the material parameters that pertain to the temperature.
+# We are interested in the flow of heat out of the top
+# boundary and how the advection is stabilized. Interesting
+# values to look at are in subsection Discretization, which
+# control the stabilization directly, as well as thermal
+# conductivity which effectively controls the Rayleigh number.
+# The thermal conductivity and Rayleigh number are inversely
+# proportional.
 
 subsection Geometry model
   set Model name = spherical shell
+
   # NOTE: the analytical solutions are hard-coded
   # to these geometry values: do not change them.
   subsection Spherical shell
@@ -39,20 +49,18 @@ subsection Geometry model
   end 
 end
 
-#Boundary conditions
+subsection Discretization
+  set Temperature polynomial degree = 2
 
-#subsection Boundary velocity model
-#  set Prescribed velocity boundary indicators = 0  : AnnulusBoundary, \
-                                                1  : AnnulusBoundary
-#end
-
-#subsection Discretization
-#set Stokes velocity polynomial degree = 1
-#set Use locally conservative discretization = true
-#end
+  subsection Stabilization parameters
+    set beta = 0.052
+    set cR = 0.11
+  end
+end
 
 subsection Material model
   set Model name = simpler
+
   subsection Simpler model
     set Reference density = 1.0
     set Reference temperature = 1.0
@@ -65,28 +73,26 @@ end
 
 subsection Gravity model
   set Model name = radial constant
+
   subsection Radial constant
     set Magnitude =  1
   end
 end
 
-#Viscosity parameter is k, which controls the number
-#of mantle convection cells
-
-subsection Annulus benchmark
-   set Viscosity parameter             = 4
-end 
-
 ############### Parameters describing the temperature field
-# As above, there is no need to set anything for the
-# temperature boundary conditions.
+# Since we are interested in the flow of heat through
+# the top of the model, we set the temperture to 1
+# everywhere within the model except for the top
+# boundary, which is set to 0.
 
 subsection Boundary temperature model
   set List of model names = function
+
   subsection Function
     set Function expression = 0
   end
-  set Fixed temperature boundary indicators = 1
+
+  set Fixed temperature boundary indicators = top
 end
 
 subsection Initial temperature model
@@ -106,7 +112,7 @@ end
 
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
-  set Initial global refinement          = 4
+  set Initial global refinement          = 2
   set Refinement fraction                = 0.2
   set Strategy                           = velocity
 end
@@ -116,20 +122,11 @@ end
 # run at the end of each time step. 
 
 subsection Postprocess
-  set List of postprocessors = visualization, velocity statistics, temperature statistics, depth average, memory statistics
-  subsection Dynamic topography
-    set Density above = 0
-    set Density below = 0
-  end
+  set List of postprocessors = visualization, velocity statistics, temperature statistics, heat flux statistics, entropy viscosity statistics, depth average
+
   subsection Visualization
-    set List of output variables = density, viscosity, strain rate, dynamic topography
-    set Time steps between graphical output = 20
+    set List of output variables = heat flux map, artificial viscosity
+    set Time between graphical output = 0.1
   end
 end
 
-subsection Solver parameters
-  subsection Stokes solver parameters
-    set Linear solver tolerance = 1e-12
-    set Number of cheap Stokes solver steps = 0
-  end
-end

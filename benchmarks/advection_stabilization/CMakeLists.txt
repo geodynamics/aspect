@@ -32,8 +32,8 @@ ENDIF ()
 
 DEAL_II_INITIALIZE_CACHED_VARIABLES()
 
-SET(TARGET "annulus")
+SET(TARGET "advection_stabilization")
 PROJECT(${TARGET})
 
-ADD_LIBRARY(${TARGET} SHARED annulus.cc)
+ADD_LIBRARY(${TARGET} SHARED advection_stabilization.cc)
 ASPECT_SETUP_PLUGIN(${TARGET})

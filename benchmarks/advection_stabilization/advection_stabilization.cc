@@ -43,7 +43,7 @@ namespace aspect
    * equation.
    *
    */
-  namespace AnnulusBenchmark
+  namespace AdvectionBenchmark
   {
     using namespace dealii;
 
@@ -142,11 +142,11 @@ namespace aspect
     template <>
     void AdvectionBenchmark<2>::stokes_solution (const Point<2> &p, Vector<double> &value) const
     {
-      Tensor<1,2> velocity = AnnulusBenchmark::AnalyticSolutions::Annulus_velocity (p, 4);
+      Tensor<1,2> velocity = aspect::AdvectionBenchmark::AnalyticSolutions::Annulus_velocity (p, 4);
       value(0) = velocity[0];
       value(1) = velocity[1];
 
-      double pressure = AnnulusBenchmark::AnalyticSolutions::Annulus_pressure (p, 4);
+      double pressure = aspect::AdvectionBenchmark::AnalyticSolutions::Annulus_pressure (p, 4);
       value(2) = pressure;       // pressure
     }
   }
@@ -155,8 +155,6 @@ namespace aspect
 // explicit instantiations
 namespace aspect
 {
-  namespace AnnulusBenchmark
-  {}
   namespace PrescribedStokesSolution
   {
     ASPECT_REGISTER_PRESCRIBED_STOKES_SOLUTION(AdvectionBenchmark,
