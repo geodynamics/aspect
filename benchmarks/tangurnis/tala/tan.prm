@@ -106,7 +106,7 @@ subsection Material model
     set Di                            = 0.5
     set gamma                         = 1
 
-    set a                             = 0 	# constant viscosity
+    set a                             = 0   # constant viscosity
 
     set wavenumber                    = 1
   end

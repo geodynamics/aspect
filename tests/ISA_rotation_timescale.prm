@@ -10,10 +10,10 @@ set Adiabatic surface temperature = 1570
 subsection Geometry model
    set Model name = box
    subsection Box
-      set X extent	= 105000
-      set Y extent	= 70000
-      set X repetitions	= 3
-      set Y repetitions	= 2
+      set X extent  = 105000
+      set Y extent  = 70000
+      set X repetitions  = 3
+      set Y repetitions  = 2
    end
 end
 
@@ -30,9 +30,9 @@ subsection Boundary velocity model
    set Prescribed velocity boundary indicators = top:function
    set Tangential velocity boundary indicators = left
    subsection Function
-      set Function constants	= u0=0.05, x0=10000, xc=52500
-      set Variable names	= x,z
-      set Function expression	= if(x<x0,(1-(x/x0-1)*(x/x0-1))*u0,u0); 0
+      set Function constants  = u0=0.05, x0=10000, xc=52500
+      set Variable names  = x,z
+      set Function expression  = if(x<x0,(1-(x/x0-1)*(x/x0-1))*u0,u0); 0
    end
 end
 
@@ -40,7 +40,7 @@ end
 subsection Boundary traction model
    set Prescribed traction boundary indicators = right:initial lithostatic pressure, bottom:initial lithostatic pressure
    subsection Initial lithostatic pressure
-      set Representative point	= 105000, 7000
+      set Representative point  = 105000, 7000
    end
 end
 
@@ -48,9 +48,9 @@ end
 subsection Initial temperature model
    set Model name = adiabatic
    subsection Adiabatic
-      set Age top boundary layer	= 1e8
-      set Age bottom boundary layer	= 1e5
-      set Amplitude			= 0
+      set Age top boundary layer  = 1e8
+      set Age bottom boundary layer  = 1e5
+      set Amplitude      = 0
    end
 end
 

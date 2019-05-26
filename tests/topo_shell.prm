@@ -41,7 +41,7 @@ subsection Boundary temperature model
 end
 
 subsection Free surface
-  set Free surface boundary indicators 		= top
+  set Free surface boundary indicators     = top
 end
 
 subsection Heating model
@@ -71,10 +71,10 @@ end
 
 subsection Postprocess
   set List of postprocessors = topography
-  	subsection Topography
-		set Time between text output 			= 0
-		set Output to file = true
-	end  
+  subsection Topography
+    set Time between text output       = 0
+    set Output to file = true
+  end
 end
 
 subsection Termination criteria

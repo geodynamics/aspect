@@ -63,9 +63,9 @@ end
 subsection Initial temperature model
   set Model name = function
   subsection Function
-        set Variable names = d, na
-	set Coordinate system = depth
-	set Function expression = if ((d < 0.65), 8000, 0)
+    set Variable names = d, na
+    set Coordinate system = depth
+    set Function expression = if ((d < 0.65), 8000, 0)
   end
 end
 

@@ -82,11 +82,11 @@ subsection Mesh refinement
   set Initial global refinement                = 2
   set Initial adaptive refinement              = 2
   set Time steps between mesh refinement       = 1000
-	set Refinement fraction = 0.25
-	set Coarsening fraction = 0
-	set Adapt by fraction of cells = true
-	set Strategy = temperature
-	set Run postprocessors on initial refinement = true
+  set Refinement fraction = 0.25
+  set Coarsening fraction = 0
+  set Adapt by fraction of cells = true
+  set Strategy = temperature
+  set Run postprocessors on initial refinement = true
 end
 
 subsection Compositional fields
@@ -97,7 +97,7 @@ end
 subsection Initial composition model
   set Model name = function
   subsection Function
-		set Function expression = if (y > 0.5, 1, 0)
+    set Function expression = if (y > 0.5, 1, 0)
     set Variable names      = x,y
   end
 end
@@ -109,7 +109,7 @@ subsection Postprocess
   subsection Visualization
     set Interpolate output = false
     set Time between graphical output = 0.01
-		set List of output variables      = error indicator 
+    set List of output variables      = error indicator
   end
 end
 

@@ -17,7 +17,7 @@ set Use conduction timestep                = true
 
 subsection Termination criteria
   set Termination criteria                 = end step
-  set End step			           = 1
+  set End step                 = 1
 end
 
 subsection Formulation

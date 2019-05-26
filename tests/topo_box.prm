@@ -53,7 +53,7 @@ subsection Initial temperature model
   set Model name = function 
   subsection Function
     set Function constants  = reference_t=293, crustal_t = 420, lith_t = 1350, mantle_t = 1470, total_depth=512e3, crustal_depth=30e3, lithospheric_depth=120e3,                                                                                                                             
-	set Function expression = if (z>total_depth-crustal_depth,reference_t+(total_depth-z)*(crustal_t/crustal_depth), if (z>total_depth-lithospheric_depth,reference_t+crustal_t+(total_depth-crustal_depth-z)*(lith_t-crustal_t)/(lithospheric_depth-crustal_depth), reference_t+lith_t+(total_depth-lithospheric_depth-z)*(mantle_t-lith_t)/(total_depth-lithospheric_depth))) 
+    set Function expression = if (z>total_depth-crustal_depth,reference_t+(total_depth-z)*(crustal_t/crustal_depth), if (z>total_depth-lithospheric_depth,reference_t+crustal_t+(total_depth-crustal_depth-z)*(lith_t-crustal_t)/(lithospheric_depth-crustal_depth), reference_t+lith_t+(total_depth-lithospheric_depth-z)*(mantle_t-lith_t)/(total_depth-lithospheric_depth))) 
     set Variable names      = x,z                                   
   end
 
@@ -83,27 +83,27 @@ subsection Boundary velocity model
 end
 
 subsection Free surface
-	set Free surface boundary indicators 		= top
+  set Free surface boundary indicators     = top
 end
 
 subsection Boundary composition model
-	set Fixed composition boundary indicators 	= left, right
+  set Fixed composition boundary indicators   = left, right
 end
 
 subsection Boundary temperature model
-	set Fixed temperature boundary indicators = top
+  set Fixed temperature boundary indicators = top
 end
 
 subsection Boundary composition model
-	set List of model names = initial composition
+  set List of model names = initial composition
 end
 
 subsection Postprocess
   set List of postprocessors = topography
-  	subsection Topography
-		set Time between text output 			= 0
-		set Output to file = true
-	end
+    subsection Topography
+    set Time between text output       = 0
+    set Output to file = true
+  end
 end
 
 subsection Termination criteria
