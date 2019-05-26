@@ -63,16 +63,18 @@ namespace aspect
                 break;
             }
 
-          const double c1 = composition.size()>0?
-                            std::max(0.0, composition[0])
-                            :
-                            0.0;
-          const double c2 = composition.size()>1?
-                            std::max(0.0, composition[1])
-                            :
-                            0.0;
-          out.densities[i] = reference_rho * (1 - thermal_alpha * (temperature - reference_T))
-                             + compositional_delta_rho_1 * c1 + compositional_delta_rho_2 * c2;
+          // The Composition reaction model has up to two compositional field that can influence the density
+          EquationOfStateOutputs<dim> eos_outputs (in.composition[i].size()>2 ? 3 : in.composition[i].size() + 1);
+          equation_of_state.evaluate(in, i, eos_outputs);
+
+          std::vector<double> volume_fractions (eos_outputs.densities.size(), 1.0);
+          for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+            {
+              volume_fractions[c+1] = std::max(0.0, in.composition[i][c]);
+              volume_fractions[0] -= volume_fractions[c+1];
+            }
+
+          out.densities[i] = MaterialUtilities::average_value(volume_fractions, eos_outputs.densities, MaterialUtilities::arithmetic);
 
 
           const double depth = this->get_geometry_model().depth(in.position[i]);
@@ -107,10 +109,10 @@ namespace aspect
                 }
             }
 
-          out.specific_heat[i] = reference_specific_heat;
+          out.thermal_expansion_coefficients[i] = eos_outputs.thermal_expansion_coefficients[0];
+          out.specific_heat[i] = eos_outputs.specific_heat[0];
           out.thermal_conductivities[i] = k_value;
-          out.thermal_expansion_coefficients[i] = thermal_alpha;
-          out.compressibilities[i] = 0.0;
+          out.compressibilities[i] = eos_outputs.compressibilities[0];
         }
     }
 
@@ -142,9 +144,9 @@ namespace aspect
       {
         prm.enter_subsection("Composition reaction model");
         {
-          prm.declare_entry ("Reference density", "3300",
-                             Patterns::Double (0),
-                             "Reference density $\\rho_0$. Units: $kg/m^3$.");
+          EquationOfState::LinearizedIncompressible<dim>::set_number_of_compositions(2);
+          EquationOfState::LinearizedIncompressible<dim>::declare_parameters (prm);
+
           prm.declare_entry ("Reference temperature", "293",
                              Patterns::Double (0),
                              "The reference temperature $T_0$. Units: $\\text{K}$.");
@@ -168,36 +170,6 @@ namespace aspect
                              Patterns::Double (0),
                              "The value of the thermal conductivity $k$. "
                              "Units: $W/m/K$.");
-          prm.declare_entry ("Reference specific heat", "1250",
-                             Patterns::Double (0),
-                             "The value of the specific heat $C_p$. "
-                             "Units: $J/kg/K$.");
-          prm.declare_entry ("Thermal expansion coefficient", "2e-5",
-                             Patterns::Double (0),
-                             "The value of the thermal expansion coefficient $\\beta$. "
-                             "Units: $1/K$.");
-          prm.declare_entry ("Density differential for compositional field 1", "0",
-                             Patterns::Double(),
-                             "If compositional fields are used, then one would frequently want "
-                             "to make the density depend on these fields. In this simple material "
-                             "model, we make the following assumptions: if no compositional fields "
-                             "are used in the current simulation, then the density is simply the usual "
-                             "one with its linear dependence on the temperature. If there are compositional "
-                             "fields, then the density only depends on the first and the second one in such a way that "
-                             "the density has an additional term of the kind $+\\Delta \\rho \\; c_1(\\mathbf x)$. "
-                             "This parameter describes the value of $\\Delta \\rho$ for the first field. "
-                             "Units: $kg/m^3/\\textrm{unit change in composition}$.");
-          prm.declare_entry ("Density differential for compositional field 2", "0",
-                             Patterns::Double(),
-                             "If compositional fields are used, then one would frequently want "
-                             "to make the density depend on these fields. In this simple material "
-                             "model, we make the following assumptions: if no compositional fields "
-                             "are used in the current simulation, then the density is simply the usual "
-                             "one with its linear dependence on the temperature. If there are compositional "
-                             "fields, then the density only depends on the first and the second one in such a way that "
-                             "the density has an additional term of the kind $+\\Delta \\rho \\; c_1(\\mathbf x)$. "
-                             "This parameter describes the value of $\\Delta \\rho$ for the second field. "
-                             "Units: $kg/m^3/\\textrm{unit change in composition}$.");
           prm.declare_entry ("Reaction depth", "0",
                              Patterns::Double (0),
                              "Above this depth the compositional fields react: "
@@ -219,17 +191,15 @@ namespace aspect
       {
         prm.enter_subsection("Composition reaction model");
         {
-          reference_rho              = prm.get_double ("Reference density");
+          equation_of_state.set_number_of_compositions(2);
+          equation_of_state.parse_parameters (prm);
+
           reference_T                = prm.get_double ("Reference temperature");
           eta                        = prm.get_double ("Viscosity");
           composition_viscosity_prefactor_1 = prm.get_double ("Composition viscosity prefactor 1");
           composition_viscosity_prefactor_2 = prm.get_double ("Composition viscosity prefactor 2");
           thermal_viscosity_exponent = prm.get_double ("Thermal viscosity exponent");
           k_value                    = prm.get_double ("Thermal conductivity");
-          reference_specific_heat    = prm.get_double ("Reference specific heat");
-          thermal_alpha              = prm.get_double ("Thermal expansion coefficient");
-          compositional_delta_rho_1  = prm.get_double ("Density differential for compositional field 1");
-          compositional_delta_rho_2  = prm.get_double ("Density differential for compositional field 2");
           reaction_depth             = prm.get_double ("Reaction depth");
 
           if (thermal_viscosity_exponent!=0.0 && reference_T == 0.0)
@@ -241,7 +211,7 @@ namespace aspect
 
       // Declare dependencies on solution variables
       this->model_dependence.viscosity = NonlinearDependence::none;
-      this->model_dependence.density = NonlinearDependence::none;
+      this->model_dependence.density = NonlinearDependence::temperature | NonlinearDependence::compositional_fields;
       this->model_dependence.compressibility = NonlinearDependence::none;
       this->model_dependence.specific_heat = NonlinearDependence::none;
       this->model_dependence.thermal_conductivity = NonlinearDependence::none;
@@ -251,12 +221,6 @@ namespace aspect
       if ((composition_viscosity_prefactor_1 != 1.0) ||
           (composition_viscosity_prefactor_2 != 1.0))
         this->model_dependence.viscosity |= NonlinearDependence::compositional_fields;
-
-      if (thermal_alpha != 0)
-        this->model_dependence.density |= NonlinearDependence::temperature;
-      if ((compositional_delta_rho_1 != 0) ||
-          (compositional_delta_rho_2 != 0))
-        this->model_dependence.density |= NonlinearDependence::compositional_fields;
     }
 
 

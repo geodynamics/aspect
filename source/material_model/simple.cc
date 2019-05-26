@@ -56,7 +56,7 @@ namespace aspect
                                :
                                temperature_dependence * eta;
 
-          // The Simple model only has two compositional fields influencing material properties
+          // The Simple model only has one compositional field influencing material properties
           EquationOfStateOutputs<dim> eos_outputs (in.composition[i].size()==0 ? 1 : 2);
           equation_of_state.evaluate(in, i, eos_outputs);
 
@@ -114,6 +114,7 @@ namespace aspect
       {
         prm.enter_subsection("Simple model");
         {
+          EquationOfState::LinearizedIncompressible<dim>::set_number_of_compositions(1);
           EquationOfState::LinearizedIncompressible<dim>::declare_parameters (prm);
 
           prm.declare_entry ("Reference temperature", "293",
@@ -165,6 +166,7 @@ namespace aspect
       {
         prm.enter_subsection("Simple model");
         {
+          equation_of_state.set_number_of_compositions(1);
           equation_of_state.parse_parameters (prm);
 
           reference_T                = prm.get_double ("Reference temperature");
