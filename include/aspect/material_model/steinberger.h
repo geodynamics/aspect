@@ -307,7 +307,7 @@ namespace aspect
          * List of pointers to objects that read and process data we get from
          * Perplex files.
          */
-std::vector<std::unique_ptr<MaterialModel::MaterialUtilities::Lookup::PerplexReader> > material_lookup;
+        std::vector<std::unique_ptr<MaterialModel::MaterialUtilities::Lookup::PerplexReader> > material_lookup;
 
         /**
          * Pointer to an object that reads and processes data for the lateral
