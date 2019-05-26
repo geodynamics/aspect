@@ -112,8 +112,7 @@ namespace aspect
     using namespace dealii;
 
     /**
-     * A class that implements a circular, divergence-free flow field
-     * around the origin of the coordinate system.
+     * A class that implements the flow field of the annulus benchmark.
      *
      * @ingroup PrescribedStokesSolution
      */
@@ -159,10 +158,7 @@ namespace aspect
   {
     ASPECT_REGISTER_PRESCRIBED_STOKES_SOLUTION(AdvectionBenchmark,
                                                "advection benchmark",
-                                               "This value describes a vector field that rotates "
-                                               "around the z-axis with constant angular velocity "
-                                               "(i.e., with a velocity that increases with "
-                                               "distance from the axis). The pressure is set "
-                                               "to zero.")
+                                               "This benchmark prescribes the Stokes solution of "
+                                               "the annulus benchmark.")
   }
 }
