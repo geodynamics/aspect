@@ -260,7 +260,7 @@ namespace aspect
     };
   }
 
-   /**
+  /**
    * Main class of the Matrix-free method. Here are all the functions for setup, assembly and solving
    * the Stokes system.
    */

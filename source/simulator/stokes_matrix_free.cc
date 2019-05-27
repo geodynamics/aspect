@@ -43,11 +43,11 @@ namespace aspect
   namespace internal
   {
 
-  /**
-   * Here we define the function(s) to make no normal flux boundary constraints for
-   * MG levels.
-   * TODO: Implement for spherical meshes.
-   */
+    /**
+     * Here we define the function(s) to make no normal flux boundary constraints for
+     * MG levels.
+     * TODO: Implement for spherical meshes.
+     */
     namespace TangentialBoundaryFunctions
     {
       template <int dim>
