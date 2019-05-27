@@ -783,34 +783,40 @@ namespace aspect
     // to reinit the sparsity pattern.
     // If the mesh got refined and the size of the linear system changed, the old and new constraint
     // matrices will have different entries, and we can not easily compare them.
-    // However, in case of mesh refinement we have to rebuild the matrix anyway, so we can skip the
-    // step that checks if constraints have changed.
-    bool mesh_has_changed = (current_constraints.get_local_lines().size()
-                             != new_current_constraints.get_local_lines().size())
-                            ||
-                            (current_constraints.get_local_lines()
-                             != new_current_constraints.get_local_lines());
+    // Note that we can have a situation where mesh_has_changed==true on only some of the machines,
+    // so we need to do the MPI::sum below in all cases to avoid a deadlock.
+    const bool mesh_has_changed = (current_constraints.get_local_lines().size()
+                                   != new_current_constraints.get_local_lines().size())
+                                  ||
+                                  (current_constraints.get_local_lines()
+                                   != new_current_constraints.get_local_lines());
+    // Figure out if any entry that was constrained before is now no longer constrained:
+    bool constraints_changed = false;
 
-    if (!mesh_has_changed)
+    if (mesh_has_changed)
       {
-        bool constrained_dofs_set_changed = false;
-
+        // The mesh changed, so we know we need to update the constraints:
+        constraints_changed = true;
+      }
+    else
+      {
+        // the mesh has not changed on our machine, so compare the constraints:
         for (auto &row: current_constraints.get_lines())
           {
             if (!new_current_constraints.is_constrained(row.index))
               {
-                constrained_dofs_set_changed = true;
+                constraints_changed = true;
                 break;
               }
           }
-
-        const bool any_constrained_dofs_set_changed = Utilities::MPI::sum(constrained_dofs_set_changed ? 1 : 0,
-                                                                          mpi_communicator) > 0;
-        if (any_constrained_dofs_set_changed)
-          rebuild_sparsity_and_matrices = true;
       }
 
-#if DEAL_II_VERSION_GTE(9,0,0)
+    // If at least one processor has different constraints, force rebuilding the matrices:
+    const bool any_constrained_dofs_set_changed = Utilities::MPI::sum(constraints_changed ? 1 : 0,
+                                                                      mpi_communicator) > 0;
+    if (any_constrained_dofs_set_changed)
+      rebuild_sparsity_and_matrices = true;
+
     current_constraints.copy_from(new_current_constraints);
 
 #ifdef DEBUG
@@ -822,13 +828,6 @@ namespace aspect
              mpi_communicator,
              /*verbose = */ false),
            ExcMessage("Inconsistent Constraints detected!"));
-#endif
-
-#else
-    current_constraints.clear ();
-    current_constraints.reinit (introspection.index_sets.system_relevant_set);
-    current_constraints.merge (new_current_constraints);
-    current_constraints.close();
 #endif
   }
 
