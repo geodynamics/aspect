@@ -400,9 +400,45 @@ namespace aspect
           R1  = prm.get_double ("Outer radius");
           phi = prm.get_double ("Opening angle");
           n_cells_along_circumference = prm.get_integer ("Cells along circumference");
+          n_slices = prm.get_integer ("Number of equidistant slices"); // for custom mesh (slices)
+          R_values = Utilities::string_to_double(Utilities::split_string_list(prm.get("List of radius values"))); // for custom mesh (list)
+          initial_surface_refinement = prm.get_integer ("Initial surface refinement");
 
+          // Check that inner radius is less than outer radius
           AssertThrow (R0 < R1,
                        ExcMessage ("Inner radius must be less than outer radius."));
+
+          // Check that we are using 360 opening angle for custom meshes
+          AssertThrow (phi == 360 && custom_mesh != none,
+                       ExcMessage ("The only opening angle that is allowed for "
+                                   "this geometry with a custom mesh is 360."));
+
+          // If we are using list of radius values for a custom mesh
+          if (custom_mesh == list)
+            {
+              // Check that list is in ascending order
+              for (unsigned int i = 1; i < R_values.size(); i++)
+                AssertThrow(R_values[i] > R_values[i-1],
+                  ExcMessage("Radius values must be strictly ascending"));
+              // Check that first value is not smaller than the inner radius
+              AssertThrow(R_values[1] > R0,
+                  ExcMessage("First value in List of radius values must be greater than inner radius"));
+              // Check that last layer is not larger than the outer radius
+              AssertThrow( *(R_values.end()-1) < R1,
+                  ExcMessage("Last value in List of radius values must be less than outer radius"));
+            }
+
+
+          // If we are extruding our mesh according to a number of equidistant slices...
+          if (custom_mesh == slices)
+            {
+              AssertThrow (n_slices > 0, ExcMessage("You must set a positive number of slices for extrusion"));
+            }
+
+
+
+
+
         }
         prm.leave_subsection();
       }
