@@ -46,13 +46,6 @@ namespace aspect
     template <int dim>
     class ModifiedTait : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
-        /**
-         * Initialization function.
-         * Calculates the globally constant equation of state parameters.
-         */
-        virtual
-        void
-        initialize ();
 
       public:
         /**
@@ -73,6 +66,7 @@ namespace aspect
          * context, compressibility means whether we should solve the continuity
          * equation as $\nabla \cdot (\rho \mathbf u)=0$ (compressible Stokes)
          * or as $\nabla \cdot \mathbf{u}=0$ (incompressible Stokes).
+        * This model is compressible.
          */
         virtual bool is_compressible () const;
         /**
@@ -113,7 +107,7 @@ namespace aspect
         /**
           * The Tait parameters
           */
-        double a, b, c;
+        double tait_a, tait_b, tait_c;
 
         /**
          * The reference pressure

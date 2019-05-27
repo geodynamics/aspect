@@ -50,8 +50,9 @@ end
 # from a molar basis to mass basis
 # (Cp(specific) = Cp(molar)/molar_mass)
 # The Einstein temperature is calculated empirically from the
-# Einstein temperature  = 10636 / (S/n + 6.44), where
-# S is the standard state entropy and n is the number of atoms
+# expression in Holland and Powell
+# (Einstein temperature  = 10636 / (S/n + 6.44)), where
+# S is the standard state molar entropy and n is the number of atoms
 # per formula unit.
 
 subsection Material model
@@ -85,8 +86,14 @@ subsection Postprocess
   set List of postprocessors = visualization
 
   subsection Visualization
-    set Output format = vtu
+    set Output format = gnuplot
     set List of output variables = material properties
+    set Time between graphical output = 0
+    set Number of grouped files       = 0
+
+    subsection Material properties
+      set List of material properties = density, viscosity, thermal expansivity, reaction terms, specific heat
+    end
   end
 end
 

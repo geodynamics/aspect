@@ -29,19 +29,6 @@ namespace aspect
     template <int dim>
     void
     ModifiedTait<dim>::
-    initialize()
-    {
-      const double Kdprime_0 = -reference_Kprime/reference_isothermal_bulk_modulus;
-
-      a = (1. + reference_Kprime) / (1. + reference_Kprime  + reference_isothermal_bulk_modulus * Kdprime_0);
-      b = reference_Kprime  / reference_isothermal_bulk_modulus - Kdprime_0  / (1. + reference_Kprime );
-      c = (1. + reference_Kprime  + reference_isothermal_bulk_modulus * Kdprime_0) /
-          (reference_Kprime * reference_Kprime + reference_Kprime - reference_isothermal_bulk_modulus * Kdprime_0);
-    }
-
-    template <int dim>
-    void
-    ModifiedTait<dim>::
     evaluate(const MaterialModelInputs<dim> &in,
              MaterialModelOutputs<dim> &out) const
     {
@@ -58,7 +45,8 @@ namespace aspect
           const double x_einstein0 = einstein_temperature/reference_temperature;
 
           // The following Einstein energies and heat capacities are divided through by 3nR.
-          // This doesn't matter, as the equation of state relies only on ratios of these quantities
+          // This doesn't matter, as the equation of state relies only on ratios of these quantities.
+          // At large values of x_einstein0, we can simplify the calculation of the thermal energy and Cv.
           double E_th0, E_th, C_V0, C_V;
           if (x_einstein0 < 35)
             {
@@ -88,25 +76,24 @@ namespace aspect
           const double psubpth = pressure - reference_pressure - Pth_rel;
 
           // x = rho0/rho
-          const double x = 1 - a * (1. - std::pow((1. + b * psubpth), -1.0 * c));
+          const double x = 1 - tait_a * (1. - std::pow((1. + tait_b * psubpth), -1.0 * tait_c));
 
           // xi
-          double xi = (C_V / C_V0);
+          const double xi = (C_V / C_V0);
 
           // Here we calculate the pressure effect on the heat capacity. It is a bit involved.
-          const double dintVdpdT = (reference_thermal_expansivity * reference_isothermal_bulk_modulus / reference_rho * a * xi) * (
-                                     std::pow((1. + b * psubpth), - c) - std::pow((1. - b * Pth), - c));
+          const double dintVdpdT = (reference_thermal_expansivity * reference_isothermal_bulk_modulus / reference_rho * tait_a * xi) * (
+                                     std::pow((1. + tait_b * psubpth), - tait_c) - std::pow((1. - b * Pth), - tait_c));
 
           const double dSdT = reference_isothermal_bulk_modulus / reference_rho * std::pow((xi * reference_thermal_expansivity), 2) * \
-                              (std::pow((1. + b * psubpth), -1. - c) - std::pow((1. - b * Pth), -1. - c)) + \
+                              (std::pow((1. + tait_b * psubpth), -1. - tait_c) - std::pow((1. - tait_b * Pth), -1. - tait_c)) + \
                               dintVdpdT * (( 1 - 2./x + 2./(std::exp(x) - 1.) ) * einstein_temperature/(temperature*temperature));
 
 
-          const Point<1> Tpoint(temperature);
-          double rho = reference_rho / x;
-          double isothermal_compressibility = 1./(reference_isothermal_bulk_modulus * (1. + b * psubpth) * (a + (1. - a) * std::pow((1. + b * psubpth), c)));
-          double alpha = reference_thermal_expansivity * xi * 1. / ((1. + b * psubpth) * (a + (1. - a) * std::pow((1 + b * psubpth), c)));
-          double heat_capacity = reference_heat_capacity_function.value(Tpoint) + temperature * dSdT;
+          const double rho = reference_rho / x;
+          const double isothermal_compressibility = 1./(reference_isothermal_bulk_modulus * (1. + tait_b * psubpth) * (tait_a + (1. - tait_a) * std::pow((1. + tait_b * psubpth), tait_c)));
+          const double alpha = reference_thermal_expansivity * xi * 1. / ((1. + tait_b * psubpth) * (tait_a + (1. - tait_a) * std::pow((1 + tait_b * psubpth), tait_c)));
+          const double heat_capacity = reference_heat_capacity_function.value(Point<1>(temperature)) + temperature * dSdT;
 
           // The following line might be useful for some compressibility models
           // double isentropic_compressibility = isothermal_compressibility - alpha*alpha*temperature/(rho*heat_capacity);
@@ -124,6 +111,8 @@ namespace aspect
             out.reaction_terms[i][c] = 0.0;
         }
     }
+
+
 
     template <int dim>
     double
@@ -155,38 +144,38 @@ namespace aspect
         {
           prm.declare_entry ("Reference pressure", "1e5",
                              Patterns::Double (0),
-                             "Reference pressure $\\P_0$. Units: $Pa$.");
+                             "Reference pressure $\\P_0$. Units: $\\text{Pa}$.");
           prm.declare_entry ("Reference temperature", "298.15",
                              Patterns::Double (0),
-                             "Reference temperature $\\T_0$. Units: $K$.");
+                             "Reference temperature $\\T_0$. Units: $\\text{K}$.");
           prm.declare_entry ("Reference density", "3300",
                              Patterns::Double (0),
                              "The density at the reference pressure and temperature. "
-                             "Units: $kg/m^3$.");
+                             "Units: $\\text{kg}/\\text{m}^3$.");
           prm.declare_entry ("Reference isothermal bulk modulus", "125e9",
                              Patterns::Double (0),
                              "The isothermal bulk modulus at the reference pressure and temperature. "
-                             "Units: $kg/m^3$.");
+                             "Units: $\\text{Pa}.");
           prm.declare_entry ("Reference bulk modulus derivative", "4",
                              Patterns::Double (0),
                              "The value of the first pressure derivative of the isothermal bulk modulus "
                              "at the reference pressure and temperature. "
-                             "Units: $kg/m^3$.");
+                             "Units: [].");
           prm.declare_entry ("Reference thermal expansivity", "2e-5",
                              Patterns::Double (0),
                              "The thermal expansion coefficient at the reference pressure and temperature. "
-                             "Units: $1/K$.");
+                             "Units: $1/\\text{K}$.");
           prm.declare_entry ("Einstein temperature", "600",
                              Patterns::Double (0),
                              "The Einstein temperature at the reference pressure and temperature. "
-                             "Units: $K$.");
+                             "Units: $\\text{K}$.");
           prm.declare_entry ("Viscosity", "1e21",
                              Patterns::Double (0),
-                             "The value of the constant viscosity $\\eta_0$. Units: $kg/m/s$.");
+                             "The value of the constant viscosity $\\eta_0$. Units: $\\text{Pas}$.");
           prm.declare_entry ("Thermal conductivity", "4.7",
                              Patterns::Double (0),
                              "The value of the constant thermal conductivity $k$. "
-                             "Units: $W/m/K$.");
+                             "Units: $\\text{W}/\\text{m}/\\text{K}$.");
 
           prm.enter_subsection("Reference heat capacity function");
           {
@@ -242,6 +231,13 @@ namespace aspect
       }
       prm.leave_subsection();
 
+      // Calculate dependent parameters
+      Kdprime_0 = -reference_Kprime/reference_isothermal_bulk_modulus;
+      tait_a = (1. + reference_Kprime) / (1. + reference_Kprime  + reference_isothermal_bulk_modulus * Kdprime_0);
+      tait_b = reference_Kprime  / reference_isothermal_bulk_modulus - Kdprime_0  / (1. + reference_Kprime );
+      tait_c = (1. + reference_Kprime  + reference_isothermal_bulk_modulus * Kdprime_0) /
+               (reference_Kprime * reference_Kprime + reference_Kprime - reference_isothermal_bulk_modulus * Kdprime_0);
+
       // Declare dependencies on solution variables
       this->model_dependence.thermal_conductivity = NonlinearDependence::none;
       this->model_dependence.viscosity = NonlinearDependence::none;
@@ -269,13 +265,7 @@ namespace aspect
     ASPECT_REGISTER_MATERIAL_MODEL(ModifiedTait,
                                    "modified tait",
                                    "A material model that implements the thermal modified Tait "
-                                   "equation of state as written in the paper of "
-                                   "Holland and Powell, 2011 "
-                                   "(``An improved and extended internally consistent "
-                                   "thermodynamic dataset for phases of petrological interest, "
-                                   "involving a new equation of state for solids'', "
-                                   "J. metamorphic Geol., 2011, 29, 333-383, "
-                                   "\\url{http://dx.doi.org/10.1111/j.1525-1314.2010.00923.x}). "
+                                   "equation of state as written in \\cite{HP2011}. "
                                    "Constant values are used for the thermal conductivity and "
                                    "viscosity. The defaults for all coefficients are chosen "
                                    "to be similar to what is believed to be correct "
