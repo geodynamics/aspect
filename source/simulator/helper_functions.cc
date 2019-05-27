@@ -848,6 +848,13 @@ namespace aspect
       double temp[2];
       Utilities::MPI::sum (my_temp, mpi_communicator, temp);
 
+      Assert (temp[1] > 0,
+              ExcMessage("While computing the average pressure, the area/volume "
+                         "to integrate over was found to be zero or negative. This "
+                         "indicates that no appropriate surface faces were found, "
+                         "which is typically the case if the geometry model is not "
+                         "set up correctly."));
+
       if (parameters.pressure_normalization == "surface")
         pressure_adjustment = -temp[0]/temp[1] + parameters.surface_pressure;
       else if (parameters.pressure_normalization == "volume")
