@@ -74,7 +74,7 @@ namespace aspect
 
         /**
          * This parameter gives the maximum depth of the lithosphere. The
-         * model be nans below this depth.
+         * model returns nans below this depth.
          */
         double max_depth;
 
