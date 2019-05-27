@@ -847,8 +847,10 @@ namespace aspect
       const double my_temp[2] = {my_pressure, my_area};
       double temp[2];
       Utilities::MPI::sum (my_temp, mpi_communicator, temp);
+      const double pressure = temp[0];
+      const double area = temp[1];
 
-      Assert (temp[1] > 0,
+      Assert (area > 0,
               ExcMessage("While computing the average pressure, the area/volume "
                          "to integrate over was found to be zero or negative. This "
                          "indicates that no appropriate surface faces were found, "
@@ -856,9 +858,9 @@ namespace aspect
                          "set up correctly."));
 
       if (parameters.pressure_normalization == "surface")
-        pressure_adjustment = -temp[0]/temp[1] + parameters.surface_pressure;
+        pressure_adjustment = -pressure/area + parameters.surface_pressure;
       else if (parameters.pressure_normalization == "volume")
-        pressure_adjustment = -temp[0]/temp[1];
+        pressure_adjustment = -pressure/area;
       else
         AssertThrow(false, ExcNotImplemented());
     }
