@@ -168,7 +168,7 @@ CONFIGURE_FILE(
 
 # enable all tests and force a re-run of the cmake configuration in the test/ folder:
 ADD_CUSTOM_TARGET(setup_tests
-  COMMAND ${CMAKE_COMMAND} -D ASPECT_RUN_ALL_TESTS=ON -D ASPECT_NEED_TEST_CONFIGURE=ON -D PRINT_TEST_SUMMARY_AS_IMPORTANT=ON . >/dev/null
+  COMMAND ${CMAKE_COMMAND} -D ASPECT_RUN_ALL_TESTS=ON -D ASPECT_NEED_TEST_CONFIGURE=ON . >/dev/null
   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
   COMMENT "Enabling all tests ...")
 
@@ -427,13 +427,13 @@ ENDIF()
 # Check whether we can find the WorldBuilder and enable it.
 SET(ASPECT_WITH_WORLD_BUILDER ON CACHE BOOL "If ON the World Builder is compiled togheter with ASPECT.")
 IF (NOT EXISTS ${CMAKE_SOURCE_DIR}/contrib/WorldBuilder/VERSION)
-  MESSAGE("-- World Builder not found.")
+  MESSAGE(STATUS "World Builder not found.")
   SET(ASPECT_WITH_WORLD_BUILDER OFF CACHE BOOL "" FORCE)
 ENDIF()
 IF (ASPECT_WITH_WORLD_BUILDER)
   SET(WORLD_BUILDER_SOURCE_DIR "${CMAKE_SOURCE_DIR}/contrib/WorldBuilder")
   INCLUDE("${WORLD_BUILDER_SOURCE_DIR}/cmake/version.cmake")
-  MESSAGE("-- World Builder version ${WORLD_BUILDER_VERSION} found.")
+  MESSAGE(STATUS "World Builder version ${WORLD_BUILDER_VERSION} found.")
 
   # add source and include dirs:
   FILE(GLOB_RECURSE _files "contrib/WorldBuilder/source/*.cc")
