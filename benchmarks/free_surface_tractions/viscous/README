@@ -1,0 +1,35 @@
+Benchmark of infinite viscous half-space loaded/unloaded by an
+ axisymmetric cylinder, using the solution of: Haskell, N.A.,
+ The Motion of a Viscous Fluid Under a Surface Load (1935), Physics
+ 6, 265; doi:10.1063/1.1745329
+
+The benchmark compares his solution for the surface displacement
+ following the application of an instantaneous cylindrical surface
+ load (Eq. 3.34) with the deformation of the free surface in ASPECT
+ after imposing surface boundary tractions.
+
+A surface pressure of rho_l*g*H0 (where rho_l is the load density,
+ H0 is the load height) is applied on the surface for r<r0 (where
+ r0 is the load radius), for t>0. This is done both in a 2-D and 
+ 3-D geometry (by symmetry the load is centered on the left boundary
+ or left/front corner). The input files are: 
+   'free_surface_viscous_cylinder_2D_loading.prm'
+   'free_surface_viscous_cylinder_3D_loading.prm'
+
+Over long timescales, the surface deformation beneath the load (i.e.
+ ice sheet) should converge to H0*rho_l/rho_s, where rho_s is the
+ density of the medium (i.e. mantle). The deformation outside the
+ load should converge to zero. The numerical runs have slightly
+ smaller deformations due to the pressure from the far vertical (right)
+ boundary, this effect is lessened by increasing the horizontal domain
+ size.
+
+The 'topography' output files may be compared against an analytical
+ solution by running the script '../viscoelastic/compare_VE_soln.py',
+ which outputs the viscous limit of the Nakiboglu and Lambeck (1982)
+ solution for an instantaneous cylindrical load on an infinite half-
+ space. These outputs ('soln_XX.txt') may be compared against the
+ ASPECT 'topography' output files, using the provided gnuplot script
+ ('compare_viscous_def.gnuplot' for maximum surface deflection
+ through time, 'compare_viscous_def_profile.gnuplot' for deflection
+ of profile through time). 

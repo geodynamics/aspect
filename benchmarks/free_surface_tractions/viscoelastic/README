@@ -1,0 +1,39 @@
+Benchmark of infinite viscoelastic half-space loaded/unloaded by 
+ an axisymmetric cylinder, using the solution of: Nakiboglu, S.M. and
+ Lambeck, K., A study of the Earth's response to surface loading with
+ application to Lake Bonneville. Geophys. J. R. astr. Soc. (1982) 70,
+ 577-620.
+
+The benchmark compares their solution for the surface displacement
+ following the application of a prescribed loading function (Eq. 27)
+ with the deformation of the free surface in ASPECT after imposing
+ surface boundary tractions.
+
+A surface pressure of rho_l*g*H0 (where rho_l is the load density,
+ H0 is the load height) is applied on the surface for r<r0 (where
+ r0 is the load radius), for t>0. The load is fully removed by t=t1,
+ and the surface relaxes. This is done both in a 2-D and 3-D geometry
+ (by symmetry the load is centered on the left boundary or left/front
+ corner). The input files are:
+   'free_surface_VE_cylinder_2D_loading.prm' (instantaneous loading)
+   'free_surface_VE_cylinder_3D_loading.prm' (	"	"	"  )
+   'free_surface_VE_cylinder_2D_loading_unloading.prm' (linear unloading)
+   'free_surface_VE_cylinder_3D_loading_unloading.prm' (  "       "     )
+
+Changing the stress instantaneously as the load is applied/removed
+ leads to oscillations in the elastic response. This can be addressed
+ by setting a fixed elastic timestep larger than the numerical 
+ timestep and turning on stress averaging:
+   'free_surface_VE_cylinder_2D_loading_fixed_elastic_dt.prm'
+   'free_surface_VE_cylinder_3D_loading_fixed_elastic_dt.prm'
+
+The 'topography' output files may be compared against the analytical
+ solution by running the script 'compare_VE_soln.py', which outputs
+ the Nakiboglu and Lambeck (1982) solution for a cylindrical load on
+ an infinite half-space. These outputs ('soln...txt') may be compared
+ against the ASPECT 'topography' output files, using the provided
+ gnuplot script ('compare_viscous_def.gnuplot' for maximum surface
+ deflection through time, 'compare_viscous_def_profile.gnuplot' for
+ deflection  of profile through time). Equivalent scripts for the
+ unloading case are also provided.
+
