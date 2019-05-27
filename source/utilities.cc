@@ -1728,8 +1728,8 @@ namespace aspect
           if (coordinate_values_are_equidistant)
             data[i]
               = std_cxx14::make_unique<aspect::InterpolatedUniformGridData<dim>> (grid_extent,
-                                                                                     table_intervals,
-                                                                                     data_tables[dim+i]);
+                                                                                  table_intervals,
+                                                                                  data_tables[dim+i]);
           else
             data[i]
               = std_cxx14::make_unique<Functions::InterpolatedTensorProductGridData<dim>> (coordinate_values,
