@@ -12,3 +12,5 @@ Benchmarks:
 2. Rotate Shape (rotate_shape_supg.prm, rotate_shape_ev.prm)
    Various shapes being rotated by 360 degrees by a fixed velocity
 
+See the section "Advection Stabilization Benchmarks" in the pdf manual for
+details.
