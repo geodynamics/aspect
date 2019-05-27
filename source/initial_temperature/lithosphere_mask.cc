@@ -40,14 +40,14 @@ namespace aspect
     void
     LithosphereMask<dim>::initialize ()
     {
-    if (LAB_depth_source == File)
-    {
-      const std::string filename = data_directory+LAB_file_name;
+      if (LAB_depth_source == File)
+        {
+          const std::string filename = data_directory+LAB_file_name;
 
-      std::cout << "   Loading Ascii data lookup file " << filename << "." << std::endl;
+          std::cout << "   Loading Ascii data lookup file " << filename << "." << std::endl;
 
-      lab_depths.load_file(filename,this->get_mpi_communicator());
-    }
+          lab_depths.load_file(filename,this->get_mpi_communicator());
+        }
     }
 
     //Read in ascii data - two dimensions so the third column is treated as data
