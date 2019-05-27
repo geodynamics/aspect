@@ -9,12 +9,13 @@ for temperature_degree in ${temperature_degrees[@]}; do
     outputfile=results_Q${temperature_degree}_${thermal_conductivity}.dat
     rm -f $outputfile
 
-
       for refinement in ${refinements[@]}; do
         h=`echo "1/(2^${refinement})" | bc -l`
 
         current_dir=Q${temperature_degree}_refinement${refinement}_${thermal_conductivity}
         echo $current_dir
+        echo -n $h >> $outputfile
+        echo -n ' ' >> $outputfile
 
         if [ -f ${current_dir}/log.txt ]; then
           # 1 average temperature, 2 maximum temperature
