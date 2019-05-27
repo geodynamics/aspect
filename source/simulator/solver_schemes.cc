@@ -28,6 +28,9 @@
 
 #include <deal.II/numerics/vector_tools.h>
 
+#include <aspect/stokes_matrix_free.h>
+
+
 namespace aspect
 {
 
@@ -292,7 +295,20 @@ namespace aspect
       }
 
     assemble_stokes_system ();
-    build_stokes_preconditioner();
+
+    // Update coefficients and add correction to system rhs for
+    // marix-free method
+    if (stokes_matrix_free)
+      {
+        stokes_matrix_free->evaluate_viscosity();
+        stokes_matrix_free->correct_stokes_rhs();
+      }
+
+    // Assemble preconditioner for matrix-based
+    if (!stokes_matrix_free)
+      {
+        build_stokes_preconditioner();
+      }
 
     if (compute_initial_residual)
       {

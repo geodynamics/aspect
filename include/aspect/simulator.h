@@ -95,6 +95,9 @@ namespace aspect
   class NewtonHandler;
 
   template <int dim>
+  class StokesMatrixFreeHandler;
+
+  template <int dim>
   class FreeSurfaceHandler;
 
   template <int dim>
@@ -758,6 +761,12 @@ namespace aspect
        */
       std::pair<double,double>
       solve_stokes ();
+
+      /**
+       * Solve the Stokes system using a block preconditioner and GMG.
+       */
+      std::pair<double,double>
+      solve_stokes_block_gmg ();
 
       /**
        * This function is called at the end of every time step. It runs all
@@ -1844,10 +1853,16 @@ namespace aspect
        */
       std::unique_ptr<FreeSurfaceHandler<dim> > free_surface;
 
+      /**
+       * Unique pointer for the matrix-free Stokes solver
+       */
+      std::unique_ptr<StokesMatrixFreeHandler<dim> > stokes_matrix_free;
+
       friend class boost::serialization::access;
       friend class SimulatorAccess<dim>;
       friend class FreeSurfaceHandler<dim>;   // FreeSurfaceHandler needs access to the internals of the Simulator
       friend class VolumeOfFluidHandler<dim>; // VolumeOfFluidHandler needs access to the internals of the Simulator
+      friend class StokesMatrixFreeHandler<dim>;
       friend struct Parameters<dim>;
   };
 }
