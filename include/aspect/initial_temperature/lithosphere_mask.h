@@ -86,7 +86,7 @@ namespace aspect
         /**
          * Return the initial temperature as a function of position. For the
          * current class, this function uses the given lithosphere temperature
-         * above max_depth and nans below max_depth.
+         * above the lithosphere asthenosphere boundary and nans below.
          */
         double
         initial_temperature (const Point<dim> &position) const;
