@@ -335,6 +335,17 @@ namespace aspect
       {
         prm.enter_subsection("Spherical shell");
         {
+          prm.declare_entry ("Custom mesh radial subdivision", "default",
+                             Patterns::Selection ("default|list of radius|number of slices"),
+                             "Choose how the spherical shell mesh is generated. "
+                             "By default, a coarse mesh is intuitively generated with "
+                             "respect to the inner and outer radius, and an initial number "
+                             "of cells along circumference. "
+                             "In the other cases, a surface mesh is first generated and "
+                             "refined as desired, before it is extruded radially following "
+                             "the specified subdivision scheme. A list of radius subdivides "
+                             "the spherical shell at specified radius. A number of slices "
+                             "subdivides the spherical shell in N slices of equal thickness.");
           prm.declare_entry ("Inner radius", "3481000",  // 6371-2890 in km
                              Patterns::Double (0),
                              "Inner radius of the spherical shell. Units: $\\text{m}$. "
@@ -396,6 +407,14 @@ namespace aspect
       {
         prm.enter_subsection("Spherical shell");
         {
+          if (prm.get ("Custom mesh radial subdivision") == "default")
+            custom_mesh = none;
+          else if (prm.get ("Custom mesh radial subdivision") == "list of radius")
+            custom_mesh = list;
+          else if (prm.get ("Custom mesh radial subdivision") == "number of slices")
+            custom_mesh = slices;
+          else
+            AssertThrow (false, ExcMessage ("Not a valid custom mesh radial subdivision scheme."));
           R0  = prm.get_double ("Inner radius");
           R1  = prm.get_double ("Outer radius");
           phi = prm.get_double ("Opening angle");
