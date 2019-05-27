@@ -560,7 +560,6 @@ namespace aspect
           }
         else if (parameters.advection_stabilization_method == Parameters<dim>::AdvectionStabilizationMethod::supg)
           {
-            // things needed for calculating tau for SUPG loop
             double norm_of_advection_term = 0.0;
             double max_conductivity_on_cell = 0.0;
 
@@ -587,8 +586,6 @@ namespace aspect
                       max_conductivity_on_cell = 0.0;
                     }
                 }
-              // TODO: this needs replacing with a more sophisticated check
-              norm_of_advection_term = std::max(norm_of_advection_term,1e-8);
             }
 
             const double fe_order
@@ -599,14 +596,31 @@ namespace aspect
                  parameters.composition_degree
                 );
             const double h = cell->diameter();
+            const double eps = max_conductivity_on_cell;
 
-            // Compute tau for SUPG
-            viscosity_per_cell[cell->active_cell_index()] = (h/fe_order)/(2*norm_of_advection_term);
+            // SUPG parameter design from "On Discontinuity-Capturing Methods
+            // for Convection-Diffusion Equations" by Volker John and Petr
+            // Knobloch. Also see deal.II step-63:
+            // delta_k = h / (2 \|u\| k) * (coth(Pe) - 1/Pe)
+            // Pe = \| u \| h/(2 p eps)
+            const double peclet_times_eps = norm_of_advection_term * h / (2.0 * fe_order);
 
-            if (max_conductivity_on_cell>1e-8)
-              viscosity_per_cell[cell->active_cell_index()] *= (1.0/tanh(norm_of_advection_term*(h/fe_order)/(2.0*max_conductivity_on_cell))
-                                                                - 1.0/(norm_of_advection_term*(h/fe_order)/(2.0*max_conductivity_on_cell)));
-
+            // Instead of Pe < 1, we check Pe*eps < eps as eps can be ==0:
+            if (peclet_times_eps==0.0 || peclet_times_eps < eps)
+              {
+                // Diffusion dominant case, no stabilization needed:
+                viscosity_per_cell[cell->active_cell_index()] = 0.0;
+              }
+            else
+              {
+                // To avoid a division by zero, increase eps slightly. The actual value is not
+                // important, as long as the result is still a valid number. Note that this
+                // is only important if \|u\| and eps are zero.
+                const double peclet = peclet_times_eps / (eps + 1e-100);
+                const double coth_of_peclet = (1.0 + exp(-2.0*peclet)) / (1.0 - exp(-2.0*peclet));
+                const double delta = h/(2.0*norm_of_advection_term*fe_order) * (coth_of_peclet - 1.0/peclet);
+                viscosity_per_cell[cell->active_cell_index()] = delta;
+              }
             Assert (viscosity_per_cell[cell->active_cell_index()] >= 0, ExcMessage ("tau for SUPG needs to be a nonnegative constant."));
           }
         else
