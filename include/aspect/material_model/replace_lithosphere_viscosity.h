@@ -32,12 +32,12 @@ namespace aspect
     using namespace dealii;
 
     /**
-     * A material model that applies a depth-dependent viscosity to a ''base model''
-     * chosen from any of the other available material models. This depth-dependent
-     * material model allows the user to specify a depth-dependent reference viscosity
-     * either through a parsed function, lists of depth and viscosity values, or a file.
-     * The current implementation only allows for depth-dependence of viscosity - all
-     * other properties are derived from the base model.
+     * A material model that applies a given constant viscosity in the lithosphere.
+     * Viscosity below this is taken from a ''base mode''chosen from any of the
+     * other available material models. The replace lithosphere viscosity
+     * material model allows the user to specify the depth of the lithosphere-asthenosphre
+     * boundary either as one value or as a file. All other properties are derived
+     * from the base model.
      * @ingroup MaterialModels
      */
     template <int dim>
@@ -54,28 +54,6 @@ namespace aspect
          */
         virtual
         void initialize();
-
-        /**
-         * Directory in which the LAB depth file is present.
-         */
-        std::string data_directory;
-
-        /**
-         * File name of the LAB depth file.
-         */
-        std::string LAB_file_name;
-
-        /**
-         * Return LAB depth as a function of position (latitude and longitude). For the
-         * current class, this function returns value from the text files.
-         */
-        double
-        ascii_lab (const Point<2> &position) const;
-
-        /**
-         * This parameter gives the viscosity set within the lithosphere.
-         */
-        double lithosphere_viscosity;
 
         /**
          * Function to compute the material properties in @p out given the
@@ -104,21 +82,65 @@ namespace aspect
         virtual bool is_compressible () const;
 
         /**
-         * Method to calculate reference viscosity for the depth-dependent model. The reference
-         * viscosity is determined by evaluating the depth-dependent part of the viscosity at
-         * the mean depth of the model.
+         * Method to calculate reference viscosity for the model. The reference
+         * viscosity is simply the reference  viscosity from the base model.
          */
         virtual double reference_viscosity () const;
 
       private:
+        /**
+         * Reads in file containing input data in ascii format.
+         */
+         Utilities::AsciiDataLookup<2> lab_depths;
 
+        /**
+         * Directory in which the LAB depth file is present.
+         */
+         std::string data_directory;
 
-        Utilities::AsciiDataLookup<2> lab_depths;
+         /**
+         * File name of the LAB depth file.
+         */
+         std::string LAB_file_name;
+
+         /**
+         * Return LAB depth as a function of position (latitude and longitude). For the
+         * current class, this function returns value from the text file. We read in
+         * two dimensions so the third column (depth) is treated as data.
+         */
+         double
+         ascii_lab (const Point<2> &position) const;
+
+         /**
+          * This parameter gives the maximum depth of the lithosphere. The
+          * model returns viscosity from the base model below this depth. This parameter is
+          * only used if LAB depth source is set to 'Value'.
+          */
+         double max_depth;
+
+         /**
+         * This parameter gives the viscosity set within the lithosphere.
+         */
+         double lithosphere_viscosity;
+
+         /**
+          * An enum to describe where the LAB depth is coming from.
+          */
+         enum LABDepthSource
+         {
+           Value,
+           File
+         };
+
+         /**
+          * Currently chosen source for the LAB depth.
+          */
+         LABDepthSource LAB_depth_source;
 
         /**
          * Pointer to the material model used as the base model
          */
-        std::shared_ptr<MaterialModel::Interface<dim> > base_model;
+         std::shared_ptr<MaterialModel::Interface<dim> > base_model;
     };
   }
 }

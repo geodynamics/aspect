@@ -45,19 +45,21 @@ namespace aspect
     {
       base_model->initialize();
 
-      //Get LAB depths
+      if (LAB_depth_source == File)
+      {
       const std::string filename = data_directory+LAB_file_name;
+
       std::cout << "   Loading Ascii data lookup file " << filename << "." << std::endl;
 
       lab_depths.load_file(filename,this->get_mpi_communicator());
+      }
     }
 
-    //Read in ascii data - two dimensions so the third column is treated as data
     template <int dim>
     double
 	ReplaceLithosphereViscosity<dim>::ascii_lab (const Point<2> &position) const
     {
-      const double lab = lab_depths.get_data(position,0)*1000; //In km
+      const double lab = lab_depths.get_data(position,0);
       return lab;
     }
 
@@ -70,8 +72,10 @@ namespace aspect
 
       for (unsigned int i=0; i < in.position.size(); ++i)
       {
-	  double depth = this->SimulatorAccess<dim>::get_geometry_model().depth(in.position[i]);
+	  const double depth = this->SimulatorAccess<dim>::get_geometry_model().depth(in.position[i]);
 
+	  if (LAB_depth_source == File)
+	  {
       //Get spherical coordinates for model
       std::array<double,dim> scoord      = Utilities::Coordinates::cartesian_to_spherical_coordinates(in.position[i]);
       const double phi = scoord[1];
@@ -85,10 +89,22 @@ namespace aspect
         out.viscosities[i] = lithosphere_viscosity;
       else
     	out.viscosities[i] *= 1;
-      }
-    }
+	  }
 
+	  else if (LAB_depth_source == Value)
+	  {
+      if (depth <= max_depth)
+    	 out.viscosities[i] = lithosphere_viscosity;
+      else
+    	 out.viscosities[i] *= 1;
+	  }
 
+      else
+        {
+          Assert( false, ExcMessage("Invalid method for depth specification method") );
+        }
+	  }
+	  }
 
     template <int dim>
     void
@@ -100,15 +116,22 @@ namespace aspect
         {
           prm.declare_entry("Base model","simple",
                             Patterns::Selection(MaterialModel::get_valid_model_names_pattern<dim>()),
-                            "The name of a material model that will be modified by a depth "
-                            "dependent viscosity. Valid values for this parameter "
+                            "The name of a material model that will be modified by a replacing"
+							"the viscosity in the lithosphere by a constant value. Valid values for this parameter "
                             "are the names of models that are also valid for the "
                             "``Material models/Model name'' parameter. See the documentation for "
-                            "that for more information.");
+                            "more information.");
           prm.declare_entry ("Lithosphere viscosity", "1600",
                              Patterns::Double (0),
                              "The viscosity within lithosphere, applied above"
                              "the maximum lithosphere depth.");
+          prm.declare_entry ("Depth specification method", "Value",
+                             Patterns::Selection("File|Value"),
+                             "Method that is used to specify the depth of the lithosphere-asthenosphere boundary.");
+          prm.declare_entry ("Maximum lithosphere depth", "200000.0",
+                             Patterns::Double (0),"Units: m."
+                             "The maximum depth of the lithosphere. The viscosity will be "
+                             "taken from the base model below this depth.");
           prm.declare_entry ("Data directory", "$ASPECT_SOURCE_DIR/data/material-model/replace-lithosphere-viscosity/",
                              Patterns::DirectoryName (),
                              "The path to the model data. The path may also include the special "
@@ -151,9 +174,17 @@ namespace aspect
 
           lithosphere_viscosity   = prm.get_double ("Lithosphere viscosity");
 
-          data_directory = Utilities::expand_ASPECT_SOURCE_DIR (prm.get("Data directory"));
-          LAB_file_name   = prm.get("LAB depth filename");
-
+          if ( prm.get("Depth specification method") == "File" )
+           {
+            LAB_depth_source = File;
+            data_directory = Utilities::expand_ASPECT_SOURCE_DIR (prm.get("Data directory"));
+            LAB_file_name = prm.get("LAB depth filename");
+           }
+           else if ( prm.get("Depth specification method") == "Value" )
+           {
+            LAB_depth_source = Value;
+            max_depth = prm.get_double ("Maximum lithosphere depth");
+           }
         }
         prm.leave_subsection();
       }
