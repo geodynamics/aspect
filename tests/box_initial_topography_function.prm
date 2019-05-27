@@ -1,5 +1,5 @@
 # This input file tests the box geometry in
-# combination with the ascii data initial
+# combination with the function initial
 # topography model.
 
 set Dimension = 2
@@ -32,7 +32,8 @@ subsection Geometry model
     set X repetitions = 1
     set Y repetitions = 1
   end
-# We specify the name and directory of the ascii data file
+
+# We specify the topography with a cosine function
   subsection Initial topography model
     set Model name = function
     subsection Function
