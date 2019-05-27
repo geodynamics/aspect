@@ -1,0 +1,110 @@
+# This cookbook uses the implementation of anisotropic viscosity terms in the Stokes
+# equation. Here, it is applied to the Rayleigh-Taylor instability problem, following
+# Lev and Hager (2008) and Perry-Houts and Karlstrom (2019) and the van Keken cookbook.
+#
+
+set Additional shared libraries = ./libanisotropic_viscosity.so
+set Dimension = 2
+set CFL number                             = 0.5
+set Start time                             = 0
+set End time                               = 1
+set Adiabatic surface temperature          = 0
+set Surface pressure                       = 0
+set Use years in output instead of seconds = false  # default: true
+set Output directory                       = output-AV-Rayleigh-Taylor_lessweak_horiz_05_27_1proc
+
+#set Nonlinear solver scheme                = iterated Stokes
+#set Max nonlinear iterations               = 1
+
+subsection Boundary temperature model
+  set List of model names = box
+end
+
+subsection Gravity model
+  set Model name = vertical
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1.1 # width of the box, present in the functions of the compositional fields
+    set Y extent = 1
+  end
+end
+
+# temperature field doesn't matter. set it to zero
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Function expression = 0
+  end
+end
+
+
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 10.0
+  end
+end
+
+#3 compositional fields, 1 for the material, 2 for the AV normals
+subsection Compositional fields
+    set Number of fields = 3
+    set Names of fields = gamma, ni, nj
+end
+
+subsection Material model
+    set Model name = AV material
+
+    subsection AV
+        set Normal viscosity    = 1
+        set Shear viscosity     = 0.5
+#density is hard-coded into the AV_material.cc plugin
+#everything else is set to 0
+  end
+end
+
+subsection Initial composition model
+    set Model name = function
+    subsection Function
+        set Variable names      = x,z
+        set Function constants  = pi=3.1415926;
+set Function expression = 0.5*(1+tanh((z-0.85-0.01*cos(2*pi*x/1))/0.005)); \
+                          (0.5*(1+tanh((z-0.85-0.01*cos(2*pi*x/1))/0.005)))*sin(90*pi/180); \
+                          (0.5*(1+tanh((z-0.85-0.01*cos(2*pi*x/1))/0.005))) *cos(90*pi/180);
+        end
+end
+
+subsection Mesh refinement
+    set Initial global refinement          = 7
+    set Initial adaptive refinement        = 0
+    set Strategy                           = composition
+    set Time steps between mesh refinement = 0
+    set Coarsening fraction                = 0.05
+    set Refinement fraction                = 0.1
+end
+
+
+
+subsection Boundary velocity model
+    set Tangential velocity boundary indicators = left, right
+    set Zero velocity boundary indicators       = bottom, top
+end
+
+
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, composition statistics, material statistics
+    subsection Visualization
+        set List of output variables = compositional vector, density, viscosity, gravity, shear stress, stress, strain rate, strain rate tensor, named additional outputs
+#anisotropic viscosity tensor components are in the named additional outputs
+        set Output format                 = vtu
+        set Time between graphical output = 0.5
+        subsection Compositional fields as vectors
+            set Names of fields = ni,nj
+            set Names of vectors = n
+        end
+    end
+end

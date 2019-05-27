@@ -6,12 +6,14 @@
 #include <deal.II/base/parameter_handler.h>
 #include <deal.II/base/patterns.h>
 #include <deal.II/base/point.h>
+#include <deal.II/base/quadrature.h>
 #include <deal.II/base/table_indices.h>
 #include <deal.II/base/tensor.h>
 #include <deal.II/base/utilities.h>
 #include <deal.II/fe/fe.h>
 #include <deal.II/fe/fe_update_flags.h>
 #include <deal.II/grid/tria_iterator_base.h>
+#include <array>
 #include <functional>
 #include <iostream>
 #include <string>
@@ -771,23 +773,29 @@ namespace MaterialModel
       c_idx_n.push_back (this->introspection().compositional_index_for_name("nk"));
 
     // Get the grad_u tensor, at the center of this cell, if possible.
-    Tensor<2,dim> grad_u;
+
+    std::vector<Tensor<2,dim> > velocity_gradients (in.position.size());
     if (in.current_cell.state() == IteratorState::valid)
       {
-        const QMidpoint<dim> quadrature_formula;
-        FEValues<dim> fe_values (this->get_mapping(),
-                                 this->get_fe(),
-                                 quadrature_formula,
-                                 update_gradients);
-        fe_values.reinit(in.current_cell);
-        std::vector<Tensor<2,dim> > velocity_gradients (quadrature_formula.size());
+    	std::vector<Point<dim> > quadrature_positions(in.position.size());
+    	          for (unsigned int i=0; i < in.position.size(); ++i)
+    	            quadrature_positions[i] = this->get_mapping().transform_real_to_unit_cell(in.current_cell, in.position[i]);
+
+    	          // FEValues requires a quadrature and we provide the default quadrature
+    	          // as we only need to evaluate the gradients of the solution.
+    	          FEValues<dim> fe_values (this->get_mapping(),
+    	                                   this->get_fe(),
+    	                                   Quadrature<dim>(quadrature_positions),
+    	                                   update_gradients);
+    	fe_values.reinit (in.current_cell);
+
+
         fe_values[this->introspection().extractors.velocities]
         .get_function_gradients(this->get_solution(), velocity_gradients);
 
-        grad_u = velocity_gradients[0];
       }
 
-    std::vector<std::array<double,3> > Viscoeigenvalues(in.position.size());
+    std::vector<std::array<double,3> > Viscoeigenvalues(in.position.size()); //This is good only in 2D
 
     for (unsigned int q=0; q<in.position.size(); ++q)
       {
@@ -802,21 +810,22 @@ namespace MaterialModel
         for (unsigned int c=0; c<in.composition[q].size(); ++c)
             out.reaction_terms[q][c] = 0.0;
 
-        Point<dim> n;
+        Tensor<1,dim> n;
         for (unsigned int i=0; i<dim; ++i)
           n[i] = in.composition[q][c_idx_n[i]];
-
+          Tensor<1,dim> n_dot;
+        if (n.norm() >0.5)
+           {
         // Symmetric and anti-symmetric parts of grad_u
-        const SymmetricTensor<2,dim> D = symmetrize(grad_u);
+        const SymmetricTensor<2,dim> D = symmetrize(velocity_gradients[q]);
         Tensor<2,dim> W;
         for (unsigned int i=0; i<dim; ++i)
           for (unsigned int j=0; j<dim; ++j)
-            W[i][j] = grad_u[i][j] - D[i][j];
+            W[i][j] = velocity_gradients[q][i][j] - D[i][j];
 
-        Point<dim> n_dot;
+//        n_dot = (W - outer_product(n*D, n) - outer_product(n, D*n)) * n;
         for (unsigned int i=0; i<dim; ++i)
           {
-            n_dot[i] = 0.0;
             // outer summation over each value of j.
             for (unsigned int j=0; j<dim; ++j)
             {
@@ -828,12 +837,36 @@ namespace MaterialModel
               n_dot[i] += Wn * n[j];
             }
           }
+        // make sure that n is a unit vector. for this to work,
+        // n needs to be a nonzero vector
 
+        Tensor<1,dim> n_new;
+        n_new = n + (n_dot * this->get_timestep());
+        Assert (n_new.norm() != 0, ExcInternalError());
+        n_new /= n_new.norm();
+        if (this->get_timestep()==0) //because at the start of the model timestep is 0
+        {
+
+        	n_dot=(n/n.norm())-n;
+        }
+        else {
+        	n_dot = (n_new-n)/ this->get_timestep();
+        	}
+          }
+        else
+        {
+        	n_dot=0;
+        }
+        //update  n[i] = in.composition[q][c_idx_n[i]] with adding to it n_dot*dt
         for (unsigned int i=0; i<dim; ++i)
-          out.reaction_terms[q][c_idx_n[i]] = n_dot[i] * this->get_timestep();
+            if (this->get_timestep()==0)
+            	out.reaction_terms[q][c_idx_n[i]] = n_dot[i];
+            else
+            	out.reaction_terms[q][c_idx_n[i]] = n_dot[i] * this->get_timestep();
 
-        if ((n[0] != 0) || (n[1] != 0) || (dim == 3 && n[2] != 0))
+        if (n.norm() > 0.5)
           {
+        	n/=n.norm();
             SymmetricTensor<4,dim> Lambda;
             for (unsigned int i=0; i<dim; ++i)
               for (unsigned int j=0; j<dim; ++j)
@@ -852,17 +885,19 @@ namespace MaterialModel
                   SymmetricTensor<2,3> ViscoTensor;
                   ViscoTensor[0][0]=anisotropic_viscosity->stress_strain_directors[q][0][0][0][0];
                   ViscoTensor[0][1]=anisotropic_viscosity->stress_strain_directors[q][0][0][1][1];
-                  ViscoTensor[0][2]=anisotropic_viscosity->stress_strain_directors[q][0][0][0][1];
+                  ViscoTensor[0][2]=anisotropic_viscosity->stress_strain_directors[q][0][0][0][1] * sqrt(2);
                   ViscoTensor[1][0]=anisotropic_viscosity->stress_strain_directors[q][1][1][0][0];
                   ViscoTensor[1][1]=anisotropic_viscosity->stress_strain_directors[q][1][1][1][1];
-                  ViscoTensor[1][2]=anisotropic_viscosity->stress_strain_directors[q][1][1][0][1];
-                  ViscoTensor[2][0]=anisotropic_viscosity->stress_strain_directors[q][0][1][0][0];
-                  ViscoTensor[2][1]=anisotropic_viscosity->stress_strain_directors[q][0][1][1][1];
-                  ViscoTensor[2][2]=anisotropic_viscosity->stress_strain_directors[q][0][1][0][1];
+                  ViscoTensor[1][2]=anisotropic_viscosity->stress_strain_directors[q][1][1][0][1] * sqrt(2);
+                  ViscoTensor[2][0]=anisotropic_viscosity->stress_strain_directors[q][0][1][0][0] * sqrt(2);
+                  ViscoTensor[2][1]=anisotropic_viscosity->stress_strain_directors[q][0][1][1][1] * sqrt(2);
+                  ViscoTensor[2][2]=anisotropic_viscosity->stress_strain_directors[q][0][1][0][1] * 2;
 
                   Viscoeigenvalues[q] = eigenvalues(ViscoTensor);
                   for (unsigned int i=0; i<3; ++i)
                   {
+                	  if (Viscoeigenvalues[q][i]<0)
+                		  cout<<" eig1 "<<Viscoeigenvalues[q][0] <<" eig2 "<<Viscoeigenvalues[q][1] <<" eig3 "<<Viscoeigenvalues[q][2] <<" n "<<n << std::endl;
                 	  AssertThrow((Viscoeigenvalues[q][i]>0),
                 	  		                ExcMessage("Error! Negative eigenvalue in the viscosity tensor"));
                   //Assert (anisotropic_viscosity->stress_strain_directors[q] has only positive eigenvalues);
