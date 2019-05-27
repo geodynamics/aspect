@@ -753,7 +753,7 @@ namespace aspect
 
   template <int dim, int degree_v, typename number>
   void
-  ABlockOperator<dim,degree_v,number>
+  MatrixFreeStokesOperators::ABlockOperator<dim,degree_v,number>
   ::compute_diagonal ()
   {
     this->inverse_diagonal_entries.
