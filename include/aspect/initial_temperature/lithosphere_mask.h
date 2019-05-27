@@ -55,11 +55,11 @@ namespace aspect
         void
         initialize ();
 
-       /**
-         * Return the initial temperature as a function of position. For the
-         * current class, this function uses the given lithosphere temperature
-         * above the lithosphere asthenosphere boundary and nans below.
-         */
+        /**
+          * Return the initial temperature as a function of position. For the
+          * current class, this function uses the given lithosphere temperature
+          * above the lithosphere-asthenosphere boundary and nans below.
+          */
         double
         initial_temperature (const Point<dim> &position) const;
 
@@ -82,32 +82,33 @@ namespace aspect
         /**
                  * Directory in which the LAB depth file is present.
                  */
-                std::string data_directory;
+        std::string data_directory;
 
-                /**
-                 * File name of the LAB depth file.
-                 */
-                std::string LAB_file_name;
+        /**
+         * File name of the LAB depth file.
+         */
+        std::string LAB_file_name;
 
-                /**
-                 * Return LAB depth as a function of position (latitude and longitude). For the
-                 * current class, this function returns value from the text files.
-                 */
-                double
-                ascii_lab (const Point<2> &position) const;
+        /**
+         * Return LAB depth as a function of position (latitude and longitude). For the
+         * current class, this function returns value from the text file. We read in in
+         * two dimensions so the third column (depth) is treated as data.
+         */
+        double
+        ascii_lab (const Point<2> &position) const;
 
 
-                /**
-                 * This parameter gives the maximum depth of the lithosphere. The
-                 * model be nans below this depth. This parameter is only used if LAB
-                 * depth source is set to 'Value'
-                 */
-                double max_depth;
+        /**
+         * This parameter gives the maximum depth of the lithosphere. The
+         * model returns nans below this depth. This parameter is only used if LAB
+         * depth source is set to 'Value'.
+         */
+        double max_depth;
 
-                /**
-                 * This parameter gives the initial temperature set within the lithosphere.
-                 */
-                double lithosphere_temperature;
+        /**
+         * This parameter gives the initial temperature set within the lithosphere.
+         */
+        double lithosphere_temperature;
 
         /**
          * An enum to describe where the LAB depth is coming from.

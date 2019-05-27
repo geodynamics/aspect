@@ -50,12 +50,11 @@ namespace aspect
         }
     }
 
-    //Read in ascii data - two dimensions so the third column is treated as data
     template <int dim>
     double
     LithosphereMask<dim>::ascii_lab (const Point<2> &position) const
     {
-      const double lab = lab_depths.get_data(position,0)*1000; //In km
+      const double lab = lab_depths.get_data(position,0);
       return lab;
     }
 
@@ -64,7 +63,7 @@ namespace aspect
     LithosphereMask<dim>::initial_temperature (const Point<dim> &position) const
     {
       double temperature;
-      double depth = this->SimulatorAccess<dim>::get_geometry_model().depth(position);
+      const double depth = this->SimulatorAccess<dim>::get_geometry_model().depth(position);
 
       if (LAB_depth_source == File)
         {
@@ -85,7 +84,7 @@ namespace aspect
 
       else if (LAB_depth_source == Value)
         {
-          if (depth <= max_depth*1000)//in km
+          if (depth <= max_depth)
             temperature = lithosphere_temperature;
           else
             temperature = std::numeric_limits<double>::quiet_NaN();
@@ -115,7 +114,7 @@ namespace aspect
           prm.declare_entry ("Depth specification method", "Value",
                              Patterns::Selection("File|Value"),
                              "Method that is used to specify the depth of the lithosphere-asthenosphere boundary.");
-          prm.declare_entry ("Maximum lithosphere depth", "200.0",
+          prm.declare_entry ("Maximum lithosphere depth", "200000.0",
                              Patterns::Double (0),
                              "The maximum depth of the lithosphere. The model will be "
                              "NaNs below this depth.");
@@ -134,8 +133,6 @@ namespace aspect
 
     template <int dim>
     void
-
-
     LithosphereMask<dim>::parse_parameters (ParameterHandler &prm)
     {
       AssertThrow (dim == 3,
@@ -146,22 +143,19 @@ namespace aspect
       {
         prm.enter_subsection ("Lithosphere Mask");
         {
-          lithosphere_temperature   = prm.get_double ("Lithosphere temperature");
+          lithosphere_temperature = prm.get_double ("Lithosphere temperature");
 
           if ( prm.get("Depth specification method") == "File" )
             {
               LAB_depth_source = File;
               data_directory = Utilities::expand_ASPECT_SOURCE_DIR (prm.get("Data directory"));
-              LAB_file_name   = prm.get("LAB depth filename");
+              LAB_file_name = prm.get("LAB depth filename");
             }
           else if ( prm.get("Depth specification method") == "Value" )
             {
               LAB_depth_source = Value;
-              max_depth           = prm.get_double ("Maximum lithosphere depth");
+              max_depth = prm.get_double ("Maximum lithosphere depth");
             }
-
-
-
         }
         prm.leave_subsection ();
       }
@@ -182,13 +176,13 @@ namespace aspect
                                               "lithosphere mask",
                                               "Implementation of a model in which the initial "
                                               "temperature is set to a specified lithosphere temperature above the "
-                                              "above the lithsphere-asthenosphere boundary (specified by an ascii file "
+                                              "lithosphere-asthenosphere boundary (specified by an ascii file "
                                               "or maximum lithosphere depth value). Below this the initial temperature is set as "
                                               "NaN.  Note the required format of the input data file: The first lines may "
                                               "contain any number of comments if they begin with ‘#’, but one of these lines "
                                               "needs to contain the number of grid points in each dimension as for example"
                                               "‘# POINTS: 3 3’. For a spherical model, the order of the data columns has to be"
-                                              "'phi', 'theta','depth (km)', where phi is the  azimuth angle and theta is the "
+                                              "'phi', 'theta','depth (m)', where phi is the  azimuth angle and theta is the "
                                               "polar angle measured positive from the north pole. This plug-in can be combined "
                                               "with another using the 'replace if valid' operator. ")
   }
