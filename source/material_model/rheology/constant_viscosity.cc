@@ -21,6 +21,9 @@
 
 #include <aspect/material_model/rheology/constant_viscosity.h>
 
+#include <deal.II/base/signaling_nan.h>
+#include <deal.II/base/parameter_handler.h>
+
 
 namespace aspect
 {
