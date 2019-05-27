@@ -67,7 +67,9 @@ find tests include source unit_tests cookbooks benchmarks \( -name '*.cc' -o -na
 tab_to_space()
 {
     f=$1
-    sed -e 's/\t/  /g' $f >$f.tmp
+    # awkward tab replacement because of OSX sed, do not change unless you test it on OSX
+    TAB=$'\t'
+    sed -e "s/$TAB/  /g" $f >$f.tmp
     diff -q $f $f.tmp >/dev/null || mv $f.tmp $f
     rm -f $f.tmp
 }
