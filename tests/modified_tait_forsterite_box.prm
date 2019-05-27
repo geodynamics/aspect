@@ -24,9 +24,9 @@ subsection Geometry model
   set Model name = box 
   subsection Box
     set X extent                = 400e3 
-    set X repetitions           = 2      
+    set X repetitions           = 1
     set Y extent                = 400e3  
-    set Y repetitions           = 2
+    set Y repetitions           = 1
   end
 end
 
@@ -40,7 +40,8 @@ end
 subsection Initial temperature model
   set Model name = function 
   subsection Function
-    set Function expression = 1400
+    set Variable names      = x,y
+    set Function expression = 1000 + y/400
   end
 end
 
@@ -74,7 +75,7 @@ end
 
 subsection Mesh refinement
   set Initial adaptive refinement              = 0         
-  set Initial global refinement                = 2           
+  set Initial global refinement                = 1
 end
 
 subsection Boundary velocity model
@@ -92,7 +93,7 @@ subsection Postprocess
     set Number of grouped files       = 0
 
     subsection Material properties
-      set List of material properties = density, viscosity, thermal expansivity, reaction terms, specific heat
+      set List of material properties = density, thermal expansivity, specific heat
     end
   end
 end

@@ -125,15 +125,21 @@ namespace aspect
         double reference_rho;
 
         /**
-         * The reference isothermal_bulk_modulus
+         * The reference isothermal bulk modulus
          */
         double reference_isothermal_bulk_modulus;
 
         /**
-         * The reference Kprime
-         * (first pressure derivative of the isothermal_bulk_modulus)
+         * The reference K'
+         * (first pressure derivative of the isothermal bulk modulus)
          */
         double reference_Kprime;
+
+        /**
+         * The reference K''
+         * (second pressure derivative of the isothermal bulk modulus)
+         */
+        double Kdprime_0;
 
         /**
          * The reference thermal expansivity

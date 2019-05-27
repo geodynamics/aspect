@@ -71,7 +71,6 @@ namespace aspect
             }
 
           // The relative thermal pressure
-          const double Pth = reference_thermal_expansivity * reference_isothermal_bulk_modulus * E_th / C_V0;
           const double Pth_rel = reference_thermal_expansivity * reference_isothermal_bulk_modulus * (E_th - E_th0) / C_V0;
           const double psubpth = pressure - reference_pressure - Pth_rel;
 
@@ -82,13 +81,18 @@ namespace aspect
           const double xi = (C_V / C_V0);
 
           // Here we calculate the pressure effect on the heat capacity. It is a bit involved.
-          const double dintVdpdT = (reference_thermal_expansivity * reference_isothermal_bulk_modulus / reference_rho * tait_a * xi) * (
-                                     std::pow((1. + tait_b * psubpth), - tait_c) - std::pow((1. - b * Pth), - tait_c));
+          const double dintVdpdT = ((reference_thermal_expansivity *
+                                     reference_isothermal_bulk_modulus / reference_rho *
+                                     tait_a * xi) *
+                                    (std::pow((1. + tait_b * psubpth), - tait_c) -
+                                     std::pow((1. - tait_b * Pth_rel), - tait_c)));
 
-          const double dSdT = reference_isothermal_bulk_modulus / reference_rho * std::pow((xi * reference_thermal_expansivity), 2) * \
-                              (std::pow((1. + tait_b * psubpth), -1. - tait_c) - std::pow((1. - tait_b * Pth), -1. - tait_c)) + \
-                              dintVdpdT * (( 1 - 2./x + 2./(std::exp(x) - 1.) ) * einstein_temperature/(temperature*temperature));
-
+          const double dSdT = (reference_isothermal_bulk_modulus / reference_rho *
+                               std::pow((xi * reference_thermal_expansivity), 2) *
+                               (std::pow((1. + tait_b * psubpth), -1. - tait_c) -
+                                std::pow((1. - tait_b * Pth_rel), -1. - tait_c)) +
+                               dintVdpdT * (( 1 - 2./x_einstein + 2./(std::exp(x_einstein) - 1.))
+                                            * einstein_temperature/(temperature*temperature)));
 
           const double rho = reference_rho / x;
           const double isothermal_compressibility = 1./(reference_isothermal_bulk_modulus * (1. + tait_b * psubpth) * (tait_a + (1. - tait_a) * std::pow((1. + tait_b * psubpth), tait_c)));
@@ -234,7 +238,7 @@ namespace aspect
       // Calculate dependent parameters
       Kdprime_0 = -reference_Kprime/reference_isothermal_bulk_modulus;
       tait_a = (1. + reference_Kprime) / (1. + reference_Kprime  + reference_isothermal_bulk_modulus * Kdprime_0);
-      tait_b = reference_Kprime  / reference_isothermal_bulk_modulus - Kdprime_0  / (1. + reference_Kprime );
+      tait_b = (reference_Kprime  / reference_isothermal_bulk_modulus) - (Kdprime_0  / (1. + reference_Kprime ));
       tait_c = (1. + reference_Kprime  + reference_isothermal_bulk_modulus * Kdprime_0) /
                (reference_Kprime * reference_Kprime + reference_Kprime - reference_isothermal_bulk_modulus * Kdprime_0);
 
