@@ -38,8 +38,8 @@ pipeline {
       }
       steps {
         sh '''
-          wget -q -O - https://api.github.com/repos/geodynamics/aspect/issues/${CHANGE_ID}/labels | grep 'ready to test' || \
-          { echo "This commit will only be tested when it has the label 'ready to test'"; exit 1; }
+        wget -q -O - https://api.github.com/repos/geodynamics/aspect/issues/${CHANGE_ID}/labels | grep 'ready to test' || \
+        { echo "This commit will only be tested when it has the label 'ready to test'"; exit 1; }
         '''
       }
     }
@@ -50,8 +50,8 @@ pipeline {
         sh 'git diff > changes-astyle.diff'
         archiveArtifacts artifacts: 'changes-astyle.diff', fingerprint: true
         sh '''
-          git diff --exit-code || \
-          { echo "Please check indentation, see artifacts in the top right corner!"; exit 1; }
+        git diff --exit-code || \
+        { echo "Please check indentation, see artifacts in the top right corner!"; exit 1; }
         '''
       }
     }
@@ -64,18 +64,18 @@ pipeline {
         sh 'mkdir build-gcc-unity'
 
         sh '''
-          cd build-gcc-unity
+        cd build-gcc-unity
 
-          # Set up build system and compile ASPECT
-          cmake \
-            -D ASPECT_USE_PETSC='OFF' \
-            -D ASPECT_PRECOMPILE_HEADERS='ON' \
-            ..
+        # Set up build system and compile ASPECT
+        cmake \
+        -D ASPECT_USE_PETSC='OFF' \
+        -D ASPECT_PRECOMPILE_HEADERS='ON' \
+        ..
         '''
 
         sh '''
-          cd build-gcc-unity
-          make aspect_unity
+        cd build-gcc-unity
+        make aspect_unity
         '''
       }
     }
@@ -88,22 +88,22 @@ pipeline {
         sh 'mkdir build-gcc-fast'
 
         sh '''
-          cd build-gcc-fast
+        cd build-gcc-fast
 
-          # Set up build system and compile ASPECT
-          cmake \
-            -G 'Ninja' \
-            -D CMAKE_CXX_FLAGS='-Werror' \
-            -D ASPECT_TEST_GENERATOR='Ninja' \
-            -D ASPECT_USE_PETSC='OFF' \
-            -D ASPECT_RUN_ALL_TESTS='ON' \
-            -D ASPECT_PRECOMPILE_HEADERS='ON' \
-            ..
+        # Set up build system and compile ASPECT
+        cmake \
+        -G 'Ninja' \
+        -D CMAKE_CXX_FLAGS='-Werror' \
+        -D ASPECT_TEST_GENERATOR='Ninja' \
+        -D ASPECT_USE_PETSC='OFF' \
+        -D ASPECT_RUN_ALL_TESTS='ON' \
+        -D ASPECT_PRECOMPILE_HEADERS='ON' \
+        ..
         '''
 
         sh '''
-          cd build-gcc-fast
-          ninja
+        cd build-gcc-fast
+        ninja
         '''
       }
     }
@@ -114,41 +114,41 @@ pipeline {
       }
       steps {
         sh '''
-          cd build-gcc-fast/tests
+        cd build-gcc-fast/tests
 
-          # Let ninja prebuild the test libraries and run
-          # the tests to create the output files in parallel. We
-          # want this to always succeed, because it does not generate
-          # useful output (we do this further down using 'ctest', however
-          # ctest can not run ninja in parallel, so this is the
-          # most efficient way to build the tests).
-          ninja -k 0 tests || true
+        # Let ninja prebuild the test libraries and run
+        # the tests to create the output files in parallel. We
+        # want this to always succeed, because it does not generate
+        # useful output (we do this further down using 'ctest', however
+        # ctest can not run ninja in parallel, so this is the
+        # most efficient way to build the tests).
+        ninja -k 0 tests || true
         '''
 
         sh '''
-          cd build-gcc-fast
+        cd build-gcc-fast
 
-          # Output the test results using ctest. Since
-          # the tests were prebuild in the previous shell
-          # command, this will be fast although it is not
-          # running in parallel.
-          ctest \
-            --no-compress-output \
-            --test-action Test
+        # Output the test results using ctest. Since
+        # the tests were prebuild in the previous shell
+        # command, this will be fast although it is not
+        # running in parallel.
+        ctest \
+        --no-compress-output \
+        --test-action Test
         '''
       }
       post {
         always {
           // Generate the 'Tests' output page in Jenkins
           xunit testTimeMargin: '3000',
-            thresholdMode: 1,
-            thresholds: [failed(), skipped()],
-            tools: [CTest(pattern: 'build-gcc-fast/Testing/**/*.xml')]
+          thresholdMode: 1,
+          thresholds: [failed(), skipped()],
+          tools: [CTest(pattern: 'build-gcc-fast/Testing/**/*.xml')]
 
           // Update the reference test output with the new test results
           sh '''
-            cd build-gcc-fast
-            ninja generate_reference_output
+          cd build-gcc-fast
+          ninja generate_reference_output
           '''
 
           // Generate the 'Artifacts' diff-file that can be
