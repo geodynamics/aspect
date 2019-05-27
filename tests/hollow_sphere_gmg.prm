@@ -99,7 +99,7 @@ end
 
 subsection Solver parameters
   subsection Stokes solver parameters
-    set Stokes solver type = block geometric multigrid
+    set Stokes solver type = block GMG
     set Linear solver tolerance = 1e-8
     set Number of cheap Stokes solver steps = 200
   end

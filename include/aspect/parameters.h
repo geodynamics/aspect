@@ -299,7 +299,7 @@ namespace aspect
 
       static const std::string pattern()
       {
-        return "block AMG|direct solver|block geometric multigrid";
+        return "block AMG|direct solver|block GMG";
       }
 
       static Kind
@@ -309,7 +309,7 @@ namespace aspect
           return block_amg;
         else if (input == "direct solver")
           return direct_solver;
-        else if (input == "block geometric multigrid")
+        else if (input == "block GMG")
           return block_gmg;
         else
           AssertThrow(false, ExcNotImplemented());

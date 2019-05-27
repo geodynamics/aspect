@@ -17,7 +17,7 @@ set Use years in output instead of seconds = false
 # Follow as closely as possible the parameters from Rudi et al. (2017)
 subsection Solver parameters
   subsection Stokes solver parameters
-    set Stokes solver type = block geometric multigrid
+    set Stokes solver type = block GMG
     set Number of cheap Stokes solver steps             = 200
     set Maximum number of expensive Stokes solver steps = 0
     set Linear solver tolerance                         = 1e-6

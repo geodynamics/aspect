@@ -3,7 +3,7 @@
 
 Loading shared library <./libhollow_sphere_gmg.so>
 
-Vectorization over 4 doubles = 256 bits (AVX), VECTORIZATION_LEVEL=2
+Vectorization over 2 doubles = 128 bits (SSE2), VECTORIZATION_LEVEL=1
 -----------------------------------------------------------------------------
 -----------------------------------------------------------------------------
 Number of active cells: 96 (on 2 levels)
