@@ -236,9 +236,18 @@ namespace aspect
                 {
                   for (unsigned int j=0; j < n_points_latitude; ++j)
                     {
-                      satellites_coordinate[p][0] = minimum_radius + ((maximum_radius - minimum_radius) / n_points_radius) * h;
-                      satellites_coordinate[p][1] = (minimum_colongitude + ((maximum_colongitude - minimum_colongitude) / n_points_longitude) * i) * numbers::PI / 180.;
-                      satellites_coordinate[p][2] = (minimum_colatitude + ((maximum_colatitude - minimum_colatitude) / n_points_latitude) * j) * numbers::PI / 180.;
+                      if (n_points_radius > 1)
+                        satellites_coordinate[p][0] = minimum_radius + ((maximum_radius - minimum_radius) / (n_points_radius - 1)) * h;
+                      else
+                        satellites_coordinate[p][0] = minimum_radius;
+                      if (n_points_longitude > 1)
+                        satellites_coordinate[p][1] = (minimum_colongitude + ((maximum_colongitude - minimum_colongitude) / (n_points_longitude - 1)) * i) * numbers::PI / 180.;
+                      else
+                        satellites_coordinate[p][1] = minimum_colongitude * numbers::PI / 180.;
+                      if (n_points_latitude > 1)
+                        satellites_coordinate[p][2] = (minimum_colatitude + ((maximum_colatitude - minimum_colatitude) / (n_points_latitude - 1)) * j) * numbers::PI / 180.;
+                      else
+                        satellites_coordinate[p][2] = minimum_colatitude * numbers::PI / 180.;
                       ++p;
                     }
                 }
