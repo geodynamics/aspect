@@ -181,7 +181,7 @@ namespace aspect
     ASPECT_REGISTER_INITIAL_TEMPERATURE_MODEL(LithosphereMask,
                                               "lithosphere mask",
                                               "Implementation of a model in which the initial "
-                                              "temperature is set at a specified lithosphere temperature above the "
+                                              "temperature is set to a specified lithosphere temperature above the "
                                               "above the lithsphere-asthenosphere boundary (specified by an ascii file "
                                               "or maximum lithosphere depth value). Below this the initial temperature is set as "
                                               "NaN.  Note the required format of the input data file: The first lines may "
