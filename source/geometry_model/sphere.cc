@@ -193,7 +193,7 @@ namespace aspect
         {
           prm.declare_entry ("Radius", "6371000",
                              Patterns::Double (0),
-                             "Radius of the sphere. Units: m.");
+                             "Radius of the sphere. Units: $\\text{m}$.");
         }
         prm.leave_subsection();
       }

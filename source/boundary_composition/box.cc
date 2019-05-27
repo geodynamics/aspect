@@ -61,23 +61,23 @@ namespace aspect
           prm.declare_entry ("Left composition", "",
                              Patterns::List(Patterns::Double ()),
                              "A comma separated list of composition boundary values "
-                             "at the left boundary (at minimal x-value). This list must have as many "
+                             "at the left boundary (at minimal $x$-value). This list must have as many "
                              "entries as there are compositional fields. Units: none.");
           prm.declare_entry ("Right composition", "",
                              Patterns::List(Patterns::Double ()),
                              "A comma separated list of composition boundary values "
-                             "at the right boundary (at maximal x-value). This list must have as many "
+                             "at the right boundary (at maximal $x$-value). This list must have as many "
                              "entries as there are compositional fields. Units: none.");
           prm.declare_entry ("Bottom composition", "",
                              Patterns::List(Patterns::Double ()),
                              "A comma separated list of composition boundary values "
-                             "at the bottom boundary (at minimal y-value in 2d, or minimal "
+                             "at the bottom boundary (at minimal $y$-value in 2d, or minimal "
                              "z-value in 3d). This list must have as many "
                              "entries as there are compositional fields. Units: none.");
           prm.declare_entry ("Top composition", "",
                              Patterns::List(Patterns::Double ()),
                              "A comma separated list of composition boundary values "
-                             "at the top boundary (at maximal y-value in 2d, or maximal "
+                             "at the top boundary (at maximal $y$-value in 2d, or maximal "
                              "z-value in 3d). This list must have as many "
                              "entries as there are compositional fields. Units: none.");
           if (dim==3)

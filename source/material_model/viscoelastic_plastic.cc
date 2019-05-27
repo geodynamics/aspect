@@ -273,7 +273,7 @@ namespace aspect
           // Reference and minimum/maximum values
           prm.declare_entry ("Reference temperature", "293",
                              Patterns::Double (0),
-                             "The reference temperature $T_0$. Units: $K$.");
+                             "The reference temperature $T_0$. Units: $\\text{K}$.");
           prm.declare_entry ("Minimum strain rate", "1.0e-20", Patterns::Double(0),
                              "Stabilizes strain dependent viscosity. Units: $1 / s$");
           prm.declare_entry ("Reference strain rate","1.0e-15",Patterns::Double(0),

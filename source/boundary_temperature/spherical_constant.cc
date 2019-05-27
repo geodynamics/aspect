@@ -87,10 +87,10 @@ namespace aspect
         {
           prm.declare_entry ("Outer temperature", "0",
                              Patterns::Double (),
-                             "Temperature at the outer boundary (lithosphere water/air). Units: K.");
+                             "Temperature at the outer boundary (lithosphere water/air). Units: $\\text{K}$.");
           prm.declare_entry ("Inner temperature", "6000",
                              Patterns::Double (),
-                             "Temperature at the inner boundary (core mantle boundary). Units: K.");
+                             "Temperature at the inner boundary (core mantle boundary). Units: $\\text{K}$.");
         }
         prm.leave_subsection ();
       }
