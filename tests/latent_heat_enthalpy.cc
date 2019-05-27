@@ -174,7 +174,7 @@ namespace aspect
         }
 
       private:
-        std::unique_ptr<Lookup::MaterialLookup> material_lookup;
+        std::unique_ptr<MaterialModel::MaterialUtilities::Lookup::MaterialLookup> material_lookup;
     };
   }
 }
