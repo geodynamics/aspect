@@ -373,7 +373,7 @@ namespace aspect
     std::pair<std::string,std::string>
     DoneaHuertaPostprocessor<dim>::execute (TableHandler &)
     {
-      std::shared_ptr<Function<dim> > ref_func;
+      std::unique_ptr<Function<dim> > ref_func;
       {
         const DoneaHuertaMaterial<dim> *
         material_model

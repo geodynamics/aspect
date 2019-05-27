@@ -54,7 +54,7 @@ namespace aspect
         /**
          * Pointer to the material model used as the base model
          */
-        std::shared_ptr<MaterialModel::Interface<dim> > base_model;
+        std::unique_ptr<MaterialModel::Interface<dim> > base_model;
 
         /**
          * Parameters determining the initial decay rate.

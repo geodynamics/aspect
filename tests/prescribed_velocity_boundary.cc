@@ -339,14 +339,14 @@ namespace aspect
     std::pair<std::string,std::string>
     InclusionPostprocessor<dim>::execute (TableHandler &statistics)
     {
-      std::shared_ptr<Function<dim> > ref_func;
+      std::unique_ptr<Function<dim> > ref_func;
       if (dynamic_cast<const InclusionMaterial<dim> *>(&this->get_material_model()) != nullptr)
         {
           const InclusionMaterial<dim> *
           material_model
             = dynamic_cast<const InclusionMaterial<dim> *>(&this->get_material_model());
 
-          ref_func = std::make_shared<AnalyticSolutions::FunctionInclusion<dim>>(material_model->get_eta_B());
+          ref_func = std_cxx14::make_unique<AnalyticSolutions::FunctionInclusion<dim>>(material_model->get_eta_B());
         }
       else
         {

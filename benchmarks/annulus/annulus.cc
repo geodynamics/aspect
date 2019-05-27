@@ -428,7 +428,7 @@ namespace aspect
     std::pair<std::string,std::string>
     AnnulusPostprocessor<dim>::execute (TableHandler &)
     {
-      std::shared_ptr<Function<dim> > ref_func;
+      std::unique_ptr<Function<dim> > ref_func;
       {
         const AnnulusMaterial<dim> &material_model
           = Plugins::get_plugin_as_type<const AnnulusMaterial<dim> >(this->get_material_model());
