@@ -77,11 +77,14 @@ namespace aspect
         parse_parameters (ParameterHandler &prm);
 
       private:
+        /**
+         * Reads in file containing input data in ascii format.
+         */
         Utilities::AsciiDataLookup<2> lab_depths;
 
         /**
-                 * Directory in which the LAB depth file is present.
-                 */
+         * Directory in which the LAB depth file is present.
+         */
         std::string data_directory;
 
         /**
@@ -91,12 +94,11 @@ namespace aspect
 
         /**
          * Return LAB depth as a function of position (latitude and longitude). For the
-         * current class, this function returns value from the text file. We read in in
+         * current class, this function returns value from the text file. We read in
          * two dimensions so the third column (depth) is treated as data.
          */
         double
         ascii_lab (const Point<2> &position) const;
-
 
         /**
          * This parameter gives the maximum depth of the lithosphere. The
