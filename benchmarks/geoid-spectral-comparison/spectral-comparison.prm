@@ -1,6 +1,4 @@
-# A description of convection in a 3d spherical shell with 
-# a prescribed initial condition based on the shear wave
-# velocity model S20RTS.
+# Spectral Comparison of the Geoid
 
 # Define the number of space dimensions we would like to 
 # work in:
@@ -23,6 +21,7 @@ set Surface pressure                       = 0
 subsection Solver parameters
   subsection Stokes solver parameters
     set Linear solver tolerance = 1e-5
+    set Number of cheap Stokes solver steps             = 0
   end
 end
 
@@ -104,11 +103,11 @@ subsection Material model
   end
 end
 
-# For this calculation we only do 2 global refinement steps. This resolution
+# For this calculation we only do 3 global refinement steps. This resolution
 # is too low to fully resolve the mantle flow, however it does capture
 # the main features.
 subsection Mesh refinement
-  set Initial global refinement          = 5
+  set Initial global refinement          = 3
   set Initial adaptive refinement        = 0
 end
 
