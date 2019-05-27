@@ -354,7 +354,7 @@ namespace aspect
        * This variable is queried by
        * SimulatorAccess::simulator_is_past_initialization().
        */
-      bool simulator_is_initialized;
+      bool simulator_is_past_initialization;
 
       /**
        * A class that is empty but that can be used as a member variable and

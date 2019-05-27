@@ -686,7 +686,7 @@ namespace aspect
   {
     return ((simulator != nullptr)
             &&
-            (simulator->simulator_is_initialized == true));
+            (simulator->simulator_is_past_initialization == true));
   }
 
 
