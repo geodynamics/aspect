@@ -23,7 +23,6 @@
 
 #include <aspect/material_model/interface.h>
 
-#include <aspect/material_model/grain_size.h>
 #include <aspect/simulator_access.h>
 
 namespace aspect
@@ -308,7 +307,7 @@ namespace aspect
          * List of pointers to objects that read and process data we get from
          * Perplex files.
          */
-        std::vector<std::unique_ptr<Lookup::PerplexReader> > material_lookup;
+        std::vector<std::unique_ptr<MaterialModel::MaterialUtilities::Lookup::PerplexReader> > material_lookup;
 
         /**
          * Pointer to an object that reads and processes data for the lateral
