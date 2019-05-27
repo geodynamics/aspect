@@ -775,10 +775,38 @@ namespace aspect
       get_current_constraints () const;
 
       /**
-       * Return whether or not the current object has been initialized by providing it with
-       * a pointer to a Simulator class object.
+       * Return whether the Simulator object has been completely initialized
+       * and has started to run its time stepping loop.
+       *
+       * This function is useful to determine in a plugin whether some
+       * of the information one can query about the Simulator can be trusted
+       * because it has already been set up completely. For example,
+       * while the Simulator is being
+       * set up, plugins may already have access to it via the current
+       * SimulatorAccess object, but data such as the current time, the
+       * time step number, etc, may all still be in a state that is not
+       * reliable since it may not have been initialized at that time. (As
+       * an example, at the very beginning of the Simulator object's existence,
+       * the time step number is set to numbers::invalid_unsigned_int, and
+       * only when the time step loop is started is it set to a valid
+       * value). Similar examples are that at some point the Simulator
+       * sets the solution vector to the correct size, but only at a later
+       * time (though before the time stepping starts), the *contents* of
+       * the solution vector are set based on the initial conditions
+       * specified in the input file.
+       *
+       * Only when this function returns @p true is all of the information
+       * returned by the SimulatorAccess object reliable and correct.
+       *
+       * @note This function returns @p true starting with the moment where the
+       *   Simulator starts the time stepping loop. However, it may
+       *   temporarily revert to returning @p false if, for example,
+       *   the Simulator does the initial mesh refinement steps where
+       *   it starts the time loop, but then goes back to
+       *   initialization steps (mesh refinement, interpolation of initial
+       *   conditions, etc.) before re-starting the time loop.
        */
-      bool simulator_is_initialized () const;
+      bool simulator_is_past_initialization () const;
 
       /**
        * Return the value used for rescaling the pressure in the linear
