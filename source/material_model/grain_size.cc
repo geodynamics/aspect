@@ -1489,7 +1489,7 @@ namespace aspect
                              "The reference density $\\rho_0$. Units: $kg/m^3$.");
           prm.declare_entry ("Reference temperature", "293",
                              Patterns::Double (0),
-                             "The reference temperature $T_0$. Units: $K$.");
+                             "The reference temperature $T_0$. Units: $\\text{K}$.");
           prm.declare_entry ("Viscosity", "5e24",
                              Patterns::Double (0),
                              "The value of the constant viscosity. Units: $kg/m/s$.");
@@ -1521,7 +1521,7 @@ namespace aspect
                              "depths than given in Phase transition depths, depending on the "
                              "Clapeyron slope given in Phase transition Clapeyron slopes. "
                              "List must have the same number of entries as Phase transition depths. "
-                             "Units: $K$.");
+                             "Units: $\\text{K}$.");
           prm.declare_entry ("Phase transition widths", "",
                              Patterns::List (Patterns::Double(0)),
                              "A list of widths for each phase transition. This is only use to specify "
@@ -1573,7 +1573,7 @@ namespace aspect
                              Patterns::List (Patterns::Double(0)),
                              "The grain size $d_{ph}$ to that a phase will be reduced to when crossing a phase transition. "
                              "When set to zero, grain size will not be reduced. "
-                             "Units: m.");
+                             "Units: $\\text{m}$.");
           prm.declare_entry ("Use paleowattmeter", "true",
                              Patterns::Bool (),
                              "A flag indicating whether the computation should be use the "
@@ -1685,7 +1685,7 @@ namespace aspect
                              "The minimum grain size that is used for the material model. This parameter "
                              "is introduced to limit local viscosity contrasts, but still allows for a widely "
                              "varying viscosity over the whole mantle range. "
-                             "Units: m.");
+                             "Units: $\\text{m}$.");
           prm.declare_entry ("Lower mantle grain size scaling", "1.0",
                              Patterns::Double (0),
                              "A scaling factor for the grain size in the lower mantle. In models where the "
