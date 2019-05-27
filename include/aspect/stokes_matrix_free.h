@@ -225,6 +225,7 @@ namespace aspect
       MatrixFreeOperators::Base<dim, dealii::LinearAlgebra::distributed::BlockVector<number> >::
       data->cell_loop(&StokesOperator::local_apply, this, dst, src);
     }
+
     template <int dim, int degree_v, typename number>
     void
     StokesOperator<dim,degree_v,number>
@@ -524,11 +525,13 @@ namespace aspect
         Table<2, VectorizedArray<number> > viscosity_x_2;
 
     };
+
     template <int dim, int degree_v, typename number>
     ABlockOperator<dim,degree_v,number>::ABlockOperator ()
       :
       MatrixFreeOperators::Base<dim, dealii::LinearAlgebra::distributed::Vector<number> >()
     {}
+
     template <int dim, int degree_v, typename number>
     void
     ABlockOperator<dim,degree_v,number>::clear ()
@@ -607,6 +610,7 @@ namespace aspect
           velocity.distribute_local_to_global (dst);
         }
     }
+
     template <int dim, int degree_v, typename number>
     void
     ABlockOperator<dim,degree_v,number>
@@ -616,6 +620,7 @@ namespace aspect
       MatrixFreeOperators::Base<dim,dealii::LinearAlgebra::distributed::Vector<number> >::
       data->cell_loop(&ABlockOperator::local_apply, this, dst, src);
     }
+
     template <int dim, int degree_v, typename number>
     void
     ABlockOperator<dim,degree_v,number>
@@ -641,6 +646,7 @@ namespace aspect
             1./inverse_diagonal.local_element(i);
         }
     }
+
     template <int dim, int degree_v, typename number>
     void
     ABlockOperator<dim,degree_v,number>
