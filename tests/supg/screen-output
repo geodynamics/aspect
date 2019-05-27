@@ -8,7 +8,7 @@ Number of degrees of freedom: 948 (578+81+289)
    Postprocessing:
      RMS, max velocity:                  0.816 m/s, 1.37 m/s
      Temperature min/avg/max:            0 K, 0.1027 K, 1 K
-     Heat fluxes through boundary parts: -1.633 W, 0 W, -12.73 W, -144.7 W
+     Heat fluxes through boundary parts: -6.27e-08 W, 0 W, -4.888e-07 W, -5.556e-06 W
      Writing graphical output:           output-supg/solution/solution-00000
 
 *** Timestep 1:  t=0.0883883 seconds
