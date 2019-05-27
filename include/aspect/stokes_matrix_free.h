@@ -749,11 +749,6 @@ namespace aspect
 
       Simulator<dim> &sim;
 
-      // TODO: velocity degree not only 2, Choosing quadrature degree?
-      typedef MatrixFreeStokesOperators::StokesOperator<dim,2,double> StokesMatrixType;
-      typedef MatrixFreeStokesOperators::MassMatrixOperator<dim,1,double> MassMatrixType;
-      typedef MatrixFreeStokesOperators::ABlockOperator<dim,2,double> ABlockMatrixType;
-
       DoFHandler<dim> dof_handler_v;
       DoFHandler<dim> dof_handler_p;
       DoFHandler<dim> dof_handler_projection;
@@ -762,6 +757,11 @@ namespace aspect
       FESystem<dim> fe_v;
       FESystem<dim> fe_p;
       FESystem<dim> fe_projection;
+
+      // TODO: velocity degree not only 2, Choosing quadrature degree?
+      typedef MatrixFreeStokesOperators::StokesOperator<dim,2,double> StokesMatrixType;
+      typedef MatrixFreeStokesOperators::MassMatrixOperator<dim,1,double> MassMatrixType;
+      typedef MatrixFreeStokesOperators::ABlockOperator<dim,2,double> ABlockMatrixType;
 
       StokesMatrixType stokes_matrix;
       ABlockMatrixType velocity_matrix;
