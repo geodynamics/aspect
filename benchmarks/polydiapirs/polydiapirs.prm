@@ -1,0 +1,96 @@
+# This is the setup of a polydiapirs experiment, i.e.
+# multiwavelength gravity structures. 
+# It consists of three layers of Newtonian fluids
+# set in motion by gravitational instability, as in 
+# case II of Weinberg and Schmeling 1992.
+
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 250
+set Use years in output instead of seconds = false
+set CFL number                             = 1.
+set Maximum time step                      = 0.1 
+set Output directory                       = output_polydiapirs
+
+subsection Geometry model
+  set Model name = box
+  subsection Box
+    set X extent  = 2.24
+    set Y extent  = 1.0000
+    set X repetitions = 2
+  end
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = left, right,top
+  set Zero velocity boundary indicators       = bottom
+end
+
+subsection Material model
+  set Model name = multicomponent
+  subsection Multicomponent
+    set Densities = 100, 90, 89
+    set Viscosities = 100, 1, 1
+    set Viscosity averaging scheme = harmonic
+    set Thermal expansivities = 0
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 9.81
+  end
+end
+
+############### Parameters describing the temperature field
+# Note: The temperature plays no role in this model
+
+subsection Boundary temperature model
+  set List of model names = box
+end
+
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Function expression = 0
+  end
+end
+
+############### Parameters describing the compositional field
+# Note: The compositional field is what drives the flow
+# in this example
+
+subsection Compositional fields
+  set Number of fields = 2
+end
+
+subsection Initial composition model
+  set Model name = function
+  subsection Function
+    set Variable names      = x,z
+    set Function expression = if( (z< 0.25 + (rand()-0.5)/5000. && z>=0.125+(rand()-0.5)/5000.) ,1 , 0 ) ; if (z<0.125+(rand    ()-0.5)/5000., 1 , 0)
+  end
+end
+
+############### Parameters describing the discretization
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Strategy                           = composition
+  set Initial global refinement          = 7
+  set Time steps between mesh refinement = 0
+end
+
+############### Parameters describing what to do with the solution
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, composition statistics, material statistics, global statistics, Stokes residual
+  subsection Visualization
+    set List of output variables = viscosity,density, strain rate
+    set Output format                 = vtu
+    set Time between graphical output = 5
+  end
+end
+
+
