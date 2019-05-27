@@ -29,6 +29,24 @@ run_prm ()
     done
 }
 
+run_coarse_prm ()
+{
+    for prm in "$@"
+    do
+        echo "Running '$prm' at `pwd` with '$BUILD' ..."
+        cp $prm $prm.tmp
+        echo "set End time=0" >> $prm.tmp
+	echo "subsection Mesh refinement" >> $prm.tmp
+	echo "set Initial global refinement          = 2" >> $prm.tmp
+	echo "end" >>$prm.tmp
+
+        $BUILD/aspect $prm.tmp >/dev/null || { rm -f $prm.tmp; return 2; }
+        rm -f $prm.tmp
+    done
+
+}
+
+
 # run aspect on all .prm files in the current folder or any subdirectory
 run_all_prms ()
 {
@@ -80,7 +98,7 @@ echo "Please be patient..."
 
 ( (cd finite_strain && make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
 
-( (cd geoid-spectral-comparison; run_all_prms ) || { echo "FAILED"; exit 1; } ) &
+( (cd geoid-spectral-comparison && run_coarse_prm "spectral-comparison.prm" ) || { echo "FAILED"; exit 1; } ) &
 
 ( (cd hollow_sphere; make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
 
