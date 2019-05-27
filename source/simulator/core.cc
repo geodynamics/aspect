@@ -142,7 +142,7 @@ namespace aspect
   Simulator<dim>::Simulator (const MPI_Comm mpi_communicator_,
                              ParameterHandler &prm)
     :
-    simulator_is_initialized (false),
+    simulator_is_past_initialization (false),
     assemblers (std_cxx14::make_unique<Assemblers::Manager<dim>>()),
     parameters (prm, mpi_communicator_),
     melt_handler (parameters.include_melt_transport ?
@@ -1851,7 +1851,7 @@ namespace aspect
 
     // Start the principal loop over time steps. At this point, everything
     // is completely initialized, so set that status as well
-    simulator_is_initialized = true;
+    simulator_is_past_initialization = true;
     do
       {
         // Only solve if we are not in pre-refinement, or we do not want to skip
@@ -1867,7 +1867,7 @@ namespace aspect
 
         // See if we have to start over with a new adaptive refinement cycle
         // at the beginning of the simulation. If so, set the
-        // simulator_is_initialized variable back to false because we will
+        // simulator_is_past_initialization variable back to false because we will
         // have to re-initialize some variables such as the size of vectors,
         // the initial state, etc.
         if (timestep_number == 0)
@@ -1875,7 +1875,7 @@ namespace aspect
             const bool initial_refinement_done = maybe_do_initial_refinement(max_refinement_level);
             if (initial_refinement_done)
               {
-                simulator_is_initialized = false;
+                simulator_is_past_initialization = false;
                 goto start_time_iteration;
               }
           }
