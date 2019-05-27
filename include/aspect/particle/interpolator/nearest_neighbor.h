@@ -53,6 +53,29 @@ namespace aspect
 
           // avoid -Woverloaded-virtual:
           using Interface<dim>::properties_at_points;
+
+          /**
+           * @copydoc Interface<dim>::declare_parameters()
+           */
+          static
+          void
+          declare_parameters (ParameterHandler &prm);
+
+          /**
+           * @copydoc Interface<dim>::parse_parameters()
+           */
+          virtual
+          void
+          parse_parameters (ParameterHandler &prm);
+
+        private:
+          /**
+           * Generally, particles need to be distributed throughout the
+           * model domain when being applied to a field. This parameter
+           * allows particles to be applied as a field even if some cells
+           * have no particles.
+           */
+          bool allow_cells_without_particles;
       };
     }
   }

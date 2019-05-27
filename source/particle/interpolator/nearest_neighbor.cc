@@ -109,6 +109,14 @@ namespace aspect
                       }
                   }
 
+                if (!allow_cells_without_particles)
+                  {
+                    AssertThrow(nearest_neighbor_cell != numbers::invalid_unsigned_int,
+                                ExcMessage("A cell and all of its neighbors do not contain any particles. "
+                                           "The `nearest neighbor' interpolation scheme does not support this case unless specified "
+                                           "in Allow cells without particles."));
+                  }
+
                 if (nearest_neighbor_cell != numbers::invalid_unsigned_int)
                   {
                     point_properties[pos_idx] = properties_at_points(particle_handler,
@@ -116,7 +124,7 @@ namespace aspect
                                                                      selected_properties,
                                                                      neighbors[nearest_neighbor_cell])[0];
                   }
-                else
+                else if (allow_cells_without_particles && nearest_neighbor_cell == numbers::invalid_unsigned_int)
                   {
                     for (unsigned int i = 0; i < n_particle_properties; ++i)
                       if (selected_properties[i])
@@ -124,9 +132,47 @@ namespace aspect
                   }
 
               }
+
           }
 
         return point_properties;
+      }
+
+
+      template <int dim>
+      void
+      NearestNeighbor<dim>::declare_parameters (ParameterHandler &prm)
+      {
+        prm.enter_subsection("Postprocess");
+        {
+          prm.enter_subsection("Particles");
+          {
+            prm.declare_entry ("Allow cells without particles", "false",
+                               Patterns::Bool (),
+                               "Generally, particles need to be distributed throughout the "
+                               "model domain when being applied to a field. This parameter "
+                               "allows particles to be applied as a field even if some cells "
+                               "have no particles.");
+          }
+          prm.leave_subsection ();
+        }
+        prm.leave_subsection ();
+      }
+
+      template <int dim>
+      void
+      NearestNeighbor<dim>::parse_parameters (ParameterHandler &prm)
+      {
+        prm.enter_subsection("Postprocess");
+        {
+          prm.enter_subsection("Particles");
+          {
+            allow_cells_without_particles = prm.get_bool("Allow cells without particles");
+
+          }
+          prm.leave_subsection ();
+        }
+        prm.leave_subsection ();
       }
     }
   }

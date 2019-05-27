@@ -21,6 +21,7 @@
 #include <aspect/particle/interpolator/cell_average.h>
 #include <aspect/postprocess/particles.h>
 #include <aspect/simulator.h>
+#include <aspect/particle/interpolator/interface.h>
 
 #include <deal.II/grid/grid_tools.h>
 #include <deal.II/base/signaling_nan.h>
@@ -115,18 +116,65 @@ namespace aspect
                 ++non_empty_neighbors;
               }
 
+            if (!allow_cells_without_particles)
+              {
+                AssertThrow(non_empty_neighbors != 0,
+                            ExcMessage("A cell and all of its neighbors do not contain any particles. "
+                                       "The `cell average' interpolation scheme does not support this case unless specified "
+                                       "in Allow cells without particles."));
+              }
+
             for (unsigned int i = 0; i < n_particle_properties; ++i)
               {
                 if (selected_properties[i] && non_empty_neighbors != 0)
                   cell_properties[i] /= non_empty_neighbors;
                 // Assume property is zero for any areas with no particles
-                else
+                else if (allow_cells_without_particles && non_empty_neighbors == 0)
                   cell_properties[i] = 0;
               }
+
           }
 
         return std::vector<std::vector<double> > (positions.size(),cell_properties);
       }
+
+      template <int dim>
+      void
+      CellAverage<dim>::declare_parameters (ParameterHandler &prm)
+      {
+        prm.enter_subsection("Postprocess");
+        {
+          prm.enter_subsection("Particles");
+          {
+            prm.declare_entry ("Allow cells without particles", "false",
+                               Patterns::Bool (),
+                               "Generally, particles need to be distributed throughout the "
+                               "model domain when being applied to a field. This parameter "
+                               "allows particles to be applied as a field even if some cells "
+                               "have no particles.");
+          }
+          prm.leave_subsection ();
+        }
+        prm.leave_subsection ();
+      }
+
+      template <int dim>
+      void
+      CellAverage<dim>::parse_parameters (ParameterHandler &prm)
+      {
+        prm.enter_subsection("Postprocess");
+        {
+          prm.enter_subsection("Particles");
+          {
+            allow_cells_without_particles = prm.get_bool("Allow cells without particles");
+
+          }
+          prm.leave_subsection ();
+        }
+        prm.leave_subsection ();
+      }
+
+
     }
   }
 }
