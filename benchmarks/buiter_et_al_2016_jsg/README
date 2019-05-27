@@ -1,0 +1,40 @@
+This benchmark attempts to reproduce the results of Buiter et al. 2016:
+  Benchmarking numerical models of brittle thrust wedges,
+  Journal of Structural Geology, 92, 140-177, 
+  http://dx.doi.org/10.1016/j.jsg.2016.03.003.
+
+More specifically, the provided input files aim to reproduce two numerical simulations 
+of stable wedge experiment 1 illustrated in Figure 4-6 and unstable wedge experiment 2 
+illustrated in Figure 8-11. Setups of these two experiments are shown in Figure 3a-b. 
+
+Experiment 1 tests whether model wedges in the stable domain of critical wedge theory 
+remain stable when translated horizontally. A quartz sand wedge with a horizontal base 
+and a surface slope of 20 degrees is pushed horizontally by inward movement of a mobile 
+wall at the right boundary with a velocity of 2.5 cm/hour.
+  
+[...]
+
+Experiment 2 tests how an unstable subcritical wedge deforms to reach the critical taper 
+solution. Horizontal layers of sand have 10 cm shortening by inward movement of a mobile 
+wall with a velocity of 2.5 cm/hour. Both the base and the surface are horizontal and the 
+“wedge” is thus in the unstable field. This experiment builds a thrust wedge through a 
+combination of mainly in-sequence forward and backward thrusting. Deformation starts by 
+forming a pop-up structure near the mobile wall. 
+
+The strain (Figure 10a-b) and strain-rate (Figure 11) fields highlight several incipient 
+shear zones that do not always accumulate enough offset to become visible in the material 
+field (Figure 8-9). The pressure field of the models remains more or less lithostatic, 
+with lower pressure values in (incipient) shear zones (Figure 10c-d).
+
+In this benchmark, input files are provided for verifying that the model follows the 
+analytical wedge theory. For the top boundary condition, zero traction and a sticky air 
+layer is used to approximate a free surface. Additional testing revealed that using a true 
+free surface leads to significant mesh distortion and associated numerical instabilities.
+The material has a visco-plastic rheology. The plastic strain-weakening behaviour, with the 
+internal angle of friction reducing between total finite strain invariant values of 0.5 and 
+1.0, is prescribed to mimic the softening from peak to dynamic stable strength correlates 
+with sand dilation.
+
+In experiment 2, the model domain is 36 * 8 cm. The resolution in exp2_low_resolution.prm and
+exp2_high_resolution.prm is 2 mm/cell and 0.5 mm/cell, respectively. More details about the model
+setup are described in input files. 
