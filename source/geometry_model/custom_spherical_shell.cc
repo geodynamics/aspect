@@ -1,3 +1,13 @@
+// TODO:
+// - make R_values a parameter so that one specifies
+//    . R0
+//    . R1
+//    . any intermediate values (if any)
+// - make the lateral refinement a parameter
+// - write a 2d test
+// - write a 3d test
+
+
 /*
   Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
@@ -42,35 +52,37 @@ namespace aspect
     {
       Triangulation<dim-1,dim> sphere_mesh;
       GridGenerator::hyper_sphere (sphere_mesh);
-      // ... maybe refine globally ...
+      sphere_mesh.refine_global (2);  // define as a run-time parameter
 
-      std::vector<double> R_values (n_slices+1);
+      std::vector<double> R_values (n_slices+1);  // also define as a run-time parameter
       for (unsigned int s=0; s<n_slices+1; ++s)
-        R_values[s] = R0 + (R1-R0)/n_slices;
+        R_values[s] = R0 + (R1-R0)/n_slices * s;
 
-      const unsigned int       n_slices = R_values.size();
-      std::vector<Point<dim>>    points(n_slices * sphere_mesh.n_vertices());
+      std::vector<Point<dim>>    points(R_values.size() * sphere_mesh.n_vertices());
 
       // copy the array of points as many times as there will be slices,
       // one slice at a time. The z-axis value are defined in slices_coordinates
-      for (unsigned int slice_n = 0; slice_n < n_slices; ++slice_n)
+      for (unsigned int point_layer = 0; point_layer < R_values.size(); ++point_layer)
         {
           for (unsigned int vertex_n = 0; vertex_n < sphere_mesh.n_vertices();
                ++vertex_n)
             {
               const Point<dim> vertex = sphere_mesh.get_vertices()[vertex_n];
-              points[slice_n * sphere_mesh.n_vertices() + vertex_n] =
-                vertex * R_values[slice_n];
+              points[point_layer * sphere_mesh.n_vertices() + vertex_n] =
+                vertex * R_values[point_layer];
             }
         }
 
       // then create the cells of each of the slices, one stack at a
       // time
       std::vector<CellData<dim>> cells;
-      cells.reserve((n_slices - 1) * sphere_mesh.n_active_cells());
+      cells.reserve((R_values.size() - 1) * sphere_mesh.n_active_cells());
+
+      SubCellData               subcell_data;
+
       for (const auto &cell : sphere_mesh.active_cell_iterators())
         {
-          for (unsigned int slice_n = 0; slice_n < n_slices - 1; ++slice_n)
+          for (unsigned int cell_layer = 0; cell_layer < R_values.size() - 1; ++cell_layer)
             {
               CellData<dim> this_cell;
               for (unsigned int vertex_n = 0;
@@ -78,25 +90,63 @@ namespace aspect
                    ++vertex_n)
                 {
                   this_cell.vertices[vertex_n] =
-                    cell->vertex_index(vertex_n) + slice_n * sphere_mesh.n_vertices();
+                    cell->vertex_index(vertex_n) + cell_layer * sphere_mesh.n_vertices();
                   this_cell.vertices[vertex_n + GeometryInfo<dim-1>::vertices_per_cell] =
                     cell->vertex_index(vertex_n) +
-                    (slice_n + 1) * sphere_mesh.n_vertices();
+                    (cell_layer + 1) * sphere_mesh.n_vertices();
                 }
 
               this_cell.material_id = cell->material_id();
+
               cells.push_back(this_cell);
+
+
+              // Mark the bottom face of the cell as boundary 0 if we are in
+              // the bottom layer of cells
+              if (cell_layer == 0)
+                {
+                  CellData<dim-1> face;
+                  for (unsigned int vertex_n = 0;
+                       vertex_n < GeometryInfo<dim-1>::vertices_per_cell;
+                       ++vertex_n)
+                    face.vertices[vertex_n] =
+                      cell->vertex_index(vertex_n) + cell_layer * sphere_mesh.n_vertices();
+                  face.boundary_id = 0;
+
+                  if (dim == 2)
+                    subcell_data.boundary_lines.push_back(reinterpret_cast<CellData<1>&>(face));
+                  else
+                    subcell_data.boundary_quads.push_back(reinterpret_cast<CellData<2>&>(face));
+                }
+
+              // Mark the top face of the cell as boundary 1 if we are in
+              // the top layer of cells
+              if (cell_layer == R_values.size()-2)
+                {
+                  CellData<dim-1> face;
+                  for (unsigned int vertex_n = 0;
+                       vertex_n < GeometryInfo<dim-1>::vertices_per_cell;
+                       ++vertex_n)
+                    face.vertices[vertex_n] =
+                      cell->vertex_index(vertex_n) +
+                      (cell_layer + 1) * sphere_mesh.n_vertices();
+                  face.boundary_id = 1;
+
+                  if (dim == 2)
+                    subcell_data.boundary_lines.push_back(reinterpret_cast<CellData<1>&>(face));
+                  else
+                    subcell_data.boundary_quads.push_back(reinterpret_cast<CellData<2>&>(face));
+                }
+
             }
         }
 
-
-      // ... need to set boundary_id for the inner and outer faces ...
-
       // Then create the actual mesh:
-      SubCellData               subcell_data;
       coarse_grid.create_triangulation(points, cells, subcell_data);
 
-      // ... attach manifold objects ...
+      // Use a manifold description for all cells.
+      coarse_grid.set_manifold (99, spherical_manifold);
+      set_manifold_ids(coarse_grid);
     }
 
 
@@ -137,9 +187,7 @@ namespace aspect
           {
             static const std::pair<std::string,types::boundary_id> mapping[]
               = { std::pair<std::string,types::boundary_id> ("bottom", 0),
-                  std::pair<std::string,types::boundary_id> ("top", 1),
-                  std::pair<std::string,types::boundary_id> ("left",  2),
-                  std::pair<std::string,types::boundary_id> ("right", 3)
+                  std::pair<std::string,types::boundary_id> ("top", 1)
                 };
 
             return std::map<std::string,types::boundary_id> (&mapping[0],
@@ -279,8 +327,9 @@ namespace aspect
     {
       prm.enter_subsection("Geometry model");
       {
-        prm.enter_subsection("Spherical shell");
+        prm.enter_subsection("Custom spherical shell");
         {
+        	// instead just provide a list of R values
           prm.declare_entry ("Inner radius", "3481000",  // 6371-2890 in km
                              Patterns::Double (0),
                              "Inner radius of the spherical shell. Units: m. "
@@ -300,18 +349,14 @@ namespace aspect
           prm.declare_entry ("Cells along circumference", "0",
                              Patterns::Integer (0),
                              "...");
+
+          // remove: duplicative of R_values
           prm.declare_entry ("Number of slices", "2",
                              Patterns::Integer (0),
                              "Number of slices for the tailored spherical shell case."
                              "\n\n"
                              "The number of slices is used for extrusion and must be "
                              "at least 2");
-          prm.declare_entry ("Slice height", "0",
-                             Patterns::Double (0),
-                             "Slice height for the tailored spherical shell case."
-                             "Units: m."
-                             "\n\n"
-                             "The height of slices for extrusion must be positive ");
         }
         prm.leave_subsection();
       }
@@ -326,18 +371,16 @@ namespace aspect
     {
       prm.enter_subsection("Geometry model");
       {
-        prm.enter_subsection("Spherical shell");
+        prm.enter_subsection("Custom spherical shell");
         {
           R0  = prm.get_double ("Inner radius");
           R1  = prm.get_double ("Outer radius");
           n_cells_along_circumference = prm.get_integer ("Cells along circumference");
           n_slices = prm.get_integer ("Number of slices");
-          height   = prm.get_double ("Slice height");
 
           AssertThrow (R0 < R1,
                        ExcMessage ("Inner radius must be less than outer radius."));
           AssertThrow (n_slices > 0, ExcMessage("You must set a positive number of slices for extrusion. "));
-          AssertThrow (height>0, ExcMessage("You must set a positive slice height for extrusion. "));
         }
         prm.leave_subsection();
       }

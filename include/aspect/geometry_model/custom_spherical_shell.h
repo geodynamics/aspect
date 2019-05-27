@@ -195,11 +195,6 @@ namespace aspect
         int n_cells_along_circumference;
 
         /**
-         * Height slices for extrusion in case of tailored spherical shell.
-         */
-        double height;
-
-        /**
          * The manifold that describes the geometry.
          */
         const SphericalManifold<dim> spherical_manifold;
