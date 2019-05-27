@@ -7,7 +7,7 @@ set End time                               = 0
 set Start time                             = 0
 set Adiabatic surface temperature          = 1613.0
 set Surface pressure                       = 0
-set Use years in output instead of seconds = false  # default: true
+set Use years in output instead of seconds = false
 set Nonlinear solver scheme                = single Advection, single Stokes
 
 
@@ -20,16 +20,14 @@ subsection Boundary temperature model
   end
 end
 
-subsection Termination criteria
-  set Checkpoint on termination = true
-  set Termination criteria      = end step
-  set End step                  = 1
-
-end
+#subsection Termination criteria
+#  set Checkpoint on termination = true
+#  set Termination criteria      = end step
+#  set End step                  = 1
+#end
 
 subsection Gravity model
   set Model name = radial constant
-
   subsection Radial constant
     set Magnitude = 9.81
   end
@@ -38,7 +36,6 @@ end
 
 subsection Geometry model
   set Model name = custom spherical shell
-
   subsection Custom spherical shell
     set Inner radius = 6071000
     set Outer radius = 6371000
@@ -48,7 +45,6 @@ end
 
 subsection Initial temperature model
   set Model name = function
-
   subsection Function
     set Function expression = 1500.0
   end
@@ -57,14 +53,13 @@ end
 
 subsection Material model
   set Model name = simple
-
   subsection Simple model
     set Reference density             = 3300
     set Reference specific heat       = 1250
-    set Reference temperature         = 1613 # default: 293
-    set Thermal conductivity          = 1e-6 # default: 4.7
+    set Reference temperature         = 1613
+    set Thermal conductivity          = 1e-6
     set Thermal expansion coefficient = 2e-5
-    set Viscosity                     = 1e22    # default: 5e24
+    set Viscosity                     = 1e22
   end
 end
 
@@ -72,16 +67,6 @@ end
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
   set Initial global refinement          = 0
-  set Additional refinement times              =
-
-  set Strategy = velocity
-   set Time steps between mesh refinement       = 2
-
-  set Refinement fraction                      = 0.1
-  set Coarsening fraction                      = 0.0
-
-
-
 end
 
 # The parameters below this comment were created by the update script
@@ -100,18 +85,15 @@ subsection Boundary velocity model
   set Zero velocity boundary indicators       = 1
 end
 
-subsection Heating model
-  set List of model names = shear heating
-end
+#subsection Heating model
+#  set List of model names = shear heating
+#end
 
 subsection Postprocess
-  set List of postprocessors = visualization, velocity statistics, basic statistics,  temperature statistics, heat flux statistics
-
+  set List of postprocessors = visualization, velocity statistics, basic statistics, temperature statistics, heat flux statistics
   subsection Visualization
     set Interpolate output = false
-     set Time between graphical output = 0
-
-     end
-
+    set Time between graphical output = 0
+  end
 end
 
