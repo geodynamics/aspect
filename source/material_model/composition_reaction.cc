@@ -37,6 +37,11 @@ namespace aspect
     {
       ReactionRateOutputs<dim> *reaction_rate_out = out.template get_additional_output<ReactionRateOutputs<dim> >();
 
+      // The Composition reaction model has up to two compositional fields (plus one background field)
+      // that can influence the density
+      const unsigned int n_compositions_for_eos = std::min(this->n_compositional_fields()+1, 3u);
+      EquationOfStateOutputs<dim> eos_outputs (n_compositions_for_eos);
+
       for (unsigned int i=0; i < in.position.size(); ++i)
         {
           const double temperature = in.temperature[i];
@@ -64,12 +69,10 @@ namespace aspect
                 break;
             }
 
-          // The Composition reaction model has up to two compositional field that can influence the density
-          EquationOfStateOutputs<dim> eos_outputs (in.composition[i].size()>2 ? 3 : in.composition[i].size() + 1);
           equation_of_state.evaluate(in, i, eos_outputs);
 
-          std::vector<double> volume_fractions (eos_outputs.densities.size(), 1.0);
-          for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+          std::vector<double> volume_fractions (n_compositions_for_eos, 1.0);
+          for (unsigned int c=0; c<n_compositions_for_eos-1; ++c)
             {
               volume_fractions[c+1] = std::max(0.0, in.composition[i][c]);
               volume_fractions[0] -= volume_fractions[c+1];
@@ -111,7 +114,7 @@ namespace aspect
             }
 
           out.thermal_expansion_coefficients[i] = eos_outputs.thermal_expansion_coefficients[0];
-          out.specific_heat[i] = eos_outputs.specific_heat[0];
+          out.specific_heat[i] = eos_outputs.specific_heat_capacities[0];
           out.thermal_conductivities[i] = k_value;
           out.compressibilities[i] = eos_outputs.compressibilities[0];
         }

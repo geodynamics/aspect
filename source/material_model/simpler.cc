@@ -49,16 +49,17 @@ namespace aspect
     evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
              MaterialModel::MaterialModelOutputs<dim> &out) const
     {
+      // The Simpler model does not depend on composition
+      EquationOfStateOutputs<dim> eos_outputs (1);
+
       for (unsigned int i=0; i<in.position.size(); ++i)
         {
-          out.viscosities[i] = constant_rheology.compute_viscosity();
-          // The Simpler model does not depend on composition
-          EquationOfStateOutputs<dim> eos_outputs (1);
           equation_of_state.evaluate(in, i, eos_outputs);
 
+          out.viscosities[i] = constant_rheology.compute_viscosity();
           out.densities[i] = eos_outputs.densities[0];
           out.thermal_expansion_coefficients[i] = eos_outputs.thermal_expansion_coefficients[0];
-          out.specific_heat[i] = eos_outputs.specific_heat[0];
+          out.specific_heat[i] = eos_outputs.specific_heat_capacities[0];
           out.thermal_conductivities[i] = k_value;
           out.compressibilities[i] = eos_outputs.compressibilities[0];
 

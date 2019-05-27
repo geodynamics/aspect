@@ -27,14 +27,14 @@ namespace aspect
   namespace MaterialModel
   {
     template <int dim>
-    EquationOfStateOutputs<dim>::EquationOfStateOutputs(const unsigned int n_points)
+    EquationOfStateOutputs<dim>::EquationOfStateOutputs(const unsigned int n_compositions)
       :
-      densities(n_points, numbers::signaling_nan<double>()),
-      thermal_expansion_coefficients(n_points, numbers::signaling_nan<double>()),
-      specific_heat(n_points, numbers::signaling_nan<double>()),
-      compressibilities(n_points, numbers::signaling_nan<double>()),
-      entropy_derivative_pressure(n_points, numbers::signaling_nan<double>()),
-      entropy_derivative_temperature(n_points, numbers::signaling_nan<double>())
+      densities(n_compositions, numbers::signaling_nan<double>()),
+      thermal_expansion_coefficients(n_compositions, numbers::signaling_nan<double>()),
+      specific_heat_capacities(n_compositions, numbers::signaling_nan<double>()),
+      compressibilities(n_compositions, numbers::signaling_nan<double>()),
+      entropy_derivative_pressure(n_compositions, numbers::signaling_nan<double>()),
+      entropy_derivative_temperature(n_compositions, numbers::signaling_nan<double>())
     {}
   }
 }

@@ -33,6 +33,11 @@ namespace aspect
     evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
              MaterialModel::MaterialModelOutputs<dim> &out) const
     {
+      // The Simple model has up to one compositional field (plus one background field)
+      // that can influence the density
+      const unsigned int n_compositions_for_eos = std::min(this->n_compositional_fields()+1, 2u);
+      EquationOfStateOutputs<dim> eos_outputs (n_compositions_for_eos);
+
       for (unsigned int i=0; i < in.position.size(); ++i)
         {
           const double delta_temp = in.temperature[i]-reference_T;
@@ -57,13 +62,11 @@ namespace aspect
                                :
                                temperature_dependence * eta;
 
-          // The Simple model only has one compositional field influencing material properties
-          EquationOfStateOutputs<dim> eos_outputs (in.composition[i].size()==0 ? 1 : 2);
           equation_of_state.evaluate(in, i, eos_outputs);
 
           // except for the density, all material properties are constant across compositions
           out.thermal_expansion_coefficients[i] = eos_outputs.thermal_expansion_coefficients[0];
-          out.specific_heat[i] = eos_outputs.specific_heat[0];
+          out.specific_heat[i] = eos_outputs.specific_heat_capacities[0];
           out.thermal_conductivities[i] = k_value;
           out.compressibilities[i] = eos_outputs.compressibilities[0];
           out.entropy_derivative_pressure[i] = eos_outputs.entropy_derivative_pressure[0];
@@ -75,7 +78,7 @@ namespace aspect
           for (unsigned int c=0; c<in.composition[i].size(); ++c)
             out.reaction_terms[i][c] = 0.0;
 
-          std::vector<double> volume_fractions (eos_outputs.densities.size(), 1.0);
+          std::vector<double> volume_fractions (n_compositions_for_eos, 1.0);
           if (in.composition[i].size()>0)
             {
               volume_fractions[1] = std::max(0.0, in.composition[i][0]);
@@ -181,7 +184,6 @@ namespace aspect
 
           if (thermal_viscosity_exponent!=0.0 && reference_T == 0.0)
             AssertThrow(false, ExcMessage("Error: Material model simple with Thermal viscosity exponent can not have reference_T=0."));
-
         }
         prm.leave_subsection();
       }

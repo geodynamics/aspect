@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -36,13 +36,12 @@ namespace aspect
                MaterialModel::EquationOfStateOutputs<dim> &out) const
       {
 
-        Assert(number_of_compositions+1 >= out.densities.size(),
+        Assert(maximum_number_of_compositions+1 >= out.densities.size(),
                ExcMessage("Error: You are trying to evaluate the equation of state with "
                           + Utilities::to_string(out.densities.size()-1) +
                           " compositional fields, which is larger than "
-                          + Utilities::to_string(number_of_compositions) +
-                          ", the number of fields the equation if state was set up with "
-                          "in the 'set_number_of_compositions' function."));
+                          + Utilities::to_string(maximum_number_of_compositions) +
+                          ", the number of fields the equation of state was set up with."));
 
 
         for (unsigned int c=0; c < out.densities.size(); ++c)
@@ -52,11 +51,9 @@ namespace aspect
               out.densities[c] += compositional_delta_rhos[c-1];
 
             out.thermal_expansion_coefficients[c] = thermal_alpha;
-            out.specific_heat[c] = reference_specific_heat;
+            out.specific_heat_capacities[c] = reference_specific_heat;
             out.compressibilities[c] = 0.0;
-            // Pressure derivative of entropy at the given positions.
             out.entropy_derivative_pressure[c] = 0.0;
-            // Temperature derivative of entropy at the given positions.
             out.entropy_derivative_temperature[c] = 0.0;
           }
       }
@@ -131,11 +128,11 @@ namespace aspect
         reference_specific_heat    = prm.get_double ("Reference specific heat");
         thermal_alpha              = prm.get_double ("Thermal expansion coefficient");
 
-        number_of_compositions = n_compositions;
-        compositional_delta_rhos.resize(number_of_compositions);
-        if (number_of_compositions > 0)
+        maximum_number_of_compositions = n_compositions;
+        compositional_delta_rhos.resize(maximum_number_of_compositions);
+        if (maximum_number_of_compositions > 0)
           compositional_delta_rhos[0]    = prm.get_double ("Density differential for compositional field 1");
-        if (number_of_compositions > 1)
+        if (maximum_number_of_compositions > 1)
           compositional_delta_rhos[1]    = prm.get_double ("Density differential for compositional field 2");
       }
 

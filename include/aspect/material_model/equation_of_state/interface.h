@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -49,11 +49,11 @@ namespace aspect
        * Constructor. Initialize the various arrays of this structure with the
        * given number of compositions.
        *
-       * @param n_comp The number of vector quantities (in the order in which
+       * @param n_compositions The number of vector quantities (in the order in which
        * the Introspection class reports them) for which input will be
        * provided, and outputs should be filled.
        */
-      EquationOfStateOutputs (const unsigned int n_comp);
+      EquationOfStateOutputs (const unsigned int n_compositions);
 
       /**
        * Density values for each composition.
@@ -69,7 +69,7 @@ namespace aspect
       /**
        * Specific heat for each composition.
        */
-      std::vector<double> specific_heat;
+      std::vector<double> specific_heat_capacities;
 
       /**
        * Compressibility for each composition. The compressibility is defined

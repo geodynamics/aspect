@@ -46,6 +46,21 @@ namespace aspect
       class LinearizedIncompressible
       {
         public:
+          /**
+           * A function that computes the output of the equation of state @p out
+           * for all compositions, given the inputs in @p in and an index @p q.
+           * More specifically, the inputs structure MaterialModelInputs contains
+           * a number of vectors, one for each input property, containing the
+           * material model inputs at a number of different locations. The equation
+           * of state model only evaluates one location (for each function call),
+           * and the index q determines which entry of each of these vectors of
+           * inputs is used.
+           * Using these inputs, the equation of state outputs are computed
+           * individually for each composition given in the inputs, and the outputs
+           * structure is filled with the equation of state outputs, which contain a
+           * number of vectors, one for each output property, with each vector
+           * containing the separate outputs for each composition.
+           */
           void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
                         const unsigned int q,
                         MaterialModel::EquationOfStateOutputs<dim> &out) const;
@@ -62,6 +77,10 @@ namespace aspect
 
           /**
            * Declare the parameters this class takes through input files.
+           * The optional parameter @p n_compositions determines the maximum
+           * number of compositions the equation of state is set up with,
+           * in other words, how many compositional fields influence the
+           * density.
            */
           static
           void
@@ -70,6 +89,10 @@ namespace aspect
 
           /**
            * Read the parameters this class declares from the parameter file.
+           * The optional parameter @p n_compositions determines the maximum
+           * number of compositions the equation of state is set up with,
+           * and should have the same value as the parameter with the same
+           * name in the declare_parameters() function.
            */
           void
           parse_parameters (ParameterHandler &prm,
@@ -77,11 +100,37 @@ namespace aspect
 
 
         private:
+          /**
+           * The reference density $\rho_0$ used in the computation of the density.
+           */
           double reference_rho;
+
+          /**
+           * The reference temperature $T_0$ used in the computation of the density.
+           */
           double reference_T;
+
+          /**
+           * The constant thermal expansivity $\alpha$ used in the computation of the density.
+           */
           double thermal_alpha;
+
+          /**
+           * The constant specific heat.
+           */
           double reference_specific_heat;
-          unsigned int number_of_compositions;
+
+          /**
+           * The maximum number of compositions that densities will be computed for, and,
+           * accordingly, the maximum number of compositions the equation of state can be
+           * evaluated with.
+           */
+          unsigned int maximum_number_of_compositions;
+
+          /**
+           * The density difference $\Delta\rho_i$ between each composition $\mathfrak c_i$
+           * and the background.
+           */
           std::vector<double> compositional_delta_rhos;
       };
     }
