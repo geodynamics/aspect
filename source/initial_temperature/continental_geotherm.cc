@@ -107,7 +107,7 @@ namespace aspect
           prm.declare_entry ("Layer thicknesses", "30000.",
                              Patterns::List(Patterns::Double(0)),
                              "List of the 3 thicknesses of the lithospheric layers "
-                             "'upper_crust', 'lower_crust' and 'mantle_lithosphere'. "
+                             "'upper\\_crust', 'lower\\_crust' and 'mantle\\_lithosphere'. "
                              "If only one thickness is given, then the same thickness is used "
                              "for all layers. Units: $m$");
           prm.declare_entry ("Surface temperature", "273.15",
@@ -237,7 +237,7 @@ namespace aspect
                                               "continental geotherm",
                                               "This is a temperature initial condition that "
                                               "computes a continental geotherm based on the solution of the "
-                                              "steady-state conductive equation $k\frac{d^2 T}{dy^2}+\rho H = 0$ "
+                                              "steady-state conductive equation $k\\frac{d^2 T}{dy^2}+\\rho H = 0$ "
                                               "as described in e.g. Turcotte and Schubert, "
                                               "Ch. 4.6, or Chapman (1986). As boundary conditions, we take the surface temperature and "
                                               "the temperature of the Lithosphere-Asthenosphere Boundary (LAB). "
@@ -259,8 +259,8 @@ namespace aspect
                                               "Note that the current implementation only works for a 3-layer lithosphere, "
                                               "even though in principle the heat conduction equation can be solved "
                                               "for any number of layers. The naming of the compositional fields "
-                                              "that represent the layers is also very specific, namely `upper_crust', "
-                                              "`lower_crust', and `lithospheric_mantle'. "
+                                              "that represent the layers is also very specific, namely `upper\\_crust', "
+                                              "`lower\\_crust', and `lithospheric\\_mantle'. "
                                               "\n"
                                               "Make sure the top and bottom temperatures of the lithosphere "
                                               "agree with temperatures set in for example the temperature "

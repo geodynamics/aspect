@@ -202,7 +202,7 @@ namespace aspect
                                         "on whether the material is plastically yielding, or the total strain field "
                                         "used in the visco plastic material model. The implementation of this property "
                                         "is equivalent to the implementation for compositional fields that is located in "
-                                        "the plugin <code>benchmarks/buiter_et_al_2008_jgr/plugin/finite_strain_invariant.cc</code>,"
+                                        "the plugin in \\texttt{benchmarks/buiter\\_et\\_al\\_2008\\_jgr/plugin/},"
                                         "and is effectively the same as what the visco plastic material model uses for compositional fields.")
     }
   }
