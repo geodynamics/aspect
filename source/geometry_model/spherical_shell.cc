@@ -47,20 +47,117 @@ namespace aspect
 
       if (phi == 360)
         {
-          GridGenerator::hyper_shell (coarse_grid,
-                                      Point<dim>(),
-                                      R0,
-                                      R1,
-                                      (n_cells_along_circumference == 0
-                                       ?
-                                       // automatic choice that leads to reasonable
-                                       // meshes with the typical aspect ratio of
-                                       // the Earth
-                                       (dim==3 ? 96 : 12)
-                                       :
-                                       // user choice
-                                       n_cells_along_circumference),
-                                      true);
+          if (custom_mesh == none)
+            {
+              GridGenerator::hyper_shell (coarse_grid,
+                                          Point<dim>(),
+                                          R0,
+                                          R1,
+                                          (n_cells_along_circumference == 0
+                                           ?
+                                           // automatic choice that leads to reasonable
+                                           // meshes with the typical aspect ratio of
+                                           // the Earth
+                                           (dim==3 ? 96 : 12)
+                                           :
+                                           // user choice
+                                           n_cells_along_circumference),
+                                          true);
+            }
+          else
+            {
+              Triangulation<dim-1,dim> sphere_mesh;
+              GridGenerator::hyper_sphere (sphere_mesh);
+              sphere_mesh.refine_global (initial_lateral_refinement);
+
+              std::vector<Point<dim>>    points(R_values.size() * sphere_mesh.n_vertices());
+
+              // copy the array of points as many times as there will be slices,
+              // one slice at a time. The z-axis value are defined in slices_coordinates
+              for (unsigned int point_layer = 0; point_layer < R_values.size(); ++point_layer)
+                {
+                  for (unsigned int vertex_n = 0; vertex_n < sphere_mesh.n_vertices();
+                       ++vertex_n)
+                    {
+                      const Point<dim> vertex = sphere_mesh.get_vertices()[vertex_n];
+                      points[point_layer * sphere_mesh.n_vertices() + vertex_n] =
+                        vertex * R_values[point_layer];
+                    }
+                }
+
+              // then create the cells of each of the slices, one stack at a
+              // time
+              std::vector<CellData<dim>> cells;
+              cells.reserve((R_values.size() - 1) * sphere_mesh.n_active_cells());
+
+              SubCellData               subcell_data;
+
+              for (const auto &cell : sphere_mesh.active_cell_iterators())
+                {
+                  for (unsigned int cell_layer = 0; cell_layer < R_values.size() - 1; ++cell_layer)
+                    {
+                      CellData<dim> this_cell;
+                      for (unsigned int vertex_n = 0;
+                           vertex_n < GeometryInfo<dim-1>::vertices_per_cell;
+                           ++vertex_n)
+                        {
+                          this_cell.vertices[vertex_n] =
+                            cell->vertex_index(vertex_n) + cell_layer * sphere_mesh.n_vertices();
+                          this_cell.vertices[vertex_n + GeometryInfo<dim-1>::vertices_per_cell] =
+                            cell->vertex_index(vertex_n) +
+                            (cell_layer + 1) * sphere_mesh.n_vertices();
+                        }
+
+                      this_cell.material_id = cell->material_id();
+                      cells.push_back(this_cell);
+
+                      // Mark the bottom face of the cell as boundary 0 if we are in
+                      // the bottom layer of cells
+                      if (cell_layer == 0)
+                        {
+                          CellData<dim-1> face;
+                          for (unsigned int vertex_n = 0;
+                               vertex_n < GeometryInfo<dim-1>::vertices_per_cell;
+                               ++vertex_n)
+                            face.vertices[vertex_n] =
+                              cell->vertex_index(vertex_n) + cell_layer * sphere_mesh.n_vertices();
+                          face.boundary_id = 0;
+
+                          if (dim == 2)
+                            subcell_data.boundary_lines.push_back(reinterpret_cast<CellData<1>&>(face));
+                          else
+                            subcell_data.boundary_quads.push_back(reinterpret_cast<CellData<2>&>(face));
+                        }
+
+                      // Mark the top face of the cell as boundary 1 if we are in
+                      // the top layer of cells
+                      if (cell_layer == R_values.size()-2)
+                        {
+                          CellData<dim-1> face;
+                          for (unsigned int vertex_n = 0;
+                               vertex_n < GeometryInfo<dim-1>::vertices_per_cell;
+                               ++vertex_n)
+                            face.vertices[vertex_n] =
+                              cell->vertex_index(vertex_n) +
+                              (cell_layer + 1) * sphere_mesh.n_vertices();
+                          face.boundary_id = 1;
+
+                          if (dim == 2)
+                            subcell_data.boundary_lines.push_back(reinterpret_cast<CellData<1>&>(face));
+                          else
+                            subcell_data.boundary_quads.push_back(reinterpret_cast<CellData<2>&>(face));
+                        }
+
+                    }
+                }
+
+              // Then create the actual mesh:
+              coarse_grid.create_triangulation(points, cells, subcell_data);
+
+              // Use a manifold description for all cells.
+              coarse_grid.set_manifold (99, spherical_manifold);
+              set_manifold_ids(coarse_grid);
+            }
         }
       else if (phi == 90)
         {
@@ -105,9 +202,6 @@ namespace aspect
              triangulation.begin_active(); cell != triangulation.end(); ++cell)
         cell->set_all_manifold_ids (99);
     }
-
-
-
 
 
     template <int dim>
@@ -346,6 +440,28 @@ namespace aspect
                              "the specified subdivision scheme. A list of radius subdivides "
                              "the spherical shell at specified radius. A number of slices "
                              "subdivides the spherical shell in N slices of equal thickness.");
+          prm.declare_entry ("List of radius", "",
+                             Patterns::List(Patterns::Double ()),
+                             "Inner radius of the spherical shell. Units: $\\text{m}$. "
+                             "\n\n"
+                             "\\note{The default value of 3,481,000 m equals the "
+                             "radius of a sphere with equal volume as Earth (i.e., "
+                             "6371 km) minus the average depth of the core-mantle "
+                             "boundary (i.e., 2890 km).}");
+          prm.declare_entry ("Number of slices", "1",
+                            Patterns::Double (0),
+                             "Inner radius of the spherical shell. Units: $\\text{m}$. "
+                             "\n\n"
+                             "\\note{The default value of 3,481,000 m equals the "
+                             "radius of a sphere with equal volume as Earth (i.e., "
+                             "6371 km) minus the average depth of the core-mantle ");
+          prm.declare_entry ("Initial lateral refinement", "0",
+                            Patterns::Double (0),
+                             "Inner radius of the spherical shell. Units: $\\text{m}$. "
+                             "\n\n"
+                             "\\note{The default value of 3,481,000 m equals the "
+                             "radius of a sphere with equal volume as Earth (i.e., "
+                             "6371 km) minus the average depth of the core-mantl.");
           prm.declare_entry ("Inner radius", "3481000",  // 6371-2890 in km
                              Patterns::Double (0),
                              "Inner radius of the spherical shell. Units: $\\text{m}$. "
@@ -407,21 +523,27 @@ namespace aspect
       {
         prm.enter_subsection("Spherical shell");
         {
-          if (prm.get ("Custom mesh radial subdivision") == "default")
-            custom_mesh = none;
-          else if (prm.get ("Custom mesh radial subdivision") == "list of radius")
-            custom_mesh = list;
-          else if (prm.get ("Custom mesh radial subdivision") == "number of slices")
-            custom_mesh = slices;
-          else
-            AssertThrow (false, ExcMessage ("Not a valid custom mesh radial subdivision scheme."));
           R0  = prm.get_double ("Inner radius");
           R1  = prm.get_double ("Outer radius");
           phi = prm.get_double ("Opening angle");
           n_cells_along_circumference = prm.get_integer ("Cells along circumference");
-          n_slices = prm.get_integer ("Number of equidistant slices"); // for custom mesh (slices)
-          R_values = Utilities::string_to_double(Utilities::split_string_list(prm.get("List of radius values"))); // for custom mesh (list)
-          initial_surface_refinement = prm.get_integer ("Initial surface refinement");
+          initial_lateral_refinement = prm.get_integer ("Initial lateral refinement");
+          R_values = Utilities::string_to_double(Utilities::split_string_list(prm.get("List of radius")));
+          n_slices = prm.get_integer ("Number of slices");
+
+          if (prm.get ("Custom mesh radial subdivision") == "default")
+            custom_mesh = none;
+          else if (prm.get ("Custom mesh radial subdivision") == "list of radius")
+              custom_mesh = list;
+          else if (prm.get ("Custom mesh radial subdivision") == "number of slices")
+            {
+              custom_mesh = slices;
+              std::vector<double> R_values (n_slices+1);
+              for (unsigned int s=0; s<n_slices+1; ++s)
+                R_values[s] = R0 + (R1-R0)/n_slices * s;
+            }
+          else
+            AssertThrow (false, ExcMessage ("Not a valid custom mesh radial subdivision scheme."));
 
           // Check that inner radius is less than outer radius
           AssertThrow (R0 < R1,
@@ -448,13 +570,16 @@ namespace aspect
             }
 
 
-          // If we are extruding our mesh according to a number of equidistant slices...
+          // If we are extruding the mesh according to a number of slices
           if (custom_mesh == slices)
             {
               AssertThrow (n_slices > 0, ExcMessage("You must set a positive number of slices for extrusion"));
             }
 
 
+              std::vector<double> R_values (n_slices+1);  // also define as a run-time parameter
+              for (unsigned int s=0; s<n_slices+1; ++s)
+                R_values[s] = R0 + (R1-R0)/n_slices * s;
 
 
 
