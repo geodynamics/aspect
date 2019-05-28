@@ -28,7 +28,10 @@
 #include <functional>
 #include <memory>
 
-#if !DEAL_II_VERSION_GTE(9,2,0)
+// for std_cxx14::make_unique:
+#include <deal.II/base/std_cxx14/memory.h>
+
+//#if !DEAL_II_VERSION_GTE(9,2,0)
 #include <deal.II/base/table.h>
 #include <deal.II/base/function_lib.h>
 namespace aspect
@@ -120,12 +123,12 @@ namespace aspect
 {
   namespace Functions
   {
-    DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
     namespace
     {
       // interpolate a data value from a table where ix denotes
       // the (lower) left endpoint of the interval to interpolate
       // in, and p_unit denotes the point in unit coordinates to do so.
+      inline
       double
       interpolate(const Table<1, double> &data_values,
                   const TableIndices<1> &ix,
@@ -135,6 +138,7 @@ namespace aspect
                 xi[0] * data_values[ix[0] + 1]);
       }
 
+      inline
       double
       interpolate(const Table<2, double> &data_values,
                   const TableIndices<2> &ix,
@@ -148,6 +152,7 @@ namespace aspect
                 p_unit[1]);
       }
 
+      inline
       double
       interpolate(const Table<3, double> &data_values,
                   const TableIndices<3> &ix,
@@ -174,6 +179,7 @@ namespace aspect
       // denotes the lower left endpoint of the interval to interpolate
       // in, p_unit denotes the point in unit coordinates, and dx
       // denotes the width of the interval in each dimension.
+      inline
       Tensor<1, 1>
       gradient_interpolate(const Table<1, double> &data_values,
                            const TableIndices<1> &ix,
@@ -187,6 +193,7 @@ namespace aspect
       }
 
 
+      inline
       Tensor<1, 2>
       gradient_interpolate(const Table<2, double> &data_values,
                            const TableIndices<2> &ix,
@@ -206,7 +213,7 @@ namespace aspect
         return grad;
       }
 
-
+      inline
       Tensor<1, 3>
       gradient_interpolate(const Table<3, double> &data_values,
                            const TableIndices<3> &ix,
@@ -245,7 +252,6 @@ namespace aspect
         return grad;
       }
     } // namespace internal
-    DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
 
     template <int dim>
     inline
@@ -376,4 +382,6 @@ namespace aspect
   }
 
 }
+//#endif
+
 #endif
