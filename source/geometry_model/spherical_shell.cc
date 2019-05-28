@@ -449,14 +449,14 @@ namespace aspect
                              "6371 km) minus the average depth of the core-mantle "
                              "boundary (i.e., 2890 km).}");
           prm.declare_entry ("Number of slices", "1",
-                            Patterns::Double (0),
+                            Patterns::Integer (0),
                              "Inner radius of the spherical shell. Units: $\\text{m}$. "
                              "\n\n"
                              "\\note{The default value of 3,481,000 m equals the "
                              "radius of a sphere with equal volume as Earth (i.e., "
                              "6371 km) minus the average depth of the core-mantle ");
           prm.declare_entry ("Initial lateral refinement", "0",
-                            Patterns::Double (0),
+                            Patterns::Integer (0),
                              "Inner radius of the spherical shell. Units: $\\text{m}$. "
                              "\n\n"
                              "\\note{The default value of 3,481,000 m equals the "
@@ -550,7 +550,10 @@ namespace aspect
                        ExcMessage ("Inner radius must be less than outer radius."));
 
           // Check that we are using 360 opening angle for custom meshes
-          AssertThrow (phi == 360 && custom_mesh != none,
+          //if (phi != 360 && custom_mesh)
+          AssertThrow (phi == 360 &&
+                       (custom_mesh != list ||
+                        custom_mesh != slices),
                        ExcMessage ("The only opening angle that is allowed for "
                                    "this geometry with a custom mesh is 360."));
 
@@ -575,11 +578,6 @@ namespace aspect
             {
               AssertThrow (n_slices > 0, ExcMessage("You must set a positive number of slices for extrusion"));
             }
-
-
-              std::vector<double> R_values (n_slices+1);  // also define as a run-time parameter
-              for (unsigned int s=0; s<n_slices+1; ++s)
-                R_values[s] = R0 + (R1-R0)/n_slices * s;
 
 
 

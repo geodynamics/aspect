@@ -199,12 +199,12 @@ namespace aspect
         /**
          * Initial surface refinement for the custom mesh cases.
          */
-        double initial_lateral_refinement;
+        int initial_lateral_refinement;
 
         /**
          * Initial surface refinement for the custom mesh cases.
          */
-        double n_slices;
+        unsigned int n_slices;
 
         /**
          * List of radius for the list custom mesh.
