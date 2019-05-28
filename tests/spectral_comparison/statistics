@@ -13,4 +13,4 @@
 # 13: Pressure at top (Pa)
 # 14: Pressure at bottom (Pa)
 # 15: Visualization file name
-0 0.000000000000e+00 0.000000000000e+00 96 3060 970 0 59 62 366 3.30110480e+03 3.30064733e+03 -2.02529816e+04 9.53756052e+10 output-spectral_comparison/solution/solution-00000 
+0 0.000000000000e+00 0.000000000000e+00 96 3060 970 0 16 242 100 3.30110480e+03 3.30064733e+03 -2.02554539e+04 9.53756054e+10 output-spectral_comparison/solution/solution-00000 
