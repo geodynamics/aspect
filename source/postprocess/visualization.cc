@@ -27,6 +27,7 @@
 
 #include <deal.II/dofs/dof_tools.h>
 #include <deal.II/numerics/data_out.h>
+#include <deal.II/numerics/data_out_faces.h>
 
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
@@ -210,6 +211,40 @@ namespace aspect
 
 
     template <int dim>
+    Visualization<dim>::OutputHistory::OutputHistory()
+      :
+      // Record that we have not yet written any meshes and so
+      // there are none we can reference from future output operations.
+      mesh_changed (true)
+    {}
+
+
+
+    template <int dim>
+    Visualization<dim>::OutputHistory::~OutputHistory()
+    {
+      // Make sure that any thread that may still be running in the background,
+      // writing data, finishes
+      background_thread.join ();
+    }
+
+
+
+    template <int dim>
+    template <class Archive>
+    void Visualization<dim>::OutputHistory::serialize (Archive &ar, const unsigned int)
+    {
+      ar &mesh_changed
+      & last_mesh_file_name
+      & times_and_pvtu_names
+      & output_file_names_by_timestep
+      & xdmf_entries
+      ;
+    }
+
+
+
+    template <int dim>
     Visualization<dim>::Visualization ()
       :
       // the following value is later read from the input file
@@ -219,36 +254,31 @@ namespace aspect
       last_output_time (std::numeric_limits<double>::quiet_NaN()),
       maximum_timesteps_between_outputs (std::numeric_limits<int>::max()),
       last_output_timestep (numbers::invalid_unsigned_int),
-      output_file_number (numbers::invalid_unsigned_int),
-      mesh_changed (true)
+      output_file_number (numbers::invalid_unsigned_int)
     {}
-
-
-
-    template <int dim>
-    Visualization<dim>::~Visualization ()
-    {
-      // make sure a thread that may still be running in the background,
-      // writing data, finishes
-      background_thread.join ();
-    }
 
 
 
     template <int dim>
     void Visualization<dim>::mesh_changed_signal()
     {
-      mesh_changed = true;
+      cell_output_history.mesh_changed = true;
     }
 
 
 
     template <int dim>
+    template <typename DataOutType>
     void
-    Visualization<dim>::write_master_files (const DataOut<dim> &data_out,
+    Visualization<dim>::write_master_files (const DataOutType &data_out,
                                             const std::string &solution_file_prefix,
-                                            const std::vector<std::string> &filenames)
+                                            const std::vector<std::string> &filenames,
+                                            OutputHistory                  &output_history) const
     {
+      static_assert (std::is_same<DataOutType,DataOut<dim>>::value ||
+                     std::is_same<DataOutType,DataOutFaces<dim>>::value,
+                     "The only allowed template types of this function are "
+                     "DataOut and DataOutFaces.");
       const double time_in_years_or_seconds = (this->convert_output_to_years() ?
                                                this->get_time() / year_in_seconds :
                                                this->get_time());
@@ -265,21 +295,21 @@ namespace aspect
           // in case we output all nonlinear iterations, we only want one
           // entry per time step, so replace the last line with the current iteration
           if (this->get_nonlinear_iteration() == 0)
-            times_and_pvtu_names.push_back(std::make_pair
-                                           (time_in_years_or_seconds, "solution/"+pvtu_master_filename));
+            output_history.times_and_pvtu_names.push_back(std::make_pair
+                                                          (time_in_years_or_seconds, "solution/"+pvtu_master_filename));
           else
-            times_and_pvtu_names.back() = (std::make_pair
-                                           (time_in_years_or_seconds, "solution/"+pvtu_master_filename));
+            output_history.times_and_pvtu_names.back() = (std::make_pair
+                                                          (time_in_years_or_seconds, "solution/"+pvtu_master_filename));
         }
       else
-        times_and_pvtu_names.push_back(std::make_pair
-                                       (time_in_years_or_seconds, "solution/"+pvtu_master_filename));
+        output_history.times_and_pvtu_names.push_back(std::make_pair
+                                                      (time_in_years_or_seconds, "solution/"+pvtu_master_filename));
 
       const std::string
       pvd_master_filename = (this->get_output_directory() + "solution.pvd");
       std::ofstream pvd_master (pvd_master_filename.c_str());
 
-      DataOutBase::write_pvd_record (pvd_master, times_and_pvtu_names);
+      DataOutBase::write_pvd_record (pvd_master, output_history.times_and_pvtu_names);
 
       // finally, do the same for Visit via the .visit file for this
       // time step, as well as for all time steps together
@@ -308,21 +338,21 @@ namespace aspect
             // in case we output all nonlinear iterations, we only want one
             // entry per time step, so replace the last line with the current iteration
             if (this->get_nonlinear_iteration() == 0)
-              output_file_names_by_timestep.push_back (filenames_with_path);
+              output_history.output_file_names_by_timestep.push_back (filenames_with_path);
             else
-              output_file_names_by_timestep.back() = filenames_with_path;
+              output_history.output_file_names_by_timestep.back() = filenames_with_path;
           }
         else
-          output_file_names_by_timestep.push_back (filenames_with_path);
+          output_history.output_file_names_by_timestep.push_back (filenames_with_path);
       }
 
       std::ofstream global_visit_master ((this->get_output_directory() +
                                           "solution.visit").c_str());
 
       std::vector<std::pair<double, std::vector<std::string> > > times_and_output_file_names;
-      for (unsigned int timestep=0; timestep<times_and_pvtu_names.size(); ++timestep)
-        times_and_output_file_names.push_back(std::make_pair(times_and_pvtu_names[timestep].first,
-                                                             output_file_names_by_timestep[timestep]));
+      for (unsigned int timestep=0; timestep<output_history.times_and_pvtu_names.size(); ++timestep)
+        times_and_output_file_names.push_back(std::make_pair(output_history.times_and_pvtu_names[timestep].first,
+                                                             output_history.output_file_names_by_timestep[timestep]));
       DataOutBase::write_visit_record (global_visit_master, times_and_output_file_names);
     }
 
@@ -343,8 +373,13 @@ namespace aspect
     template <int dim>
     template <typename DataOutType>
     std::string
-    Visualization<dim>::write_data_out_data(DataOutType &data_out)
+    Visualization<dim>::write_data_out_data(DataOutType   &data_out,
+                                            OutputHistory &output_history) const
     {
+      static_assert (std::is_same<DataOutType,DataOut<dim>>::value ||
+                     std::is_same<DataOutType,DataOutFaces<dim>>::value,
+                     "The only allowed template types of this function are "
+                     "DataOut and DataOutFaces.");
       const double time_in_years_or_seconds = (this->convert_output_to_years() ?
                                                this->get_time() / year_in_seconds :
                                                this->get_time());
@@ -365,22 +400,24 @@ namespace aspect
           // If the mesh changed since the last output, make a new mesh file
           const std::string mesh_file_prefix = "mesh-"
                                                + Utilities::int_to_string(output_file_number, 5);
-          if (mesh_changed)
-            last_mesh_file_name = "solution/" + mesh_file_prefix + ".h5";
+          if (output_history.mesh_changed)
+            output_history.last_mesh_file_name = "solution/" + mesh_file_prefix + ".h5";
 
           data_out.write_filtered_data(data_filter);
-          data_out.write_hdf5_parallel(data_filter, mesh_changed,
-                                       this->get_output_directory() + last_mesh_file_name,
+          data_out.write_hdf5_parallel(data_filter,
+                                       output_history.mesh_changed,
+                                       this->get_output_directory() + output_history.last_mesh_file_name,
                                        this->get_output_directory() + h5_solution_file_name,
                                        this->get_mpi_communicator());
           new_xdmf_entry = data_out.create_xdmf_entry(data_filter,
-                                                      last_mesh_file_name, h5_solution_file_name,
+                                                      output_history.last_mesh_file_name,
+                                                      h5_solution_file_name,
                                                       time_in_years_or_seconds, this->get_mpi_communicator());
-          xdmf_entries.push_back(new_xdmf_entry);
-          data_out.write_xdmf_file(xdmf_entries,
+          output_history.xdmf_entries.push_back(new_xdmf_entry);
+          data_out.write_xdmf_file(output_history.xdmf_entries,
                                    this->get_output_directory() + xdmf_filename,
                                    this->get_mpi_communicator());
-          mesh_changed = false;
+          output_history.mesh_changed = false;
         }
       else if (output_format == "vtu")
         {
@@ -399,7 +436,7 @@ namespace aspect
                 filenames.push_back(
                   solution_file_prefix + "."
                   + Utilities::int_to_string(i, 4) + ".vtu");
-              write_master_files(data_out, solution_file_prefix, filenames);
+              write_master_files(data_out, solution_file_prefix, filenames, output_history);
             }
           const unsigned int n_processes = Utilities::MPI::n_mpi_processes(
                                              this->get_mpi_communicator());
@@ -436,10 +473,10 @@ namespace aspect
                 {
                   // Wait for all previous write operations to finish, should
                   // any be still active,
-                  background_thread.join();
+                  output_history.background_thread.join();
                   // then continue with writing our own data.
-                  background_thread = Threads::new_thread(&writer,
-                                                          filename, temporary_output_location, file_contents);
+                  output_history.background_thread = Threads::new_thread(&writer,
+                                                                         filename, temporary_output_location, file_contents);
                 }
               else
                 writer(filename, temporary_output_location, file_contents);
@@ -643,20 +680,21 @@ namespace aspect
                                         this->get_stokes_velocity_degree()
                                         :
                                         0;
-      data_out.build_patches (this->get_mapping(),
-                              subdivisions,
-                              this->get_geometry_model().has_curved_elements()
-                              ?
-                              DataOut<dim>::curved_inner_cells
-                              :
-                              DataOut<dim>::no_curved_cells);
 
       // Now get everything written for the DataOut case, and record this
       // in the statistics file
       std::string solution_file_prefix;
       {
+        data_out.build_patches (this->get_mapping(),
+                                subdivisions,
+                                this->get_geometry_model().has_curved_elements()
+                                ?
+                                DataOut<dim>::curved_inner_cells
+                                :
+                                DataOut<dim>::no_curved_cells);
+
         solution_file_prefix
-          = write_data_out_data(data_out);
+          = write_data_out_data(data_out, cell_output_history);
         statistics.add_value ("Visualization file name",
                               this->get_output_directory()
                               + "solution/"
@@ -1116,13 +1154,14 @@ namespace aspect
         }
 
       // Finally also set up a listener to check when the mesh changes
-      mesh_changed = true;
+      cell_output_history.mesh_changed = true;
       this->get_triangulation().signals.post_refinement.connect(
         [&]()
       {
         this->mesh_changed_signal();
       });
     }
+
 
 
     template <int dim>
@@ -1132,10 +1171,7 @@ namespace aspect
       ar &last_output_time
       & last_output_timestep
       & output_file_number
-      & times_and_pvtu_names
-      & output_file_names_by_timestep
-      & last_mesh_file_name
-      & xdmf_entries
+      & cell_output_history
       ;
 
       // We do not serialize mesh_changed but use the default (true) from our
