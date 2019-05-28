@@ -34,6 +34,14 @@ namespace aspect
   {
     namespace Generator
     {
+
+      template <int dim>
+      std::pair<Point<dim>, Point<dim> >
+      UniformBox<dim>::get_box_domain() const
+      {
+        return std::make_pair (P_min, P_max);
+      }
+
       template <int dim>
       void
       UniformBox<dim>::generate_particles(std::multimap<Particles::internal::LevelInd, Particle<dim> > &particles)

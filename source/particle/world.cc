@@ -24,6 +24,7 @@
 #include <aspect/compat.h>
 #include <aspect/geometry_model/box.h>
 #include <aspect/citation_info.h>
+#include <aspect/particle/generator/uniform_box.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
@@ -263,9 +264,35 @@ namespace aspect
               {
                 const unsigned int n_particles_in_cell = particle_handler->n_particles_in_cell(cell);
 
+                //If we're using uniform box and want to generate particles, only generate
+                //in the area we've specified.
+                bool cell_in_domain = true;
+                if(dynamic_cast<const Generator::UniformBox<dim> *>(generator.get()) != nullptr)
+                {
+                  std::array< Point<dim>, GeometryInfo<dim>::vertices_per_cell> new_vertices;
+                  new_vertices = this->get_mapping().get_vertices(cell);
+
+                  const Generator::UniformBox<dim> *box
+                      = dynamic_cast<const Generator::UniformBox<dim> *>(generator.get());
+
+                  const std::pair<Point<dim>, Point<dim> > box_domain = box->get_box_domain();
+                  Point<dim> P_min = box_domain.first;
+                  Point<dim> P_max = box_domain.second;
+
+                  for (unsigned int v = 0; v < GeometryInfo<dim>::vertices_per_cell; ++v)
+                    {
+                      for (unsigned int d=0; d<dim; ++d)
+                      {
+                        if((new_vertices[v][d] > P_max(d) + std::numeric_limits<double>::epsilon()) ||
+                          (new_vertices[v][d] < P_min(d) - std::numeric_limits<double>::epsilon()))
+                    	  cell_in_domain = false;
+                      }
+                    }
+                }
+
                 // Add particles if necessary
                 if ((particle_load_balancing & ParticleLoadBalancing::add_particles) &&
-                    (n_particles_in_cell < min_particles_per_cell))
+                    (n_particles_in_cell < min_particles_per_cell) && cell_in_domain)
                   {
                     for (unsigned int i = n_particles_in_cell; i < min_particles_per_cell; ++i,++local_next_particle_index)
                       {
@@ -287,12 +314,15 @@ namespace aspect
 
                 // Remove particles if necessary
                 else if ((particle_load_balancing & ParticleLoadBalancing::remove_particles) &&
-                         (n_particles_in_cell > max_particles_per_cell))
+                         (n_particles_in_cell > max_particles_per_cell) || !cell_in_domain)
                   {
                     const boost::iterator_range<typename ParticleHandler<dim>::particle_iterator> particles_in_cell
                       = particle_handler->particles_in_cell(cell);
 
-                    const unsigned int n_particles_to_remove = n_particles_in_cell - max_particles_per_cell;
+                    unsigned int n_particles_to_remove = n_particles_in_cell - max_particles_per_cell;
+
+                    if(!cell_in_domain)
+                    	n_particles_to_remove = n_particles_in_cell;
 
                     std::set<unsigned int> particle_ids_to_remove;
                     while (particle_ids_to_remove.size() < n_particles_to_remove)

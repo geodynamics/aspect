@@ -68,6 +68,9 @@ namespace aspect
           void
           parse_parameters (ParameterHandler &prm);
 
+          std::pair<Point<dim>, Point<dim> >
+                    get_box_domain() const;
+
         private:
           /**
            * Number of initial particles to create.
