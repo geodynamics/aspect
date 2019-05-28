@@ -80,7 +80,8 @@ namespace aspect
           {
             solid_density,
             fluid_density,
-            average_density
+            average_density,
+            zero
           };
         };
 

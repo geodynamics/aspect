@@ -72,6 +72,12 @@ namespace aspect
                 break;
               }
 
+              case DensityFormulation::zero:
+              {
+                fluid_pressure_gradient_outputs[q] = 0.0;
+                break;
+              }
+
               default:
                 Assert (false, ExcNotImplemented());
             }
@@ -87,7 +93,7 @@ namespace aspect
         prm.enter_subsection("Density");
         {
           prm.declare_entry ("Density formulation", "solid density",
-                             Patterns::Selection ("solid density|fluid density|average density"),
+                             Patterns::Selection ("solid density|fluid density|average density|zero"),
                              "The density formulation used to compute the fluid pressure gradient "
                              "at the model boundary."
                              "\n\n"
@@ -130,6 +136,8 @@ namespace aspect
             density_formulation = DensityFormulation::fluid_density;
           else if (prm.get ("Density formulation") == "average density")
             density_formulation = DensityFormulation::average_density;
+          else if (prm.get ("Density formulation") == "zero")
+            density_formulation = DensityFormulation::zero;
           else
             AssertThrow (false, ExcNotImplemented());
         }

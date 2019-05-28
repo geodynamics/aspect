@@ -365,6 +365,7 @@ namespace aspect
     if (parameters.include_melt_transport)
       {
         melt_handler->initialize_simulator (*this);
+        melt_handler->parse_geometry_dependent_parameters (prm);
         melt_handler->initialize();
       }
 
