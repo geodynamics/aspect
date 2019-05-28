@@ -14,18 +14,18 @@
 # advection, so we prescribe a Stokes flow and
 # solve only for advection.
 
-set Additional shared libraries            = ./libadvection_stabilization.so
+set Additional shared libraries            = ./libadvection_in_annulus.so
 set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 1
 set Use years in output instead of seconds = false
 set Nonlinear solver scheme                = single Advection, no Stokes
-set Output directory                       = output_advection_stabilization
+set Output directory                       = output_advection_in_annulus
 set Pressure normalization                 = surface
 set Timing output frequency                = 100
 
 subsection Prescribed Stokes solution
-  set Model name = advection benchmark
+  set Model name = advection in annulus
 end
 
 ############### Parameters describing the model

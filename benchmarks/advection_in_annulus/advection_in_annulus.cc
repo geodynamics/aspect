@@ -43,7 +43,7 @@ namespace aspect
    * equation.
    *
    */
-  namespace AdvectionBenchmark
+  namespace AdvectionInAnnulus
   {
     using namespace dealii;
 
@@ -117,7 +117,7 @@ namespace aspect
      * @ingroup PrescribedStokesSolution
      */
     template <int dim>
-    class AdvectionBenchmark : public Interface<dim>, public SimulatorAccess<dim>
+    class AdvectionInAnnulus : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
 
@@ -132,20 +132,20 @@ namespace aspect
   namespace PrescribedStokesSolution
   {
     template <int dim>
-    void AdvectionBenchmark<dim>::stokes_solution (const Point<dim> &, Vector<double> &) const
+    void AdvectionInAnnulus<dim>::stokes_solution (const Point<dim> &, Vector<double> &) const
     {
       return;
     }
 
 
     template <>
-    void AdvectionBenchmark<2>::stokes_solution (const Point<2> &p, Vector<double> &value) const
+    void AdvectionInAnnulus<2>::stokes_solution (const Point<2> &p, Vector<double> &value) const
     {
-      Tensor<1,2> velocity = aspect::AdvectionBenchmark::AnalyticSolutions::Annulus_velocity (p, 4);
+      Tensor<1,2> velocity = aspect::AdvectionInAnnulus::AnalyticSolutions::Annulus_velocity (p, 4);
       value(0) = velocity[0];
       value(1) = velocity[1];
 
-      double pressure = aspect::AdvectionBenchmark::AnalyticSolutions::Annulus_pressure (p, 4);
+      double pressure = aspect::AdvectionInAnnulus::AnalyticSolutions::Annulus_pressure (p, 4);
       value(2) = pressure;       // pressure
     }
   }
@@ -156,8 +156,8 @@ namespace aspect
 {
   namespace PrescribedStokesSolution
   {
-    ASPECT_REGISTER_PRESCRIBED_STOKES_SOLUTION(AdvectionBenchmark,
-                                               "advection benchmark",
+    ASPECT_REGISTER_PRESCRIBED_STOKES_SOLUTION(AdvectionInAnnulus,
+                                               "advection in annulus",
                                                "This benchmark prescribes the Stokes solution of "
                                                "the annulus benchmark.")
   }

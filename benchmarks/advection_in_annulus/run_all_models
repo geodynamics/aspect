@@ -22,7 +22,7 @@ for temperature_degree in 1 2 3; do #3
 
       echo "set Output directory = Q${temperature_degree}_refinement${refinement}_${thermal_conductivity}" >> current.prm
       echo "Starting Q${temperature_degree}_refinement${refinement}_${thermal_conductivity}"
-      cat advection_stabilization.prm current.prm | ./aspect --
+      cat advection_in_annulus.prm current.prm | ./aspect --
     done
   done
 done
