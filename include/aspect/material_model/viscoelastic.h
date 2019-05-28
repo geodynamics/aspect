@@ -23,6 +23,7 @@
 
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>
+#include <aspect/material_model/equation_of_state/multicomponent_incompressible.h>
 
 namespace aspect
 {
@@ -249,10 +250,7 @@ namespace aspect
                                                          const double dte) const;
 
 
-        /**
-         * Vector for field densities, read from parameter file.
-         */
-        std::vector<double> densities;
+        EquationOfState::MulticomponentIncompressible<dim> equation_of_state;
 
         /**
          * Vector for field viscosities, read from parameter file.
@@ -260,19 +258,9 @@ namespace aspect
         std::vector<double> viscosities;
 
         /**
-         * Vector for field thermal expnsivities, read from parameter file.
-         */
-        std::vector<double> thermal_expansivities;
-
-        /**
          * Vector for field thermal conductivities, read from parameter file.
          */
         std::vector<double> thermal_conductivities;
-
-        /**
-         * Vector for field specific heats, read from parameter file.
-         */
-        std::vector<double> specific_heats;
 
         /**
          * Vector for field elastic shear moduli, read from parameter file.
