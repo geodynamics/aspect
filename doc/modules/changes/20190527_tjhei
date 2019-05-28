@@ -1,0 +1,3 @@
+New: Fix a rare deadlock caused by adaptive refinement in parallel runs.
+<br>
+(Timo Heister, 2019/05/27)
