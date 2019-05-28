@@ -86,7 +86,9 @@ namespace aspect
       class FunctionInclusion : public Function<dim>
       {
         public:
-          FunctionInclusion (double eta_B) : Function<dim>(dim+2), eta_B_(eta_B) {}
+          FunctionInclusion (double eta_B,
+                             const unsigned int n_compositional_fields)
+            : Function<dim>(dim+2+n_compositional_fields), eta_B_(eta_B) {}
           virtual void vector_value (const Point< dim >   &p,
                                      Vector< double >   &values) const
           {
@@ -296,7 +298,9 @@ namespace aspect
               material_model
                 = dynamic_cast<const InclusionMaterial<dim> *>(&this->get_material_model());
 
-              ref_func.reset (new AnalyticSolutions::FunctionInclusion<dim>(material_model->get_eta_B()));
+              ref_func.reset (new AnalyticSolutions::FunctionInclusion<dim>(
+                                material_model->get_eta_B(),
+                                this->n_compositional_fields()));
             }
           else
             {
