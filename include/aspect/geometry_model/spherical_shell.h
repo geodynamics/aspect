@@ -209,7 +209,7 @@ namespace aspect
         /**
          * List of radius for the list custom mesh.
          */
-        std::vector<double> R_values;
+        std::vector<double> R_values_list;
 
         /**
          * Inner and outer radii of the spherical shell.

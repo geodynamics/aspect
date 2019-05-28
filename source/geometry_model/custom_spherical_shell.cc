@@ -56,8 +56,10 @@ namespace aspect
 
       std::vector<double> R_values (n_slices+1);  // also define as a run-time parameter
       for (unsigned int s=0; s<n_slices+1; ++s)
+        {
         R_values[s] = R0 + (R1-R0)/n_slices * s;
-
+        std::cout << R_values[s] << std::endl;
+        }
       std::vector<Point<dim>>    points(R_values.size() * sphere_mesh.n_vertices());
 
       // copy the array of points as many times as there will be slices,

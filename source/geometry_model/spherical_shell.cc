@@ -70,8 +70,26 @@ namespace aspect
               GridGenerator::hyper_sphere (sphere_mesh);
               sphere_mesh.refine_global (initial_lateral_refinement);
 
+              // Calculate the number of R_values wrt custom mesh scheme
+              unsigned int n_R_values;
+	      if (custom_mesh == slices)
+                n_R_values = n_slices+1;
+              else
+                n_R_values = R_values_list.size();
+ 
+              // allocate R_values wrt the number of slices
+              std::vector<double> R_values (n_R_values);
+	      for (unsigned int s=0; s<n_R_values; ++s)
+                { 
+	          if (custom_mesh == slices)
+	            R_values[s] = R0 + (R1-R0)/n_slices * s;
+                  else
+                    R_values[s] = R_values_list[s];
+                }
+              
               std::vector<Point<dim>>    points(R_values.size() * sphere_mesh.n_vertices());
-
+              std::cout << R_values.size() << std::endl;
+ 
               // copy the array of points as many times as there will be slices,
               // one slice at a time. The z-axis value are defined in slices_coordinates
               for (unsigned int point_layer = 0; point_layer < R_values.size(); ++point_layer)
@@ -429,8 +447,8 @@ namespace aspect
       {
         prm.enter_subsection("Spherical shell");
         {
-          prm.declare_entry ("Custom mesh radial subdivision", "default",
-                             Patterns::Selection ("default|list of radius|number of slices"),
+          prm.declare_entry ("Custom mesh subdivision", "none",
+                             Patterns::Selection ("none|list of radius|number of slices"),
                              "Choose how the spherical shell mesh is generated. "
                              "By default, a coarse mesh is intuitively generated with "
                              "respect to the inner and outer radius, and an initial number "
@@ -528,22 +546,25 @@ namespace aspect
           phi = prm.get_double ("Opening angle");
           n_cells_along_circumference = prm.get_integer ("Cells along circumference");
           initial_lateral_refinement = prm.get_integer ("Initial lateral refinement");
-          R_values = Utilities::string_to_double(Utilities::split_string_list(prm.get("List of radius")));
+          R_values_list = Utilities::string_to_double(Utilities::split_string_list(prm.get("List of radius")));
           n_slices = prm.get_integer ("Number of slices");
 
-          if (prm.get ("Custom mesh radial subdivision") == "default")
+          if (prm.get ("Custom mesh subdivision") == "none")
             custom_mesh = none;
-          else if (prm.get ("Custom mesh radial subdivision") == "list of radius")
+          else if (prm.get ("Custom mesh subdivision") == "list of radius")
               custom_mesh = list;
-          else if (prm.get ("Custom mesh radial subdivision") == "number of slices")
+          else if (prm.get ("Custom mesh subdivision") == "number of slices")
             {
               custom_mesh = slices;
-              std::vector<double> R_values (n_slices+1);
-              for (unsigned int s=0; s<n_slices+1; ++s)
-                R_values[s] = R0 + (R1-R0)/n_slices * s;
+              //std::vector<double> R_values (n_slices+1);
+              //for (unsigned int s=0; s<n_slices+1; ++s)
+              //  {
+              //  R_values[s] = R0 + (R1-R0)/n_slices * s;
+              //  std::cout << R_values[s] << ' ' << n_slices << std::endl;
+              //  }
             }
           else
-            AssertThrow (false, ExcMessage ("Not a valid custom mesh radial subdivision scheme."));
+            AssertThrow (false, ExcMessage ("Not a valid custom mesh subdivision scheme."));
 
           // Check that inner radius is less than outer radius
           AssertThrow (R0 < R1,
@@ -561,14 +582,14 @@ namespace aspect
           if (custom_mesh == list)
             {
               // Check that list is in ascending order
-              for (unsigned int i = 1; i < R_values.size(); i++)
-                AssertThrow(R_values[i] > R_values[i-1],
+              for (unsigned int i = 1; i < R_values_list.size(); i++)
+                AssertThrow(R_values_list[i] > R_values_list[i-1],
                   ExcMessage("Radius values must be strictly ascending"));
               // Check that first value is not smaller than the inner radius
-              AssertThrow(R_values[1] > R0,
+              AssertThrow(R_values_list[1] > R0,
                   ExcMessage("First value in List of radius values must be greater than inner radius"));
               // Check that last layer is not larger than the outer radius
-              AssertThrow( *(R_values.end()-1) < R1,
+              AssertThrow( *(R_values_list.end()-1) < R1,
                   ExcMessage("Last value in List of radius values must be less than outer radius"));
             }
 
