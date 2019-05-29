@@ -445,6 +445,16 @@ namespace aspect
                                                  &&
                                                  (open_velocity_boundary_indicators.size() == 0);
 
+    {
+      // If the material model uses PrescribedCompressionOutput, we might need to do RHS modifcation:
+      MaterialModel::MaterialModelOutputs<dim> outputs(1,0);
+      material_model->create_additional_named_outputs (outputs);
+
+      if (outputs.template get_additional_output<MaterialModel::PrescribedCompressionOutputs<dim> >() != nullptr
+          &&                                   (open_velocity_boundary_indicators.size() == 0))
+        do_pressure_rhs_compatibility_modification = true;
+    }
+
     // make sure that we don't have to fill every column of the statistics
     // object in each time step.
     statistics.set_auto_fill_mode(true);
