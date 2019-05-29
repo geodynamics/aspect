@@ -7,24 +7,24 @@ include $ASPECT_SOURCE_DIR/benchmarks/buiter_et_al_2016_jsg/exp_2_high_resolutio
 
 # Mesh refinement specifications 
 subsection Mesh refinement
-  set Initial adaptive refinement          	     = 0
-  set Initial global refinement            	     = 0	  #The resolution is 2 mm/cell
-  set Time steps between mesh refinement   	     = 0
+  set Initial adaptive refinement                 = 0
+  set Initial global refinement                   = 0    #The resolution is 2 mm/cell
+  set Time steps between mesh refinement          = 0
 end
 
 ### Material properties
 # Using harmonic material averaging is required to achieve reasonable convergence 
 # behavior, particularly when the viscosity contrast is large.
 subsection Material model
-  set Model name 			             = visco plastic
+  set Model name                    = visco plastic
 
   subsection Visco Plastic
 
   
   # Further testing revealed that decreasing the model resolution allows using a higher contrast between the minimum and maximum viscosity.
   # The viscosity contrast is 10^8 here and any value higher than this causes divergence of the solver.
-    set Minimum viscosity 		             = 1e4  
-    set Maximum viscosity 		             = 1e12
+    set Minimum viscosity                  = 1e4  
+    set Maximum viscosity                  = 1e12
 
   end
 end
