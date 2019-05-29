@@ -814,7 +814,7 @@ namespace MaterialModel
         for (unsigned int i=0; i<dim; ++i)
           n[i] = in.composition[q][c_idx_n[i]];
           Tensor<1,dim> n_dot;
-        if (n.norm() >0.5)
+        if (n.norm() >0.5 && in.composition[q][c_idx_gamma] > 0.8)
            {
         // Symmetric and anti-symmetric parts of grad_u
         const SymmetricTensor<2,dim> D = symmetrize(velocity_gradients[q]);

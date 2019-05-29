@@ -7,11 +7,11 @@ set Additional shared libraries = ./libanisotropic_viscosity.so
 set Dimension = 2
 set CFL number                             = 0.5
 set Start time                             = 0
-set End time                               = 1
+set End time                               = 30
 set Adiabatic surface temperature          = 0
 set Surface pressure                       = 0
 set Use years in output instead of seconds = false  # default: true
-set Output directory                       = output-AV-Rayleigh-Taylor_lessweak_horiz_05_27_1proc
+set Output directory                       = output-AV-Rayleigh-Taylor_weak_45_05_27_box2x1_if
 
 #set Nonlinear solver scheme                = iterated Stokes
 #set Max nonlinear iterations               = 1
@@ -28,7 +28,7 @@ subsection Geometry model
   set Model name = box
 
   subsection Box
-    set X extent = 1.1 # width of the box, present in the functions of the compositional fields
+    set X extent = 2 # width of the box, present in the functions of the compositional fields
     set Y extent = 1
   end
 end
@@ -60,7 +60,7 @@ subsection Material model
 
     subsection AV
         set Normal viscosity    = 1
-        set Shear viscosity     = 0.5
+        set Shear viscosity     = 0.1
 #density is hard-coded into the AV_material.cc plugin
 #everything else is set to 0
   end
@@ -71,17 +71,18 @@ subsection Initial composition model
     subsection Function
         set Variable names      = x,z
         set Function constants  = pi=3.1415926;
-set Function expression = 0.5*(1+tanh((z-0.85-0.01*cos(2*pi*x/1))/0.005)); \
-                          (0.5*(1+tanh((z-0.85-0.01*cos(2*pi*x/1))/0.005)))*sin(90*pi/180); \
-                          (0.5*(1+tanh((z-0.85-0.01*cos(2*pi*x/1))/0.005))) *cos(90*pi/180);
+
+set Function expression = 0.5*(1+tanh((z-0.85-0.02*cos(2*pi*x/2))/0.02)); \
+                          (0.5*(1+tanh((z-0.85-0.02*cos(2*pi*x/2))/0.02))) > 0.8 ? sin(45*pi/180) : 0.0; \
+                          (0.5*(1+tanh((z-0.85-0.02*cos(2*pi*x/2))/0.02))) > 0.8 ? cos(45*pi/180) : 0.0;
         end
 end
 
 subsection Mesh refinement
-    set Initial global refinement          = 7
-    set Initial adaptive refinement        = 0
+    set Initial global refinement          = 6
+    set Initial adaptive refinement        = 2
     set Strategy                           = composition
-    set Time steps between mesh refinement = 0
+    set Time steps between mesh refinement = 1
     set Coarsening fraction                = 0.05
     set Refinement fraction                = 0.1
 end
