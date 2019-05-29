@@ -158,7 +158,7 @@ namespace aspect
   {
     ASPECT_REGISTER_PRESCRIBED_STOKES_SOLUTION(AdvectionInAnnulus,
                                                "advection in annulus",
-                                               "This benchmark prescribes the Stokes solution of "
+                                               "This plugin prescribes the Stokes solution of "
                                                "the annulus benchmark.")
   }
 }

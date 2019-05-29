@@ -1,10 +1,11 @@
 #!/bin/bash
 
-# Instructions for how to use this scipt are provided in the README.
+# This script is used to run several models consecutively,
+# using all possible parameter combinations.
 
-for temperature_degree in 1 2 3; do #3
+for temperature_degree in 1 2 3; do
   for refinement in 2 3 4; do
-    for thermal_conductivity in 1e-2 1e-3; do # 6 7 10 15 20
+    for thermal_conductivity in 1e-2 1e-3; do 
       echo "subsection Discretization" > current.prm
       echo "  set Temperature polynomial degree = $temperature_degree" >> current.prm
       echo "end" >> current.prm

@@ -103,13 +103,6 @@ subsection Initial temperature model
   end
 end
 
-
-############### Parameters describing the discretization
-# The following parameters describe how often we want to refine
-# the mesh globally and adaptively, what fraction of cells should
-# be refined in each adaptive refinement step, and what refinement
-# indicator to use when refining the mesh adaptively. 
-
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
   set Initial global refinement          = 2
@@ -117,10 +110,6 @@ subsection Mesh refinement
   set Refinement fraction                = 0.2
   set Strategy                           = velocity
 end
-
-############### Parameters describing what to do with the solution
-# The final section allows us to choose which postprocessors to
-# run at the end of each time step. 
 
 subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, temperature statistics, heat flux statistics, entropy viscosity statistics, depth average
