@@ -185,6 +185,33 @@ namespace aspect
         opening_angle () const;
 
       private:
+
+        /**
+         * Specify the radial subdivision of the spherical shell
+         * mesh.
+         */
+        enum CustomMeshRadialSubdivision
+        {
+          none,
+          list,
+          slices
+        } custom_mesh;
+
+        /**
+         * Initial surface refinement for the custom mesh cases.
+         */
+        int initial_lateral_refinement;
+
+        /**
+         * Initial surface refinement for the custom mesh cases.
+         */
+        unsigned int n_slices;
+
+        /**
+         * List of radius for the list custom mesh.
+         */
+        std::vector<double> R_values_list;
+
         /**
          * Inner and outer radii of the spherical shell.
          */
