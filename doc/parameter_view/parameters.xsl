@@ -18,7 +18,8 @@
 					<button onclick="expandAll()">Expand all</button> 
 					<button onclick="collapseAll()">Collapse all</button> 
 					<button onclick="expandAllSubsections()">Expand subsections</button> 
-					<button onclick="collapseAllSubsections()">Collapse subsections</button> 
+					<button onclick="collapseAllSubsections()">Collapse subsections</button>
+					<input type="text" id="search" value=""/>
 				</div>
 				<ul id="ParameterList">
 					<xsl:apply-templates
