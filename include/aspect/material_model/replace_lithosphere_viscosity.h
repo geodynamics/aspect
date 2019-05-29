@@ -47,7 +47,7 @@ namespace aspect
         /**
          * Empty Constructor.
          */
-    	ReplaceLithosphereViscosity ();
+        ReplaceLithosphereViscosity ();
 
         /**
          * Initialize the base model at the beginning of the run.
@@ -91,56 +91,56 @@ namespace aspect
         /**
          * Reads in file containing input data in ascii format.
          */
-         Utilities::AsciiDataLookup<2> lab_depths;
+        Utilities::AsciiDataLookup<2> lab_depths;
 
         /**
          * Directory in which the LAB depth file is present.
          */
-         std::string data_directory;
+        std::string data_directory;
 
-         /**
-         * File name of the LAB depth file.
+        /**
+        * File name of the LAB depth file.
+        */
+        std::string LAB_file_name;
+
+        /**
+        * Return LAB depth as a function of position (latitude and longitude). For the
+        * current class, this function returns value from the text file. We read in
+        * two dimensions so the third column (depth) is treated as data.
+        */
+        double
+        ascii_lab (const Point<2> &position) const;
+
+        /**
+         * This parameter gives the maximum depth of the lithosphere. The
+         * model returns viscosity from the base model below this depth. This parameter is
+         * only used if LAB depth source is set to 'Value'.
          */
-         std::string LAB_file_name;
+        double max_depth;
 
-         /**
-         * Return LAB depth as a function of position (latitude and longitude). For the
-         * current class, this function returns value from the text file. We read in
-         * two dimensions so the third column (depth) is treated as data.
+        /**
+        * This parameter gives the viscosity set within the lithosphere.
+        */
+        double lithosphere_viscosity;
+
+        /**
+         * An enum to describe where the LAB depth is coming from.
          */
-         double
-         ascii_lab (const Point<2> &position) const;
+        enum LABDepthSource
+        {
+          Value,
+          File
+        };
 
-         /**
-          * This parameter gives the maximum depth of the lithosphere. The
-          * model returns viscosity from the base model below this depth. This parameter is
-          * only used if LAB depth source is set to 'Value'.
-          */
-         double max_depth;
-
-         /**
-         * This parameter gives the viscosity set within the lithosphere.
+        /**
+         * Currently chosen source for the LAB depth.
          */
-         double lithosphere_viscosity;
-
-         /**
-          * An enum to describe where the LAB depth is coming from.
-          */
-         enum LABDepthSource
-         {
-           Value,
-           File
-         };
-
-         /**
-          * Currently chosen source for the LAB depth.
-          */
-         LABDepthSource LAB_depth_source;
+        LABDepthSource LAB_depth_source;
 
         /**
          * Pointer to the material model used as the base model
          */
-         std::shared_ptr<MaterialModel::Interface<dim> > base_model;
+        std::shared_ptr<MaterialModel::Interface<dim> > base_model;
     };
   }
 }

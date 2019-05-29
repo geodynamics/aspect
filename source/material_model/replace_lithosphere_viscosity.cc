@@ -33,11 +33,11 @@ namespace aspect
 {
   namespace MaterialModel
   {
-  template <int dim>
-  ReplaceLithosphereViscosity<dim>::ReplaceLithosphereViscosity ()
-    :
-    lab_depths(1, 1.0)
-  {}
+    template <int dim>
+    ReplaceLithosphereViscosity<dim>::ReplaceLithosphereViscosity ()
+      :
+      lab_depths(1, 1.0)
+    {}
 
     template <int dim>
     void
@@ -46,18 +46,18 @@ namespace aspect
       base_model->initialize();
 
       if (LAB_depth_source == File)
-      {
-      const std::string filename = data_directory+LAB_file_name;
+        {
+          const std::string filename = data_directory+LAB_file_name;
 
-      std::cout << "   Loading Ascii data lookup file " << filename << "." << std::endl;
+          std::cout << "   Loading Ascii data lookup file " << filename << "." << std::endl;
 
-      lab_depths.load_file(filename,this->get_mpi_communicator());
-      }
+          lab_depths.load_file(filename,this->get_mpi_communicator());
+        }
     }
 
     template <int dim>
     double
-	ReplaceLithosphereViscosity<dim>::ascii_lab (const Point<2> &position) const
+    ReplaceLithosphereViscosity<dim>::ascii_lab (const Point<2> &position) const
     {
       const double lab = lab_depths.get_data(position,0);
       return lab;
@@ -65,50 +65,50 @@ namespace aspect
 
     template <int dim>
     void
-	ReplaceLithosphereViscosity<dim>::evaluate(const typename Interface<dim>::MaterialModelInputs &in,
-                                  typename Interface<dim>::MaterialModelOutputs &out) const
+    ReplaceLithosphereViscosity<dim>::evaluate(const typename Interface<dim>::MaterialModelInputs &in,
+                                               typename Interface<dim>::MaterialModelOutputs &out) const
     {
       base_model->evaluate(in,out);
 
       for (unsigned int i=0; i < in.position.size(); ++i)
-      {
-	  const double depth = this->SimulatorAccess<dim>::get_geometry_model().depth(in.position[i]);
-
-	  if (LAB_depth_source == File)
-	  {
-      //Get spherical coordinates for model
-      std::array<double,dim> scoord      = Utilities::Coordinates::cartesian_to_spherical_coordinates(in.position[i]);
-      const double phi = scoord[1];
-      const double theta = scoord[2];
-      const Point<2> phi_theta (phi, theta);
-
-      //Get lab depth for specific phi and theta
-      const double lab_depth = ascii_lab(phi_theta);
-
-      if (depth <= lab_depth)
-        out.viscosities[i] = lithosphere_viscosity;
-      else
-    	out.viscosities[i] *= 1;
-	  }
-
-	  else if (LAB_depth_source == Value)
-	  {
-      if (depth <= max_depth)
-    	 out.viscosities[i] = lithosphere_viscosity;
-      else
-    	 out.viscosities[i] *= 1;
-	  }
-
-      else
         {
-          Assert( false, ExcMessage("Invalid method for depth specification method") );
+          const double depth = this->SimulatorAccess<dim>::get_geometry_model().depth(in.position[i]);
+
+          if (LAB_depth_source == File)
+            {
+              //Get spherical coordinates for model
+              std::array<double,dim> scoord      = Utilities::Coordinates::cartesian_to_spherical_coordinates(in.position[i]);
+              const double phi = scoord[1];
+              const double theta = scoord[2];
+              const Point<2> phi_theta (phi, theta);
+
+              //Get lab depth for specific phi and theta
+              const double lab_depth = ascii_lab(phi_theta);
+
+              if (depth <= lab_depth)
+                out.viscosities[i] = lithosphere_viscosity;
+              else
+                out.viscosities[i] *= 1;
+            }
+
+          else if (LAB_depth_source == Value)
+            {
+              if (depth <= max_depth)
+                out.viscosities[i] = lithosphere_viscosity;
+              else
+                out.viscosities[i] *= 1;
+            }
+
+          else
+            {
+              Assert( false, ExcMessage("Invalid method for depth specification method") );
+            }
         }
-	  }
-	  }
+    }
 
     template <int dim>
     void
-	ReplaceLithosphereViscosity<dim>::declare_parameters (ParameterHandler &prm)
+    ReplaceLithosphereViscosity<dim>::declare_parameters (ParameterHandler &prm)
     {
       prm.enter_subsection("Material model");
       {
@@ -117,7 +117,7 @@ namespace aspect
           prm.declare_entry("Base model","simple",
                             Patterns::Selection(MaterialModel::get_valid_model_names_pattern<dim>()),
                             "The name of a material model that will be modified by a replacing"
-							"the viscosity in the lithosphere by a constant value. Valid values for this parameter "
+                            "the viscosity in the lithosphere by a constant value. Valid values for this parameter "
                             "are the names of models that are also valid for the "
                             "``Material models/Model name'' parameter. See the documentation for "
                             "more information.");
@@ -144,18 +144,18 @@ namespace aspect
                              Patterns::FileName (),
                              "File from which the lithosphere-asthenosphere boundary depth data is read.");
         }
-          prm.leave_subsection();
-        }
         prm.leave_subsection();
+      }
+      prm.leave_subsection();
     }
 
     template <int dim>
     void
-	ReplaceLithosphereViscosity<dim>::parse_parameters (ParameterHandler &prm)
+    ReplaceLithosphereViscosity<dim>::parse_parameters (ParameterHandler &prm)
     {
-        AssertThrow (dim == 3,
-                     ExcMessage ("The 'Replace lithosphere viscosity' material model "
-                                 "is only available for 3d computations."));
+      AssertThrow (dim == 3,
+                   ExcMessage ("The 'Replace lithosphere viscosity' material model "
+                               "is only available for 3d computations."));
 
       prm.enter_subsection("Material model");
       {
@@ -175,16 +175,16 @@ namespace aspect
           lithosphere_viscosity   = prm.get_double ("Lithosphere viscosity");
 
           if ( prm.get("Depth specification method") == "File" )
-           {
-            LAB_depth_source = File;
-            data_directory = Utilities::expand_ASPECT_SOURCE_DIR (prm.get("Data directory"));
-            LAB_file_name = prm.get("LAB depth filename");
-           }
-           else if ( prm.get("Depth specification method") == "Value" )
-           {
-            LAB_depth_source = Value;
-            max_depth = prm.get_double ("Maximum lithosphere depth");
-           }
+            {
+              LAB_depth_source = File;
+              data_directory = Utilities::expand_ASPECT_SOURCE_DIR (prm.get("Data directory"));
+              LAB_file_name = prm.get("LAB depth filename");
+            }
+          else if ( prm.get("Depth specification method") == "Value" )
+            {
+              LAB_depth_source = Value;
+              max_depth = prm.get_double ("Maximum lithosphere depth");
+            }
         }
         prm.leave_subsection();
       }
@@ -198,20 +198,20 @@ namespace aspect
 
     template <int dim>
     bool
-	ReplaceLithosphereViscosity<dim>::
+    ReplaceLithosphereViscosity<dim>::
     is_compressible () const
     {
       return base_model->is_compressible();
     }
 
     template <int dim>
-       double
-	   ReplaceLithosphereViscosity<dim>::
-       reference_viscosity() const
-       {
-         /* Return reference viscosity from base model*/
-         return base_model->reference_viscosity();
-       }
+    double
+    ReplaceLithosphereViscosity<dim>::
+    reference_viscosity() const
+    {
+      /* Return reference viscosity from base model*/
+      return base_model->reference_viscosity();
+    }
 
   }
 }
@@ -223,61 +223,22 @@ namespace aspect
   {
     ASPECT_REGISTER_MATERIAL_MODEL(ReplaceLithosphereViscosity,
                                    "replace lithosphere viscosity",
-                                   "The ``depth dependent'' Material model applies a depth-dependent scaling "
-                                   "to any of the other available material models. In other words, it "
-                                   "is a ``compositing material model''."
-                                   "\n\n"
+                                   "The ``replace lithosphere viscosity'' Material model sets viscosity to a "
+                                   "prescribed constant above the lithosphere-asthenosphere boundary (specified by "
+                                   "an ascii file or maximum lithosphere depth). Below the lithosphere-asthenosphere"
+                                   "boundary the viscosity is taken from any of the other available material model. "
+                                   "In other words, it is a ``compositing material model''."
+                                   "\n"
                                    "Parameters related to the depth dependent model are read from a subsection "
-                                   "``Material model/Depth dependent model''. "
-                                   "The user must specify a ``Base model'' from which material properties are "
-                                   "derived. Currently the depth dependent model only allows depth dependence of "
-                                   "viscosity - other material properties are taken from the ``Base model''. "
-                                   "Viscosity $\\eta$ at depth $z$ is calculated according to:"
-                                   "\\begin{equation}"
-                                   "\\eta(z,p,T,X,...) = \\eta(z) \\eta_b(p,T,X,..)/\\eta_{rb}"
-                                   "\\end{equation}"
-                                   "where $\\eta(z)$ is the depth-dependence specified by the depth dependent "
-                                   "model, $\\eta_b(p,T,X,...)$ is the viscosity calculated from the base model, "
-                                   "and $\\eta_{rb}$ is the reference viscosity of the ``Base model''. "
-                                   "In addition to the specification of the ``Base model'', the user must specify "
-                                   "the method to be used to calculate the depth-dependent viscosity $\\eta(z)$ as "
-                                   "``Material model/Depth dependent model/Depth dependence method'', which can be "
-                                   "chosen among ``None|Function|File|List''. Each method and the associated parameters "
-                                   "are as follows:"
+                                   "``Material model/replace lithosphere vicsosity''. "
+                                   "The user must specify a ``Base model'' from which other material properties are "
+                                   "derived.  "
                                    "\n"
-                                   "\n"
-                                   "``Function'': read a user-specified parsed function from the input file in a "
-                                   "subsection ``Material model/Depth dependent model/Viscosity depth function''. "
-                                   "By default, this function is uniformly equal to 1.0e21. Specifying a function "
-                                   "that returns a value less than or equal to 0.0 anywhere in the model domain will "
-                                   "produce an error. "
-                                   "\n"
-                                   "\n"
-                                   "``File'': read a user-specified file containing viscosity values at specified "
-                                   "depths. The file containing depth-dependent viscosities is read from a "
-                                   "directory specified by the user as "
-                                   "``Material model/Depth dependent model/Data directory'', from a file with name "
-                                   "specified as ``Material model/Depth dependent model/Viscosity depth file''. "
-                                   "The format of this file is ascii text and contains two columns with one header line:"
-                                   "\n"
-                                   "\n"
-                                   "example Viscosity depth file:\\\\"
-                                   "Depth (m)    Viscosity (Pa-s)\\\\"
-                                   "0.0000000e+00     1.0000000e+21\\\\"
-                                   "6.7000000e+05     1.0000000e+22\\\\"
-                                   "\n"
-                                   "\n"
-                                   "Viscosity is interpolated from this file using linear interpolation. "
-                                   "``None'': no depth-dependence. Viscosity is taken directly from ``Base model''"
-                                   "\n"
-                                   "\n"
-                                   "``List:'': read a comma-separated list of depth values corresponding to the maximum "
-                                   "depths of layers having constant depth-dependence $\\eta(z)$. The layers must be "
-                                   "specified in order of increasing depth, and the last layer in the list must have a depth "
-                                   "greater than or equal to the maximal depth of the model. The list of layer depths is "
-                                   "specified as ``Material model/Depth dependent model/Depth list'' and the corresponding "
-                                   "list of layer viscosities is specified as "
-                                   "``Material model/Depth dependent model/Viscosity list''"
-                                  )
+                                   "Note the required format of the input data file: The first lines may "
+                                   "contain any number of comments if they begin with ‘#’, but one of these lines "
+                                   "needs to contain the number of grid points in each dimension as for example"
+                                   "‘# POINTS: 3 3’. For a spherical model, the order of the data columns has to be"
+                                   "'phi', 'theta','depth (m)', where phi is the  azimuth angle and theta is the "
+                                   "polar angle measured positive from the north pole.")
   }
 }
