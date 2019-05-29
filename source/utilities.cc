@@ -2848,7 +2848,7 @@ namespace aspect
 
     const std::string get_model_operator_options()
     {
-          return "add|subtract|minimum|maximum|replace if valid";
+      return "add|subtract|minimum|maximum|replace if valid";
     }
 
 
