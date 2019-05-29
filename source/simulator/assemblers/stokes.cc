@@ -269,6 +269,9 @@ namespace aspect
       const MaterialModel::ElasticOutputs<dim>
       *elastic_outputs = scratch.material_model_outputs.template get_additional_output<MaterialModel::ElasticOutputs<dim> >();
 
+      const MaterialModel::PrescribedCompressionOutputs<dim>
+      *prescribed_compression = scratch.material_model_outputs.template get_additional_output<MaterialModel::PrescribedCompressionOutputs<dim> >();
+
       // When using the Q1-Q1 equal order element, we need to compute the
       // projection of the Q1 pressure shape functions onto the constants
       // and use this projection in the computation of matrix terms.
@@ -368,6 +371,19 @@ namespace aspect
               if (elastic_outputs != nullptr && this->get_parameters().enable_elasticity)
                 data.local_rhs(i) += (scalar_product(elastic_outputs->elastic_force[q],Tensor<2,dim>(scratch.grads_phi_u[i])))
                                      * JxW;
+
+              if (prescribed_compression != nullptr)
+                data.local_rhs(i) += (
+                                       // RHS of div u,p = (R,p)
+                                       pressure_scaling
+                                       * prescribed_compression->prescribed_compression[q]
+                                       * scratch.phi_p[i]
+                                       // RHS of momentum eqn: - \int nu R, \nabla v
+                                       -
+                                       eta
+                                       * prescribed_compression->prescribed_compression[q]
+                                       * scratch.div_phi_u[i]
+                                     ) * JxW;
 
               if (scratch.rebuild_stokes_matrix)
                 for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)

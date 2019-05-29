@@ -933,6 +933,34 @@ namespace aspect
         std::vector<double> rhs_melt_pc;
     };
 
+
+
+    /**
+     * An AdditionalOutput that allows prescribing compression for the solve in the Stokes system.
+     */
+    template <int dim>
+    class PrescribedCompressionOutputs : public NamedAdditionalMaterialOutputs<dim>
+    {
+      public:
+        /**
+         * Constructor
+         */
+        explicit PrescribedCompressionOutputs (const unsigned int n_points);
+
+        /**
+         * Function for NamedAdditionalMaterialOutputs interface
+         */
+        virtual std::vector<double> get_nth_output(const unsigned int idx) const;
+
+        /**
+         * A scalar value per evaluation point that specifies the prescribed compression
+         * in that point.
+         */
+        std::vector<double> prescribed_compression;
+    };
+
+
+
     /**
      * A class for an elastic force term to be added to the RHS of the
      * Stokes system, which can be attached to the
