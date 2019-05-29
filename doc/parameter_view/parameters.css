@@ -42,7 +42,7 @@ ul {
     content: "[+]";
 }
 .active::before {
-    content: "[-]";
+    content: "[−]";
 }
 
 /* Style the collapsible content. Note: hidden by default */
