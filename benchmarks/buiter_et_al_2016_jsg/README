@@ -3,9 +3,9 @@ This benchmark attempts to reproduce the results of Buiter et al. 2016:
   Journal of Structural Geology, 92, 140-177, 
   http://dx.doi.org/10.1016/j.jsg.2016.03.003.
 
-More specifically, the provided input files aim to reproduce two numerical simulations 
+More specifically, the provided input files aim to reproduce the numerical simulations 
 of stable wedge experiment 1 illustrated in Figure 4-6 and unstable wedge experiment 2 
-illustrated in Figure 8-11. Setups of these two experiments are shown in Figure 3a-b. 
+illustrated in Figure 8-11. The setups of these two experiments are shown in Figure 3a-b. 
 
 Experiment 1 tests whether model wedges in the stable domain of critical wedge theory 
 remain stable when translated horizontally. A quartz sand wedge with a horizontal base 
