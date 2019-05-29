@@ -22,6 +22,50 @@
 demangleStrings();
 reorderList();
 
+
+// Grab text from the search input field and only show parameters that contain the text:
+function filter_text()
+{
+    var needle = document.getElementById("search").value.toUpperCase();
+    var list = document.getElementById("ParameterList");
+    collapseAllSubsections();
+
+    var items = document.getElementsByClassName("parameter");
+    for (var i=0;i<items.length; ++i) {
+	var haystack = items[i].innerText.toUpperCase();
+	if (haystack.includes(needle)) {
+	    items[i].style.display = "block";
+
+	    p = items[i];
+	    while (p.parentNode) {
+		p=p.parentNode;
+		if (p.className=="content") {
+		    var temp = [];
+		    temp[0]=p.parentNode.children[0];
+		    expand(temp);
+		}
+	    }
+	} else {
+	    items[i].style.display = "none";
+	}
+    }
+
+    if (needle.length==0) {
+	// If the user typed nothing, collapse all
+	collapseAllSubsections();
+    }
+}
+
+// Trigger a filter when the user presses return:
+function search_input(event) {
+    if (event.keyCode == 13)
+	filter_text();
+}
+
+document.getElementById("search").addEventListener('change', filter_text);
+document.getElementById("search").addEventListener('input', search_input);
+
+
 function demangleStrings() {
   mangledStrings = document.getElementsByClassName("mangled");
   var j;
