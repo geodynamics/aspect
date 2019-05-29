@@ -240,7 +240,7 @@ namespace aspect
               const double delta_temp = in.temperature[i]-this->get_adiabatic_conditions().temperature(in.position[i]);
               visc_temperature_dependence = std::max(std::min(std::exp(-thermal_viscosity_exponent*delta_temp/this->get_adiabatic_conditions().temperature(in.position[i])),1e4),1e-4);
             }
-          else
+          else if (thermal_viscosity_exponent != 0.0)
             {
               const double delta_temp = in.temperature[i]-reference_T;
               visc_temperature_dependence = std::max(std::min(std::exp(-thermal_viscosity_exponent*delta_temp/reference_T),1e4),1e-4);
@@ -281,7 +281,7 @@ namespace aspect
                   const double delta_temp = in.temperature[i]-this->get_adiabatic_conditions().temperature(in.position[i]);
                   visc_temperature_dependence = std::max(std::min(std::exp(-thermal_bulk_viscosity_exponent*delta_temp/this->get_adiabatic_conditions().temperature(in.position[i])),1e4),1e-4);
                 }
-              else
+              else if (thermal_viscosity_exponent != 0.0)
                 {
                   const double delta_temp = in.temperature[i]-reference_T;
                   visc_temperature_dependence = std::max(std::min(std::exp(-thermal_bulk_viscosity_exponent*delta_temp/reference_T),1e4),1e-4);
