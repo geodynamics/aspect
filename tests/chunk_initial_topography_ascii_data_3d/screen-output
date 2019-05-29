@@ -1,0 +1,49 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+
+   Loading Ascii data boundary file /Users/ACG/Documents/PhD/Aspect/source/25-05-2019/aspect/data/geometry-model/initial-topography-model/ascii-data/test/shell_3d_outer.0.txt.
+
+
+   Loading new data file did not succeed.
+   Assuming constant boundary conditions for rest of model run.
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+Number of active cells: 64 (on 3 levels)
+Number of degrees of freedom: 3,041 (2,187+125+729)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 90+0 iterations.
+
+   Postprocessing:
+
+     Model domain depth (m):                        3e+06
+     Temperature contrast across model domain (K):  3500
+     Reference depth (m):                           0
+     Reference temperature (K):                     1613
+     Reference pressure (Pa):                       0
+     Reference gravity (m/s^2):                     10
+     Reference density (kg/m^3):                    3207.74
+     Reference thermal expansion coefficient (1/K): 3e-05
+     Reference specific heat capacity (J/(K*kg)):   1200
+     Reference thermal conductivity (W/(m*K)):      4.7
+     Reference viscosity (Pa*s):                    1e+21
+     Reference thermal diffusivity (m^2/s):         1.22101e-06
+     Rayleigh number:                               7.4479e+07
+
+     RMS, max velocity:       0.0401 m/year, 0.0998 m/year
+     Temperature min/avg/max: 1613 K, 1613 K, 1613 K
+     Topography min/max:      6000 m, 9000 m
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
