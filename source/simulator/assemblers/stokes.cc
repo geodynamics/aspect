@@ -374,13 +374,13 @@ namespace aspect
 
               if (prescribed_compression != nullptr)
                 data.local_rhs(i) += (
-                                       // RHS of div u,p = (R,p)
-                                       pressure_scaling
+                                       // RHS of - (div u,p) = - (R,p)
+                                       - pressure_scaling
                                        * prescribed_compression->prescribed_compression[q]
                                        * scratch.phi_p[i]
-                                       // RHS of momentum eqn: - \int nu R, \nabla v
+                                       // RHS of momentum eqn: - \int 2/3 nu R, \nabla v
                                        -
-                                       eta
+                                       2.0 / 3.0 * eta
                                        * prescribed_compression->prescribed_compression[q]
                                        * scratch.div_phi_u[i]
                                      ) * JxW;

@@ -1009,6 +1009,8 @@ namespace aspect
   \
   template class ReactionRateOutputs<dim>; \
   \
+  template class PrescribedCompressionOutputs<dim>; \
+  \
   template class PrescribedFieldOutputs<dim>; \
   \
   namespace MaterialAveraging \
