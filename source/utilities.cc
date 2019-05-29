@@ -2167,18 +2167,11 @@ namespace aspect
     {
       if (this->get_time() - first_data_file_model_time >= 0.0)
         {
-          Point<dim> internal_position = position;
+          const std::array<double,dim> natural_position = this->get_geometry_model().cartesian_to_natural_coordinates(position);
 
-          if (dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()) != nullptr
-              || dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model()) != nullptr
-              || dynamic_cast<const GeometryModel::Sphere<dim>*> (&this->get_geometry_model()) != nullptr)
-            {
-              const std::array<double,dim> spherical_position =
-                Utilities::Coordinates::cartesian_to_spherical_coordinates(position);
-
-              for (unsigned int i = 0; i < dim; i++)
-                internal_position[i] = spherical_position[i];
-            }
+          Point<dim> internal_position;
+          for (unsigned int i = 0; i < dim; i++)
+            internal_position[i] = natural_position[i];
 
           const std::array<unsigned int,dim-1> boundary_dimensions =
             get_boundary_dimensions(boundary_indicator);
