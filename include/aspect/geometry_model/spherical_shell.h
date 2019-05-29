@@ -216,7 +216,7 @@ namespace aspect
         unsigned int n_slices;
 
         /**
-         * List of radius for the list custom mesh.
+         * List of radial values for the list custom mesh.
          */
         std::vector<double> R_values_list;
 

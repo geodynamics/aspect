@@ -88,21 +88,24 @@ namespace aspect
               if (custom_mesh == slices)
                 n_R_values = n_slices+1;
               else
-                n_R_values = R_values_list.size();
-
+                n_R_values = R_values_list.size()+2;
+ 
               // allocate R_values wrt the number of slices
               std::vector<double> R_values (n_R_values);
-              for (unsigned int s=0; s<n_R_values; ++s)
+              if (custom_mesh == slices)
                 {
-                  if (custom_mesh == slices)
+                  for (unsigned int s=0; s<n_R_values; ++s)
                     R_values[s] = R0 + (R1-R0)/n_slices * s;
-                  else
-                    R_values[s] = R_values_list[s];
                 }
-
+              if (custom_mesh == list)
+                {
+                  R_values[0] = R0;
+                  R_values[n_R_values-1] = R1;
+                  for (unsigned int s=1; s<(n_R_values-1); ++s)
+                    R_values[s] = R_values_list[s-1];
+                }
               std::vector<Point<dim>>    points(R_values.size() * sphere_mesh.n_vertices());
-              std::cout << R_values.size() << std::endl;
-
+ 
               // copy the array of points as many times as there will be slices,
               // one slice at a time. The z-axis value are defined in slices_coordinates
               for (unsigned int point_layer = 0; point_layer < R_values.size(); ++point_layer)
@@ -142,23 +145,23 @@ namespace aspect
                       this_cell.material_id = cell->material_id();
 
 #if !DEAL_II_VERSION_GTE(9,1,0)
-                      // In deal.II prior to version 9.1, the hyper_ball mesh generated above
-                      // had cells that were inconsistently oriented: Some cells had a normal
-                      // vector that pointed to the inside of the ball, some that pointed
-                      // to the outside. This leads to cells with either negative or
-                      // positive volume if we extrude them in the radial direction. We need
-                      // to fix this up.
+              // In deal.II prior to version 9.1, the hyper_ball mesh generated above
+              // had cells that were inconsistently oriented: Some cells had a normal
+              // vector that pointed to the inside of the ball, some that pointed
+              // to the outside. This leads to cells with either negative or
+              // positive volume if we extrude them in the radial direction. We need
+              // to fix this up.
 
-                      if (GridTools::cell_measure (points, this_cell.vertices) < 0)
-                        {
-                          if (dim == 2)
-                            std::swap (this_cell.vertices[1], this_cell.vertices[2]);
-                          if (dim == 3)
-                            {
-                              std::swap (this_cell.vertices[1], this_cell.vertices[2]);
-                              std::swap (this_cell.vertices[5], this_cell.vertices[6]);
-                            }
-                        }
+              if (GridTools::cell_measure (points, this_cell.vertices) < 0)
+              {
+                  if (dim == 2)
+                      std::swap (this_cell.vertices[1], this_cell.vertices[2]);
+                  if (dim == 3)
+                  {
+                      std::swap (this_cell.vertices[1], this_cell.vertices[2]);
+                      std::swap (this_cell.vertices[5], this_cell.vertices[6]);
+                  }
+              }
 #endif
 
                       cells.push_back(this_cell);
@@ -492,12 +495,12 @@ namespace aspect
                              "and radii values must be greater than the inner radius and "
                              "lesser than the outer radius.");
           prm.declare_entry ("Number of slices", "1",
-                             Patterns::Integer (0),
+                            Patterns::Integer (0),
                              "Number of slices for the custom mesh scheme. "
                              "The number of slices subdivides the spherical shell into N "
                              "slices of equal thickness. Must be greater than 0.");
           prm.declare_entry ("Initial lateral refinement", "0",
-                             Patterns::Integer (0),
+                            Patterns::Integer (0),
                              "Inner radius of the spherical shell. Units: $\\text{m}$. "
                              "\n\n"
                              "\\note{The default value of 3,481,000 m equals the "
@@ -569,12 +572,12 @@ namespace aspect
           phi = prm.get_double ("Opening angle");
           n_cells_along_circumference = prm.get_integer ("Cells along circumference");
           initial_lateral_refinement = prm.get_integer ("Initial lateral refinement");
-          R_values_list = Utilities::string_to_double(Utilities::split_string_list(prm.get("List of radius")));
+          R_values_list = Utilities::string_to_double(Utilities::split_string_list(prm.get("List of radial values")));
           n_slices = prm.get_integer ("Number of slices");
 
           if (prm.get ("Custom mesh subdivision") == "none")
             custom_mesh = none;
-          else if (prm.get ("Custom mesh subdivision") == "list of radius")
+          else if (prm.get ("Custom mesh subdivision") == "list of radial values")
             custom_mesh = list;
           else if (prm.get ("Custom mesh subdivision") == "number of slices")
             custom_mesh = slices;
@@ -585,19 +588,19 @@ namespace aspect
           AssertThrow (R0 < R1,
                        ExcMessage ("Inner radius must be less than outer radius."));
 
-          // If we are using list of radius values for a custom mesh
+          // If we are using list of radial values for a custom mesh
           if (custom_mesh == list)
             {
               // Check that list is in ascending order
               for (unsigned int i = 1; i < R_values_list.size(); i++)
                 AssertThrow(R_values_list[i] > R_values_list[i-1],
-                            ExcMessage("Radial values must be strictly ascending"));
+                  ExcMessage("Radial values must be strictly ascending"));
               // Check that first value is not smaller than the inner radius
               AssertThrow(R_values_list[1] > R0,
-                          ExcMessage("First value in List of radius values must be greater than inner radius"));
+                  ExcMessage("First value in List of radial values must be greater than inner radius"));
               // Check that last layer is not larger than the outer radius
               AssertThrow( *(R_values_list.end()-1) < R1,
-                           ExcMessage("Last value in List of radial values must be less than outer radius"));
+                  ExcMessage("Last value in List of radial values must be less than outer radius"));
             }
 
 
@@ -629,7 +632,7 @@ namespace aspect
                                    "The spherical shell may be generated as per in the original "
                                    "code (with respect to the inner and outer radius, and an "
                                    "initial number of cells along circumference) or following "
-                                   "a custom mesh scheme: list of radial vaules or number of "
+                                   "a custom mesh scheme: list of radial values or number of "
                                    "slices. A list of radial values subdivides the spherical "
                                    "shell at specified radii. The number of slices subdivides "
                                    "the spherical shell into N slices of equal thickness. The "
