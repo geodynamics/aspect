@@ -1121,7 +1121,8 @@ namespace aspect
           add,
           subtract,
           minimum,
-          maximum
+          maximum,
+          replace_if_valid
         };
 
         /**

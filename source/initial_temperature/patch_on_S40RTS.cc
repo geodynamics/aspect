@@ -39,7 +39,7 @@ namespace aspect
     void
     PatchOnS40RTS<dim>::initialize ()
     {
-      Utilities::AsciiDataInitial<dim>::initialize(1);
+      this->Utilities::AsciiDataInitial<dim>::initialize(1);
     }
 
 
