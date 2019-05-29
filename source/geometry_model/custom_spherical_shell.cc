@@ -57,8 +57,8 @@ namespace aspect
       std::vector<double> R_values (n_slices+1);  // also define as a run-time parameter
       for (unsigned int s=0; s<n_slices+1; ++s)
         {
-        R_values[s] = R0 + (R1-R0)/n_slices * s;
-        std::cout << R_values[s] << std::endl;
+          R_values[s] = R0 + (R1-R0)/n_slices * s;
+          std::cout << R_values[s] << std::endl;
         }
       std::vector<Point<dim>>    points(R_values.size() * sphere_mesh.n_vertices());
 
@@ -331,7 +331,7 @@ namespace aspect
       {
         prm.enter_subsection("Custom spherical shell");
         {
-        	// instead just provide a list of R values
+          // instead just provide a list of R values
           prm.declare_entry ("Inner radius", "3481000",  // 6371-2890 in km
                              Patterns::Double (0),
                              "Inner radius of the spherical shell. Units: m. "

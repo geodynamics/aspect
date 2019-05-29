@@ -102,6 +102,15 @@ namespace aspect
          * This information is used to determine what boundary indicators can
          * be used in the input file.
          *
+         * The spherical shell may be generated as per in the original code
+         * (with respect to the inner and outer radius, and an initial number
+         * of cells along circumference) or following a custom mesh scheme:
+         * list of radial values or number of slices. A list of radial values
+         * subdivides the spherical shell at specified radii. The number of
+         * slices subdivides the spherical shell into N slices of equal
+         * thickness. The custom spherical shell only works with an opening
+         * angle of 360.
+         *
          * The spherical shell model uses boundary indicators zero and one,
          * with zero corresponding to the inner surface and one corresponding
          * to the outer surface. In 2d, if the geometry is only a slice of the
@@ -186,7 +195,7 @@ namespace aspect
 
       private:
         /**
-         * Specify the radial subdivision of the spherical shell  
+         * Specify the radial subdivision of the spherical shell
          * mesh.
          */
         enum CustomMeshRadialSubdivision
