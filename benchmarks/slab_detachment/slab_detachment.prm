@@ -1,0 +1,157 @@
+# Input file for the Detachment benchmark of 
+# Schmalholz 2011 as performed in the paper of Glerum et al. 2017.
+# It considers a 2D box with a lithosphere of nonlinear rheology
+# and a vertically hanging slab that necks over time.
+
+set Dimension                              = 2
+set End time                               = 7.8894e14 #seconds = 25My
+set Use years in output instead of seconds = true
+set Output directory                       = output_slab_detachment
+#set Nonlinear solver scheme                = iterated Advection and Newton Stokes
+set Nonlinear solver scheme                = iterated Advection and Stokes
+set Nonlinear solver tolerance             = 1e-6
+set Max nonlinear iterations               = 50
+set CFL number                             = 1
+
+# A 2D rectangle of 1000x660 km.
+subsection Geometry model 
+  set Model name = box
+    subsection Box
+      set X extent = 1000000.0 
+      set Y extent = 660000.0
+      set X repetitions = 100
+      set Y repetitions = 66
+  end
+end
+
+# Vertical gravity. 
+subsection Gravity model
+  set Model name = vertical 
+  subsection Vertical
+    set Magnitude = 9.81
+  end
+end
+
+# setting up DG for composition(s)
+#subsection Discretization
+#   set Use discontinuous composition discretization = true
+#   subsection Stabilization parameters
+#      set Use limiter for discontinuous composition solution = true
+#      set Global composition maximum = 1.
+#      set Global composition minimum = 0.
+#   end
+#end
+
+# there are two compositions, one background (mantle) and one additional (slab)
+subsection Compositional fields
+  set Number of fields = 1
+  set Names of fields = slab
+end
+
+# Dislocation rheology set to linear viscosity in the mantle. 
+# Temperature effects are not considered.
+
+subsection Material model
+
+  set Material averaging = harmonic average
+
+  set Model name = visco plastic
+
+  subsection Visco Plastic
+
+    set Reference temperature  = 273 
+    set Reference viscosity    = 1.e22
+
+    set Minimum strain rate = 1.e-20
+    set Reference strain rate = 1.e-15
+
+    set Minimum viscosity = 1e21
+    set Maximum viscosity = 1e25
+
+    set Viscosity averaging scheme = harmonic
+
+    set Thermal diffusivities = 0,      0  
+    set Heat capacities       = 750.,   750.
+    set Densities             = 3150,   3300
+    set Thermal expansivities = 0,      0
+
+    set Viscous flow law = dislocation
+
+    set Prefactors for dislocation creep          =  1e-21, 1.22773766e-48 
+    set Stress exponents for dislocation creep    =   1, 4
+    set Activation energies for dislocation creep =   0, 0  
+    set Activation volumes for dislocation creep  =   0, 0 
+
+    # cohesion set really high to generate very large plastic 
+    # viscosities which will not be taken into account 
+    # by the material model.
+    set Angles of internal friction = 0 , 0 
+    set Cohesions                   = 1e15, 1e15
+
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 0
+  set Time steps between mesh refinement = 0
+end
+
+#free slip boundary conditions on the top and bottom, 
+# no slip on left and right boundaries
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = bottom, top
+  set Zero velocity boundary indicators       = left, right 
+end
+
+# Temperature effects are not considered,
+# so we set everything to zero.
+subsection Boundary temperature model
+  set List of model names = box
+end
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Function expression = 273 # cannot be zero!!!
+  end
+end
+
+# Description of the initial compositional fields mantle and slab
+subsection Initial composition model
+   set Model name = function
+   subsection Function
+     set Variable names = x,z
+     set Function expression = if((x<460000.0&z<580000.0)|(z<330000.0&x>=460000.0&x<540000.0)|(z<580000.0&x>=540000.0),0,1)
+   end
+end
+
+# We output the solution every 1 My and monitor the velocity
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, particles 
+  subsection Visualization
+    set Time between graphical output = 1e6 
+    set List of output variables      = strain rate, viscosity, density
+  end
+  # We read a file with 22 initial particle locations and
+  # output the new particle locations over time to an ascii file.
+  subsection Particles
+    set Number of particles         = 22
+    set Time between data output  = 1e6
+    set Data output format        = ascii
+    set Particle generator name   = ascii file
+    subsection Generator
+      subsection Ascii file
+        set Data directory = benchmarks/slab_detachment/
+        set Data file name = initial_particle_location.dat
+      end
+    end
+  end
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-7
+    set Number of cheap Stokes solver steps = 0
+  end
+end
+
