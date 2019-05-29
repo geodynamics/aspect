@@ -23,7 +23,7 @@ demangleStrings();
 reorderList();
 
 
-// grab text from the search input field and only show parameters that contain the text:
+// Grab text from the search input field and only show parameters that contain the text:
 function filter_text()
 {
     var needle = document.getElementById("search").value.toUpperCase();
@@ -35,6 +35,7 @@ function filter_text()
 	var haystack = items[i].innerText.toUpperCase();
 	if (haystack.includes(needle)) {
 	    items[i].style.display = "block";
+
 	    p = items[i];
 	    while (p.parentNode) {
 		p=p.parentNode;
@@ -48,9 +49,14 @@ function filter_text()
 	    items[i].style.display = "none";
 	}
     }
+
+    if (needle.length==0) {
+	// If the user typed nothing, collapse all
+	collapseAllSubsections();
+    }
 }
 
-// trigger a filter when the user presses return
+// Trigger a filter when the user presses return:
 function search_input(event) {
     if (event.keyCode == 13)
 	filter_text();
