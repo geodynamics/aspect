@@ -22,7 +22,7 @@ run_all_prms ()
 {
     for prm in `ls *prm`;
     do
-    if [ "`basename $prm`" = "parameters.prm" ];
+    if [ "`basename $prm`" = "parameters.prm" -o "`basename $prm`" = "original.prm" ];
     then
 	continue;
     fi
