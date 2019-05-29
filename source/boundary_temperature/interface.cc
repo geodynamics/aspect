@@ -312,7 +312,7 @@ namespace aspect
                           std::get<dim>(registered_plugins).get_description_string());
 
         prm.declare_entry("List of model operators", "add",
-                          Patterns::MultipleSelection("add|subtract|minimum|maximum"),
+                          Patterns::MultipleSelection(Utilities::get_model_operator_options()),
                           "A comma-separated list of operators that "
                           "will be used to append the listed temperature models onto "
                           "the previous models. If only one operator is given, "

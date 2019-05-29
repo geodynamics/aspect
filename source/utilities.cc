@@ -2846,6 +2846,13 @@ namespace aspect
 
 
 
+    const std::string get_model_operator_options()
+    {
+          return "add|subtract|minimum|maximum|replace if valid";
+    }
+
+
+
     template <int dim>
     SymmetricTensor<2,dim>
     nth_basis_for_symmetric_tensors (const unsigned int k)
