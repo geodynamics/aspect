@@ -22,6 +22,7 @@
 #define _aspect_material_model_simple_h
 
 #include <aspect/material_model/interface.h>
+#include <aspect/material_model/equation_of_state/linearized_incompressible.h>
 #include <aspect/simulator_access.h>
 
 namespace aspect
@@ -96,22 +97,19 @@ namespace aspect
          */
 
       private:
-        double reference_rho;
         double reference_T;
         double eta;
         double composition_viscosity_prefactor;
         double thermal_viscosity_exponent;
         double maximum_thermal_prefactor;
         double minimum_thermal_prefactor;
-        double thermal_alpha;
-        double reference_specific_heat;
 
         /**
          * The thermal conductivity.
          */
         double k_value;
 
-        double compositional_delta_rho;
+        EquationOfState::LinearizedIncompressible<dim> equation_of_state;
     };
 
   }

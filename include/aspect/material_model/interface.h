@@ -540,6 +540,7 @@ namespace aspect
     };
 
 
+
     /**
      * A namespace in which we define how material model outputs should be
      * averaged on each cell.
