@@ -1162,6 +1162,11 @@ namespace aspect
     std::vector<Operator> create_model_operator_list(const std::vector<std::string> &operator_names);
 
     /**
+     * Create a string of model operators for use in declare_parameters
+     */
+    const std::string get_model_operator_options();
+
+    /**
      * A function that returns a SymmetricTensor, whose entries are zero, except for
      * the k'th component, which is set to one. If k is not on the main diagonal the
      * resulting tensor is symmetrized.
