@@ -148,9 +148,7 @@ namespace aspect
     melt_handler (parameters.include_melt_transport ?
                   std_cxx14::make_unique<MeltHandler<dim>>(prm) :
                   nullptr),
-    newton_handler (parameters.nonlinear_solver == NonlinearSolver::iterated_Advection_and_Newton_Stokes ?
-                    std_cxx14::make_unique<NewtonHandler<dim>>() :
-                    nullptr),
+    newton_handler (std_cxx14::make_unique<NewtonHandler<dim>>()),
     post_signal_creation(
       std::bind (&internals::SimulatorSignals::call_connector_functions<dim>,
                  std::ref(signals))),
@@ -228,7 +226,7 @@ namespace aspect
 
     rebuild_stokes_matrix (true),
     assemble_newton_stokes_matrix (true),
-    assemble_newton_stokes_system (parameters.nonlinear_solver == NonlinearSolver::iterated_Advection_and_Newton_Stokes ? true : false),
+    assemble_newton_stokes_system (true),
     rebuild_stokes_preconditioner (true)
   {
     if (Utilities::MPI::this_mpi_process(mpi_communicator) == 0)
@@ -370,12 +368,12 @@ namespace aspect
 
     // If the solver type is a Newton type of solver, we need to set make sure
     // assemble_newton_stokes_system set to true.
-    if (parameters.nonlinear_solver == NonlinearSolver::iterated_Advection_and_Newton_Stokes)
-      {
-        assemble_newton_stokes_system = true;
-        newton_handler->initialize_simulator(*this);
-        newton_handler->parameters.parse_parameters(prm);
-      }
+    //if (parameters.nonlinear_solver == NonlinearSolver::iterated_Advection_and_Newton_Stokes)
+    {
+      assemble_newton_stokes_system = true;
+      newton_handler->initialize_simulator(*this);
+      newton_handler->parameters.parse_parameters(prm);
+    }
 
     if (parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::block_gmg)
       {
