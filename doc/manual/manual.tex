@@ -8,6 +8,7 @@
 \usepackage{subfigure}
 \usepackage{textpos}
 \usepackage{gensymb}
+\usepackage{siunitx}
 
 % This adds space between the Appendix number (e.g., A.101) and the title.
 
@@ -775,7 +776,7 @@ c,\mathbf x)$:} Units $\textrm{Pa}\cdot \textrm{s} =
   and $\alpha$ is the linear thermal expansion coefficient. For the earth's
   mantle, typical values for this parameterization would be
   $\rho_{\text{ref}}=3300\frac{\textrm{kg}}{\textrm{m}^3}$,
-  $T_{\text{ref}}=293 \textrm{K}$, $\alpha=2\cdot 10^{-5}
+  $T_{\text{ref}}=293 \textrm{K}$, $\alpha=\num{2e-5}
   \frac{1}{\mathrm{K}}$.
 
 \item \textit{The gravity vector $\mathbf g=\mathbf g(\mathbf x)$:} Units
@@ -840,7 +841,7 @@ Units $\frac{\textrm{J}}{\textrm{kg}\cdot\textrm{K}} =
   the decay of radioactive material. As such, it depends not on pressure or
   temperature, but may depend on the location due to different chemical
   composition of material in the earth mantle. The literature suggests a value
-  of $\gamma=7.4\cdot 10^{-12}\frac{\textrm{W}}{\textrm{kg}}$.
+  of $\gamma=\num{7.4e-12}\frac{\textrm{W}}{\textrm{kg}}$.
 
 \item \textit{The thermal expansion coefficient $\alpha=\alpha(p,T,\mathfrak c ,\mathbf x)$:} Units
   $\frac{1}{\textrm{K}}$.
@@ -860,9 +861,7 @@ Units $\frac{\textrm{J}}{\textrm{kg}\cdot\textrm{K}} =
    -\frac{M}{\rho^2} \frac{\partial \rho}{\partial T} =
    -\frac{V}{\rho} \frac{\partial \rho}{\partial T}$.
 
-   The literature suggests that values of $\alpha=1\cdot
-   10^{-5}\frac{1}{\textrm{K}}$ at the core-mantle boundary and $\alpha=4\cdot
-   10^{-5}\frac{1}{\textrm{K}}$ are appropriate for Earth.
+   The literature suggests that values of $\alpha=\num{1e-5}\frac{1}{\textrm{K}}$ at the core-mantle boundary and $\alpha=\num{4e-5}\frac{1}{\textrm{K}}$ are appropriate for Earth.
 
 \item \textit{The isothermal compressibility $\beta_T=\beta_T(p,T,\mathfrak c ,\mathbf x)$:} Units
   $\frac{1}{\textrm{Pa}}$.
@@ -1133,13 +1132,12 @@ physical units. On the other hand, there are also downsides:
   often vastly different.%
   \footnote{To illustrate this, consider convection in the Earth as a
   back-of-the-envelope example.
-  With the length scale of the mantle $L=3\cdot 10^6\;\text{m}$, viscosity
-  $\eta=10^{24} \; \text{kg}/\text{m}/\text{s}$, density $\rho=3\cdot 10^3 \; \text{kg}/\text{m}^3$ and a typical
-  velocity of $U=0.1\;\text{m}/\text{year}=3\cdot 10^{-9}\; \text{m}/\text{s}$, we get that the friction
-  term in \eqref{eq:stokes-1} has size $\eta U/L^2 \approx 3\cdot 10^2 \;
+  With the length scale of the mantle $L=\num{3e6}\;\text{m}$, viscosity
+  $\eta=10^{24} \; \text{kg}/\text{m}/\text{s}$, density $\rho=\num{3e3} \; \text{kg}/\text{m}^3$ and a typical
+  velocity of $U=0.1\;\text{m}/\text{year}=\num{3e-9}\; \text{m}/\text{s}$, we get that the friction
+  term in \eqref{eq:stokes-1} has size $\eta U/L^2 \approx \num{3e2} \;
   \text{kg}/\text{m}^2/\text{s}^2$. On the other hand, the term $\nabla\cdot(\rho u)$ in the
-  continuity equation \eqref{eq:stokes-2} has size $\rho U/L\approx 3\cdot
-  10^{-12} \; \text{kg}/\text{s}/\text{m}^3$. In other words, their \textit{numerical values} are 14
+  continuity equation \eqref{eq:stokes-2} has size $\rho U/L\approx \num{3e-12} \; \text{kg}/\text{s}/\text{m}^3$. In other words, their \textit{numerical values} are 14
   orders of magnitude apart.}
   Of course, these values can not be compared: they have different physical
   units, and the ratios between these values depends on whether we choose to
@@ -4816,7 +4814,7 @@ find that the flux through the top and bottom boundaries is not exactly the same
 (up to the obvious difference in sign, given that at the bottom boundary heat
 flows into the domain and at the top boundary out of it) at the beginning of the
 simulation until the fluid has attained its equilibrium. However, after
-$t\approx 0.2$, the fluxes differ by only $5\cdot 10^{-5}$, i.e., by less than
+$t\approx 0.2$, the fluxes differ by only $\num{5e-5}$, i.e., by less than
 0.001\% of their magnitude.%
 \footnote{This difference is far smaller than the numerical error in the heat
 flux on the mesh this data is computed on.}
@@ -5571,7 +5569,7 @@ the mass appears stable at a value of 0.403646 (the exact value, namely the
 area that was initially filled by each material, is 0.4; the difference is a
 result of the fact that we can't exactly represent the step function on our
 mesh with the finite element space). In fact, the maximal difference in this
-value between time steps 1 and 500 is only $1.1\cdot 10^{-6}$. In other words,
+value between time steps 1 and 500 is only $\num{1.1e-6}$. In other words,
 these numbers show that the compositional field approach is almost exactly mass conservative.
 
 
@@ -6896,7 +6894,7 @@ video.}
 \hfill
 \includegraphics[width=0.32\textwidth]{cookbooks/shell_simple_2d/x-movie1000.png}
 \caption{\it Simple convection in a quarter of an annulus: Snapshots of the
-temperature field at times $t=0$, $t=1.2\cdot 10^7$ years (time step 2135), and
+temperature field at times $t=0$, $t=\num{1.2e7}$ years (time step 2135), and
 $t=10^9$ years (time step 25,662). The bottom right part of each figure shows an
 overlay of the mesh used during that time step.}
 \label{fig:simple-shell-2d}
@@ -6922,7 +6920,7 @@ In the following, let us pick apart this input file:
   constant (here, we set it to $\eta=10^{22} \text{Pa}\;\text{s}$) and so are
   all other parameters except for the density which we choose to be
   $\rho(T)=\rho_0(1-\alpha (T-T_{\text{ref}}))$ with $\rho_0=3300
-  \text{kg}\;\text{m}^{-3}$, $\alpha=4\cdot 10^{-5} \text{K}^{-1}$ and
+  \text{kg}\;\text{m}^{-3}$, $\alpha=\num{4e-5} \text{K}^{-1}$ and
   $T_{\text{ref}}=293 \text{K}$. The remaining material parameters remain at their
   default values and you can find their values described in the documentation of
   the \texttt{simple} material model in
@@ -7025,8 +7023,8 @@ the current case to be%
   =
   \frac{g\, \alpha  \Delta T  \rho  L^3}{\kappa\eta}
 =
-  \frac{10\, \text{m}\,\text{s}^{-2} \times 4\cdot 10^{-5}\, \text{K}^{-1} \times 3300\,
-  \text{K} \times 3300\, \text{kg}\,\text{m}^{-3} \times (2.86 \cdot 10^6
+  \frac{10\, \text{m}\,\text{s}^{-2} \times \num{4e-5}\, \text{K}^{-1} \times 3300\,
+  \text{K} \times 3300\, \text{kg}\,\text{m}^{-3} \times (\num{2.86e6}
   \, \text{m})^3}{10^{-6}\, \text{m}^2\,\text{s}^{-1}\times 10^{22}\,
   \text{kg}\,\text{m}^{-1}\,\text{s}^{-1}}.
 \end{equation*}
@@ -7064,7 +7062,7 @@ first 800 million years due to the stable layering that results from it. The
 maximal velocity encountered follows generally the same trend and is in the
 range of 2--3 cm/year between 100 and 800 million years, and 4--8 cm/year
 following that. Right: Average temperature at various depths for $t=0$,
-$t=800,000$ years, $t=5\cdot 10^8$ years, and $t=10^9$ years.}
+$t=800,000$ years, $t=\num{5e8}$ years, and $t=10^9$ years.}
 \label{fig:simple-shell-2d-rms}
 \end{figure}
 
@@ -7214,7 +7212,7 @@ corresponding movie can be found at \url{http://youtu.be/j63MkEc0RRw}.
 \centering
 \includegraphics[width=0.7\textwidth]{cookbooks/shell_simple_3d/x-movie0700.png}
 \caption{\it Convection in a spherical shell: Snapshot of
-isosurfaces of the temperature field at time $t\approx 1.06\cdot 10^9$ years
+isosurfaces of the temperature field at time $t\approx \num{1.06e9}$ years
 with a quarter of the geometry cut away. The surface shows
 vectors indicating the flow velocity and direction.}
 \label{fig:simple-shell-3d}
@@ -7310,13 +7308,12 @@ internal heat budget}%
 accessible and typically about right in terms of numbers. The numbers stated
 here are those listed on Wikipedia at the time this section was written in
 March 2014.}
-states that the overall heat flux through the Earth surface is about $47 \cdot
-10^{12}$ W (i.e., 47 terawatts) of which an estimated 12--30 TW are primordial
+states that the overall heat flux through the Earth surface is about $\num{47e12}$ W (i.e., 47 terawatts) of which an estimated 12--30 TW are primordial
 heat released from cooling the Earth and 15--41 TW from radiogenic heating.%
 \footnote{As a point of reference, for the mantle an often used number for the
-release of heat due to radioactive decay is $7.4\cdot 10^{-12}$ W/kg. Taking a
+release of heat due to radioactive decay is $\num{7.4e-12}$ W/kg. Taking a
 density of $3300\; \text{kg}/\text{m}^3$ and a volume of $10^{12}\; \text{m}^3$
-would yield roughly $2.4\cdot 10^{13}$ W of heat produced. This back of the
+would yield roughly $\num{2.4e13}$ W of heat produced. This back of the
 envelope calculation lies within the uncertain range stated above.}
 Our model does not include radiogenic heating (though \aspect{} has a number of 
 \texttt{Heating models} to switch this on, see 
@@ -9573,7 +9570,7 @@ For the setup of this benchmark, we chose the following parameters:
   g &= 9.81 \, \text{m}/\text{s}^2.
 \end{align*}
 With these values, the exact value of sinking velocity is $v_s =
-8.72 \cdot 10^{-10} \, \text{m}/\text{s}$.
+\num{8.72e-10} \, \text{m}/\text{s}$.
 
 To run this benchmark, we need to set up an input file that describes the
 situation. In principle, what we need to do is to describe a spherical object
@@ -9616,8 +9613,8 @@ of the sphere using the following filters:
 If you then look at
 the Calculator object in the Spreadsheet View, you can see the average sinking
 velocity of the sphere in the column ``Result'' and compare it to the theoretical
-value $v_s = 8.72 \cdot 10^{-10} \, \text{m}/\text{s}$.
-In this case, the numerical result is 8.865 $\cdot 10^{-10} \,
+value $v_s = \num{8.72e-10} \, \text{m}/\text{s}$.
+In this case, the numerical result is $\num{8.865e-10} \,
 \text{m}/\text{s}$ when you add a few more refinement steps to actually resolve
 the 3d flow field adequately. The ``velocity statistics'' postprocessor we have
 selected above also provides us with a maximal velocity that is on the same
