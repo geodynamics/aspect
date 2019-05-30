@@ -579,8 +579,9 @@ namespace aspect
          *
          * @param position The current position to compute the data (velocity,
          * temperature, etc.)
-         * @param component The index between 0 and @p components of the data
-         * column to be returned.
+         * @param component The index (starting at 0) of the data column to be
+         * returned. The index is therefore less than the number of data
+         * columns in the data file (or specified in the constructor).
          */
         double
         get_data(const Point<dim> &position,
