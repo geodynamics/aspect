@@ -140,7 +140,7 @@ end
 
 subsection Solver parameters
   subsection Stokes solver parameters
-    set Linear solver tolerance = 1e-12
+    set Linear solver tolerance = 1e-8
     set Use direct solver for Stokes system = false
   end
 end

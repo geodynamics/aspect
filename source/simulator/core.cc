@@ -1725,7 +1725,7 @@ namespace aspect
 
         case NonlinearSolver::iterated_Advection_and_Stokes:
         {
-          if (parameters.include_melt_transport == true)
+          if (parameters.include_melt_transport == true || parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::direct_solver)
             solve_iterated_advection_and_stokes();
           else
             solve_iterated_advection_and_newton_stokes(true);
