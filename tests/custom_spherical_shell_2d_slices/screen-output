@@ -1,15 +1,19 @@
 -----------------------------------------------------------------------------
 -----------------------------------------------------------------------------
 
+first 3
+slices 5.711e+06
+slices 6.041e+06
+slices 6.371e+06
 -----------------------------------------------------------------------------
 -----------------------------------------------------------------------------
-Number of active cells: 16 (on 1 levels)
-Number of degrees of freedom: 264 (160+24+80)
+Number of active cells: 8 (on 1 levels)
+Number of degrees of freedom: 132 (80+12+40)
 
 *** Timestep 0:  t=0 seconds
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 14+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
 
@@ -27,7 +31,10 @@ Number of degrees of freedom: 264 (160+24+80)
      Reference thermal diffusivity (m^2/s):         2.42424e-13
      Rayleigh number:                               7.67836e+10
 
-     Writing graphical output: output-custom_spherical_shell_2d_slices/solution/solution-00000
+     Writing graphical output:           output-custom_spherical_shell_2d_slices/solution/solution-00000
+     RMS, max velocity:                  1.59e-11 m/s, 2.21e-11 m/s
+     Temperature min/avg/max:            1000 K, 1495 K, 2000 K
+     Heat fluxes through boundary parts: -3762 W, -4105 W
 
 Termination requested by criterion: end time
 

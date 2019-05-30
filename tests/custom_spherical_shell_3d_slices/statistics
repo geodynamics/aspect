@@ -9,4 +9,12 @@
 # 9: Velocity iterations in Stokes preconditioner
 # 10: Schur complement iterations in Stokes preconditioner
 # 11: Visualization file name
-0 0.000000000000e+00 0.000000000000e+00 48 1548 490 0 56 59 290 output-custom_spherical_shell_3d_slices/solution/solution-00000 
+# 12: RMS velocity (m/s)
+# 13: Max. velocity (m/s)
+# 14: Minimal temperature (K)
+# 15: Average temperature (K)
+# 16: Maximal temperature (K)
+# 17: Average nondimensional temperature (K)
+# 18: Outward heat flux through boundary with indicator 0 ("bottom") (W)
+# 19: Outward heat flux through boundary with indicator 1 ("top") (W)
+0 0.000000000000e+00 0.000000000000e+00 12 414 130 0 11 13 48 output-custom_spherical_shell_3d_slices/solution/solution-00000 4.75462647e-11 7.84022846e-11 1.00000000e+03 1.49011786e+03 2.00000000e+03 4.90117861e-01 -9.01922071e+10 -1.05593569e+11 

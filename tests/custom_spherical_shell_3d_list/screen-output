@@ -1,25 +1,18 @@
 -----------------------------------------------------------------------------
--- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
---     . version 2.2.0-pre (tailored_spherical_shell, 0cb0cfc4b)
---     . using deal.II 9.0.0
---     .       with 32 bit indices and vectorization level 1 (128 bits)
---     . using Trilinos 12.10.1
---     . using p4est 2.0.0
---     . running in DEBUG mode
---     . running with 1 MPI process
 -----------------------------------------------------------------------------
 
+first 4
+list 5.961e+06
+list 6.151e+06
 -----------------------------------------------------------------------------
--- For information on how to cite ASPECT, see:
---   https://aspect.geodynamics.org/citing.html?ver=2.2.0-pre&sha=0cb0cfc4b&src=code
 -----------------------------------------------------------------------------
-Number of active cells: 72 (on 1 levels)
-Number of degrees of freedom: 2,848 (2,058+104+686)
+Number of active cells: 18 (on 1 levels)
+Number of degrees of freedom: 760 (546+32+182)
 
 *** Timestep 0:  t=0 seconds
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+45 iterations.
+   Solving Stokes system... 18+0 iterations.
 
    Postprocessing:
 
@@ -38,32 +31,16 @@ Number of degrees of freedom: 2,848 (2,058+104+686)
      Rayleigh number:                               7.67836e+10
 
      Writing graphical output:           output-custom_spherical_shell_3d_list/solution/solution-00000
-     RMS, max velocity:                  6.88e-12 m/s, 1.68e-11 m/s
+     RMS, max velocity:                  4.77e-11 m/s, 8.39e-11 m/s
      Temperature min/avg/max:            1000 K, 1497 K, 2000 K
-     Heat fluxes through boundary parts: 5.155e+11 W, -5.669e+11 W
+     Heat fluxes through boundary parts: 5.131e+11 W, -5.665e+11 W
 
 Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      1.96s |            |
-|                                             |            |            |
-| Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         1 |     0.299s |        15% |
-| Assemble temperature system     |         1 |     0.116s |       5.9% |
-| Build Stokes preconditioner     |         1 |     0.139s |       7.1% |
-| Build temperature preconditioner|         1 |   0.00417s |      0.21% |
-| Initialization                  |         1 |    0.0623s |       3.2% |
-| Postprocessing                  |         1 |     0.188s |       9.6% |
-| Setup dof systems               |         1 |     0.153s |       7.8% |
-| Setup initial conditions        |         1 |     0.074s |       3.8% |
-| Setup matrices                  |         1 |    0.0395s |         2% |
-| Solve Stokes system             |         1 |     0.813s |        41% |
-| Solve temperature system        |         1 |  0.000811s |         0% |
 +---------------------------------+-----------+------------+------------+
 
 -----------------------------------------------------------------------------
--- For information on how to cite ASPECT, see:
---   https://aspect.geodynamics.org/citing.html?ver=2.2.0-pre&sha=0cb0cfc4b&src=code
 -----------------------------------------------------------------------------

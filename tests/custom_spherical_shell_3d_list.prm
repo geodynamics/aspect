@@ -79,7 +79,7 @@ end
 subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, basic statistics, temperature statistics, heat flux statistics
   subsection Visualization
-    set Output format = gnuplot
-    set Time between graphical output = 0
+    set Output format      = gnuplot
+    set Interpolate output = false
   end
 end
