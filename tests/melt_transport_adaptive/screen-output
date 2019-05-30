@@ -26,7 +26,7 @@ Number of degrees of freedom: 7,880 (2,178+1,057+2,178+289+1,089+1,089)
      RMS, max velocity:                               1.32 m/s, 1.96 m/s
      Pressure min/avg/max:                            -0.0004027 Pa, 0.9975 Pa, 2 Pa
      Max, min, and rms velocity along boundary parts: 1.967 m/s, 1.414 m/s, 1.553 m/s, 1.967 m/s, 1.414 m/s, 1.553 m/s, 1.686 m/s, 1.368 m/s, 1.485 m/s, 1.981 m/s, 1.718 m/s, 1.813 m/s
-     Errors                                           ndofs= 7880 u_L2= 2.652044e-04 p_L2= 1.598769e-02 p_f_L2= 6.919098e-03 p_c_bar_L= 2.092301e-02 p_c_L= 4.573019e-02 phi_L2= 2.988517e-03 u_f_L2= 1.588241e-01
+     Errors                                           ndofs= 7880 u_L2= 2.652044e-04 p_L2= 1.598769e-02 p_f_L2= 6.919098e-03 p_c_bar_L2= 2.092301e-02 p_c_L2= 4.573019e-02 phi_L2= 2.988517e-03 u_f_L2= 1.588241e-01
 
 Number of active cells: 307 (on 6 levels)
 Number of degrees of freedom: 9,971 (2,774+1,285+2,774+364+1,387+1,387)
@@ -53,7 +53,7 @@ Number of degrees of freedom: 9,971 (2,774+1,285+2,774+364+1,387+1,387)
      RMS, max velocity:                               1.32 m/s, 1.96 m/s
      Pressure min/avg/max:                            -0.0004526 Pa, 0.9992 Pa, 2 Pa
      Max, min, and rms velocity along boundary parts: 1.967 m/s, 1.414 m/s, 1.553 m/s, 1.967 m/s, 1.414 m/s, 1.553 m/s, 1.686 m/s, 1.368 m/s, 1.485 m/s, 1.981 m/s, 1.718 m/s, 1.813 m/s
-     Errors                                           ndofs= 9971 u_L2= 2.545764e-04 p_L2= 1.042116e-02 p_f_L2= 4.697242e-03 p_c_bar_L= 2.066909e-02 p_c_L= 4.397139e-02 phi_L2= 2.251494e-03 u_f_L2= 1.084027e-01
+     Errors                                           ndofs= 9971 u_L2= 2.545764e-04 p_L2= 1.042116e-02 p_f_L2= 4.697242e-03 p_c_bar_L2= 2.066909e-02 p_c_L2= 4.397139e-02 phi_L2= 2.251494e-03 u_f_L2= 1.084027e-01
 
 Number of active cells: 448 (on 6 levels)
 Number of degrees of freedom: 14,076 (3,906+1,851+3,906+507+1,953+1,953)
@@ -80,7 +80,7 @@ Number of degrees of freedom: 14,076 (3,906+1,851+3,906+507+1,953+1,953)
      RMS, max velocity:                               1.32 m/s, 1.96 m/s
      Pressure min/avg/max:                            -0.0003152 Pa, 0.999 Pa, 2 Pa
      Max, min, and rms velocity along boundary parts: 1.967 m/s, 1.414 m/s, 1.553 m/s, 1.967 m/s, 1.414 m/s, 1.553 m/s, 1.686 m/s, 1.368 m/s, 1.485 m/s, 1.981 m/s, 1.718 m/s, 1.813 m/s
-     Errors                                           ndofs= 14076 u_L2= 1.017003e-04 p_L2= 7.220003e-03 p_f_L2= 2.449483e-03 p_c_bar_L= 1.163704e-02 p_c_L= 2.211413e-02 phi_L2= 5.074203e-04 u_f_L2= 6.536803e-02
+     Errors                                           ndofs= 14076 u_L2= 1.017003e-04 p_L2= 7.220003e-03 p_f_L2= 2.449483e-03 p_c_bar_L2= 1.163704e-02 p_c_L2= 2.211413e-02 phi_L2= 5.074203e-04 u_f_L2= 6.536803e-02
 
 Termination requested by criterion: end time
 

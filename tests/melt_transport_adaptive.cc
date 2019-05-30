@@ -415,16 +415,24 @@ namespace aspect
           cellwise_errors_p_c[i] = cellwise_errors_p_c_bar[i] * p_c_scale;
         }
 
+    const double u_l2 = VectorTools::compute_global_error(this->get_triangulation(), cellwise_errors_u, VectorTools::L2_norm);
+    const double p_l2 = VectorTools::compute_global_error(this->get_triangulation(), cellwise_errors_p, VectorTools::L2_norm);
+    const double p_f_l2 = VectorTools::compute_global_error(this->get_triangulation(), cellwise_errors_p_f, VectorTools::L2_norm);
+    const double p_c_bar_l2 = VectorTools::compute_global_error(this->get_triangulation(), cellwise_errors_p_c_bar, VectorTools::L2_norm);
+    const double p_c_l2 = VectorTools::compute_global_error(this->get_triangulation(), cellwise_errors_p_c, VectorTools::L2_norm);
+    const double phi_l2 = VectorTools::compute_global_error(this->get_triangulation(), cellwise_errors_porosity, VectorTools::L2_norm);
+    const double u_f_l2 = VectorTools::compute_global_error(this->get_triangulation(), cellwise_errors_u_f, VectorTools::L2_norm);
+
     std::ostringstream os;
     os << std::scientific
        << "ndofs= " << this->get_solution().size()
-       << " u_L2= " << std::sqrt(Utilities::MPI::sum(cellwise_errors_u.norm_sqr(),MPI_COMM_WORLD))
-       << " p_L2= "  << std::sqrt(Utilities::MPI::sum(cellwise_errors_p.norm_sqr(),MPI_COMM_WORLD))
-       << " p_f_L2= " << std::sqrt(Utilities::MPI::sum(cellwise_errors_p_f.norm_sqr(),MPI_COMM_WORLD))
-       << " p_c_bar_L= " << std::sqrt(Utilities::MPI::sum(cellwise_errors_p_c_bar.norm_sqr(),MPI_COMM_WORLD))
-       << " p_c_L= " << std::sqrt(Utilities::MPI::sum(cellwise_errors_p_c.norm_sqr(),MPI_COMM_WORLD))
-       << " phi_L2= " << std::sqrt(Utilities::MPI::sum(cellwise_errors_porosity.norm_sqr(),MPI_COMM_WORLD))
-       << " u_f_L2= " << std::sqrt(Utilities::MPI::sum(cellwise_errors_u_f.norm_sqr(),MPI_COMM_WORLD))
+       << " u_L2= " << u_l2
+       << " p_L2= "  << p_l2
+       << " p_f_L2= " << p_f_l2
+       << " p_c_bar_L2= " << p_c_bar_l2
+       << " p_c_L2= " << p_c_l2
+       << " phi_L2= " << phi_l2
+       << " u_f_L2= " << u_f_l2
        ;
 
     return std::make_pair("Errors", os.str());

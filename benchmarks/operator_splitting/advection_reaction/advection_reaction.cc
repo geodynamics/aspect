@@ -454,10 +454,10 @@ namespace aspect
                                        VectorTools::L2_norm,
                                        &comp_T);
 
-    const double current_error = std::sqrt(Utilities::MPI::sum(cellwise_errors_composition.norm_sqr(),MPI_COMM_WORLD));
+    const double current_error = VectorTools::compute_global_error(this->get_triangulation(), cellwise_errors_composition, VectorTools::L2_norm);
     max_error = std::max(max_error, current_error);
 
-    const double current_error_T = std::sqrt(Utilities::MPI::sum(cellwise_errors_temperature.norm_sqr(),MPI_COMM_WORLD));
+    const double current_error_T = VectorTools::compute_global_error(this->get_triangulation(), cellwise_errors_temperature, VectorTools::L2_norm);
     max_error_T = std::max(max_error_T, current_error_T);
 
     std::ostringstream os;
