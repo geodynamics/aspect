@@ -67,6 +67,12 @@ namespace aspect
         initialize ();
 
         /**
+         * Return the Vs as a function of position.
+         */
+        virtual
+        double get_Vs (const Point<dim> &position) const;
+
+        /**
          * Return the initial temperature as a function of position.
          */
         virtual
