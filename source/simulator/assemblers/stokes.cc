@@ -428,6 +428,7 @@ namespace aspect
     {
       const unsigned int n_points = outputs.viscosities.size();
 
+      // Stokes RHS:
       if (this->get_parameters().enable_additional_stokes_rhs
           && outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >() == nullptr)
         {
@@ -440,6 +441,22 @@ namespace aspect
              outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >()->rhs_u.size()
              == n_points, ExcInternalError());
 
+
+      // PrescribedCompression:
+      if (this->get_parameters().enable_prescribed_compression
+          && outputs.template get_additional_output<MaterialModel::PrescribedCompressionOutputs<dim>>() == nullptr)
+        {
+          outputs.additional_outputs.push_back(
+            std_cxx14::make_unique<MaterialModel::PrescribedCompressionOutputs<dim>> (n_points));
+        }
+
+      Assert(!this->get_parameters().enable_prescribed_compression
+             ||
+             outputs.template get_additional_output<MaterialModel::PrescribedCompressionOutputs<dim> >()->prescribed_compression.size()
+             == n_points, ExcInternalError());
+
+
+      // Elasticity:
       if ((this->get_parameters().enable_elasticity) &&
           outputs.template get_additional_output<MaterialModel::ElasticOutputs<dim> >() == nullptr)
         {
