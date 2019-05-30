@@ -23,9 +23,7 @@
 #include <aspect/geometry_model/initial_topography_model/zero_topography.h>
 
 #include <deal.II/grid/grid_generator.h>
-#include <deal.II/grid/grid_reordering.h>
 #include <deal.II/grid/grid_tools.h>
-
 #include <aspect/utilities.h>
 
 namespace aspect
@@ -59,7 +57,7 @@ namespace aspect
         {
           if (custom_mesh == none)
             {
-              // If we are not using a custom mesh scheme, the mesh is generated
+              // if we are not using a custom mesh scheme, the mesh is generated
               // as per the original code.
               GridGenerator::hyper_shell (coarse_grid,
                                           Point<dim>(),
@@ -78,33 +76,37 @@ namespace aspect
             }
           else
             {
-              // If we are using a custom mesh scheme, we need to create
+              // if we are using a custom mesh scheme, we need to create
               // a new triangulation to extrude (this will be a 1D line in
               // 2D space, or a 2D surface in 3D space).
               Triangulation<dim-1,dim> sphere_mesh;
               GridGenerator::hyper_sphere (sphere_mesh);
               sphere_mesh.refine_global (initial_lateral_refinement);
 
-              // Calculate the number of R_values wrt custom mesh scheme
+              // calculate the number of R_values wrt custom mesh scheme
               unsigned int n_R_values;
               if (custom_mesh == slices)
                 n_R_values = n_slices+1;
               else
-                n_R_values = R_values_list.size();
-
+                n_R_values = R_values_list.size()+2;
+ 
               // allocate R_values wrt the number of slices
               std::vector<double> R_values (n_R_values);
-              for (unsigned int s=0; s<n_R_values; ++s)
-                {
               if (custom_mesh == slices)
-                R_values[s] = R0 + (R1-R0)/n_slices * s;
-              else
-                R_values[s] = R_values_list[s];
-              }
-
+                {
+                  for (unsigned int s=0; s<n_R_values; ++s)
+                    R_values[s] = R0 + (R1-R0)/n_slices * s;
+                }
+              if (custom_mesh == list)
+                {
+                  R_values[0] = R0;
+                  R_values[n_R_values-1] = R1;
+                  for (unsigned int s=1; s<(n_R_values-1); ++s)
+                    R_values[s] = R_values_list[s-1];
+                }
               std::vector<Point<dim>>    points(R_values.size() * sphere_mesh.n_vertices());
-
-              // Copy the array of points as many times as there will be slices,
+ 
+              // copy the array of points as many times as there will be slices,
               // one slice at a time. The z-axis value are defined in slices_coordinates
               for (unsigned int point_layer = 0; point_layer < R_values.size(); ++point_layer)
                 {
@@ -117,7 +119,7 @@ namespace aspect
                     }
                 }
 
-              // Then create the cells of each of the slices, one stack at a
+              // then create the cells of each of the slices, one stack at a
               // time
               std::vector<CellData<dim>> cells;
               cells.reserve((R_values.size() - 1) * sphere_mesh.n_active_cells());
@@ -162,40 +164,40 @@ namespace aspect
               }
 #endif
 
-              cells.push_back(this_cell);
+                      cells.push_back(this_cell);
 
-              // Mark the bottom face of the cell as boundary 0 if we are in
-              // the bottom layer of cells
-              if (cell_layer == 0)
-                {
-                  CellData<dim-1> face;
-                  for (unsigned int vertex_n = 0;
-                       vertex_n < GeometryInfo<dim-1>::vertices_per_cell;
-                       ++vertex_n)
-                    face.vertices[vertex_n] =
-                      cell->vertex_index(vertex_n) + cell_layer * sphere_mesh.n_vertices();
-                  face.boundary_id = 0;
-
-                  if (dim == 2)
-                    subcell_data.boundary_lines.push_back(reinterpret_cast<CellData<1>&>(face));
-                  else
-                    subcell_data.boundary_quads.push_back(reinterpret_cast<CellData<2>&>(face));
-                }
-
-                // Mark the top face of the cell as boundary 1 if we are in
-                // the top layer of cells
-                if (cell_layer == R_values.size()-2)
-                  {
-                    CellData<dim-1> face;
-                    for (unsigned int vertex_n = 0;
-                         vertex_n < GeometryInfo<dim-1>::vertices_per_cell;
+                      // Mark the bottom face of the cell as boundary 0 if we are in
+                      // the bottom layer of cells
+                      if (cell_layer == 0)
+                        {
+                          CellData<dim-1> face;
+                          for (unsigned int vertex_n = 0;
+                               vertex_n < GeometryInfo<dim-1>::vertices_per_cell;
                                ++vertex_n)
-                         face.vertices[vertex_n] =
-                           cell->vertex_index(vertex_n) +
-                           (cell_layer + 1) * sphere_mesh.n_vertices();
-                         face.boundary_id = 1;
+                            face.vertices[vertex_n] =
+                              cell->vertex_index(vertex_n) + cell_layer * sphere_mesh.n_vertices();
+                          face.boundary_id = 0;
 
-                         if (dim == 2)
+                          if (dim == 2)
+                            subcell_data.boundary_lines.push_back(reinterpret_cast<CellData<1>&>(face));
+                          else
+                            subcell_data.boundary_quads.push_back(reinterpret_cast<CellData<2>&>(face));
+                        }
+
+                      // Mark the top face of the cell as boundary 1 if we are in
+                      // the top layer of cells
+                      if (cell_layer == R_values.size()-2)
+                        {
+                          CellData<dim-1> face;
+                          for (unsigned int vertex_n = 0;
+                               vertex_n < GeometryInfo<dim-1>::vertices_per_cell;
+                               ++vertex_n)
+                            face.vertices[vertex_n] =
+                              cell->vertex_index(vertex_n) +
+                              (cell_layer + 1) * sphere_mesh.n_vertices();
+                          face.boundary_id = 1;
+
+                          if (dim == 2)
                             subcell_data.boundary_lines.push_back(reinterpret_cast<CellData<1>&>(face));
                           else
                             subcell_data.boundary_quads.push_back(reinterpret_cast<CellData<2>&>(face));
@@ -206,7 +208,6 @@ namespace aspect
 
               // Then create the actual mesh:
               coarse_grid.create_triangulation(points, cells, subcell_data);
-
             }
         }
       else if (phi == 90)
@@ -232,12 +233,11 @@ namespace aspect
           Assert (false, ExcInternalError());
         }
 
-      // Use a manifold description for all cells.
+      // Use a manifold description for all cells. use manifold_id 99 in order
+      // not to step on the boundary indicators used below
       coarse_grid.set_manifold (99, spherical_manifold);
       set_manifold_ids(coarse_grid);
 
-      // Boundary objects are no longer necessary for deal.II 9.0,
-      // because everything is handled by the manifold.
     }
 
 
@@ -250,9 +250,6 @@ namespace aspect
              triangulation.begin_active(); cell != triangulation.end(); ++cell)
         cell->set_all_manifold_ids (99);
     }
-
-
-
 
 
     template <int dim>
@@ -483,23 +480,32 @@ namespace aspect
           prm.declare_entry ("Custom mesh subdivision", "none",
                              Patterns::Selection ("none|list of radial values|number of slices"),
                              "Choose how the spherical shell mesh is generated. "
-                             "By default, a coarse mesh is intuitively generated with "
-                             "respect to the inner and outer radius, and an initial number "
-                             "of cells along circumference. "
+                             "By default, a coarse mesh is generated with respect to the "
+                             "inner and outer radius, and an initial number of cells along "
+                             "circumference. "
                              "In the other cases, a surface mesh is first generated and "
                              "refined as desired, before it is extruded radially following "
-                             "the specified subdivision scheme. A list of radial values subdivides "
-                             "the spherical shell at specified radii. A number of slices "
-                             "subdivides the spherical shell into N slices of equal thickness.");
+                             "the specified subdivision scheme.");
           prm.declare_entry ("List of radial values", "",
                              Patterns::List(Patterns::Double ()),
-                             "List of radial values (add comment)");
+                             "List of radial values for the custom mesh scheme. Units: "
+                             "$\\text{m}$. "
+                             "A list of radial values subdivides the spherical shell at "
+                             "specified radii. The radial values must be strickly ascending "
+                             "and radii values must be greater than the inner radius and "
+                             "lesser than the outer radius.");
           prm.declare_entry ("Number of slices", "1",
                             Patterns::Integer (0),
-                             "Number of slices comment (add comment)");
+                             "Number of slices for the custom mesh scheme. "
+                             "The number of slices subdivides the spherical shell into N "
+                             "slices of equal thickness. Must be greater than 0.");
           prm.declare_entry ("Initial lateral refinement", "0",
                             Patterns::Integer (0),
-                             "Initial lateral refinement (comment)");
+                             "Inner radius of the spherical shell. Units: $\\text{m}$. "
+                             "\n\n"
+                             "\\note{The default value of 3,481,000 m equals the "
+                             "radius of a sphere with equal volume as Earth (i.e., "
+                             "6371 km) minus the average depth of the core-mantl.");
           prm.declare_entry ("Inner radius", "3481000",  // 6371-2890 in km
                              Patterns::Double (0),
                              "Inner radius of the spherical shell. Units: $\\text{m}$. "
@@ -565,6 +571,7 @@ namespace aspect
           R1  = prm.get_double ("Outer radius");
           phi = prm.get_double ("Opening angle");
           n_cells_along_circumference = prm.get_integer ("Cells along circumference");
+          initial_lateral_refinement = prm.get_integer ("Initial lateral refinement");
           R_values_list = Utilities::string_to_double(Utilities::split_string_list(prm.get("List of radial values")));
           n_slices = prm.get_integer ("Number of slices");
 
@@ -577,14 +584,9 @@ namespace aspect
           else
             AssertThrow (false, ExcMessage ("Not a valid custom mesh subdivision scheme."));
 
+          // Check that inner radius is less than outer radius
           AssertThrow (R0 < R1,
                        ExcMessage ("Inner radius must be less than outer radius."));
-
-          // If we are extruding the mesh according to number of slices, n_slices must be positive.
-          if (custom_mesh == slices)
-            {
-              AssertThrow (n_slices > 0, ExcMessage("You must set a positive number of slices for extrusion"));
-            }
 
           // If we are using list of radial values for a custom mesh
           if (custom_mesh == list)
@@ -595,11 +597,19 @@ namespace aspect
                   ExcMessage("Radial values must be strictly ascending"));
               // Check that first value is not smaller than the inner radius
               AssertThrow(R_values_list[1] > R0,
-                  ExcMessage("First value in List of radial values must be greater than inner radius."));
+                  ExcMessage("First value in List of radial values must be greater than inner radius"));
               // Check that last layer is not larger than the outer radius
               AssertThrow( *(R_values_list.end()-1) < R1,
-                  ExcMessage("Last value in List of radius values must be less than outer radius."));
+                  ExcMessage("Last value in List of radial values must be less than outer radius"));
             }
+
+
+          // If we are extruding the mesh according to a number of slices
+          if (custom_mesh == slices)
+            {
+              AssertThrow (n_slices > 0, ExcMessage("You must set a positive number of slices for extrusion"));
+            }
+
         }
         prm.leave_subsection();
       }
@@ -618,6 +628,16 @@ namespace aspect
                                    "A geometry representing a spherical shell or a piece of it. "
                                    "Inner and outer radii are read from the parameter file "
                                    "in subsection 'Spherical shell'."
+                                   "\n\n"
+                                   "The spherical shell may be generated as per in the original "
+                                   "code (with respect to the inner and outer radius, and an "
+                                   "initial number of cells along circumference) or following "
+                                   "a custom mesh scheme: list of radial values or number of "
+                                   "slices. A list of radial values subdivides the spherical "
+                                   "shell at specified radii. The number of slices subdivides "
+                                   "the spherical shell into N slices of equal thickness. The "
+                                   "custom spherical shell only works with an opening angle of "
+                                   "360."
                                    "\n\n"
                                    "Despite the name, this geometry does not imply the use of "
                                    "a spherical coordinate system when used in 2d. Indeed, "
@@ -646,6 +666,5 @@ namespace aspect
                                    "and 4 at $z=0$. These last three boundaries can then also "
                                    "be referred to as `east', `west' and `south' symbolically "
                                    "in input files.")
-    // Add info about the custom mesh.
   }
 }
