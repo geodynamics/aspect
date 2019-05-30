@@ -1,0 +1,7 @@
+New: There is a new initial temperature plug-in that determines 
+initial temperature from a shear wave velocity (Vs) model (in km s$^-1$),
+using the anelasticity parameterisation of Yamauchi & Takei 2016. This
+plug-in is essentially the same as that used in the
+benchmarks/yamauchi_takei_2016_anelasticity folder.
+<br>
+(Fred Richards, 2019/05/29)
