@@ -992,9 +992,8 @@ namespace aspect
                                          VectorTools::L2_norm,
                                          &comp_p);
 
-      double e_f = std::sqrt(Utilities::MPI::sum(cellwise_errors_f.norm_sqr(),MPI_COMM_WORLD));
-      double e_p = std::sqrt(Utilities::MPI::sum(cellwise_errors_p.norm_sqr(),MPI_COMM_WORLD));
-
+      const double e_f = VectorTools::compute_global_error(this->get_triangulation(), cellwise_errors_f, VectorTools::L2_norm);
+      const double e_p = VectorTools::compute_global_error(this->get_triangulation(), cellwise_errors_p, VectorTools::L2_norm);
 
       std::ostringstream os;
       os << std::scientific << e_f / amplitude
