@@ -89,7 +89,7 @@ namespace aspect
                 n_R_values = n_slices+1;
               else
                 n_R_values = R_values_list.size()+2;
- 
+
               // allocate R_values wrt the number of slices
               std::vector<double> R_values (n_R_values);
               if (custom_mesh == slices)
@@ -105,7 +105,7 @@ namespace aspect
                     R_values[s] = R_values_list[s-1];
                 }
               std::vector<Point<dim>>    points(R_values.size() * sphere_mesh.n_vertices());
- 
+
               // copy the array of points as many times as there will be slices,
               // one slice at a time. The z-axis value are defined in slices_coordinates
               for (unsigned int point_layer = 0; point_layer < R_values.size(); ++point_layer)
@@ -145,23 +145,23 @@ namespace aspect
                       this_cell.material_id = cell->material_id();
 
 #if !DEAL_II_VERSION_GTE(9,1,0)
-              // In deal.II prior to version 9.1, the hyper_ball mesh generated above
-              // had cells that were inconsistently oriented: Some cells had a normal
-              // vector that pointed to the inside of the ball, some that pointed
-              // to the outside. This leads to cells with either negative or
-              // positive volume if we extrude them in the radial direction. We need
-              // to fix this up.
+                      // In deal.II prior to version 9.1, the hyper_ball mesh generated above
+                      // had cells that were inconsistently oriented: Some cells had a normal
+                      // vector that pointed to the inside of the ball, some that pointed
+                      // to the outside. This leads to cells with either negative or
+                      // positive volume if we extrude them in the radial direction. We need
+                      // to fix this up.
 
-              if (GridTools::cell_measure (points, this_cell.vertices) < 0)
-              {
-                  if (dim == 2)
-                      std::swap (this_cell.vertices[1], this_cell.vertices[2]);
-                  if (dim == 3)
-                  {
-                      std::swap (this_cell.vertices[1], this_cell.vertices[2]);
-                      std::swap (this_cell.vertices[5], this_cell.vertices[6]);
-                  }
-              }
+                      if (GridTools::cell_measure (points, this_cell.vertices) < 0)
+                        {
+                          if (dim == 2)
+                            std::swap (this_cell.vertices[1], this_cell.vertices[2]);
+                          if (dim == 3)
+                            {
+                              std::swap (this_cell.vertices[1], this_cell.vertices[2]);
+                              std::swap (this_cell.vertices[5], this_cell.vertices[6]);
+                            }
+                        }
 #endif
 
                       cells.push_back(this_cell);
@@ -495,14 +495,14 @@ namespace aspect
                              "the first value must be greater than the inner radius "
                              "while the last must be less than the outer radius.");
           prm.declare_entry ("Number of slices", "1",
-                            Patterns::Integer (0),
+                             Patterns::Integer (0),
                              "Number of slices for the custom mesh subdivision scheme. "
                              "The number of slices subdivides the spherical shell into N "
                              "slices of equal thickness. Must be greater than 0.");
           prm.declare_entry ("Initial lateral refinement", "0",
-                            Patterns::Integer (0),
+                             Patterns::Integer (0),
                              "Initial lateral refinement for the custom mesh subdivision "
-                             "schemes."	
+                             "schemes."
                              "The number of refinement steps performed on the initial "
                              "coarse surface mesh, before the surface is extruded "
                              "radially. This parameter allows the user more control "
@@ -597,13 +597,13 @@ namespace aspect
               // Check that list is in ascending order
               for (unsigned int i = 1; i < R_values_list.size(); i++)
                 AssertThrow(R_values_list[i] > R_values_list[i-1],
-                  ExcMessage("Radial values must be strictly ascending"));
+                            ExcMessage("Radial values must be strictly ascending"));
               // Check that first value is not smaller than the inner radius
               AssertThrow(R_values_list[1] > R0,
-                  ExcMessage("First value in List of radial values must be greater than inner radius"));
+                          ExcMessage("First value in List of radial values must be greater than inner radius"));
               // Check that last layer is not larger than the outer radius
               AssertThrow( *(R_values_list.end()-1) < R1,
-                  ExcMessage("Last value in List of radial values must be less than outer radius"));
+                           ExcMessage("Last value in List of radial values must be less than outer radius"));
             }
 
 
