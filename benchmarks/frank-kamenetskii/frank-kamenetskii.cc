@@ -45,6 +45,7 @@ namespace aspect
         double viscosity_variation;
         double eta;
         double composition_viscosity_prefactor;
+        double thermal_alpha;
     };
 
   }
@@ -128,6 +129,10 @@ namespace aspect
                              "model. Dimensionless exponent. Note that the minimum "
                              "value of this parameter is 1.0, which is equivalent to "
                              "using a constant viscosity throughout the domain.");
+          prm.declare_entry ("Thermal expansion coefficient", "2e-5",
+                             Patterns::Double (0),
+                             "The value of the thermal expansion coefficient $\\alpha$. "
+                             "Units: $1/K$.");
         }
         prm.leave_subsection();
       }
@@ -148,6 +153,7 @@ namespace aspect
           composition_viscosity_prefactor = prm.get_double ("Composition viscosity prefactor");
           viscosity_reference_T           = prm.get_double ("Viscosity reference temperature");
           viscosity_variation             = prm.get_double ("Viscosity variation");
+          thermal_alpha                   = prm.get_double ("Thermal expansion coefficient");
 
         }
         prm.leave_subsection();
@@ -155,10 +161,17 @@ namespace aspect
       prm.leave_subsection();
 
       // Declare dependencies on solution variables
+      this->model_dependence.compressibility = NonlinearDependence::none;
+      this->model_dependence.specific_heat = NonlinearDependence::none;
+      this->model_dependence.thermal_conductivity = NonlinearDependence::none;
       this->model_dependence.viscosity = NonlinearDependence::none;
+      this->model_dependence.density = NonlinearDependence::none;
 
       if (viscosity_variation != 1.0)
         this->model_dependence.viscosity |= NonlinearDependence::temperature;
+
+      if (thermal_alpha != 0)
+        this->model_dependence.density |= NonlinearDependence::temperature;
     }
   }
 }
