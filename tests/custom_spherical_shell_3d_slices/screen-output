@@ -1,19 +1,11 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
-first 3
-slices 5.711e+06
-slices 6.041e+06
-slices 6.371e+06
------------------------------------------------------------------------------
------------------------------------------------------------------------------
-Number of active cells: 12 (on 1 levels)
-Number of degrees of freedom: 544 (390+24+130)
+Number of active cells: 48 (on 1 levels)
+Number of degrees of freedom: 2,038 (1,470+78+490)
 
 *** Timestep 0:  t=0 seconds
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 12+0 iterations.
+   Solving Stokes system... 57+0 iterations.
 
    Postprocessing:
 
@@ -32,9 +24,9 @@ Number of degrees of freedom: 544 (390+24+130)
      Rayleigh number:                               7.67836e+10
 
      Writing graphical output:           output-custom_spherical_shell_3d_slices/solution/solution-00000
-     RMS, max velocity:                  4.75e-11 m/s, 7.84e-11 m/s
-     Temperature min/avg/max:            1000 K, 1490 K, 2000 K
-     Heat fluxes through boundary parts: -9.019e+10 W, -1.056e+11 W
+     RMS, max velocity:                  6.2e-12 m/s, 1.23e-11 m/s
+     Temperature min/avg/max:            1000 K, 1491 K, 2000 K
+     Heat fluxes through boundary parts: -8.801e+10 W, -1.027e+11 W
 
 Termination requested by criterion: end time
 
@@ -43,5 +35,3 @@ Termination requested by criterion: end time
 +---------------------------------+-----------+------------+------------+
 +---------------------------------+-----------+------------+------------+
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------
