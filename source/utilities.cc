@@ -1743,6 +1743,7 @@ namespace aspect
     AsciiDataLookup<dim>::get_data(const Point<dim> &position,
                                    const unsigned int component) const
     {
+      Assert(component<components, ExcMessage("Invalid component index"));
       return data[component]->value(position);
     }
 
