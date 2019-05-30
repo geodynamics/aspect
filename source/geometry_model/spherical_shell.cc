@@ -552,8 +552,8 @@ namespace aspect
                              "The parameter is best left at its default in 3d."
                              "\n\n"
                              "In either case, this parameter is ignored unless the opening "
-                             "angle of the domain is 360 degrees. This parameter is also"
-                             "also ignored when using a custom mesh subdivision scheme.");
+                             "angle of the domain is 360 degrees. This parameter is also "
+                             "ignored when using a custom mesh subdivision scheme.");
         }
         prm.leave_subsection();
       }
