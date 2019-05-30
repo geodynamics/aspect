@@ -1,0 +1,40 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+Number of active cells: 16 (on 1 levels)
+Number of degrees of freedom: 264 (160+24+80)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 14+0 iterations.
+
+   Postprocessing:
+
+     Model domain depth (m):                        660000
+     Temperature contrast across model domain (K):  1000
+     Reference depth (m):                           0
+     Reference temperature (K):                     1613
+     Reference pressure (Pa):                       0
+     Reference gravity (m/s^2):                     9.81
+     Reference density (kg/m^3):                    3300
+     Reference thermal expansion coefficient (1/K): 2e-05
+     Reference specific heat capacity (J/(K*kg)):   1250
+     Reference thermal conductivity (W/(m*K)):      1e-06
+     Reference viscosity (Pa*s):                    1e+22
+     Reference thermal diffusivity (m^2/s):         2.42424e-13
+     Rayleigh number:                               7.67836e+10
+
+     Writing graphical output: output-custom_spherical_shell_2d_slices/solution/solution-00000
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
