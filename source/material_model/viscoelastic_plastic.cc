@@ -146,7 +146,7 @@ namespace aspect
 
               out.viscosities[i] = MaterialUtilities::average_value(volume_fractions,viscosities_viscoelastic,viscosity_averaging);
 
-              if (ElasticAdditionalOutputs<dim> *elastic_out = out.template get_additional_output<ElasticAdditionalOutputs<dim> >())
+              if (Rheology::ElasticAdditionalOutputs<dim> *elastic_out = out.template get_additional_output<Rheology::ElasticAdditionalOutputs<dim> >())
                 {
                   elastic_out->elastic_shear_moduli[i] = MaterialUtilities::average_value(volume_fractions,elastic_shear_moduli,viscosity_averaging);
                 }
@@ -508,11 +508,11 @@ namespace aspect
     void
     ViscoelasticPlastic<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      if (out.template get_additional_output<ElasticAdditionalOutputs<dim> >() == NULL)
+      if (out.template get_additional_output<Rheology::ElasticAdditionalOutputs<dim> >() == NULL)
         {
           const unsigned int n_points = out.viscosities.size();
           out.additional_outputs.push_back(
-            std_cxx14::make_unique<MaterialModel::ElasticAdditionalOutputs<dim>> (n_points));
+            std_cxx14::make_unique<Rheology::ElasticAdditionalOutputs<dim>> (n_points));
         }
     }
   }
