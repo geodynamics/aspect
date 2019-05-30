@@ -47,7 +47,11 @@ run_coarse_prm ()
 }
 
 
-# run aspect on all .prm files in the current folder or any subdirectory
+# Run aspect on all .prm files in the current folder or any
+# subdirectory; however, exclude files named parameters.prm and
+# original.prm as these are created by previous ASPECT runs and placed
+# in the output directories (where they can't be run from since paths
+# don't match up any more).
 run_all_prms ()
 {
     for prm in `find . -name "*prm"`;

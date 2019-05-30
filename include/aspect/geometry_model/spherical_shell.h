@@ -110,7 +110,7 @@ namespace aspect
          * A list of radial values subdivides the spherical shell at specified
          * radii. The number of slices subdivides the spherical shell into N
          * slices of equal thickness. The custom spherical shell only works
-         * with an opening angle of 360.
+         * with an opening angle of 360 degrees.
          *
          * The spherical shell model uses boundary indicators zero and one,
          * with zero corresponding to the inner surface and one corresponding
