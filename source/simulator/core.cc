@@ -369,11 +369,11 @@ namespace aspect
     // If the solver type is a Newton type of solver, we need to set make sure
     // assemble_newton_stokes_system set to true.
     if (parameters.nonlinear_solver == NonlinearSolver::iterated_Advection_and_Newton_Stokes || parameters.nonlinear_solver == NonlinearSolver::iterated_Advection_and_Stokes)
-    {
-      assemble_newton_stokes_system = true;
-      newton_handler->initialize_simulator(*this);
-      newton_handler->parameters.parse_parameters(prm);
-    }
+      {
+        assemble_newton_stokes_system = true;
+        newton_handler->initialize_simulator(*this);
+        newton_handler->parameters.parse_parameters(prm);
+      }
 
     if (parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::block_gmg)
       {
