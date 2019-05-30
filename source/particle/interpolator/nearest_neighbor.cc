@@ -109,21 +109,71 @@ namespace aspect
                       }
                   }
 
-                Assert(nearest_neighbor_cell != numbers::invalid_unsigned_int,
-                       ExcMessage("A cell and all of its neighbors do not contain any particles. "
-                                  "This case is not supported by the 'nearest neighbor' interpolation scheme."));
+                if (!allow_cells_without_particles)
+                  {
+                    AssertThrow(nearest_neighbor_cell != numbers::invalid_unsigned_int,
+                                ExcMessage("A cell and all of its neighbors do not contain any particles. "
+                                           "The `nearest neighbor' interpolation scheme does not support this case unless specified "
+                                           "in Allow cells without particles."));
+                  }
 
-                point_properties[pos_idx] = properties_at_points(particle_handler,
-                                                                 std::vector<Point<dim> > (1,positions[pos_idx]),
-                                                                 selected_properties,
-                                                                 neighbors[nearest_neighbor_cell])[0];
+                if (nearest_neighbor_cell != numbers::invalid_unsigned_int)
+                  {
+                    point_properties[pos_idx] = properties_at_points(particle_handler,
+                                                                     std::vector<Point<dim> > (1,positions[pos_idx]),
+                                                                     selected_properties,
+                                                                     neighbors[nearest_neighbor_cell])[0];
+                  }
+                else if (allow_cells_without_particles && nearest_neighbor_cell == numbers::invalid_unsigned_int)
+                  {
+                    for (unsigned int i = 0; i < n_particle_properties; ++i)
+                      if (selected_properties[i])
+                        point_properties[pos_idx][i] = 0;
+                  }
+
               }
 
-            AssertThrow(minimum_distance < std::numeric_limits<double>::max(),
-                        ExcMessage("Failed to find any neighbor particles."));
           }
 
         return point_properties;
+      }
+
+
+
+      template <int dim>
+      void
+      NearestNeighbor<dim>::declare_parameters (ParameterHandler &prm)
+      {
+        prm.enter_subsection("Postprocess");
+        {
+          prm.enter_subsection("Particles");
+          {
+            prm.declare_entry ("Allow cells without particles", "false",
+                               Patterns::Bool (),
+                               "By default, every cell needs to contain particles to use this interpolator "
+                               "plugin. If this parameter is set to true, cells are allowed to have no particles, "
+                               "in which case the interpolator will return 0 for the cell's properties.");
+          }
+          prm.leave_subsection ();
+        }
+        prm.leave_subsection ();
+      }
+
+
+
+      template <int dim>
+      void
+      NearestNeighbor<dim>::parse_parameters (ParameterHandler &prm)
+      {
+        prm.enter_subsection("Postprocess");
+        {
+          prm.enter_subsection("Particles");
+          {
+            allow_cells_without_particles = prm.get_bool("Allow cells without particles");
+          }
+          prm.leave_subsection ();
+        }
+        prm.leave_subsection ();
       }
     }
   }
