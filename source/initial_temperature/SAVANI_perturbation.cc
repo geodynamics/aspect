@@ -191,7 +191,7 @@ namespace aspect
 
     template <>
     double
-	SAVANIPerturbation<2>::
+    SAVANIPerturbation<2>::
     get_Vs (const Point<2> &/*position*/) const
     {
       Assert (false, ExcNotImplemented());
@@ -200,94 +200,94 @@ namespace aspect
 
     template <>
     double
-	SAVANIPerturbation<3>::
-	get_Vs (const Point<3> &position) const
-	{
-        const unsigned int dim = 3;
+    SAVANIPerturbation<3>::
+    get_Vs (const Point<3> &position) const
+    {
+      const unsigned int dim = 3;
 
-    	 // get the degree from the input file (60)
-    	      unsigned int max_degree = spherical_harmonics_lookup->maxdegree();
+      // get the degree from the input file (60)
+      unsigned int max_degree = spherical_harmonics_lookup->maxdegree();
 
-    	      // lower the maximum order if needed
-    	      if (lower_max_order)
-    	        {
-    	          AssertThrow(max_order <= max_degree, ExcMessage("Specifying a maximum order higher than the order of spherical harmonic data is not allowed"));
-    	          max_degree = max_order;
-    	        }
+      // lower the maximum order if needed
+      if (lower_max_order)
+        {
+          AssertThrow(max_order <= max_degree, ExcMessage("Specifying a maximum order higher than the order of spherical harmonic data is not allowed"));
+          max_degree = max_order;
+        }
 
-    	      const int num_spline_knots = 28; // The tomography models are parameterized by 28 layers
+      const int num_spline_knots = 28; // The tomography models are parameterized by 28 layers
 
-    	      // get the spherical harmonics coefficients
-    	      const std::vector<double> a_lm = spherical_harmonics_lookup->cos_coeffs();
-    	      const std::vector<double> b_lm = spherical_harmonics_lookup->sin_coeffs();
+      // get the spherical harmonics coefficients
+      const std::vector<double> a_lm = spherical_harmonics_lookup->cos_coeffs();
+      const std::vector<double> b_lm = spherical_harmonics_lookup->sin_coeffs();
 
-    	      // get spline knots and rescale them from [-1 1], i.e., CMB to Moho.
-    	      const std::vector<double> r = spline_depths_lookup->spline_depths();
-    	      const double rmoho = 6346e3;
-    	      const double rcmb = 3480e3;
-    	      std::vector<double> depth_values(num_spline_knots,0);
+      // get spline knots and rescale them from [-1 1], i.e., CMB to Moho.
+      const std::vector<double> r = spline_depths_lookup->spline_depths();
+      const double rmoho = 6346e3;
+      const double rcmb = 3480e3;
+      std::vector<double> depth_values(num_spline_knots,0);
 
-    	      for (unsigned int i = 0; i<num_spline_knots; ++i)
-    	        depth_values[i] = rcmb+(rmoho-rcmb)*0.5*(r[i]+1);
+      for (unsigned int i = 0; i<num_spline_knots; ++i)
+        depth_values[i] = rcmb+(rmoho-rcmb)*0.5*(r[i]+1);
 
-    	      // convert coordinates from [x,y,z] to [r, phi, theta]
-    	      std::array<double,dim> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(position);
+      // convert coordinates from [x,y,z] to [r, phi, theta]
+      std::array<double,dim> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(position);
 
-    	      // Evaluate the spherical harmonics at this position. Since they are the
-    	      // same for all depth splines, do it once to avoid multiple evaluations.
-    	      std::vector<std::vector<double> > cosine_components(max_degree+1,std::vector<double>(max_degree+1,0.0));
-    	      std::vector<std::vector<double> > sine_components(max_degree+1,std::vector<double>(max_degree+1,0.0));
+      // Evaluate the spherical harmonics at this position. Since they are the
+      // same for all depth splines, do it once to avoid multiple evaluations.
+      std::vector<std::vector<double> > cosine_components(max_degree+1,std::vector<double>(max_degree+1,0.0));
+      std::vector<std::vector<double> > sine_components(max_degree+1,std::vector<double>(max_degree+1,0.0));
 
-    	      for (unsigned int degree_l = 0; degree_l < max_degree+1; ++degree_l)
-    	        {
-    	          for (unsigned int order_m = 0; order_m < degree_l+1; ++order_m)
-    	            {
-    	              const std::pair<double,double> sph_harm_vals = Utilities::real_spherical_harmonic( degree_l, order_m, scoord[2], scoord[1] );
-    	              cosine_components[degree_l][order_m] = sph_harm_vals.first;
-    	              sine_components[degree_l][order_m] = sph_harm_vals.second;
-    	            }
-    	        }
+      for (unsigned int degree_l = 0; degree_l < max_degree+1; ++degree_l)
+        {
+          for (unsigned int order_m = 0; order_m < degree_l+1; ++order_m)
+            {
+              const std::pair<double,double> sph_harm_vals = Utilities::real_spherical_harmonic( degree_l, order_m, scoord[2], scoord[1] );
+              cosine_components[degree_l][order_m] = sph_harm_vals.first;
+              sine_components[degree_l][order_m] = sph_harm_vals.second;
+            }
+        }
 
-    	      // iterate over all degrees and orders at each depth and sum them all up.
-    	      std::vector<double> spline_values(num_spline_knots,0);
-    	      double prefact;
-    	      unsigned int ind = 0;
+      // iterate over all degrees and orders at each depth and sum them all up.
+      std::vector<double> spline_values(num_spline_knots,0);
+      double prefact;
+      unsigned int ind = 0;
 
-    	      for (unsigned int depth_interp = 0; depth_interp < num_spline_knots; ++depth_interp)
-    	        {
-    	          for (unsigned int degree_l = 0; degree_l < max_degree+1; ++degree_l)
-    	            {
-    	              for (unsigned int order_m = 0; order_m < degree_l+1; ++order_m)
-    	                {
-    	                  // normalization after Dahlen and Tromp, 1986, Appendix B.6
-    	                  if (degree_l == 0)
-    	                    prefact = (zero_out_degree_0
-    	                               ?
-    	                               0.
-    	                               :
-    	                               1.);
-    	                  else
-    	                    prefact = 1.0;
+      for (unsigned int depth_interp = 0; depth_interp < num_spline_knots; ++depth_interp)
+        {
+          for (unsigned int degree_l = 0; degree_l < max_degree+1; ++degree_l)
+            {
+              for (unsigned int order_m = 0; order_m < degree_l+1; ++order_m)
+                {
+                  // normalization after Dahlen and Tromp, 1986, Appendix B.6
+                  if (degree_l == 0)
+                    prefact = (zero_out_degree_0
+                               ?
+                               0.
+                               :
+                               1.);
+                  else
+                    prefact = 1.0;
 
-    	                  spline_values[depth_interp] += prefact * (a_lm[ind] * cosine_components[degree_l][order_m]
-    	                                                            + b_lm[ind] * sine_components[degree_l][order_m]);
+                  spline_values[depth_interp] += prefact * (a_lm[ind] * cosine_components[degree_l][order_m]
+                                                            + b_lm[ind] * sine_components[degree_l][order_m]);
 
-    	                  ++ind;
-    	                }
-    	            }
-    	        }
+                  ++ind;
+                }
+            }
+        }
 
 
-    	      // The boundary condition for the cubic spline interpolation is that the function is linear
-    	      // at the boundary (i.e. Moho and CMB). Values outside the range are linearly
-    	      // extrapolated.
-    	      aspect::Utilities::tk::spline s;
-    	      s.set_points(depth_values,spline_values);
+      // The boundary condition for the cubic spline interpolation is that the function is linear
+      // at the boundary (i.e. Moho and CMB). Values outside the range are linearly
+      // extrapolated.
+      aspect::Utilities::tk::spline s;
+      s.set_points(depth_values,spline_values);
 
-    	      // Get value at specific depth
-    	      return s(scoord[0]);
+      // Get value at specific depth
+      return s(scoord[0]);
 
-	}
+    }
 
 
     template <>
