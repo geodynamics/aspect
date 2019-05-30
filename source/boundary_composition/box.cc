@@ -72,25 +72,25 @@ namespace aspect
                              Patterns::List(Patterns::Double ()),
                              "A comma separated list of composition boundary values "
                              "at the bottom boundary (at minimal $y$-value in 2d, or minimal "
-                             "z-value in 3d). This list must have as many "
+                             "$z$-value in 3d). This list must have as many "
                              "entries as there are compositional fields. Units: none.");
           prm.declare_entry ("Top composition", "",
                              Patterns::List(Patterns::Double ()),
                              "A comma separated list of composition boundary values "
                              "at the top boundary (at maximal $y$-value in 2d, or maximal "
-                             "z-value in 3d). This list must have as many "
+                             "$z$-value in 3d). This list must have as many "
                              "entries as there are compositional fields. Units: none.");
           if (dim==3)
             {
               prm.declare_entry ("Front composition", "",
                                  Patterns::List(Patterns::Double ()),
                                  "A comma separated list of composition boundary values "
-                                 "at the front boundary (at minimum y-value). This list must have as many "
+                                 "at the front boundary (at minimum $y$-value). This list must have as many "
                                  "entries as there are compositional fields. Units: none.");
               prm.declare_entry ("Back composition", "",
                                  Patterns::List(Patterns::Double ()),
                                  "A comma separated list of composition boundary values "
-                                 "at the back boundary (at maximum y-value). This list must have as many "
+                                 "at the back boundary (at maximum $y$-value). This list must have as many "
                                  "entries as there are compositional fields. Units: none.");
             }
         }
