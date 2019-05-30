@@ -226,7 +226,7 @@ namespace aspect
 
     rebuild_stokes_matrix (true),
     assemble_newton_stokes_matrix (true),
-    assemble_newton_stokes_system (true),
+    assemble_newton_stokes_system (parameters.nonlinear_solver == NonlinearSolver::iterated_Advection_and_Newton_Stokes || parameters.nonlinear_solver == NonlinearSolver::iterated_Advection_and_Stokes ? true : false),
     rebuild_stokes_preconditioner (true)
   {
     if (Utilities::MPI::this_mpi_process(mpi_communicator) == 0)
@@ -368,7 +368,7 @@ namespace aspect
 
     // If the solver type is a Newton type of solver, we need to set make sure
     // assemble_newton_stokes_system set to true.
-    //if (parameters.nonlinear_solver == NonlinearSolver::iterated_Advection_and_Newton_Stokes)
+    if (parameters.nonlinear_solver == NonlinearSolver::iterated_Advection_and_Newton_Stokes || parameters.nonlinear_solver == NonlinearSolver::iterated_Advection_and_Stokes)
     {
       assemble_newton_stokes_system = true;
       newton_handler->initialize_simulator(*this);
