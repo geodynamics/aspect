@@ -491,21 +491,23 @@ namespace aspect
                              "List of radial values for the custom mesh scheme. Units: "
                              "$\\text{m}$. "
                              "A list of radial values subdivides the spherical shell at "
-                             "specified radii. The radial values must be strickly ascending "
-                             "and radii values must be greater than the inner radius and "
-                             "lesser than the outer radius.");
+                             "specified radii. The list must be strictly ascending, and "
+                             "the first value must be greater than the inner radius "
+                             "while the last must be less than the outer radius.");
           prm.declare_entry ("Number of slices", "1",
                             Patterns::Integer (0),
-                             "Number of slices for the custom mesh scheme. "
+                             "Number of slices for the custom mesh subdivision scheme. "
                              "The number of slices subdivides the spherical shell into N "
                              "slices of equal thickness. Must be greater than 0.");
           prm.declare_entry ("Initial lateral refinement", "0",
                             Patterns::Integer (0),
-                             "Inner radius of the spherical shell. Units: $\\text{m}$. "
-                             "\n\n"
-                             "\\note{The default value of 3,481,000 m equals the "
-                             "radius of a sphere with equal volume as Earth (i.e., "
-                             "6371 km) minus the average depth of the core-mantl.");
+                             "Initial lateral refinement for the custom mesh subdivision "
+                             "schemes."	
+                             "The number of refinement steps performed on the initial "
+                             "coarse surface mesh, before the surface is extruded "
+                             "radially. This parameter allows the user more control "
+                             "over the ratio between radial and lateral refinement of "
+                             "the mesh.");
           prm.declare_entry ("Inner radius", "3481000",  // 6371-2890 in km
                              Patterns::Double (0),
                              "Inner radius of the spherical shell. Units: $\\text{m}$. "
@@ -550,7 +552,8 @@ namespace aspect
                              "The parameter is best left at its default in 3d."
                              "\n\n"
                              "In either case, this parameter is ignored unless the opening "
-                             "angle of the domain is 360 degrees.");
+                             "angle of the domain is 360 degrees. This parameter is also"
+                             "also ignored when using a custom mesh subdivision scheme.");
         }
         prm.leave_subsection();
       }
