@@ -126,7 +126,6 @@ namespace aspect
                                        "in Allow cells without particles."));
               }
 
-
             for (unsigned int i = 0; i < n_particle_properties; ++i)
               {
                 if (selected_properties[i] && non_empty_neighbors !=0)
@@ -141,6 +140,8 @@ namespace aspect
         return std::vector<std::vector<double> > (positions.size(),cell_properties);
       }
 
+
+
       template <int dim>
       void
       HarmonicAverage<dim>::declare_parameters (ParameterHandler &prm)
@@ -151,15 +152,16 @@ namespace aspect
           {
             prm.declare_entry ("Allow cells without particles", "false",
                                Patterns::Bool (),
-                               "Generally, particles need to be distributed throughout the "
-                               "model domain when being applied to a field. This parameter "
-                               "allows particles to be applied as a field even if some cells "
-                               "have no particles.");
+                               "By default, every cell needs to contain particles to use this interpolator "
+                               "plugin. If this parameter is set to true, cells are allowed to have no particles, "
+                               "in which case the interpolator will return 0 for the cell's properties.");
           }
           prm.leave_subsection ();
         }
         prm.leave_subsection ();
       }
+
+
 
       template <int dim>
       void
@@ -170,7 +172,6 @@ namespace aspect
           prm.enter_subsection("Particles");
           {
             allow_cells_without_particles = prm.get_bool("Allow cells without particles");
-
           }
           prm.leave_subsection ();
         }

@@ -70,10 +70,9 @@ namespace aspect
 
         private:
           /**
-           * Generally, particles need to be distributed throughout the
-           * model domain when being applied to a field. This parameter
-           * allows particles to be applied as a field even if some cells
-           * have no particles.
+           * By default, every cell needs to contain particles to use this interpolator
+           * plugin. If this parameter is set to true, cells are allowed to have no particles,
+           * in which case the interpolator will return 0 for the cell's properties.
            */
           bool allow_cells_without_particles;
       };
