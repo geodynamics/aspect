@@ -9,11 +9,11 @@
 #include <deal.II/base/quadrature.h>
 #include <deal.II/base/table_indices.h>
 #include <deal.II/base/tensor.h>
-#include <deal.II/base/utilities.h>
 #include <deal.II/fe/fe.h>
 #include <deal.II/fe/fe_update_flags.h>
 #include <deal.II/grid/tria_iterator_base.h>
 #include <array>
+#include <cmath>
 #include <functional>
 #include <iostream>
 #include <string>
@@ -38,6 +38,7 @@
 #include <aspect/gravity_model/interface.h>
 #include <aspect/simulator/assemblers/stokes.h>
 #include <aspect/simulator_signals.h>
+#include <aspect/postprocess/particles.h>
 
 #include <deal.II/base/symmetric_tensor.h>
 #include <deal.II/base/signaling_nan.h>
@@ -146,21 +147,6 @@ namespace aspect
         };
         
         /**
-         * A class containing the functions to assemble the compressible adjustment
-         * to the Stokes preconditioner.
-         */
-        template <int dim>
-        class StokesCompressiblePreconditionerAnisotropicViscosity : public Assemblers::Interface<dim>,
-        public SimulatorAccess<dim>
-        {
-        public:
-            virtual
-            void
-            execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
-                    internal::Assembly::CopyData::CopyDataBase<dim> &data) const;
-        };
-        
-        /**
          * This class assembles the terms for the matrix and right-hand-side of the incompressible
          * Stokes equation for the current cell.
          */
@@ -179,22 +165,7 @@ namespace aspect
              */
             virtual void create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const;
         };
-        
-        /**
-         * This class assembles the term that arises in the viscosity term of Stokes matrix for
-         * compressible models, because the divergence of the velocity is not longer zero.
-         */
-        template <int dim>
-        class StokesCompressibleStrainRateViscosityTermAnisotropicViscosity : public Assemblers::Interface<dim>,
-        public SimulatorAccess<dim>
-        {
-        public:
-            virtual
-            void
-            execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
-                    internal::Assembly::CopyData::CopyDataBase<dim> &data) const;
-        };
-        
+
         template <int dim>
         void
         StokesPreconditionerAnisotropicViscosity<dim>::
@@ -293,79 +264,7 @@ namespace aspect
             }
         }
         
-        
-        
-        template <int dim>
-        void
-        StokesCompressiblePreconditionerAnisotropicViscosity<dim>::
-        execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
-                 internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
-        {
-            internal::Assembly::Scratch::StokesPreconditioner<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesPreconditioner<dim>& > (scratch_base);
-            internal::Assembly::CopyData::StokesPreconditioner<dim> &data = dynamic_cast<internal::Assembly::CopyData::StokesPreconditioner<dim>& > (data_base);
-            
-            const MaterialModel::AnisotropicViscosity<dim> *anisotropic_viscosity =
-            scratch.material_model_outputs.template get_additional_output<MaterialModel::AnisotropicViscosity<dim> >();
-            
-            const Introspection<dim> &introspection = this->introspection();
-            const FiniteElement<dim> &fe = this->get_fe();
-            const unsigned int stokes_dofs_per_cell = data.local_dof_indices.size();
-            const unsigned int n_q_points           = scratch.finite_element_values.n_quadrature_points;
-            
-            // First loop over all dofs and find those that are in the Stokes system
-            // save the component (pressure and dim velocities) each belongs to.
-            for (unsigned int i = 0, i_stokes = 0; i_stokes < stokes_dofs_per_cell; /*increment at end of loop*/)
-            {
-                if (introspection.is_stokes_component(fe.system_to_component_index(i).first))
-                {
-                    scratch.dof_component_indices[i_stokes] = fe.system_to_component_index(i).first;
-                    ++i_stokes;
-                }
-                ++i;
-            }
-            
-            // Loop over all quadrature points and assemble their contributions to
-            // the preconditioner matrix
-            for (unsigned int q = 0; q < n_q_points; ++q)
-            {
-                for (unsigned int i = 0, i_stokes = 0; i_stokes < stokes_dofs_per_cell; /*increment at end of loop*/)
-                {
-                    if (introspection.is_stokes_component(fe.system_to_component_index(i).first))
-                    {
-                        scratch.grads_phi_u[i_stokes] = scratch.finite_element_values[introspection.extractors.velocities].symmetric_gradient(i,q);
-                        scratch.div_phi_u[i_stokes]   = scratch.finite_element_values[introspection.extractors.velocities].divergence (i, q);
-                        
-                        ++i_stokes;
-                    }
-                    ++i;
-                }
-                
-                const double eta_two_thirds = scratch.material_model_outputs.viscosities[q] * 2.0 / 3.0;
-                
-                const bool use_tensor = (anisotropic_viscosity != nullptr);
-                
-                const SymmetricTensor<4, dim> &stress_strain_director = (use_tensor)
-                ?
-                anisotropic_viscosity->stress_strain_directors[q]
-                :
-                dealii::identity_tensor<dim>();
-                
-                const double JxW = scratch.finite_element_values.JxW(q);
-                
-                for (unsigned int i = 0; i < stokes_dofs_per_cell; ++i)
-                    for (unsigned int j = 0; j < stokes_dofs_per_cell; ++j)
-                        if (scratch.dof_component_indices[i] ==
-                            scratch.dof_component_indices[j])
-                            data.local_matrix(i, j) += (- (use_tensor ?
-                                                           eta_two_thirds * (scratch.div_phi_u[i] * trace(stress_strain_director * scratch.grads_phi_u[j]))
-                                                           :
-                                                           eta_two_thirds * (scratch.div_phi_u[i] * scratch.div_phi_u[j])
-                                                           ))
-                            * JxW;
-            }
-        }
-        
-        
+
         
         template <int dim>
         void
@@ -485,71 +384,9 @@ namespace aspect
                    outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >()->rhs_u.size()
                    == n_points, ExcInternalError());
         }
-        
-        
-        
-        template <int dim>
-        void
-        StokesCompressibleStrainRateViscosityTermAnisotropicViscosity<dim>::
-        execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
-                 internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
-        {
-            internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>& > (scratch_base);
-            internal::Assembly::CopyData::StokesSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::StokesSystem<dim>& > (data_base);
-            
-            if (!scratch.rebuild_stokes_matrix)
-                return;
-            
-            const MaterialModel::AnisotropicViscosity<dim> *anisotropic_viscosity =
-            scratch.material_model_outputs.template get_additional_output<MaterialModel::AnisotropicViscosity<dim> >();
-            
-            const Introspection<dim> &introspection = this->introspection();
-            const FiniteElement<dim> &fe = this->get_fe();
-            const unsigned int stokes_dofs_per_cell = data.local_dof_indices.size();
-            const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
-            
-            for (unsigned int q=0; q<n_q_points; ++q)
-            {
-                for (unsigned int i=0, i_stokes=0; i_stokes<stokes_dofs_per_cell; /*increment at end of loop*/)
-                {
-                    if (introspection.is_stokes_component(fe.system_to_component_index(i).first))
-                    {
-                        scratch.grads_phi_u[i_stokes] = scratch.finite_element_values[introspection.extractors.velocities].symmetric_gradient(i,q);
-                        scratch.div_phi_u[i_stokes]   = scratch.finite_element_values[introspection.extractors.velocities].divergence (i, q);
-                        
-                        ++i_stokes;
-                    }
-                    ++i;
-                }
-                
-                // Viscosity scalar
-                const double eta_two_thirds = scratch.material_model_outputs.viscosities[q] * 2.0 / 3.0;
-                
-                const bool use_tensor = (anisotropic_viscosity != nullptr);
-                
-                const SymmetricTensor<4, dim> &stress_strain_director = (use_tensor)
-                ?
-                anisotropic_viscosity->stress_strain_directors[q]
-                :
-                dealii::identity_tensor<dim>();
-                
-                const double JxW = scratch.finite_element_values.JxW(q);
-                
-                for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
-                    for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
-                    {
-                        data.local_matrix(i,j) += (- (use_tensor ?
-                                                      eta_two_thirds * (scratch.div_phi_u[i] * trace(stress_strain_director * scratch.grads_phi_u[j]))
-                                                      :
-                                                      eta_two_thirds * (scratch.div_phi_u[i] * scratch.div_phi_u[j])
-                                                      ))
-                        * JxW;
-                    }
-            }
-        }
     }
-    
-    
+        
+
     namespace HeatingModel
     {
         template <int dim>
@@ -718,16 +555,12 @@ namespace MaterialModel
 			{
 			if (dynamic_cast<Assemblers::StokesPreconditioner<dim> *>(assemblers.stokes_preconditioner[i].get()) != nullptr)
             assemblers.stokes_preconditioner[i] = std_cxx14::make_unique<Assemblers::StokesPreconditionerAnisotropicViscosity<dim> > ();
-			if (dynamic_cast<Assemblers::StokesCompressiblePreconditioner<dim> *>(assemblers.stokes_preconditioner[i].get()) != nullptr)
-            assemblers.stokes_preconditioner[i] = std_cxx14::make_unique<Assemblers::StokesCompressiblePreconditionerAnisotropicViscosity<dim> > ();
 			}
 
 		for (unsigned int i=0; i<assemblers.stokes_system.size(); ++i)
 			{
 			if (dynamic_cast<Assemblers::StokesIncompressibleTerms<dim> *>(assemblers.stokes_system[i].get()) != nullptr)
             assemblers.stokes_system[i] = std_cxx14::make_unique<Assemblers::StokesIncompressibleTermsAnisotropicViscosity<dim> > ();
-			if (dynamic_cast<Assemblers::StokesCompressibleStrainRateViscosityTerm<dim> *>(assemblers.stokes_system[i].get()) != nullptr)
-            assemblers.stokes_system[i] = std_cxx14::make_unique<Assemblers::StokesCompressibleStrainRateViscosityTermAnisotropicViscosity<dim> > ();
 			}
 		}
 
@@ -749,6 +582,7 @@ namespace MaterialModel
 	AV<dim>::evaluate (const MaterialModel::MaterialModelInputs<dim> &in,
                       MaterialModel::MaterialModelOutputs<dim> &out) const
 	{
+
       MaterialModel::AnisotropicViscosity<dim> *anisotropic_viscosity =
       out.template get_additional_output<MaterialModel::AnisotropicViscosity<dim> >();
 
@@ -984,158 +818,9 @@ namespace MaterialModel
         }
     }
 }
-
-
-//a simple material model for Anisotropic viscosity with a constant tensor
-    namespace MaterialModel
-    {
-        template <int dim>
-        void
-        Anisotropic<dim>::set_assemblers(const SimulatorAccess<dim> &,
-                                         Assemblers::Manager<dim> &assemblers) const
-        {
-            for (unsigned int i=0; i<assemblers.stokes_preconditioner.size(); ++i)
-            {
-                if (dynamic_cast<Assemblers::StokesPreconditioner<dim> *>(assemblers.stokes_preconditioner[i].get()) != nullptr)
-                    assemblers.stokes_preconditioner[i] = std_cxx14::make_unique<Assemblers::StokesPreconditionerAnisotropicViscosity<dim> > ();
-                if (dynamic_cast<Assemblers::StokesCompressiblePreconditioner<dim> *>(assemblers.stokes_preconditioner[i].get()) != nullptr)
-                    assemblers.stokes_preconditioner[i] = std_cxx14::make_unique<Assemblers::StokesCompressiblePreconditionerAnisotropicViscosity<dim> > ();
-            }
-            
-            for (unsigned int i=0; i<assemblers.stokes_system.size(); ++i)
-            {
-                if (dynamic_cast<Assemblers::StokesIncompressibleTerms<dim> *>(assemblers.stokes_system[i].get()) != nullptr)
-                    assemblers.stokes_system[i] = std_cxx14::make_unique<Assemblers::StokesIncompressibleTermsAnisotropicViscosity<dim> > ();
-                if (dynamic_cast<Assemblers::StokesCompressibleStrainRateViscosityTerm<dim> *>(assemblers.stokes_system[i].get()) != nullptr)
-                    assemblers.stokes_system[i] = std_cxx14::make_unique<Assemblers::StokesCompressibleStrainRateViscosityTermAnisotropicViscosity<dim> > ();
-            }
-        }
-        
-        template <int dim>
-        void
-        Anisotropic<dim>::
-        initialize()
-        {
-            this->get_signals().set_assemblers.connect (std::bind(&Anisotropic<dim>::set_assemblers,
-                                                                  std::cref(*this),
-                                                                  std::placeholders::_1,
-                                                                  std::placeholders::_2));
-
-        }
-        
-        template <int dim>
-        void
-        Anisotropic<dim>::
-        evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                 MaterialModel::MaterialModelOutputs<dim> &out) const
-        {
-            MaterialModel::AnisotropicViscosity<dim> *anisotropic_viscosity =
-            out.template get_additional_output<MaterialModel::AnisotropicViscosity<dim> >();
-            
-            Simple<dim>::evaluate(in, out);
-            Point<dim> center;
-            center[0] = 0.5;
-            center[1] = 0.5;
-            if (dim == 3)
-                center[2] = 0.5;
-            for (unsigned int i=0; i < in.position.size(); ++i)
-            {
-                const double pressure = in.pressure[i];
-                out.densities[i] = 1.0 + pressure;
-                out.compressibilities[i] = 1.0 / (1. + pressure);
-                if ((in.position[i]-center).norm() < 0.25)
-                {
-                    if (anisotropic_viscosity != nullptr)
-                        anisotropic_viscosity->stress_strain_directors[i] = C;
-                }
-            }
-        }
-        
-        template <int dim>
-        bool
-        Anisotropic<dim>::
-        is_compressible () const
-        {
-            return true;
-        }
-        
-        template <int dim>
-        void
-        Anisotropic<dim>::
-        declare_parameters (ParameterHandler &prm)
-        {
-            Simple<dim>::declare_parameters (prm);
-            prm.enter_subsection ("Material model");
-            {
-                prm.enter_subsection ("Anisotropic");
-                {
-                    if (dim == 2)
-                        prm.declare_entry ("Viscosity tensor",
-                                           "1, 0, 0,"
-                                           "0, 1, 0,"
-                                           "0, 0,.5",
-                                           Patterns::List(Patterns::Double()),
-                                           "Viscosity-scaling tensor in Voigt notation.");
-                    else
-                        prm.declare_entry ("Viscosity tensor",
-                                           "1, 0, 0, 0, 0, 0,"
-                                           "0, 1, 0, 0, 0, 0,"
-                                           "0, 0, 1, 0, 0, 0,"
-                                           "0, 0, 0,.5, 0, 0,"
-                                           "0, 0, 0, 0,.5, 0,"
-                                           "0, 0, 0, 0, 0,.5",
-                                           Patterns::List(Patterns::Double()),
-                                           "Viscosity-scaling tensor in Voigt notation.");
-                }
-                prm.leave_subsection();
-            }
-            prm.leave_subsection();
-        }
-        
-        template <int dim>
-        void
-        Anisotropic<dim>::
-        parse_parameters (ParameterHandler &prm)
-        {
-            Simple<dim>::parse_parameters (prm);
-            prm.enter_subsection ("Material model");
-            {
-                prm.enter_subsection ("Anisotropic");
-                {
-                    const int size_voigt = (dim == 3 ? 6 : 3);
-                    const std::vector<double> tmp_tensor =
-                    Utilities::string_to_double(Utilities::split_string_list(prm.get ("Viscosity tensor")));
-                    Assert(tmp_tensor.size() == size_voigt*size_voigt,
-                           ExcMessage("Constitutive voigt matrix must have 9 components in 2D, or 36 components in 3d"));
-                    
-                    std::vector<std::vector<double> > voigt_visc_tensor (size_voigt);
-                    for (unsigned int i=0; i<size_voigt; ++i)
-                    {
-                        voigt_visc_tensor[i].resize(size_voigt);
-                        for (unsigned int j=0; j<size_voigt; ++j)
-                            voigt_visc_tensor[i][j] = tmp_tensor[i*size_voigt+j];
-                    }
-                    
-                    // Voigt indices (For mapping back to real tensor)
-                    const unsigned int vi3d0[] = {0, 1, 2, 1, 0, 0};
-                    const unsigned int vi3d1[] = {0, 1, 2, 2, 2, 1};
-                    const unsigned int vi2d0[] = {0, 1, 0};
-                    const unsigned int vi2d1[] = {0, 1, 1};
-                    
-                    // Fill the constitutive tensor with values from the Voigt tensor
-                    for (unsigned int i=0; i<size_voigt; ++i)
-                        for (unsigned int j=0; j<size_voigt; ++j)
-                            if (dim == 2)
-                                C[vi2d0[i]][vi2d1[i]][vi2d0[j]][vi2d1[j]] = voigt_visc_tensor[i][j];
-                            else
-                                C[vi3d0[i]][vi3d1[i]][vi3d0[j]][vi3d1[j]] = voigt_visc_tensor[i][j];
-                }
-                prm.leave_subsection ();
-            }
-            prm.leave_subsection ();
-        }
-    }
 }
+
+
 
 // explicit instantiations
 namespace aspect
@@ -1144,14 +829,7 @@ namespace aspect
     {
 #define INSTANTIATE(dim) \
         template class StokesPreconditioner<dim>; \
-        template class StokesCompressiblePreconditioner<dim>; \
         template class StokesIncompressibleTerms<dim>; \
-        template class StokesCompressibleStrainRateViscosityTerm<dim>; \
-        template class StokesReferenceDensityCompressibilityTerm<dim>; \
-        template class StokesImplicitReferenceDensityCompressibilityTerm<dim>; \
-        template class StokesIsothermalCompressionTerm<dim>; \
-        template class StokesHydrostaticCompressionTerm<dim>; \
-        template class StokesPressureRHSCompatibilityModification<dim>; \
         template class StokesBoundaryTraction<dim>;
         
         ASPECT_INSTANTIATE(INSTANTIATE)
@@ -1169,19 +847,8 @@ namespace aspect
                                       "right-hand side of the temperature equation.")
     }
     
-    namespace MaterialModel
-    {
-        ASPECT_REGISTER_MATERIAL_MODEL(Anisotropic,
-                                       "anisotropic",
-                                       "A simple material model that is like the "
-                                       "'Simple' model, but has a non-zero compressibility "
-                                       "and always has a blob of anisotropic material in "
-                                       "the center.")
-    }
-}
 
-namespace aspect
-{
+
   namespace MaterialModel
   {
     ASPECT_REGISTER_MATERIAL_MODEL(AV,
