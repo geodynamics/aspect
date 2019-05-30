@@ -34,9 +34,16 @@ namespace aspect
     {
       for (unsigned int i=0; i < in.temperature.size(); ++i)
         {
-          const double temperature = std::max(1e-10,in.temperature[i]);
+          const double temperature = in.temperature[i];
           const double pressure = in.pressure[i];
 
+          AssertThrow(temperature > 100., ExcMessage("The current temperature is <100 K. "
+                                                     "The modified Tait equations of state is "
+                                                     "not designed for such temperatures. "
+                                                     "If this exception is triggered at the "
+                                                     "beginning of a run, you may need to "
+                                                     "set Adiabatic surface temperature "
+                                                     "to a value > 100 in the parameter file."));
           out.viscosities[i] = eta;
           out.thermal_conductivities[i] = k_value;
 
@@ -44,31 +51,24 @@ namespace aspect
           const double x_einstein = einstein_temperature/temperature;
           const double x_einstein0 = einstein_temperature/reference_temperature;
 
+
+          AssertThrow(x_einstein < 35., ExcMessage("The current temperature is less than 1/35th "
+                                                   "of the Einstein temperature. This is not "
+                                                   "expected for geological materials."));
+          AssertThrow(x_einstein0 < 35., ExcMessage("The reference temperature of the "
+                                                    "equation of state is less than 1/35th "
+                                                    "of the Einstein temperature. This is not "
+                                                    "expected for geological materials."));
+
           // The following Einstein energies and heat capacities are divided through by 3nR.
           // This doesn't matter, as the equation of state relies only on ratios of these quantities.
           // At large values of x_einstein0, we can simplify the calculation of the thermal energy and Cv.
           double E_th0, E_th, C_V0, C_V;
-          if (x_einstein0 < 35)
-            {
-              E_th0 = einstein_temperature * (0.5 + 1. / (std::exp(x_einstein0) - 1.0));
-              C_V0 = x_einstein0 * x_einstein0 * std::exp(x_einstein0) / std::pow(std::exp(x_einstein0) - 1.0, 2.0);
-            }
-          else
-            {
-              E_th0 = einstein_temperature * 0.5;
-              C_V0 = x_einstein0 * x_einstein0 * std::exp(-x_einstein0);
-            }
+          E_th0 = einstein_temperature * (0.5 + 1. / (std::exp(x_einstein0) - 1.0));
+          C_V0 = x_einstein0 * x_einstein0 * std::exp(x_einstein0) / std::pow(std::exp(x_einstein0) - 1.0, 2.0);
 
-          if (x_einstein < 35)
-            {
-              E_th = einstein_temperature * (0.5 + 1. / (std::exp(x_einstein) - 1.0));
-              C_V = x_einstein * x_einstein * std::exp(x_einstein) / std::pow(std::exp(x_einstein) - 1.0, 2.0);
-            }
-          else
-            {
-              E_th = einstein_temperature * 0.5;
-              C_V = x_einstein * x_einstein * std::exp(-x_einstein);
-            }
+          E_th = einstein_temperature * (0.5 + 1. / (std::exp(x_einstein) - 1.0));
+          C_V = x_einstein * x_einstein * std::exp(x_einstein) / std::pow(std::exp(x_einstein) - 1.0, 2.0);
 
           // The relative thermal pressure
           const double Pth_rel = reference_thermal_expansivity * reference_isothermal_bulk_modulus * (E_th - E_th0) / C_V0;
@@ -106,8 +106,8 @@ namespace aspect
           out.thermal_expansion_coefficients[i] = alpha;
           out.specific_heat[i] = heat_capacity;
 
-          out.entropy_derivative_pressure[i] = 0.0;
-          out.entropy_derivative_temperature[i] = 0.0;
+          out.entropy_derivative_pressure[i] = -alpha / rho;
+          out.entropy_derivative_temperature[i] = heat_capacity/temperature;
           // Change in composition due to chemical reactions at the
           // given positions. The term reaction_terms[i][c] is the
           // change in compositional field c at point i.
