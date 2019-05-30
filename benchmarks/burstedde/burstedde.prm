@@ -12,8 +12,9 @@ set Additional shared libraries            = ./libburstedde.so
 
 set Dimension                              = 3
 
-set Enable prescribed compression          = true
-
+subsection Formulation
+  set Enable prescribed compression          = true
+end
 
 set Start time                             = 0
 set End time                               = 0
