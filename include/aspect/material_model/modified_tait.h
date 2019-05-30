@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -18,8 +18,8 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#ifndef _aspect_material_model_simple_compressible_h
-#define _aspect_material_model_simple_compressible_h
+#ifndef _aspect_material_model_modified_tait_h
+#define _aspect_material_model_modified_tait_h
 
 #include <deal.II/base/function_lib.h>
 #include <aspect/material_model/interface.h>
