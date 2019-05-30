@@ -562,7 +562,7 @@ namespace aspect
          * therefore when using this constructor it is necessary to provide
          * this list in the first uncommented line of the data file.
          */
-        AsciiDataLookup(const double scale_factor);
+        explicit AsciiDataLookup(const double scale_factor);
 
         /**
          * Loads a data text file. Throws an exception if the file does not
@@ -579,7 +579,9 @@ namespace aspect
          *
          * @param position The current position to compute the data (velocity,
          * temperature, etc.)
-         * @param component The index of the data column to be returned.
+         * @param component The index (starting at 0) of the data column to be
+         * returned. The index is therefore less than the number of data
+         * columns in the data file (or specified in the constructor).
          */
         double
         get_data(const Point<dim> &position,
