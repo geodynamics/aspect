@@ -2173,6 +2173,12 @@ namespace aspect
           for (unsigned int i = 0; i < dim; i++)
             internal_position[i] = natural_position[i];
 
+          // The chunk model has latitude as natural coordinate. We need to convert this to colatitude
+          if (dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model()) != nullptr && dim == 3)
+            {
+              internal_position[2] = numbers::PI/2. - internal_position[2];
+            }
+
           const std::array<unsigned int,dim-1> boundary_dimensions =
             get_boundary_dimensions(boundary_indicator);
 
