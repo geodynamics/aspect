@@ -579,7 +579,7 @@ namespace aspect
        * This function is implemented in
        * <code>source/simulator/solver_schemes.cc</code>.
        */
-      void solve_iterated_advection_and_newton_stokes ();
+      void solve_iterated_advection_and_newton_stokes (const bool only_picard);
 
       /**
        * This function implements one scheme for the various

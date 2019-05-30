@@ -513,7 +513,7 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::solve_iterated_advection_and_newton_stokes ()
+  void Simulator<dim>::solve_iterated_advection_and_newton_stokes (const bool only_picard)
   {
     // Now store the linear_tolerance we started out with, because we might change
     // it within this timestep.
@@ -552,8 +552,9 @@ namespace aspect
         assemble_and_solve_temperature();
         assemble_and_solve_composition();
 
-        if (use_picard == true && (residual/initial_residual <= newton_handler->parameters.nonlinear_switch_tolerance ||
-                                   nonlinear_iteration >= newton_handler->parameters.max_pre_newton_nonlinear_iterations))
+        if (only_picard == false && use_picard == true &&
+            (residual/initial_residual <= newton_handler->parameters.nonlinear_switch_tolerance ||
+             nonlinear_iteration >= newton_handler->parameters.max_pre_newton_nonlinear_iterations))
           {
             use_picard = false;
             pcout << "   Switching from defect correction form of Picard to the Newton solver scheme." << std::endl;
@@ -937,7 +938,7 @@ namespace aspect
   template void Simulator<dim>::solve_no_advection_iterated_stokes(); \
   template void Simulator<dim>::solve_iterated_advection_and_stokes(); \
   template void Simulator<dim>::solve_single_advection_iterated_stokes(); \
-  template void Simulator<dim>::solve_iterated_advection_and_newton_stokes(); \
+  template void Simulator<dim>::solve_iterated_advection_and_newton_stokes(const bool); \
   template void Simulator<dim>::solve_single_advection_no_stokes(); \
   template void Simulator<dim>::solve_first_timestep_only_single_stokes(); \
   template void Simulator<dim>::solve_no_advection_no_stokes();

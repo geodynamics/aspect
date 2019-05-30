@@ -1723,7 +1723,8 @@ namespace aspect
 
         case NonlinearSolver::iterated_Advection_and_Stokes:
         {
-          solve_iterated_advection_and_stokes();
+          //solve_iterated_advection_and_stokes();
+          solve_iterated_advection_and_newton_stokes(true);
           break;
         }
 
@@ -1735,7 +1736,7 @@ namespace aspect
 
         case NonlinearSolver::iterated_Advection_and_Newton_Stokes:
         {
-          solve_iterated_advection_and_newton_stokes();
+          solve_iterated_advection_and_newton_stokes(false);
           break;
         }
 
