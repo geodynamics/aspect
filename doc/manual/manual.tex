@@ -8233,8 +8233,7 @@ The required heating model and changes to the material model are implemented in 
 (\url{cookbooks/inner_core_convection/inner_core_convection.cc}). To compile the file, do
 
 \begin{verbatim}
- $ cmake -DAspect_DIR=/path/to/aspect .
- 
+ cmake -DAspect_DIR=/path/to/aspect/build/ .
  make
 \end{verbatim}
 
@@ -11142,6 +11141,7 @@ do:
     and compile it into a shared library yourself. This may be as easy as
     calling
     \begin{verbatim}
+ # NOTE: do not do this, but use the cmake command below!
  g++ -I/path/to/aspect/headers -I/path/to/deal.II/headers \
      -fPIC -shared my_plugin.cc -o my_plugin.so
     \end{verbatim}
@@ -11169,7 +11169,7 @@ do:
   \end{itemize}
   You can then just run the commands
     \begin{verbatim}
- cmake -DAspect_DIR=/path/to/aspect .
+ cmake -DAspect_DIR=/path/to/aspect/build/ .
  make
     \end{verbatim}
     and it should compile your plugin files into a shared library
