@@ -62,13 +62,11 @@ namespace aspect
 
           // The following Einstein energies and heat capacities are divided through by 3nR.
           // This doesn't matter, as the equation of state relies only on ratios of these quantities.
-          // At large values of x_einstein0, we can simplify the calculation of the thermal energy and Cv.
-          double E_th0, E_th, C_V0, C_V;
-          E_th0 = einstein_temperature * (0.5 + 1. / (std::exp(x_einstein0) - 1.0));
-          C_V0 = x_einstein0 * x_einstein0 * std::exp(x_einstein0) / std::pow(std::exp(x_einstein0) - 1.0, 2.0);
+          const double E_th0 = einstein_temperature * (0.5 + 1. / (std::exp(x_einstein0) - 1.0));
+          const double C_V0 = x_einstein0 * x_einstein0 * std::exp(x_einstein0) / std::pow(std::exp(x_einstein0) - 1.0, 2.0);
 
-          E_th = einstein_temperature * (0.5 + 1. / (std::exp(x_einstein) - 1.0));
-          C_V = x_einstein * x_einstein * std::exp(x_einstein) / std::pow(std::exp(x_einstein) - 1.0, 2.0);
+          const double E_th = einstein_temperature * (0.5 + 1. / (std::exp(x_einstein) - 1.0));
+          const double C_V = x_einstein * x_einstein * std::exp(x_einstein) / std::pow(std::exp(x_einstein) - 1.0, 2.0);
 
           // The relative thermal pressure
           const double Pth_rel = reference_thermal_expansivity * reference_isothermal_bulk_modulus * (E_th - E_th0) / C_V0;
