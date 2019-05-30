@@ -76,6 +76,7 @@ namespace aspect
             }
           else
             {
+              Assert(custom_mesh == slices || custom_mesh == list, ExcNotImplemented());
               // If we are using a custom mesh scheme, we need to create
               // a new triangulation to extrude (this will be a 1D line in
               // 2D space, or a 2D surface in 3D space).
@@ -164,6 +165,7 @@ namespace aspect
                             }
                         }
 #endif
+                      Assert(GridTools::cell_measure (points, this_cell.vertices) > 0, ExcInternalError());
 
                       cells.push_back(this_cell);
 
@@ -496,7 +498,7 @@ namespace aspect
                              "the first value must be greater than the inner radius "
                              "while the last must be less than the outer radius.");
           prm.declare_entry ("Number of slices", "1",
-                             Patterns::Integer (0),
+                             Patterns::Integer (1),
                              "Number of slices for the custom mesh subdivision scheme. "
                              "The number of slices subdivides the spherical shell into N "
                              "slices of equal thickness. Must be greater than 0.");
