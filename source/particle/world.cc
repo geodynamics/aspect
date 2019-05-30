@@ -264,31 +264,35 @@ namespace aspect
               {
                 const unsigned int n_particles_in_cell = particle_handler->n_particles_in_cell(cell);
 
-                //If we're using uniform box and want to generate particles, only generate
-                //in the area we've specified.
+                /*
+                 * If using the uniform box generator with add/remove particles and cells without
+                 * particles are allowed, check whether any vertex is outside of the specified box.
+                 * If a vertex is outside, no particles will be generated in that cell, and any
+                 * particles that enter the cell will be removed.
+                 */
                 bool cell_in_domain = true;
-                if(dynamic_cast<const Generator::UniformBox<dim> *>(generator.get()) != nullptr)
-                {
-                  std::array< Point<dim>, GeometryInfo<dim>::vertices_per_cell> new_vertices;
-                  new_vertices = this->get_mapping().get_vertices(cell);
+                if (dynamic_cast<const Generator::UniformBox<dim> *>(generator.get()) != nullptr)
+                  {
+                    std::array< Point<dim>, GeometryInfo<dim>::vertices_per_cell> new_vertices;
+                    new_vertices = this->get_mapping().get_vertices(cell);
 
-                  const Generator::UniformBox<dim> *box
+                    const Generator::UniformBox<dim> *box
                       = dynamic_cast<const Generator::UniformBox<dim> *>(generator.get());
 
-                  const std::pair<Point<dim>, Point<dim> > box_domain = box->get_box_domain();
-                  Point<dim> P_min = box_domain.first;
-                  Point<dim> P_max = box_domain.second;
+                    const std::pair<Point<dim>, Point<dim> > box_domain = box->get_box_domain();
+                    Point<dim> P_min = box_domain.first;
+                    Point<dim> P_max = box_domain.second;
 
-                  for (unsigned int v = 0; v < GeometryInfo<dim>::vertices_per_cell; ++v)
-                    {
-                      for (unsigned int d=0; d<dim; ++d)
+                    for (unsigned int v = 0; v < GeometryInfo<dim>::vertices_per_cell; ++v)
                       {
-                        if((new_vertices[v][d] > P_max(d) + std::numeric_limits<double>::epsilon()) ||
-                          (new_vertices[v][d] < P_min(d) - std::numeric_limits<double>::epsilon()))
-                    	  cell_in_domain = false;
+                        for (unsigned int d=0; d<dim; ++d)
+                          {
+                            if ((new_vertices[v][d] > P_max(d) + std::numeric_limits<double>::epsilon()) ||
+                                (new_vertices[v][d] < P_min(d) - std::numeric_limits<double>::epsilon()))
+                              cell_in_domain = false;
+                          }
                       }
-                    }
-                }
+                  }
 
                 // Add particles if necessary
                 if ((particle_load_balancing & ParticleLoadBalancing::add_particles) &&
@@ -321,8 +325,8 @@ namespace aspect
 
                     unsigned int n_particles_to_remove = n_particles_in_cell - max_particles_per_cell;
 
-                    if(!cell_in_domain)
-                    	n_particles_to_remove = n_particles_in_cell;
+                    if (!cell_in_domain)
+                      n_particles_to_remove = n_particles_in_cell;
 
                     std::set<unsigned int> particle_ids_to_remove;
                     while (particle_ids_to_remove.size() < n_particles_to_remove)

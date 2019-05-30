@@ -68,8 +68,11 @@ namespace aspect
           void
           parse_parameters (ParameterHandler &prm);
 
+          /**
+           * Function to send min/max dimensions of uniform box/
+           */
           std::pair<Point<dim>, Point<dim> >
-                    get_box_domain() const;
+          get_box_domain() const;
 
         private:
           /**
