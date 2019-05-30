@@ -1,0 +1,91 @@
+# This is a simple 3d setup for testing a custom spherical shell
+# using the number of slices subdivision scheme.
+
+set Dimension = 3
+set CFL number                             = 1.0
+set End time                               = 0
+set Start time                             = 0
+set Adiabatic surface temperature          = 1613.0
+set Surface pressure                       = 0
+set Use years in output instead of seconds = false
+set Nonlinear solver scheme                = single Advection, single Stokes
+
+
+subsection Boundary temperature model
+  set List of model names = spherical constant
+  subsection Spherical constant
+    set Inner temperature = 2000.0
+    set Outer temperature = 1000.0
+  end
+end
+
+
+subsection Gravity model
+  set Model name = radial constant
+  subsection Radial constant
+    set Magnitude = 9.81
+  end
+end
+
+
+subsection Geometry model
+  set Model name = spherical shell
+  subsection Spherical shell
+    set Custom mesh subdivision = number of slices 
+    set Number of slices = 2
+    set Inner radius = 5711000
+    set Outer radius = 6371000
+    set Initial lateral refinement = 1
+    set Opening angle = 360
+  end
+end
+
+
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Function expression = 1500.0
+  end
+end
+
+
+subsection Material model
+  set Model name = simple
+  subsection Simple model
+    set Reference density             = 3300
+    set Reference specific heat       = 1250
+    set Reference temperature         = 1613
+    set Thermal conductivity          = 1e-6
+    set Thermal expansion coefficient = 2e-5
+    set Viscosity                     = 1e22
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 0
+end
+
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = 0, 1
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = 0
+end
+
+subsection Boundary velocity model
+  set Zero velocity boundary indicators       = 1
+end
+
+
+subsection Postprocess
+  set List of postprocessors = visualization, basic statistics
+  subsection Visualization
+    set Interpolate output = false
+    set Output format      = gnuplot
+  end
+end
+
