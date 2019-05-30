@@ -22,6 +22,7 @@
 #define _aspect_material_model_drucker_prager_h
 
 #include <aspect/material_model/interface.h>
+#include <aspect/material_model/equation_of_state/linearized_incompressible.h>
 #include <aspect/simulator_access.h>
 
 namespace aspect
@@ -140,12 +141,11 @@ namespace aspect
 
       private:
 
-        double reference_rho;
         double reference_T;
         double reference_eta;
-        double thermal_expansivity;
-        double reference_specific_heat;
         double thermal_conductivities;
+
+        EquationOfState::LinearizedIncompressible<dim> equation_of_state;
 
         /**
          * The angle of internal friction

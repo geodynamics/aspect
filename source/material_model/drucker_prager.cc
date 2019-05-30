@@ -39,9 +39,10 @@ namespace aspect
       MaterialModel::MaterialModelDerivatives<dim> *derivatives;
       derivatives = out.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim> >();
 
+      EquationOfStateOutputs<dim> eos_outputs (1);
+
       for (unsigned int i=0; i < in.temperature.size(); ++i)
         {
-          const double temperature = in.temperature[i];
           // To avoid negative yield strengths and eventually viscosities,
           // we make sure the pressure is not negative
           const double pressure=std::max(in.pressure[i],0.0);
@@ -143,23 +144,17 @@ namespace aspect
                     }
                 }
             }
-          out.densities[i] = reference_rho * (1.0 - thermal_expansivity * (temperature - reference_T));
-          out.thermal_expansion_coefficients[i] = thermal_expansivity;
-          // Specific heat at the given positions.
-          out.specific_heat[i] = reference_specific_heat;
-          // Thermal conductivity at the given positions.
+
+          equation_of_state.evaluate(in, i, eos_outputs);
+
+          out.densities[i] = eos_outputs.densities[0];
+          out.thermal_expansion_coefficients[i] = eos_outputs.thermal_expansion_coefficients[0];
+          out.specific_heat[i] = eos_outputs.specific_heat_capacities[0];
           out.thermal_conductivities[i] = thermal_conductivities;
-          // Compressibility at the given positions.
-          // The compressibility is given as
-          // $\frac 1\rho \frac{\partial\rho}{\partial p}$.
-          out.compressibilities[i] = 0.0;
-          // Pressure derivative of entropy at the given positions.
-          out.entropy_derivative_pressure[i] = 0.0;
-          // Temperature derivative of entropy at the given positions.
-          out.entropy_derivative_temperature[i] = 0.0;
-          // Change in composition due to chemical reactions at the
-          // given positions. The term reaction_terms[i][c] is the
-          // change in compositional field c at point i.
+          out.compressibilities[i] = eos_outputs.compressibilities[0];
+          out.entropy_derivative_pressure[i] = eos_outputs.entropy_derivative_pressure[0];
+          out.entropy_derivative_temperature[i] = eos_outputs.entropy_derivative_temperature[0];
+
           for (unsigned int c=0; c < in.composition[i].size(); ++c)
             out.reaction_terms[i][c] = 0.0;
         }
@@ -195,9 +190,8 @@ namespace aspect
       {
         prm.enter_subsection("Drucker Prager");
         {
-          prm.declare_entry ("Reference density", "3300",
-                             Patterns::Double (0),
-                             "The reference density $\\rho_0$. Units: $kg/m^3$.");
+          EquationOfState::LinearizedIncompressible<dim>::declare_parameters (prm);
+
           prm.declare_entry ("Reference temperature", "293",
                              Patterns::Double (0),
                              "The reference temperature $T_0$. The reference temperature is used "
@@ -228,14 +222,6 @@ namespace aspect
                              Patterns::Double (0),
                              "The value of the thermal conductivity $k$. "
                              "Units: $W/m/K$.");
-          prm.declare_entry ("Reference specific heat", "1250",
-                             Patterns::Double (0),
-                             "The value of the specific heat $C_p$. "
-                             "Units: $J/kg/K$.");
-          prm.declare_entry ("Thermal expansion coefficient", "2e-5",
-                             Patterns::Double (0),
-                             "The value of the thermal expansion coefficient $\\beta$. "
-                             "Units: $1/K$.");
           prm.enter_subsection ("Viscosity");
           {
             prm.declare_entry ("Minimum viscosity", "1e19",
@@ -275,12 +261,11 @@ namespace aspect
       {
         prm.enter_subsection("Drucker Prager");
         {
-          reference_rho              = prm.get_double ("Reference density");
+          equation_of_state.parse_parameters (prm);
+
           reference_T                = prm.get_double ("Reference temperature");
           reference_eta              = prm.get_double ("Reference viscosity");
           thermal_conductivities     = prm.get_double ("Thermal conductivity");
-          reference_specific_heat    = prm.get_double ("Reference specific heat");
-          thermal_expansivity        = prm.get_double ("Thermal expansion coefficient");
           prm.enter_subsection ("Viscosity");
           {
             minimum_viscosity          = prm.get_double ("Minimum viscosity");
@@ -301,13 +286,10 @@ namespace aspect
       this->model_dependence.specific_heat = NonlinearDependence::none;
       this->model_dependence.thermal_conductivity = NonlinearDependence::none;
       this->model_dependence.viscosity = NonlinearDependence::strain_rate;
-      this->model_dependence.density = NonlinearDependence::none;
+      this->model_dependence.density = NonlinearDependence::temperature;
 
       if (angle_of_internal_friction==0.0)
         this->model_dependence.viscosity |= NonlinearDependence::pressure;
-
-      if (thermal_expansivity != 0)
-        this->model_dependence.density = NonlinearDependence::temperature;
     }
   }
 }
