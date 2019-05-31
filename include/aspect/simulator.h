@@ -136,6 +136,18 @@ namespace aspect
     template <int dim>      class Manager;
   }
 
+  struct DefectCorrectionResiduals
+  {
+    double initial_residual;
+    double velocity_residual;
+    double pressure_residual;
+    double residual;
+    double residual_old;
+    double switch_initial_residual;
+    double newton_residual_for_derivative_scaling_factor;
+    std::pair<double,double> stokes_residuals;
+  };
+
   /**
    * This is the main class of ASPECT. It implements the overall simulation
    * algorithm using the numerical methods discussed in the papers and manuals
@@ -717,6 +729,20 @@ namespace aspect
        */
       double assemble_and_solve_stokes (const bool compute_initial_residual = false,
                                         double *initial_nonlinear_residual = nullptr);
+
+      /**
+       * Assemble and solve the defect correction for of the Stokes equation.
+       * This function takes a structure of DefectCorrectionResiduals which
+       * contains information about different resuduals. The information in
+       * this structure is updated by this function. The parameter use_picard
+       * forces the use of the defect correction Piccard iteration, so no
+       * Newton derivatives are added to the matrix.
+       *
+       * This function is implemented in
+       * <code>source/simulator/solver_schemes.cc</code>.
+       */
+      void assemble_and_solve_defect_correction_Stokes(DefectCorrectionResiduals &dcr,
+                                                       bool use_picard);
 
       /**
        * Initiate the assembly of one advection matrix and right hand side and
