@@ -1794,6 +1794,12 @@ namespace aspect
           break;
         }
 
+        case NonlinearSolver::single_Advection_DC_iterated_Stokes:
+        {
+          solve_single_advection_defect_correction_iterated_stokes();
+          break;
+        }
+
         case NonlinearSolver::iterated_Advection_and_Newton_Stokes:
         {
           solve_iterated_advection_and_newton_stokes();
