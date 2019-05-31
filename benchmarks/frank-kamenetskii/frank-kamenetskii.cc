@@ -26,6 +26,15 @@
 
 namespace aspect
 {
+  /**
+   * This plugin modifies the Simple material to calculate
+   * viscosity according to the Frank-Kamenetskii approximation.
+   * Different reference temperature values are used to calculate
+   * density and viscosity. The model is called using
+   * 'frank-kamenetskii' but values are set in the Simple
+   * model subsection.
+   *
+   */
   namespace MaterialModel
   {
     using namespace dealii;
@@ -44,7 +53,6 @@ namespace aspect
         double viscosity_reference_T;
         double viscosity_variation;
         double eta;
-        double thermal_alpha;
     };
 
   }
@@ -71,7 +79,6 @@ namespace aspect
           const double delta_temp = in.temperature[i]-viscosity_reference_T;
 
           // Calculate the activation energy, E, from viscosity variation, delta_eta.
-          // This follows the method from Zhong et al., 2008.
           const double activation_energy = std::log(viscosity_variation);
 
           // Calculate the temperature dependence for the viscosity law.
@@ -115,10 +122,6 @@ namespace aspect
                              "model. Dimensionless exponent. Note that the minimum "
                              "value of this parameter is 1.0, which is equivalent to "
                              "using a constant viscosity throughout the domain.");
-          prm.declare_entry ("Thermal expansion coefficient", "2e-5",
-                             Patterns::Double (0),
-                             "The value of the thermal expansion coefficient $\\alpha$. "
-                             "Units: $1/K$.");
         }
         prm.leave_subsection();
       }
@@ -138,7 +141,6 @@ namespace aspect
           eta                             = prm.get_double ("Viscosity");
           viscosity_reference_T           = prm.get_double ("Viscosity reference temperature");
           viscosity_variation             = prm.get_double ("Viscosity variation");
-          thermal_alpha                   = prm.get_double ("Thermal expansion coefficient");
 
         }
         prm.leave_subsection();
@@ -147,13 +149,10 @@ namespace aspect
 
       // Declare dependencies on solution variables
       this->model_dependence.viscosity = NonlinearDependence::none;
-      this->model_dependence.density = NonlinearDependence::none;
 
       if (viscosity_variation != 1.0)
         this->model_dependence.viscosity |= NonlinearDependence::temperature;
 
-      if (thermal_alpha != 0)
-        this->model_dependence.density |= NonlinearDependence::temperature;
     }
   }
 }
