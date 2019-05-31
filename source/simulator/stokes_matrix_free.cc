@@ -1202,7 +1202,7 @@ namespace aspect
     // linearized_stokes_variables has a different
     // layout than current_linearization_point, which also contains all the
     // other solution variables.
-    if (!sim.assemble_newton_stokes_system)
+    if (sim.assemble_newton_stokes_system == false)
       {
         linearized_stokes_initial_guess.block (block_vel) = sim.current_linearization_point.block (block_vel);
         linearized_stokes_initial_guess.block (block_p) = sim.current_linearization_point.block (block_p);
@@ -1229,7 +1229,7 @@ namespace aspect
     linearized_stokes_initial_guess.block (block_p) /= sim.pressure_scaling;
 
     double solver_tolerance = 0;
-    if (!sim.assemble_newton_stokes_system)
+    if (sim.assemble_newton_stokes_system == false)
       {
         // (ab)use the distributed solution vector to temporarily put a residual in
         // (we don't care about the residual vector -- all we care about is the
@@ -1464,7 +1464,7 @@ namespace aspect
 
     // do some cleanup now that we have the solution
     sim.remove_nullspace(sim.solution, distributed_stokes_solution);
-    if (!sim.assemble_newton_stokes_system)
+    if (sim.assemble_newton_stokes_system == false)
       sim.last_pressure_normalization_adjustment = sim.normalize_pressure(sim.solution);
 
 

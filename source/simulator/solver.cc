@@ -671,7 +671,7 @@ namespace aspect
         // linearized_stokes_variables has a different
         // layout than current_linearization_point, which also contains all the
         // other solution variables.
-        if (!assemble_newton_stokes_system)
+        if (assemble_newton_stokes_system == false)
           {
             linearized_stokes_initial_guess.block (block_vel) = current_linearization_point.block (block_vel);
             linearized_stokes_initial_guess.block (block_p) = current_linearization_point.block (block_p);
@@ -912,7 +912,7 @@ namespace aspect
 
     // do some cleanup now that we have the solution
     remove_nullspace(solution, distributed_stokes_solution);
-    if (!assemble_newton_stokes_system)
+    if (assemble_newton_stokes_system == false)
       this->last_pressure_normalization_adjustment = normalize_pressure(solution);
 
     // convert melt pressures:
