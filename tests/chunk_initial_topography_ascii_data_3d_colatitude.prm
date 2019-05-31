@@ -1,0 +1,18 @@
+# An input script to test the chunk geometry model
+# with additional initial topography with a gradient
+# in the latitudinal direction.
+include $ASPECT_SOURCE_DIR/tests/chunk_initial_topography_ascii_data_3d.prm
+
+set Dimension                       = 3
+
+subsection Geometry model
+  set Model name = chunk
+
+  subsection Initial topography model
+    set Model name = ascii data
+    subsection Ascii data model
+      set Data directory       = $ASPECT_SOURCE_DIR/data/geometry-model/initial-topography-model/ascii-data/test/
+      set Data file name       = shell_3d_outer_2.0.txt
+    end
+  end
+end

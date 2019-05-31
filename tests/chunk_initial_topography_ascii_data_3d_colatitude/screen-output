@@ -2,7 +2,7 @@
 -----------------------------------------------------------------------------
 
 
-   Loading Ascii data boundary file /Users/ACG/Documents/PhD/Aspect/source/25-05-2019/aspect/data/geometry-model/initial-topography-model/ascii-data/test/shell_2d_outer.0.txt.
+   Loading Ascii data boundary file /Users/ACG/Documents/PhD/Aspect/source/25-05-2019/aspect/data/geometry-model/initial-topography-model/ascii-data/test/shell_3d_outer_2.0.txt.
 
 
    From this timestep onwards, ASPECT will not attempt to load new Ascii data files.
@@ -14,13 +14,13 @@
 
 -----------------------------------------------------------------------------
 -----------------------------------------------------------------------------
-Number of active cells: 256 (on 5 levels)
-Number of degrees of freedom: 3,556 (2,178+289+1,089)
+Number of active cells: 64 (on 3 levels)
+Number of degrees of freedom: 3,041 (2,187+125+729)
 
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+15 iterations.
+   Solving Stokes system... 82+0 iterations.
 
    Postprocessing:
 
@@ -38,9 +38,9 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
      Reference thermal diffusivity (m^2/s):         1.22101e-06
      Rayleigh number:                               7.4479e+07
 
-     RMS, max velocity:       0.0119 m/year, 0.0933 m/year
+     RMS, max velocity:       0.0124 m/year, 0.0606 m/year
      Temperature min/avg/max: 1613 K, 1613 K, 1613 K
-     Topography min/max:      -4.757e+04 m, 9e+04 m
+     Topography min/max:      -1959 m, 8999 m
 
 Termination requested by criterion: end time
 
