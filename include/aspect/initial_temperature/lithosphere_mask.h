@@ -53,7 +53,7 @@ namespace aspect
 
           /**
            * Return LAB depth as a function of position (latitude and longitude). This
-	   * function returns either a constant value or values from a text file,
+          * function returns either a constant value or values from a text file,
            * depending on the input parameters. Text files are read in
            * two dimensions so the third column (depth) is treated as data.
            */
