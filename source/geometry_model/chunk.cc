@@ -712,7 +712,9 @@ namespace aspect
     {
       // the chunk manifold has a order of radius, longitude, latitude.
       // This is exactly what we need.
-      const Point<dim> transformed_point = manifold.pull_back(position_point);
+      // Ignore the topography to avoid a loop when calling the
+      // AsciiDataBoundary for topography which uses this function....
+      const Point<dim> transformed_point = manifold.pull_back_sphere(position_point);
       std::array<double,dim> position_array;
       for (unsigned int i = 0; i < dim; i++)
         position_array[i] = transformed_point(i);
@@ -726,6 +728,10 @@ namespace aspect
     aspect::Utilities::Coordinates::CoordinateSystem
     Chunk<dim>::natural_coordinate_system() const
     {
+      // TODO This will give problems somewhere down the line
+      // if geometry models are asked for their coordinate system,
+      // chunk returns spherical and then Utilitiess::Coordinates::cartesian_to_spherical
+      // is used
       return aspect::Utilities::Coordinates::CoordinateSystem::spherical;
     }
 
@@ -735,10 +741,12 @@ namespace aspect
     Point<dim>
     Chunk<dim>::natural_to_cartesian_coordinates(const std::array<double,dim> &position_tensor) const
     {
+      // Ignore the topography to avoid a loop when calling the
+      // AsciiDataBoundary for topography which uses this function....
       Point<dim> position_point;
       for (unsigned int i = 0; i < dim; i++)
         position_point[i] = position_tensor[i];
-      const Point<dim> transformed_point = manifold.push_forward(position_point);
+      const Point<dim> transformed_point = manifold.push_forward_sphere(position_point);
 
       return transformed_point;
     }
