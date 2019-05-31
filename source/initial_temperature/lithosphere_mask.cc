@@ -44,6 +44,7 @@ namespace aspect
         {
           const std::string filename = data_directory+LAB_file_name;
 
+          if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
           std::cout << "   Loading Ascii data lookup file " << filename << "." << std::endl;
 
           lab_depths.load_file(filename,this->get_mpi_communicator());
