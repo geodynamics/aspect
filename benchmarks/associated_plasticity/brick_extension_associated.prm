@@ -1,0 +1,133 @@
+#
+############### Global parameters
+
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 0
+set Use years in output instead of seconds = false
+set CFL number                             = 0.5
+set Nonlinear solver tolerance             = 1e-3
+set Output directory                       = output_brick_extension_associated
+set Nonlinear solver scheme                = iterated Stokes
+set Max nonlinear iterations               = 50
+
+
+############### Geometry
+# We consider a 2D box of 40x10 km of which the elements are of unit aspect ratio.
+subsection Geometry model
+  set Model name = box
+  subsection Box
+    set X extent  = 100000
+    set Y extent  = 10000
+    set X repetitions = 10
+  end
+end
+
+subsection Material model
+  set Model name = visco plastic
+  subsection Visco Plastic
+
+    set Reference temperature  = 273 
+    set Reference viscosity    = 1e21
+
+    set Minimum strain rate = 1.e-20
+    set Reference strain rate = 1.e-15
+
+    set Minimum viscosity = 1e20
+    set Maximum viscosity = 1e25
+
+    set Viscosity averaging scheme = harmonic
+
+    set Thermal diffusivities = 0
+    set Heat capacities       = 750.
+    set Densities             = 2800
+    set Thermal expansivities = 0
+
+    set Viscous flow law = dislocation
+    set Prefactors for dislocation creep          =  1e-50
+    set Stress exponents for dislocation creep    =   1
+    set Activation energies for dislocation creep =   0
+    set Activation volumes for dislocation creep  =   0
+
+    set Yield mechanism = drucker 
+    set Angles of internal friction =    30.
+    set Cohesions                   =    1.e7
+    set Use associated plasticity = true
+
+  end 
+end 
+
+subsection Formulation
+  set Enable prescribed compression = true
+end
+
+
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = left:function, right:function, bottom:function
+  subsection Function
+    set Variable names      = x,y
+    set Function expression =  if(x>=50000.0,-2.e-11,2.e-11);0 
+  end
+end
+
+
+
+############## rho * g = 27000
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 10
+  end
+end
+
+############### Parameters describing the temperature field
+# As above, there is no need to set anything for the
+# temperature boundary conditions.
+
+subsection Boundary temperature model
+  set List of model names = box
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 273 # cannot be zero!!!
+  end
+end
+
+
+
+############### Parameters describing the discretization
+# If we refine, do it based on the strain rate, viscosity or
+# velocity and after each
+# level of refinement, compute the shear band angles in a 
+# postprocessing step.
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 3
+  set Refinement fraction                = 0.8
+  set Coarsening fraction                = 0.0
+  set Strategy                           = strain rate # viscosity # velocity
+end
+
+
+############### Parameters describing the what to do with the solution
+# Average shear band angles are automatically computed according to the
+# description in Kaus (2010). The Stokes residual after each nonlinear 
+# iteration is monitored.
+subsection Postprocess
+  set List of postprocessors = visualization
+  subsection Visualization
+    set List of output variables = viscosity, strain rate, named additional outputs
+    set Time between graphical output = 0
+  end
+  set Run postprocessors on nonlinear iterations = true
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-9
+    set Number of cheap Stokes solver steps = 0
+  end
+end
