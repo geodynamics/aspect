@@ -57,7 +57,7 @@ subsection Boundary velocity model
   end
 end
 
-# Zero traction boundary condition at the top is to allow material to leave the system at the surface following compressional thickening.
+# The zero traction surface allows sticky air to leave the system in response to compression.
 subsection Boundary traction model
   set Prescribed traction boundary indicators = top: zero traction 
 end
