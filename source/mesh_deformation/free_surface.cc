@@ -387,8 +387,8 @@ namespace aspect
                 mesh_velocity_constraints.set_inhomogeneity(index, boundary_velocity[index]);
               }
         }
-
     }
+
 
 
     template <int dim>
@@ -427,6 +427,8 @@ namespace aspect
       }
       prm.leave_subsection ();
     }
+
+
 
     template <int dim>
     void FreeSurface<dim>::parse_parameters(ParameterHandler &prm)

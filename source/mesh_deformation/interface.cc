@@ -165,7 +165,7 @@ namespace aspect
                            "to compare this with the documentation of the geometry model you "
                            "use in your model. "
                            "\n\n"
-                           "The format is id1: object1, object2; id2: object3, object2, where "
+                           "The format is id1: object1 & object2, id2: object3 & object2, where "
                            "objects are one of " + std::get<dim>(registered_plugins).get_description_string());
       }
       prm.leave_subsection ();
@@ -214,7 +214,7 @@ namespace aspect
             AssertThrow (split_parts.size() == 2,
                          ExcMessage ("The format for mesh deformation indicators "
                                      "requires that each entry has the form `"
-                                     "<id> : <value, value, ...>', but there does not "
+                                     "<id> : <value & value & ...>', but there does not "
                                      "appear to be a colon in the entry <"
                                      + *p
                                      + ">."));
@@ -272,11 +272,8 @@ namespace aspect
                     if (*object == "free surface" && free_surface_boundary_ids.find(boundary_id) == free_surface_boundary_ids.end())
                       free_surface_boundary_ids.insert(boundary_id);
                   }
-
               }
           }
-
-
       }
       prm.leave_subsection ();
 

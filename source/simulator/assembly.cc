@@ -513,7 +513,6 @@ namespace aspect
         Mp_preconditioner_AMG->initialize (system_preconditioner_matrix.block(1,1), Amg_data);
       }
 
-    // TODO only needed for free surface, or for all mesh deformations?
     if (parameters.mesh_deformation_enabled || parameters.include_melt_transport || parameters.use_full_A_block_preconditioner)
       Amg_preconditioner->initialize (system_matrix.block(0,0),
                                       Amg_data);

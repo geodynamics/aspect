@@ -99,7 +99,7 @@ namespace aspect
         void
         compute_velocity_constraints_on_boundary(const DoFHandler<dim> &mesh_deformation_dof_handler,
                                                  ConstraintMatrix &mesh_velocity_constraints,
-                                                 std::set<types::boundary_id> boundary_id) const;
+                                                 const std::set<types::boundary_id> &boundary_id) const;
 
         /**
          * Declare parameters for the free surface handling.
