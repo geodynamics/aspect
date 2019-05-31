@@ -23,6 +23,7 @@
 #include <aspect/geometry_model/initial_topography_model/zero_topography.h>
 
 #include <deal.II/grid/grid_generator.h>
+#include <aspect/utilities.h>
 
 #if !DEAL_II_VERSION_GTE(9,0,0)
 #include <deal.II/grid/tria_boundary_lib.h>
@@ -174,11 +175,30 @@ namespace aspect
     }
 
 
+
+    template <int dim>
+    std::array<double,dim>
+    Sphere<dim>::cartesian_to_natural_coordinates(const Point<dim> &position) const
+    {
+      return Utilities::Coordinates::cartesian_to_spherical_coordinates<dim>(position);
+    }
+
+
+
     template <int dim>
     aspect::Utilities::Coordinates::CoordinateSystem
     Sphere<dim>::natural_coordinate_system() const
     {
       return aspect::Utilities::Coordinates::CoordinateSystem::spherical;
+    }
+
+
+
+    template <int dim>
+    Point<dim>
+    Sphere<dim>::natural_to_cartesian_coordinates(const std::array<double,dim> &position) const
+    {
+      return Utilities::Coordinates::spherical_to_cartesian_coordinates<dim>(position);
     }
 
 
