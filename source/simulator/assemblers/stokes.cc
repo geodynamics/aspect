@@ -270,7 +270,10 @@ namespace aspect
       *elastic_outputs = scratch.material_model_outputs.template get_additional_output<MaterialModel::ElasticOutputs<dim> >();
 
       const MaterialModel::PrescribedCompressionOutputs<dim>
-      *prescribed_compression = scratch.material_model_outputs.template get_additional_output<MaterialModel::PrescribedCompressionOutputs<dim> >();
+      *prescribed_compression =
+        (this->get_parameters().enable_prescribed_compression)
+        ? scratch.material_model_outputs.template get_additional_output<MaterialModel::PrescribedCompressionOutputs<dim> >()
+        : nullptr;
 
       // When using the Q1-Q1 equal order element, we need to compute the
       // projection of the Q1 pressure shape functions onto the constants
@@ -330,6 +333,10 @@ namespace aspect
                   if (scratch.rebuild_stokes_matrix)
                     {
                       scratch.grads_phi_u[i_stokes] = scratch.finite_element_values[introspection.extractors.velocities].symmetric_gradient(i,q);
+                      scratch.div_phi_u[i_stokes]   = scratch.finite_element_values[introspection.extractors.velocities].divergence (i, q);
+                    }
+                  else if (prescribed_compression)
+                    {
                       scratch.div_phi_u[i_stokes]   = scratch.finite_element_values[introspection.extractors.velocities].divergence (i, q);
                     }
                   ++i_stokes;
