@@ -74,10 +74,9 @@ namespace aspect
 
           /**
            * Declare the parameters this class takes through input files.
-           * The optional parameter @p n_compositions determines the maximum
-           * number of compositions the equation of state is set up with,
-           * in other words, how many compositional fields influence the
-           * density.
+           * The optional parameter @p default_thermal_expansion determines
+           * the default value of the thermal expansivity used in the
+           * equation of state.
            */
           static
           void
@@ -86,29 +85,33 @@ namespace aspect
 
           /**
            * Read the parameters this class declares from the parameter file.
-           * The optional parameter @p n_compositions determines the maximum
-           * number of compositions the equation of state is set up with,
-           * and should have the same value as the parameter with the same
-           * name in the declare_parameters() function.
            */
           void
           parse_parameters (ParameterHandler &prm);
 
 
         private:
-          // Vector of reference densities $\rho_0$ with one entry per composition,
-          // used in the computation of the density.
+          /**
+           * Vector of reference densities $\rho_0$ with one entry per composition,
+           * used in the computation of the density.
+           */
           std::vector<double> densities;
 
-          // The reference temperature $T_0$ used in the computation of the density.
-          // All component use the same reference temperature.
+          /**
+           * The reference temperature $T_0$ used in the computation of the density.
+           * All component use the same reference temperature.
+           */
           double reference_T;
 
-          // Vector of constant thermal expansivities $\alpha$ with one entry per composition,
-          // used in the computation of the density.
+          /**
+           * Vector of constant thermal expansivities $\alpha$ with one entry per composition,
+           * used in the computation of the density.
+           */
           std::vector<double> thermal_expansivities;
 
-          // Vector of specific heat capacities with one entry per composition.
+          /**
+           * Vector of specific heat capacities with one entry per composition.
+           */
           std::vector<double> specific_heats;
       };
     }

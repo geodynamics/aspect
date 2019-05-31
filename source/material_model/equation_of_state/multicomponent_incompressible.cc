@@ -115,7 +115,6 @@ namespace aspect
                                                                has_background_field,
                                                                "Specific heats");
       }
-
     }
   }
 }
