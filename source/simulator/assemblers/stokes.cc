@@ -385,7 +385,7 @@ namespace aspect
                                        - pressure_scaling
                                        * prescribed_compression->prescribed_compression[q]
                                        * scratch.phi_p[i]
-                                       // RHS of momentum eqn: - \int 2/3 nu R, \nabla v
+                                       // RHS of momentum eqn: - \int 2/3 eta R, div v
                                        -
                                        2.0 / 3.0 * eta
                                        * prescribed_compression->prescribed_compression[q]
