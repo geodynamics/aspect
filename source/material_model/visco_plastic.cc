@@ -659,7 +659,7 @@ namespace aspect
           // If plastic strain is tracked (so not the total strain), only overwrite
           // when plastically yielding.
           // If viscous strain is also tracked, overwrite the second reaction term as well.
-          if  (this->get_timestep_number() > 0 && in.strain_rate.size())
+          if  (this->simulator_is_past_initialization() && this->get_timestep_number() > 0 && in.strain_rate.size())
             {
               const double edot_ii = std::max(sqrt(std::fabs(second_invariant(deviator(in.strain_rate[i])))),min_strain_rate);
               const double e_ii = edot_ii*this->get_timestep();
