@@ -133,7 +133,7 @@ namespace aspect
                              Patterns::Double (0),"Units: m."
                              "The maximum depth of the lithosphere. The viscosity will be "
                              "taken from the base model below this depth.");
-          prm.declare_entry ("Data directory", "$ASPECT_SOURCE_DIR/data/material-model/replace-lithosphere-viscosity/",
+          prm.declare_entry ("Data directory", "$ASPECT_SOURCE_DIR/data/initial-temperature/lithosphere-mask/",
                              Patterns::DirectoryName (),
                              "The path to the model data. The path may also include the special "
                              "text `$ASPECT_SOURCE_DIR' which will be interpreted as the path "
