@@ -1,0 +1,17 @@
+set Dimension = 2
+
+include $ASPECT_SOURCE_DIR/benchmarks/melt_column_differentiation/diff_adim.prm
+
+set End time = 1
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 0.1
+    set Y extent = 1
+    set Y repetitions = 10
+    set X repetitions = 1
+  end
+
+end
