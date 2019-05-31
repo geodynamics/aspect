@@ -107,14 +107,12 @@ namespace aspect
             Point<3>
             push_forward(const Point<3> &chart_point) const;
 
-#if DEAL_II_VERSION_GTE(9,0,0)
             /**
              * Return a copy of this manifold.
              */
             virtual
             std::unique_ptr<Manifold<dim,3> >
             clone() const;
-#endif
 
           private:
             /**
