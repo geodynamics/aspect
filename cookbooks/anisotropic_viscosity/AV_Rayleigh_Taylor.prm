@@ -48,20 +48,19 @@ end
 
 # 3 compositional fields, 1 for the material, 2 for the anisotropic viscosity (AV) normals
 subsection Compositional fields
-    set Number of fields = 3
-    set Names of fields = gamma, ni, nj
+  set Number of fields = 3
+  set Names of fields = gamma, ni, nj
 end
 
 subsection Material model
-    set Model name = AV material
+  set Model name = AV material
 
-  #density is hard-coded into the AV_material.cc plugin
-  #everything else is set to 0
+  # density is hard-coded into the AV_material.cc plugin
+  # everything else is set to 0
     
     subsection AV
         set Normal viscosity    = 1
         set Shear viscosity     = 0.1
-
   end
 end
 
@@ -71,10 +70,10 @@ subsection Initial composition model
         set Variable names      = x,z
         set Function constants  = pi=3.1415926;
 
-  set Function expression = 0.5*(1+tanh((z-0.85-0.02*cos(2*pi*x/2))/0.02)); \
+    set Function expression = 0.5*(1+tanh((z-0.85-0.02*cos(2*pi*x/2))/0.02)); \
                             (0.5*(1+tanh((z-0.85-0.02*cos(2*pi*x/2))/0.02))) > 0.8 ? sin(45*pi/180) : 0.0; \
                             (0.5*(1+tanh((z-0.85-0.02*cos(2*pi*x/2))/0.02))) > 0.8 ? cos(45*pi/180) : 0.0;
-        end
+    end
 end
 
 subsection Mesh refinement
@@ -82,7 +81,7 @@ subsection Mesh refinement
     set Initial adaptive refinement        = 2
     set Strategy                           = composition
     set Time steps between mesh refinement = 1
-    set Coarsening fraction                = 0.05
+      set Coarsening fraction                = 0.05
     set Refinement fraction                = 0.1
 end
 
@@ -93,20 +92,15 @@ subsection Boundary velocity model
     set Zero velocity boundary indicators       = bottom, top
 end
 
-
-
 subsection Postprocess
-
-  set List of postprocessors = visualization, velocity statistics, composition statistics, material statistics
-      
+      set List of postprocessors = visualization, velocity statistics, composition statistics, material statistics
       subsection Visualization
 
-  # add "named additional outputs" to the list to save the stress-strain director (AV tensor)
-        set List of output variables = compositional vector, density, viscosity, gravity, shear stress, stress, strain rate, strain rate tensor, named additional outputs
-
-        set Output format                 = vtu
-        set Time between graphical output = 0.5
-        subsection Compositional fields as vectors
+     # add "named additional outputs" to the list to save the stress-strain director (AV tensor)
+          set List of output variables = compositional vector, density, viscosity, gravity, shear stress, stress, strain rate, strain rate tensor, named additional outputs
+          set Output format                 = vtu
+          set Time between graphical output = 0.5
+          subsection Compositional fields as vectors
             set Names of fields = ni,nj
             set Names of vectors = n
         end

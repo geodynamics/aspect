@@ -95,6 +95,7 @@ namespace aspect
          */
         std::vector<SymmetricTensor<4,dim> > stress_strain_directors;
     };
+
     namespace
     {
       template <int dim>
@@ -228,14 +229,7 @@ namespace aspect
 
           const double eta = scratch.material_model_outputs.viscosities[q];
           const double one_over_eta = 1. / eta;
-
-          const bool use_tensor = (anisotropic_viscosity != nullptr);
-
-          const SymmetricTensor<4, dim> &stress_strain_director = (use_tensor)
-                                                                  ?
-                                                                  anisotropic_viscosity->stress_strain_directors[q]
-                                                                  :
-                                                                  dealii::identity_tensor<dim>();
+          const SymmetricTensor<4, dim> &stress_strain_director = anisotropic_viscosity->stress_strain_directors[q];
 
 
 
@@ -245,13 +239,9 @@ namespace aspect
             for (unsigned int j = 0; j < stokes_dofs_per_cell; ++j)
               if (scratch.dof_component_indices[i] ==
                   scratch.dof_component_indices[j])
-                data.local_matrix(i, j) += ((
-                                              use_tensor ?
-                                              2.0 * eta * (scratch.grads_phi_u[i]
-                                                           * stress_strain_director
-                                                           * scratch.grads_phi_u[j]) :
-                                              2.0 * eta * (scratch.grads_phi_u[i]
-                                                           * scratch.grads_phi_u[j]))
+                data.local_matrix(i, j) += (2.0 * eta * (scratch.grads_phi_u[i]
+                                                         * stress_strain_director
+                                                         * scratch.grads_phi_u[j])
                                             + one_over_eta * pressure_scaling
                                             * pressure_scaling
                                             * (scratch.phi_p[i]
@@ -323,13 +313,7 @@ namespace aspect
                               :
                               numbers::signaling_nan<double>());
 
-          const bool use_tensor = (anisotropic_viscosity != nullptr);
-
-          const SymmetricTensor<4, dim> &stress_strain_director = (use_tensor)
-                                                                  ?
-                                                                  anisotropic_viscosity->stress_strain_directors[q]
-                                                                  :
-                                                                  dealii::identity_tensor<dim>();
+          const SymmetricTensor<4, dim> &stress_strain_director = anisotropic_viscosity->stress_strain_directors[q];
 
           const Tensor<1,dim>
           gravity = this->get_gravity_model().gravity_vector (scratch.finite_element_values.quadrature_point(q));
@@ -350,10 +334,7 @@ namespace aspect
               if (scratch.rebuild_stokes_matrix)
                 for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
                   {
-                    data.local_matrix(i,j) += ( (use_tensor ?
-                                                 eta * 2.0 * (scratch.grads_phi_u[i] * stress_strain_director * scratch.grads_phi_u[j])
-                                                 :
-                                                 eta * 2.0 * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j]))
+                    data.local_matrix(i,j) += ( eta * 2.0 * (scratch.grads_phi_u[i] * stress_strain_director * scratch.grads_phi_u[j])
                                                 // assemble \nabla p as -(p, div v):
                                                 - (pressure_scaling *
                                                    scratch.div_phi_u[i] * scratch.phi_p[j])
@@ -501,7 +482,8 @@ namespace aspect
   namespace MaterialModel
   {
 
-    //class "Anisotropic" replaces the viscosity scalar to a viscosity tensor, which is defiend in the parameter file
+    //The Anisotropic material model class builds on the `Simple` material model but replaces the scalar viscosity
+    //produced by the latter material model by a viscosity tensor. This tensor is defined in the parameter file.
     template <int dim>
     class Anisotropic : public MaterialModel::Simple<dim>
     {
@@ -529,7 +511,11 @@ namespace aspect
     };
 
 
-    // class "AV" calculates the anisotropic viscosity tensor from the director vectors and the normal and shear viscosities (defined in the .prm file)
+    // The AV material model calculates an anisotropic viscosity tensor from director vectors and the normal and shear
+    // viscosities (defined in the .prm file). In contrast to the `Anisotropic` material model, the principal directions of the
+    // tensor are not read from an input file, but instead are computed at every quadrature point. Like the
+    // `Anisotropic` material model, this class is derived from the `Simple` material model and inherits all other
+    // material properties from it.
     template <int dim>
     class AV : public MaterialModel::Simple<dim>
     {
@@ -549,7 +535,6 @@ namespace aspect
         void set_assemblers(const SimulatorAccess<dim> &,
                             Assemblers::Manager<dim> &assemblers) const;
     };
-
   }
 }
 
@@ -603,7 +588,7 @@ namespace aspect
       MaterialModel::AnisotropicViscosity<dim> *anisotropic_viscosity =
         out.template get_additional_output<MaterialModel::AnisotropicViscosity<dim> >();
 
-      Simple<dim>::evaluate(in,out);
+      //Simple<dim>::evaluate(in,out);
 
       AssertThrow((this->introspection().compositional_name_exists("gamma")),
                   ExcMessage("AV material model only works if there is a compositional field called gamma."));
@@ -639,11 +624,8 @@ namespace aspect
                                    Quadrature<dim>(quadrature_positions),
                                    update_gradients);
           fe_values.reinit (in.current_cell);
-
-
           fe_values[this->introspection().extractors.velocities]
           .get_function_gradients(this->get_solution(), velocity_gradients);
-
         }
 
       for (unsigned int q=0; q<in.position.size(); ++q)
@@ -662,6 +644,7 @@ namespace aspect
           Tensor<1,dim> n;
           for (unsigned int i=0; i<dim; ++i)
             n[i] = in.composition[q][c_idx_n[i]];
+
           Tensor<1,dim> n_dot;
           if (n.norm() >0.5 && in.composition[q][c_idx_gamma] > 0.8)
             {
@@ -672,7 +655,6 @@ namespace aspect
                 for (unsigned int j=0; j<dim; ++j)
                   W[i][j] = velocity_gradients[q][i][j] - D[i][j];
 
-//        n_dot = (W - outer_product(n*D, n) - outer_product(n, D*n)) * n;
               for (unsigned int i=0; i<dim; ++i)
                 {
                   // outer summation over each value of j.
@@ -695,7 +677,7 @@ namespace aspect
               n_new /= n_new.norm();
               if (this->get_timestep()==0) //because at the start of the model timestep is 0
                 {
-                  n_dot=(n/n.norm())-n;
+                  n_dot = (n/n.norm())-n;
                 }
               else
                 {
@@ -704,9 +686,9 @@ namespace aspect
             }
           else
             {
-              n_dot=0;
+              n_dot = 0;
             }
-          //update  n[i] = in.composition[q][c_idx_n[i]] with adding to it n_dot*dt
+          // update  n[i] = in.composition[q][c_idx_n[i]] with adding to it n_dot*dt
           for (unsigned int i=0; i<dim; ++i)
             if (this->get_timestep()==0)
               out.reaction_terms[q][c_idx_n[i]] = n_dot[i];
