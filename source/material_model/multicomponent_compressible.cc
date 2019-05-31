@@ -43,7 +43,7 @@ namespace aspect
 
           equation_of_state.evaluate(in, i, eos_outputs);
 
-          unsigned int n_fields = reference_volume_fractions.size();
+          const unsigned int n_fields = reference_volume_fractions.size();
           std::vector<double> mass_fractions(n_fields);
           std::vector<double> volume_fractions(n_fields);
           double sum_mass_fractions = 0.0;

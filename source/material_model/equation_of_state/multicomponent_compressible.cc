@@ -54,8 +54,8 @@ namespace aspect
                                                 ak * std::pow(f, -1.-(1./isothermal_bulk_modulus_pressure_derivatives[c]))
                                                 / reference_densities[c]));
             out.compressibilities[c] = reference_isothermal_compressibilities[c]/f;
-            out.entropy_derivative_pressure[c] = -out.thermal_expansion_coefficients[c] / out.densities[c];
-            out.entropy_derivative_temperature[c] = out.specific_heat_capacities[c] / temperature;
+            out.entropy_derivative_pressure[c] = 0.;
+            out.entropy_derivative_temperature[c] = 0.;
           }
       }
 
@@ -152,7 +152,6 @@ namespace aspect
                                                                          has_background_field,
                                                                          "Isochoric specific heats");
       }
-
     }
   }
 }
