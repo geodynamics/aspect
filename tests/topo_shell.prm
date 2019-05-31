@@ -41,7 +41,7 @@ subsection Boundary temperature model
 end
 
 subsection Mesh deformation
-  set Mesh deformation boundary indicators 		= top: free surface
+  set Mesh deformation boundary indicators     = top: free surface
 end
 
 subsection Heating model

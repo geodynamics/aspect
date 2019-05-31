@@ -24,7 +24,7 @@ subsection Boundary velocity model
 end
 
 subsection Mesh deformation
-  set Mesh deformation boundary indicators 		= top: free surface
+  set Mesh deformation boundary indicators     = top: free surface
   set Additional tangential mesh velocity boundary indicators = right, left
   subsection Free surface
     set Free surface stabilization theta = 0.5
