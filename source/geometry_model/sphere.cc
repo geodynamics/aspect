@@ -25,28 +25,14 @@
 #include <deal.II/grid/grid_generator.h>
 #include <aspect/utilities.h>
 
-#if !DEAL_II_VERSION_GTE(9,0,0)
-#include <deal.II/grid/tria_boundary_lib.h>
-#endif
-
 namespace aspect
 {
   namespace GeometryModel
   {
-    /*
-      intel 18 incorrectly complains:
-
-      warning #411: class template "aspect::GeometryModel::Sphere<dim>" defines no constructor to initialize the following:
-      const member "aspect::GeometryModel::Sphere<dim>::spherical_manifold"
-
-      even though SphericalManifold's constructor has only one argument with a default.
-    */
     template <int dim>
     Sphere<dim>::Sphere()
-#if DEAL_II_VERSION_GTE(9,0,0)
       :
       spherical_manifold()
-#endif
     {}
 
 
@@ -60,13 +46,8 @@ namespace aspect
                                  Point<dim>(),
                                  R);
 
-#if DEAL_II_VERSION_GTE(9,0,0)
       coarse_grid.set_manifold(0,spherical_manifold);
       coarse_grid.set_all_manifold_ids_on_boundary(0);
-#else
-      static const HyperBallBoundary<dim> boundary_ball(Point<dim>(), R);
-      coarse_grid.set_boundary (0, boundary_ball);
-#endif
     }
 
 
