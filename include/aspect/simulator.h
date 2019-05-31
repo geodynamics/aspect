@@ -581,6 +581,21 @@ namespace aspect
        */
       void solve_single_advection_iterated_stokes ();
 
+
+      /**
+       * This function implements one scheme for the various
+       * steps necessary to assemble and solve the nonlinear problem.
+       *
+       * The `single Advection, iterated DC Stokes' scheme solves the temperature and
+       * composition equations once at the beginning of each time step
+       * and then iterates out the solution of the Stokes equation using
+       * Defect Correction (DC) Picard iterations.
+       *
+       * This function is implemented in
+       * <code>source/simulator/solver_schemes.cc</code>.
+       */
+      void solve_single_advection_defect_correction_iterated_stokes ();
+
       /**
        * This function implements one scheme for the various
        * steps necessary to assemble and solve the nonlinear problem.

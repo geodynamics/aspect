@@ -754,6 +754,63 @@ namespace aspect
 
 
   template <int dim>
+  void Simulator<dim>::solve_single_advection_defect_correction_iterated_stokes ()
+  {
+    // Now store the linear_tolerance we started out with, because we might change
+    // it within this timestep.
+    double begin_linear_tolerance = parameters.linear_stokes_solver_tolerance;
+
+    std::vector<double> initial_composition_residual (parameters.n_compositional_fields,0);
+
+    DefectCorrectionResiduals dcr;
+    dcr.initial_residual = 1;
+
+    dcr.velocity_residual = 0;
+    dcr.pressure_residual = 0;
+    dcr.residual = 1;
+    dcr.residual_old = 1;
+
+    dcr.switch_initial_residual = 1;
+    dcr.newton_residual_for_derivative_scaling_factor = 1;
+
+    const unsigned int max_nonlinear_iterations =
+      (pre_refinement_step < parameters.initial_adaptive_refinement)
+      ?
+      std::min(parameters.max_nonlinear_iterations,
+               parameters.max_nonlinear_iterations_in_prerefinement)
+      :
+      parameters.max_nonlinear_iterations;
+
+    // Now iterate out the nonlinearities.
+    dcr.stokes_residuals = std::pair<double,double>  (numbers::signaling_nan<double>(),
+                                                      numbers::signaling_nan<double>());
+
+    assemble_and_solve_temperature();
+    assemble_and_solve_composition();
+
+    for (nonlinear_iteration = 0; nonlinear_iteration < max_nonlinear_iterations; ++nonlinear_iteration)
+      {
+
+        assemble_and_solve_defect_correction_Stokes(dcr, true);
+
+        if (parameters.run_postprocessors_on_nonlinear_iterations)
+          postprocess ();
+
+        if (dcr.residual/dcr.initial_residual < parameters.nonlinear_tolerance)
+          break;
+      }
+
+    // Reset the linear tolerance to what it was at the beginning of the time step.
+    parameters.linear_stokes_solver_tolerance = begin_linear_tolerance;
+
+    // When we are finished iterating, we need to set the final solution to the current linearization point,
+    // because the solution vector is used in the postprocess.
+    solution = current_linearization_point;
+  }
+
+
+
+  template <int dim>
   void Simulator<dim>::solve_no_advection_single_stokes ()
   {
     assemble_and_solve_stokes();
