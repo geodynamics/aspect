@@ -91,7 +91,7 @@ namespace aspect
         void
         compute_velocity_constraints_on_boundary(const DoFHandler<dim> &mesh_deformation_dof_handler,
                                                  ConstraintMatrix &mesh_velocity_constraints,
-                                                 std::set<types::boundary_id> boundary_id) const = 0;
+                                                 const std::set<types::boundary_id> &boundary_id) const = 0;
 
         /**
          * Declare the parameters this class takes through input files. The
