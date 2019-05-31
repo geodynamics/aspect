@@ -2416,6 +2416,294 @@ namespace aspect
 
 
 
+    template <int querydim>
+    void
+    UnstructuredDataLookup<querydim>::initialize (const MPI_Comm &comm,
+                                                  std::string datadirectory,
+                                                  std::vector<std::string> material_file_names)
+    {
+      n_data_files = material_file_names.size();
+
+      // Read in values from each file in the list
+      for (unsigned int i = 0; i < n_data_files; i++)
+        {
+          load_file (datadirectory+material_file_names[i], comm);
+        }
+
+      // Set the coordinate points into the kdtree object
+      coordinate_kdtree.set_points (coordinate_values);
+    }
+
+
+
+    template <int querydim>
+    std::vector< std::pair<std::vector<double> ,double> >
+    UnstructuredDataLookup<querydim>::get_data(const Point<querydim> &target_point, const unsigned int n_points) const
+    {
+      // Fill a vector with indices and distances of the closest n_points points to the given target point
+      std::vector<std::pair<unsigned int, double> > closest_indices = coordinate_kdtree.get_closest_points (target_point,n_points);
+
+      std::vector<double> data_return;
+      std::pair<std::vector<double>,double> data_distance_pair;
+      std::vector< std::pair<std::vector<double> ,double> > set_of_closest_data;
+
+      // Capture the index of the nearestneighbor
+      for (unsigned int i=0; i<closest_indices.size(); ++i)
+        {
+          unsigned int nearestneighbor = std::get<0>(closest_indices[i]);
+
+          for (unsigned int j=0; j<data[nearestneighbor].size(); ++j)
+            {
+              data_return.emplace_back(data[nearestneighbor][j]);
+            }
+
+          data_distance_pair = {data_return, std::get<1>(closest_indices[i])};
+
+          set_of_closest_data.emplace_back(data_distance_pair);
+        }
+
+      return set_of_closest_data;
+    }
+
+
+
+    template <int querydim>
+    UnstructuredDataLookup<querydim>::UnstructuredDataLookup(const unsigned int components)
+      :
+      components(components),
+      data(components)
+    {}
+
+
+
+    template <int querydim>
+    UnstructuredDataLookup<querydim>::UnstructuredDataLookup()
+      :
+      components(numbers::invalid_unsigned_int),
+      data()
+    {}
+
+
+
+    template <int querydim>
+    void
+    UnstructuredDataLookup<querydim>::load_file(const std::string &filename,
+                                                const MPI_Comm &comm)
+    {
+
+      // Set the size of the vector that stores the file boundary_dimensions
+      unsigned int num_point_dimensions = 3;
+      point_dimensions.resize(num_point_dimensions);
+
+
+      // Read data from disk and distribute among processes
+      std::stringstream in(read_and_distribute_file_content(filename, comm));
+
+      // Read header lines and table size
+      while (in.peek() == '#')
+        {
+          std::string line;
+          std::getline(in,line);
+          std::stringstream linestream(line);
+          std::string word;
+          while (linestream >> word)
+            if (word == "POINTS:")
+              for (unsigned int i = 0; i < num_point_dimensions; i++)
+                {
+                  unsigned int temp_index;
+                  linestream >> temp_index;
+
+                  if (point_dimensions[i] == 0)
+                    point_dimensions[i] = temp_index;
+                  else
+                    AssertThrow (point_dimensions[i] == temp_index,
+                                 ExcMessage("The file grid must not change over model runtime. "
+                                            "Either you prescribed a conflicting number of points in "
+                                            "the input file, or the POINTS comment in your data files "
+                                            "is changing between following files."));
+                }
+        }
+
+      for (unsigned int i = 0; i < num_point_dimensions; i++)
+        {
+          AssertThrow(point_dimensions[i] != 0,
+                      ExcMessage("Could not successfully read in the file header of the "
+                                 "ascii data file <" + filename + ">. One header line has to "
+                                 "be of the format: '#POINTS: TOTALNUMBERDATALINES NUMBERCOORDCOLUMNS NUMBERDATACOLUMNS'."
+                                 " Check for typos in this line "
+                                 "(e.g. a missing space character)."));
+        }
+
+
+      // Assign values from the point_dimensions vector into something more recognizable
+      const unsigned int number_of_data_lines = point_dimensions[0];
+      const unsigned int number_of_coordinate_columns = point_dimensions[1];
+      const unsigned int number_of_data_columns = point_dimensions[2];
+
+
+      // Ensure that querydim matches the number of coordinate columns
+      AssertThrow(querydim==number_of_coordinate_columns,
+                  ExcMessage("The number of coordinate columns does not match the query dimension "
+                             "for the ascii data file <" + filename + ">. Check that the #POINTS "
+                             "values are correct and that they match the query dimension that this "
+                             "class is initialized with. The #POINTS is as follows: "
+                             "'#POINTS: TOTALNUMBERDATALINES NUMBERCOORDCOLUMNS NUMBERDATACOLUMNS'."));
+
+      // Read column lines if present
+      unsigned int name_column_index = 0;
+      double temp_data;
+
+      // Catch whether a column descriptor is present. If yes, read the names into a vector of names, both coordinates and data.
+      while (true)
+        {
+          AssertThrow (name_column_index < 100,
+                       ExcMessage("The program found more than 100 columns in the first line of the data file. "
+                                  "This is unlikely intentional. Check your data file and make sure the data can be "
+                                  "interpreted as floating point numbers. If you do want to read a data file with more "
+                                  "than 100 columns, please remove this assertion."));
+
+          std::string column_name_or_data;
+          in >> column_name_or_data;
+          try
+            {
+              // If the data field contains a name this will throw an exception
+              temp_data = boost::lexical_cast<double>(column_name_or_data);
+
+              // If there was no exception we have left the line containing names
+              // and have read the first data field. Save number of components, and
+              // make sure there is no contradiction if the components were already given to
+              // the constructor of this class.
+              if (components == numbers::invalid_unsigned_int)
+                components = name_column_index - number_of_coordinate_columns;
+              else if (name_column_index != 0)
+                AssertThrow (components == name_column_index,
+                             ExcMessage("The number of expected data columns and the "
+                                        "list of column names at the beginning of the data file "
+                                        + filename + " do not match. The file should contain "
+                                        "one column name per column (one for each dimension "
+                                        "and one per data column)."));
+
+              break;
+            }
+          catch (const boost::bad_lexical_cast &e)
+            {
+              // The first dim columns are coordinates and contain no data
+              if (name_column_index >= number_of_coordinate_columns)
+                {
+                  // Transform name to lower case to prevent confusion with capital letters
+                  // Note: only ASCII characters allowed
+                  std::transform(column_name_or_data.begin(), column_name_or_data.end(), column_name_or_data.begin(), ::tolower);
+
+                  AssertThrow(std::find(data_component_names.begin(),data_component_names.end(),column_name_or_data)
+                              == data_component_names.end(),
+                              ExcMessage("There are multiple fields named " + column_name_or_data +
+                                         " in the data file " + filename + ". Please remove duplication to "
+                                         "allow for unique association between column and name."));
+
+                  data_component_names.push_back(column_name_or_data);
+                }
+              ++name_column_index;
+            }
+        }
+
+
+      // Reserve an appropriate amount of memory for the coordinate and data vectors.
+      coordinate_values.reserve(data.size() + number_of_data_lines);
+      data.reserve(data.size() + number_of_data_lines);
+
+
+      // Read data lines
+      unsigned int read_data_entries = 0;
+      Point<querydim> coordinate_point;
+      std::vector<double> data_values(number_of_data_columns);
+
+      do
+        {
+          unsigned int column_num = read_data_entries%(number_of_coordinate_columns+number_of_data_columns);
+
+          // Populate coordinates vector
+          if (column_num < number_of_coordinate_columns)
+            {
+              coordinate_point[column_num] = temp_data;
+            }
+
+          if (column_num == number_of_coordinate_columns)
+            {
+              coordinate_values.emplace_back(coordinate_point);
+              coordinate_point = Point<querydim>();
+            }
+
+          if (column_num >= number_of_coordinate_columns)
+            {
+              data_values[column_num - number_of_coordinate_columns] = temp_data;
+            }
+
+          if (column_num == number_of_coordinate_columns + number_of_data_columns - 1)
+            data.emplace_back(data_values);
+
+          ++read_data_entries;
+        }
+      while (in >> temp_data);
+
+      AssertThrow(in.eof(),
+                  ExcMessage ("While reading the data file '" + filename + "' the ascii data "
+                              "plugin has encountered an error before the end of the file. "
+                              "Please check for malformed data values (e.g. NaN) or superfluous "
+                              "lines at the end of the data file."));
+
+      const unsigned int n_expected_data_entries = (number_of_coordinate_columns+number_of_data_columns) * number_of_data_lines;
+      AssertThrow(read_data_entries == n_expected_data_entries,
+                  ExcMessage ("While reading the data file '" + filename + "' the ascii data "
+                              "plugin has reached the end of the file, but has not found the "
+                              "expected number of data values considering the spatial dimension, "
+                              "data columns, and number of lines prescribed by the POINTS header "
+                              "of the file. Please check the number of data "
+                              "lines against the POINTS header in the file."));
+
+    }
+
+
+
+    template <int querydim>
+    std::vector<std::string>
+    UnstructuredDataLookup<querydim>::get_column_names() const
+    {
+      return data_component_names;
+    }
+
+
+
+    template <int querydim>
+    unsigned int
+    UnstructuredDataLookup<querydim>::get_column_index_from_name(const std::string &column_name) const
+    {
+      const std::vector<std::string>::const_iterator column_position =
+        std::find(data_component_names.begin(),data_component_names.end(),column_name);
+
+      AssertThrow(column_position != data_component_names.end(),
+                  ExcMessage("There is no data column named " + column_name
+                             + " in the current data file. Please check the name and the "
+                             "first line not starting with '#' of your data file."));
+
+      return std::distance(data_component_names.begin(),column_position);
+    }
+
+
+
+    template <int querydim>
+    std::string
+    UnstructuredDataLookup<querydim>::get_column_name_from_index(const unsigned int column_index) const
+    {
+      AssertThrow(data_component_names.size() > column_index,
+                  ExcMessage("There is no data column number " + Utilities::to_string(column_index)
+                             + " in the current data file. The data file only contains "
+                             + Utilities::to_string(data_component_names.size()) + " named columns."));
+
+      return data_component_names[column_index];
+    }
+
+
+
     double
     weighted_p_norm_average ( const std::vector<double> &weights,
                               const std::vector<double> &values,
