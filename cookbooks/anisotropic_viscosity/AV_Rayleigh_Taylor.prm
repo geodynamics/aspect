@@ -11,7 +11,7 @@ set End time                               = 30
 set Adiabatic surface temperature          = 0
 set Surface pressure                       = 0
 set Use years in output instead of seconds = false  # default: true
-set Output directory                       = output-AV-Rayleigh-Taylor
+set Output directory                       = output-AV-Rayleigh-Taylor-noAV
 
 
 subsection Boundary temperature model
@@ -60,7 +60,7 @@ subsection Material model
     
     subsection AV
         set Normal viscosity    = 1
-        set Shear viscosity     = 0.1
+        set Shear viscosity     = 1
   end
 end
 
