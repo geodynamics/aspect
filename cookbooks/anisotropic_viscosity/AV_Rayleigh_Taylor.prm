@@ -11,10 +11,8 @@ set End time                               = 30
 set Adiabatic surface temperature          = 0
 set Surface pressure                       = 0
 set Use years in output instead of seconds = false  # default: true
-set Output directory                       = output-AV-Rayleigh-Taylor_weak_45_05_27_box2x1_if
+set Output directory                       = output-AV-Rayleigh-Taylor
 
-#set Nonlinear solver scheme                = iterated Stokes
-#set Max nonlinear iterations               = 1
 
 subsection Boundary temperature model
   set List of model names = box
@@ -41,7 +39,6 @@ subsection Initial temperature model
   end
 end
 
-
 subsection Gravity model
   set Model name = vertical
   subsection Vertical
@@ -49,7 +46,7 @@ subsection Gravity model
   end
 end
 
-#3 compositional fields, 1 for the material, 2 for the AV normals
+# 3 compositional fields, 1 for the material, 2 for the anisotropic viscosity (AV) normals
 subsection Compositional fields
     set Number of fields = 3
     set Names of fields = gamma, ni, nj
@@ -58,11 +55,13 @@ end
 subsection Material model
     set Model name = AV material
 
+	#density is hard-coded into the AV_material.cc plugin
+	#everything else is set to 0
+    
     subsection AV
         set Normal viscosity    = 1
         set Shear viscosity     = 0.1
-#density is hard-coded into the AV_material.cc plugin
-#everything else is set to 0
+
   end
 end
 
@@ -72,9 +71,9 @@ subsection Initial composition model
         set Variable names      = x,z
         set Function constants  = pi=3.1415926;
 
-set Function expression = 0.5*(1+tanh((z-0.85-0.02*cos(2*pi*x/2))/0.02)); \
-                          (0.5*(1+tanh((z-0.85-0.02*cos(2*pi*x/2))/0.02))) > 0.8 ? sin(45*pi/180) : 0.0; \
-                          (0.5*(1+tanh((z-0.85-0.02*cos(2*pi*x/2))/0.02))) > 0.8 ? cos(45*pi/180) : 0.0;
+	set Function expression = 0.5*(1+tanh((z-0.85-0.02*cos(2*pi*x/2))/0.02)); \
+                          	(0.5*(1+tanh((z-0.85-0.02*cos(2*pi*x/2))/0.02))) > 0.8 ? sin(45*pi/180) : 0.0; \
+                          	(0.5*(1+tanh((z-0.85-0.02*cos(2*pi*x/2))/0.02))) > 0.8 ? cos(45*pi/180) : 0.0;
         end
 end
 
@@ -97,10 +96,14 @@ end
 
 
 subsection Postprocess
+
   set List of postprocessors = visualization, velocity statistics, composition statistics, material statistics
-    subsection Visualization
+    	
+      subsection Visualization
+
+	# add "named additional outputs" to the list to save the stress-strain director (AV tensor)
         set List of output variables = compositional vector, density, viscosity, gravity, shear stress, stress, strain rate, strain rate tensor, named additional outputs
-#anisotropic viscosity tensor components are in the named additional outputs
+
         set Output format                 = vtu
         set Time between graphical output = 0.5
         subsection Compositional fields as vectors
