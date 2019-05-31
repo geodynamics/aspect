@@ -33,7 +33,7 @@ namespace aspect
 
     /**
      * A material model that applies a given constant viscosity in the lithosphere.
-     * Viscosity below this is taken from a ''base mode''chosen from any of the
+     * Viscosity below this is taken from a ''base model'' chosen from any of the
      * other available material models. The replace lithosphere viscosity
      * material model allows the user to specify the depth of the lithosphere-asthenosphre
      * boundary either as one value or as a file. All other properties are derived
