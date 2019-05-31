@@ -2286,14 +2286,14 @@ allows using one of the following methods:
 \end{itemize}
 
 
-Both add additional terms to the temperature (or compositional field equation). We will discuss
+Both add additional terms to the temperature (or compositional field) equation. We will discuss
 the case for the temperature equation here. The compositional fields only differ in having
 a zero conductivity, fewer right-hand side terms, and $\rho C_p=1$. The strong form of the temperature equation reads
 \[
  \rho C_p \frac{\partial T}{\partial t} + \rho C_p \mathbf{u} \cdot \nabla T - \nabla \cdot k\nabla T = F,
 \]
 where $F$ is the combination of source and reaction terms,
-while the weak form (with test function $\varphi$) becomes:
+while the weak form -- with test function $\varphi$ and L2 inner product $(\cdot,\cdot)$ -- is
 \[
 a(T,\varphi) =
  \left(\rho C_p \frac{\partial T}{\partial t}, \varphi \right)
@@ -2303,8 +2303,7 @@ a(T,\varphi) =
 
 \subsubsection{SUPG Stabilization}
 
-For streamline upwind/Petrov-Galerkin (SUPG) (see for example \cite{JohnKnobloch2006,dealiistep-63}), we amend the weak form with a cell-wise
-defined weak form
+For streamline upwind/Petrov-Galerkin (SUPG) (see for example \cite{JohnKnobloch2006,dealiistep-63}), we add to the weak form $a(\cdot,\cdot)$ the cell-wise defined weak form
 \[
 a_{\text{SUPG}} (T, \varphi) =
  \sum_{K \in \mathcal{T}_h}
@@ -2312,8 +2311,12 @@ a_{\text{SUPG}} (T, \varphi) =
 \]
 where $K \in \mathcal{T}_h$ are the cells in the computation, $\delta_K \geq 0$ is a stabilization coefficient
 defined on each cell, $\mathbf{\beta} = \rho C_p \mathbf{u}$ is the effective advection velocity.
+The standard literature about SUPG does not contain $\rho C_p$, so it makes sense to include this in the
+velocity.
 The first argument in the inner product is the strong form of the residual of PDE, which
-is tested with the expression $\mathbf{\beta} \cdot \nabla \varphi$.
+is tested with the expression $\mathbf{\beta} \cdot \nabla \varphi$ representing the solution in
+streamline direction. We have to assume $k$ to be
+constant per cell, as we can not compute the spacial derivatives easily.
 
 For the implementation, $\frac{\partial T}{\partial t}$ is replaced by the BDF2 approximation, and its terms from older timesteps and $-F$, are moved to the right-hand side of the PDE.
 
@@ -2325,15 +2328,17 @@ where the Peclet number is given by
 \[
  Pe = \frac{ \| \mathbf{\beta} \| h}{2 k d},
 \]
-$d$ is the polynomial degree (typically 2) and
+$d$ is the polynomial degree of the temperature or composition element (typically 2) and
 $
  \coth(x) = (1+\exp(-2x)) / (1-\exp(-2x)).
 $
 If $Pe<1$, the equation is diffusion-dominated and no stabilization is needed, so we
-set $\delta_K=0$. Care needs to be taken in the definition if $\| \beta \|$ or $k$ become zero.
-
-
-
+set $\delta_K=0$. Care needs to be taken in the definition if $\| \beta \|$ or $k$ become zero:
+\begin{enumerate}
+\item If $k$ is zero, then $Pe=\infty$ and the right part of the product in the definition of $\delta_K$is equal to one.
+\item If $\| \beta \|$ is zero, $Pe < 1$, so we set $\delta_K=0$
+\item If both are zero, no stabilization is needed (the field remains constant).  
+\end{enumerate}
 
 
 
