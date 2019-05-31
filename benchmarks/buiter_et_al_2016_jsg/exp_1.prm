@@ -1,19 +1,21 @@
-# This is the input file for the setup for the benchmark described in Buiter et al, 2016
-# Experiment 1 which simulates a stable wedge undergoing translation.
-# Experiment 2 can be found in $ASPECT_INSTALL/aspect/benchmarks/buiter_et_al_2008_jgr
-# Refer to the README file for details on experimental setup for this benchmark.
-
-
+# This is an input file for the setup for the benchmark described in Buiter et al, 2016
+# which simulates a stable wedge undergoing translation.
+# Experiment 2 can be found in $ASPECT_INSTALL/aspect/benchmarks/buiter_et_al_2016_jsg
+# Please refer to the README file for further details on the experimental setup and results.
 #####  Global parameters
 set Dimension                              = 2
 set Start time                             = 0
-set End time                               = 14400
+set End time                               = 14400 # Equivalent to 10 cm of horizontal translation
 set Use years in output instead of seconds = false
 set Nonlinear solver scheme                = single Advection, iterated Stokes
-set Nonlinear solver tolerance             = 1e-9
-set Max nonlinear iterations               = 25
+
+# Note that the Linear/Nonlinear solver tolerance should be sufficiently 
+# strict to avoid numerical instabilities.
+
+set Nonlinear solver tolerance             = 1e-7
+set Max nonlinear iterations               = 100
 set CFL number                             = 0.5
-set Output directory                       = output
+set Output directory                       = stable_wedge_output
 set Timing output frequency                = 1
 set Pressure normalization                 = no
 set Resume computation			   = auto
@@ -32,6 +34,7 @@ subsection Geometry model
 end
 
 # Mesh refinement specifications
+# AMR is not used since model X,Y repititions are defined.
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
   set Initial global refinement          = 0
@@ -60,6 +63,7 @@ subsection Boundary traction model
 end
 
 # Temperature boundary conditions
+# Temperature does not affect model
 subsection Boundary temperature model
   set List of model names = initial temperature
 end
@@ -78,9 +82,10 @@ subsection Compositional fields
   set Names of fields  = sand, bound, block, sticky_air, total_strain
 end
 
-# Spatial domain of different compositional fields
-# Box bounding simulated sandbox experiment
-# Rigid indentor used to translate wedge
+# Spatial domain of different compositional fields:
+# Sand wedge with taper angle of 20 degrees,
+# Box bounding simulated sandbox experiment,
+# Rigid indentor used to translate wedge, and
 # Sticky air layer above modelled materials
 subsection Initial composition model
   set Model name = function
@@ -153,7 +158,7 @@ subsection Gravity model
   end
 end
 
-# Checkpointing
+# Checkpointing for restart files
 subsection Checkpointing
   set Steps between checkpoint = 10
 end
@@ -174,6 +179,9 @@ subsection Termination criteria
   set Termination criteria = end step
   set End step             = 10000
 end
+
+# Note that the Linear/Nonlinear solver tolerance should be sufficiently 
+# strict to avoid numerical instabilities.
 
 subsection Solver parameters
   subsection Stokes solver parameters
