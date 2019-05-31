@@ -35,14 +35,14 @@ namespace aspect
 
     namespace LABDepth
     {
-     	template <int dim>
+      template <int dim>
       class LABDepthLookup : public SimulatorAccess<dim>
-     	{
+      {
         public:
-            /**
-             * Empty Constructor.
-             */
-            LABDepthLookup ();
+          /**
+           * Empty Constructor.
+           */
+          LABDepthLookup ();
 
           /**
            * Initialization function. This function is called once at the
@@ -51,65 +51,65 @@ namespace aspect
           void
           initialize ();
 
-            /**
-             * Return LAB depth as a function of position (latitude and longitude). For the
-             * current class, this function returns value from the text file. We read in
-             * two dimensions so the third column (depth) is treated as data.
-             */
-            double
-            get_lab_depth (const Point<dim> &position) const;
+          /**
+           * Return LAB depth as a function of position (latitude and longitude). For the
+           * current class, this function returns value from the text file. We read in
+           * two dimensions so the third column (depth) is treated as data.
+           */
+          double
+          get_lab_depth (const Point<dim> &position) const;
 
-            /**
-             * Declare the parameters this class takes through input files.
-             */
-            static
-            void
-            declare_parameters (ParameterHandler &prm);
+          /**
+           * Declare the parameters this class takes through input files.
+           */
+          static
+          void
+          declare_parameters (ParameterHandler &prm);
 
-            /**
-             * Read the parameters this class declares from the parameter file.
-             */
-            void
-            parse_parameters (ParameterHandler &prm);
+          /**
+           * Read the parameters this class declares from the parameter file.
+           */
+          void
+          parse_parameters (ParameterHandler &prm);
 
         private:
-               /**
-                * Reads in file containing input data in ascii format.
-                */
-               Utilities::AsciiDataLookup<2> lab_depths;
+          /**
+           * Reads in file containing input data in ascii format.
+           */
+          Utilities::AsciiDataLookup<2> lab_depths;
 
-               /**
-                * Directory in which the LAB depth file is present.
-                */
-               std::string data_directory;
+          /**
+           * Directory in which the LAB depth file is present.
+           */
+          std::string data_directory;
 
-               /**
-                * File name of the LAB depth file.
-                */
-               std::string LAB_file_name;
+          /**
+           * File name of the LAB depth file.
+           */
+          std::string LAB_file_name;
 
-               /**
-                * An enum to describe where the LAB depth is coming from.
-                */
-               enum LABDepthSource
-               {
-                 Value,
-                 File
-               };
+          /**
+           * An enum to describe where the LAB depth is coming from.
+           */
+          enum LABDepthSource
+          {
+            Value,
+            File
+          };
 
-               /**
-                * Currently chosen source for the LAB depth.
-                */
-               LABDepthSource LAB_depth_source;
+          /**
+           * Currently chosen source for the LAB depth.
+           */
+          LABDepthSource LAB_depth_source;
 
-               /**
-                * This parameter gives the maximum depth of the lithosphere. The
-                * model returns nans below this depth. This parameter is only used if LAB
-                * depth source is set to 'Value'.
-                */
-               double max_depth;
-  };
-  }
+          /**
+           * This parameter gives the maximum depth of the lithosphere. The
+           * model returns nans below this depth. This parameter is only used if LAB
+           * depth source is set to 'Value'.
+           */
+          double max_depth;
+      };
+    }
 
     /**
      * A class that implements a constant reference temperature

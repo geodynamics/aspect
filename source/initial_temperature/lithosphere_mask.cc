@@ -29,100 +29,100 @@ namespace aspect
 {
   namespace InitialTemperature
   {
-  namespace LABDepth
-  {
-  template <int dim>
-  LABDepthLookup<dim>::LABDepthLookup ()
-    :
-	lab_depths(1, 1.0)
-  {}
+    namespace LABDepth
+    {
+      template <int dim>
+      LABDepthLookup<dim>::LABDepthLookup ()
+        :
+        lab_depths(1, 1.0)
+      {}
 
 
 
-  template <int dim>
-  void
-  LABDepthLookup<dim>::initialize ()
-  {
-    if (LAB_depth_source == File)
-      {
-        const std::string filename = data_directory+LAB_file_name;
-      	  this->get_pcout() << "   Loading Ascii data lookup file " << filename << "." << std::endl;
-
-        lab_depths.load_file(filename,this->get_mpi_communicator());
-      }
-  }
-
-
-
-  template <int dim>
-  double
-	LABDepthLookup<dim>::get_lab_depth (const Point<dim> &position) const
-  {
-      if (LAB_depth_source == File)
-        {
-          //Get spherical coordinates for model
-          std::array<double,dim> scoord      = Utilities::Coordinates::cartesian_to_spherical_coordinates<dim>(position);
-          const double phi = scoord[1];
-          const double theta = scoord[2];
-          const Point<2> phi_theta (phi, theta);
-
-          //Get lab depth for specific phi and theta
-          const double lab_depth = lab_depths.get_data(phi_theta,0);
-          return lab_depth;
-        }
-
-      else if (LAB_depth_source == Value)
-        {
-          return max_depth;
-        }
-      else
-        {
-          Assert( false, ExcMessage("Invalid method for depth specification method") );
-          return 0.0;
-        }
-
-    return 0.0;
-  }
-
-
-
-  template <int dim>
+      template <int dim>
       void
-	  LABDepthLookup<dim>::declare_parameters (ParameterHandler &prm)
+      LABDepthLookup<dim>::initialize ()
       {
-            prm.declare_entry ("Depth specification method", "Value",
-                               Patterns::Selection("File|Value"),
-                               "Method that is used to specify the depth of the lithosphere-asthenosphere boundary.");
-            prm.declare_entry ("Maximum lithosphere depth", "200000.0",
-                               Patterns::Double (0),"Units: m."
-                               "The maximum depth of the lithosphere. The model will be "
-                               "NaNs below this depth.");
-            prm.declare_entry ("Data directory", "$ASPECT_SOURCE_DIR/data/initial-temperature/lithosphere-mask/",
-                               Patterns::DirectoryName (),
-                               "The path to the LAB depth data file");
-            prm.declare_entry ("LAB depth filename",
-                               "LAB_CAM2016.txt",
-                               Patterns::FileName (),
-                               "File from which the lithosphere-asthenosphere boundary depth data is read.");
+        if (LAB_depth_source == File)
+          {
+            const std::string filename = data_directory+LAB_file_name;
+            this->get_pcout() << "   Loading Ascii data lookup file " << filename << "." << std::endl;
+
+            lab_depths.load_file(filename,this->get_mpi_communicator());
+          }
+      }
+
+
+
+      template <int dim>
+      double
+      LABDepthLookup<dim>::get_lab_depth (const Point<dim> &position) const
+      {
+        if (LAB_depth_source == File)
+          {
+            //Get spherical coordinates for model
+            std::array<double,dim> scoord      = Utilities::Coordinates::cartesian_to_spherical_coordinates<dim>(position);
+            const double phi = scoord[1];
+            const double theta = scoord[2];
+            const Point<2> phi_theta (phi, theta);
+
+            //Get lab depth for specific phi and theta
+            const double lab_depth = lab_depths.get_data(phi_theta,0);
+            return lab_depth;
+          }
+
+        else if (LAB_depth_source == Value)
+          {
+            return max_depth;
+          }
+        else
+          {
+            Assert( false, ExcMessage("Invalid method for depth specification method") );
+            return 0.0;
+          }
+
+        return 0.0;
+      }
+
+
+
+      template <int dim>
+      void
+      LABDepthLookup<dim>::declare_parameters (ParameterHandler &prm)
+      {
+        prm.declare_entry ("Depth specification method", "Value",
+                           Patterns::Selection("File|Value"),
+                           "Method that is used to specify the depth of the lithosphere-asthenosphere boundary.");
+        prm.declare_entry ("Maximum lithosphere depth", "200000.0",
+                           Patterns::Double (0),"Units: m."
+                           "The maximum depth of the lithosphere. The model will be "
+                           "NaNs below this depth.");
+        prm.declare_entry ("Data directory", "$ASPECT_SOURCE_DIR/data/initial-temperature/lithosphere-mask/",
+                           Patterns::DirectoryName (),
+                           "The path to the LAB depth data file");
+        prm.declare_entry ("LAB depth filename",
+                           "LAB_CAM2016.txt",
+                           Patterns::FileName (),
+                           "File from which the lithosphere-asthenosphere boundary depth data is read.");
       }
 
       template <int dim>
       void
-	  LABDepthLookup<dim>::parse_parameters (ParameterHandler &prm)
+      LABDepthLookup<dim>::parse_parameters (ParameterHandler &prm)
       {
-            if ( prm.get("Depth specification method") == "File" )
-              {
-                LAB_depth_source = File;
-                data_directory = Utilities::expand_ASPECT_SOURCE_DIR (prm.get("Data directory"));
-                LAB_file_name = prm.get("LAB depth filename");
-              }
-            else if ( prm.get("Depth specification method") == "Value" )
-              {
-                LAB_depth_source = Value;
-                max_depth = prm.get_double ("Maximum lithosphere depth");
-              }
+        if ( prm.get("Depth specification method") == "File" )
+          {
+            LAB_depth_source = File;
+            data_directory = Utilities::expand_ASPECT_SOURCE_DIR (prm.get("Data directory"));
+            LAB_file_name = prm.get("LAB depth filename");
+          }
+        else if ( prm.get("Depth specification method") == "Value" )
+          {
+            LAB_depth_source = Value;
+            max_depth = prm.get_double ("Maximum lithosphere depth");
+          }
       }
-  }
+    }
 
 
 
@@ -130,7 +130,7 @@ namespace aspect
     void
     LithosphereMask<dim>::initialize ()
     {
-    	lab_depth_lookup.initialize();
+      lab_depth_lookup.initialize();
     }
 
 
@@ -144,9 +144,9 @@ namespace aspect
       const double lab_depth = lab_depth_lookup.get_lab_depth(position);
 
       if (depth <= lab_depth)
-    	  temperature = lithosphere_temperature;
+        temperature = lithosphere_temperature;
       else
-    	  temperature = std::numeric_limits<double>::quiet_NaN();
+        temperature = std::numeric_limits<double>::quiet_NaN();
 
       return temperature;
     }
@@ -159,7 +159,7 @@ namespace aspect
       {
         prm.enter_subsection ("Lithosphere Mask");
         {
-        	LABDepth::LABDepthLookup<dim>::declare_parameters(prm);
+          LABDepth::LABDepthLookup<dim>::declare_parameters(prm);
 
           prm.declare_entry ("Lithosphere temperature", "1600",
                              Patterns::Double (0),
@@ -183,7 +183,7 @@ namespace aspect
       {
         prm.enter_subsection ("Lithosphere Mask");
         {
-        	lab_depth_lookup.initialize_simulator(this->get_simulator());
+          lab_depth_lookup.initialize_simulator(this->get_simulator());
           lab_depth_lookup.parse_parameters(prm);
           lithosphere_temperature = prm.get_double ("Lithosphere temperature");
         }
@@ -201,8 +201,8 @@ namespace aspect
 {
   namespace InitialTemperature
   {
-  template class LABDepth::LABDepthLookup<2>;
-  template class LABDepth::LABDepthLookup<3>;
+    template class LABDepth::LABDepthLookup<2>;
+    template class LABDepth::LABDepthLookup<3>;
 
 
     ASPECT_REGISTER_INITIAL_TEMPERATURE_MODEL(LithosphereMask,
