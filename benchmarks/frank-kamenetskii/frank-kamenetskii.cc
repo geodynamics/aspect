@@ -44,7 +44,6 @@ namespace aspect
         double viscosity_reference_T;
         double viscosity_variation;
         double eta;
-        double composition_viscosity_prefactor;
         double thermal_alpha;
     };
 
@@ -79,13 +78,7 @@ namespace aspect
           const double temperature_dependence = std::exp(-activation_energy * delta_temp);
 
           // Calculate the temperature-dependent viscosity.
-          out.viscosities[i] = ((composition_viscosity_prefactor != 1.0) && (in.composition[i].size()>0))
-                               ?
-                               // Geometric interpolation
-                               std::pow(10.0, ((1-in.composition[i][0]) * std::log10(eta * temperature_dependence)
-                                               + in.composition[i][0] * std::log10(eta * composition_viscosity_prefactor * temperature_dependence)))
-                               :
-                               temperature_dependence * eta;
+          out.viscosities[i] = temperature_dependence * eta;
 
         }
     }
@@ -112,13 +105,6 @@ namespace aspect
                              Patterns::Double (0),
                              "The value of the constant viscosity $\\eta_0$. This viscosity may be "
                              "modified by both temperature and compositional dependencies. Units: $kg/m/s$.");
-          prm.declare_entry ("Composition viscosity prefactor", "1.0",
-                             Patterns::Double (0),
-                             "A linear dependency of viscosity on the first compositional field. "
-                             "Dimensionless prefactor. With a value of 1.0 (the default) the "
-                             "viscosity does not depend on the composition. See the general documentation "
-                             "of this model for a formula that states the dependence of the "
-                             "viscosity on this factor, which is called $\\xi$ there.");
           prm.declare_entry ("Viscosity reference temperature", "293",
                              Patterns::Double (0),
                              "The reference temperature used in the viscosity formula. "
@@ -150,7 +136,6 @@ namespace aspect
         prm.enter_subsection("Simple model");
         {
           eta                             = prm.get_double ("Viscosity");
-          composition_viscosity_prefactor = prm.get_double ("Composition viscosity prefactor");
           viscosity_reference_T           = prm.get_double ("Viscosity reference temperature");
           viscosity_variation             = prm.get_double ("Viscosity variation");
           thermal_alpha                   = prm.get_double ("Thermal expansion coefficient");
@@ -161,9 +146,6 @@ namespace aspect
       prm.leave_subsection();
 
       // Declare dependencies on solution variables
-      this->model_dependence.compressibility = NonlinearDependence::none;
-      this->model_dependence.specific_heat = NonlinearDependence::none;
-      this->model_dependence.thermal_conductivity = NonlinearDependence::none;
       this->model_dependence.viscosity = NonlinearDependence::none;
       this->model_dependence.density = NonlinearDependence::none;
 
