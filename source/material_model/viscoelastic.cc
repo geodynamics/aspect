@@ -29,26 +29,6 @@ namespace aspect
   namespace MaterialModel
   {
     template <int dim>
-    double
-    Viscoelastic<dim>::
-    calculate_average_vector (const std::vector<double> &composition,
-                              const std::vector<double> &parameter_values,
-                              const MaterialUtilities::CompositionalAveragingOperation &average_type) const
-    {
-      // Store which components to exclude during volume fraction computation.
-      ComponentMask composition_mask(this->n_compositional_fields(), true);
-      // assign compositional fields associated with viscoelastic stress a value of 0
-      // assume these fields are listed first
-      for (unsigned int i=0; i < SymmetricTensor<2,dim>::n_independent_components; ++i)
-        composition_mask.set(i, false);
-      const std::vector<double> volume_fractions = MaterialUtilities::compute_volume_fractions(composition, composition_mask);
-      const double averaged_vector = MaterialUtilities::average_value(volume_fractions, parameter_values, average_type);
-      return averaged_vector;
-    }
-
-
-
-    template <int dim>
     void
     Viscoelastic<dim>::
     evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
@@ -91,15 +71,15 @@ namespace aspect
             out.reaction_terms[i][c] = 0.0;
 
           // Average viscosity
-          const double average_viscosity = calculate_average_vector(composition,
-                                                                    viscosities,
-                                                                    viscosity_averaging);
+          const double average_viscosity = MaterialUtilities::calculate_average_vector<dim>(composition,
+                                           viscosities,
+                                           viscosity_averaging);
 
           // Average elastic shear modulus
           std::vector<double> elastic_shear_moduli(elastic_rheology.get_elastic_shear_moduli());
-          average_elastic_shear_moduli[i] = calculate_average_vector(composition,
-                                                                     elastic_shear_moduli,
-                                                                     viscosity_averaging);
+          average_elastic_shear_moduli[i] = MaterialUtilities::calculate_average_vector<dim>(composition,
+                                            elastic_shear_moduli,
+                                            viscosity_averaging);
 
           // Average viscoelastic (e.g., effective) viscosity (equation 28 in Moresi et al., 2003, J. Comp. Phys.)
           out.viscosities[i] = elastic_rheology.calculate_viscoelastic_viscosity(average_viscosity,
@@ -144,9 +124,6 @@ namespace aspect
           EquationOfState::MulticomponentIncompressible<dim>::declare_parameters (prm);
           Rheology::Elasticity<dim>::declare_parameters (prm);
 
-          prm.declare_entry ("Reference temperature", "293",
-                             Patterns::Double (0),
-                             "The reference temperature $T_0$. Units: $\\si{K}$.");
           prm.declare_entry ("Viscosities", "1.e21",
                              Patterns::List(Patterns::Double(0)),
                              "List of viscosities for background mantle and compositional fields, "
@@ -184,11 +161,12 @@ namespace aspect
           // Equation of state parameters
           equation_of_state.initialize_simulator (this->get_simulator());
           equation_of_state.parse_parameters (prm);
+
           elastic_rheology.initialize_simulator (this->get_simulator());
           elastic_rheology.parse_parameters(prm);
 
-
-          reference_T = prm.get_double ("Reference temperature");
+          AssertThrow(this->get_parameters().enable_elasticity == true,
+                      ExcMessage ("Material model Viscoelastic only works if 'Enable elasticity' is set to true"));
 
           viscosity_averaging = MaterialUtilities::parse_compositional_averaging_operation ("Viscosity averaging scheme",
                                 prm);

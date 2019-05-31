@@ -269,6 +269,16 @@ namespace aspect
 
 
       /**
+       * Used for calculating average elastic shear modulus and viscosity
+       */
+      template <int dim>
+      double calculate_average_vector (const std::vector<double> &composition,
+                                       const std::vector<double> &parameter_values,
+                                       const MaterialUtilities::CompositionalAveragingOperation &average_type);
+
+
+
+      /**
        * A data structure with all inputs for the
        * MaterialModel::Interface::compute_drucker_prager_yielding() method.
        */

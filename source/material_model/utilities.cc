@@ -694,6 +694,24 @@ namespace aspect
       }
 
 
+      template <int dim>
+      double
+      calculate_average_vector (const std::vector<double> &composition,
+                                const std::vector<double> &parameter_values,
+                                const MaterialUtilities::CompositionalAveragingOperation &average_type)
+      {
+        // Store which components to exclude during volume fraction computation.
+        ComponentMask composition_mask(composition.size(), true);
+        // assign compositional fields associated with viscoelastic stress a value of 0
+        // assume these fields are listed first
+        for (unsigned int i=0; i < SymmetricTensor<2,dim>::n_independent_components; ++i)
+          composition_mask.set(i, false);
+        const std::vector<double> volume_fractions = MaterialUtilities::compute_volume_fractions(composition, composition_mask);
+        const double averaged_vector = MaterialUtilities::average_value(volume_fractions, parameter_values, average_type);
+        return averaged_vector;
+      }
+
+
 
       DruckerPragerInputs::DruckerPragerInputs(const double cohesion_,
                                                const double friction_angle_,
@@ -766,6 +784,12 @@ namespace aspect
   void \
   compute_drucker_prager_yielding<dim> (const DruckerPragerInputs &, \
                                         DruckerPragerOutputs &); \
+  \
+  template \
+  double \
+  calculate_average_vector<dim>(const std::vector<double> &, \
+                                const std::vector<double> &, \
+                                const MaterialUtilities::CompositionalAveragingOperation &); \
    
       ASPECT_INSTANTIATE(INSTANTIATE)
     }

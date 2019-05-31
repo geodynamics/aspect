@@ -111,7 +111,7 @@ namespace aspect
           get_elastic_shear_moduli () const;
 
           /**
-           * Given the (viscous) viscosity and the shear modulus, compute the viscoelastic
+           * Given the (viscous or visco-plastic) viscosity and the shear modulus, compute the viscoelastic
            * viscosity.
            */
           double

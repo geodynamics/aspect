@@ -141,37 +141,31 @@ namespace aspect
 
         // Check whether the compositional fields representing the viscoelastic
         // stress tensor are both named correctly and listed in the right order.
+        AssertThrow(this->introspection().compositional_index_for_name("stress_xx") == 0,
+                    ExcMessage("Rheology model Elasticity only works if the first "
+                               "compositional field is called stress_xx."));
+        AssertThrow(this->introspection().compositional_index_for_name("stress_yy") == 1,
+                    ExcMessage("Rheology model Elasticity only works if the second "
+                               "compositional field is called stress_yy."));
         if (dim == 2)
           {
-            AssertThrow(this->introspection().compositional_index_for_name("stress_xx") == 0,
-                        ExcMessage("Material model Viscoelastic only works if the first "
-                                   "compositional field is called stress_xx."));
-            AssertThrow(this->introspection().compositional_index_for_name("stress_yy") == 1,
-                        ExcMessage("Material model Viscoelastic only works if the second "
-                                   "compositional field is called stress_yy."));
             AssertThrow(this->introspection().compositional_index_for_name("stress_xy") == 2,
-                        ExcMessage("Material model Viscoelastic only works if the third "
+                        ExcMessage("Rheology model Elasticity only works if the third "
                                    "compositional field is called stress_xy."));
           }
         else if (dim == 3)
           {
-            AssertThrow(this->introspection().compositional_index_for_name("stress_xx") == 0,
-                        ExcMessage("Material model Viscoelastic only works if the first "
-                                   "compositional field is called stress_xx."));
-            AssertThrow(this->introspection().compositional_index_for_name("stress_yy") == 1,
-                        ExcMessage("Material model Viscoelastic only works if the second "
-                                   "compositional field is called stress_yy."));
             AssertThrow(this->introspection().compositional_index_for_name("stress_zz") == 2,
-                        ExcMessage("Material model Viscoelastic only works if the third "
+                        ExcMessage("Rheology model Elasticity only works if the third "
                                    "compositional field is called stress_zz."));
             AssertThrow(this->introspection().compositional_index_for_name("stress_xy") == 3,
-                        ExcMessage("Material model Viscoelastic only works if the fourth "
+                        ExcMessage("Rheology model Elasticity only works if the fourth "
                                    "compositional field is called stress_xy."));
             AssertThrow(this->introspection().compositional_index_for_name("stress_xz") == 4,
-                        ExcMessage("Material model Viscoelastic only works if the fifth "
+                        ExcMessage("Rheology model Elasticity only works if the fifth "
                                    "compositional field is called stress_xz."));
             AssertThrow(this->introspection().compositional_index_for_name("stress_yz") == 5,
-                        ExcMessage("Material model Viscoelastic only works if the sixth "
+                        ExcMessage("Rheology model Elasticity only works if the sixth "
                                    "compositional field is called stress_yz."));
           }
         else

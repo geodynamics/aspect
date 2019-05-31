@@ -207,24 +207,9 @@ namespace aspect
 
       private:
         /**
-         * Reference temperature for thermal expansion. All components use
-         * the same reference_T.
-         */
-        double reference_T;
-
-        /**
          * Enumeration for selecting which viscosity averaging scheme to use.
          */
         MaterialUtilities::CompositionalAveragingOperation viscosity_averaging;
-
-        /**
-         * Used for calculating average elastic shear modulus and viscosity
-         */
-        double calculate_average_vector (const std::vector<double> &composition,
-                                         const std::vector<double> &parameter_values,
-                                         const MaterialUtilities::CompositionalAveragingOperation &average_type) const;
-
-
 
         EquationOfState::MulticomponentIncompressible<dim> equation_of_state;
 
@@ -238,7 +223,6 @@ namespace aspect
          */
         std::vector<double> thermal_conductivities;
 
-        /**
         Rheology::Elasticity<dim> elastic_rheology;
     };
 
