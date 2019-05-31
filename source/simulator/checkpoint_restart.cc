@@ -95,7 +95,7 @@ namespace aspect
       oa << parameters.n_compositional_fields;
       oa << parameters.names_of_compositional_fields;
       oa << parameters.normalized_fields;
-      oa << parameters.free_surface_enabled;
+      oa << parameters.mesh_deformation_enabled;
     }
 
 
@@ -245,10 +245,10 @@ namespace aspect
                                "These need to be the same during restarting "
                                "from a checkpoint."));
 
-      bool free_surface_enabled;
-      ia >> free_surface_enabled;
-      AssertThrow (free_surface_enabled == parameters.free_surface_enabled,
-                   ExcMessage ("The enable free surface setting that were stored "
+      bool mesh_deformation_enabled;
+      ia >> mesh_deformation_enabled;
+      AssertThrow (mesh_deformation_enabled == parameters.mesh_deformation_enabled,
+                   ExcMessage ("The enable mesh deformation settings that were stored "
                                "in the checkpoint file is not the same as the one "
                                "you currently set in your input file. "
                                "These need to be the same during restarting "
