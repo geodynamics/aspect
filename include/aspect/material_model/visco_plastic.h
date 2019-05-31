@@ -23,6 +23,7 @@
 
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>
+#include <aspect/material_model/equation_of_state/multicomponent_incompressible.h>
 
 #include<deal.II/fe/component_mask.h>
 
@@ -178,10 +179,9 @@ namespace aspect
 
         double grain_size;
 
-        std::vector<double> densities;
-        std::vector<double> thermal_expansivities;
         std::vector<double> thermal_diffusivities;
-        std::vector<double> heat_capacities;
+
+        EquationOfState::MulticomponentIncompressible<dim> equation_of_state;
 
         /**
          * Enumeration for selecting which viscosity averaging scheme to use.

@@ -49,6 +49,8 @@ namespace aspect
       MaterialModel::ElasticOutputs<dim>
       *force_out = out.template get_additional_output<MaterialModel::ElasticOutputs<dim> >();
 
+      EquationOfStateOutputs<dim> eos_outputs (this->n_compositional_fields()+1);
+
       // The elastic time step (dte) is equal to the numerical time step if the time step number
       // is greater than 0 and the parameter 'use_fixed_elastic_time_step' is set to false.
       // On the first (0) time step the elastic time step is always equal to the value
@@ -62,37 +64,28 @@ namespace aspect
 
       for (unsigned int i=0; i < in.temperature.size(); ++i)
         {
-
-          const double temperature = in.temperature[i];
           const std::vector<double> composition = in.composition[i];
           const double pressure = in.pressure[i];
           const SymmetricTensor<2,dim> strain_rate = in.strain_rate[i];
           const std::vector<double> volume_fractions = MaterialUtilities::compute_volume_fractions(composition, composition_mask);
 
+          equation_of_state.evaluate(in, i, eos_outputs);
+
           // Arithmetic averaging of specific heat.
           // This may not be strictly the most reasonable thing, but for most Earth materials we hope
           // that they do not vary so much that it is a big problem. This statement also applies to
           // the arithmetic averaging of density and thermal conductivity below.
-          out.specific_heat[i] = MaterialUtilities::average_value(volume_fractions, specific_heats, MaterialUtilities::arithmetic);
+          out.densities[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.densities, MaterialUtilities::arithmetic);
+          out.thermal_expansion_coefficients[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.thermal_expansion_coefficients, MaterialUtilities::arithmetic);
+          out.specific_heat[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.specific_heat_capacities, MaterialUtilities::arithmetic);
 
           out.thermal_conductivities[i] = MaterialUtilities::average_value(volume_fractions, thermal_conductivities, MaterialUtilities::arithmetic);
 
-          double density = 0.0;
-          for (unsigned int j=0; j < volume_fractions.size(); ++j)
-            {
-              // not strictly correct if thermal expansivities are different, since we are interpreting
-              // these compositions as volume fractions, but the error introduced should not be too bad.
-              const double temperature_factor = (1.0 - thermal_expansivities[j] * (temperature - reference_temperature));
-              density += volume_fractions[j] * densities[j] * temperature_factor;
-            }
-          out.densities[i] = density;
-
-          out.thermal_expansion_coefficients[i] = MaterialUtilities::average_value(volume_fractions, thermal_expansivities, MaterialUtilities::arithmetic);
-
           // Set properties that are not relevant for this material model to 0
-          out.compressibilities[i] = 0.0;
-          out.entropy_derivative_pressure[i] = 0.0;
-          out.entropy_derivative_temperature[i] = 0.0;
+          out.compressibilities[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.compressibilities, MaterialUtilities::arithmetic);
+          out.entropy_derivative_pressure[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.entropy_derivative_pressure, MaterialUtilities::arithmetic);
+          out.entropy_derivative_temperature[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.entropy_derivative_temperature, MaterialUtilities::arithmetic);
+
           for (unsigned int c=0; c<in.composition[i].size(); ++c)
             out.reaction_terms[i][c] = 0.0;
 
@@ -258,7 +251,7 @@ namespace aspect
     ViscoelasticPlastic<dim>::
     is_compressible () const
     {
-      return false;
+      return equation_of_state.is_compressible();
     }
 
     template <int dim>
@@ -269,6 +262,8 @@ namespace aspect
       {
         prm.enter_subsection("Viscoelastic Plastic");
         {
+          // Equation of state parameters
+          EquationOfState::MulticomponentIncompressible<dim>::declare_parameters (prm);
 
           // Reference and minimum/maximum values
           prm.declare_entry ("Reference temperature", "293",
@@ -304,22 +299,6 @@ namespace aspect
                              "\n\n"
                              "Units: $Pa \\, s$");
 
-          // Equation of state parameters
-          prm.declare_entry ("Densities", "3300.",
-                             Patterns::List(Patterns::Double(0)),
-                             "List of densities for background material and compositional fields, "
-                             "for a total of N+1 values, where N is the number of compositional fields. "
-                             "If only one value is given, then all use the same value.  Units: $kg / m^3$");
-          prm.declare_entry ("Thermal expansivities", "4.e-5",
-                             Patterns::List(Patterns::Double(0)),
-                             "List of thermal expansivities for background material and compositional fields, "
-                             "for a total of N+1 values, where N is the number of compositional fields. "
-                             "If only one value is given, then all use the same value. Units: $1/K$");
-          prm.declare_entry ("Specific heats", "1250.",
-                             Patterns::List(Patterns::Double(0)),
-                             "List of specific heats $C_p$ for background material and compositional fields, "
-                             "for a total of N+1 values, where N is the number of compositional fields. "
-                             "If only one value is given, then all use the same value. Units: $J /kg /K$");
           prm.declare_entry ("Thermal conductivities", "4.7",
                              Patterns::List(Patterns::Double(0)),
                              "List of thermal conductivities for background material and compositional fields, "
@@ -397,9 +376,11 @@ namespace aspect
       {
         prm.enter_subsection("Viscoelastic Plastic");
         {
-
           AssertThrow(this->get_parameters().enable_elasticity == true,
                       ExcMessage ("Material model Viscoelastic only works if 'Enable elasticity' is set to true"));
+
+          equation_of_state.initialize_simulator (this->get_simulator());
+          equation_of_state.parse_parameters (prm);
 
           reference_temperature = prm.get_double ("Reference temperature");
           minimum_strain_rate = prm.get_double("Minimum strain rate");
@@ -424,21 +405,12 @@ namespace aspect
                                                               "Cohesions");
 
           // Parse additional material properties
-          densities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Densities"))),
-                                                              n_fields,
-                                                              "Densities");
           linear_viscosities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Linear viscosities"))),
                                                                        n_fields,
                                                                        "Viscosities");
           thermal_conductivities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Thermal conductivities"))),
                                                                            n_fields,
                                                                            "Thermal conductivities");
-          thermal_expansivities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Thermal expansivities"))),
-                                                                          n_fields,
-                                                                          "Thermal expansivities");
-          specific_heats = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Specific heats"))),
-                                                                   n_fields,
-                                                                   "Specific heats");
           elastic_shear_moduli = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Elastic shear moduli"))),
                                                                          n_fields,
                                                                          "Elastic shear moduli");
