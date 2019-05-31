@@ -55,8 +55,8 @@ end
 subsection Material model
     set Model name = AV material
 
-	#density is hard-coded into the AV_material.cc plugin
-	#everything else is set to 0
+  #density is hard-coded into the AV_material.cc plugin
+  #everything else is set to 0
     
     subsection AV
         set Normal viscosity    = 1
@@ -71,9 +71,9 @@ subsection Initial composition model
         set Variable names      = x,z
         set Function constants  = pi=3.1415926;
 
-	set Function expression = 0.5*(1+tanh((z-0.85-0.02*cos(2*pi*x/2))/0.02)); \
-                          	(0.5*(1+tanh((z-0.85-0.02*cos(2*pi*x/2))/0.02))) > 0.8 ? sin(45*pi/180) : 0.0; \
-                          	(0.5*(1+tanh((z-0.85-0.02*cos(2*pi*x/2))/0.02))) > 0.8 ? cos(45*pi/180) : 0.0;
+  set Function expression = 0.5*(1+tanh((z-0.85-0.02*cos(2*pi*x/2))/0.02)); \
+                            (0.5*(1+tanh((z-0.85-0.02*cos(2*pi*x/2))/0.02))) > 0.8 ? sin(45*pi/180) : 0.0; \
+                            (0.5*(1+tanh((z-0.85-0.02*cos(2*pi*x/2))/0.02))) > 0.8 ? cos(45*pi/180) : 0.0;
         end
 end
 
@@ -98,10 +98,10 @@ end
 subsection Postprocess
 
   set List of postprocessors = visualization, velocity statistics, composition statistics, material statistics
-    	
+      
       subsection Visualization
 
-	# add "named additional outputs" to the list to save the stress-strain director (AV tensor)
+  # add "named additional outputs" to the list to save the stress-strain director (AV tensor)
         set List of output variables = compositional vector, density, viscosity, gravity, shear stress, stress, strain rate, strain rate tensor, named additional outputs
 
         set Output format                 = vtu

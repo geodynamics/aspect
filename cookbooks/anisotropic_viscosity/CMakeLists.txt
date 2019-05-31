@@ -22,11 +22,11 @@ FIND_PACKAGE(Aspect 2.1.0 QUIET HINTS ${Aspect_DIR} ../ ../../ $ENV{ASPECT_DIR})
 
 IF (NOT Aspect_FOUND)
   MESSAGE(FATAL_ERROR "\n"
-	"Could not find a valid ASPECT build/installation directory. "
-	"Please specify the directory where you are building ASPECT by passing\n"
-	"   -D Aspect_DIR=<path to ASPECT>\n"
-	"to cmake or by setting the environment variable ASPECT_DIR in your shell "
-	"before calling cmake. See the section 'How to write a plugin' in the "
+  "Could not find a valid ASPECT build/installation directory. "
+  "Please specify the directory where you are building ASPECT by passing\n"
+  "   -D Aspect_DIR=<path to ASPECT>\n"
+  "to cmake or by setting the environment variable ASPECT_DIR in your shell "
+  "before calling cmake. See the section 'How to write a plugin' in the "
         "manual for more information.")
 ENDIF ()
 
