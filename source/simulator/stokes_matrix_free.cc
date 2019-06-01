@@ -1012,10 +1012,12 @@ namespace aspect
   {
     dealii::LinearAlgebra::distributed::BlockVector<double> rhs_correction(2);
     dealii::LinearAlgebra::distributed::BlockVector<double> u0(2);
-    rhs_correction.collect_sizes();
-    u0.collect_sizes();
+
     stokes_matrix.initialize_dof_vector(rhs_correction);
     stokes_matrix.initialize_dof_vector(u0);
+
+    rhs_correction.collect_sizes();
+    u0.collect_sizes();
 
     u0 = 0;
     rhs_correction = 0;
@@ -1098,8 +1100,6 @@ namespace aspect
     double initial_nonlinear_residual = numbers::signaling_nan<double>();
     double final_linear_residual      = numbers::signaling_nan<double>();
 
-    LinearAlgebra::BlockVector distributed_stokes_solution (sim.introspection.index_sets.stokes_partitioning, sim.mpi_communicator);
-
     typedef dealii::LinearAlgebra::distributed::Vector<double> vector_t;
 
     // Below we define all the objects needed to build the GMG preconditioner:
@@ -1176,23 +1176,33 @@ namespace aspect
     const unsigned int block_p = (sim.parameters.include_melt_transport) ?
                                  sim.introspection.variable("fluid pressure").block_index
                                  : sim.introspection.block_indices.pressure;
+
+    LinearAlgebra::BlockVector distributed_stokes_solution (sim.introspection.index_sets.stokes_partitioning,
+                                                            sim.mpi_communicator);
+    // extract Stokes parts of rhs vector
+    LinearAlgebra::BlockVector distributed_stokes_rhs(sim.introspection.index_sets.stokes_partitioning,
+                                                      sim.mpi_communicator);
+
+    distributed_stokes_rhs.block(block_vel) = sim.system_rhs.block(block_vel);
+    distributed_stokes_rhs.block(block_p) = sim.system_rhs.block(block_p);
+
     Assert(block_vel == 0, ExcNotImplemented());
     Assert(block_p == 1, ExcNotImplemented());
     Assert(!sim.parameters.include_melt_transport
            || sim.introspection.variable("compaction pressure").block_index == 1, ExcNotImplemented());
 
-
     // create a completely distributed vector that will be used for
     // the scaled and denormalized solution and later used as a
     // starting guess for the linear solver
-    LinearAlgebra::BlockVector linearized_stokes_initial_guess (sim.introspection.index_sets.stokes_partitioning, sim.mpi_communicator);
+    LinearAlgebra::BlockVector linearized_stokes_initial_guess (sim.introspection.index_sets.stokes_partitioning,
+                                                                sim.mpi_communicator);
 
     // copy the velocity and pressure from current_linearization_point into
     // the vector linearized_stokes_initial_guess. We need to do the copy because
     // linearized_stokes_variables has a different
     // layout than current_linearization_point, which also contains all the
     // other solution variables.
-    if (!sim.assemble_newton_stokes_system)
+    if (sim.assemble_newton_stokes_system == false)
       {
         linearized_stokes_initial_guess.block (block_vel) = sim.current_linearization_point.block (block_vel);
         linearized_stokes_initial_guess.block (block_p) = sim.current_linearization_point.block (block_p);
@@ -1218,7 +1228,6 @@ namespace aspect
     sim.current_constraints.set_zero (linearized_stokes_initial_guess);
     linearized_stokes_initial_guess.block (block_p) /= sim.pressure_scaling;
 
-
     double solver_tolerance = 0;
     if (sim.assemble_newton_stokes_system == false)
       {
@@ -1230,27 +1239,28 @@ namespace aspect
         // the nonlinear residual. Because the place where the nonlinear residual is
         // checked against the nonlinear tolerance comes after the solve, the system
         // is solved one time too many in the case of a nonlinear Picard solver.
-        LinearAlgebra::BlockVector rhs_tmp (sim.introspection.index_sets.stokes_partitioning, sim.mpi_communicator);
-        rhs_tmp.block(0) = sim.system_rhs.block(0);
-        rhs_tmp.block(1) = sim.system_rhs.block(1);
 
-        // We must copy back and forth from Trilinos to dealii vector when we
-        // use the matrix-free operators
-        dealii::LinearAlgebra::distributed::BlockVector<double> x(2);
-        x.collect_sizes();
-        stokes_matrix.initialize_dof_vector(x);
-        internal::ChangeVectorTypes::copy(x,linearized_stokes_initial_guess);
+        // We must copy between Trilinos/dealii vector types
+        dealii::LinearAlgebra::distributed::BlockVector<double> solution_copy(2);
+        dealii::LinearAlgebra::distributed::BlockVector<double> initial_copy(2);
+        dealii::LinearAlgebra::distributed::BlockVector<double> rhs_copy(2);
 
-        dealii::LinearAlgebra::distributed::BlockVector<double> Ax(2);
-        Ax.collect_sizes();
-        stokes_matrix.initialize_dof_vector(Ax);
-        stokes_matrix.vmult(Ax,x);
+        stokes_matrix.initialize_dof_vector(solution_copy);
+        stokes_matrix.initialize_dof_vector(initial_copy);
+        stokes_matrix.initialize_dof_vector(rhs_copy);
 
-        LinearAlgebra::BlockVector res (sim.introspection.index_sets.stokes_partitioning, sim.mpi_communicator);
-        internal::ChangeVectorTypes::copy(res,Ax);
-        res *= -1;
-        res += rhs_tmp;
-        initial_nonlinear_residual = res.l2_norm();
+        solution_copy.collect_sizes();
+        initial_copy.collect_sizes();
+        rhs_copy.collect_sizes();
+
+        internal::ChangeVectorTypes::copy(solution_copy,distributed_stokes_solution);
+        internal::ChangeVectorTypes::copy(initial_copy,linearized_stokes_initial_guess);
+        internal::ChangeVectorTypes::copy(rhs_copy,distributed_stokes_rhs);
+
+        // Compute residual l2_norm
+        stokes_matrix.vmult(solution_copy,initial_copy);
+        solution_copy.sadd(-1,1,rhs_copy);
+        initial_nonlinear_residual = solution_copy.l2_norm();
 
         // Note: the residual is computed with a zero velocity, effectively computing
         // || B^T p - g ||, which we are going to use for our solver tolerance.
@@ -1261,23 +1271,13 @@ namespace aspect
         // are only interested in the part of the rhs not balanced by the static
         // pressure (the current pressure is a good approximation for the static
         // pressure).
+        initial_copy.block(0) = 0.;
+        stokes_matrix.vmult(solution_copy,initial_copy);
+        solution_copy.block(0).sadd(-1,1,rhs_copy.block(0));
 
-        // For the matrix-free object, multiplying by B^T requires multiplying the
-        // vector (0,p) by the Stokes matrix, then extracting the first block of
-        // the result.
-        x.block(0) = 0;
-        dealii::LinearAlgebra::distributed::BlockVector<double> Btp(2);
-        Btp.collect_sizes();
-        stokes_matrix.initialize_dof_vector(Btp);
-        stokes_matrix.vmult(Btp,x);
+        const double residual_u = solution_copy.block(0).l2_norm();
 
-        res = 0;
-        internal::ChangeVectorTypes::copy(res,Btp);
-        res *= -1;
-        res += rhs_tmp;
-        const double residual_u = res.block(0).l2_norm();
-
-        const double residual_p = sim.system_rhs.block(1).l2_norm();
+        const double residual_p = rhs_copy.block(1).l2_norm();
 
         solver_tolerance = sim.parameters.linear_stokes_solver_tolerance *
                            std::sqrt(residual_u*residual_u+residual_p*residual_p);
@@ -1287,8 +1287,8 @@ namespace aspect
         // if we are solving for the Newton update, then the initial guess of the solution
         // vector is the zero vector, and the starting (nonlinear) residual is simply
         // the norm of the (Newton) right hand side vector
-        const double residual_u = sim.system_rhs.block(0).l2_norm();
-        const double residual_p = sim.system_rhs.block(1).l2_norm();
+        const double residual_u = distributed_stokes_rhs.block(0).l2_norm();
+        const double residual_p = distributed_stokes_rhs.block(1).l2_norm();
         solver_tolerance = sim.parameters.linear_stokes_solver_tolerance *
                            std::sqrt(residual_u*residual_u+residual_p*residual_p);
 
@@ -1297,19 +1297,23 @@ namespace aspect
         // taking the norm of the right hand side
         initial_nonlinear_residual = std::sqrt(residual_u*residual_u+residual_p*residual_p);
       }
+
     // Now overwrite the solution vector again with the current best guess
     // to solve the linear system
     distributed_stokes_solution = linearized_stokes_initial_guess;
 
-    // extract Stokes parts of rhs vector
-    LinearAlgebra::BlockVector distributed_stokes_rhs(sim.introspection.index_sets.stokes_partitioning,
-                                                      sim.mpi_communicator);
+    // Again, copy solution and rhs vectors to solve with matrix-free operators
+    dealii::LinearAlgebra::distributed::BlockVector<double> solution_copy(2);
+    dealii::LinearAlgebra::distributed::BlockVector<double> rhs_copy(2);
 
-    distributed_stokes_rhs.block(block_vel) = sim.system_rhs.block(block_vel);
-    distributed_stokes_rhs.block(block_p) = sim.system_rhs.block(block_p);
+    stokes_matrix.initialize_dof_vector(solution_copy);
+    stokes_matrix.initialize_dof_vector(rhs_copy);
 
-    PrimitiveVectorMemory<dealii::LinearAlgebra::distributed::BlockVector<double> > mem;
+    solution_copy.collect_sizes();
+    rhs_copy.collect_sizes();
 
+    internal::ChangeVectorTypes::copy(solution_copy,distributed_stokes_solution);
+    internal::ChangeVectorTypes::copy(rhs_copy,distributed_stokes_rhs);
 
     // create Solver controls for the cheap and expensive solver phase
     SolverControl solver_control_cheap (sim.parameters.n_cheap_stokes_solver_steps,
@@ -1319,7 +1323,6 @@ namespace aspect
 
     solver_control_cheap.enable_history_data();
     solver_control_expensive.enable_history_data();
-
 
     // create a cheap preconditioner that consists of only a single V-cycle
     const internal::BlockSchurGMGPreconditioner<ABlockMatrixType, StokesMatrixType, MassMatrixType, MassPreconditioner, APreconditioner>
@@ -1337,15 +1340,7 @@ namespace aspect
                               sim.parameters.linear_solver_A_block_tolerance,
                               sim.parameters.linear_solver_S_block_tolerance);
 
-    // Again, copy solution and rhs vectors to solve with matrix-free operators
-    dealii::LinearAlgebra::distributed::BlockVector<double> solution_copy(2);
-    dealii::LinearAlgebra::distributed::BlockVector<double> rhs_copy(2);
-    solution_copy.collect_sizes();
-    rhs_copy.collect_sizes();
-    stokes_matrix.initialize_dof_vector(solution_copy);
-    stokes_matrix.initialize_dof_vector(rhs_copy);
-    internal::ChangeVectorTypes::copy(solution_copy,distributed_stokes_solution);
-    internal::ChangeVectorTypes::copy(rhs_copy,distributed_stokes_rhs);
+    PrimitiveVectorMemory<dealii::LinearAlgebra::distributed::BlockVector<double> > mem;
 
     // step 1a: try if the simple and fast solver
     // succeeds in n_cheap_stokes_solver_steps steps or less.
@@ -1469,7 +1464,7 @@ namespace aspect
 
     // do some cleanup now that we have the solution
     sim.remove_nullspace(sim.solution, distributed_stokes_solution);
-    if (!sim.assemble_newton_stokes_system)
+    if (sim.assemble_newton_stokes_system == false)
       sim.last_pressure_normalization_adjustment = sim.normalize_pressure(sim.solution);
 
 
