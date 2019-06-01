@@ -487,7 +487,7 @@ namespace aspect
   const std::set<types::boundary_id> &
   SimulatorAccess<dim>::get_mesh_deformation_boundary_indicators () const
   {
-    return (*(simulator->mesh_deformation)).get_active_mesh_deformation_boundary_indicators();
+    return simulator->mesh_deformation->get_active_mesh_deformation_boundary_indicators();
   }
 
 
