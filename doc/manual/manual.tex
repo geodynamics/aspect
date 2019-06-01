@@ -2268,7 +2268,7 @@ is included in the model, and a constant temperature if adiabatic heating is not
 Pressure and density profiles are hydrostatic. The density can depend on any of the solution variables.
 However, this option can also be used to arbitrarily combine the different approximations 
 described in this section. Users should be careful when using this option, as some combinations
-may lead to unphysical model behaviour. 
+may lead to unphysical model behavior.
 \end{itemize}
 
 An example cookbook that shows a comparison between different approximations is discussed in Section~\ref{sec:cookbooks-burnman}.
@@ -2276,7 +2276,7 @@ An example cookbook that shows a comparison between different approximations is 
 \subsection{Advection Stabilization}
 \label{sec:advection-stabilization}
 
-\aspect{} imeplements several advection schemes for the temperature and compositional field
+\aspect{} implements several advection schemes for the temperature and compositional field
 equations. Specifically, the parameter \ref{parameters:Discretization/Stabilization_20parameters/Stabilization_20method}
 allows using one of the following methods:
 
@@ -3546,7 +3546,7 @@ Visit (see \url{https://visit.llnl.gov/}) and ParaView (see
 advantages beyond being widely distributed:
 \begin{itemize}
 \item It allows for compression, keeping files relatively small even for
-  sizeable computations.
+  sizable computations.
 \item It is a structured XML format, allowing other programs to read it
   without too much trouble.
 \item It has a degree of support for parallel computations where every
@@ -3986,7 +3986,7 @@ Section~\ref{parameters:Resume computation}.
 \note{It is not imperative that the parameters selected in the input file are
   exactly the same when resuming a program from a saved state than what they
   were at the time when this state was saved. For example, one may want to
-  choose a different parametrization of the material law, or add or remove
+  choose a different parameterization of the material law, or add or remove
   postprocessors that should be run at the end of each time step. Likewise,
   the end time, the times at which some additional mesh refinement steps
   should happen, etc., can be different.
@@ -5751,7 +5751,7 @@ clearly makes no sense at all.
 
 \textit{This section was contributed by Juliane Dannberg and Ren{\'e} Ga{\ss}m{\"o}ller}.
 
-In addition, there are setups where one wants the compositional fields to interact with each other. One example would be material upwelling at a mid-ocean ridge and changing the composition to that of oceanic crust when it reaches a certain depth. In this cookbook, we will describe how this kind of behaviour can be achieved by using the \texttt{composition reaction} function of the material model. 
+In addition, there are setups where one wants the compositional fields to interact with each other. One example would be material upwelling at a mid-ocean ridge and changing the composition to that of oceanic crust when it reaches a certain depth. In this cookbook, we will describe how this kind of behavior can be achieved by using the \texttt{composition reaction} function of the material model. 
 
 We will consider the exact same setup as in the previous paragraphs, except for the initial conditions and properties of the two compositional fields. There is one material that initially fills the bottom half of the domain and is less dense than the material above. In addition, there is another material that only gets created when the first material reaches the uppermost 20\% of the domain, and that has a higher density. This should cause the first material to move upwards, get partially converted to the second material, which then sinks down again. This means we want to change the initial conditions for the compositional fields: 
 
@@ -6800,7 +6800,7 @@ An animation of a model using the jellyfish as initial condition and assigning i
 \textit{This section was contributed by Magali Billen}\\
 This cookbook provides an example to illustrate how to use the lazy-expression syntax for multiple, nested, if-else-statements in function expressions in the parameter file. It also shows how to set parameters in the input file so you can quickly check initial conditions (i.e., without waiting for the solver to converge).  For this model we define a simple 2D box, which is $5000 \times 1000$ km, with free-slip velocity boundary conditions. The material parameters are constant within the box (set using the  ``simple'' material model). The initial thermal structure has two parts divided at $xtr=2200$~km. The temperature in each region is defined using the equation for a half-space cooling model:
 \begin{equation}
-T(x,y) = T_s + (T_m  - T_s) erf{(\frac{y}{2\sqrt{\kappa x/v}})}
+T(x,y) = T_s + (T_m  - T_s) \erf{(\frac{y}{2\sqrt{\kappa x/v}})}
 \end{equation}
 where $erf$ is the error function, $T_m$ is the mantle temperature, $T_s$ is the surface temperature, $y$ is depth, $x$ is horizontal distance, $\kappa$ is the thermal diffusivity, and $v$ is the plate velocity. The age of the plate is given by $x/v$. Note that the equation for the half-space cooling model is not defined at $x=0$ (because there is a divide by zero inside the error function): at $x=0$, $T=T_m$.  For $(x \le xtr)$ and $(x>0)$ the age of the plate increases from zero at the boundary according to a fixed plate velocity $v_{sub}=7.927\times10^{-10}$~m/s  ($2.5$~cm/yr). This is the subducting plate. For $x > xtr$, there is a fixed plate age of $age_{op}=9.46\times10^{14}$~s ($30$~my); this is the overriding plate. In order to resolve the temperature structure, we also define some initial refinement of the mesh for the top 150 km of the mesh. Both the mesh refinement and the temperature structure are defined using lazy-expression syntax in functions within the parameter file.
 
