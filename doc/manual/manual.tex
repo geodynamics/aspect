@@ -80,6 +80,8 @@
 \newcommand{\petsc}{{\textsc{PETSc}}}
 \newcommand{\aspect}{\textsc{ASPECT}}
 
+\DeclareMathOperator{\erf}{erf}
+
 \begin{document}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -2304,7 +2306,7 @@ a(T,\varphi) =
 
 \subsubsection{SUPG Stabilization}
 
-For streamline upwind/Petrov-Galerkin (SUPG) (see for example \cite{JohnKnobloch2006,dealiistep-63}), we add to the weak form $a(\cdot,\cdot)$ the cell-wise defined weak form
+For streamline upwind/Petrov-Galerkin (SUPG) (see for example \cite{JohnKnobloch2006,dealiistep63}), we add to the weak form $a(\cdot,\cdot)$ the cell-wise defined weak form
 \[
 a_{\text{SUPG}} (T, \varphi) =
  \sum_{K \in \mathcal{T}_h}
