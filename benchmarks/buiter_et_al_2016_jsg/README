@@ -12,9 +12,12 @@ Experiment 1 tests whether model wedges in the stable domain of critical wedge
 theory remain stable when translated horizontally. A quartz sand wedge with a 
 horizontal base and a surface slope of 20 degrees is pushed horizontally by 
 inward movement of a mobile wall at the right boundary with a velocity of 2.5 
-cm/hour.
-  
-[...]
+cm/hour. 
+
+The basal angle is zero (horizontal), a thin layer separates the sand and boundary 
+to ensure minimum coupling between the wedge and bounding box during translation,
+and a sticky air layer is used above the wedge. Further, the purely plastic
+material should not undergo any deformation during translation.
 
 Experiment 2 tests how an unstable subcritical wedge deforms to reach the 
 critical taper solution. This experiment builds a thrust wedge through a 
@@ -31,7 +34,7 @@ in (incipient) shear zones (Figure 10c-d).
 
 Input files are provided for verifying that the models of brittle thrust wedge 
 in this benchmark follows other numerical results and the analytical wedge 
-theory inthe paper. 
+theory in the paper. 
 
 The resolution in exp2_low_resolution.prm and exp2_high_resolution.prm is 
 2 mm/cell and 0.5 mm/cell, respectively. More details about the model setup 
