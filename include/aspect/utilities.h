@@ -1018,14 +1018,16 @@ namespace aspect
      * Note the required format of the input data: The first lines may contain
      * any number of comments if they begin with '#', but one of these lines
      * needs to contain the number of columns and lines in the file:
-    * '#POINTS: TOTALNUMBERDATALINES NUMBERCOORDCOLUMNS NUMBERDATACOLUMNS'.
-    * For example '# POINTS: 5 4 3' would be 5 lines of data, 4 columns of coordinates,
-    * and 3 columns of data. The comments can optionally be followed by a
+     * '#POINTS: TOTALNUMBERDATALINES NUMBERCOORDCOLUMNS NUMBERDATACOLUMNS'.
+     * For example '# POINTS: 5 4 3' would be 5 lines of data, 4 columns of coordinates,
+     * and 3 columns of data. The comments can optionally be followed by a
      * single line, which does not start with '#', containing the names of
      * the data columns.
      * The order of the following data columns has to be
      * 'coordinates data' with @p querydim coordinate columns and @p components
-     * data columns. The coordinates do not need to be equidistant.
+     * data columns. @p querydim and @p components need to
+     * match NUMBERCOORDCOLUMNS NUMBERDATACOLUMNS, respectivily.
+     * The coordinates do not need to be equidistant.
      */
     template <int querydim>
     class UnstructuredDataLookup
@@ -1033,8 +1035,7 @@ namespace aspect
       public:
 
         /**
-         * The following variables are properties of the material files
-         * we read in.
+         * The following are member variables and functions of the class
          */
         unsigned int n_data_files;
 
@@ -1049,7 +1050,7 @@ namespace aspect
 
         virtual void initialize (const MPI_Comm &comm,
                                  std::string datadirectory,
-                                 std::vector<std::string> material_file_names);
+                                 std::vector<std::string> file_name_list);
 
 
 
@@ -1083,13 +1084,13 @@ namespace aspect
 
 
         /**
-         * Returns the data (velocity, temperature, etc. - according
+         * Returns the data (e.g., velocity, temperature, etc. - according
          * to the used plugin) for the n closest points to the target point.
-        * The function returns a vector of pairs of < data_return , Euclidean distance >,
-        * where data_return is a vector containing all the data properties
-        * associated with a single line in the file -- all the data columns.
-        * The Euclidean distance is the distance that the data points
-        * are from the target point.
+         * The function returns a vector of pairs of < data_return , Euclidean distance >,
+         * where data_return is a vector containing all the data properties
+         * associated with a single line in the file -- all the data columns.
+         * The Euclidean distance is the distance that the data points
+         * are from the target point.
          */
         std::vector< std::pair<std::vector<double>, double> >
         get_data (const Point<querydim> &target_point, const unsigned int n_points) const;

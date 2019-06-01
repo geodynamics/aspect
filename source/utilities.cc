@@ -2420,14 +2420,14 @@ namespace aspect
     void
     UnstructuredDataLookup<querydim>::initialize (const MPI_Comm &comm,
                                                   std::string datadirectory,
-                                                  std::vector<std::string> material_file_names)
+                                                  std::vector<std::string> file_name_list)
     {
-      n_data_files = material_file_names.size();
+      n_data_files = file_name_list.size();
 
       // Read in values from each file in the list
       for (unsigned int i = 0; i < n_data_files; i++)
         {
-          load_file (datadirectory+material_file_names[i], comm);
+          load_file (datadirectory+file_name_list[i], comm);
         }
 
       // Set the coordinate points into the kdtree object
