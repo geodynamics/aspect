@@ -275,6 +275,8 @@ namespace aspect
         ? scratch.material_model_outputs.template get_additional_output<MaterialModel::PrescribedCompressionOutputs<dim> >()
         : nullptr;
 
+      const bool material_model_is_compressible = (this->get_material_model().is_compressible());
+
       // When using the Q1-Q1 equal order element, we need to compute the
       // projection of the Q1 pressure shape functions onto the constants
       // and use this projection in the computation of matrix terms.
@@ -335,7 +337,7 @@ namespace aspect
                       scratch.grads_phi_u[i_stokes] = scratch.finite_element_values[introspection.extractors.velocities].symmetric_gradient(i,q);
                       scratch.div_phi_u[i_stokes]   = scratch.finite_element_values[introspection.extractors.velocities].divergence (i, q);
                     }
-                  else if (prescribed_compression)
+                  else if (prescribed_compression && !material_model_is_compressible)
                     {
                       scratch.div_phi_u[i_stokes]   = scratch.finite_element_values[introspection.extractors.velocities].divergence (i, q);
                     }
@@ -385,9 +387,14 @@ namespace aspect
                                        - pressure_scaling
                                        * prescribed_compression->prescribed_compression[q]
                                        * scratch.phi_p[i]
+                                     ) * JxW;
+
+              // Only assemble this term if we are running incompressible, otherwise this term
+              // is already included on the LHS of the equation.
+              if (prescribed_compression != nullptr && !material_model_is_compressible)
+                data.local_rhs(i) += (
                                        // RHS of momentum eqn: - \int 2/3 eta R, div v
-                                       -
-                                       2.0 / 3.0 * eta
+                                       - 2.0 / 3.0 * eta
                                        * prescribed_compression->prescribed_compression[q]
                                        * scratch.div_phi_u[i]
                                      ) * JxW;
