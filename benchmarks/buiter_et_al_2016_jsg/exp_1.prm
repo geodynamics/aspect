@@ -18,7 +18,7 @@ set CFL number                             = 0.5
 set Output directory                       = stable_wedge_output
 set Timing output frequency                = 1
 set Pressure normalization                 = no
-set Resume computation			   = auto
+set Resume computation         = auto
 
 #### Parameters describing the model
 
@@ -53,7 +53,7 @@ subsection Boundary velocity model
   subsection Function
     set Variable names      = x,y
     set Function constants  = cm=0.01, h=3600., th=0.002                  # h = hr = 3600 s; th = thickness of bounding box
-    set Function expression = if (y>th, -2.5*cm/h, -(y/th)*2.5*cm/h) ; 0. # velocity BC is defined such that the wedge is pushed at 2.5 cm/h to the left above the bound								            -ing box and tapers to zero from the top to the bottom of the bounding box. 
+    set Function expression = if (y>th, -2.5*cm/h, -(y/th)*2.5*cm/h) ; 0. # velocity BC is defined such that the wedge is pushed at 2.5 cm/h to the left above the bound                            -ing box and tapers to zero from the top to the bottom of the bounding box. 
   end
 end
 
@@ -94,9 +94,9 @@ subsection Initial composition model
     set Function constants  = th=0.002
     set Function expression = if((x<0.1324 && x>=0.05) && (y<=0.36408*x-0.0182039 && y>=th), 1, 0); \    
                               if((x>=0.1324 && x<0.1329) || (x>0 && y<=th),1,0); \                       
-                              if(x>=0.1329 && y>th,1,0); \						 
-			      if((x<=0.1324 && y>0.36408*x-0.0182039 && y>th) || (x<0.05 && y>th),1,0); \
-			      0;
+                              if(x>=0.1329 && y>th,1,0); \             
+            if((x<=0.1324 && y>0.36408*x-0.0182039 && y>th) || (x<0.05 && y>th),1,0); \
+            0;
   end
 end
 
@@ -116,7 +116,7 @@ subsection Material model
   set Material averaging = harmonic average 
   set Model name = visco plastic
   subsection Visco Plastic
-#						      [bkd, sand,  bound, block, sticky_air, total_strain]
+#                  [bkd, sand,  bound, block, sticky_air, total_strain]
     set Densities                                   = 1560, 1560., 3100,  1560 , 0,          1560
     
     set Reference temperature                       = 293
