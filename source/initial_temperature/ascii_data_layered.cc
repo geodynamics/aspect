@@ -1,0 +1,114 @@
+/*
+  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
+
+  This file is part of ASPECT.
+
+  ASPECT is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2, or (at your option)
+  any later version.
+
+  ASPECT is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with ASPECT; see the file LICENSE.  If not see
+  <http://www.gnu.org/licenses/>.
+ */
+
+
+#include <aspect/global.h>
+#include <aspect/initial_temperature/ascii_data_layered.h>
+
+namespace aspect
+{
+  namespace InitialTemperature
+  {
+    template <int dim>
+    AsciiDataLayered<dim>::AsciiDataLayered ()
+    {}
+
+
+    template <int dim>
+    void
+    AsciiDataLayered<dim>::initialize ()
+    {
+      Utilities::AsciiDataLayered<dim>::initialize(1);
+    }
+
+
+    template <int dim>
+    double
+    AsciiDataLayered<dim>::
+    initial_temperature (const Point<dim> &position) const
+    {
+      // This is where we get the initial temperature
+      return Utilities::AsciiDataLayered<dim>::get_data_component(position,0);
+    }
+
+
+    template <int dim>
+    void
+    AsciiDataLayered<dim>::declare_parameters (ParameterHandler &prm)
+    {
+      prm.enter_subsection ("Initial layered temperature model");
+      {
+        Utilities::AsciiDataBase<dim>::declare_parameters(prm,
+                                                          "$ASPECT_SOURCE_DIR/data/initial-temperature/ascii-data/test/",
+                                                          "box_2d.txt");
+      }
+      prm.leave_subsection();
+    }
+
+
+    template <int dim>
+    void
+    AsciiDataLayered<dim>::parse_parameters (ParameterHandler &prm)
+    {
+      prm.enter_subsection ("Initial layered temperature model");
+      {
+        Utilities::AsciiDataBase<dim>::parse_parameters(prm);
+      }
+      prm.leave_subsection();
+    }
+  }
+}
+
+// explicit instantiations
+namespace aspect
+{
+  namespace InitialTemperature
+  {
+    ASPECT_REGISTER_INITIAL_TEMPERATURE_MODEL(AsciiDataLayered,
+                                              "ascii data layered",
+                                              "Implementation of a model in which the initial "
+                                              "temperature is derived from a file containing data "
+                                              "in ascii format. Note the required format of the "
+                                              "input data: The first lines may contain any number of comments "
+                                              "if they begin with `#', but one of these lines needs to "
+                                              "contain the number of grid points in each dimension as "
+                                              "for example `# POINTS: 3 3'. "
+                                              "The order of the data columns "
+                                              "has to be `Temperature [K]', `x', `y' in a 2d model and "
+                                              "`Temperature [K]', `x', `y', `z' in a 3d model, which means that "
+                                              "the first column must contain the isotherm temperature. "
+                                              "Note that the data in the input "
+                                              "files need to be sorted in a specific order: "
+                                              "the temperature needs to ascend first "
+                                              "(looping over isotherms at the same horizontal position), "
+                                              "followed by the second and the third at last in order to "
+                                              "assign the correct data to the prescribed coordinates. "
+                                              "If you use a spherical model, "
+                                              "then the assumed grid changes. `x' will be replaced by the "
+                                              "azimuth angle and `y' (if 3D) by the polar angle measured "
+                                              "positive from the north pole. The last column will be the "
+                                              "radial distance of the point to the bottom "
+                                              "of the model. The grid will be assumed to be "
+                                              "a latitude-longitude grid. Note that the order "
+                                              "of spherical coordinates is `phi', `theta', 'r'"
+                                              "and not `theta', `phi', `r' as this is "
+                                              "more consistent with other ASPECT plugins.")
+  }
+}

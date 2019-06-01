@@ -941,6 +941,90 @@ namespace aspect
     };
 
 
+    /**
+     * A base class that implements conditions determined from a
+     * layered AsciiData input file.
+     */
+    template <int dim>
+    class AsciiDataLayered : public Utilities::AsciiDataBase<dim>, public SimulatorAccess<dim>
+    {
+      public:
+        /**
+         * Constructor
+         */
+        AsciiDataLayered();
+
+        /**
+         * Initialization function. This function is called once at the
+         * beginning of the program. Checks preconditions.
+         */
+        virtual
+        void
+        initialize (const unsigned int components);
+
+
+        /**
+         * Returns the data component at the given position.
+         */
+        double
+        get_data_component (const Point<dim>                    &position,
+                            const unsigned int                   component) const;
+
+
+        /**
+         * Declare the parameters all derived classes take from input files.
+         */
+        static
+        void
+        declare_parameters (ParameterHandler  &prm,
+                            const std::string &default_directory,
+                            const std::string &default_filename,
+                            const std::string &subsection_name = "Ascii data model");
+
+        /**
+         * Read the parameters from the parameter file.
+         */
+        void
+        parse_parameters (ParameterHandler &prm,
+                          const std::string &subsection_name = "Ascii data model");
+
+      protected:
+        /**
+         * Pointer to an object that reads and processes data we get from text
+         * files.
+         */
+        std::vector<std::unique_ptr<aspect::Utilities::AsciiDataLookup<dim-1> >> lookups;
+
+      private:
+
+        /**
+         * Number of layer boundaries in the model.
+         */
+        unsigned int number_of_layer_boundaries;
+
+        /**
+         * Names for the layer boundaries.
+         */
+        std::vector<std::string> layer_boundary_names;
+
+        /**
+         * Values for the layer boundaries.
+         */
+        std::vector<double> layer_boundary_values;
+
+        /**
+         * Interpolation scheme for profile averaging.
+         */
+        std::string interpolation_scheme;
+
+        /**
+         * Output data.
+         */
+        double data;
+
+
+    };
+
 
     /**
      * A base class that reads in a data profile and provides its values.

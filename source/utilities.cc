@@ -2278,6 +2278,172 @@ namespace aspect
 
 
     template <int dim>
+    AsciiDataLayered<dim>::AsciiDataLayered ()
+    {}
+
+
+
+    template <int dim>
+    void
+    AsciiDataLayered<dim>::initialize(const unsigned int components)
+    {
+      AssertThrow ((dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()))
+                   || (dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model())) != nullptr
+                   || (dynamic_cast<const GeometryModel::Sphere<dim>*> (&this->get_geometry_model())) != nullptr
+                   || (dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model())) != nullptr,
+                   ExcMessage ("This ascii data plugin can only be used when using "
+                               "a spherical shell, chunk or box geometry."));
+
+
+      // Create a vector of doubles corresponding to the layer_values
+      number_of_layer_boundaries = layer_boundary_values.size();
+      // Create the lookups for each file
+      for (unsigned int i=0; i<layer_boundary_names.size(); ++i)
+        {
+          const std::string templ = this->data_directory + this->data_file_name;
+          const std::string filename = replace_placeholders(templ, layer_boundary_names[i], 0);
+
+          AssertThrow(Utilities::fexists(filename),
+                      ExcMessage (std::string("Ascii data file <")
+                                  +
+                                  filename
+                                  +
+                                  "> not found!"));
+
+          layer_boundary_values.push_back(string_to_double(layer_boundary_names[i]));
+          lookups.push_back(std_cxx14::make_unique<Utilities::AsciiDataLookup<dim-1>> (components,
+                                                                                       this->scale_factor));
+          lookups[i]->load_file(filename,this->get_mpi_communicator());
+
+        }
+    }
+
+
+
+    template <int dim>
+    double
+    AsciiDataLayered<dim>::
+    get_data_component (const Point<dim>                    &position,
+                        const unsigned int                   component) const
+    {
+      // Get the location of the component in the coordinate system of the ascii data input
+      const std::array<double,dim> natural_position = this->get_geometry_model().cartesian_to_natural_coordinates(position);
+
+      Point<dim> internal_position;
+      for (unsigned int i = 0; i < dim; i++)
+        internal_position[i] = natural_position[i];
+
+      // The chunk model has latitude as natural coordinate. We need to convert this to colatitude
+      if (dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model()) != nullptr && dim == 3)
+        {
+          internal_position[2] = numbers::PI/2. - internal_position[2];
+        }
+
+      double vertical_position;
+      if ((dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model())) != nullptr)
+        {
+          vertical_position = internal_position[dim];
+        }
+      else
+        {
+          vertical_position = internal_position[0];
+        }
+
+      Point<dim-1> horizontal_position;
+      for (unsigned int i = 0; i < dim-1; i++)
+        if ((dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model())) != nullptr)
+          {
+            horizontal_position[i] = internal_position[i]; // in cartesian coordinates, the vertical component comes last
+          }
+        else
+          {
+            horizontal_position[i] = internal_position[i+1]; // in spherical coordinates, the vertical component comes first
+          }
+
+      // Find which layer we're in
+      unsigned int layer_boundary_index=0;
+      double old_difference_in_vertical_position = vertical_position - lookups[layer_boundary_index]->get_data(horizontal_position,component);
+      double difference_in_vertical_position = old_difference_in_vertical_position;
+      while (difference_in_vertical_position < 0 && layer_boundary_index < number_of_layer_boundaries-1)
+        {
+          layer_boundary_index++;
+          old_difference_in_vertical_position = difference_in_vertical_position;
+          difference_in_vertical_position = vertical_position - lookups[layer_boundary_index]->get_data(horizontal_position,component);
+        }
+
+      double data;
+      if (interpolation_scheme == "piecewise constant")
+        {
+          data = layer_boundary_values[layer_boundary_index];
+        }
+      else if (interpolation_scheme == "linear")
+        {
+          if (difference_in_vertical_position < 0 || layer_boundary_index == 0) // if the point is above the first layer or below the last
+            {
+              data = layer_boundary_values[layer_boundary_index];
+            }
+          else
+            {
+              const double f = old_difference_in_vertical_position/(difference_in_vertical_position-old_difference_in_vertical_position);
+              data = f*layer_boundary_values[layer_boundary_index] + (1. - f)*layer_boundary_values[layer_boundary_index-1];
+            }
+        }
+      return data;
+    }
+
+
+    template <int dim>
+    void
+    AsciiDataLayered<dim>::declare_parameters (ParameterHandler  &prm,
+                                               const std::string &default_directory,
+                                               const std::string &default_filename,
+                                               const std::string &subsection_name)
+    {
+      Utilities::AsciiDataBase<dim>::declare_parameters(prm,
+                                                        default_directory,
+                                                        default_filename,
+                                                        subsection_name);
+
+      prm.enter_subsection (subsection_name);
+      {
+        prm.declare_entry ("Layer boundary values", "1200",
+                           Patterns::List (Patterns::Anything()),
+                           "The list of layer values to be read in. These must be given "
+                           "in ascending order of the vertical component inside the data file. "
+                           "This is not necessarily in ascending order of the boundary values. "
+                           "The boundary values should correspond to the ascii file data names.");
+
+        prm.declare_entry ("Interpolation scheme", "linear",
+                           Patterns::Selection("piecewise constant|linear"),
+                           "Method to interpolate between layers. Select from "
+                           "piecewise constant or linear. "
+                           "Outside the domain given by the layers, the values are"
+                           "given by the top and bottom layer.");
+
+      }
+      prm.leave_subsection();
+    }
+
+
+    template <int dim>
+    void
+    AsciiDataLayered<dim>::parse_parameters (ParameterHandler &prm,
+                                             const std::string &subsection_name)
+    {
+      Utilities::AsciiDataBase<dim>::parse_parameters(prm, subsection_name);
+
+      prm.enter_subsection(subsection_name);
+      {
+        layer_boundary_names = Utilities::split_string_list(prm.get ("Layer boundary values"));
+
+        interpolation_scheme = prm.get("Interpolation scheme");
+      }
+      prm.leave_subsection();
+    }
+
+
+
+    template <int dim>
     AsciiDataInitial<dim>::AsciiDataInitial ()
     {}
 
@@ -2332,8 +2498,6 @@ namespace aspect
         }
       return lookup->get_data(internal_position,component);
     }
-
-
 
     template <int dim>
     AsciiDataProfile<dim>::AsciiDataProfile ()
@@ -2990,6 +3154,8 @@ namespace aspect
     template class AsciiDataBase<3>;
     template class AsciiDataBoundary<2>;
     template class AsciiDataBoundary<3>;
+    template class AsciiDataLayered<2>;
+    template class AsciiDataLayered<3>;
     template class AsciiDataInitial<2>;
     template class AsciiDataInitial<3>;
     template class AsciiDataProfile<1>;
