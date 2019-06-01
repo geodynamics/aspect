@@ -62,13 +62,15 @@ namespace aspect
         const double x = pos[0];
         const double y = pos[1];
         const double z = pos[2];
+        const double pi = numbers::PI;
 
         // create a Point<3> (because it has a constructor that takes
         // three doubles) and return it (it automatically converts to
         // the necessary Tensor<1,3>).
-        return Point<3> (x+x*x+x*y+x*x*x*y,
-                         y+x*y+y*y+x*x*y*y,
-                         -2.*z-3.*x*z-3.*y*z-5.*x*x*y*z);
+        const double a=1.0;
+        return Point<3> (x+x*x+x*y+x*x*x*y+a*x,
+                         y+x*y+y*y+x*x*y*y+a*y,
+                         -2.*z-3.*x*z-3.*y*z-5.*x*x*y*z+a*z);
       }
 
       double
@@ -183,9 +185,26 @@ namespace aspect
     class BursteddeMaterial : public MaterialModel::Interface<dim>
     {
       public:
+        virtual
+        void
+        create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &outputs) const
+        {
+          if (outputs.template get_additional_output<MaterialModel::PrescribedCompressionOutputs<dim> >() == nullptr)
+            {
+              const unsigned int n_points = outputs.viscosities.size();
+              outputs.additional_outputs.push_back(
+                std_cxx14::make_unique<MaterialModel::PrescribedCompressionOutputs<dim>> (n_points));
+            }
+        }
+
+
+
         virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
                               MaterialModel::MaterialModelOutputs<dim> &out) const
         {
+          MaterialModel::PrescribedCompressionOutputs<dim>
+          *prescribed_compression = out.template get_additional_output<MaterialModel::PrescribedCompressionOutputs<dim> >();
+
           for (unsigned int i=0; i < in.position.size(); ++i)
             {
               const Point<dim> &p = in.position[i];
@@ -213,6 +232,12 @@ namespace aspect
               // change in compositional field c at point i.
               for (unsigned int c=0; c<in.composition[i].size(); ++c)
                 out.reaction_terms[i][c] = 0.0;
+
+              if (prescribed_compression != nullptr)
+                {
+                  const double pi=numbers::PI;
+                  prescribed_compression->prescribed_compression[i]=3;
+                }
 
             }
 

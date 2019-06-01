@@ -809,6 +809,23 @@ namespace aspect
 
 
 
+    template <int dim>
+    PrescribedCompressionOutputs<dim>::PrescribedCompressionOutputs (const unsigned int n_points)
+      : NamedAdditionalMaterialOutputs<dim>(std::vector<std::string>(1, "prescribed_compression")),
+        prescribed_compression(n_points, numbers::signaling_nan<double>())
+    {}
+
+
+
+    template <int dim>
+    std::vector<double> PrescribedCompressionOutputs<dim>::get_nth_output(const unsigned int idx) const
+    {
+      Assert(idx==0, ExcInternalError());
+      return prescribed_compression;
+    }
+
+
+
     namespace
     {
       std::vector<std::string> make_seismic_additional_outputs_names()
@@ -991,6 +1008,8 @@ namespace aspect
   template class SeismicAdditionalOutputs<dim>; \
   \
   template class ReactionRateOutputs<dim>; \
+  \
+  template class PrescribedCompressionOutputs<dim>; \
   \
   template class PrescribedFieldOutputs<dim>; \
   \

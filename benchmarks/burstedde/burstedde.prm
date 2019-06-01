@@ -12,6 +12,10 @@ set Additional shared libraries            = ./libburstedde.so
 
 set Dimension                              = 3
 
+subsection Formulation
+  set Enable prescribed compression          = true
+end
+
 set Start time                             = 0
 set End time                               = 0
 set Use years in output instead of seconds = false

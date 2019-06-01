@@ -441,7 +441,8 @@ namespace aspect
     // there is no open boundary to balance the pressure.
     do_pressure_rhs_compatibility_modification = ((material_model->is_compressible() && !parameters.include_melt_transport)
                                                   ||
-                                                  (parameters.include_melt_transport && !material_model->is_compressible()))
+                                                  (parameters.include_melt_transport && !material_model->is_compressible())
+                                                  || parameters.enable_prescribed_compression)
                                                  &&
                                                  (open_velocity_boundary_indicators.size() == 0);
 

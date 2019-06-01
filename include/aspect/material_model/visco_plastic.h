@@ -369,6 +369,15 @@ namespace aspect
         std::vector<double> viscous_strain_weakening_factors;
 
 
+        /**
+         * Whether to use an associated plasticity, which takes 
+         * the effects of dilation into account. The effects are
+         * taken into account through terms assembled within the
+         * material model and added to the RHS of the continuity
+         * and momentum equations.
+         */
+        bool use_associated_plasticity;
+
         std::vector<double> prefactors_diffusion;
         std::vector<double> grain_size_exponents_diffusion;
         std::vector<double> activation_energies_diffusion;
