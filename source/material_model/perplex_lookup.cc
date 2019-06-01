@@ -161,11 +161,11 @@ namespace aspect
           prm.declare_entry ("Minimum material temperature", "0.",
                              Patterns::Double (0),
                              "The value of the minimum temperature used to query PerpleX. "
-                             "Units: $\\text{K}$.");
+                             "Units: $\\si{K}$.");
           prm.declare_entry ("Maximum material temperature", "6000.",
                              Patterns::Double (0),
                              "The value of the maximum temperature used to query PerpleX. "
-                             "Units: $\\text{K}$.");
+                             "Units: $\\si{K}$.");
           prm.declare_entry ("Minimum material pressure", "1.e5",
                              Patterns::Double (0),
                              "The value of the minimum pressure used to query PerpleX. "

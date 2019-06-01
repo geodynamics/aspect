@@ -96,11 +96,11 @@ namespace aspect
         {
           prm.declare_entry ("Outer temperature", "0",
                              Patterns::Double (),
-                             "Temperature at the outer boundary (lithosphere water/air). Units: $\\text{K}$.");
+                             "Temperature at the outer boundary (lithosphere water/air). Units: $\\si{K}$.");
           prm.declare_entry ("Inner temperature", "6000",
                              Patterns::Double (),
                              "Temperature at the inner boundary (core mantle boundary) at the "
-                             "beginning. Units: $\\text{K}$.");
+                             "beginning. Units: $\\si{K}$.");
           prm.declare_entry ("dT over dt", "0",
                              Patterns::Double (),
                              "Initial CMB temperature changing rate. Units: $K/year$.");
@@ -160,7 +160,7 @@ namespace aspect
           {
             prm.declare_entry ("Tm0","1695",
                                Patterns::Double (0),
-                               "Melting curve (\\cite{NPB+04} eq. (40)) parameter Tm0. Units: $\\text{K}$.");
+                               "Melting curve (\\cite{NPB+04} eq. (40)) parameter Tm0. Units: $\\si{K}$.");
             prm.declare_entry ("Tm1","10.9",
                                Patterns::Double (),
                                "Melting curve (\\cite{NPB+04} eq. (40)) parameter Tm1. Units: $1/Tpa$.");

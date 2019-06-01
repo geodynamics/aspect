@@ -325,25 +325,25 @@ namespace aspect
         {
           prm.declare_entry ("X extent", "1",
                              Patterns::Double (0),
-                             "Extent of the box in x-direction. Units: $\\text{m}$.");
+                             "Extent of the box in x-direction. Units: $\\si{m}$.");
           prm.declare_entry ("Y extent", "1",
                              Patterns::Double (0),
-                             "Extent of the box in y-direction. Units: $\\text{m}$.");
+                             "Extent of the box in y-direction. Units: $\\si{m}$.");
           prm.declare_entry ("Z extent", "1",
                              Patterns::Double (0),
                              "Extent of the box in z-direction. This value is ignored "
-                             "if the simulation is in 2d. Units: $\\text{m}$.");
+                             "if the simulation is in 2d. Units: $\\si{m}$.");
 
           prm.declare_entry ("Box origin X coordinate", "0",
                              Patterns::Double (),
-                             "X coordinate of box origin. Units: $\\text{m}$.");
+                             "X coordinate of box origin. Units: $\\si{m}$.");
           prm.declare_entry ("Box origin Y coordinate", "0",
                              Patterns::Double (),
-                             "Y coordinate of box origin. Units: $\\text{m}$.");
+                             "Y coordinate of box origin. Units: $\\si{m}$.");
           prm.declare_entry ("Box origin Z coordinate", "0",
                              Patterns::Double (),
                              "Z coordinate of box origin. This value is ignored "
-                             "if the simulation is in 2d. Units: $\\text{m}$.");
+                             "if the simulation is in 2d. Units: $\\si{m}$.");
 
           prm.declare_entry ("X repetitions", "1",
                              Patterns::Integer (1),

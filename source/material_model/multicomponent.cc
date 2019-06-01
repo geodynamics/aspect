@@ -93,7 +93,7 @@ namespace aspect
 
           prm.declare_entry ("Reference temperature", "293",
                              Patterns::Double (0),
-                             "The reference temperature $T_0$. Units: $\\text{K}$.");
+                             "The reference temperature $T_0$. Units: $\\si{K}$.");
           prm.declare_entry ("Viscosities", "1.e21",
                              Patterns::Anything(),
                              "List of viscosities for background mantle and compositional fields,"
