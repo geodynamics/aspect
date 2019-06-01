@@ -98,8 +98,10 @@ namespace aspect
 
     namespace
     {
-      template <int dim>
 
+
+
+      template <int dim>
       std::vector<std::string> make_AnisotropicViscosity_additional_outputs_names()
       {
         std::vector<std::string> names;
@@ -113,12 +115,16 @@ namespace aspect
       }
     }
 
+
+
     template <int dim>
     AnisotropicViscosity<dim>::AnisotropicViscosity (const unsigned int n_points)
       :
       NamedAdditionalMaterialOutputs<dim>(make_AnisotropicViscosity_additional_outputs_names<dim>()),
       stress_strain_directors(n_points, dealii::identity_tensor<dim> ())
     {}
+
+
 
     template <int dim>
     std::vector<double>
@@ -133,12 +139,10 @@ namespace aspect
     }
   }
 }
-
 #endif
 
 namespace aspect
 {
-
   namespace Assemblers
   {
     /**
@@ -179,6 +183,8 @@ namespace aspect
          */
         virtual void create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const;
     };
+
+
 
     template <int dim>
     void
@@ -230,9 +236,6 @@ namespace aspect
           const double eta = scratch.material_model_outputs.viscosities[q];
           const double one_over_eta = 1. / eta;
           const SymmetricTensor<4, dim> &stress_strain_director = anisotropic_viscosity->stress_strain_directors[q];
-
-
-
           const double JxW = scratch.finite_element_values.JxW(q);
 
           for (unsigned int i = 0; i < stokes_dofs_per_cell; ++i)
@@ -249,6 +252,8 @@ namespace aspect
                                            * JxW;
         }
     }
+
+
 
     template <int dim>
     void
@@ -304,8 +309,6 @@ namespace aspect
                 }
               ++i;
             }
-
-
           // Viscosity scalar
           const double eta = (scratch.rebuild_stokes_matrix
                               ?
@@ -377,7 +380,6 @@ namespace aspect
     }
   }
 
-
   namespace HeatingModel
   {
     template <int dim>
@@ -400,6 +402,8 @@ namespace aspect
         void
         create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &material_model_outputs) const;
     };
+
+
 
     template <int dim>
     void
@@ -462,6 +466,8 @@ namespace aspect
         }
     }
 
+
+
     template <int dim>
     void
     ShearHeatingAnisotropicViscosity<dim>::
@@ -481,41 +487,10 @@ namespace aspect
 
   namespace MaterialModel
   {
-
-    //The Anisotropic material model class builds on the `Simple` material model but replaces the scalar viscosity
-    //produced by the latter material model by a viscosity tensor. This tensor is defined in the parameter file.
-    template <int dim>
-    class Anisotropic : public MaterialModel::Simple<dim>
-    {
-      public:
-        virtual void initialize();
-
-        virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                              MaterialModel::MaterialModelOutputs<dim> &out) const;
-        static void declare_parameters(ParameterHandler &prm);
-        virtual void parse_parameters(ParameterHandler &prm);
-
-        /**
-         * Return true if the compressibility() function returns something that
-         * is not zero.
-         */
-        virtual bool
-        is_compressible () const;
-
-      private:
-        void set_assemblers(const SimulatorAccess<dim> &,
-                            Assemblers::Manager<dim> &assemblers) const;
-
-        // Constitutive tensor
-        SymmetricTensor<4,dim> C;
-    };
-
-
     // The AV material model calculates an anisotropic viscosity tensor from director vectors and the normal and shear
     // viscosities (defined in the .prm file). In contrast to the `Anisotropic` material model, the principal directions of the
-    // tensor are not read from an input file, but instead are computed at every quadrature point. Like the
-    // `Anisotropic` material model, this class is derived from the `Simple` material model and inherits all other
-    // material properties from it.
+    // tensor are not read from an input file, but instead are computed at every quadrature point. This material model is used in T independent models.
+    // All the parameters are defined below.
     template <int dim>
     class AV : public MaterialModel::Simple<dim>
     {
@@ -541,7 +516,7 @@ namespace aspect
 namespace aspect
 {
 
-//Next session is a more evolved implementation of anisotropic viscosity in the material model by Jonathan Perry-Houts
+//Next session is a more evolved implementation of anisotropic viscosity in the material model based on Jonathan Perry-Houts'paper
   namespace MaterialModel
   {
     template <int dim>
@@ -587,8 +562,6 @@ namespace aspect
     {
       MaterialModel::AnisotropicViscosity<dim> *anisotropic_viscosity =
         out.template get_additional_output<MaterialModel::AnisotropicViscosity<dim> >();
-
-      //Simple<dim>::evaluate(in,out);
 
       AssertThrow((this->introspection().compositional_name_exists("gamma")),
                   ExcMessage("AV material model only works if there is a compositional field called gamma."));
