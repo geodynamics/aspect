@@ -2316,7 +2316,7 @@ velocity.
 The first argument in the inner product is the strong form of the residual of PDE, which
 is tested with the expression $\mathbf{\beta} \cdot \nabla \varphi$ representing the solution in
 streamline direction. We have to assume $k$ to be
-constant per cell, as we can not compute the spacial derivatives easily.
+constant per cell, as we can not compute the spatial derivatives easily.
 
 For the implementation, $\frac{\partial T}{\partial t}$ is replaced by the BDF2 approximation, and its terms from older timesteps and $-F$, are moved to the right-hand side of the PDE.
 
