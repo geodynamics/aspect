@@ -1,0 +1,17 @@
+include base.prm
+
+set Dimension                              = 2
+
+set Output directory                       = output_explicit
+
+subsection Material model
+  subsection Visco Plastic
+    set Compressible = false
+  end 
+end 
+
+subsection Formulation
+  set Enable prescribed compression = true
+end
+
+
