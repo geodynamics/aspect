@@ -1,0 +1,7 @@
+# Test data for ascii data initial temperature conditions.
+# Only next line is parsed in format: [nx] [ny] because of keyword "POINTS:"
+# POINTS: 3
+# Columns: x y
+0.     250000.
+300000 150000.
+600000 300000.

@@ -1,0 +1,13 @@
+# Test data for ascii data initial temperature conditions.
+# Only next line is parsed in format: [nx] [ny] because of keyword "POINTS:"
+# POINTS: 3 3
+# Columns: phi theta r
+0.     0.     6310000
+0.7854 0.     6310000
+1.5708 0.     6310000
+0.     0.7854 6260000
+0.7854 0.7854 6260000
+1.5708 0.7854 6260000
+0.     1.5708 6360000
+0.7854 1.5708 6360000
+1.5708 1.5708 6360000
