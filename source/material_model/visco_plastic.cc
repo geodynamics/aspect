@@ -733,7 +733,7 @@ namespace aspect
     ViscoPlastic<dim>::
     is_compressible () const
     {
-      return false;
+      return compressible;
     }
 
     template <int dim>
@@ -751,6 +751,8 @@ namespace aspect
       {
         prm.enter_subsection ("Visco Plastic");
         {
+          prm.declare_entry ("Compressible", "false", Patterns::Bool(),
+                             "If true, run as a compressible model.");
           // Reference and minimum/maximum values
           prm.declare_entry ("Reference temperature", "293", Patterns::Double(0),
                              "For calculating density by thermal expansivity. Units: $\\text{K}$");
@@ -1080,6 +1082,8 @@ namespace aspect
       {
         prm.enter_subsection ("Visco Plastic");
         {
+          compressible = prm.get_bool("Compressible");
+
           // Reference and minimum/maximum values
           reference_T = prm.get_double("Reference temperature");
           min_strain_rate = prm.get_double("Minimum strain rate");
@@ -1378,7 +1382,7 @@ namespace aspect
         {
           const unsigned int n_points = out.viscosities.size();
           out.additional_outputs.push_back(
-          std_cxx14::make_unique<MaterialModel::PrescribedCompressionOutputs<dim>> (n_points));
+            std_cxx14::make_unique<MaterialModel::PrescribedCompressionOutputs<dim>> (n_points));
         }
     }
 
