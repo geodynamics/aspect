@@ -58,12 +58,10 @@ end
 
 
 subsection Postprocess
-  set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, visualization
+  set List of postprocessors = velocity statistics, temperature statistics, depth average
   
-  subsection Visualization
-    set Interpolate output = false
+  subsection Depth average
     set Time between graphical output = 0
-    set List of output variables      = strain rate
+    set Number of zones = 10
   end
 end
-
