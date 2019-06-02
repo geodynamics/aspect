@@ -18,8 +18,8 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#ifndef _aspect_initial_temperature_anelasticity_temperature_h
-#define _aspect_initial_temperature_anelasticity_temperature_h
+#ifndef _aspect_initial_temperature_anelasticity_vs_to_temperature_h
+#define _aspect_initial_temperature_anelasticity_vs_to_temperature_h
 
 #include <aspect/initial_temperature/interface.h>
 #include <aspect/utilities.h>
@@ -33,18 +33,19 @@ namespace aspect
 
     /**
      * A class that describes an initial temperature field for a 2D or 3D shear wave velocity (Vs) model.
-     * Vs values are converted to temperature using the anelasticity parameterization of Yamauchi & Takei (2016).
+     * Vs values are read from ascii data files that follow the format of the AsciiDataLookup class and
+     * are converted to temperature using the anelasticity parameterization of Yamauchi & Takei (2016).
      *
      * @ingroup InitialTemperatures
      */
     template <int dim>
-    class AnelasticVs2T : public Utilities::AsciiDataInitial<dim>, public Interface<dim>
+    class AnelasticVsToTemperature : public Utilities::AsciiDataInitial<dim>, public Interface<dim>
     {
       public:
         /**
         * Constructor. Initialize variables.
         */
-        AnelasticVs2T ();
+        AnelasticVsToTemperature ();
 
         /**
         * Initialization function. This function is called once at the
@@ -58,7 +59,8 @@ namespace aspect
 
         /**
         * Return the boundary temperature as a function of position. For the
-        * current class, this function returns value from the text files.
+        * current class, this function returns temperatures that are computed
+        * from seismic velocities read in from text files.
         */
         double
         initial_temperature (const Point<dim> &position) const;
@@ -82,33 +84,28 @@ namespace aspect
         * Function that assesses difference between input and calculated Vs for Brent minimization
         */
         double
-        fVs(double x, double depth, double absolute_Vs, double mu0, double dmudT,
-            double dmudP, double viscosity_prefactor, double activation_energy, double activation_volume,
-            double solidus_gradient, bool density_model_flag) const;
+        fVs(const double x, const double y, const double z, const double a, const double b,
+            const double c, const double d, const double e, const double f,
+            const double g, const bool h) const;
 
         /**
         * Function that assesses difference between input and calculated pressure for Brent minimization
         */
         double
-        fdV(double x, double bulk_modulus, double bulk_modulus_pressure_derivative, double pressure) const;
+        fdV(const double x, const double a, const double b, const double c) const;
 
         /**
           * Function to calculate Vs using Yamauchi & Takei 2016 anelasticity parameterization
         */
         double
-        yamauchi_takei_Vs(double temperature, double depth, double mu0, double dmudT,
-                          double dmudP, double viscosity_prefactor, double activation_energy,
-                          double activation_volume, double solidus_gradient, bool density_model_flag) const;
+        yamauchi_takei_Vs(const double x, const double y, const double a, const double b,
+                          const double c, const double d, const double e,
+                          const double f, const double g, const bool h) const;
 
         /**
         * Whether to remove temperature heterogeneity upper parts of model
         */
         double no_perturbation_depth;
-
-        /**
-        * Whether to use Yamauchi & Takei (2016) anelasticity parameterization
-        */
-        bool use_yamauchi_takei;
 
         /**
         * Whether to use original parameters published in Yamauchi & Takei (2016)

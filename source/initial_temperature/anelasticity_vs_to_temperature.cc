@@ -19,11 +19,10 @@
 */
 
 #include <aspect/global.h>
-#include <aspect/initial_temperature/anelasticity_temperature.h>
+#include <aspect/initial_temperature/anelasticity_vs_to_temperature.h>
 #include <aspect/material_model/interface.h>
 #include <aspect/initial_composition/interface.h>
 #include <aspect/adiabatic_conditions/interface.h>
-#include <aspect/material_model/anelasticity_temperature.h>
 #include <aspect/simulator_access.h>
 
 #include <boost/lexical_cast.hpp>
@@ -34,21 +33,20 @@ namespace aspect
   namespace InitialTemperature
   {
     template <int dim>
-    AnelasticVs2T<dim>::AnelasticVs2T ()
+    AnelasticVsToTemperature<dim>::AnelasticVsToTemperature ()
     {}
 
     template <int dim>
     void
-    AnelasticVs2T<dim>::initialize ()
+    AnelasticVsToTemperature<dim>::initialize ()
     {
       Utilities::AsciiDataInitial<dim>::initialize(1);
     }
 
-     // set up Vs function that Brent minimization operates on
     template <int dim>
     double
-    AnelasticVs2T<dim>::
-    fVs (double x,
+    AnelasticVsToTemperature<dim>::
+    fVs (const double x,
          const double      depth,
          const double      absolute_Vs,
          const double      mu0,
@@ -64,11 +62,10 @@ namespace aspect
                                         ,solidus_gradient,use_original_model)-absolute_Vs);
     }
 
-    // set up volume change function that Brent minimization operates on
     template <int dim>
     double
-    AnelasticVs2T<dim>::
-    fdV (double x, const double bulk_modulus, const double bulk_modulus_pressure_derivative, const double pressure ) const
+    AnelasticVsToTemperature<dim>::
+    fdV (const double x, const double bulk_modulus, const double bulk_modulus_pressure_derivative, const double pressure ) const
     {
       return std::abs((bulk_modulus*(3./2.)*(std::pow(x,7./3.)-std::pow(x,5./3.))*(1+(((3./4.)*
                                                                                       (bulk_modulus_pressure_derivative-4))*(std::pow(x,2./3.)-1))))-pressure);
@@ -77,12 +74,11 @@ namespace aspect
     // set up initial temperature
     template <int dim>
     double
-    AnelasticVs2T<dim>::
+    AnelasticVsToTemperature<dim>::
     initial_temperature (const Point<dim> &position) const
     {
       // determine depth
-      double depth;
-      depth = this->get_geometry_model().depth(position);
+      const double depth = this->get_geometry_model().depth(position);
 
       // declare temperature
       double temperature;
@@ -94,43 +90,29 @@ namespace aspect
         {
           // convert absolute Vs into temperature
           // check if using Yamauchi & Takei 2016 parameterization
-          if (use_yamauchi_takei == true)
-            {
-              // specify Brent algorithm parameters
-              const double a=273;
-              const double b=3273;
-              typedef std::pair<double, double> Result;
-              // create fVs function to use in Brent minimization and calculate temperature
-              auto bfunc = [ &,this] (double x)
-              {
-                return fVs(x, depth, absolute_Vs, mu0, dmudT,dmudP,
-                           viscosity_prefactor,activation_energy,activation_volume,solidus_gradient,use_original_model);
-              };
-              // determine maximum Vs
-              double maximum_Vs;
-              int fail;
-              maximum_Vs=yamauchi_takei_Vs(273.,depth,mu0,dmudT,dmudP,viscosity_prefactor,activation_energy,activation_volume
-                                           ,solidus_gradient,use_original_model);
+          // specify Brent algorithm parameters
+          const double a=273;
+          const double b=3273;
+          // create fVs function to use in Brent minimization and calculate temperature
+          auto bfunc = [ &,this] (const double x)
+          {
+            return fVs(x, depth, absolute_Vs, mu0, dmudT,dmudP,
+                       viscosity_prefactor,activation_energy,activation_volume,solidus_gradient,use_original_model);
+          };
+          // determine maximum Vs
+          const double maximum_Vs=yamauchi_takei_Vs(273.,depth,mu0,dmudT,dmudP,viscosity_prefactor,activation_energy,activation_volume
+                                                    ,solidus_gradient,use_original_model);
 
-              // set number of fails to zero
-              fail=0;
-              // where absolute Vs exceeds maximum Vs, set temperature to 273 K
-              if (absolute_Vs>maximum_Vs)
-                {
-                  temperature=273.;
-                  fail=fail+1;
-                  std::cout << "Vs too fast for sensible temperature for " << fail << " points!" << std::endl;
-                }
-              else
-                {
-                  Result r1 = boost::math::tools::brent_find_minima(bfunc,a,b,16);
-                  temperature=r1.first;
-                }
+          // where absolute Vs exceeds maximum Vs, set temperature to 273 K
+          if (absolute_Vs>maximum_Vs)
+            {
+              AssertThrow(absolute_Vs > maximum_Vs,
+                          ExcMessage("Computed Vs of " + std::to_string(absolute_Vs) + " too fast for sensible temperature"));
+              temperature=273.;
             }
           else
             {
-              Assert (false, ExcNotImplemented());
-              return 273.;
+              temperature=boost::math::tools::brent_find_minima(bfunc,a,b,16).first;
             }
         }
       else
@@ -145,9 +127,9 @@ namespace aspect
     // set up function to calculate shear wave velocity from Yamauchi & Takei 2016 parameterisation
     template <int dim>
     double
-    AnelasticVs2T<dim>::
-    yamauchi_takei_Vs (double temperature,
-                       double depth,
+    AnelasticVsToTemperature<dim>::
+    yamauchi_takei_Vs (const double temperature,
+                       const double depth,
                        const double mu0,
                        const double dmudT,
                        const double dmudP,
@@ -186,31 +168,30 @@ namespace aspect
       // initialize solidus
       const double T_solidus = 1326.0 + 273 + (((depth-50000)/1e3)*solidus_gradient);
       // initialize homologous_temperature
-      double homologous_temperature = temperature/T_solidus;
+      const double homologous_temperature = temperature/T_solidus;
       // initialize pressures
-      double pressure = depth/pressure_gradient;
+      const double pressure = depth/pressure_gradient;
       // declare other parameters
-      double viscosity,viscosity_reduction_factor,peak_amplitude,peak_width,isothermal_volume_change;
-      double compressibility,pressure_dependent_density,integrated_thermal_expansivity,density,anharmonic_Vs;
-      double unrelaxed_compliance,loss_compliance,storage_compliance,attenuation,period,anelastic_Vs;
+      double viscosity,viscosity_reduction_factor,unrelaxed_compliance, attenuation;
       // begin calculation of Vs
       if (homologous_temperature<critical_homologous_temperature)
         {
-          viscosity_reduction_factor=1;
+          viscosity_reduction_factor=1.0;
         }
       else if ((homologous_temperature>=critical_homologous_temperature) && (homologous_temperature<1))
         {
-          viscosity_reduction_factor=std::exp((-1*((homologous_temperature-critical_homologous_temperature)/(homologous_temperature-
-                                                   (homologous_temperature*critical_homologous_temperature))))*std::log(reduction_factor));
+          viscosity_reduction_factor=std::exp((-1.0*((homologous_temperature-critical_homologous_temperature)/(homologous_temperature-
+                                                     (homologous_temperature*critical_homologous_temperature))))*std::log(reduction_factor));
         }
       else
         {
-          viscosity_reduction_factor=(1/reduction_factor)*std::exp(-melt_viscosity_factor);
+          viscosity_reduction_factor=(1.0/reduction_factor)*std::exp(-melt_viscosity_factor);
         }
       viscosity = std::pow(grain_size/reference_grain_size,grain_size_exponent)*viscosity_prefactor*std::exp((activation_energy/gas_constant)
-                  *(1/temperature-1/reference_temperature))*std::exp((activation_volume/gas_constant)*(pressure/temperature-reference_pressure/
-                                                                     reference_temperature))*viscosity_reduction_factor;
-      unrelaxed_compliance=1./(1e9*(mu0+(dmudP*pressure*1e-9)+(dmudT*(temperature-273))));
+                  *(1.0/temperature-1.0/reference_temperature))*std::exp((activation_volume/gas_constant)*(pressure/temperature-reference_pressure/
+                                                                         reference_temperature))*viscosity_reduction_factor;
+      unrelaxed_compliance=1.0/(1e9*(mu0+(dmudP*pressure*1e-9)+(dmudT*(temperature-273))));
+
       if (temperature<273)
         {
           // Vs is too high to give realistic temperature so viscosity, attenuation and unrelaxed compliance are reset
@@ -219,7 +200,8 @@ namespace aspect
           attenuation=1e-9;
         }
       // evaluate Maxwell normalised shear wave period
-      double maxwell_relaxation_time=viscosity*unrelaxed_compliance;
+      const double maxwell_relaxation_time=viscosity*unrelaxed_compliance;
+      double period;
       if (use_original_model == true)
         {
           // set shear wave period as constant
@@ -230,8 +212,10 @@ namespace aspect
           // calculate shear wave period incorporating depth dependence of Forsyth 1992
           period=(3*depth)/4200;
         }
-      double normalised_period=period/(2*M_PI*maxwell_relaxation_time);
+      // determine normalised shear wave period
+      const double normalised_period=period/(2*M_PI*maxwell_relaxation_time);
       // determine peak amplitudes
+      double peak_amplitude;
       if (homologous_temperature < 0.91)
         {
           peak_amplitude=0.01;
@@ -249,6 +233,7 @@ namespace aspect
           peak_amplitude=0.03+melt_peak_factor;
         }
       // determine peak widths
+      double peak_width;
       if (homologous_temperature < 0.92)
         {
           peak_width=4;
@@ -262,6 +247,7 @@ namespace aspect
           peak_width=7;
         }
       // determine density
+      double compressibility,pressure_dependent_density,integrated_thermal_expansivity,density,isothermal_volume_change;
       if (use_original_model == true)
         {
           // calculate density using original parameters
@@ -271,18 +257,18 @@ namespace aspect
         {
           // create fdV function to use in Brent minimization and calculate isothermal_volume_change and density using
           // expressions in Grose & Afonso 2013
-          typedef std::pair<double, double> Result2;
-          auto vfunc = [ &,this] (double x)
+//          typedef std::pair<double, double> Result2;
+          auto vfunc = [ &,this] (const double x)
           {
             return fdV(x, bulk_modulus, bulk_modulus_pressure_derivative, pressure);
           };
-          Result2 r2 = boost::math::tools::brent_find_minima(vfunc,a,b,16);
-          isothermal_volume_change=r2.first;
+          isothermal_volume_change=boost::math::tools::brent_find_minima(vfunc,a,b,16).first;
           compressibility=isothermal_volume_change*std::exp((gruneisen_parameter+1)*(std::pow(isothermal_volume_change,-1)-1));
           pressure_dependent_density=reference_density*isothermal_volume_change;
           integrated_thermal_expansivity=(2.832e-5*(temperature-273))+((0.758e-8/2)*(std::pow(temperature,2)-std::pow(273,2)));
           density=pressure_dependent_density*(1-(compressibility*integrated_thermal_expansivity));
         }
+      double loss_compliance,storage_compliance,anharmonic_Vs,anelastic_Vs;
       // determine J1 term (real part of complex compliance)
       storage_compliance=unrelaxed_compliance*(1+((background_amplitude*std::pow(normalised_period,background_slope))
                                                   /background_slope)+((std::sqrt(2*M_PI)/2)*peak_amplitude*peak_width*(1-
@@ -302,23 +288,18 @@ namespace aspect
 
     template <int dim>
     void
-    AnelasticVs2T<dim>::declare_parameters (ParameterHandler &prm)
+    AnelasticVsToTemperature<dim>::declare_parameters (ParameterHandler &prm)
     {
       prm.enter_subsection ("Initial temperature model");
       {
         prm.declare_entry ("Remove temperature heterogeneity down to specified depth",
                            boost::lexical_cast<std::string>(-std::numeric_limits<double>::max()),
                            Patterns::Double (),
-                           "This will set the heterogeneity prescribed by S20RTS or S40RTS to zero "
-                           "down to the specified depth (in meters). Note that your resolution has "
-                           "to be adequate to capture this cutoff. For example if you specify a depth "
-                           "of 660km, but your closest spherical depth layers are only at 500km and "
-                           "750km (due to a coarse resolution) it will only zero out heterogeneities "
-                           "down to 500km. Similar caution has to be taken when using adaptive meshing.");
-        prm.declare_entry ("Use Yamauchi and Takei parameterization", "true",
-                           Patterns::Bool(),
-                           "This parameter determines whether to use the anelasticity model of "
-                           "Yamauchi & Takei, 2016 (JGR) to convert absolute Vs into temperature");
+                           "This will remove density and viscosity variations down to the specified depth "
+                           "(in meters). Note that your resolution has to be adequate to capture this cutoff. "
+                           "For example if you specify a depth of 660km, but your closest spherical depth layers "
+                           "are only at 500km and 750km (due to a coarse resolution) it will only zero out "
+                           "heterogeneities down to 500km. Similar caution has to be taken when using adaptive meshing.");
         prm.declare_entry ("Use original density and frequency model of Yamauchi and Takei", "true",
                            Patterns::Bool(),
                            "Use original density and frequency model of Yamauchi and Takei where density"
@@ -336,13 +317,13 @@ namespace aspect
                            Patterns::Double(),
                            "The value of the pressure derivative of shear modulus $\\dmu_U/dP$.");
         prm.declare_entry ("Viscosity prefactor", "6.22e21",
-        				   Patterns::Double(),
+                           Patterns::Double(),
                            "The value of the viscosity prefactor $\\eta_r$. Units: $Pa s$.");
         prm.declare_entry ("Activation energy", "462.5e3",
-        				   Patterns::Double(),
+                           Patterns::Double(),
                            "The value of the activation energy $\\E_a$. Units: $J/mol$.");
         prm.declare_entry ("Activation volume", "7.913e-6",
-        				   Patterns::Double(),
+                           Patterns::Double(),
                            "The value of the activation volume $\\V_a$. Units: $m^3/mol$.");
         prm.declare_entry ("Solidus gradient", "1.018",
                            Patterns::Double(),
@@ -359,12 +340,11 @@ namespace aspect
 
     template <int dim>
     void
-    AnelasticVs2T<dim>::parse_parameters (ParameterHandler &prm)
+    AnelasticVsToTemperature<dim>::parse_parameters (ParameterHandler &prm)
     {
       prm.enter_subsection ("Initial temperature model");
       {
         no_perturbation_depth   = prm.get_double ("Remove temperature heterogeneity down to specified depth");
-        use_yamauchi_takei = prm.get_bool ("Use Yamauchi and Takei parameterization");
         use_original_model = prm.get_bool ("Use original density and frequency model of Yamauchi and Takei");
         upper_temperature = prm.get_double("Upper temperature");
         mu0 = prm.get_double ("Reference shear modulus");
@@ -387,20 +367,21 @@ namespace aspect
 {
   namespace InitialTemperature
   {
-    ASPECT_REGISTER_INITIAL_TEMPERATURE_MODEL(AnelasticVs2T,
-                                              "anelastic Vs to temperature",
-                                              "Implementation of a model in which the initial temperature is calculated "
-                                              "from files containing absolute shear wave velocity (Vs) data in ascii format. "
-                                              "This plug-in allows you to select from a number of different models that"
-                                              "convert Vs into temperature, accounting for the anelastic behaviour of mantle material."
+    ASPECT_REGISTER_INITIAL_TEMPERATURE_MODEL(AnelasticVsToTemperature,
+                                              "anelasticity Vs to temperature",
+                                              "Implementation of a model in which the initial temperature is "
+                                              "calculated from files containing absolute shear wave velocity (Vs) "
+                                              "data in ascii format. This plug-in allows you to convert Vs into anelastic"
+                                              "temperature, accounting for the behaviour of mantle material. "
+                                              "Currently only the Yamauchi & Takei 2016 parameterization is implemented. "
                                               "Note the required format of the "
                                               "input data: The first lines may contain any number of comments "
                                               "if they begin with `#', but one of these lines needs to "
                                               "contain the number of grid points in each dimension as "
                                               "for example `# POINTS: 3 3'. "
                                               "The order of the data columns "
-                                              "has to be `x', `y', `Temperature [K]' in a 2d model and "
-                                              " `x', `y', `z', `Temperature [K]' in a 3d model, which means that "
+                                              "has to be `x', `y', `Velocity  [km/s]' in a 2d model and "
+                                              " `x', `y', `z', `Velocity [km/s]' in a 3d model, which means that "
                                               "there has to be a single column "
                                               "containing the temperature. "
                                               "Note that the data in the input "
