@@ -1,0 +1,71 @@
+##### simple test for ascii data initial temperature
+
+set Dimension                              = 3
+set Use years in output instead of seconds = true
+set End time                               = 0
+
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 600e3
+    set Y extent = 600e3
+    set Z extent = 660e3
+    set X repetitions = 3
+    set Y repetitions = 3
+    set Z repetitions = 5
+  end
+end
+
+
+subsection Initial temperature model
+  set Model name = ascii data layered
+  subsection Ascii data model
+    set Data directory        = $ASPECT_SOURCE_DIR/data/initial-temperature/ascii-data/test/
+    set Data file names       = initial_isotherm_1000K_box_3d.txt, initial_isotherm_500K_box_3d.txt
+    set Layer boundary values = 1000, 500
+    set Interpolation scheme  = linear
+  end
+end
+
+    
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = left, right, front, back, top, bottom
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 10
+  end
+end
+
+
+subsection Material model
+  set Model name = simple
+  subsection Simple model
+    set Viscosity = 1e21
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial global refinement                = 1
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 0
+  set Strategy                                 = temperature
+end
+
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, visualization
+  
+  subsection Visualization
+    set Interpolate output = false
+    set Time between graphical output = 0
+    set List of output variables      = strain rate
+  end
+end
+

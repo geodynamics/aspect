@@ -2294,15 +2294,11 @@ namespace aspect
                    ExcMessage ("This ascii data plugin can only be used when using "
                                "a spherical shell, chunk or box geometry."));
 
-
-      // Create a vector of doubles corresponding to the layer_values
-      number_of_layer_boundaries = layer_boundary_values.size();
-      // Create the lookups for each file
+      // Create the lookups for each file and a vector of doubles corresponding to the layer_values
+      std::string filename;
       for (unsigned int i=0; i<layer_boundary_names.size(); ++i)
         {
-          const std::string templ = this->data_directory + this->data_file_name;
-          const std::string filename = replace_placeholders(templ, layer_boundary_names[i], 0);
-
+          filename = data_directory + data_file_names[i];
           AssertThrow(Utilities::fexists(filename),
                       ExcMessage (std::string("Ascii data file <")
                                   +
@@ -2314,8 +2310,8 @@ namespace aspect
           lookups.push_back(std_cxx14::make_unique<Utilities::AsciiDataLookup<dim-1>> (components,
                                                                                        this->scale_factor));
           lookups[i]->load_file(filename,this->get_mpi_communicator());
-
         }
+      number_of_layer_boundaries = layer_boundary_values.size();
     }
 
 
@@ -2340,55 +2336,51 @@ namespace aspect
         }
 
       double vertical_position;
+      Point<dim-1> horizontal_position;
       if ((dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model())) != nullptr)
         {
-          vertical_position = internal_position[dim];
+          // in cartesian coordinates, the vertical component comes last
+          vertical_position = internal_position[dim-1];
+          for (unsigned int i = 0; i < dim-1; i++)
+            horizontal_position[i] = internal_position[i];
         }
       else
         {
+          // in spherical coordinates, the vertical component comes first
           vertical_position = internal_position[0];
+          for (unsigned int i = 0; i < dim-1; i++)
+            horizontal_position[i] = internal_position[i+1];
         }
-
-      Point<dim-1> horizontal_position;
-      for (unsigned int i = 0; i < dim-1; i++)
-        if ((dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model())) != nullptr)
-          {
-            horizontal_position[i] = internal_position[i]; // in cartesian coordinates, the vertical component comes last
-          }
-        else
-          {
-            horizontal_position[i] = internal_position[i+1]; // in spherical coordinates, the vertical component comes first
-          }
 
       // Find which layer we're in
       unsigned int layer_boundary_index=0;
+      // if position < position of the first boundary layer, stop
       double old_difference_in_vertical_position = vertical_position - lookups[layer_boundary_index]->get_data(horizontal_position,component);
       double difference_in_vertical_position = old_difference_in_vertical_position;
-      while (difference_in_vertical_position < 0 && layer_boundary_index < number_of_layer_boundaries-1)
+      while (difference_in_vertical_position > 0. && layer_boundary_index < number_of_layer_boundaries-1)
         {
           layer_boundary_index++;
           old_difference_in_vertical_position = difference_in_vertical_position;
           difference_in_vertical_position = vertical_position - lookups[layer_boundary_index]->get_data(horizontal_position,component);
         }
 
-      double data;
       if (interpolation_scheme == "piecewise constant")
         {
-          data = layer_boundary_values[layer_boundary_index];
+          return layer_boundary_values[layer_boundary_index];
         }
       else if (interpolation_scheme == "linear")
         {
-          if (difference_in_vertical_position < 0 || layer_boundary_index == 0) // if the point is above the first layer or below the last
+          if (difference_in_vertical_position > 0 || layer_boundary_index == 0) // if the point is above the first layer or below the last
             {
-              data = layer_boundary_values[layer_boundary_index];
+              return layer_boundary_values[layer_boundary_index];
             }
           else
             {
-              const double f = old_difference_in_vertical_position/(difference_in_vertical_position-old_difference_in_vertical_position);
-              data = f*layer_boundary_values[layer_boundary_index] + (1. - f)*layer_boundary_values[layer_boundary_index-1];
+              const double f = difference_in_vertical_position/(difference_in_vertical_position-old_difference_in_vertical_position);
+              return (1.-f)*layer_boundary_values[layer_boundary_index] + f*layer_boundary_values[layer_boundary_index-1];
             }
         }
-      return data;
+      return 0;
     }
 
 
@@ -2406,6 +2398,21 @@ namespace aspect
 
       prm.enter_subsection (subsection_name);
       {
+        prm.declare_entry ("Data directory",
+                           default_directory,
+                           Patterns::DirectoryName (),
+                           "The name of a directory that contains the model data. This path "
+                           "may either be absolute (if starting with a `/') or relative to "
+                           "the current directory. The path may also include the special "
+                           "text `$ASPECT_SOURCE_DIR' which will be interpreted as the path "
+                           "in which the ASPECT source files were located when ASPECT was "
+                           "compiled. This interpretation allows, for example, to reference "
+                           "files located in the `data/' subdirectory of ASPECT. ");
+        prm.declare_entry ("Data file names",
+                           default_filename,
+                           Patterns::List (Patterns::Anything()),
+                           "The file names of the model data (comma separated). ");
+
         prm.declare_entry ("Layer boundary values", "1200",
                            Patterns::List (Patterns::Anything()),
                            "The list of layer values to be read in. These must be given "
@@ -2434,8 +2441,10 @@ namespace aspect
 
       prm.enter_subsection(subsection_name);
       {
-        layer_boundary_names = Utilities::split_string_list(prm.get ("Layer boundary values"));
 
+        data_directory = Utilities::expand_ASPECT_SOURCE_DIR(prm.get ("Data directory"));
+        data_file_names    = Utilities::split_string_list(prm.get ("Data file names"), ',');
+        layer_boundary_names = Utilities::split_string_list(prm.get("Layer boundary values"), ',');
         interpolation_scheme = prm.get("Interpolation scheme");
       }
       prm.leave_subsection();

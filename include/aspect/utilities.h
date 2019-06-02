@@ -998,6 +998,16 @@ namespace aspect
       private:
 
         /**
+         * Directory in which the data files are present.
+         */
+        std::string data_directory;
+
+        /**
+         * Filenames of data files.
+         */
+        std::vector<std::string> data_file_names;
+
+        /**
          * Number of layer boundaries in the model.
          */
         unsigned int number_of_layer_boundaries;
@@ -1016,11 +1026,6 @@ namespace aspect
          * Interpolation scheme for profile averaging.
          */
         std::string interpolation_scheme;
-
-        /**
-         * Output data.
-         */
-        double data;
 
 
     };

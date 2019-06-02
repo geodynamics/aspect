@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -53,11 +53,11 @@ namespace aspect
     void
     AsciiDataLayered<dim>::declare_parameters (ParameterHandler &prm)
     {
-      prm.enter_subsection ("Initial layered temperature model");
+      prm.enter_subsection ("Initial temperature model");
       {
-        Utilities::AsciiDataBase<dim>::declare_parameters(prm,
-                                                          "$ASPECT_SOURCE_DIR/data/initial-temperature/ascii-data/test/",
-                                                          "box_2d.txt");
+        Utilities::AsciiDataLayered<dim>::declare_parameters(prm,
+                                                             "$ASPECT_SOURCE_DIR/data/initial-temperature/ascii-data/test/",
+                                                             "initial_isotherm_500K_box_3d.txt");
       }
       prm.leave_subsection();
     }
@@ -67,9 +67,9 @@ namespace aspect
     void
     AsciiDataLayered<dim>::parse_parameters (ParameterHandler &prm)
     {
-      prm.enter_subsection ("Initial layered temperature model");
+      prm.enter_subsection ("Initial temperature model");
       {
-        Utilities::AsciiDataBase<dim>::parse_parameters(prm);
+        Utilities::AsciiDataLayered<dim>::parse_parameters(prm);
       }
       prm.leave_subsection();
     }
@@ -109,6 +109,8 @@ namespace aspect
                                               "a latitude-longitude grid. Note that the order "
                                               "of spherical coordinates is `phi', `theta', 'r'"
                                               "and not `theta', `phi', `r' as this is "
-                                              "more consistent with other ASPECT plugins.")
+                                              "more consistent with other ASPECT plugins. Outside of the "
+                                              "region defined by the grid, the plugin will use the value "
+                                              "at the edge of the region.")
   }
 }
