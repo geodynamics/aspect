@@ -2366,7 +2366,7 @@ namespace aspect
 
       if (interpolation_scheme == "piecewise constant")
         {
-          return layer_boundary_values[layer_boundary_index];
+          return layer_boundary_values[layer_boundary_index]; // takes value from layer above
         }
       else if (interpolation_scheme == "linear")
         {
@@ -2423,9 +2423,10 @@ namespace aspect
         prm.declare_entry ("Interpolation scheme", "linear",
                            Patterns::Selection("piecewise constant|linear"),
                            "Method to interpolate between layers. Select from "
-                           "piecewise constant or linear. "
-                           "Outside the domain given by the layers, the values are"
-                           "given by the top and bottom layer.");
+                           "piecewise constant or linear. Piecewise constant takes the "
+                           "value from the nearest layer boundary above the data point."
+                           "Above and below the domain given by the layers, the values are"
+                           "given by the top and bottom layer boundary.");
 
       }
       prm.leave_subsection();
