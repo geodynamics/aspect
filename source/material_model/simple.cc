@@ -123,7 +123,7 @@ namespace aspect
           prm.declare_entry ("Reference temperature", "293",
                              Patterns::Double (0),
                              "The reference temperature $T_0$. The reference temperature is used "
-                             "in both the density and viscosity formulas. Units: $\\text{K}$.");
+                             "in both the density and viscosity formulas. Units: $\\si{K}$.");
           prm.declare_entry ("Viscosity", "5e24",
                              Patterns::Double (0),
                              "The value of the constant viscosity $\\eta_0$. This viscosity may be "

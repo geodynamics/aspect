@@ -112,11 +112,11 @@ namespace aspect
                              "for all layers. Units: $m$");
           prm.declare_entry ("Surface temperature", "273.15",
                              Patterns::Double (0),
-                             "The value of the surface temperature. Units: $\\text{K}$.");
+                             "The value of the surface temperature. Units: $\\si{K}$.");
           prm.declare_entry ("Lithosphere-Asthenosphere boundary isotherm", "1673.15",
                              Patterns::Double (0),
                              "The value of the isotherm that is assumed at the Lithosphere-"
-                             "Asthenosphere boundary. Units: $\\text{K}$.");
+                             "Asthenosphere boundary. Units: $\\si{K}$.");
         }
         prm.leave_subsection();
       }

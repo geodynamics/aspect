@@ -66,7 +66,7 @@ namespace aspect
       {
         prm.declare_entry ("Reference temperature", "293",
                            Patterns::Double (0),
-                           "The reference temperature $T_0$. Units: $\\text{K}$.");
+                           "The reference temperature $T_0$. Units: $\\si{K}$.");
         prm.declare_entry ("Densities", "3300.",
                            Patterns::Anything(),
                            "List of densities for background mantle and compositional fields,"

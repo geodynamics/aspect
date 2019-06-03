@@ -518,7 +518,7 @@ namespace aspect
                            "More precisely, this length scale represents the square root of the "
                            "product of diffusivity and time in the diffusion equation, and controls "
                            "the distance over which features are diffused."
-                           "Units: $\\text{m}$.");
+                           "Units: $\\si{m}$.");
       }
       prm.leave_subsection ();
     }

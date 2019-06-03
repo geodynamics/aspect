@@ -141,7 +141,7 @@ namespace aspect
 
           prm.declare_entry ("Reference temperature", "293",
                              Patterns::Double (0),
-                             "The reference temperature $T_0$. Units: $\\text{K}$.");
+                             "The reference temperature $T_0$. Units: $\\si{K}$.");
           prm.declare_entry ("Thermal conductivities", "4.7",
                              Patterns::List(Patterns::Double(0)),
                              "List of thermal conductivities for background mantle and compositional fields,"

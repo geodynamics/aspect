@@ -195,7 +195,7 @@ namespace aspect
           prm.declare_entry ("Reference temperature", "293",
                              Patterns::Double (0),
                              "The reference temperature $T_0$. The reference temperature is used "
-                             "in the density calculation. Units: $\\text{K}$.");
+                             "in the density calculation. Units: $\\si{K}$.");
           prm.declare_entry ("Reference viscosity", "1e22",
                              Patterns::Double (0),
                              "The reference viscosity that is used for pressure scaling. "

@@ -310,7 +310,7 @@ namespace aspect
           prm.declare_entry ("Reference temperature", "293",
                              Patterns::Double (0),
                              "The reference temperature $T_0$. The reference temperature is used "
-                             "in both the density and viscosity formulas. Units: $\\text{K}$.");
+                             "in both the density and viscosity formulas. Units: $\\si{K}$.");
           prm.declare_entry ("Reference shear viscosity", "5e20",
                              Patterns::Double (0),
                              "The value of the constant viscosity $\\eta_0$ of the solid matrix. "
@@ -366,7 +366,7 @@ namespace aspect
           prm.declare_entry ("Surface solidus", "1300",
                              Patterns::Double (0),
                              "Solidus for a pressure of zero. "
-                             "Units: $\\text{K}$.");
+                             "Units: $\\si{K}$.");
           prm.declare_entry ("Depletion solidus change", "200.0",
                              Patterns::Double (),
                              "The solidus temperature change for a depletion of 100\\%. For positive "
@@ -374,7 +374,7 @@ namespace aspect
                              "(depletion) and lowered for a negative peridotite field (enrichment). "
                              "Scaling with depletion is linear. Only active when fractional melting "
                              "is used. "
-                             "Units: $\\text{K}$.");
+                             "Units: $\\si{K}$.");
           prm.declare_entry ("Pressure solidus change", "6e-8",
                              Patterns::Double (),
                              "The linear solidus temperature change with pressure. For positive "
