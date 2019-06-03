@@ -2325,21 +2325,23 @@ For the implementation, $\frac{\partial T}{\partial t}$ is replaced by the BDF2 
 
 We use the parameter design presented in \cite{JohnKnobloch2006} for $\delta_K$:
 \[
- \delta_K = \frac{h}{2d\|\mathbf{\beta}\|} \left( \coth(Pe)-\frac{1}{Pe} \right)
+ \delta_K = \frac{h}{2d\|\mathbf{\beta}\|_{\infty,K}} \left( \coth(Pe)-\frac{1}{Pe} \right)
 \]
 where the Peclet number is given by
 \[
- Pe = \frac{ \| \mathbf{\beta} \| h}{2 k d},
+ Pe = \frac{ h \| \mathbf{\beta} \|_{\infty,K}}{2 d k_\text{max}},
 \]
-$d$ is the polynomial degree of the temperature or composition element (typically 2) and
+$d$ is the polynomial degree of the temperature or composition element (typically 2),
 $
- \coth(x) = (1+\exp(-2x)) / (1-\exp(-2x)).
+ \coth(x) = (1+\exp(-2x)) / (1-\exp(-2x)),
 $
+and $k_\text{max}=\| k \|_{\infty, K}$ is the maximum conductivity in the cell $K$.
+
 If $Pe<1$, the equation is diffusion-dominated and no stabilization is needed, so we
 set $\delta_K=0$. Care needs to be taken in the definition if $\| \beta \|$ or $k$ become zero:
 \begin{enumerate}
-\item If $k$ is zero, then $Pe=\infty$ and the right part of the product in the definition of $\delta_K$is equal to one.
-\item If $\| \beta \|$ is zero, $Pe < 1$, so we set $\delta_K=0$
+\item If $k$ is zero, then $Pe=\infty$ and the right part of the product in the definition of $\delta_K$ is equal to one.
+\item If $\| \beta \|$ is zero, $Pe < 1$, so we set $\delta_K=0$.
 \item If both are zero, no stabilization is needed (the field remains constant).  
 \end{enumerate}
 
