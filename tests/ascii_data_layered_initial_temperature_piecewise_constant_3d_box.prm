@@ -1,4 +1,6 @@
-##### simple test for ascii data initial temperature
+# This test is to check that the layered ascii data initial temperature
+# plugin works in a 3D box with temperature defined as piecewise constant
+# between isotherms (with temperature taken from the overlying isotherm).
 
 set Dimension                              = 3
 set Use years in output instead of seconds = true

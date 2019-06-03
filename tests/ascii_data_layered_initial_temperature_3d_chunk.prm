@@ -1,4 +1,7 @@
-##### simple test for ascii data initial temperature
+# This test is to check that the layered ascii data initial temperature
+# plugin works in a 3D chunk with temperature defined as linear
+# between isotherms and constant below and above the
+# first and last isotherm (with a value taken from that isotherm).
 
 set Dimension = 3
 set CFL number                             = 1.0

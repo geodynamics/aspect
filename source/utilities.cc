@@ -2292,13 +2292,12 @@ namespace aspect
                    || (dynamic_cast<const GeometryModel::Sphere<dim>*> (&this->get_geometry_model())) != nullptr
                    || (dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model())) != nullptr,
                    ExcMessage ("This ascii data plugin can only be used when using "
-                               "a spherical shell, chunk or box geometry."));
+                               "a spherical shell, chunk, sphere or box geometry."));
 
-      // Create the lookups for each file and a vector of doubles corresponding to the layer_values
-      std::string filename;
-      for (unsigned int i=0; i<layer_boundary_names.size(); ++i)
+      // Create the lookups for each file
+      for (unsigned int i=0; i<layer_boundary_values.size(); ++i)
         {
-          filename = data_directory + data_file_names[i];
+          const std::string filename = data_directory + data_file_names[i];
           AssertThrow(Utilities::fexists(filename),
                       ExcMessage (std::string("Ascii data file <")
                                   +
@@ -2306,7 +2305,6 @@ namespace aspect
                                   +
                                   "> not found!"));
 
-          layer_boundary_values.push_back(string_to_double(layer_boundary_names[i]));
           lookups.push_back(std_cxx14::make_unique<Utilities::AsciiDataLookup<dim-1>> (components,
                                                                                        this->scale_factor));
           lookups[i]->load_file(filename,this->get_mpi_communicator());
@@ -2408,6 +2406,7 @@ namespace aspect
                            "in which the ASPECT source files were located when ASPECT was "
                            "compiled. This interpretation allows, for example, to reference "
                            "files located in the `data/' subdirectory of ASPECT. ");
+
         prm.declare_entry ("Data file names",
                            default_filename,
                            Patterns::List (Patterns::Anything()),
@@ -2422,10 +2421,11 @@ namespace aspect
 
         prm.declare_entry ("Interpolation scheme", "linear",
                            Patterns::Selection("piecewise constant|linear"),
-                           "Method to interpolate between layers. Select from "
+                           "Method to interpolate between layer boundaries. Select from "
                            "piecewise constant or linear. Piecewise constant takes the "
-                           "value from the nearest layer boundary above the data point."
-                           "Above and below the domain given by the layers, the values are"
+                           "value from the nearest layer boundary above the data point. "
+                           "The linear option interpolates linearly between layer boundaries. "
+                           "Above and below the domain given by the layer boundaries, the values are"
                            "given by the top and bottom layer boundary.");
 
       }
@@ -2445,7 +2445,7 @@ namespace aspect
 
         data_directory = Utilities::expand_ASPECT_SOURCE_DIR(prm.get ("Data directory"));
         data_file_names    = Utilities::split_string_list(prm.get ("Data file names"), ',');
-        layer_boundary_names = Utilities::split_string_list(prm.get("Layer boundary values"), ',');
+        layer_boundary_values = Utilities::string_to_double(Utilities::split_string_list(prm.get("Layer boundary values"), ','));
         interpolation_scheme = prm.get("Interpolation scheme");
       }
       prm.leave_subsection();

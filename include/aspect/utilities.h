@@ -1013,11 +1013,6 @@ namespace aspect
         unsigned int number_of_layer_boundaries;
 
         /**
-         * Names for the layer boundaries.
-         */
-        std::vector<std::string> layer_boundary_names;
-
-        /**
          * Values for the layer boundaries.
          */
         std::vector<double> layer_boundary_values;

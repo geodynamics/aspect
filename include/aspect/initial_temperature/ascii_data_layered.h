@@ -34,8 +34,8 @@ namespace aspect
     using namespace dealii;
 
     /**
-     * A class that implements a prescribed temperature field determined from
-     * a AsciiData input file.
+     * A class that implements an initial temperature field determined from
+     * AsciiData input files. Each file defines an isotherm as a grid of points.
      *
      * @ingroup InitialTemperatures
      */
@@ -59,7 +59,7 @@ namespace aspect
         using Utilities::AsciiDataLayered<dim>::initialize;
 
         /**
-         * Return the boundary temperature as a function of position. For the
+         * Return the initial temperature as a function of position. For the
          * current class, this function returns value from the text files.
          */
         double
