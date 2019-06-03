@@ -106,8 +106,6 @@ namespace aspect
           // where absolute Vs exceeds maximum Vs, set temperature to 273 K
           if (absolute_Vs>maximum_Vs)
             {
-              AssertThrow(absolute_Vs > maximum_Vs,
-                          ExcMessage("Computed Vs of " + std::to_string(absolute_Vs) + " too fast for sensible temperature"));
               temperature=273.;
             }
           else
@@ -257,7 +255,6 @@ namespace aspect
         {
           // create fdV function to use in Brent minimization and calculate isothermal_volume_change and density using
           // expressions in Grose & Afonso 2013
-//          typedef std::pair<double, double> Result2;
           auto vfunc = [ &,this] (const double x)
           {
             return fdV(x, bulk_modulus, bulk_modulus_pressure_derivative, pressure);
