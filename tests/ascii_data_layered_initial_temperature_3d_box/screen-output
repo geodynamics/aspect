@@ -10,7 +10,7 @@ Number of degrees of freedom: 14,735 (10,647+539+3,549)
    Postprocessing:
      RMS, max velocity:       0.00417 m/year, 0.014 m/year
      Temperature min/avg/max: 500 K, 784.2 K, 1000 K
-     Writing depth average:   output/depth_average.gnuplot
+     Writing depth average:   output-ascii_data_layered_initial_temperature_3d_box/depth_average.gnuplot
 
 Termination requested by criterion: end time
 
