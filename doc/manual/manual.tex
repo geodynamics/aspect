@@ -10872,6 +10872,43 @@ In this benchmark, a 2D input ASCII file containing $V_S$ specified at 50 and 75
 The parameter file and initial temperature model for this benchmark can be found at \url{benchmarks/yamauchi_takei_2016_anelasticity/yamauchi_takei_2016_anelasticity.prm} and \url{benchmarks/yamauchi_takei_2016_anelasticity/anelasticity_temperature.cc}. Code to recreate  Fig.~\ref{fig:anelasticity}  is provided in \url{benchmarks/yamauchi_takei_2016_anelasticity/plot_output}.
 
 
+\subsubsection{Brittle thrust wedges benchmark}
+\label{sec:benchmark-brittle-thrust-wedge}
+
+\textit{This section was contributed by Sibiao Liu, Stephanie Sparks, John Naliboff, and Cedric Thieulot.}
+
+Buiter et al. (2016, \cite{buiter16}) organized new comparison experiments with analogue and numerical models to investigate brittle thrust wedge behavior. The benchmark here aims to verify that the wedge models using  \aspect{} follows other numerical results and the analytical wedge theory showing in this paper. In particular, input files (\url{benchmarks/ buiter_et_al_2016_jsg}) are provided for reproducing the numerical simulations of stable wedge experiment 1 and unstable wedge experiment 2 with same model setups.
+
+A number of model sets of prescribed material behaviorl are required to simulate the brittle thrust formation. For example, although the material in the numerical model has a visco-plastic rheology, it performs plastic yielding at the beginning of shortening due to the non-viscos sand. The plastic strain-weakening behavior, with the internal angle of friction reducing between total finite strain invariant values of 0.5 and 1.0, is prescribed to mimic the softening from peak to dynamic stable strength correlates with sand dilation. 
+
+In sandbox-type models an important role is played by the boundaries and the frictional sliding of sand against these boundaries. For the top boundary condition, zero traction ("open") and a sticky air layer is used to approximate a free surface. Additional testing revealed that using a true free surface leads to significant mesh distortion and associated numerical instabilities. We apply a rigid block that approximates a mobile wall with a constant velocity of 2.5 cm/hour on the right-hand side boundary to drive the deformation in sand layers. 
+\lstinputlisting[language=prmfile]{cookbooks/benchmarks/brittle_thrust_wedges/velocity_bc_part.prm}
+
+A good and accurate solver convergence is always challenging to achieve in numerical thrust wedge models with a high spatial resolution (ca. 1 mm node spacing) and a large viscosity contrast. Here, we suggest that several parameters should be considered carefully. Firstly, the nonlinear and linear solver tolerances should be sufficiently strict to avoid numerical instabilities. Secondly, we use the discontinuous Galerkin method (set Use discontinuous composition discretization = true) to ensure that the discontinuous composition bound preserving limiter produces sharp interfaces between compositional layers. Lastly, using the harmonic averaging scheme for material and viscosity is required to achieve reasonable convergence behavior.
+\lstinputlisting[language=prmfile]{cookbooks/benchmarks/brittle_thrust_wedges/convergence_part.prm}
+
+\textbf{Experiment 1} tests whether model wedges in the stable domain of critical taper theory remain stable when translated horizontally. A quartz sand wedge with a horizontal base and a surface slope of 20 degrees is pushed 4 cm horizontally by inward movement of a mobile wall at the right boundary with a velocity of 2.5 cm/hour (Figure ~\ref{fig:btwexp1}).  The basal angle is zero (horizontal), a thin layer separates the sand and boundary to ensure minimum coupling between the wedge and bounding box during translation, and a sticky air layer is used above the wedge. Further, the purely plastic material should not undergo any deformation during translation.
+
+\begin{figure}
+\begin{center}
+  \centering
+  \includegraphics[width=\textwidth]{cookbooks/benchmarks/brittle thrust wedges/exp1.png}
+  \caption{\it Numerical model of a stable sand wedge. a) Initial model setup. b) Material field after 4 cm of translation. c) Strain rate field and d) pressure field.}
+  \label{fig:btwexp1}
+\end{center}
+\end{figure}
+
+\textbf{Experiment 2} tests how an unstable subcritical wedge deforms to reach the critical taper solution. In this experiment, horizontal layers of sand suffer 10 cm shortening by inward movement of a mobile wall with a velocity of 2.5 cm/hour (Figure ~\ref{fig:btwexp2}). It builds thrust wedges near the mobile wall through a combination of mainly in-sequence forward and backward thrusting.  The strain field highlights several incipient shear zones that do not always accumulate enough offset to become visible in the material field. The pressure field of the model remains more or less lithostatic, with lower pressure values in (incipient) shear zones.
+
+\begin{figure}
+\begin{center}
+  \centering
+  \includegraphics[width=\textwidth]{cookbooks/benchmarks/brittle thrust wedges/exp2.png}
+  \caption{\it Numerical model of an unstable subcritical wedge. a) Initial model setup. b) Material field of sands after 10 cm shortening. c) Strain field and d) pressure field.}
+  \label{fig:btwexp2}
+\end{center}
+\end{figure}
+
 
 \section{Extending and contributing to \aspect}
 \label{sec:extending}
