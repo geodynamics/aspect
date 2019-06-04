@@ -1,0 +1,21 @@
+set terminal pdf enhanced
+set key bottom
+set pointsize .5
+set xlabel '{/Symbol h}_1/{/Symbol h}_2'
+set ylabel '|v_z| {/Symbol h}_1/{/Symbol d}{/Symbol r}'
+
+eta1=1e21
+rho1=3200
+
+set format x "%g"
+set log xy
+
+set output 'plot.pdf'
+plot[][]\
+'my_point_values_4.dat' u (eta1/$2):(-$8*eta1/($3-rho1)) w lp t '16x16',\
+'my_point_values_5.dat' u (eta1/$2):(-$8*eta1/($3-rho1)) w lp t '32x32',\
+'my_point_values_6.dat' u (eta1/$2):(-$8*eta1/($3-rho1)) w lp t '64x64',\
+'my_point_values_7.dat' u (eta1/$2):(-$8*eta1/($3-rho1)) w lp t '128x128',\
+
+#lvl eta2 rho2 method posx posy vx vy p T
+
