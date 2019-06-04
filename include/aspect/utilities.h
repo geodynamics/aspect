@@ -1013,11 +1013,6 @@ namespace aspect
         unsigned int number_of_layer_boundaries;
 
         /**
-         * Values for the layer boundaries.
-         */
-        std::vector<double> layer_boundary_values;
-
-        /**
          * Interpolation scheme for profile averaging.
          */
         std::string interpolation_scheme;

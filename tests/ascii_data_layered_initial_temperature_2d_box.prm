@@ -25,7 +25,6 @@ subsection Initial temperature model
   subsection Ascii data model
     set Data directory        = $ASPECT_SOURCE_DIR/data/initial-temperature/ascii-data/test/
     set Data file names       = initial_isotherm_1000K_box_2d.txt, initial_isotherm_500K_box_2d.txt
-    set Layer boundary values = 1000, 500
     set Interpolation scheme  = linear
   end
 end

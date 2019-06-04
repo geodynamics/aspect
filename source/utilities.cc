@@ -2295,7 +2295,8 @@ namespace aspect
                                "a spherical shell, chunk, sphere or box geometry."));
 
       // Create the lookups for each file
-      for (unsigned int i=0; i<layer_boundary_values.size(); ++i)
+      number_of_layer_boundaries = data_file_names.size();
+      for (unsigned int i=0; i<number_of_layer_boundaries; ++i)
         {
           const std::string filename = data_directory + data_file_names[i];
           AssertThrow(Utilities::fexists(filename),
@@ -2309,7 +2310,6 @@ namespace aspect
                                                                                        this->scale_factor));
           lookups[i]->load_file(filename,this->get_mpi_communicator());
         }
-      number_of_layer_boundaries = layer_boundary_values.size();
     }
 
 
@@ -2353,29 +2353,30 @@ namespace aspect
       // Find which layer we're in
       unsigned int layer_boundary_index=0;
       // if position < position of the first boundary layer, stop
-      double old_difference_in_vertical_position = vertical_position - lookups[layer_boundary_index]->get_data(horizontal_position,component);
+      double old_difference_in_vertical_position = vertical_position - lookups[layer_boundary_index]->get_data(horizontal_position,0);
       double difference_in_vertical_position = old_difference_in_vertical_position;
       while (difference_in_vertical_position > 0. && layer_boundary_index < number_of_layer_boundaries-1)
         {
           layer_boundary_index++;
           old_difference_in_vertical_position = difference_in_vertical_position;
-          difference_in_vertical_position = vertical_position - lookups[layer_boundary_index]->get_data(horizontal_position,component);
+          difference_in_vertical_position = vertical_position - lookups[layer_boundary_index]->get_data(horizontal_position,0);
         }
 
       if (interpolation_scheme == "piecewise constant")
         {
-          return layer_boundary_values[layer_boundary_index]; // takes value from layer above
+          return lookups[layer_boundary_index]->get_data(horizontal_position,component); // takes value from layer above
         }
       else if (interpolation_scheme == "linear")
         {
           if (difference_in_vertical_position > 0 || layer_boundary_index == 0) // if the point is above the first layer or below the last
             {
-              return layer_boundary_values[layer_boundary_index];
+              return lookups[layer_boundary_index]->get_data(horizontal_position,component);
             }
           else
             {
               const double f = difference_in_vertical_position/(difference_in_vertical_position-old_difference_in_vertical_position);
-              return (1.-f)*layer_boundary_values[layer_boundary_index] + f*layer_boundary_values[layer_boundary_index-1];
+              return ((1.-f)*lookups[layer_boundary_index]->get_data(horizontal_position,component) +
+                      f*lookups[layer_boundary_index-1]->get_data(horizontal_position,component));
             }
         }
       return 0;
@@ -2412,13 +2413,6 @@ namespace aspect
                            Patterns::List (Patterns::Anything()),
                            "The file names of the model data (comma separated). ");
 
-        prm.declare_entry ("Layer boundary values", "1200",
-                           Patterns::List (Patterns::Anything()),
-                           "The list of layer values to be read in. These must be given "
-                           "in ascending order of the vertical component inside the data file. "
-                           "This is not necessarily in ascending order of the boundary values. "
-                           "The boundary values should correspond to the ascii file data names.");
-
         prm.declare_entry ("Interpolation scheme", "linear",
                            Patterns::Selection("piecewise constant|linear"),
                            "Method to interpolate between layer boundaries. Select from "
@@ -2442,10 +2436,8 @@ namespace aspect
 
       prm.enter_subsection(subsection_name);
       {
-
         data_directory = Utilities::expand_ASPECT_SOURCE_DIR(prm.get ("Data directory"));
         data_file_names    = Utilities::split_string_list(prm.get ("Data file names"), ',');
-        layer_boundary_values = Utilities::string_to_double(Utilities::split_string_list(prm.get("Layer boundary values"), ','));
         interpolation_scheme = prm.get("Interpolation scheme");
       }
       prm.leave_subsection();

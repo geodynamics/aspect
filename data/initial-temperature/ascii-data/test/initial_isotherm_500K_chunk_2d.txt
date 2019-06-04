@@ -4,7 +4,7 @@
 # tests/ascii_data_layered_initial_temperature_2d_chunk.prm.
 # Only next line is parsed in format: [nx] [ny] because of keyword "POINTS:"
 # POINTS: 3
-# Columns: phi r
-0.     6310000
-0.7854 6260000
-1.5708 6360000
+# Columns: phi r temperature[K]
+0.     6310000. 500.
+0.7854 6260000. 500.
+1.5708 6360000. 500.

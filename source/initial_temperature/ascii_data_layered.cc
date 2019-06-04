@@ -35,7 +35,7 @@ namespace aspect
     void
     AsciiDataLayered<dim>::initialize ()
     {
-      Utilities::AsciiDataLayered<dim>::initialize(1);
+      Utilities::AsciiDataLayered<dim>::initialize(2);
     }
 
 
@@ -45,7 +45,7 @@ namespace aspect
     initial_temperature (const Point<dim> &position) const
     {
       // This is where we get the initial temperature
-      return Utilities::AsciiDataLayered<dim>::get_data_component(position,0);
+      return Utilities::AsciiDataLayered<dim>::get_data_component(position,1);
     }
 
 
@@ -85,21 +85,22 @@ namespace aspect
                                               "ascii data layered",
                                               "Implementation of a model in which the initial "
                                               "temperature is derived from files containing data "
-                                              "in ascii format. Each file defines an isothermal surface. "
-                                              "Between the isotherms, the temperatures can be chosen to be "
+                                              "in ascii format. Each file defines a surface on which "
+                                              "temperature is defined. "
+                                              "Between the surfaces, the temperatures can be chosen to be "
                                               "constant (with a value defined by the nearest shallower "
-                                              "isotherm), or linearly interpolated between isotherms. "
+                                              "surface), or linearly interpolated between surfaces. "
                                               "Note the required format of the input ascii data file: "
                                               "The first lines may contain any number of comments "
                                               "if they begin with `#', but one of these lines needs to "
                                               "contain the number of grid points in each dimension as "
                                               "for example `# POINTS: 3 3'. "
                                               "The order of the data columns "
-                                              "has to be `x', `y' in a 2d model and "
-                                              "`x', `y', `z' in a 3d model; i.e. "
-                                              "the last column always contains the position of the isotherm "
-                                              "along the vertical direction. "
-                                              "The first column needs to ascend first, "
+                                              "has to be `x', `y', `Temperature [K]' in a 2d model and "
+                                              "`x', `y', `z', `Temperature [K]' in a 3d model; i.e. "
+                                              "the last two columns always contain the position of the "
+                                              "isotherm along the vertical direction, and the temperature "
+                                              "at that point. The first column needs to ascend first, "
                                               "followed by the second in order to assign the correct data "
                                               "to the prescribed coordinates. If you use a spherical model, "
                                               "then the assumed grid changes. `x' will be replaced by the "
@@ -108,8 +109,8 @@ namespace aspect
                                               "distance of the point from the origin "
                                               "(i.e. radial position). The grid in this case will be "
                                               "a latitude-longitude grid. Note that the order "
-                                              "of spherical coordinates in 3D is `phi', `theta', 'r'"
-                                              "and not `theta', `phi', `r' as this is "
+                                              "of spherical coordinates in 3D is `phi', `theta', `r', `T'"
+                                              "and not `theta', `phi', `r', `T' as this is "
                                               "more consistent with other ASPECT plugins. Outside of the "
                                               "region defined by the grid, the plugin will use the value "
                                               "at the edge of the region.")
