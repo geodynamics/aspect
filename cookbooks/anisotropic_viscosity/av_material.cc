@@ -139,7 +139,6 @@ namespace aspect
     }
   }
 }
-#endif
 
 namespace aspect
 {
@@ -838,3 +837,4 @@ namespace aspect
                                    "Transverse isotropic material model.")
   }
 }
+#endif
