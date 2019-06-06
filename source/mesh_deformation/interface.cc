@@ -708,7 +708,7 @@ namespace aspect
 
 
     template <int dim>
-    const std::set<types::boundary_id>
+    const std::set<types::boundary_id> &
     MeshDeformationHandler<dim>::get_free_surface_boundary_indicators () const
     {
       return free_surface_boundary_ids;

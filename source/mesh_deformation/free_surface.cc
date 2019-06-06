@@ -71,6 +71,9 @@ namespace aspect
       const unsigned int n_face_q_points = scratch.face_finite_element_values.n_quadrature_points;
       const unsigned int stokes_dofs_per_cell = data.local_dof_indices.size();
 
+      // Get the boundary indicators of those boundaries with a free surface
+      const std::set<types::boundary_id> tmp_free_surface_boundary_indicators = this->get_mesh_deformation_handler().get_free_surface_boundary_indicators();
+
       // only apply on free surface faces
       if (cell->at_boundary() && cell->is_locally_owned())
         for (unsigned int face_no=0; face_no<GeometryInfo<dim>::faces_per_cell; ++face_no)
@@ -79,8 +82,8 @@ namespace aspect
               const types::boundary_id boundary_indicator
                 = cell->face(face_no)->boundary_id();
 
-              if (this->get_mesh_deformation_handler().get_free_surface_boundary_indicators().find(boundary_indicator)
-                  == this->get_mesh_deformation_handler().get_free_surface_boundary_indicators().end())
+              if (tmp_free_surface_boundary_indicators.find(boundary_indicator)
+                  == tmp_free_surface_boundary_indicators.end())
                 continue;
 
               scratch.face_finite_element_values.reinit(cell, face_no);
@@ -277,6 +280,10 @@ namespace aspect
       typename DoFHandler<dim>::active_cell_iterator
       fscell = mesh_deformation_dof_handler.begin_active();
 
+      // Get the boundary indicators of those boundaries with
+      // a free surface.
+      const std::set<types::boundary_id> tmp_free_surface_boundary_indicators = this->get_mesh_deformation_handler().get_free_surface_boundary_indicators();
+
       for (; cell!=endc; ++cell, ++fscell)
         if (cell->at_boundary() && cell->is_locally_owned())
           for (unsigned int face_no=0; face_no<GeometryInfo<dim>::faces_per_cell; ++face_no)
@@ -284,9 +291,9 @@ namespace aspect
               {
                 const types::boundary_id boundary_indicator
                   = cell->face(face_no)->boundary_id();
+
                 // Only project onto the free surface boundary/boundaries.
-                if (this->get_mesh_deformation_handler().get_free_surface_boundary_indicators().find(boundary_indicator)
-                    == this->get_mesh_deformation_handler().get_free_surface_boundary_indicators().end())
+                if (tmp_free_surface_boundary_indicators.find(boundary_indicator) == tmp_free_surface_boundary_indicators.end())
                   continue;
 
                 fscell->get_dof_indices (cell_dof_indices);
