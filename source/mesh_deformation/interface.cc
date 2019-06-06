@@ -524,7 +524,6 @@ namespace aspect
               for (unsigned int i=0; i<dofs_per_cell; ++i)
                 {
                   for (unsigned int j=0; j<dofs_per_cell; ++j)
-                    if (i==j)
                       cell_matrix(i,j) += scalar_product( fe_values[extract_vel].gradient(i,point),
                                                           fe_values[extract_vel].gradient(j,point) ) *
                                           fe_values.JxW(point);
@@ -709,7 +708,7 @@ namespace aspect
 
 
     template <int dim>
-    const std::set<types::boundary_id>
+    const std::set<types::boundary_id> &
     MeshDeformationHandler<dim>::get_free_surface_boundary_indicators () const
     {
       return free_surface_boundary_ids;

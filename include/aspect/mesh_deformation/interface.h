@@ -228,7 +228,7 @@ namespace aspect
          * mesh deformation object. If no free surface is used,
          * an empty set is returned.
          */
-        const std::set<types::boundary_id>
+        const std::set<types::boundary_id> &
         get_free_surface_boundary_indicators () const;
 
         /**
