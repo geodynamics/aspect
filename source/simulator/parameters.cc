@@ -527,13 +527,13 @@ namespace aspect
     prm.enter_subsection("Formulation");
     {
       prm.declare_entry ("Formulation", "custom",
-                         Patterns::Selection ("isothermal compression|custom|anelastic liquid approximation|Boussinesq approximation"),
+                         Patterns::Selection ("isentropic compression|custom|anelastic liquid approximation|Boussinesq approximation"),
                          "Select a formulation for the basic equations. Different "
                          "published formulations are available in ASPECT (see the list of "
                          "possible values for this parameter in the manual for available options). "
                          "Two ASPECT specific options are\n"
                          "\\begin{enumerate}\n"
-                         "  \\item `isothermal compression': ASPECT's original "
+                         "  \\item `isentropic compression': ASPECT's original "
                          "formulation, using the explicit compressible mass equation, "
                          "and the full density for the temperature equation.\n"
                          "  \\item `custom': A custom selection of `Mass conservation' and "
@@ -550,7 +550,7 @@ namespace aspect
                          "density that depends on temperature and depth and not on the pressure.}");
 
       prm.declare_entry ("Mass conservation", "ask material model",
-                         Patterns::Selection ("incompressible|isothermal compression|hydrostatic compression|"
+                         Patterns::Selection ("incompressible|isentropic compression|hydrostatic compression|"
                                               "reference density profile|implicit reference density profile|"
                                               "ask material model"),
                          "Possible approximations for the density derivatives in the mass "
@@ -1417,9 +1417,9 @@ namespace aspect
       // in Simulator<dim>::check_consistency_of_formulation() after the initialization of
       // material models, heating plugins, and adiabatic conditions.
       formulation = Formulation::parse(prm.get("Formulation"));
-      if (formulation == Formulation::isothermal_compression)
+      if (formulation == Formulation::isentropic_compression)
         {
-          formulation_mass_conservation = Formulation::MassConservation::isothermal_compression;
+          formulation_mass_conservation = Formulation::MassConservation::isentropic_compression;
           formulation_temperature_equation = Formulation::TemperatureEquation::real_density;
         }
       else if (formulation == Formulation::boussinesq_approximation)

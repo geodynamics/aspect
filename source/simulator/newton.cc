@@ -77,10 +77,10 @@ namespace aspect
         // do nothing, because we assembled div u =0 above already
       }
     else if (this->get_parameters().formulation_mass_conservation ==
-             Parameters<dim>::Formulation::MassConservation::isothermal_compression)
+             Parameters<dim>::Formulation::MassConservation::isentropic_compression)
       {
         assemblers.stokes_system.push_back(
-          std_cxx14::make_unique<aspect::Assemblers::NewtonStokesIsothermalCompressionTerm<dim> >());
+          std_cxx14::make_unique<aspect::Assemblers::NewtonStokesIsentropicCompressionTerm<dim> >());
       }
     else
       AssertThrow(false,

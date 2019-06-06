@@ -320,11 +320,11 @@ namespace aspect
      * $ - \nabla \mathbf{u} = \frac{1}{\rho} \frac{\partial rho}{\partial p} \rho \mathbf{g} \cdot \mathbf{u}$
      */
     template <int dim>
-    class NewtonStokesIsothermalCompressionTerm : public Assemblers::Interface<dim>,
+    class NewtonStokesIsentropicCompressionTerm : public Assemblers::Interface<dim>,
       public SimulatorAccess<dim>
     {
       public:
-        virtual ~NewtonStokesIsothermalCompressionTerm () {}
+        virtual ~NewtonStokesIsentropicCompressionTerm () {}
 
         virtual
         void

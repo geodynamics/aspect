@@ -623,7 +623,7 @@ namespace aspect
 
     template <int dim>
     void
-    NewtonStokesIsothermalCompressionTerm<dim>::
+    NewtonStokesIsentropicCompressionTerm<dim>::
     execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
              internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
     {
@@ -633,7 +633,7 @@ namespace aspect
       // assemble RHS of:
       //  - div u = 1/rho * drho/dp rho * g * u
       Assert(this->get_parameters().formulation_mass_conservation ==
-             Parameters<dim>::Formulation::MassConservation::isothermal_compression,
+             Parameters<dim>::Formulation::MassConservation::isentropic_compression,
              ExcInternalError());
 
       const Introspection<dim> &introspection = this->introspection();
@@ -692,7 +692,7 @@ namespace aspect
   template class NewtonStokesCompressibleStrainRateViscosityTerm<dim>; \
   template class NewtonStokesReferenceDensityCompressibilityTerm<dim>; \
   template class NewtonStokesImplicitReferenceDensityCompressibilityTerm<dim>; \
-  template class NewtonStokesIsothermalCompressionTerm<dim>;
+  template class NewtonStokesIsentropicCompressionTerm<dim>;
 
     ASPECT_INSTANTIATE(INSTANTIATE)
   }

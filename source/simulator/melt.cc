@@ -1683,10 +1683,10 @@ namespace aspect
     assemblers.stokes_system.push_back(std_cxx14::make_unique<Assemblers::MeltStokesSystem<dim> > ());
 
     AssertThrow((this->get_parameters().formulation_mass_conservation ==
-                 Parameters<dim>::Formulation::MassConservation::isothermal_compression) ||
+                 Parameters<dim>::Formulation::MassConservation::isentropic_compression) ||
                 (this->get_parameters().formulation_mass_conservation ==
                  Parameters<dim>::Formulation::MassConservation::incompressible),
-                ExcMessage("The melt implementation currently only supports the isothermal compression "
+                ExcMessage("The melt implementation currently only supports the isentropic compression "
                            "approximation or the incompressible formulation of the mass conservation equation."));
 
     // add the boundary integral for melt migration
