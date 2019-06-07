@@ -8,7 +8,7 @@ Number of degrees of freedom: 230 (50+21+50+9+25+25+25+25)
 
 *** Timestep 0:  t=0 years
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 25+0 iterations.
+   Solving Stokes system... 20+0 iterations.
    Solving for u_f in 1 iterations.
 
    Postprocessing:

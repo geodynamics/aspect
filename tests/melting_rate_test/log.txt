@@ -1,0 +1,67 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 2.1.0-pre (ULVZ_partial_melting, a196d24f4)
+--     . using deal.II 9.0.0
+--     . using Trilinos 12.10.1
+--     . using p4est 2.0.0
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+-- For information on how to cite ASPECT, see:
+--   https://aspect.geodynamics.org/citing.html?ver=2.1.0-pre&melt=1&sha=a196d24f4&src=code
+-----------------------------------------------------------------------------
+Number of active cells: 4,096 (on 7 levels)
+Number of degrees of freedom: 153,866 (33,282+16,513+33,282+4,225+16,641+16,641+16,641+16,641)
+
+*** Timestep 0:  t=0 years
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 36+0 iterations.
+   Solving for u_f in 12 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  1e-23 m/year, 5.29e-23 m/year
+     Temperature min/avg/max:            3400 K, 4200 K, 5000 K
+     Heat fluxes through boundary parts: 0 W, 0 W, 0 W, 0 W
+     Writing graphical output:           output-melting_rate_test/solution/solution-00000
+
+*** Timestep 1:  t=1e+06 years
+   Solving composition reactions in 10 substep(s).
+
+   Postprocessing:
+     RMS, max velocity:                  1e-23 m/year, 5.29e-23 m/year
+     Temperature min/avg/max:            3400 K, 4200 K, 5000 K
+     Heat fluxes through boundary parts: 0 W, 0 W, 0 W, 0 W
+     Writing graphical output:           output-melting_rate_test/solution/solution-00001
+
+*** Timestep 2:  t=2e+06 years
+   Solving composition reactions in 10 substep(s).
+
+   Postprocessing:
+     RMS, max velocity:                  1e-23 m/year, 5.29e-23 m/year
+     Temperature min/avg/max:            3400 K, 4200 K, 5000 K
+     Heat fluxes through boundary parts: 0 W, 0 W, 0 W, 0 W
+     Writing graphical output:           output-melting_rate_test/solution/solution-00002
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |      40.8s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
++---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |         1 |      2.34s |       5.7% |
+| Build Stokes preconditioner     |         1 |      2.04s |         5% |
+| Initialization                  |         1 |    0.0447s |      0.11% |
+| Postprocessing                  |         3 |      6.19s |        15% |
+| Setup dof systems               |         1 |     0.378s |      0.93% |
+| Setup initial conditions        |         1 |      1.25s |       3.1% |
+| Solve Stokes system             |         1 |      3.72s |       9.1% |
++---------------------------------+-----------+------------+------------+
+
+-----------------------------------------------------------------------------
+-- For information on how to cite ASPECT, see:
+--   https://aspect.geodynamics.org/citing.html?ver=2.1.0-pre&melt=1&sha=a196d24f4&src=code
+-----------------------------------------------------------------------------
