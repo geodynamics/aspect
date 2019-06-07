@@ -524,9 +524,9 @@ namespace aspect
               for (unsigned int i=0; i<dofs_per_cell; ++i)
                 {
                   for (unsigned int j=0; j<dofs_per_cell; ++j)
-                      cell_matrix(i,j) += scalar_product( fe_values[extract_vel].gradient(i,point),
-                                                          fe_values[extract_vel].gradient(j,point) ) *
-                                          fe_values.JxW(point);
+                    cell_matrix(i,j) += scalar_product( fe_values[extract_vel].gradient(i,point),
+                                                        fe_values[extract_vel].gradient(j,point) ) *
+                                        fe_values.JxW(point);
                 }
 
             mesh_velocity_constraints.distribute_local_to_global (cell_matrix, cell_vector,
