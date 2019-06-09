@@ -1,7 +1,7 @@
 # Note that the Linear/Nonlinear solver tolerance should be sufficiently strict 
 # to avoid numerical instabilities.
 set Nonlinear solver scheme                 = single Advection, iterated Stokes
-set Nonlinear solver toleranc               = 1e-7
+set Nonlinear solver tolerance               = 1e-7
 set Max nonlinear iterations                = 100
 
 subsection Solver parameters
