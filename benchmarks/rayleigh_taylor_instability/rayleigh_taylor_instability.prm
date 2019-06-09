@@ -1,0 +1,74 @@
+set Additional shared libraries  = ./librayleigh_taylor_instability.so 
+set Dimension                    = 2
+set Start time                   = 0
+set End time                     = 0
+set Output directory             = output
+set Pressure normalization       = volume
+set Use years in output instead of seconds = false
+
+subsection Geometry model
+  set Model name = box
+  subsection Box
+    set X extent  = 512e3
+    set Y extent  = 512e3
+  end
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = left, right
+  set Zero velocity boundary indicators =  bottom, top
+end
+
+subsection Material model
+  set Model name  = RTinstabilityMaterial
+  #set Material averaging = harmonic average
+  subsection RTinstability
+     set eta1 = 1e21
+     set eta2 = 1e21
+     set rho1 = 3300
+     set rho2 = 3000
+     set amplitude = 4000
+     set lambda = 256e3
+  end 
+end
+
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 10
+  end
+end
+
+############### Parameters describing the temperature field
+# Note: The temperature plays no role in this model
+
+subsection Boundary temperature model
+  set List of model names = box
+end
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Function expression = 0
+  end
+end
+
+############### Parameters describing the discretization
+
+subsection Mesh refinement
+  set Initial global refinement     = 4
+  set Initial adaptive refinement   = 6
+  set Strategy                      = density
+  set Refinement fraction           = 0.5
+  set Run postprocessors on initial refinement = true
+end
+
+############### Parameters describing what to do with the solution
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics
+  subsection Visualization
+    set Output format                 = vtu
+    set Time between graphical output = 0
+    set List of output variables = density, viscosity, strain rate
+  end
+end

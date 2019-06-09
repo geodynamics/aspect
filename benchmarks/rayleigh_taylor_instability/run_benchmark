@@ -1,0 +1,48 @@
+rm vy.dat
+
+for visc2 in 1.25e20 2.5e20 5e20 1e21 2e21 4e21 8e21 16e21 32e21 64e21 128e21 256e21; do 
+    for lambda in 64e3 128e3 256e3; do 
+
+        cp blank.prm inputfile.prm 
+        echo lambda= $lambda visc2= ${visc2}
+
+        echo '#####################################################' >>  inputfile.prm
+
+        echo subsection Mesh refinement >> inputfile.prm
+        echo set Initial global refinement   = 4 >> inputfile.prm
+        echo set Initial adaptive refinement = 6 >> inputfile.prm
+        echo set Strategy                    = density >> inputfile.prm
+        echo set Refinement fraction           = 0.6  >> inputfile.prm
+        echo set Run postprocessors on initial refinement = true >> inputfile.prm
+        echo end >> inputfile.prm
+
+        echo subsection Material model >> inputfile.prm
+        echo set Model name  = RTinstabilityMaterial >> inputfile.prm
+        #echo set Material averaging = harmonic average >> inputfile.prm
+        echo subsection RTinstability >> inputfile.prm
+        echo set eta1 = 1e21 >> inputfile.prm
+        echo set eta2 = ${visc2} >> inputfile.prm
+        echo set rho1 = 3300 >> inputfile.prm
+        echo set rho2 = 3000 >> inputfile.prm
+        echo set amplitude = 3000 >> inputfile.prm
+        echo set lambda = ${lambda} >> inputfile.prm
+        echo end >> inputfile.prm >> inputfile.prm >> inputfile.prm
+        echo end >> inputfile.prm >> inputfile.prm >> inputfile.prm
+
+        ../../build/aspect inputfile.prm > opla
+
+        echo -n $lambda >> vy.dat 
+        echo -n ' ' >> vy.dat 
+        echo -n $visc2 >> vy.dat 
+        echo -n ' ' >> vy.dat 
+        tail -1 output/statistics >> vy.dat 
+        #grep vy.dat opla >> vy.dat 
+
+    done
+ 
+    echo ' ' >> vy.dat
+
+done
+
+#rm inputfile.prm
+
