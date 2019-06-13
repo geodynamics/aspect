@@ -52,20 +52,13 @@ namespace aspect
         elastic_shear_moduli(n_points, numbers::signaling_nan<double>())
       {}
 
+
+
       template <int dim>
       std::vector<double>
       ElasticAdditionalOutputs<dim>::get_nth_output(const unsigned int idx) const
       {
         AssertIndexRange (idx, 1);
-        switch (idx)
-          {
-            case 0:
-              return elastic_shear_moduli;
-
-            default:
-              AssertThrow(false, ExcInternalError());
-          }
-        // we will never get here, so just return something
         return elastic_shear_moduli;
       }
 
@@ -169,7 +162,7 @@ namespace aspect
                                    "compositional field is called stress_yz."));
           }
         else
-          ExcNotImplemented();
+          AssertThrow(false, ExcNotImplemented());
 
         // Currently, it only makes sense to use this material model when the nonlinear solver
         // scheme does a single Advection iteration and at minimum one Stokes iteration. More
@@ -186,9 +179,8 @@ namespace aspect
 
         // Functionality to average the additional RHS terms over the cell is not implemented.
         // This enforces that the variable 'Material averaging' is set to 'none'.
-        AssertThrow((this->get_parameters().material_averaging ==
-                     MaterialModel::MaterialAveraging::none),
-                    ExcMessage("The viscoelastic material model cannot be used with "
+        AssertThrow(this->get_parameters().material_averaging == MaterialModel::MaterialAveraging::none,
+                    ExcMessage("Material models with elasticity cannot be used with "
                                "material averaging. The variable 'Material averaging' "
                                "in the 'Material model' subsection must be set to 'none'."));
       }
@@ -212,7 +204,7 @@ namespace aspect
       template <int dim>
       void
       Elasticity<dim>::fill_elastic_force_outputs (const MaterialModel::MaterialModelInputs<dim> &in,
-                                                   const std::vector<double> average_elastic_shear_moduli,
+                                                   const std::vector<double> &average_elastic_shear_moduli,
                                                    MaterialModel::MaterialModelOutputs<dim> &out) const
       {
         // Create a reference to the structure for the elastic force terms that are needed to compute the
@@ -251,7 +243,7 @@ namespace aspect
       template <int dim>
       void
       Elasticity<dim>::fill_reaction_outputs (const MaterialModel::MaterialModelInputs<dim> &in,
-                                              const std::vector<double> average_elastic_shear_moduli,
+                                              const std::vector<double> &average_elastic_shear_moduli,
                                               MaterialModel::MaterialModelOutputs<dim> &out) const
       {
         if (in.current_cell.state() == IteratorState::valid && this->get_timestep_number() > 0 && in.strain_rate.size() > 0)
@@ -330,7 +322,7 @@ namespace aspect
         // We also use this parameter when we are still *before* the first time step,
         // i.e., if the time step number is numbers::invalid_unsigned_int.
         const double dte = ( ( this->get_timestep_number() > 0 &&
-                               this->get_timestep_number() != numbers::invalid_unsigned_int &&
+                               this->simulator_is_past_initialization() &&
                                use_fixed_elastic_time_step == false )
                              ?
                              this->get_timestep()

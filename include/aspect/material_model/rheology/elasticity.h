@@ -42,7 +42,7 @@ namespace aspect
       class ElasticAdditionalOutputs : public NamedAdditionalMaterialOutputs<dim>
       {
         public:
-          ElasticAdditionalOutputs(const unsigned int n_points);
+          explicit ElasticAdditionalOutputs(const unsigned int n_points);
 
           virtual std::vector<double> get_nth_output(const unsigned int idx) const;
 
@@ -88,7 +88,7 @@ namespace aspect
            */
           void
           fill_elastic_force_outputs (const MaterialModel::MaterialModelInputs<dim> &in,
-                                      const std::vector<double> average_elastic_shear_moduli,
+                                      const std::vector<double> &average_elastic_shear_moduli,
                                       MaterialModel::MaterialModelOutputs<dim> &out) const;
 
           /**
@@ -100,7 +100,7 @@ namespace aspect
            */
           void
           fill_reaction_outputs (const MaterialModel::MaterialModelInputs<dim> &in,
-                                 const std::vector<double> average_elastic_shear_moduli,
+                                 const std::vector<double> &average_elastic_shear_moduli,
                                  MaterialModel::MaterialModelOutputs<dim> &out) const;
 
           /**
