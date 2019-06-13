@@ -135,7 +135,7 @@ namespace aspect
                                                                                      average_elastic_shear_moduli[i]);
 
               // Fill the material properties that are part of the elastic additional outputs
-              if (Rheology::ElasticAdditionalOutputs<dim> *elastic_out = out.template get_additional_output<Rheology::ElasticAdditionalOutputs<dim> >())
+              if (ElasticAdditionalOutputs<dim> *elastic_out = out.template get_additional_output<ElasticAdditionalOutputs<dim> >())
                 {
                   elastic_out->elastic_shear_moduli[i] = average_elastic_shear_moduli[i];
                 }

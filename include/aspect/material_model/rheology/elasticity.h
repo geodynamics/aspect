@@ -31,31 +31,31 @@ namespace aspect
   {
     using namespace dealii;
 
+    /**
+     * Additional output fields for the elastic shear modulus to be added to
+     * the MaterialModel::MaterialModelOutputs structure and filled in the
+     * MaterialModel::Interface::evaluate() function.
+     */
+    template <int dim>
+    class ElasticAdditionalOutputs : public NamedAdditionalMaterialOutputs<dim>
+    {
+      public:
+        explicit ElasticAdditionalOutputs(const unsigned int n_points);
+
+        virtual std::vector<double> get_nth_output(const unsigned int idx) const;
+
+        /**
+         * Elastic shear moduli at the evaluation points passed to
+         * the instance of MaterialModel::Interface::evaluate() that fills
+         * the current object.
+         */
+        std::vector<double> elastic_shear_moduli;
+    };
+
+
+
     namespace Rheology
     {
-      /**
-       * Additional output fields for the elastic shear modulus to be added to
-       * the MaterialModel::MaterialModelOutputs structure and filled in the
-       * MaterialModel::Interface::evaluate() function.
-       */
-      template <int dim>
-      class ElasticAdditionalOutputs : public NamedAdditionalMaterialOutputs<dim>
-      {
-        public:
-          explicit ElasticAdditionalOutputs(const unsigned int n_points);
-
-          virtual std::vector<double> get_nth_output(const unsigned int idx) const;
-
-          /**
-           * Elastic shear moduli at the evaluation points passed to
-           * the instance of MaterialModel::Interface::evaluate() that fills
-           * the current object.
-           */
-          std::vector<double> elastic_shear_moduli;
-      };
-
-
-
       template <int dim>
       class Elasticity : public ::aspect::SimulatorAccess<dim>
       {

@@ -33,37 +33,37 @@ namespace aspect
 {
   namespace MaterialModel
   {
+    namespace
+    {
+      std::vector<std::string> make_elastic_additional_outputs_names()
+      {
+        std::vector<std::string> names;
+        names.emplace_back("elastic_shear_modulus");
+        return names;
+      }
+    }
+
+    template <int dim>
+    ElasticAdditionalOutputs<dim>::ElasticAdditionalOutputs (const unsigned int n_points)
+      :
+      NamedAdditionalMaterialOutputs<dim>(make_elastic_additional_outputs_names()),
+      elastic_shear_moduli(n_points, numbers::signaling_nan<double>())
+    {}
+
+
+
+    template <int dim>
+    std::vector<double>
+    ElasticAdditionalOutputs<dim>::get_nth_output(const unsigned int idx) const
+    {
+      AssertIndexRange (idx, 1);
+      return elastic_shear_moduli;
+    }
+
+
+
     namespace Rheology
     {
-      namespace
-      {
-        std::vector<std::string> make_elastic_additional_outputs_names()
-        {
-          std::vector<std::string> names;
-          names.emplace_back("elastic_shear_modulus");
-          return names;
-        }
-      }
-
-      template <int dim>
-      ElasticAdditionalOutputs<dim>::ElasticAdditionalOutputs (const unsigned int n_points)
-        :
-        NamedAdditionalMaterialOutputs<dim>(make_elastic_additional_outputs_names()),
-        elastic_shear_moduli(n_points, numbers::signaling_nan<double>())
-      {}
-
-
-
-      template <int dim>
-      std::vector<double>
-      ElasticAdditionalOutputs<dim>::get_nth_output(const unsigned int idx) const
-      {
-        AssertIndexRange (idx, 1);
-        return elastic_shear_moduli;
-      }
-
-
-
       template <int dim>
       void
       Elasticity<dim>::declare_parameters (ParameterHandler &prm)
@@ -360,14 +360,14 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    namespace Rheology
-    {
 #define INSTANTIATE(dim) \
   template class ElasticAdditionalOutputs<dim>; \
   \
-  template class Elasticity<dim>;
+  namespace Rheology \
+  { \
+    template class Elasticity<dim>; \
+  }
 
-      ASPECT_INSTANTIATE(INSTANTIATE)
-    }
+    ASPECT_INSTANTIATE(INSTANTIATE)
   }
 }
