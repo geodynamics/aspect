@@ -103,6 +103,15 @@ namespace aspect
        * $\\rho C_p$ term on the left hand side of the energy equation.
        */
       std::vector<double> lhs_latent_heat_terms;
+
+      /**
+       * Reset function. Resets all of the values in the heating model
+       * outputs to their uninitialized values (NaN for the source and latent
+       * heat terms, 0 for the rates of temperature change).
+       */
+      virtual
+      void
+      reset ();
     };
 
     /**
