@@ -23,7 +23,7 @@
 
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>
-#include <aspect/material_model/viscoelastic.h>
+#include <aspect/material_model/rheology/elasticity.h>
 #include <aspect/material_model/equation_of_state/multicomponent_incompressible.h>
 
 namespace aspect
@@ -233,12 +233,6 @@ namespace aspect
       private:
 
         /**
-         * Reference temperature for thermal expansion. All components use
-         * the same value.
-         */
-        double reference_temperature;
-
-        /**
          * Minimum strain-rate (second invariant) to stabilize strain-rate dependent viscosity
          */
         double minimum_strain_rate;
@@ -291,33 +285,7 @@ namespace aspect
          */
         std::vector<double> cohesions;
 
-        /**
-         * Vector for field elastic shear moduli, read from parameter file.
-         */
-        std::vector<double> elastic_shear_moduli;
-
-        /**
-         * Bool indicating whether to use a fixed material time scale in the
-         * viscoelastic rheology for all time steps (if true) or to use the
-         * actual (variable) advection time step of the model (if false). Read
-         * from parameter file.
-         */
-        bool use_fixed_elastic_time_step;
-
-        /**
-         * Bool indicating whether to use a stress averaging scheme to account
-         * for differences between the numerical and fixed elastic time step
-         * (if true). When set to false, the viscoelastic stresses are not
-         * modified to account for differences between the viscoelastic time
-         * step and the numerical time step. Read from parameter file.
-         */
-        bool use_stress_averaging;
-
-        /**
-         * Double for fixed elastic time step value, read from parameter file
-         */
-        double fixed_elastic_time_step;
-
+        Rheology::Elasticity<dim> elastic_rheology;
     };
 
   }
