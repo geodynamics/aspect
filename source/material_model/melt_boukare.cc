@@ -365,20 +365,6 @@ namespace aspect
       const double T = temperature;                // temperature in K
       const double R = constants::gas_constant;    // Ideal Gas Constant
 
-      const double melting_reference_pressure = 120.e9;       // Pa
-
-      const double Fe_mantle_melting_temperature = 3470.0;    // Kelvin at the reference pressure - reference melting temperature for Fe mantle endmember
-      const double Mg_mantle_melting_temperature = 4821.2;    // Kelvin at reference pressure - reference melting temperature for Mg mantle endmember
-
-      const double Fe_mantle_melting_entropy = 33.77;       // molar entropy change of melting in J/mol K
-      const double Mg_mantle_melting_entropy = 34.33;       // molar entropy change of melting in J/mol K
-
-      const double Fe_mantle_melting_volume = 1.51e-07;       // molar volume change of melting of solid Fe mantle endmember in m3/mol
-      const double Mg_mantle_melting_volume = 9.29e-08;       // molar volume change of melting volume of solid Mg mantle endmember in m3/mol
-
-      const double Fe_number_of_moles = 0.56;                 // number of moles of atoms mixing on pseudosite in mantle lattice (empirical model fitting the full boukare model)
-      const double Mg_number_of_moles = 0.52;
-
 
       // Free Energy Change Delta_G due to Melting as a function of temperature and pressure
       const double dG_Fe_mantle = (Fe_mantle_melting_temperature - T) * Fe_mantle_melting_entropy
@@ -391,12 +377,15 @@ namespace aspect
                                                std::exp(dG_Fe_mantle/(Fe_number_of_moles*R*T)));
       const double molar_composition_of_solid = molar_composition_of_melt * std::exp(dG_Fe_mantle/(Fe_number_of_moles*R*T));
 
+
+
       double melt_fraction;
       if (molar_composition_of_solid >= molar_composition_of_bulk)     // below the solidus
         {
           melt_fraction = 0;
           new_molar_composition_of_solid = molar_composition_of_bulk;
-          new_molar_composition_of_melt = molar_composition_of_bulk;
+          // TODO: make this solidus melt composition
+          new_molar_composition_of_melt = molar_composition_of_bulk / std::exp(dG_Fe_mantle/(Fe_number_of_moles*R*T));
         }
       else if (molar_composition_of_melt <= molar_composition_of_bulk) // above the liquidus
         {
@@ -752,7 +741,22 @@ namespace aspect
                   out.reaction_terms[q][c] = 0.0;
                 }
 
-              const double porosity = std::min(1.0, std::max(in.composition[q][porosity_idx],0.0));
+              if (EnthalpyOutputs<dim> *enthalpy_out = out.template get_additional_output<EnthalpyOutputs<dim> >())
+                {
+                  const double melt_molar_mass = endmember_mole_fractions_per_phase[mgmelt_idx] * molar_masses[mgmelt_idx]
+        										 + endmember_mole_fractions_per_phase[femelt_idx] * molar_masses[femelt_idx];
+                  const double Fe_enthalpy_of_fusion = Fe_mantle_melting_temperature * Fe_mantle_melting_entropy
+                                              + (in.pressure[q] - melting_reference_pressure) * Fe_mantle_melting_volume;
+                  const double Mg_enthalpy_of_fusion = Mg_mantle_melting_temperature * Mg_mantle_melting_entropy
+                                              + (in.pressure[q] - melting_reference_pressure) * Mg_mantle_melting_volume;
+                  double enthalpy_of_fusion = Fe_enthalpy_of_fusion * bulk_composition + Mg_enthalpy_of_fusion * (1.0-bulk_composition);
+                  enthalpy_of_fusion /= melt_molar_mass;
+
+            	  enthalpy_out->enthalpies_of_fusion[q] = enthalpy_of_fusion;
+                }
+
+              // cutoff for viscosity at 30%
+              const double porosity = std::min(0.3, std::max(in.composition[q][porosity_idx],0.0));
               out.viscosities[q] = (1.0 - porosity) * eta_0 * exp(- alpha_phi * porosity);
             }
           else
@@ -794,7 +798,7 @@ namespace aspect
               melt_out->permeabilities[q] = reference_permeability * std::pow(porosity,3) * std::pow(1.0-porosity,2);
 
               const double porosity_threshold = 0.01 * std::pow(this->get_melt_handler().melt_parameters.melt_scaling_factor_threshold, 1./3.);
-              melt_out->compaction_viscosities[q] = (1.0 - porosity) * xi_0 / std::max(porosity, porosity_threshold);
+              melt_out->compaction_viscosities[q] = (1.0 - std::min(porosity, .9999)) * xi_0 / std::max(porosity, porosity_threshold);
 
               const double delta_temp = in.temperature[q]-this->get_adiabatic_conditions().temperature(in.position[q]);
               const double visc_temperature_dependence = std::max(std::min(std::exp(-thermal_bulk_viscosity_exponent*delta_temp/this->get_adiabatic_conditions().temperature(in.position[q])),1e4),1e-4);
@@ -1119,7 +1123,7 @@ namespace aspect
         {
           const unsigned int n_points = out.viscosities.size();
           out.additional_outputs.push_back(
-            std::make_shared<MaterialModel::ReactionRateOutputs<dim>> (n_points, this->n_compositional_fields()));
+            std::make_shared<MaterialModel::ReactionRateOutputs<dim> > (n_points, this->n_compositional_fields()));
         }
     }
   }

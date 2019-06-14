@@ -75,9 +75,14 @@ namespace aspect
          * @}
          */
 
+        virtual
+        void
+        create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const;
+
       private:
         // entropy change upon melting
         double melting_entropy_change;
+        bool   retrieve_entropy_change_from_material_model;
     };
   }
 }

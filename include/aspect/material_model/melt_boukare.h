@@ -48,7 +48,7 @@ namespace aspect
     {
       public:
         /**
-          * Initialization function. Computes endmember propoerties.
+          * Initialization function. Computes endmember properties.
           */
         virtual
         void
@@ -154,9 +154,6 @@ namespace aspect
 
         bool include_melting_and_freezing;
         double melting_time_scale;
-
-        // entropy change upon melting
-        double peridotite_melting_entropy_change;
 
         // melting model parameters
         const double molar_MgO_in_Mg_mantle_endmember = 0.581;
@@ -295,6 +292,21 @@ namespace aspect
         double
         limit_update_to_0_and_1 (const double value,
                                  const double change_of_value) const;
+
+
+        const double melting_reference_pressure = 120.e9;       // Pa
+
+        const double Fe_mantle_melting_temperature = 3470.0;    // Kelvin at the reference pressure - reference melting temperature for Fe mantle endmember
+        const double Mg_mantle_melting_temperature = 4821.2;    // Kelvin at reference pressure - reference melting temperature for Mg mantle endmember
+
+        const double Fe_mantle_melting_entropy = 33.77;         // molar entropy change of melting in J/mol K
+        const double Mg_mantle_melting_entropy = 34.33;         // molar entropy change of melting in J/mol K
+
+        const double Fe_mantle_melting_volume = 1.51e-07;       // molar volume change of melting of solid Fe mantle endmember in m3/mol
+        const double Mg_mantle_melting_volume = 9.29e-08;       // molar volume change of melting volume of solid Mg mantle endmember in m3/mol
+
+        const double Fe_number_of_moles = 0.56;                 // number of moles of atoms mixing on pseudosite in mantle lattice (empirical model fitting the full boukare model)
+        const double Mg_number_of_moles = 0.52;
     };
 
   }
