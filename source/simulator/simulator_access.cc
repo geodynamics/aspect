@@ -487,6 +487,8 @@ namespace aspect
   const std::set<types::boundary_id> &
   SimulatorAccess<dim>::get_mesh_deformation_boundary_indicators () const
   {
+    Assert( simulator->parameters.mesh_deformation_enabled,
+            ExcMessage("You cannot get the mesh deformation boundary indicators if mesh deformation is not enabled."));
     return simulator->mesh_deformation->get_active_mesh_deformation_boundary_indicators();
   }
 
@@ -642,7 +644,7 @@ namespace aspect
   SimulatorAccess<dim>::get_mesh_deformation_handler () const
   {
     Assert (simulator->mesh_deformation.get() != nullptr,
-            ExcMessage("You can not call this function if no mesh deformation objects are not enabled."));
+            ExcMessage("You cannot call this function if mesh deformation is not enabled."));
 
     return *(simulator->mesh_deformation);
   }
