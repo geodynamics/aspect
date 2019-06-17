@@ -1,15 +1,8 @@
------------------------------------------------------------------------------
--- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
---     . version 2.0.0-pre
---     . running in DEBUG mode
---     . running with 1 MPI process
---     . using Trilinos
------------------------------------------------------------------------------
 
 Number of active cells: 512 (on 5 levels)
 Number of degrees of freedom: 6,996 (4,290+561+2,145)
 
-Number of free surface degrees of freedom: 1122
+Number of mesh deformation degrees of freedom: 1122
 *** Timestep 0:  t=0 years
    Solving mesh velocity system... 0 iterations.
    Solving temperature system... 0 iterations.
@@ -22,21 +15,7 @@ Number of free surface degrees of freedom: 1122
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      2.74s |            |
-|                                             |            |            |
-| Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         1 |     0.505s |        18% |
-| Assemble temperature system     |         1 |     0.612s |        22% |
-| Build Stokes preconditioner     |         1 |     0.326s |        12% |
-| Build temperature preconditioner|         1 |   0.00646s |      0.24% |
-| Solve Stokes system             |         1 |     0.125s |       4.6% |
-| Solve temperature system        |         1 |   0.00161s |         0% |
-| Free surface                    |         1 |       0.2s |       7.3% |
-| Initialization                  |         1 |    0.0802s |       2.9% |
-| Postprocessing                  |         1 |   0.00269s |         0% |
-| Setup dof systems               |         1 |      0.19s |       6.9% |
-| Setup initial conditions        |         1 |     0.205s |       7.5% |
 +---------------------------------+-----------+------------+------------+
 
 *** Timestep 1:  t=772224 years
@@ -51,41 +30,13 @@ Number of free surface degrees of freedom: 1122
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      4.76s |            |
-|                                             |            |            |
-| Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         2 |      1.02s |        22% |
-| Assemble temperature system     |         2 |      1.26s |        26% |
-| Build Stokes preconditioner     |         2 |     0.662s |        14% |
-| Build temperature preconditioner|         2 |    0.0126s |      0.26% |
-| Solve Stokes system             |         2 |     0.205s |       4.3% |
-| Solve temperature system        |         2 |   0.00514s |      0.11% |
-| Free surface                    |         2 |     0.398s |       8.4% |
-| Initialization                  |         1 |    0.0802s |       1.7% |
-| Postprocessing                  |         2 |     0.005s |      0.11% |
-| Setup dof systems               |         1 |      0.19s |         4% |
-| Setup initial conditions        |         1 |     0.205s |       4.3% |
 +---------------------------------+-----------+------------+------------+
 
 Termination requested by criterion: end step
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      4.76s |            |
-|                                             |            |            |
-| Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         2 |      1.02s |        22% |
-| Assemble temperature system     |         2 |      1.26s |        26% |
-| Build Stokes preconditioner     |         2 |     0.662s |        14% |
-| Build temperature preconditioner|         2 |    0.0126s |      0.26% |
-| Solve Stokes system             |         2 |     0.205s |       4.3% |
-| Solve temperature system        |         2 |   0.00514s |      0.11% |
-| Free surface                    |         2 |     0.398s |       8.4% |
-| Initialization                  |         1 |    0.0802s |       1.7% |
-| Postprocessing                  |         2 |     0.005s |      0.11% |
-| Setup dof systems               |         1 |      0.19s |         4% |
-| Setup initial conditions        |         1 |     0.205s |       4.3% |
 +---------------------------------+-----------+------------+------------+
 
