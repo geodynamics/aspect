@@ -4,7 +4,7 @@ Loading shared library <./libfree_surface_blob_nonzero_melt.so>
 Number of active cells: 640 (on 4 levels)
 Number of degrees of freedom: 19,352 (5,346+2,617+5,346+697+2,673+2,673)
 
-Number of free surface degrees of freedom: 1394
+Number of mesh deformation degrees of freedom: 1394
 *** Timestep 0:  t=0 years
    Solving mesh velocity system... 0 iterations.
    Solving temperature system... 0 iterations.
@@ -16,7 +16,7 @@ Number of free surface degrees of freedom: 1394
 Number of active cells: 760 (on 5 levels)
 Number of degrees of freedom: 23,646 (6,550+3,138+6,550+858+3,275+3,275)
 
-Number of free surface degrees of freedom: 1716
+Number of mesh deformation degrees of freedom: 1716
 *** Timestep 0:  t=0 years
    Solving mesh velocity system... 0 iterations.
    Solving temperature system... 0 iterations.
@@ -28,7 +28,7 @@ Number of free surface degrees of freedom: 1716
 Number of active cells: 1,360 (on 6 levels)
 Number of degrees of freedom: 42,688 (11,842+5,621+11,842+1,541+5,921+5,921)
 
-Number of free surface degrees of freedom: 3082
+Number of mesh deformation degrees of freedom: 3082
 *** Timestep 0:  t=0 years
    Solving mesh velocity system... 0 iterations.
    Solving temperature system... 0 iterations.
