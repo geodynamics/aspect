@@ -60,10 +60,10 @@ namespace aspect
 
                 // Use cases for this plugin include a deforming mesh,
                 // or a fixed mesh with initial topography
-                if ( (this->get_parameters().mesh_deformation_enabled && 
+                if ( (this->get_parameters().mesh_deformation_enabled &&
                       this->get_mesh_deformation_boundary_indicators().find(boundary_indicator) !=
                       this->get_mesh_deformation_boundary_indicators().end()) ||
-                     (dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(&this->get_initial_topography_model()) 
+                     (dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(&this->get_initial_topography_model())
                       == nullptr &&
                       this->get_geometry_model().translate_symbolic_boundary_name_to_id("top") == boundary_indicator)  )
                   {
