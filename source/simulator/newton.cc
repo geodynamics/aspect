@@ -296,10 +296,6 @@ namespace aspect
             velocity_block_stabilization = Stabilization::none;
 
           use_Newton_failsafe = prm.get_bool("Use Newton failsafe");
-
-          AssertThrow((!DEAL_II_VERSION_GTE(9,0,0) && !use_Newton_failsafe) || DEAL_II_VERSION_GTE(9,0,0),
-                      ExcMessage("The failsafe option can't be used with a deal.ii less then 9.0.0."));
-
           SPD_safety_factor = prm.get_double("SPD safety factor");
           use_Eisenstat_Walker_method_for_Picard_iterations = prm.get_bool("Use Eisenstat Walker method for Picard iterations");
 
