@@ -35,6 +35,12 @@ namespace aspect
     void
     AsciiDataLayered<dim>::initialize ()
     {
+      // The ascii data layered class has dim-1 spatial columns
+      // (which provide the horizontal coordinates of the layer).
+      // We need another 2 columns; the first for the depth
+      // of the layer at the given horizontal coordinates,
+      // and the second for temperature (for cases where
+      // temperature varies across the layer).
       Utilities::AsciiDataLayered<dim>::initialize(2);
     }
 

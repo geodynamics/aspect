@@ -2287,10 +2287,10 @@ namespace aspect
     void
     AsciiDataLayered<dim>::initialize(const unsigned int components)
     {
-      AssertThrow ((dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()))
-                   || (dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model())) != nullptr
-                   || (dynamic_cast<const GeometryModel::Sphere<dim>*> (&this->get_geometry_model())) != nullptr
-                   || (dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model())) != nullptr,
+      AssertThrow ((Plugins::plugin_type_matches<GeometryModel::SphericalShell<dim> >(this->get_geometry_model()) ||
+                    Plugins::plugin_type_matches<GeometryModel::Chunk<dim> >(this->get_geometry_model()) ||
+                    Plugins::plugin_type_matches<GeometryModel::Sphere<dim> >(this->get_geometry_model()) ||
+                    Plugins::plugin_type_matches<GeometryModel::Box<dim> >(this->get_geometry_model())),
                    ExcMessage ("This ascii data plugin can only be used when using "
                                "a spherical shell, chunk, sphere or box geometry."));
 
@@ -2317,8 +2317,8 @@ namespace aspect
     template <int dim>
     double
     AsciiDataLayered<dim>::
-    get_data_component (const Point<dim>                    &position,
-                        const unsigned int                   component) const
+    get_data_component (const Point<dim> &position,
+                        const unsigned int component) const
     {
       // Get the location of the component in the coordinate system of the ascii data input
       const std::array<double,dim> natural_position = this->get_geometry_model().cartesian_to_natural_coordinates(position);
@@ -2328,14 +2328,14 @@ namespace aspect
         internal_position[i] = natural_position[i];
 
       // The chunk model has latitude as natural coordinate. We need to convert this to colatitude
-      if (dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model()) != nullptr && dim == 3)
+      if (Plugins::plugin_type_matches<GeometryModel::Chunk<dim> >(this->get_geometry_model()) && dim == 3)
         {
           internal_position[2] = numbers::PI/2. - internal_position[2];
         }
 
       double vertical_position;
       Point<dim-1> horizontal_position;
-      if ((dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model())) != nullptr)
+      if (Plugins::plugin_type_matches<GeometryModel::Box<dim> >(this->get_geometry_model()))
         {
           // in cartesian coordinates, the vertical component comes last
           vertical_position = internal_position[dim-1];
@@ -2357,7 +2357,7 @@ namespace aspect
       double difference_in_vertical_position = old_difference_in_vertical_position;
       while (difference_in_vertical_position > 0. && layer_boundary_index < number_of_layer_boundaries-1)
         {
-          layer_boundary_index++;
+          ++layer_boundary_index;
           old_difference_in_vertical_position = difference_in_vertical_position;
           difference_in_vertical_position = vertical_position - lookups[layer_boundary_index]->get_data(horizontal_position,0);
         }
@@ -2437,7 +2437,7 @@ namespace aspect
       prm.enter_subsection(subsection_name);
       {
         data_directory = Utilities::expand_ASPECT_SOURCE_DIR(prm.get ("Data directory"));
-        data_file_names    = Utilities::split_string_list(prm.get ("Data file names"), ',');
+        data_file_names = Utilities::split_string_list(prm.get ("Data file names"), ',');
         interpolation_scheme = prm.get("Interpolation scheme");
       }
       prm.leave_subsection();
@@ -2500,6 +2500,8 @@ namespace aspect
         }
       return lookup->get_data(internal_position,component);
     }
+
+
 
     template <int dim>
     AsciiDataProfile<dim>::AsciiDataProfile ()

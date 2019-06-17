@@ -967,8 +967,8 @@ namespace aspect
          * Returns the data component at the given position.
          */
         double
-        get_data_component (const Point<dim>                    &position,
-                            const unsigned int                   component) const;
+        get_data_component (const Point<dim> &position,
+                            const unsigned int component) const;
 
 
         /**
