@@ -43,8 +43,8 @@ namespace aspect
 
       AssertThrow(geometry != nullptr,
                         ExcMessage("Fastscape can only be run with a box model"));
-     // AssertThrow(dim == 3,
-     //                   ExcMessage("Fastscape can only be applied to 3D runs."));
+      AssertThrow(dim == 3,
+                        ExcMessage("Fastscape can only be applied to 3D runs."));
 
       if (geometry != nullptr)
         {
@@ -54,6 +54,15 @@ namespace aspect
           double yll = geometry->get_extents()[1];
 
           /*
+           * Find nx any to send to fastscape based off of the maximum
+           * refinement chosen in aspect.
+           * TODO: This needs to take into account x/y repetitions as well.
+           */
+          int nx = 1+std::pow(2,refinement);
+          int ny = 1+std::pow(2,refinement);
+          int array_size = nx*ny-1;
+
+          /*
            * Pointers get allocated only 8 bytes at compile so don't run into
            * allocation issues. This creates an array that can delete itself.
            */
@@ -61,42 +70,75 @@ namespace aspect
           std::unique_ptr<double[]> kf (new double[array_size]);
           std::unique_ptr<double[]> kd (new double[array_size]);
 
-          //TODO: Make sure this doesn't run on first timestep.
-          double a_dt = 100001; //this->get_timestep();
-          double f_dt = a_dt/steps;
+          /* Initialize kf and kd across array.
+           * TODO: Find a cleaner way to initialize these to the same value,
+           * and find how to initialize if they're spatially dependent.
+           */
+          for (int i=0; i<array_size; i++)
+            {
+              kf[i]=kff;
+              kd[i]=kdd;
+            }
 
+          const types::boundary_id relevant_boundary = this->get_geometry_model().translate_symbolic_boundary_name_to_id ("top");
+
+          // Get a quadrature rule that exists only on the corners
+          QTrapez<dim-1> face_corners;
+          FEFaceValues<dim> face_vals (this->get_mapping(), this->get_fe(), face_corners, update_quadrature_points | update_JxW_values);
+
+          /* loop over all of the surface cells and save the position and values
+           * TODO: Get velocity components as well
+           */
+          typename parallel::distributed::Triangulation<dim>::active_cell_iterator cell = this->get_triangulation().begin_active(),
+                                                                                   endc = this->get_triangulation().end();
+          for (; cell != endc; ++cell)
+            if (cell->is_locally_owned() && cell->at_boundary())
+              for (unsigned int face_no = 0; face_no < GeometryInfo<dim>::faces_per_cell; ++face_no)
+                if (cell->face(face_no)->at_boundary())
+                  {
+                    if ( cell->face(face_no)->boundary_id() != relevant_boundary)
+                      continue;
+
+                    face_vals.reinit( cell, face_no);
+
+                    //Find out dx and dy, and the total number of x points per row.
+                    double dx = cell->extent_in_direction(0);
+                    double dy = cell->extent_in_direction(1);
+                    double numx = 1+xll/dx;
+
+                    for (unsigned int corner = 0; corner < face_corners.size(); ++corner)
+                      {
+                        const Point<dim> vertex = face_vals.quadrature_point(corner);
+                        const double elevation = vertex(dim-1);
+
+                        double indx = 1+vertex(0)/dx;
+                        double indy = 1+vertex(1)/dy;
+                        double index = (indy-1)*numx+indx;
+
+                        h[index-1] = elevation;
+                      }
+                  }
+
+          //TODO: Make sure this doesn't run on first timestep.
+          double a_dt = this->get_timestep();
+
+          double f_dt = a_dt/steps;
           while (f_dt>max_timestep)
           {
         	  steps=steps*2;
         	  f_dt = a_dt/steps;
           }
-    	  std::cout<<"Fastscape timestep: "<<f_dt<<std::endl;
-
-          //Currently initializing h this way until we can get info from aspect.
-          //TODO: Get h (topography) and later ux/uy from aspect (do we need uplift rate as well
-          //for vertical projection?).
-          for (int i=0; i<array_size; i++)
-            {
-              h[i]=0;
-              kf[i]=kff;
-              kd[i]=kdd;
-              if (i>(array_size/2))
-                h[i]=1000;
-            }
 
           //Initialize fastscape
           fastscape_init_();
           fastscape_set_nx_ny_(&nx,&ny);
           fastscape_setup_();
 
-          double xl = 10e3;
-          double yl = 20e3;
           //set x and y extent
-          fastscape_set_xl_yl_(&xl,&yl);
+          fastscape_set_xl_yl_(&xll,&yll);
 
-          double dt = 2e3;
           //Set time step
-          fastscape_set_dt_(&dt);
+          fastscape_set_dt_(&f_dt);
 
           //Initialize topography
           fastscape_init_h_(h.get());
@@ -109,10 +151,13 @@ namespace aspect
 
           //Initialize first time step
           fastscape_get_step_(&istep);
+          fastscape_vtk_(h.get(), &vexp);
 
           double summ = 0;
           //loop on time stepping
           //TODO only run this with one process
+         /* if(a_dt > 0)
+          {
           do
             {
               //execute step, this increases timestep counter
@@ -120,7 +165,7 @@ namespace aspect
               //get value of time step counter
               fastscape_get_step_(&istep);
               //outputs new h values
-              fastscape_copy_h_(h.get());
+              //fastscape_copy_h_(h.get());
               //output vtk
               fastscape_vtk_(h.get(), &vexp);
 
@@ -139,13 +184,18 @@ namespace aspect
 
               std::cout<<"step: "<<istep<<" h range: "<<minnn<<"  "<<summ/array_size<<"  "<<maxxx<<std::endl;
 
+
+        	  std::cout<<istep<<std::endl;
+        	  istep += 1;
+
             }
-          while (istep<nstep);
+          while (istep<steps);
+          }*/
 
           //output timing
           fastscape_debug_();
 
-          //end FastScape run*/
+          //end FastScape run
           fastscape_destroy_();
         }
     }
@@ -159,13 +209,7 @@ namespace aspect
       {
         prm.enter_subsection ("Fastscape");
         {
-          prm.declare_entry("X grid dimension", "0",
-                            Patterns::Integer(),
-                            "Mesh resolution in x direction");
-          prm.declare_entry("Y grid dimension", "0",
-                            Patterns::Integer(),
-                            "Mesh resolution in y direction");
-          prm.declare_entry("Number of steps", "0",
+          prm.declare_entry("Number of steps", "5",
                             Patterns::Integer(),
 	                        "Number of steps per ASPECT timestep");
 		  prm.declare_entry("Maximum timestep", "10e3",
@@ -179,6 +223,10 @@ namespace aspect
           prm.declare_entry("Vertical exaggeration", "3",
                             Patterns::Double(),
                             "Vertical exaggeration for fastscape's VTK file.");
+          prm.declare_entry("Maximum aspect refinement", "1",
+                            Patterns::Integer(),
+                            "Refinement level expected at surface to determine"
+                            "proper nx and ny values");
 
           prm.enter_subsection ("Erosional parameters");
           {
@@ -233,13 +281,12 @@ namespace aspect
       {
         prm.enter_subsection("Fastscape");
         {
-          nx = prm.get_integer("X grid dimension");
-          ny = prm.get_integer("Y grid dimension");
           nstep = prm.get_integer("Number of steps");
           max_timestep = prm.get_double("Maximum timestep");
           bc = prm.get_integer("Boundary conditions");
           vexp = prm.get_double("Vertical exaggeration");
-          array_size = nx*ny;
+          nstep = prm.get_integer("Maximum aspect refinement");
+          refinement = prm.get_integer("Maximum aspect refinement");
 
           prm.enter_subsection("Erosional parameters");
           {

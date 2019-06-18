@@ -95,13 +95,12 @@ namespace aspect
         /**
          * A function object representing the mesh deformation.
          */
-        int nx;
-        int ny;
         int nstep;
         int bc;
         int array_size;
         double max_timestep;
         double vexp;
+        int refinement;
 
         double m;
         double n;
