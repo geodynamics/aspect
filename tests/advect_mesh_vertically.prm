@@ -89,13 +89,12 @@ subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, right, bottom
 end
 
-subsection Free surface
-  set Free surface boundary indicators = top
-end
-
-subsection Free surface
-  set Free surface stabilization theta = 0.5
-  set Surface velocity projection = vertical
+subsection Mesh deformation
+  set Mesh deformation boundary indicators = top: free surface
+  subsection Free surface
+    set Free surface stabilization theta = 0.5
+    set Surface velocity projection = vertical
+  end
 end
 
 subsection Compositional fields

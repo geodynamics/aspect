@@ -266,7 +266,7 @@ namespace aspect
   {
     ASPECT_REGISTER_POSTPROCESSOR(Topography,
                                   "topography",
-                                  "A postprocessor intended for use with a free surface.  After every step "
+                                  "A postprocessor intended for use with a deforming top surface.  After every step "
                                   "it loops over all the vertices on the top surface and determines the "
                                   "maximum and minimum topography relative to a reference datum (initial "
                                   "box height for a box geometry model or initial radius for a "

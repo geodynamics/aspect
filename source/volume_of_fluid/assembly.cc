@@ -20,7 +20,7 @@
 
 #include <aspect/simulator.h>
 #include <aspect/utilities.h>
-#include <aspect/free_surface.h>
+#include <aspect/mesh_deformation/free_surface.h>
 #include <aspect/volume_of_fluid/handler.h>
 #include <aspect/volume_of_fluid/utilities.h>
 #include <aspect/volume_of_fluid/assembly.h>

@@ -277,9 +277,9 @@ namespace aspect
     bool
     TwoMergedBoxes<dim>::point_is_in_domain(const Point<dim> &point) const
     {
-      AssertThrow(this->get_free_surface_boundary_indicators().size() != 0 &&
+      AssertThrow(!this->get_parameters().mesh_deformation_enabled == 0 ||
                   this->simulator_is_past_initialization() == false,
-                  ExcMessage("After displacement of the free surface, this function can no longer be used to determine whether a point lies in the domain or not."));
+                  ExcMessage("After displacement of the mesh, this function can no longer be used to determine whether a point lies in the domain or not."));
 
       AssertThrow(dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(&this->get_initial_topography_model()) != nullptr,
                   ExcMessage("After adding topography, this function can no longer be used to determine whether a point lies in the domain or not."));

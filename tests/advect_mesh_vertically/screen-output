@@ -2,7 +2,7 @@
 Number of active cells: 160 (on 3 levels)
 Number of degrees of freedom: 2,977 (1,394+189+697+697)
 
-Number of free surface degrees of freedom: 378
+Number of mesh deformation degrees of freedom: 378
 *** Timestep 0:  t=0 years
    Solving mesh velocity system... 0 iterations.
    Skipping temperature solve because RHS is zero.
@@ -13,7 +13,7 @@ Number of free surface degrees of freedom: 378
 Number of active cells: 94 (on 4 levels)
 Number of degrees of freedom: 1,962 (918+126+459+459)
 
-Number of free surface degrees of freedom: 252
+Number of mesh deformation degrees of freedom: 252
 *** Timestep 0:  t=0 years
    Solving mesh velocity system... 0 iterations.
    Skipping temperature solve because RHS is zero.
@@ -24,7 +24,7 @@ Number of free surface degrees of freedom: 252
 Number of active cells: 124 (on 5 levels)
 Number of degrees of freedom: 2,567 (1,202+163+601+601)
 
-Number of free surface degrees of freedom: 326
+Number of mesh deformation degrees of freedom: 326
 *** Timestep 0:  t=0 years
    Solving mesh velocity system... 0 iterations.
    Skipping temperature solve because RHS is zero.
@@ -95,7 +95,7 @@ Number of free surface degrees of freedom: 326
 Number of active cells: 178 (on 5 levels)
 Number of degrees of freedom: 3,723 (1,746+231+873+873)
 
-Number of free surface degrees of freedom: 462
+Number of mesh deformation degrees of freedom: 462
 *** Timestep 6:  t=2187.54 years
    Solving mesh velocity system... 1 iterations.
    Skipping temperature solve because RHS is zero.
@@ -154,7 +154,7 @@ Number of free surface degrees of freedom: 462
 Number of active cells: 220 (on 5 levels)
 Number of degrees of freedom: 4,420 (2,074+272+1,037+1,037)
 
-Number of free surface degrees of freedom: 544
+Number of mesh deformation degrees of freedom: 544
 *** Timestep 11:  t=4597.83 years
    Solving mesh velocity system... 1 iterations.
    Skipping temperature solve because RHS is zero.
@@ -213,7 +213,7 @@ Number of free surface degrees of freedom: 544
 Number of active cells: 250 (on 5 levels)
 Number of degrees of freedom: 4,871 (2,286+299+1,143+1,143)
 
-Number of free surface degrees of freedom: 598
+Number of mesh deformation degrees of freedom: 598
 *** Timestep 16:  t=7730.38 years
    Solving mesh velocity system... 1 iterations.
    Skipping temperature solve because RHS is zero.
@@ -273,7 +273,7 @@ Number of free surface degrees of freedom: 598
 Number of active cells: 256 (on 5 levels)
 Number of degrees of freedom: 4,973 (2,334+305+1,167+1,167)
 
-Number of free surface degrees of freedom: 610
+Number of mesh deformation degrees of freedom: 610
 Termination requested by criterion: end step
 
 

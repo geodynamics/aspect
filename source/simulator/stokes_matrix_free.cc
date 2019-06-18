@@ -836,7 +836,7 @@ namespace aspect
 
     // This requires: porting the additional stabilization terms and using a
     // different mapping in the MatrixFree operators:
-    Assert(!sim.parameters.free_surface_enabled, ExcNotImplemented());
+    Assert(!sim.parameters.mesh_deformation_enabled, ExcNotImplemented());
     // Sorry, not any time soon:
     Assert(!sim.parameters.include_melt_transport, ExcNotImplemented());
     // Not very difficult to do, but will require a different mass matrix

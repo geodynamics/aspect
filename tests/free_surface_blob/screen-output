@@ -2,7 +2,7 @@
 Number of active cells: 640 (on 4 levels)
 Number of degrees of freedom: 8,716 (5,346+697+2,673)
 
-Number of free surface degrees of freedom: 1394
+Number of mesh deformation degrees of freedom: 1394
 *** Timestep 0:  t=0 years
    Solving mesh velocity system... 0 iterations.
    Solving temperature system... 0 iterations.
@@ -12,7 +12,7 @@ Number of free surface degrees of freedom: 1394
 Number of active cells: 664 (on 5 levels)
 Number of degrees of freedom: 9,184 (5,634+733+2,817)
 
-Number of free surface degrees of freedom: 1466
+Number of mesh deformation degrees of freedom: 1466
 *** Timestep 0:  t=0 years
    Solving mesh velocity system... 0 iterations.
    Solving temperature system... 0 iterations.

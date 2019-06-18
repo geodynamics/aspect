@@ -66,8 +66,8 @@ subsection Boundary temperature model
   set Fixed temperature boundary indicators   = inner, outer
 end
 
-subsection Free surface
-  set Free surface boundary indicators = outer
+subsection Mesh deformation
+  set Mesh deformation boundary indicators = outer: free surface
 end
 
 subsection Boundary velocity model

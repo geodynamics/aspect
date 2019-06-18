@@ -263,7 +263,7 @@ namespace aspect
     AssertThrow(dynamic_cast<const MappingCartesian<dim> *>(&(this->get_mapping())),
                 ExcMessage("Volume of Fluid Interface Tracking currently requires Cartesian Mappings"));
 
-    AssertThrow(!this->get_parameters().free_surface_enabled,
+    AssertThrow(!this->get_parameters().mesh_deformation_enabled,
                 ExcMessage("Volume of Fluid Interface Tracking is currently incompatible with the Free Surface implementation."));
 
     AssertThrow(!this->get_parameters().include_melt_transport,

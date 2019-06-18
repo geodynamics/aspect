@@ -2049,7 +2049,6 @@ namespace aspect
     std::set<types::boundary_id> boundary_indicator_lists[6]
       = { boundary_velocity_manager.get_zero_boundary_velocity_indicators(),
           boundary_velocity_manager.get_tangential_boundary_velocity_indicators(),
-          parameters.free_surface_boundary_indicators,
           std::set<types::boundary_id>()   // to be prescribed velocity and traction boundary indicators
         };
 
@@ -2211,8 +2210,6 @@ namespace aspect
                      is_element( (*p).first.second, boundary_indicator_lists[0] ) == false && // zero velocity
                      is_element( (*p).first.first, boundary_indicator_lists[1] ) == false && // tangential velocity
                      is_element( (*p).first.second, boundary_indicator_lists[1] ) == false && // tangential velocity
-                     is_element( (*p).first.first, boundary_indicator_lists[2] ) == false && // free surface
-                     is_element( (*p).first.second, boundary_indicator_lists[2] ) == false && // free surface
                      is_element( (*p).first.first, boundary_indicator_lists[3] ) == false && // prescribed traction or velocity
                      is_element( (*p).first.second, boundary_indicator_lists[3] ) == false,  // prescribed traction or velocity
                      ExcMessage("Periodic boundaries must not have boundary conditions set."));
