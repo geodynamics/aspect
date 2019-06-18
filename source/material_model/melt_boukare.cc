@@ -877,6 +877,16 @@ namespace aspect
                              "computed. If the model does not use operator splitting, this parameter is not used. "
                              "Units: yr or s, depending on the ``Use years "
                              "in output instead of seconds'' parameter.");
+          prm.declare_entry ("Fe mantle melting temperature", "3424.5",
+                             Patterns::Double(),
+                             "The melting temperature of one of the components in the melting "
+                             "model, the Fe mantle endmember."
+                             "Units: K.");
+          prm.declare_entry ("Mg mantle melting temperature", "4821.2",
+                             Patterns::Double(),
+                             "The melting temperature of one of the components in the melting "
+                             "model, the Mg mantle endmember."
+                             "Units: K.");
           prm.declare_entry ("Reference temperature", "298.15",
                              Patterns::Double(),
                              "Reference temperature used to compute the material properties"
@@ -998,6 +1008,8 @@ namespace aspect
           alpha_phi                         = prm.get_double ("Exponential melt weakening factor");
           include_melting_and_freezing      = prm.get_bool ("Include melting and freezing");
           melting_time_scale                = prm.get_double ("Melting time scale for operator splitting");
+          Fe_mantle_melting_temperature     = prm.get_double ("Fe mantle melting temperature");
+          Mg_mantle_melting_temperature     = prm.get_double ("Mg mantle melting temperature");
 
           reference_temperature             = prm.get_double ("Reference temperature");
           reference_pressure                = prm.get_double ("Reference pressure");

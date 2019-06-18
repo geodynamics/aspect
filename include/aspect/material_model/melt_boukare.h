@@ -296,8 +296,8 @@ namespace aspect
 
         const double melting_reference_pressure = 120.e9;       // Pa
 
-        const double Fe_mantle_melting_temperature = 3424.5;    // Kelvin at the reference pressure - reference melting temperature for Fe mantle endmember
-        const double Mg_mantle_melting_temperature = 4821.2;    // Kelvin at reference pressure - reference melting temperature for Mg mantle endmember
+        double Fe_mantle_melting_temperature = 3424.5;          // Kelvin at the reference pressure - reference melting temperature for Fe mantle endmember
+        double Mg_mantle_melting_temperature = 4821.2;          // Kelvin at reference pressure - reference melting temperature for Mg mantle endmember
 
         const double Fe_mantle_melting_entropy = 33.77;         // molar entropy change of melting in J/mol K
         const double Mg_mantle_melting_entropy = 34.33;         // molar entropy change of melting in J/mol K
