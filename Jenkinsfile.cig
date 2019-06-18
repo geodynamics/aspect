@@ -2,8 +2,8 @@
 
 pipeline {
   agent {
-    docker {
-      image 'tjhei/dealii:v9.0.1-full-v9.0.1-r5-gcc5'
+    dockerfile {
+      dir 'contrib/ci'
     }
   }
 
@@ -105,6 +105,12 @@ pipeline {
         cd build-gcc-fast
         ninja
         '''
+      }
+    }
+
+    stage('Build Documentation') {
+      steps {
+        sh 'cd doc && make manual.pdf'
       }
     }
 
