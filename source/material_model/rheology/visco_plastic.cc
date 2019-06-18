@@ -506,6 +506,20 @@ namespace aspect
               composition_mask.set(i,false);
           }
 
+        // Mask fields that track the age and deposition depth of deposited sediments.
+#ifdef ASPECT_WITH_FASTSCAPE
+        if (this->introspection().compositional_name_exists("sediment_age"))
+          {
+            const unsigned int sedi_age_position_tmp = this->introspection().compositional_index_for_name("sediment_age");
+            composition_mask.set(sedi_age_position_tmp,false);
+          }
+        if (this->introspection().compositional_name_exists("deposition_depth"))
+          {
+            const unsigned int depo_depth_position_tmp = this->introspection().compositional_index_for_name("deposition_depth");
+            composition_mask.set(depo_depth_position_tmp,false);
+          }
+#endif
+
         return composition_mask;
       }
 
