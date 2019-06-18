@@ -296,7 +296,7 @@ namespace aspect
 
         const double melting_reference_pressure = 120.e9;       // Pa
 
-        const double Fe_mantle_melting_temperature = 3470.0;    // Kelvin at the reference pressure - reference melting temperature for Fe mantle endmember
+        const double Fe_mantle_melting_temperature = 3424.5;    // Kelvin at the reference pressure - reference melting temperature for Fe mantle endmember
         const double Mg_mantle_melting_temperature = 4821.2;    // Kelvin at reference pressure - reference melting temperature for Mg mantle endmember
 
         const double Fe_mantle_melting_entropy = 33.77;         // molar entropy change of melting in J/mol K
@@ -305,8 +305,8 @@ namespace aspect
         const double Fe_mantle_melting_volume = 1.51e-07;       // molar volume change of melting of solid Fe mantle endmember in m3/mol
         const double Mg_mantle_melting_volume = 9.29e-08;       // molar volume change of melting volume of solid Mg mantle endmember in m3/mol
 
-        const double Fe_number_of_moles = 0.56;                 // number of moles of atoms mixing on pseudosite in mantle lattice (empirical model fitting the full boukare model)
-        const double Mg_number_of_moles = 0.52;
+        const double Fe_number_of_moles = 0.48;                 // number of moles of atoms mixing on pseudosite in mantle lattice (empirical model fitting the full boukare model)
+        const double Mg_number_of_moles = 0.62;
     };
 
   }

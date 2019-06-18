@@ -704,7 +704,7 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
      Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09884/0.09884/0.09884 // 0.000999/0.000999/0.000999 // 0.001006/0.001006/0.001006
+     Compositions min/max/mass: 0.099/0.099/0.099 // 0.0009985/0.0009985/0.0009985 // 0.001004/0.001004/0.001004
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00053
 
 *** Timestep 54:  t=5.4 years
@@ -717,7 +717,7 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
      Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09883/0.09883/0.09883 // 0.0009981/0.0009981/0.0009981 // 0.001012/0.001012/0.001012
+     Compositions min/max/mass: 0.09906/0.09906/0.09906 // 0.0009972/0.0009972/0.0009972 // 0.00101/0.00101/0.00101
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00054
 
 *** Timestep 55:  t=5.5 years
@@ -729,8 +729,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09883/0.09883/0.09883 // 0.000997/0.000997/0.000997 // 0.001017/0.001017/0.001017
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09909/0.09909/0.09909 // 0.0009959/0.0009959/0.0009959 // 0.001016/0.001016/0.001016
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00055
 
 *** Timestep 56:  t=5.6 years
@@ -742,8 +742,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09883/0.09883/0.09883 // 0.000996/0.000996/0.000996 // 0.001023/0.001023/0.001023
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09911/0.09911/0.09911 // 0.0009946/0.0009946/0.0009946 // 0.001022/0.001022/0.001022
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00056
 
 *** Timestep 57:  t=5.7 years
@@ -755,8 +755,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.000995/0.000995/0.000995 // 0.001028/0.001028/0.001028
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09912/0.09912/0.09912 // 0.0009933/0.0009933/0.0009933 // 0.001028/0.001028/0.001028
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00057
 
 *** Timestep 58:  t=5.8 years
@@ -768,8 +768,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.000994/0.000994/0.000994 // 0.001033/0.001033/0.001033
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09913/0.09913/0.09913 // 0.0009921/0.0009921/0.0009921 // 0.001035/0.001035/0.001035
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00058
 
 *** Timestep 59:  t=5.9 years
@@ -781,8 +781,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.000993/0.000993/0.000993 // 0.001039/0.001039/0.001039
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09914/0.09914/0.09914 // 0.0009908/0.0009908/0.0009908 // 0.001041/0.001041/0.001041
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00059
 
 *** Timestep 60:  t=6 years
@@ -794,8 +794,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.000992/0.000992/0.000992 // 0.001044/0.001044/0.001044
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09914/0.09914/0.09914 // 0.0009896/0.0009896/0.0009896 // 0.001047/0.001047/0.001047
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00060
 
 *** Timestep 61:  t=6.1 years
@@ -807,8 +807,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.000991/0.000991/0.000991 // 0.00105/0.00105/0.00105
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09914/0.09914/0.09914 // 0.0009884/0.0009884/0.0009884 // 0.001054/0.001054/0.001054
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00061
 
 *** Timestep 62:  t=6.2 years
@@ -820,8 +820,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.00099/0.00099/0.00099 // 0.001055/0.001055/0.001055
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09914/0.09914/0.09914 // 0.0009871/0.0009871/0.0009871 // 0.00106/0.00106/0.00106
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00062
 
 *** Timestep 63:  t=6.3 years
@@ -833,8 +833,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.000989/0.000989/0.000989 // 0.00106/0.00106/0.00106
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09914/0.09914/0.09914 // 0.0009859/0.0009859/0.0009859 // 0.001067/0.001067/0.001067
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00063
 
 *** Timestep 64:  t=6.4 years
@@ -846,8 +846,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.000988/0.000988/0.000988 // 0.001066/0.001066/0.001066
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09914/0.09914/0.09914 // 0.0009847/0.0009847/0.0009847 // 0.001073/0.001073/0.001073
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00064
 
 *** Timestep 65:  t=6.5 years
@@ -859,8 +859,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.000987/0.000987/0.000987 // 0.001071/0.001071/0.001071
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09914/0.09914/0.09914 // 0.0009834/0.0009834/0.0009834 // 0.00108/0.00108/0.00108
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00065
 
 *** Timestep 66:  t=6.6 years
@@ -872,8 +872,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.000986/0.000986/0.000986 // 0.001076/0.001076/0.001076
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09914/0.09914/0.09914 // 0.0009822/0.0009822/0.0009822 // 0.001086/0.001086/0.001086
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00066
 
 *** Timestep 67:  t=6.7 years
@@ -885,8 +885,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.000985/0.000985/0.000985 // 0.001082/0.001082/0.001082
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09914/0.09914/0.09914 // 0.000981/0.000981/0.000981 // 0.001093/0.001093/0.001093
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00067
 
 *** Timestep 68:  t=6.8 years
@@ -898,8 +898,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.000984/0.000984/0.000984 // 0.001087/0.001087/0.001087
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0009798/0.0009798/0.0009798 // 0.001099/0.001099/0.001099
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00068
 
 *** Timestep 69:  t=6.9 years
@@ -911,8 +911,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.000983/0.000983/0.000983 // 0.001092/0.001092/0.001092
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0009786/0.0009786/0.0009786 // 0.001106/0.001106/0.001106
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00069
 
 *** Timestep 70:  t=7 years
@@ -924,8 +924,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.000982/0.000982/0.000982 // 0.001097/0.001097/0.001097
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0009774/0.0009774/0.0009774 // 0.001112/0.001112/0.001112
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00070
 
 *** Timestep 71:  t=7.1 years
@@ -937,8 +937,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009811/0.0009811/0.0009811 // 0.001103/0.001103/0.001103
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0009762/0.0009762/0.0009762 // 0.001119/0.001119/0.001119
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00071
 
 *** Timestep 72:  t=7.2 years
@@ -950,8 +950,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009801/0.0009801/0.0009801 // 0.001108/0.001108/0.001108
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.000975/0.000975/0.000975 // 0.001125/0.001125/0.001125
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00072
 
 *** Timestep 73:  t=7.3 years
@@ -963,8 +963,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009791/0.0009791/0.0009791 // 0.001113/0.001113/0.001113
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0009738/0.0009738/0.0009738 // 0.001132/0.001132/0.001132
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00073
 
 *** Timestep 74:  t=7.4 years
@@ -976,8 +976,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009781/0.0009781/0.0009781 // 0.001118/0.001118/0.001118
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0009726/0.0009726/0.0009726 // 0.001138/0.001138/0.001138
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00074
 
 *** Timestep 75:  t=7.5 years
@@ -989,8 +989,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009771/0.0009771/0.0009771 // 0.001124/0.001124/0.001124
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0009714/0.0009714/0.0009714 // 0.001144/0.001144/0.001144
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00075
 
 *** Timestep 76:  t=7.6 years
@@ -1002,8 +1002,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009762/0.0009762/0.0009762 // 0.001129/0.001129/0.001129
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0009702/0.0009702/0.0009702 // 0.001151/0.001151/0.001151
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00076
 
 *** Timestep 77:  t=7.7 years
@@ -1015,8 +1015,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009752/0.0009752/0.0009752 // 0.001134/0.001134/0.001134
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.000969/0.000969/0.000969 // 0.001157/0.001157/0.001157
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00077
 
 *** Timestep 78:  t=7.8 years
@@ -1028,8 +1028,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009742/0.0009742/0.0009742 // 0.001139/0.001139/0.001139
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0009678/0.0009678/0.0009678 // 0.001163/0.001163/0.001163
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00078
 
 *** Timestep 79:  t=7.9 years
@@ -1041,8 +1041,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009733/0.0009733/0.0009733 // 0.001145/0.001145/0.001145
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0009666/0.0009666/0.0009666 // 0.00117/0.00117/0.00117
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00079
 
 *** Timestep 80:  t=8 years
@@ -1054,8 +1054,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009723/0.0009723/0.0009723 // 0.00115/0.00115/0.00115
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0009654/0.0009654/0.0009654 // 0.001176/0.001176/0.001176
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00080
 
 *** Timestep 81:  t=8.1 years
@@ -1067,8 +1067,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009713/0.0009713/0.0009713 // 0.001155/0.001155/0.001155
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0009642/0.0009642/0.0009642 // 0.001182/0.001182/0.001182
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00081
 
 *** Timestep 82:  t=8.2 years
@@ -1080,8 +1080,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009704/0.0009704/0.0009704 // 0.00116/0.00116/0.00116
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0009631/0.0009631/0.0009631 // 0.001189/0.001189/0.001189
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00082
 
 *** Timestep 83:  t=8.3 years
@@ -1093,8 +1093,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009694/0.0009694/0.0009694 // 0.001165/0.001165/0.001165
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0009619/0.0009619/0.0009619 // 0.001195/0.001195/0.001195
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00083
 
 *** Timestep 84:  t=8.4 years
@@ -1106,8 +1106,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009684/0.0009684/0.0009684 // 0.00117/0.00117/0.00117
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0009607/0.0009607/0.0009607 // 0.001201/0.001201/0.001201
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00084
 
 *** Timestep 85:  t=8.5 years
@@ -1119,8 +1119,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009675/0.0009675/0.0009675 // 0.001175/0.001175/0.001175
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0009595/0.0009595/0.0009595 // 0.001207/0.001207/0.001207
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00085
 
 *** Timestep 86:  t=8.6 years
@@ -1132,8 +1132,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009665/0.0009665/0.0009665 // 0.001181/0.001181/0.001181
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0009584/0.0009584/0.0009584 // 0.001214/0.001214/0.001214
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00086
 
 *** Timestep 87:  t=8.7 years
@@ -1145,8 +1145,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009656/0.0009656/0.0009656 // 0.001186/0.001186/0.001186
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0009572/0.0009572/0.0009572 // 0.00122/0.00122/0.00122
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00087
 
 *** Timestep 88:  t=8.8 years
@@ -1158,8 +1158,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009646/0.0009646/0.0009646 // 0.001191/0.001191/0.001191
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.000956/0.000956/0.000956 // 0.001226/0.001226/0.001226
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00088
 
 *** Timestep 89:  t=8.9 years
@@ -1171,8 +1171,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009637/0.0009637/0.0009637 // 0.001196/0.001196/0.001196
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0009549/0.0009549/0.0009549 // 0.001232/0.001232/0.001232
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00089
 
 *** Timestep 90:  t=9 years
@@ -1184,8 +1184,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009627/0.0009627/0.0009627 // 0.001201/0.001201/0.001201
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0009537/0.0009537/0.0009537 // 0.001239/0.001239/0.001239
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00090
 
 *** Timestep 91:  t=9.1 years
@@ -1197,8 +1197,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009618/0.0009618/0.0009618 // 0.001206/0.001206/0.001206
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0009525/0.0009525/0.0009525 // 0.001245/0.001245/0.001245
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00091
 
 *** Timestep 92:  t=9.2 years
@@ -1210,8 +1210,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009608/0.0009608/0.0009608 // 0.001211/0.001211/0.001211
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0009514/0.0009514/0.0009514 // 0.001251/0.001251/0.001251
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00092
 
 *** Timestep 93:  t=9.3 years
@@ -1223,8 +1223,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009599/0.0009599/0.0009599 // 0.001216/0.001216/0.001216
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0009502/0.0009502/0.0009502 // 0.001257/0.001257/0.001257
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00093
 
 *** Timestep 94:  t=9.4 years
@@ -1236,8 +1236,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.000959/0.000959/0.000959 // 0.001221/0.001221/0.001221
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0009491/0.0009491/0.0009491 // 0.001263/0.001263/0.001263
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00094
 
 *** Timestep 95:  t=9.5 years
@@ -1249,8 +1249,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.000958/0.000958/0.000958 // 0.001226/0.001226/0.001226
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0009479/0.0009479/0.0009479 // 0.001269/0.001269/0.001269
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00095
 
 *** Timestep 96:  t=9.6 years
@@ -1262,8 +1262,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009571/0.0009571/0.0009571 // 0.001231/0.001231/0.001231
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0009468/0.0009468/0.0009468 // 0.001275/0.001275/0.001275
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00096
 
 *** Timestep 97:  t=9.7 years
@@ -1275,8 +1275,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009561/0.0009561/0.0009561 // 0.001236/0.001236/0.001236
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0009456/0.0009456/0.0009456 // 0.001282/0.001282/0.001282
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00097
 
 *** Timestep 98:  t=9.8 years
@@ -1288,8 +1288,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009552/0.0009552/0.0009552 // 0.001241/0.001241/0.001241
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0009445/0.0009445/0.0009445 // 0.001288/0.001288/0.001288
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00098
 
 *** Timestep 99:  t=9.9 years
@@ -1301,8 +1301,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009543/0.0009543/0.0009543 // 0.001246/0.001246/0.001246
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0009434/0.0009434/0.0009434 // 0.001294/0.001294/0.001294
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00099
 
 *** Timestep 100:  t=10 years
@@ -1314,8 +1314,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009534/0.0009534/0.0009534 // 0.001251/0.001251/0.001251
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0009422/0.0009422/0.0009422 // 0.0013/0.0013/0.0013
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00100
 
 
@@ -1333,8 +1333,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009524/0.0009524/0.0009524 // 0.001256/0.001256/0.001256
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0009411/0.0009411/0.0009411 // 0.001306/0.001306/0.001306
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00101
 
 *** Timestep 102:  t=10.2 years
@@ -1346,8 +1346,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009515/0.0009515/0.0009515 // 0.001261/0.001261/0.001261
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.00094/0.00094/0.00094 // 0.001312/0.001312/0.001312
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00102
 
 *** Timestep 103:  t=10.3 years
@@ -1359,8 +1359,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009506/0.0009506/0.0009506 // 0.001266/0.001266/0.001266
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0009388/0.0009388/0.0009388 // 0.001318/0.001318/0.001318
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00103
 
 *** Timestep 104:  t=10.4 years
@@ -1372,8 +1372,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009497/0.0009497/0.0009497 // 0.001271/0.001271/0.001271
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0009377/0.0009377/0.0009377 // 0.001324/0.001324/0.001324
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00104
 
 *** Timestep 105:  t=10.5 years
@@ -1385,8 +1385,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009487/0.0009487/0.0009487 // 0.001276/0.001276/0.001276
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0009366/0.0009366/0.0009366 // 0.00133/0.00133/0.00133
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00105
 
 *** Timestep 106:  t=10.6 years
@@ -1398,8 +1398,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009478/0.0009478/0.0009478 // 0.001281/0.001281/0.001281
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0009354/0.0009354/0.0009354 // 0.001336/0.001336/0.001336
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00106
 
 *** Timestep 107:  t=10.7 years
@@ -1411,8 +1411,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009469/0.0009469/0.0009469 // 0.001286/0.001286/0.001286
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0009343/0.0009343/0.0009343 // 0.001342/0.001342/0.001342
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00107
 
 *** Timestep 108:  t=10.8 years
@@ -1424,8 +1424,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.000946/0.000946/0.000946 // 0.00129/0.00129/0.00129
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0009332/0.0009332/0.0009332 // 0.001348/0.001348/0.001348
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00108
 
 *** Timestep 109:  t=10.9 years
@@ -1437,8 +1437,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009451/0.0009451/0.0009451 // 0.001295/0.001295/0.001295
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0009321/0.0009321/0.0009321 // 0.001354/0.001354/0.001354
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00109
 
 *** Timestep 110:  t=11 years
@@ -1450,8 +1450,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009442/0.0009442/0.0009442 // 0.0013/0.0013/0.0013
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.000931/0.000931/0.000931 // 0.00136/0.00136/0.00136
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00110
 
 *** Timestep 111:  t=11.1 years
@@ -1463,8 +1463,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009433/0.0009433/0.0009433 // 0.001305/0.001305/0.001305
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0009299/0.0009299/0.0009299 // 0.001366/0.001366/0.001366
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00111
 
 *** Timestep 112:  t=11.2 years
@@ -1476,8 +1476,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009424/0.0009424/0.0009424 // 0.00131/0.00131/0.00131
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0009287/0.0009287/0.0009287 // 0.001372/0.001372/0.001372
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00112
 
 *** Timestep 113:  t=11.3 years
@@ -1489,8 +1489,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009414/0.0009414/0.0009414 // 0.001315/0.001315/0.001315
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0009276/0.0009276/0.0009276 // 0.001378/0.001378/0.001378
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00113
 
 *** Timestep 114:  t=11.4 years
@@ -1502,8 +1502,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009405/0.0009405/0.0009405 // 0.00132/0.00132/0.00132
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0009265/0.0009265/0.0009265 // 0.001383/0.001383/0.001383
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00114
 
 *** Timestep 115:  t=11.5 years
@@ -1515,8 +1515,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009396/0.0009396/0.0009396 // 0.001324/0.001324/0.001324
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0009254/0.0009254/0.0009254 // 0.001389/0.001389/0.001389
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00115
 
 *** Timestep 116:  t=11.6 years
@@ -1528,8 +1528,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009387/0.0009387/0.0009387 // 0.001329/0.001329/0.001329
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0009243/0.0009243/0.0009243 // 0.001395/0.001395/0.001395
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00116
 
 *** Timestep 117:  t=11.7 years
@@ -1541,8 +1541,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009378/0.0009378/0.0009378 // 0.001334/0.001334/0.001334
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0009232/0.0009232/0.0009232 // 0.001401/0.001401/0.001401
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00117
 
 *** Timestep 118:  t=11.8 years
@@ -1554,8 +1554,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009369/0.0009369/0.0009369 // 0.001339/0.001339/0.001339
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0009221/0.0009221/0.0009221 // 0.001407/0.001407/0.001407
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00118
 
 *** Timestep 119:  t=11.9 years
@@ -1567,8 +1567,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009361/0.0009361/0.0009361 // 0.001344/0.001344/0.001344
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.000921/0.000921/0.000921 // 0.001413/0.001413/0.001413
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00119
 
 *** Timestep 120:  t=12 years
@@ -1580,8 +1580,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009352/0.0009352/0.0009352 // 0.001348/0.001348/0.001348
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0009199/0.0009199/0.0009199 // 0.001419/0.001419/0.001419
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00120
 
 *** Timestep 121:  t=12.1 years
@@ -1593,8 +1593,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009343/0.0009343/0.0009343 // 0.001353/0.001353/0.001353
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0009188/0.0009188/0.0009188 // 0.001424/0.001424/0.001424
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00121
 
 *** Timestep 122:  t=12.2 years
@@ -1606,8 +1606,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009334/0.0009334/0.0009334 // 0.001358/0.001358/0.001358
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0009178/0.0009178/0.0009178 // 0.00143/0.00143/0.00143
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00122
 
 *** Timestep 123:  t=12.3 years
@@ -1619,8 +1619,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009325/0.0009325/0.0009325 // 0.001363/0.001363/0.001363
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0009167/0.0009167/0.0009167 // 0.001436/0.001436/0.001436
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00123
 
 *** Timestep 124:  t=12.4 years
@@ -1632,8 +1632,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009316/0.0009316/0.0009316 // 0.001367/0.001367/0.001367
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0009156/0.0009156/0.0009156 // 0.001442/0.001442/0.001442
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00124
 
 *** Timestep 125:  t=12.5 years
@@ -1645,8 +1645,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009307/0.0009307/0.0009307 // 0.001372/0.001372/0.001372
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0009145/0.0009145/0.0009145 // 0.001448/0.001448/0.001448
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00125
 
 *** Timestep 126:  t=12.6 years
@@ -1658,8 +1658,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009298/0.0009298/0.0009298 // 0.001377/0.001377/0.001377
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0009134/0.0009134/0.0009134 // 0.001453/0.001453/0.001453
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00126
 
 *** Timestep 127:  t=12.7 years
@@ -1671,8 +1671,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.000929/0.000929/0.000929 // 0.001382/0.001382/0.001382
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0009123/0.0009123/0.0009123 // 0.001459/0.001459/0.001459
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00127
 
 *** Timestep 128:  t=12.8 years
@@ -1684,8 +1684,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009281/0.0009281/0.0009281 // 0.001386/0.001386/0.001386
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0009113/0.0009113/0.0009113 // 0.001465/0.001465/0.001465
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00128
 
 *** Timestep 129:  t=12.9 years
@@ -1697,8 +1697,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009272/0.0009272/0.0009272 // 0.001391/0.001391/0.001391
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0009102/0.0009102/0.0009102 // 0.001471/0.001471/0.001471
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00129
 
 *** Timestep 130:  t=13 years
@@ -1710,8 +1710,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009263/0.0009263/0.0009263 // 0.001396/0.001396/0.001396
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0009091/0.0009091/0.0009091 // 0.001476/0.001476/0.001476
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00130
 
 *** Timestep 131:  t=13.1 years
@@ -1723,8 +1723,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009255/0.0009255/0.0009255 // 0.0014/0.0014/0.0014
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.000908/0.000908/0.000908 // 0.001482/0.001482/0.001482
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00131
 
 *** Timestep 132:  t=13.2 years
@@ -1736,8 +1736,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009246/0.0009246/0.0009246 // 0.001405/0.001405/0.001405
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.000907/0.000907/0.000907 // 0.001488/0.001488/0.001488
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00132
 
 *** Timestep 133:  t=13.3 years
@@ -1749,8 +1749,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009237/0.0009237/0.0009237 // 0.00141/0.00141/0.00141
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0009059/0.0009059/0.0009059 // 0.001493/0.001493/0.001493
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00133
 
 *** Timestep 134:  t=13.4 years
@@ -1762,8 +1762,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009229/0.0009229/0.0009229 // 0.001414/0.001414/0.001414
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0009049/0.0009049/0.0009049 // 0.001499/0.001499/0.001499
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00134
 
 *** Timestep 135:  t=13.5 years
@@ -1775,8 +1775,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.000922/0.000922/0.000922 // 0.001419/0.001419/0.001419
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0009038/0.0009038/0.0009038 // 0.001505/0.001505/0.001505
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00135
 
 *** Timestep 136:  t=13.6 years
@@ -1788,8 +1788,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009211/0.0009211/0.0009211 // 0.001424/0.001424/0.001424
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0009027/0.0009027/0.0009027 // 0.00151/0.00151/0.00151
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00136
 
 *** Timestep 137:  t=13.7 years
@@ -1801,8 +1801,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009203/0.0009203/0.0009203 // 0.001428/0.001428/0.001428
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0009017/0.0009017/0.0009017 // 0.001516/0.001516/0.001516
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00137
 
 *** Timestep 138:  t=13.8 years
@@ -1814,8 +1814,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009194/0.0009194/0.0009194 // 0.001433/0.001433/0.001433
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0009006/0.0009006/0.0009006 // 0.001522/0.001522/0.001522
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00138
 
 *** Timestep 139:  t=13.9 years
@@ -1827,8 +1827,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009185/0.0009185/0.0009185 // 0.001437/0.001437/0.001437
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0008996/0.0008996/0.0008996 // 0.001527/0.001527/0.001527
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00139
 
 *** Timestep 140:  t=14 years
@@ -1840,8 +1840,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009177/0.0009177/0.0009177 // 0.001442/0.001442/0.001442
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0008985/0.0008985/0.0008985 // 0.001533/0.001533/0.001533
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00140
 
 *** Timestep 141:  t=14.1 years
@@ -1853,8 +1853,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009168/0.0009168/0.0009168 // 0.001446/0.001446/0.001446
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0008975/0.0008975/0.0008975 // 0.001538/0.001538/0.001538
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00141
 
 *** Timestep 142:  t=14.2 years
@@ -1866,8 +1866,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.000916/0.000916/0.000916 // 0.001451/0.001451/0.001451
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0008964/0.0008964/0.0008964 // 0.001544/0.001544/0.001544
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00142
 
 *** Timestep 143:  t=14.3 years
@@ -1879,8 +1879,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009151/0.0009151/0.0009151 // 0.001456/0.001456/0.001456
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0008954/0.0008954/0.0008954 // 0.001549/0.001549/0.001549
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00143
 
 *** Timestep 144:  t=14.4 years
@@ -1892,8 +1892,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009143/0.0009143/0.0009143 // 0.00146/0.00146/0.00146
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0008943/0.0008943/0.0008943 // 0.001555/0.001555/0.001555
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00144
 
 *** Timestep 145:  t=14.5 years
@@ -1905,8 +1905,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009134/0.0009134/0.0009134 // 0.001465/0.001465/0.001465
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0008933/0.0008933/0.0008933 // 0.001561/0.001561/0.001561
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00145
 
 *** Timestep 146:  t=14.6 years
@@ -1918,8 +1918,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009126/0.0009126/0.0009126 // 0.001469/0.001469/0.001469
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0008923/0.0008923/0.0008923 // 0.001566/0.001566/0.001566
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00146
 
 *** Timestep 147:  t=14.7 years
@@ -1931,8 +1931,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009117/0.0009117/0.0009117 // 0.001474/0.001474/0.001474
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0008912/0.0008912/0.0008912 // 0.001572/0.001572/0.001572
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00147
 
 *** Timestep 148:  t=14.8 years
@@ -1944,8 +1944,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009109/0.0009109/0.0009109 // 0.001478/0.001478/0.001478
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0008902/0.0008902/0.0008902 // 0.001577/0.001577/0.001577
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00148
 
 *** Timestep 149:  t=14.9 years
@@ -1957,8 +1957,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.00091/0.00091/0.00091 // 0.001483/0.001483/0.001483
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0008892/0.0008892/0.0008892 // 0.001583/0.001583/0.001583
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00149
 
 *** Timestep 150:  t=15 years
@@ -1970,8 +1970,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009092/0.0009092/0.0009092 // 0.001487/0.001487/0.001487
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0008881/0.0008881/0.0008881 // 0.001588/0.001588/0.001588
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00150
 
 *** Timestep 151:  t=15 years
@@ -1983,8 +1983,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
    Postprocessing:
      RMS, max velocity:         0 m/year, 0 m/year
-     Temperature min/avg/max:   4819 K, 4819 K, 4819 K
-     Compositions min/max/mass: 0.09882/0.09882/0.09882 // 0.0009092/0.0009092/0.0009092 // 0.001487/0.001487/0.001487
+     Temperature min/avg/max:   4818 K, 4818 K, 4818 K
+     Compositions min/max/mass: 0.09915/0.09915/0.09915 // 0.0008881/0.0008881/0.0008881 // 0.001588/0.001588/0.001588
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00151
 
 Termination requested by criterion: end time
