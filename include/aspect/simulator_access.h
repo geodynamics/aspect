@@ -143,6 +143,11 @@ namespace aspect
     template <int dim> class World;
   }
 
+  namespace TimeStepping
+  {
+    template <int dim> class Manager;
+  }
+
   /**
    * SimulatorAccess is a base class for different plugins like postprocessors.
    * It provides access to the various variables of the main class that
@@ -282,6 +287,14 @@ namespace aspect
       get_timestep_number () const;
 
       /**
+       * Return a reference to the manager of the time stepping strategies.
+       * This can then be used, for example, to check whether a checkpoint needs to
+       * be made upon termination.
+       */
+      const TimeStepping::Manager<dim> &
+      get_timestepping_manager() const;
+
+      /**
        * Return the current nonlinear iteration number of a time step.
        */
       unsigned int
@@ -377,6 +390,12 @@ namespace aspect
        */
       unsigned int
       n_compositional_fields () const;
+
+      /**
+       * Return the simulation end time in seconds.
+       */
+      double
+      get_end_time () const;
 
       /**
        * Compute the error indicators in the same way they are normally used

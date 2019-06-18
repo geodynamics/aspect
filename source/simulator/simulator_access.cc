@@ -148,6 +148,15 @@ namespace aspect
 
 
   template <int dim>
+  const TimeStepping::Manager<dim> &
+  SimulatorAccess<dim>::get_timestepping_manager() const
+  {
+    return simulator->time_stepping_manager;
+  }
+
+
+
+  template <int dim>
   unsigned int SimulatorAccess<dim>::get_nonlinear_iteration () const
   {
     return simulator->nonlinear_iteration;
@@ -198,6 +207,14 @@ namespace aspect
     return simulator->parameters.convert_to_years;
   }
 
+
+
+  template <int dim>
+  double
+  SimulatorAccess<dim>::get_end_time () const
+  {
+    return simulator->parameters.end_time;
+  }
 
 
   template <int dim>

@@ -1470,6 +1470,10 @@ namespace aspect
     if (convert_to_years == true)
       start_time *= year_in_seconds;
 
+    end_time = prm.get_double ("End time");
+    if (convert_to_years == true)
+      end_time *= year_in_seconds;
+
     output_directory        = prm.get ("Output directory");
     if (output_directory.size() == 0)
       output_directory = "./";

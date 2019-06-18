@@ -597,6 +597,47 @@ IF(ASPECT_WITH_LIBDAP)
   ENDIF()
 ENDIF()
 
+
+# Check for FastScape library and link it to ASPECT if requested
+SET(ASPECT_WITH_FASTSCAPE OFF CACHE BOOL "Whether the user wants to compile ASPECT with the landscape evolution code FastScape, or not.")
+MESSAGE(STATUS "Using ASPECT_WITH_FASTSCAPE = '${ASPECT_WITH_FASTSCAPE}'")
+IF(ASPECT_WITH_FASTSCAPE)
+  FIND_LIBRARY(FASTSCAPE NAMES fastscapelib_fortran PATHS $ENV{FASTSCAPE_DIR} ${FASTSCAPE_DIR} PATH_SUFFIXES lib NO_DEFAULT_PATH)
+  IF (FASTSCAPE)
+     MESSAGE(STATUS "FastScape library found at ${FASTSCAPE_DIR}")
+
+    # Get the fastscape source path so we can check the version.
+    FILE (STRINGS "${FASTSCAPE_DIR}/Makefile" _fastscape_makefile)
+    foreach(_line ${_fastscape_makefile})
+        if("${_line}" MATCHES "^CMAKE_SOURCE_DIR")
+          string(REPLACE "CMAKE_SOURCE_DIR = " "" FASTSCAPE_SOURCE_DIR ${_line})
+        endif()
+    endforeach()
+
+    # Now get the version from setup.py
+    MESSAGE(STATUS "Parsing '${FASTSCAPE_SOURCE_DIR}/setup.py' for version information")
+    FILE (STRINGS "${FASTSCAPE_SOURCE_DIR}/setup.py" _fastscape_info)
+    foreach(_line ${_fastscape_info})
+        string(STRIP ${_line} _line)
+        if("${_line}" MATCHES "^version")
+          string(REGEX REPLACE "[^0-9.]" "" FASTSCAPE_VERSION ${_line})
+        endif()
+    endforeach()
+
+    # Throw an error if the version is too old.
+    IF(${FASTSCAPE_VERSION} VERSION_LESS 2.8)
+      MESSAGE(FATAL_ERROR "The linked FastScape version is ${FASTSCAPE_VERSION}, however at least 2.8.0 is required.")
+    ENDIF()
+
+    FOREACH(_T ${TARGETS})
+      TARGET_LINK_LIBRARIES(${_T} ${FASTSCAPE})
+    ENDFOREACH()
+  ELSE()
+     MESSAGE(FATAL_ERROR "Trying to link with FastScape but libfastscapelib_fortran.so was not found in ${FASTSCAPE_DIR}")
+  ENDIF()
+ENDIF()
+
+
 #
 # NETCDF (c including parallel)
 #
