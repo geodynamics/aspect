@@ -86,7 +86,9 @@ pipeline {
 
     stage('Build Documentation') {
 	      steps {
-	        sh 'cd doc && make manual.pdf'
+	        sh 'cd doc && make manual.pdf || touch ~/FAILED-DOC'
+		archiveArtifacts artifacts: 'doc/manual/manual.log', allowEmptyArchive: true
+		sh 'if [ -f ~/FAILED-DOC ]; then exit 1; fi'
 	      }
 	    }
 
