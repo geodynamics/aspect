@@ -19,25 +19,16 @@
 #include <aspect/geometry_model/box.h>
 #include <deal.II/grid/grid_generator.h>
 
-
 #include <deal.II/numerics/vector_tools.h>
 
 namespace aspect
 {
   namespace MeshDeformation
   {
-
-
-
-
-
-    template <int dim>
-    void
-    FastScape<dim>::compute_velocity_constraints_on_boundary(const DoFHandler<dim> &mesh_deformation_dof_handler,
-                                                                    ConstraintMatrix &mesh_velocity_constraints,
-                                                                    const std::set<types::boundary_id> &boundary_ids) const
-    {
-
+  template <int dim>
+  void
+  FastScape<dim>::initialize ()
+  {
       const GeometryModel::Box<dim> *geometry
         = dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model());
 
@@ -46,21 +37,27 @@ namespace aspect
       AssertThrow(dim == 3,
                         ExcMessage("Fastscape can only be applied to 3D runs."));
 
-      if (geometry != nullptr)
-        {
+      x_extent = geometry->get_extents()[0];
+      y_extent = geometry->get_extents()[1];
+
+      const std::pair<int, int > repetitions = geometry->get_repetitions();
+      int x_repetitions = repetitions.first;
+      int y_repetitions = repetitions.second;
+
+      nx = 1+std::pow(2,refinement)*x_repetitions;
+      ny = 1+std::pow(2,refinement)*y_repetitions;
+      array_size = nx*ny-1;
+  }
+
+
+    template <int dim>
+    void
+    FastScape<dim>::compute_velocity_constraints_on_boundary(const DoFHandler<dim> &mesh_deformation_dof_handler,
+                                                                    ConstraintMatrix &mesh_velocity_constraints,
+                                                                    const std::set<types::boundary_id> &boundary_ids) const
+    {
           int istep;
           int steps = nstep;
-          double xll = geometry->get_extents()[0];
-          double yll = geometry->get_extents()[1];
-
-          /*
-           * Find nx any to send to fastscape based off of the maximum
-           * refinement chosen in aspect.
-           * TODO: This needs to take into account x/y repetitions as well.
-           */
-          int nx = 1+std::pow(2,refinement);
-          int ny = 1+std::pow(2,refinement);
-          int array_size = nx*ny-1;
 
           /*
            * Pointers get allocated only 8 bytes at compile so don't run into
@@ -104,7 +101,7 @@ namespace aspect
                     //Find out dx and dy, and the total number of x points per row.
                     double dx = cell->extent_in_direction(0);
                     double dy = cell->extent_in_direction(1);
-                    double numx = 1+xll/dx;
+                    double numx = 1+x_extent/dx;
 
                     for (unsigned int corner = 0; corner < face_corners.size(); ++corner)
                       {
@@ -114,12 +111,18 @@ namespace aspect
                         double indx = 1+vertex(0)/dx;
                         double indy = 1+vertex(1)/dy;
                         double index = (indy-1)*numx+indx;
+                        //std::cout<<indx<<"  "<<indy<<"  "<<index<<"  "<<elevation<<std::endl;
 
                         h[index-1] = elevation;
+                        std::cout<<h[index-1]<<std::endl;
                       }
                   }
+          /*std::cout<<array_size<<"  "<<nx<<"  "<<ny<<std::endl;
+          for (int i=0; i<array_size; i++)
+            {
+              std::cout<<h[i]<<std::endl;
+            }*/
 
-          //TODO: Make sure this doesn't run on first timestep.
           double a_dt = this->get_timestep();
 
           double f_dt = a_dt/steps;
@@ -129,75 +132,56 @@ namespace aspect
         	  f_dt = a_dt/steps;
           }
 
-          //Initialize fastscape
-          fastscape_init_();
-          fastscape_set_nx_ny_(&nx,&ny);
-          fastscape_setup_();
+          int processor = Utilities::MPI::this_mpi_process(MPI_COMM_WORLD);
 
-          //set x and y extent
-          fastscape_set_xl_yl_(&xll,&yll);
-
-          //Set time step
-          fastscape_set_dt_(&f_dt);
-
-          //Initialize topography
-          fastscape_init_h_(h.get());
-
-          //Set erosional parameters
-          fastscape_set_erosional_parameters_(kf.get(), &kfsed, &m, &n, kd.get(), &kdsed, &g, &g, &p);
-
-          //set boundary conditions
-          fastscape_set_bc_(&bc);
-
-          //Initialize first time step
-          fastscape_get_step_(&istep);
-          fastscape_vtk_(h.get(), &vexp);
-
-          double summ = 0;
-          //loop on time stepping
-          //TODO only run this with one process
-         /* if(a_dt > 0)
+          if(processor == 0)
           {
-          do
+            //Initialize fastscape
+            fastscape_init_();
+            fastscape_set_nx_ny_(&nx,&ny);
+            fastscape_setup_();
+
+            //set x and y extent
+            fastscape_set_xl_yl_(&x_extent,&y_extent);
+
+            //Set time step
+            fastscape_set_dt_(&f_dt);
+
+            //Initialize topography
+            fastscape_init_h_(h.get());
+
+            //Set erosional parameters
+            fastscape_set_erosional_parameters_(kf.get(), &kfsed, &m, &n, kd.get(), &kdsed, &g, &g, &p);
+
+            //set boundary conditions
+            fastscape_set_bc_(&bc);
+
+            //Initialize first time step
+            fastscape_get_step_(&istep);
+            fastscape_vtk_(h.get(), &vexp);
+
+           /* if(a_dt > 0)
             {
-              //execute step, this increases timestep counter
-              fastscape_execute_step_();
-              //get value of time step counter
-              fastscape_get_step_(&istep);
-              //outputs new h values
-              //fastscape_copy_h_(h.get());
-              //output vtk
-              fastscape_vtk_(h.get(), &vexp);
+            do
+              {
+                //execute step, this increases timestep counter
+                fastscape_execute_step_();
+                //get value of time step counter
+                fastscape_get_step_(&istep);
+                //outputs new h values
+                //fastscape_copy_h_(h.get());
+                //output vtk
+                fastscape_vtk_(h.get(), &vexp);
+              }
+            while (istep<steps);
+            }*/
 
-              double minnn = h[0];
-              double maxxx = h[0];
-              summ=0;
-              for (int i=0; i<array_size; i++)
-                {
-                  summ += h[i];
-                  if (h[i+1] > maxxx)
-                    maxxx = h[i];
+            //output timing
+            fastscape_debug_();
 
-                  if (h[i+1] < minnn)
-                    minnn = h[i];
-                }
-
-              std::cout<<"step: "<<istep<<" h range: "<<minnn<<"  "<<summ/array_size<<"  "<<maxxx<<std::endl;
-
-
-        	  std::cout<<istep<<std::endl;
-        	  istep += 1;
-
-            }
-          while (istep<steps);
-          }*/
-
-          //output timing
-          fastscape_debug_();
-
-          //end FastScape run
-          fastscape_destroy_();
-        }
+            //end FastScape run
+            fastscape_destroy_();
+          }
     }
 
 

@@ -38,7 +38,9 @@ extern"C" {
 void fastscape_init_();
 void fastscape_set_nx_ny_(const int *nnx, const int *nny);
 void fastscape_setup_();
-void fastscape_set_xl_yl_(double *xxl,double *yyl);
+
+//TODO: These were originally double and not const double, make sure this isn't an issue.
+void fastscape_set_xl_yl_(const double *xxl,const double *yyl);
 void fastscape_set_dt_(double *dtt);
 void fastscape_init_h_(double *hp);
 void fastscape_set_erosional_parameters_(double *kkf,const double *kkfsed,const double *mm,const double *nnn,
@@ -71,7 +73,7 @@ namespace aspect
     {
       public:
 
-        //virtual void update();
+    	virtual void initialize ();
 
         virtual
         void
@@ -101,6 +103,8 @@ namespace aspect
         double max_timestep;
         double vexp;
         int refinement;
+        int nx;
+        int ny;
 
         double m;
         double n;
@@ -111,6 +115,8 @@ namespace aspect
         double kfsed;
         double kdd;
         double kdsed;
+        double x_extent;
+        double y_extent;
     };
   }
 }

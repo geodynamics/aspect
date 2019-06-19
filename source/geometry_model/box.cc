@@ -202,6 +202,13 @@ namespace aspect
     }
 
     template <int dim>
+    std::pair<int,int>
+    Box<dim>::get_repetitions() const
+    {
+      return std::make_pair (repetitions[0], repetitions[1]);
+    }
+
+    template <int dim>
     Point<dim>
     Box<dim>::get_origin () const
     {
