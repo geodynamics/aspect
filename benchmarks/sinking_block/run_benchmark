@@ -1,5 +1,5 @@
 rm my_point_values_*.dat
-rm opla*
+rm log*
 
 for l in 4 5 6 7 ; do 
     for visc2 in 1 2 4 8 16 32 64 128 256 512 1024 2048 4096 8192 16384 32768 65536 131072 262144 524288 1048576 2097152 4194304 8388608 16777216 33554432 67108864 134217728 268435456; do 
@@ -26,7 +26,7 @@ for l in 4 5 6 7 ; do
             echo end >> inputfile.prm >> inputfile.prm
             echo end >> inputfile.prm >> inputfile.prm
 
-            ../../build/aspect inputfile.prm > opla
+            ./aspect inputfile.prm > log
 
             echo -n $l >> my_point_values_${l}.dat
             echo -n ' ' >> my_point_values_${l}.dat
@@ -36,7 +36,7 @@ for l in 4 5 6 7 ; do
             echo -n ' ' >> my_point_values_${l}.dat
             grep 256000 output_${l}_${visc2}e17_${dens2}/point_values.txt >> my_point_values_${l}.dat
 
-            mv opla opla_${l}_${visc2}e17_${dens2}
+            mv log log_${l}_${visc2}e17_${dens2}
 
         done
         echo ' ' >> my_point_values_${l}.dat

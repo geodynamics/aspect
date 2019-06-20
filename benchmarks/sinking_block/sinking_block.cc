@@ -59,7 +59,7 @@ namespace aspect
             {
               const Point<dim> &pos = in.position[i];
               if (method==0)
-                if ( abs(pos[0]-256e3)<64e3 && abs(pos[1]-384e3)<64e3)
+                if ( std::abs(pos[0]-256e3)<64e3 && std::abs(pos[1]-384e3)<64e3)
                   {
                     out.viscosities[i] = eta2;
                     out.densities[i] = rho2;
@@ -70,7 +70,7 @@ namespace aspect
                     out.densities[i] = rho1;
                   }
               else if (method==1)
-                if ( abs(pos[0]-256e3)<64e3 && abs(pos[1]-384e3)<64e3)
+                if ( std::abs(pos[0]-256e3)<64e3 && std::abs(pos[1]-384e3)<64e3)
                   {
                     out.viscosities[i] = eta2;
                     out.densities[i] = rho2-rho1;
@@ -81,8 +81,8 @@ namespace aspect
                     out.densities[i] = 0;
                   }
               else if (method==2)
-                if ( abs(pos[1]-384e3)<64e3)
-                  if ( abs(pos[0]-256e3)<64e3) // in block
+                if ( std::abs(pos[1]-384e3)<64e3)
+                  if ( std::abs(pos[0]-256e3)<64e3) // in block
                     {
                       out.viscosities[i] = eta2;
                       out.densities[i] = 0.75*(rho2-rho1);
@@ -151,7 +151,10 @@ namespace aspect
                                  "density in the Inclusion.");
               prm.declare_entry ("method", "0",
                                  Patterns::Integer (0),
-                                 "density field treatment.");
+                                 "density field treatment. Acceptable values are "
+                                 "0 (full densities), 1 (reduced densities), and "
+                                 "2 (vertically averaged density profile is removed"
+                                 " --see Thieulot and Bangerth, In prep.");
             }
             prm.leave_subsection();
           }
@@ -222,24 +225,6 @@ namespace aspect
     {
       return false;
     }
-
-    /**
-      * A postprocessor that evaluates the accuracy of the solution.
-      *
-      * The implementation of error evaluators that correspond to the
-      * benchmarks defined in the Donea and Huerta FEM book (see manual).
-      */
-    template <int dim>
-    class SinkingBlockPostprocessor : public Postprocess::Interface<dim>, public ::aspect::SimulatorAccess<dim>
-    {
-      public:
-        /**
-         * Generate graphical output from the current solution.
-         */
-        virtual
-        std::pair<std::string,std::string>
-        execute (TableHandler &statistics);
-    };
 
   }
 }

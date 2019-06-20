@@ -53,7 +53,7 @@ end
 ############### Parameters describing the discretization
 
 subsection Mesh refinement
-  set Initial global refinement          = 5 
+  set Initial global refinement          = 3 
   set Initial adaptive refinement        = 0
 end
 
