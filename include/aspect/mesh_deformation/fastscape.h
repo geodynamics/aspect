@@ -73,7 +73,7 @@ namespace aspect
     {
       public:
 
-    	virtual void initialize ();
+        virtual void initialize ();
 
         virtual
         void
