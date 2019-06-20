@@ -64,6 +64,7 @@ namespace aspect
            * allocation issues. This creates an array that can delete itself.
            */
           std::unique_ptr<double[]> h (new double[array_size]);
+          std::unique_ptr<double[]> h_temp (new double[array_size]);
           std::unique_ptr<double[]> kf (new double[array_size]);
           std::unique_ptr<double[]> kd (new double[array_size]);
 
@@ -71,10 +72,11 @@ namespace aspect
            * TODO: Find a cleaner way to initialize these to the same value,
            * and find how to initialize if they're spatially dependent.
            */
-          for (int i=0; i<array_size; i++)
+          for (int i=0; i<=array_size; i++)
             {
               kf[i]=kff;
               kd[i]=kdd;
+              h_temp[i]=0;
             }
 
           const types::boundary_id relevant_boundary = this->get_geometry_model().translate_symbolic_boundary_name_to_id ("top");
@@ -111,17 +113,10 @@ namespace aspect
                         double indx = 1+vertex(0)/dx;
                         double indy = 1+vertex(1)/dy;
                         double index = (indy-1)*numx+indx;
-                        //std::cout<<indx<<"  "<<indy<<"  "<<index<<"  "<<elevation<<std::endl;
 
-                        h[index-1] = elevation;
-                        std::cout<<h[index-1]<<std::endl;
+                        h_temp[index-1] = elevation;
                       }
                   }
-          /*std::cout<<array_size<<"  "<<nx<<"  "<<ny<<std::endl;
-          for (int i=0; i<array_size; i++)
-            {
-              std::cout<<h[i]<<std::endl;
-            }*/
 
           double a_dt = this->get_timestep();
 
@@ -132,10 +127,28 @@ namespace aspect
         	  f_dt = a_dt/steps;
           }
 
-          int processor = Utilities::MPI::this_mpi_process(MPI_COMM_WORLD);
 
-          if(processor == 0)
+          if(Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
           {
+        	  //Set h to h values from processor zero
+              for (int i=0; i<=array_size; i++)
+            	  h[i]=h_temp[i];
+
+              for (unsigned int p=1; p<Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()); ++p)
+                {
+                  MPI_Status status;
+                  MPI_Recv(h_temp.get(), array_size+1, MPI_DOUBLE, p, 42, this->get_mpi_communicator(), &status);
+
+                  /*
+                   * To keep indexing correct, each proc fills h_temp with zeroes in locations that
+                   * it doesn't own. This checks whether or not we have an actual value.
+                   */
+                  for (int i=0; i<=array_size; i++)
+                	  if(h_temp[i]>0)
+                		  h[i]=h_temp[i];
+
+                }
+
             //Initialize fastscape
             fastscape_init_();
             fastscape_set_nx_ny_(&nx,&ny);
@@ -182,6 +195,10 @@ namespace aspect
             //end FastScape run
             fastscape_destroy_();
           }
+          else
+            {
+              MPI_Send(h_temp.get(), array_size+1, MPI_DOUBLE, 0, 42, this->get_mpi_communicator());
+            }
     }
 
 
