@@ -2,8 +2,8 @@
 
 pipeline {
   agent {
-    docker {
-      image 'tjhei/dealii:v9.0.1-full-v9.0.1-r5-gcc5'
+    dockerfile {
+      dir 'contrib/ci'
       // We mount /repos into the docker image. This allows us to cache
       // the git repo by setting "advanced clone behaviors". If the
       // directory does not exist, this will be ignored.
@@ -83,6 +83,14 @@ pipeline {
         '''
       }
     }
+
+    stage('Build Documentation') {
+	      steps {
+	        sh 'cd doc && make manual.pdf || touch ~/FAILED-DOC'
+		archiveArtifacts artifacts: 'doc/manual/manual.log', allowEmptyArchive: true
+		sh 'if [ -f ~/FAILED-DOC ]; then exit 1; fi'
+	      }
+	    }
 
     stage('Prebuild tests') {
       options {timeout(time: 90, unit: 'MINUTES')}
