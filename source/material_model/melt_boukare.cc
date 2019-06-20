@@ -32,6 +32,32 @@ namespace aspect
 {
   namespace MaterialModel
   {
+    namespace
+    {
+      std::vector<std::string> make_boukare_additional_outputs_names()
+      {
+        std::vector<std::string> names;
+        names.emplace_back("bulk_composition");
+        return names;
+      }
+    }
+
+    template <int dim>
+    BoukareOutputs<dim>::BoukareOutputs (const unsigned int n_points)
+      :
+      NamedAdditionalMaterialOutputs<dim>(make_boukare_additional_outputs_names()),
+	  bulk_composition(n_points, numbers::signaling_nan<double>())
+    {}
+
+    template <int dim>
+    std::vector<double>
+    BoukareOutputs<dim>::get_nth_output(const unsigned int idx) const
+    {
+      AssertIndexRange (idx, 1);
+      return bulk_composition;
+    }
+
+
     template <int dim>
     void
     MeltBoukare<dim>::initialize()
@@ -503,6 +529,8 @@ namespace aspect
     {
       ReactionRateOutputs<dim> *reaction_rate_out = out.template get_additional_output<ReactionRateOutputs<dim> >();
       MeltOutputs<dim> *melt_out = out.template get_additional_output<MeltOutputs<dim> >();
+      BoukareOutputs<dim> *boukare_out = out.template get_additional_output<BoukareOutputs<dim> >();
+      EnthalpyOutputs<dim> *enthalpy_out = out.template get_additional_output<EnthalpyOutputs<dim> >();
 
       // if the temperature or pressure are zero, this model does not work
       // this should only happen when wetting the melt constraints before we have the initial temperature
@@ -663,6 +691,9 @@ namespace aspect
               // the molar fraction of the combined iron endmembers
               const double bulk_composition = old_melt_composition * melt_molar_fraction + old_solid_composition * solid_molar_fraction;
 
+              if (boukare_out != nullptr)
+                boukare_out->bulk_composition[q] = bulk_composition;
+
               // calculate the melting rate as difference between the equilibrium melt fraction
               // and the solution of the previous time step, and also update melt and solid composition
               double solid_composition, melt_composition;
@@ -741,7 +772,7 @@ namespace aspect
                   out.reaction_terms[q][c] = 0.0;
                 }
 
-              if (EnthalpyOutputs<dim> *enthalpy_out = out.template get_additional_output<EnthalpyOutputs<dim> >())
+              if (enthalpy_out != nullptr)
                 {
                   const double melt_molar_mass = endmember_mole_fractions_per_phase[mgmelt_idx] * molar_masses[mgmelt_idx]
         										 + endmember_mole_fractions_per_phase[femelt_idx] * molar_masses[femelt_idx];
@@ -798,7 +829,7 @@ namespace aspect
               melt_out->permeabilities[q] = reference_permeability * std::pow(porosity,3) * std::pow(1.0-porosity,2);
 
               const double porosity_threshold = 0.01 * std::pow(this->get_melt_handler().melt_parameters.melt_scaling_factor_threshold, 1./3.);
-              melt_out->compaction_viscosities[q] = (1.0 - std::min(porosity, .9999)) * xi_0 / std::max(porosity, porosity_threshold);
+              melt_out->compaction_viscosities[q] = (1.0 - porosity) * xi_0 / std::max(porosity, porosity_threshold);
 
               const double delta_temp = in.temperature[q]-this->get_adiabatic_conditions().temperature(in.position[q]);
               const double visc_temperature_dependence = std::max(std::min(std::exp(-thermal_bulk_viscosity_exponent*delta_temp/this->get_adiabatic_conditions().temperature(in.position[q])),1e4),1e-4);
@@ -1136,6 +1167,13 @@ namespace aspect
           const unsigned int n_points = out.viscosities.size();
           out.additional_outputs.push_back(
             std_cxx14::make_unique<MaterialModel::ReactionRateOutputs<dim> > (n_points, this->n_compositional_fields()));
+        }
+
+      if (out.template get_additional_output<BoukareOutputs<dim> >() == nullptr)
+        {
+          const unsigned int n_points = out.viscosities.size();
+          out.additional_outputs.push_back(
+            std_cxx14::make_unique<MaterialModel::BoukareOutputs<dim>> (n_points));
         }
     }
   }

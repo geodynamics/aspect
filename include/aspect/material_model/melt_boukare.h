@@ -33,6 +33,23 @@ namespace aspect
     using namespace dealii;
 
     /**
+     * Additional output fields for the melt boukare material model.
+     */
+    template <int dim>
+    class BoukareOutputs : public NamedAdditionalMaterialOutputs<dim>
+    {
+      public:
+    	BoukareOutputs(const unsigned int n_points);
+
+        virtual std::vector<double> get_nth_output(const unsigned int idx) const;
+
+        /**
+         * Bulk composition of the material.
+         */
+        std::vector<double> bulk_composition;
+    };
+
+    /**
      * A material model that implements a simple formulation of the
      * material parameters required for the modelling of melt transport
      * in a global model, including a source term for the porosity according
