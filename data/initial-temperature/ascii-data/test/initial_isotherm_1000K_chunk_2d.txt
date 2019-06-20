@@ -1,0 +1,10 @@
+# Test data for layered ascii data initial temperature conditions.
+# The following data defines a surface in a 2D chunk which
+# will be used to define the 1000 K isotherm in
+# tests/ascii_data_layered_initial_temperature_2d_chunk.prm.
+# Only next line is parsed in format: [nx] [ny] because of keyword "POINTS:"
+# POINTS: 3
+# Columns: phi r temperature[K]
+0.     5990000. 1000.
+0.7854 5890000. 1000.
+1.5708 6040000. 1000.

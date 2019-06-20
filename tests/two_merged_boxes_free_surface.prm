@@ -75,8 +75,8 @@ subsection Boundary velocity model
   set Zero velocity boundary indicators       = 4
 end
 
-subsection Free surface
-  set Free surface boundary indicators = 5
+subsection Mesh deformation
+  set Mesh deformation boundary indicators = 5: free surface
 end
 
 subsection Postprocess

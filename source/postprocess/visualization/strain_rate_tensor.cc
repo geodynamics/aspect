@@ -22,7 +22,6 @@
 #include <aspect/postprocess/visualization/strain_rate_tensor.h>
 
 
-#if DEAL_II_VERSION_GTE(9,0,0)
 namespace aspect
 {
   namespace Postprocess
@@ -93,4 +92,3 @@ namespace aspect
     }
   }
 }
-#endif

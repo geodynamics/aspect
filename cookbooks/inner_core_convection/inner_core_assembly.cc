@@ -36,7 +36,7 @@ namespace aspect
    * normal stress and the normal velocity that take into account the
    * rate of phase change (melting/freezing) at the inner-outer core
    * boundary. The model is based on Deguen, Alboussiere, and Cardin
-   * (2013), Thermal convection in Earth’s inner core with phase change
+   * (2013), Thermal convection in Earth's inner core with phase change
    * at its boundary. GJI, 194, 1310-133.
    *
    * The mechanical boundary conditions for the inner core are

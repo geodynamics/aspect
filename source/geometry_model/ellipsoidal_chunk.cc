@@ -22,11 +22,6 @@
 #include <aspect/geometry_model/ellipsoidal_chunk.h>
 #include <aspect/utilities.h>
 #include <deal.II/grid/tria_iterator.h>
-
-#if !DEAL_II_VERSION_GTE(9,0,0)
-#include <deal.II/grid/tria_boundary_lib.h>
-#endif
-
 #include <deal.II/grid/tria_accessor.h>
 #include <deal.II/grid/grid_generator.h>
 #include <deal.II/grid/grid_tools.h>
@@ -232,14 +227,12 @@ namespace aspect
       return push_forward_ellipsoid (push_forward_topography(chart_point), semi_major_axis_a, eccentricity);
     }
 
-#if DEAL_II_VERSION_GTE(9,0,0)
     template <int dim>
     std::unique_ptr<Manifold<dim,3> >
     EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::clone() const
     {
       return std_cxx14::make_unique<EllipsoidalChunkGeometry>(*this);
     }
-#endif
 
     template <int dim>
     void
@@ -752,9 +745,9 @@ namespace aspect
     bool
     EllipsoidalChunk<dim>::point_is_in_domain(const Point<dim> &point) const
     {
-      AssertThrow(this->get_free_surface_boundary_indicators().size() == 0 ||
+      AssertThrow(!this->get_parameters().mesh_deformation_enabled ||
                   this->get_timestep_number() == 0,
-                  ExcMessage("After displacement of the free surface, this function can no longer be used to determine whether a point lies in the domain or not."));
+                  ExcMessage("After displacement of the mesh, this function can no longer be used to determine whether a point lies in the domain or not."));
 
       // dim = 3
       const Point<dim> ellipsoidal_point = manifold.pull_back(point);

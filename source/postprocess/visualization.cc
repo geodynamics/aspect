@@ -24,6 +24,7 @@
 #include <aspect/utilities.h>
 #include <aspect/simulator_access.h>
 #include <aspect/geometry_model/interface.h>
+#include <aspect/mesh_deformation/interface.h>
 
 #include <deal.II/dofs/dof_tools.h>
 #include <deal.II/numerics/data_out.h>
@@ -125,13 +126,13 @@ namespace aspect
 
       /**
        * This Postprocessor will generate the output variables of mesh velocity
-       * for when a free surface is used.
+       * for when a deforming mesh is used.
        */
       template <int dim>
-      class FreeSurfacePostprocessor: public DataPostprocessorVector< dim >, public SimulatorAccess<dim>
+      class MeshDeformationPostprocessor: public DataPostprocessorVector< dim >, public SimulatorAccess<dim>
       {
         public:
-          FreeSurfacePostprocessor ()
+          MeshDeformationPostprocessor ()
             : DataPostprocessorVector<dim>( "mesh_velocity", UpdateFlags(update_values) )
           {}
 
@@ -559,20 +560,20 @@ namespace aspect
       internal::BaseVariablePostprocessor<dim> base_variables;
       base_variables.initialize_simulator (this->get_simulator());
 
-      std::unique_ptr<internal::FreeSurfacePostprocessor<dim> > free_surface_variables;
+      std::unique_ptr<internal::MeshDeformationPostprocessor<dim> > mesh_deformation_variables;
 
       DataOut<dim> data_out;
       data_out.attach_dof_handler (this->get_dof_handler());
       data_out.add_data_vector (this->get_solution(),
                                 base_variables);
 
-      // If there is a free surface, also attach the mesh velocity object
-      if ( this->get_free_surface_boundary_indicators().empty() == false && output_mesh_velocity)
+      // If there is a deforming mesh, also attach the mesh velocity object
+      if ( this->get_parameters().mesh_deformation_enabled && output_mesh_velocity)
         {
-          free_surface_variables = std_cxx14::make_unique<internal::FreeSurfacePostprocessor<dim>>();
-          free_surface_variables->initialize_simulator(this->get_simulator());
+          mesh_deformation_variables = std_cxx14::make_unique<internal::MeshDeformationPostprocessor<dim>>();
+          mesh_deformation_variables->initialize_simulator(this->get_simulator());
           data_out.add_data_vector (this->get_mesh_velocity(),
-                                    *free_surface_variables);
+                                    *mesh_deformation_variables);
         }
 
       // then for each additional selected output variable
@@ -934,7 +935,7 @@ namespace aspect
 
           prm.declare_entry ("Output mesh velocity", "false",
                              Patterns::Bool(),
-                             "For free surface computations Aspect uses an Arbitrary-Lagrangian-"
+                             "For computations with deforming meshes, Aspect uses an Arbitrary-Lagrangian-"
                              "Eulerian formulation to handle deforming the domain, so the mesh "
                              "has its own velocity field.  This may be written as an output field "
                              "by setting this parameter to true.");

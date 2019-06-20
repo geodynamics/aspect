@@ -351,7 +351,7 @@ namespace aspect
                              "Reference density $\\rho_0$. Units: $kg/m^3$.");
           prm.declare_entry ("Reference temperature", "293",
                              Patterns::Double (0),
-                             "The reference temperature $T_0$. Units: $\\text{K}$.");
+                             "The reference temperature $T_0$. Units: $\\si{K}$.");
           prm.declare_entry ("Viscosity", "5e24",
                              Patterns::Double (0),
                              "The value of the constant viscosity. Units: $kg/m/s$.");
@@ -429,7 +429,7 @@ namespace aspect
                              "depths than given in Phase transition depths, depending on the "
                              "Clapeyron slope given in Phase transition Clapeyron slopes. "
                              "List must have the same number of entries as Phase transition depths. "
-                             "Units: $\\text{K}$.");
+                             "Units: $\\si{K}$.");
           prm.declare_entry ("Phase transition Clapeyron slopes", "",
                              Patterns::List (Patterns::Double()),
                              "A list of Clapeyron slopes for each phase transition. A positive "

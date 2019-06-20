@@ -1,0 +1,23 @@
+
+Number of active cells: 576 (on 4 levels)
+Number of degrees of freedom: 10,229 (4,802+625+2,401+2,401)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Solving C_1 system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 34+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:         6.38e-11 m/year, 1.27e-10 m/year
+     Temperature min/avg/max:   1000 K, 1000 K, 1000 K
+     Writing depth average:     output-ascii_data_layered_initial_composition_2d_box/depth_average.gnuplot
+     Compositions min/max/mass: 1/2/1.537e+10
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

@@ -23,7 +23,8 @@
 
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>
-#include <deal.II/base/parameter_handler.h>
+#include <aspect/material_model/equation_of_state/multicomponent_incompressible.h>
+
 
 namespace aspect
 {
@@ -129,29 +130,16 @@ namespace aspect
         MaterialUtilities::CompositionalAveragingOperation viscosity_averaging;
 
         /**
-         * Vector for field densities, read from parameter file .
-         */
-        std::vector<double> densities;
-
-        /**
          * Vector for field viscosities, read from parameter file.
          */
         std::vector<double> viscosities;
-
-        /**
-         * Vector for field thermal expansivities, read from parameter file.
-         */
-        std::vector<double> thermal_expansivities;
 
         /**
          * Vector for field thermal conductivities, read from parameter file.
          */
         std::vector<double> thermal_conductivities;
 
-        /**
-         * Vector for field specific heats, read from parameter file.
-         */
-        std::vector<double> specific_heats;
+        EquationOfState::MulticomponentIncompressible<dim> equation_of_state;
     };
 
   }

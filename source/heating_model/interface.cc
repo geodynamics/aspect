@@ -248,6 +248,7 @@ namespace aspect
                                   "if the model does not use operator splitting."));
               heating_model_outputs.rates_of_temperature_change[q] += individual_heating_outputs.rates_of_temperature_change[q];
             }
+          individual_heating_outputs.reset();
         }
 
       // If the heating model does not get the reaction rate outputs, it can not correctly compute
@@ -344,6 +345,20 @@ namespace aspect
       lhs_latent_heat_terms(n_points,numbers::signaling_nan<double>())
     {
     }
+
+
+
+    void
+    HeatingModelOutputs::reset()
+    {
+      for (unsigned int q=0; q<heating_source_terms.size(); ++q)
+        {
+          heating_source_terms[q] = numbers::signaling_nan<double>();
+          lhs_latent_heat_terms[q] = numbers::signaling_nan<double>();
+          rates_of_temperature_change[q] = 0.0;
+        }
+    }
+
 
 
     template <int dim>

@@ -327,11 +327,7 @@ namespace aspect
       composition(fe_values.n_quadrature_points, std::vector<double>(introspection.n_compositional_fields, numbers::signaling_nan<double>())),
       strain_rate(fe_values.n_quadrature_points, numbers::signaling_nan<SymmetricTensor<2,dim> >()),
       cell(cell_x.state() == IteratorState::valid ? &current_cell : nullptr),
-#if DEAL_II_VERSION_GTE(9,0,0)
       current_cell (cell_x)
-#else
-      current_cell(cell_x.state() == IteratorState::valid ? cell_x : typename DoFHandler<dim>::active_cell_iterator())
-#endif
     {
       // Call the function reinit to populate the new arrays.
       this->reinit(fe_values, current_cell, introspection, solution_vector, use_strain_rate);
@@ -397,11 +393,7 @@ namespace aspect
       this->cell = cell_x.state() == IteratorState::valid ? &cell_x : nullptr;
       DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
 
-#if DEAL_II_VERSION_GTE(9,0,0)
       this->current_cell = cell_x;
-#else
-      this->current_cell = (cell_x.state() == IteratorState::valid ? cell_x : typename DoFHandler<dim>::active_cell_iterator());
-#endif
 
     }
 

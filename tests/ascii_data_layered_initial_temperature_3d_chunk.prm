@@ -1,0 +1,79 @@
+# This test is to check that the layered ascii data initial temperature
+# plugin works in a 3D chunk with temperature defined as linear
+# between isotherms and constant below and above the
+# first and last isotherm (with a value taken from that isotherm).
+
+set Dimension = 3
+set CFL number                             = 1.0
+set End time                               = 0
+set Start time                             = 0
+set End time                               = 0
+set Surface pressure                       = 0
+set Use years in output instead of seconds = false  # default: true
+set Nonlinear solver scheme                = single Advection, single Stokes
+
+
+subsection Geometry model
+  set Model name = chunk
+
+  subsection Chunk
+    set Chunk minimum longitude = 0
+    set Chunk maximum longitude = 90
+    set Longitude repetitions = 9
+    set Chunk minimum latitude = 0
+    set Chunk maximum latitude = 80
+    set Latitude repetitions = 9
+    set Chunk inner radius = 5740000
+    set Chunk outer radius = 6400000
+    set Radius repetitions = 6
+  end
+end
+
+subsection Initial temperature model
+  set Model name = ascii data layered
+  subsection Ascii data model
+    set Data directory        = $ASPECT_SOURCE_DIR/data/initial-temperature/ascii-data/test/
+    set Data file names       = initial_isotherm_1000K_chunk_3d.txt, initial_isotherm_500K_chunk_3d.txt
+    set Interpolation scheme  = linear
+  end
+end
+
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = inner, outer, west, east, south, north
+end
+
+subsection Gravity model
+  set Model name = radial constant
+
+  subsection Radial constant
+    set Magnitude = 10
+  end
+end
+
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Viscosity                     = 1e21
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Strategy                           = temperature
+  set Refinement fraction                = 0.95
+  set Initial global refinement          = 0
+end
+
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, temperature statistics, depth average
+  
+  subsection Depth average
+    set Time between graphical output = 0
+    set Number of zones = 10
+  end
+end

@@ -1,0 +1,88 @@
+# This test is to check that the layered ascii data initial temperature
+# plugin works in a 2D box with temperature defined as linear
+# between isotherms and constant below and above the
+# first and last isotherm (with a value taken from that isotherm).
+
+set Dimension                              = 2
+set Use years in output instead of seconds = true
+set End time                               = 0
+set Adiabatic surface temperature          = 1613.0
+
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 100e3
+    set Y extent = 100e3
+    set X repetitions = 3
+    set Y repetitions = 3
+  end
+end
+
+
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Function expression = 1000
+  end
+end
+
+
+subsection Boundary temperature model
+  set List of model names = box
+end
+
+
+subsection Compositional fields
+  set Number of fields = 1
+end
+
+
+subsection Initial composition model
+  set Model name = ascii data layered
+  subsection Ascii data model
+    set Data directory        = $ASPECT_SOURCE_DIR/data/initial-composition/ascii-data/test/
+    set Data file names       = initial_composition_top_mantle_box_2d.txt, initial_composition_top_crust_box_2d.txt
+    set Interpolation scheme  = piecewise constant
+  end
+end
+
+    
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = left, right, top, bottom
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 10
+  end
+end
+
+
+subsection Material model
+  set Model name = simple
+  subsection Simple model
+    set Viscosity = 1e21
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial global refinement                = 3
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 0
+  set Strategy                                 = temperature
+end
+
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, temperature statistics, depth average, composition statistics
+  
+  subsection Depth average
+    set Time between graphical output = 0
+    set Number of zones = 10
+  end
+end

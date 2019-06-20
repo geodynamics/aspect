@@ -40,8 +40,8 @@ subsection Boundary temperature model
   set Fixed temperature boundary indicators   = top, bottom
 end
 
-subsection Free surface
-  set Free surface boundary indicators     = top
+subsection Mesh deformation
+  set Mesh deformation boundary indicators     = top: free surface
 end
 
 subsection Heating model

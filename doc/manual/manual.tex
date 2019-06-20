@@ -80,6 +80,8 @@
 \newcommand{\petsc}{{\textsc{PETSc}}}
 \newcommand{\aspect}{\textsc{ASPECT}}
 
+\DeclareMathOperator{\erf}{erf}
+
 \begin{document}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -749,13 +751,13 @@ modifications.
 Concretely, we consider the following coefficients and dependencies:
 \begin{itemize}
 \item \textit{The viscosity $\eta=\eta(p,T,\varepsilon(\mathbf u),\mathfrak
-c,\mathbf x)$:} Units $\textrm{Pa}\cdot \textrm{s} =
-  \textrm{kg}\frac{1}{\textrm{m}\cdot\textrm{s}}$.
+c,\mathbf x)$:} Units $\si{Pa . s} =
+  \si{kg}\frac{1}{\si{m . s}}$.
 
   The viscosity is the proportionality factor that relates total forces
   (external gravity minus pressure gradients) and fluid velocities $\mathbf
   u$. The simplest models assume that $\eta$ is constant, with the constant
-  often chosen to be on the order of $10^{21} \textrm{Pa}\;\textrm{s}$.
+  often chosen to be on the order of $10^{21} \si{Pa . s}$.
 
   More complex (and more realistic) models assume that the viscosity depends
   on pressure, temperature and strain rate. Since this dependence is often
@@ -763,7 +765,7 @@ c,\mathbf x)$:} Units $\textrm{Pa}\cdot \textrm{s} =
   dependent.
 
 \item \textit{The density $\rho=\rho(p,T,\mathfrak c,\mathbf x)$:} Units
-  $\frac{\textrm{kg}}{\textrm{m}^3}$.
+  $\frac{\si{kg}}{\si{m}^3}$.
 
   In general, the density depends on pressure and temperature, both through
   pressure compression, thermal expansion, and phase changes the material may
@@ -775,15 +777,15 @@ c,\mathbf x)$:} Units $\textrm{Pa}\cdot \textrm{s} =
   $\rho_{\text{ref}}$ is the reference density at temperature $T_{\text{ref}}$
   and $\alpha$ is the linear thermal expansion coefficient. For the earth's
   mantle, typical values for this parameterization would be
-  $\rho_{\text{ref}}=3300\frac{\textrm{kg}}{\textrm{m}^3}$,
-  $T_{\text{ref}}=293 \textrm{K}$, $\alpha=\num{2e-5}
+  $\rho_{\text{ref}}=3300\frac{\si{kg}}{\si{m}^3}$,
+  $T_{\text{ref}}=293 \si{K}$, $\alpha=\num{2e-5}
   \frac{1}{\mathrm{K}}$.
 
 \item \textit{The gravity vector $\mathbf g=\mathbf g(\mathbf x)$:} Units
-  $\frac{\textrm{m}}{\textrm{s}^2}$.
+  $\frac{\si{m}}{\textrm{s}^2}$.
 
   Simple models assume a radially inward gravity vector of constant magnitude
-  (e.g., the surface gravity of Earth, $9.81 \frac{\textrm{m}}{\textrm{s}^2}$),
+  (e.g., the surface gravity of Earth, $9.81 \frac{\si{m}}{\textrm{s}^2}$),
   or one that can be computed analytically assuming a homogeneous mantle
   density.
 
@@ -795,21 +797,21 @@ c,\mathbf x)$:} Units $\textrm{Pa}\cdot \textrm{s} =
   implemented.
 
 \item \textit{The specific isobaric heat capacity $C_p=C_p(p,T,\mathfrak c,\mathbf x)$:}
-Units $\frac{\textrm{J}}{\textrm{kg}\cdot\textrm{K}} =
-  \frac{\textrm{m}^2}{\textrm{s}^2\cdot\textrm{K}}$.
+Units $\frac{\textrm{J}}{\si{kg}\cdot\si{K}} =
+  \frac{\si{m}^2}{\textrm{s}^2\cdot\si{K}}$.
 
   The specific heat capacity denotes the amount of energy needed to increase
   the temperature of one kilogram of material by one Kelvin at constant pressure.
   Wikipedia lists a value of
-  790 $\frac{\textrm{J}}{\textrm{kg}\cdot\textrm{K}}$ for granite%
+  790 $\frac{\textrm{J}}{\si{kg}\cdot\si{K}}$ for granite%
   \footnote{See \url{http://en.wikipedia.org/wiki/Specific_heat}.}
   For the earth mantle, a value of 1250
-  $\frac{\textrm{J}}{\textrm{kg}\cdot\textrm{K}}$ is within the range
+  $\frac{\textrm{J}}{\si{kg}\cdot\si{K}}$ is within the range
   suggested by the literature.
 
 
 \item \textit{The thermal conductivity $k=k(p,T,\mathfrak c,\mathbf x)$:} Units
-  $\frac{\textrm{W}}{\textrm{m}\cdot\textrm{K}}=\frac{\textrm{kg}\cdot\textrm{m}}{\textrm{s}^3\cdot\textrm{K}}$.
+  $\frac{\textrm{W}}{\si{m}\cdot\si{K}}=\frac{\si{kg}\cdot\si{m}}{\textrm{s}^3\cdot\si{K}}$.
 
   The thermal conductivity denotes the amount of thermal energy flowing
   through a unit area for a given temperature gradient. It depends on the
@@ -822,8 +824,8 @@ Units $\frac{\textrm{J}}{\textrm{kg}\cdot\textrm{K}} =
 
   As a rule of thumb for its
   order of magnitude, Wikipedia quotes values of
-  $1.83$--$2.90\frac{\textrm{W}}{\textrm{m}\cdot\textrm{K}}$ for sandstone and
-  $1.73$--$3.98\frac{\textrm{W}}{\textrm{m}\cdot\textrm{K}}$ for granite.%
+  $1.83$--$2.90\frac{\textrm{W}}{\si{m}\cdot\si{K}}$ for sandstone and
+  $1.73$--$3.98\frac{\textrm{W}}{\si{m}\cdot\si{K}}$ for granite.%
   \footnote{See \url{http://en.wikipedia.org/wiki/Thermal_conductivity} and
     \url{http://en.wikipedia.org/wiki/List_of_thermal_conductivities}.} The
   values in the mantle are almost certainly higher than this though probably
@@ -835,16 +837,16 @@ Units $\frac{\textrm{J}}{\textrm{kg}\cdot\textrm{K}} =
   \textit{thermal diffusivity} $\kappa$ using the relation $k = \rho C_p \kappa$.
 
 \item \textit{The intrinsic specific heat production $H=H(\mathbf x)$:} Units
-  $\frac{\textrm{W}}{\textrm{kg}}=\frac{\textrm{m}^2}{\textrm{s}^3}$.
+  $\frac{\textrm{W}}{\si{kg}}=\frac{\si{m}^2}{\textrm{s}^3}$.
 
   This term denotes the intrinsic heating of the material, for example due to
   the decay of radioactive material. As such, it depends not on pressure or
   temperature, but may depend on the location due to different chemical
   composition of material in the earth mantle. The literature suggests a value
-  of $\gamma=\num{7.4e-12}\frac{\textrm{W}}{\textrm{kg}}$.
+  of $\gamma=\num{7.4e-12}\frac{\textrm{W}}{\si{kg}}$.
 
 \item \textit{The thermal expansion coefficient $\alpha=\alpha(p,T,\mathfrak c ,\mathbf x)$:} Units
-  $\frac{1}{\textrm{K}}$.
+  $\frac{1}{\si{K}}$.
 
   This term denotes by how much the material under consideration
   expands due to temperature increases at constant pressure.
@@ -861,7 +863,7 @@ Units $\frac{\textrm{J}}{\textrm{kg}\cdot\textrm{K}} =
    -\frac{M}{\rho^2} \frac{\partial \rho}{\partial T} =
    -\frac{V}{\rho} \frac{\partial \rho}{\partial T}$.
 
-   The literature suggests that values of $\alpha=\num{1e-5}\frac{1}{\textrm{K}}$ at the core-mantle boundary and $\alpha=\num{4e-5}\frac{1}{\textrm{K}}$ are appropriate for Earth.
+   The literature suggests that values of $\alpha=\num{1e-5}\frac{1}{\si{K}}$ at the core-mantle boundary and $\alpha=\num{4e-5}\frac{1}{\si{K}}$ are appropriate for Earth.
 
 \item \textit{The isothermal compressibility $\beta_T=\beta_T(p,T,\mathfrak c ,\mathbf x)$:} Units
   $\frac{1}{\textrm{Pa}}$.
@@ -915,8 +917,8 @@ Units $\frac{\textrm{J}}{\textrm{kg}\cdot\textrm{K}} =
 \item \textit{The change in entropy $\Delta S$ at a
   phase transition together with the derivatives of the phase function
   $X=X(p,T,\mathfrak c,\mathbf x)$ with regard to temperature and pressure:} Units
-  $\frac{\textrm{J}}{\textrm{kg}\textrm{K}^2}$ ($-\Delta S \frac{\partial X}{\partial T}$) and
-  $\frac{\textrm{m}^3}{\textrm{kg}\textrm{K}}$ ($\Delta S \frac{\partial X}{\partial p}$).
+  $\frac{\textrm{J}}{\si{kg}\si{K}^2}$ ($-\Delta S \frac{\partial X}{\partial T}$) and
+  $\frac{\si{m}^3}{\si{kg}\si{K}}$ ($\Delta S \frac{\partial X}{\partial p}$).
 
   When material undergoes a phase transition, the entropy changes due to
   release or consumption of latent heat. However, phase transitions occur
@@ -947,7 +949,7 @@ In order to derive the relationships between different material properties, we m
 introduce a thermodynamic potential known as the
 \href{https://en.wikipedia.org/wiki/Gibbs_free_energy}{\textit{specific
     Gibbs free energy}}
-$\mathcal{G}(p, T)$ with units $\text{J}/\text{kg}$. The word ``specific'' indicates that the energy is
+$\mathcal{G}(p, T)$ with units $\si{J}/\si{kg}$. The word ``specific'' indicates that the energy is
 given per unit mass, rather than volume or number of atoms or molecules. This potential is
 equal to the maximum amount of non-expansion work that can be extracted from a
 thermodynamically closed system. At equilibrium conditions and fixed temperature and
@@ -1132,12 +1134,12 @@ physical units. On the other hand, there are also downsides:
   often vastly different.%
   \footnote{To illustrate this, consider convection in the Earth as a
   back-of-the-envelope example.
-  With the length scale of the mantle $L=\num{3e6}\;\text{m}$, viscosity
-  $\eta=10^{24} \; \text{kg}/\text{m}/\text{s}$, density $\rho=\num{3e3} \; \text{kg}/\text{m}^3$ and a typical
-  velocity of $U=0.1\;\text{m}/\text{year}=\num{3e-9}\; \text{m}/\text{s}$, we get that the friction
+  With the length scale of the mantle $L=\num{3e6}\;\si{m}$, viscosity
+  $\eta=10^{24} \; \si{kg}/\si{m}/\si{s}$, density $\rho=\num{3e3} \; \si{kg}/\si{m}^3$ and a typical
+  velocity of $U=0.1\;\si{m}/\text{year}=\num{3e-9}\; \si{m}/\si{s}$, we get that the friction
   term in \eqref{eq:stokes-1} has size $\eta U/L^2 \approx \num{3e2} \;
-  \text{kg}/\text{m}^2/\text{s}^2$. On the other hand, the term $\nabla\cdot(\rho u)$ in the
-  continuity equation \eqref{eq:stokes-2} has size $\rho U/L\approx \num{3e-12} \; \text{kg}/\text{s}/\text{m}^3$. In other words, their \textit{numerical values} are 14
+  \si{kg}/\si{m}^2/\si{s}^2$. On the other hand, the term $\nabla\cdot(\rho u)$ in the
+  continuity equation \eqref{eq:stokes-2} has size $\rho U/L\approx \num{3e-12} \; \si{kg}/\si{s}/\si{m}^3$. In other words, their \textit{numerical values} are 14
   orders of magnitude apart.}
   Of course, these values can not be compared: they have different physical
   units, and the ratios between these values depends on whether we choose to
@@ -1927,9 +1929,9 @@ The question whether the Boussinesq approximation is valid is then whether the
 second term (the one omitted in the Boussinesq model) is small compared to the
 first. To this end, consider that the velocity can change completely over length
 scales of maybe 10 km, so that $\nabla \cdot\mathbf u \approx \|u\| /
-10\text{km}$. On the other hand, given a smooth dependence of density on pressure,
+10\si{km}$. On the other hand, given a smooth dependence of density on pressure,
 the length scale for variation of the density is the entire earth mantle,
-i.e., $\frac 1\rho \mathbf u \cdot \nabla\rho \approx \|u\| 0.5 / 3000 \text{km}$
+i.e., $\frac 1\rho \mathbf u \cdot \nabla\rho \approx \|u\| 0.5 / 3000 \si{km}$
 (given a variation between minimal and maximal density of 0.5 times the
 density itself). In other words, for a smooth variation, the contribution of
 the compressibility to the continuity equation is very small. This may be
@@ -2268,7 +2270,7 @@ is included in the model, and a constant temperature if adiabatic heating is not
 Pressure and density profiles are hydrostatic. The density can depend on any of the solution variables.
 However, this option can also be used to arbitrarily combine the different approximations 
 described in this section. Users should be careful when using this option, as some combinations
-may lead to unphysical model behaviour. 
+may lead to unphysical model behavior.
 \end{itemize}
 
 An example cookbook that shows a comparison between different approximations is discussed in Section~\ref{sec:cookbooks-burnman}.
@@ -2276,7 +2278,7 @@ An example cookbook that shows a comparison between different approximations is 
 \subsection{Advection Stabilization}
 \label{sec:advection-stabilization}
 
-\aspect{} imeplements several advection schemes for the temperature and compositional field
+\aspect{} implements several advection schemes for the temperature and compositional field
 equations. Specifically, the parameter \ref{parameters:Discretization/Stabilization_20parameters/Stabilization_20method}
 allows using one of the following methods:
 
@@ -2285,6 +2287,116 @@ allows using one of the following methods:
  \item SUPG Stabilization
 \end{itemize}
 
+
+Both add additional terms to the temperature (or compositional field) equation. We will discuss
+the case for the temperature equation here. The compositional fields only differ in having
+a zero conductivity, fewer right-hand side terms, and $\rho C_p=1$. The strong form of the temperature equation reads
+\[
+ \rho C_p \frac{\partial T}{\partial t} + \rho C_p \mathbf{u} \cdot \nabla T - \nabla \cdot k\nabla T = F,
+\]
+where $F$ is the combination of source and reaction terms,
+while the weak form -- with test function $\varphi$ and L2 inner product $(\cdot,\cdot)$ -- is
+\begin{equation}
+a(T,\varphi) =
+ \left(\rho C_p \frac{\partial T}{\partial t}, \varphi \right)
+ + \left(\rho C_p \mathbf{u} \cdot \nabla T, \varphi \right)
+ + \left( k \nabla T, \nabla \varphi \right) = (F,\varphi) = f(\varphi).
+ \label{eqn:weak-form-for-advection}
+\end{equation}
+
+\subsubsection{SUPG Stabilization}
+
+For streamline upwind/Petrov-Galerkin (SUPG) (see for example \cite{JohnKnobloch2006,dealiistep63}), we add to the weak form $a(\cdot,\cdot)$ the cell-wise defined weak form
+\[
+a_{\text{SUPG}} (T, \varphi) =
+ \sum_{K \in \mathcal{T}_h}
+  \delta_K \left( \rho C_p \frac{\partial T}{\partial t} - k \triangle T + \mathbf{\beta} \cdot \nabla T - F, \mathbf{\beta} \cdot \nabla \varphi \right)_K,
+\]
+where $K \in \mathcal{T}_h$ are the cells in the computation, $\delta_K \geq 0$ is a stabilization coefficient
+defined on each cell, $\mathbf{\beta} = \rho C_p \mathbf{u}$ is the effective advection velocity.
+The standard literature about SUPG does not contain $\rho C_p$, so it makes sense to include this in the
+velocity.
+The first argument in the inner product is the strong form of the residual of PDE, which
+is tested with the expression $\mathbf{\beta} \cdot \nabla \varphi$ representing the solution in
+streamline direction. We have to assume $k$ to be
+constant per cell, as we can not compute the spatial derivatives easily.
+
+For the implementation, $\frac{\partial T}{\partial t}$ is replaced by the BDF2 approximation, and its terms from older timesteps and $-F$, are moved to the right-hand side of the PDE.
+
+We use the parameter design presented in \cite{JohnKnobloch2006} for $\delta_K$:
+\[
+ \delta_K = \frac{h}{2d\|\mathbf{\beta}\|_{\infty,K}} \left( \coth(Pe)-\frac{1}{Pe} \right)
+\]
+where the Peclet number is given by
+\[
+ Pe = \frac{ h \| \mathbf{\beta} \|_{\infty,K}}{2 d k_\text{max}},
+\]
+$d$ is the polynomial degree of the temperature or composition element (typically 2),
+$
+ \coth(x) = (1+\exp(-2x)) / (1-\exp(-2x)),
+$
+and $k_\text{max}=\| k \|_{\infty, K}$ is the maximum conductivity in the cell $K$.
+
+If $Pe<1$, the equation is diffusion-dominated and no stabilization is needed, so we
+set $\delta_K=0$. Care needs to be taken in the definition if $\| \beta \|$ or $k$ become zero:
+\begin{enumerate}
+\item If $k$ is zero, then $Pe=\infty$ and the right part of the product in the definition of $\delta_K$ is equal to one.
+\item If $\| \beta \|$ is zero, $Pe < 1$, so we set $\delta_K=0$.
+\item If both are zero, no stabilization is needed (the field remains constant).  
+\end{enumerate}
+
+\subsubsection{Entropy viscosity}
+
+The entropy viscosity method (\cite{GPP11,KHB12}) adds an artificial diffusion $\nu_h$ to the weak form \eqref{eqn:weak-form-for-advection}, where the diffusion term $\left (k\nabla T, \nabla \varphi \right)$ is replaced by
+\[
+\left(\max (k, \nu_h) \nabla T, \nabla \varphi \right).
+\]
+The parameter $\nu_h$ is chosen as a constant per cell as
+\[
+ v_h \vert_K = \min \left( v_h^\text{max} \vert_K, v_h^E \vert_K \right),
+\]
+where $v_h^\text{max}$ is the maximum dissipation defined as
+\[
+ v_h^\text{max} \vert_K = \alpha_\text{max} h \| \mathbf u \|_{\infty,K}
+\]
+on each cell $K$ with parameter $\alpha_\text{max}$ (known as ``beta'' in the parameter 
+files, see  \ref{parameters:Discretization/Stabilization_20parameters/beta}). By itself, this is commonly known as a first-order viscosity 
+stabilization scheme, which is effective at stabilization, but too diffusive to
+be used by itself. In fact, one can show that this reduces the convergence order
+of smooth solutions to be only first order.
+This is avoided by taking the minimum with the entropy viscosity $v_h^E|_K$
+above. It is defined as
+\[
+ v_h^E \vert_K = \alpha_E \frac{h^2 \| r_E \|_{\infty, K}}{\| E - E_\text{avg} \|_{\infty, \Omega}}.
+\]
+The constant $\alpha_E$ is given by ``cR'' in the parameter files, see \ref{parameters:Discretization/Stabilization_20parameters/cR}.
+In the denominator, the entropy viscosity above is scaled by
+the maximum deviation of the temperature
+entropy $E=\frac{1}{2}(T-T_m)^2$ with $T_m = \frac{1}{2}(T_\text{min}+T_\text{max})$
+from the spatial average $E_\text{avg} = \frac{1}{| \Omega |}\int E \;\text{d}x$.
+The residual $r_E$ of the entropy equation for $E$ is defined as
+\[
+ r_E = \frac{\partial E}{\partial t} + (T-T_m)(\mathbf{u}\cdot \nabla T - k\triangle T - F).
+\]
+This residual is defined in such a way, that it is zero for the exact solution, large
+where the numerical approximation is poor (for example in areas with strong gradients),
+and small in areas where the numerical approximation is good.
+
+The above definition assumes the entropy residual exponent (``alpha'' in the parameter files,
+see \ref{parameters:Discretization/Stabilization_20parameters/alpha}) is set to 2 (the default
+and recommended). For the choice of 1 for ``alpha'', the entropy viscosity is defined as
+\[
+ v_h^E \vert_K = \alpha_E \frac{h |\Omega| \cdot \| \mathbf u \|_{\infty,K} \cdot \| r_E \|_{\infty, K}}
+ {\| \mathbf u \|_{\infty,\Omega} \cdot (T_\text{max} - T_\text{min})}.
+\]
+instead.
+
+An additional parameter is the strain rate scaling factor ``gamma'' (see \ref{parameters:Discretization/Stabilization_20parameters/gamma}), which changes the definition
+of the maximum dissipation $\nu_h^\text{max}$ to
+\[
+ v_h^\text{max} \vert_K = \alpha_\text{max} h \|\lvert\mathbf u\rvert + \gamma h_K \lvert\varepsilon (\mathbf u)\rvert\|_{\infty,K},
+\]
+where $\gamma\geq 0$ is the aforementioned parameter in front of the strain rate.
 
 \subsection{Free surface calculations}
 \label{sec:freesurface}
@@ -3489,7 +3601,7 @@ Visit (see \url{https://visit.llnl.gov/}) and ParaView (see
 advantages beyond being widely distributed:
 \begin{itemize}
 \item It allows for compression, keeping files relatively small even for
-  sizeable computations.
+  sizable computations.
 \item It is a structured XML format, allowing other programs to read it
   without too much trouble.
 \item It has a degree of support for parallel computations where every
@@ -3929,7 +4041,7 @@ Section~\ref{parameters:Resume computation}.
 \note{It is not imperative that the parameters selected in the input file are
   exactly the same when resuming a program from a saved state than what they
   were at the time when this state was saved. For example, one may want to
-  choose a different parametrization of the material law, or add or remove
+  choose a different parameterization of the material law, or add or remove
   postprocessors that should be run at the end of each time step. Likewise,
   the end time, the times at which some additional mesh refinement steps
   should happen, etc., can be different.
@@ -5694,7 +5806,7 @@ clearly makes no sense at all.
 
 \textit{This section was contributed by Juliane Dannberg and Ren{\'e} Ga{\ss}m{\"o}ller}.
 
-In addition, there are setups where one wants the compositional fields to interact with each other. One example would be material upwelling at a mid-ocean ridge and changing the composition to that of oceanic crust when it reaches a certain depth. In this cookbook, we will describe how this kind of behaviour can be achieved by using the \texttt{composition reaction} function of the material model. 
+In addition, there are setups where one wants the compositional fields to interact with each other. One example would be material upwelling at a mid-ocean ridge and changing the composition to that of oceanic crust when it reaches a certain depth. In this cookbook, we will describe how this kind of behavior can be achieved by using the \texttt{composition reaction} function of the material model. 
 
 We will consider the exact same setup as in the previous paragraphs, except for the initial conditions and properties of the two compositional fields. There is one material that initially fills the bottom half of the domain and is less dense than the material above. In addition, there is another material that only gets created when the first material reaches the uppermost 20\% of the domain, and that has a higher density. This should cause the first material to move upwards, get partially converted to the second material, which then sinks down again. This means we want to change the initial conditions for the compositional fields: 
 
@@ -6157,7 +6269,7 @@ cookbook shown in Section~\ref{sec:cookbooks-freesurface} to include a crust:
   \lstinputlisting[language=prmfile]{cookbooks/free_surface_with_crust/free-surface-wc.part2.prm.out}
   Note that the height of the interface at 170km is interpreted in the
   coordinate system in which the box geometry of this cookbook lives. The box
-  has dimensions $500\text{km}\times 200\text{km}$, so an interface height of
+  has dimensions $500\si{km}\times 200\si{km}$, so an interface height of
   170km implies a depth of 30km.
 \end{itemize}
 
@@ -6743,7 +6855,7 @@ An animation of a model using the jellyfish as initial condition and assigning i
 \textit{This section was contributed by Magali Billen}\\
 This cookbook provides an example to illustrate how to use the lazy-expression syntax for multiple, nested, if-else-statements in function expressions in the parameter file. It also shows how to set parameters in the input file so you can quickly check initial conditions (i.e., without waiting for the solver to converge).  For this model we define a simple 2D box, which is $5000 \times 1000$ km, with free-slip velocity boundary conditions. The material parameters are constant within the box (set using the  ``simple'' material model). The initial thermal structure has two parts divided at $xtr=2200$~km. The temperature in each region is defined using the equation for a half-space cooling model:
 \begin{equation}
-T(x,y) = T_s + (T_m  - T_s) erf{(\frac{y}{2\sqrt{\kappa x/v}})}
+T(x,y) = T_s + (T_m  - T_s) \erf{(\frac{y}{2\sqrt{\kappa x/v}})}
 \end{equation}
 where $erf$ is the error function, $T_m$ is the mantle temperature, $T_s$ is the surface temperature, $y$ is depth, $x$ is horizontal distance, $\kappa$ is the thermal diffusivity, and $v$ is the plate velocity. The age of the plate is given by $x/v$. Note that the equation for the half-space cooling model is not defined at $x=0$ (because there is a divide by zero inside the error function): at $x=0$, $T=T_m$.  For $(x \le xtr)$ and $(x>0)$ the age of the plate increases from zero at the boundary according to a fixed plate velocity $v_{sub}=7.927\times10^{-10}$~m/s  ($2.5$~cm/yr). This is the subducting plate. For $x > xtr$, there is a fixed plate age of $age_{op}=9.46\times10^{14}$~s ($30$~my); this is the overriding plate. In order to resolve the temperature structure, we also define some initial refinement of the mesh for the top 150 km of the mesh. Both the mesh refinement and the temperature structure are defined using lazy-expression syntax in functions within the parameter file.
 
@@ -6917,11 +7029,11 @@ In the following, let us pick apart this input file:
   (for historical reasons, the remainder of the parameters that describe the
   equations is in a different section, see the fourth point below). We choose
   the simplest material model \aspect{} has to offer where the viscosity is
-  constant (here, we set it to $\eta=10^{22} \text{Pa}\;\text{s}$) and so are
+  constant (here, we set it to $\eta=10^{22} \si{Pa .  s}$) and so are
   all other parameters except for the density which we choose to be
   $\rho(T)=\rho_0(1-\alpha (T-T_{\text{ref}}))$ with $\rho_0=3300
-  \text{kg}\;\text{m}^{-3}$, $\alpha=\num{4e-5} \text{K}^{-1}$ and
-  $T_{\text{ref}}=293 \text{K}$. The remaining material parameters remain at their
+  \si{kg}\;\si{m}^{-3}$, $\alpha=\num{4e-5} \si{K}^{-1}$ and
+  $T_{\text{ref}}=293 \si{K}$. The remaining material parameters remain at their
   default values and you can find their values described in the documentation of
   the \texttt{simple} material model in
   Sections~\ref{parameters:Material_20model} and
@@ -7017,16 +7129,16 @@ difference is much smaller than 3300 K in reality, and we can expect convection
 to be significantly less vigorous than in the simulation here. Indeed, using
 the values in the input file shown above, we can compute the Rayleigh number for
 the current case to be%
-\footnote{Note that the density in 2d has units $\text{kg}\,\text{m}^{-2}$}
+\footnote{Note that the density in 2d has units $\si{kg}\,\si{m}^{-2}$}
 \begin{equation*}
   \textrm{Ra}
   =
   \frac{g\, \alpha  \Delta T  \rho  L^3}{\kappa\eta}
 =
-  \frac{10\, \text{m}\,\text{s}^{-2} \times \num{4e-5}\, \text{K}^{-1} \times 3300\,
-  \text{K} \times 3300\, \text{kg}\,\text{m}^{-3} \times (\num{2.86e6}
-  \, \text{m})^3}{10^{-6}\, \text{m}^2\,\text{s}^{-1}\times 10^{22}\,
-  \text{kg}\,\text{m}^{-1}\,\text{s}^{-1}}.
+  \frac{10\, \si{m}\,\si{s}^{-2} \times \num{4e-5}\, \si{K}^{-1} \times 3300\,
+  \si{K} \times 3300\, \si{kg}\,\si{m}^{-3} \times (\num{2.86e6}
+  \, \si{m})^3}{10^{-6}\, \si{m}^2\,\si{s}^{-1}\times 10^{22}\,
+  \si{kg}\,\si{m}^{-1}\,\si{s}^{-1}}.
 \end{equation*}
 
 Second, the initial temperature profile we chose is not realistic -- in fact, it
@@ -7312,7 +7424,7 @@ states that the overall heat flux through the Earth surface is about $\num{47e12
 heat released from cooling the Earth and 15--41 TW from radiogenic heating.%
 \footnote{As a point of reference, for the mantle an often used number for the
 release of heat due to radioactive decay is $\num{7.4e-12}$ W/kg. Taking a
-density of $3300\; \text{kg}/\text{m}^3$ and a volume of $10^{12}\; \text{m}^3$
+density of $3300\; \si{kg}/\si{m}^3$ and a volume of $10^{12}\; \si{m}^3$
 would yield roughly $\num{2.4e13}$ W of heat produced. This back of the
 envelope calculation lies within the uncertain range stated above.}
 Our model does not include radiogenic heating (though \aspect{} has a number of 
@@ -8210,7 +8322,7 @@ as temperature variations associated with lithospheric thinning exert a first-or
 \end{figure}
 \begin{figure}
 \includegraphics[width=\textwidth]{cookbooks/continental_extension/continental_extension_cookbook_strainrate_highres_10e6yr.png}
-\caption{\it Strain rate (in units of $s^{-1}$) after \num{10e6} years of extension. The black line marks the 550 $\degree C$ isotherm. The numerical resolution ($1 \text{km}$) is double that of the previous model.} 
+\caption{\it Strain rate (in units of $s^{-1}$) after \num{10e6} years of extension. The black line marks the 550 $\degree C$ isotherm. The numerical resolution ($1 \si{km}$) is double that of the previous model.} 
 \label{fig:continental_extension_cookbook_strainrate_highres_10e6yr}
 \end{figure}
  
@@ -8933,18 +9045,18 @@ natural gas these structures have been extensively studied \cite{jahu17}.
 We consider in this experiment the three-layer viscous Rayleigh-Taylor instability proposed 
 by Weinberg and Schmeling \cite{wesc92} 
 and we focus in what follows on the case II of that publication.
-The domain is a 2D Cartesian box of size $2.24\text{m} \times 1\text{m}$. 
-Gravity is Earth-like ($9.81\text{m}/\text{s}^2$).
+The domain is a 2D Cartesian box of size $2.24\si{m} \times 1\si{m}$. 
+Gravity is Earth-like ($9.81\si{m}/\si{s}^2$).
 Boundary conditions are free-slip on the sides and top and no-slip at the bottom.
 All three layers are initially horizontal. The top layer (fluid 1) has a thickness of 
-$0.75\text{m}$, a viscosity $\eta_1=100\text{Pa s}$ and a density $\rho_1=100\text{kg}/\text{m}^3$. 
-The middle layer (fluid 2) has a thickness 0.125m with $\rho_2=90\text{kg}/\text{m}^3$ and $\mu_2=1\text{Pa s}$.
-The bottom layer (fluid 3) has a thickness 0.125m with $\rho_3=89\text{kg}/\text{m}^3$ and $\mu_3=1\text{Pa s}$.
-The two interfaces between the layers are perturbed by a random noise of amplitude $\pm 0.001\text{m}$. 
+$0.75\si{m}$, a viscosity $\eta_1=100\si{Pa . s}$ and a density $\rho_1=100\si{kg}/\si{m}^3$. 
+The middle layer (fluid 2) has a thickness 0.125m with $\rho_2=90\si{kg}/\si{m}^3$ and $\mu_2=1\si{Pa . s}$.
+The bottom layer (fluid 3) has a thickness 0.125m with $\rho_3=89\si{kg}/\si{m}^3$ and $\mu_3=1\si{Pa . s}$.
+The two interfaces between the layers are perturbed by a random noise of amplitude $\pm 0.001\si{m}$. 
 Since fluid 3 is lighter than fluid 2 and fluid 2 is lighter than fluid 1, both interfaces are unstable.
 We observe that interface 2-3 deforms first, produces domes which are subsequently incorporated in the domes 
 being generated at the interface 1-2, as shown in Figure~\ref{fig:polydiapirs_density}.
-The root mean square velocity (Figure~\ref{fig:polydiapirs_vrms}) shows two slopes in the early stages ($t<50\text{s}$)
+The root mean square velocity (Figure~\ref{fig:polydiapirs_vrms}) shows two slopes in the early stages ($t<50\si{s}$)
 corresponding to the 
 two different growth rates of the interfaces, 
 as explained by linear stability analysis \cite{wesc92,ramb81}.
@@ -8955,7 +9067,7 @@ as explained by linear stability analysis \cite{wesc92,ramb81}.
     \includegraphics[width=0.48\textwidth]{cookbooks/polydiapirism/diapirs0005}
     \includegraphics[width=0.48\textwidth]{cookbooks/polydiapirism/diapirs0010}
     \includegraphics[width=0.48\textwidth]{cookbooks/polydiapirism/diapirs0015}
-    \caption{Polydiapirism benchmark: Density field at $t=0,25,50,75\text{s}$.}
+    \caption{Polydiapirism benchmark: Density field at $t=0,25,50,75\si{s}$.}
     \label{fig:polydiapirs_density}
 \end{figure}
 
@@ -9383,7 +9495,7 @@ exhumed ultra-high-pressure rocks \cite{wosp00,vaal11,garm18}.
 
 This benchmark is based on the setup by S. Schmalholtz \cite{schm11}, which was subsequently 
 run with \aspect{} by A. Glerum \cite{gltf18}.
-The computational domain is a $1000 \text{km}\times 660 \text{km}$ box.
+The computational domain is a $1000 \si{km}\times 660 \si{km}$ box.
 No-slip boundary conditions are imposed on the sides of the system, while free-slip
 boundary conditions are imposed at the top and bottom.
 
@@ -9396,18 +9508,18 @@ boundary conditions are imposed at the top and bottom.
 
 Two materials are present in the domain: the lithosphere and the mantle as shown 
 in Figure~\ref{fig:slab_detachment_setup}. The gravity acceleration 
-is Earth-like with $g=9.81 \text{m/s}^2$.
-The overriding plate is $80\text{km}$ thick and is placed at the top of the domain. 
-The already subducted lithosphere extends vertically into the mantle for $250 \text{km}$. 
-This slab has a density $\rho_s=3300\text{kg/m}^3$ and is characterized by a power-law flow law so that 
+is Earth-like with $g=9.81 \si{m}\si{s}^2$.
+The overriding plate is $80\si{km}$ thick and is placed at the top of the domain. 
+The already subducted lithosphere extends vertically into the mantle for $250 \si{km}$. 
+This slab has a density $\rho_s=3300\si{kg}/\si{m}^3$ and is characterized by a power-law flow law so that 
 its effective viscosity depends on the square root of the second invariant 
 of the strainrate $\dot\varepsilon$:
 \[
 \eta_{eff} = \eta_0 \, \dot\varepsilon^{1/n-1} 
 \]
-with $n=4$ and $\eta_0=4.75\times 10^{11}\text{Pa s}$.
-The mantle occupies the rest of the domain and has a constant viscosity $\eta_m=10^{21}\text{Pa s}$ 
-and a density $\rho_m=3150\text{kg/m}^3$. Viscosity is capped between $10^{21}\text{Pa s}$ and $10^{25}\text{Pa s}$.
+with $n=4$ and $\eta_0=4.75\times 10^{11}\si{Pa . s}$.
+The mantle occupies the rest of the domain and has a constant viscosity $\eta_m=10^{21}\si{Pa . s}$ 
+and a density $\rho_m=3150\si{kg}/\si{m}^3$. Viscosity is capped between $10^{21}\si{Pa . s}$ and $10^{25}\si{Pa . s}$.
 Figure~\ref{fig:slab_detachment_evolution} shows the various fields and their evolution through time. 
 As shown in \cite{schm11,gltf18} the hanging slab necks, helped by the localizing effect of the 
 nonlinear rheology. Model results were shown to compare favorably to the results of \cite{schm11} in \cite{gltf18,hitg14} 
@@ -9564,13 +9676,13 @@ the first timestep.
 For the setup of this benchmark, we chose the following parameters:
 \begin{align*}
   \label{eq:stokes-parameters}
-  r &= 200 \, \text{km}\\
-  \Delta\rho &= 100 \, \text{kg}/\text{m}^3\\
-  \eta &= 10^{22} \, \text{Pa s}\\
-  g &= 9.81 \, \text{m}/\text{s}^2.
+  r &= 200 \, \si{km}\\
+  \Delta\rho &= 100 \, \si{kg}/\si{m}^3\\
+  \eta &= 10^{22} \, \si{Pa.s}\\
+  g &= 9.81 \, \si{m}/\si{s}^2.
 \end{align*}
 With these values, the exact value of sinking velocity is $v_s =
-\num{8.72e-10} \, \text{m}/\text{s}$.
+\num{8.72e-10} \, \si{m}/\si{s}$.
 
 To run this benchmark, we need to set up an input file that describes the
 situation. In principle, what we need to do is to describe a spherical object
@@ -9613,9 +9725,9 @@ of the sphere using the following filters:
 If you then look at
 the Calculator object in the Spreadsheet View, you can see the average sinking
 velocity of the sphere in the column ``Result'' and compare it to the theoretical
-value $v_s = \num{8.72e-10} \, \text{m}/\text{s}$.
+value $v_s = \num{8.72e-10} \, \si{m}/\si{s}$.
 In this case, the numerical result is $\num{8.865e-10} \,
-\text{m}/\text{s}$ when you add a few more refinement steps to actually resolve
+\si{m}/\si{s}$ when you add a few more refinement steps to actually resolve
 the 3d flow field adequately. The ``velocity statistics'' postprocessor we have
 selected above also provides us with a maximal velocity that is on the same
 order of magnitude. The difference between the analytical and the numerical
@@ -9640,7 +9752,7 @@ than 2\% is a good indication that \aspect{} implements the equations correctly.
       outside of this sphere. As the velocity vectors show, the sphere sinks
       in the viscous medium.
       Right: The density distribution of the model. The compositional density
-      contrast of 100 kg$/\text{m}^3$ leads to a higher density inside of the
+      contrast of 100 kg$/\si{m}^3$ leads to a higher density inside of the
       sphere.}
   \label{fig:stokes-falling-sphere-2d}
 \end{figure}
@@ -9761,10 +9873,10 @@ The setup of this benchmark is taken from Schubert, Turcotte and Olson \cite{STO
       temperature profile across the phase transition. The dashed line marks
       the phase transition. Material flows in with a prescribed temperature and
       velocity at the top, crosses the phase transition in the center and flows
-      out at the bottom. The predicted bottom temperature is $T_2 = 1109.08 \, \text{K}$.
+      out at the bottom. The predicted bottom temperature is $T_2 = 1109.08 \, \si{K}$.
       Right: Temperature distribution of the model together with the associated
       temperature profile across the phase transition. The modelled bottom
-      temperature is $T_2 = 1107.39 \, \text{K}$.}
+      temperature is $T_2 = 1107.39 \, \si{K}$.}
   \label{fig:latent-heat-benchmark}
 \end{figure}
 It tests whether the latent heat production when material crosses a phase
@@ -9832,7 +9944,7 @@ In addition, we have tested the approach exactly as it is described in \cite{STO
 
 The exact values of the parameters used for this benchmark can be found in
 Fig.~\ref{fig:latent-heat-benchmark}. They result in a predicted value of $T_2 =
-1109.08 \, \text{K}$ for the temperature in the bottom half of the model, and
+1109.08 \, \si{K}$ for the temperature in the bottom half of the model, and
 we will demonstrate below that we can match this value in our numerical
 computations. However, it is not as simple as suggested above. In actual
 numerical computations, we can not exactly reproduce the behavior of Dirac delta
@@ -9871,8 +9983,8 @@ to change the phase transition width to look how this influences the result.
     \includegraphics[width=0.49\textwidth]{cookbooks/benchmarks/latent-heat/latent-heat-results-2.png}
   \end{center}
   \caption{\it Results of the latent heat benchmark. Both figures show the modelled temperature $T_2$ at the bottom of the model domain.
-      Left: $T_2$ in dependence of resolution using a constant phase transition width of 20\,km. With an increasing number of global refinements of the mesh, the bottom temperature converges against a value of $T_2 = 1105.27 \, \text{K}$.
-      Right: $T_2$ in dependence of phase transition width. The model resolution is chosen proportional to the phase transition width, starting with 5 global refinements for a width of 20\,km. With decreasing phase transition width, $T_2$ approaches the theoretical value of $1109.08 \, \text{K}$}
+      Left: $T_2$ in dependence of resolution using a constant phase transition width of 20\,km. With an increasing number of global refinements of the mesh, the bottom temperature converges against a value of $T_2 = 1105.27 \, \si{K}$.
+      Right: $T_2$ in dependence of phase transition width. The model resolution is chosen proportional to the phase transition width, starting with 5 global refinements for a width of 20\,km. With decreasing phase transition width, $T_2$ approaches the theoretical value of $1109.08 \, \si{K}$}
   \label{fig:latent-heat-benchmark-results}
 \end{figure}
 
@@ -9889,7 +10001,7 @@ variable in the ``Line series'' section) or ``Calculator'' (as seen in
 Fig.~\ref{fig:latent-heat-benchmark}). In
 Fig.~\ref{fig:latent-heat-benchmark-results} (left) we can see that with
 increasing resolution, the value for the bottom temperature converges to a value
-of $T_2 = 1105.27 \, \text{K}$. 
+of $T_2 = 1105.27 \, \si{K}$. 
 
 However, this is not what the analytic solution
 predicted. The reason for this difference is the width of the phase transition
@@ -9905,7 +10017,7 @@ tangent as our phase function. Moreover,
 Fig.~\ref{fig:latent-heat-benchmark-results} (right) illustrates what happens to
 the temperature at the bottom when we vary the width of the phase transition:
 The smaller the width, the closer the temperature gets to the predicted value of
-$T_2 = 1109.08 \, \text{K}$, demonstrating that we converge to the correct
+$T_2 = 1109.08 \, \si{K}$, demonstrating that we converge to the correct
 solution.
 
 
@@ -10708,10 +10820,10 @@ where $\rho$ is the density and $J_1$ and $J_2$ represent real and imaginary com
 \rho (P,T) = \rho_{0}  \left\{ 1 - \left[\alpha(T - T_0)\right] + \frac{P}{K} \right\}
 \label{eq:density_P}
 \end{equation}
-where $\rho_{0} = 3291~\text{kg m}^{-3}$ and $\alpha = 3.59 \times 10^{-5}~\text{K}^{-1}$ are the density and thermal expansivity corresponding to $T_{0} = 873~\text{K}$, $P$ = pressure and $K = 115.2~\text{GPa}$ is the bulk modulus. $J_1$ and $J_2$ are expressed as
+where $\rho_{0} = 3291~\si{kg . m}^{-3}$ and $\alpha = 3.59 \times 10^{-5}~\si{K}^{-1}$ are the density and thermal expansivity corresponding to $T_{0} = 873~\si{K}$, $P$ = pressure and $K = 115.2~\si{GPa}$ is the bulk modulus. $J_1$ and $J_2$ are expressed as
 \begin{align*}
-J_1(\tau_S^{\prime})= & J_U \left[ 1 + \frac{A_B[\tau_S^{\prime}]^{\alpha_B}}{\alpha_B} + \frac{\sqrt{2\pi}}{2} A_P~\sigma_P \left\{ 1-\text{erf}\left(\frac{\text{ln}[\tau_P^{\prime}/\tau_S^{\prime}]}{\sqrt{2}\sigma_P}\right)\right\}\right] \\
-J_2(\tau_S^{\prime}) = & J_U \frac{\pi}{2} \left[ A_B[\tau_S^{\prime}]^{\alpha_B} + A_P~\text{exp} \left(-\frac{\text{ln}^2[\tau_P^{\prime}/\tau_S^{\prime}]}{2\sigma_P^2}\right)\right] + J_U \tau_S^{\prime}
+J_1(\tau_S^{\prime})= & J_U \left[ 1 + \frac{A_B[\tau_S^{\prime}]^{\alpha_B}}{\alpha_B} + \frac{\sqrt{2\pi}}{2} A_P~\sigma_P \left\{ 1-\text{erf}\left(\frac{\ln[\tau_P^{\prime}/\tau_S^{\prime}]}{\sqrt{2}\sigma_P}\right)\right\}\right] \\
+J_2(\tau_S^{\prime}) = & J_U \frac{\pi}{2} \left[ A_B[\tau_S^{\prime}]^{\alpha_B} + A_P~\exp \left(-\frac{\ln^2[\tau_P^{\prime}/\tau_S^{\prime}]}{2\sigma_P^2}\right)\right] + J_U \tau_S^{\prime}
 \end{align*}
 where $A_B = 0.664$ and $\alpha_B = 0.38$ represent the amplitude and slope of background stress relaxation and $J_U$ is the unrelaxed compliance. Parameters $A_P$ and $\sigma_P$ represent the amplitude and width of a high frequency relaxation peak superimposed on this background trend such that
 \begin{equation}
@@ -10734,18 +10846,18 @@ where $T^{\prime}$ is the homologous temperature ($\frac{T}{T_{s}}$) with $T$ th
 \begin{equation}
 J_{U}(P,T)^{-1} = \mu_U(P,T) = \mu_U^0 + \frac{\partial{\mu_U}}{\partial{T}}(T -T_0)+ \frac{\partial{\mu_U}}{\partial{P}}(P-P_0)
 \end{equation}
-where $\mu_U^0$ is the unrelaxed shear modulus at surface pressure-temperature conditions, the differential terms are assumed to be constant and the pressure, $P$, in GPa is linearly related to the depth, $z$, in km by $\frac{z}{30}$. The normalised shear wave period, $\tau_S^{\prime}$, in Equations~(\ref{eq:real_compliance}) and (\ref{eq:imaginary_compliance}) is equal to $\frac{\tau_S}{2\pi\tau_M}$, where $\tau_S = 100~\text{s}$ is the shear wave period and $\tau_M = \frac{\eta}{\mu_U}$ is the normalised Maxwell relaxation timescale. $\tau_P^{\prime}$ represents the normalised shear-wave period associated with the centre of the high frequency relaxation peak, assumed to be $6 \times 10^{-5}$. The shear viscosity, $\eta$, is
+where $\mu_U^0$ is the unrelaxed shear modulus at surface pressure-temperature conditions, the differential terms are assumed to be constant and the pressure, $P$, in GPa is linearly related to the depth, $z$, in km by $\frac{z}{30}$. The normalised shear wave period, $\tau_S^{\prime}$, in Equations~(\ref{eq:real_compliance}) and (\ref{eq:imaginary_compliance}) is equal to $\frac{\tau_S}{2\pi\tau_M}$, where $\tau_S = 100~\si{s}$ is the shear wave period and $\tau_M = \frac{\eta}{\mu_U}$ is the normalised Maxwell relaxation timescale. $\tau_P^{\prime}$ represents the normalised shear-wave period associated with the centre of the high frequency relaxation peak, assumed to be $6 \times 10^{-5}$. The shear viscosity, $\eta$, is
 \begin{equation}
-\eta = \eta_r \left(\frac{d}{d_r}\right)^{m} \text{exp} \left[ \frac{E_a}{R}\left(\frac{1}{T}-\frac{1}{T_r}\right) \right] \text{exp} \left[ \frac{V_a}{R}\left(\frac{P}{T}-\frac{P_r}{T_r}\right) \right] A_{\eta}
+\eta = \eta_r \left(\frac{d}{d_r}\right)^{m} \exp \left[ \frac{E_a}{R}\left(\frac{1}{T}-\frac{1}{T_r}\right) \right] \exp \left[ \frac{V_a}{R}\left(\frac{P}{T}-\frac{P_r}{T_r}\right) \right] A_{\eta}
 \label{eq:eta}
 \end{equation}
-where $d$ is the grain size, $m$ the grain size exponent (assumed to be 3), $R$ the gas constant, $E_a$ the activation energy and $V_a$ the activation volume. Subscripts $[X]_r$ refer to reference values, assumed to be $d_r = d = 1~\text{mm}$, $P_r = 1.5~\text{GPa}$ and $T_r = 1473~\text{K}$ for the upper mantle. $A_{\eta}$ represents the extra reduction of viscosity due to an increase in $E_a$ near the solidus, expressed as
+where $d$ is the grain size, $m$ the grain size exponent (assumed to be 3), $R$ the gas constant, $E_a$ the activation energy and $V_a$ the activation volume. Subscripts $[X]_r$ refer to reference values, assumed to be $d_r = d = 1~\si{mm}$, $P_r = 1.5~\si{GPa}$ and $T_r = 1473~\si{K}$ for the upper mantle. $A_{\eta}$ represents the extra reduction of viscosity due to an increase in $E_a$ near the solidus, expressed as
 \begin{equation}
 A_\eta(T^{\prime}) = 
 \begin{cases}
 1  & \text{for } T^{\prime} < T^{\prime}_{\eta} \\
-\text{exp} \left[-\frac{(T^{\prime}-T^{\prime}_{\eta})}{(T^{\prime}-T^{\prime}T^{\prime}_{\eta})} \text{ln}(\gamma)\right]& \text{for }T^{\prime}_{\eta} \leq T^{\prime} < 1 \\
-\gamma^{-1} \text{exp}(\lambda\phi) & \text{for }T^{\prime} \geq 1\\
+\exp \left[-\frac{(T^{\prime}-T^{\prime}_{\eta})}{(T^{\prime}-T^{\prime}T^{\prime}_{\eta})} \ln(\gamma)\right]& \text{for }T^{\prime}_{\eta} \leq T^{\prime} < 1 \\
+\gamma^{-1} \exp(\lambda\phi) & \text{for }T^{\prime} \geq 1\\
 \end{cases}
 \end{equation}
 where $T^{\prime}_\eta$ is the homologous temperature above which activation energy becomes $E_a + \Delta E_a$, and $\gamma = 5$ is the factor of additional reduction. $\lambda\phi$ describes the direct effect of melt on viscosity, assumed to be negligible here. The solidus temperature, $T_s$, is fixed to a value of 1599~K at 50~km equivalent to a dry peridotite solidus \cite{Hirsch2000} and linearly increases below this depth according to
@@ -10755,10 +10867,92 @@ T_{s}(z) = 1599 + \frac {\partial T_s}{\partial z} (z - 50000)
 \end{equation}
 where $\frac {\partial T_s}{\partial z}$ is the solidus gradient. 
 
-In this benchmark, a 2D input ASCII file containing $V_S$ specified at 50 and 75 km depth is read in and converted to temperature using an initial temperature model that implements the $V_{S}(P,T)$ formulation detailed above. The default parameters governing the relationship between $V_S$ and temperature are set to the values calibrated by Yamauchi \& Takei~\cite{YT16}, where $\mu_U^0 = 72.45~\text{GPa}$, $\frac{\partial{\mu_U}}{\partial{T}} = -0.01094~\text{GPa K}^{-1}$, $\frac{\partial{\mu_U}}{\partial{P}} = 1.987$,  $\eta_r = 6.22 \times 10^{21}~\text{Pa s}$, $E_a = 452.5~\text{kJ mol}^{-1}$, $V_a = 7.913 \times 10^{-6}~\text{m}^{3}~\text{mol}^{-1}$ and $\frac{\partial T_s}{\partial z} = 1.018~\text{K km}^{-1}$. As $V_S$ is a complex function of temperature, a Brent minimization algorithm is used to find optimal values. Fig.~\ref{fig:anelasticity} shows that the \aspect{} implementation of this parameterization can accurately recreate the results shown by Yamauchi \& Takei~\cite{YT16} in their Fig. 20.
+In this benchmark, a 2D input ASCII file containing $V_S$ specified at 50 and 75 km depth is read in and converted to temperature using an initial temperature model that implements the $V_{S}(P,T)$ formulation detailed above. The default parameters governing the relationship between $V_S$ and temperature are set to the values calibrated by Yamauchi \& Takei~\cite{YT16}, where $\mu_U^0 = 72.45~\si{GPa}$, $\frac{\partial{\mu_U}}{\partial{T}} = -0.01094~\si{GPa . K}^{-1}$, $\frac{\partial{\mu_U}}{\partial{P}} = 1.987$,  $\eta_r = 6.22 \times 10^{21}~\si{Pa . s}$, $E_a = 452.5~\si{kJ . mol}^{-1}$, $V_a = 7.913 \times 10^{-6}~\si{m}^{3}~\si{mol}^{-1}$ and $\frac{\partial T_s}{\partial z} = 1.018~\si{K . km}^{-1}$. As $V_S$ is a complex function of temperature, a Brent minimization algorithm is used to find optimal values. Fig.~\ref{fig:anelasticity} shows that the \aspect{} implementation of this parameterization can accurately recreate the results shown by Yamauchi \& Takei~\cite{YT16} in their Fig. 20.
 
 The parameter file and initial temperature model for this benchmark can be found at \url{benchmarks/yamauchi_takei_2016_anelasticity/yamauchi_takei_2016_anelasticity.prm} and \url{benchmarks/yamauchi_takei_2016_anelasticity/anelasticity_temperature.cc}. Code to recreate  Fig.~\ref{fig:anelasticity}  is provided in \url{benchmarks/yamauchi_takei_2016_anelasticity/plot_output}.
 
+
+\subsubsection{Brittle thrust wedges benchmark}
+\label{sec:benchmark-brittle-thrust-wedge}
+
+\textit{This section was contributed by Sibiao Liu, Stephanie Sparks, John 
+Naliboff, and Cedric Thieulot.}
+
+Buiter et al. (2016, \cite{buiter16}) organized new comparison experiments with 
+analogue and numerical models to investigate brittle thrust wedge behavior. The 
+benchmark here aims to verify that the wedge models using \aspect{} follows other 
+numerical results and the analytical wedge theory shown in this paper. In particular, 
+input files (\url{benchmarks/buiter_et_al_2016_jsg}) are provided for reproducing 
+the numerical simulations of stable wedge experiment 1 and unstable wedge experiment 
+2 with the same model setups.
+
+A number of model sets of prescribed material behavior are required to simulate 
+the brittle thrust formation. For example, although the material in the numerical 
+model has a visco-plastic rheology, it performs plastic yielding at the beginning 
+of shortening due to the non-viscous sand. We prescribe plastic strain-weakening 
+behavior, with the internal angle of friction diminishing between total finite 
+strain invariant values of 0.5 and 1.0, to mimic the softening from peak to 
+dynamic stable strength which correlates with sand dilation. 
+
+In sandbox-type models, an important role is played by the boundaries and the 
+frictional sliding of sand against these boundaries. For the top boundary condition, 
+zero traction ("open") and a sticky air layer is used to approximate a free surface. 
+Additional testing revealed that using a true free surface leads to significant 
+mesh distortion and associated numerical instabilities. We also apply a rigid block 
+that approximates a mobile wall with a constant velocity of 2.5 cm/hour on the 
+right-hand side boundary to drive the deformation in the sand layers. The following 
+listing shows key portions of the parameter file that describes this kind of setup:
+
+\lstinputlisting[language=prmfile]{cookbooks/benchmarks/brittle_thrust_wedges/velocity_bc_part.prm}
+
+Accurate solver convergence is always challenging to achieve in numerical thrust 
+wedge models with a high spatial resolution (ca. 1 mm node spacing) and a large 
+viscosity contrast. Here, we suggest that several parameters should be considered 
+carefully. First, the nonlinear and linear solver tolerances should be sufficiently 
+strict to avoid numerical instabilities. Second, we use the discontinuous Galerkin 
+method (\texttt{set Use discontinuous composition discretization = true}) to ensure 
+that the discontinuous composition bound preserving limiter produces sharp interfaces 
+between compositional layers. Lastly, we use the harmonic averaging scheme for 
+material and viscosity is required to achieve reasonable convergence behavior. The 
+relevant parameters are shown here:
+
+\lstinputlisting[language=prmfile]{cookbooks/benchmarks/brittle_thrust_wedges/convergence_part.prm}
+
+\textit{Experiment 1} tests whether model wedges in the stable domain of critical 
+taper theory remain stable when translated horizontally. A quartz sand wedge with 
+a horizontal base and a surface slope of 20 degrees is pushed 4 cm horizontally by 
+inward movement of a mobile wall at the right boundary with a velocity of 2.5 cm/hour 
+(Figure~\ref{fig:btwexp1}). The basal angle is zero (horizontal), a thin layer separates 
+the sand and boundary to ensure minimum coupling between the wedge and bounding box 
+during translation, and a sticky air layer is used above the wedge. Further, the purely 
+plastic material should not undergo any deformation during translation.
+
+\begin{figure}
+\begin{center}
+  \centering
+  \includegraphics[width=\textwidth]{cookbooks/benchmarks/brittle thrust wedges/exp1.png}
+  \caption{\it Numerical model of a stable sand wedge. a) Initial model setup. b) Material field after 4 cm of translation. c) Strain rate field and d) pressure field.}
+  \label{fig:btwexp1}
+\end{center}
+\end{figure}
+
+\textit{Experiment 2} tests how an unstable subcritical wedge deforms to reach the 
+critical taper solution. In this experiment, horizontal layers of sand undergo 10 cm 
+shortening by inward movement of a mobile wall with a velocity of 2.5 cm/hour 
+(Figure~\ref{fig:btwexp2}). Model results show thrust wedge generation near the 
+mobile wall through a combination of mainly in-sequence forward and backward thrusting. 
+The strain field highlights several incipient shear zones that do not always accumulate 
+enough offset to become visible in the material field. The pressure field of the model 
+remains more or less lithostatic, with lower pressure values in (incipient) shear zones.
+
+\begin{figure}
+\begin{center}
+  \centering
+  \includegraphics[width=\textwidth]{cookbooks/benchmarks/brittle thrust wedges/exp2.png}
+  \caption{\it Numerical model of an unstable subcritical wedge. a) Initial model setup. b) Material field of sands after 10 cm shortening. c) Strain field and d) pressure field.}
+  \label{fig:btwexp2}
+\end{center}
+\end{figure}
 
 
 \section{Extending and contributing to \aspect}

@@ -129,6 +129,23 @@ namespace aspect
         bool
         point_is_in_domain(const Point<dim> &point) const;
 
+        /**
+               * Takes the Cartesian points (x,z or x,y,z) and returns standardized
+               * coordinates which are most 'natural' to the geometry model. For a sphere
+               * this is (radius, longitude) in 2d and (radius, longitude, latitude) in 3d.
+               */
+        virtual
+        std::array<double,dim> cartesian_to_natural_coordinates(const Point<dim> &position) const;
+
+        /**
+         * Undoes the action of cartesian_to_natural_coordinates, and turns the
+         * coordinate system which is most 'natural' to the geometry model into
+         * Cartesian coordinates.
+         */
+        virtual
+        Point<dim> natural_to_cartesian_coordinates(const std::array<double,dim> &position) const;
+
+
         static
         void
         declare_parameters (ParameterHandler &prm);
@@ -149,12 +166,10 @@ namespace aspect
          */
         double R;
 
-#if DEAL_II_VERSION_GTE(9,0,0)
         /**
          * The manifold that describes the geometry.
          */
         const SphericalManifold<dim> spherical_manifold;
-#endif
     };
   }
 }

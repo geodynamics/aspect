@@ -37,62 +37,41 @@ namespace aspect
     evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
              MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-
       // Store which components to exclude during volume fraction computation.
-      ComponentMask composition_mask(this->n_compositional_fields(),true);
-      // Elastic stress fields
+      ComponentMask composition_mask(this->n_compositional_fields(), true);
+      // assign compositional fields associated with viscoelastic stress a value of 0
+      // assume these fields are listed first
       for (unsigned int i = 0; i < SymmetricTensor<2,dim>::n_independent_components ; ++i)
         composition_mask.set(i,false);
 
-      // Create the structure for the elastic force terms that are needed to compute the
-      // right-hand side of the Stokes system
-      MaterialModel::ElasticOutputs<dim>
-      *force_out = out.template get_additional_output<MaterialModel::ElasticOutputs<dim> >();
-
-      // The elastic time step (dte) is equal to the numerical time step if the time step number
-      // is greater than 0 and the parameter 'use_fixed_elastic_time_step' is set to false.
-      // On the first (0) time step the elastic time step is always equal to the value
-      // specified in 'fixed_elastic_time_step', which is also used in all subsequent time
-      // steps if 'use_fixed_elastic_time_step' is set to true.
-      const double dte = ( ( this->get_timestep_number() > 0 && use_fixed_elastic_time_step == false )
-                           ?
-                           this->get_timestep()
-                           :
-                           fixed_elastic_time_step);
+      std::vector<double> average_elastic_shear_moduli (in.temperature.size());
+      std::vector<double> elastic_shear_moduli(elastic_rheology.get_elastic_shear_moduli());
+      EquationOfStateOutputs<dim> eos_outputs (this->n_compositional_fields()+1);
 
       for (unsigned int i=0; i < in.temperature.size(); ++i)
         {
-
-          const double temperature = in.temperature[i];
           const std::vector<double> composition = in.composition[i];
           const double pressure = in.pressure[i];
           const SymmetricTensor<2,dim> strain_rate = in.strain_rate[i];
           const std::vector<double> volume_fractions = MaterialUtilities::compute_volume_fractions(composition, composition_mask);
 
+          equation_of_state.evaluate(in, i, eos_outputs);
+
           // Arithmetic averaging of specific heat.
           // This may not be strictly the most reasonable thing, but for most Earth materials we hope
           // that they do not vary so much that it is a big problem. This statement also applies to
           // the arithmetic averaging of density and thermal conductivity below.
-          out.specific_heat[i] = MaterialUtilities::average_value(volume_fractions, specific_heats, MaterialUtilities::arithmetic);
+          out.densities[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.densities, MaterialUtilities::arithmetic);
+          out.thermal_expansion_coefficients[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.thermal_expansion_coefficients, MaterialUtilities::arithmetic);
+          out.specific_heat[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.specific_heat_capacities, MaterialUtilities::arithmetic);
 
           out.thermal_conductivities[i] = MaterialUtilities::average_value(volume_fractions, thermal_conductivities, MaterialUtilities::arithmetic);
 
-          double density = 0.0;
-          for (unsigned int j=0; j < volume_fractions.size(); ++j)
-            {
-              // not strictly correct if thermal expansivities are different, since we are interpreting
-              // these compositions as volume fractions, but the error introduced should not be too bad.
-              const double temperature_factor = (1.0 - thermal_expansivities[j] * (temperature - reference_temperature));
-              density += volume_fractions[j] * densities[j] * temperature_factor;
-            }
-          out.densities[i] = density;
-
-          out.thermal_expansion_coefficients[i] = MaterialUtilities::average_value(volume_fractions, thermal_expansivities, MaterialUtilities::arithmetic);
-
           // Set properties that are not relevant for this material model to 0
-          out.compressibilities[i] = 0.0;
-          out.entropy_derivative_pressure[i] = 0.0;
-          out.entropy_derivative_temperature[i] = 0.0;
+          out.compressibilities[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.compressibilities, MaterialUtilities::arithmetic);
+          out.entropy_derivative_pressure[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.entropy_derivative_pressure, MaterialUtilities::arithmetic);
+          out.entropy_derivative_temperature[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.entropy_derivative_temperature, MaterialUtilities::arithmetic);
+
           for (unsigned int c=0; c<in.composition[i].size(); ++c)
             out.reaction_terms[i][c] = 0.0;
 
@@ -145,104 +124,26 @@ namespace aspect
                     {
                       viscosities_viscoplastic[j] = viscosities_pre_yield[j];
                     }
-
-
-                  viscosities_viscoelastic[j] = ( viscosities_viscoplastic[j] * dte ) / ( dte + ( viscosities_viscoplastic[j] / elastic_shear_moduli[j] ) );
-
                 }
 
-              out.viscosities[i] = MaterialUtilities::average_value(volume_fractions,viscosities_viscoelastic,viscosity_averaging);
+              // Average viscosity and shear modulus
+              const double average_viscosity = MaterialUtilities::average_value(volume_fractions, viscosities_viscoplastic, viscosity_averaging);
+              average_elastic_shear_moduli[i] = MaterialUtilities::average_value(volume_fractions, elastic_shear_moduli, viscosity_averaging);
 
+              // Average viscoelastic (e.g., effective) viscosity (equation 28 in Moresi et al., 2003, J. Comp. Phys.)
+              out.viscosities[i] = elastic_rheology.calculate_viscoelastic_viscosity(average_viscosity,
+                                                                                     average_elastic_shear_moduli[i]);
+
+              // Fill the material properties that are part of the elastic additional outputs
               if (ElasticAdditionalOutputs<dim> *elastic_out = out.template get_additional_output<ElasticAdditionalOutputs<dim> >())
                 {
-                  elastic_out->elastic_shear_moduli[i] = MaterialUtilities::average_value(volume_fractions,elastic_shear_moduli,viscosity_averaging);
-                }
-
-              // Fill elastic force outputs (assumed to be zero during initial time step)
-              if (force_out)
-                {
-                  force_out->elastic_force[i] = 0.;
+                  elastic_out->elastic_shear_moduli[i] = average_elastic_shear_moduli[i];
                 }
             }
         }
 
-      // Viscoelasticity section
-      if (in.current_cell.state() == IteratorState::valid && this->get_timestep_number() > 0 && in.strain_rate.size() > 0)
-        {
-          // Get old (previous time step) velocity gradients
-          std::vector<Point<dim> > quadrature_positions(in.position.size());
-          for (unsigned int i=0; i < in.position.size(); ++i)
-            quadrature_positions[i] = this->get_mapping().transform_real_to_unit_cell(in.current_cell, in.position[i]);
-
-          // FEValues requires a quadrature and we provide the default quadrature
-          // as we only need to evaluate the gradients of the solution.
-          FEValues<dim> fe_values (this->get_mapping(),
-                                   this->get_fe(),
-                                   Quadrature<dim>(quadrature_positions),
-                                   update_gradients);
-
-          fe_values.reinit (in.current_cell);
-          std::vector<Tensor<2,dim> > old_velocity_gradients (quadrature_positions.size(), Tensor<2,dim>());
-          fe_values[this->introspection().extractors.velocities].get_function_gradients (this->get_old_solution(),
-                                                                                         old_velocity_gradients);
-
-          MaterialModel::ElasticOutputs<dim>
-          *force_out = out.template get_additional_output<MaterialModel::ElasticOutputs<dim> >();
-
-          for (unsigned int i=0; i < in.position.size(); ++i)
-            {
-
-              const std::vector<double> composition = in.composition[i];
-              const std::vector<double> volume_fractions = MaterialUtilities::compute_volume_fractions(composition, composition_mask);
-
-              // Get old stresses from compositional fields
-              SymmetricTensor<2,dim> stress_old;
-              for (unsigned int j=0; j < SymmetricTensor<2,dim>::n_independent_components; ++j)
-                stress_old[SymmetricTensor<2,dim>::unrolled_to_component_indices(j)] = in.composition[i][j];
-
-              // Calculate the rotated stresses
-              // Rotation (vorticity) tensor (equation 25 in Moresi et al., 2003, J. Comp. Phys.)
-              const Tensor<2,dim> rotation = 0.5 * ( old_velocity_gradients[i] - transpose(old_velocity_gradients[i]) );
-
-              // Recalculate average elastic shear modulus
-              const double elastic_shear_modulus = MaterialUtilities::average_value(volume_fractions,
-                                                                                    elastic_shear_moduli,
-                                                                                    viscosity_averaging);
-
-              // Average viscoelastic viscosity (viscoplastic viscosity modified for elastic contributions)
-              const double viscoelastic_viscosity = out.viscosities[i];
-
-              // Calculate the current (new) viscoelastic stress, which is a function of the material
-              // properties (viscoelastic viscosity, shear modulus), elastic time step size, strain rate,
-              // vorticity and prior (inherited) viscoelastic stresses (see equation 29 in Moresi et al.,
-              // 2003, J. Comp. Phys.)
-              SymmetricTensor<2,dim> stress_new = ( 2. * viscoelastic_viscosity * deviator(in.strain_rate[i]) ) +
-                                                  ( ( viscoelastic_viscosity / ( elastic_shear_modulus * dte ) ) * stress_old ) +
-                                                  ( ( viscoelastic_viscosity / elastic_shear_modulus ) *
-                                                    ( symmetrize(rotation * Tensor<2,dim>(stress_old) ) - symmetrize(Tensor<2,dim>(stress_old) * rotation) ) );
-
-              // Stress averaging scheme to account for difference between fixed elastic time step
-              // and numerical time step (see equation 32 in Moresi et al., 2003, J. Comp. Phys.)
-              const double dt = this->get_timestep();
-              if (use_fixed_elastic_time_step == true && use_stress_averaging == true && dt < dte)
-                {
-                  stress_new = ( ( 1. - ( dt / dte ) ) * stress_old ) + ( ( dt / dte ) * stress_new ) ;
-                }
-
-              // Fill reaction terms
-              for (unsigned int j = 0; j < SymmetricTensor<2,dim>::n_independent_components ; ++j)
-                out.reaction_terms[i][j] = -stress_old[SymmetricTensor<2,dim>::unrolled_to_component_indices(j)]
-                                           + stress_new[SymmetricTensor<2,dim>::unrolled_to_component_indices(j)];
-
-              // Fill elastic force outputs (See equation 30 in Moresi et al., 2003, J. Comp. Phys.)
-              if (force_out)
-                {
-                  force_out->elastic_force[i] = -1. * ( ( viscoelastic_viscosity / ( elastic_shear_modulus * dte  ) ) * stress_old );
-                }
-
-            }
-        }
-
+      elastic_rheology.fill_elastic_force_outputs(in, average_elastic_shear_moduli, out);
+      elastic_rheology.fill_reaction_outputs(in, average_elastic_shear_moduli, out);
     }
 
     template <int dim>
@@ -258,7 +159,7 @@ namespace aspect
     ViscoelasticPlastic<dim>::
     is_compressible () const
     {
-      return false;
+      return equation_of_state.is_compressible();
     }
 
     template <int dim>
@@ -269,11 +170,11 @@ namespace aspect
       {
         prm.enter_subsection("Viscoelastic Plastic");
         {
+          // Equation of state parameters
+          EquationOfState::MulticomponentIncompressible<dim>::declare_parameters (prm);
+          Rheology::Elasticity<dim>::declare_parameters (prm);
 
           // Reference and minimum/maximum values
-          prm.declare_entry ("Reference temperature", "293",
-                             Patterns::Double (0),
-                             "The reference temperature $T_0$. Units: $\\text{K}$.");
           prm.declare_entry ("Minimum strain rate", "1.0e-20", Patterns::Double(0),
                              "Stabilizes strain dependent viscosity. Units: $1 / s$");
           prm.declare_entry ("Reference strain rate","1.0e-15",Patterns::Double(0),
@@ -304,22 +205,6 @@ namespace aspect
                              "\n\n"
                              "Units: $Pa \\, s$");
 
-          // Equation of state parameters
-          prm.declare_entry ("Densities", "3300.",
-                             Patterns::List(Patterns::Double(0)),
-                             "List of densities for background material and compositional fields, "
-                             "for a total of N+1 values, where N is the number of compositional fields. "
-                             "If only one value is given, then all use the same value.  Units: $kg / m^3$");
-          prm.declare_entry ("Thermal expansivities", "4.e-5",
-                             Patterns::List(Patterns::Double(0)),
-                             "List of thermal expansivities for background material and compositional fields, "
-                             "for a total of N+1 values, where N is the number of compositional fields. "
-                             "If only one value is given, then all use the same value. Units: $1/K$");
-          prm.declare_entry ("Specific heats", "1250.",
-                             Patterns::List(Patterns::Double(0)),
-                             "List of specific heats $C_p$ for background material and compositional fields, "
-                             "for a total of N+1 values, where N is the number of compositional fields. "
-                             "If only one value is given, then all use the same value. Units: $J /kg /K$");
           prm.declare_entry ("Thermal conductivities", "4.7",
                              Patterns::List(Patterns::Double(0)),
                              "List of thermal conductivities for background material and compositional fields, "
@@ -350,35 +235,6 @@ namespace aspect
                              "for a total of N+1 values, where N is the number of compositional fields. "
                              "The extremely large default cohesion value (1e20 Pa) prevents the viscous stress from "
                              "exceeding the yield stress. Units: $Pa$.");
-
-          // Viscoelasticity parameters
-          prm.declare_entry ("Elastic shear moduli", "75.0e9",
-                             Patterns::List(Patterns::Double(0)),
-                             "List of elastic shear moduli, $G$, "
-                             "for background material and compositional fields, "
-                             "for a total of N+1 values, where N is the number of compositional fields. "
-                             "The default value of 75 GPa is representative of mantle rocks. Units: Pa.");
-          prm.declare_entry ("Use fixed elastic time step", "unspecified",
-                             Patterns::Selection("true|false|unspecified"),
-                             "Select whether the material time scale in the viscoelastic constitutive "
-                             "relationship uses the regular numerical time step or a separate fixed "
-                             "elastic time step throughout the model run. The fixed elastic time step "
-                             "is always used during the initial time step. If a fixed elastic time "
-                             "step is used throughout the model run, a stress averaging scheme can be "
-                             "applied to account for differences with the numerical time step. An "
-                             "alternative approach is to limit the maximum time step size so that it "
-                             "is equal to the elastic time step. The default value of this parameter is "
-                             "'unspecified', which throws an exception during runtime. In order for "
-                             "the model to run the user must select 'true' or 'false'.");
-          prm.declare_entry ("Fixed elastic time step", "1.e3",
-                             Patterns::Double (0),
-                             "The fixed elastic time step $dte$. Units: years if the "
-                             "'Use years in output instead of seconds' parameter is set; "
-                             "seconds otherwise.");
-          prm.declare_entry ("Use stress averaging","false",
-                             Patterns::Bool (),
-                             "Whether to apply a stress averaging scheme to account for differences "
-                             "between the fixed elastic time step and numerical time step. ");
         }
         prm.leave_subsection();
       }
@@ -393,15 +249,19 @@ namespace aspect
       // Get the number of fields for composition-dependent material properties
       const unsigned int n_fields = this->n_compositional_fields() + 1;
 
+      AssertThrow(this->get_parameters().enable_elasticity == true,
+                  ExcMessage ("Material model Viscoelastic plastic only works if 'Enable elasticity' is set to true"));
+
       prm.enter_subsection("Material model");
       {
         prm.enter_subsection("Viscoelastic Plastic");
         {
+          elastic_rheology.initialize_simulator (this->get_simulator());
+          elastic_rheology.parse_parameters(prm);
 
-          AssertThrow(this->get_parameters().enable_elasticity == true,
-                      ExcMessage ("Material model Viscoelastic only works if 'Enable elasticity' is set to true"));
+          equation_of_state.initialize_simulator (this->get_simulator());
+          equation_of_state.parse_parameters (prm);
 
-          reference_temperature = prm.get_double ("Reference temperature");
           minimum_strain_rate = prm.get_double("Minimum strain rate");
           reference_strain_rate = prm.get_double("Reference strain rate");
           minimum_viscosity = prm.get_double ("Minimum viscosity");
@@ -424,97 +284,12 @@ namespace aspect
                                                               "Cohesions");
 
           // Parse additional material properties
-          densities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Densities"))),
-                                                              n_fields,
-                                                              "Densities");
           linear_viscosities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Linear viscosities"))),
                                                                        n_fields,
                                                                        "Viscosities");
           thermal_conductivities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Thermal conductivities"))),
                                                                            n_fields,
                                                                            "Thermal conductivities");
-          thermal_expansivities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Thermal expansivities"))),
-                                                                          n_fields,
-                                                                          "Thermal expansivities");
-          specific_heats = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Specific heats"))),
-                                                                   n_fields,
-                                                                   "Specific heats");
-          elastic_shear_moduli = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Elastic shear moduli"))),
-                                                                         n_fields,
-                                                                         "Elastic shear moduli");
-
-          if (prm.get ("Use fixed elastic time step") == "true")
-            use_fixed_elastic_time_step = true;
-          else if (prm.get ("Use fixed elastic time step") == "false")
-            use_fixed_elastic_time_step = false;
-          else
-            AssertThrow(false, ExcMessage("'Use fixed elastic time step' must be set to 'true' or 'false'"));
-
-          use_stress_averaging = prm.get_bool ("Use stress averaging");
-          if (use_stress_averaging)
-            AssertThrow(use_fixed_elastic_time_step == true,
-                        ExcMessage("Stress averaging can only be used if 'Use fixed elastic time step' is set to true'"));
-
-          fixed_elastic_time_step = prm.get_double ("Fixed elastic time step");
-          AssertThrow(fixed_elastic_time_step > 0,
-                      ExcMessage("The fixed elastic time step must be greater than zero"));
-
-          if (this->convert_output_to_years())
-            fixed_elastic_time_step *= year_in_seconds;
-
-          // Check whether the compositional fields representing the viscoelastic
-          // stress tensor are both named correctly and listed in the right order.
-          if (dim == 2)
-            {
-              AssertThrow(this->introspection().compositional_index_for_name("stress_xx") == 0,
-                          ExcMessage("Material model Viscoelastic only works if the first "
-                                     "compositional field is called stress_xx."));
-              AssertThrow(this->introspection().compositional_index_for_name("stress_yy") == 1,
-                          ExcMessage("Material model Viscoelastic only works if the second "
-                                     "compositional field is called stress_yy."));
-              AssertThrow(this->introspection().compositional_index_for_name("stress_xy") == 2,
-                          ExcMessage("Material model Viscoelastic only works if the third "
-                                     "compositional field is called stress_xy."));
-            }
-          else if (dim == 3)
-            {
-              AssertThrow(this->introspection().compositional_index_for_name("stress_xx") == 0,
-                          ExcMessage("Material model Viscoelastic Plastic only works if the first "
-                                     "compositional field is called stress_xx."));
-              AssertThrow(this->introspection().compositional_index_for_name("stress_yy") == 1,
-                          ExcMessage("Material model Viscoelastic Plastic only works if the second "
-                                     "compositional field is called stress_yy."));
-              AssertThrow(this->introspection().compositional_index_for_name("stress_zz") == 2,
-                          ExcMessage("Material model Viscoelastic Plastic only works if the third "
-                                     "compositional field is called stress_zz."));
-              AssertThrow(this->introspection().compositional_index_for_name("stress_xy") == 3,
-                          ExcMessage("Material model Viscoelastic Plastic only works if the fourth "
-                                     "compositional field is called stress_xy."));
-              AssertThrow(this->introspection().compositional_index_for_name("stress_xz") == 4,
-                          ExcMessage("Material model Viscoelastic Plastic only works if the fifth "
-                                     "compositional field is called stress_xz."));
-              AssertThrow(this->introspection().compositional_index_for_name("stress_yz") == 5,
-                          ExcMessage("Material model Viscoelastic Plastic only works if the sixth "
-                                     "compositional field is called stress_yz."));
-            }
-          else
-            ExcNotImplemented();
-
-          AssertThrow((this->get_parameters().nonlinear_solver ==
-                       Parameters<dim>::NonlinearSolver::single_Advection_single_Stokes
-                       ||
-                       this->get_parameters().nonlinear_solver ==
-                       Parameters<dim>::NonlinearSolver::single_Advection_iterated_Stokes),
-                      ExcMessage("The material model will only work with the solver schemes "
-                                 "'single Advection, single Stokes' and 'single Advection, iterated Stokes'"));
-
-          // Functionality to average the additional RHS terms over the cell is not implemented.
-          // This enforces that the variable 'Material averaging' is set to 'none'.
-          AssertThrow((this->get_parameters().material_averaging ==
-                       MaterialModel::MaterialAveraging::none),
-                      ExcMessage("The viscoelastic_plastic material model cannot be used with "
-                                 "material averaging. The variable 'Material averaging' "
-                                 "in the 'Material model' subsection must be set to 'none'."));
         }
         prm.leave_subsection();
       }
@@ -536,12 +311,7 @@ namespace aspect
     void
     ViscoelasticPlastic<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      if (out.template get_additional_output<ElasticAdditionalOutputs<dim> >() == NULL)
-        {
-          const unsigned int n_points = out.viscosities.size();
-          out.additional_outputs.push_back(
-            std_cxx14::make_unique<MaterialModel::ElasticAdditionalOutputs<dim>> (n_points));
-        }
+      elastic_rheology.create_elastic_outputs(out);
     }
   }
 }

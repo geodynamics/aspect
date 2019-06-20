@@ -33,6 +33,85 @@ namespace aspect
   {
     using namespace dealii;
 
+    namespace LABDepth
+    {
+      template <int dim>
+      class LABDepthLookup : public SimulatorAccess<dim>
+      {
+        public:
+          /**
+           * Empty Constructor.
+           */
+          LABDepthLookup ();
+
+          /**
+           * Initialization function. This function is called once at the
+           * beginning of the program. Checks preconditions.
+           */
+          void
+          initialize ();
+
+          /**
+           * Return LAB depth as a function of position (latitude and longitude). This
+          * function returns either a constant value or values from a text file,
+           * depending on the input parameters. Text files are read in
+           * two dimensions so the third column (depth) is treated as data.
+           */
+          double
+          get_lab_depth (const Point<dim> &position) const;
+
+          /**
+           * Declare the parameters this class takes through input files.
+           */
+          static
+          void
+          declare_parameters (ParameterHandler &prm);
+
+          /**
+           * Read the parameters this class declares from the parameter file.
+           */
+          void
+          parse_parameters (ParameterHandler &prm);
+
+        private:
+          /**
+           * Reads in file containing input data in ascii format.
+           */
+          Utilities::AsciiDataLookup<2> lab_depths;
+
+          /**
+           * Directory in which the LAB depth file is present.
+           */
+          std::string data_directory;
+
+          /**
+           * File name of the LAB depth file.
+           */
+          std::string LAB_file_name;
+
+          /**
+           * An enum to describe where the LAB depth is coming from.
+           */
+          enum LABDepthSource
+          {
+            Value,
+            File
+          };
+
+          /**
+           * Currently chosen source for the LAB depth.
+           */
+          LABDepthSource LAB_depth_source;
+
+          /**
+           * This parameter gives the maximum depth of the lithosphere. The
+           * model returns nans below this depth. This parameter is only used if LAB
+           * depth source is set to 'Value'.
+           */
+          double max_depth;
+      };
+    }
+
     /**
      * A class that implements a constant reference temperature
      * above a specified depth and nans below the specified depth.
@@ -43,11 +122,6 @@ namespace aspect
     class LithosphereMask : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
-        /**
-         * Empty Constructor.
-         */
-        LithosphereMask ();
-
         /**
          * Initialization function. This function is called once at the
          * beginning of the program. Checks preconditions.
@@ -78,56 +152,17 @@ namespace aspect
 
       private:
         /**
-         * Reads in file containing input data in ascii format.
-         */
-        Utilities::AsciiDataLookup<2> lab_depths;
-
-        /**
-         * Directory in which the LAB depth file is present.
-         */
-        std::string data_directory;
-
-        /**
-         * File name of the LAB depth file.
-         */
-        std::string LAB_file_name;
-
-        /**
-         * Return LAB depth as a function of position (latitude and longitude). For the
-         * current class, this function returns value from the text file. We read in
-         * two dimensions so the third column (depth) is treated as data.
-         */
-        double
-        ascii_lab (const Point<2> &position) const;
-
-        /**
-         * This parameter gives the maximum depth of the lithosphere. The
-         * model returns nans below this depth. This parameter is only used if LAB
-         * depth source is set to 'Value'.
-         */
-        double max_depth;
-
-        /**
          * This parameter gives the initial temperature set within the lithosphere.
          */
         double lithosphere_temperature;
 
         /**
-         * An enum to describe where the LAB depth is coming from.
+         *
          */
-        enum LABDepthSource
-        {
-          Value,
-          File
-        };
-
-        /**
-         * Currently chosen source for the LAB depth.
-         */
-        LABDepthSource LAB_depth_source;
+        LABDepth::LABDepthLookup<dim> lab_depth_lookup;
     };
+
   }
 }
-
 
 #endif

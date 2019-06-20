@@ -55,23 +55,12 @@ namespace aspect
     {
       public:
 
-#if !DEAL_II_VERSION_GTE(9,0,0)
-        void initialize ();
-#endif
-
         /**
          * Generate a coarse mesh for the geometry described by this class.
          */
         virtual
         void create_coarse_mesh (parallel::distributed::Triangulation<dim> &coarse_grid) const;
 
-#if !DEAL_II_VERSION_GTE(9,0,0)
-        /**
-         * Connect the set/clear manifold id functions to the post/pre_compute_no_normal_flux signals.
-         */
-        void
-        connect_to_signal(SimulatorSignals<dim> &signals);
-#endif
 
         /**
          * Return the set of boundary indicators that are used by this model.
@@ -319,14 +308,12 @@ namespace aspect
             void
             set_min_longitude(const double p1_lon);
 
-#if DEAL_II_VERSION_GTE(9,0,0)
             /**
              * Return a copy of this manifold.
              */
             virtual
             std::unique_ptr<Manifold<dim,dim> >
             clone() const;
-#endif
 
           private:
             // The minimum longitude of the domain
@@ -337,11 +324,6 @@ namespace aspect
          * An object that describes the geometry.
          */
         ChunkGeometry manifold;
-
-#if !DEAL_II_VERSION_GTE(9,0,0)
-        void set_manifold_ids (typename parallel::distributed::Triangulation<dim> &triangulation);
-        void clear_manifold_ids (typename parallel::distributed::Triangulation<dim> &triangulation);
-#endif
     };
   }
 }

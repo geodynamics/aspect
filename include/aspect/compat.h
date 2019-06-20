@@ -31,7 +31,7 @@
 // for std_cxx14::make_unique:
 #include <deal.II/base/std_cxx14/memory.h>
 
-//#if !DEAL_II_VERSION_GTE(9,2,0)
+#if !DEAL_II_VERSION_GTE(9,2,0)
 #include <deal.II/base/table.h>
 #include <deal.II/base/function_lib.h>
 namespace aspect
@@ -382,6 +382,6 @@ namespace aspect
   }
 
 }
-//#endif
+#endif
 
 #endif
