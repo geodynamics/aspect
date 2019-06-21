@@ -2,8 +2,8 @@
 
 pipeline {
   agent {
-    docker {
-      image 'tjhei/dealii:v9.0.1-full-v9.0.1-r5-gcc5'
+    dockerfile {
+      dir 'contrib/ci'
     }
   }
 
@@ -105,6 +105,15 @@ pipeline {
         cd build-gcc-fast
         ninja
         '''
+      }
+    }
+
+    stage('Build Documentation') {
+      steps {
+        sh 'cd doc && ./update_parameters.sh ./build-gcc-fast/aspect'
+        sh 'cd doc && make manual.pdf || touch ~/FAILED-DOC'
+        archiveArtifacts artifacts: 'doc/manual/manual.log', allowEmptyArchive: true
+        sh 'if [ -f ~/FAILED-DOC ]; then exit 1; fi'
       }
     }
 
