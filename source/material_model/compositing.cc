@@ -86,11 +86,26 @@ namespace aspect
     {
       typename Interface<dim>::MaterialModelOutputs base_output(out.viscosities.size(),
                                                                 this->introspection().n_compositional_fields);
+      create_additional_named_outputs(base_output);
 
       for (unsigned int i=0; i<models.size(); ++i)
         {
+          models[i]->evaluate(in, out);
           models[i]->evaluate(in, base_output);
           copy_required_properties(i, base_output, out);
+        }
+    }
+
+
+
+    template <int dim>
+    void
+    Compositing<dim>::
+    create_additional_named_outputs (typename Interface<dim>::MaterialModelOutputs &outputs) const
+    {
+      for (unsigned int i=0; i<models.size(); ++i)
+        {
+          models[i]->create_additional_named_outputs(outputs);
         }
     }
 

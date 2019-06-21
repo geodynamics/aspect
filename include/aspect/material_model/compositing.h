@@ -71,6 +71,14 @@ namespace aspect
                   typename Interface<dim>::MaterialModelOutputs &out) const;
 
         /**
+         * If this material model can produce additional named outputs
+         * that are derived from NamedAdditionalOutputs, create them in here.
+         */
+        virtual
+        void
+        create_additional_named_outputs (typename Interface<dim>::MaterialModelOutputs &outputs) const;
+
+        /**
          * @copydoc MaterialModel::Interface::declare_parameters()
          */
         static void
