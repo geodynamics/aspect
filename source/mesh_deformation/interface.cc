@@ -165,7 +165,7 @@ namespace aspect
                            "to compare this with the documentation of the geometry model you "
                            "use in your model. "
                            "\n\n"
-                           "The format is id1: object1 & object2, id2: object3 & object2, where "
+                           "The format is id1: object1 \\& object2, id2: object3 \\& object2, where "
                            "objects are one of " + std::get<dim>(registered_plugins).get_description_string());
       }
       prm.leave_subsection ();
