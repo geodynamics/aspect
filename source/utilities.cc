@@ -2299,16 +2299,16 @@ namespace aspect
            this->get_timestep_number() == numbers::invalid_unsigned_int) ||
           this->get_time() - first_data_file_model_time >= 0.0 )
         {
-          Point<dim> internal_position = position;
+          const std::array<double,dim> natural_position = this->get_geometry_model().cartesian_to_natural_coordinates(position);
 
-          if (dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()) != 0
-              || dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model()) != 0)
+          Point<dim> internal_position;
+          for (unsigned int i = 0; i < dim; i++)
+            internal_position[i] = natural_position[i];
+
+          // The chunk model has latitude as natural coordinate. We need to convert this to colatitude
+          if (dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model()) != nullptr && dim == 3)
             {
-              const std::array<double,dim> spherical_position =
-                ::aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(position);
-
-              for (unsigned int i = 0; i < dim; i++)
-                internal_position[i] = spherical_position[i];
+              internal_position[2] = numbers::PI/2. - internal_position[2];
             }
 
           const std::array<unsigned int,dim-1> boundary_dimensions =
