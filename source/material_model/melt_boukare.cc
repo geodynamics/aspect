@@ -206,7 +206,8 @@ namespace aspect
                               const unsigned int i) const
     {
       AssertThrow(temperature > 0.0,
-                  ExcMessage("The temperature has to be larger than 0!"));
+                  ExcMessage("The temperature has to be larger than 0, but it is "
+                      + std::to_string(temperature) + " for endmember " + std::to_string(i) + "."));
 
       const double energy = 3. * number_of_atoms[i] * constants::gas_constant * Einstein_temperatures[i]
                             * (0.5 + 1. / (std::exp(Einstein_temperatures[i] / temperature) - 1.0));
