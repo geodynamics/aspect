@@ -12,11 +12,11 @@ pipeline {
   }
 
   options {
-    timeout(time: 2, unit: 'HOURS')
+    timeout(time: 3, unit: 'HOURS')
   }
 
   stages {
-    stage ("info") {
+    stage ("Print Info") {
       steps {
         echo "PR: ${env.CHANGE_ID} - ${env.CHANGE_TITLE}"
         echo "CHANGE_AUTHOR_EMAIL: ${env.CHANGE_AUTHOR_EMAIL}"
@@ -26,7 +26,7 @@ pipeline {
       }
     }
 
-    stage ("Check permissions") {
+    stage ("Check Permissions") {
       when {
         allOf {
           not {branch 'master'}
@@ -53,7 +53,7 @@ pipeline {
       }
     }
 
-    stage('Check indentation') {
+    stage('Check Indentation') {
       steps {
         sh './contrib/utilities/indent'
         sh 'git diff > changes-astyle.diff'
@@ -66,60 +66,99 @@ pipeline {
     }
 
     stage('Build') {
-      options {timeout(time: 15, unit: 'MINUTES')}
+      options {
+        timeout(time: 30, unit: 'MINUTES')
+      }
       steps {
         sh '''
-        export NP=`grep -c ^processor /proc/cpuinfo`
-        mkdir -p /home/dealii/build-gcc-fast
-        cd /home/dealii/build-gcc-fast
-        cmake -G "Ninja" \
+        # running cmake...
+        mkdir build-gcc-fast
+        cd build-gcc-fast
+
+        cmake \
+        -G 'Ninja' \
         -D CMAKE_CXX_FLAGS='-Werror' \
-        -D ASPECT_TEST_GENERATOR=Ninja \
-        -D ASPECT_USE_PETSC=OFF \
-        -D ASPECT_RUN_ALL_TESTS=ON \
-        -D ASPECT_PRECOMPILE_HEADERS=ON \
-        $WORKSPACE/
-        ninja -j $NP
+        -D ASPECT_TEST_GENERATOR='Ninja' \
+        -D ASPECT_USE_PETSC='OFF' \
+        -D ASPECT_RUN_ALL_TESTS='ON' \
+        -D ASPECT_PRECOMPILE_HEADERS='ON' \
+        ..
+        '''
+
+        sh '''
+        # compiling...
+        cd build-gcc-fast
+        ninja
         '''
       }
     }
 
     stage('Build Documentation') {
-	      steps {
-	        sh 'cd doc && make manual.pdf || touch ~/FAILED-DOC'
-		archiveArtifacts artifacts: 'doc/manual/manual.log', allowEmptyArchive: true
-		sh 'if [ -f ~/FAILED-DOC ]; then exit 1; fi'
-	      }
-	    }
-
-    stage('Prebuild tests') {
-      options {timeout(time: 90, unit: 'MINUTES')}
       steps {
-        sh '''
-        cd /home/dealii/build-gcc-fast/tests
-        echo "Prebuilding tests..."
-        ninja -k 0 tests || true
-        '''
+        sh 'cd doc && ./update_parameters.sh ./build-gcc-fast/aspect'
+        sh 'cd doc && make manual.pdf || touch ~/FAILED-DOC'
+        archiveArtifacts artifacts: 'doc/manual/manual.log', allowEmptyArchive: true
+        sh 'if [ -f ~/FAILED-DOC ]; then exit 1; fi'
       }
     }
 
-    stage('Run tests') {
-      options {timeout(time: 90, unit: 'MINUTES')}
+    stage('Test') {
+      options {
+        timeout(time: 150, unit: 'MINUTES')
+      }
       steps {
+        // Let ninja prebuild the test libraries and run
+        // the tests to create the output files in parallel. We
+        // want this to always succeed, because it does not generate
+        // useful output (we do this further down using 'ctest', however
+        // ctest can not run ninja in parallel, so this is the
+        // most efficient way to build the tests).
         sh '''
-        rm -f /home/dealii/build-gcc-fast/FAILED
-        cd /home/dealii/build-gcc-fast
-        ctest --output-on-failure -j4 || { touch FAILED; }
-        echo "Generating reference output..."
-        ninja generate_reference_output
+        # prebuilding tests...
+        cd build-gcc-fast/tests
+        ninja -k 0 tests || true
         '''
-        sh 'git diff tests > changes-test-results.diff'
-        archiveArtifacts artifacts: 'changes-test-results.diff', fingerprint: true
-        sh 'if [ -f /home/dealii/build-gcc-fast/FAILED ]; then exit 1; fi'
-        sh 'git diff --exit-code --name-only'
+
+        // Output the test results using ctest. Since
+        // the tests were prebuild in the previous shell
+        // command, this will be fast although it is not
+        // running in parallel. We use the ninja test generator, which
+        // does not support running ctest with -j.
+        sh '''
+        # generating test results...
+        cd build-gcc-fast
+        ctest \
+        --no-compress-output \
+        --test-action Test \
+        --output-on-failure
+        '''
+      }
+      post {
+        always {
+          // Generate the 'Tests' output page in Jenkins
+          xunit testTimeMargin: '3000',
+          thresholdMode: 1,
+          thresholds: [failed(), skipped()],
+          tools: [CTest(pattern: 'build-gcc-fast/Testing/**/*.xml')]
+
+          // Update the reference test output with the new test results
+          sh '''
+          # generating reference output...
+          cd build-gcc-fast
+          ninja generate_reference_output
+          '''
+
+          // Generate the 'Artifacts' diff-file that can be
+          // used to update the test results
+          sh 'git diff tests > changes-test-results.diff'
+          archiveArtifacts artifacts: 'changes-test-results.diff'
+        }
       }
     }
   }
-
-  post { cleanup { cleanWs() } }
+  post {
+    cleanup {
+      cleanWs()
+    }
+  }
 }
