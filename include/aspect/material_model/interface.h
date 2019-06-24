@@ -537,6 +537,11 @@ namespace aspect
        */
       template <class AdditionalOutputType>
       const AdditionalOutputType *get_additional_output() const;
+
+      /**
+       * Steal the additional outputs from @p other.
+       */
+      void take_additional_outputs_from(MaterialModelOutputs<dim> &other);
     };
 
 
@@ -1302,6 +1307,13 @@ namespace aspect
             return result;
         }
       return nullptr;
+    }
+
+
+    template <int dim>
+    void MaterialModelOutputs<dim>::take_additional_outputs_from(MaterialModelOutputs<dim> &other)
+    {
+      this->additional_outputs = std::move(other.additional_outputs);
     }
 
 
