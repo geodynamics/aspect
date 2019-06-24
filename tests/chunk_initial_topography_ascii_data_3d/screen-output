@@ -16,7 +16,7 @@ Number of degrees of freedom: 3,041 (2,187+125+729)
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 91+0 iterations.
+   Solving Stokes system... 101+0 iterations.
 
    Postprocessing:
 
@@ -34,7 +34,7 @@ Number of degrees of freedom: 3,041 (2,187+125+729)
      Reference thermal diffusivity (m^2/s):         1.22101e-06
      Rayleigh number:                               7.4479e+07
 
-     RMS, max velocity:       0.0137 m/year, 0.0608 m/year
+     RMS, max velocity:       0.0169 m/year, 0.0588 m/year
      Temperature min/avg/max: 1613 K, 1613 K, 1613 K
      Topography min/max:      -1981 m, 8995 m
 
