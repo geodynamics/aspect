@@ -2,6 +2,7 @@
 
 pipeline {
   agent {
+    // first build a docker image for running the tests from the repo
     dockerfile {
       dir 'contrib/ci'
     }
@@ -37,9 +38,14 @@ pipeline {
         }
       }
       steps {
+        // For /rebuild to work you need to:
+        // 1) select "issue comment" to be delivered in the github webhook setting
+        // 2) install "GitHub PR Comment Build Plugin" on Jenkins
+        // 3) in project settings select "add property" "Trigger build on pr comment" with
+        //    the phrase ".*/rebuild.*" (without quotes)
         sh '''
         wget -q -O - https://api.github.com/repos/geodynamics/aspect/issues/${CHANGE_ID}/labels | grep 'ready to test' || \
-        { echo "This commit will only be tested when it has the label 'ready to test'"; exit 1; }
+        { echo "This commit will only be tested when it has the label 'ready to test'. Trigger a rebuild by adding a comment that contains '/rebuild'..."; exit 1; }
         '''
       }
     }
@@ -61,9 +67,9 @@ pipeline {
         timeout(time: 30, unit: 'MINUTES')
       }
       steps {
-        sh 'mkdir build-gcc-unity'
-
         sh '''
+        # running cmake for unity build...
+        mkdir build-gcc-unity
         cd build-gcc-unity
 
         # Set up build system and compile ASPECT
@@ -74,6 +80,7 @@ pipeline {
         '''
 
         sh '''
+        # executing unity build...
         cd build-gcc-unity
         make aspect_unity
         '''
@@ -85,12 +92,11 @@ pipeline {
         timeout(time: 30, unit: 'MINUTES')
       }
       steps {
-        sh 'mkdir build-gcc-fast'
-
         sh '''
+        # running cmake...
+        mkdir build-gcc-fast
         cd build-gcc-fast
 
-        # Set up build system and compile ASPECT
         cmake \
         -G 'Ninja' \
         -D CMAKE_CXX_FLAGS='-Werror' \
@@ -102,6 +108,7 @@ pipeline {
         '''
 
         sh '''
+        # compiling...
         cd build-gcc-fast
         ninja
         '''
@@ -122,28 +129,30 @@ pipeline {
         timeout(time: 150, unit: 'MINUTES')
       }
       steps {
+        // Let ninja prebuild the test libraries and run
+        // the tests to create the output files in parallel. We
+        // want this to always succeed, because it does not generate
+        // useful output (we do this further down using 'ctest', however
+        // ctest can not run ninja in parallel, so this is the
+        // most efficient way to build the tests).
         sh '''
+        # prebuilding tests...
         cd build-gcc-fast/tests
-
-        # Let ninja prebuild the test libraries and run
-        # the tests to create the output files in parallel. We
-        # want this to always succeed, because it does not generate
-        # useful output (we do this further down using 'ctest', however
-        # ctest can not run ninja in parallel, so this is the
-        # most efficient way to build the tests).
         ninja -k 0 tests || true
         '''
 
+        // Output the test results using ctest. Since
+        // the tests were prebuild in the previous shell
+        // command, this will be fast although it is not
+        // running in parallel. We use the ninja test generator, which
+        // does not support running ctest with -j.
         sh '''
+        # generating test results...
         cd build-gcc-fast
-
-        # Output the test results using ctest. Since
-        # the tests were prebuild in the previous shell
-        # command, this will be fast although it is not
-        # running in parallel.
         ctest \
         --no-compress-output \
-        --test-action Test
+        --test-action Test \
+        --output-on-failure
         '''
       }
       post {
@@ -156,6 +165,7 @@ pipeline {
 
           // Update the reference test output with the new test results
           sh '''
+          # generating reference output...
           cd build-gcc-fast
           ninja generate_reference_output
           '''
@@ -163,7 +173,7 @@ pipeline {
           // Generate the 'Artifacts' diff-file that can be
           // used to update the test results
           sh 'git diff tests > changes-test-results.diff'
-          archiveArtifacts artifacts: 'changes-test-results.diff', fingerprint: true
+          archiveArtifacts artifacts: 'changes-test-results.diff'
         }
       }
     }
