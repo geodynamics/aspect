@@ -650,9 +650,9 @@ namespace aspect
                 }
               else
                 {
-            	  n_new = n + (n_dot * this->get_timestep());
-            	  Assert (n_new.norm() != 0, ExcInternalError());
-            	  n_new /= n_new.norm();
+                  n_new = n + (n_dot * this->get_timestep());
+                  Assert (n_new.norm() != 0, ExcInternalError());
+                  n_new /= n_new.norm();
                   n_dot = (n_new-n)/ this->get_timestep();
                 }
             }
