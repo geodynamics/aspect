@@ -640,19 +640,19 @@ namespace aspect
                       n_dot[i] += Wn * n[j];
                     }
                 }
+
               // make sure that n is a unit vector. for this to work,
               // n needs to be a nonzero vector
-
               Tensor<1,dim> n_new;
-              n_new = n + (n_dot * this->get_timestep());
-              Assert (n_new.norm() != 0, ExcInternalError());
-              n_new /= n_new.norm();
               if (this->get_timestep()==0) //because at the start of the model timestep is 0
                 {
                   n_dot = (n/n.norm())-n;
                 }
               else
                 {
+                  n_new = n + (n_dot * this->get_timestep());
+                  Assert (n_new.norm() != 0, ExcInternalError());
+                  n_new /= n_new.norm();
                   n_dot = (n_new-n)/ this->get_timestep();
                 }
             }
