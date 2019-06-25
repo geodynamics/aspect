@@ -824,10 +824,13 @@ namespace aspect
 
           for (unsigned int q=0; q<in.position.size(); ++q)
             {
-              double porosity = std::min(0.3, std::max(in.composition[q][porosity_idx],0.0));
+              double porosity = std::max(in.composition[q][porosity_idx],0.0);
 
               melt_out->fluid_viscosities[q] = eta_f;
               melt_out->permeabilities[q] = reference_permeability * std::pow(porosity,3) * std::pow(1.0-porosity,2);
+
+              // limit porosity to disaggregation threshold
+              porosity = std::min(0.3, porosity);
 
               const double porosity_threshold = 0.01 * std::pow(this->get_melt_handler().melt_parameters.melt_scaling_factor_threshold, 1./3.);
               melt_out->compaction_viscosities[q] = (1.0 - porosity) * xi_0 / std::max(porosity, porosity_threshold);
