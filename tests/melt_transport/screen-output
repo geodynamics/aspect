@@ -27,18 +27,6 @@ Number of degrees of freedom: 28,553 (12,611+8,450+1,089+4,225+1,089+1,089)
 
 *** Timestep 2:  t=1.01594e+07 years
    Solving composition reactions in 1 substep(s).
-   Solving temperature system... 19 iterations.
-   Solving peridotite system ... 5 iterations.
-   Skipping porosity composition solve because RHS is zero.
-   Solving Stokes system... done.
-   Solving for u_f in 11 iterations.
-
-   Postprocessing:
-     Compositions min/max/mass: -0.02469/0.3288/3.739e+10 // 0/0/0
-     RMS, max velocity:         0.000504 m/year, 0.00132 m/year
-
-*** Timestep 3:  t=1.5e+07 years
-   Solving composition reactions in 1 substep(s).
    Solving temperature system... 18 iterations.
    Solving peridotite system ... 4 iterations.
    Skipping porosity composition solve because RHS is zero.
@@ -46,8 +34,20 @@ Number of degrees of freedom: 28,553 (12,611+8,450+1,089+4,225+1,089+1,089)
    Solving for u_f in 11 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: -0.02118/0.3303/3.739e+10 // 0/0/0
-     RMS, max velocity:         0.000483 m/year, 0.00122 m/year
+     Compositions min/max/mass: -0.0243/0.3287/3.739e+10 // 0/0/0
+     RMS, max velocity:         0.000504 m/year, 0.00133 m/year
+
+*** Timestep 3:  t=1.5e+07 years
+   Solving composition reactions in 1 substep(s).
+   Solving temperature system... 17 iterations.
+   Solving peridotite system ... 4 iterations.
+   Skipping porosity composition solve because RHS is zero.
+   Solving Stokes system... done.
+   Solving for u_f in 11 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass: -0.02113/0.3305/3.739e+10 // 0/0/0
+     RMS, max velocity:         0.000484 m/year, 0.00122 m/year
 
 Termination requested by criterion: end time
 
