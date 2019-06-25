@@ -1661,6 +1661,7 @@ namespace aspect
     for (const auto &cell : dof_handler.active_cell_iterators())
       if (cell->is_locally_owned())
         {
+
           fe_values_C.reinit (cell);
           in_C.reinit(fe_values_C, cell, introspection, solution);
 
@@ -1771,7 +1772,6 @@ namespace aspect
       update_solution_vectors_with_reaction_results(introspection.block_indices.compositional_fields[c],
                                                     distributed_vector,
                                                     distributed_reaction_vector);
-
     update_solution_vectors_with_reaction_results(introspection.block_indices.temperature,
                                                   distributed_vector,
                                                   distributed_reaction_vector);
