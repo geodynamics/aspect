@@ -778,9 +778,9 @@ namespace aspect
                   const double melt_molar_mass = endmember_mole_fractions_per_phase[mgmelt_idx] * molar_masses[mgmelt_idx]
         										 + endmember_mole_fractions_per_phase[femelt_idx] * molar_masses[femelt_idx];
                   const double Fe_enthalpy_of_fusion = Fe_mantle_melting_temperature * Fe_mantle_melting_entropy
-                                              + (in.pressure[q] - melting_reference_pressure) * Fe_mantle_melting_volume;
+                                              + (this->get_adiabatic_conditions().pressure(in.position[q]) - melting_reference_pressure) * Fe_mantle_melting_volume;
                   const double Mg_enthalpy_of_fusion = Mg_mantle_melting_temperature * Mg_mantle_melting_entropy
-                                              + (in.pressure[q] - melting_reference_pressure) * Mg_mantle_melting_volume;
+                                              + (this->get_adiabatic_conditions().pressure(in.position[q]) - melting_reference_pressure) * Mg_mantle_melting_volume;
                   double enthalpy_of_fusion = Fe_enthalpy_of_fusion * bulk_composition + Mg_enthalpy_of_fusion * (1.0-bulk_composition);
                   enthalpy_of_fusion /= melt_molar_mass;
 
