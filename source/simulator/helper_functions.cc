@@ -1752,7 +1752,33 @@ namespace aspect
     old_old_solution.block(block_T) = distributed_vector.block(block_T);
 
     operator_split_reaction_vector.block(block_T) = distributed_reaction_vector.block(block_T);
+
+    initialize_current_linearization_point();
+  }
+
+
+
+  template <int dim>
+  void Simulator<dim>::initialize_current_linearization_point ()
+  {
+    // Start with a simple copy of the last timestep
     current_linearization_point = old_solution;
+
+    // If possible use an extrapolated solution from last and
+    // previous to last timestep.
+    if (timestep_number > 1)
+      {
+        // TODO: Trilinos sadd does not like ghost vectors even as input. Copy
+        // into distributed vectors for now:
+        LinearAlgebra::BlockVector distr_solution (system_rhs);
+        distr_solution = old_solution;
+        LinearAlgebra::BlockVector distr_old_solution (system_rhs);
+        distr_old_solution = old_old_solution;
+        distr_solution.sadd ((1 + time_step/old_time_step),
+                             -time_step/old_time_step,
+                             distr_old_solution);
+        current_linearization_point = distr_solution;
+      }
   }
 
 
