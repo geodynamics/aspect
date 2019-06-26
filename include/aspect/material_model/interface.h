@@ -1192,7 +1192,7 @@ namespace aspect
     class EnthalpyOutputs : public AdditionalMaterialOutputs<dim>
     {
       public:
-    	EnthalpyOutputs(const unsigned int n_points)
+        EnthalpyOutputs(const unsigned int n_points)
           : enthalpies_of_fusion(n_points, numbers::signaling_nan<double>())
         {}
 

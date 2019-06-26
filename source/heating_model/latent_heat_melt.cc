@@ -43,7 +43,7 @@ namespace aspect
         = material_model_outputs.template get_additional_output<MaterialModel::ReactionRateOutputs<dim>>();
 
       const MaterialModel::EnthalpyOutputs<dim> *enthalpy_out
-	    = material_model_outputs.template get_additional_output<MaterialModel::EnthalpyOutputs<dim> >();
+        = material_model_outputs.template get_additional_output<MaterialModel::EnthalpyOutputs<dim> >();
 
       double enthalpy_change;
 
@@ -55,9 +55,9 @@ namespace aspect
 
           // Determine if the change of energy should come from the material model
           if (retrieve_entropy_change_from_material_model && enthalpy_out)
-        	enthalpy_change = - enthalpy_out->enthalpies_of_fusion[q];
+            enthalpy_change = - enthalpy_out->enthalpies_of_fusion[q];
           else
-        	enthalpy_change = melting_entropy_change * material_model_inputs.temperature[q];
+            enthalpy_change = melting_entropy_change * material_model_inputs.temperature[q];
 
           if (this->introspection().compositional_name_exists("porosity") &&  this->get_timestep_number() > 0)
             {
@@ -123,7 +123,7 @@ namespace aspect
                              "from solid to melt. "
                              "Units: \\si{\\joule\\per\\kelvin\\per\\kilogram}.");
           prm.declare_entry ("Retrieve entropy change from material model", "false",
-        		              Patterns::Bool (),
+                             Patterns::Bool (),
                              "Instead of using the entropy change given in the "
                              "'Melting entropy change' query the EnthalpyAdditionalOutputs "
                              "in the material model to compute the entropy change for the "
@@ -157,7 +157,7 @@ namespace aspect
 
     template <int dim>
     void
-	LatentHeatMelt<dim>::create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const
+    LatentHeatMelt<dim>::create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const
     {
       if (this->include_melt_transport() && retrieve_entropy_change_from_material_model
           && outputs.template get_additional_output<MaterialModel::EnthalpyOutputs<dim> >() == nullptr)

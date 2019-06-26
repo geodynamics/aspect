@@ -39,7 +39,7 @@ namespace aspect
     class BoukareOutputs : public NamedAdditionalMaterialOutputs<dim>
     {
       public:
-    	BoukareOutputs(const unsigned int n_points);
+        BoukareOutputs(const unsigned int n_points);
 
         virtual std::vector<double> get_nth_output(const unsigned int idx) const;
 

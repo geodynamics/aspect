@@ -46,7 +46,7 @@ namespace aspect
     BoukareOutputs<dim>::BoukareOutputs (const unsigned int n_points)
       :
       NamedAdditionalMaterialOutputs<dim>(make_boukare_additional_outputs_names()),
-	  bulk_composition(n_points, numbers::signaling_nan<double>())
+      bulk_composition(n_points, numbers::signaling_nan<double>())
     {}
 
     template <int dim>
@@ -207,7 +207,7 @@ namespace aspect
     {
       AssertThrow(temperature > 0.0,
                   ExcMessage("The temperature has to be larger than 0, but it is "
-                      + std::to_string(temperature) + " for endmember " + std::to_string(i) + "."));
+                             + std::to_string(temperature) + " for endmember " + std::to_string(i) + "."));
 
       const double energy = 3. * number_of_atoms[i] * constants::gas_constant * Einstein_temperatures[i]
                             * (0.5 + 1. / (std::exp(Einstein_temperatures[i] / temperature) - 1.0));
@@ -365,9 +365,16 @@ namespace aspect
                              const double change_of_value) const
     {
       if (old_value + change_of_value < 0)
-        return -old_value;
+        {
+          AssertThrow (false, ExcMessage("Update below 0. Proposed update: " + std::to_string(old_value + change_of_value)));
+          return -old_value;
+        }
       else if (old_value + change_of_value > 1)
-        return 1.0 - old_value;
+        {
+
+          AssertThrow (false, ExcMessage("Update above 1. Proposed update: " + std::to_string(old_value + change_of_value)));
+          return 1.0 - old_value;
+        }
       else
         return change_of_value;
     }
@@ -776,7 +783,7 @@ namespace aspect
               if (enthalpy_out != nullptr)
                 {
                   const double melt_molar_mass = endmember_mole_fractions_per_phase[mgmelt_idx] * molar_masses[mgmelt_idx]
-        										 + endmember_mole_fractions_per_phase[femelt_idx] * molar_masses[femelt_idx];
+                                                 + endmember_mole_fractions_per_phase[femelt_idx] * molar_masses[femelt_idx];
                   const double Fe_enthalpy_of_fusion = Fe_mantle_melting_temperature * Fe_mantle_melting_entropy
                                               + (this->get_adiabatic_conditions().pressure(in.position[q]) - melting_reference_pressure) * Fe_mantle_melting_volume;
                   const double Mg_enthalpy_of_fusion = Mg_mantle_melting_temperature * Mg_mantle_melting_entropy
@@ -784,7 +791,7 @@ namespace aspect
                   double enthalpy_of_fusion = Fe_enthalpy_of_fusion * bulk_composition + Mg_enthalpy_of_fusion * (1.0-bulk_composition);
                   enthalpy_of_fusion /= melt_molar_mass;
 
-            	  enthalpy_out->enthalpies_of_fusion[q] = enthalpy_of_fusion;
+                  enthalpy_out->enthalpies_of_fusion[q] = enthalpy_of_fusion;
                 }
 
               // cutoff for viscosity at 30%
