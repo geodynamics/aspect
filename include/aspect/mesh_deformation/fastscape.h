@@ -21,6 +21,8 @@
 #include <aspect/mesh_deformation/interface.h>
 #include <aspect/simulator_access.h>
 #include <vector>
+#include <array>
+#include <deal.II/base/function_lib.h>
 
 
 
@@ -117,6 +119,10 @@ namespace aspect
         double kdsed;
         double x_extent;
         double y_extent;
+
+        std::array<std::pair<double,double>,dim-1> grid_extent;
+        std::array< unsigned int, dim-1 > table_intervals;
+        std::array<std::unique_ptr<typename Functions::InterpolatedUniformGridData<2> >, 3> velocities;
     };
   }
 }
