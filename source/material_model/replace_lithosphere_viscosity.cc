@@ -162,7 +162,7 @@ namespace aspect
                                    "In other words, it is a ``compositing material model''."
                                    "\n"
                                    "Parameters related to the replace lithosphere viscosity model are read from a subsection "
-                                   "``Material model/replace lithosphere vicsosity''. "
+                                   "``Material model/Replace lithosphere viscosity''. "
                                    "The user must specify a ``Base model'' from which other material properties are "
                                    "derived.  "
                                    "\n"
