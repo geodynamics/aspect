@@ -161,7 +161,7 @@ namespace aspect
                                    "boundary the viscosity is taken from any of the other available material model. "
                                    "In other words, it is a ``compositing material model''."
                                    "\n"
-                                   "Parameters related to the depth dependent model are read from a subsection "
+                                   "Parameters related to the replace lithosphere viscosity model are read from a subsection "
                                    "``Material model/replace lithosphere vicsosity''. "
                                    "The user must specify a ``Base model'' from which other material properties are "
                                    "derived.  "
