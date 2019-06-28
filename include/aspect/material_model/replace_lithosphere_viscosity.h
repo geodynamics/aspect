@@ -36,7 +36,7 @@ namespace aspect
      * A material model that applies a given constant viscosity in the lithosphere.
      * Viscosity below this is taken from a ''base model'' chosen from any of the
      * other available material models. The 'replace lithosphere viscosity'
-     * material model allows the user to specify the depth of the lithosphere-asthenosphre
+     * material model allows the user to specify the depth of the lithosphere-asthenosphere
      * boundary either as one value or as a file. All other properties are derived
      * from the base model.
      * @ingroup MaterialModels
@@ -58,22 +58,23 @@ namespace aspect
          */
         virtual
         void
+
         evaluate (const typename Interface<dim>::MaterialModelInputs &in,
                   typename Interface<dim>::MaterialModelOutputs &out) const;
         /**
-         * Method to declare parameters related to depth-dependent model
+         * Method to declare parameters related to replace lithosphere viscosity model
          */
         static void
         declare_parameters (ParameterHandler &prm);
 
         /**
-         * Method to parse parameters related to depth-dependent model
+         * Method to parse parameters related to replace lithosphere viscosity model
          */
         virtual void
         parse_parameters (ParameterHandler &prm);
 
         /**
-         * Method that indicates whether material is compressible. Depth dependent model is compressible
+         * Method that indicates whether material is compressible. Replace lithosphere viscosity model is compressible
          * if and only if base model is compressible.
          */
         virtual bool is_compressible () const;
@@ -85,7 +86,6 @@ namespace aspect
         virtual double reference_viscosity () const;
 
       private:
-
 
         /**
         * This parameter gives the viscosity set within the lithosphere.

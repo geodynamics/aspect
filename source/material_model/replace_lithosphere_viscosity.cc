@@ -58,8 +58,6 @@ namespace aspect
 
           if (depth <= lab_depth)
             out.viscosities[i] = lithosphere_viscosity;
-          else
-            out.viscosities[i] *= 1;
         }
 
     }
@@ -80,7 +78,7 @@ namespace aspect
                             "are the names of models that are also valid for the "
                             "``Material models/Model name'' parameter. See the documentation for "
                             "more information.");
-          prm.declare_entry ("Lithosphere viscosity", "1600",
+          prm.declare_entry ("Lithosphere viscosity", "1e23",
                              Patterns::Double (0),
                              "The viscosity within lithosphere, applied above"
                              "the maximum lithosphere depth.");
