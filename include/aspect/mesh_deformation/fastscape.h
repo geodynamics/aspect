@@ -75,6 +75,8 @@ namespace aspect
     {
       public:
 
+    	//FastScape();
+
         virtual void initialize ();
 
         virtual
@@ -122,7 +124,6 @@ namespace aspect
 
         std::array<std::pair<double,double>,dim-1> grid_extent;
         std::array< unsigned int, dim-1 > table_intervals;
-        std::array<std::unique_ptr<typename Functions::InterpolatedUniformGridData<2> >, 3> velocities;
     };
   }
 }
