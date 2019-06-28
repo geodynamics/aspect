@@ -69,7 +69,7 @@ Number of degrees of freedom: 2,058 (578+162+578+81+81+289+289)
 
 *** Timestep 6:  t=0.5 seconds
    Solving composition reactions in 1 substep(s).
-   Solving temperature system... 6 iterations.
+   Solving temperature system... 7 iterations.
    Skipping porosity composition solve because RHS is zero.
    Skipping peridotite composition solve because RHS is zero.
 

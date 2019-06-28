@@ -1,8 +1,4 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 Number of active cells: 1 (on 1 levels)
 Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
@@ -31,7 +27,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 2:  t=0.02 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -43,7 +39,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 3:  t=0.03 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -55,7 +51,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 4:  t=0.04 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -67,7 +63,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 5:  t=0.05 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -79,7 +75,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 6:  t=0.06 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -91,7 +87,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 7:  t=0.07 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -103,7 +99,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 8:  t=0.08 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -115,7 +111,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 9:  t=0.09 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -127,7 +123,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 10:  t=0.1 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -139,7 +135,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 11:  t=0.11 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -151,7 +147,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 12:  t=0.12 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -163,7 +159,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 13:  t=0.13 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -175,7 +171,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 14:  t=0.14 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -187,7 +183,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 15:  t=0.15 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -199,7 +195,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 16:  t=0.16 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -211,7 +207,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 17:  t=0.17 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -223,7 +219,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 18:  t=0.18 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -235,7 +231,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 19:  t=0.19 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -247,7 +243,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 20:  t=0.2 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -259,7 +255,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 21:  t=0.21 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -271,7 +267,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 22:  t=0.22 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -283,7 +279,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 23:  t=0.23 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -295,7 +291,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 24:  t=0.24 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -307,7 +303,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 25:  t=0.25 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -319,7 +315,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 26:  t=0.26 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -331,7 +327,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 27:  t=0.27 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -343,7 +339,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 28:  t=0.28 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -355,7 +351,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 29:  t=0.29 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -367,7 +363,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 30:  t=0.3 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -379,7 +375,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 31:  t=0.31 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -391,7 +387,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 32:  t=0.32 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -403,7 +399,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 33:  t=0.33 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -415,7 +411,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 34:  t=0.34 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -427,7 +423,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 35:  t=0.35 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -439,7 +435,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 36:  t=0.36 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -451,7 +447,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 37:  t=0.37 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -463,7 +459,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 38:  t=0.38 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -475,7 +471,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 39:  t=0.39 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -487,7 +483,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 40:  t=0.4 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -499,7 +495,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 41:  t=0.41 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -511,7 +507,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 42:  t=0.42 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -523,7 +519,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 43:  t=0.43 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -535,7 +531,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 44:  t=0.44 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -547,7 +543,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 45:  t=0.45 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -559,7 +555,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 46:  t=0.46 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -571,7 +567,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 47:  t=0.47 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -583,7 +579,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 48:  t=0.48 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -595,7 +591,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 49:  t=0.49 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -607,7 +603,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 50:  t=0.5 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -619,7 +615,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 51:  t=0.51 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -631,7 +627,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 52:  t=0.52 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -643,7 +639,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 53:  t=0.53 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -655,7 +651,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 54:  t=0.54 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -667,7 +663,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 55:  t=0.55 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -679,7 +675,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 56:  t=0.56 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -691,7 +687,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 57:  t=0.57 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -703,7 +699,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 58:  t=0.58 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -715,7 +711,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 59:  t=0.59 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -727,7 +723,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 60:  t=0.6 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -739,7 +735,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 61:  t=0.61 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -751,7 +747,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 62:  t=0.62 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -763,7 +759,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 63:  t=0.63 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -775,7 +771,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 64:  t=0.64 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -787,7 +783,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 65:  t=0.65 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -799,7 +795,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 66:  t=0.66 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -811,7 +807,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 67:  t=0.67 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -823,7 +819,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 68:  t=0.68 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -835,7 +831,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 69:  t=0.69 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -847,7 +843,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 70:  t=0.7 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -859,7 +855,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 71:  t=0.71 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -871,7 +867,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 72:  t=0.72 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -883,7 +879,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 73:  t=0.73 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -895,7 +891,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 74:  t=0.74 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -907,7 +903,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 75:  t=0.75 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -919,7 +915,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 76:  t=0.76 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -931,7 +927,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 77:  t=0.77 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -943,7 +939,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 78:  t=0.78 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -955,7 +951,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 79:  t=0.79 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -967,7 +963,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 80:  t=0.8 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -979,7 +975,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 81:  t=0.81 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -991,7 +987,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 82:  t=0.82 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -1003,7 +999,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 83:  t=0.83 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -1015,7 +1011,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 84:  t=0.84 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -1027,7 +1023,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 85:  t=0.85 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -1039,7 +1035,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 86:  t=0.86 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -1051,7 +1047,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 87:  t=0.87 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -1063,7 +1059,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 88:  t=0.88 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -1075,7 +1071,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 89:  t=0.89 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -1087,7 +1083,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 90:  t=0.9 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -1099,7 +1095,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 91:  t=0.91 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -1111,7 +1107,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 92:  t=0.92 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -1123,7 +1119,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 93:  t=0.93 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -1135,7 +1131,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 94:  t=0.94 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -1147,7 +1143,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 95:  t=0.95 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -1159,7 +1155,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 96:  t=0.96 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -1171,7 +1167,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 97:  t=0.97 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -1183,7 +1179,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 98:  t=0.98 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -1195,7 +1191,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 99:  t=0.99 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -1207,7 +1203,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
 
 *** Timestep 100:  t=1 seconds
    Solving composition reactions in 999 substep(s).
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
 
@@ -1230,5 +1226,3 @@ Termination requested by criterion: end time
 +---------------------------------+-----------+------------+------------+
 +---------------------------------+-----------+------------+------------+
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------

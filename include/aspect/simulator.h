@@ -1224,6 +1224,18 @@ namespace aspect
        */
       void compute_reactions ();
 
+      /**
+       * Initialize the current linearization point vector from the old
+       * solution vector(s). Depending on the time of the call this
+       * can be simply a copy of the solution of the last timestep,
+       * or a linear extrapolation of old and old_old timestep to
+       * the new timestep.
+       *
+       * This function is implemented in
+       * <code>source/simulator/helper_functions.cc</code>.
+       */
+      void initialize_current_linearization_point ();
+
 
       /**
        * Interpolate material model outputs onto a compositional field. For the field

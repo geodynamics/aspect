@@ -1678,21 +1678,7 @@ namespace aspect
   {
     // start any scheme with an extrapolated value from the previous
     // two time steps if those are available
-    current_linearization_point = old_solution;
-
-    if (timestep_number > 1)
-      {
-        // TODO: Trilinos sadd does not like ghost vectors even as input. Copy
-        // into distributed vectors for now:
-        LinearAlgebra::BlockVector distr_solution (system_rhs);
-        distr_solution = old_solution;
-        LinearAlgebra::BlockVector distr_old_solution (system_rhs);
-        distr_old_solution = old_old_solution;
-        distr_solution.sadd ((1 + time_step/old_time_step),
-                             -time_step/old_time_step,
-                             distr_old_solution);
-        current_linearization_point = distr_solution;
-      }
+    initialize_current_linearization_point();
 
     // The mesh deformation scheme is currently not built to work inside a nonlinear solver.
     // We do the mesh deformation execution at the beginning of the timestep for a specific reason.
