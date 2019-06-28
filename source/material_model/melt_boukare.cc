@@ -540,9 +540,9 @@ namespace aspect
       BoukareOutputs<dim> *boukare_out = out.template get_additional_output<BoukareOutputs<dim> >();
       EnthalpyOutputs<dim> *enthalpy_out = out.template get_additional_output<EnthalpyOutputs<dim> >();
 
-      // if the temperature or pressure are zero, this model does not work
-      // this should only happen when wetting the melt constraints before we have the initial temperature
-      // in this case, just fill the permeabilities and fluid viscosities and return
+      // If the temperature or pressure are zero, this model does not work.
+      // This should only happen when setting the melt constraints before we have the initial temperature.
+      // In this case, just fill the permeabilities and fluid viscosities and return.
       for (unsigned int q=0; q<in.position.size(); ++q)
         {
           if (in.temperature[q] == 0.0)
@@ -560,6 +560,18 @@ namespace aspect
               return;
             }
         }
+
+      // TODO: We need the reaction step here to conserve bulk composition. Is there a better way to do this?
+      double reaction_time_step_size = 1.0;
+      double reaction_fraction = 0;
+      if(this->simulator_is_past_initialization())
+        {
+    	  const unsigned int number_of_reaction_steps = std::max(static_cast<unsigned int>(this->get_timestep() / this->get_parameters().reaction_time_step),
+    			  std::max(this->get_parameters().reaction_steps_per_advection_step,1U));
+    	  reaction_time_step_size = this->get_timestep() / static_cast<double>(number_of_reaction_steps);
+    	  reaction_fraction = reaction_time_step_size / melting_time_scale;
+        }
+
 
       const unsigned int Fe_solid_idx = this->introspection().compositional_index_for_name("molar_Fe_in_solid");
       const unsigned int n_endmembers = endmember_names.size();
@@ -694,6 +706,7 @@ namespace aspect
               const double old_porosity = in.composition[q][porosity_idx];
               const double old_solid_composition = in.composition[q][Fe_solid_idx];
               const double old_melt_composition = in.composition[q][Fe_melt_idx];
+              const double old_melt_molar_fraction = melt_molar_fraction;
 
               // in this simple model, the bulk composition is just one number, namely
               // the molar fraction of the combined iron endmembers
@@ -711,19 +724,17 @@ namespace aspect
                                                   solid_composition,
                                                   melt_composition);
 
-              // TODO: think about the correct time scale instead of 0.01!
-              // Include melting time scale and make sure bulk composition is conserved
-              const double change_of_melt_composition = limit_update_to_0_and_1(old_melt_composition, melt_composition - old_melt_composition);
-              const double change_of_solid_composition = limit_update_to_0_and_1(old_solid_composition, solid_composition - old_solid_composition);
+              // We have to compute the update to the melt fraction in such a way that the bulk composition is conserved.
+              const double change_of_melt_composition = reaction_fraction * limit_update_to_0_and_1(old_melt_composition, melt_composition - old_melt_composition);
+              const double change_of_melt_fraction = reaction_fraction * limit_update_to_0_and_1(old_melt_molar_fraction, melt_molar_fraction - old_melt_molar_fraction);
 
-              solid_composition = old_solid_composition + change_of_solid_composition;
+              melt_molar_fraction = old_melt_molar_fraction + change_of_melt_fraction;
               melt_composition = old_melt_composition + change_of_melt_composition;
 
-              if (solid_composition < bulk_composition && melt_composition > bulk_composition)
-                melt_molar_fraction = (bulk_composition - solid_composition )
-                                      / (melt_composition - solid_composition);
-
-
+              if (melt_molar_fraction > 0 && melt_molar_fraction < 1)
+                solid_composition = (bulk_composition - melt_molar_fraction * melt_composition)
+                                      / (1.0 - melt_molar_fraction);
+              const double change_of_solid_composition = solid_composition - old_solid_composition;
 
               // TODO write a function for this (computing molar volumes from solid and melt composition)
               /* ------------- We have to compute this again here because the porosity may have changed ----------------- */
@@ -755,9 +766,7 @@ namespace aspect
 
               const double new_porosity = melt_molar_fraction * melt_molar_volume
                                           / (melt_molar_fraction * melt_molar_volume + (1.0 - melt_molar_fraction) * solid_molar_volume);
-
-              // do not allow negative porosity or porosity > 1
-              const double porosity_change = limit_update_to_0_and_1(old_porosity, new_porosity - old_porosity);
+              const double porosity_change = new_porosity - old_porosity;
 
               // For this simple model, we only track the iron in the solid (bridgmanite) and the iron in the melt
               // TODO: make this more general to work with the full equation of state
@@ -769,11 +778,11 @@ namespace aspect
                       if (!include_melting_and_freezing)
                         reaction_rate_out->reaction_rates[q][c] = 0.0;
                       else if (c == Fe_solid_idx && this->get_timestep_number() > 0)
-                        reaction_rate_out->reaction_rates[q][c] = change_of_solid_composition / melting_time_scale;
+                        reaction_rate_out->reaction_rates[q][c] = change_of_solid_composition / reaction_time_step_size;
                       else if (c == Fe_melt_idx && this->get_timestep_number() > 0)
-                        reaction_rate_out->reaction_rates[q][c] = change_of_melt_composition / melting_time_scale;
+                        reaction_rate_out->reaction_rates[q][c] = change_of_melt_composition / reaction_time_step_size;
                       else if (c == porosity_idx && this->get_timestep_number() > 0)
-                        reaction_rate_out->reaction_rates[q][c] = porosity_change / melting_time_scale;
+                        reaction_rate_out->reaction_rates[q][c] = porosity_change / reaction_time_step_size;
                       else
                         reaction_rate_out->reaction_rates[q][c] = 0.0;
                     }
