@@ -58,9 +58,9 @@ namespace aspect
          */
         virtual
         void
-
         evaluate (const typename Interface<dim>::MaterialModelInputs &in,
                   typename Interface<dim>::MaterialModelOutputs &out) const;
+
         /**
          * Method to declare parameters related to replace lithosphere viscosity model
          */
