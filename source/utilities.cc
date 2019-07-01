@@ -2316,7 +2316,7 @@ namespace aspect
             get_boundary_dimensions(boundary_indicator);
 
           Point<dim-1> data_position;
-          for (unsigned int i = 0; i < dim-1; i++)
+          for (unsigned int i = 0; i < dim-1; ++i)
             data_position[i] = internal_position[boundary_dimensions[i]];
 
           const Tensor<1,dim-1>  gradients = lookups.find(boundary_indicator)->second->get_gradients(data_position,component);

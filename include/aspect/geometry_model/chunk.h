@@ -72,7 +72,7 @@ namespace aspect
          * This function calls the initialize function of the manifold
          * with the given pointer to the initial topography model.
          */
-        void initialize_for_test (const InitialTopographyModel::Interface<dim> *topo_pointer);
+        void set_topography_model (const InitialTopographyModel::Interface<dim> *topo_pointer);
 
         /**
          * Generate a coarse mesh for the geometry described by this class.
