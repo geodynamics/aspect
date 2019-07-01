@@ -58,8 +58,20 @@ namespace aspect
     {
       public:
 
+        /**
+         * Initialization function. This function is called once at the
+         * beginning of the program after parse_parameters is run and after
+         * the SimulatorAccess (if applicable) is initialized.
+         * This function calls the initialize function of the manifold
+         * with a pointer to the initial topography model obtained
+         * from SimulatorAccess.
+         */
         void initialize ();
 
+        /**
+         * This function calls the initialize function of the manifold
+         * with the given pointer to the initial topography model.
+         */
         void initialize_for_test (const InitialTopographyModel::Interface<dim> *topo_pointer);
 
         /**

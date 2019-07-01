@@ -78,8 +78,13 @@ namespace aspect
 
       Tensor<2,dim> DX;
 
-      // The initial topography derivatives (dtopo/dphi and dtopo/dtheta)
-      // They are zero for the ZeroTopography model
+      // We only have access to the topography gradients
+      // (dtopo/dphi and dtopo/dtheta) for the AsciiData
+      // initial topography model. We assume 0.0 otherwise;
+      // while this is valid for the ZeroTopography model,
+      // this will result in incorrect gradients for
+      // other initial topography models. Hence only AsciiData 
+      // and ZeroTopography are allowed for now in Chunk<dim>::initialize().
       Tensor<1,dim-1> topo_derivatives;
       if (const InitialTopographyModel::AsciiData<dim> *itm = dynamic_cast<const InitialTopographyModel::AsciiData<dim> *> (topo))
         topo_derivatives = itm->vector_gradient(push_forward_sphere(chart_point));
@@ -413,7 +418,7 @@ namespace aspect
     {
       AssertThrow(dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(&this->get_initial_topography_model()) != nullptr ||
                   dynamic_cast<const InitialTopographyModel::AsciiData<dim>*>(&this->get_initial_topography_model()) != nullptr,
-                  ExcMessage("At the moment, only the Zero or AsciiData initial topography model can be used."));
+                  ExcMessage("At the moment, only the Zero or AsciiData initial topography model can be used with the Chunk geometry model."));
 
       manifold.initialize(&(this->get_initial_topography_model()));
     }
