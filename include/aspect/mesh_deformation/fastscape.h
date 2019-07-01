@@ -109,6 +109,8 @@ namespace aspect
         int refinement;
         int nx;
         int ny;
+        int nz;
+        unsigned int additional_refinement;
 
         double m;
         double n;
@@ -122,8 +124,8 @@ namespace aspect
         double x_extent;
         double y_extent;
 
-        std::array<std::pair<double,double>,dim-1> grid_extent;
-        std::array< unsigned int, dim-1 > table_intervals;
+        std::array<std::pair<double,double>,dim> grid_extent;
+        std::array< unsigned int, dim > table_intervals;
     };
   }
 }
