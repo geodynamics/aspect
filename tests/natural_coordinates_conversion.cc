@@ -81,7 +81,7 @@ int f()
     prm_chunk.leave_subsection();
     prm_chunk.leave_subsection();
     chunk.parse_parameters(prm_chunk);
-    chunk.initialize_for_test(&zero_topo);
+    chunk.set_topography_model(&zero_topo);
 
     inter_point_2d = chunk.cartesian_to_natural_coordinates(point_2d);
     new_point_2d = chunk.natural_to_cartesian_coordinates(inter_point_2d);
@@ -157,7 +157,7 @@ int f()
     prm_chunk.leave_subsection();
     prm_chunk.leave_subsection();
     chunk.parse_parameters(prm_chunk);
-    chunk.initialize_for_test(&zero_topo);
+    chunk.set_topography_model(&zero_topo);
 
     inter_point_3d = chunk.cartesian_to_natural_coordinates(point_3d);
     new_point_3d = chunk.natural_to_cartesian_coordinates(inter_point_3d);
