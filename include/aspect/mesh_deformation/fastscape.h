@@ -112,6 +112,7 @@ namespace aspect
         unsigned int additional_refinement;
         unsigned int initial_global_refinement;
         unsigned int dy_slices;
+        int numx;
 
         double m;
         double n;

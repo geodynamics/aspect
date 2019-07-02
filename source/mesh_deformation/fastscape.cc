@@ -86,27 +86,32 @@ namespace aspect
        */
       nx = 1+std::pow(2,initial_global_refinement+additional_refinement)*x_repetitions;
       dx = grid_extent[0].second/(nx-1);
-      table_intervals[0] = nx-1;
 
-  if ( dim==3 )
-  {
-      ny = 1+std::pow(2,initial_global_refinement+additional_refinement)*y_repetitions;
-      dy = grid_extent[0].second/(ny-1);
-      table_intervals[1] = ny-1;
-      table_intervals[2] = 1;
-  }
-  else
+      //sub intervals are 1 less than points.
+      table_intervals[0] = nx-1;
+      //TODO: it'd be best to not have to use dim-1 intervals at all.
+      table_intervals[dim-1] = 1;
+
+  if (dim == 2)
   {
       ny = dy_slices;
       dy = dx;
       grid_extent[1].second = (ny-1)*dy;
-      table_intervals[1] = 1;
+
+  }
+
+  if (dim == 3)
+  {
+      ny = 1+std::pow(2,initial_global_refinement+additional_refinement)*y_repetitions;
+      dy = grid_extent[1].second/(ny-1);
+      table_intervals[1] = ny-1;
   }
 
 
-      //Sub intervals are one less than the points
       array_size = nx*ny-1;
+      numx = 1+grid_extent[0].second/dx;
     }
+
 
     template <int dim>
     void
@@ -128,8 +133,6 @@ namespace aspect
            */
           std::vector<std::vector<double>> temporary_variables(dim+1, std::vector<double>(array_size+1));
           std::vector<double> V(array_size);
-          double numx = 1+grid_extent[0].second/dx;
-          std::vector<double> V2(numx);
 
 
           // Get a quadrature rule that exists only on the corners
@@ -159,41 +162,31 @@ namespace aspect
                     fe_face_values.reinit( cell, face_no);
                     fe_face_values[this->introspection().extractors.velocities].get_function_values(this->get_solution(), vel );
 
-                    //Find out dx and dy, and the total number of x points per row.
-
                     for (unsigned int corner = 0; corner < face_corners.size(); ++corner)
                       {
                         const Point<dim> vertex = fe_face_values.quadrature_point(corner);
-                        double index;
-
-                        //std::cout<<corner<<"  "<<vertex(0)<<"  "<<vertex(1)<<std::endl;
                         double indx = 1+vertex(0)/dx;
-                        if (dim == 3)
-                        {
-                            double indy = 1+vertex(1)/dy;
-                            index = (indy-1)*numx+indx;
-                        }
-                        else
-                        	index = indx;
+
+                      if(dim == 2)
+                      {
+                          for (unsigned int ys=0; ys<dy_slices; ys++)
+                          {
+                           double index = indx+numx*ys;
+                           temporary_variables[0][index-1] = this->get_geometry_model().height_above_reference_surface(vertex); //vertex(dim-1);   //z component
+
+                           for (unsigned int i=0; i<dim; ++i)
+                               temporary_variables[i+1][index-1] = vel[corner][i];
+                          }
+                      }
 
                       if(dim == 3)
                       {
-                        temporary_variables[0][index-1] = this->get_geometry_model().height_above_reference_surface(vertex); //vertex(dim-1);   //z component
-
-                        for (unsigned int i=0; i<dim; ++i)
-                            temporary_variables[i+1][index-1] = vel[corner][i];
-                      }
-                      else
-                      {
-                         for (unsigned int ys=0; ys<dy_slices; ys++)
-                         {
-                          index = indx+numx*ys;
-                          //std::cout<<index<<"  "<<vertex(0)<<"  "<<vertex(1)<<std::endl;
+                          double indy = 1+vertex(1)/dy;
+                          double index = (indy-1)*numx+indx;
                           temporary_variables[0][index-1] = this->get_geometry_model().height_above_reference_surface(vertex); //vertex(dim-1);   //z component
 
                           for (unsigned int i=0; i<dim; ++i)
-                              temporary_variables[i+1][index-1] = 0; //vel[corner][i];
-                         }
+                              temporary_variables[i+1][index-1] = vel[corner][i];
                       }
 
 
@@ -225,10 +218,11 @@ namespace aspect
                   vx[i]=temporary_variables[1][i];
                   vz[i]=temporary_variables[dim][i];
 
-                  if(dim == 3 )
-                      vy[i]=temporary_variables[2][i];
-                  else
-                	  vy[i]=0;
+                  if(dim == 2 )
+                      vy[i]=0;
+
+                  if(dim == 3)
+                	  vy[i]=temporary_variables[2][i];
 
                   kf[i] = kff;
                   kd[i] = kdd;
@@ -251,10 +245,11 @@ namespace aspect
                         vx[i]=temporary_variables[1][i];
                         vz[i]=temporary_variables[dim][i];
 
-                        if(dim == 3 )
-                            vy[i]=temporary_variables[2][i];
-                        else
-                      	    vy[i]=0;
+                        if(dim == 2 )
+                            vy[i]=0;
+
+                        if(dim == 3)
+                      	    vy[i]=temporary_variables[2][i];
                     }
 
                 }
@@ -321,7 +316,6 @@ namespace aspect
               for (int i=0; i<=array_size; i++)
               {
                 V[i] = (h[i] - temporary_variables[0][i])/a_dt;
-                //std::cout<<i<<"  "<<V[i]<<std::endl;
               }
 
               MPI_Bcast(&V[0], array_size+1, MPI_DOUBLE, 0, this->get_mpi_communicator());
@@ -348,6 +342,8 @@ namespace aspect
           //Average 2d slices, this may depend on chosen boundary conditions.
           if (dim == 2)
           {
+              std::vector<double> V2(numx);
+
         	  for (int i=0; i<numx; i++)
         	  {
               for (unsigned int ys=0; ys<dy_slices; ys++)
@@ -373,7 +369,8 @@ namespace aspect
                     }
 
           }
-          else
+
+          if(dim == 3)
           {
           //Indexes through y and then x
           for (unsigned int k=0; k<data_table.size()[2]; ++k)
