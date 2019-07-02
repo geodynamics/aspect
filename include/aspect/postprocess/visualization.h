@@ -617,6 +617,7 @@ namespace aspect
          * @param solution_file_prefix The stem of the filename to be written.
          * @param filenames List of filenames for the current output from all
          * processors.
+         * @param output_history The OutputHistory object to fill.
          */
         template <typename DataOutType>
         void write_master_files (const DataOutType &data_out,
