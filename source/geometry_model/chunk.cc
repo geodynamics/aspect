@@ -83,7 +83,7 @@ namespace aspect
       // initial topography model. We assume 0.0 otherwise;
       // while this is valid for the ZeroTopography model,
       // this will result in incorrect gradients for
-      // other initial topography models. Hence only AsciiData 
+      // other initial topography models. Hence only AsciiData
       // and ZeroTopography are allowed for now in Chunk<dim>::initialize().
       Tensor<1,dim-1> topo_derivatives;
       if (const InitialTopographyModel::AsciiData<dim> *itm = dynamic_cast<const InitialTopographyModel::AsciiData<dim> *> (topo))
