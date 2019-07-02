@@ -60,19 +60,15 @@ namespace aspect
 
       AssertThrow(geometry != nullptr,
                   ExcMessage("Fastscape can only be run with a box model"));
-      AssertThrow(dim == 3,
-                  ExcMessage("Fastscape can only be applied to 3D runs."));
+      AssertThrow((dy_slices & 1) != 0,
+                 ExcMessage("Number of slices in y must be an odd number."));
 
-      x_extent = geometry->get_extents()[0];
-      y_extent = geometry->get_extents()[1];
-
-      //second is for maximum coordiantes, first for minimum.
-      grid_extent[0].second = geometry->get_extents()[0];
-      grid_extent[1].second = geometry->get_extents()[1];
-      grid_extent[2].second = geometry->get_extents()[2];
-      grid_extent[0].first = 0;
-      grid_extent[1].first = 0;
-      grid_extent[2].first = 0;
+      //second is for maximum coordiantes, first for minimum.f
+      for (unsigned int i=0; i<dim; ++i)
+      {
+       grid_extent[i].first = 0;
+       grid_extent[i].second = geometry->get_extents()[i];
+      }
 
 
       //TODO: There has to be a better type to use to get this.
@@ -81,19 +77,35 @@ namespace aspect
       int y_repetitions = repetitions.second;
 
       /*
-       * Set nx and ny based on repetitions and chosen max refinement.
+       * Set nx and ny based on repetitions and initial global refinement level in model.
+       * NOTE: fastscape refinement must be at least as high as the refinement on surface.
        * TODO: There needs to be a good error message if refinement is chosen
-       * incorrectly. Right now it just throws a segmentation fault.
+       * incorrectly. Right now it just throws a segmentation fault. Also,
+       * should I add adapative here? This needs to actually equal the refinement
+       * level at the surface.
        */
-      nx = 1+std::pow(2,refinement+additional_refinement)*x_repetitions;  //+(additional_refinement-1)
-      ny = 1+std::pow(2,refinement+additional_refinement)*y_repetitions;
-      array_size = nx*ny-1;
-      std::cout<<array_size+1<<std::endl;
-
-      //Sub intervals are one less than the points
+      nx = 1+std::pow(2,initial_global_refinement+additional_refinement)*x_repetitions;
+      dx = grid_extent[0].second/(nx-1);
       table_intervals[0] = nx-1;
+
+  if ( dim==3 )
+  {
+      ny = 1+std::pow(2,initial_global_refinement+additional_refinement)*y_repetitions;
+      dy = grid_extent[0].second/(ny-1);
       table_intervals[1] = ny-1;
       table_intervals[2] = 1;
+  }
+  else
+  {
+      ny = dy_slices;
+      dy = dx;
+      grid_extent[1].second = (ny-1)*dy;
+      table_intervals[1] = 1;
+  }
+
+
+      //Sub intervals are one less than the points
+      array_size = nx*ny-1;
     }
 
     template <int dim>
@@ -114,12 +126,13 @@ namespace aspect
            * Initialize a vector of temporary variables to hold: z component, Vx, Vy, and Vz.
            * For some reason I need to add one to the temporary array_size but not V.
            */
-          std::vector<std::vector<double>> temporary_variables(4, std::vector<double>(array_size+1));
+          std::vector<std::vector<double>> temporary_variables(dim+1, std::vector<double>(array_size+1));
           std::vector<double> V(array_size);
+          double numx = 1+grid_extent[0].second/dx;
+          std::vector<double> V2(numx);
 
 
           // Get a quadrature rule that exists only on the corners
-          //QTrapez<dim-1> face_corners;
 
           const QIterated<dim-1> face_corners (QTrapez<1>(),
                                                    pow(2,additional_refinement));
@@ -147,29 +160,41 @@ namespace aspect
                     fe_face_values[this->introspection().extractors.velocities].get_function_values(this->get_solution(), vel );
 
                     //Find out dx and dy, and the total number of x points per row.
-                    double dx = (cell->extent_in_direction(0))/pow(2,additional_refinement);
-                    double dy = (cell->extent_in_direction(1))/pow(2,additional_refinement);
-                    double numx = round(1+x_extent/dx);
 
                     for (unsigned int corner = 0; corner < face_corners.size(); ++corner)
                       {
                         const Point<dim> vertex = fe_face_values.quadrature_point(corner);
+                        double index;
 
+                        //std::cout<<corner<<"  "<<vertex(0)<<"  "<<vertex(1)<<std::endl;
                         double indx = 1+vertex(0)/dx;
-                        double indy = 1+vertex(1)/dy;
-                        double index = (indy-1)*numx+indx;
+                        if (dim == 3)
+                        {
+                            double indy = 1+vertex(1)/dy;
+                            index = (indy-1)*numx+indx;
+                        }
+                        else
+                        	index = indx;
 
-                        /*
-                         * Points sometimes aren't exact, and when this happens they were automatically rounded down.
-                         * This should at least keep them indexed correctly unless there is a lot of distortion.
-                         * TODO: Is there a better way to do this?
-                         */
-                        index = round(index);
+                      if(dim == 3)
+                      {
+                        temporary_variables[0][index-1] = this->get_geometry_model().height_above_reference_surface(vertex); //vertex(dim-1);   //z component
 
-                        temporary_variables[0][index-1] = vertex(dim-1); //this->get_geometry_model().height_above_reference_surface(vertex); //vertex(dim-1);   //z component
-                        temporary_variables[1][index-1] = vel[corner][0];  //Vx
-                        temporary_variables[2][index-1] = vel[corner][1];  //Vy
-                        temporary_variables[3][index-1] = vel[corner][2];  //Vz
+                        for (unsigned int i=0; i<dim; ++i)
+                            temporary_variables[i+1][index-1] = vel[corner][i];
+                      }
+                      else
+                      {
+                         for (unsigned int ys=0; ys<dy_slices; ys++)
+                         {
+                          index = indx+numx*ys;
+                          //std::cout<<index<<"  "<<vertex(0)<<"  "<<vertex(1)<<std::endl;
+                          temporary_variables[0][index-1] = this->get_geometry_model().height_above_reference_surface(vertex); //vertex(dim-1);   //z component
+
+                          for (unsigned int i=0; i<dim; ++i)
+                              temporary_variables[i+1][index-1] = 0; //vel[corner][i];
+                         }
+                      }
 
 
                       }
@@ -196,32 +221,40 @@ namespace aspect
                */
               for (int i=0; i<=array_size; i++)
                 {
-                  h[i]=temporary_variables[0][i];
+                  h[i]= temporary_variables[0][i];
                   vx[i]=temporary_variables[1][i];
-                  vy[i]=temporary_variables[2][i];
-                  vz[i]=temporary_variables[3][i];
-                  kf[i]=kff;
-                  kd[i]=kdd;
-                  std::cout<<"h in 0: "<<i+1<<"  "<<h[i]<<std::endl;
+                  vz[i]=temporary_variables[dim][i];
+
+                  if(dim == 3 )
+                      vy[i]=temporary_variables[2][i];
+                  else
+                	  vy[i]=0;
+
+                  kf[i] = kff;
+                  kd[i] = kdd;
                 }
 
               for (unsigned int p=1; p<Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()); ++p)
                 {
                   MPI_Status status;
-                  for (int i=0; i<4; i++)
+                  for (int i=0; i<dim+1; i++)
                      MPI_Recv(&temporary_variables[i][0], array_size+1, MPI_DOUBLE, p, 42, this->get_mpi_communicator(), &status);
 
                   /*
                    * Each processor initialized everything to zero, so if it had any
                    * points at the surface a value will be added.
                    */
-                  for (int i=0; i<=array_size; i++)
+                 for (int i=0; i<=array_size; i++)
                 	if(temporary_variables[0][i]>0)
                     {
-                      h[i]=temporary_variables[0][i];
-                      vx[i]=temporary_variables[1][i];
-                      vy[i]=temporary_variables[2][i];
-                      vz[i]=temporary_variables[3][i];
+                        h[i]= temporary_variables[0][i];
+                        vx[i]=temporary_variables[1][i];
+                        vz[i]=temporary_variables[dim][i];
+
+                        if(dim == 3 )
+                            vy[i]=temporary_variables[2][i];
+                        else
+                      	    vy[i]=0;
                     }
 
                 }
@@ -246,10 +279,10 @@ namespace aspect
               fastscape_setup_();
 
               //set x and y extent
-              fastscape_set_xl_yl_(&x_extent,&y_extent);
+             fastscape_set_xl_yl_(&grid_extent[0].second,&grid_extent[1].second);
 
               //Set time step
-              f_dt = 1e5;
+              //f_dt = 2e4;
               fastscape_set_dt_(&f_dt);
 
               //Initialize topography
@@ -266,7 +299,7 @@ namespace aspect
 
               fastscape_vtk_(h.get(), &vexp);
 
-            /* do
+             do
                 {
                   //execute step, this increases timestep counter
                   fastscape_execute_step_();
@@ -277,18 +310,18 @@ namespace aspect
                   //output vtk
                   fastscape_vtk_(h.get(), &vexp);
                 }
-              while (istep<steps);*/
+              while (istep<steps);
 
               //output timing
               fastscape_debug_();
 
               //end FastScape run
-              fastscape_destroy_();
+             fastscape_destroy_();
 
               for (int i=0; i<=array_size; i++)
               {
                 V[i] = (h[i] - temporary_variables[0][i])/a_dt;
-                //std::cout<<V[i]<<std::endl;
+                //std::cout<<i<<"  "<<V[i]<<std::endl;
               }
 
               MPI_Bcast(&V[0], array_size+1, MPI_DOUBLE, 0, this->get_mpi_communicator());
@@ -296,20 +329,52 @@ namespace aspect
             }
           else
             {
-        	  for (int i=0; i<4; i++)
+        	  for (int i=0; i<dim+1; i++)
                 MPI_Send(&temporary_variables[i][0], array_size+1, MPI_DOUBLE, 0, 42, this->get_mpi_communicator());
 
         	  MPI_Bcast(&V[0], array_size+1, MPI_DOUBLE, 0, this->get_mpi_communicator());
             }
 
-          /*TableIndices<dim> size_idx;
+          TableIndices<dim> size_idx;
           for (unsigned int d=0; d<dim; ++d)
+          {
             size_idx[d] = table_intervals[d]+1;
+          }
 
           Table<dim,double> data_table;
           data_table.TableBase<dim,double>::reinit(size_idx);
-
           TableIndices<dim> idx;
+
+          //Average 2d slices, this may depend on chosen boundary conditions.
+          if (dim == 2)
+          {
+        	  for (int i=0; i<numx; i++)
+        	  {
+              for (unsigned int ys=0; ys<dy_slices; ys++)
+              {
+                int index = i+numx*ys;
+                V2[i] += V[index];
+              }
+
+              V2[i] = V2[i]/dy_slices;
+        	 }
+                  for (unsigned int i=0; i<data_table.size()[1]; ++i)
+                    {
+                      idx[1] = i;
+                      for (unsigned int j=0; j<data_table.size()[0]; ++j)
+                        {
+                          idx[0] = j;
+                          if(i == 1 )
+                            data_table(idx) = V2[j]/year_in_seconds;
+                          else
+                        	data_table(idx)= 0;
+                        }
+
+                    }
+
+          }
+          else
+          {
           //Indexes through y and then x
           for (unsigned int k=0; k<data_table.size()[2]; ++k)
             {
@@ -328,6 +393,7 @@ namespace aspect
 
                 }
             }
+          }
 
 
           Functions::InterpolatedUniformGridData<dim> *velocities;
@@ -342,13 +408,13 @@ namespace aspect
 
           VectorFunctionFromScalarFunctionObject<dim> vector_function_object(
             lambda,
-            2,
-            3);
+            dim-1,
+            dim);
 
             VectorTools::interpolate_boundary_values (mesh_deformation_dof_handler,
                                                       *boundary_ids.begin(),
                                                       vector_function_object,
-                                                      mesh_velocity_constraints);*/
+                                                      mesh_velocity_constraints);
 
         }
     }
@@ -375,14 +441,13 @@ namespace aspect
           prm.declare_entry("Vertical exaggeration", "3",
                             Patterns::Double(),
                             "Vertical exaggeration for fastscape's VTK file.");
-          prm.declare_entry("Maximum aspect refinement", "1",
-                            Patterns::Integer(),
-                            "Refinement level expected at surface to determine"
-                            "proper nx and ny values");
           prm.declare_entry("Additional fastscape refinement", "0",
                             Patterns::Integer(),
                             "Refinement level expected at surface to determine"
                             "proper nx and ny values");
+          prm.declare_entry("Ny slices for 2d", "11",
+                            Patterns::Integer(),
+                            "Number of steps per ASPECT timestep");
 
           prm.enter_subsection ("Erosional parameters");
           {
@@ -428,6 +493,16 @@ namespace aspect
         prm.leave_subsection();
       }
       prm.leave_subsection ();
+
+      prm.enter_subsection ("Mesh refinement");
+      {
+        prm.declare_entry ("Initial global refinement", "2",
+                           Patterns::Integer (0),
+                           "The number of global refinement steps performed on "
+                           "the initial coarse mesh, before the problem is first "
+                           "solved there.");
+      }
+      prm.leave_subsection ();
     }
 
     template <int dim>
@@ -441,9 +516,8 @@ namespace aspect
           max_timestep = prm.get_double("Maximum timestep");
           bc = prm.get_integer("Boundary conditions");
           vexp = prm.get_double("Vertical exaggeration");
-          nstep = prm.get_integer("Maximum aspect refinement");
-          refinement = prm.get_integer("Maximum aspect refinement");
           additional_refinement = prm.get_integer("Additional fastscape refinement");
+          dy_slices = prm.get_integer("Ny slices for 2d");
 
           prm.enter_subsection("Erosional parameters");
           {
@@ -461,6 +535,12 @@ namespace aspect
         }
         prm.leave_subsection();
 
+      }
+      prm.leave_subsection ();
+
+      prm.enter_subsection ("Mesh refinement");
+      {
+        initial_global_refinement    = prm.get_integer ("Initial global refinement");
       }
       prm.leave_subsection ();
     }

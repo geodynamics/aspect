@@ -106,11 +106,12 @@ namespace aspect
         int array_size;
         double max_timestep;
         double vexp;
-        int refinement;
         int nx;
         int ny;
         int nz;
         unsigned int additional_refinement;
+        unsigned int initial_global_refinement;
+        unsigned int dy_slices;
 
         double m;
         double n;
@@ -121,8 +122,8 @@ namespace aspect
         double kfsed;
         double kdd;
         double kdsed;
-        double x_extent;
-        double y_extent;
+        double dx;
+        double dy;
 
         std::array<std::pair<double,double>,dim> grid_extent;
         std::array< unsigned int, dim > table_intervals;
