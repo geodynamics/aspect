@@ -1,5 +1,7 @@
 Pull Request Checklist. Please read and check each box with an X. Feel free to delete any part not applicable to your PR.
 
+### Describe the content of this pull request, and why you did these changes:
+
 ### Before submitting your first pull request:
 
 * [ ] I have read the guidelines in our [CONTRIBUTING.md](../CONTRIBUTING.md) document.
