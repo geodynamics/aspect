@@ -747,12 +747,9 @@ namespace aspect
         {
           AnalyticSolutions::FunctionSolKz<dim> ref_func(this->introspection().n_components);
 
-          if (dynamic_cast<const SolKzMaterial<dim> *>(&this->get_material_model()) == NULL)
-            {
-              AssertThrow(false,
-                          ExcMessage(
-                            "Postprocessor SolKzPostprocessor only works with the material model SolKzn."));
-            }
+          AssertThrow(Plugins::plugin_type_matches<const SolKzMaterial<dim>>(this->get_material_model()),
+                      ExcMessage(
+                        "Postprocessor SolKzPostprocessor only works with the material model SolKzn."));
 
           const QGauss<dim> quadrature_formula(this->introspection().polynomial_degree.velocities + 2);
 

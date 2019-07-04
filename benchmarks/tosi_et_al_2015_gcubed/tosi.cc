@@ -411,10 +411,10 @@ namespace aspect
     std::pair<std::string,std::string>
     TosiPostprocessor<dim>::execute (TableHandler &statistics)
     {
-      AssertThrow(dynamic_cast<const GeometryModel::Box<dim> *>(&this->get_geometry_model()) != 0,
+      AssertThrow(Plugins::plugin_type_matches<const GeometryModel::Box<dim> >(this->get_geometry_model()),
                   ExcMessage("The current calculation of rate of work only makes sense in a Cartesian geometry."));
 
-      AssertThrow(dynamic_cast<const TosiMaterial<dim> *>(&this->get_material_model()) != 0,
+      AssertThrow(Plugins::plugin_type_matches<const TosiMaterial<dim>>(this->get_material_model()),
                   ExcMessage("The current calculation of viscous dissipation is only for incompressible models "
                              "and specifically computes the difference between work and dissipation as requested "
                              "in the paper of Tosi et al. 2015."));
