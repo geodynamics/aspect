@@ -143,7 +143,7 @@ namespace aspect
      * $\kappa = \frac{1}{\rho} \frac{\partial rho}{\partial p}$.
      */
     template <int dim>
-    class StokesIsothermalCompressionTerm : public Assemblers::Interface<dim>,
+    class StokesIsentropicCompressionTerm : public Assemblers::Interface<dim>,
       public SimulatorAccess<dim>
     {
       public:

@@ -781,7 +781,7 @@ namespace aspect
   template class StokesCompressibleStrainRateViscosityTerm<dim>; \
   template class StokesReferenceDensityCompressibilityTerm<dim>; \
   template class StokesImplicitReferenceDensityCompressibilityTerm<dim>; \
-  template class StokesIsothermalCompressionTerm<dim>; \
+  template class StokesIsentropicCompressionTerm<dim>; \
   template class StokesHydrostaticCompressionTerm<dim>; \
   template class StokesPressureRHSCompatibilityModification<dim>; \
   template class StokesBoundaryTraction<dim>;

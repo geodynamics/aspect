@@ -592,7 +592,7 @@ namespace aspect
 
     template <int dim>
     void
-    StokesIsothermalCompressionTerm<dim>::
+    StokesIsentropicCompressionTerm<dim>::
     execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
              internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
     {
@@ -607,7 +607,7 @@ namespace aspect
       // -div(u) as the adjoint operator of grad(p)
 
       Assert(this->get_parameters().formulation_mass_conservation ==
-             Parameters<dim>::Formulation::MassConservation::isothermal_compression,
+             Parameters<dim>::Formulation::MassConservation::isentropic_compression,
              ExcInternalError());
 
       const Introspection<dim> &introspection = this->introspection();
@@ -811,7 +811,7 @@ namespace aspect
   template class StokesCompressibleStrainRateViscosityTerm<dim>; \
   template class StokesReferenceDensityCompressibilityTerm<dim>; \
   template class StokesImplicitReferenceDensityCompressibilityTerm<dim>; \
-  template class StokesIsothermalCompressionTerm<dim>; \
+  template class StokesIsentropicCompressionTerm<dim>; \
   template class StokesHydrostaticCompressionTerm<dim>; \
   template class StokesPressureRHSCompatibilityModification<dim>; \
   template class StokesBoundaryTraction<dim>;

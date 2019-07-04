@@ -138,7 +138,7 @@ namespace aspect
       {
         boussinesq_approximation,
         anelastic_liquid_approximation,
-        isothermal_compression,
+        isentropic_compression,
         custom
       };
 
@@ -150,8 +150,8 @@ namespace aspect
       Kind
       parse(const std::string &input)
       {
-        if (input == "isothermal compression")
-          return Formulation::isothermal_compression;
+        if (input == "isentropic compression")
+          return Formulation::isentropic_compression;
         else if (input == "anelastic liquid approximation")
           return Formulation::anelastic_liquid_approximation;
         else if (input == "Boussinesq approximation")
@@ -178,7 +178,7 @@ namespace aspect
          */
         enum Kind
         {
-          isothermal_compression,
+          isentropic_compression,
           hydrostatic_compression,
           reference_density_profile,
           implicit_reference_density_profile,
@@ -193,8 +193,8 @@ namespace aspect
         static Kind
         parse(const std::string &input)
         {
-          if (input == "isothermal compression")
-            return Formulation::MassConservation::isothermal_compression;
+          if (input == "isentropic compression")
+            return Formulation::MassConservation::isentropic_compression;
           else if (input == "hydrostatic compression")
             return Formulation::MassConservation::hydrostatic_compression;
           else if (input == "reference density profile")
@@ -459,7 +459,7 @@ namespace aspect
      * equations ASPECT will solve.
      * Common formulations are the Boussinesq or Anelastic Liquid
      * Approximations (BA, ALA). ASPECT's original formulation is termed
-     * 'isothermal compression'. 'Custom' allows
+     * 'isentropic compression'. 'Custom' allows
      * to set the approximations individually per equation.
      */
     typename Formulation::Kind formulation;
@@ -467,7 +467,7 @@ namespace aspect
     /**
      * Determines how to formulate the mass conservation equation in ASPECT.
      * Common approximations are 'incompressible' or 'reference density profile'.
-     * ASPECT's original formulation is termed 'isothermal compression'. See the
+     * ASPECT's original formulation is termed 'isentropic compression'. See the
      * manual for more details about the individual terms.
      */
     typename Formulation::MassConservation::Kind formulation_mass_conservation;

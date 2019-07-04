@@ -1887,7 +1887,7 @@ namespace aspect
     if (parameters.formulation_mass_conservation == Parameters<dim>::Formulation::MassConservation::ask_material_model)
       {
         if (material_model->is_compressible() == true)
-          parameters.formulation_mass_conservation = Parameters<dim>::Formulation::MassConservation::isothermal_compression;
+          parameters.formulation_mass_conservation = Parameters<dim>::Formulation::MassConservation::isentropic_compression;
         else
           parameters.formulation_mass_conservation = Parameters<dim>::Formulation::MassConservation::incompressible;
       }
@@ -1901,7 +1901,7 @@ namespace aspect
                                "but the provided material model reports that it is compressible. "
                                "Please check the consistency of your material model and selected formulation."));
       }
-    else if (parameters.formulation_mass_conservation == Parameters<dim>::Formulation::MassConservation::isothermal_compression
+    else if (parameters.formulation_mass_conservation == Parameters<dim>::Formulation::MassConservation::isentropic_compression
              || parameters.formulation_mass_conservation == Parameters<dim>::Formulation::MassConservation::reference_density_profile
              || parameters.formulation_mass_conservation == Parameters<dim>::Formulation::MassConservation::implicit_reference_density_profile)
       {
@@ -1915,17 +1915,17 @@ namespace aspect
     // Ensure that the correct heating terms have been selected for the chosen combined formulation
     // Note that if the combined formulation is 'custom' there is no check
     // (useful e.g. for smaller scale lithospheric models with shear heating but without adiabatic heating)
-    if (parameters.formulation == Parameters<dim>::Formulation::isothermal_compression)
+    if (parameters.formulation == Parameters<dim>::Formulation::isentropic_compression)
       {
         AssertThrow(heating_model_manager.adiabatic_heating_enabled(),
                     ExcMessage("ASPECT detected an inconsistency in the provided input file. "
-                               "The `isothermal compression' formulation expects adiabatic heating to be enabled, "
+                               "The `isentropic compression' formulation expects adiabatic heating to be enabled, "
                                "but the `adiabatic heating' plugin has not been selected in the input file. "
                                "Please check the consistency of your input file."));
 
         AssertThrow(heating_model_manager.shear_heating_enabled(),
                     ExcMessage("ASPECT detected an inconsistency in the provided input file. "
-                               "The `isothermal compression' formulation expects shear heating to be enabled, "
+                               "The `isentropic compression' formulation expects shear heating to be enabled, "
                                "but the `shear heating' plugin has not been selected in the input file. "
                                "Please check the consistency of your input file."));
       }
