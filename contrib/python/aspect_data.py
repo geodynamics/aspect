@@ -89,7 +89,7 @@ def set_param(line):
     return param_name, param_value   
     
 def read_parameter_file(file):
-    """ Read parameter file, and return a dictionnary with all values. 
+    """ Read parameter file, and return a dictionary with all values. 
     
     Numerical values are not considered as such. Use float() later to use them.
     """
@@ -117,7 +117,6 @@ def read_parameter_file(file):
                 section = name_section
             else:
                 section = section+": "+name_section
-            #print(section)
 
         elif line[0] == 'set':
 
