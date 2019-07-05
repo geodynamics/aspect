@@ -214,7 +214,7 @@ namespace aspect
         this->introspection().index_sets.system_partitioning,
         this->introspection().index_sets.system_relevant_partitioning,
         this->get_mpi_communicator());
-      
+
       interface_contained_global.block(volume_fraction_block) = interface_contained_local.block(volume_fraction_block);
       interface_contained_global.update_ghost_values();
 
