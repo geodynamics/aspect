@@ -167,6 +167,12 @@ namespace aspect
         assemblers->stokes_system.push_back(
           std_cxx14::make_unique<aspect::Assemblers::StokesHydrostaticCompressionTerm<dim> >());
       }
+    else if (parameters.formulation_mass_conservation ==
+             Parameters<dim>::Formulation::MassConservation::projected_density_field)
+      {
+        assemblers->stokes_system.push_back(
+          std_cxx14::make_unique<aspect::Assemblers::StokesProjectedDensityFieldTerm<dim> >());
+      }
     else
       AssertThrow(false,
                   ExcMessage("Unknown mass conservation equation approximation. There is no assembler"
