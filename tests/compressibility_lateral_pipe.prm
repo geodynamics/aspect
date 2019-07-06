@@ -1,0 +1,5 @@
+set Dimension = 2
+
+include $ASPECT_SOURCE_DIR/benchmarks/compressibility_formulations/lateral_pipe/lateral_pipe.prm
+
+set End time = 2e7

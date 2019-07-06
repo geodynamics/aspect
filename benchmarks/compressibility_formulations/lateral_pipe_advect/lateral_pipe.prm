@@ -1,0 +1,141 @@
+# This is a benchmark to illustrate the effect of different formulations
+# of compressibility. It starts from a simple lateral pipe flow model,
+# in which material enters a vertical pipe with a prescribed velocity.
+# Due to increasing temperature at the boundary a density gradient is
+# advected into the model.
+
+set Additional shared libraries = ../plugins/libcompressibility_formulations.so
+
+set Dimension = 2
+
+set End time                               = 6201145.069582775
+set Use years in output instead of seconds = true
+set Adiabatic surface temperature          = 1600
+set Nonlinear solver scheme                = iterated Advection and Stokes
+set Nonlinear solver tolerance             = 1e-14
+set Max nonlinear iterations               = 25
+
+set Output directory                       = output-lateral_pipe
+
+subsection Adiabatic conditions model
+  subsection Compute profile
+    set Number of points = 100000
+    set Composition reference profile = function
+  end
+end
+
+
+subsection Heating model
+  set List of model names =
+end
+
+
+subsection Discretization
+  set Stokes velocity polynomial degree = 2
+  set Temperature polynomial degree = 2
+  set Composition polynomial degree = 2
+  set Use locally conservative discretization = true
+  set Use discontinuous composition discretization = true
+  set Use discontinuous temperature discretization = true
+end
+
+subsection Solver parameters
+  set Temperature solver tolerance = 1e-14
+  set Composition solver tolerance = 1e-14
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-14
+  end
+end
+
+subsection Compositional fields
+  set Number of fields = 1
+  set Names of fields = density_field
+  set Compositional field methods = prescribed field
+end
+
+subsection Initial composition model
+  set Model name = adiabatic density
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set Y extent = 100000
+    set X extent = 1000000
+    set X repetitions = 8
+  end
+end
+
+
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 0.0
+  end
+end
+
+
+############### Boundary conditions
+# We only fix the temperature at the upper boundary, the other boundaries
+# are isolating.
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = left
+  set List of model names = function
+
+  subsection Function
+    set Function expression = 1600 + 200 * t / 1e7 
+  end
+end
+
+# To guarantuee a steady downward flow, we fix the velocity
+# at the top and bottom, and set it to free slip on the sides. 
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = left:function
+  set Tangential velocity boundary indicators = bottom,top
+
+  subsection Function
+    set Function expression = 2*1000000/(1e7*(exp(1)-1)) * exp(t/1e7); 0.0
+    set Variable names      = x,y,t
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Function expression = 1600 + 200 * ln(1-x*(exp(1)-1)/(2*1000000))
+  end
+end
+
+
+subsection Material model
+  set Model name = compressibility formulations
+
+  subsection Simple compressible model
+    set Thermal conductivity = 0.0
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0 
+  set Initial global refinement          = 0
+  set Time steps between mesh refinement = 0
+end
+
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, temperature statistics, material statistics, mass flux statistics
+
+  subsection Visualization
+    set Number of grouped files       = 1
+    set Output format                 = vtu
+
+    # We are only interested in the last timestep (when the system hast reached
+    # a steady state). For following the development of the system or checking
+    # if the solution already reached steady state, this parameter can be set 
+    # to a smaller value.
+    set Time between graphical output = 6201145.069582775 #1e7
+    set List of output variables = nonadiabatic temperature, nonadiabatic pressure, heating, material properties, strain rate
+  end
+end

@@ -1,0 +1,10 @@
+subsection Formulation
+  set Mass conservation = projected density field
+  set Temperature equation = real density
+end
+
+subsection Material model
+  subsection Projected density model
+    set Use adiabatic pressure for density = true
+  end
+end

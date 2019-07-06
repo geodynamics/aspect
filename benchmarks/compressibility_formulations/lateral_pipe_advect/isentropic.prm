@@ -1,0 +1,4 @@
+subsection Formulation
+  set Mass conservation = isentropic compression
+  set Temperature equation = real density
+end
