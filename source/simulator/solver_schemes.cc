@@ -187,7 +187,14 @@ namespace aspect
               // if this is a prescribed field with diffusion, we first have to copy the material model
               // outputs into the prescribed field before we assemle and solve the equation
               if (method == Parameters<dim>::AdvectionFieldMethod::prescribed_field_with_diffusion)
-                interpolate_material_output_into_compositional_field(c);
+                {
+                  interpolate_material_output_into_compositional_field(c);
+
+                  // Also set the old_solution block to the prescribed field. The old
+                  // solution is the one that is used to assemble the diffusion system in
+                  // assemble_advection_system() for this solver scheme.
+                  old_solution.block(adv_field.block_index(introspection)) = solution.block(adv_field.block_index(introspection));
+                }
 
               assemble_advection_system (adv_field);
 
