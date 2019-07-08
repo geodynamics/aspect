@@ -29,7 +29,13 @@
 
 #include <deal.II/fe/fe_system.h>
 #include <deal.II/dofs/dof_handler.h>
-#include <deal.II/lac/constraint_matrix.h>
+
+#if DEAL_II_VERSION_GTE(9,1,0)
+#  include <deal.II/lac/affine_constraints.h>
+#else
+#  include <deal.II/lac/constraint_matrix.h>
+#endif
+
 #include <deal.II/base/index_set.h>
 
 
@@ -38,6 +44,18 @@ namespace aspect
   using namespace dealii;
 
   template <int dim> class Simulator;
+
+#if DEAL_II_VERSION_GTE(9,1,0)
+  /**
+   * The ConstraintMatrix class was deprecated in deal.II 9.1 in favor
+   * of AffineConstraints. To make the name available for ASPECT
+   * nonetheless, use a `using` declaration. This injects the name
+   * into the `aspect` namespace, where it is visible before the
+   * deprecated name in the `dealii` namespace, thereby suppressing
+   * the deprecation message.
+   */
+  using ConstraintMatrix = class dealii::AffineConstraints<double>;
+#endif
 
   /**
    * A namespace that contains everything that is related to the deformation
