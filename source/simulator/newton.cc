@@ -185,13 +185,13 @@ namespace aspect
           prm.declare_entry ("Max pre-Newton nonlinear iterations", "10",
                              Patterns::Integer (0),
                              "If the 'Nonlinear Newton solver switch tolerance' is reached before the "
-                             "maximal number of Picard iteration, then the solver switches to Newton "
+                             "maximal number of Picard iterations, then the solver switches to Newton "
                              "solves anyway.");
 
           prm.declare_entry ("Max Newton line search iterations", "5",
                              Patterns::Integer (0),
                              "The maximum number of line search iterations allowed. If the "
-                             "criterion is not reached after this number of iteration, we apply "
+                             "criterion is not reached after this number of iterations, we apply "
                              "the scaled increment even though it does not satisfy the necessary "
                              "criteria and simply continue with the next Newton iteration.");
 
@@ -214,7 +214,7 @@ namespace aspect
                              Patterns::Selection ("SPD|PD|symmetric|none"),
                              "This parameters allows for the stabilization of the preconditioner. If one derives the Newton "
                              "method without any modifications, the matrix created for the preconditioning is not necessarily "
-                             "Symmetric Positive Definite. This is problematic (see Fraters et al., in prep). When `none' is chosen, "
+                             "Symmetric Positive Definite. This is problematic (see \\cite{FBTGS18}). When `none' is chosen, "
                              "the preconditioner is not stabilized. The `symmetric' parameters symmetrizes the matrix, and `PD' makes "
                              "the matrix Positive Definite. `SPD' is the full stabilization, where the matrix is guaranteed Symmetric "
                              "Positive Definite.");
@@ -223,7 +223,7 @@ namespace aspect
                              Patterns::Selection ("SPD|PD|symmetric|none"),
                              "This parameters allows for the stabilization of the velocity block. If one derives the Newton "
                              "method without any modifications, the matrix created for the velocity block is not necessarily "
-                             "Symmetric Positive Definite. This is problematic (see Fraters et al., in prep). When `none' is chosen, "
+                             "Symmetric Positive Definite. This is problematic (see \\cite{FBTGS18}). When `none' is chosen, "
                              "the velocity block is not stabilized. The `symmetric' parameters symmetrizes the matrix, and `PD' makes "
                              "the matrix Positive Definite. `SPD' is the full stabilization, where the matrix is guaranteed Symmetric "
                              "Positive Definite.");
@@ -231,7 +231,7 @@ namespace aspect
           prm.declare_entry ("Use Newton failsafe", "false",
                              Patterns::Bool (),
                              "When this parameter is true and the linear solver fails, we try again, but now with SPD stabilization "
-                             "for both the preconditioner and the velocity block. The SPD stabilization will remain active untill "
+                             "for both the preconditioner and the velocity block. The SPD stabilization will remain active until "
                              "the next timestep, when the default values are restored.");
 
 

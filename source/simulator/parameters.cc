@@ -517,7 +517,7 @@ namespace aspect
                            "``prescribed field with diffusion'' method is selected for a field. "
                            "More precisely, this length scale represents the square root of the "
                            "product of diffusivity and time in the diffusion equation, and controls "
-                           "the distance over which features are diffused."
+                           "the distance over which features are diffused. "
                            "Units: $\\si{m}$.");
       }
       prm.leave_subsection ();
