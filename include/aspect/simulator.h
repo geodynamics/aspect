@@ -1248,13 +1248,8 @@ namespace aspect
        * interpolated to the finite element space and consequently into the
        * solution vector.
        * This is useful for compositional fields whose advection mode is set
-       * to Parameters::AdvectionFieldMethod::prescribed_field.
-       *
-       * This function also sets the previous solution vectors (corresponding to the
-       * solution from previous time steps) to the same interpolated
-       * values. This implies that the compositional field method can then be
-       * combined with time-dependent problems like advection or diffusion of
-       * the field.
+       * to Parameters::AdvectionFieldMethod::prescribed_field or
+       * Parameters::AdvectionFieldMethod::prescribed_field_with_diffusion.
        *
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.

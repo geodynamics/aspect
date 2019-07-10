@@ -1871,10 +1871,6 @@ namespace aspect
     const unsigned int block_c = introspection.block_indices.compositional_fields[c];
     distributed_vector.block(block_c).compress(VectorOperation::insert);
     solution.block(block_c) = distributed_vector.block(block_c);
-
-    // We also want to copy the values into the old solution, because it might
-    // be used in other parts of the code.
-    old_solution.block(block_c) = distributed_vector.block(block_c);
   }
 
 
