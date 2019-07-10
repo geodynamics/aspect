@@ -443,11 +443,11 @@ namespace aspect
     {
       std::unique_ptr<Function<dim> > ref_func;
       {
-        const BursteddeMaterial<dim> *
+        const BursteddeMaterial<dim> &
         material_model
-          = dynamic_cast<const BursteddeMaterial<dim> *>(&this->get_material_model());
+          = Plugins::get_plugin_as_type<const BursteddeMaterial<dim>>(this->get_material_model());
 
-        ref_func.reset (new AnalyticSolutions::FunctionBurstedde<dim>(material_model->get_beta()));
+        ref_func.reset (new AnalyticSolutions::FunctionBurstedde<dim>(material_model.get_beta()));
       }
 
       const QGauss<dim> quadrature_formula (this->introspection().polynomial_degree.velocities+2);

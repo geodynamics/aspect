@@ -86,7 +86,7 @@ namespace aspect
 
             for (unsigned int q=0; q<n_q_points; ++q)
               {
-                const double P = dynamic_cast<const MaterialModel::InnerCore<dim>&>
+                const double P = Plugins::get_plugin_as_type<const MaterialModel::InnerCore<dim>>
                                  (this->get_material_model()).resistance_to_phase_change
                                  .value(scratch.material_model_inputs.position[q]);
 
@@ -122,13 +122,12 @@ namespace aspect
   void set_assemblers_phase_boundary(const SimulatorAccess<dim> &simulator_access,
                                      Assemblers::Manager<dim> &assemblers)
   {
-    AssertThrow (dynamic_cast<const MaterialModel::InnerCore<dim>*>
-                 (&simulator_access.get_material_model()) != 0,
+    AssertThrow (Plugins::plugin_type_matches<const MaterialModel::InnerCore<dim>>
+                 (simulator_access.get_material_model()),
                  ExcMessage ("The phase boundary assembler can only be used with the "
                              "material model 'inner core material'!"));
 
-    PhaseBoundaryAssembler<dim> *phase_boundary_assembler = new PhaseBoundaryAssembler<dim>();
-    assemblers.stokes_system_on_boundary_face.push_back (std::unique_ptr<PhaseBoundaryAssembler<dim> > (phase_boundary_assembler));
+    assemblers.stokes_system_on_boundary_face.push_back (std_cxx14::make_unique<PhaseBoundaryAssembler<dim>>());
   }
 }
 

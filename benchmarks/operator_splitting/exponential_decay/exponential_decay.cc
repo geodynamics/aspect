@@ -183,8 +183,8 @@ namespace aspect
           // class; it will get a chance to read its parameters below after we
           // leave the current section
           base_model.reset(create_material_model<dim>(prm.get("Base model")));
-          if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(base_model.get()))
-            sim->initialize_simulator (this->get_simulator());
+          if (Plugins::plugin_type_matches<SimulatorAccess<dim>>(*base_model))
+            Plugins::get_plugin_as_type<SimulatorAccess<dim>>(*base_model).initialize_simulator (this->get_simulator());
 
           half_life              = prm.get_double ("Half life");
         }

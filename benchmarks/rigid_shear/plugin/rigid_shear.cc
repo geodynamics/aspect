@@ -270,12 +270,9 @@ namespace aspect
         {
           AnalyticSolutions::FunctionRigidShear<dim> ref_func(this->introspection().n_components);
 
-          if (dynamic_cast<const RigidShearMaterial<dim> *>(&this->get_material_model()) == NULL)
-            {
-              AssertThrow(false,
-                          ExcMessage(
-                            "Postprocessor RigidShearPostprocessor only works with the material model RigidShearMaterial."));
-            }
+          AssertThrow(Plugins::plugin_type_matches<const RigidShearMaterial<dim>>(this->get_material_model()),
+                      ExcMessage(
+                        "Postprocessor RigidShearPostprocessor only works with the material model RigidShearMaterial."));
 
           const QGauss<dim> quadrature_formula(this->introspection().polynomial_degree.velocities + 2);
 

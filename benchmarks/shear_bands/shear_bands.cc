@@ -323,20 +323,14 @@ namespace aspect
     void
     ShearBandsInitialCondition<dim>::initialize ()
     {
-      if (dynamic_cast<const ShearBandsMaterial<dim> *>(&this->get_material_model()) != NULL)
-        {
-          const ShearBandsMaterial<dim> *
-          material_model
-            = dynamic_cast<const ShearBandsMaterial<dim> *>(&this->get_material_model());
+      AssertThrow(Plugins::plugin_type_matches<const ShearBandsMaterial<dim>>(this->get_material_model()),
+                  ExcMessage("Initial condition shear bands only works with the material model shear bands."));
 
-          background_porosity = material_model->get_background_porosity();
-        }
-      else
-        {
-          AssertThrow(false,
-                      ExcMessage("Initial condition shear bands only works with the material model shear bands."));
-        }
+      const ShearBandsMaterial<dim> &
+      material_model
+        = Plugins::get_plugin_as_type<const ShearBandsMaterial<dim>>(this->get_material_model());
 
+      background_porosity = material_model.get_background_porosity();
 
       AssertThrow(noise_amplitude < background_porosity,
                   ExcMessage("Amplitude of the white noise must be smaller "
@@ -351,19 +345,14 @@ namespace aspect
       white_noise.TableBase<dim,double>::reinit(size_idx);
       std::array<std::pair<double,double>,dim> grid_extents;
 
-      if (dynamic_cast<const GeometryModel::Box<dim> *>(&this->get_geometry_model()) != NULL)
-        {
-          const GeometryModel::Box<dim> *
-          geometry_model
-            = dynamic_cast<const GeometryModel::Box<dim> *>(&this->get_geometry_model());
+      AssertThrow(Plugins::plugin_type_matches<const GeometryModel::Box<dim>>(this->get_geometry_model()),
+                  ExcMessage("Initial condition shear bands only works with the box geometry model."));
 
-          extents = geometry_model->get_extents();
-        }
-      else
-        {
-          AssertThrow(false,
-                      ExcMessage("Initial condition shear bands only works with the box geometry model."));
-        }
+      const GeometryModel::Box<dim> &
+      geometry_model
+        = Plugins::get_plugin_as_type<const GeometryModel::Box<dim>>(this->get_geometry_model());
+
+      extents = geometry_model.get_extents();
 
       for (unsigned int d=0; d<dim; ++d)
         {
@@ -506,20 +495,14 @@ namespace aspect
     void
     PlaneWaveMeltBandsInitialCondition<dim>::initialize ()
     {
-      if (dynamic_cast<const ShearBandsMaterial<dim> *>(&this->get_material_model()) != NULL)
-        {
-          const ShearBandsMaterial<dim> *
-          material_model
-            = dynamic_cast<const ShearBandsMaterial<dim> *>(&this->get_material_model());
+      AssertThrow(Plugins::plugin_type_matches<ShearBandsMaterial<dim>>(this->get_material_model()),
+                  ExcMessage("Initial condition shear bands only works with the material model shear bands."));
 
-          background_porosity = material_model->get_background_porosity();
-        }
-      else
-        {
-          AssertThrow(false,
-                      ExcMessage("Initial condition plane wave melt bands only works with the material model shear bands."));
-        }
+      const ShearBandsMaterial<dim> &
+      material_model
+        = Plugins::get_plugin_as_type<const ShearBandsMaterial<dim>>(this->get_material_model());
 
+      background_porosity = material_model.get_background_porosity();
 
       AssertThrow(amplitude < 1.0,
                   ExcMessage("Amplitude of the melt bands must be smaller "
@@ -758,22 +741,17 @@ namespace aspect
     void
     ShearBandsGrowthRate<dim>::initialize ()
     {
-      if (dynamic_cast<const ShearBandsMaterial<dim> *>(&this->get_material_model()) != NULL)
-        {
-          const ShearBandsMaterial<dim> *
-          material_model
-            = dynamic_cast<const ShearBandsMaterial<dim> *>(&this->get_material_model());
+      AssertThrow(Plugins::plugin_type_matches<const ShearBandsMaterial<dim>>(this->get_material_model()),
+                  ExcMessage("Postprocessor shear bands growth rate only works with the material model shear bands."));
 
-          background_porosity = material_model->get_background_porosity();
-          eta_0               = material_model->reference_viscosity();
-          xi_0                = material_model->get_reference_compaction_viscosity();
-          alpha               = material_model->get_porosity_exponent();
-        }
-      else
-        {
-          AssertThrow(false,
-                      ExcMessage("Postprocessor shear bands growth rate only works with the material model shear bands."));
-        }
+      const ShearBandsMaterial<dim> &
+      material_model
+        = Plugins::get_plugin_as_type<const ShearBandsMaterial<dim>>(this->get_material_model());
+
+      background_porosity = material_model.get_background_porosity();
+      eta_0               = material_model.reference_viscosity();
+      xi_0                = material_model.get_reference_compaction_viscosity();
+      alpha               = material_model.get_porosity_exponent();
 
       const PlaneWaveMeltBandsInitialCondition<dim> &initial_composition
         = this->get_initial_composition_manager().template

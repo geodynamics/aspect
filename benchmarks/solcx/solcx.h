@@ -3129,21 +3129,17 @@ namespace aspect
         execute (TableHandler &/*statistics*/)
         {
           std::unique_ptr<Function<dim> > ref_func;
-          if (dynamic_cast<const SolCxMaterial<dim> *>(&this->get_material_model()) != NULL)
-            {
-              const SolCxMaterial<dim> *
-              material_model
-                = dynamic_cast<const SolCxMaterial<dim> *>(&this->get_material_model());
 
-              ref_func.reset (new AnalyticSolutions::FunctionSolCx<dim>(material_model->get_eta_B(),
-                                                                        material_model->get_background_density(),
-                                                                        this->n_compositional_fields()));
-            }
-          else
-            {
-              AssertThrow(false,
-                          ExcMessage("Postprocessor DuretzEtAl only works with the material model SolCx, SolKz, and Inclusion."));
-            }
+          AssertThrow(Plugins::plugin_type_matches<const SolCxMaterial<dim>>(this->get_material_model()),
+                      ExcMessage("Postprocessor DuretzEtAl only works with the material model SolCx, SolKz, and Inclusion."));
+
+          const SolCxMaterial<dim> &
+          material_model
+            = Plugins::get_plugin_as_type<const SolCxMaterial<dim>>(this->get_material_model());
+
+          ref_func.reset (new AnalyticSolutions::FunctionSolCx<dim>(material_model.get_eta_B(),
+                                                                    material_model.get_background_density(),
+                                                                    this->n_compositional_fields()));
 
           const QGauss<dim> quadrature_formula (this->introspection().polynomial_degree.velocities + 2);
 
