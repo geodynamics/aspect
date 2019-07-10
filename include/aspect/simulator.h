@@ -1591,7 +1591,7 @@ namespace aspect
 
       /**
        * This function computes the Eisenstat Walker linear tolerance used for the Newton iterations
-       * in the `iterated Advection and Newton Stokes' solver scheme.
+       * in the `iterated Advection and Newton Stokes' and `single Advection, iterated Newton Stokes' solver schemes.
        * The Eisenstat and Walker (1996) method is used for determining the linear tolerance of
        * the iteration after the first iteration. The paper gives two preferred choices of computing
        * this tolerance. Both choices are implemented here with the suggested parameter values and

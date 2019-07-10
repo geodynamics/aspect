@@ -1303,6 +1303,7 @@ namespace aspect
   template void Simulator<dim>::solve_iterated_advection_and_stokes(); \
   template void Simulator<dim>::solve_single_advection_iterated_stokes(); \
   template void Simulator<dim>::solve_iterated_advection_and_newton_stokes(); \
+  template void Simulator<dim>::solve_single_advection_iterated_newton_stokes(); \
   template void Simulator<dim>::solve_single_advection_no_stokes(); \
   template void Simulator<dim>::solve_first_timestep_only_single_stokes(); \
   template void Simulator<dim>::solve_no_advection_no_stokes();
