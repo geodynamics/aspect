@@ -64,30 +64,33 @@ namespace aspect
 
           for (unsigned int i=0; i < in.position.size(); ++i)
             {
-              double viscosity = 0.0;
-
-              // In the first nonlinear iteration of the (pre-refinement steps of the) first time step,
-              // strain rate is zero, so we set viscosity to eta_initial, a user-defined guess of the viscosity.
-              if ((this->get_timestep_number() == 0 && in.strain_rate[i].norm() == 0))
-                viscosity = eta_initial;
-              else
+              if (in.strain_rate.size())
                 {
-                  // Otherwise we compute the linear viscosity and, if needed, the plastic viscosity.
-                  const double visc_linear = viscolin(eta_T,eta_Z,in.temperature[i],this->get_geometry_model().depth(in.position[i]));
+                  double viscosity = 0.0;
 
-                  if (eta_asterisk == 0.0 && sigma_yield == 0.0)
-                    viscosity = visc_linear;
+                  // In the first nonlinear iteration of the (pre-refinement steps of the) first time step,
+                  // strain rate is zero, so we set viscosity to eta_initial, a user-defined guess of the viscosity.
+                  if ((this->get_timestep_number() == 0 && in.strain_rate[i].norm() == 0))
+                    viscosity = eta_initial;
                   else
                     {
-                      const double visc_plastic = viscoplast(eta_asterisk,sigma_yield,deviator(in.strain_rate[i]).norm());
+                      // Otherwise we compute the linear viscosity and, if needed, the plastic viscosity.
+                      const double visc_linear = viscolin(eta_T,eta_Z,in.temperature[i],this->get_geometry_model().depth(in.position[i]));
 
-                      // Compute the harmonic average (equation (6) of the paper)
-                      viscosity = 2.0 / ((1.0 / visc_linear) + (1.0 / visc_plastic));
+                      if (eta_asterisk == 0.0 && sigma_yield == 0.0)
+                        viscosity = visc_linear;
+                      else
+                        {
+                          const double visc_plastic = viscoplast(eta_asterisk,sigma_yield,deviator(in.strain_rate[i]).norm());
+
+                          // Compute the harmonic average (equation (6) of the paper)
+                          viscosity = 2.0 / ((1.0 / visc_linear) + (1.0 / visc_plastic));
+                        }
                     }
-                }
 
-              // Cut-off the viscosity by user-defined values to avoid possible very large viscosity ratios
-              out.viscosities[i] = std::max(std::min(viscosity,eta_maximum),eta_minimum);
+                  // Cut-off the viscosity by user-defined values to avoid possible very large viscosity ratios
+                  out.viscosities[i] = std::max(std::min(viscosity,eta_maximum),eta_minimum);
+                }
 
               out.densities[i] = reference_rho * (1.0 - thermal_alpha * (in.temperature[i] - reference_T));
               out.thermal_expansion_coefficients[i] = thermal_alpha;
