@@ -181,8 +181,9 @@ namespace aspect
 
     const std::string allowed_solver_schemes = "single Advection, single Stokes|iterated Advection and Stokes|"
                                                "single Advection, iterated Stokes|no Advection, iterated Stokes|"
-                                               "iterated Advection and Newton Stokes|single Advection, no Stokes|"
-                                               "IMPES|iterated IMPES|iterated Stokes|Newton Stokes|Stokes only|Advection only|"
+                                               "iterated Advection and Newton Stokes|single Advection, iterated Newton Stokes|"
+                                               "single Advection, no Stokes|IMPES|iterated IMPES|"
+                                               "iterated Stokes|Newton Stokes|Stokes only|Advection only|"
                                                "first timestep only, single Stokes|no Advection, no Stokes";
 
     prm.declare_entry ("Nonlinear solver scheme", "single Advection, single Stokes",
@@ -206,6 +207,10 @@ namespace aspect
                        "The `iterated Advection and Newton Stokes' scheme iterates by alternating the solution "
                        "of the temperature, composition and Stokes equations, using Picard iterations for the "
                        "temperature and composition, and Newton iterations for the Stokes system. "
+                       "The `single Advection, iterated Newton Stokes' scheme solves "
+                       "the temperature and composition equations once at the beginning of each time step and "
+                       "then iterates out the solution of the Stokes equation, using Newton iterations for the "
+                       "Stokes system. "
                        "The `first timestep only, single Stokes' scheme solves the Stokes equations exactly "
                        "once, at the first time step. No nonlinear iterations are done, and the temperature and "
                        "composition systems are not solved. "
@@ -1248,6 +1253,8 @@ namespace aspect
         nonlinear_solver = NonlinearSolver::no_Advection_iterated_Stokes;
       else if (solver_scheme == "iterated Advection and Newton Stokes" || solver_scheme == "Newton Stokes")
         nonlinear_solver = NonlinearSolver::iterated_Advection_and_Newton_Stokes;
+      else if (solver_scheme == "single Advection, iterated Newton Stokes")
+        nonlinear_solver = NonlinearSolver::single_Advection_iterated_Newton_Stokes;
       else if (solver_scheme == "single Advection, no Stokes" || solver_scheme == "Advection only")
         nonlinear_solver = NonlinearSolver::single_Advection_no_Stokes;
       else if (solver_scheme == "first timestep only, single Stokes")

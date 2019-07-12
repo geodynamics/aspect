@@ -588,6 +588,23 @@ namespace aspect
        * This function implements one scheme for the various
        * steps necessary to assemble and solve the nonlinear problem.
        *
+       * The `single Advection, iterated Newton Stokes' scheme solves the temperature and
+       * composition equations once at the beginning of each time step
+       * and then iterates out the solution of the Stokes equation using Newton iterations.
+       * For the Stokes system it is able to switch from a defect correction form of
+       * Picard iterations to Newton iterations after a certain tolerance or
+       * number of iterations is reached. This can greatly improve the
+       * convergence rate for particularly nonlinear viscosities.
+       *
+       * This function is implemented in
+       * <code>source/simulator/solver_schemes.cc</code>.
+       */
+      void solve_single_advection_iterated_newton_stokes ();
+
+      /**
+       * This function implements one scheme for the various
+       * steps necessary to assemble and solve the nonlinear problem.
+       *
        * The `single Advection, no Stokes' scheme only solves the temperature and other
        * advection systems and instead of solving for the Stokes system,
        * a prescribed velocity and pressure is used."
@@ -1569,7 +1586,7 @@ namespace aspect
 
       /**
        * This function computes the Eisenstat Walker linear tolerance used for the Newton iterations
-       * in the `iterated Advection and Newton Stokes' solver scheme.
+       * in the `iterated Advection and Newton Stokes' and `single Advection, iterated Newton Stokes' solver schemes.
        * The Eisenstat and Walker (1996) method is used for determining the linear tolerance of
        * the iteration after the first iteration. The paper gives two preferred choices of computing
        * this tolerance. Both choices are implemented here with the suggested parameter values and
