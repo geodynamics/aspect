@@ -98,7 +98,7 @@ namespace aspect
                                                                 this->introspection().n_compositional_fields);
 
       // Move the additional outputs to base_output so that our models can fill them if desired:
-      base_output.take_additional_outputs_from(out);
+      base_output.move_additional_outputs_from(out);
 
       for (unsigned int i=0; i<models.size(); ++i)
         {
@@ -107,7 +107,7 @@ namespace aspect
         }
 
       // Finally, we move the additional outputs back into place:
-      out.take_additional_outputs_from(base_output);
+      out.move_additional_outputs_from(base_output);
     }
 
 
