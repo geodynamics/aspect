@@ -48,7 +48,7 @@ namespace aspect
     ASPECT_REGISTER_INITIAL_COMPOSITION_MODEL(AdiabaticDensity,
                                               "adiabatic density",
                                               "Specify the initial composition as the adiabatic reference density at "
-                                              "each position. Note that only the field with the name 'density_field' "
+                                              "each position. Note that only the field with the name 'density\\_field' "
                                               "will be filled for all other fields this plugin returns 0.0.")
   }
 }
