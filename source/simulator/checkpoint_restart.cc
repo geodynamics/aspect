@@ -366,6 +366,9 @@ namespace aspect
 
     }
 
+    // Wait for everyone to finish writing
+    MPI_Barrier(mpi_communicator);
+
     // Now rename the snapshots to put the new one in place of the old one.
     // Do this after writing the new one, because writing large checkpoints
     // can be slow, and the model might be cancelled during writing.
