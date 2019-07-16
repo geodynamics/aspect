@@ -1,0 +1,7 @@
+# Like checkpoint_01, but in parallel.
+
+# MPI: 2
+
+set Dimension = 2
+
+include $ASPECT_SOURCE_DIR/tests/checkpoint_01.prm

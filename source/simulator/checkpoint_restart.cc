@@ -262,29 +262,7 @@ namespace aspect
   void Simulator<dim>::create_snapshot()
   {
     TimerOutput::Scope timer (computing_timer, "Create snapshot");
-    unsigned int my_id = Utilities::MPI::this_mpi_process (mpi_communicator);
-
-    if (my_id == 0)
-      {
-        // if we have previously written a snapshot, then keep the last
-        // snapshot in case this one fails to save. Note: static variables
-        // will only be initialized once per model run.
-        static bool previous_snapshot_exists = (parameters.resume_computation == true);
-
-        if (previous_snapshot_exists == true)
-          {
-            move_file (parameters.output_directory + "restart.mesh",
-                       parameters.output_directory + "restart.mesh.old");
-            move_file (parameters.output_directory + "restart.mesh.info",
-                       parameters.output_directory + "restart.mesh.info.old");
-            move_file (parameters.output_directory + "restart.resume.z",
-                       parameters.output_directory + "restart.resume.z.old");
-          }
-        // from now on, we know that if we get into this
-        // function again that a snapshot has previously
-        // been written
-        previous_snapshot_exists = true;
-      }
+    const unsigned int my_id = Utilities::MPI::this_mpi_process (mpi_communicator);
 
     // save Triangulation and Solution vectors:
     {
@@ -327,7 +305,7 @@ namespace aspect
 
       signals.pre_checkpoint_store_user_data(triangulation);
 
-      triangulation.save ((parameters.output_directory + "restart.mesh").c_str());
+      triangulation.save ((parameters.output_directory + "restart.mesh.new").c_str());
     }
 
     // save general information This calls the serialization functions on all
@@ -363,7 +341,7 @@ namespace aspect
                 (uint32_t)compressed_data_length
               }; /* list of compressed sizes of blocks */
 
-          std::ofstream f ((parameters.output_directory + "restart.resume.z").c_str());
+          std::ofstream f ((parameters.output_directory + "restart.resume.z.new").c_str());
           f.write((const char *)compression_header, 4 * sizeof(compression_header[0]));
           f.write((char *)&compressed_data[0], compressed_data_length);
           f.close();
@@ -375,7 +353,7 @@ namespace aspect
           // "sticky".
           if (!f)
             AssertThrow(false, ExcMessage ("Writing of the checkpoint file '" + parameters.output_directory
-                                           + "restart.resume.z' with size "
+                                           + "restart.resume.z.new' with size "
                                            + Utilities::to_string(4 * sizeof(compression_header[0])+compressed_data_length)
                                            + " failed on processor 0."));
         }
@@ -387,6 +365,44 @@ namespace aspect
 #endif
 
     }
+
+    // Wait for everyone to finish writing
+    MPI_Barrier(mpi_communicator);
+
+    // Now rename the snapshots to put the new one in place of the old one.
+    // Do this after writing the new one, because writing large checkpoints
+    // can be slow, and the model might be cancelled during writing.
+    // This way restart remains usable even if restart.new is not completely
+    // written.
+    if (my_id == 0)
+      {
+        // if we have previously written a snapshot, then keep the last
+        // snapshot in case this one fails to save. Note: static variables
+        // will only be initialized once per model run.
+        static bool previous_snapshot_exists = (parameters.resume_computation == true);
+
+        if (previous_snapshot_exists == true)
+          {
+            move_file (parameters.output_directory + "restart.mesh",
+                       parameters.output_directory + "restart.mesh.old");
+            move_file (parameters.output_directory + "restart.mesh.info",
+                       parameters.output_directory + "restart.mesh.info.old");
+            move_file (parameters.output_directory + "restart.resume.z",
+                       parameters.output_directory + "restart.resume.z.old");
+          }
+
+        move_file (parameters.output_directory + "restart.mesh.new",
+                   parameters.output_directory + "restart.mesh");
+        move_file (parameters.output_directory + "restart.mesh.new.info",
+                   parameters.output_directory + "restart.mesh.info");
+        move_file (parameters.output_directory + "restart.resume.z.new",
+                   parameters.output_directory + "restart.resume.z");
+
+        // from now on, we know that if we get into this
+        // function again that a snapshot has previously
+        // been written
+        previous_snapshot_exists = true;
+      }
 
     pcout << "*** Snapshot created!" << std::endl << std::endl;
   }
