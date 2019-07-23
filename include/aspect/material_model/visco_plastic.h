@@ -368,6 +368,11 @@ namespace aspect
          */
         std::vector<double> viscous_strain_weakening_factors;
 
+        /**
+         * The factor by which the diffusion, dislocation, or composite
+         * viscosity is multiplied before plastic yielding.
+         */
+        std::vector<double> pre_yield_viscosity_factors;
 
         std::vector<double> prefactors_diffusion;
         std::vector<double> grain_size_exponents_diffusion;

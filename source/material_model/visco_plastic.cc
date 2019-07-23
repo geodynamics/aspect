@@ -190,6 +190,8 @@ namespace aspect
               }
             }
 
+          // The pre-yield viscosity multiplicative factor linearly increases or decreases the viscosity
+          viscosity_pre_yield *= pre_yield_viscosity_factors[j];
 
           // Second step: strain weakening
 
@@ -914,6 +916,13 @@ namespace aspect
                              "Select what type of yield mechanism to use between Drucker Prager "
                              "and stress limiter options.");
 
+          prm.declare_entry ("Pre-yield viscosity multiplicative factors", "1.0",
+                             Patterns::List(Patterns::Double(0)),
+                             "List of pre-yield viscosity multiplicative factors, for background material "
+                             "and compositional fields, for a total of N+1 values, where N is the number "
+                             "of compositional fields. If only one value is given, then all use the same value. "
+                             "The multiplicative factor is applied to the viscosity prior to yielding. Units: none");
+
           // Diffusion creep parameters
           prm.declare_entry ("Prefactors for diffusion creep", "1.5e-15",
                              Patterns::List(Patterns::Double(0)),
@@ -1219,6 +1228,10 @@ namespace aspect
             AssertThrow(false, ExcMessage("Not a valid yield mechanism."));
 
           // Rheological parameters
+          pre_yield_viscosity_factors = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Pre-yield viscosity multiplicative factors"))),
+                                                                                n_fields,
+                                                                                "Pre-yield viscosity multiplicative factors");
+
           // Diffusion creep parameters (Stress exponents often but not always 1)
           prefactors_diffusion = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Prefactors for diffusion creep"))),
                                                                          n_fields,
