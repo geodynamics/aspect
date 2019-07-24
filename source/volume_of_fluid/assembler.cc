@@ -118,18 +118,16 @@ namespace aspect
           if (face_normal_direction != calc_dir)
             continue;
 
-          typename DoFHandler<dim>::face_iterator face = cell->face (face_no);
+          const typename DoFHandler<dim>::face_iterator face = cell->face (face_no);
 
           if (!face->at_boundary())
-            {
-              this->local_assemble_internal_face_volume_of_fluid_system (field, update_from_old, cell, face_no, scratch, data);
-            }
+            this->local_assemble_internal_face_volume_of_fluid_system (field, update_from_old, cell, face_no, scratch, data);
           else
-            {
-              this->local_assemble_boundary_face_volume_of_fluid_system (field, update_from_old, cell, face_no, scratch, data);
-            }
+            this->local_assemble_boundary_face_volume_of_fluid_system (field, update_from_old, cell, face_no, scratch, data);
         }
     }
+
+
 
     template <int dim>
     void VolumeOfFluidAssembler<dim>::local_assemble_boundary_face_volume_of_fluid_system (const VolumeOfFluidField<dim> &field,
@@ -293,9 +291,11 @@ namespace aspect
         }
     }
 
+
+
     template <int dim>
     void VolumeOfFluidAssembler<dim>::local_assemble_internal_face_volume_of_fluid_system (const VolumeOfFluidField<dim> &field,
-        bool update_from_old,
+        const bool update_from_old,
         const typename DoFHandler<dim>::active_cell_iterator &cell,
         const unsigned int face_no,
         internal::Assembly::Scratch::VolumeOfFluidSystem<dim> &scratch,
@@ -381,7 +381,7 @@ namespace aspect
                *  this cell is equally-sized and
                *    (a) this cell is on a different subdomain, with lower subdmain_id(), or
                *    (b) this cell is on the same subdomain and has lower index().
-              */
+               */
               Assert (cell->is_locally_owned(), ExcInternalError());
 
               Assert (neighbor.state() == IteratorState::valid,
@@ -621,13 +621,15 @@ namespace aspect
               // within tolerance), we are at a VoF fluid interface but have
               // not correctly computed the advection flux
               AssertThrow(flux_volume_of_fluid < volume_fraction_threshold || flux_volume_of_fluid>1.0-volume_fraction_threshold,
-                          ExcMessage("Volume of Fluid interface coincides with variation in AMR refinement levels."
+                          ExcMessage("Volume of Fluid interface coincides with variation in AMR refinement levels. "
                                      "This case is not handled by the current Volume of Fluid assembler."));
             }
         }
     }
   }
 }
+
+
 
 namespace aspect
 {
