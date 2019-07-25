@@ -38,7 +38,7 @@ namespace aspect
       void
       ViscoPlasticStrainInvariant<dim>::initialize ()
       {
-        AssertThrow(dynamic_cast<const MaterialModel::ViscoPlastic<dim> *>(&this->get_material_model()) != NULL,
+        AssertThrow(dynamic_cast<const MaterialModel::ViscoPlastic<dim> *>(&this->get_material_model()) != nullptr,
                     ExcMessage("This initial condition only makes sense in combination with the visco_plastic material model."));
 
         n_components = 0;
