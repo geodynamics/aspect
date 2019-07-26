@@ -64,6 +64,20 @@ namespace aspect
       double local_max_height = std::numeric_limits<double>::lowest();
       double local_min_height = std::numeric_limits<double>::max();
 
+      // Set up some variables for the analytical solution of the
+      // topography
+      const unsigned int n_max = 5000;
+      const double time = this->get_time();
+
+      double domain_width = 100e3, kappa = 0.5;
+      if (analytical_solution_example == 1)
+         kappa = 100;
+      else if (analytical_solution_example == 2)
+      {
+         kappa = 100;
+         domain_width = 100e3;
+      }
+
       // loop over all of the surface cells and save the elevation to stored_value
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned() && cell->at_boundary())
@@ -80,7 +94,29 @@ namespace aspect
                     const Point<dim> vertex = face_vals.quadrature_point(corner);
                     const double elevation = this->get_geometry_model().height_above_reference_surface(vertex);
                     if (write_to_file)
+                    {
+                      if (analytical_solution_example == 0)
                       output_file << vertex << ' '<< elevation << std::endl;
+                      else if (analytical_solution_example == 1)
+                      {
+                      // compute analytical solution and write out diff
+                      double sum = 0.;
+                      for (unsigned int n=1; n<=n_max; ++n)
+                         sum += std::cos(2.*n*numbers::PI*vertex[0]/domain_width)
+                               * std::exp(-kappa*2.*n*n*numbers::PI*numbers::PI*(time/year_in_seconds)/(domain_width*domain_width))
+                               /(4.*n*n-1.);
+
+                      const double topo = 100e3/numbers::PI - 200e3/numbers::PI*sum;
+                   
+                      output_file << vertex << ' '<< elevation << ' ' << topo << std::endl;
+                      }
+                      else if (analytical_solution_example == 2)
+                      {
+                       const double topo = 5e3 * std::sin(vertex[0]*numbers::PI/domain_width)
+                                                * std::exp(-kappa*numbers::PI*numbers::PI*(time/year_in_seconds)/(domain_width*domain_width));
+                       output_file << vertex << ' '<< elevation << ' ' << topo << std::endl;
+                      }
+                    }
                     if ( elevation > local_max_height)
                       local_max_height = elevation;
                     if ( elevation < local_min_height)
@@ -187,6 +223,13 @@ namespace aspect
                              "Units: years if the "
                              "'Use years in output instead of seconds' parameter is set; "
                              "seconds otherwise.");
+          prm.declare_entry ("Analytical solution of example", "1",
+                             Patterns::Integer (0),
+                             "The number of the diffusion example for "
+                             "which we output the analytical solution. "
+                             "For a value of 0, we do not write the "
+                             "analytical solution. "
+                             "Units: -. ");
         }
         prm.leave_subsection();
       }
@@ -206,6 +249,7 @@ namespace aspect
           output_interval = prm.get_double ("Time between text output");
           if (this->convert_output_to_years())
             output_interval *= year_in_seconds;
+          analytical_solution_example = prm.get_double ("Analytical solution of example");
         }
         prm.leave_subsection();
       }

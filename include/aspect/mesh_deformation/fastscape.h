@@ -47,6 +47,8 @@ void fastscape_set_dt_(double *dtt);
 void fastscape_init_h_(double *hp);
 void fastscape_set_erosional_parameters_(double *kkf,const double *kkfsed,const double *mm,const double *nnn,
                                          double *kkd,const double *kkdsed,const double *gg1,const double *gg2,const double *pp);
+
+void fastscape_view_();
 void fastscape_set_bc_(const int *jbc);
 void fastscape_set_v_(double *ux, double *uy);
 void fastscape_set_u_(double *up);
@@ -111,8 +113,14 @@ namespace aspect
         int nz;
         unsigned int additional_refinement;
         unsigned int initial_global_refinement;
-        unsigned int dy_slices;
         int numx;
+        unsigned int bottom;
+        unsigned int right;
+        unsigned int top;
+        unsigned int left;
+        double x_extent;
+        double y_extent;
+        bool slice;
 
         double m;
         double n;

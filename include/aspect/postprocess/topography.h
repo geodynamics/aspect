@@ -83,6 +83,7 @@ namespace aspect
          * to be produced. Used to check for the next necessary output time.
          */
         double last_output_time;
+        double analytical_solution_example;
     };
   }
 }

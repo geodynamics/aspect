@@ -44,12 +44,6 @@ namespace aspect
 {
   namespace MeshDeformation
   {
-    /*template <int dim>
-     FastScape<dim>::FastScape()
-       :
-       function(dim)
-     {}*/
-
 
     template <int dim>
     void
@@ -60,8 +54,6 @@ namespace aspect
 
       AssertThrow(geometry != nullptr,
                   ExcMessage("Fastscape can only be run with a box model"));
-      AssertThrow((dy_slices & 1) != 0,
-                  ExcMessage("Number of slices in y must be an odd number."));
 
       //second is for maximum coordiantes, first for minimum.
       for (unsigned int i=0; i<dim; ++i)
@@ -69,7 +61,6 @@ namespace aspect
           grid_extent[i].first = 0;
           grid_extent[i].second = geometry->get_extents()[i];
         }
-
 
       //TODO: There has to be a better type to use to get this.
       const std::pair<int, int > repetitions = geometry->get_repetitions();
@@ -79,6 +70,7 @@ namespace aspect
       //Set nx and dx, as these will be the same regardless of dimension.
       nx = 1+std::pow(2,initial_global_refinement+additional_refinement)*x_repetitions;
       dx = grid_extent[0].second/(nx-1);
+      x_extent = geometry->get_extents()[0];
       //Find the number of grid points in x direction for indexing.
       numx = 1+grid_extent[0].second/dx;
 
@@ -89,9 +81,9 @@ namespace aspect
 
       if (dim == 2)
         {
-          ny = dy_slices;
+          ny = nx*8-1; //*2-1dy_slices;
           dy = dx;
-          grid_extent[1].second = (ny-1)*dy;
+          y_extent = grid_extent[0].second*8; //(ny-1)*dy;
 
         }
 
@@ -100,10 +92,12 @@ namespace aspect
           ny = 1+std::pow(2,initial_global_refinement+additional_refinement)*y_repetitions;
           dy = grid_extent[1].second/(ny-1);
           table_intervals[1] = ny-1;
+          y_extent = geometry->get_extents()[1];
         }
 
       //Determine array size to send to fastscape
       array_size = nx*ny-1;
+      std::cout<<nx<<"  "<<ny<<"  "<<dx<<std::endl;
     }
 
 
@@ -115,7 +109,15 @@ namespace aspect
     {
       const types::boundary_id relevant_boundary = this->get_geometry_model().translate_symbolic_boundary_name_to_id ("top");
       const bool top_boundary = boundary_ids.find(relevant_boundary) == boundary_ids.begin();
-      double a_dt = this->get_old_timestep()/year_in_seconds;
+
+      //If using with the mesh deformation, you may need to use the old timestep
+      //otherwise fastscape won't see the change made until the following timestep.
+      //TODO: How does this work in combination with the free surface?
+      double a_dt = this->get_timestep();
+      if (this->convert_output_to_years())
+      {
+         a_dt = this->get_timestep()/year_in_seconds;
+      }
 
       //We only want to run fastscape if there was a change in time, and if we're at the top boundary.
       if (a_dt > 0 && top_boundary)
@@ -144,6 +146,7 @@ namespace aspect
           endc = this->get_dof_handler().end();
 
           //TODO: At some point it'd be good to check that the surface is all at one refinement level.
+          //Also check that global+additional refinement is at least as high as what is at the surface.
           for (; cell != endc; ++cell)
             if (cell->is_locally_owned() && cell->at_boundary())
               for (unsigned int face_no = 0; face_no < GeometryInfo<dim>::faces_per_cell; ++face_no)
@@ -152,6 +155,7 @@ namespace aspect
                     if ( cell->face(face_no)->boundary_id() != relevant_boundary)
                       continue;
 
+                    //Should we update mapping here?
                     std::vector<Tensor<1,dim> > vel( face_corners.size() );
                     fe_face_values.reinit( cell, face_no);
                     fe_face_values[this->introspection().extractors.velocities].get_function_values(this->get_solution(), vel );
@@ -164,13 +168,13 @@ namespace aspect
 
                         if (dim == 2)
                           {
-                            for (unsigned int ys=0; ys<dy_slices; ys++)
+                            for (int ys=0; ys<ny; ys++)
                               {
                                 double index = indx+numx*ys;
                                 temporary_variables[0][index-1] = this->get_geometry_model().height_above_reference_surface(vertex); //vertex(dim-1);   //z component
 
                                 for (unsigned int i=0; i<dim; ++i)
-                                  temporary_variables[i+1][index-1] = vel[corner][i];
+                                  temporary_variables[i+1][index-1] = vel[corner][i]*year_in_seconds;
                               }
                           }
 
@@ -178,10 +182,10 @@ namespace aspect
                           {
                             double indy = 1+vertex(1)/dy;
                             double index = (indy-1)*numx+indx;
-                            temporary_variables[0][index-1] = this->get_geometry_model().height_above_reference_surface(vertex); //vertex(dim-1);   //z component
+                            temporary_variables[0][index-1] = vertex(dim-1); //this->get_geometry_model().height_above_reference_surface(vertex); //vertex(dim-1);   //z component
 
                             for (unsigned int i=0; i<dim; ++i)
-                              temporary_variables[i+1][index-1] = vel[corner][i];
+                              temporary_variables[i+1][index-1] = vel[corner][i]*year_in_seconds;
                           }
 
 
@@ -201,7 +205,7 @@ namespace aspect
               std::unique_ptr<double[]> vz (new double[array_size]);
               std::unique_ptr<double[]> kf (new double[array_size]);
               std::unique_ptr<double[]> kd (new double[array_size]);
-              int istep;
+              int istep = 0;
               int steps = nstep;
 
               //Initialize kf and kd across array, and set the velocities and h values to what proc zero has.
@@ -251,6 +255,7 @@ namespace aspect
               for (int i=0; i<=array_size; i++)
                 {
                   temporary_variables[0][i] = h[i];
+                  //std::cout<<vx[i]<<"  "<<vy[i]<<"  "<<vz[i]<<"  "<<i<<std::endl;
                 }
 
               //Find a fastscape timestep that is below our maximum timestep.
@@ -260,7 +265,15 @@ namespace aspect
                   steps=steps*2;
                   f_dt = a_dt/steps;
                 }
+              f_dt = 1000;
+              steps = 500;
+              //f_dt = max_timestep;
+              //steps = round(a_dt/max_timestep);
+              //f_dt = 25000;
+              //steps = 1e7/f_dt;
               std::cout<<"Fastscape timestep: "<<f_dt<<"  "<<a_dt<<"  "<<steps<<std::endl;
+
+
 
               //Initialize fastscape
               fastscape_init_();
@@ -268,7 +281,7 @@ namespace aspect
               fastscape_setup_();
 
               //set x and y extent
-              fastscape_set_xl_yl_(&grid_extent[0].second,&grid_extent[1].second);
+              fastscape_set_xl_yl_(&x_extent,&y_extent);
 
               //Set time step
               fastscape_set_dt_(&f_dt);
@@ -279,11 +292,18 @@ namespace aspect
               //Set erosional parameters TODO: why is it g twice here?
               fastscape_set_erosional_parameters_(kf.get(), &kfsed, &m, &n, kd.get(), &kdsed, &g, &g, &p);
 
+              fastscape_set_u_(vz.get());
+              fastscape_set_v_(vx.get(), vy.get());
+
               //set boundary conditions
               fastscape_set_bc_(&bc);
 
+              //model setup
+              fastscape_view_();
+
               //Initialize first time step
-              fastscape_get_step_(&istep);
+              fastscape_vtk_(h.get(), &vexp);
+              //fastscape_get_step_(&istep);
 
               do
                 {
@@ -298,6 +318,7 @@ namespace aspect
                 }
               while (istep<steps);
 
+              //fastscape_vtk_(h.get(), &vexp);
               //output timing
               fastscape_debug_();
 
@@ -305,9 +326,11 @@ namespace aspect
               fastscape_destroy_();
 
               //Find out our velocities from the change in height.
+              //TODO: Do we want to use the current or previous time step?
               for (int i=0; i<=array_size; i++)
                 {
                   V[i] = (h[i] - temporary_variables[0][i])/a_dt;
+                  //std::cout<<i<<"  H1: "<<h[i]<<"  H2: "<<temporary_variables[0][i]<<"  V1: "<<V[i]<<std::endl;
                 }
 
               MPI_Bcast(&V[0], array_size+1, MPI_DOUBLE, 0, this->get_mpi_communicator());
@@ -332,23 +355,43 @@ namespace aspect
           TableIndices<dim> idx;
 
           //Average the 2D slices together to get a 1D velocity array.
-          //TODO: If side boundaries are fixed then we may be averaging in an
-          //unnecessary zero.
+          // double V3;
+
+          //this variable gives us how many slices near the boundaries to ignore,
+          //this helps with lower values due to fixed top and bottom boundaries.
+          int edge = (nx+1)/2;
+          //std::cout<<nx<<"  "<<ny<<"  "<<edge<<std::endl;
           if (dim == 2)
             {
               std::vector<double> V2(numx);
 
               for (int i=0; i<numx; i++)
                 {
-                  for (unsigned int ys=0; ys<dy_slices; ys++)
+            	  //Multiply edge by bottom and top, so it only takes them off if they're fixed.
+            	  if(slice)
+            	  {
+                      int index = i+numx*((ny-1)/2);
+                      V2[i] = V[index];
+            	  }
+            	  else
+            	  {
+                  for (int ys=(edge); ys<(ny-edge); ys++)
                     {
                       int index = i+numx*ys;
                       V2[i] += V[index];
+                    //std::cout<<i<<"  "<<index<<"  "<<V[index]<<std::endl;
                     }
+                    V2[i] = V2[i]/(ny-edge*2);
+            	  }
 
-                  V2[i] = V2[i]/dy_slices;
+
+
+                  //std::cout<<i<<" V2: "<<V2[i]<<std::endl;
+                  //V3 += V2[i];
+
                 }
-
+             // V3 = V3/numx;
+             // std::cout<<"Average: "<<V3<<std::endl;
               for (unsigned int i=0; i<data_table.size()[1]; ++i)
                 {
                   idx[1] = i;
@@ -357,10 +400,20 @@ namespace aspect
                     {
                       idx[0] = j;
 
-                      if (i == 1 )
-                        data_table(idx) = V2[j]/year_in_seconds;
+                      //Convert from m/yr to m/s if needed
+                      if (i == 1)
+                      {
+                          if (this->convert_output_to_years())
+                             data_table(idx) = V2[j]/year_in_seconds;
+                          else
+                        	 data_table(idx) = V2[j];
+
+                      }
                       else
                         data_table(idx)= 0;
+
+                      //std::cout<<idx<<"  "<<data_table(idx)<<std::endl;
+
                     }
 
                 }
@@ -382,13 +435,20 @@ namespace aspect
                           idx[0] = j;
 
                           if (k==1 )
-                            data_table(idx) = V[nx*i+j]/year_in_seconds;
+                          {
+                              if (this->convert_output_to_years())
+                                 data_table(idx) = V[nx*i+j]/year_in_seconds;
+                              else
+                            	  data_table(idx) = V[nx*i+j];
+                          }
                           else
                             data_table(idx)= 0;
+
                         }
                     }
                 }
             }
+
 
 
           Functions::InterpolatedUniformGridData<dim> *velocities;
@@ -428,11 +488,6 @@ namespace aspect
           prm.declare_entry("Maximum timestep", "10e3",
                             Patterns::Double(0),
                             "Maximum timestep for fastscape.");
-          prm.declare_entry("Boundary conditions", "1111",
-                            Patterns::Integer(),
-                            "Boundary conditions where 0 is reflective and 1 is fixed  "
-                            "height. Must be given in four digits, where the order is bottom,"
-                            "right, top, left.");
           prm.declare_entry("Vertical exaggeration", "3",
                             Patterns::Double(),
                             "Vertical exaggeration for fastscape's VTK file.");
@@ -440,13 +495,32 @@ namespace aspect
                             Patterns::Integer(),
                             "Refinement level expected at surface to determine"
                             "proper nx and ny values");
-          prm.declare_entry("Ny slices for 2d", "11",
-                            Patterns::Integer(),
-                            "Number of steps per ASPECT timestep");
+          prm.declare_entry ("Use center slice for 2d", "false",
+                             Patterns::Bool (),
+                             "If this is set to true, then a 2D model will only consider the "
+                             "center slice fastscape gives. If set to false, then aspect will"
+                             "average the inner third of what fastscape calculates.");
+
+          prm.enter_subsection ("Boundary conditions");
+          {
+              prm.declare_entry ("Bottom", "1",
+            		             Patterns::Integer (0, 1),
+                                 "Bottom boundary condition, where 1 is fixed and 0 is reflective.");
+              prm.declare_entry ("Right", "1",
+ 		                         Patterns::Integer (0, 1),
+                                 "Right boundary condition, where 1 is fixed and 0 is reflective.");
+              prm.declare_entry ("Top", "1",
+ 		                         Patterns::Integer (0, 1),
+                                 "Top boundary condition, where 1 is fixed and 0 is reflective.");
+              prm.declare_entry ("Left", "1",
+ 		                         Patterns::Integer (0, 1),
+                                 "Left boundary condition, where 1 is fixed and 0 is reflective.");
+          }
+          prm.leave_subsection();
 
           prm.enter_subsection ("Erosional parameters");
           {
-            prm.declare_entry("Drainage area exponent", "0.5",
+            prm.declare_entry("Drainage area exponent", "0.4",
                               Patterns::Double(),
                               "Theta parameter described in \\cite{KMM2010}. "
                               "An unstabilized free surface can overshoot its ");
@@ -458,15 +532,15 @@ namespace aspect
                               Patterns::Double(),
                               "Theta parameter described in \\cite{KMM2010}. "
                               "An unstabilized free surface can overshoot its ");
-            prm.declare_entry("Bedrock deposition coefficient", "0",
+            prm.declare_entry("Bedrock deposition coefficient", "-1",
                               Patterns::Double(),
                               "Theta parameter described in \\cite{KMM2010}. "
                               "An unstabilized free surface can overshoot its ");
-            prm.declare_entry("Sediment deposition coefficient", "0",
+            prm.declare_entry("Sediment deposition coefficient", "-1",
                               Patterns::Double(),
                               "Theta parameter described in \\cite{KMM2010}. "
                               "An unstabilized free surface can overshoot its ");
-            prm.declare_entry("Bedrock river incision rate", "2e-6",
+            prm.declare_entry("Bedrock river incision rate", "-1",
                               Patterns::Double(),
                               "Theta parameter described in \\cite{KMM2010}. "
                               "An unstabilized free surface can overshoot its ");
@@ -474,7 +548,7 @@ namespace aspect
                               Patterns::Double(),
                               "Theta parameter described in \\cite{KMM2010}. "
                               "An unstabilized free surface can overshoot its ");
-            prm.declare_entry("Bedrock diffusivity", "1e-1",
+            prm.declare_entry("Bedrock diffusivity", "1",
                               Patterns::Double(),
                               "Theta parameter described in \\cite{KMM2010}. "
                               "An unstabilized free surface can overshoot its ");
@@ -509,10 +583,20 @@ namespace aspect
         {
           nstep = prm.get_integer("Number of steps");
           max_timestep = prm.get_double("Maximum timestep");
-          bc = prm.get_integer("Boundary conditions");
           vexp = prm.get_double("Vertical exaggeration");
           additional_refinement = prm.get_integer("Additional fastscape refinement");
-          dy_slices = prm.get_integer("Ny slices for 2d");
+          slice = prm.get_bool("Use center slice for 2d");
+
+          prm.enter_subsection("Boundary conditions");
+          {
+           bottom = prm.get_integer("Bottom");
+           right = prm.get_integer("Right");
+           top = prm.get_integer("Top");
+           left = prm.get_integer("Left");
+
+           bc = bottom*1000+right*100+top*10+left;
+          }
+          prm.leave_subsection();
 
           prm.enter_subsection("Erosional parameters");
           {
@@ -527,6 +611,8 @@ namespace aspect
             p = prm.get_double("Multi-direction slope exponent");
           }
           prm.leave_subsection();
+
+
         }
         prm.leave_subsection();
 
