@@ -618,91 +618,96 @@ namespace aspect
           for (unsigned int i=0; i<dim; ++i)
             n[i] = in.composition[q][c_idx_n[i]];
 
-          Tensor<1,dim> n_dot;
-          if (n.norm() >0.5 && in.composition[q][c_idx_gamma] > 0.8)
+          // The computation of the viscosity tensor is only
+          // necessary after the simulator has been initialized.
+          if (this->simulator_is_past_initialization())
             {
-              // Symmetric and anti-symmetric parts of grad_u
-              const SymmetricTensor<2,dim> D = symmetrize(velocity_gradients[q]);
-              Tensor<2,dim> W;
-              for (unsigned int i=0; i<dim; ++i)
-                for (unsigned int j=0; j<dim; ++j)
-                  W[i][j] = velocity_gradients[q][i][j] - D[i][j];
-
-              for (unsigned int i=0; i<dim; ++i)
+              Tensor<1,dim> n_dot;
+              if (n.norm() > 0.5 && in.composition[q][c_idx_gamma] > 0.8)
                 {
-                  // outer summation over each value of j.
-                  for (unsigned int j=0; j<dim; ++j)
+                  // Symmetric and anti-symmetric parts of grad_u
+                  const SymmetricTensor<2,dim> D = symmetrize(velocity_gradients[q]);
+                  Tensor<2,dim> W;
+                  for (unsigned int i=0; i<dim; ++i)
+                    for (unsigned int j=0; j<dim; ++j)
+                      W[i][j] = velocity_gradients[q][i][j] - D[i][j];
+
+                  for (unsigned int i=0; i<dim; ++i)
                     {
-                      float Wn = W[i][j];
-                      for (unsigned int k=0; k<dim; ++k)
+                      // outer summation over each value of j.
+                      for (unsigned int j=0; j<dim; ++j)
                         {
-                          Wn -= D[k][i]*n[k]*n[j] - D[k][j]*n[k]*n[i];
+                          float Wn = W[i][j];
+                          for (unsigned int k=0; k<dim; ++k)
+                            {
+                              Wn -= D[k][i]*n[k]*n[j] - D[k][j]*n[k]*n[i];
+                            }
+                          n_dot[i] += Wn * n[j];
                         }
-                      n_dot[i] += Wn * n[j];
                     }
-                }
 
-              // make sure that n is a unit vector. for this to work,
-              // n needs to be a nonzero vector
-              Tensor<1,dim> n_new;
-              if (this->get_timestep()==0) //because at the start of the model timestep is 0
-                {
-                  n_dot = (n/n.norm())-n;
+                  // make sure that n is a unit vector. We have checked
+                  // above that n != 0.0.
+                  // handle time step 0 differently, because time step length is 0
+                  if (this->get_timestep() == 0)
+                    {
+                      n_dot = (n/n.norm())-n;
+                    }
+                  else
+                    {
+                      Tensor<1,dim> n_new = n + (n_dot * this->get_timestep());
+                      Assert (n_new.norm() != 0, ExcInternalError());
+                      n_new /= n_new.norm();
+                      n_dot = (n_new-n)/ this->get_timestep();
+                    }
                 }
               else
                 {
-                  n_new = n + (n_dot * this->get_timestep());
-                  Assert (n_new.norm() != 0, ExcInternalError());
-                  n_new /= n_new.norm();
-                  n_dot = (n_new-n)/ this->get_timestep();
+                  n_dot = 0;
                 }
-            }
-          else
-            {
-              n_dot = 0;
-            }
-          // update  n[i] = in.composition[q][c_idx_n[i]] with adding to it n_dot*dt
-          for (unsigned int i=0; i<dim; ++i)
-            if (this->get_timestep()==0)
-              out.reaction_terms[q][c_idx_n[i]] = n_dot[i];
-            else
-              out.reaction_terms[q][c_idx_n[i]] = n_dot[i] * this->get_timestep();
-
-          if (n.norm() > 0.5)
-            {
-              n/=n.norm();
-              SymmetricTensor<4,dim> Lambda;
+              // update  n[i] = in.composition[q][c_idx_n[i]] with adding to it n_dot*dt
               for (unsigned int i=0; i<dim; ++i)
-                for (unsigned int j=0; j<dim; ++j)
-                  for (unsigned int k=0; k<dim; ++k)
-                    for (unsigned int l=0; l<dim; ++l)
-                      Lambda[i][j][k][l] = 1./2. * (n[i]*n[k]*delta(l,j)
-                                                    + n[j]*n[k]*delta(i,l)
-                                                    + n[i]*n[l]*delta(k,j)
-                                                    + n[j]*n[l]*delta(i,k))
-                                           - 2*n[i]*n[j]*n[k]*n[l];
+                if (this->get_timestep() == 0)
+                  out.reaction_terms[q][c_idx_n[i]] = n_dot[i];
+                else
+                  out.reaction_terms[q][c_idx_n[i]] = n_dot[i] * this->get_timestep();
 
-              if (anisotropic_viscosity != nullptr)
+              if (n.norm() > 0.5)
                 {
-                  anisotropic_viscosity->stress_strain_directors[q] =dealii::identity_tensor<dim> ()
-                                                                     - (1. - viscosity_ratio) * Lambda;
-                  SymmetricTensor<2,3> ViscoTensor;
-                  ViscoTensor[0][0]=anisotropic_viscosity->stress_strain_directors[q][0][0][0][0];
-                  ViscoTensor[0][1]=anisotropic_viscosity->stress_strain_directors[q][0][0][1][1];
-                  ViscoTensor[0][2]=anisotropic_viscosity->stress_strain_directors[q][0][0][0][1] * sqrt(2);
-                  ViscoTensor[1][0]=anisotropic_viscosity->stress_strain_directors[q][1][1][0][0];
-                  ViscoTensor[1][1]=anisotropic_viscosity->stress_strain_directors[q][1][1][1][1];
-                  ViscoTensor[1][2]=anisotropic_viscosity->stress_strain_directors[q][1][1][0][1] * sqrt(2);
-                  ViscoTensor[2][0]=anisotropic_viscosity->stress_strain_directors[q][0][1][0][0] * sqrt(2);
-                  ViscoTensor[2][1]=anisotropic_viscosity->stress_strain_directors[q][0][1][1][1] * sqrt(2);
-                  ViscoTensor[2][2]=anisotropic_viscosity->stress_strain_directors[q][0][1][0][1] * 2;
+                  n /= n.norm();
+                  SymmetricTensor<4,dim> Lambda;
+                  for (unsigned int i=0; i<dim; ++i)
+                    for (unsigned int j=0; j<dim; ++j)
+                      for (unsigned int k=0; k<dim; ++k)
+                        for (unsigned int l=0; l<dim; ++l)
+                          Lambda[i][j][k][l] = 1./2. * (n[i]*n[k]*delta(l,j)
+                                                        + n[j]*n[k]*delta(i,l)
+                                                        + n[i]*n[l]*delta(k,j)
+                                                        + n[j]*n[l]*delta(i,k))
+                                               - 2*n[i]*n[j]*n[k]*n[l];
 
-                  const std::array<double,3> Viscoeigenvalues = eigenvalues(ViscoTensor);
-                  for (unsigned int i=0; i<3; ++i)
+                  if (anisotropic_viscosity != nullptr)
                     {
-                      if (Viscoeigenvalues[i]<0)
-                        AssertThrow((Viscoeigenvalues[i]>0),
-                                    ExcMessage("Error! Negative eigenvalue in the viscosity tensor"));
+                      anisotropic_viscosity->stress_strain_directors[q] =dealii::identity_tensor<dim> ()
+                                                                         - (1. - viscosity_ratio) * Lambda;
+                      SymmetricTensor<2,3> ViscoTensor;
+                      ViscoTensor[0][0]=anisotropic_viscosity->stress_strain_directors[q][0][0][0][0];
+                      ViscoTensor[0][1]=anisotropic_viscosity->stress_strain_directors[q][0][0][1][1];
+                      ViscoTensor[0][2]=anisotropic_viscosity->stress_strain_directors[q][0][0][0][1] * std::sqrt(2);
+                      ViscoTensor[1][0]=anisotropic_viscosity->stress_strain_directors[q][1][1][0][0];
+                      ViscoTensor[1][1]=anisotropic_viscosity->stress_strain_directors[q][1][1][1][1];
+                      ViscoTensor[1][2]=anisotropic_viscosity->stress_strain_directors[q][1][1][0][1] * std::sqrt(2);
+                      ViscoTensor[2][0]=anisotropic_viscosity->stress_strain_directors[q][0][1][0][0] * std::sqrt(2);
+                      ViscoTensor[2][1]=anisotropic_viscosity->stress_strain_directors[q][0][1][1][1] * std::sqrt(2);
+                      ViscoTensor[2][2]=anisotropic_viscosity->stress_strain_directors[q][0][1][0][1] * 2;
+
+                      const std::array<double,3> Viscoeigenvalues = eigenvalues(ViscoTensor);
+                      for (unsigned int i=0; i<3; ++i)
+                        {
+                          AssertThrow((Viscoeigenvalues[i]>0),
+                                      ExcMessage("Eigenvalue "+ std::to_string(i) + " of the viscosity tensor is negative at " +
+                                                 std::to_string(Viscoeigenvalues[i]) + ". This is not allowed."));
+                        }
                     }
                 }
             }
