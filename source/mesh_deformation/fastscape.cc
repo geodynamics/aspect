@@ -68,14 +68,14 @@ namespace aspect
       int y_repetitions = repetitions.second;
 
       //Set nx and dx, as these will be the same regardless of dimension.
-      nx = 1+std::pow(2,initial_global_refinement+additional_refinement)*x_repetitions;
-      dx = grid_extent[0].second/(nx-1);
-      x_extent = geometry->get_extents()[0];
+      nx = 3+std::pow(2,initial_global_refinement+additional_refinement)*x_repetitions;
+      dx = grid_extent[0].second/(nx-3);
+      x_extent = geometry->get_extents()[0]+2*dx;
       //Find the number of grid points in x direction for indexing.
-      numx = 1+grid_extent[0].second/dx;
+      numx = 3+grid_extent[0].second/dx;
 
       //sub intervals are 1 less than points.
-      table_intervals[0] = nx-1;
+      table_intervals[0] = nx-3;
       //TODO: it'd be best to not have to use dim-1 intervals at all.
       table_intervals[dim-1] = 1;
 
@@ -89,10 +89,11 @@ namespace aspect
 
       if (dim == 3)
         {
-          ny = 1+std::pow(2,initial_global_refinement+additional_refinement)*y_repetitions;
-          dy = grid_extent[1].second/(ny-1);
-          table_intervals[1] = ny-1;
-          y_extent = geometry->get_extents()[1];
+          ny = 3+std::pow(2,initial_global_refinement+additional_refinement)*y_repetitions;
+          dy = grid_extent[1].second/(ny-3);
+          table_intervals[1] = ny-3;
+          y_extent = geometry->get_extents()[1]+2*dy;
+          numy = 3+grid_extent[0].second/dy;
         }
 
       //Determine array size to send to fastscape
@@ -107,6 +108,7 @@ namespace aspect
                                                              ConstraintMatrix &mesh_velocity_constraints,
                                                              const std::set<types::boundary_id> &boundary_ids) const
     {
+      TimerOutput::Scope timer_section(this->get_computing_timer(), "Fastscape plugin");
       const types::boundary_id relevant_boundary = this->get_geometry_model().translate_symbolic_boundary_name_to_id ("top");
       const bool top_boundary = boundary_ids.find(relevant_boundary) == boundary_ids.begin();
 
@@ -127,7 +129,7 @@ namespace aspect
            * Initialize a vector of temporary variables to hold: z component, Vx, Vy, and Vz.
            * For some reason I need to add one to the temporary array_size but not V.
            */
-          std::vector<std::vector<double>> temporary_variables(dim+1, std::vector<double>(array_size+1));
+          std::vector<std::vector<double>> temporary_variables(dim+1, std::vector<double>(array_size+1,std::numeric_limits<double>::epsilon()));
           std::vector<double> V(array_size);
 
 
@@ -164,7 +166,7 @@ namespace aspect
                       {
                         const Point<dim> vertex = fe_face_values.quadrature_point(corner);
                         //This tells us which x point we're at
-                        double indx = 1+vertex(0)/dx;
+                        double indx = 2+vertex(0)/dx;
 
                         if (dim == 2)
                           {
@@ -180,17 +182,55 @@ namespace aspect
 
                         if (dim == 3)
                           {
-                            double indy = 1+vertex(1)/dy;
+                            double indy = 2+vertex(1)/dy;
                             double index = (indy-1)*numx+indx;
-                            temporary_variables[0][index-1] = vertex(dim-1); //this->get_geometry_model().height_above_reference_surface(vertex); //vertex(dim-1);   //z component
+                            temporary_variables[0][index-1] = this->get_geometry_model().height_above_reference_surface(vertex); //vertex(dim-1);   //z component
 
                             for (unsigned int i=0; i<dim; ++i)
                               temporary_variables[i+1][index-1] = vel[corner][i]*year_in_seconds;
+
+                            //std::cout<<index<<"  "<<this->get_geometry_model().height_above_reference_surface(vertex)<<"  "<<vel[corner][0]*year_in_seconds<<"  "<<vel[corner][1]*year_in_seconds<<"  "<<vel[corner][2]*year_in_seconds<<std::endl;
                           }
 
 
                       }
                   }
+
+          /*Fastscape needs an edge node that can remain zero for advecting, this inputs this edge node with the same
+           * values as what is next to it, except the corners which remain zero. So far it seems that keeping all the edge
+           * nodes at epsilon when initiated works the same, but keeping this here in case we decide to use it instead.
+           * TODO: If we decide to use this method, this code needs to be much cleaner.
+           */
+         /* if(dim == 3)
+          {
+        	  for(int j=1; j<(numy-1); j++)
+        	  {
+        		 double index = numy*j+1;
+        		 double index2 = numy*(j+1);
+                 temporary_variables[0][index-1] = temporary_variables[0][index]; //this->get_geometry_model().height_above_reference_surface(vertex); //vertex(dim-1);   //z component
+        		 temporary_variables[0][index2-1] = temporary_variables[0][index2-2];
+
+                 for (unsigned int i=0; i<dim; ++i)
+                 {
+                   temporary_variables[i+1][index-1] = temporary_variables[i+1][index];
+                   temporary_variables[i+1][index2-1] = temporary_variables[i+1][index2-2];
+                 }
+        	  }
+
+        	  for(int j=1; j<(numx-1); j++)
+        	  {
+        		 double index = j+1;
+        		 double index2 = numx*(numy-1)+j+1;
+                 temporary_variables[0][index-1] = temporary_variables[0][index+numx-1]; //this->get_geometry_model().height_above_reference_surface(vertex); //vertex(dim-1);   //z component
+        		 temporary_variables[0][index2-1] = temporary_variables[0][index2-numx-1];
+
+                 for (unsigned int i=0; i<dim; ++i)
+                 {
+                   temporary_variables[i+1][index-1] = temporary_variables[i+1][index+numx-1];
+                   temporary_variables[i+1][index2-1] = temporary_variables[i+1][index2-numx-1];
+                 }
+        	  }
+          }*/
 
           //Only run fastscape on a single processor
           if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
@@ -211,7 +251,7 @@ namespace aspect
               //Initialize kf and kd across array, and set the velocities and h values to what proc zero has.
               for (int i=0; i<=array_size; i++)
                 {
-                  h[i]= temporary_variables[0][i];
+                  h[i] = temporary_variables[0][i];
                   vx[i]=temporary_variables[1][i];
                   vz[i]=temporary_variables[dim][i];
 
@@ -232,11 +272,12 @@ namespace aspect
                     MPI_Recv(&temporary_variables[i][0], array_size+1, MPI_DOUBLE, p, 42, this->get_mpi_communicator(), &status);
 
                   /*
-                   * Each processor initialized everything to zero, so if it has any
+                   * Each processor initialized everything to epsilon, so if it has any
                    * points at the surface a value will be added.
+                   * TODO: Maybe it'd be better to instead track the index and value?
                    */
                   for (int i=0; i<=array_size; i++)
-                    if (temporary_variables[0][i]>0)
+                    if (temporary_variables[0][i] != std::numeric_limits<double>::epsilon())
                       {
                         h[i]= temporary_variables[0][i];
                         vx[i]=temporary_variables[1][i];
@@ -248,14 +289,13 @@ namespace aspect
                         if (dim == 3)
                           vy[i]=temporary_variables[2][i];
                       }
-
                 }
 
               //Keep initial h values in temporary to calculate velocity later on.
               for (int i=0; i<=array_size; i++)
                 {
                   temporary_variables[0][i] = h[i];
-                  //std::cout<<vx[i]<<"  "<<vy[i]<<"  "<<vz[i]<<"  "<<i<<std::endl;
+                  //std::cout<<h[i]<<"  "<<vx[i]<<"  "<<vy[i]<<"  "<<vz[i]<<"  "<<i<<std::endl;
                 }
 
               //Find a fastscape timestep that is below our maximum timestep.
@@ -265,8 +305,8 @@ namespace aspect
                   steps=steps*2;
                   f_dt = a_dt/steps;
                 }
-              f_dt = 1000;
-              steps = 500;
+              //f_dt = 1000;
+              //steps = 500;
               //f_dt = max_timestep;
               //steps = round(a_dt/max_timestep);
               //f_dt = 25000;
@@ -314,7 +354,7 @@ namespace aspect
                   //outputs new h values
                   fastscape_copy_h_(h.get());
                   //Output fastscape visualization.
-                  fastscape_vtk_(h.get(), &vexp);
+                  //fastscape_vtk_(h.get(), &vexp);
                 }
               while (istep<steps);
 
@@ -437,9 +477,9 @@ namespace aspect
                           if (k==1 )
                           {
                               if (this->convert_output_to_years())
-                                 data_table(idx) = V[nx*i+j]/year_in_seconds;
+                                 data_table(idx) = V[(nx+1)+nx*i+j]/year_in_seconds;  //(nx+1)+nx*i+j  nx*i+j
                               else
-                            	  data_table(idx) = V[nx*i+j];
+                            	  data_table(idx) = V[(nx+1)+nx*i+j];
                           }
                           else
                             data_table(idx)= 0;

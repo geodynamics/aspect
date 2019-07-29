@@ -23,6 +23,8 @@
 #include <vector>
 #include <array>
 #include <deal.II/base/function_lib.h>
+#include <deal.II/base/timer.h>
+
 
 
 
@@ -114,6 +116,7 @@ namespace aspect
         unsigned int additional_refinement;
         unsigned int initial_global_refinement;
         int numx;
+        int numy;
         unsigned int bottom;
         unsigned int right;
         unsigned int top;
