@@ -1710,7 +1710,13 @@ namespace aspect
           else if (x_compositional_field_methods[i] == "particles")
             compositional_field_methods[i] = AdvectionFieldMethod::particles;
           else if (x_compositional_field_methods[i] == "volume of fluid")
-            compositional_field_methods[i] = AdvectionFieldMethod::volume_of_fluid;
+            {
+              AssertThrow (dim==2,
+                           ExcMessage ("The 'volume of fluid' method is currently "
+                                       "only implemented for two-dimensional "
+                                       "computations."));
+              compositional_field_methods[i] = AdvectionFieldMethod::volume_of_fluid;
+            }
           else if (x_compositional_field_methods[i] == "static")
             compositional_field_methods[i] = AdvectionFieldMethod::static_field;
           else if (x_compositional_field_methods[i] == "melt field")
