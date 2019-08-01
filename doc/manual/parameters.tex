@@ -189,10 +189,10 @@ For more information, see the section in the manual that discusses the general m
 {\it Default:} single Advection, single Stokes
 
 
-{\it Description:} The kind of scheme used to resolve the nonlinearity in the system. `single Advection, single Stokes' means that no nonlinear iterations are done, and the temperature, compositional fields and Stokes equations are solved exactly once per time step, one after the other. The `iterated Advection and Stokes' scheme iterates this decoupled approach by alternating the solution of the temperature, composition and Stokes systems. The `single Advection, iterated Stokes' scheme solves the temperature and composition equation once at the beginning of each time step and then iterates out the solution of the Stokes equation. The `no Advection, iterated Stokes' scheme only solves the Stokes system, iterating out the solution, and ignores compositions and the temperature equation (careful, the material model must not depend on the temperature or composition; this is mostly useful for Stokes benchmarks). The `single Advection, no Stokes' scheme only solves the temperature and other advection systems once, and instead of solving for the Stokes system, a prescribed velocity and pressure is used. The `iterated Advection and Newton Stokes' scheme iterates by alternating the solution of the temperature, composition and Stokes equations, using Picard iterations for the temperature and composition, and Newton iterations for the Stokes system. The `first timestep only, single Stokes' scheme solves the Stokes equations exactly once, at the first time step. No nonlinear iterations are done, and the temperature and composition systems are not solved. The `IMPES' scheme is deprecated and only allowed for reasons of backwards compatibility. It is the same as `single Advection, single Stokes' .The `iterated IMPES' scheme is deprecated and only allowed for reasons of backwards compatibility. It is the same as `iterated Advection and Stokes'. The `iterated Stokes' scheme is deprecated and only allowed for reasons of backwards compatibility. It is the same as `single Advection, iterated Stokes'. The `Stokes only' scheme is deprecated and only allowed for reasons of backwards compatibility. It is the same as `no Advection, iterated Stokes'. The `Advection only' scheme is deprecated and only allowed for reasons of backwards compatibility. It is the same as `single Advection, no Stokes'. The `Newton Stokes' scheme is deprecated and only allowed for reasons of backwards compatibility. It is the same as `iterated Advection and Newton Stokes'.
+{\it Description:} The kind of scheme used to resolve the nonlinearity in the system. `single Advection, single Stokes' means that no nonlinear iterations are done, and the temperature, compositional fields and Stokes equations are solved exactly once per time step, one after the other. The `iterated Advection and Stokes' scheme iterates this decoupled approach by alternating the solution of the temperature, composition and Stokes systems. The `single Advection, iterated Stokes' scheme solves the temperature and composition equation once at the beginning of each time step and then iterates out the solution of the Stokes equation. The `no Advection, iterated Stokes' scheme only solves the Stokes system, iterating out the solution, and ignores compositions and the temperature equation (careful, the material model must not depend on the temperature or composition; this is mostly useful for Stokes benchmarks). The `single Advection, no Stokes' scheme only solves the temperature and other advection systems once, and instead of solving for the Stokes system, a prescribed velocity and pressure is used. The `iterated Advection and Newton Stokes' scheme iterates by alternating the solution of the temperature, composition and Stokes equations, using Picard iterations for the temperature and composition, and Newton iterations for the Stokes system. The `single Advection, iterated Newton Stokes' scheme solves the temperature and composition equations once at the beginning of each time step and then iterates out the solution of the Stokes equation, using Newton iterations for the Stokes system. The `first timestep only, single Stokes' scheme solves the Stokes equations exactly once, at the first time step. No nonlinear iterations are done, and the temperature and composition systems are not solved. The `IMPES' scheme is deprecated and only allowed for reasons of backwards compatibility. It is the same as `single Advection, single Stokes' .The `iterated IMPES' scheme is deprecated and only allowed for reasons of backwards compatibility. It is the same as `iterated Advection and Stokes'. The `iterated Stokes' scheme is deprecated and only allowed for reasons of backwards compatibility. It is the same as `single Advection, iterated Stokes'. The `Stokes only' scheme is deprecated and only allowed for reasons of backwards compatibility. It is the same as `no Advection, iterated Stokes'. The `Advection only' scheme is deprecated and only allowed for reasons of backwards compatibility. It is the same as `single Advection, no Stokes'. The `Newton Stokes' scheme is deprecated and only allowed for reasons of backwards compatibility. It is the same as `iterated Advection and Newton Stokes'.
 
 
-{\it Possible values:} Any one of single Advection, single Stokes, iterated Advection and Stokes, single Advection, iterated Stokes, no Advection, iterated Stokes, iterated Advection and Newton Stokes, single Advection, no Stokes, IMPES, iterated IMPES, iterated Stokes, Newton Stokes, Stokes only, Advection only, first timestep only, single Stokes, no Advection, no Stokes
+{\it Possible values:} Any one of single Advection, single Stokes, iterated Advection and Stokes, single Advection, iterated Stokes, no Advection, iterated Stokes, iterated Advection and Newton Stokes, single Advection, iterated Newton Stokes, single Advection, no Stokes, IMPES, iterated IMPES, iterated Stokes, Newton Stokes, Stokes only, Advection only, first timestep only, single Stokes, no Advection, no Stokes
 \item {\it Parameter name:} {\tt Nonlinear solver tolerance}
 \phantomsection\label{parameters:Nonlinear solver tolerance}
 \label{parameters:Nonlinear_20solver_20tolerance}
@@ -4037,7 +4037,7 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 
 {\it Description:} Select a formulation for the basic equations. Different published formulations are available in ASPECT (see the list of possible values for this parameter in the manual for available options). Two ASPECT specific options are
 \begin{enumerate}
-  \item `isothermal compression': ASPECT's original formulation, using the explicit compressible mass equation, and the full density for the temperature equation.
+  \item `isentropic compression': ASPECT's original formulation, using the explicit compressible mass equation, and the full density for the temperature equation.
   \item `custom': A custom selection of `Mass conservation' and `Temperature equation'.
 \end{enumerate}
 
@@ -4046,7 +4046,7 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 \note{The `anelastic liquid approximation' option here can also be used to set up the `truncated anelastic liquid approximation' as long as this option is chosen together with a material model that defines a density that depends on temperature and depth and not on the pressure.}
 
 
-{\it Possible values:} Any one of isothermal compression, custom, anelastic liquid approximation, Boussinesq approximation
+{\it Possible values:} Any one of isentropic compression, custom, anelastic liquid approximation, Boussinesq approximation
 \item {\it Parameter name:} {\tt Mass conservation}
 \phantomsection\label{parameters:Formulation/Mass conservation}
 \label{parameters:Formulation/Mass_20conservation}
@@ -4063,7 +4063,7 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 {\it Description:} Possible approximations for the density derivatives in the mass conservation equation. Note that this parameter is only evaluated if `Formulation' is set to `custom'. Other formulations ignore the value of this parameter.
 
 
-{\it Possible values:} Any one of incompressible, isothermal compression, hydrostatic compression, reference density profile, implicit reference density profile, ask material model
+{\it Possible values:} Any one of incompressible, isentropic compression, hydrostatic compression, reference density profile, implicit reference density profile, ask material model
 \item {\it Parameter name:} {\tt Temperature equation}
 \phantomsection\label{parameters:Formulation/Temperature equation}
 \label{parameters:Formulation/Temperature_20equation}
@@ -8229,6 +8229,10 @@ The density is defined as \[\rho = \exp(\text{Di}/\gamma \cdot z)  (1.0 - \alpha
 
 `perplex lookup': A material model that has constant values for viscosity and thermal conductivity, and calculates other properties on-the-fly using PerpleX meemum. Compositional fields correspond to the individual components in the order given in the PerpleX file.
 
+`replace lithosphere viscosity': The ``replace lithosphere viscosity'' Material model sets viscosity to a prescribed constant above the lithosphere-asthenosphere boundary (specified by an ascii file or maximum lithosphere depth). Below the lithosphere-asthenosphereboundary the viscosity is taken from any of the other available material model. In other words, it is a ``compositing material model''.
+Parameters related to the replace lithosphere viscosity model are read from a subsection ``Material model/Replace lithosphere viscosity''. The user must specify a ``Base model'' from which other material properties are derived.  
+Note the required format of the input data file: The first lines may contain any number of comments if they begin with ‘\#’, but one of these lines needs to contain the number of grid points in each dimension as for example‘\# POINTS: 3 3’. For a spherical model, the order of the data columns has to be'phi', 'theta','depth (m)', where phi is the  azimuth angle and theta is the polar angle measured positive from the north pole.
+
 `simple': A material model that has constant values for all coefficients but the density and viscosity. The defaults for all coefficients are chosen to be similar to what is believed to be correct for Earth's mantle. All of the values that define this model are read from a section ``Material model/Simple model'' in the input file, see Section~\ref{parameters:Material_20model/Simple_20model}.
 
 This model uses the following set of equations for the two coefficients that are non-constant: \begin{align}  \eta(p,T,\mathfrak c) &= \tau(T) \zeta(\mathfrak c) \eta_0, \\  \rho(p,T,\mathfrak c) &= \left(1-\alpha (T-T_0)\right)\rho_0 + \Delta\rho \; c_0,\end{align}where $c_0$ is the first component of the compositional vector $\mathfrak c$ if the model uses compositional fields, or zero otherwise. 
@@ -8324,7 +8328,7 @@ The viscoelastic rheology behavior takes into account the elastic shear strength
  When more than one compositional field is present at a point, they are averaged arithmetically. An exception is viscosity, which may be averaged arithmetically, harmonically, geometrically, or by selecting the viscosity of the composition field with the greatest volume fraction.
 
 
-{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, grain size, latent heat, latent heat melt, melt global, melt simple, modified tait, multicomponent, multicomponent compressible, nondimensional, perplex lookup, simple, simple compressible, simpler, visco plastic, viscoelastic, viscoelastic plastic, unspecified
+{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, grain size, latent heat, latent heat melt, melt global, melt simple, modified tait, multicomponent, multicomponent compressible, nondimensional, perplex lookup, replace lithosphere viscosity, simple, simple compressible, simpler, visco plastic, viscoelastic, viscoelastic plastic, unspecified
 \end{itemize}
 
 
@@ -8533,7 +8537,7 @@ The viscoelastic rheology behavior takes into account the elastic shear strength
 {\it Description:} The name of a material model that will be modified by an averaging operation. Valid values for this parameter are the names of models that are also valid for the ``Material models/Model name'' parameter. See the documentation for that for more information.
 
 
-{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, grain size, latent heat, latent heat melt, melt global, melt simple, modified tait, multicomponent, multicomponent compressible, nondimensional, perplex lookup, simple, simple compressible, simpler, visco plastic, viscoelastic, viscoelastic plastic
+{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, grain size, latent heat, latent heat melt, melt global, melt simple, modified tait, multicomponent, multicomponent compressible, nondimensional, perplex lookup, replace lithosphere viscosity, simple, simple compressible, simpler, visco plastic, viscoelastic, viscoelastic plastic
 \item {\it Parameter name:} {\tt Bell shape limit}
 \phantomsection\label{parameters:Material model/Averaging/Bell shape limit}
 \label{parameters:Material_20model/Averaging/Bell_20shape_20limit}
@@ -8573,7 +8577,7 @@ The viscoelastic rheology behavior takes into account the elastic shear strength
 {\it Description:} Material model to use for Compressibility. Valid values for this parameter are the names of models that are also valid for the ``Material models/Model name'' parameter. See the documentation for that for more information.
 
 
-{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, grain size, latent heat, latent heat melt, melt global, melt simple, modified tait, multicomponent, multicomponent compressible, nondimensional, perplex lookup, simple, simple compressible, simpler, visco plastic, viscoelastic, viscoelastic plastic, unspecified
+{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, grain size, latent heat, latent heat melt, melt global, melt simple, modified tait, multicomponent, multicomponent compressible, nondimensional, perplex lookup, replace lithosphere viscosity, simple, simple compressible, simpler, visco plastic, viscoelastic, viscoelastic plastic, unspecified
 \item {\it Parameter name:} {\tt Density}
 \phantomsection\label{parameters:Material model/Compositing/Density}
 \label{parameters:Material_20model/Compositing/Density}
@@ -8590,7 +8594,7 @@ The viscoelastic rheology behavior takes into account the elastic shear strength
 {\it Description:} Material model to use for Density. Valid values for this parameter are the names of models that are also valid for the ``Material models/Model name'' parameter. See the documentation for that for more information.
 
 
-{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, grain size, latent heat, latent heat melt, melt global, melt simple, modified tait, multicomponent, multicomponent compressible, nondimensional, perplex lookup, simple, simple compressible, simpler, visco plastic, viscoelastic, viscoelastic plastic, unspecified
+{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, grain size, latent heat, latent heat melt, melt global, melt simple, modified tait, multicomponent, multicomponent compressible, nondimensional, perplex lookup, replace lithosphere viscosity, simple, simple compressible, simpler, visco plastic, viscoelastic, viscoelastic plastic, unspecified
 \item {\it Parameter name:} {\tt Entropy derivative pressure}
 \phantomsection\label{parameters:Material model/Compositing/Entropy derivative pressure}
 \label{parameters:Material_20model/Compositing/Entropy_20derivative_20pressure}
@@ -8607,7 +8611,7 @@ The viscoelastic rheology behavior takes into account the elastic shear strength
 {\it Description:} Material model to use for Entropy derivative pressure. Valid values for this parameter are the names of models that are also valid for the ``Material models/Model name'' parameter. See the documentation for that for more information.
 
 
-{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, grain size, latent heat, latent heat melt, melt global, melt simple, modified tait, multicomponent, multicomponent compressible, nondimensional, perplex lookup, simple, simple compressible, simpler, visco plastic, viscoelastic, viscoelastic plastic, unspecified
+{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, grain size, latent heat, latent heat melt, melt global, melt simple, modified tait, multicomponent, multicomponent compressible, nondimensional, perplex lookup, replace lithosphere viscosity, simple, simple compressible, simpler, visco plastic, viscoelastic, viscoelastic plastic, unspecified
 \item {\it Parameter name:} {\tt Entropy derivative temperature}
 \phantomsection\label{parameters:Material model/Compositing/Entropy derivative temperature}
 \label{parameters:Material_20model/Compositing/Entropy_20derivative_20temperature}
@@ -8624,7 +8628,7 @@ The viscoelastic rheology behavior takes into account the elastic shear strength
 {\it Description:} Material model to use for Entropy derivative temperature. Valid values for this parameter are the names of models that are also valid for the ``Material models/Model name'' parameter. See the documentation for that for more information.
 
 
-{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, grain size, latent heat, latent heat melt, melt global, melt simple, modified tait, multicomponent, multicomponent compressible, nondimensional, perplex lookup, simple, simple compressible, simpler, visco plastic, viscoelastic, viscoelastic plastic, unspecified
+{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, grain size, latent heat, latent heat melt, melt global, melt simple, modified tait, multicomponent, multicomponent compressible, nondimensional, perplex lookup, replace lithosphere viscosity, simple, simple compressible, simpler, visco plastic, viscoelastic, viscoelastic plastic, unspecified
 \item {\it Parameter name:} {\tt Reaction terms}
 \phantomsection\label{parameters:Material model/Compositing/Reaction terms}
 \label{parameters:Material_20model/Compositing/Reaction_20terms}
@@ -8641,7 +8645,7 @@ The viscoelastic rheology behavior takes into account the elastic shear strength
 {\it Description:} Material model to use for Reaction terms. Valid values for this parameter are the names of models that are also valid for the ``Material models/Model name'' parameter. See the documentation for that for more information.
 
 
-{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, grain size, latent heat, latent heat melt, melt global, melt simple, modified tait, multicomponent, multicomponent compressible, nondimensional, perplex lookup, simple, simple compressible, simpler, visco plastic, viscoelastic, viscoelastic plastic, unspecified
+{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, grain size, latent heat, latent heat melt, melt global, melt simple, modified tait, multicomponent, multicomponent compressible, nondimensional, perplex lookup, replace lithosphere viscosity, simple, simple compressible, simpler, visco plastic, viscoelastic, viscoelastic plastic, unspecified
 \item {\it Parameter name:} {\tt Specific heat}
 \phantomsection\label{parameters:Material model/Compositing/Specific heat}
 \label{parameters:Material_20model/Compositing/Specific_20heat}
@@ -8658,7 +8662,7 @@ The viscoelastic rheology behavior takes into account the elastic shear strength
 {\it Description:} Material model to use for Specific heat. Valid values for this parameter are the names of models that are also valid for the ``Material models/Model name'' parameter. See the documentation for that for more information.
 
 
-{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, grain size, latent heat, latent heat melt, melt global, melt simple, modified tait, multicomponent, multicomponent compressible, nondimensional, perplex lookup, simple, simple compressible, simpler, visco plastic, viscoelastic, viscoelastic plastic, unspecified
+{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, grain size, latent heat, latent heat melt, melt global, melt simple, modified tait, multicomponent, multicomponent compressible, nondimensional, perplex lookup, replace lithosphere viscosity, simple, simple compressible, simpler, visco plastic, viscoelastic, viscoelastic plastic, unspecified
 \item {\it Parameter name:} {\tt Thermal conductivity}
 \phantomsection\label{parameters:Material model/Compositing/Thermal conductivity}
 \label{parameters:Material_20model/Compositing/Thermal_20conductivity}
@@ -8675,7 +8679,7 @@ The viscoelastic rheology behavior takes into account the elastic shear strength
 {\it Description:} Material model to use for Thermal conductivity. Valid values for this parameter are the names of models that are also valid for the ``Material models/Model name'' parameter. See the documentation for that for more information.
 
 
-{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, grain size, latent heat, latent heat melt, melt global, melt simple, modified tait, multicomponent, multicomponent compressible, nondimensional, perplex lookup, simple, simple compressible, simpler, visco plastic, viscoelastic, viscoelastic plastic, unspecified
+{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, grain size, latent heat, latent heat melt, melt global, melt simple, modified tait, multicomponent, multicomponent compressible, nondimensional, perplex lookup, replace lithosphere viscosity, simple, simple compressible, simpler, visco plastic, viscoelastic, viscoelastic plastic, unspecified
 \item {\it Parameter name:} {\tt Thermal expansion coefficient}
 \phantomsection\label{parameters:Material model/Compositing/Thermal expansion coefficient}
 \label{parameters:Material_20model/Compositing/Thermal_20expansion_20coefficient}
@@ -8692,7 +8696,7 @@ The viscoelastic rheology behavior takes into account the elastic shear strength
 {\it Description:} Material model to use for Thermal expansion coefficient. Valid values for this parameter are the names of models that are also valid for the ``Material models/Model name'' parameter. See the documentation for that for more information.
 
 
-{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, grain size, latent heat, latent heat melt, melt global, melt simple, modified tait, multicomponent, multicomponent compressible, nondimensional, perplex lookup, simple, simple compressible, simpler, visco plastic, viscoelastic, viscoelastic plastic, unspecified
+{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, grain size, latent heat, latent heat melt, melt global, melt simple, modified tait, multicomponent, multicomponent compressible, nondimensional, perplex lookup, replace lithosphere viscosity, simple, simple compressible, simpler, visco plastic, viscoelastic, viscoelastic plastic, unspecified
 \item {\it Parameter name:} {\tt Viscosity}
 \phantomsection\label{parameters:Material model/Compositing/Viscosity}
 \label{parameters:Material_20model/Compositing/Viscosity}
@@ -8709,7 +8713,7 @@ The viscoelastic rheology behavior takes into account the elastic shear strength
 {\it Description:} Material model to use for Viscosity. Valid values for this parameter are the names of models that are also valid for the ``Material models/Model name'' parameter. See the documentation for that for more information.
 
 
-{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, grain size, latent heat, latent heat melt, melt global, melt simple, modified tait, multicomponent, multicomponent compressible, nondimensional, perplex lookup, simple, simple compressible, simpler, visco plastic, viscoelastic, viscoelastic plastic, unspecified
+{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, grain size, latent heat, latent heat melt, melt global, melt simple, modified tait, multicomponent, multicomponent compressible, nondimensional, perplex lookup, replace lithosphere viscosity, simple, simple compressible, simpler, visco plastic, viscoelastic, viscoelastic plastic, unspecified
 \end{itemize}
 
 \subsection{Parameters in section \tt Material model/Composition reaction model}
@@ -8942,7 +8946,7 @@ The viscoelastic rheology behavior takes into account the elastic shear strength
 {\it Description:} The name of a material model that will be modified by a depth dependent viscosity. Valid values for this parameter are the names of models that are also valid for the ``Material models/Model name'' parameter. See the documentation for that for more information.
 
 
-{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, grain size, latent heat, latent heat melt, melt global, melt simple, modified tait, multicomponent, multicomponent compressible, nondimensional, perplex lookup, simple, simple compressible, simpler, visco plastic, viscoelastic, viscoelastic plastic
+{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, grain size, latent heat, latent heat melt, melt global, melt simple, modified tait, multicomponent, multicomponent compressible, nondimensional, perplex lookup, replace lithosphere viscosity, simple, simple compressible, simpler, visco plastic, viscoelastic, viscoelastic plastic
 \item {\it Parameter name:} {\tt Data directory}
 \phantomsection\label{parameters:Material model/Depth dependent model/Data directory}
 \label{parameters:Material_20model/Depth_20dependent_20model/Data_20directory}
@@ -13570,6 +13574,114 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 
 
 {\it Description:} The value of the viscosity $\eta$. Units: $kg/m/s$.
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\end{itemize}
+
+\subsection{Parameters in section \tt Material model/Replace lithosphere viscosity}
+\label{parameters:Material_20model/Replace_20lithosphere_20viscosity}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Base model}
+\phantomsection\label{parameters:Material model/Replace lithosphere viscosity/Base model}
+\label{parameters:Material_20model/Replace_20lithosphere_20viscosity/Base_20model}
+
+
+\index[prmindex]{Base model}
+\index[prmindexfull]{Material model!Replace lithosphere viscosity!Base model}
+{\it Value:} simple
+
+
+{\it Default:} simple
+
+
+{\it Description:} The name of a material model that will be modified by a replacingthe viscosity in the lithosphere by a constant value. Valid values for this parameter are the names of models that are also valid for the ``Material models/Model name'' parameter. See the documentation for more information.
+
+
+{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, grain size, latent heat, latent heat melt, melt global, melt simple, modified tait, multicomponent, multicomponent compressible, nondimensional, perplex lookup, replace lithosphere viscosity, simple, simple compressible, simpler, visco plastic, viscoelastic, viscoelastic plastic
+\item {\it Parameter name:} {\tt Data directory}
+\phantomsection\label{parameters:Material model/Replace lithosphere viscosity/Data directory}
+\label{parameters:Material_20model/Replace_20lithosphere_20viscosity/Data_20directory}
+
+
+\index[prmindex]{Data directory}
+\index[prmindexfull]{Material model!Replace lithosphere viscosity!Data directory}
+{\it Value:} \$ASPECT\_SOURCE\_DIR/data/initial-temperature/lithosphere-mask/
+
+
+{\it Default:} \$ASPECT\_SOURCE\_DIR/data/initial-temperature/lithosphere-mask/
+
+
+{\it Description:} The path to the LAB depth data file
+
+
+{\it Possible values:} A directory name
+\item {\it Parameter name:} {\tt Depth specification method}
+\phantomsection\label{parameters:Material model/Replace lithosphere viscosity/Depth specification method}
+\label{parameters:Material_20model/Replace_20lithosphere_20viscosity/Depth_20specification_20method}
+
+
+\index[prmindex]{Depth specification method}
+\index[prmindexfull]{Material model!Replace lithosphere viscosity!Depth specification method}
+{\it Value:} Value
+
+
+{\it Default:} Value
+
+
+{\it Description:} Method that is used to specify the depth of the lithosphere-asthenosphere boundary.
+
+
+{\it Possible values:} Any one of File, Value
+\item {\it Parameter name:} {\tt LAB depth filename}
+\phantomsection\label{parameters:Material model/Replace lithosphere viscosity/LAB depth filename}
+\label{parameters:Material_20model/Replace_20lithosphere_20viscosity/LAB_20depth_20filename}
+
+
+\index[prmindex]{LAB depth filename}
+\index[prmindexfull]{Material model!Replace lithosphere viscosity!LAB depth filename}
+{\it Value:} LAB\_CAM2016.txt
+
+
+{\it Default:} LAB\_CAM2016.txt
+
+
+{\it Description:} File from which the lithosphere-asthenosphere boundary depth data is read.
+
+
+{\it Possible values:} an input filename
+\item {\it Parameter name:} {\tt Lithosphere viscosity}
+\phantomsection\label{parameters:Material model/Replace lithosphere viscosity/Lithosphere viscosity}
+\label{parameters:Material_20model/Replace_20lithosphere_20viscosity/Lithosphere_20viscosity}
+
+
+\index[prmindex]{Lithosphere viscosity}
+\index[prmindexfull]{Material model!Replace lithosphere viscosity!Lithosphere viscosity}
+{\it Value:} 1e23
+
+
+{\it Default:} 1e23
+
+
+{\it Description:} The viscosity within lithosphere, applied abovethe maximum lithosphere depth.
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Maximum lithosphere depth}
+\phantomsection\label{parameters:Material model/Replace lithosphere viscosity/Maximum lithosphere depth}
+\label{parameters:Material_20model/Replace_20lithosphere_20viscosity/Maximum_20lithosphere_20depth}
+
+
+\index[prmindex]{Maximum lithosphere depth}
+\index[prmindexfull]{Material model!Replace lithosphere viscosity!Maximum lithosphere depth}
+{\it Value:} 200000.0
+
+
+{\it Default:} 200000.0
+
+
+{\it Description:} Units: m.The maximum depth of the lithosphere. The model will be NaNs below this depth.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -19883,7 +19995,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Default:} 1.e4
 
 
-{\it Description:} Set a length scale for the diffusion of compositional fields if the ``prescribed field with diffusion'' method is selected for a field. More precisely, this length scale represents the square root of the product of diffusivity and time in the diffusion equation, and controls the distance over which features are diffused.Units: $\si{m}$.
+{\it Description:} Set a length scale for the diffusion of compositional fields if the ``prescribed field with diffusion'' method is selected for a field. More precisely, this length scale represents the square root of the product of diffusivity and time in the diffusion equation, and controls the distance over which features are diffused. Units: $\si{m}$.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -19906,7 +20018,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Default:} 5
 
 
-{\it Description:} The maximum number of line search iterations allowed. If the criterion is not reached after this number of iteration, we apply the scaled increment even though it does not satisfy the necessary criteria and simply continue with the next Newton iteration.
+{\it Description:} The maximum number of line search iterations allowed. If the criterion is not reached after this number of iterations, we apply the scaled increment even though it does not satisfy the necessary criteria and simply continue with the next Newton iteration.
 
 
 {\it Possible values:} An integer $n$ such that $0\leq n \leq 2147483647$
@@ -19923,7 +20035,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Default:} 10
 
 
-{\it Description:} If the 'Nonlinear Newton solver switch tolerance' is reached before the maximal number of Picard iteration, then the solver switches to Newton solves anyway.
+{\it Description:} If the 'Nonlinear Newton solver switch tolerance' is reached before the maximal number of Picard iterations, then the solver switches to Newton solves anyway.
 
 
 {\it Possible values:} An integer $n$ such that $0\leq n \leq 2147483647$
@@ -19991,7 +20103,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Default:} SPD
 
 
-{\it Description:} This parameters allows for the stabilization of the preconditioner. If one derives the Newton method without any modifications, the matrix created for the preconditioning is not necessarily Symmetric Positive Definite. This is problematic (see Fraters et al., in prep). When `none' is chosen, the preconditioner is not stabilized. The `symmetric' parameters symmetrizes the matrix, and `PD' makes the matrix Positive Definite. `SPD' is the full stabilization, where the matrix is guaranteed Symmetric Positive Definite.
+{\it Description:} This parameters allows for the stabilization of the preconditioner. If one derives the Newton method without any modifications, the matrix created for the preconditioning is not necessarily Symmetric Positive Definite. This is problematic (see \cite{FBTGS18}). When `none' is chosen, the preconditioner is not stabilized. The `symmetric' parameters symmetrizes the matrix, and `PD' makes the matrix Positive Definite. `SPD' is the full stabilization, where the matrix is guaranteed Symmetric Positive Definite.
 
 
 {\it Possible values:} Any one of SPD, PD, symmetric, none
@@ -20008,7 +20120,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Default:} SPD
 
 
-{\it Description:} This parameters allows for the stabilization of the velocity block. If one derives the Newton method without any modifications, the matrix created for the velocity block is not necessarily Symmetric Positive Definite. This is problematic (see Fraters et al., in prep). When `none' is chosen, the velocity block is not stabilized. The `symmetric' parameters symmetrizes the matrix, and `PD' makes the matrix Positive Definite. `SPD' is the full stabilization, where the matrix is guaranteed Symmetric Positive Definite.
+{\it Description:} This parameters allows for the stabilization of the velocity block. If one derives the Newton method without any modifications, the matrix created for the velocity block is not necessarily Symmetric Positive Definite. This is problematic (see \cite{FBTGS18}). When `none' is chosen, the velocity block is not stabilized. The `symmetric' parameters symmetrizes the matrix, and `PD' makes the matrix Positive Definite. `SPD' is the full stabilization, where the matrix is guaranteed Symmetric Positive Definite.
 
 
 {\it Possible values:} Any one of SPD, PD, symmetric, none
@@ -20044,7 +20156,7 @@ Once derivatives are used in a Newton method, \aspect{} always uses the Eisensta
 {\it Default:} false
 
 
-{\it Description:} When this parameter is true and the linear solver fails, we try again, but now with SPD stabilization for both the preconditioner and the velocity block. The SPD stabilization will remain active untill the next timestep, when the default values are restored.
+{\it Description:} When this parameter is true and the linear solver fails, we try again, but now with SPD stabilization for both the preconditioner and the velocity block. The SPD stabilization will remain active until the next timestep, when the default values are restored.
 
 
 {\it Possible values:} A boolean value (true or false)
@@ -20497,7 +20609,7 @@ The default value should be good for relatively simple models, but in particular
 {\it Default:} 3
 
 
-{\it Description:} Number of divisions per dimension when computing the initial volume fracitons.If set to the default of 3 for a 2D model, then initialization will be based on the initialization criterion at $3^2=9$ points within each cell. If the initialization based on a composition style initial condition, a larger value may be desired for better approximation of the initial fluid fractions. Smaller values will suffice in the case of level set initializations due to the presence of more information to better approximate the initial fluid fractions.
+{\it Description:} Number of divisions per dimension when computing the initial volume fractions.If set to the default of 3 for a 2D model, then initialization will be based on the initialization criterion at $3^2=9$ points within each cell. If the initialization based on a composition style initial condition, a larger value may be desired for better approximation of the initial fluid fractions. Smaller values will suffice in the case of level set initializations due to the presence of more information to better approximate the initial fluid fractions.
 
 
 {\it Possible values:} An integer $n$ such that $1\leq n \leq 2147483647$
@@ -20531,7 +20643,7 @@ The default value should be good for relatively simple models, but in particular
 {\it Default:} 1e-12
 
 
-{\it Description:} The relative tolerance up to which the linear systemfor the Volume of Fluid system gets solved. See'Solver parameters/Composition solver tolerance'for more details.
+{\it Description:} The relative tolerance up to which the linear system for the Volume of Fluid system gets solved. See 'Solver parameters/Composition solver tolerance' for more details.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq 1$
