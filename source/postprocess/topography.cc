@@ -112,7 +112,7 @@ namespace aspect
                       }
                       else if (analytical_solution_example == 2)
                       {
-                       const double topo = 5e3 * std::sin(vertex[0]*numbers::PI/domain_width)
+                       const double topo = 50e3 * std::sin(vertex[0]*numbers::PI/domain_width)
                                                 * std::exp(-kappa*numbers::PI*numbers::PI*(time/year_in_seconds)/(domain_width*domain_width));
                        output_file << vertex << ' '<< elevation << ' ' << topo << std::endl;
                       }

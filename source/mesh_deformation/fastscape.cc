@@ -81,9 +81,9 @@ namespace aspect
 
       if (dim == 2)
         {
-          ny = nx*8-1; //*2-1dy_slices;
+          ny = nx; //*2-1dy_slices;
           dy = dx;
-          y_extent = grid_extent[0].second*8; //(ny-1)*dy;
+          y_extent = grid_extent[0].second; //(ny-1)*dy;
 
         }
 
@@ -98,7 +98,10 @@ namespace aspect
 
       //Determine array size to send to fastscape
       array_size = nx*ny-1;
-      std::cout<<nx<<"  "<<ny<<"  "<<dx<<std::endl;
+      if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
+      {
+      std::cout<<"Initializing Fastscape on "<<(1+initial_global_refinement+additional_refinement)<<" levels."<<"  "<<dx<<std::endl;
+      }
     }
 
 
@@ -111,6 +114,8 @@ namespace aspect
       TimerOutput::Scope timer_section(this->get_computing_timer(), "Fastscape plugin");
       const types::boundary_id relevant_boundary = this->get_geometry_model().translate_symbolic_boundary_name_to_id ("top");
       const bool top_boundary = boundary_ids.find(relevant_boundary) == boundary_ids.begin();
+      const GeometryModel::Box<dim> *geometry
+        = dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model());
 
       //If using with the mesh deformation, you may need to use the old timestep
       //otherwise fastscape won't see the change made until the following timestep.
@@ -131,6 +136,11 @@ namespace aspect
            */
           std::vector<std::vector<double>> temporary_variables(dim+1, std::vector<double>(array_size+1,std::numeric_limits<double>::epsilon()));
           std::vector<double> V(array_size);
+
+          /*for (int i=0; i<=array_size; i++)
+            {
+              temporary_variables[0][i] = geometry->get_extents()[dim-1];
+            }*/
 
 
           // Get a quadrature rule that exists only on the corners, and increase the refinement if specified.
@@ -184,15 +194,11 @@ namespace aspect
                           {
                             double indy = 2+vertex(1)/dy;
                             double index = (indy-1)*numx+indx;
-                            temporary_variables[0][index-1] = this->get_geometry_model().height_above_reference_surface(vertex); //vertex(dim-1);   //z component
+                            temporary_variables[0][index-1] = vertex(dim-1); //this->get_geometry_model().height_above_reference_surface(vertex); //vertex(dim-1);   //z component
 
                             for (unsigned int i=0; i<dim; ++i)
                               temporary_variables[i+1][index-1] = vel[corner][i]*year_in_seconds;
-
-                            //std::cout<<index<<"  "<<this->get_geometry_model().height_above_reference_surface(vertex)<<"  "<<vel[corner][0]*year_in_seconds<<"  "<<vel[corner][1]*year_in_seconds<<"  "<<vel[corner][2]*year_in_seconds<<std::endl;
                           }
-
-
                       }
                   }
 
@@ -277,11 +283,11 @@ namespace aspect
                    * TODO: Maybe it'd be better to instead track the index and value?
                    */
                   for (int i=0; i<=array_size; i++)
-                    if (temporary_variables[0][i] != std::numeric_limits<double>::epsilon())
+                    if (temporary_variables[1][i] != std::numeric_limits<double>::epsilon())
                       {
                         h[i]= temporary_variables[0][i];
                         vx[i]=temporary_variables[1][i];
-                        vz[i]=temporary_variables[dim][i];
+                        vz[i]= temporary_variables[dim][i];
 
                         if (dim == 2 )
                           vy[i]=0;
@@ -295,7 +301,6 @@ namespace aspect
               for (int i=0; i<=array_size; i++)
                 {
                   temporary_variables[0][i] = h[i];
-                  //std::cout<<h[i]<<"  "<<vx[i]<<"  "<<vy[i]<<"  "<<vz[i]<<"  "<<i<<std::endl;
                 }
 
               //Find a fastscape timestep that is below our maximum timestep.
@@ -332,8 +337,8 @@ namespace aspect
               //Set erosional parameters TODO: why is it g twice here?
               fastscape_set_erosional_parameters_(kf.get(), &kfsed, &m, &n, kd.get(), &kdsed, &g, &g, &p);
 
-              fastscape_set_u_(vz.get());
-              fastscape_set_v_(vx.get(), vy.get());
+              //fastscape_set_u_(vz.get());
+              //fastscape_set_v_(vx.get(), vy.get());
 
               //set boundary conditions
               fastscape_set_bc_(&bc);
@@ -354,7 +359,7 @@ namespace aspect
                   //outputs new h values
                   fastscape_copy_h_(h.get());
                   //Output fastscape visualization.
-                  //fastscape_vtk_(h.get(), &vexp);
+                  fastscape_vtk_(h.get(), &vexp);
                 }
               while (istep<steps);
 
@@ -405,23 +410,23 @@ namespace aspect
             {
               std::vector<double> V2(numx);
 
-              for (int i=0; i<numx; i++)
+              for (int i=1; i<(numx-1); i++)
                 {
             	  //Multiply edge by bottom and top, so it only takes them off if they're fixed.
             	  if(slice)
             	  {
                       int index = i+numx*((ny-1)/2);
-                      V2[i] = V[index];
+                      V2[i-1] = V[index];
             	  }
             	  else
             	  {
                   for (int ys=(edge); ys<(ny-edge); ys++)
                     {
                       int index = i+numx*ys;
-                      V2[i] += V[index];
+                      V2[i-1] += V[index];
                     //std::cout<<i<<"  "<<index<<"  "<<V[index]<<std::endl;
                     }
-                    V2[i] = V2[i]/(ny-edge*2);
+                    V2[i-1] = V2[i-1]/(ny-edge*2);
             	  }
 
 
@@ -436,7 +441,7 @@ namespace aspect
                 {
                   idx[1] = i;
 
-                  for (unsigned int j=0; j<data_table.size()[0]; ++j)
+                  for (unsigned int j=0; j<(data_table.size()[0]); ++j)
                     {
                       idx[0] = j;
 
