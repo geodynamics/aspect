@@ -307,7 +307,7 @@ namespace aspect
     // marix-free method
     if (stokes_matrix_free)
       {
-        stokes_matrix_free->evaluate_viscosity();
+        stokes_matrix_free->evaluate_material_model();
         stokes_matrix_free->correct_stokes_rhs();
       }
 
