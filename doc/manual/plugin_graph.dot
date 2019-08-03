@@ -336,6 +336,9 @@ N6aspect13MaterialModel14NondimensionalILi2EEE -> N6aspect13MaterialModel9Interf
 SimulatorAccess -> N6aspect13MaterialModel14NondimensionalILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
 N6aspect13MaterialModel13PerpleXLookupILi2EEE [label="perplex lookup", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
 N6aspect13MaterialModel13PerpleXLookupILi2EEE -> N6aspect13MaterialModel9InterfaceILi2EEE [len=3, weight=50];
+N6aspect13MaterialModel27ReplaceLithosphereViscosityILi2EEE [label="replace\nlithosphere\nviscosity", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
+N6aspect13MaterialModel27ReplaceLithosphereViscosityILi2EEE -> N6aspect13MaterialModel9InterfaceILi2EEE [len=3, weight=50];
+SimulatorAccess -> N6aspect13MaterialModel27ReplaceLithosphereViscosityILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
 N6aspect13MaterialModel6SimpleILi2EEE [label="simple", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
 N6aspect13MaterialModel6SimpleILi2EEE -> N6aspect13MaterialModel9InterfaceILi2EEE [len=3, weight=50];
 SimulatorAccess -> N6aspect13MaterialModel6SimpleILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
