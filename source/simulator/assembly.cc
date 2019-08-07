@@ -680,8 +680,7 @@ namespace aspect
         rebuild_stokes_matrix = false;
         timer_section_name += " rhs";
       }
-
-    if (assemble_newton_stokes_system)
+    else if (assemble_newton_stokes_system)
       {
         if (!assemble_newton_stokes_matrix)
           timer_section_name += " rhs";
