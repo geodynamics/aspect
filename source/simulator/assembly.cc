@@ -672,23 +672,26 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::assemble_stokes_system ()
   {
+    std::string timer_section_name = "Assemble Stokes system";
+
     // Matrix-free, only assemble RHS
     if (stokes_matrix_free)
       {
         rebuild_stokes_matrix = false;
+        timer_section_name += " rhs";
+      }
+    else if (assemble_newton_stokes_system)
+      {
+        if (!assemble_newton_stokes_matrix)
+          timer_section_name += " rhs";
+        else if (assemble_newton_stokes_matrix && newton_handler->parameters.newton_derivative_scaling_factor == 0)
+          timer_section_name += " Picard";
+        else if (assemble_newton_stokes_matrix && newton_handler->parameters.newton_derivative_scaling_factor != 0)
+          timer_section_name += " Newton";
       }
 
     TimerOutput::Scope timer (computing_timer,
-                              (stokes_matrix_free ?
-                               "Assemble Stokes system rhs" :
-                               (!assemble_newton_stokes_system ?
-                                "Assemble Stokes system" :
-                                (assemble_newton_stokes_matrix ?
-                                 (newton_handler->parameters.newton_derivative_scaling_factor == 0 ?
-                                  "Assemble Stokes system Picard" :
-                                  "Assemble Stokes system Newton")
-                                 :
-                                 "Assemble Stokes system rhs"))));
+                              timer_section_name);
 
 
     if (rebuild_stokes_matrix == true)
