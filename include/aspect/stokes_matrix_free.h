@@ -72,12 +72,14 @@ namespace aspect
         void clear ();
 
         /**
-         * Fills in the viscosity table and set the value for the pressure scaling constant.
+         * Fills in the viscosity table, sets the value for the pressure scaling constant,
+         * and gives information regarding compressibility.
          */
-        void fill_viscosities_and_pressure_scaling(const dealii::LinearAlgebra::distributed::Vector<number> &viscosity_values,
-                                                   const double pressure_scaling,
-                                                   const Triangulation<dim> &tria,
-                                                   const DoFHandler<dim> &dof_handler_for_projection);
+        void fill_cell_data(const dealii::LinearAlgebra::distributed::Vector<number> &viscosity_values,
+                            const double pressure_scaling,
+                            const Triangulation<dim> &tria,
+                            const DoFHandler<dim> &dof_handler_for_projection,
+                            const bool is_compressible);
 
         /**
          * Returns the viscosity table.
@@ -118,6 +120,11 @@ namespace aspect
          * Pressure scaling constant.
          */
         double pressure_scaling;
+
+        /**
+          * Information on the compressibility of the flow.
+          */
+        bool is_compressible;
     };
 
     /**
@@ -140,12 +147,12 @@ namespace aspect
         void clear ();
 
         /**
-         * Fills in the viscosity table and set the value for the pressure scaling constant.
+         * Fills in the viscosity table and sets the value for the pressure scaling constant.
          */
-        void fill_viscosities_and_pressure_scaling (const dealii::LinearAlgebra::distributed::Vector<number> &viscosity_values,
-                                                    const double pressure_scaling,
-                                                    const Triangulation<dim> &tria,
-                                                    const DoFHandler<dim> &dof_handler_for_projection);
+        void fill_cell_data (const dealii::LinearAlgebra::distributed::Vector<number> &viscosity_values,
+                             const double pressure_scaling,
+                             const Triangulation<dim> &tria,
+                             const DoFHandler<dim> &dof_handler_for_projection);
 
 
         /**
@@ -213,12 +220,13 @@ namespace aspect
         void clear ();
 
         /**
-         * Fills in the viscosity table.
+         * Fills in the viscosity table and gives information regarding compressibility.
          */
-        void fill_viscosities(const dealii::LinearAlgebra::distributed::Vector<number> &viscosity_values,
-                              const Triangulation<dim> &tria,
-                              const DoFHandler<dim> &dof_handler_for_projection,
-                              const bool for_mg);
+        void fill_cell_data(const dealii::LinearAlgebra::distributed::Vector<number> &viscosity_values,
+                            const Triangulation<dim> &tria,
+                            const DoFHandler<dim> &dof_handler_for_projection,
+                            const bool for_mg,
+                            const bool is_compressible);
 
         /**
          * Computes the diagonal of the matrix. Since matrix-free operators have not access
@@ -256,6 +264,11 @@ namespace aspect
          * Table which stores the viscosity on each quadrature point.
          */
         Table<2, VectorizedArray<number> > viscosity_x_2;
+
+        /**
+          * Information on the compressibility of the flow.
+          */
+        bool is_compressible;
 
     };
   }
@@ -296,9 +309,10 @@ namespace aspect
       /**
        * Evalute the MaterialModel to query for the viscosity on the active cells,
        * project this viscosity to the multigrid hierarchy, and cache the information
-       * for later usage.
+       * for later usage. Also sets pressure scaling and information regarding the
+       * compressiblity of the flow.
        */
-      void evaluate_viscosity();
+      void evaluate_material_model();
 
       /**
        * Get the workload imbalance of the distribution
@@ -355,7 +369,6 @@ namespace aspect
 
       dealii::LinearAlgebra::distributed::Vector<double> active_coef_dof_vec;
       MGLevelObject<dealii::LinearAlgebra::distributed::Vector<double> > level_coef_dof_vec;
-
 
       MGTransferMatrixFree<dim,double> mg_transfer;
   };

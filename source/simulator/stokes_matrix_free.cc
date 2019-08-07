@@ -400,10 +400,11 @@ namespace aspect
   template <int dim, int degree_v, typename number>
   void
   MatrixFreeStokesOperators::StokesOperator<dim,degree_v,number>::
-  fill_viscosities_and_pressure_scaling (const dealii::LinearAlgebra::distributed::Vector<number> &viscosity_values,
-                                         const double pressure_scaling,
-                                         const Triangulation<dim> &tria,
-                                         const DoFHandler<dim> &dof_handler_for_projection)
+  fill_cell_data (const dealii::LinearAlgebra::distributed::Vector<number> &viscosity_values,
+                  const double pressure_scaling,
+                  const Triangulation<dim> &tria,
+                  const DoFHandler<dim> &dof_handler_for_projection,
+                  const bool is_compressible)
   {
     FEEvaluation<dim,degree_v,degree_v+1,dim,number> velocity (*this->data, 0);
     const unsigned int n_cells = this->data->n_macro_cells();
@@ -425,7 +426,9 @@ namespace aspect
           for (unsigned int q=0; q<velocity.n_q_points; ++q)
             viscosity_x_2(cell,q)[i] = 2.0*viscosity_values(local_dof_indices[0]);
         }
+
     this->pressure_scaling = pressure_scaling;
+    this->is_compressible = is_compressible;
   }
 
   template <int dim, int degree_v, typename number>
@@ -454,7 +457,6 @@ namespace aspect
                  const dealii::LinearAlgebra::distributed::BlockVector<number> &src,
                  const std::pair<unsigned int, unsigned int>           &cell_range) const
   {
-    typedef VectorizedArray<number> vector_t;
     FEEvaluation<dim,degree_v,degree_v+1,dim,number> velocity (data, 0);
     FEEvaluation<dim,degree_v-1,  degree_v+1,1,  number> pressure (data, 1);
 
@@ -469,16 +471,20 @@ namespace aspect
 
         for (unsigned int q=0; q<velocity.n_q_points; ++q)
           {
-            SymmetricTensor<2,dim,vector_t> sym_grad_u =
-              velocity.get_symmetric_gradient (q);
-            vector_t pres = pressure.get_value(q);
-            vector_t div = -trace(sym_grad_u);
-            pressure.submit_value   (pressure_scaling*div, q);
+            SymmetricTensor<2,dim,VectorizedArray<number>> sym_grad_u =
+                                                          velocity.get_symmetric_gradient (q);
+            VectorizedArray<number> pres = pressure.get_value(q);
+            VectorizedArray<number> div = trace(sym_grad_u);
+            pressure.submit_value(-1.0*pressure_scaling*div, q);
 
             sym_grad_u *= viscosity_x_2(cell,q);
 
             for (unsigned int d=0; d<dim; ++d)
               sym_grad_u[d][d] -= pressure_scaling*pres;
+
+            if (is_compressible)
+              for (unsigned int d=0; d<dim; ++d)
+                sym_grad_u[d][d] -= viscosity_x_2(cell,q)/3.0*div;
 
             velocity.submit_symmetric_gradient(sym_grad_u, q);
           }
@@ -520,10 +526,10 @@ namespace aspect
   template <int dim, int degree_p, typename number>
   void
   MatrixFreeStokesOperators::MassMatrixOperator<dim,degree_p,number>::
-  fill_viscosities_and_pressure_scaling (const dealii::LinearAlgebra::distributed::Vector<number> &viscosity_values,
-                                         const double pressure_scaling,
-                                         const Triangulation<dim> &tria,
-                                         const DoFHandler<dim> &dof_handler_for_projection)
+  fill_cell_data (const dealii::LinearAlgebra::distributed::Vector<number> &viscosity_values,
+                  const double pressure_scaling,
+                  const Triangulation<dim> &tria,
+                  const DoFHandler<dim> &dof_handler_for_projection)
   {
     FEEvaluation<dim,degree_p,degree_p+2,1,number> pressure (*this->data, 0);
     const unsigned int n_cells = this->data->n_macro_cells();
@@ -545,6 +551,7 @@ namespace aspect
           for (unsigned int q=0; q<pressure.n_q_points; ++q)
             one_over_viscosity(cell,q)[i] = 1.0/viscosity_values(local_dof_indices[0]);
         }
+
     this->pressure_scaling = pressure_scaling;
   }
 
@@ -673,10 +680,11 @@ namespace aspect
   template <int dim, int degree_v, typename number>
   void
   MatrixFreeStokesOperators::ABlockOperator<dim,degree_v,number>::
-  fill_viscosities (const dealii::LinearAlgebra::distributed::Vector<number> &viscosity_values,
-                    const Triangulation<dim> &tria,
-                    const DoFHandler<dim> &dof_handler_for_projection,
-                    const bool for_mg)
+  fill_cell_data (const dealii::LinearAlgebra::distributed::Vector<number> &viscosity_values,
+                  const Triangulation<dim> &tria,
+                  const DoFHandler<dim> &dof_handler_for_projection,
+                  const bool for_mg,
+                  const bool is_compressible)
   {
     FEEvaluation<dim,degree_v,degree_v+1,dim,number> velocity (*this->data, 0);
     const unsigned int n_cells = this->data->n_macro_cells();
@@ -711,6 +719,8 @@ namespace aspect
           for (unsigned int q=0; q<velocity.n_q_points; ++q)
             viscosity_x_2(cell,q)[i] = 2.0*viscosity_values(local_dof_indices[0]);
         }
+
+    this->is_compressible = is_compressible;
   }
 
   template <int dim, int degree_v, typename number>
@@ -733,8 +743,17 @@ namespace aspect
         velocity.evaluate (false, true, false);
         for (unsigned int q=0; q<velocity.n_q_points; ++q)
           {
-            velocity.submit_symmetric_gradient
-            (viscosity_x_2(cell,q)*velocity.get_symmetric_gradient(q),q);
+            SymmetricTensor<2,dim,VectorizedArray<number>> sym_grad_u =
+                                                          velocity.get_symmetric_gradient (q);
+            sym_grad_u *= viscosity_x_2(cell,q);
+
+            if (is_compressible)
+              {
+                VectorizedArray<number> div = trace(sym_grad_u);
+                for (unsigned int d=0; d<dim; ++d)
+                  sym_grad_u[d][d] -= 1.0/3.0*div;
+              }
+            velocity.submit_symmetric_gradient(sym_grad_u, q);
           }
         velocity.integrate (false, true);
         velocity.distribute_local_to_global (dst);
@@ -799,8 +818,19 @@ namespace aspect
             velocity.evaluate (false,true,false);
             for (unsigned int q=0; q<velocity.n_q_points; ++q)
               {
-                velocity.submit_symmetric_gradient
-                (viscosity_x_2(cell,q)*velocity.get_symmetric_gradient(q),q);
+                SymmetricTensor<2,dim,VectorizedArray<number>> sym_grad_u =
+                                                              velocity.get_symmetric_gradient (q);
+
+                sym_grad_u *= viscosity_x_2(cell,q);
+
+                if (is_compressible)
+                  {
+                    VectorizedArray<number> div = trace(sym_grad_u);
+                    for (unsigned int d=0; d<dim; ++d)
+                      sym_grad_u[d][d] -= 1.0/3.0*div;
+                  }
+
+                velocity.submit_symmetric_gradient(sym_grad_u, q);
               }
             velocity.integrate (false,true);
 
@@ -862,6 +892,12 @@ namespace aspect
            ,
            ExcNotImplemented());
 
+    // Currently cannot solve compressible flow with implicit reference density
+    if (sim.material_model->is_compressible() == true)
+      Assert(sim.parameters.formulation_mass_conservation !=
+             Parameters<dim>::Formulation::MassConservation::implicit_reference_density_profile,
+             ExcNotImplemented());
+
     {
       const unsigned int n_vect_doubles =
         VectorizedArray<double>::n_array_elements;
@@ -919,7 +955,7 @@ namespace aspect
 
 
   template <int dim>
-  void StokesMatrixFreeHandler<dim>::evaluate_viscosity ()
+  void StokesMatrixFreeHandler<dim>::evaluate_material_model ()
   {
     {
       const QGauss<dim> quadrature_formula (sim.parameters.stokes_velocity_degree+1);
@@ -968,20 +1004,24 @@ namespace aspect
       active_coef_dof_vec.compress(VectorOperation::insert);
     }
 
-    stokes_matrix.fill_viscosities_and_pressure_scaling(active_coef_dof_vec,
-                                                        sim.pressure_scaling,
-                                                        sim.triangulation,
-                                                        dof_handler_projection);
+    const bool is_compressible = sim.material_model->is_compressible();
 
-    velocity_matrix.fill_viscosities(active_coef_dof_vec,
-                                     sim.triangulation,
-                                     dof_handler_projection,
-                                     false);
+    stokes_matrix.fill_cell_data(active_coef_dof_vec,
+                                 sim.pressure_scaling,
+                                 sim.triangulation,
+                                 dof_handler_projection,
+                                 is_compressible);
 
-    mass_matrix.fill_viscosities_and_pressure_scaling(active_coef_dof_vec,
-                                                      sim.pressure_scaling,
-                                                      sim.triangulation,
-                                                      dof_handler_projection);
+    velocity_matrix.fill_cell_data(active_coef_dof_vec,
+                                   sim.triangulation,
+                                   dof_handler_projection,
+                                   /*for_mg*/ false,
+                                   is_compressible);
+
+    mass_matrix.fill_cell_data(active_coef_dof_vec,
+                               sim.pressure_scaling,
+                               sim.triangulation,
+                               dof_handler_projection);
     mass_matrix.compute_diagonal();
 
 
@@ -998,10 +1038,11 @@ namespace aspect
 
     for (unsigned int level=0; level<n_levels; ++level)
       {
-        mg_matrices[level].fill_viscosities(level_coef_dof_vec[level],
-                                            sim.triangulation,
-                                            dof_handler_projection,
-                                            true);
+        mg_matrices[level].fill_cell_data(level_coef_dof_vec[level],
+                                          sim.triangulation,
+                                          dof_handler_projection,
+                                          /*for_mg*/ true,
+                                          is_compressible);
         mg_matrices[level].compute_diagonal();
       }
   }
@@ -1100,9 +1141,8 @@ namespace aspect
     double initial_nonlinear_residual = numbers::signaling_nan<double>();
     double final_linear_residual      = numbers::signaling_nan<double>();
 
-    typedef dealii::LinearAlgebra::distributed::Vector<double> vector_t;
-
     // Below we define all the objects needed to build the GMG preconditioner:
+    using vector_t = dealii::LinearAlgebra::distributed::Vector<double>;
 
     // We choose a Chebyshev smoother, degree 4
     typedef PreconditionChebyshev<ABlockMatrixType,vector_t> SmootherType;
