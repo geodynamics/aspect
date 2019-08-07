@@ -199,7 +199,7 @@ namespace aspect
          * Function for assembling face fluxes for VolumeOfFluid system.
          */
         void local_assemble_internal_face_volume_of_fluid_system (const VolumeOfFluidField<dim> &field,
-                                                                  bool update_from_old,
+                                                                  const bool update_from_old,
                                                                   const typename DoFHandler<dim>::active_cell_iterator &cell,
                                                                   const unsigned int face_no,
                                                                   internal::Assembly::Scratch::VolumeOfFluidSystem<dim> &scratch,
