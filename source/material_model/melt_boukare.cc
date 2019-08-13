@@ -347,11 +347,15 @@ namespace aspect
             AssertThrow (false, ExcNotImplemented());
         }
 
+      // The porosity needs to be between 0 and 1,
+      // but that may not always be the case, because it is advected using the finite element.
+      const double bounded_porosity = std::min(1.0, std::max(0.0, porosity));
+
       double melt_molar_fraction = 0.0;
       if (melt_molar_volume > 0)
         {
-          const double n_moles_total = porosity / melt_molar_volume + (1.0 - porosity) / solid_molar_volume;
-          melt_molar_fraction = porosity / (melt_molar_volume * n_moles_total);
+          const double n_moles_total = bounded_porosity / melt_molar_volume + (1.0 - bounded_porosity) / solid_molar_volume;
+          melt_molar_fraction = bounded_porosity / (melt_molar_volume * n_moles_total);
         }
 
       return melt_molar_fraction;
@@ -406,14 +410,24 @@ namespace aspect
       const double dG_Mg_mantle = (Mg_mantle_melting_temperature - T) * Mg_mantle_melting_entropy
                                   + (P - melting_reference_pressure) * Mg_mantle_melting_volume;
 
+      double melt_fraction;
+
+      // If we are so far below the solidus that we can not reasonably compute the compositions,
+      // set their values explicitly. We can freely set the melt composition (as there is no melt)
+      // so we set it in a way that makes it continuous.
+      if (T < 0.5 * std::min(Fe_mantle_melting_temperature, Mg_mantle_melting_temperature))
+      {
+        melt_fraction = 0.0;
+        new_molar_composition_of_solid = molar_composition_of_bulk;
+        new_molar_composition_of_melt = 0.0;
+        return melt_fraction;
+      }
+
       // Mole composition of the solid and liquid (corresponds to the molar fraction of iron)
       const double molar_composition_of_melt = 1.0 - (1.0 - std::exp(dG_Fe_mantle/(Fe_number_of_moles*R*T)))/(std::exp(dG_Mg_mantle/(Mg_number_of_moles*R*T)) -
                                                std::exp(dG_Fe_mantle/(Fe_number_of_moles*R*T)));
       const double molar_composition_of_solid = molar_composition_of_melt * std::exp(dG_Fe_mantle/(Fe_number_of_moles*R*T));
 
-
-
-      double melt_fraction;
       if (molar_composition_of_solid >= molar_composition_of_bulk)     // below the solidus
         {
           melt_fraction = 0;

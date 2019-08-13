@@ -6,7 +6,8 @@
 # allows for melting of approximately 10% of the material. This 
 # means that the steady-state melt fraction at the end of the 
 # model run should be 0.1. 
-
+# The test also outputs the bulk composition to make sure it is
+# conserved (it should be 0.001). 
 
 set Dimension                              = 2
 
@@ -154,7 +155,8 @@ subsection Postprocess
 
   subsection Visualization
     set Time between graphical output = 0
-    set List of output variables = material properties, nonadiabatic temperature, melt fraction
+    set Output format = gnuplot
+    set List of output variables = material properties, nonadiabatic temperature, melt fraction, named additional outputs
 
     subsection Material properties
       set List of material properties = density,thermal expansivity,specific heat,viscosity,compressibility
