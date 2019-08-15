@@ -58,7 +58,7 @@ void fastscape_set_u_(double *up);
 //Functions to run FastScape
 void fastscape_get_step_(int *sstep);
 void fastscape_execute_step_();
-void fastscape_vtk_(double *fp, const double *vexp);
+void fastscape_named_vtk_(double *fp, const double *vexp, int *astep, const char *c, int *length);
 void fastscape_copy_h_(double *hp);
 
 //end run
