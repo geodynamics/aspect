@@ -40,11 +40,9 @@ namespace aspect
     void
     VolumeOfFluidInterface<dim>::tag_additional_cells() const
     {
-
-      //Break early if DoFs do not exist
+      // Break early if DoFs have not been distributed yet.
       if (this->get_dof_handler().n_dofs() == 0)
         return;
-
 
       const QMidpoint<dim> qMidC;
 
