@@ -1,6 +1,8 @@
-# A test for the particle load balacing strategy 'remove particles'.
-# As soon as too many particles live in a cell, a fraction of them
-# is discarded.
+# A test for the particle load balacing strategy 'repartition'.
+#
+# The load is distributed according to a balanced weight defined
+# as: n_locally_owned_cells + particle_weight/1000 * n_locally_owned_particles.
+# This test uses the default particle weight.
 
 # MPI: 4
 

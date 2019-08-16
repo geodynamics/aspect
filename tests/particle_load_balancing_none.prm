@@ -1,6 +1,6 @@
-# A test for the particle load balacing strategy 'remove particles'.
-# As soon as too many particles live in a cell, a fraction of them
-# is discarded.
+# A test for the particle load balacing strategy 'none'.
+# No load balancing is performed and the resulting imbalance is
+# recorded by the 'load balance statistics' postprocessor.
 
 # MPI: 4
 
