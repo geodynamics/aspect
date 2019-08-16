@@ -59,14 +59,37 @@ namespace aspect
                                update_values |
                                update_quadrature_points);
 
+      // Create block vector to indicate when other mpi process believes cell
+      // borders an interface cell and therefore neighbors should be refined
+      // Use the first vof block, due to being the correct size, and only
+      // needing one indicator
+      LinearAlgebra::BlockVector interface_contained_local(
+        this->introspection().index_sets.system_partitioning,
+        this->get_mpi_communicator());
+
+      const FiniteElement<dim> &system_fe = this->get_fe();
+
+      const VolumeOfFluidField<dim> vof_field = this->get_volume_of_fluid_handler().field_struct_for_field_index(0);
+      const unsigned int volume_fraction_block = vof_field.volume_fraction.block_index;
+      const unsigned int volume_of_fluid_c_index = vof_field.volume_fraction.first_component_index;
+      const unsigned int volume_of_fluid_ind
+        = this->get_fe().component_to_system_index(volume_of_fluid_c_index, 0);
+
+      interface_contained_local.block(volume_fraction_block) = 0.0;
+
+      std::vector<types::global_dof_index> local_dof_indices (system_fe.dofs_per_cell);
+
       for (unsigned int f=0; f<this->get_volume_of_fluid_handler().get_n_fields(); ++f)
         {
+
+          const double volume_fraction_threshold = this->get_volume_of_fluid_handler().get_volume_fraction_threshold();
+
           const FEValuesExtractors::Scalar volume_of_fluid_field = this->get_volume_of_fluid_handler().field_struct_for_field_index(f)
                                                                    .volume_fraction.extractor_scalar();
+
           std::vector<double> volume_of_fluid_values(qMidC.size());
           std::vector<double> neighbor_volume_of_fluid_values(qMidC.size());
 
-          const double volume_fraction_threshold = this->get_volume_of_fluid_handler().get_volume_fraction_threshold();
 
           typename DoFHandler<dim>::active_cell_iterator cell = this->get_dof_handler().begin_active(),
                                                          endc = this->get_dof_handler().end();
@@ -176,9 +199,45 @@ namespace aspect
                     {
                       cell->clear_coarsen_flag ();
                       cell->set_refine_flag ();
+                      // Mark in vector, will be true here if true on any process
+                      cell->get_dof_indices(local_dof_indices);
+                      interface_contained_local(local_dof_indices[volume_of_fluid_ind]) = 1.0;
                     }
                 }
 
+            }
+        }
+
+      // Now communicate and mark any cells not already included, this could be
+      // reduced to only loop over cells bordering another process
+      LinearAlgebra::BlockVector interface_contained_global(
+        this->introspection().index_sets.system_partitioning,
+        this->introspection().index_sets.system_relevant_partitioning,
+        this->get_mpi_communicator());
+
+      interface_contained_global.block(volume_fraction_block) = interface_contained_local.block(volume_fraction_block);
+      interface_contained_global.update_ghost_values();
+
+      const FEValuesExtractors::Scalar ic_extract = this->get_volume_of_fluid_handler().field_struct_for_field_index(0)
+                                                    .volume_fraction.extractor_scalar();
+      std::vector<double> ic_values(qMidC.size());
+
+      typename DoFHandler<dim>::active_cell_iterator cell = this->get_dof_handler().begin_active(),
+                                                     endc = this->get_dof_handler().end();
+      for (; cell != endc; ++cell)
+        {
+          // Skip artificial cells
+          if (!cell->active() || cell->is_artificial())
+            continue;
+
+          fe_values.reinit(cell);
+          fe_values[ic_extract].get_function_values(interface_contained_global,
+                                                    ic_values);
+
+          // If the cell has been indicated to need refinement add it
+          if (ic_values[0]>0.5)
+            {
+              marked_cells.insert(cell);
             }
         }
 

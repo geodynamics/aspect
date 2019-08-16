@@ -13,8 +13,8 @@ Number of degrees of freedom: 1,749 (578+81+289+289+64+192+256)
      Global volume of fluid volumes (m^3): 0.785
      VoF Calculation(IEstL1/FEstL1):       5.49126816e-02 / 0.00000000e+00
 
-Number of active cells: 91 (on 5 levels)
-Number of degrees of freedom: 2,534 (846+114+423+423+91+273+364)
+Number of active cells: 115 (on 5 levels)
+Number of degrees of freedom: 3,160 (1,050+140+525+525+115+345+460)
 
 *** Timestep 0:  t=0 seconds
    Skipping temperature solve because RHS is zero.
@@ -46,8 +46,8 @@ Number of degrees of freedom: 5,989 (1,986+257+993+993+220+660+880)
    Postprocessing:
      Global volume of fluid volumes (m^3): 0.785
 
-Number of active cells: 244 (on 6 levels)
-Number of degrees of freedom: 6,623 (2,194+283+1,097+1,097+244+732+976)
+Number of active cells: 247 (on 6 levels)
+Number of degrees of freedom: 6,698 (2,218+286+1,109+1,109+247+741+988)
 
 *** Timestep 2:  t=0.0441942 seconds
    Skipping temperature solve because RHS is zero.
@@ -57,8 +57,8 @@ Number of degrees of freedom: 6,623 (2,194+283+1,097+1,097+244+732+976)
    Postprocessing:
      Global volume of fluid volumes (m^3): 0.785
 
-Number of active cells: 238 (on 6 levels)
-Number of degrees of freedom: 6,473 (2,146+277+1,073+1,073+238+714+952)
+Number of active cells: 244 (on 6 levels)
+Number of degrees of freedom: 6,623 (2,194+283+1,097+1,097+244+732+976)
 
 *** Timestep 3:  t=0.0662913 seconds
    Skipping temperature solve because RHS is zero.
@@ -68,8 +68,8 @@ Number of degrees of freedom: 6,473 (2,146+277+1,073+1,073+238+714+952)
    Postprocessing:
      Global volume of fluid volumes (m^3): 0.785
 
-Number of active cells: 235 (on 6 levels)
-Number of degrees of freedom: 6,398 (2,122+274+1,061+1,061+235+705+940)
+Number of active cells: 244 (on 6 levels)
+Number of degrees of freedom: 6,623 (2,194+283+1,097+1,097+244+732+976)
 
 *** Timestep 4:  t=0.0883883 seconds
    Skipping temperature solve because RHS is zero.
@@ -90,8 +90,8 @@ Number of degrees of freedom: 6,698 (2,218+286+1,109+1,109+247+741+988)
    Postprocessing:
      Global volume of fluid volumes (m^3): 0.785
 
-Number of active cells: 247 (on 6 levels)
-Number of degrees of freedom: 6,698 (2,218+286+1,109+1,109+247+741+988)
+Number of active cells: 250 (on 6 levels)
+Number of degrees of freedom: 6,773 (2,242+289+1,121+1,121+250+750+1,000)
 
 *** Timestep 6:  t=0.132583 seconds
    Skipping temperature solve because RHS is zero.
@@ -101,8 +101,8 @@ Number of degrees of freedom: 6,698 (2,218+286+1,109+1,109+247+741+988)
    Postprocessing:
      Global volume of fluid volumes (m^3): 0.785
 
-Number of active cells: 244 (on 6 levels)
-Number of degrees of freedom: 6,623 (2,194+283+1,097+1,097+244+732+976)
+Number of active cells: 250 (on 6 levels)
+Number of degrees of freedom: 6,773 (2,242+289+1,121+1,121+250+750+1,000)
 
 *** Timestep 7:  t=0.15468 seconds
    Skipping temperature solve because RHS is zero.
@@ -112,8 +112,8 @@ Number of degrees of freedom: 6,623 (2,194+283+1,097+1,097+244+732+976)
    Postprocessing:
      Global volume of fluid volumes (m^3): 0.785
 
-Number of active cells: 247 (on 6 levels)
-Number of degrees of freedom: 6,698 (2,218+286+1,109+1,109+247+741+988)
+Number of active cells: 250 (on 6 levels)
+Number of degrees of freedom: 6,773 (2,242+289+1,121+1,121+250+750+1,000)
 
 *** Timestep 8:  t=0.176777 seconds
    Skipping temperature solve because RHS is zero.
@@ -168,8 +168,8 @@ Number of degrees of freedom: 6,473 (2,146+277+1,073+1,073+238+714+952)
      Global volume of fluid volumes (m^3): 0.785
      VoF Calculation(IEstL1/FEstL1):       6.62790687e-03 / 5.04975103e-03
 
-Number of active cells: 232 (on 6 levels)
-Number of degrees of freedom: 6,323 (2,098+271+1,049+1,049+232+696+928)
+Number of active cells: 250 (on 6 levels)
+Number of degrees of freedom: 6,807 (2,258+291+1,129+1,129+250+750+1,000)
 
 Termination requested by criterion: end time
 
