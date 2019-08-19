@@ -38,7 +38,7 @@ namespace aspect
      * In particular, it computes maximal, average and
      * minimal number of cells across all ranks.
      * If there are particles it also computes the
-     * maximal, average and minum number of particles across
+     * maximal, average, and minimum number of particles across
      * all ranks, and maximal, average, and minimal ratio
      * between local number of particles and local number
      * of cells across all processes. All of these numbers
