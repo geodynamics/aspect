@@ -34,11 +34,16 @@ namespace aspect
     LoadBalanceStatistics<dim>::execute (TableHandler &statistics)
     {
       const unsigned int locally_owned_active_cells = this->get_triangulation().n_locally_owned_active_cells();
-      const dealii::Utilities::MPI::MinMaxAvg cell_distribution = dealii::Utilities::MPI::min_max_avg(locally_owned_active_cells,this->get_mpi_communicator());
+      const dealii::Utilities::MPI::MinMaxAvg cell_distribution
+        = dealii::Utilities::MPI::min_max_avg(locally_owned_active_cells,
+                                              this->get_mpi_communicator());
 
-      statistics.add_value ("Minimal cells per process", cell_distribution.min);
-      statistics.add_value ("Maximal cells per process", cell_distribution.max);
-      statistics.add_value ("Average cells per process", cell_distribution.avg);
+      statistics.add_value ("Minimal cells per process",
+                            static_cast<unsigned int>(cell_distribution.min));
+      statistics.add_value ("Maximal cells per process",
+                            static_cast<unsigned int>(cell_distribution.max));
+      statistics.add_value ("Average cells per process",
+                            cell_distribution.avg);
 
       if (this->get_postprocess_manager().template
           has_matching_postprocessor<const Postprocess::Particles<dim> >())
@@ -50,17 +55,23 @@ namespace aspect
           const dealii::Utilities::MPI::MinMaxAvg particles_per_process =
             dealii::Utilities::MPI::min_max_avg(locally_owned_particles,this->get_mpi_communicator());
 
-          statistics.add_value ("Minimal particles per process", particles_per_process.min);
-          statistics.add_value ("Maximal particles per process", particles_per_process.max);
-          statistics.add_value ("Average particles per process", particles_per_process.avg);
+          statistics.add_value ("Minimal particles per process",
+                                static_cast<unsigned int>(particles_per_process.min));
+          statistics.add_value ("Maximal particles per process",
+                                static_cast<unsigned int>(particles_per_process.max));
+          statistics.add_value ("Average particles per process",
+                                particles_per_process.avg);
 
           const double local_ratio = (locally_owned_active_cells != 0)
                                      ?
-                                     static_cast<double>(locally_owned_particles) / static_cast<double>(locally_owned_active_cells)
+                                     static_cast<double>(locally_owned_particles)
+                                     / static_cast<double>(locally_owned_active_cells)
                                      :
                                      0.0;
 
-          const dealii::Utilities::MPI::MinMaxAvg particle_to_cell_ratio = dealii::Utilities::MPI::min_max_avg(local_ratio,this->get_mpi_communicator());
+          const dealii::Utilities::MPI::MinMaxAvg particle_to_cell_ratio
+            = dealii::Utilities::MPI::min_max_avg(local_ratio,
+                                                  this->get_mpi_communicator());
 
           statistics.add_value ("Minimal local particle to cell ratio", particle_to_cell_ratio.min);
           statistics.add_value ("Maximal local particle to cell ratio", particle_to_cell_ratio.max);
