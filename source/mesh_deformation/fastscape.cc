@@ -85,7 +85,6 @@ namespace aspect
           dy = dx;
           y_extent = grid_extent[0].second; //(ny-1)*dy;
           numy = numx;
-
         }
 
       if (dim == 3)
@@ -99,10 +98,6 @@ namespace aspect
 
       //Determine array size to send to fastscape
       array_size = nx*ny-1;
-      if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
-      {
-      std::cout<<"Initializing Fastscape on "<<(1+initial_global_refinement)<<" levels."<<"  "<<dx<<std::endl;
-      }
     }
 
 
@@ -116,9 +111,6 @@ namespace aspect
       const types::boundary_id relevant_boundary = this->get_geometry_model().translate_symbolic_boundary_name_to_id ("top");
       const bool top_boundary = boundary_ids.find(relevant_boundary) == boundary_ids.begin();
 
-      //If using with the mesh deformation, you may need to use the old timestep
-      //otherwise fastscape won't see the change made until the following timestep.
-      //TODO: How does this work in combination with the free surface?
       double a_dt = this->get_timestep();
       if (this->convert_output_to_years())
       {
@@ -152,7 +144,6 @@ namespace aspect
           endc = this->get_dof_handler().end();
 
           //TODO: At some point it'd be good to check that the surface is all at one refinement level.
-          //Also check that global+additional refinement is at least as high as what is at the surface.
           for (; cell != endc; ++cell)
             if (cell->is_locally_owned() && cell->at_boundary())
               for (unsigned int face_no = 0; face_no < GeometryInfo<dim>::faces_per_cell; ++face_no)
@@ -162,8 +153,8 @@ namespace aspect
                       continue;
 
                     std::vector<Tensor<1,dim> > vel( face_corners.size() );
-                    fe_face_values.reinit( cell, face_no);
-                    fe_face_values[this->introspection().extractors.velocities].get_function_values(this->get_solution(), vel );
+                    fe_face_values.reinit(cell, face_no);
+                    fe_face_values[this->introspection().extractors.velocities].get_function_values(this->get_solution(), vel);
 
                     for (unsigned int corner = 0; corner < face_corners.size(); ++corner)
                       {
@@ -177,7 +168,7 @@ namespace aspect
                               {
                             	double h_seed = (std::rand()%2000)/100;
                                 double index = indx+numx*ys;
-                                temporary_variables[0][index-1] = this->get_geometry_model().height_above_reference_surface(vertex); //+h_seed; //vertex(dim-1);   //z component
+                                temporary_variables[0][index-1] = this->get_geometry_model().height_above_reference_surface(vertex)+h_seed; //vertex(dim-1);   //z component
 
                                 for (unsigned int i=0; i<dim; ++i)
                                   temporary_variables[i+1][index-1] = vel[corner][i]*year_in_seconds;
@@ -189,7 +180,7 @@ namespace aspect
                         	double h_seed = (std::rand()%2000)/100;
                             double indy = 2+vertex(1)/dy;
                             double index = (indy-1)*numx+indx;
-                            temporary_variables[0][index-1] = vertex(dim-1); //+h_seed; //this->get_geometry_model().height_above_reference_surface(vertex); //vertex(dim-1);   //z component
+                            temporary_variables[0][index-1] = vertex(dim-1)+h_seed; //this->get_geometry_model().height_above_reference_surface(vertex); //vertex(dim-1);   //z component
 
                             for (unsigned int i=0; i<dim; ++i)
                               temporary_variables[i+1][index-1] = vel[corner][i]*year_in_seconds;
@@ -197,11 +188,6 @@ namespace aspect
                       }
                   }
 
-          /*Fastscape needs an edge node that can remain zero for advecting, this inputs this edge node with the same
-           * values as what is next to it, except the corners which remain zero. So far it seems that keeping all the edge
-           * nodes at epsilon when initiated works the same, but keeping this here in case we decide to use it instead.
-           * TODO: If we decide to use this method, this code needs to be much cleaner.
-           */
         	//Set ghost nodes for left and right boundaries
         	  for(int j=1; j<numy; j++)
         	  {
@@ -215,9 +201,9 @@ namespace aspect
                  }
         	  }
 
-        	  //Set ghost node for top and bottom boundaries
-        	 if(dim == 3)
-        	 {
+          //Set ghost node for top and bottom boundaries
+          if(dim == 3)
+           {
         	  for(int j=0; j<numx; j++)
         	  {
         		 double index_bot = j+1;
@@ -231,19 +217,12 @@ namespace aspect
         	  }
             }
 
-       	   //Corners point values. May not need this anymore.
-             /*for (unsigned int i=0; i<dim+1; ++i)
-             {
-       		  temporary_variables[i][0] = temporary_variables[i][1];
-       		  temporary_variables[i][numx-1] = temporary_variables[i][numx-2];
-			  temporary_variables[i][numx*(numy-1)] = temporary_variables[i][numx*(numy-1)+1];
-			  temporary_variables[i][array_size] = temporary_variables[i][array_size-1];
-             }*/
-
-          //Only run fastscape on a single processor
+          //Run fastscape on single processor.
           if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
             {
-              /* Initialize the variables that will be sent to fastscape.
+
+              /*
+               * Initialize the variables that will be sent to fastscape.
                * These have to be doubles of array_size, which C++ doesn't like,
                * so they're initialized this way.
                */
@@ -256,14 +235,14 @@ namespace aspect
               int istep = 0;
               int steps = nstep;
 
-              //Initialize kf and kd across array, and set the velocities and h values to what proc zero has.
+              //Initialize kf and kd across array, and set the velocities and h values to what processor zero has.
               for (int i=0; i<=array_size; i++)
                 {
                   h[i] = temporary_variables[0][i];
-                  vx[i]=temporary_variables[1][i];
-                  vz[i]=temporary_variables[dim][i];
+                  vx[i] = temporary_variables[1][i];
+                  vz[i] = temporary_variables[dim][i];
 
-                  if (dim == 2 )
+                  if (dim == 2)
                     vy[i]=0;
 
                   if (dim == 3)
@@ -280,8 +259,8 @@ namespace aspect
                     MPI_Recv(&temporary_variables[i][0], array_size+1, MPI_DOUBLE, p, 42, this->get_mpi_communicator(), &status);
 
                   /*
-                   * Each processor initialized everything to epsilon, so if it has any
-                   * points at the surface a value will be added.
+                   * All values are initialized to epsilon, if a processor has a value
+                   * that is not epsilon, then it's at the surface.
                    * TODO: Maybe it'd be better to instead track the index and value?
                    */
                   for (int i=0; i<=array_size; i++)
@@ -299,7 +278,38 @@ namespace aspect
                       }
                 }
 
-              //Keep initial h values in temporary to calculate velocity later on.
+              //If it's the first time this is called, initialize fastscape
+              if(this->get_timestep_number () == 1)
+              {
+              	this->get_pcout() <<"   Initializing Fastscape... "<< (1+initial_global_refinement+additional_refinement)  <<
+              			" levels, cell size: "<<dx<<" m."<<std::endl;
+
+            	//Initialize fastscape with grid and extent.
+                fastscape_init_();
+                fastscape_set_nx_ny_(&nx,&ny);
+                fastscape_setup_();
+                fastscape_set_xl_yl_(&x_extent,&y_extent);
+
+                //set boundary conditions
+                fastscape_set_bc_(&bc);
+
+                //Initialize topography
+                fastscape_init_h_(h.get());
+
+                //Set erosional parameters. May have to move this if sed values are updated over time.
+                fastscape_set_erosional_parameters_(kf.get(), &kfsed, &m, &n, kd.get(), &kdsed, &g, &g, &p);
+              }
+              else
+              {
+            	  //If it isn't the first timestep we just want to know current h values in fastscape.
+                  fastscape_copy_h_(h.get());
+              }
+
+              /*
+               * Keep initial h values so we can calculate velocity later.
+               * In the first timestep, h will be given from other processors.
+               * In other timesteps, we copy h from the still running fastscape.
+               */
               for (int i=0; i<=array_size; i++)
                 {
                   temporary_variables[0][i] = h[i];
@@ -312,75 +322,55 @@ namespace aspect
                   steps=steps*2;
                   f_dt = a_dt/steps;
                 }
-              //f_dt = 1000;
-              //steps = 5;
-              //f_dt = max_timestep;
-              //steps = round(a_dt/max_timestep);
-              //f_dt = 25000;
-              //steps = 1e7/f_dt;
-              std::cout<<"Fastscape timestep: "<<f_dt<<"  "<<a_dt<<"  "<<steps<<std::endl;
-
-              //Initialize fastscape
-              fastscape_init_();
-              fastscape_set_nx_ny_(&nx,&ny);
-              fastscape_setup_();
-
-              //set x and y extent
-              fastscape_set_xl_yl_(&x_extent,&y_extent);
+              //std::cout<<"Fastscape timestep: "<<f_dt<<"  "<<a_dt<<"  "<<steps<<std::endl;
+        	  this->get_pcout() <<"   Calling Fastscape... "<<steps<<" timesteps of "<<f_dt<<" years."<<std::endl;
 
               //Set time step
               fastscape_set_dt_(&f_dt);
 
-              //Initialize topography
-              fastscape_init_h_(h.get());
-
-              //Set erosional parameters TODO: why is it g twice here?
-              fastscape_set_erosional_parameters_(kf.get(), &kfsed, &m, &n, kd.get(), &kdsed, &g, &g, &p);
-
               //Set velocity components
-              //fastscape_set_u_(vz.get());
-              //fastscape_set_v_(vx.get(), vy.get());
+              fastscape_set_u_(vz.get());
+              fastscape_set_v_(vx.get(), vy.get());
 
-              //set boundary conditions
-              fastscape_set_bc_(&bc);
-
-              //model setup
-              fastscape_view_();
-
-              int astep = round(this->get_time()/year_in_seconds);
+              //View model setup.
+              //fastscape_view_();
 
               std::string filename;
               filename = this->get_output_directory();
               const char* c=filename.c_str();
               int length = filename.length();
 
-              //Initialize first time step
-              //fastscape_vtk_(h.get(), &vexp, &astep, c, &length);
-              //fastscape_get_step_(&istep);
-              fastscape_named_vtk_(h.get(), &vexp, &astep, c, &length);
+              //Initialize first time step, and update steps.
+              fastscape_get_step_(&istep);
+              steps = istep+steps;
 
               do
                 {
+            	  //Write fastscape visualization
+                  fastscape_named_vtk_(h.get(), &vexp, &istep, c, &length);
+
                   //execute step, this increases timestep counter
                   fastscape_execute_step_();
+
                   //get value of time step counter
                   fastscape_get_step_(&istep);
+
                   //outputs new h values
                   fastscape_copy_h_(h.get());
-                  //Output fastscape visualization.
-                   fastscape_named_vtk_(h.get(), &vexp, &astep, c, &length);
                 }
               while (istep<steps);
 
-              //fastscape_vtk_(h.get(), &vexp);
               //output timing
-              fastscape_debug_();
+              //fastscape_debug_();
 
-              //end FastScape run
-              fastscape_destroy_();
+              //If we've reached the end time, destroy fastscape.
+              if (this->get_time()+a_dt >= end_time)
+            	 {
+            	  this->get_pcout()<<"   Destroying Fastscape..."<<std::endl;
+                  fastscape_destroy_();
+            	 }
 
               //Find out our velocities from the change in height.
-              //TODO: Do we want to use the current or previous time step?
               for (int i=0; i<=array_size; i++)
                 {
                   V[i] = (h[i] - temporary_variables[0][i])/a_dt;
@@ -413,7 +403,6 @@ namespace aspect
           //this variable gives us how many slices near the boundaries to ignore,
           //this helps with lower values due to fixed top and bottom boundaries.
           int edge = (nx+1)/2;
-          //std::cout<<nx<<"  "<<ny<<"  "<<edge<<std::endl;
           if (dim == 2)
             {
               std::vector<double> V2(numx);
@@ -521,6 +510,19 @@ namespace aspect
     template <int dim>
     void FastScape<dim>::declare_parameters(ParameterHandler &prm)
     {
+
+        prm.declare_entry ("End time",
+                           /* boost::lexical_cast<std::string>(std::numeric_limits<double>::max() /
+                                                year_in_seconds) = */ "5.69e+300",
+                           Patterns::Double (),
+                           "The end time of the simulation. The default value is a number "
+                           "so that when converted from years to seconds it is approximately "
+                           "equal to the largest number representable in floating point "
+                           "arithmetic. For all practical purposes, this equals infinity. "
+                           "Units: Years if the "
+                           "'Use years in output instead of seconds' parameter is set; "
+                           "seconds otherwise.");
+
       prm.enter_subsection ("Mesh deformation");
       {
         prm.enter_subsection ("Fastscape");
@@ -620,6 +622,9 @@ namespace aspect
     template <int dim>
     void FastScape<dim>::parse_parameters(ParameterHandler &prm)
     {
+        end_time = prm.get_double ("End time");
+        if (prm.get_bool ("Use years in output instead of seconds") == true)
+          end_time *= year_in_seconds;
       prm.enter_subsection ("Mesh deformation");
       {
         prm.enter_subsection("Fastscape");

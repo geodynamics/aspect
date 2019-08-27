@@ -136,6 +136,7 @@ namespace aspect
         double kdsed;
         double dx;
         double dy;
+        double end_time;
 
         std::array<std::pair<double,double>,dim> grid_extent;
         std::array< unsigned int, dim > table_intervals;
