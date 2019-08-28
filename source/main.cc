@@ -328,9 +328,11 @@ void possibly_load_shared_libs (const std::string &parameters)
     }
 }
 
-/*
- * Current implementation for reading from stdin requires use of a std::string,
- * so this function will read until the end of the stream
+
+/**
+ * Read until we reach the end of the given stream, and return the contents
+ * so obtained in a std::string object that contains the individual
+ * lines read separated by `\n` characters.
  */
 std::string
 read_until_end (std::istream &input)
@@ -349,7 +351,7 @@ read_until_end (std::istream &input)
 
 
 /**
- * Takes the name of a parameter file and return all parameters in that file
+ * Take the name of a parameter file and return all parameters in that file
  * as a string. If @p parameter_file_name is "--" read the parameters from
  * std::cin instead.
  */
