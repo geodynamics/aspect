@@ -10876,10 +10876,32 @@ The parameter file and initial temperature model for this benchmark can be found
 \label{sec:benchmark-brittle-thrust-wedge}
 
 \textit{This section was contributed by Sibiao Liu, Stephanie Sparks, John 
-Naliboff, and Cedric Thieulot.}
+Naliboff, Cedric Thieulot, and Wolfgang Bangerth.}
 
-Buiter et al. (2016, \cite{buiter16}) organized new comparison experiments with 
-analogue and numerical models to investigate brittle thrust wedge behavior. The 
+Thrusting of brittle crust by applying compressive forces can lead to
+large deformations. The process is complicated to model because the
+rheology of cold, brittle crust is substantially more complicated than
+that of the hot, ductile rocks in the mantle. At the same time, the
+processes that act in such situations are surprisingly easy to
+replicate and visualize using simple ``sand box'' experiments in which
+one fills a volume with layers of differently-colored sand and compresses
+or stretches the volume. Examples of the patterns one can then observe
+in these do-it-yourself models are shown in
+Fig.~\ref{fig:sandbox-images}.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.45\textwidth]{cookbooks/benchmarks/brittle_thrust_wedges/real-sandbox-1.jpg}
+  \hfill
+  \includegraphics[width=0.45\textwidth]{cookbooks/benchmarks/brittle_thrust_wedges/real-sandbox-2.jpg}
+  \caption{\it Examples of deformation patterns of ``sand box'' experiments in
+    which alternating layers of differently-colored sand undergo deformation.
+    Pictures courtesy of the lab of Dennis Harry at Colorado State University.}
+  \label{fig:sandbox-images}
+\end{figure}
+
+Buiter et al.~\cite{buiter16} organized new comparison experiments between these kinds of 
+analogue and numerical models to investigate this kind of brittle thrust wedge behavior. The 
 benchmark here aims to verify that the wedge models using \aspect{} follows other 
 numerical results and the analytical wedge theory shown in this paper. In particular, 
 input files (\url{benchmarks/buiter_et_al_2016_jsg}) are provided for reproducing 
@@ -10896,7 +10918,7 @@ dynamic stable strength which correlates with sand dilation.
 
 In sandbox-type models, an important role is played by the boundaries and the 
 frictional sliding of sand against these boundaries. For the top boundary condition, 
-zero traction ("open") and a sticky air layer is used to approximate a free surface. 
+zero traction (``open'') and a sticky air layer is used to approximate a free surface. 
 Additional testing revealed that using a true free surface leads to significant 
 mesh distortion and associated numerical instabilities. We also apply a rigid block 
 that approximates a mobile wall with a constant velocity of 2.5 cm/hour on the 
