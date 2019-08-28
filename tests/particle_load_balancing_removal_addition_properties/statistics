@@ -14,5 +14,5 @@
 # 14: Particle file name
 0 0.000000000000e+00 0.000000000000e+00 16 187 81 81 0 0 14 16 15 104 output-particle_load_balancing_removal_addition_properties/particles/particles-00000 
 1 2.484856989252e+02 2.484856989252e+02 10 132 57 57 0 8 14 16 48  71                                                                                   "" 
-2 4.562360183968e+02 2.077503194716e+02 10 132 57 57 0 8 14 16 48  72                                                                                   "" 
-3 5.000000000000e+02 4.376398160323e+01 10 132 57 57 0 8 13 15 45  73 output-particle_load_balancing_removal_addition_properties/particles/particles-00001 
+2 4.562360183967e+02 2.077503194716e+02 10 132 57 57 0 8 14 16 48  72                                                                                   "" 
+3 5.000000000000e+02 4.376398160326e+01 10 132 57 57 0 8 13 15 45  73 output-particle_load_balancing_removal_addition_properties/particles/particles-00001 
