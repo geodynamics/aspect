@@ -748,6 +748,10 @@ int main (int argc, char *argv[])
         }
       else
         {
+          // If only help or version is requested, we are done.
+          if (output_help || output_version)
+            return 0;
+
           // We hook into the abort handler on ranks != 0 to avoid an MPI
           // deadlock. The deal.II library will call std::abort() when an
           // Assert is triggered, which can lead to a deadlock because it
@@ -775,7 +779,7 @@ int main (int argc, char *argv[])
         {
           if (i_am_proc_0)
             print_help();
-          return 2;
+          return 0;
         }
 
       // See where to read input from, then do the reading and
