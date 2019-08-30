@@ -124,6 +124,7 @@ namespace aspect
         double x_extent;
         double y_extent;
         bool slice;
+        int fs_seed;
 
         double m;
         double n;

@@ -127,7 +127,7 @@ namespace aspect
            */
           std::vector<std::vector<double>> temporary_variables(dim+1, std::vector<double>(array_size+1,std::numeric_limits<double>::epsilon()));
           std::vector<double> V(array_size);
-          std::srand(time(NULL));
+          std::srand(fs_seed);
 
           // Get a quadrature rule that exists only on the corners, and increase the refinement if specified.
           const QIterated<dim-1> face_corners (QTrapez<1>(),
@@ -166,9 +166,13 @@ namespace aspect
                           {
                             for (int ys=0; ys<ny; ys++)
                               {
-                            	double h_seed = (std::rand()%2000)/100;
                                 double index = indx+numx*ys;
-                                temporary_variables[0][index-1] = this->get_geometry_model().height_above_reference_surface(vertex)+h_seed; //vertex(dim-1);   //z component
+                            	if(this->get_timestep_number () == 1)
+                            	{
+                                	double h_seed = (std::rand()%2000)/100;
+                                    temporary_variables[0][index-1] = this->get_geometry_model().height_above_reference_surface(vertex)+h_seed; //vertex(dim-1);   //z component
+                            	}
+
 
                                 for (unsigned int i=0; i<dim; ++i)
                                   temporary_variables[i+1][index-1] = vel[corner][i]*year_in_seconds;
@@ -177,10 +181,14 @@ namespace aspect
 
                         if (dim == 3)
                           {
-                        	double h_seed = (std::rand()%2000)/100;
                             double indy = 2+vertex(1)/dy;
                             double index = (indy-1)*numx+indx;
-                            temporary_variables[0][index-1] = vertex(dim-1)+h_seed; //this->get_geometry_model().height_above_reference_surface(vertex); //vertex(dim-1);   //z component
+
+                        	if(this->get_timestep_number () == 1)
+                        	{
+                        	  double h_seed = (std::rand()%2000)/100;
+                              temporary_variables[0][index-1] = vertex(dim-1)+h_seed; //this->get_geometry_model().height_above_reference_surface(vertex); //vertex(dim-1);   //z component
+                        	}
 
                             for (unsigned int i=0; i<dim; ++i)
                               temporary_variables[i+1][index-1] = vel[corner][i]*year_in_seconds;
@@ -545,6 +553,9 @@ namespace aspect
                              "If this is set to true, then a 2D model will only consider the "
                              "center slice fastscape gives. If set to false, then aspect will"
                              "average the inner third of what fastscape calculates.");
+          prm.declare_entry("Fastscape seed", "1",
+                            Patterns::Integer(),
+                            "Seed used for adding an initial 0-1 m noise to fastscape topography.");
 
           prm.enter_subsection ("Boundary conditions");
           {
@@ -634,6 +645,7 @@ namespace aspect
           vexp = prm.get_double("Vertical exaggeration");
           additional_refinement = prm.get_integer("Additional fastscape refinement");
           slice = prm.get_bool("Use center slice for 2d");
+          fs_seed = prm.get_integer("Fastscape seed");
 
           prm.enter_subsection("Boundary conditions");
           {
