@@ -10821,10 +10821,11 @@ where $\rho$ is the density and $J_1$ and $J_2$ represent real and imaginary com
 \label{eq:density_P}
 \end{equation}
 where $\rho_{0} = 3291~\si{kg . m}^{-3}$ and $\alpha = 3.59 \times 10^{-5}~\si{K}^{-1}$ are the density and thermal expansivity corresponding to $T_{0} = 873~\si{K}$, $P$ = pressure and $K = 115.2~\si{GPa}$ is the bulk modulus. $J_1$ and $J_2$ are expressed as
-\begin{align*}
-J_1(\tau_S^{\prime})= & J_U \left[ 1 + \frac{A_B[\tau_S^{\prime}]^{\alpha_B}}{\alpha_B} + \frac{\sqrt{2\pi}}{2} A_P~\sigma_P \left\{ 1-\text{erf}\left(\frac{\ln[\tau_P^{\prime}/\tau_S^{\prime}]}{\sqrt{2}\sigma_P}\right)\right\}\right] \\
+\begin{align}
+J_1(\tau_S^{\prime})= & J_U \left[ 1 + \frac{A_B[\tau_S^{\prime}]^{\alpha_B}}{\alpha_B} + \frac{\sqrt{2\pi}}{2} A_P~\sigma_P \left\{ 1-\text{erf}\left(\frac{\ln[\tau_P^{\prime}/\tau_S^{\prime}]}{\sqrt{2}\sigma_P}\right)\right\}\right] \label{eqn:real_compliance} \\
 J_2(\tau_S^{\prime}) = & J_U \frac{\pi}{2} \left[ A_B[\tau_S^{\prime}]^{\alpha_B} + A_P~\exp \left(-\frac{\ln^2[\tau_P^{\prime}/\tau_S^{\prime}]}{2\sigma_P^2}\right)\right] + J_U \tau_S^{\prime}
-\end{align*}
+\label{eqn:imaginary_compliance}
+\end{align}
 where $A_B = 0.664$ and $\alpha_B = 0.38$ represent the amplitude and slope of background stress relaxation and $J_U$ is the unrelaxed compliance. Parameters $A_P$ and $\sigma_P$ represent the amplitude and width of a high frequency relaxation peak superimposed on this background trend such that
 \begin{equation}
 A_P(T^{\prime}) = \begin{cases}
@@ -10846,7 +10847,7 @@ where $T^{\prime}$ is the homologous temperature ($\frac{T}{T_{s}}$) with $T$ th
 \begin{equation}
 J_{U}(P,T)^{-1} = \mu_U(P,T) = \mu_U^0 + \frac{\partial{\mu_U}}{\partial{T}}(T -T_0)+ \frac{\partial{\mu_U}}{\partial{P}}(P-P_0)
 \end{equation}
-where $\mu_U^0$ is the unrelaxed shear modulus at surface pressure-temperature conditions, the differential terms are assumed to be constant and the pressure, $P$, in GPa is linearly related to the depth, $z$, in km by $\frac{z}{30}$. The normalised shear wave period, $\tau_S^{\prime}$, in Equations~(\ref{eq:real_compliance}) and (\ref{eq:imaginary_compliance}) is equal to $\frac{\tau_S}{2\pi\tau_M}$, where $\tau_S = 100~\si{s}$ is the shear wave period and $\tau_M = \frac{\eta}{\mu_U}$ is the normalised Maxwell relaxation timescale. $\tau_P^{\prime}$ represents the normalised shear-wave period associated with the centre of the high frequency relaxation peak, assumed to be $6 \times 10^{-5}$. The shear viscosity, $\eta$, is
+where $\mu_U^0$ is the unrelaxed shear modulus at surface pressure-temperature conditions, the differential terms are assumed to be constant and the pressure, $P$, in GPa is linearly related to the depth, $z$, in km by $\frac{z}{30}$. The normalised shear wave period, $\tau_S^{\prime}$, in Equations~\eqref{eqn:real_compliance} and \eqref{eqn:imaginary_compliance} is equal to $\frac{\tau_S}{2\pi\tau_M}$, where $\tau_S = 100~\si{s}$ is the shear wave period and $\tau_M = \frac{\eta}{\mu_U}$ is the normalised Maxwell relaxation timescale. $\tau_P^{\prime}$ represents the normalised shear-wave period associated with the centre of the high frequency relaxation peak, assumed to be $6 \times 10^{-5}$. The shear viscosity, $\eta$, is
 \begin{equation}
 \eta = \eta_r \left(\frac{d}{d_r}\right)^{m} \exp \left[ \frac{E_a}{R}\left(\frac{1}{T}-\frac{1}{T_r}\right) \right] \exp \left[ \frac{V_a}{R}\left(\frac{P}{T}-\frac{P_r}{T_r}\right) \right] A_{\eta}
 \label{eq:eta}
