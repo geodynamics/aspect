@@ -1,6 +1,8 @@
 ################### top matter ################
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8.12)
 
+PROJECT(unittests CXX)
+
 SET(ASPECT_BINARY "${ASPECT_BINARY}" CACHE STRING "" FORCE)
 
 ENABLE_TESTING()
