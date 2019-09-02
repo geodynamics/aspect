@@ -110,6 +110,7 @@ namespace aspect
       TimerOutput::Scope timer_section(this->get_computing_timer(), "Fastscape plugin");
       const types::boundary_id relevant_boundary = this->get_geometry_model().translate_symbolic_boundary_name_to_id ("top");
       const bool top_boundary = boundary_ids.find(relevant_boundary) == boundary_ids.begin();
+      std::unique_ptr<double[]> h (new double[array_size]);
 
       double a_dt = this->get_timestep();
       if (this->convert_output_to_years())
@@ -197,6 +198,8 @@ namespace aspect
                   }
 
         	//Set ghost nodes for left and right boundaries
+
+
         	  for(int j=1; j<numy; j++)
         	  {
         		 double index_left = numx*j+1;
@@ -323,6 +326,72 @@ namespace aspect
                   temporary_variables[0][i] = h[i];
                 }
 
+          	  //If opposite boundaries are both open, set as periodic and replace ghost nodes with
+              //the value on opposite side.
+              if(left == 1 && right == 1)
+              {
+          	  for(int j=1; j<numy; j++)
+          	  {
+          		 double index_left = numx*j+1;
+          		 double index_right = numx*(j+1);
+
+          		 if(vx[index_right-2] > 0 && vx[index_left] > 0)
+          		 {
+                   vz[index_right-1] = (h[index_right-2] - h[index_right-1])/a_dt;
+                   vz[index_left-1] = (h[index_right-2] - h[index_right-1])/a_dt;
+
+                   vy[index_right-1] = vy[index_right-2];
+                   vy[index_left-1] =  vy[index_right-2];
+
+                   vx[index_right-1] = vx[index_right-2];
+                   vx[index_left-1] =  vx[index_right-2];
+          		 }
+          		 else if(vx[index_right-2] < 0 && vx[index_left] < 0)
+          		 {
+                   vz[index_right-1] = (h[index_left] - h[index_left-1])/a_dt;
+                   vz[index_left-1] = (h[index_left] - h[index_left-1])/a_dt;
+
+                   vy[index_right-1] = vy[index_left];
+                   vy[index_left-1] =  vy[index_left];
+
+                   vx[index_right-1] = vx[index_left];
+                   vx[index_left-1] =  vx[index_left];
+          		 }
+          	  }
+              }
+
+              if(top == 1 && bottom == 1)
+              {
+        	  for(int j=0; j<numx; j++)
+        	  {
+        		 double index_bot = j+1;
+        		 double index_top = numx*(numy-1)+j+1;
+
+          		 if(vy[index_bot+numx-1] < 0 && vy[index_top-numx-1] < 0)
+          		 {
+                   vz[index_bot-1] = (h[index_bot+numx-1] - h[index_bot-1])/a_dt;
+                   vz[index_top-1] = (h[index_bot+numx-1] - h[index_bot-1])/a_dt;
+
+                   vy[index_bot-1] = vy[index_bot+numx-1];
+                   vy[index_top-1] =  vy[index_bot+numx-1];
+
+                   vx[index_bot-1] = vx[index_bot+numx-1];
+                   vx[index_top-1] =  vx[index_bot+numx-1];
+          		 }
+          		 else if(vy[index_bot+numx-1] > 0 && vy[index_top-numx-1] > 0)
+          		 {
+                   vz[index_bot-1] = (h[index_top-numx-1] - h[index_top-1])/a_dt;
+                   vz[index_top-1] = (h[index_top-numx-1] - h[index_top-1])/a_dt;
+
+                   vy[index_bot-1] = vy[index_top-numx-1];
+                   vy[index_top-1] =  vy[index_top-numx-1];
+
+                   vx[index_bot-1] = vx[index_top-numx-1];
+                   vx[index_top-1] =  vx[index_top-numx-1];
+          		 }
+        	  }
+              }
+
               //Find a fastscape timestep that is below our maximum timestep.
               double f_dt = a_dt/steps;
               while (f_dt>max_timestep)
@@ -352,10 +421,12 @@ namespace aspect
               fastscape_get_step_(&istep);
               steps = istep+steps;
 
+              fastscape_named_vtk_(h.get(), &vexp, &istep, c, &length);
+
               do
                 {
             	  //Write fastscape visualization
-                  fastscape_named_vtk_(h.get(), &vexp, &istep, c, &length);
+                  //fastscape_named_vtk_(h.get(), &vexp, &istep, c, &length);
 
                   //execute step, this increases timestep counter
                   fastscape_execute_step_();
