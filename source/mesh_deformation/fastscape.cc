@@ -334,31 +334,50 @@ namespace aspect
           	  {
           		 double index_left = numx*j+1;
           		 double index_right = numx*(j+1);
+          		 double side = index_left;
+          	 	 int jj = 0;
+          	 	 int avg = 3;
+          	 	 double avg_above = true;
+          	 	 double avg_below = true;
 
-          		 if(vx[index_right-2] > 0 && vx[index_left] > 0)
-          		 {
-                   vz[index_right-1] = (h[index_right-2] - h[index_right-1])/a_dt;
-                   vz[index_left-1] = (h[index_right-2] - h[index_right-1])/a_dt;
+          	 	 /*
+          	 	  * This is a simple way to switch the sides so I don't have to rewrite the end result twice.
+          	 	  * Also, it makes it so if both sides are going against each other, we just ignore periodic boundaries.
+          	 	  */
+          	 	 if(vx[index_right-2] > 0 && vx[index_left] >= 0)
+          	 	 {
+          	 		 side = index_right;
+          	 	     jj = 2;
+          	 	 }
+          	 	 else if((vx[index_right-2] < 0 && vx[index_left] > 0) || (vx[index_right-2] > 0 && vx[index_left] < 0))
+          	 		 continue;
 
-                   vy[index_right-1] = vy[index_right-2];
-                   vy[index_left-1] =  vy[index_right-2];
+          	 	 /*
+          	 	  * This checks whether we have surrounding nodes to average the value.
+          	 	  * If we are at a corner, then we only average 2 values instead of 3.
+          	 	  */
+          	 	 if(side-jj+numx > array_size || side-1+numx > array_size)
+          	 	 {
+          	 		 avg = avg-1;
+          	 	     avg_above = false;
+          	 	 }
+          	 	 else if(side-jj+numx < 0)
+          	 	 {
+          	 		 avg = avg-1;
+          	 		 avg_below = false;
+          	 	 }
 
-                   vx[index_right-1] = vx[index_right-2];
-                   vx[index_left-1] =  vx[index_right-2];
-          		 }
-          		 else if(vx[index_right-2] < 0 && vx[index_left] < 0)
-          		 {
-                   vz[index_right-1] = (h[index_left] - h[index_left-1])/a_dt;
-                   vz[index_left-1] = (h[index_left] - h[index_left-1])/a_dt;
+                   vz[index_right-1] = (h[side-jj] - h[side-1])/a_dt;
+                   vz[index_left-1] = (h[side-jj] - h[side-1])/a_dt;
 
-                   vy[index_right-1] = vy[index_left];
-                   vy[index_left-1] =  vy[index_left];
+                   vy[index_right-1] = vy[side-jj];
+                   vy[index_left-1] =  vy[side-jj];
 
-                   vx[index_right-1] = vx[index_left];
-                   vx[index_left-1] =  vx[index_left];
+                   vx[index_right-1] = vx[side-jj];
+                   vx[index_left-1] =  vx[side-jj];
           		 }
           	  }
-              }
+
 
               if(top == 1 && bottom == 1)
               {
@@ -366,19 +385,30 @@ namespace aspect
         	  {
         		 double index_bot = j+1;
         		 double index_top = numx*(numy-1)+j+1;
+          		 double side = index_bot;
+          		 int jj = numx;
 
-          		 if(vy[index_bot+numx-1] < 0 && vy[index_top-numx-1] < 0)
-          		 {
-                   vz[index_bot-1] = (h[index_bot+numx-1] - h[index_bot-1])/a_dt;
-                   vz[index_top-1] = (h[index_bot+numx-1] - h[index_bot-1])/a_dt;
+          	 	 if(vy[index_bot+numx-1] > 0 && vy[index_top-numx-1] >= 0)
+          	 	 {
+          	 		 side = index_top;
+          	 		 jj = -numx;
+          	 	 }
+          	 	 else if((vy[index_bot+numx-1] < 0 && vy[index_top-numx-1] > 0) || (vy[index_bot+numx-1] > 0 && vy[index_top-numx-1] < 0))
+          	 		 continue;
 
-                   vy[index_bot-1] = vy[index_bot+numx-1];
-                   vy[index_top-1] =  vy[index_bot+numx-1];
+          		// if(vy[index_bot+numx-1] < 0 && vy[index_top-numx-1] < 0)
+          		// {
+          	 	 //std::cout<<jj<<std::endl;
+                   vz[index_bot-1] = (h[side+jj-1] - h[side-1])/a_dt;     //index_bot+numx index_top-numx
+                   vz[index_top-1] = (h[side+jj-1] - h[side-1])/a_dt;
 
-                   vx[index_bot-1] = vx[index_bot+numx-1];
-                   vx[index_top-1] =  vx[index_bot+numx-1];
-          		 }
-          		 else if(vy[index_bot+numx-1] > 0 && vy[index_top-numx-1] > 0)
+                   vy[index_bot-1] = vy[side+jj-1];
+                   vy[index_top-1] =  vy[side+jj-1];
+
+                   vx[index_bot-1] = vx[side+jj-1];
+                   vx[index_top-1] =  vx[side+jj-1];
+          	//	 }
+          		/* else if(vy[index_bot+numx-1] > 0 && vy[index_top-numx-1] > 0)
           		 {
                    vz[index_bot-1] = (h[index_top-numx-1] - h[index_top-1])/a_dt;
                    vz[index_top-1] = (h[index_top-numx-1] - h[index_top-1])/a_dt;
@@ -388,7 +418,7 @@ namespace aspect
 
                    vx[index_bot-1] = vx[index_top-numx-1];
                    vx[index_top-1] =  vx[index_top-numx-1];
-          		 }
+          		 }*/
         	  }
               }
 
@@ -421,12 +451,12 @@ namespace aspect
               fastscape_get_step_(&istep);
               steps = istep+steps;
 
-              fastscape_named_vtk_(h.get(), &vexp, &istep, c, &length);
+              //fastscape_named_vtk_(h.get(), &vexp, &istep, c, &length);
 
               do
                 {
             	  //Write fastscape visualization
-                  //fastscape_named_vtk_(h.get(), &vexp, &istep, c, &length);
+                  fastscape_named_vtk_(h.get(), &vexp, &istep, c, &length);
 
                   //execute step, this increases timestep counter
                   fastscape_execute_step_();
