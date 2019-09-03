@@ -555,6 +555,9 @@ SimulatorAccess -> N6aspect11Postprocess18HeatFluxStatisticsILi2EEE [style="dott
 N6aspect11Postprocess17HeatingStatisticsILi2EEE [label="heating\nstatistics", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
 N6aspect11Postprocess17HeatingStatisticsILi2EEE -> N6aspect11Postprocess9InterfaceILi2EEE [len=3, weight=50];
 SimulatorAccess -> N6aspect11Postprocess17HeatingStatisticsILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
+N6aspect11Postprocess21LoadBalanceStatisticsILi2EEE [label="load balance\nstatistics", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
+N6aspect11Postprocess21LoadBalanceStatisticsILi2EEE -> N6aspect11Postprocess9InterfaceILi2EEE [len=3, weight=50];
+SimulatorAccess -> N6aspect11Postprocess21LoadBalanceStatisticsILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
 N6aspect11Postprocess18MassFluxStatisticsILi2EEE [label="mass flux\nstatistics", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
 N6aspect11Postprocess18MassFluxStatisticsILi2EEE -> N6aspect11Postprocess9InterfaceILi2EEE [len=3, weight=50];
 SimulatorAccess -> N6aspect11Postprocess18MassFluxStatisticsILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];

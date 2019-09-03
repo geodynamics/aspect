@@ -6127,10 +6127,10 @@ When ``composition is specified, the initial model is treated as a standard comp
 
 \index[prmindex]{Data file name}
 \index[prmindexfull]{Initial composition model!Ascii data model!Data file name}
-{\it Value:} box\_2d.txt
+{\it Value:} initial\_composition\_top\_mantle\_box\_3d.txt
 
 
-{\it Default:} box\_2d.txt
+{\it Default:} initial\_composition\_top\_mantle\_box\_3d.txt
 
 
 {\it Description:} The file name of the model data. Provide file in format: (Velocity file name).\%s\%d where \%s is a string specifying the boundary of the model according to the names of the boundary indicators (of the chosen geometry model).\%d is any sprintf integer qualifier, specifying the format of the current file number. 
@@ -6711,10 +6711,10 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Data file name}
 \index[prmindexfull]{Initial temperature model!Ascii data model!Data file name}
-{\it Value:} box\_2d.txt
+{\it Value:} initial\_isotherm\_500K\_box\_3d.txt
 
 
-{\it Default:} box\_2d.txt
+{\it Default:} initial\_isotherm\_500K\_box\_3d.txt
 
 
 {\it Description:} The file name of the model data. Provide file in format: (Velocity file name).\%s\%d where \%s is a string specifying the boundary of the model according to the names of the boundary indicators (of the chosen geometry model).\%d is any sprintf integer qualifier, specifying the format of the current file number. 
@@ -16627,6 +16627,8 @@ The ``heat flux densities'' postprocessor computes the same quantity as the one 
 
 `heating statistics': A postprocessor that computes some statistics about heating, averaged by volume. 
 
+`load balance statistics': A postprocessor that computes statistics about the distribution of cells, and if present particles across subdomains. In particular, it computes maximal, average and minimal number of cells across all ranks. If there are particles it also computes the maximal, average, and minimum number of particles across all ranks, and maximal, average, and minimal ratio between local number of particles and local number of cells across all processes. All of these numbers can be useful to assess the load balance between different MPI ranks, as the difference between the mimimal and maximal load should be as small as possible.
+
 `mass flux statistics': A postprocessor that computes some statistics about the mass flux across boundaries. For each boundary indicator (see your geometry description for which boundary indicators are used), the mass flux is computed in outward direction, i.e., from the domain to the outside, using the formula $\int_{\Gamma_i} \rho \mathbf v \cdot \mathbf n$ where $\Gamma_i$ is the part of the boundary with indicator $i$, $\rho$ is the density as reported by the material model, $\mathbf v$ is the velocity, and $\mathbf n$ is the outward normal. 
 
 As stated, this postprocessor computes the \textit{outbound} mass flux. If you are interested in the opposite direction, for example from the core into the mantle when the domain describes the mantle, then you need to multiply the result by -1.
@@ -16671,7 +16673,7 @@ The file format then consists of lines with Euclidean coordinates followed by th
 `volume of fluid statistics': A postprocessor that computes some statistics about the volume-of-fluid fields.
 
 
-{\it Possible values:} A comma-separated list of any of Stokes residual, basic statistics, boundary densities, boundary pressures, command, composition statistics, core statistics, depth average, dynamic topography, entropy viscosity statistics, geoid, global statistics, gravity calculation, heat flux densities, heat flux map, heat flux statistics, heating statistics, mass flux statistics, material statistics, matrix statistics, melt statistics, memory statistics, particle count statistics, particles, point values, pressure statistics, rotation statistics, spherical velocity statistics, temperature statistics, topography, velocity boundary statistics, velocity statistics, visualization, volume of fluid statistics
+{\it Possible values:} A comma-separated list of any of Stokes residual, basic statistics, boundary densities, boundary pressures, command, composition statistics, core statistics, depth average, dynamic topography, entropy viscosity statistics, geoid, global statistics, gravity calculation, heat flux densities, heat flux map, heat flux statistics, heating statistics, load balance statistics, mass flux statistics, material statistics, matrix statistics, melt statistics, memory statistics, particle count statistics, particles, point values, pressure statistics, rotation statistics, spherical velocity statistics, temperature statistics, topography, velocity boundary statistics, velocity statistics, visualization, volume of fluid statistics
 \item {\it Parameter name:} {\tt Run postprocessors on nonlinear iterations}
 \phantomsection\label{parameters:Postprocess/Run postprocessors on nonlinear iterations}
 \label{parameters:Postprocess/Run_20postprocessors_20on_20nonlinear_20iterations}
