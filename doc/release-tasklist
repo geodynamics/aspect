@@ -93,7 +93,9 @@
       gpg --detach-sign --armor aspect-manual-$TAG.pdf
       sha1sum aspect-$TAG.tar.gz aspect-manual-$TAG.pdf >sha1sum-$TAG.txt
   . create a release on github, upload tar.gz and manual-$VER.pdf
-  . link it on download.html, update version info etc.
+  . update website (www repo):
+    - header.include: add link to changes
+    - index.html: add news entry
   . create zenodo release for source code:
     - https://zenodo.org/deposit?page=1&size=20
     - title: ASPECT v2.0.0
