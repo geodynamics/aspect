@@ -234,8 +234,10 @@ namespace aspect
             }
 
             case Parameters<dim>::AdvectionFieldMethod::volume_of_fluid:
+            {
               volume_of_fluid_handler->do_volume_of_fluid_update(adv_field);
               break;
+            }
 
             case Parameters<dim>::AdvectionFieldMethod::static_field:
             {
