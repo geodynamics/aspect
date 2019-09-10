@@ -110,7 +110,6 @@ namespace aspect
       TimerOutput::Scope timer_section(this->get_computing_timer(), "Fastscape plugin");
       const types::boundary_id relevant_boundary = this->get_geometry_model().translate_symbolic_boundary_name_to_id ("top");
       const bool top_boundary = boundary_ids.find(relevant_boundary) == boundary_ids.begin();
-      std::unique_ptr<double[]> h (new double[array_size]);
 
       double a_dt = this->get_timestep();
       if (this->convert_output_to_years())
@@ -128,7 +127,6 @@ namespace aspect
            */
           std::vector<std::vector<double>> temporary_variables(dim+1, std::vector<double>(array_size+1,std::numeric_limits<double>::epsilon()));
           std::vector<double> V(array_size);
-          std::srand(fs_seed);
 
           // Get a quadrature rule that exists only on the corners, and increase the refinement if specified.
           const QIterated<dim-1> face_corners (QTrapez<1>(),
@@ -170,8 +168,8 @@ namespace aspect
                                 double index = indx+numx*ys;
                             	if(this->get_timestep_number () == 1)
                             	{
-                                	double h_seed = (std::rand()%2000)/100;
-                                    temporary_variables[0][index-1] = this->get_geometry_model().height_above_reference_surface(vertex)+h_seed; //vertex(dim-1);   //z component
+                                	//double h_seed = (std::rand()%2000)/100;
+                                    temporary_variables[0][index-1] = this->get_geometry_model().height_above_reference_surface(vertex); //vertex(dim-1);   //z component
                             	}
 
 
@@ -187,8 +185,7 @@ namespace aspect
 
                         	if(this->get_timestep_number () == 1)
                         	{
-                        	  double h_seed = (std::rand()%2000)/100;
-                              temporary_variables[0][index-1] = vertex(dim-1)+h_seed; //this->get_geometry_model().height_above_reference_surface(vertex); //vertex(dim-1);   //z component
+                              temporary_variables[0][index-1] = vertex(dim-1); //this->get_geometry_model().height_above_reference_surface(vertex); //vertex(dim-1);   //z component
                         	}
 
                             for (unsigned int i=0; i<dim; ++i)
@@ -199,8 +196,7 @@ namespace aspect
 
         	//Set ghost nodes for left and right boundaries
 
-
-        	  for(int j=1; j<numy; j++)
+        	  for(int j=0; j<numy; j++)
         	  {
         		 double index_left = numx*j+1;
         		 double index_right = numx*(j+1);
@@ -245,6 +241,7 @@ namespace aspect
               std::unique_ptr<double[]> kd (new double[array_size]);
               int istep = 0;
               int steps = nstep;
+              std::srand(fs_seed);
 
               //Initialize kf and kd across array, and set the velocities and h values to what processor zero has.
               for (int i=0; i<=array_size; i++)
@@ -323,22 +320,31 @@ namespace aspect
                */
               for (int i=0; i<=array_size; i++)
                 {
+            	  //Initialize random topography noise first time fastscape is called.
+            	  if(this->get_timestep_number () == 1)
+            	  {
+                	  double h_seed = (std::rand()%2000)/100;
+                	  h[i] = h[i] + h_seed;
+            	  }
                   temporary_variables[0][i] = h[i];
                 }
 
           	  //If opposite boundaries are both open, set as periodic and replace ghost nodes with
               //the value on opposite side.
-              if(left == 1 && right == 1)
+              if(left == 0 && right == 0)
               {
-          	  for(int j=1; j<numy; j++)
+          	  for(int j=0; j<numy; j++)
           	  {
           		 double index_left = numx*j+1;
           		 double index_right = numx*(j+1);
           		 double side = index_left;
           	 	 int jj = 0;
-          	 	 int avg = 3;
-          	 	 double avg_above = true;
-          	 	 double avg_below = true;
+          	 	// int below = 0;
+          	 	// int above = 0;
+          	 	// int avg = 1;
+          	 	 //std::vector<std::vector<double>> temporary_variables(dim+1, std::vector<double>(4,std::numeric_limits<double>::epsilon()));
+          	 	//std::vector<double> p_above(4,0);
+          	 	//std::vector<double> p_below(4,0);
 
           	 	 /*
           	 	  * This is a simple way to switch the sides so I don't have to rewrite the end result twice.
@@ -356,30 +362,45 @@ namespace aspect
           	 	  * This checks whether we have surrounding nodes to average the value.
           	 	  * If we are at a corner, then we only average 2 values instead of 3.
           	 	  */
-          	 	 if(side-jj+numx > array_size || side-1+numx > array_size)
+          	 	/* if(side-jj+numx <= array_size && side-1+numx <= array_size)
           	 	 {
-          	 		 avg = avg-1;
-          	 	     avg_above = false;
-          	 	 }
-          	 	 else if(side-jj+numx < 0)
-          	 	 {
-          	 		 avg = avg-1;
-          	 		 avg_below = false;
+          	 		 avg = avg+1;
+                     above = 1;
+          	 	     p_above[0] = h[side-jj+numx];
+          	 	     p_above[1] = vz[side-jj+numx];
+          	       	p_above[2] = vx[side-jj+numx];
+          	        p_above[3] = vy[side-jj+numx];
           	 	 }
 
-                   vz[index_right-1] = (h[side-jj] - h[side-1])/a_dt;
-                   vz[index_left-1] = (h[side-jj] - h[side-1])/a_dt;
+          	 	 if(side-jj-numx >= 0 && side-1-numx >= 0)
+          	 	 {
+          	 		 avg = avg+1;
+          	 		 below = 1;
+          	 	     p_below[0] = h[side-jj-numx];
+          	 	     p_below[1] = vz[side-jj-numx];
+          	 	     p_below[2] = vx[side-jj-numx];
+          	 	     p_below[3] = vy[side-jj-numx];
+          	 	 }*/
+
+                   vz[index_right-1] =   vz[side-jj]; //(h[side-jj] - h[side-1])/a_dt; (vz[side-jj] + p_below[1] + p_above[1])/avg;
+                   vz[index_left-1] =    vz[side-jj];//(h[side-jj] - h[side-1])/a_dt;
 
                    vy[index_right-1] = vy[side-jj];
                    vy[index_left-1] =  vy[side-jj];
 
                    vx[index_right-1] = vx[side-jj];
                    vx[index_left-1] =  vx[side-jj];
+
+                   h[index_right-1] = h[side-jj];     //index_bot+numx index_top-numx
+                   h[index_left-1] = h[side-jj];
+
+                   //std::cout<<index_right<<"  "<<avg<<"  "<<vx[side-jj]<<"  "<<p_above[2]<<"  "<<p_below[2]<<"  "<<vx[index_right-1]<<std::endl;
+
           		 }
           	  }
 
 
-              if(top == 1 && bottom == 1)
+              if(top == 0 && bottom == 0)
               {
         	  for(int j=0; j<numx; j++)
         	  {
@@ -396,29 +417,17 @@ namespace aspect
           	 	 else if((vy[index_bot+numx-1] < 0 && vy[index_top-numx-1] > 0) || (vy[index_bot+numx-1] > 0 && vy[index_top-numx-1] < 0))
           	 		 continue;
 
-          		// if(vy[index_bot+numx-1] < 0 && vy[index_top-numx-1] < 0)
-          		// {
-          	 	 //std::cout<<jj<<std::endl;
-                   vz[index_bot-1] = (h[side+jj-1] - h[side-1])/a_dt;     //index_bot+numx index_top-numx
-                   vz[index_top-1] = (h[side+jj-1] - h[side-1])/a_dt;
+                   vz[index_bot-1] = vz[side+jj-1];   //(h[side+jj-1] - h[side-1])/a_dt;     //index_bot+numx index_top-numx
+                   vz[index_top-1] = vz[side+jj-1];   // (h[side+jj-1] - h[side-1])/a_dt;
 
                    vy[index_bot-1] = vy[side+jj-1];
                    vy[index_top-1] =  vy[side+jj-1];
 
                    vx[index_bot-1] = vx[side+jj-1];
                    vx[index_top-1] =  vx[side+jj-1];
-          	//	 }
-          		/* else if(vy[index_bot+numx-1] > 0 && vy[index_top-numx-1] > 0)
-          		 {
-                   vz[index_bot-1] = (h[index_top-numx-1] - h[index_top-1])/a_dt;
-                   vz[index_top-1] = (h[index_top-numx-1] - h[index_top-1])/a_dt;
 
-                   vy[index_bot-1] = vy[index_top-numx-1];
-                   vy[index_top-1] =  vy[index_top-numx-1];
-
-                   vx[index_bot-1] = vx[index_top-numx-1];
-                   vx[index_top-1] =  vx[index_top-numx-1];
-          		 }*/
+                   h[index_bot-1] = h[side+jj-1];     //index_bot+numx index_top-numx
+                   h[index_top-1] = h[side+jj-1];
         	  }
               }
 
@@ -438,6 +447,7 @@ namespace aspect
               //Set velocity components
               fastscape_set_u_(vz.get());
               fastscape_set_v_(vx.get(), vy.get());
+              fastscape_set_h_(h.get());
 
               //View model setup.
               //fastscape_view_();

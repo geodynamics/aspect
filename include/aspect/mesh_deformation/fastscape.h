@@ -54,6 +54,7 @@ void fastscape_view_();
 void fastscape_set_bc_(const int *jbc);
 void fastscape_set_v_(double *ux, double *uy);
 void fastscape_set_u_(double *up);
+void fastscape_set_h_(double *hp);
 
 //Functions to run FastScape
 void fastscape_get_step_(int *sstep);
