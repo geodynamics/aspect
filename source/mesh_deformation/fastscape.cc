@@ -40,6 +40,9 @@
 #include <deal.II/fe/fe_values.h>
 #include <deal.II/numerics/vector_tools.h>
 
+#include <fstream>
+#include <iostream>
+
 namespace aspect
 {
   namespace MeshDeformation
@@ -54,6 +57,11 @@ namespace aspect
 
       AssertThrow(geometry != nullptr,
                   ExcMessage("Fastscape can only be run with a box model"));
+
+
+      //Initialize parameters for restarting fastscape
+      restart = this->get_parameters().resume_computation;
+      restart_step = 0;
 
       //second is for maximum coordiantes, first for minimum.
       for (unsigned int i=0; i<dim; ++i)
@@ -71,6 +79,7 @@ namespace aspect
       nx = 3+std::pow(2,initial_global_refinement+additional_refinement)*x_repetitions;
       dx = grid_extent[0].second/(nx-3);
       x_extent = geometry->get_extents()[0]+2*dx;
+
       //Find the number of grid points in x direction for indexing.
       numx = 1+x_extent/dx;
 
@@ -110,6 +119,7 @@ namespace aspect
       TimerOutput::Scope timer_section(this->get_computing_timer(), "Fastscape plugin");
       const types::boundary_id relevant_boundary = this->get_geometry_model().translate_symbolic_boundary_name_to_id ("top");
       const bool top_boundary = boundary_ids.find(relevant_boundary) == boundary_ids.begin();
+      int current_timestep = this->get_timestep_number ();
 
       double a_dt = this->get_timestep();
       if (this->convert_output_to_years())
@@ -166,7 +176,7 @@ namespace aspect
                             for (int ys=0; ys<ny; ys++)
                               {
                                 double index = indx+numx*ys;
-                            	if(this->get_timestep_number () == 1)
+                            	if(current_timestep == 1)
                             	{
                                 	//double h_seed = (std::rand()%2000)/100;
                                     temporary_variables[0][index-1] = this->get_geometry_model().height_above_reference_surface(vertex); //vertex(dim-1);   //z component
@@ -183,7 +193,7 @@ namespace aspect
                             double indy = 2+vertex(1)/dy;
                             double index = (indy-1)*numx+indx;
 
-                        	if(this->get_timestep_number () == 1)
+                        	if(current_timestep == 1)
                         	{
                               temporary_variables[0][index-1] = vertex(dim-1); //this->get_geometry_model().height_above_reference_surface(vertex); //vertex(dim-1);   //z component
                         	}
@@ -243,6 +253,14 @@ namespace aspect
               int steps = nstep;
               std::srand(fs_seed);
 
+              //Create variables for output directory and restart file
+              std::string filename;
+              filename = this->get_output_directory();
+              const char* c=filename.c_str();
+              int length = filename.length();
+              const std::string restart_filename = filename + "fastscape_h_restart.txt";
+              const std::string restart_step_filename = filename + "fastscape_steps_restart.txt";
+
               //Initialize kf and kd across array, and set the velocities and h values to what processor zero has.
               for (int i=0; i<=array_size; i++)
                 {
@@ -286,11 +304,53 @@ namespace aspect
                       }
                 }
 
-              //If it's the first time this is called, initialize fastscape
-              if(this->get_timestep_number () == 1)
+              //If it's the first time this is called, or we are restarting from a checkpoint, initialize fastscape.
+              if(current_timestep == 1 || restart)
               {
+
               	this->get_pcout() <<"   Initializing Fastscape... "<< (1+initial_global_refinement+additional_refinement)  <<
               			" levels, cell size: "<<dx<<" m."<<std::endl;
+
+              	//If we are restarting from a checkpoint, load h values for fastscape so we don't lose resolution.
+                if (restart)
+                {
+                 this->get_pcout() <<"      Loading Fastscape restart file... "<<std::endl;
+  				 restart = false;
+
+  				 //Load in h values.
+                 std::ifstream in;
+  				 in.open(restart_filename.c_str());
+              	 if(in)
+              	 {
+              	   int line = 0;
+
+              	   while (line <= array_size)
+              	   {
+              		  in >> h[line];
+              	      line++;
+              	   }
+
+              	   in.close();
+              	 }
+              	 else if(!in)
+              	      AssertThrow(false,ExcMessage("Cannot open file to restart fastscape."));
+
+              	 /*
+              	  * Now load the fastscape istep at time of restart.
+              	  * Reinitializing fastscape always resets this to 0, so here
+              	  * we keep it in a separate variable to keep track for visualization files.
+              	  */
+                 std::ifstream in_step;
+  				 in_step.open(restart_step_filename.c_str());
+              	 if(in)
+              	 {
+
+              	   in_step >> restart_step;
+              	   in_step.close();
+              	 }
+              	 else if(!in_step)
+              	      AssertThrow(false,ExcMessage("Cannot open file to restart fastscape."));
+                }
 
             	//Initialize fastscape with grid and extent.
                 fastscape_init_();
@@ -313,21 +373,39 @@ namespace aspect
                   fastscape_copy_h_(h.get());
               }
 
+              //Get current fastscape timestep.
+              fastscape_get_step_(&istep);
+
               /*
                * Keep initial h values so we can calculate velocity later.
                * In the first timestep, h will be given from other processors.
-               * In other timesteps, we copy h from the still running fastscape.
+               * In other timesteps, we copy h from fastscape.
                */
               for (int i=0; i<=array_size; i++)
                 {
             	  //Initialize random topography noise first time fastscape is called.
-            	  if(this->get_timestep_number () == 1)
+            	  if(current_timestep == 1)
             	  {
                 	  double h_seed = (std::rand()%2000)/100;
                 	  h[i] = h[i] + h_seed;
             	  }
                   temporary_variables[0][i] = h[i];
                 }
+
+              //Write a file to store h & step in case of restart.
+              if ((this->get_parameters().checkpoint_time_secs == 0) &&
+                  (this->get_parameters().checkpoint_steps > 0) &&
+                  (current_timestep % this->get_parameters().checkpoint_steps == 0))
+              {
+                std::ofstream out_h (restart_filename.c_str());
+                std::ofstream out_step (restart_step_filename.c_str());
+
+                out_step<<(istep+restart_step)<<std::endl;
+
+                for (int i=0; i<=array_size; i++)
+                      out_h<<h[i]<<std::endl;
+              }
+
 
           	  //If opposite boundaries are both open, set as periodic and replace ghost nodes with
               //the value on opposite side.
@@ -438,8 +516,6 @@ namespace aspect
                   steps=steps*2;
                   f_dt = a_dt/steps;
                 }
-              //std::cout<<"Fastscape timestep: "<<f_dt<<"  "<<a_dt<<"  "<<steps<<std::endl;
-        	  this->get_pcout() <<"   Calling Fastscape... "<<steps<<" timesteps of "<<f_dt<<" years."<<std::endl;
 
               //Set time step
               fastscape_set_dt_(&f_dt);
@@ -449,24 +525,18 @@ namespace aspect
               fastscape_set_v_(vx.get(), vy.get());
               fastscape_set_h_(h.get());
 
-              //View model setup.
-              //fastscape_view_();
-
-              std::string filename;
-              filename = this->get_output_directory();
-              const char* c=filename.c_str();
-              int length = filename.length();
-
               //Initialize first time step, and update steps.
-              fastscape_get_step_(&istep);
+              //int astep = round(this->get_time()/year_in_seconds);
+              int visualization_step = istep+restart_step;
               steps = istep+steps;
 
-              //fastscape_named_vtk_(h.get(), &vexp, &istep, c, &length);
-
+              //I really need to figure out a better way to make visualization files output correctly.
+        	  this->get_pcout() <<"   Calling Fastscape... "<<(steps-istep)<<" timesteps of "<<f_dt<<" years."<<std::endl;
               do
                 {
             	  //Write fastscape visualization
-                  fastscape_named_vtk_(h.get(), &vexp, &istep, c, &length);
+            	  visualization_step = istep+restart_step;
+                  fastscape_named_vtk_(h.get(), &vexp, &visualization_step, c, &length);
 
                   //execute step, this increases timestep counter
                   fastscape_execute_step_();
@@ -478,9 +548,6 @@ namespace aspect
                   fastscape_copy_h_(h.get());
                 }
               while (istep<steps);
-
-              //output timing
-              //fastscape_debug_();
 
               //If we've reached the end time, destroy fastscape.
               if (this->get_time()+a_dt >= end_time)
@@ -496,7 +563,6 @@ namespace aspect
                 }
 
               MPI_Bcast(&V[0], array_size+1, MPI_DOUBLE, 0, this->get_mpi_communicator());
-
             }
           else
             {
@@ -624,7 +690,6 @@ namespace aspect
 
         }
     }
-
 
     template <int dim>
     void FastScape<dim>::declare_parameters(ParameterHandler &prm)

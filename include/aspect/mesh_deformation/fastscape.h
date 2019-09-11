@@ -126,6 +126,8 @@ namespace aspect
         double y_extent;
         bool slice;
         int fs_seed;
+        mutable bool restart;
+        mutable int restart_step;
 
         double m;
         double n;
