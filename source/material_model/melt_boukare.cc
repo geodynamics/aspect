@@ -748,17 +748,20 @@ namespace aspect
                                                   solid_composition,
                                                   melt_composition);
 
+
               // We have to compute the update to the melt fraction in such a way that the bulk composition is conserved.
-              const double change_of_melt_composition = reaction_fraction * limit_update_to_0_and_1(old_melt_composition, melt_composition - old_melt_composition);
+              const double change_of_solid_composition = reaction_fraction * limit_update_to_0_and_1(old_solid_composition, solid_composition - old_solid_composition);
               const double change_of_melt_fraction = reaction_fraction * limit_update_to_0_and_1(old_melt_molar_fraction, melt_molar_fraction - old_melt_molar_fraction);
 
+              solid_composition = old_solid_composition + change_of_solid_composition;
               melt_molar_fraction = old_melt_molar_fraction + change_of_melt_fraction;
-              melt_composition = old_melt_composition + change_of_melt_composition;
 
-              if (melt_molar_fraction > 0 && melt_molar_fraction < 1)
-                solid_composition = (bulk_composition - melt_molar_fraction * melt_composition)
-                                      / (1.0 - melt_molar_fraction);
-              const double change_of_solid_composition = solid_composition - old_solid_composition;
+              melt_composition = old_melt_composition;
+              if (melt_molar_fraction > 1.e-6)
+                melt_composition = (bulk_composition - (1.0-melt_molar_fraction) * solid_composition) / melt_molar_fraction;
+
+              const double change_of_melt_composition = melt_composition - old_melt_composition;
+
 
               // TODO write a function for this (computing molar volumes from solid and melt composition)
               /* ------------- We have to compute this again here because the porosity may have changed ----------------- */
