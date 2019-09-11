@@ -123,9 +123,9 @@ namespace aspect
 
       double a_dt = this->get_timestep();
       if (this->convert_output_to_years())
-      {
-         a_dt = this->get_timestep()/year_in_seconds;
-      }
+        {
+          a_dt = this->get_timestep()/year_in_seconds;
+        }
 
       //We only want to run fastscape if there was a change in time, and if we're at the top boundary.
       if (a_dt > 0 && top_boundary)
@@ -176,11 +176,11 @@ namespace aspect
                             for (int ys=0; ys<ny; ys++)
                               {
                                 double index = indx+numx*ys;
-                            	if(current_timestep == 1)
-                            	{
-                                	//double h_seed = (std::rand()%2000)/100;
+                                if (current_timestep == 1)
+                                  {
+                                    //double h_seed = (std::rand()%2000)/100;
                                     temporary_variables[0][index-1] = this->get_geometry_model().height_above_reference_surface(vertex); //vertex(dim-1);   //z component
-                            	}
+                                  }
 
 
                                 for (unsigned int i=0; i<dim; ++i)
@@ -193,10 +193,10 @@ namespace aspect
                             double indy = 2+vertex(1)/dy;
                             double index = (indy-1)*numx+indx;
 
-                        	if(current_timestep == 1)
-                        	{
-                              temporary_variables[0][index-1] = vertex(dim-1); //this->get_geometry_model().height_above_reference_surface(vertex); //vertex(dim-1);   //z component
-                        	}
+                            if (current_timestep == 1)
+                              {
+                                temporary_variables[0][index-1] = vertex(dim-1); //this->get_geometry_model().height_above_reference_surface(vertex); //vertex(dim-1);   //z component
+                              }
 
                             for (unsigned int i=0; i<dim; ++i)
                               temporary_variables[i+1][index-1] = vel[corner][i]*year_in_seconds;
@@ -204,34 +204,34 @@ namespace aspect
                       }
                   }
 
-        	//Set ghost nodes for left and right boundaries
+          //Set ghost nodes for left and right boundaries
 
-        	  for(int j=0; j<numy; j++)
-        	  {
-        		 double index_left = numx*j+1;
-        		 double index_right = numx*(j+1);
+          for (int j=0; j<numy; j++)
+            {
+              double index_left = numx*j+1;
+              double index_right = numx*(j+1);
 
-                 for (unsigned int i=0; i<dim+1; ++i)
-                 {
-                   temporary_variables[i][index_left-1] = temporary_variables[i][index_left];
-                   temporary_variables[i][index_right-1] = temporary_variables[i][index_right-2];
-                 }
-        	  }
+              for (unsigned int i=0; i<dim+1; ++i)
+                {
+                  temporary_variables[i][index_left-1] = temporary_variables[i][index_left];
+                  temporary_variables[i][index_right-1] = temporary_variables[i][index_right-2];
+                }
+            }
 
           //Set ghost node for top and bottom boundaries
-          if(dim == 3)
-           {
-        	  for(int j=0; j<numx; j++)
-        	  {
-        		 double index_bot = j+1;
-        		 double index_top = numx*(numy-1)+j+1;
+          if (dim == 3)
+            {
+              for (int j=0; j<numx; j++)
+                {
+                  double index_bot = j+1;
+                  double index_top = numx*(numy-1)+j+1;
 
-                 for (unsigned int i=0; i<dim+1; ++i)
-                 {
-                   temporary_variables[i][index_bot-1] = temporary_variables[i][index_bot+numx-1];
-                   temporary_variables[i][index_top-1] = temporary_variables[i][index_top-numx-1];
-                 }
-        	  }
+                  for (unsigned int i=0; i<dim+1; ++i)
+                    {
+                      temporary_variables[i][index_bot-1] = temporary_variables[i][index_bot+numx-1];
+                      temporary_variables[i][index_top-1] = temporary_variables[i][index_top-numx-1];
+                    }
+                }
             }
 
           //Run fastscape on single processor.
@@ -256,7 +256,7 @@ namespace aspect
               //Create variables for output directory and restart file
               std::string filename;
               filename = this->get_output_directory();
-              const char* c=filename.c_str();
+              const char *c=filename.c_str();
               int length = filename.length();
               const std::string restart_filename = filename + "fastscape_h_restart.txt";
               const std::string restart_step_filename = filename + "fastscape_steps_restart.txt";
@@ -305,76 +305,73 @@ namespace aspect
                 }
 
               //If it's the first time this is called, or we are restarting from a checkpoint, initialize fastscape.
-              if(current_timestep == 1 || restart)
-              {
-
-              	this->get_pcout() <<"   Initializing Fastscape... "<< (1+initial_global_refinement+additional_refinement)  <<
-              			" levels, cell size: "<<dx<<" m."<<std::endl;
-
-              	//If we are restarting from a checkpoint, load h values for fastscape so we don't lose resolution.
-                if (restart)
+              if (current_timestep == 1 || restart)
                 {
-                 this->get_pcout() <<"      Loading Fastscape restart file... "<<std::endl;
-  				 restart = false;
 
-  				 //Load in h values.
-                 std::ifstream in;
-  				 in.open(restart_filename.c_str());
-              	 if(in)
-              	 {
-              	   int line = 0;
+                  this->get_pcout() <<"   Initializing Fastscape... "<< (1+initial_global_refinement+additional_refinement)  <<
+                                    " levels, cell size: "<<dx<<" m."<<std::endl;
 
-              	   while (line <= array_size)
-              	   {
-              		  in >> h[line];
-              	      line++;
-              	   }
+                  //If we are restarting from a checkpoint, load h values for fastscape so we don't lose resolution.
+                  if (restart)
+                    {
+                      this->get_pcout() <<"      Loading Fastscape restart file... "<<std::endl;
+                      restart = false;
 
-              	   in.close();
-              	 }
-              	 else if(!in)
-              	      AssertThrow(false,ExcMessage("Cannot open file to restart fastscape."));
+                      //Load in h values.
+                      std::ifstream in;
+                      in.open(restart_filename.c_str());
+                      if (in)
+                        {
+                          int line = 0;
 
-              	 /*
-              	  * Now load the fastscape istep at time of restart.
-              	  * Reinitializing fastscape always resets this to 0, so here
-              	  * we keep it in a separate variable to keep track for visualization files.
-              	  */
-                 std::ifstream in_step;
-  				 in_step.open(restart_step_filename.c_str());
-              	 if(in)
-              	 {
+                          while (line <= array_size)
+                            {
+                              in >> h[line];
+                              line++;
+                            }
 
-              	   in_step >> restart_step;
-              	   in_step.close();
-              	 }
-              	 else if(!in_step)
-              	      AssertThrow(false,ExcMessage("Cannot open file to restart fastscape."));
+                          in.close();
+                        }
+                      else if (!in)
+                        AssertThrow(false,ExcMessage("Cannot open file to restart fastscape."));
+
+                      /*
+                       * Now load the fastscape istep at time of restart.
+                       * Reinitializing fastscape always resets this to 0, so here
+                       * we keep it in a separate variable to keep track for visualization files.
+                       */
+                      std::ifstream in_step;
+                      in_step.open(restart_step_filename.c_str());
+                      if (in)
+                        {
+
+                          in_step >> restart_step;
+                          in_step.close();
+                        }
+                      else if (!in_step)
+                        AssertThrow(false,ExcMessage("Cannot open file to restart fastscape."));
+                    }
+
+                  //Initialize fastscape with grid and extent.
+                  fastscape_init_();
+                  fastscape_set_nx_ny_(&nx,&ny);
+                  fastscape_setup_();
+                  fastscape_set_xl_yl_(&x_extent,&y_extent);
+
+                  //set boundary conditions
+                  fastscape_set_bc_(&bc);
+
+                  //Initialize topography
+                  fastscape_init_h_(h.get());
+
+                  //Set erosional parameters. May have to move this if sed values are updated over time.
+                  fastscape_set_erosional_parameters_(kf.get(), &kfsed, &m, &n, kd.get(), &kdsed, &g, &g, &p);
                 }
-
-            	//Initialize fastscape with grid and extent.
-                fastscape_init_();
-                fastscape_set_nx_ny_(&nx,&ny);
-                fastscape_setup_();
-                fastscape_set_xl_yl_(&x_extent,&y_extent);
-
-                //set boundary conditions
-                fastscape_set_bc_(&bc);
-
-                //Initialize topography
-                fastscape_init_h_(h.get());
-
-                //Set erosional parameters. May have to move this if sed values are updated over time.
-                fastscape_set_erosional_parameters_(kf.get(), &kfsed, &m, &n, kd.get(), &kdsed, &g, &g, &p);
-              }
               else
-              {
-            	  //If it isn't the first timestep we just want to know current h values in fastscape.
+                {
+                  //If it isn't the first timestep we just want to know current h values in fastscape.
                   fastscape_copy_h_(h.get());
-              }
-
-              //Get current fastscape timestep.
-              fastscape_get_step_(&istep);
+                }
 
               /*
                * Keep initial h values so we can calculate velocity later.
@@ -383,131 +380,98 @@ namespace aspect
                */
               for (int i=0; i<=array_size; i++)
                 {
-            	  //Initialize random topography noise first time fastscape is called.
-            	  if(current_timestep == 1)
-            	  {
-                	  double h_seed = (std::rand()%2000)/100;
-                	  h[i] = h[i] + h_seed;
-            	  }
+                  //Initialize random topography noise first time fastscape is called.
+                  if (current_timestep == 1)
+                    {
+                      double h_seed = (std::rand()%2000)/100;
+                      h[i] = h[i] + h_seed;
+                    }
                   temporary_variables[0][i] = h[i];
                 }
+
+              //Get current fastscape timestep.
+              fastscape_get_step_(&istep);
 
               //Write a file to store h & step in case of restart.
               if ((this->get_parameters().checkpoint_time_secs == 0) &&
                   (this->get_parameters().checkpoint_steps > 0) &&
                   (current_timestep % this->get_parameters().checkpoint_steps == 0))
-              {
-                std::ofstream out_h (restart_filename.c_str());
-                std::ofstream out_step (restart_step_filename.c_str());
+                {
+                  std::ofstream out_h (restart_filename.c_str());
+                  std::ofstream out_step (restart_step_filename.c_str());
 
-                out_step<<(istep+restart_step)<<std::endl;
+                  out_step<<(istep+restart_step)<<std::endl;
 
-                for (int i=0; i<=array_size; i++)
-                      out_h<<h[i]<<std::endl;
-              }
+                  for (int i=0; i<=array_size; i++)
+                    out_h<<h[i]<<std::endl;
+                }
 
 
-          	  //If opposite boundaries are both open, set as periodic and replace ghost nodes with
+              //If opposite boundaries are both open, set as periodic and replace ghost nodes with
               //the value on opposite side.
-              if(left == 0 && right == 0)
-              {
-          	  for(int j=0; j<numy; j++)
-          	  {
-          		 double index_left = numx*j+1;
-          		 double index_right = numx*(j+1);
-          		 double side = index_left;
-          	 	 int jj = 0;
-          	 	// int below = 0;
-          	 	// int above = 0;
-          	 	// int avg = 1;
-          	 	 //std::vector<std::vector<double>> temporary_variables(dim+1, std::vector<double>(4,std::numeric_limits<double>::epsilon()));
-          	 	//std::vector<double> p_above(4,0);
-          	 	//std::vector<double> p_below(4,0);
+              if (left == 0 && right == 0)
+                {
+                  for (int j=0; j<numy; j++)
+                    {
+                      double index_left = numx*j+1;
+                      double index_right = numx*(j+1);
+                      double side = index_left;
+                      int jj = 0;
 
-          	 	 /*
-          	 	  * This is a simple way to switch the sides so I don't have to rewrite the end result twice.
-          	 	  * Also, it makes it so if both sides are going against each other, we just ignore periodic boundaries.
-          	 	  */
-          	 	 if(vx[index_right-2] > 0 && vx[index_left] >= 0)
-          	 	 {
-          	 		 side = index_right;
-          	 	     jj = 2;
-          	 	 }
-          	 	 else if((vx[index_right-2] < 0 && vx[index_left] > 0) || (vx[index_right-2] > 0 && vx[index_left] < 0))
-          	 		 continue;
+                      //If they aren't going the same direction, don't set the ghost nodes.
+                      if (vx[index_right-2] > 0 && vx[index_left] >= 0)
+                        {
+                          side = index_right;
+                          jj = 2;
+                        }
+                      else if ((vx[index_right-2] < 0 && vx[index_left] > 0) || (vx[index_right-2] > 0 && vx[index_left] < 0))
+                        continue;
 
-          	 	 /*
-          	 	  * This checks whether we have surrounding nodes to average the value.
-          	 	  * If we are at a corner, then we only average 2 values instead of 3.
-          	 	  */
-          	 	/* if(side-jj+numx <= array_size && side-1+numx <= array_size)
-          	 	 {
-          	 		 avg = avg+1;
-                     above = 1;
-          	 	     p_above[0] = h[side-jj+numx];
-          	 	     p_above[1] = vz[side-jj+numx];
-          	       	p_above[2] = vx[side-jj+numx];
-          	        p_above[3] = vy[side-jj+numx];
-          	 	 }
+                      vz[index_right-1] =   vz[side-jj];
+                      vz[index_left-1] =    vz[side-jj];
 
-          	 	 if(side-jj-numx >= 0 && side-1-numx >= 0)
-          	 	 {
-          	 		 avg = avg+1;
-          	 		 below = 1;
-          	 	     p_below[0] = h[side-jj-numx];
-          	 	     p_below[1] = vz[side-jj-numx];
-          	 	     p_below[2] = vx[side-jj-numx];
-          	 	     p_below[3] = vy[side-jj-numx];
-          	 	 }*/
+                      vy[index_right-1] = vy[side-jj];
+                      vy[index_left-1] =  vy[side-jj];
 
-                   vz[index_right-1] =   vz[side-jj]; //(h[side-jj] - h[side-1])/a_dt; (vz[side-jj] + p_below[1] + p_above[1])/avg;
-                   vz[index_left-1] =    vz[side-jj];//(h[side-jj] - h[side-1])/a_dt;
+                      vx[index_right-1] = vx[side-jj];
+                      vx[index_left-1] =  vx[side-jj];
 
-                   vy[index_right-1] = vy[side-jj];
-                   vy[index_left-1] =  vy[side-jj];
-
-                   vx[index_right-1] = vx[side-jj];
-                   vx[index_left-1] =  vx[side-jj];
-
-                   h[index_right-1] = h[side-jj];     //index_bot+numx index_top-numx
-                   h[index_left-1] = h[side-jj];
-
-                   //std::cout<<index_right<<"  "<<avg<<"  "<<vx[side-jj]<<"  "<<p_above[2]<<"  "<<p_below[2]<<"  "<<vx[index_right-1]<<std::endl;
-
-          		 }
-          	  }
+                      h[index_right-1] = h[side-jj];
+                      h[index_left-1] = h[side-jj];
+                    }
+                }
 
 
-              if(top == 0 && bottom == 0)
-              {
-        	  for(int j=0; j<numx; j++)
-        	  {
-        		 double index_bot = j+1;
-        		 double index_top = numx*(numy-1)+j+1;
-          		 double side = index_bot;
-          		 int jj = numx;
+              if (top == 0 && bottom == 0)
+                {
+                  for (int j=0; j<numx; j++)
+                    {
+                      double index_bot = j+1;
+                      double index_top = numx*(numy-1)+j+1;
+                      double side = index_bot;
+                      int jj = numx;
 
-          	 	 if(vy[index_bot+numx-1] > 0 && vy[index_top-numx-1] >= 0)
-          	 	 {
-          	 		 side = index_top;
-          	 		 jj = -numx;
-          	 	 }
-          	 	 else if((vy[index_bot+numx-1] < 0 && vy[index_top-numx-1] > 0) || (vy[index_bot+numx-1] > 0 && vy[index_top-numx-1] < 0))
-          	 		 continue;
+                      if (vy[index_bot+numx-1] > 0 && vy[index_top-numx-1] >= 0)
+                        {
+                          side = index_top;
+                          jj = -numx;
+                        }
+                      else if ((vy[index_bot+numx-1] < 0 && vy[index_top-numx-1] > 0) || (vy[index_bot+numx-1] > 0 && vy[index_top-numx-1] < 0))
+                        continue;
 
-                   vz[index_bot-1] = vz[side+jj-1];   //(h[side+jj-1] - h[side-1])/a_dt;     //index_bot+numx index_top-numx
-                   vz[index_top-1] = vz[side+jj-1];   // (h[side+jj-1] - h[side-1])/a_dt;
+                      vz[index_bot-1] = vz[side+jj-1];
+                      vz[index_top-1] = vz[side+jj-1];
 
-                   vy[index_bot-1] = vy[side+jj-1];
-                   vy[index_top-1] =  vy[side+jj-1];
+                      vy[index_bot-1] = vy[side+jj-1];
+                      vy[index_top-1] =  vy[side+jj-1];
 
-                   vx[index_bot-1] = vx[side+jj-1];
-                   vx[index_top-1] =  vx[side+jj-1];
+                      vx[index_bot-1] = vx[side+jj-1];
+                      vx[index_top-1] =  vx[side+jj-1];
 
-                   h[index_bot-1] = h[side+jj-1];     //index_bot+numx index_top-numx
-                   h[index_top-1] = h[side+jj-1];
-        	  }
-              }
+                      h[index_bot-1] = h[side+jj-1];
+                      h[index_top-1] = h[side+jj-1];
+                    }
+                }
 
               //Find a fastscape timestep that is below our maximum timestep.
               double f_dt = a_dt/steps;
@@ -526,17 +490,17 @@ namespace aspect
               fastscape_set_h_(h.get());
 
               //Initialize first time step, and update steps.
-              //int astep = round(this->get_time()/year_in_seconds);
               int visualization_step = istep+restart_step;
               steps = istep+steps;
+              fastscape_named_vtk_(h.get(), &vexp, &visualization_step, c, &length);
 
               //I really need to figure out a better way to make visualization files output correctly.
-        	  this->get_pcout() <<"   Calling Fastscape... "<<(steps-istep)<<" timesteps of "<<f_dt<<" years."<<std::endl;
+              this->get_pcout() <<"   Calling Fastscape... "<<(steps-istep)<<" timesteps of "<<f_dt<<" years."<<std::endl;
               do
                 {
-            	  //Write fastscape visualization
-            	  visualization_step = istep+restart_step;
-                  fastscape_named_vtk_(h.get(), &vexp, &visualization_step, c, &length);
+                  //Write fastscape visualization
+                  //visualization_step = istep+restart_step;
+                  //fastscape_named_vtk_(h.get(), &vexp, &visualization_step, c, &length);
 
                   //execute step, this increases timestep counter
                   fastscape_execute_step_();
@@ -551,10 +515,10 @@ namespace aspect
 
               //If we've reached the end time, destroy fastscape.
               if (this->get_time()+a_dt >= end_time)
-            	 {
-            	  this->get_pcout()<<"   Destroying Fastscape..."<<std::endl;
+                {
+                  this->get_pcout()<<"   Destroying Fastscape..."<<std::endl;
                   fastscape_destroy_();
-            	 }
+                }
 
               //Find out our velocities from the change in height.
               for (int i=0; i<=array_size; i++)
@@ -582,9 +546,6 @@ namespace aspect
           data_table.TableBase<dim,double>::reinit(size_idx);
           TableIndices<dim> idx;
 
-          //Average the 2D slices together to get a 1D velocity array.
-          // double V3;
-
           //this variable gives us how many slices near the boundaries to ignore,
           //this helps with lower values due to fixed top and bottom boundaries.
           int edge = (nx+1)/2;
@@ -594,21 +555,21 @@ namespace aspect
 
               for (int i=1; i<(numx-1); i++)
                 {
-            	  //Multiply edge by bottom and top, so it only takes them off if they're fixed.
-            	  if(slice)
-            	  {
+                  //Multiply edge by bottom and top, so it only takes them off if they're fixed.
+                  if (slice)
+                    {
                       int index = i+numx*((ny-1)/2);
                       V2[i-1] = V[index];
-            	  }
-            	  else
-            	  {
-                  for (int ys=(edge); ys<(ny-edge); ys++)
-                    {
-                      int index = i+numx*ys;
-                      V2[i-1] += V[index];
                     }
-                    V2[i-1] = V2[i-1]/(ny-edge*2);
-            	  }
+                  else
+                    {
+                      for (int ys=(edge); ys<(ny-edge); ys++)
+                        {
+                          int index = i+numx*ys;
+                          V2[i-1] += V[index];
+                        }
+                      V2[i-1] = V2[i-1]/(ny-edge*2);
+                    }
                 }
 
               for (unsigned int i=0; i<data_table.size()[1]; ++i)
@@ -621,13 +582,13 @@ namespace aspect
 
                       //Convert from m/yr to m/s if needed
                       if (i == 1)
-                      {
+                        {
                           if (this->convert_output_to_years())
-                             data_table(idx) = V2[j]/year_in_seconds;
+                            data_table(idx) = V2[j]/year_in_seconds;
                           else
-                        	 data_table(idx) = V2[j];
+                            data_table(idx) = V2[j];
 
-                      }
+                        }
                       else
                         data_table(idx)= 0;
 
@@ -652,12 +613,12 @@ namespace aspect
                           idx[0] = j;
 
                           if (k==1)
-                          {
+                            {
                               if (this->convert_output_to_years())
-                                 data_table(idx) = V[(nx+1)+nx*i+j]/year_in_seconds;  //(nx+1)+nx*i+j  nx*i+j
+                                data_table(idx) = V[(nx+1)+nx*i+j]/year_in_seconds;  //(nx+1)+nx*i+j  nx*i+j
                               else
-                            	  data_table(idx) = V[(nx+1)+nx*i+j];
-                          }
+                                data_table(idx) = V[(nx+1)+nx*i+j];
+                            }
                           else
                             data_table(idx)= 0;
 
@@ -695,17 +656,17 @@ namespace aspect
     void FastScape<dim>::declare_parameters(ParameterHandler &prm)
     {
 
-        prm.declare_entry ("End time",
-                           /* boost::lexical_cast<std::string>(std::numeric_limits<double>::max() /
-                                                year_in_seconds) = */ "5.69e+300",
-                           Patterns::Double (),
-                           "The end time of the simulation. The default value is a number "
-                           "so that when converted from years to seconds it is approximately "
-                           "equal to the largest number representable in floating point "
-                           "arithmetic. For all practical purposes, this equals infinity. "
-                           "Units: Years if the "
-                           "'Use years in output instead of seconds' parameter is set; "
-                           "seconds otherwise.");
+      prm.declare_entry ("End time",
+                         /* boost::lexical_cast<std::string>(std::numeric_limits<double>::max() /
+                                              year_in_seconds) = */ "5.69e+300",
+                         Patterns::Double (),
+                         "The end time of the simulation. The default value is a number "
+                         "so that when converted from years to seconds it is approximately "
+                         "equal to the largest number representable in floating point "
+                         "arithmetic. For all practical purposes, this equals infinity. "
+                         "Units: Years if the "
+                         "'Use years in output instead of seconds' parameter is set; "
+                         "seconds otherwise.");
 
       prm.enter_subsection ("Mesh deformation");
       {
@@ -735,18 +696,18 @@ namespace aspect
 
           prm.enter_subsection ("Boundary conditions");
           {
-              prm.declare_entry ("Bottom", "1",
-            		             Patterns::Integer (0, 1),
-                                 "Bottom boundary condition, where 1 is fixed and 0 is reflective.");
-              prm.declare_entry ("Right", "1",
- 		                         Patterns::Integer (0, 1),
-                                 "Right boundary condition, where 1 is fixed and 0 is reflective.");
-              prm.declare_entry ("Top", "1",
- 		                         Patterns::Integer (0, 1),
-                                 "Top boundary condition, where 1 is fixed and 0 is reflective.");
-              prm.declare_entry ("Left", "1",
- 		                         Patterns::Integer (0, 1),
-                                 "Left boundary condition, where 1 is fixed and 0 is reflective.");
+            prm.declare_entry ("Bottom", "1",
+                               Patterns::Integer (0, 1),
+                               "Bottom boundary condition, where 1 is fixed and 0 is reflective.");
+            prm.declare_entry ("Right", "1",
+                               Patterns::Integer (0, 1),
+                               "Right boundary condition, where 1 is fixed and 0 is reflective.");
+            prm.declare_entry ("Top", "1",
+                               Patterns::Integer (0, 1),
+                               "Top boundary condition, where 1 is fixed and 0 is reflective.");
+            prm.declare_entry ("Left", "1",
+                               Patterns::Integer (0, 1),
+                               "Left boundary condition, where 1 is fixed and 0 is reflective.");
           }
           prm.leave_subsection();
 
@@ -809,9 +770,9 @@ namespace aspect
     template <int dim>
     void FastScape<dim>::parse_parameters(ParameterHandler &prm)
     {
-        end_time = prm.get_double ("End time");
-        if (prm.get_bool ("Use years in output instead of seconds") == true)
-          end_time *= year_in_seconds;
+      end_time = prm.get_double ("End time");
+      if (prm.get_bool ("Use years in output instead of seconds") == true)
+        end_time *= year_in_seconds;
       prm.enter_subsection ("Mesh deformation");
       {
         prm.enter_subsection("Fastscape");
@@ -825,12 +786,12 @@ namespace aspect
 
           prm.enter_subsection("Boundary conditions");
           {
-           bottom = prm.get_integer("Bottom");
-           right = prm.get_integer("Right");
-           top = prm.get_integer("Top");
-           left = prm.get_integer("Left");
+            bottom = prm.get_integer("Bottom");
+            right = prm.get_integer("Right");
+            top = prm.get_integer("Top");
+            left = prm.get_integer("Left");
 
-           bc = bottom*1000+right*100+top*10+left;
+            bc = bottom*1000+right*100+top*10+left;
           }
           prm.leave_subsection();
 

@@ -71,12 +71,12 @@ namespace aspect
 
       double domain_width = 100e3, kappa = 0.5;
       if (analytical_solution_example == 1)
-         kappa = 100;
+        kappa = 100;
       else if (analytical_solution_example == 2)
-      {
-         kappa = 100;
-         domain_width = 100e3;
-      }
+        {
+          kappa = 100;
+          domain_width = 100e3;
+        }
 
       // loop over all of the surface cells and save the elevation to stored_value
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
@@ -94,29 +94,29 @@ namespace aspect
                     const Point<dim> vertex = face_vals.quadrature_point(corner);
                     const double elevation = this->get_geometry_model().height_above_reference_surface(vertex);
                     if (write_to_file)
-                    {
-                      if (analytical_solution_example == 0)
-                      output_file << vertex << ' '<< elevation << std::endl;
-                      else if (analytical_solution_example == 1)
                       {
-                      // compute analytical solution and write out diff
-                      double sum = 0.;
-                      for (unsigned int n=1; n<=n_max; ++n)
-                         sum += std::cos(2.*n*numbers::PI*vertex[0]/domain_width)
-                               * std::exp(-kappa*2.*n*n*numbers::PI*numbers::PI*(time/year_in_seconds)/(domain_width*domain_width))
-                               /(4.*n*n-1.);
+                        if (analytical_solution_example == 0)
+                          output_file << vertex << ' '<< elevation << std::endl;
+                        else if (analytical_solution_example == 1)
+                          {
+                            // compute analytical solution and write out diff
+                            double sum = 0.;
+                            for (unsigned int n=1; n<=n_max; ++n)
+                              sum += std::cos(2.*n*numbers::PI*vertex[0]/domain_width)
+                                     * std::exp(-kappa*2.*n*n*numbers::PI*numbers::PI*(time/year_in_seconds)/(domain_width*domain_width))
+                                     /(4.*n*n-1.);
 
-                      const double topo = 100e3/numbers::PI - 200e3/numbers::PI*sum;
-                   
-                      output_file << vertex << ' '<< elevation << ' ' << topo << std::endl;
-                      }
-                      else if (analytical_solution_example == 2)
-                      {
-                       const double topo = 50e3 * std::sin(vertex[0]*numbers::PI/domain_width)
+                            const double topo = 100e3/numbers::PI - 200e3/numbers::PI*sum;
+
+                            output_file << vertex << ' '<< elevation << ' ' << topo << std::endl;
+                          }
+                        else if (analytical_solution_example == 2)
+                          {
+                            const double topo = 50e3 * std::sin(vertex[0]*numbers::PI/domain_width)
                                                 * std::exp(-kappa*numbers::PI*numbers::PI*(time/year_in_seconds)/(domain_width*domain_width));
-                       output_file << vertex << ' '<< elevation << ' ' << topo << std::endl;
+                            output_file << vertex << ' '<< elevation << ' ' << topo << std::endl;
+                          }
                       }
-                    }
                     if ( elevation > local_max_height)
                       local_max_height = elevation;
                     if ( elevation < local_min_height)
