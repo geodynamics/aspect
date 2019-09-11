@@ -700,7 +700,17 @@ namespace aspect
               if (melt_molar_volume > 0)
                 melt_out->fluid_densities[q] = melt_molar_mass / melt_molar_volume;
               else
-                melt_out->fluid_densities[q] = out.densities[q];
+              {
+            	// make sure we have a useful melt density even if there is no melt to avoid density jumps
+            	double mass = 0, volume = 0;
+            	for (unsigned int i=0; i<n_endmembers; ++i)
+                  if (endmember_states[i] == EndmemberState::melt)
+                    {
+                      mass += endmember_mole_fractions_per_phase[i] * molar_masses[i];
+                      volume += endmember_mole_fractions_per_phase[i] * endmembers.volumes[i];
+                    }
+                melt_out->fluid_densities[q] = mass/volume;
+              }
 
               // TODO: this does not take into account the volume change due to thermal expansion of melt
               melt_out->fluid_density_gradients[q] = melt_out->fluid_densities[q] * melt_out->fluid_densities[q]
