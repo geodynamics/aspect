@@ -932,7 +932,9 @@ namespace aspect
       // solves are going to be performed.
       if (!(parameters.nonlinear_solver == NonlinearSolver::Kind::no_Advection_iterated_Stokes
             ||
-            parameters.nonlinear_solver == NonlinearSolver::Kind::no_Advection_no_Stokes))
+            parameters.nonlinear_solver == NonlinearSolver::Kind::no_Advection_no_Stokes
+            ||
+            parameters.nonlinear_solver == NonlinearSolver::Kind::first_timestep_only_single_Stokes))
         coupling[x.temperature][x.temperature] = DoFTools::always;
 
       // For equal-order interpolation, we need a stabilization term
