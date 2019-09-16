@@ -388,11 +388,9 @@ namespace aspect
     ViscoPlastic<dim>::
     get_volumetric_composition_mask() const
     {
-      // Return composition mask for strain fields
+      // Store which components to exclude during the volume fraction computation.
       ComponentMask strain_mask = strain_rheology.get_strain_composition_mask();
 
-      // For now return the composition mask for strain fields, as the fields associated with
-      // strain are the only ones that should have masks.
       return strain_mask;
     }
 

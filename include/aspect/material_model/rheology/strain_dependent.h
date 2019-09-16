@@ -33,10 +33,8 @@ namespace aspect
   {
     using namespace dealii;
 
-
     namespace Rheology
     {
-
       /**
        * Enumeration for selecting which type of weakening mechanism to use.
        * For none, no strain weakening occurs.
@@ -125,9 +123,16 @@ namespace aspect
                                       const double min_strain_rate,
                                       const bool plastic_yielding,
                                       MaterialModel::MaterialModelOutputs<dim> &out) const;
-
+        
+          /**
+           * A function that returns a ComponentMask, which indicates that components
+           * associated with strain should be excluded during the volume fraction computation.
+           */
           ComponentMask get_strain_composition_mask() const;
 
+          /**
+           * A function that returns the selected type of strain weakening mechanism. 
+           */
           WeakeningMechanism
           get_weakening_mechanism () const;
 
@@ -167,6 +172,11 @@ namespace aspect
            */
           bool use_viscous_strain_weakening;
 
+          /**
+           * Where to track the full finite strain tensor and use an 
+           * an invariant measure of its accumulated values to weaken
+           * the cohesion and internal angle of friction.
+           */
           bool use_finite_strain_tensor;
 
           /**
