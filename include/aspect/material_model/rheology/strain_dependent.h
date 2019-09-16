@@ -73,28 +73,23 @@ namespace aspect
           parse_parameters (ParameterHandler &prm);
 
           /**
-           * A function that computes how the rheologic parameters change
+           * A function that computes by how much the rheologic parameters change
            * if strain weakening is applied. Given a compositional field with
            * the index j and a vector of all compositional fields, it returns
-           * the weakened cohesion, friction angle and a reduction factor for
-           * the prefactor of the viscous flow law(s) used in the computation
-           * for that composition.
+           * reduction factors for the cohesion, friction angle and the prefactor
+           * of the viscous flow law(s) used in the computation for that composition.
            */
           std::array<double, 3>
-          compute_weakened_yield_parameters(const unsigned int j,
-                                            const std::vector<double> cohesions,
-                                            const std::vector<double> angles_internal_friction,
-                                            const std::vector<double> &composition) const;
+          compute_strain_weakening_factors(const unsigned int j,
+                                           const std::vector<double> &composition) const;
 
           /**
-           * A function that computes the strain weakened values
-           * of cohesion and internal friction angle for a given
-           * compositional field.
+           * A function that computes by how much the cohesion and internal friction
+           * angle for a given compositional field are weakened under the influence
+           * of a given strain.
            */
           std::pair<double, double>
           calculate_plastic_weakening (const double strain_ii,
-                                       const std::vector<double> cohesions,
-                                       const std::vector<double> angles_internal_friction,
                                        const unsigned int j) const;
 
           /**
@@ -123,7 +118,7 @@ namespace aspect
                                       const double min_strain_rate,
                                       const bool plastic_yielding,
                                       MaterialModel::MaterialModelOutputs<dim> &out) const;
-        
+
           /**
            * A function that returns a ComponentMask, which indicates that components
            * associated with strain should be excluded during the volume fraction computation.
@@ -131,7 +126,7 @@ namespace aspect
           ComponentMask get_strain_composition_mask() const;
 
           /**
-           * A function that returns the selected type of strain weakening mechanism. 
+           * A function that returns the selected type of strain weakening mechanism.
            */
           WeakeningMechanism
           get_weakening_mechanism () const;
@@ -173,7 +168,7 @@ namespace aspect
           bool use_viscous_strain_weakening;
 
           /**
-           * Where to track the full finite strain tensor and use an 
+           * Where to track the full finite strain tensor and use an
            * an invariant measure of its accumulated values to weaken
            * the cohesion and internal angle of friction.
            */

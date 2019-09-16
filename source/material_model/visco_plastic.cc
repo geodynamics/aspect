@@ -193,14 +193,15 @@ namespace aspect
 
           // Second step: strain weakening
 
-          // Calculate the strain weakened cohesion, friction and viscosity factors
-          const std::array<double, 3> weakened_values = strain_rheology.compute_weakened_yield_parameters(j, cohesions, angles_internal_friction, composition);
-          // Reduce the viscosity by the viscous strain weakening factor,
-          // which is 1 if no viscous strain-softening is specified.
-          viscosity_pre_yield *= weakened_values[2];
+          // Calculate the strain weakening factors for cohesion, friction and viscosity. If no brittle and/or viscous strain weakening is applied, the factors are 1.
+          const std::array<double, 3> weakening_factors = strain_rheology.compute_strain_weakening_factors(j, composition);
+
+          const double current_cohesion = cohesions[j] * weakening_factors[0];
+          const double current_friction = angles_internal_friction[j] * weakening_factors[1];
+          viscosity_pre_yield *= weakening_factors[2];
 
           // Weakened friction and cohesion values
-          std::pair<double, double> yield_parameters (weakened_values[0], weakened_values[1]);
+          std::pair<double, double> yield_parameters (current_cohesion, current_friction);
 
           // Third step: plastic yielding
 
@@ -266,10 +267,10 @@ namespace aspect
           // set to weakened values, or unweakened values when strain weakening is not used
           for (unsigned int j=0; j < volume_fractions.size(); ++j)
             {
-              // Calculate the strain weakened cohesion, friction and viscosity factors
-              const std::array<double, 3> weakened_values = strain_rheology.compute_weakened_yield_parameters(j, cohesions, angles_internal_friction, in.composition[i]);
-              C   += volume_fractions[j] * weakened_values[0];
-              phi += volume_fractions[j] * weakened_values[1];
+              // Calculate the strain weakening factors and weakened values
+              const std::array<double, 3> weakening_factors = strain_rheology.compute_strain_weakening_factors(j, in.composition[i]);
+              C   += volume_fractions[j] * (cohesions[j] * weakening_factors[0]);
+              phi += volume_fractions[j] * (angles_internal_friction[j] * weakening_factors[1]);
             }
 
           plastic_out->cohesions[i] = C;

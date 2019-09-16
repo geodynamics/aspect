@@ -378,13 +378,11 @@ namespace aspect
       template <int dim>
       std::array<double, 3>
       StrainDependent<dim>::
-      compute_weakened_yield_parameters(const unsigned int j,
-                                        const std::vector<double> cohesions,
-                                        const std::vector<double> angles_internal_friction,
-                                        const std::vector<double> &composition) const
+      compute_strain_weakening_factors(const unsigned int j,
+                                       const std::vector<double> &composition) const
       {
         double viscous_weakening = 1.0;
-        std::pair<double, double> yield_parameters (cohesions[j], angles_internal_friction[j]);
+        std::pair<double, double> brittle_weakening (1.0, 1.0);
 
         switch (weakening_mechanism)
           {
@@ -401,33 +399,33 @@ namespace aspect
               const SymmetricTensor<2,dim> L = symmetrize( strain * transpose(strain) );
 
               const double strain_ii = std::fabs(second_invariant(L));
-              yield_parameters = calculate_plastic_weakening(strain_ii, cohesions,angles_internal_friction, j);
+              brittle_weakening = calculate_plastic_weakening(strain_ii, j);
               viscous_weakening = calculate_viscous_weakening(strain_ii, j);
               break;
             }
             case total_strain:
             {
               const unsigned int total_strain_index = this->introspection().compositional_index_for_name("total_strain");
-              yield_parameters = calculate_plastic_weakening(composition[total_strain_index],cohesions,angles_internal_friction, j);
+              brittle_weakening = calculate_plastic_weakening(composition[total_strain_index], j);
               viscous_weakening = calculate_viscous_weakening(composition[total_strain_index], j);
               break;
             }
             case plastic_weakening_with_total_strain_only:
             {
               const unsigned int total_strain_index = this->introspection().compositional_index_for_name("total_strain");
-              yield_parameters = calculate_plastic_weakening(composition[total_strain_index], cohesions,angles_internal_friction, j);
+              brittle_weakening = calculate_plastic_weakening(composition[total_strain_index], j);
               break;
             }
             case plastic_weakening_with_plastic_strain_only:
             {
               const unsigned int plastic_strain_index = this->introspection().compositional_index_for_name("plastic_strain");
-              yield_parameters = calculate_plastic_weakening(composition[plastic_strain_index], cohesions,angles_internal_friction, j);
+              brittle_weakening = calculate_plastic_weakening(composition[plastic_strain_index], j);
               break;
             }
             case plastic_weakening_with_plastic_strain_and_viscous_weakening_with_viscous_strain:
             {
               const unsigned int plastic_strain_index = this->introspection().compositional_index_for_name("plastic_strain");
-              yield_parameters = calculate_plastic_weakening(composition[plastic_strain_index], cohesions,angles_internal_friction, j);
+              brittle_weakening = calculate_plastic_weakening(composition[plastic_strain_index], j);
               const unsigned int viscous_strain_index = this->introspection().compositional_index_for_name("viscous_strain");
               viscous_weakening = calculate_viscous_weakening(composition[viscous_strain_index], j);
               break;
@@ -445,9 +443,9 @@ namespace aspect
             }
           }
 
-        std::array<double, 3> weakened_values = {yield_parameters.first,yield_parameters.second,viscous_weakening};
+        std::array<double, 3> weakening_factors = {brittle_weakening.first,brittle_weakening.second,viscous_weakening};
 
-        return weakened_values;
+        return weakening_factors;
 
       }
 
@@ -456,8 +454,6 @@ namespace aspect
       std::pair<double, double>
       StrainDependent<dim>::
       calculate_plastic_weakening(const double strain_ii,
-                                  const std::vector<double> cohesions,
-                                  const std::vector<double> angles_internal_friction,
                                   const unsigned int j) const
       {
         // Constrain the second strain invariant of the previous timestep by the strain interval
@@ -466,10 +462,11 @@ namespace aspect
         // Linear strain weakening of cohesion and internal friction angle between specified strain values
         const double strain_fraction = (cut_off_strain_ii - start_plastic_strain_weakening_intervals[j]) /
                                        (start_plastic_strain_weakening_intervals[j] - end_plastic_strain_weakening_intervals[j]);
-        const double current_coh = cohesions[j] + (cohesions[j] - cohesions[j] * cohesion_strain_weakening_factors[j]) * strain_fraction;
-        const double current_phi = angles_internal_friction[j] + (angles_internal_friction[j] - angles_internal_friction[j] * friction_strain_weakening_factors[j]) * strain_fraction;
 
-        return std::make_pair (current_coh, current_phi);
+        const double weakening_cohesion = 1. + (1. - cohesion_strain_weakening_factors[j]) * strain_fraction;
+        const double weakening_friction = 1. + (1. - friction_strain_weakening_factors[j]) * strain_fraction;
+
+        return std::make_pair (weakening_cohesion, weakening_friction);
       }
 
 
