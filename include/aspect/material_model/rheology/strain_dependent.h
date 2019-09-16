@@ -168,7 +168,7 @@ namespace aspect
           bool use_viscous_strain_weakening;
 
           /**
-           * Where to track the full finite strain tensor and use an
+           * Whether to track the full finite strain tensor and use an
            * an invariant measure of its accumulated values to weaken
            * the cohesion and internal angle of friction.
            */
