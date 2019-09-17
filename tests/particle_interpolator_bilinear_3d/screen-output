@@ -1,0 +1,110 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 2.2.0-pre (bilinear_in_3d, 687f076a2)
+--     . using deal.II 9.1.1
+--     .       with 32 bit indices and vectorization level 1 (128 bits)
+--     . using Trilinos 12.10.1
+--     . using p4est 2.0.0
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+-- For information on how to cite ASPECT, see:
+--   https://aspect.geodynamics.org/citing.html?ver=2.2.0-pre&dg=1&particles=1&sha=687f076a2&src=code
+-----------------------------------------------------------------------------
+Number of active cells: 512 (on 4 levels)
+Number of degrees of freedom: 48,029 (14,739+729+4,913+13,824+13,824)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 43+0 iterations.
+
+   Postprocessing:
+     Number of advected particles: 4096
+     RMS, max velocity:            1.02 m/s, 2.51 m/s
+     Compositions min/max/mass:    -1.25/2.25/0.3984 // -0.5/1.5/0.375
+     Temperature min/avg/max:      0 K, 0.5 K, 1 K
+
+*** Timestep 1:  t=0.0248316 seconds
+   Solving temperature system... 24 iterations.
+   Solving Stokes system... 12+0 iterations.
+
+   Postprocessing:
+     Number of advected particles: 4096
+     RMS, max velocity:            1.02 m/s, 2.51 m/s
+     Compositions min/max/mass:    -1.25/2.25/0.3984 // -0.5/1.5/0.375
+     Temperature min/avg/max:      0 K, 0.4996 K, 1 K
+
+*** Timestep 2:  t=0.0496632 seconds
+   Solving temperature system... 15 iterations.
+   Solving Stokes system... 34+0 iterations.
+
+   Postprocessing:
+     Number of advected particles: 4096
+     RMS, max velocity:            1.02 m/s, 2.52 m/s
+     Compositions min/max/mass:    -2.34/3.277/0.3975 // -0.9231/1.692/0.3734
+     Temperature min/avg/max:      0 K, 0.4993 K, 1 K
+
+*** Timestep 3:  t=0.0744559 seconds
+   Solving temperature system... 15 iterations.
+   Solving Stokes system... 34+0 iterations.
+
+   Postprocessing:
+     Number of advected particles: 4096
+     RMS, max velocity:            1 m/s, 2.51 m/s
+     Compositions min/max/mass:    -2.507/3.005/0.3963 // -197.7/238.1/0.3789
+     Temperature min/avg/max:      0 K, 0.4991 K, 1 K
+
+*** Timestep 4:  t=0.0993854 seconds
+   Solving temperature system... 15 iterations.
+   Solving Stokes system... 37+0 iterations.
+
+   Postprocessing:
+     Number of advected particles: 4096
+     RMS, max velocity:            1.02 m/s, 2.97 m/s
+     Compositions min/max/mass:    -67.89/67.12/0.3669 // -705.6/600.3/0.337
+     Temperature min/avg/max:      0 K, 0.4989 K, 1 K
+
+*** Timestep 5:  t=0.1 seconds
+   Solving temperature system... 11 iterations.
+   Solving Stokes system... 38+0 iterations.
+
+   Postprocessing:
+     Number of advected particles: 4096
+     RMS, max velocity:            1.21 m/s, 7.07 m/s
+     Compositions min/max/mass:    -167.3/159/0.4221 // -908.1/896.5/0.8378
+     Temperature min/avg/max:      0 K, 0.4989 K, 1 K
+
+Termination requested by criterion: end time
+
+
++----------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start     |       139s |            |
+|                                              |            |            |
+| Section                          | no. calls |  wall time | % of total |
++----------------------------------+-----------+------------+------------+
+| Assemble Stokes system           |         6 |      32.6s |        23% |
+| Assemble temperature system      |         6 |      45.5s |        33% |
+| Build Stokes preconditioner      |         1 |       9.1s |       6.5% |
+| Build temperature preconditioner |         6 |     0.278s |       0.2% |
+| Initialization                   |         1 |      0.17s |      0.12% |
+| Particles: Advect                |        12 |      2.14s |       1.5% |
+| Particles: Generate              |         1 |     0.058s |         0% |
+| Particles: Initialization        |         1 |  0.000227s |         0% |
+| Particles: Initialize properties |         1 |    0.0275s |         0% |
+| Particles: Interpolate           |        12 |      1.67s |       1.2% |
+| Particles: Sort                  |        12 |      1.85s |       1.3% |
+| Postprocessing                   |         6 |      11.7s |       8.4% |
+| Setup dof systems                |         1 |      1.73s |       1.2% |
+| Setup initial conditions         |         1 |      3.94s |       2.8% |
+| Setup matrices                   |         1 |      12.8s |       9.2% |
+| Solve Stokes system              |         6 |      3.86s |       2.8% |
+| Solve temperature system         |         6 |     0.149s |      0.11% |
++----------------------------------+-----------+------------+------------+
+
+-----------------------------------------------------------------------------
+-- For information on how to cite ASPECT, see:
+--   https://aspect.geodynamics.org/citing.html?ver=2.2.0-pre&dg=1&particles=1&sha=687f076a2&src=code
+-----------------------------------------------------------------------------
