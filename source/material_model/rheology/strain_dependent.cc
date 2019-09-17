@@ -90,46 +90,6 @@ namespace aspect
                            "but to guarantee that one uses either the old parameter names or the new ones, "
                            "never both.");
 
-        prm.declare_entry ("Use strain weakening", "default",
-                           Patterns::Selection("true|false|default"),
-                           "Apply strain weakening to viscosity, cohesion and internal angle "
-                           "of friction based on accumulated finite strain.  Units: None. "
-                           "By default, this parameter is set to false. The default option is there "
-                           "to make sure that the parameter is not used at the same time as the "
-                           "``Strain weakening mechanism'' parameter, which has the same functionality. "
-                           "This parameter is deprecated; please use ``Strain weakening mechanism'' "
-                           "instead!");
-
-        prm.declare_entry ("Use plastic strain weakening", "default",
-                           Patterns::Selection("true|false|default"),
-                           "Apply strain weakening to cohesion and internal angle "
-                           "of friction based on accumulated finite plastic strain only. Units: None. "
-                           "By default, this parameter is set to false. The default option is there "
-                           "to make sure that the parameter is not used at the same time as the "
-                           "``Strain weakening mechanism'' parameter, which has the same functionality. "
-                           "This parameter is deprecated; please use ``Strain weakening mechanism'' "
-                           "instead!");
-
-        prm.declare_entry ("Use viscous strain weakening", "default",
-                           Patterns::Selection("true|false|default"),
-                           "Apply strain weakening to diffusion and dislocation viscosity prefactors "
-                           "based on accumulated finite viscous strain only. Units: None. "
-                           "By default, this parameter is set to false. The default option is there "
-                           "to make sure that the parameter is not used at the same time as the "
-                           "``Strain weakening mechanism'' parameter, which has the same functionality. "
-                           "This parameter is deprecated; please use ``Strain weakening mechanism'' "
-                           "instead!");
-
-        prm.declare_entry ("Use finite strain tensor", "default",
-                           Patterns::Selection("true|false|default"),
-                           "Track and use the full finite strain tensor for strain weakening. "
-                           "Units: None. "
-                           "By default, this parameter is set to false. The default option is there "
-                           "to make sure that the parameter is not used at the same time as the "
-                           "``Strain weakening mechanism'' parameter, which has the same functionality. "
-                           "This parameter is deprecated; please use ``Strain weakening mechanism'' "
-                           "instead!");
-
         prm.declare_entry ("Start plasticity strain weakening intervals", "0.",
                            Patterns::List(Patterns::Double(0)),
                            "List of strain weakening interval initial strains "
@@ -214,69 +174,6 @@ namespace aspect
         else
           AssertThrow(false, ExcMessage("Not a valid Strain weakening mechanism!"));
 
-        if (prm.get ("Strain weakening mechanism") != "default")
-          {
-            AssertThrow(prm.get("Use strain weakening") == "default",
-                        ExcMessage("You can not specify both a ``Strain weakening mechanism'' and the "
-                                   "``Use strain weakening'' parameter, as they cover the same functionality. "
-                                   "Please only use the parameter ``Strain weakening mechanism'', "
-                                   "``Use strain weakening'' is deprecated."));
-            AssertThrow(prm.get("Use plastic strain weakening") == "default",
-                        ExcMessage("You can not specify both a ``Strain weakening mechanism'' and the "
-                                   "``Use plastic strain weakening'' parameter, as they cover the same functionality. "
-                                   "Please only use the parameter ``Strain weakening mechanism'', "
-                                   "``Use plastic strain weakening'' is deprecated."));
-            AssertThrow(prm.get("Use viscous strain weakening") == "default",
-                        ExcMessage("You can not specify both a ``Strain weakening mechanism'' and the "
-                                   "``Use viscous strain weakening'' parameter, as they cover the same functionality. "
-                                   "Please only use the parameter ``Strain weakening mechanism'', "
-                                   "``Use viscous strain weakening'' is deprecated."));
-            AssertThrow(prm.get("Use finite strain tensor") == "default",
-                        ExcMessage("You can not specify both a ``Strain weakening mechanism'' and the "
-                                   "``Use finite strain tensor'' parameter, as they cover the same functionality. "
-                                   "Please only use the parameter ``Strain weakening mechanism'', "
-                                   "``Use finite strain tensor'' is deprecated."));
-          }
-        else
-          {
-            // The original parameters can still be used
-            const bool use_strain_weakening         = (prm.get("Use strain weakening") == "true");
-            const bool use_plastic_strain_weakening = (prm.get("Use plastic strain weakening") == "true");
-            const bool use_viscous_strain_weakening = (prm.get("Use viscous strain weakening") == "true");
-            const bool use_finite_strain_tensor     = (prm.get("Use finite strain tensor") == "true");
-
-            if (use_plastic_strain_weakening)
-              AssertThrow(use_strain_weakening,
-                          ExcMessage("If plastic strain weakening is to be used, strain weakening should also be set to true. "));
-
-            if (use_viscous_strain_weakening)
-              AssertThrow(use_strain_weakening,
-                          ExcMessage("If viscous strain weakening is to be used, strain weakening should also be set to true. "));
-
-            if (use_finite_strain_tensor)
-              {
-                AssertThrow(use_strain_weakening,
-                            ExcMessage("If strain weakening using the full tensor is to be used, strain weakening should also be set to true. "));
-                AssertThrow(use_plastic_strain_weakening == false && use_viscous_strain_weakening == false,
-                            ExcMessage("If strain weakening using the full tensor is to be used, the total strain will be used for weakening. "));
-              }
-
-            if (!use_strain_weakening)
-              weakening_mechanism = none;
-            else if (use_finite_strain_tensor)
-              weakening_mechanism = finite_strain_tensor;
-            else if (use_plastic_strain_weakening && !use_viscous_strain_weakening)
-              weakening_mechanism = plastic_weakening_with_plastic_strain_only;
-            else if (!use_plastic_strain_weakening && use_viscous_strain_weakening)
-              weakening_mechanism = viscous_weakening_with_viscous_strain_only;
-            else if (use_plastic_strain_weakening && use_viscous_strain_weakening)
-              weakening_mechanism = plastic_weakening_with_plastic_strain_and_viscous_weakening_with_viscous_strain;
-            else if (!use_plastic_strain_weakening && !use_viscous_strain_weakening)
-              weakening_mechanism = total_strain;
-            else
-              AssertThrow(false, ExcInternalError());
-          }
-
         if (weakening_mechanism == plastic_weakening_with_plastic_strain_only
             || weakening_mechanism == plastic_weakening_with_plastic_strain_and_viscous_weakening_with_viscous_strain)
           {
@@ -329,16 +226,20 @@ namespace aspect
         // nonlinear solver scheme does a single advection iteration. More than one nonlinear advection
         // iteration will result in the incorrect value of strain being used in the material model, as
         // the compositional fields representing strain are updated through the reaction terms.
-        if (use_strain_weakening)
+        if (weakening_mechanism != none)
           {
             AssertThrow((this->get_parameters().nonlinear_solver ==
                          Parameters<dim>::NonlinearSolver::single_Advection_single_Stokes
                          ||
                          this->get_parameters().nonlinear_solver ==
-                         Parameters<dim>::NonlinearSolver::single_Advection_iterated_Stokes),
+                         Parameters<dim>::NonlinearSolver::single_Advection_iterated_Stokes
+                         ||
+                         this->get_parameters().nonlinear_solver ==
+                         Parameters<dim>::NonlinearSolver::single_Advection_iterated_Newton_Stokes),
                         ExcMessage("The material model will only work with the nonlinear "
-                                   "solver schemes 'single Advection, single Stokes' and "
-                                   "'single Advection, iterated Stokes' when strain "
+                                   "solver schemes 'single Advection, single Stokes', "
+                                   "'single Advection, iterated Stokes', and "
+                                   "'single Advection, iterated_Newton_Stokes' when strain "
                                    "weakening is enabled."));
           }
 
