@@ -153,16 +153,18 @@ namespace aspect
           // Note: values of A, d, m, E, V and n are distinct for diffusion & dislocation creep
 
           // Diffusion creep: viscosity is grain size dependent (m!=0) and strain-rate independent (n=1)
-          double viscosity_diffusion = 0.5 / prefactors_diffusion[j] *
-                                       std::exp((activation_energies_diffusion[j] + pressure*activation_volumes_diffusion[j])/
-                                                (constants::gas_constant*temperature_for_viscosity)) *
-                                       std::pow(grain_size, grain_size_exponents_diffusion[j]);
+          double viscosity_diffusion = diffusion_creep.compute_viscosity(pressure, temperature_for_viscosity, j);
+          //double viscosity_diffusion = 0.5 / prefactors_diffusion[j] *
+          //                             std::exp((activation_energies_diffusion[j] + pressure*activation_volumes_diffusion[j])/
+          //                                      (constants::gas_constant*temperature_for_viscosity)) *
+          //                             std::pow(grain_size, grain_size_exponents_diffusion[j]);
 
           // For dislocation creep, viscosity is grain size independent (m=0) and strain-rate dependent (n>1)
-          double viscosity_dislocation = 0.5 * std::pow(prefactors_dislocation[j],-1/stress_exponents_dislocation[j]) *
-                                         std::exp((activation_energies_dislocation[j] + pressure*activation_volumes_dislocation[j])/
-                                                  (constants::gas_constant*temperature_for_viscosity*stress_exponents_dislocation[j])) *
-                                         std::pow(edot_ii,((1. - stress_exponents_dislocation[j])/stress_exponents_dislocation[j]));
+          double viscosity_dislocation = dislocation_creep.compute_viscosity(edot_ii, pressure, temperature_for_viscosity, j);
+          //double viscosity_dislocation = 0.5 * std::pow(prefactors_dislocation[j],-1/stress_exponents_dislocation[j]) *
+          //                               std::exp((activation_energies_dislocation[j] + pressure*activation_volumes_dislocation[j])/
+          //                                       (constants::gas_constant*temperature_for_viscosity*stress_exponents_dislocation[j])) *
+          //                               std::pow(edot_ii,((1. - stress_exponents_dislocation[j])/stress_exponents_dislocation[j]));
 
           // Select what form of viscosity to use (diffusion, dislocation or composite)
           double viscosity_pre_yield = 0.0;
@@ -563,7 +565,6 @@ namespace aspect
                              "If only one value is given, then all use the same value.  Units: $m^2/s$");
 
           // Rheological parameters
-          prm.declare_entry ("Grain size", "1e-3", Patterns::Double(0), "Units: $m$");
           prm.declare_entry ("Viscosity averaging scheme", "harmonic",
                              Patterns::Selection("arithmetic|harmonic|geometric|maximum composition"),
                              "When more than one compositional field is present at a point "
@@ -581,55 +582,10 @@ namespace aspect
                              "and stress limiter options.");
 
           // Diffusion creep parameters
-          prm.declare_entry ("Prefactors for diffusion creep", "1.5e-15",
-                             Patterns::List(Patterns::Double(0)),
-                             "List of viscosity prefactors, $A$, for background material and compositional fields, "
-                             "for a total of N+1 values, where N is the number of compositional fields. "
-                             "If only one value is given, then all use the same value. "
-                             "Units: $Pa^{-1} m^{m_{\\text{diffusion}}} s^{-1}$");
-          prm.declare_entry ("Stress exponents for diffusion creep", "1",
-                             Patterns::List(Patterns::Double(0)),
-                             "List of stress exponents, $n_{\\text{diffusion}}$, for background material and compositional fields, "
-                             "for a total of N+1 values, where N is the number of compositional fields. "
-                             "If only one value is given, then all use the same value.  Units: None");
-          prm.declare_entry ("Grain size exponents for diffusion creep", "3",
-                             Patterns::List(Patterns::Double(0)),
-                             "List of grain size exponents, $m_{\\text{diffusion}}$, for background material and compositional fields, "
-                             "for a total of N+1 values, where N is the number of compositional fields. "
-                             "If only one value is given, then all use the same value. Units: None");
-          prm.declare_entry ("Activation energies for diffusion creep", "375e3",
-                             Patterns::List(Patterns::Double(0)),
-                             "List of activation energies, $E_a$, for background material and compositional fields, "
-                             "for a total of N+1 values, where N is the number of compositional fields. "
-                             "If only one value is given, then all use the same value.  Units: $J / mol$");
-          prm.declare_entry ("Activation volumes for diffusion creep", "6e-6",
-                             Patterns::List(Patterns::Double(0)),
-                             "List of activation volumes, $V_a$, for background material and compositional fields, "
-                             "for a total of N+1 values, where N is the number of compositional fields. "
-                             "If only one value is given, then all use the same value.  Units: $m^3 / mol$");
+          Rheology::DiffusionCreep<dim>::declare_parameters(prm);
 
           // Dislocation creep parameters
-          prm.declare_entry ("Prefactors for dislocation creep", "1.1e-16",
-                             Patterns::List(Patterns::Double(0)),
-                             "List of viscosity prefactors, $A$, for background material and compositional fields, "
-                             "for a total of N+1 values, where N is the number of compositional fields. "
-                             "If only one value is given, then all use the same value. "
-                             "Units: $Pa^{-n_{\\text{dislocation}}} s^{-1}$");
-          prm.declare_entry ("Stress exponents for dislocation creep", "3.5",
-                             Patterns::List(Patterns::Double(0)),
-                             "List of stress exponents, $n_{\\text{dislocation}}$, for background material and compositional fields, "
-                             "for a total of N+1 values, where N is the number of compositional fields. "
-                             "If only one value is given, then all use the same value.  Units: None");
-          prm.declare_entry ("Activation energies for dislocation creep", "530e3",
-                             Patterns::List(Patterns::Double(0)),
-                             "List of activation energies, $E_a$, for background material and compositional fields, "
-                             "for a total of N+1 values, where N is the number of compositional fields. "
-                             "If only one value is given, then all use the same value.  Units: $J / mol$");
-          prm.declare_entry ("Activation volumes for dislocation creep", "1.4e-5",
-                             Patterns::List(Patterns::Double(0)),
-                             "List of activation volumes, $V_a$, for background material and compositional fields, "
-                             "for a total of N+1 values, where N is the number of compositional fields. "
-                             "If only one value is given, then all use the same value.  Units: $m^3 / mol$");
+          Rheology::DislocationCreep<dim>::declare_parameters(prm);
 
 
           // Plasticity parameters
@@ -709,7 +665,6 @@ namespace aspect
                                                                           n_fields,
                                                                           "Thermal diffusivities");
 
-          grain_size = prm.get_double("Grain size");
 
           viscosity_averaging = MaterialUtilities::parse_compositional_averaging_operation ("Viscosity averaging scheme",
                                 prm);
@@ -733,32 +688,14 @@ namespace aspect
             AssertThrow(false, ExcMessage("Not a valid yield mechanism."));
 
           // Rheological parameters
-          // Diffusion creep parameters (Stress exponents often but not always 1)
-          prefactors_diffusion = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Prefactors for diffusion creep"))),
-                                                                         n_fields,
-                                                                         "Prefactors for diffusion creep");
-          grain_size_exponents_diffusion = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Grain size exponents for diffusion creep"))),
-                                                                                   n_fields,
-                                                                                   "Grain size exponents for diffusion creep");
-          activation_energies_diffusion = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Activation energies for diffusion creep"))),
-                                                                                  n_fields,
-                                                                                  "Activation energies for diffusion creep");
-          activation_volumes_diffusion = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Activation volumes for diffusion creep"))),
-                                                                                 n_fields,
-                                                                                 "Activation volumes for diffusion creep");
-          // Dislocation creep parameters (Note the lack of grain size exponents)
-          prefactors_dislocation = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Prefactors for dislocation creep"))),
-                                                                           n_fields,
-                                                                           "Prefactors for dislocation creep");
-          stress_exponents_dislocation = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Stress exponents for dislocation creep"))),
-                                                                                 n_fields,
-                                                                                 "Stress exponents for dislocation creep");
-          activation_energies_dislocation = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Activation energies for dislocation creep"))),
-                                                                                    n_fields,
-                                                                                    "Activation energies for dislocation creep");
-          activation_volumes_dislocation = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Activation volumes for dislocation creep"))),
-                                                                                   n_fields,
-                                                                                   "Activation volumes for dislocation creep");
+          // Diffusion creep parameters
+          diffusion_creep.initialize_simulator (this->get_simulator());
+          diffusion_creep.parse_parameters(prm);
+
+          // Dislocation creep parameters
+          dislocation_creep.initialize_simulator (this->get_simulator());
+          dislocation_creep.parse_parameters(prm);
+
           // Plasticity parameters
           angles_internal_friction = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Angles of internal friction"))),
                                                                              n_fields,
