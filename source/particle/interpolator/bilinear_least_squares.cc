@@ -34,12 +34,12 @@ namespace aspect
   {
     namespace Interpolator
     {
-      template <>
+      template <int dim>
       std::vector<std::vector<double> >
-      BilinearLeastSquares<2>::properties_at_points(const ParticleHandler<2> &particle_handler,
-                                                      const std::vector<Point<2> > &positions,
+      BilinearLeastSquares<dim>::properties_at_points(const ParticleHandler<dim> &particle_handler,
+                                                      const std::vector<Point<dim> > &positions,
                                                       const ComponentMask &selected_properties,
-                                                      const typename parallel::distributed::Triangulation<2>::active_cell_iterator &cell) const
+                                                      const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const
       {
         const unsigned int n_particle_properties = particle_handler.n_properties_per_particle();
 
@@ -53,12 +53,12 @@ namespace aspect
                     ExcNotImplemented("Interpolation of multiple components is not supported."));
 
 
-        const Point<2> approximated_cell_midpoint = std::accumulate (positions.begin(), positions.end(), Point<2>())
+        const Point<dim> approximated_cell_midpoint = std::accumulate (positions.begin(), positions.end(), Point<dim>())
                                                       / static_cast<double> (positions.size());
 
-        typename parallel::distributed::Triangulation<2>::active_cell_iterator found_cell;
+        typename parallel::distributed::Triangulation<dim>::active_cell_iterator found_cell;
 
-        if (cell == typename parallel::distributed::Triangulation<2>::active_cell_iterator())
+        if (cell == typename parallel::distributed::Triangulation<dim>::active_cell_iterator())
           {
             // We can not simply use one of the points as input for find_active_cell_around_point
             // because for vertices of mesh cells we might end up getting ghost_cells as return value
@@ -76,7 +76,7 @@ namespace aspect
         else
           found_cell = cell;
 
-        const typename ParticleHandler<2>::particle_iterator_range particle_range =
+        const typename ParticleHandler<dim>::particle_iterator_range particle_range =
           particle_handler.particles_in_cell(found_cell);
 
 
@@ -94,24 +94,32 @@ namespace aspect
         // Noticed that the size of matrix A is n_particles x matrix_dimension
         // which usually is not a square matrix. Therefore, we solve Ax=r by
         // solving A^TAx= A^Tr.
-        const unsigned int matrix_dimension = 4;
+        const unsigned int matrix_dimension = (dim == 2) ? 4: 7;
         dealii::LAPACKFullMatrix<double> A(n_particles, matrix_dimension);
         Vector<double> r(n_particles);
         r = 0;
 
         unsigned int index = 0;
         const double cell_diameter = found_cell->diameter();
-        for (typename ParticleHandler<2>::particle_iterator particle = particle_range.begin();
+        for (typename ParticleHandler<dim>::particle_iterator particle = particle_range.begin();
              particle != particle_range.end(); ++particle, ++index)
           {
             const double particle_property_value = particle->get_properties()[property_index];
             r[index] = particle_property_value;
 
-            const Point<2> particle_position = particle->get_location();
+            const Tensor<1, dim, double> relative_particle_position = (particle->get_location() - approximated_cell_midpoint) / cell_diameter;
             A(index,0) = 1;
-            A(index,1) = (particle_position[0] - approximated_cell_midpoint[0])/cell_diameter;
-            A(index,2) = (particle_position[1] - approximated_cell_midpoint[1])/cell_diameter;
-            A(index,3) = (particle_position[0] - approximated_cell_midpoint[0]) * (particle_position[1] - approximated_cell_midpoint[1])/std::pow(cell_diameter,2);
+            A(index, 1) = relative_particle_position[0];
+            A(index, 2) = relative_particle_position[1];
+            if (dim == 2)
+            {
+              A(index, 3) = relative_particle_position[0] * relative_particle_position[1];
+            } else {
+              A(index, 3) = relative_particle_position[2];
+              A(index, 4) = relative_particle_position[0] * relative_particle_position[1];
+              A(index, 5) = relative_particle_position[0] * relative_particle_position[2];
+              A(index, 6) = relative_particle_position[1] * relative_particle_position[2];
+            }
           }
 
         dealii::LAPACKFullMatrix<double> B(matrix_dimension, matrix_dimension);
@@ -132,13 +140,22 @@ namespace aspect
         B_inverse.compute_inverse_svd(threshold);
         B_inverse.vmult(c, c_ATr);
 
-        for (typename std::vector<Point<2> >::const_iterator itr = positions.begin(); itr != positions.end(); ++itr, ++index_positions)
+        for (typename std::vector<Point<dim>>::const_iterator itr = positions.begin(); itr != positions.end(); ++itr, ++index_positions)
           {
-            const Point<2> support_point = *itr;
+            const Tensor<1, dim, double> relative_support_point_location = (*itr - approximated_cell_midpoint) / cell_diameter;
             double interpolated_value = c[0] +
-                                        c[1]*(support_point[0] - approximated_cell_midpoint[0])/cell_diameter +
-                                        c[2]*(support_point[1] - approximated_cell_midpoint[1])/cell_diameter +
-                                        c[3]*(support_point[0] - approximated_cell_midpoint[0])*(support_point[1] - approximated_cell_midpoint[1])/std::pow(cell_diameter,2);
+                                        c[1] * relative_support_point_location[0] +
+                                        c[2] * relative_support_point_location[1];
+            if (dim == 2)
+            {
+              interpolated_value += c[3] * relative_support_point_location[0] * relative_support_point_location[1];
+            } else
+            {
+              interpolated_value += c[3] * relative_support_point_location[2] +
+                                    c[4] * relative_support_point_location[0] * relative_support_point_location[1] +
+                                    c[5] * relative_support_point_location[0] * relative_support_point_location[2] +
+                                    c[6] * relative_support_point_location[1] * relative_support_point_location[2];
+            }
 
             // Overshoot and undershoot correction of interpolated particle property.
             if (use_global_valued_limiter)
@@ -152,128 +169,6 @@ namespace aspect
         return cell_properties;
       }
 
-
-
-      template <>
-      std::vector<std::vector<double> >
-      BilinearLeastSquares<3>::properties_at_points(const ParticleHandler<3> &particle_handler,
-                                                      const std::vector<Point<3> > &positions,
-                                                      const ComponentMask &selected_properties,
-                                                      const typename parallel::distributed::Triangulation<3>::active_cell_iterator &cell) const
-      {
-        const unsigned int n_particle_properties = particle_handler.n_properties_per_particle();
-
-        const unsigned int property_index = selected_properties.first_selected_component(selected_properties.size());
-
-        AssertThrow(property_index != numbers::invalid_unsigned_int,
-                    ExcMessage("Internal error: the particle property interpolator was "
-                               "called without a specified component to interpolate."));
-
-
-        AssertThrow(selected_properties.n_selected_components(n_particle_properties) == 1,
-                    ExcNotImplemented("Interpolation of multiple components is not supported."));
-
-
-        const Point<3> approximated_cell_midpoint = std::accumulate (positions.begin(), positions.end(), Point<3>())
-                                                      / static_cast<double> (positions.size());
-
-        typename parallel::distributed::Triangulation<3>::active_cell_iterator found_cell;
-
-        if (cell == typename parallel::distributed::Triangulation<3>::active_cell_iterator())
-        {
-          // We can not simply use one of the points as input for find_active_cell_around_point
-          // because for vertices of mesh cells we might end up getting ghost_cells as return value
-          // instead of the local active cell. So make sure we are well in the inside of a cell.
-          Assert(positions.size() > 0,
-                 ExcMessage("The particle property interpolator was not given any "
-                            "positions to evaluate the particle cell_properties at."));
-
-
-          found_cell =
-                  (GridTools::find_active_cell_around_point<> (this->get_mapping(),
-                                                               this->get_triangulation(),
-                                                               approximated_cell_midpoint)).first;
-        }
-        else
-          found_cell = cell;
-
-        const typename ParticleHandler<3>::particle_iterator_range particle_range =
-                particle_handler.particles_in_cell(found_cell);
-
-
-        std::vector<std::vector<double> > cell_properties(positions.size(),
-                                                          std::vector<double>(n_particle_properties,
-                                                                              numbers::signaling_nan<double>()));
-
-        const unsigned int n_particles = std::distance(particle_range.begin(),particle_range.end());
-
-        AssertThrow(n_particles != 0,
-                    ExcMessage("At least one cell contained no particles. The `bilinear'"
-                               "interpolation scheme does not support this case. "));
-
-
-        // Noticed that the size of matrix A is n_particles x matrix_dimension
-        // which usually is not a square matrix. Therefore, we solve Ax=r by
-        // solving A^TAx= A^Tr.
-        const unsigned int matrix_dimension = 7;
-        dealii::LAPACKFullMatrix<double> A(n_particles, matrix_dimension);
-        Vector<double> r(n_particles);
-        r = 0;
-
-        unsigned int index = 0;
-        const double cell_diameter = found_cell->diameter();
-        for (auto particle = particle_range.begin();
-             particle != particle_range.end(); ++particle, ++index)
-        {
-          const double particle_property_value = particle->get_properties()[property_index];
-          r[index] = particle_property_value;
-
-          const Tensor<1, 3, double> particle_position = (particle->get_location() - approximated_cell_midpoint)/cell_diameter;
-          A(index,0) = 1;
-          A(index,1) = particle_position[0];
-          A(index,2) = particle_position[1];
-          A(index, 3) = particle_position[2];
-          A(index,4) = particle_position[0] * particle_position[1];
-          A(index,5) = particle_position[0] * particle_position[2];
-          A(index, 6) = particle_position[1] * particle_position[2];
-        }
-
-        dealii::LAPACKFullMatrix<double> B(matrix_dimension, matrix_dimension);
-
-        Vector<double> c_ATr(matrix_dimension);
-        Vector<double> c(matrix_dimension);
-
-        const double threshold = 1e-15;
-        unsigned int index_positions = 0;
-
-        // Matrix A can be rank deficient if it does not have full rank, therefore singular.
-        // To circumvent this issue, we solve A^TAx=A^Tr by using singular value
-        // decomposition (SVD).
-        A.Tmmult(B, A, false);
-        A.Tvmult(c_ATr,r);
-
-        dealii::LAPACKFullMatrix<double> B_inverse(B);
-        B_inverse.compute_inverse_svd(threshold);
-        B_inverse.vmult(c, c_ATr);
-
-        for (auto itr = positions.begin(); itr != positions.end(); ++itr, ++index_positions)
-        {
-          const Tensor<1, 3, double> support_point = (*itr - approximated_cell_midpoint)/cell_diameter;
-          double interpolated_value = c[0] +
-                                      c[1] * support_point[0] +
-                                      c[2] * support_point[1] +
-                                      c[3] * support_point[0] * support_point[1];
-          // Overshoot and undershoot correction of interpolated particle property.
-          if (use_global_valued_limiter)
-          {
-            interpolated_value = std::min(interpolated_value, global_maximum_particle_properties[property_index]);
-            interpolated_value = std::max(interpolated_value, global_minimum_particle_properties[property_index]);
-          }
-
-          cell_properties[index_positions][property_index] = interpolated_value;
-        }
-        return cell_properties;
-      }
 
 
       template <int dim>
