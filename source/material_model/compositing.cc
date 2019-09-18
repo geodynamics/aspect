@@ -81,6 +81,16 @@ namespace aspect
 
     template <int dim>
     void
+    Compositing<dim>::initialize ()
+    {
+      // initialize all models
+      for (auto &model : models)
+        model->initialize();
+    }
+
+
+    template <int dim>
+    void
     Compositing<dim>::evaluate(const typename Interface<dim>::MaterialModelInputs &in,
                                typename Interface<dim>::MaterialModelOutputs &out) const
     {
