@@ -63,6 +63,13 @@ namespace aspect
     {
       public:
         /**
+         * @copydoc MaterialModel::Interface::initialize()
+         */
+        virtual
+        void
+        initialize ();
+
+        /**
          * @copydoc MaterialModel::Interface::evaluate()
          */
         virtual
