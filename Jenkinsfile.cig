@@ -51,13 +51,7 @@ pipeline {
     }
 
     stage('Check Indentation') {
-      environment {
-        TEST_SECRET = credentials('dummy-credential')
-      }
       steps {
-        sh '''python -c "import os; print os.environ['TEST_SECRET'][3:10]"'''
-        sh '''printf $TEST_SECRET | md5sum -'''
-        sh 'false'
         sh './contrib/utilities/indent'
         sh 'git diff > changes-astyle.diff'
         archiveArtifacts artifacts: 'changes-astyle.diff', fingerprint: true
@@ -135,6 +129,9 @@ pipeline {
       options {
         timeout(time: 150, unit: 'MINUTES')
       }
+      environment {
+        COVERALLS_REPO_TOKEN = credentials('Coveralls-Repo-Token-ASPECT')
+      }
       steps {
         // Let ninja prebuild the test libraries and run
         // the tests to create the output files in parallel. We
@@ -183,6 +180,10 @@ pipeline {
           archiveArtifacts artifacts: 'changes-test-results.diff'
 
           // post the coverage results to coveralls
+          sh '''
+          cd build-gcc-fast
+          coveralls -r ../ -b . -i source --gcov-options '\\-lp'
+          '''
         }
       }
     }
