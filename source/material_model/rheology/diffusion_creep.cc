@@ -44,6 +44,11 @@ namespace aspect
                                               const double temperature,
                                               const unsigned int composition) const
       {
+        // Power law creep equation
+        //    viscosity = 0.5 * A^(-1/n) * d^(m/n) * exp((E + P*V)/(nRT))
+        // A: prefactor,
+        // d: grain size, m: grain size exponent, E: activation energy, P: pressure,
+        // V; activation volume, R: gas constant, T: temperature.
         const double viscosity_diffusion = 0.5 / prefactors_diffusion[composition] *
                                            std::exp((activation_energies_diffusion[composition] +
                                                      pressure*activation_volumes_diffusion[composition])/
@@ -65,11 +70,6 @@ namespace aspect
                            "for a total of N+1 values, where N is the number of compositional fields. "
                            "If only one value is given, then all use the same value. "
                            "Units: $Pa^{-1} m^{m_{\\text{diffusion}}} s^{-1}$");
-//          prm.declare_entry ("Stress exponents for diffusion creep", "1",
-//                            Patterns::List(Patterns::Double(0)),
-//                             "List of stress exponents, $n_{\\text{diffusion}}$, for background material and compositional fields, "
-//                             "for a total of N+1 values, where N is the number of compositional fields. "
-//                             "If only one value is given, then all use the same value.  Units: None");
         prm.declare_entry ("Grain size exponents for diffusion creep", "3",
                            Patterns::List(Patterns::Double(0)),
                            "List of grain size exponents, $m_{\\text{diffusion}}$, for background material and compositional fields, "

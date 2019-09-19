@@ -55,7 +55,7 @@ namespace aspect
           parse_parameters (ParameterHandler &prm);
 
           /**
-           * Compute the viscosity, in this case just a constant.
+           * Compute the viscosity based on the dislocation creep law.
            */
           double
           compute_viscosity (const double strain_rate,
@@ -64,9 +64,25 @@ namespace aspect
                              const unsigned int composition) const;
 
         private:
+
+          /**
+           * List of dislocation creep prefactors A.
+           */
           std::vector<double> prefactors_dislocation;
+
+          /**
+           * List of dislocation creep stress exponents n.
+           */
           std::vector<double> stress_exponents_dislocation;
+
+          /**
+           * List of dislocation creep activation energies E.
+           */
           std::vector<double> activation_energies_dislocation;
+
+          /**
+           * List of dislocation creep activation volumes V.
+           */
           std::vector<double> activation_volumes_dislocation;
 
       };

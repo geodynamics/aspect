@@ -145,26 +145,11 @@ namespace aspect
       std::vector<bool> composition_yielding(volume_fractions.size());
       for (unsigned int j=0; j < volume_fractions.size(); ++j)
         {
-          // Power law creep equation
-          //    viscosity = 0.5 * A^(-1/n) * edot_ii^((1-n)/n) * d^(m/n) * exp((E + P*V)/(nRT))
-          // A: prefactor, edot_ii: square root of second invariant of deviatoric strain rate tensor,
-          // d: grain size, m: grain size exponent, E: activation energy, P: pressure,
-          // V; activation volume, n: stress exponent, R: gas constant, T: temperature.
-          // Note: values of A, d, m, E, V and n are distinct for diffusion & dislocation creep
-
-          // Diffusion creep: viscosity is grain size dependent (m!=0) and strain-rate independent (n=1)
+          // Compute viscosity from iffusion creep law
           double viscosity_diffusion = diffusion_creep.compute_viscosity(pressure, temperature_for_viscosity, j);
-          //double viscosity_diffusion = 0.5 / prefactors_diffusion[j] *
-          //                             std::exp((activation_energies_diffusion[j] + pressure*activation_volumes_diffusion[j])/
-          //                                      (constants::gas_constant*temperature_for_viscosity)) *
-          //                             std::pow(grain_size, grain_size_exponents_diffusion[j]);
 
-          // For dislocation creep, viscosity is grain size independent (m=0) and strain-rate dependent (n>1)
+          // Compute visocisty from dislocation creep law
           double viscosity_dislocation = dislocation_creep.compute_viscosity(edot_ii, pressure, temperature_for_viscosity, j);
-          //double viscosity_dislocation = 0.5 * std::pow(prefactors_dislocation[j],-1/stress_exponents_dislocation[j]) *
-          //                               std::exp((activation_energies_dislocation[j] + pressure*activation_volumes_dislocation[j])/
-          //                                       (constants::gas_constant*temperature_for_viscosity*stress_exponents_dislocation[j])) *
-          //                               std::pow(edot_ii,((1. - stress_exponents_dislocation[j])/stress_exponents_dislocation[j]));
 
           // Select what form of viscosity to use (diffusion, dislocation or composite)
           double viscosity_pre_yield = 0.0;

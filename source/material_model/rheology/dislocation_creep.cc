@@ -45,6 +45,11 @@ namespace aspect
                                                 const double temperature,
                                                 const unsigned int composition) const
       {
+        // Power law creep equation:
+        //    viscosity = 0.5 * A^(-1/n) * edot_ii^((1-n)/n) * exp((E + P*V)/(nRT))
+        // A: prefactor, edot_ii: square root of second invariant of deviatoric strain rate tensor,
+        // E: activation energy, P: pressure,
+        // V; activation volume, n: stress exponent, R: gas constant, T: temperature.
         double viscosity_dislocation = 0.5 * std::pow(prefactors_dislocation[composition],-1/stress_exponents_dislocation[composition]) *
                                        std::exp((activation_energies_dislocation[composition] + pressure*activation_volumes_dislocation[composition])/
                                                 (constants::gas_constant*temperature*stress_exponents_dislocation[composition])) *

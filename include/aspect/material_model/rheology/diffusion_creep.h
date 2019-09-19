@@ -56,7 +56,7 @@ namespace aspect
           parse_parameters (ParameterHandler &prm);
 
           /**
-           * Compute the viscosity, in this case just a constant.
+           * Compute the viscosity based on the diffusion creep law.
            */
           double
           compute_viscosity (const double pressure,
@@ -64,10 +64,30 @@ namespace aspect
                              const unsigned int composition) const;
 
         private:
+
+          /**
+           * List of diffusion creep prefactors A.
+           */
           std::vector<double> prefactors_diffusion;
+
+          /**
+           * List of diffusion creep grain size exponenents m.
+           */
           std::vector<double> grain_size_exponents_diffusion;
+
+          /**
+           * List of diffusion creep activation energies E.
+           */
           std::vector<double> activation_energies_diffusion;
+
+          /**
+           * List of diffusion creep activation volumes V.
+           */
           std::vector<double> activation_volumes_diffusion;
+
+          /**
+           * Diffusion creep grain size d.
+           */
           double grain_size;
       };
     }
