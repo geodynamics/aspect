@@ -112,14 +112,16 @@ namespace aspect
             A(index, 1) = relative_particle_position[0];
             A(index, 2) = relative_particle_position[1];
             if (dim == 2)
-            {
-              A(index, 3) = relative_particle_position[0] * relative_particle_position[1];
-            } else {
-              A(index, 3) = relative_particle_position[2];
-              A(index, 4) = relative_particle_position[0] * relative_particle_position[1];
-              A(index, 5) = relative_particle_position[0] * relative_particle_position[2];
-              A(index, 6) = relative_particle_position[1] * relative_particle_position[2];
-            }
+              {
+                A(index, 3) = relative_particle_position[0] * relative_particle_position[1];
+              }
+            else
+              {
+                A(index, 3) = relative_particle_position[2];
+                A(index, 4) = relative_particle_position[0] * relative_particle_position[1];
+                A(index, 5) = relative_particle_position[0] * relative_particle_position[2];
+                A(index, 6) = relative_particle_position[1] * relative_particle_position[2];
+              }
           }
 
         dealii::LAPACKFullMatrix<double> B(matrix_dimension, matrix_dimension);
@@ -147,15 +149,16 @@ namespace aspect
                                         c[1] * relative_support_point_location[0] +
                                         c[2] * relative_support_point_location[1];
             if (dim == 2)
-            {
-              interpolated_value += c[3] * relative_support_point_location[0] * relative_support_point_location[1];
-            } else
-            {
-              interpolated_value += c[3] * relative_support_point_location[2] +
-                                    c[4] * relative_support_point_location[0] * relative_support_point_location[1] +
-                                    c[5] * relative_support_point_location[0] * relative_support_point_location[2] +
-                                    c[6] * relative_support_point_location[1] * relative_support_point_location[2];
-            }
+              {
+                interpolated_value += c[3] * relative_support_point_location[0] * relative_support_point_location[1];
+              }
+            else
+              {
+                interpolated_value += c[3] * relative_support_point_location[2] +
+                                      c[4] * relative_support_point_location[0] * relative_support_point_location[1] +
+                                      c[5] * relative_support_point_location[0] * relative_support_point_location[2] +
+                                      c[6] * relative_support_point_location[1] * relative_support_point_location[2];
+              }
 
             // Overshoot and undershoot correction of interpolated particle property.
             if (use_global_valued_limiter)
