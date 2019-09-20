@@ -56,6 +56,7 @@ namespace aspect
     std::vector<double>
     ElasticAdditionalOutputs<dim>::get_nth_output(const unsigned int idx) const
     {
+      (void)idx; // suppress warning in release mode
       AssertIndexRange (idx, 1);
       return elastic_shear_moduli;
     }
