@@ -30,6 +30,40 @@ namespace aspect
   {
 
     template <int dim>
+    std::pair<double, double>
+    LatentHeat<dim>::
+    transition_depth_to_pressure (const Point<dim> &position,
+                                  const int phase) const
+    {
+      double transition_pressure = 0.;
+      double transition_pressure_width = 0.;
+
+      if (this->get_adiabatic_conditions().is_initialized() && this->include_latent_heat())
+        {
+          const Point<dim,double> representative_transition_depth = this->get_geometry_model().representative_point(transition_depths[phase]);
+
+          const Point<dim,double> plus_width = this->get_geometry_model().representative_point(transition_depths[phase] + transition_pressure_widths[phase]);
+          const Point<dim,double> minus_width = this->get_geometry_model().representative_point(transition_depths[phase] - transition_pressure_widths[phase]);
+
+          transition_pressure = (this->get_adiabatic_conditions().pressure(representative_transition_depth));
+
+          transition_pressure_width = 0.5 * ((this->get_adiabatic_conditions().pressure(plus_width))
+                                             - (this->get_adiabatic_conditions().pressure(minus_width)));
+        }
+      else
+        {
+          const double gravity = this->get_gravity_model().gravity_vector(position).norm();
+
+          transition_pressure = reference_rho * gravity * transition_depths[phase];
+
+          transition_pressure_width = 0.5 * ((reference_rho * gravity * (transition_depths[phase] + transition_widths[phase])) -
+                                             (reference_rho * gravity * (transition_depths[phase] - transition_widths[phase])));
+        }
+
+      return std::make_pair (transition_pressure, transition_pressure_width);
+    }
+
+    template <int dim>
     void
     LatentHeat<dim>::
     evaluate(const MaterialModelInputs<dim> &in,
@@ -101,56 +135,47 @@ namespace aspect
             // gradual transitions between the materials
             double phase_dependence = 0.0;
             double viscosity_phase_dependence = 1.0;
-            
+
             unsigned int number_of_phase_transitions;
-            std::vector<double> phase_transition_points;
-            std::vector<double> phase_transition_widths;
-            const std::vector<double> phase_transition_temperatures = transition_temperatures;
-            const std::vector<double> phase_transition_slopes = transition_slopes;
-
-            // Phase transitions defined by depth
             if (use_depth)
-              {
-                number_of_phase_transitions = transition_depths.size();
-                phase_transition_points = transition_depths;
-                phase_transition_widths = transition_widths;
-              }
-            // Phase transitions defined by pressure
+              number_of_phase_transitions = transition_depths.size();
             else
-              {
-                number_of_phase_transitions = transition_pressures.size();
-                phase_transition_points = transition_pressures;
-                phase_transition_widths = transition_pressure_widths;
-              }
+              number_of_phase_transitions = transition_pressures.size();
 
-            // Gravity and depth used below for phase function calculation
-            const double depth = this->get_geometry_model().depth(position);
-            const double gravity = this->get_gravity_model().gravity_vector(position).norm();
+            double transition_pressure = 0.;
+            double transition_pressure_width = 0.;
 
             // Loop through phase transitions
             for (unsigned int phase=0; phase<number_of_phase_transitions; ++phase)
               {
-                const MaterialUtilities::PhaseFunctionInputs phase_in(use_depth,
-                                                                      phase,
-                                                                      depth,
-                                                                      gravity,
-                                                                      temperature,
+
+                if (use_depth)
+                  {
+                    const std::pair<double, double> phase_transition_pressure_range =
+                      transition_depth_to_pressure(position, phase);
+
+                    transition_pressure = phase_transition_pressure_range.first;
+                    transition_pressure_width = phase_transition_pressure_range.second;
+                  }
+                else
+                  {
+                    transition_pressure = transition_pressures[phase];
+                    transition_pressure_width = transition_pressure_widths[phase];
+                  }
+
+                const MaterialUtilities::PhaseFunctionInputs phase_in(temperature,
                                                                       pressure,
-                                                                      phase_transition_points[phase],
-                                                                      phase_transition_widths[phase],
-                                                                      phase_transition_temperatures[phase],
-                                                                      phase_transition_slopes[phase]);
+                                                                      transition_pressure,
+                                                                      transition_pressure_width,
+                                                                      transition_temperatures[phase],
+                                                                      transition_slopes[phase]);
 
-                MaterialUtilities::PhaseFunctionOutputs phase_out;
-
-                MaterialUtilities::compute_phase_function<dim> (phase_in, phase_out);
-
-                const double phaseFunction = phase_out.phase_function;
+                const double phaseFunction = MaterialUtilities::phase_function<dim> (phase_in);
 
                 // Note that for the densities we have a list of jumps, so the index used
                 // in the loop corresponds to the index of the phase transition. For the
-                // fviscosities we have a list of prefactors, which has one more entry
-                // for the first layer, so we have to use i+1 as the index.
+                // viscosities we have a list of prefactors, which has one more entry
+                // for the first layer, so we have to use phase+1 as the index.
                 if (composition.size()==0)
                   {
                     phase_dependence += phaseFunction * density_jumps[phase];
@@ -194,43 +219,30 @@ namespace aspect
                 {
 
                   double transition_pressure;
-                  double pressure_width;
+                  double transition_pressure_width;
 
-                  // Determine transition pressure and width
                   if (use_depth)
                     {
-                      double transition_point = transition_depths[phase];
-                      double transition_width = transition_widths[phase];
- 
-                      const Point<dim,double> representative_transition_point = this->get_geometry_model().representative_point(transition_point);
-                      const Point<dim,double> plus_width = this->get_geometry_model().representative_point(transition_point + transition_width);
-                      const Point<dim,double> minus_width = this->get_geometry_model().representative_point(transition_point - transition_width);
+                      const std::pair<double, double> phase_transition_pressure_range =
+                        transition_depth_to_pressure(position, phase);
 
-                      transition_pressure = (this->get_adiabatic_conditions().pressure(representative_transition_point));
-
-                      pressure_width = 0.5 * ((this->get_adiabatic_conditions().pressure(plus_width))
-                                              - (this->get_adiabatic_conditions().pressure(minus_width)));
+                      transition_pressure = phase_transition_pressure_range.first;
+                      transition_pressure_width = phase_transition_pressure_range.second;
                     }
                   else
                     {
                       transition_pressure = transition_pressures[phase];
-                      pressure_width = transition_pressure_widths[phase];
+                      transition_pressure_width = transition_pressure_widths[phase];
                     }
 
                   const MaterialUtilities::PhaseFunctionDerivativeInputs phase_derivative_in(temperature,
                                                                                              pressure,
                                                                                              transition_pressure,
-                                                                                             pressure_width,
+                                                                                             transition_pressure_width,
                                                                                              transition_temperatures[phase],
                                                                                              transition_slopes[phase]);
 
-                  MaterialUtilities::PhaseFunctionDerivativeOutputs phase_derivative_out;
-
-                  MaterialUtilities::compute_phase_function_derivative<dim> (phase_derivative_in, phase_derivative_out);
-
-                  const double PhaseFunctionDerivative = phase_derivative_out.phase_function_derivative;
-
-                  // calculate the change of entropy across the phase transition
+                  const double PhaseFunctionDerivative = MaterialUtilities::phase_function_derivative<dim> (phase_derivative_in);
                   double entropy_change = 0.0;
                   if (composition.size()==0)      // only one compositional field
                     entropy_change = transition_slopes[phase] * density_jumps[phase] / (rho * rho);

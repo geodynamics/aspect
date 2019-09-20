@@ -750,87 +750,51 @@ namespace aspect
         return;
       }
 
-      PhaseFunctionInputs::PhaseFunctionInputs(const bool use_depth_,
-                                               const int phase_,
-                                               const double depth_,
-                                               const double gravity_,
-                                               const double temperature_,
+
+
+      PhaseFunctionInputs::PhaseFunctionInputs(const double temperature_,
                                                const double pressure_,
-                                               const double transition_point_,
-                                               const double transition_width_,
+                                               const double transition_pressure_,
+                                               const double transition_pressure_width_,
                                                const double transition_temperature_,
                                                const double transition_slope_)
 
         :
-        use_depth(use_depth_),
-        phase(phase_),
-        depth(depth_),
-        gravity(gravity_),
         temperature(temperature_),
         pressure(pressure_),
-        transition_point(transition_point_),
-        transition_width(transition_width_),
+        transition_pressure(transition_pressure_),
+        transition_pressure_width(transition_pressure_width_),
         transition_temperature(transition_temperature_),
         transition_slope(transition_slope_)
       {}
 
 
-      PhaseFunctionOutputs::PhaseFunctionOutputs ()
-        :
-        phase_function(numbers::signaling_nan<double>())
-      {}
-
-
       template <int dim>
-      void
-      compute_phase_function (const PhaseFunctionInputs &in,
-                                    PhaseFunctionOutputs &out)
+      double
+      phase_function (const PhaseFunctionInputs &in)
       {
+        // Calculate the deviation from the phase transition point
+        // (pressure here), with the current pressure and temperature.
+        double pressure_deviation = in.pressure - in.transition_pressure -
+                                    in.transition_slope * (in.temperature - in.transition_temperature);
 
-        if (!in.use_depth)
-          {
-            
-            // Calculate the deviation from the phase transition point 
-            // (pressure here), with the current pressure and temperature. 
-            double pressure_deviation = in.pressure - in.transition_point -
-                                        in.transition_slope * (in.temperature - in.transition_temperature);
+        double phase_function;
 
-            // Calculate the percentage of material that has undergone the phase transition as a function
-            // of the pressure deviation and phase transition width (defined in terms of a pressure range here).
-            if (in.transition_width==0)
-              (pressure_deviation > 0) ? out.phase_function = 1 : out.phase_function = 0;            
-            else
-              out.phase_function = 0.5*(1.0 + std::tanh(pressure_deviation / in.transition_width));
-          }
-        // For phase transtions defined using depth rather than pressure
+        // Calculate the percentage of material that has undergone the phase transition as a function
+        // of the pressure deviation and phase transition width (defined in terms of a pressure range here).
+        if (in.transition_pressure_width==0)
+          (pressure_deviation > 0) ? phase_function = 1 : phase_function = 0;
         else
-          {
-            // Calculate the deviation from the phase transition point with
-            // the current depth and temperature
-            double depth_deviation = (in.pressure > 0
-                                     ?
-                                     in.depth - in.transition_point -
-                                     in.transition_slope * (in.depth / in.pressure) * (in.temperature - in.transition_temperature)
-                                     :
-                                     in.depth - in.transition_point -
-                                     in.transition_slope / (in.gravity * 3300.0) * (in.temperature - in.transition_temperature));
+          phase_function = 0.5*(1.0 + std::tanh(pressure_deviation / in.transition_pressure_width));
 
-            // Calculate the percentage of material that has undergone the phase transition as a function
-            // of the depth deviation and phase transition width.
-            if (in.transition_width==0)
-              out.phase_function = (depth_deviation > 0) ? 1 : 0;
-            else
-              out.phase_function = 0.5*(1.0 + std::tanh(depth_deviation / in.transition_width));
-          }
-        
-        return;
+        return phase_function;
       }
 
 
       PhaseFunctionDerivativeInputs::PhaseFunctionDerivativeInputs(const double temperature_,
                                                                    const double pressure_,
                                                                    const double transition_pressure_,
-                                                                   const double pressure_width_,
+                                                                   const double transition_pressure_width_,
                                                                    const double transition_temperature_,
                                                                    const double transition_slope_)
 
@@ -838,42 +802,36 @@ namespace aspect
         temperature(temperature_),
         pressure(pressure_),
         transition_pressure(transition_pressure_),
-        pressure_width(pressure_width_),
+        transition_pressure_width(transition_pressure_width_),
         transition_temperature(transition_temperature_),
         transition_slope(transition_slope_)
       {}
 
 
-      PhaseFunctionDerivativeOutputs::PhaseFunctionDerivativeOutputs ()
-        :
-        phase_function_derivative(numbers::signaling_nan<double>())
-      {}
-
-
-
       template <int dim>
-      void
-      compute_phase_function_derivative (const PhaseFunctionDerivativeInputs &in,
-                                         PhaseFunctionDerivativeOutputs &out)
+      double
+      phase_function_derivative (const PhaseFunctionDerivativeInputs &in)
       {
 
-      // Calculate the pressure deviation from the transition pressure (both in temperature
-      // and in pressure)
-      const double pressure_deviation = in.pressure - in.transition_pressure
-                                  - in.transition_slope * (in.temperature - in.transition_temperature);
+        // Calculate the pressure deviation from the transition pressure (both in temperature
+        // and in pressure)
+        const double pressure_deviation = in.pressure - in.transition_pressure
+                                          - in.transition_slope * (in.temperature - in.transition_temperature);
 
-      // Calculate the analytical derivative of the phase function
-      if (in.pressure_width==0)
-        {
-          out.phase_function_derivative = 0.;
-        }
-      else
-        {
-          out.phase_function_derivative = 0.5 / in.pressure_width * (1.0 - std::tanh(pressure_deviation / in.pressure_width)
-                                          * std::tanh(pressure_deviation / in.pressure_width));
-        }
+        double phase_function_derivative;
 
-        return; 
+        // Calculate the analytical derivative of the phase function
+        if (in.transition_pressure_width==0)
+          {
+            phase_function_derivative = 0.;
+          }
+        else
+          {
+            phase_function_derivative = 0.5 / in.transition_pressure_width * (1.0 - std::tanh(pressure_deviation / in.transition_pressure_width)
+                                                                              * std::tanh(pressure_deviation / in.transition_pressure_width));
+          }
+
+        return phase_function_derivative;
       }
 
     }
@@ -894,14 +852,12 @@ namespace aspect
   compute_drucker_prager_yielding<dim> (const DruckerPragerInputs &, \
                                         DruckerPragerOutputs &); \
   template \
-  void \
-  compute_phase_function<dim> (const PhaseFunctionInputs &, \
-                               PhaseFunctionOutputs &); \
+  double \
+  phase_function<dim> (const PhaseFunctionInputs &); \
   template \
-  void \
-  compute_phase_function_derivative<dim> (const PhaseFunctionDerivativeInputs &, \
-                                          PhaseFunctionDerivativeOutputs &);
-   
+  double \
+  phase_function_derivative<dim> (const PhaseFunctionDerivativeInputs &);
+
       ASPECT_INSTANTIATE(INSTANTIATE)
     }
   }

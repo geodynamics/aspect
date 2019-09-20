@@ -55,6 +55,9 @@ namespace aspect
         virtual void evaluate(const MaterialModelInputs<dim> &in,
                               MaterialModelOutputs<dim> &out) const;
 
+
+
+
         /**
          * @name Qualitative properties one can ask a material model
          * @{
@@ -81,7 +84,6 @@ namespace aspect
         /**
          * @}
          */
-
 
         /**
          * @name Functions used in dealing with run-time parameters
@@ -123,6 +125,16 @@ namespace aspect
         double k_value;
 
         double compositional_delta_rho;
+
+        /**
+         * A function to compute the phase transition pressure and pressure width
+         * if the phase transitions are defined by the user in terms of depth.
+         * This function should be moved to the material model utilities.
+         */
+        virtual
+        std::pair<double, double>
+        transition_depth_to_pressure (const Point<dim> &position,
+                                      const int phase) const;
 
         // list of depth (or pressure), width and Clapeyron slopes
         // for the different phase transitions
