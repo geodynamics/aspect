@@ -80,11 +80,11 @@ Number of degrees of freedom: 48,029 (14,739+729+4,913+13,824+13,824)
 Termination requested by criterion: end time
 
 
-+----------------------------------------------+------------+------------+
++---------------------------------------------+------------+------------+
 | Total wallclock time elapsed since start     |       139s |            |
 |                                              |            |            |
 | Section                          | no. calls |  wall time | % of total |
-+----------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
 | Assemble Stokes system           |         6 |      32.6s |        23% |
 | Assemble temperature system      |         6 |      45.5s |        33% |
 | Build Stokes preconditioner      |         1 |       9.1s |       6.5% |
@@ -102,7 +102,7 @@ Termination requested by criterion: end time
 | Setup matrices                   |         1 |      12.8s |       9.2% |
 | Solve Stokes system              |         6 |      3.86s |       2.8% |
 | Solve temperature system         |         6 |     0.149s |      0.11% |
-+----------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
 
 -----------------------------------------------------------------------------
 -- For information on how to cite ASPECT, see:
