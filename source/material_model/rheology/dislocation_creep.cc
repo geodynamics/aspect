@@ -50,10 +50,10 @@ namespace aspect
         // A: prefactor, edot_ii: square root of second invariant of deviatoric strain rate tensor,
         // E: activation energy, P: pressure,
         // V; activation volume, n: stress exponent, R: gas constant, T: temperature.
-        double viscosity_dislocation = 0.5 * std::pow(prefactors_dislocation[composition],-1/stress_exponents_dislocation[composition]) *
-                                       std::exp((activation_energies_dislocation[composition] + pressure*activation_volumes_dislocation[composition])/
-                                                (constants::gas_constant*temperature*stress_exponents_dislocation[composition])) *
-                                       std::pow(strain_rate,((1. - stress_exponents_dislocation[composition])/stress_exponents_dislocation[composition]));
+        const double viscosity_dislocation = 0.5 * std::pow(prefactors_dislocation[composition],-1/stress_exponents_dislocation[composition]) *
+                                             std::exp((activation_energies_dislocation[composition] + pressure*activation_volumes_dislocation[composition])/
+                                                      (constants::gas_constant*temperature*stress_exponents_dislocation[composition])) *
+                                             std::pow(strain_rate,((1. - stress_exponents_dislocation[composition])/stress_exponents_dislocation[composition]));
         return viscosity_dislocation;
       }
 
