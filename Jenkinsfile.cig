@@ -111,7 +111,7 @@ pipeline {
         # compiling...
         cd build-gcc-fast
         ninja
-        ''' 
+        '''
       }
     }
 
