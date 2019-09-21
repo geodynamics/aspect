@@ -99,7 +99,7 @@ pipeline {
 
         cmake \
         -G 'Ninja' \
-        -D CMAKE_CXX_FLAGS='-Werror' \
+        -D CMAKE_CXX_FLAGS='-Werror --coverage' \
         -D ASPECT_TEST_GENERATOR='Ninja' \
         -D ASPECT_USE_PETSC='OFF' \
         -D ASPECT_RUN_ALL_TESTS='ON' \
@@ -127,6 +127,9 @@ pipeline {
     stage('Test') {
       options {
         timeout(time: 150, unit: 'MINUTES')
+      }
+      environment {
+        COVERALLS_REPO_TOKEN = credentials('Coveralls-Repo-Token-ASPECT')
       }
       steps {
         // Let ninja prebuild the test libraries and run
@@ -174,6 +177,12 @@ pipeline {
           // used to update the test results
           sh 'git diff tests > changes-test-results.diff'
           archiveArtifacts artifacts: 'changes-test-results.diff'
+
+          // post the coverage results to coveralls
+          sh '''
+          cd build-gcc-fast
+          coveralls -r ../ -b . -i source --gcov-options '\\-lp'
+          '''
         }
       }
     }
