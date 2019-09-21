@@ -39,7 +39,6 @@ Number of degrees of freedom: 420 (297+24+99)
 Exception on MPI process <0> while running mesh refinement plugin <thermal energy density>: 
 Mesh refinement plugin thermal energy density could failed to find a gradient. This could be caused by having a constant temperature in the model. If this is the case, please set an other mesh refinement strategy. DEAL.II error:
 --------------------------------------------------------
-An error occurred in line <912> of file <DEALII_DIR/source/numerics/derivative_approximation.cc> in function
 (line in output replaced by thermal_energy_density.sh script)
     void dealii::DerivativeApproximation::internal::approximate_cell(const dealii::Mapping<dim, spacedim>&, const DoFHandlerType<dim, spacedim>&, const InputVector&, unsigned int, const dealii::TriaActiveIterator<dealii::DoFCellAccessor<DoFHandlerType<dim, spacedim>, false> >&, typename DerivativeDescription::Derivative&) [with DerivativeDescription = dealii::DerivativeApproximation::internal::Gradient<3>; int dim = 3; DoFHandlerType = dealii::DoFHandler; InputVector = dealii::TrilinosWrappers::MPI::BlockVector; int spacedim = 3; typename DerivativeDescription::Derivative = dealii::Tensor<1, 3>]
 The violated condition was: 
@@ -49,12 +48,3 @@ Additional information:
 --------------------------------------------------------
 
 Aborting!
-----------------------------------------------------
---------------------------------------------------------------------------
-MPI_ABORT was invoked on rank 0 in communicator MPI_COMM_WORLD
-with errorcode 1.
-
-NOTE: invoking MPI_ABORT causes Open MPI to kill all MPI processes.
-You may or may not see output from other processes, depending on
-exactly when Open MPI kills them.
---------------------------------------------------------------------------
