@@ -879,13 +879,13 @@ namespace aspect
       template <int dim>
       std::pair<double, double>
       PhaseFunction<dim>::
-      transition_depth_to_pressure (const Point<dim> &position,
+      transition_depth_to_pressure (const Point<dim> &/*position*/,
                                     const int phase) const
       {
         double transition_pressure = 0.;
         double transition_pressure_width = 0.;
 
-        if (this->get_adiabatic_conditions().is_initialized() && this->include_latent_heat())
+        if (this->get_adiabatic_conditions().is_initialized())
           {
             const Point<dim,double> representative_transition_depth = this->get_geometry_model().representative_point(transition_depths[phase]);
 

@@ -55,9 +55,6 @@ namespace aspect
         virtual void evaluate(const MaterialModelInputs<dim> &in,
                               MaterialModelOutputs<dim> &out) const;
 
-
-
-
         /**
          * @name Qualitative properties one can ask a material model
          * @{
@@ -128,8 +125,8 @@ namespace aspect
         // list of depth (or pressure), width and Clapeyron slopes
         // for the different phase transitions
         std::vector<double> density_jumps;
-        std::vector<double> phase_prefactors;
         std::vector<int> transition_phases;
+        std::vector<double> phase_prefactors;
 
         MaterialUtilities::PhaseFunction<dim> phase_function;
     };

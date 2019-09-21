@@ -22,7 +22,6 @@
 #define _aspect_material_model_utilities_h
 
 #include <aspect/global.h>
-
 #include <deal.II/base/point.h>
 #include <deal.II/base/symmetric_tensor.h>
 #include <deal.II/fe/component_mask.h>

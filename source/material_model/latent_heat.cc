@@ -106,8 +106,6 @@ namespace aspect
             // Loop through phase transitions
             for (unsigned int phase=0; phase<number_of_phase_transitions; ++phase)
               {
-
-
                 const MaterialUtilities::PhaseFunctionInputs phase_in(temperature,
                                                                       pressure,
                                                                       phase,
