@@ -1,17 +1,7 @@
 -----------------------------------------------------------------------------
--- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
---     . version 2.2.0-pre (improve_mesh_ref_thermal_desn_grad_error_message, 8f2311933)
---     . using deal.II 9.0.1
---     .       with 32 bit indices and vectorization level 1 (128 bits)
---     . using Trilinos 12.10.1
---     . using p4est 2.0.0
---     . running in DEBUG mode
---     . running with 1 MPI process
 -----------------------------------------------------------------------------
 
 -----------------------------------------------------------------------------
--- For information on how to cite ASPECT, see:
---   https://aspect.geodynamics.org/citing.html?ver=2.2.0-pre&sha=8f2311933&src=code
 -----------------------------------------------------------------------------
 Number of active cells: 40 (on 2 levels)
 Number of degrees of freedom: 2,199 (1,575+99+525)
@@ -37,7 +27,7 @@ Number of degrees of freedom: 420 (297+24+99)
 
 ----------------------------------------------------
 Exception on MPI process <0> while running mesh refinement plugin <thermal energy density>: 
-Mesh refinement plugin thermal energy density could failed to find a gradient. This could be caused by having a constant temperature in the model. If this is the case, please set an other mesh refinement strategy. DEAL.II error:
+The mesh refinement plugin failed to compute a thermal energy density gradient. This could be caused by having a constant temperature in the model. If this is the case, please set an other mesh refinement strategy. DEAL.II error:
 --------------------------------------------------------
 (line in output replaced by thermal_energy_density.sh script)
     void dealii::DerivativeApproximation::internal::approximate_cell(const dealii::Mapping<dim, spacedim>&, const DoFHandlerType<dim, spacedim>&, const InputVector&, unsigned int, const dealii::TriaActiveIterator<dealii::DoFCellAccessor<DoFHandlerType<dim, spacedim>, false> >&, typename DerivativeDescription::Derivative&) [with DerivativeDescription = dealii::DerivativeApproximation::internal::Gradient<3>; int dim = 3; DoFHandlerType = dealii::DoFHandler; InputVector = dealii::TrilinosWrappers::MPI::BlockVector; int spacedim = 3; typename DerivativeDescription::Derivative = dealii::Tensor<1, 3>]

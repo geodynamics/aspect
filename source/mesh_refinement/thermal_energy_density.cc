@@ -119,7 +119,7 @@ namespace aspect
                     << "> while running mesh refinement plugin <"
                     << "thermal energy density"
                     << ">: " << std::endl
-                    << "Mesh refinement plugin thermal energy density could failed to find a gradient. "
+                    << "The mesh refinement plugin failed to compute a thermal energy density gradient. "
                     << "This could be caused by having a constant temperature in the model. If this is "
                     << "the case, please set an other mesh refinement strategy. DEAL.II error:"
                     << exc.what() << std::endl
