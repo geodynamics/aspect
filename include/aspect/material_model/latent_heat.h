@@ -107,7 +107,6 @@ namespace aspect
          */
 
       private:
-        bool use_depth;
         double reference_rho;
         double reference_T;
         double eta;
@@ -126,27 +125,13 @@ namespace aspect
 
         double compositional_delta_rho;
 
-        /**
-         * A function to compute the phase transition pressure and pressure width
-         * if the phase transitions are defined by the user in terms of depth.
-         * This function should be moved to the material model utilities.
-         */
-        virtual
-        std::pair<double, double>
-        transition_depth_to_pressure (const Point<dim> &position,
-                                      const int phase) const;
-
         // list of depth (or pressure), width and Clapeyron slopes
         // for the different phase transitions
-        std::vector<double> transition_depths;
-        std::vector<double> transition_pressures;
-        std::vector<double> transition_temperatures;
-        std::vector<double> transition_widths;
-        std::vector<double> transition_pressure_widths;
-        std::vector<double> transition_slopes;
         std::vector<double> density_jumps;
-        std::vector<int> transition_phases;
         std::vector<double> phase_prefactors;
+        std::vector<int> transition_phases;
+
+        MaterialUtilities::PhaseFunction<dim> phase_function;
     };
 
   }

@@ -20,6 +20,10 @@
 
 
 #include <aspect/global.h>
+#include <aspect/simulator_access.h>
+
+#include <aspect/adiabatic_conditions/interface.h>
+
 #include <aspect/material_model/interface.h>
 #include <aspect/material_model/utilities.h>
 #include <aspect/utilities.h>
@@ -754,86 +758,262 @@ namespace aspect
 
       PhaseFunctionInputs::PhaseFunctionInputs(const double temperature_,
                                                const double pressure_,
-                                               const double transition_pressure_,
-                                               const double transition_pressure_width_,
-                                               const double transition_temperature_,
-                                               const double transition_slope_)
+                                               const unsigned int phase_index_,
+                                               const unsigned int composition_index_)
 
         :
         temperature(temperature_),
         pressure(pressure_),
-        transition_pressure(transition_pressure_),
-        transition_pressure_width(transition_pressure_width_),
-        transition_temperature(transition_temperature_),
-        transition_slope(transition_slope_)
+        phase_index(phase_index_),
+        composition_index(composition_index_)
       {}
 
 
       template <int dim>
       double
-      phase_function (const PhaseFunctionInputs &in)
+      PhaseFunction<dim>::phase_function (const PhaseFunctionInputs &in) const
       {
+        double transition_pressure;
+        double transition_pressure_width;
+
+        if (use_depth_instead_of_pressure)
+          {
+            const std::pair<double, double> phase_transition_pressure_range =
+              transition_depth_to_pressure(Point<dim>(), in.phase_index);
+
+            transition_pressure = phase_transition_pressure_range.first;
+            transition_pressure_width = phase_transition_pressure_range.second;
+          }
+        else
+          {
+            transition_pressure = transition_pressures[in.phase_index];
+            transition_pressure_width = transition_pressure_widths[in.phase_index];
+          }
+
         // Calculate the deviation from the phase transition point
         // (pressure here), with the current pressure and temperature.
-        double pressure_deviation = in.pressure - in.transition_pressure -
-                                    in.transition_slope * (in.temperature - in.transition_temperature);
+        double pressure_deviation = in.pressure - transition_pressure -
+                                    transition_slopes[in.phase_index] * (in.temperature - transition_temperatures[in.phase_index]);
 
         double phase_function;
 
         // Calculate the percentage of material that has undergone the phase transition as a function
         // of the pressure deviation and phase transition width (defined in terms of a pressure range here).
-        if (in.transition_pressure_width==0)
+        if (transition_pressure_width == 0)
           (pressure_deviation > 0) ? phase_function = 1 : phase_function = 0;
         else
-          phase_function = 0.5*(1.0 + std::tanh(pressure_deviation / in.transition_pressure_width));
+          phase_function = 0.5*(1.0 + std::tanh(pressure_deviation / transition_pressure_width));
 
         return phase_function;
       }
 
 
-      PhaseFunctionDerivativeInputs::PhaseFunctionDerivativeInputs(const double temperature_,
-                                                                   const double pressure_,
-                                                                   const double transition_pressure_,
-                                                                   const double transition_pressure_width_,
-                                                                   const double transition_temperature_,
-                                                                   const double transition_slope_)
-
-        :
-        temperature(temperature_),
-        pressure(pressure_),
-        transition_pressure(transition_pressure_),
-        transition_pressure_width(transition_pressure_width_),
-        transition_temperature(transition_temperature_),
-        transition_slope(transition_slope_)
-      {}
-
 
       template <int dim>
       double
-      phase_function_derivative (const PhaseFunctionDerivativeInputs &in)
+      PhaseFunction<dim>::phase_function_derivative (const PhaseFunctionInputs &in) const
       {
+        double transition_pressure;
+        double transition_pressure_width;
+
+        if (use_depth_instead_of_pressure)
+          {
+            const std::pair<double, double> phase_transition_pressure_range =
+              transition_depth_to_pressure(Point<dim>(), in.phase_index);
+
+            transition_pressure = phase_transition_pressure_range.first;
+            transition_pressure_width = phase_transition_pressure_range.second;
+          }
+        else
+          {
+            transition_pressure = transition_pressures[in.phase_index];
+            transition_pressure_width = transition_pressure_widths[in.phase_index];
+          }
 
         // Calculate the pressure deviation from the transition pressure (both in temperature
         // and in pressure)
-        const double pressure_deviation = in.pressure - in.transition_pressure
-                                          - in.transition_slope * (in.temperature - in.transition_temperature);
+        double pressure_deviation = in.pressure - transition_pressure -
+                                    transition_slopes[in.phase_index] * (in.temperature - transition_temperatures[in.phase_index]);
 
         double phase_function_derivative;
 
         // Calculate the analytical derivative of the phase function
-        if (in.transition_pressure_width==0)
+        if (transition_pressure_width == 0)
           {
             phase_function_derivative = 0.;
           }
         else
           {
-            phase_function_derivative = 0.5 / in.transition_pressure_width * (1.0 - std::tanh(pressure_deviation / in.transition_pressure_width)
-                                                                              * std::tanh(pressure_deviation / in.transition_pressure_width));
+            phase_function_derivative = 0.5 / transition_pressure_width * (1.0 - std::tanh(pressure_deviation / transition_pressure_width)
+                                                                           * std::tanh(pressure_deviation / transition_pressure_width));
           }
 
         return phase_function_derivative;
       }
 
+
+
+      template <int dim>
+      unsigned int
+      PhaseFunction<dim>::
+      n_phase_transitions () const
+      {
+        if (use_depth_instead_of_pressure)
+          return transition_depths.size();
+        else
+          return transition_pressures.size();
+      }
+
+
+
+      template <int dim>
+      double
+      PhaseFunction<dim>::
+      get_transition_slope (const unsigned int phase_index) const
+      {
+        return transition_slopes[phase_index];
+      }
+
+
+
+      template <int dim>
+      std::pair<double, double>
+      PhaseFunction<dim>::
+      transition_depth_to_pressure (const Point<dim> &position,
+                                    const int phase) const
+      {
+        double transition_pressure = 0.;
+        double transition_pressure_width = 0.;
+
+        if (this->get_adiabatic_conditions().is_initialized() && this->include_latent_heat())
+          {
+            const Point<dim,double> representative_transition_depth = this->get_geometry_model().representative_point(transition_depths[phase]);
+
+            const Point<dim,double> plus_width = this->get_geometry_model().representative_point(transition_depths[phase] + transition_widths[phase]);
+            const Point<dim,double> minus_width = this->get_geometry_model().representative_point(transition_depths[phase] - transition_widths[phase]);
+
+            transition_pressure = (this->get_adiabatic_conditions().pressure(representative_transition_depth));
+
+            transition_pressure_width = 0.5 * ((this->get_adiabatic_conditions().pressure(plus_width))
+                                               - (this->get_adiabatic_conditions().pressure(minus_width)));
+          }
+//        else
+//          {
+//            const double gravity = this->get_gravity_model().gravity_vector(position).norm();
+//
+//            transition_pressure = reference_rho * gravity * transition_depths[phase];
+//
+//            transition_pressure_width = 0.5 * ((reference_rho * gravity * (transition_depths[phase] + transition_widths[phase])) -
+//                                               (reference_rho * gravity * (transition_depths[phase] - transition_widths[phase])));
+//          }
+
+        return std::make_pair (transition_pressure, transition_pressure_width);
+      }
+
+
+
+      template <int dim>
+      void
+      PhaseFunction<dim>::declare_parameters (ParameterHandler &prm)
+      {
+        prm.declare_entry ("Phase transition depths", "",
+                           Patterns::List (Patterns::Double(0)),
+                           "A list of depths where phase transitions occur. Values must "
+                           "monotonically increase. "
+                           "Units: $m$.");
+        prm.declare_entry ("Phase transition widths", "",
+                           Patterns::List (Patterns::Double(0)),
+                           "A list of widths for each phase transition, in terms of depth. The phase functions "
+                           "are scaled with these values, leading to a jump between phases "
+                           "for a value of zero and a gradual transition for larger values. "
+                           "List must have the same number of entries as Phase transition depths. "
+                           "Units: $m$.");
+        prm.declare_entry ("Phase transition pressures", "",
+                           Patterns::List (Patterns::Double(0)),
+                           "A list of pressures where phase transitions occur. Values must "
+                           "monotonically increase. Define transition by depth instead of "
+                           "pressure must be set to false to use this parameter. "
+                           "Units: $Pa$.");
+        prm.declare_entry ("Phase transition pressure widths", "",
+                           Patterns::List (Patterns::Double(0)),
+                           "A list of widths for each phase transition, in terms of pressure. The phase functions "
+                           "are scaled with these values, leading to a jump between phases "
+                           "for a value of zero and a gradual transition for larger values. "
+                           "List must have the same number of entries as Phase transition pressures. "
+                           "Define transition by depth instead of pressure must be set to false "
+                           "to use this parameter. "
+                           "Units: $Pa$.");
+        prm.declare_entry ("Define transition by depth instead of pressure", "true",
+                           Patterns::Bool (),
+                           "Whether to list phase transitions by depth or pressure. If this parameter is true, "
+                           "then the input file will use Phase transitions depths and Phase transition widths "
+                           "to define the phase transition. If it is false, the parameter file will read in "
+                           "phase transition data from Phase transition pressures and "
+                           "Phase transition pressure widths.");
+        prm.declare_entry ("Phase transition temperatures", "",
+                           Patterns::List (Patterns::Double(0)),
+                           "A list of temperatures where phase transitions occur. Higher or lower "
+                           "temperatures lead to phase transition occurring in smaller or greater "
+                           "depths than given in Phase transition depths, depending on the "
+                           "Clapeyron slope given in Phase transition Clapeyron slopes. "
+                           "List must have the same number of entries as Phase transition depths. "
+                           "Units: $\\si{K}$.");
+        prm.declare_entry ("Phase transition Clapeyron slopes", "",
+                           Patterns::List (Patterns::Double()),
+                           "A list of Clapeyron slopes for each phase transition. A positive "
+                           "Clapeyron slope indicates that the phase transition will occur in "
+                           "a greater depth, if the temperature is higher than the one given in "
+                           "Phase transition temperatures and in a smaller depth, if the "
+                           "temperature is smaller than the one given in Phase transition temperatures. "
+                           "For negative slopes the other way round. "
+                           "List must have the same number of entries as Phase transition depths. "
+                           "Units: $Pa/K$.");
+      }
+
+
+
+      template <int dim>
+      void
+      PhaseFunction<dim>::parse_parameters (ParameterHandler &prm)
+      {
+        transition_depths = Utilities::string_to_double
+                            (Utilities::split_string_list(prm.get ("Phase transition depths")));
+        transition_widths= Utilities::string_to_double
+                           (Utilities::split_string_list(prm.get ("Phase transition widths")));
+        transition_pressures = Utilities::string_to_double
+                               (Utilities::split_string_list(prm.get ("Phase transition pressures")));
+        transition_pressure_widths= Utilities::string_to_double
+                                    (Utilities::split_string_list(prm.get ("Phase transition pressure widths")));
+        use_depth_instead_of_pressure = prm.get_bool ("Define transition by depth instead of pressure");
+        transition_temperatures = Utilities::string_to_double
+                                  (Utilities::split_string_list(prm.get ("Phase transition temperatures")));
+        transition_slopes = Utilities::string_to_double
+                            (Utilities::split_string_list(prm.get ("Phase transition Clapeyron slopes")));
+
+        // make sure to check against the depth lists for size errors, since using depth
+        if (use_depth_instead_of_pressure)
+          {
+            if (transition_widths.size() != transition_depths.size() ||
+                transition_temperatures.size() != transition_depths.size() ||
+                transition_slopes.size() != transition_depths.size())
+              AssertThrow(false, ExcMessage("Error: At least one list that gives input parameters for the phase "
+                                            "transitions has the wrong size. Currently checking against transition depths. "
+                                            "If phase transitions in terms of pressure inputs are desired, check to make sure "
+                                            "'Define transition by depth instead of pressure = false'."));
+          }
+        // make sure to check against the pressure lists for size errors,
+        // since pressure is being used instead of depth.
+        else
+          {
+            if (transition_pressure_widths.size() != transition_pressures.size() ||
+                transition_temperatures.size() != transition_pressures.size() ||
+                transition_slopes.size() != transition_pressures.size())
+              AssertThrow(false, ExcMessage("Error: At least one list that gives input parameters for the phase "
+                                            "transitions has the wrong size. Currently checking against transition pressures. "
+                                            "If phase transitions in terms of depth inputs are desired, check to make sure "
+                                            "'Define transition by depth instead of pressure = true'."));
+          }
+      }
     }
   }
 }
@@ -851,12 +1031,7 @@ namespace aspect
   void \
   compute_drucker_prager_yielding<dim> (const DruckerPragerInputs &, \
                                         DruckerPragerOutputs &); \
-  template \
-  double \
-  phase_function<dim> (const PhaseFunctionInputs &); \
-  template \
-  double \
-  phase_function_derivative<dim> (const PhaseFunctionDerivativeInputs &);
+  template class PhaseFunction<dim>;
 
       ASPECT_INSTANTIATE(INSTANTIATE)
     }

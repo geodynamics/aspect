@@ -22,6 +22,7 @@
 #define _aspect_material_model_utilities_h
 
 #include <aspect/global.h>
+
 #include <deal.II/base/point.h>
 #include <deal.II/base/symmetric_tensor.h>
 #include <deal.II/fe/component_mask.h>
@@ -30,6 +31,8 @@
 
 namespace aspect
 {
+  template <int dim> class SimulatorAccess;
+
   namespace MaterialModel
   {
     using namespace dealii;
@@ -337,64 +340,90 @@ namespace aspect
         */
         PhaseFunctionInputs(const double temperature,
                             const double pressure,
-                            const double transition_pressure,
-                            const double transition_pressure_width,
-                            const double transition_temperature,
-                            const double transition_slope);
+                            const unsigned int phase_index,
+                            const unsigned int composition_index);
 
-        const double temperature;
-        const double pressure;
-        const double transition_pressure;
-        const double transition_pressure_width;
-        const double transition_temperature;
-        const double transition_slope;
+        double temperature;
+        double pressure;
+        unsigned int phase_index;
+        unsigned int composition_index;
       };
 
-
       /**
-       * For material models with phase changes:
-       * Function to compute the percentage of material that has
-       * already undergone the phase transition to the higher-pressure
-       * material. This is done individually for each transition and
-       * summed up in the end.
-       */
+             * A simplified, incompressible equation of state where the density depends linearly
+             * on temperature and composition, using the equation
+             * $\rho(p,T,\mathfrak c) = \left(1-\alpha (T-T_0)\right)\rho_0 + \sum_i \Delta\rho_i \; \mathfrak c_i.$ "
+             * There is no pressure-dependence of the density, and all other material properties
+             * relating to the equation of state are assumed to be constant and identical for each
+             * composition.
+             */
       template <int dim>
-      double phase_function (const PhaseFunctionInputs &in);
-
-
-      /**
-       * A data structure with all inputs for the
-       * MaterialModel::Interface::compute_phase_function_derivative() method.
-       */
-      struct PhaseFunctionDerivativeInputs
+      class PhaseFunction: public ::aspect::SimulatorAccess<dim>
       {
-        /**
-        * Constructor. Initializes the various variables of this
-        * structure with the input values.
-        */
-        PhaseFunctionDerivativeInputs(const double temperature,
-                                      const double pressure,
-                                      const double transition_pressure,
-                                      const double transition_pressure_width,
-                                      const double transition_temperature,
-                                      const double transition_slope);
+        public:
+          /**
+           * For material models with phase changes:
+           * Function to compute the percentage of material that has
+           * already undergone the phase transition to the higher-pressure
+           * material. This is done individually for each transition and
+           * summed up in the end.
+           */
+          double phase_function (const PhaseFunctionInputs &in) const;
 
-        const double temperature;
-        const double pressure;
-        const double transition_pressure;
-        const double transition_pressure_width;
-        const double transition_temperature;
-        const double transition_slope;
+          /**
+           * For material models with phase changes:
+           * Function to compute the derivative of the phase function.
+           */
+          double phase_function_derivative (const PhaseFunctionInputs &in) const;
+
+          unsigned int n_phase_transitions () const;
+
+          double get_transition_slope (const unsigned int phase_index) const;
+
+          /**
+           * Declare the parameters this class takes through input files.
+           * The optional parameter @p n_compositions determines the maximum
+           * number of compositions the equation of state is set up with,
+           * in other words, how many compositional fields influence the
+           * density.
+           */
+          static
+          void
+          declare_parameters (ParameterHandler &prm);
+
+          /**
+           * Read the parameters this class declares from the parameter file.
+           * The optional parameter @p n_compositions determines the maximum
+           * number of compositions the equation of state is set up with,
+           * and should have the same value as the parameter with the same
+           * name in the declare_parameters() function.
+           */
+          void
+          parse_parameters (ParameterHandler &prm);
+
+
+        private:
+          /**
+           * A function to compute the phase transition pressure and pressure width
+           * if the phase transitions are defined by the user in terms of depth.
+           * This function should be moved to the material model utilities.
+           */
+          virtual
+          std::pair<double, double>
+          transition_depth_to_pressure (const Point<dim> &position,
+                                        const int phase) const;
+
+          // list of depth (or pressure), width and Clapeyron slopes
+          // for the different phase transitions
+          std::vector<double> transition_depths;
+          std::vector<double> transition_pressures;
+          std::vector<double> transition_temperatures;
+          std::vector<double> transition_widths;
+          std::vector<double> transition_pressure_widths;
+          std::vector<double> transition_slopes;
+
+          bool use_depth_instead_of_pressure;
       };
-
-
-      /**
-       * For material models with phase changes:
-       * Function to compute the derivative of the phase function.
-       */
-      template <int dim>
-      double phase_function_derivative (const PhaseFunctionDerivativeInputs &in);
-
     }
   }
 }
