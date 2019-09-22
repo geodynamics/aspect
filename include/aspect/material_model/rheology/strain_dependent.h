@@ -133,46 +133,7 @@ namespace aspect
 
         private:
 
-          /**
-           * Enumeration for selecting which type of weakening mechanism to use.
-           * For none, no strain weakening occurs.
-           * Otherwise, the material can be weakened based on the second
-           * invariant of the full finite strain tensor, the total accumulated
-           * strain, or the plastic strain and viscous strain can be tracked
-           * separately and used only for the corresponding (plastic or viscous)
-           * part of the viscosity computation.
-           */
           WeakeningMechanism weakening_mechanism;
-
-          /**
-           * Whether to use the accumulated strain to weaken
-           * plastic parameters cohesion and friction angle
-           * and/or viscous parameters diffusion and dislocation prefactor.
-           * Additional flags can be set to specifically use the plastic
-           * strain for the plastic parameters and the viscous strain
-           * for the viscous parameters, instead of the total strain
-           * for all of them.
-           */
-          bool use_strain_weakening;
-
-          /**
-           * Whether to use only the accumulated plastic strain to weaken
-           * plastic parameters cohesion and friction angle.
-           */
-          bool use_plastic_strain_weakening;
-
-          /**
-           * Whether to use the accumulated viscous strain to weaken
-           * the viscous parameters diffusion and dislocation prefactor.
-           */
-          bool use_viscous_strain_weakening;
-
-          /**
-           * Whether to track the full finite strain tensor and use an
-           * an invariant measure of its accumulated values to weaken
-           * the cohesion and internal angle of friction.
-           */
-          bool use_finite_strain_tensor;
 
           /**
            * The start of the strain interval (plastic or total strain)
