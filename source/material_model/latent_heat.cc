@@ -106,13 +106,21 @@ namespace aspect
             // Loop through phase transitions
             for (unsigned int phase=0; phase<number_of_phase_transitions; ++phase)
               {
-                const MaterialUtilities::PhaseFunctionInputs<dim> phase_in(temperature,
-                                                                      pressure,
-                                                                      in.position[i],
-                                                                      phase,
-                                                                      0);
+                const double depth = this->get_geometry_model().depth(in.position[i]);
+                const double pressure_depth_derivative = (depth > 0)
+                                                         ?
+                                                         pressure / depth
+                                                         :
+                                                         this->get_gravity_model().gravity_vector(in.position[i]).norm() * reference_rho;
 
-                const double phaseFunction = phase_function.phase_function(phase_in);
+                const MaterialUtilities::PhaseFunctionInputs<dim> phase_in(temperature,
+                                                                           pressure,
+                                                                           depth,
+                                                                           pressure_depth_derivative,
+                                                                           phase,
+                                                                           0);
+
+                const double phaseFunction = phase_function.get_value(phase_in);
 
                 // Note that for the densities we have a list of jumps, so the index used
                 // in the loop corresponds to the index of the phase transition. For the
@@ -156,13 +164,21 @@ namespace aspect
             if (this->get_adiabatic_conditions().is_initialized() && this->include_latent_heat())
               for (unsigned int phase=0; phase<number_of_phase_transitions; ++phase)
                 {
-                  const MaterialUtilities::PhaseFunctionInputs<dim> phase_in(temperature,
-                                                                        pressure,
-                                                                        in.position[i],
-                                                                        phase,
-                                                                        0);
+                  const double depth = this->get_geometry_model().depth(in.position[i]);
+                  const double pressure_depth_derivative = (pressure > 0)
+                                                           ?
+                                                           depth / pressure
+                                                           :
+                                                           this->get_gravity_model().gravity_vector(in.position[i]).norm() * reference_rho;
 
-                  const double PhaseFunctionDerivative = phase_function.phase_function_derivative(phase_in);
+                  const MaterialUtilities::PhaseFunctionInputs<dim> phase_in(temperature,
+                                                                             pressure,
+                                                                             depth,
+                                                                             pressure_depth_derivative,
+                                                                             phase,
+                                                                             0);
+
+                  const double PhaseFunctionDerivative = phase_function.get_derivative(phase_in);
                   const double clapeyron_slope = phase_function.get_transition_slope(phase);
 
                   double entropy_change = 0.0;
@@ -345,6 +361,14 @@ namespace aspect
             AssertThrow(false, ExcMessage("Error: At least one list that gives input parameters for the phase "
                                           "transitions has the wrong size. If there are n phase transitions you "
                                           "need to provide n density jumps, and n+1 viscosity prefactors."));
+
+          // as the phase viscosity prefactors are all applied multiplicatively on top of each other,
+          // we have to scale them here so that they are relative factors in comparison to the product
+          // of the prefactors of all phase above the current one
+          for (unsigned int phase=1; phase<phase_prefactors.size(); ++phase)
+            {
+              phase_prefactors[phase] /= phase_prefactors[phase-1];
+            }
 
           if (thermal_viscosity_exponent!=0.0 && reference_T == 0.0)
             AssertThrow(false, ExcMessage("Error: Material model latent heat with Thermal viscosity exponent can not have reference_T=0."));

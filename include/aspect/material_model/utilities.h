@@ -325,11 +325,10 @@ namespace aspect
       compute_drucker_prager_yielding (const DruckerPragerInputs &in,
                                        DruckerPragerOutputs &out);
 
-
-
       /**
        * A data structure with all inputs for the
-       * MaterialModel::Interface::compute_phase_function() method.
+       * PhaseFunction::phase_function_value() and
+       * PhaseFunction::phase_function_derivative() method.
        */
       template <int dim>
       struct PhaseFunctionInputs
@@ -340,54 +339,57 @@ namespace aspect
         */
         PhaseFunctionInputs(const double temperature,
                             const double pressure,
-                            const Point<dim> &position,
-                            const unsigned int phase_index,
-                            const unsigned int composition_index);
+                            const double depth,
+                            const double pressure_depth_derivative,
+                            const unsigned int phase_index);
 
         double temperature;
         double pressure;
-        Point<dim> position;
+        double depth;
+        double pressure_depth_derivative;
         unsigned int phase_index;
-        unsigned int composition_index;
       };
 
       /**
-             * A simplified, incompressible equation of state where the density depends linearly
-             * on temperature and composition, using the equation
-             * $\rho(p,T,\mathfrak c) = \left(1-\alpha (T-T_0)\right)\rho_0 + \sum_i \Delta\rho_i \; \mathfrak c_i.$ "
-             * There is no pressure-dependence of the density, and all other material properties
-             * relating to the equation of state are assumed to be constant and identical for each
-             * composition.
-             */
+       * A class that bundles functionality to compute the values and
+       * derivatives of phase functions. The class can handle arbitrary
+       * numbers of phase transitions, but the calling side has to determine
+       * how to use the return values of this object (e.g. in terms of
+       * density or viscosity).
+       */
       template <int dim>
       class PhaseFunction: public ::aspect::SimulatorAccess<dim>
       {
         public:
           /**
-           * For material models with phase changes:
-           * Function to compute the percentage of material that has
-           * already undergone the phase transition to the higher-pressure
-           * material. This is done individually for each transition and
-           * summed up in the end.
+           * Percentage of material that has already undergone the phase
+           * transition to the higher-pressure material (this is done
+           * individually for each transition and summed up in the end)
            */
-          double phase_function (const PhaseFunctionInputs<dim> &in) const;
+          double get_value (const PhaseFunctionInputs<dim> &in) const;
 
           /**
-           * For material models with phase changes:
-           * Function to compute the derivative of the phase function.
+           * Derivative of the phase function (argument is the pressure
+           * deviation).
            */
-          double phase_function_derivative (const PhaseFunctionInputs<dim> &in) const;
+          double get_derivative (const PhaseFunctionInputs<dim> &in) const;
 
+          /**
+           * The total number of phase transitions.
+           */
           unsigned int n_phase_transitions () const;
 
+          /**
+           * Return the Clapeyron slope (dp/dT of the transition) for
+           * phase transition number @p phase_index.
+           */
           double get_transition_slope (const unsigned int phase_index) const;
 
           /**
            * Declare the parameters this class takes through input files.
-           * The optional parameter @p n_compositions determines the maximum
-           * number of compositions the equation of state is set up with,
-           * in other words, how many compositional fields influence the
-           * density.
+           * Note that this class does not declare its own subsection,
+           * i.e. the parameters will be declared in the subsection that
+           * was active before calling this function.
            */
           static
           void
@@ -395,10 +397,9 @@ namespace aspect
 
           /**
            * Read the parameters this class declares from the parameter file.
-           * The optional parameter @p n_compositions determines the maximum
-           * number of compositions the equation of state is set up with,
-           * and should have the same value as the parameter with the same
-           * name in the declare_parameters() function.
+           * Note that this class does not declare its own subsection,
+           * i.e. the parameters will be parsed from the subsection that
+           * was active before calling this function.
            */
           void
           parse_parameters (ParameterHandler &prm);
@@ -406,17 +407,9 @@ namespace aspect
 
         private:
           /**
-           * A function to compute the phase transition pressure and pressure width
-           * if the phase transitions are defined by the user in terms of depth.
-           * This function should be moved to the material model utilities.
+           * List of depth (or pressure), width and Clapeyron slopes
+           * for the different phase transitions
            */
-          virtual
-          std::pair<double, double>
-          transition_depth_to_pressure (const Point<dim> &position,
-                                        const int phase) const;
-
-          // list of depth (or pressure), width and Clapeyron slopes
-          // for the different phase transitions
           std::vector<double> transition_depths;
           std::vector<double> transition_pressures;
           std::vector<double> transition_temperatures;
@@ -424,6 +417,12 @@ namespace aspect
           std::vector<double> transition_pressure_widths;
           std::vector<double> transition_slopes;
 
+          /**
+           * Whether to define the phase transitions based on depth, or pressure.
+           * Based on this parameter, either transition_depths and transition_width,
+           * or transition_pressures and transition_pressure_widths determine the
+           * depth of the phase transition.
+           */
           bool use_depth_instead_of_pressure;
       };
     }
