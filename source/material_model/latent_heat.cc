@@ -117,8 +117,7 @@ namespace aspect
                                                                            pressure,
                                                                            depth,
                                                                            pressure_depth_derivative,
-                                                                           phase,
-                                                                           0);
+                                                                           phase);
 
                 const double phaseFunction = phase_function.get_value(phase_in);
 
@@ -175,8 +174,7 @@ namespace aspect
                                                                              pressure,
                                                                              depth,
                                                                              pressure_depth_derivative,
-                                                                             phase,
-                                                                             0);
+                                                                             phase);
 
                   const double PhaseFunctionDerivative = phase_function.get_derivative(phase_in);
                   const double clapeyron_slope = phase_function.get_transition_slope(phase);

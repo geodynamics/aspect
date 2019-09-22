@@ -762,16 +762,14 @@ namespace aspect
                                                     const double pressure_,
                                                     const double depth_,
                                                     const double pressure_depth_derivative_,
-                                                    const unsigned int phase_index_,
-                                                    const unsigned int composition_index_)
+                                                    const unsigned int phase_index_)
 
         :
         temperature(temperature_),
         pressure(pressure_),
         depth(depth_),
         pressure_depth_derivative(pressure_depth_derivative_),
-        phase_index(phase_index_),
-        composition_index(composition_index_)
+        phase_index(phase_index_)
       {}
 
 
