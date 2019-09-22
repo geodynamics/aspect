@@ -106,8 +106,9 @@ namespace aspect
             // Loop through phase transitions
             for (unsigned int phase=0; phase<number_of_phase_transitions; ++phase)
               {
-                const MaterialUtilities::PhaseFunctionInputs phase_in(temperature,
+                const MaterialUtilities::PhaseFunctionInputs<dim> phase_in(temperature,
                                                                       pressure,
+                                                                      in.position[i],
                                                                       phase,
                                                                       0);
 
@@ -128,6 +129,7 @@ namespace aspect
                       phase_dependence += phaseFunction * density_jumps[phase] * (1.0 - composition[0]);
                     else if (transition_phases[phase] == 1) // 2nd compositional field
                       phase_dependence += phaseFunction * density_jumps[phase] * composition[0];
+
                     viscosity_phase_dependence *= 1. + phaseFunction * (phase_prefactors[phase]-1.);
                   }
               }
@@ -154,8 +156,9 @@ namespace aspect
             if (this->get_adiabatic_conditions().is_initialized() && this->include_latent_heat())
               for (unsigned int phase=0; phase<number_of_phase_transitions; ++phase)
                 {
-                  const MaterialUtilities::PhaseFunctionInputs phase_in(temperature,
+                  const MaterialUtilities::PhaseFunctionInputs<dim> phase_in(temperature,
                                                                         pressure,
+                                                                        in.position[i],
                                                                         phase,
                                                                         0);
 

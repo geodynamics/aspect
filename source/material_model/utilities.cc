@@ -23,6 +23,7 @@
 #include <aspect/simulator_access.h>
 
 #include <aspect/adiabatic_conditions/interface.h>
+#include <aspect/gravity_model/interface.h>
 
 #include <aspect/material_model/interface.h>
 #include <aspect/material_model/utilities.h>
@@ -756,14 +757,17 @@ namespace aspect
 
 
 
-      PhaseFunctionInputs::PhaseFunctionInputs(const double temperature_,
+      template <int dim>
+      PhaseFunctionInputs<dim>::PhaseFunctionInputs(const double temperature_,
                                                const double pressure_,
+                                               const Point<dim> &position_,
                                                const unsigned int phase_index_,
                                                const unsigned int composition_index_)
 
         :
         temperature(temperature_),
         pressure(pressure_),
+        position(position_),
         phase_index(phase_index_),
         composition_index(composition_index_)
       {}
@@ -771,84 +775,109 @@ namespace aspect
 
       template <int dim>
       double
-      PhaseFunction<dim>::phase_function (const PhaseFunctionInputs &in) const
+      PhaseFunction<dim>::phase_function (const PhaseFunctionInputs<dim> &in) const
       {
-        double transition_pressure;
-        double transition_pressure_width;
-
-        if (use_depth_instead_of_pressure)
+        // We need to convert the depth to pressure (depth-based phase transitions),
+        // or else use the pressure itself if the phase transition is defined based off a pressure.
+        if (!use_depth_instead_of_pressure)
           {
-            const std::pair<double, double> phase_transition_pressure_range =
-              transition_depth_to_pressure(Point<dim>(), in.phase_index);
+            // first, get the pressure at which the phase transition occurs normally
+            // and get the pressure change in the range of the phase transition
 
-            transition_pressure = phase_transition_pressure_range.first;
-            transition_pressure_width = phase_transition_pressure_range.second;
-          }
-        else
-          {
+            double transition_pressure;
+            double pressure_width;
+            double width_temp;
+
             transition_pressure = transition_pressures[in.phase_index];
-            transition_pressure_width = transition_pressure_widths[in.phase_index];
+            pressure_width = transition_pressure_widths[in.phase_index];
+            width_temp = transition_pressure_widths[in.phase_index];
+
+            // then calculate the deviation from the transition point (both in temperature
+            // and in pressure)
+            double pressure_deviation = in.pressure - transition_pressure
+                                        - transition_slopes[in.phase_index] * (in.temperature - transition_temperatures[in.phase_index]);
+
+            // last, calculate the percentage of material that has undergone the transition
+            // (also in dependence of the phase transition width - this is an input parameter)
+            double phase_func;
+            // use delta function for width = 0
+            if (width_temp==0)
+              (pressure_deviation > 0) ? phase_func = 1 : phase_func = 0;
+            else
+              phase_func = 0.5*(1.0 + std::tanh(pressure_deviation / pressure_width));
+            return phase_func;
           }
-
-        // Calculate the deviation from the phase transition point
-        // (pressure here), with the current pressure and temperature.
-        double pressure_deviation = in.pressure - transition_pressure -
-                                    transition_slopes[in.phase_index] * (in.temperature - transition_temperatures[in.phase_index]);
-
-        double phase_function;
-
-        // Calculate the percentage of material that has undergone the phase transition as a function
-        // of the pressure deviation and phase transition width (defined in terms of a pressure range here).
-        if (transition_pressure_width == 0)
-          (pressure_deviation > 0) ? phase_function = 1 : phase_function = 0;
+        // this part of the loop is only implemented for phase transitions based off of depth,
+        // since pressure-based transitions are included above.
         else
-          phase_function = 0.5*(1.0 + std::tanh(pressure_deviation / transition_pressure_width));
+          {
+            const double depth = this->get_geometry_model().depth(in.position);
 
-        return phase_function;
+            const double depth_deviation = (in.pressure > 0
+                                      ?
+                                      depth - transition_depths[in.phase_index]
+                                      - transition_slopes[in.phase_index] * (depth / in.pressure) * (in.temperature - transition_temperatures[in.phase_index])
+                                      :
+                                      depth - transition_depths[in.phase_index]
+                               - transition_slopes[in.phase_index] / (this->get_gravity_model().gravity_vector(in.position).norm() * 3300.00)
+                                      * (in.temperature - transition_temperatures[in.phase_index]));
+
+            double phase_func;
+            // use delta function for width = 0
+            if (transition_widths[in.phase_index]==0)
+              phase_func = (depth_deviation > 0) ? 1 : 0;
+            else
+              phase_func = 0.5*(1.0 + std::tanh(depth_deviation / transition_widths[in.phase_index]));
+            return phase_func;
+          }
       }
 
 
 
       template <int dim>
       double
-      PhaseFunction<dim>::phase_function_derivative (const PhaseFunctionInputs &in) const
+      PhaseFunction<dim>::phase_function_derivative (const PhaseFunctionInputs<dim> &in) const
       {
         double transition_pressure;
-        double transition_pressure_width;
+         double pressure_width;
+         double width_temp;
 
-        if (use_depth_instead_of_pressure)
-          {
-            const std::pair<double, double> phase_transition_pressure_range =
-              transition_depth_to_pressure(Point<dim>(), in.phase_index);
+         // we already should have the adiabatic conditions here
+         AssertThrow (this->get_adiabatic_conditions().is_initialized(),
+                      ExcMessage("need adiabatic conditions to incorporate phase transitions"));
 
-            transition_pressure = phase_transition_pressure_range.first;
-            transition_pressure_width = phase_transition_pressure_range.second;
-          }
-        else
-          {
-            transition_pressure = transition_pressures[in.phase_index];
-            transition_pressure_width = transition_pressure_widths[in.phase_index];
-          }
+         // first, get the pressure at which the phase transition occurs normally
 
-        // Calculate the pressure deviation from the transition pressure (both in temperature
-        // and in pressure)
-        double pressure_deviation = in.pressure - transition_pressure -
-                                    transition_slopes[in.phase_index] * (in.temperature - transition_temperatures[in.phase_index]);
+         // phase transition based off of depth
+         if (use_depth_instead_of_pressure)
+           {
+             const Point<dim,double> transition_point = this->get_geometry_model().representative_point(transition_depths[in.phase_index]);
+             const Point<dim,double> transition_plus_width = this->get_geometry_model().representative_point(transition_depths[in.phase_index] + transition_widths[in.phase_index]);
+             const Point<dim,double> transition_minus_width = this->get_geometry_model().representative_point(transition_depths[in.phase_index] - transition_widths[in.phase_index]);
+             transition_pressure = this->get_adiabatic_conditions().pressure(transition_point);
+             pressure_width = 0.5 * (this->get_adiabatic_conditions().pressure(transition_plus_width)
+                                     - this->get_adiabatic_conditions().pressure(transition_minus_width));
+             width_temp = transition_widths[in.phase_index];
+           }
+         // using pressure instead of depth to define the phase transition
+         else
+           {
+             transition_pressure = transition_pressures[in.phase_index];
+             pressure_width = transition_pressure_widths[in.phase_index];
+             width_temp = transition_pressure_widths[in.phase_index];
+           }
 
-        double phase_function_derivative;
+         // then calculate the deviation from the transition point (both in temperature
+         // and in pressure)
+         double pressure_deviation = in.pressure - transition_pressure
+                                     - transition_slopes[in.phase_index] * (in.temperature - transition_temperatures[in.phase_index]);
 
-        // Calculate the analytical derivative of the phase function
-        if (transition_pressure_width == 0)
-          {
-            phase_function_derivative = 0.;
-          }
-        else
-          {
-            phase_function_derivative = 0.5 / transition_pressure_width * (1.0 - std::tanh(pressure_deviation / transition_pressure_width)
-                                                                           * std::tanh(pressure_deviation / transition_pressure_width));
-          }
-
-        return phase_function_derivative;
+         // last, calculate the analytical derivative of the phase function
+         if (width_temp==0)
+           return 0;
+         else
+           return 0.5 / pressure_width * (1.0 - std::tanh(pressure_deviation / pressure_width)
+                                          * std::tanh(pressure_deviation / pressure_width));
       }
 
 
@@ -1031,6 +1060,7 @@ namespace aspect
   void \
   compute_drucker_prager_yielding<dim> (const DruckerPragerInputs &, \
                                         DruckerPragerOutputs &); \
+  template struct PhaseFunctionInputs<dim>; \
   template class PhaseFunction<dim>;
 
       ASPECT_INSTANTIATE(INSTANTIATE)

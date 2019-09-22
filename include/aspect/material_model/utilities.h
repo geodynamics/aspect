@@ -331,6 +331,7 @@ namespace aspect
        * A data structure with all inputs for the
        * MaterialModel::Interface::compute_phase_function() method.
        */
+      template <int dim>
       struct PhaseFunctionInputs
       {
         /**
@@ -339,11 +340,13 @@ namespace aspect
         */
         PhaseFunctionInputs(const double temperature,
                             const double pressure,
+                            const Point<dim> &position,
                             const unsigned int phase_index,
                             const unsigned int composition_index);
 
         double temperature;
         double pressure;
+        Point<dim> position;
         unsigned int phase_index;
         unsigned int composition_index;
       };
@@ -367,13 +370,13 @@ namespace aspect
            * material. This is done individually for each transition and
            * summed up in the end.
            */
-          double phase_function (const PhaseFunctionInputs &in) const;
+          double phase_function (const PhaseFunctionInputs<dim> &in) const;
 
           /**
            * For material models with phase changes:
            * Function to compute the derivative of the phase function.
            */
-          double phase_function_derivative (const PhaseFunctionInputs &in) const;
+          double phase_function_derivative (const PhaseFunctionInputs<dim> &in) const;
 
           unsigned int n_phase_transitions () const;
 
