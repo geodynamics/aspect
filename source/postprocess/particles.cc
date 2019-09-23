@@ -38,81 +38,160 @@ namespace aspect
       void
       ParticleOutput<dim>::build_patches(const dealii::Particles::ParticleHandler<dim> &particle_handler,
                                          const aspect::Particle::Property::ParticlePropertyInformation &property_information,
+                                         std::vector<std::string> &output_properties,
                                          const bool only_group_3d_vectors)
       {
         // First store the names of the data fields
         dataset_names.reserve(property_information.n_components()+1);
         dataset_names.push_back("id");
-
-        for (unsigned int field_index = 0; field_index < property_information.n_fields(); ++field_index)
+        if (std::find(output_properties.begin(), output_properties.end(), "all") != output_properties.end())
           {
-            const unsigned n_components = property_information.get_components_by_field_index(field_index);
-            const std::string field_name = property_information.get_field_name_by_index(field_index);
-
-            // HDF5 only supports 3D vector output, therefore only treat output fields as vector if we
-            // have a dimension of 3 and 3 components.
-            const bool field_is_vector = (!only_group_3d_vectors)
-                                         ?
-                                         n_components == dim
-                                         :
-                                         dim == 3 && n_components == 3;
-
-            // If it is a 1D element, or a vector, print just the name, otherwise append the index after an underscore
-            if ((n_components == 1) || field_is_vector)
-              for (unsigned int component_index=0; component_index<n_components; ++component_index)
-                dataset_names.push_back(field_name);
-            else
-              for (unsigned int component_index=0; component_index<n_components; ++component_index)
-                dataset_names.push_back(field_name + "_" + Utilities::to_string(component_index));
-          }
-
-
-        // Second store which of these data fields are vectors
-
-        for (unsigned int field_index = 0; field_index < property_information.n_fields(); ++field_index)
-          {
-            const unsigned n_components = property_information.get_components_by_field_index(field_index);
-
-            // If the property has dim components, we treat it as vector
-            if (n_components == dim)
+            // just output all properties
+            for (unsigned int field_index = 0; field_index < property_information.n_fields(); ++field_index)
               {
-                const unsigned int field_position = property_information.get_position_by_field_index(field_index);
+                const unsigned n_components = property_information.get_components_by_field_index(field_index);
                 const std::string field_name = property_information.get_field_name_by_index(field_index);
-#if DEAL_II_VERSION_GTE(9,1,0)
-                vector_datasets.push_back(std::make_tuple(field_position+1,
-                                                          field_position+n_components,
-                                                          field_name,
-                                                          DataComponentInterpretation::component_is_part_of_vector));
-#else
-                vector_datasets.push_back(std::make_tuple(field_position+1,
-                                                          field_position+n_components,
-                                                          field_name));
-#endif
+
+                // HDF5 only supports 3D vector output, therefore only treat output fields as vector if we
+                // have a dimension of 3 and 3 components.
+                const bool field_is_vector = (!only_group_3d_vectors)
+                                             ?
+                                             n_components == dim
+                                             :
+                                             dim == 3 && n_components == 3;
+
+                // If it is a 1D element, or a vector, print just the name, otherwise append the index after an underscore
+                if ((n_components == 1) || field_is_vector)
+                  for (unsigned int component_index=0; component_index<n_components; ++component_index)
+                    dataset_names.push_back(field_name);
+                else
+                  for (unsigned int component_index=0; component_index<n_components; ++component_index)
+                    dataset_names.push_back(field_name + "_" + Utilities::to_string(component_index));
               }
-          }
 
 
-        // Third build the actual patch data
-        patches.resize(particle_handler.n_locally_owned_particles());
+            // Second store which of these data fields are vectors
 
-        typename dealii::Particles::ParticleHandler<dim>::particle_iterator particle = particle_handler.begin();
-
-        for (unsigned int i=0; particle != particle_handler.end(); ++particle, ++i)
-          {
-            patches[i].vertices[0] = particle->get_location();
-            patches[i].patch_index = i;
-            patches[i].n_subdivisions = 1;
-            patches[i].data.reinit(property_information.n_components()+1,1);
-
-            patches[i].data(0,0) = particle->get_id();
-
-            if (particle->has_properties())
+            for (unsigned int field_index = 0; field_index < property_information.n_fields(); ++field_index)
               {
-                const ArrayView<const double> properties = particle->get_properties();
-                for (unsigned int property_index = 0; property_index < properties.size(); ++property_index)
-                  patches[i].data(property_index+1,0) = properties[property_index];
+                const unsigned n_components = property_information.get_components_by_field_index(field_index);
+
+                // If the property has dim components, we treat it as vector
+                if (n_components == dim)
+                  {
+                    const unsigned int field_position = property_information.get_position_by_field_index(field_index);
+                    const std::string field_name = property_information.get_field_name_by_index(field_index);
+#if DEAL_II_VERSION_GTE(9,1,0)
+                    vector_datasets.push_back(std::make_tuple(field_position+1,
+                                                              field_position+n_components,
+                                                              field_name,
+                                                              DataComponentInterpretation::component_is_part_of_vector));
+#else
+                    vector_datasets.push_back(std::make_tuple(field_position+1,
+                                                              field_position+n_components,
+                                                              field_name));
+#endif
+                  }
+              }
+
+
+            // Third build the actual patch data
+            patches.resize(particle_handler.n_locally_owned_particles());
+
+            typename dealii::Particles::ParticleHandler<dim>::particle_iterator particle = particle_handler.begin();
+
+            for (unsigned int i=0; particle != particle_handler.end(); ++particle, ++i)
+              {
+                patches[i].vertices[0] = particle->get_location();
+                patches[i].patch_index = i;
+                patches[i].n_subdivisions = 1;
+                patches[i].data.reinit(property_information.n_components()+1,1);
+
+                patches[i].data(0,0) = particle->get_id();
+
+                if (particle->has_properties())
+                  {
+                    const ArrayView<const double> properties = particle->get_properties();
+                    for (unsigned int property_index = 0; property_index < properties.size(); ++property_index)
+                      patches[i].data(property_index+1,0) = properties[property_index];
+                  }
               }
           }
+        else
+          {
+            unsigned int total_components = 0;
+            for (unsigned int field_index = 0; field_index < output_properties.size(); ++field_index)
+              {
+                const std::string field_name = output_properties[field_index];
+                const unsigned n_components = property_information.get_components_by_field_name(field_name);
+                total_components += n_components;
+
+                // HDF5 only supports 3D vector output, therefore only treat output fields as vector if we
+                // have a dimension of 3 and 3 components.
+                const bool field_is_vector = (!only_group_3d_vectors)
+                                             ?
+                                             n_components == dim
+                                             :
+                                             dim == 3 && n_components == 3;
+
+                // If it is a 1D element, or a vector, print just the name, otherwise append the index after an underscore
+                if ((n_components == 1) || field_is_vector)
+                  for (unsigned int component_index=0; component_index<n_components; ++component_index)
+                    dataset_names.push_back(field_name);
+                else
+                  for (unsigned int component_index=0; component_index<n_components; ++component_index)
+                    dataset_names.push_back(field_name + "_" + Utilities::to_string(component_index));
+              }
+
+
+            // Second store which of these data fields are vectors
+
+            for (unsigned int field_index = 0; field_index < output_properties.size(); ++field_index)
+              {
+                const std::string field_name = output_properties[field_index];
+                const unsigned n_components = property_information.get_components_by_field_name(field_name);
+
+                // If the property has dim components, we treat it as vector
+                if (n_components == dim)
+                  {
+                    const unsigned int field_position = property_information.get_position_by_field_name(field_name);
+#if DEAL_II_VERSION_GTE(9,1,0)
+                    vector_datasets.push_back(std::make_tuple(field_position+1,
+                                                              field_position+n_components,
+                                                              field_name,
+                                                              DataComponentInterpretation::component_is_part_of_vector));
+#else
+                    vector_datasets.push_back(std::make_tuple(field_position+1,
+                                                              field_position+n_components,
+                                                              field_name));
+#endif
+                  }
+              }
+
+
+            // Third build the actual patch data
+            patches.resize(particle_handler.n_locally_owned_particles());
+
+            typename dealii::Particles::ParticleHandler<dim>::particle_iterator particle = particle_handler.begin();
+
+            for (unsigned int i=0; particle != particle_handler.end(); ++particle, ++i)
+              {
+                patches[i].vertices[0] = particle->get_location();
+                patches[i].patch_index = i;
+                patches[i].n_subdivisions = 1;
+                patches[i].data.reinit(total_components+1,1);
+
+                patches[i].data(0,0) = particle->get_id();
+
+                if (particle->has_properties())
+                  {
+                    const ArrayView<const double> properties = particle->get_properties();
+                    for (unsigned int property_index = 0; property_index < output_properties.size(); ++property_index)
+                      patches[i].data(property_index+1,0) = properties[property_index];
+                  }
+              }
+          }
+
       }
 
       template <int dim>
@@ -369,6 +448,7 @@ namespace aspect
       internal::ParticleOutput<dim> data_out;
       data_out.build_patches(world.get_particle_handler(),
                              world.get_property_manager().get_data_info(),
+                             output_properties,
                              output_hdf5);
 
       // Now prepare everything for writing the output and choose output format
@@ -651,6 +731,13 @@ namespace aspect
                              "move this file to a network file system. If this variable is "
                              "set to a non-empty string it will be interpreted as a "
                              "temporary storage location.");
+
+          prm.declare_entry ("Output properties", "all",
+                             Patterns::Anything(),
+                             "A comma seperated list of particle property fields which "
+                             "are added to the output file. Set to `all` to output all "
+                             "available properties. "
+                             "Todo: do we need a way to generate all posibilites?");
         }
         prm.leave_subsection ();
       }
@@ -721,6 +808,8 @@ namespace aspect
                                      "there is a terminal available to move the files to their final location "
                                      "after writing. The system() command did not succeed in finding such a terminal."));
             }
+
+          output_properties = Utilities::split_string_list(prm.get("Output properties"));
         }
         prm.leave_subsection ();
       }

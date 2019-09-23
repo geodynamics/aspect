@@ -55,6 +55,7 @@ namespace aspect
            */
           void build_patches(const Particles::ParticleHandler<dim> &particle_handler,
                              const aspect::Particle::Property::ParticlePropertyInformation &property_information,
+                             std::vector<std::string> &output_properties,
                              const bool only_group_3d_vectors);
 
         private:
@@ -325,6 +326,12 @@ namespace aspect
          * The writer() function runs on this background thread.
          */
         Threads::Thread<void> background_thread;
+
+        /**
+         * Stores the particle property fields which are ouptut to the
+         * visualization file.
+         */
+        std::vector<std::string> output_properties;
 
         /**
          * A function that writes the text in the second argument to a file
