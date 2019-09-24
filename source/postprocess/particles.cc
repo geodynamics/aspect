@@ -78,9 +78,16 @@ namespace aspect
               {
                 const unsigned int field_position = property_information.get_position_by_field_index(field_index);
                 const std::string field_name = property_information.get_field_name_by_index(field_index);
+#if DEAL_II_VERSION_GTE(9,1,0)
+                vector_datasets.push_back(std::make_tuple(field_position+1,
+                                                          field_position+n_components,
+                                                          field_name,
+                                                          DataComponentInterpretation::component_is_part_of_vector));
+#else
                 vector_datasets.push_back(std::make_tuple(field_position+1,
                                                           field_position+n_components,
                                                           field_name));
+#endif
               }
           }
 
@@ -122,12 +129,24 @@ namespace aspect
         return dataset_names;
       }
 
+#if DEAL_II_VERSION_GTE(9,1,0)
+      template <int dim>
+      std::vector<
+      std::tuple<unsigned int,
+          unsigned int, std::string,
+          DataComponentInterpretation::DataComponentInterpretation> >
+          ParticleOutput<dim>::get_nonscalar_data_ranges () const
+      {
+        return vector_datasets;
+      }
+#else
       template <int dim>
       std::vector<std::tuple<unsigned int, unsigned int, std::string> >
       ParticleOutput<dim>::get_vector_data_ranges () const
       {
         return vector_datasets;
       }
+#endif
 
     }
 
