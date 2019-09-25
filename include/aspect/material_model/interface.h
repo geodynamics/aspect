@@ -887,6 +887,15 @@ namespace aspect
          * for the compositional field with the index c.
          */
         std::vector<std::vector<double> > prescribed_field_outputs;
+
+        /**
+         * Prescribed field outputs for the temperature field at the evaluation points
+         * that are passed to the instance of MaterialModel::Interface::evaluate()
+         * that fills the current object.
+         * prescribed_temperature_outputs[q] is the prescribed field output at the evaluation point q
+         * for the temperature.
+         */
+        std::vector<double> prescribed_temperature_outputs;
     };
 
 

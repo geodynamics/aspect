@@ -142,20 +142,43 @@ namespace aspect
   double Simulator<dim>::assemble_and_solve_temperature (const bool compute_initial_residual,
                                                          double *initial_residual)
   {
-    assemble_advection_system (AdvectionField::temperature());
-
-    if (compute_initial_residual)
+    switch (parameters.temperature_method)
       {
-        Assert(initial_residual != nullptr, ExcInternalError());
-        *initial_residual = system_rhs.block(introspection.block_indices.temperature).l2_norm();
+        case Parameters<dim>::AdvectionFieldMethod::fem_field:
+        {
+          assemble_advection_system (AdvectionField::temperature());
+
+          if (compute_initial_residual)
+            {
+              Assert(initial_residual != nullptr, ExcInternalError());
+              *initial_residual = system_rhs.block(introspection.block_indices.temperature).l2_norm();
+            }
+
+          const double current_residual = solve_advection(AdvectionField::temperature());
+          current_linearization_point.block(introspection.block_indices.temperature)
+            = solution.block(introspection.block_indices.temperature);
+
+          if ((initial_residual != nullptr) && (*initial_residual > 0))
+            return current_residual / *initial_residual;
+          break;
+        }
+        case Parameters<dim>::AdvectionFieldMethod::prescribed_field:
+        {
+          const AdvectionField adv_field (AdvectionField::temperature());
+
+          interpolate_material_output_into_advection_field(adv_field);
+
+          // Call the signal in case the user wants to do something with the variable:
+          SolverControl dummy;
+          signals.post_advection_solver(*this,
+                                        adv_field.is_temperature(),
+                                        adv_field.compositional_variable,
+                                        dummy);
+          break;
+        }
+        default:
+          AssertThrow(false,ExcNotImplemented());
       }
-
-    const double current_residual = solve_advection(AdvectionField::temperature());
-    current_linearization_point.block(introspection.block_indices.temperature)
-      = solution.block(introspection.block_indices.temperature);
-
-    if ((initial_residual != nullptr) && (*initial_residual > 0))
-      return current_residual / *initial_residual;
 
     return 0.0;
   }
@@ -188,7 +211,7 @@ namespace aspect
               // outputs into the prescribed field before we assemle and solve the equation
               if (method == Parameters<dim>::AdvectionFieldMethod::prescribed_field_with_diffusion)
                 {
-                  interpolate_material_output_into_compositional_field(c);
+                  interpolate_material_output_into_advection_field(adv_field);
 
                   // Also set the old_solution block to the prescribed field. The old
                   // solution is the one that is used to assemble the diffusion system in
@@ -222,7 +245,7 @@ namespace aspect
 
             case Parameters<dim>::AdvectionFieldMethod::prescribed_field:
             {
-              interpolate_material_output_into_compositional_field(c);
+              interpolate_material_output_into_advection_field(adv_field);
 
               // Call the signal in case the user wants to do something with the variable:
               SolverControl dummy;

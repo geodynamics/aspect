@@ -1255,23 +1255,23 @@ namespace aspect
 
 
       /**
-       * Interpolate material model outputs onto a compositional field. For the field
-       * whose index is given in the @p compositional_index, this function
+       * Interpolate material model outputs onto a advection field (temperature
+       * or composition). For the field indicated by @p adv_field, this function
        * asks the material model to fill a MaterialModel::MaterialModelOutputs
        * object that has an attached MaterialModel::PrescribedFieldOutputs
        * "additional outputs" object. The MaterialModel::MaterialModelInputs
        * object passed to the material model then contains the support points of
-       * the compositional field, thereby allowing the outputs to be
+       * the advection field, thereby allowing the outputs to be
        * interpolated to the finite element space and consequently into the
        * solution vector.
-       * This is useful for compositional fields whose advection mode is set
+       * This is useful for advection fields whose advection mode is set
        * to Parameters::AdvectionFieldMethod::prescribed_field or
        * Parameters::AdvectionFieldMethod::prescribed_field_with_diffusion.
        *
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
        */
-      void interpolate_material_output_into_compositional_field (const unsigned int compositional_index);
+      void interpolate_material_output_into_advection_field (const AdvectionField &adv_field);
 
 
       /**
