@@ -1,0 +1,86 @@
+# A testcase that demonstrates that interpolating material model
+# outputs into compositional fields works.
+#
+# The material model prescribes the temperature to be exactly the
+# pressure of the model
+# and is copied into the temperature field, 
+# so the minimum and maximum temperature should be 0.0 and 1.0, 
+# respecively.
+
+set Dimension = 2
+set End time                               = 0
+set Start time                             = 0
+set Adiabatic surface temperature          = 0
+set Surface pressure                       = 0
+set Use years in output instead of seconds = false
+
+set Temperature method                     = prescribed field
+
+subsection Boundary temperature model
+  set List of model names = box
+end
+
+subsection Gravity model
+  set Model name = vertical
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1
+    set Y extent = 1
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Function expression = 0.5
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 1.0
+  end
+end
+
+
+subsection Material model
+  set Model name = prescribed field material
+
+  subsection Simple model
+    set Reference density             = 1
+    set Reference specific heat       = 1
+    set Reference temperature         = 0
+    set Thermal conductivity          = 1e-6
+    set Thermal expansion coefficient = 0
+    set Viscosity                     = 1
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 4
+end
+
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = 0, 1, 2, 3
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, temperature statistics
+
+  subsection Visualization
+    set Interpolate output = false
+
+    set List of output variables      = density
+    set Number of grouped files       = 0
+    set Output format                 = vtu
+    set Time between graphical output = 0
+  end
+end
