@@ -1064,6 +1064,32 @@ namespace aspect
     }
     prm.leave_subsection ();
 
+    prm.enter_subsection ("Temperature field");
+    {
+      prm.declare_entry ("Temperature method", "field",
+                         Patterns::Selection("field|prescribed field"),
+                         "A comma separated list denoting the solution method of the "
+                         "temperature field. Each entry of the list must be "
+                         "one of the currently implemented field types."
+                         "\n\n"
+                         "These choices correspond to the following methods by which "
+                         "the temperature field gains its values:"
+                         "\\begin{itemize}"
+                         "\\item ``field'': If the temperature is marked with this "
+                         "method, then its values are computed in each time step by "
+                         "solving the temperature advection-diffusion equation. In other words, "
+                         "this corresponds to the usual notion of a temperature. "
+                         "\n"
+                         "\\item ``prescribed field'': The value of the temperature is determined "
+                         "in each time step from the material model. If a compositional field is "
+                         "marked with this method, then the value of a specific additional material "
+                         "model output, called the `PrescribedTemperatureOutputs' is interpolated "
+                         "onto the temperature. This field does not change otherwise, it is not "
+                         "advected with the flow. \n"
+                         "\\end{itemize}");
+    }
+    prm.leave_subsection();
+
     prm.enter_subsection ("Compositional fields");
     {
       prm.declare_entry ("Number of fields", "0",
@@ -1609,6 +1635,20 @@ namespace aspect
                                "can only select one of the two."));
     }
     prm.leave_subsection ();
+
+    prm.enter_subsection ("Temperature field");
+    {
+      std::string x_temperature_method
+        = prm.get ("Temperature method");
+
+      if (x_temperature_method == "field")
+        temperature_method = AdvectionFieldMethod::fem_field;
+      else if (x_temperature_method == "prescribed field")
+        temperature_method = AdvectionFieldMethod::prescribed_field;
+      else
+        AssertThrow(false,ExcNotImplemented());
+    }
+    prm.leave_subsection();
 
     prm.enter_subsection ("Compositional fields");
     {

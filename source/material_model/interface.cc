@@ -920,6 +920,25 @@ namespace aspect
         nth_prescribed_field_output[q] = prescribed_field_outputs[q][idx];
       return nth_prescribed_field_output;
     }
+
+
+
+    template<int dim>
+    PrescribedTemperatureOutputs<dim>::PrescribedTemperatureOutputs (const unsigned int n_points)
+      :
+      NamedAdditionalMaterialOutputs<dim>(std::vector<std::string>(1,"prescribed_temperature")),
+      prescribed_temperature_outputs(n_points, std::numeric_limits<double>::quiet_NaN())
+    {}
+
+
+
+    template<int dim>
+    std::vector<double>
+    PrescribedTemperatureOutputs<dim>::get_nth_output(const unsigned int idx) const
+    {
+      AssertIndexRange (idx, 1);
+      return prescribed_temperature_outputs;
+    }
   }
 }
 
@@ -985,6 +1004,8 @@ namespace aspect
   template class ReactionRateOutputs<dim>; \
   \
   template class PrescribedFieldOutputs<dim>; \
+  \
+  template class PrescribedTemperatureOutputs<dim>; \
   \
   namespace MaterialAveraging \
   { \

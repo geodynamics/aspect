@@ -589,6 +589,17 @@ namespace aspect
      */
 
     /**
+     * @name Parameters that have to do with the temperature field
+     * @{
+     */
+
+    typename AdvectionFieldMethod::Kind temperature_method;
+
+    /**
+     * @}
+     */
+
+    /**
      * @name Parameters that have to do with compositional fields
      * @{
      */
