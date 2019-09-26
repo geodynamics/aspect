@@ -934,7 +934,7 @@ namespace aspect
 
     template<int dim>
     std::vector<double>
-    PrescribedTemperatureOutputs<dim>::get_nth_output(const unsigned int /*idx*/) const
+    PrescribedTemperatureOutputs<dim>::get_nth_output(const unsigned int idx) const
     {
       AssertIndexRange (idx, 1);
       return prescribed_temperature_outputs;
