@@ -199,9 +199,12 @@ namespace aspect
             const unsigned int n_s12 = this->introspection().compositional_index_for_name("s12");
             const unsigned int n_s21 = this->introspection().compositional_index_for_name("s21");
             const unsigned int n_s22 = this->introspection().compositional_index_for_name("s22");
-            AssertThrow(n_s12>n_s11 && n_s21>n_s12 && n_s22 > n_s21,
-                        ExcMessage("Material model visco_plastic with strain weakening using the full strain tensor only works if there "
-                                   "are compositional fields called sij, with i=1,..,dim and j=1,...,dim in the order s11,s12,s21 etc."));
+            if (dim==2)
+              {
+                AssertThrow(n_s12>n_s11 && n_s21>n_s12 && n_s22 > n_s21,
+                            ExcMessage("Material model visco_plastic with strain weakening using the full strain tensor only works if there "
+                                       "are compositional fields called sij, with i=1,..,dim and j=1,...,dim in the order s11,s12,s21 etc."));
+              }
             if (dim==3)
               {
                 const unsigned int n_s13 = this->introspection().compositional_index_for_name("s13");
@@ -209,10 +212,10 @@ namespace aspect
                 const unsigned int n_s31 = this->introspection().compositional_index_for_name("s31");
                 const unsigned int n_s32 = this->introspection().compositional_index_for_name("s32");
                 const unsigned int n_s33 = this->introspection().compositional_index_for_name("s33");
-                AssertThrow(n_s23 > n_s13 && n_s31 > n_s23 && n_s32 > n_s31 && n_s33 > n_s32,
+                AssertThrow(n_s12>n_s11 && n_s13>n_s12 && n_s21>n_s13 && n_s22>n_s21 && n_s23>n_s22 && n_s31>n_s23 && n_s32>n_s31 && n_s33>n_s32,
                             ExcMessage("Material model visco_plastic with strain weakening using the full strain tensor only works if there "
                                        "are compositional fields called sij, with i=1,..,dim and j=1,...,dim in the order s11,s12,s21 etc."));
-                AssertThrow(n_s33 == n_s13+s-1, ExcMessage("The strain tensor components should be represented by consecutive fields."));
+                AssertThrow(n_s33 == n_s11+s-1, ExcMessage("The strain tensor components should be represented by consecutive fields."));
               }
           }
 
