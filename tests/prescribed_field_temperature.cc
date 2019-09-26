@@ -36,12 +36,12 @@ namespace aspect
     {
       Simple<dim>::evaluate(in, out);
 
-      // set up variable to interpolate prescribed field outputs onto compositional fields
-      PrescribedFieldOutputs<dim> *prescribed_field_out = out.template get_additional_output<PrescribedFieldOutputs<dim> >();
+      // set up variable to interpolate prescribed field outputs onto temperature field
+      PrescribedTemperatureOutputs<dim> *prescribed_temperature_out = out.template get_additional_output<PrescribedTemperatureOutputs<dim> >();
 
-      if (prescribed_field_out != NULL)
+      if (prescribed_temperature_out != NULL)
         for (unsigned int i=0; i < in.position.size(); ++i)
-          prescribed_field_out->prescribed_temperature_outputs[i] = in.pressure[i];
+          prescribed_temperature_out->prescribed_temperature_outputs[i] = in.pressure[i];
     }
 
 
@@ -49,11 +49,11 @@ namespace aspect
     void
     PrescribedFieldMaterial<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      if (out.template get_additional_output<PrescribedFieldOutputs<dim> >() == NULL)
+      if (out.template get_additional_output<PrescribedTemperatureOutputs<dim> >() == NULL)
         {
           const unsigned int n_points = out.viscosities.size();
           out.additional_outputs.push_back(
-            std_cxx14::make_unique<MaterialModel::PrescribedFieldOutputs<dim>> (n_points, this->n_compositional_fields()));
+            std_cxx14::make_unique<MaterialModel::PrescribedTemperatureOutputs<dim>> (n_points));
         }
     }
   }

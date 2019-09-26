@@ -1804,7 +1804,7 @@ namespace aspect
 
     // Create an FEValues object that allows us to interpolate onto the solution
     // vector. To make this happen, we need to have a quadrature formula that
-    // consists of the support points of the compositional field finite element
+    // consists of the support points of the advection field finite element
     const Quadrature<dim> quadrature(dof_handler.get_fe().base_element(adv_field.base_element(introspection))
                                      .get_unit_support_points());
 
@@ -1822,13 +1822,26 @@ namespace aspect
 
     MaterialModel::PrescribedFieldOutputs<dim> *prescribed_field_out
       = out.template get_additional_output<MaterialModel::PrescribedFieldOutputs<dim> >();
+    MaterialModel::PrescribedTemperatureOutputs<dim> *prescribed_temperature_out
+      = out.template get_additional_output<MaterialModel::PrescribedTemperatureOutputs<dim> >();
 
-    // check if the material model computes prescribed field outputs
-    AssertThrow(prescribed_field_out != nullptr,
-                ExcMessage("You are trying to use a prescribed advection field, "
-                           "but the material model you use does not support interpolating properties "
-                           "(it does not create PrescribedFieldOutputs, which is required for this "
-                           "advection field type)."));
+    // check if the material model computes the correct prescribed field outputs
+    if (adv_field.is_temperature())
+      {
+        AssertThrow(prescribed_temperature_out != nullptr,
+                    ExcMessage("You are trying to use a prescribed temperature field, "
+                               "but the material model you use does not support interpolating properties "
+                               "(it does not create PrescribedTemperatureOutputs, which is required for this "
+                               "temperature field type)."));
+      }
+    else
+      {
+        AssertThrow(prescribed_field_out != nullptr,
+                    ExcMessage("You are trying to use a prescribed advection field, "
+                               "but the material model you use does not support interpolating properties "
+                               "(it does not create PrescribedFieldOutputs, which is required for this "
+                               "advection field type)."));
+      }
 
     // Make a loop first over all cells, and then over all degrees of freedom in each element
     // to interpolate material properties onto a solution vector.
@@ -1865,13 +1878,13 @@ namespace aspect
                 {
                   if (adv_field.is_temperature())
                     {
-                      Assert(numbers::is_finite(prescribed_field_out->prescribed_temperature_outputs[j]),
+                      Assert(numbers::is_finite(prescribed_temperature_out->prescribed_temperature_outputs[j]),
                              ExcMessage("You are trying to use a prescribed advection field, "
                                         "but the material model you use does not fill the PrescribedFieldOutputs "
                                         "for your prescribed field, which is required for this method."));
 
                       distributed_vector(local_dof_indices[dof_idx])
-                        = prescribed_field_out->prescribed_temperature_outputs[j];
+                        = prescribed_temperature_out->prescribed_temperature_outputs[j];
                     }
                   else
                     {

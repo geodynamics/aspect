@@ -1255,11 +1255,13 @@ namespace aspect
 
 
       /**
-       * Interpolate material model outputs onto a advection field (temperature
-       * or composition). For the field indicated by @p adv_field, this function
+       * Interpolate material model outputs onto an advection field (temperature
+       * or composition). For the field identified by the AdvectionField @p adv_field, this function
        * asks the material model to fill a MaterialModel::MaterialModelOutputs
        * object that has an attached MaterialModel::PrescribedFieldOutputs
-       * "additional outputs" object. The MaterialModel::MaterialModelInputs
+       * "additional outputs" object (for composition) or an attached
+       * MaterialModel::PrescribedTemperatureOutputs (for temperature).
+       * The MaterialModel::MaterialModelInputs
        * object passed to the material model then contains the support points of
        * the advection field, thereby allowing the outputs to be
        * interpolated to the finite element space and consequently into the

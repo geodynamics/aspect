@@ -862,11 +862,8 @@ namespace aspect
       std::vector<std::string> make_prescribed_field_output_names(const unsigned int n_comp)
       {
         std::vector<std::string> names;
-        names.push_back("prescribed_temperature_output");
-
         for (unsigned int c=0; c<n_comp; ++c)
           names.push_back("prescribed_field_output_C" + Utilities::int_to_string(c));
-
         return names;
       }
     }
@@ -905,8 +902,7 @@ namespace aspect
                                                          const unsigned int n_comp)
       :
       NamedAdditionalMaterialOutputs<dim>(make_prescribed_field_output_names(n_comp)),
-      prescribed_field_outputs(n_points, std::vector<double>(n_comp, std::numeric_limits<double>::quiet_NaN())),
-      prescribed_temperature_outputs(n_points, std::numeric_limits<double>::quiet_NaN())
+      prescribed_field_outputs(n_points, std::vector<double>(n_comp, std::numeric_limits<double>::quiet_NaN()))
     {}
 
 
@@ -915,21 +911,33 @@ namespace aspect
     std::vector<double>
     PrescribedFieldOutputs<dim>::get_nth_output(const unsigned int idx) const
     {
-      if (idx == 0)
-        return prescribed_temperature_outputs;
-      else
-        {
-          // we have to extract the prescribed field outputs for one particular compositional
-          // field, but the vector in the material model outputs is sorted so that the
-          // number of evaluation points (and not the compositional fields) is the outer
-          // vector
-          std::vector<double> nth_prescribed_field_output(prescribed_field_outputs.size());
-          for (unsigned int q=0; q<prescribed_field_outputs.size(); ++q)
-            nth_prescribed_field_output[q] = prescribed_field_outputs[q][idx-1];
-          return nth_prescribed_field_output;
-        }
+      // we have to extract the prescribed field outputs for one particular compositional
+      // field, but the vector in the material model outputs is sorted so that the
+      // number of evaluation points (and not the compositional fields) is the outer
+      // vector
+      std::vector<double> nth_prescribed_field_output(prescribed_field_outputs.size());
+      for (unsigned int q=0; q<prescribed_field_outputs.size(); ++q)
+        nth_prescribed_field_output[q] = prescribed_field_outputs[q][idx];
+      return nth_prescribed_field_output;
+    }
 
-      return std::vector<double>();
+
+
+    template<int dim>
+    PrescribedTemperatureOutputs<dim>::PrescribedTemperatureOutputs (const unsigned int n_points)
+      :
+      NamedAdditionalMaterialOutputs<dim>(std::vector<std::string>(1,"prescribed_temperature")),
+      prescribed_temperature_outputs(n_points, std::numeric_limits<double>::quiet_NaN())
+    {}
+
+
+
+    template<int dim>
+    std::vector<double>
+    PrescribedTemperatureOutputs<dim>::get_nth_output(const unsigned int /*idx*/) const
+    {
+      AssertIndexRange (idx, 1);
+      return prescribed_temperature_outputs;
     }
   }
 }
@@ -996,6 +1004,8 @@ namespace aspect
   template class ReactionRateOutputs<dim>; \
   \
   template class PrescribedFieldOutputs<dim>; \
+  \
+  template class PrescribedTemperatureOutputs<dim>; \
   \
   namespace MaterialAveraging \
   { \

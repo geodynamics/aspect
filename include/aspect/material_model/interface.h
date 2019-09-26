@@ -887,6 +887,28 @@ namespace aspect
          * for the compositional field with the index c.
          */
         std::vector<std::vector<double> > prescribed_field_outputs;
+    };
+
+    /**
+     * Additional output fields for prescribed temperature outputs to be added to
+     * the MaterialModel::MaterialModelOutputs structure and filled in the
+     * MaterialModel::Interface::evaluate() function.
+     *
+     * This structure is used if the temperature field is solved using the
+     * advection scheme "prescribed field".
+     * (See Parameters::AdvectionFieldMethod for more information.)
+     * Then, while updating the temperature field, a structure of this
+     * type is created, given to the material model, and the material model
+     * outputs will finally be interpolated onto the
+     * temperature field.
+     */
+    template <int dim>
+    class PrescribedTemperatureOutputs : public NamedAdditionalMaterialOutputs<dim>
+    {
+      public:
+        PrescribedTemperatureOutputs (const unsigned int n_points);
+
+        virtual std::vector<double> get_nth_output(const unsigned int idx) const;
 
         /**
          * Prescribed field outputs for the temperature field at the evaluation points
@@ -897,7 +919,6 @@ namespace aspect
          */
         std::vector<double> prescribed_temperature_outputs;
     };
-
 
     /**
      * A class for additional output fields to be added to the RHS of the
