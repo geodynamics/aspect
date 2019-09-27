@@ -834,7 +834,7 @@ namespace aspect
                                      "after writing. The system() command did not succeed in finding such a terminal."));
             }
 
-          exclude_output_properties = Utilities::split_string_list(prm.get("Output properties"));
+          exclude_output_properties = Utilities::split_string_list(prm.get("Exclude output properties"));
         }
         prm.leave_subsection ();
       }
