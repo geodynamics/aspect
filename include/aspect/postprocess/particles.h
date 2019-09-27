@@ -55,7 +55,7 @@ namespace aspect
            */
           void build_patches(const Particles::ParticleHandler<dim> &particle_handler,
                              const aspect::Particle::Property::ParticlePropertyInformation &property_information,
-                             std::vector<std::string> &output_properties,
+                             std::vector<std::string> &exclude_output_properties,
                              const bool only_group_3d_vectors);
 
         private:
@@ -331,7 +331,7 @@ namespace aspect
          * Stores the particle property fields which are ouptut to the
          * visualization file.
          */
-        std::vector<std::string> output_properties;
+        std::vector<std::string> exclude_output_properties;
 
         /**
          * A function that writes the text in the second argument to a file
