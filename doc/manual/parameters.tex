@@ -14837,23 +14837,6 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 
 
 {\it Possible values:} Any one of none, finite strain tensor, total strain, plastic weakening with plastic strain only, plastic weakening with total strain only, plastic weakening with plastic strain and viscous weakening with viscous strain, viscous weakening with viscous strain only, default
-\item {\it Parameter name:} {\tt Stress exponents for diffusion creep}
-\phantomsection\label{parameters:Material model/Visco Plastic/Stress exponents for diffusion creep}
-\label{parameters:Material_20model/Visco_20Plastic/Stress_20exponents_20for_20diffusion_20creep}
-
-
-\index[prmindex]{Stress exponents for diffusion creep}
-\index[prmindexfull]{Material model!Visco Plastic!Stress exponents for diffusion creep}
-{\it Value:} 1
-
-
-{\it Default:} 1
-
-
-{\it Description:} List of stress exponents, $n_{\text{diffusion}}$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value.  Units: None
-
-
-{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
 \item {\it Parameter name:} {\tt Stress exponents for dislocation creep}
 \phantomsection\label{parameters:Material model/Visco Plastic/Stress exponents for dislocation creep}
 \label{parameters:Material_20model/Visco_20Plastic/Stress_20exponents_20for_20dislocation_20creep}
@@ -14922,74 +14905,6 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 
 
 {\it Possible values:} Any string
-\item {\it Parameter name:} {\tt Use finite strain tensor}
-\phantomsection\label{parameters:Material model/Visco Plastic/Use finite strain tensor}
-\label{parameters:Material_20model/Visco_20Plastic/Use_20finite_20strain_20tensor}
-
-
-\index[prmindex]{Use finite strain tensor}
-\index[prmindexfull]{Material model!Visco Plastic!Use finite strain tensor}
-{\it Value:} default
-
-
-{\it Default:} default
-
-
-{\it Description:} Track and use the full finite strain tensor for strain weakening. Units: None. By default, this parameter is set to false. The default option is there to make sure that the parameter is not used at the same time as the ``Strain weakening mechanism'' parameter, which has the same functionality. This parameter is deprecated; please use ``Strain weakening mechanism'' instead!
-
-
-{\it Possible values:} Any one of true, false, default
-\item {\it Parameter name:} {\tt Use plastic strain weakening}
-\phantomsection\label{parameters:Material model/Visco Plastic/Use plastic strain weakening}
-\label{parameters:Material_20model/Visco_20Plastic/Use_20plastic_20strain_20weakening}
-
-
-\index[prmindex]{Use plastic strain weakening}
-\index[prmindexfull]{Material model!Visco Plastic!Use plastic strain weakening}
-{\it Value:} default
-
-
-{\it Default:} default
-
-
-{\it Description:} Apply strain weakening to cohesion and internal angle of friction based on accumulated finite plastic strain only. Units: None. By default, this parameter is set to false. The default option is there to make sure that the parameter is not used at the same time as the ``Strain weakening mechanism'' parameter, which has the same functionality. This parameter is deprecated; please use ``Strain weakening mechanism'' instead!
-
-
-{\it Possible values:} Any one of true, false, default
-\item {\it Parameter name:} {\tt Use strain weakening}
-\phantomsection\label{parameters:Material model/Visco Plastic/Use strain weakening}
-\label{parameters:Material_20model/Visco_20Plastic/Use_20strain_20weakening}
-
-
-\index[prmindex]{Use strain weakening}
-\index[prmindexfull]{Material model!Visco Plastic!Use strain weakening}
-{\it Value:} default
-
-
-{\it Default:} default
-
-
-{\it Description:} Apply strain weakening to viscosity, cohesion and internal angle of friction based on accumulated finite strain.  Units: None. By default, this parameter is set to false. The default option is there to make sure that the parameter is not used at the same time as the ``Strain weakening mechanism'' parameter, which has the same functionality. This parameter is deprecated; please use ``Strain weakening mechanism'' instead!
-
-
-{\it Possible values:} Any one of true, false, default
-\item {\it Parameter name:} {\tt Use viscous strain weakening}
-\phantomsection\label{parameters:Material model/Visco Plastic/Use viscous strain weakening}
-\label{parameters:Material_20model/Visco_20Plastic/Use_20viscous_20strain_20weakening}
-
-
-\index[prmindex]{Use viscous strain weakening}
-\index[prmindexfull]{Material model!Visco Plastic!Use viscous strain weakening}
-{\it Value:} default
-
-
-{\it Default:} default
-
-
-{\it Description:} Apply strain weakening to diffusion and dislocation viscosity prefactors based on accumulated finite viscous strain only. Units: None. By default, this parameter is set to false. The default option is there to make sure that the parameter is not used at the same time as the ``Strain weakening mechanism'' parameter, which has the same functionality. This parameter is deprecated; please use ``Strain weakening mechanism'' instead!
-
-
-{\it Possible values:} Any one of true, false, default
 \item {\it Parameter name:} {\tt Viscosity averaging scheme}
 \phantomsection\label{parameters:Material model/Visco Plastic/Viscosity averaging scheme}
 \label{parameters:Material_20model/Visco_20Plastic/Viscosity_20averaging_20scheme}
@@ -20384,6 +20299,33 @@ The default value should be good for relatively simple models, but in particular
 
 
 {\it Possible values:} A boolean value (true or false)
+\end{itemize}
+
+\subsection{Parameters in section \tt Temperature field}
+\label{parameters:Temperature_20field}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Temperature method}
+\phantomsection\label{parameters:Temperature field/Temperature method}
+\label{parameters:Temperature_20field/Temperature_20method}
+
+
+\index[prmindex]{Temperature method}
+\index[prmindexfull]{Temperature field!Temperature method}
+{\it Value:} field
+
+
+{\it Default:} field
+
+
+{\it Description:} A comma separated list denoting the solution method of the temperature field. Each entry of the list must be one of the currently implemented field types.
+
+These choices correspond to the following methods by which the temperature field gains its values:\begin{itemize}\item ``field'': If the temperature is marked with this method, then its values are computed in each time step by solving the temperature advection-diffusion equation. In other words, this corresponds to the usual notion of a temperature. 
+\item ``prescribed field'': The value of the temperature is determined in each time step from the material model. If a compositional field is marked with this method, then the value of a specific additional material model output, called the `PrescribedTemperatureOutputs' is interpolated onto the temperature. This field does not change otherwise, it is not advected with the flow. 
+\end{itemize}
+
+
+{\it Possible values:} Any one of field, prescribed field
 \end{itemize}
 
 \subsection{Parameters in section \tt Termination criteria}
