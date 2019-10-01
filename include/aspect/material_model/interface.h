@@ -537,6 +537,12 @@ namespace aspect
        */
       template <class AdditionalOutputType>
       const AdditionalOutputType *get_additional_output() const;
+
+      /**
+       * Steal the additional outputs from @p other. The destination (@p
+       * this), is expected to currently have no additional outputs.
+       */
+      void move_additional_outputs_from(MaterialModelOutputs<dim> &other);
     };
 
 
@@ -1332,6 +1338,14 @@ namespace aspect
             return result;
         }
       return nullptr;
+    }
+
+
+    template <int dim>
+    void MaterialModelOutputs<dim>::move_additional_outputs_from(MaterialModelOutputs<dim> &other)
+    {
+      Assert(this->additional_outputs.empty(), ExcMessage("Destination of move needs to be empty!"));
+      this->additional_outputs = std::move(other.additional_outputs);
     }
 
 
