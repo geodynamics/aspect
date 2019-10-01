@@ -96,8 +96,8 @@ namespace aspect
      * $\mu$ is the shear modulus and $\overset{\triangledown}{\tau}$ is the
      * Jaumann corotational stress rate. If plasticity is included the
      * deviatoric rate of deformation may be writted as:
-     * $\hat{D} = \hat{D_{e}} + \hat{D_{v}} + \hat{D_{p}$, where $\hat{D_{p}$
-     * is the plastic component. As defined in the second paragraph, $\hat{D_{p}$
+     * $\hat{D} = \hat{D_{e}} + \hat{D_{v}} + \hat{D_{p}}$, where $\hat{D_{p}}$
+     * is the plastic component. As defined in the second paragraph, $\hat{D_{p}}$
      * decomposes to $\frac{\tau_{y}}{2\eta_{y}}$, where $\tau_{y}$ is the yield
      * stress and $\eta_{y}$ is the viscosity rescaled to the yield surface.
      *
@@ -110,7 +110,7 @@ namespace aspect
      * \frac{\partial V_{j}}{\partial x_{i}} \right )$.
      *
      * The Jaumann stress-rate can also be approximated using terms from the time
-     * at the previous time step ($t$) and current time step ($t + \Delta t_^{e}$):
+     * at the previous time step ($t$) and current time step ($t + \Delta t^{e}$):
      * $\smash[t]{\overset{\triangledown}{\tau}}^{t + \Delta t^{e}} \approx
      * \frac{\tau^{t + \Delta t^{e} - \tau^{t}}}{\Delta t^{e}} -
      * W^{t}\tau^{t} + \tau^{t}W^{t}$.
