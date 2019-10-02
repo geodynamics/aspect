@@ -101,10 +101,9 @@ namespace aspect
             double phase_dependence = 0.0;
             double viscosity_phase_dependence = 1.0;
 
-            const unsigned int number_of_phase_transitions = phase_function.n_phase_transitions();
 
             // Loop through phase transitions
-            for (unsigned int phase=0; phase<number_of_phase_transitions; ++phase)
+            for (unsigned int phase=0; phase<phase_function.n_phase_transitions(); ++phase)
               {
                 const double depth = this->get_geometry_model().depth(in.position[i]);
                 const double pressure_depth_derivative = (depth > 0)
@@ -119,7 +118,7 @@ namespace aspect
                                                                            pressure_depth_derivative,
                                                                            phase);
 
-                const double phaseFunction = phase_function.get_value(phase_in);
+                const double phaseFunction = phase_function.compute_value(phase_in);
 
                 // Note that for the densities we have a list of jumps, so the index used
                 // in the loop corresponds to the index of the phase transition. For the
@@ -157,11 +156,8 @@ namespace aspect
             double entropy_gradient_temperature = 0.0;
             const double rho = out.densities[i];
 
-            // Number of phase transitions
-            const unsigned int number_of_phase_transitions = phase_function.n_phase_transitions();
-
             if (this->get_adiabatic_conditions().is_initialized() && this->include_latent_heat())
-              for (unsigned int phase=0; phase<number_of_phase_transitions; ++phase)
+              for (unsigned int phase=0; phase<phase_function.n_phase_transitions(); ++phase)
                 {
                   const double depth = this->get_geometry_model().depth(in.position[i]);
                   const double pressure_depth_derivative = (pressure > 0)
@@ -176,7 +172,7 @@ namespace aspect
                                                                              pressure_depth_derivative,
                                                                              phase);
 
-                  const double PhaseFunctionDerivative = phase_function.get_derivative(phase_in);
+                  const double PhaseFunctionDerivative = phase_function.compute_derivative(phase_in);
                   const double clapeyron_slope = phase_function.get_transition_slope(phase);
 
                   double entropy_change = 0.0;
@@ -353,12 +349,16 @@ namespace aspect
           phase_prefactors = Utilities::string_to_double
                              (Utilities::split_string_list(prm.get ("Viscosity prefactors")));
 
-          if (density_jumps.size() != phase_function.n_phase_transitions() ||
-              transition_phases.size() != phase_function.n_phase_transitions() ||
-              phase_prefactors.size() != phase_function.n_phase_transitions()+1)
-            AssertThrow(false, ExcMessage("Error: At least one list that gives input parameters for the phase "
-                                          "transitions has the wrong size. If there are n phase transitions you "
-                                          "need to provide n density jumps, and n+1 viscosity prefactors."));
+          const unsigned int n_transitions = phase_function.n_phase_transitions();
+          if (density_jumps.size() != n_transitions ||
+              transition_phases.size() != n_transitions ||
+              phase_prefactors.size() != n_transitions+1)
+            AssertThrow(false, ExcMessage("Error: At least one list that provides input parameters for phase "
+                                          "transitions has the wrong size. The phase function object reports that "
+                                          "there are " + std::to_string(n_transitions) + " transitions, "
+                                          "therefore the material model expects " + std::to_string(n_transitions) +
+                                          " density jumps and corresponding phases, and "
+                                          + std::to_string(n_transitions+1) + " viscosity prefactors."));
 
           // as the phase viscosity prefactors are all applied multiplicatively on top of each other,
           // we have to scale them here so that they are relative factors in comparison to the product

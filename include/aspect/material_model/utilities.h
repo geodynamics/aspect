@@ -366,16 +366,16 @@ namespace aspect
            * transition to the higher-pressure material (this is done
            * individually for each transition and summed up in the end)
            */
-          double get_value (const PhaseFunctionInputs<dim> &in) const;
+          double compute_value (const PhaseFunctionInputs<dim> &in) const;
 
           /**
-           * Derivative of the phase function (argument is the pressure
-           * deviation).
+           * Return the derivative of the phase function with respect to
+           * pressure.
            */
-          double get_derivative (const PhaseFunctionInputs<dim> &in) const;
+          double compute_derivative (const PhaseFunctionInputs<dim> &in) const;
 
           /**
-           * The total number of phase transitions.
+           * Return the total number of phase transitions.
            */
           unsigned int n_phase_transitions () const;
 

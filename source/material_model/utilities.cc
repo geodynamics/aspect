@@ -775,7 +775,7 @@ namespace aspect
 
       template <int dim>
       double
-      PhaseFunction<dim>::get_value (const PhaseFunctionInputs<dim> &in) const
+      PhaseFunction<dim>::compute_value (const PhaseFunctionInputs<dim> &in) const
       {
         // the percentage of material that has undergone the transition
         double function_value;
@@ -813,15 +813,18 @@ namespace aspect
 
       template <int dim>
       double
-      PhaseFunction<dim>::get_derivative (const PhaseFunctionInputs<dim> &in) const
+      PhaseFunction<dim>::compute_derivative (const PhaseFunctionInputs<dim> &in) const
       {
         double transition_pressure;
         double pressure_width;
         double width_temp;
 
         // we already should have the adiabatic conditions here
-        AssertThrow (this->get_adiabatic_conditions().is_initialized(),
-                     ExcMessage("need adiabatic conditions to incorporate phase transitions"));
+        Assert (this->get_adiabatic_conditions().is_initialized(),
+                ExcMessage("The adiabatic conditions need to be already initialized "
+                           "to calculate the derivative of phase functions. Either call this "
+                           "function after the reference conditions have been computed, or implement "
+                           "a workaround for the case without reference profile."));
 
         // phase transition based on depth
         if (use_depth_instead_of_pressure)
