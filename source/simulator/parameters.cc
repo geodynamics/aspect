@@ -557,6 +557,7 @@ namespace aspect
       prm.declare_entry ("Mass conservation", "ask material model",
                          Patterns::Selection ("incompressible|isentropic compression|hydrostatic compression|"
                                               "reference density profile|implicit reference density profile|"
+                                              "projected density field|"
                                               "ask material model"),
                          "Possible approximations for the density derivatives in the mass "
                          "conservation equation. Note that this parameter is only evaluated "
@@ -1779,15 +1780,6 @@ namespace aspect
         AssertThrow (this->include_melt_transport,
                      ExcMessage ("The advection method 'melt field' can only be selected if melt "
                                  "transport is used in the simulation."));
-
-      if (std::find(compositional_field_methods.begin(), compositional_field_methods.end(), AdvectionFieldMethod::prescribed_field)
-          != compositional_field_methods.end()
-          ||
-          std::find(compositional_field_methods.begin(), compositional_field_methods.end(), AdvectionFieldMethod::prescribed_field_with_diffusion)
-          != compositional_field_methods.end())
-        AssertThrow (!this->use_discontinuous_composition_discretization,
-                     ExcMessage ("The advection method 'prescribed field' has not yet been tested with "
-                                 "a discontinuous composition discretization."));
 
       const std::vector<std::string> x_mapped_particle_properties
         = Utilities::split_string_list

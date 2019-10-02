@@ -1,0 +1,13 @@
+subsection Formulation
+  set Mass conservation = reference density profile
+  set Temperature equation = reference density profile
+end
+
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 0.000000001
+  end
+end
+
+

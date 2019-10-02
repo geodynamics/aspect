@@ -649,6 +649,98 @@ namespace aspect
     }
 
 
+
+    template <int dim>
+    void
+    StokesProjectedDensityFieldTerm<dim>::
+    execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
+             internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
+    {
+      internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>& > (scratch_base);
+      internal::Assembly::CopyData::StokesSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::StokesSystem<dim>& > (data_base);
+
+      // assemble RHS of:
+      // $ - \nabla \cdot \mathbf{u} = \frac{1}{\rho} \frac{\partial \rho}{\partial t} + \frac{1}{\rho} \nabla \rho \cdot \mathbf{u}$
+
+      // Compared to the manual, this term seems to have the wrong sign, but
+      // this is because we negate the entire equation to make sure we get
+      // -div(u) as the adjoint operator of grad(p)
+
+      Assert(this->get_parameters().formulation_mass_conservation ==
+             Parameters<dim>::Formulation::MassConservation::projected_density_field,
+             ExcInternalError());
+
+      const Introspection<dim> &introspection = this->introspection();
+      const FiniteElement<dim> &fe = this->get_fe();
+      const unsigned int stokes_dofs_per_cell = data.local_dof_indices.size();
+      const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
+      const double pressure_scaling = this->get_pressure_scaling();
+      const unsigned int density_idx = this->introspection().compositional_index_for_name("density_field");
+
+      const double time_step = this->get_timestep();
+      const double old_time_step = this->get_old_timestep();
+
+      std::vector<Tensor<1,dim> > density_gradients(n_q_points);
+      std::vector<double> density(n_q_points);
+      std::vector<double> density_old(n_q_points);
+      std::vector<double> density_old_old(n_q_points);
+
+      scratch.finite_element_values[introspection.extractors.compositional_fields[density_idx]].get_function_gradients (this->get_current_linearization_point(),
+          density_gradients);
+      scratch.finite_element_values[introspection.extractors.compositional_fields[density_idx]].get_function_values (this->get_current_linearization_point(),
+          density);
+      scratch.finite_element_values[introspection.extractors.compositional_fields[density_idx]].get_function_values (this->get_old_solution(),
+          density_old);
+      scratch.finite_element_values[introspection.extractors.compositional_fields[density_idx]].get_function_values (this->get_old_old_solution(),
+          density_old_old);
+
+      for (unsigned int q=0; q<n_q_points; ++q)
+        {
+          for (unsigned int i=0, i_stokes=0; i_stokes<stokes_dofs_per_cell; /*increment at end of loop*/)
+            {
+              if (introspection.is_stokes_component(fe.system_to_component_index(i).first))
+                {
+                  scratch.phi_p[i_stokes] = scratch.finite_element_values[introspection.extractors.pressure].value (i, q);
+                  ++i_stokes;
+                }
+              ++i;
+            }
+
+          double drho_dt;
+
+          if (this->get_timestep_number() > 1)
+            drho_dt = (1.0/time_step) *
+                      (density[q] *
+                       (2*time_step + old_time_step) / (time_step + old_time_step)
+                       -
+                       density_old[q] *
+                       (1 + time_step/old_time_step)
+                       +
+                       density_old_old[q] *
+                       (time_step * time_step) / (old_time_step * (time_step + old_time_step)));
+          else if (this->get_timestep_number() == 1)
+            drho_dt =
+              (density[q] - density_old[q]) / time_step;
+          else
+            drho_dt = 0.0;
+
+          const double JxW = scratch.finite_element_values.JxW(q);
+
+          for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
+            data.local_rhs(i) += (
+                                   (pressure_scaling *
+                                    (1.0 / density[q]) *
+                                    (density_gradients[q] *
+                                     scratch.velocity_values[q]) *
+                                    scratch.phi_p[i])
+                                   + pressure_scaling * (1.0 / density[q]) * drho_dt * scratch.phi_p[i]
+                                 )
+                                 * JxW;
+        }
+    }
+
+
+
     template <int dim>
     void
     StokesHydrostaticCompressionTerm<dim>::
@@ -813,6 +905,7 @@ namespace aspect
   template class StokesImplicitReferenceDensityCompressibilityTerm<dim>; \
   template class StokesIsentropicCompressionTerm<dim>; \
   template class StokesHydrostaticCompressionTerm<dim>; \
+  template class StokesProjectedDensityFieldTerm<dim>; \
   template class StokesPressureRHSCompatibilityModification<dim>; \
   template class StokesBoundaryTraction<dim>;
 

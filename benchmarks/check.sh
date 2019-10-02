@@ -157,6 +157,8 @@ wait # newton_solver_benchmark_set/nonlinear_channel_flow depends on nonlinear_c
 
 ( (cd zhong_et_al_93 && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
 
+( (cd compressibility_benchmarks/plugins && make_lib && cd .. && bash run.sh ) || { echo "FAILED"; exit 1; } ) &
+
 wait
 
 exit 0
