@@ -170,7 +170,7 @@ namespace aspect
       // initialize pressures
       const double pressure = depth/pressure_gradient;
       // declare other parameters
-      double viscosity,viscosity_reduction_factor,unrelaxed_compliance, attenuation;
+      double viscosity,viscosity_reduction_factor,unrelaxed_compliance;
       // begin calculation of Vs
       if (homologous_temperature<critical_homologous_temperature)
         {
@@ -265,21 +265,13 @@ namespace aspect
           integrated_thermal_expansivity=(2.832e-5*(temperature-273))+((0.758e-8/2)*(std::pow(temperature,2)-std::pow(273,2)));
           density=pressure_dependent_density*(1-(compressibility*integrated_thermal_expansivity));
         }
-      double loss_compliance,storage_compliance,anharmonic_Vs,anelastic_Vs;
+      double storage_compliance,anelastic_Vs;
       // determine J1 term (real part of complex compliance)
       storage_compliance=unrelaxed_compliance*(1+((background_amplitude*std::pow(normalised_period,background_slope))
                                                   /background_slope)+((std::sqrt(2*M_PI)/2)*peak_amplitude*peak_width*(1-
                                                                       std::erf((std::log(peak_period/normalised_period))/(std::sqrt(2)*peak_width)))));
-      // determine J2 term (imaginary part of complex compliance)
-      loss_compliance=unrelaxed_compliance*(M_PI/2)*(background_amplitude*(std::pow(normalised_period,background_slope))+\
-                                                     (peak_amplitude*std::exp(-1*(std::pow(std::log(peak_period/normalised_period),2)
-                                                                                  /(2*std::pow(peak_width,2))))))+(unrelaxed_compliance*normalised_period);
-      // calculate anharmonic Vs
-      anharmonic_Vs=1/(std::sqrt(density*unrelaxed_compliance)*1e3);
       // calculate Vs
       anelastic_Vs=1/(std::sqrt(density*storage_compliance)*1e3);
-      // calculate attenuation
-      attenuation=loss_compliance/storage_compliance;
       return anelastic_Vs;
     }
 
