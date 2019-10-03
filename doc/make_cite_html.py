@@ -62,14 +62,15 @@ want_groups = {"KHB12": "main",
                "rose_freesurface" : "fs",
                "dannberg_melt" : "melt",
                "gassmoeller_particles" : "particles",
-               "He_2017_DG" : "dg"
+               "He_2017_DG" : "dg",
+               "clevenger_stokes19" : "mf",
 }
 
 want = []
 for a in want_groups:
     want.append(a)
 
-# move to end:
+# move KHB12 to the end:
 want.remove("KHB12")
 want.append("KHB12")
 
@@ -84,14 +85,17 @@ bibformated = {
         "dannberg_melt" : "Juliane Dannberg, and Timo Heister. 2016. “Compressible Magma/mantle Dynamics: 3-D, Adaptive Simulations in ASPECT.” Geophysical Journal International 207 (3) (September 4): 1343–1366. doi:10.1093/gji/ggw329. http://dx.doi.org/10.1093/gji/ggw329.",
         "gassmoeller_particles" : "Rene Gassmoeller, Eric Heien, Elbridge Gerry Puckett, and Wolfgang Bangerth. 2017. “Flexible and scalable particle-in-cell methods for massively parallel computations.” arXiv:1612.03369",
         "heister_aspect_methods2" : "Timo Heister, Juliane Dannberg, Rene Gassmöller, and Wolfgang Bangerth. 2017. “High Accuracy Mantle Convection Simulation through Modern Numerical Methods – II: Realistic Models and Problems.” Geophysical Journal International 210 (2) (May 9): 833–851. doi:10.1093/gji/ggx195. http://dx.doi.org/10.1093/gji/ggx195.",
-        "rose_freesurface" : "Ian Rose, Bruce Buffett, and Timo Heister. 2017. “Stability and Accuracy of Free Surface Time Integration in Viscous Flows.” Physics of the Earth and Planetary Interiors 262 (January): 90–100. doi:10.1016/j.pepi.2016.11.007. http://dx.doi.org/10.1016/j.pepi.2016.11.007."
+        "rose_freesurface" : "Ian Rose, Bruce Buffett, and Timo Heister. 2017. “Stability and Accuracy of Free Surface Time Integration in Viscous Flows.” Physics of the Earth and Planetary Interiors 262 (January): 90–100. doi:10.1016/j.pepi.2016.11.007. http://dx.doi.org/10.1016/j.pepi.2016.11.007.",
+        "clevenger_stokes19" : "Thomas C. Clevenger, and Timo Heister. 2019. “Comparison Between Algebraic and Matrix-free Geometric Multigrid for a Stokes Problem on Adaptive Meshes with Variable Viscosity.“ arXiv:1907.06696.",
 }
 
 downloaded = False
 for w in want:
     print()
     print ("{}:".format(w))
-    assert(w in bibitems)
+    if not w in bibitems:
+        exit("Error could not find entry @{} in {}".format(w, bibfile))
+
     print ("\tbib source OK")
     url = biburls[w]
     print ("\tURL: {}".format(url))
