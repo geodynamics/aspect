@@ -845,8 +845,16 @@ namespace aspect
 #ifdef DEBUG
     IndexSet locally_active_dofs;
     DoFTools::extract_locally_active_dofs(dof_handler, locally_active_dofs);
+    const std::vector<IndexSet> locally_owned_per_proc
+#if DEAL_II_VERSION_GTE(9,2,0)
+      = dof_handler.compute_locally_owned_dofs_per_processor();
+#else
+      = dof_handler.locally_owned_dofs_per_processor();
+#endif
+
+
     Assert(current_constraints.is_consistent_in_parallel(
-             dof_handler.locally_owned_dofs_per_processor(),
+             locally_owned_per_proc,
              locally_active_dofs,
              mpi_communicator,
              /*verbose = */ false),
