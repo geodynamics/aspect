@@ -862,7 +862,7 @@ namespace aspect
       fe_projection(FE_DGQ<dim>(0),1)
   {
     parse_parameters(prm);
-    //TODO CitationInfo::add("mf");
+    CitationInfo::add("mf");
 
     // This requires: porting the additional stabilization terms and using a
     // different mapping in the MatrixFree operators:
