@@ -235,6 +235,13 @@ namespace aspect
          */
         virtual void compute_diagonal ();
 
+        /**
+         * Manually set the diagonal inside the matrix-free object. This function is needed
+         * when using tangential constraints as the function compute_diagonal() cannot handle
+         * non-Dirichlet boundary conditions.
+         */
+        void set_diagonal (const dealii::LinearAlgebra::distributed::Vector<number> &diag);
+
       private:
 
         /**
@@ -324,6 +331,12 @@ namespace aspect
        * Add correction to system RHS for non-zero boundary condition.
        */
       void correct_stokes_rhs();
+
+      /**
+       * Computes and sets the diagonal for the A-block operators for the purpose
+       * of smoothing inside the multigrid v-cycle.
+       */
+      void get_ablock_diagonals();
 
       /**
        * Declare parameters. (No actual parameters at the moment).

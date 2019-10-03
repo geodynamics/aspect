@@ -50,11 +50,136 @@ namespace aspect
      */
     namespace TangentialBoundaryFunctions
     {
+      template <int dim, int spacedim>
+      void compute_no_normal_flux_constraints_shell(const DoFHandler<dim,spacedim> &dof_handler,
+                                                    const MGConstrainedDoFs        &mg_constrained_dofs,
+                                                    const Mapping<dim> &mapping,
+                                                    const unsigned int level,
+                                                    const unsigned int first_vector_component,
+                                                    const std::set<types::boundary_id> &boundary_ids,
+                                                    ConstraintMatrix &constraints)
+      {
+        IndexSet refinement_edge_indices = mg_constrained_dofs.get_refinement_edge_indices(level);
+
+        const double inhomogeneity = 0;
+        const auto &fe = dof_handler.get_fe();
+        const std::vector<Point<dim - 1>> &unit_support_points = fe.get_unit_face_support_points();
+        const Quadrature<dim - 1> quadrature(unit_support_points);
+        const unsigned int dofs_per_face = fe.dofs_per_face;
+        std::vector<types::global_dof_index> face_dofs(dofs_per_face);
+
+
+        FEFaceValues<dim, spacedim> fe_face_values(mapping,
+                                                   dof_handler.get_fe(),
+                                                   quadrature,
+                                                   update_quadrature_points |
+                                                   update_normal_vectors);
+        typename DoFHandler<dim, spacedim>::level_cell_iterator
+        cell = dof_handler.begin(level),
+        endc = dof_handler.end(level);
+        std::set<types::boundary_id>::iterator b_id;
+
+        for (; cell != endc; ++cell)
+          if (cell->level_subdomain_id() != numbers::artificial_subdomain_id
+              &&
+              cell->level_subdomain_id() != numbers::invalid_subdomain_id)
+            for (unsigned int face_no = 0;
+                 face_no < GeometryInfo<dim>::faces_per_cell;
+                 ++face_no)
+              if ((b_id = boundary_ids.find(cell->face(face_no)->boundary_id())) !=
+                  boundary_ids.end())
+                {
+                  typename DoFHandler<dim, spacedim>::level_face_iterator face = cell->face(face_no);
+                  // Does this work? Parallel?
+                  face->get_mg_dof_indices(level,face_dofs);//, cell->active_fe_index());
+                  fe_face_values.reinit(cell, face_no);
+
+                  for (unsigned int i = 0; i < face_dofs.size(); ++i)
+                    if (fe.face_system_to_component_index(i).first ==
+                        first_vector_component)
+                      if (!refinement_edge_indices.is_element(face_dofs[i]))
+                        {
+                          const Point<dim> position = fe_face_values.quadrature_point(i);
+                          std::array<types::global_dof_index,dim> dof_indices;
+                          dof_indices[0] = face_dofs[i];
+                          for (unsigned int k = 0; k < dofs_per_face; ++k)
+                            if ((k != i) &&
+                                (quadrature.point(k) == quadrature.point(i)) &&
+                                (fe.face_system_to_component_index(k).first >=
+                                 first_vector_component) &&
+                                (fe.face_system_to_component_index(k).first <
+                                 first_vector_component + dim))
+                              dof_indices
+                              [fe.face_system_to_component_index(k).first -
+                               first_vector_component] = face_dofs[k];
+
+                          Tensor<1, dim> normal_vector =
+                            cell->face(face_no)->get_manifold().normal_vector(
+                              cell->face(face_no), position);
+
+                          // remove small entries:
+                          for (unsigned int d = 0; d < dim; ++d)
+                            if (std::fabs(normal_vector[d]) < 1e-13)
+                              normal_vector[d] = 0;
+                          normal_vector /= normal_vector.norm();
+
+                          // Tangential boundary only implemented for 2D currently
+                          Assert(dim==2, ExcNotImplemented());
+
+                          if (std::fabs(normal_vector[0]) >
+                              std::fabs(normal_vector[1]) + 1e-10)
+                            {
+                              if (!constraints.is_constrained(dof_indices[0]) &&
+                                  constraints.can_store_line(dof_indices[0]))
+                                {
+                                  constraints.add_line(dof_indices[0]);
+
+                                  if (std::fabs(normal_vector[1] /
+                                                normal_vector[0]) >
+                                      std::numeric_limits<double>::epsilon())
+                                    constraints.add_entry(dof_indices[0],
+                                                          dof_indices[1],
+                                                          -normal_vector[1] /
+                                                          normal_vector[0]);
+
+                                  if (std::fabs(inhomogeneity / normal_vector[0]) >
+                                      std::numeric_limits<double>::epsilon())
+                                    constraints.set_inhomogeneity(
+                                      dof_indices[0],
+                                      inhomogeneity / normal_vector[0]);
+                                }
+                            }
+                          else
+                            {
+                              if (!constraints.is_constrained(dof_indices[1]) &&
+                                  constraints.can_store_line(dof_indices[1]))
+                                {
+                                  constraints.add_line(dof_indices[1]);
+
+                                  if (std::fabs(normal_vector[0] /
+                                                normal_vector[1]) >
+                                      std::numeric_limits<double>::epsilon())
+                                    constraints.add_entry(dof_indices[1],
+                                                          dof_indices[0],
+                                                          -normal_vector[0] /
+                                                          normal_vector[1]);
+
+                                  if (std::fabs(inhomogeneity / normal_vector[1]) >
+                                      std::numeric_limits<double>::epsilon())
+                                    constraints.set_inhomogeneity(
+                                      dof_indices[1],
+                                      inhomogeneity / normal_vector[1]);
+                                }
+                            }
+                        }
+                }
+      }
+
       template <int dim>
-      void make_no_normal_flux_constraints (const DoFHandler<dim>    &dof,
-                                            const types::boundary_id  bid,
-                                            const unsigned int first_vector_component,
-                                            MGConstrainedDoFs         &mg_constrained_dofs)
+      void compute_no_normal_flux_constraints_box (const DoFHandler<dim>    &dof,
+                                                   const types::boundary_id  bid,
+                                                   const unsigned int first_vector_component,
+                                                   MGConstrainedDoFs         &mg_constrained_dofs)
       {
         // For a given boundary id, find which vector component is on the boundary
         // and set a zero boundary constraint for those degrees of freedom.
@@ -843,6 +968,31 @@ namespace aspect
       }
   }
 
+  template <int dim, int degree_v, typename number>
+  void
+  MatrixFreeStokesOperators::ABlockOperator<dim,degree_v,number>
+  ::set_diagonal (const dealii::LinearAlgebra::distributed::Vector<number> &diag)
+  {
+    this->inverse_diagonal_entries.
+    reset(new DiagonalMatrix<dealii::LinearAlgebra::distributed::Vector<number> >());
+    dealii::LinearAlgebra::distributed::Vector<number> &inverse_diagonal =
+      this->inverse_diagonal_entries->get_vector();
+    this->data->initialize_dof_vector(inverse_diagonal);
+
+    inverse_diagonal = diag;
+
+    this->set_constrained_entries_to_one(inverse_diagonal);
+
+    for (unsigned int i=0; i<inverse_diagonal.local_size(); ++i)
+      {
+        Assert(inverse_diagonal.local_element(i) > 0.,
+               ExcMessage("No diagonal entry in a positive definite operator "
+                          "should be zero"));
+        inverse_diagonal.local_element(i) =
+          1./inverse_diagonal.local_element(i);
+      }
+  }
+
   /**
    * Matrix-free setup, assmeble, and solve function implementations.
    */
@@ -1043,7 +1193,6 @@ namespace aspect
                                           dof_handler_projection,
                                           /*for_mg*/ true,
                                           is_compressible);
-        mg_matrices[level].compute_diagonal();
       }
   }
 
@@ -1590,11 +1739,17 @@ namespace aspect
       }
     mg_constrained_dofs.make_zero_boundary_constraints(dof_handler_v, dirichlet_boundary);
 
-    std::set<types::boundary_id> no_flux_boundary = sim.boundary_velocity_manager.get_tangential_boundary_velocity_indicators();
-    Assert(no_flux_boundary.empty() || !sim.geometry_model->has_curved_elements(),
-           ExcMessage("Tangential boundary only for Box as of now."))
-    for (auto bid : no_flux_boundary)
-      internal::TangentialBoundaryFunctions::make_no_normal_flux_constraints(dof_handler_v,bid,0,mg_constrained_dofs);
+    {
+      std::set<types::boundary_id> no_flux_boundary = sim.boundary_velocity_manager.get_tangential_boundary_velocity_indicators();
+      if (!no_flux_boundary.empty() && !sim.geometry_model->has_curved_elements())
+        for (auto bid : no_flux_boundary)
+          {
+            internal::TangentialBoundaryFunctions::compute_no_normal_flux_constraints_box(dof_handler_v,
+                                                                                          bid,
+                                                                                          0,
+                                                                                          mg_constrained_dofs);
+          }
+    }
 
     dof_handler_projection.distribute_mg_dofs();
 
@@ -1669,6 +1824,33 @@ namespace aspect
           level_constraints.reinit(relevant_dofs);
           level_constraints.add_lines(mg_constrained_dofs.get_boundary_indices(level));
           level_constraints.close();
+
+#if DEAL_II_VERSION_GTE(9,2,0)
+          std::set<types::boundary_id> no_flux_boundary
+            = sim.boundary_velocity_manager.get_tangential_boundary_velocity_indicators();
+          if (!no_flux_boundary.empty() && sim.geometry_model->has_curved_elements())
+            {
+              ConstraintMatrix user_level_constraints;
+              user_level_constraints.reinit(relevant_dofs);
+
+              internal::TangentialBoundaryFunctions::compute_no_normal_flux_constraints_shell(dof_handler_v,
+                                                                                              mg_constrained_dofs,
+                                                                                              *sim.mapping,
+                                                                                              level,
+                                                                                              0,
+                                                                                              no_flux_boundary,
+                                                                                              user_level_constraints);
+              user_level_constraints.close();
+              mg_constrained_dofs.add_user_constraints(level,user_level_constraints);
+
+              level_constraints.merge(user_level_constraints);
+              level_constraints.close();
+            }
+#else
+          AssertThrow(false, ExcMessage("No normal flux for shell domain only implemented in "
+                                        "master version of deal.II"));
+#endif
+
           {
             typename MatrixFree<dim,double>::AdditionalData additional_data;
             additional_data.tasks_parallel_scheme =
@@ -1694,6 +1876,98 @@ namespace aspect
     mg_transfer.initialize_constraints(mg_constrained_dofs);
     mg_transfer.build(dof_handler_v);
   }
+
+
+  template <int dim>
+  void StokesMatrixFreeHandler<dim>::get_ablock_diagonals()
+  {
+    for (unsigned int level=0; level < sim.triangulation.n_global_levels(); ++level)
+      {
+        // If we have a tangential boundary we must compute the diagonal
+        // outside of the matrix-free object
+        if (!(sim.boundary_velocity_manager.get_tangential_boundary_velocity_indicators().empty())
+            &&
+            sim.geometry_model->has_curved_elements())
+          {
+            IndexSet locally_relevant_dofs;
+            DoFTools::extract_locally_relevant_level_dofs (dof_handler_v, level, locally_relevant_dofs);
+
+            DiagonalMatrix<dealii::LinearAlgebra::distributed::Vector<double> > diagonal_matrix;
+            dealii::LinearAlgebra::distributed::Vector<double> &diagonal_vector =
+              diagonal_matrix.get_vector();
+
+            diagonal_vector.reinit(dof_handler_v.locally_owned_mg_dofs(level),
+                                   locally_relevant_dofs,
+                                   sim.mpi_communicator);
+
+            QGauss<dim>  quadrature_formula(sim.parameters.stokes_velocity_degree+1);
+            FEValues<dim> fe_values (fe_v, quadrature_formula,
+                                     update_values   | update_gradients |
+                                     update_quadrature_points | update_JxW_values);
+
+            const unsigned int   dofs_per_cell   = fe_v.dofs_per_cell;
+            const unsigned int   n_q_points      = quadrature_formula.size();
+
+            FullMatrix<double>   cell_matrix (dofs_per_cell, dofs_per_cell);
+
+            std::vector<types::global_dof_index> local_dof_indices (dofs_per_cell);
+            const FEValuesExtractors::Vector velocities (0);
+
+            std::vector<SymmetricTensor<2,dim> > symgrad_phi_u (dofs_per_cell);
+
+            ConstraintMatrix boundary_constraints;
+            boundary_constraints.reinit(locally_relevant_dofs);
+            boundary_constraints.add_lines (mg_constrained_dofs.get_refinement_edge_indices(level));
+            boundary_constraints.add_lines (mg_constrained_dofs.get_boundary_indices(level));
+            boundary_constraints.merge(mg_constrained_dofs.get_user_constraint_matrix(level));
+            boundary_constraints.close();
+
+            typename DoFHandler<dim>::level_cell_iterator cell = dof_handler_v.begin(level),
+                                                          endc = dof_handler_v.end(level);
+            for (; cell!=endc; ++cell)
+              if (cell->level_subdomain_id()==sim.triangulation.locally_owned_subdomain())
+                {
+                  cell_matrix = 0;
+                  fe_values.reinit (cell);
+
+
+                  typename DoFHandler<dim>::level_cell_iterator DG_cell(&(sim.triangulation),
+                                                                        level,
+                                                                        cell->index(),
+                                                                        &dof_handler_projection);
+                  std::vector<types::global_dof_index> dg_dof_indices(dof_handler_projection.get_fe(0).dofs_per_cell);
+                  DG_cell->get_active_or_mg_dof_indices(dg_dof_indices);
+                  double viscosity = level_coef_dof_vec[level](dg_dof_indices[0]);
+
+                  for (unsigned int q=0; q<n_q_points; ++q)
+                    {
+                      for (unsigned int k=0; k<dofs_per_cell; ++k)
+                        symgrad_phi_u[k] = fe_values[velocities].symmetric_gradient (k, q);
+
+                      for (unsigned int i=0; i<dofs_per_cell; ++i)
+                        for (unsigned int j=0; j<dofs_per_cell; ++j)
+                          cell_matrix(i,j) += (2*viscosity*(symgrad_phi_u[i]*symgrad_phi_u[j])
+                                               * fe_values.JxW(q));
+                    }
+
+                  cell->get_mg_dof_indices (local_dof_indices);
+
+
+                  boundary_constraints.distribute_local_to_global (cell_matrix,
+                                                                   local_dof_indices,
+                                                                   diagonal_matrix);
+                }
+
+            mg_matrices[level].set_diagonal(diagonal_matrix.get_vector());
+          }
+        else
+          {
+            mg_matrices[level].compute_diagonal();
+          }
+      }
+  }
+
+
 
 
 // explicit instantiation of the functions we implement in this file
