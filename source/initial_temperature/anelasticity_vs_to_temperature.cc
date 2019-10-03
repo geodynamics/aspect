@@ -195,7 +195,6 @@ namespace aspect
           // Vs is too high to give realistic temperature so viscosity, attenuation and unrelaxed compliance are reset
           viscosity=1e40;
           unrelaxed_compliance=1./(1e9*(mu0+(dmudP*pressure*1e-9)));
-          attenuation=1e-9;
         }
       // evaluate Maxwell normalised shear wave period
       const double maxwell_relaxation_time=viscosity*unrelaxed_compliance;
