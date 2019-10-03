@@ -37,21 +37,26 @@ bibtexkey: "aspectmanual",
 bibtex: '@article{aspectmanual,\n  title         = {{\\textsc{ASPECT}: Advanced Solver for Problems in Earth\'s ConvecTion, User Manual}},\n  author        = {W. Bangerth and J. Dannberg and R. Gassm{\\"o}ller and T. Heister and others},\n  year          = {2019},\n  month         = {April},\n  DOI           = {10.6084/m9.figshare.4865333},\n  note          = {doi:10.6084/m9.figshare.4865333},\n  URL           = {https://doi.org/10.6084/m9.figshare.4865333}\n}',
 group: '2.0.1'},
 entry8:{
+text: "Thomas C. Clevenger, and Timo Heister. 2019. “Comparison Between Algebraic and Matrix-free Geometric Multigrid for a Stokes Problem on Adaptive Meshes with Variable Viscosity.“ arXiv:1907.06696.",
+bibtexkey: "clevenger_stokes19",
+bibtex: '@Article{clevenger_stokes19,\n  Title                    = {Comparison between Algebraic and Matrix-free Geometric Multigrid for a Stokes Problem},\n  Author                   = {Thomas C. Clevenger and Timo Heister},\n  Journal                  = {arXiv preprint arXiv:1907.06696},\n  Year                     = {2019},\n  Url                      = {https://arxiv.org/abs/1907.06696}\n}',
+group: 'mf'},
+entry9:{
 text: "Juliane Dannberg, and Timo Heister. 2016. “Compressible Magma/mantle Dynamics: 3-D, Adaptive Simulations in ASPECT.” Geophysical Journal International 207 (3) (September 4): 1343–1366. doi:10.1093/gji/ggw329. http://dx.doi.org/10.1093/gji/ggw329.",
 bibtexkey: "dannberg_melt",
 bibtex: '@Article{dannberg_melt,\n  title={Compressible magma/mantle dynamics: {3D}, adaptive simulations in {ASPECT}},\n  author={Dannberg, J. and Heister, T.},\n  journal={Geophysical Journal International},\n  volume={207},\n  number={3},\n  pages={1343--1366},\n  year={2016},\n  publisher={Oxford University Press},\n  doi = {10.1093/gji/ggw329}, \n  url = {https://dx.doi.org/10.1093/gji/ggw329}\n}',
 group: 'melt'},
-entry9:{
+entry10:{
 text: "Rene Gassmoeller, Eric Heien, Elbridge Gerry Puckett, and Wolfgang Bangerth. 2017. “Flexible and scalable particle-in-cell methods for massively parallel computations.” arXiv:1612.03369",
 bibtexkey: "gassmoeller_particles",
 bibtex: '@article{gassmoeller_particles,\n  title={Flexible and scalable particle-in-cell methods for massively parallel computations},\n  author={Gassmoeller, Rene and Heien, Eric and Puckett, Elbridge Gerry and Bangerth, Wolfgang},\n  journal={arXiv preprint arXiv:1612.03369},\n  year={2016},\n  URL={https://arxiv.org/abs/1612.03369}\n}',
 group: 'particles'},
-entry10:{
+entry11:{
 text: "Timo Heister, Juliane Dannberg, Rene Gassmöller, and Wolfgang Bangerth. 2017. “High Accuracy Mantle Convection Simulation through Modern Numerical Methods – II: Realistic Models and Problems.” Geophysical Journal International 210 (2) (May 9): 833–851. doi:10.1093/gji/ggx195. http://dx.doi.org/10.1093/gji/ggx195.",
 bibtexkey: "heister_aspect_methods2",
 bibtex: '@article{heister_aspect_methods2,\n  title                    = {High Accuracy Mantle Convection Simulation through Modern Numerical Methods.\n                              {II}: {R}ealistic Models and Problems},\n  author                   = {Heister, Timo and Dannberg, Juliane and\n                              Gassm{\\"o}ller, Rene and Bangerth, Wolfgang},\n  journal                  = {Geophysical Journal International},\n  year                     = {2017},\n  number                   = {2},\n  pages                    = {833-851},\n  volume                   = {210},\n  DOI                      = {10.1093/gji/ggx195},\n  URL                      = {https://doi.org/10.1093/gji/ggx195}\n}',
 group: 'main'},
-entry11:{
+entry12:{
 text: "Ian Rose, Bruce Buffett, and Timo Heister. 2017. “Stability and Accuracy of Free Surface Time Integration in Viscous Flows.” Physics of the Earth and Planetary Interiors 262 (January): 90–100. doi:10.1016/j.pepi.2016.11.007. http://dx.doi.org/10.1016/j.pepi.2016.11.007.",
 bibtexkey: "rose_freesurface",
 bibtex: '@Article{rose_freesurface,\n  Title                    = {Stability and accuracy of free surface time integration in viscous flows},\n  Author                   = {Ian Rose and Bruce Buffett and Timo Heister},\n  Journal                  = {Physics of the Earth and Planetary Interiors},\n  Year                     = {2017},\n  Pages                    = {90 - 100},\n  Volume                   = {262},\n  Doi                      = {10.1016/j.pepi.2016.11.007},\n  ISSN                     = {0031-9201},\n  Url                      = {http://dx.doi.org/10.1016/j.pepi.2016.11.007}\n}',
