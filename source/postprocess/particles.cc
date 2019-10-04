@@ -44,8 +44,7 @@ namespace aspect
         // First store the names of the data fields
         dataset_names.reserve(property_information.n_components()+1);
         dataset_names.push_back("id");
-        // if (std::find(output_properties.begin(), output_properties.end(), "all") != output_properties.end())
-        //{
+
         // just output all properties
         for (unsigned int field_index = 0; field_index < property_information.n_fields(); ++field_index)
           {
@@ -82,10 +81,9 @@ namespace aspect
                 dataset_names.push_back(field_name + "_" + Utilities::to_string(component_index));
           }
 
-
         // Second store which of these data fields are vectors
 
-        unsigned int field_position = property_information.get_position_by_field_index(0);
+        unsigned int field_position = property_information.n_fields() == 0 ? 0 : property_information.get_position_by_field_index(0);
         for (unsigned int field_index = 0; field_index < property_information.n_fields(); ++field_index)
           {
             const unsigned n_components = property_information.get_components_by_field_index(field_index);
@@ -123,7 +121,6 @@ namespace aspect
 
           }
 
-
         // Third build the actual patch data
         patches.resize(particle_handler.n_locally_owned_particles());
 
@@ -134,7 +131,7 @@ namespace aspect
             patches[i].vertices[0] = particle->get_location();
             patches[i].patch_index = i;
             patches[i].n_subdivisions = 1;
-            patches[i].data.reinit(dataset_names.size(),1);//property_information.n_components()+1,1);
+            patches[i].data.reinit(dataset_names.size(),1);
 
             patches[i].data(0,0) = particle->get_id();
 
@@ -146,6 +143,7 @@ namespace aspect
                 unsigned int field_index = 0;
                 unsigned int do_not_increase_for = 0;
                 std::string field_name = "";
+
                 for (unsigned int property_index = 0; property_index < properties.size(); ++property_index)
                   {
                     if (do_not_increase_for > 0)
