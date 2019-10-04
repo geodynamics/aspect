@@ -82,7 +82,6 @@ namespace aspect
          * @}
          */
 
-
         /**
          * @name Functions used in dealing with run-time parameters
          * @{
@@ -105,7 +104,6 @@ namespace aspect
          */
 
       private:
-        bool use_depth;
         double reference_rho;
         double reference_T;
         double eta;
@@ -124,40 +122,13 @@ namespace aspect
 
         double compositional_delta_rho;
 
-        /**
-         * Percentage of material that has already undergone the phase
-         * transition to the higher-pressure material (this is done
-         * individually for each transition and summed up in the end)
-         */
-        virtual
-        double
-        phase_function (const Point<dim> &position,
-                        const double temperature,
-                        const double pressure,
-                        const int phase) const;
-
-        /**
-         * Derivative of the phase function (argument is the pressure
-         * deviation).
-         */
-        virtual
-        double
-        phase_function_derivative (const Point<dim> &position,
-                                   const double temperature,
-                                   const double pressure,
-                                   const int phase) const;
-
         // list of depth (or pressure), width and Clapeyron slopes
         // for the different phase transitions
-        std::vector<double> transition_depths;
-        std::vector<double> transition_pressures;
-        std::vector<double> transition_temperatures;
-        std::vector<double> transition_widths;
-        std::vector<double> transition_pressure_widths;
-        std::vector<double> transition_slopes;
         std::vector<double> density_jumps;
         std::vector<int> transition_phases;
         std::vector<double> phase_prefactors;
+
+        MaterialUtilities::PhaseFunction<dim> phase_function;
     };
 
   }

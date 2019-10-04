@@ -29,117 +29,6 @@ namespace aspect
   namespace MaterialModel
   {
     template <int dim>
-    double
-    LatentHeat<dim>::
-    phase_function (const Point<dim> &position,
-                    const double temperature,
-                    const double pressure,
-                    const int phase) const
-    {
-      // We need to convert the depth to pressure (depth-based phase transitions),
-      // or else use the pressure itself if the phase transition is defined based off a pressure.
-      if (!use_depth)
-        {
-          // first, get the pressure at which the phase transition occurs normally
-          // and get the pressure change in the range of the phase transition
-
-          double transition_pressure;
-          double pressure_width;
-          double width_temp;
-
-          transition_pressure = transition_pressures[phase];
-          pressure_width = transition_pressure_widths[phase];
-          width_temp = transition_pressure_widths[phase];
-
-          // then calculate the deviation from the transition point (both in temperature
-          // and in pressure)
-          double pressure_deviation = pressure - transition_pressure
-                                      - transition_slopes[phase] * (temperature - transition_temperatures[phase]);
-
-          // last, calculate the percentage of material that has undergone the transition
-          // (also in dependence of the phase transition width - this is an input parameter)
-          double phase_func;
-          // use delta function for width = 0
-          if (width_temp==0)
-            (pressure_deviation > 0) ? phase_func = 1 : phase_func = 0;
-          else
-            phase_func = 0.5*(1.0 + std::tanh(pressure_deviation / pressure_width));
-          return phase_func;
-        }
-      // this part of the loop is only implemented for phase transitions based off of depth,
-      // since pressure-based transitions are included above.
-      else
-        {
-          double depth = this->get_geometry_model().depth(position);
-          double depth_deviation = (pressure > 0
-                                    ?
-                                    depth - transition_depths[phase]
-                                    - transition_slopes[phase] * (depth / pressure) * (temperature - transition_temperatures[phase])
-                                    :
-                                    depth - transition_depths[phase]
-                                    - transition_slopes[phase] / (this->get_gravity_model().gravity_vector(position).norm() * reference_rho)
-                                    * (temperature - transition_temperatures[phase]));
-          double phase_func;
-          // use delta function for width = 0
-          if (transition_widths[phase]==0)
-            phase_func = (depth_deviation > 0) ? 1 : 0;
-          else
-            phase_func = 0.5*(1.0 + std::tanh(depth_deviation / transition_widths[phase]));
-          return phase_func;
-        }
-    }
-
-    template <int dim>
-    double
-    LatentHeat<dim>::
-    phase_function_derivative (const Point<dim> &,
-                               const double temperature,
-                               const double pressure,
-                               const int phase) const
-    {
-      double transition_pressure;
-      double pressure_width;
-      double width_temp;
-
-      // we already should have the adiabatic conditions here
-      AssertThrow (this->get_adiabatic_conditions().is_initialized(),
-                   ExcMessage("need adiabatic conditions to incorporate phase transitions"));
-
-      // first, get the pressure at which the phase transition occurs normally
-
-      // phase transition based off of depth
-      if (use_depth)
-        {
-          const Point<dim,double> transition_point = this->get_geometry_model().representative_point(transition_depths[phase]);
-          const Point<dim,double> transition_plus_width = this->get_geometry_model().representative_point(transition_depths[phase] + transition_widths[phase]);
-          const Point<dim,double> transition_minus_width = this->get_geometry_model().representative_point(transition_depths[phase] - transition_widths[phase]);
-          transition_pressure = this->get_adiabatic_conditions().pressure(transition_point);
-          pressure_width = 0.5 * (this->get_adiabatic_conditions().pressure(transition_plus_width)
-                                  - this->get_adiabatic_conditions().pressure(transition_minus_width));
-          width_temp = transition_widths[phase];
-        }
-      // using pressure instead of depth to define the phase transition
-      else
-        {
-          transition_pressure = transition_pressures[phase];
-          pressure_width = transition_pressure_widths[phase];
-          width_temp = transition_pressure_widths[phase];
-        }
-
-      // then calculate the deviation from the transition point (both in temperature
-      // and in pressure)
-      double pressure_deviation = pressure - transition_pressure
-                                  - transition_slopes[phase] * (temperature - transition_temperatures[phase]);
-
-      // last, calculate the analytical derivative of the phase function
-      if (width_temp==0)
-        return 0;
-      else
-        return 0.5 / pressure_width * (1.0 - std::tanh(pressure_deviation / pressure_width)
-                                       * std::tanh(pressure_deviation / pressure_width));
-    }
-
-    template <int dim>
     void
     LatentHeat<dim>::
     evaluate(const MaterialModelInputs<dim> &in,
@@ -212,46 +101,45 @@ namespace aspect
             double phase_dependence = 0.0;
             double viscosity_phase_dependence = 1.0;
 
-            // transitions defined by depth
-            unsigned int number_of_phase_transitions;
-            if (use_depth)
-              number_of_phase_transitions = transition_depths.size();
-            // transitions defined by pressure
-            else
-              number_of_phase_transitions = transition_pressures.size();
 
-            // note that for the densities, we have a list of jumps, so the index used
-            // in the loop corresponds to the index of the phase transition, whereas
-            // for the viscosities we have a list of prefactors (which has one more
-            // entry for the first layer), so we have to use i+1 as index
-            if (composition.size()==0)      // only one field
+            // Loop through phase transitions
+            for (unsigned int phase=0; phase<phase_function.n_phase_transitions(); ++phase)
               {
-                for (unsigned int phase=0; phase<number_of_phase_transitions; ++phase)
-                  {
-                    const double phaseFunction = phase_function (position,
-                                                                 temperature,
-                                                                 pressure,
-                                                                 phase);
+                const double depth = this->get_geometry_model().depth(in.position[i]);
+                const double pressure_depth_derivative = (depth > 0)
+                                                         ?
+                                                         pressure / depth
+                                                         :
+                                                         this->get_gravity_model().gravity_vector(in.position[i]).norm() * reference_rho;
 
+                const MaterialUtilities::PhaseFunctionInputs<dim> phase_in(temperature,
+                                                                           pressure,
+                                                                           depth,
+                                                                           pressure_depth_derivative,
+                                                                           phase);
+
+                const double phaseFunction = phase_function.compute_value(phase_in);
+
+                // Note that for the densities we have a list of jumps, so the index used
+                // in the loop corresponds to the index of the phase transition. For the
+                // viscosities we have a list of prefactors, which has one more entry
+                // for the first layer, so we have to use phase+1 as the index.
+                if (composition.size()==0)
+                  {
                     phase_dependence += phaseFunction * density_jumps[phase];
                     viscosity_phase_dependence *= 1. + phaseFunction * (phase_prefactors[phase+1]-1.);
                   }
-              }
-            else if (composition.size()>0)
-              {
-                for (unsigned int phase=0; phase<number_of_phase_transitions; ++phase)
+                else if (composition.size()>0)
                   {
-                    const double phaseFunction = phase_function (position,
-                                                                 temperature,
-                                                                 pressure,
-                                                                 phase);
                     if (transition_phases[phase] == 0)     // 1st compositional field
                       phase_dependence += phaseFunction * density_jumps[phase] * (1.0 - composition[0]);
                     else if (transition_phases[phase] == 1) // 2nd compositional field
                       phase_dependence += phaseFunction * density_jumps[phase] * composition[0];
+
                     viscosity_phase_dependence *= 1. + phaseFunction * (phase_prefactors[phase]-1.);
                   }
               }
+
             // fourth, pressure dependence of density
             const double kappa = reference_compressibility;
             const double pressure_dependence = reference_rho * kappa * (pressure - this->get_surface_pressure());
@@ -267,41 +155,42 @@ namespace aspect
             double entropy_gradient_pressure = 0.0;
             double entropy_gradient_temperature = 0.0;
             const double rho = out.densities[i];
-            unsigned int number_of_phase_transitions;
-
-            // transition defined by depth
-            if (use_depth)
-              number_of_phase_transitions= transition_depths.size();
-            // transition defined by pressure
-            else
-              number_of_phase_transitions= transition_pressures.size();
-
 
             if (this->get_adiabatic_conditions().is_initialized() && this->include_latent_heat())
-              for (unsigned int phase=0; phase<number_of_phase_transitions; ++phase)
+              for (unsigned int phase=0; phase<phase_function.n_phase_transitions(); ++phase)
                 {
-                  // calculate derivative of the phase function
-                  const double PhaseFunctionDerivative = phase_function_derivative(position,
-                                                                                   temperature,
-                                                                                   pressure,
-                                                                                   phase);
+                  const double depth = this->get_geometry_model().depth(in.position[i]);
+                  const double pressure_depth_derivative = (pressure > 0)
+                                                           ?
+                                                           depth / pressure
+                                                           :
+                                                           this->get_gravity_model().gravity_vector(in.position[i]).norm() * reference_rho;
 
-                  // calculate the change of entropy across the phase transition
+                  const MaterialUtilities::PhaseFunctionInputs<dim> phase_in(temperature,
+                                                                             pressure,
+                                                                             depth,
+                                                                             pressure_depth_derivative,
+                                                                             phase);
+
+                  const double PhaseFunctionDerivative = phase_function.compute_derivative(phase_in);
+                  const double clapeyron_slope = phase_function.get_transition_slope(phase);
+
                   double entropy_change = 0.0;
                   if (composition.size()==0)      // only one compositional field
-                    entropy_change = transition_slopes[phase] * density_jumps[phase] / (rho * rho);
+                    entropy_change = clapeyron_slope * density_jumps[phase] / (rho * rho);
                   else
                     {
                       if (transition_phases[phase] == 0)     // 1st compositional field
-                        entropy_change = transition_slopes[phase] * density_jumps[phase] / (rho * rho) * (1.0 - composition[0]);
+                        entropy_change = clapeyron_slope * density_jumps[phase] / (rho * rho) * (1.0 - composition[0]);
                       else if (transition_phases[phase] == 1) // 2nd compositional field
-                        entropy_change = transition_slopes[phase] * density_jumps[phase] / (rho * rho) * composition[0];
+                        entropy_change = clapeyron_slope * density_jumps[phase] / (rho * rho) * composition[0];
                     }
                   // we need DeltaS * DX/Dpressure_deviation for the pressure derivative
                   // and - DeltaS * DX/Dpressure_deviation * gamma for the temperature derivative
                   entropy_gradient_pressure += PhaseFunctionDerivative * entropy_change;
-                  entropy_gradient_temperature -= PhaseFunctionDerivative * entropy_change * transition_slopes[phase];
+                  entropy_gradient_temperature -= PhaseFunctionDerivative * entropy_change * clapeyron_slope;
                 }
+
             out.entropy_derivative_pressure[i] = entropy_gradient_pressure;
             out.entropy_derivative_temperature[i] = entropy_gradient_temperature;
           }
@@ -388,58 +277,6 @@ namespace aspect
                              "the density has an additional term of the kind $+\\Delta \\rho \\; c_1(\\mathbf x)$. "
                              "This parameter describes the value of $\\Delta \\rho$. Units: $kg/m^3/\\textrm{unit "
                              "change in composition}$.");
-          prm.declare_entry ("Phase transition depths", "",
-                             Patterns::List (Patterns::Double(0)),
-                             "A list of depths where phase transitions occur. Values must "
-                             "monotonically increase. "
-                             "Units: $m$.");
-          prm.declare_entry ("Phase transition widths", "",
-                             Patterns::List (Patterns::Double(0)),
-                             "A list of widths for each phase transition, in terms of depth. The phase functions "
-                             "are scaled with these values, leading to a jump between phases "
-                             "for a value of zero and a gradual transition for larger values. "
-                             "List must have the same number of entries as Phase transition depths. "
-                             "Units: $m$.");
-          prm.declare_entry ("Phase transition pressures", "",
-                             Patterns::List (Patterns::Double(0)),
-                             "A list of pressures where phase transitions occur. Values must "
-                             "monotonically increase. Define transition by depth instead of "
-                             "pressure must be set to false to use this parameter. "
-                             "Units: $Pa$.");
-          prm.declare_entry ("Phase transition pressure widths", "",
-                             Patterns::List (Patterns::Double(0)),
-                             "A list of widths for each phase transition, in terms of pressure. The phase functions "
-                             "are scaled with these values, leading to a jump between phases "
-                             "for a value of zero and a gradual transition for larger values. "
-                             "List must have the same number of entries as Phase transition pressures. "
-                             "Define transition by depth instead of pressure must be set to false "
-                             "to use this parameter. "
-                             "Units: $Pa$.");
-          prm.declare_entry ("Define transition by depth instead of pressure", "true",
-                             Patterns::Bool (),
-                             "Whether to list phase transitions by depth or pressure. If this parameter is true, "
-                             "then the input file will use Phase transitions depths and Phase transition widths "
-                             "to define the phase transition. If it is false, the parameter file will read in "
-                             "phase transition data from Phase transition pressures and "
-                             "Phase transition pressure widths.");
-          prm.declare_entry ("Phase transition temperatures", "",
-                             Patterns::List (Patterns::Double(0)),
-                             "A list of temperatures where phase transitions occur. Higher or lower "
-                             "temperatures lead to phase transition occurring in smaller or greater "
-                             "depths than given in Phase transition depths, depending on the "
-                             "Clapeyron slope given in Phase transition Clapeyron slopes. "
-                             "List must have the same number of entries as Phase transition depths. "
-                             "Units: $\\si{K}$.");
-          prm.declare_entry ("Phase transition Clapeyron slopes", "",
-                             Patterns::List (Patterns::Double()),
-                             "A list of Clapeyron slopes for each phase transition. A positive "
-                             "Clapeyron slope indicates that the phase transition will occur in "
-                             "a greater depth, if the temperature is higher than the one given in "
-                             "Phase transition temperatures and in a smaller depth, if the "
-                             "temperature is smaller than the one given in Phase transition temperatures. "
-                             "For negative slopes the other way round. "
-                             "List must have the same number of entries as Phase transition depths. "
-                             "Units: $Pa/K$.");
           prm.declare_entry ("Phase transition density jumps", "",
                              Patterns::List (Patterns::Double(0)),
                              "A list of density jumps at each phase transition. A positive value means "
@@ -471,6 +308,8 @@ namespace aspect
                              Patterns::Double (0),
                              "Limit for the maximum viscosity in the model. "
                              "Units: Pa \\, s.");
+
+          MaterialUtilities::PhaseFunction<dim>::declare_parameters(prm);
         }
         prm.leave_subsection();
       }
@@ -500,20 +339,9 @@ namespace aspect
           min_viscosity              = prm.get_double ("Minimum viscosity");
           max_viscosity              = prm.get_double ("Maximum viscosity");
 
+          phase_function.initialize_simulator (this->get_simulator());
+          phase_function.parse_parameters (prm);
 
-          transition_depths = Utilities::string_to_double
-                              (Utilities::split_string_list(prm.get ("Phase transition depths")));
-          transition_widths= Utilities::string_to_double
-                             (Utilities::split_string_list(prm.get ("Phase transition widths")));
-          transition_pressures = Utilities::string_to_double
-                                 (Utilities::split_string_list(prm.get ("Phase transition pressures")));
-          transition_pressure_widths= Utilities::string_to_double
-                                      (Utilities::split_string_list(prm.get ("Phase transition pressure widths")));
-          use_depth                   = prm.get_bool ("Define transition by depth instead of pressure");
-          transition_temperatures = Utilities::string_to_double
-                                    (Utilities::split_string_list(prm.get ("Phase transition temperatures")));
-          transition_slopes = Utilities::string_to_double
-                              (Utilities::split_string_list(prm.get ("Phase transition Clapeyron slopes")));
           density_jumps = Utilities::string_to_double
                           (Utilities::split_string_list(prm.get ("Phase transition density jumps")));
           transition_phases = Utilities::string_to_int
@@ -521,35 +349,16 @@ namespace aspect
           phase_prefactors = Utilities::string_to_double
                              (Utilities::split_string_list(prm.get ("Viscosity prefactors")));
 
-          // make sure to check against the depth lists for size errors, since using depth
-          if (use_depth)
-            {
-              if (transition_widths.size() != transition_depths.size() ||
-                  transition_temperatures.size() != transition_depths.size() ||
-                  transition_slopes.size() != transition_depths.size() ||
-                  density_jumps.size() != transition_depths.size() ||
-                  transition_phases.size() != transition_depths.size() ||
-                  phase_prefactors.size() != transition_depths.size()+1)
-                AssertThrow(false, ExcMessage("Error: At least one list that gives input parameters for the phase "
-                                              "transitions has the wrong size. Currently checking against transition depths. "
-                                              "If phase transitions in terms of pressure inputs are desired, check to make sure "
-                                              "'Define transition by depth instead of pressure = false'."));
-            }
-          // make sure to check against the pressure lists for size errors,
-          // since pressure is being used instead of depth.
-          else
-            {
-              if (transition_pressure_widths.size() != transition_pressures.size() ||
-                  transition_temperatures.size() != transition_pressures.size() ||
-                  transition_slopes.size() != transition_pressures.size() ||
-                  density_jumps.size() != transition_pressures.size() ||
-                  transition_phases.size() != transition_pressures.size() ||
-                  phase_prefactors.size() != transition_pressures.size()+1)
-                AssertThrow(false, ExcMessage("Error: At least one list that gives input parameters for the phase "
-                                              "transitions has the wrong size. Currently checking against transition pressures. "
-                                              "If phase transitions in terms of depth inputs are desired, check to make sure "
-                                              "'Define transition by depth instead of pressure = true'."));
-            }
+          const unsigned int n_transitions = phase_function.n_phase_transitions();
+          if (density_jumps.size() != n_transitions ||
+              transition_phases.size() != n_transitions ||
+              phase_prefactors.size() != n_transitions+1)
+            AssertThrow(false, ExcMessage("Error: At least one list that provides input parameters for phase "
+                                          "transitions has the wrong size. The phase function object reports that "
+                                          "there are " + std::to_string(n_transitions) + " transitions, "
+                                          "therefore the material model expects " + std::to_string(n_transitions) +
+                                          " density jumps and corresponding phases, and "
+                                          + std::to_string(n_transitions+1) + " viscosity prefactors."));
 
           // as the phase viscosity prefactors are all applied multiplicatively on top of each other,
           // we have to scale them here so that they are relative factors in comparison to the product
@@ -561,6 +370,7 @@ namespace aspect
 
           if (thermal_viscosity_exponent!=0.0 && reference_T == 0.0)
             AssertThrow(false, ExcMessage("Error: Material model latent heat with Thermal viscosity exponent can not have reference_T=0."));
+
         }
         prm.leave_subsection();
       }

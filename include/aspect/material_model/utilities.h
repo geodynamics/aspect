@@ -30,6 +30,8 @@
 
 namespace aspect
 {
+  template <int dim> class SimulatorAccess;
+
   namespace MaterialModel
   {
     using namespace dealii;
@@ -323,6 +325,106 @@ namespace aspect
       compute_drucker_prager_yielding (const DruckerPragerInputs &in,
                                        DruckerPragerOutputs &out);
 
+      /**
+       * A data structure with all inputs for the
+       * PhaseFunction::phase_function_value() and
+       * PhaseFunction::phase_function_derivative() method.
+       */
+      template <int dim>
+      struct PhaseFunctionInputs
+      {
+        /**
+        * Constructor. Initializes the various variables of this
+        * structure with the input values.
+        */
+        PhaseFunctionInputs(const double temperature,
+                            const double pressure,
+                            const double depth,
+                            const double pressure_depth_derivative,
+                            const unsigned int phase_index);
+
+        double temperature;
+        double pressure;
+        double depth;
+        double pressure_depth_derivative;
+        unsigned int phase_index;
+      };
+
+      /**
+       * A class that bundles functionality to compute the values and
+       * derivatives of phase functions. The class can handle arbitrary
+       * numbers of phase transitions, but the calling side has to determine
+       * how to use the return values of this object (e.g. in terms of
+       * density or viscosity).
+       */
+      template <int dim>
+      class PhaseFunction: public ::aspect::SimulatorAccess<dim>
+      {
+        public:
+          /**
+           * Percentage of material that has already undergone the phase
+           * transition to the higher-pressure material (this is done
+           * individually for each transition and summed up in the end)
+           */
+          double compute_value (const PhaseFunctionInputs<dim> &in) const;
+
+          /**
+           * Return the derivative of the phase function with respect to
+           * pressure.
+           */
+          double compute_derivative (const PhaseFunctionInputs<dim> &in) const;
+
+          /**
+           * Return the total number of phase transitions.
+           */
+          unsigned int n_phase_transitions () const;
+
+          /**
+           * Return the Clapeyron slope (dp/dT of the transition) for
+           * phase transition number @p phase_index.
+           */
+          double get_transition_slope (const unsigned int phase_index) const;
+
+          /**
+           * Declare the parameters this class takes through input files.
+           * Note that this class does not declare its own subsection,
+           * i.e. the parameters will be declared in the subsection that
+           * was active before calling this function.
+           */
+          static
+          void
+          declare_parameters (ParameterHandler &prm);
+
+          /**
+           * Read the parameters this class declares from the parameter file.
+           * Note that this class does not declare its own subsection,
+           * i.e. the parameters will be parsed from the subsection that
+           * was active before calling this function.
+           */
+          void
+          parse_parameters (ParameterHandler &prm);
+
+
+        private:
+          /**
+           * List of depth (or pressure), width and Clapeyron slopes
+           * for the different phase transitions
+           */
+          std::vector<double> transition_depths;
+          std::vector<double> transition_pressures;
+          std::vector<double> transition_temperatures;
+          std::vector<double> transition_widths;
+          std::vector<double> transition_pressure_widths;
+          std::vector<double> transition_slopes;
+
+          /**
+           * Whether to define the phase transitions based on depth, or pressure.
+           * Based on this parameter, either transition_depths and transition_width,
+           * or transition_pressures and transition_pressure_widths determine the
+           * depth of the phase transition.
+           */
+          bool use_depth_instead_of_pressure;
+      };
     }
   }
 }

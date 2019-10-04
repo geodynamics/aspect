@@ -76,6 +76,11 @@ namespace aspect
     template <int dim> class Manager;
   }
 
+  namespace MaterialModel
+  {
+    template <int dim> class Interface;
+  }
+
   namespace InitialTemperature
   {
     template <int dim> class Manager;
