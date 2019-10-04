@@ -1,0 +1,7 @@
+New: There is a new model in the MaterialModel::Rheology namespace for plastic
+material behavior based on the Drucker Prager yield criterion. The functionality
+is largely based on existing functions in MaterialUtilities and is currently used 
+in the visco plastic material. *Note, will updated once PR is approved and further
+changes are made. 
+<br>
+(John Naliboff, 2019-10-10)
