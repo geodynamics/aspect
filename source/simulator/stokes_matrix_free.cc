@@ -1386,6 +1386,11 @@ namespace aspect
     // succeeds in n_cheap_stokes_solver_steps steps or less.
     try
       {
+        // if this cheaper solver is not desired, then simply short-cut
+        // the attempt at solving with the cheaper preconditioner
+        if (sim.parameters.n_cheap_stokes_solver_steps == 0)
+          throw SolverControl::NoConvergence(0,0);
+
         SolverFGMRES<dealii::LinearAlgebra::distributed::BlockVector<double> >
         solver(solver_control_cheap, mem,
                SolverFGMRES<dealii::LinearAlgebra::distributed::BlockVector<double> >::
