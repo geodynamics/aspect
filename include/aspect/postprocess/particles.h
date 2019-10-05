@@ -55,7 +55,7 @@ namespace aspect
            */
           void build_patches(const Particles::ParticleHandler<dim> &particle_handler,
                              const aspect::Particle::Property::ParticlePropertyInformation &property_information,
-                             std::vector<std::string> &exclude_output_properties,
+                             const std::vector<std::string> &exclude_output_properties,
                              const bool only_group_3d_vectors);
 
         private:
@@ -328,8 +328,8 @@ namespace aspect
         Threads::Thread<void> background_thread;
 
         /**
-         * Stores the particle property fields which are ouptut to the
-         * visualization file.
+         * Stores the particle property fields which are exluded from ouptut
+         * to the visualization file.
          */
         std::vector<std::string> exclude_output_properties;
 

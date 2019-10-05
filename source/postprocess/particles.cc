@@ -38,7 +38,7 @@ namespace aspect
       void
       ParticleOutput<dim>::build_patches(const dealii::Particles::ParticleHandler<dim> &particle_handler,
                                          const aspect::Particle::Property::ParticlePropertyInformation &property_information,
-                                         std::vector<std::string> &exclude_output_properties,
+                                         const std::vector<std::string> &exclude_output_properties,
                                          const bool only_group_3d_vectors)
       {
         // First store the names of the data fields
@@ -54,7 +54,7 @@ namespace aspect
             bool found = false;
             for (unsigned int i = 0; i < exclude_output_properties.size(); ++i)
               {
-                if (field_name.find(exclude_output_properties[i]) != std::string::npos)
+                if (exclude_output_properties[i] == "all" || field_name.find(exclude_output_properties[i]) != std::string::npos)
                   {
                     found = true;
                     break;
@@ -93,7 +93,7 @@ namespace aspect
             bool found = false;
             for (unsigned int i = 0; i < exclude_output_properties.size(); ++i)
               {
-                if (field_name.find(exclude_output_properties[i]) != std::string::npos)
+                if (exclude_output_properties[i] == "all" ||field_name.find(exclude_output_properties[i]) != std::string::npos)
                   {
                     found = true;
                     break;
@@ -162,7 +162,7 @@ namespace aspect
                     bool found = false;
                     for (unsigned int i = 0; i < exclude_output_properties.size(); ++i)
                       {
-                        if (field_name.find(exclude_output_properties[i]) != std::string::npos)
+                        if (exclude_output_properties[i] == "all" || field_name.find(exclude_output_properties[i]) != std::string::npos)
                           {
                             found = true;
                             break;
