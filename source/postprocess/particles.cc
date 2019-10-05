@@ -719,7 +719,8 @@ namespace aspect
           prm.declare_entry ("Exclude output properties", "",
                              Patterns::Anything(),
                              "A comma seperated list of strings which exclude all particle"
-                             " property fields which contain these strings. "
+                             "property fields which contain these strings. If one of the "
+                             "entries is 'all', only a id will we provided for every point."
                              "Todo: do we need a way to generate all posibilites?");
         }
         prm.leave_subsection ();
