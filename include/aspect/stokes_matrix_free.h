@@ -282,14 +282,14 @@ namespace aspect
 
   /**
     * Base class for the matrix free GMG solver for the Stokes system. The
-    * actual implementation is found inside StokesMatrixFreeHandlerImpl below.
+    * actual implementation is found inside StokesMatrixFreeHandlerImplementation below.
     */
   template<int dim>
   class StokesMatrixFreeHandler
   {
     public:
       /**
-       * Destructor.
+       * virtual Destructor.
        */
       virtual ~StokesMatrixFreeHandler();
 
@@ -325,15 +325,10 @@ namespace aspect
       virtual void correct_stokes_rhs()=0;
 
       /**
-       * Declare parameters. (No actual parameters at the moment).
+       * Declare parameters.
        */
       static
       void declare_parameters (ParameterHandler &prm);
-
-      /**
-       * Parse parameters. (No actual parameters at the moment).
-       */
-      virtual void parse_parameters (ParameterHandler &prm);
   };
 
   /**
@@ -343,10 +338,11 @@ namespace aspect
    * We need to derive from StokesMatrixFreeHandler to be able to introduce a
    * second template argument for the degree of the Stokes finite
    * element. This way, the main simulator does not need to know about the
-   * degree and we can pick the desired class to use at runtime.
+   * degree by using a pointer to the base class and we can pick the desired
+   * velocity degree at runtime.
    */
   template<int dim, int velocity_degree>
-  class StokesMatrixFreeHandlerImpl: public StokesMatrixFreeHandler<dim>
+  class StokesMatrixFreeHandlerImplementation: public StokesMatrixFreeHandler<dim>
   {
     public:
       /**
@@ -355,24 +351,24 @@ namespace aspect
        * Simulator that owns it, since it needs to make fairly extensive
        * changes to the internals of the simulator.
        */
-      StokesMatrixFreeHandlerImpl(Simulator<dim> &, ParameterHandler &prm);
+      StokesMatrixFreeHandlerImplementation(Simulator<dim> &, ParameterHandler &prm);
 
       /**
        * Destructor.
        */
-      ~StokesMatrixFreeHandlerImpl();
+      ~StokesMatrixFreeHandlerImplementation();
 
       /**
        * Solves the Stokes linear system matrix-free. This is called
        * by Simulator<dim>::solve_stokes().
        */
-      std::pair<double,double> solve();
+      std::pair<double,double> solve() override;
 
       /**
        * Allocates and sets up the members of the StokesMatrixFreeHandler. This
        * is called by Simulator<dim>::setup_dofs()
        */
-      void setup_dofs();
+      void setup_dofs() override;
 
       /**
        * Evaluate the material model and update internal data structures before the
@@ -384,7 +380,7 @@ namespace aspect
        * Get the workload imbalance of the distribution
        * of the level hierarchy.
        */
-      double get_workload_imbalance();
+      double get_workload_imbalance() override;
 
       /**
     private:
@@ -401,6 +397,17 @@ namespace aspect
        * Add correction to system RHS for non-zero boundary condition.
        */
       void correct_stokes_rhs();
+
+      /**
+       * Parse parameters. (No actual parameters at the moment).
+       */
+      void parse_parameters (ParameterHandler &prm);
+
+      /**
+       * Declare parameters. (No actual parameters at the moment).
+       */
+      static
+      void declare_parameters (ParameterHandler &prm);
 
       /**
        * Computes and sets the diagonal for the A-block operators on each level for
@@ -432,7 +439,7 @@ namespace aspect
       ConstraintMatrix constraints_projection;
 
       MGLevelObject<ABlockMatrixType> mg_matrices;
-      MGConstrainedDoFs              mg_constrained_dofs;
+      MGConstrainedDoFs mg_constrained_dofs;
       MGConstrainedDoFs mg_constrained_dofs_projection;
 
       dealii::LinearAlgebra::distributed::Vector<double> active_coef_dof_vec;

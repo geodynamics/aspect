@@ -382,10 +382,10 @@ namespace aspect
         switch (parameters.stokes_velocity_degree)
           {
             case 2:
-              stokes_matrix_free = std_cxx14::make_unique<StokesMatrixFreeHandlerImpl<dim,2>>(*this, prm);
+              stokes_matrix_free = std_cxx14::make_unique<StokesMatrixFreeHandlerImplementation<dim,2>>(*this, prm);
               break;
             case 3:
-              stokes_matrix_free = std_cxx14::make_unique<StokesMatrixFreeHandlerImpl<dim,3>>(*this, prm);
+              stokes_matrix_free = std_cxx14::make_unique<StokesMatrixFreeHandlerImplementation<dim,3>>(*this, prm);
               break;
             default:
               AssertThrow(false, ExcMessage("The finite element degree for the Stokes system you selected is not supported yet."));
