@@ -1911,6 +1911,8 @@ namespace aspect
       friend class MeshDeformation::MeshDeformationHandler<dim>;   // MeshDeformationHandler needs access to the internals of the Simulator
       friend class VolumeOfFluidHandler<dim>; // VolumeOfFluidHandler needs access to the internals of the Simulator
       friend class StokesMatrixFreeHandler<dim>;
+      template <int dimi, int velocity_degree>
+      friend class StokesMatrixFreeHandlerImpl;
       friend struct Parameters<dim>;
   };
 }

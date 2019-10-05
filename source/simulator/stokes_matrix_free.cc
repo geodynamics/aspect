@@ -987,9 +987,9 @@ namespace aspect
   /**
    * Matrix-free setup, assmeble, and solve function implementations.
    */
-  template <int dim>
-  StokesMatrixFreeHandler<dim>::StokesMatrixFreeHandler (Simulator<dim> &simulator,
-                                                         ParameterHandler &prm)
+  template <int dim, int velocity_degree>
+  StokesMatrixFreeHandlerImpl<dim, velocity_degree>::StokesMatrixFreeHandlerImpl (Simulator<dim> &simulator,
+                                                                                  ParameterHandler &prm)
     : sim(simulator),
 
       dof_handler_v(simulator.triangulation),
@@ -1002,7 +1002,7 @@ namespace aspect
       fe_p (FE_Q<dim>(sim.parameters.stokes_velocity_degree-1),1),
       fe_projection(FE_DGQ<dim>(0),1)
   {
-    parse_parameters(prm);
+    this->parse_parameters(prm);
     CitationInfo::add("mf");
 
     // This requires: porting the additional stabilization terms and using a
@@ -1013,8 +1013,7 @@ namespace aspect
     // Not very difficult to do, but will require a different mass matrix
     // operator:
     AssertThrow(!sim.parameters.use_locally_conservative_discretization, ExcNotImplemented());
-    // TODO: this is currently hard-coded in the header:
-    AssertThrow(sim.parameters.stokes_velocity_degree==2, ExcNotImplemented());
+
 
     // sanity check:
     Assert(sim.introspection.variable("velocity").block_index==0, ExcNotImplemented());
@@ -1055,10 +1054,13 @@ namespace aspect
   StokesMatrixFreeHandler<dim>::~StokesMatrixFreeHandler ()
   {
   }
+  template <int dim, int velocity_degree>
+  StokesMatrixFreeHandlerImpl<dim, velocity_degree>::~StokesMatrixFreeHandlerImpl ()
+  {
+  }
 
-
-  template <int dim>
-  double StokesMatrixFreeHandler<dim>::get_workload_imbalance ()
+  template <int dim, int velocity_degree>
+  double StokesMatrixFreeHandlerImpl<dim, velocity_degree>::get_workload_imbalance ()
   {
     unsigned int n_proc = Utilities::MPI::n_mpi_processes(sim.triangulation.get_communicator());
     unsigned int n_global_levels = sim.triangulation.n_global_levels();
@@ -1094,8 +1096,8 @@ namespace aspect
   }
 
 
-  template <int dim>
-  void StokesMatrixFreeHandler<dim>::evaluate_material_model ()
+  template <int dim, int velocity_degree>
+  void StokesMatrixFreeHandlerImpl<dim, velocity_degree>::evaluate_material_model ()
   {
     {
       const QGauss<dim> quadrature_formula (sim.parameters.stokes_velocity_degree+1);
@@ -1187,8 +1189,8 @@ namespace aspect
   }
 
 
-  template <int dim>
-  void StokesMatrixFreeHandler<dim>::correct_stokes_rhs()
+  template <int dim, int velocity_degree>
+  void StokesMatrixFreeHandlerImpl<dim, velocity_degree>::correct_stokes_rhs()
   {
     dealii::LinearAlgebra::distributed::BlockVector<double> rhs_correction(2);
     dealii::LinearAlgebra::distributed::BlockVector<double> u0(2);
@@ -1205,9 +1207,9 @@ namespace aspect
     u0.update_ghost_values();
 
     const Table<2, VectorizedArray<double>> viscosity_x_2_table = stokes_matrix.get_viscosity_x_2_table();
-    FEEvaluation<dim,2,3,dim,double>
+    FEEvaluation<dim,velocity_degree,velocity_degree+1,dim,double>
     velocity (*stokes_matrix.get_matrix_free(), 0);
-    FEEvaluation<dim,1,3,1,double>
+    FEEvaluation<dim,velocity_degree-1,velocity_degree+1,1,double>
     pressure (*stokes_matrix.get_matrix_free(), 1);
 
     for (unsigned int cell=0; cell<stokes_matrix.get_matrix_free()->n_macro_cells(); ++cell)
@@ -1274,8 +1276,8 @@ namespace aspect
   }
 
 
-  template <int dim>
-  std::pair<double,double> StokesMatrixFreeHandler<dim>::solve()
+  template <int dim, int velocity_degree>
+  std::pair<double,double> StokesMatrixFreeHandlerImpl<dim,velocity_degree>::solve()
   {
     double initial_nonlinear_residual = numbers::signaling_nan<double>();
     double final_linear_residual      = numbers::signaling_nan<double>();
@@ -1663,8 +1665,8 @@ namespace aspect
   }
 
 
-  template <int dim>
-  void StokesMatrixFreeHandler<dim>::setup_dofs()
+  template <int dim, int velocity_degree>
+  void StokesMatrixFreeHandlerImpl<dim, velocity_degree>::setup_dofs()
   {
     // Velocity DoFHandler
     {
@@ -1979,7 +1981,9 @@ namespace aspect
 
 // explicit instantiation of the functions we implement in this file
 #define INSTANTIATE(dim) \
-  template class StokesMatrixFreeHandler<dim>;
+  template class StokesMatrixFreeHandler<dim>; \
+  template class StokesMatrixFreeHandlerImpl<dim,2>; \
+  template class StokesMatrixFreeHandlerImpl<dim,3>;
 
   ASPECT_INSTANTIATE(INSTANTIATE)
 }

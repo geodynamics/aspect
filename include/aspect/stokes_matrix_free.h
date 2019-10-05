@@ -281,11 +281,72 @@ namespace aspect
   }
 
   /**
-   * Main class of the Matrix-free method. Here are all the functions for setup, assembly and solving
-   * the Stokes system.
-   */
+    * Base class for the matrix free GMG solver for the Stokes system. The
+    * actual implementation is found inside StokesMatrixFreeHandlerImpl below.
+    */
   template<int dim>
   class StokesMatrixFreeHandler
+  {
+    public:
+      /**
+       * Destructor.
+       */
+      virtual ~StokesMatrixFreeHandler();
+
+      /**
+       * Solves the Stokes linear system matrix-free. This is called
+       * by Simulator<dim>::solve_stokes().
+       */
+      virtual std::pair<double,double> solve()=0;
+
+      /**
+       * Allocates and sets up the members of the StokesMatrixFreeHandler. This
+       * is called by Simulator<dim>::setup_dofs()
+       */
+      virtual void setup_dofs()=0;
+
+      /**
+       * Evalute the MaterialModel to query for the viscosity on the active cells,
+       * project this viscosity to the multigrid hierarchy, and cache the information
+       * for later usage. Also sets pressure scaling and information regarding the
+       * compressiblity of the flow.
+       */
+      virtual void evaluate_material_model()=0;
+
+      /**
+       * Get the workload imbalance of the distribution
+       * of the level hierarchy.
+       */
+      virtual double get_workload_imbalance()=0;
+
+      /**
+       * Add correction to system RHS for non-zero boundary condition.
+       */
+      virtual void correct_stokes_rhs()=0;
+
+      /**
+       * Declare parameters. (No actual parameters at the moment).
+       */
+      static
+      void declare_parameters (ParameterHandler &prm);
+
+      /**
+       * Parse parameters. (No actual parameters at the moment).
+       */
+      virtual void parse_parameters (ParameterHandler &prm);
+  };
+
+  /**
+   * Main class of the Matrix-free method. Here are all the functions for
+   * setup, assembly and solving the Stokes system.
+   *
+   * We need to derive from StokesMatrixFreeHandler to be able to introduce a
+   * second template argument for the degree of the Stokes finite
+   * element. This way, the main simulator does not need to know about the
+   * degree and we can pick the desired class to use at runtime.
+   */
+  template<int dim, int velocity_degree>
+  class StokesMatrixFreeHandlerImpl: public StokesMatrixFreeHandler<dim>
   {
     public:
       /**
@@ -294,12 +355,12 @@ namespace aspect
        * Simulator that owns it, since it needs to make fairly extensive
        * changes to the internals of the simulator.
        */
-      StokesMatrixFreeHandler(Simulator<dim> &, ParameterHandler &prm);
+      StokesMatrixFreeHandlerImpl(Simulator<dim> &, ParameterHandler &prm);
 
       /**
        * Destructor.
        */
-      ~StokesMatrixFreeHandler();
+      ~StokesMatrixFreeHandlerImpl();
 
       /**
        * Solves the Stokes linear system matrix-free. This is called
@@ -326,16 +387,6 @@ namespace aspect
       double get_workload_imbalance();
 
       /**
-       * Declare parameters. (No actual parameters at the moment).
-       */
-      static
-      void declare_parameters (ParameterHandler &prm);
-
-      /**
-       * Parse parameters. (No actual parameters at the moment).
-       */
-      void parse_parameters (ParameterHandler &prm);
-
     private:
 
       /**
@@ -368,10 +419,9 @@ namespace aspect
       FESystem<dim> fe_p;
       FESystem<dim> fe_projection;
 
-      // TODO: velocity degree not only 2, Choosing quadrature degree?
-      typedef MatrixFreeStokesOperators::StokesOperator<dim,2,double> StokesMatrixType;
-      typedef MatrixFreeStokesOperators::MassMatrixOperator<dim,1,double> MassMatrixType;
-      typedef MatrixFreeStokesOperators::ABlockOperator<dim,2,double> ABlockMatrixType;
+      typedef MatrixFreeStokesOperators::StokesOperator<dim,velocity_degree,double> StokesMatrixType;
+      typedef MatrixFreeStokesOperators::MassMatrixOperator<dim,velocity_degree-1,double> MassMatrixType;
+      typedef MatrixFreeStokesOperators::ABlockOperator<dim,velocity_degree,double> ABlockMatrixType;
 
       StokesMatrixType stokes_matrix;
       ABlockMatrixType velocity_matrix;

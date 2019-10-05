@@ -379,7 +379,18 @@ namespace aspect
 
     if (parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::block_gmg)
       {
-        stokes_matrix_free = std_cxx14::make_unique<StokesMatrixFreeHandler<dim>>(*this, prm);
+        switch (parameters.stokes_velocity_degree)
+          {
+            case 2:
+              stokes_matrix_free = std_cxx14::make_unique<StokesMatrixFreeHandlerImpl<dim,2>>(*this, prm);
+              break;
+            case 3:
+              stokes_matrix_free = std_cxx14::make_unique<StokesMatrixFreeHandlerImpl<dim,3>>(*this, prm);
+              break;
+            default:
+              AssertThrow(false, ExcMessage("The finite element degree for the Stokes system you selected is not supported yet."));
+          }
+
       }
 
     postprocess_manager.initialize_simulator (*this);
