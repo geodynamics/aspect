@@ -1921,7 +1921,9 @@ namespace aspect
             boundary_constraints.reinit(locally_relevant_dofs);
             boundary_constraints.add_lines (mg_constrained_dofs.get_refinement_edge_indices(level));
             boundary_constraints.add_lines (mg_constrained_dofs.get_boundary_indices(level));
+#if DEAL_II_VERSION_GTE(9,2,0)
             boundary_constraints.merge(mg_constrained_dofs.get_user_constraint_matrix(level));
+#endif
             boundary_constraints.close();
 
             typename DoFHandler<dim>::level_cell_iterator cell = dof_handler_v.begin(level),
