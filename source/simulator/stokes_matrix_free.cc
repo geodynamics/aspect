@@ -46,7 +46,6 @@ namespace aspect
     /**
      * Here we define the function(s) to make no normal flux boundary constraints for
      * MG levels.
-     * TODO: Implement for spherical meshes.
      */
     namespace TangentialBoundaryFunctions
     {
@@ -59,6 +58,13 @@ namespace aspect
                                                     const std::set<types::boundary_id> &boundary_ids,
                                                     ConstraintMatrix &constraints)
       {
+        // TODO: This is a simplification of compute_no_normal_flux_constraints() from deal.II.
+        // The differences are:
+        // - It works on a specific level so we can ignore hanging nodes
+        // - We use the normal vector given by the manifold (instead of averaging surface vectors)
+        //
+        // This should go into deal.II at some point, but it is too specific at this point.
+
         IndexSet refinement_edge_indices = mg_constrained_dofs.get_refinement_edge_indices(level);
 
         const double inhomogeneity = 0;
@@ -74,12 +80,9 @@ namespace aspect
                                                    quadrature,
                                                    update_quadrature_points |
                                                    update_normal_vectors);
-        typename DoFHandler<dim, spacedim>::level_cell_iterator
-        cell = dof_handler.begin(level),
-        endc = dof_handler.end(level);
-        std::set<types::boundary_id>::iterator b_id;
 
-        for (; cell != endc; ++cell)
+        std::set<types::boundary_id>::iterator b_id;
+        for (const auto &cell : dof_handler.cell_iterators_on_level(level))
           if (cell->level_subdomain_id() != numbers::artificial_subdomain_id
               &&
               cell->level_subdomain_id() != numbers::invalid_subdomain_id)
@@ -90,8 +93,7 @@ namespace aspect
                   boundary_ids.end())
                 {
                   typename DoFHandler<dim, spacedim>::level_face_iterator face = cell->face(face_no);
-                  // Does this work? Parallel?
-                  face->get_mg_dof_indices(level,face_dofs);//, cell->active_fe_index());
+                  face->get_mg_dof_indices(level, face_dofs);
                   fe_face_values.reinit(cell, face_no);
 
                   for (unsigned int i = 0; i < face_dofs.size(); ++i)
@@ -1847,8 +1849,8 @@ namespace aspect
               level_constraints.close();
             }
 #else
-          AssertThrow(false, ExcMessage("No normal flux for shell domain only implemented in "
-                                        "master version of deal.II"));
+          AssertThrow(false, ExcMessage("No normal flux for spherical domains requires "
+                                        "a deal.II version newer than 9.1"));
 #endif
 
           {
