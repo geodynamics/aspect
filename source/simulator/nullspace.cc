@@ -66,7 +66,7 @@ namespace aspect
           axis(rotation_axis)
         {}
 
-        virtual Tensor<1,dim> value (const Point<dim> &p) const
+        Tensor<1,dim> value (const Point<dim> &p) const override
         {
           if ( dim == 2)
             return cross_product_2d(p);
@@ -101,7 +101,7 @@ namespace aspect
           translation(t)
         {}
 
-        virtual Tensor<1,dim> value(const Point<dim> &) const
+        Tensor<1,dim> value(const Point<dim> &) const override
         {
           return translation;
         }

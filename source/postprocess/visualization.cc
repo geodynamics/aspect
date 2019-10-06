@@ -55,10 +55,10 @@ namespace aspect
       class BaseVariablePostprocessor: public DataPostprocessor< dim >, public SimulatorAccess<dim>
       {
         public:
-          virtual
+
           void
           evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
-                                std::vector<Vector<double> > &computed_quantities) const
+                                std::vector<Vector<double> > &computed_quantities) const override
           {
             const double velocity_scaling_factor =
               this->convert_output_to_years() ? year_in_seconds : 1.0;
@@ -76,7 +76,7 @@ namespace aspect
                 }
           }
 
-          virtual std::vector<std::string> get_names () const
+          std::vector<std::string> get_names () const override
           {
             std::vector<std::string> solution_names (dim, "velocity");
 
@@ -96,9 +96,9 @@ namespace aspect
             return solution_names;
           }
 
-          virtual
+
           std::vector<DataComponentInterpretation::DataComponentInterpretation>
-          get_data_component_interpretation () const
+          get_data_component_interpretation () const override
           {
             std::vector<DataComponentInterpretation::DataComponentInterpretation>
             interpretation (dim,
@@ -118,7 +118,7 @@ namespace aspect
             return interpretation;
           }
 
-          virtual UpdateFlags get_needed_update_flags () const
+          UpdateFlags get_needed_update_flags () const override
           {
             return update_values;
           }
@@ -136,10 +136,10 @@ namespace aspect
             : DataPostprocessorVector<dim>( "mesh_velocity", UpdateFlags(update_values) )
           {}
 
-          virtual
+
           void
           evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
-                                std::vector<Vector<double> > &computed_quantities) const
+                                std::vector<Vector<double> > &computed_quantities) const override
           {
             // check that the first quadrature point has dim components
             Assert( computed_quantities[0].size() == dim,
