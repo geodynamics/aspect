@@ -214,8 +214,7 @@ namespace aspect
       // Deal with a curved mesh
       // Attach the real manifold to slot 15.
       coarse_grid.set_manifold (15, manifold);
-      for (typename Triangulation<dim>::active_cell_iterator cell =
-             coarse_grid.begin_active(); cell != coarse_grid.end(); ++cell)
+      for (const auto &cell : coarse_grid.active_cell_iterators())
         cell->set_all_manifold_ids (15);
     }
 

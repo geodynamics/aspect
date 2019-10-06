@@ -117,11 +117,10 @@ namespace aspect
                                     "or " + std::to_string(n_fields) + " (the number of fields, possibly plus 1 if a background field is expected)."));
 
           // Parse by entry
-          for (std::vector<std::string>::const_iterator field_entry = field_entries.begin();
-               field_entry != field_entries.end(); ++field_entry)
+          for (const auto &field_entry : field_entries)
             {
               // Split each entry into string and value ( <id> : <value>)
-              std::vector<std::string> key_and_value = Utilities::split_string_list (*field_entry, ':');
+              std::vector<std::string> key_and_value = Utilities::split_string_list (field_entry, ':');
 
               // Ensure that each entry has the correct form.
               AssertThrow (key_and_value.size() == 2,
@@ -130,7 +129,7 @@ namespace aspect
                                        + "requires that each entry has the "
                                        "form `<id> : <value>' "
                                        ", but the entry <"
-                                       + *field_entry
+                                       + field_entry
                                        + "> does not appear to follow this pattern."));
 
               // If there is one entry in the list the keyword "all" must be found.
@@ -266,11 +265,8 @@ namespace aspect
       char fn_split = '(', fn_end = ')';
       std::vector<std::string> var_name_list;
 
-      for (std::vector<std::string>::const_iterator var_decl_iterator = var_declarations.begin();
-           var_decl_iterator != var_declarations.end();
-           ++var_decl_iterator)
+      for (const auto &var_decl : var_declarations)
         {
-          const std::string &var_decl = *var_decl_iterator;
           if (var_decl.find(fn_split) != std::string::npos && var_decl[var_decl.length()-1]==fn_end)
             {
               const std::string fn_name = var_decl.substr(0, var_decl.find(fn_split));
@@ -355,8 +351,7 @@ namespace aspect
 
       unsigned int dofs_per_cell = dof_handler.get_fe().dofs_per_cell;
       std::vector<types::global_dof_index> indices(dofs_per_cell);
-      for (typename DoFHandler<dim>::active_cell_iterator cell=dof_handler.begin_active();
-           cell!=dof_handler.end(); ++cell)
+      for (const auto &cell : dof_handler.active_cell_iterators())
         if (cell->is_locally_owned())
           {
             cell->get_dof_indices(indices);

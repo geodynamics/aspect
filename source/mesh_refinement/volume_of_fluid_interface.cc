@@ -89,121 +89,114 @@ namespace aspect
           std::vector<double> neighbor_volume_of_fluid_values(qMidC.size());
 
 
-          typename DoFHandler<dim>::active_cell_iterator cell = this->get_dof_handler().begin_active(),
-                                                         endc = this->get_dof_handler().end();
-          for (; cell != endc; ++cell)
-            {
-              // Skip artificial cells
-              if (!cell->active() || cell->is_artificial())
-                continue;
+          for (const auto &cell : this->get_dof_handler().active_cell_iterators())
+            if (!cell->is_artificial())
+              {
+                bool refine_current_cell = false;
 
-              bool refine_current_cell = false;
+                // Get cell volume_of_fluid
+                fe_values.reinit(cell);
+                fe_values[volume_of_fluid_field].get_function_values(this->get_solution(),
+                                                                     volume_of_fluid_values);
 
-              // Get cell volume_of_fluid
-              fe_values.reinit(cell);
-              fe_values[volume_of_fluid_field].get_function_values(this->get_solution(),
-                                                                   volume_of_fluid_values);
+                // Handle overshoots
+                volume_of_fluid_values[0] = std::min(volume_of_fluid_values[0], 1.0);
+                volume_of_fluid_values[0] = std::max(volume_of_fluid_values[0], 0.0);
 
-              // Handle overshoots
-              volume_of_fluid_values[0] = std::min(volume_of_fluid_values[0], 1.0);
-              volume_of_fluid_values[0] = std::max(volume_of_fluid_values[0], 0.0);
+                // Check if at interface
+                if (volume_of_fluid_values[0] > volume_fraction_threshold && volume_of_fluid_values[0] < (1.0 - volume_fraction_threshold))
+                  {
+                    refine_current_cell = true;
+                  }
 
-              // Check if at interface
-              if (volume_of_fluid_values[0] > volume_fraction_threshold && volume_of_fluid_values[0] < (1.0 - volume_fraction_threshold))
-                {
-                  refine_current_cell = true;
-                }
+                if (!refine_current_cell)
+                  {
+                    for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+                      {
+                        const bool cell_has_periodic_neighbor = cell->has_periodic_neighbor(f);
+                        const typename DoFHandler<dim>::face_iterator face = cell->face(f);
 
-              if (!refine_current_cell)
-                {
-                  for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
-                    {
-                      const bool cell_has_periodic_neighbor = cell->has_periodic_neighbor(f);
-                      const typename DoFHandler<dim>::face_iterator face = cell->face(f);
+                        // Skip if face is at boundary, and does not have a periodic neighbor
+                        if (face->at_boundary() && !cell_has_periodic_neighbor)
+                          continue;
 
-                      // Skip if face is at boundary, and does not have a periodic neighbor
-                      if (face->at_boundary() && !cell_has_periodic_neighbor)
-                        continue;
+                        const typename DoFHandler<dim>::cell_iterator neighbor = cell->neighbor_or_periodic_neighbor(f);
 
-                      const typename DoFHandler<dim>::cell_iterator neighbor = cell->neighbor_or_periodic_neighbor(f);
+                        if (neighbor->is_artificial())
+                          continue;
 
-                      // Skip if neighboring cell is invalid
-                      if (neighbor == endc)
-                        continue;
+                        if ((!face->at_boundary() && !face->has_children())
+                            ||
+                            (face->at_boundary() && cell->periodic_neighbor_is_coarser(f))
+                            ||
+                            (face->at_boundary() && neighbor->level() == cell->level() && neighbor->active()))
+                          {
+                            if (neighbor->active())
+                              {
+                                fe_values.reinit(neighbor);
+                                fe_values[volume_of_fluid_field].get_function_values(this->get_solution(),
+                                                                                     neighbor_volume_of_fluid_values);
 
-                      if ((!face->at_boundary() && !face->has_children())
-                          ||
-                          (face->at_boundary() && cell->periodic_neighbor_is_coarser(f))
-                          ||
-                          (face->at_boundary() && neighbor->level() == cell->level() && neighbor->active()))
-                        {
-                          if (neighbor->active() && !neighbor->is_artificial())
-                            {
-                              fe_values.reinit(neighbor);
-                              fe_values[volume_of_fluid_field].get_function_values(this->get_solution(),
-                                                                                   neighbor_volume_of_fluid_values);
+                                // Handle overshoots
+                                neighbor_volume_of_fluid_values[0] = std::min(neighbor_volume_of_fluid_values[0], 1.0);
+                                neighbor_volume_of_fluid_values[0] = std::max(neighbor_volume_of_fluid_values[0], 0.0);
 
-                              // Handle overshoots
-                              neighbor_volume_of_fluid_values[0] = std::min(neighbor_volume_of_fluid_values[0], 1.0);
-                              neighbor_volume_of_fluid_values[0] = std::max(neighbor_volume_of_fluid_values[0], 0.0);
+                                if (std::abs(neighbor_volume_of_fluid_values[0]-volume_of_fluid_values[0])>volume_fraction_threshold)
+                                  {
+                                    refine_current_cell = true;
+                                    break;
+                                  }
+                              }
+                          }
+                        else
+                          {
+                            for (unsigned int subface=0; subface < face->number_of_children(); ++subface)
+                              {
+                                const typename DoFHandler<dim>::active_cell_iterator neighbor_sub =
+                                  (cell_has_periodic_neighbor
+                                   ?
+                                   cell->periodic_neighbor_child_on_subface(f, subface)
+                                   :
+                                   cell->neighbor_child_on_subface(f, subface));
 
-                              if (std::abs(neighbor_volume_of_fluid_values[0]-volume_of_fluid_values[0])>volume_fraction_threshold)
-                                {
-                                  refine_current_cell = true;
-                                  break;
-                                }
-                            }
-                        }
-                      else
-                        {
-                          for (unsigned int subface=0; subface < face->number_of_children(); ++subface)
-                            {
-                              const typename DoFHandler<dim>::active_cell_iterator neighbor_sub =
-                                (cell_has_periodic_neighbor
-                                 ?
-                                 cell->periodic_neighbor_child_on_subface(f, subface)
-                                 :
-                                 cell->neighbor_child_on_subface(f, subface));
+                                Assert(!neighbor_sub->is_artificial(), ExcInternalError());
 
-                              if (neighbor_sub==endc || neighbor_sub->is_artificial())
-                                continue;
+                                fe_values.reinit(neighbor_sub);
+                                fe_values[volume_of_fluid_field].get_function_values(this->get_solution(),
+                                                                                     neighbor_volume_of_fluid_values);
 
-                              fe_values.reinit(neighbor_sub);
-                              fe_values[volume_of_fluid_field].get_function_values(this->get_solution(),
-                                                                                   neighbor_volume_of_fluid_values);
+                                // Handle overshoots
+                                neighbor_volume_of_fluid_values[0] = std::min(neighbor_volume_of_fluid_values[0], 1.0);
+                                neighbor_volume_of_fluid_values[0] = std::max(neighbor_volume_of_fluid_values[0], 0.0);
 
-                              // Handle overshoots
-                              neighbor_volume_of_fluid_values[0] = std::min(neighbor_volume_of_fluid_values[0], 1.0);
-                              neighbor_volume_of_fluid_values[0] = std::max(neighbor_volume_of_fluid_values[0], 0.0);
+                                if (std::abs(neighbor_volume_of_fluid_values[0]-volume_of_fluid_values[0])>volume_fraction_threshold)
+                                  {
+                                    refine_current_cell = true;
+                                    break;
+                                  }
 
-                              if (std::abs(neighbor_volume_of_fluid_values[0]-volume_of_fluid_values[0])>volume_fraction_threshold)
-                                {
-                                  refine_current_cell = true;
-                                  break;
-                                }
+                              }
+                            if (refine_current_cell)
+                              break;
+                          }
+                      }
+                  }
 
-                            }
-                          if (refine_current_cell)
-                            break;
-                        }
-                    }
-                }
+                if (refine_current_cell)
+                  {
+                    // Fractional volume
+                    marked_cells.insert(cell);
+                    if (cell->is_locally_owned())
+                      {
+                        cell->clear_coarsen_flag ();
+                        cell->set_refine_flag ();
+                        // Mark in vector, will be true here if true on any process
+                        cell->get_dof_indices(local_dof_indices);
+                        interface_contained_local(local_dof_indices[volume_of_fluid_ind]) = 1.0;
+                      }
+                  }
 
-              if (refine_current_cell)
-                {
-                  // Fractional volume
-                  marked_cells.insert(cell);
-                  if (cell->is_locally_owned())
-                    {
-                      cell->clear_coarsen_flag ();
-                      cell->set_refine_flag ();
-                      // Mark in vector, will be true here if true on any process
-                      cell->get_dof_indices(local_dof_indices);
-                      interface_contained_local(local_dof_indices[volume_of_fluid_ind]) = 1.0;
-                    }
-                }
-
-            }
+              }
         }
 
       // Now communicate and mark any cells not already included, this could be
@@ -220,24 +213,19 @@ namespace aspect
                                                     .volume_fraction.extractor_scalar();
       std::vector<double> ic_values(qMidC.size());
 
-      typename DoFHandler<dim>::active_cell_iterator cell = this->get_dof_handler().begin_active(),
-                                                     endc = this->get_dof_handler().end();
-      for (; cell != endc; ++cell)
-        {
-          // Skip artificial cells
-          if (!cell->active() || cell->is_artificial())
-            continue;
+      for (const auto &cell : this->get_dof_handler().active_cell_iterators())
+        if (cell->is_locally_owned())
+          {
+            fe_values.reinit(cell);
+            fe_values[ic_extract].get_function_values(interface_contained_global,
+                                                      ic_values);
 
-          fe_values.reinit(cell);
-          fe_values[ic_extract].get_function_values(interface_contained_global,
-                                                    ic_values);
-
-          // If the cell has been indicated to need refinement add it
-          if (ic_values[0]>0.5)
-            {
-              marked_cells.insert(cell);
-            }
-        }
+            // If the cell has been indicated to need refinement add it
+            if (ic_values[0]>0.5)
+              {
+                marked_cells.insert(cell);
+              }
+          }
 
       // Now mark for refinement all cells that are a neighbor of a cell that contains the interface
 
@@ -282,27 +270,23 @@ namespace aspect
 
       if (strict_coarsening)
         {
-          typename DoFHandler<dim>::active_cell_iterator
-          cell = this->get_dof_handler().begin_active(),
-          endc = this->get_dof_handler().end();
-          for (; cell != endc; ++cell)
-            {
-              if (cell->is_locally_owned())
-                {
-                  if (marked_cells_and_neighbors.find(cell) != marked_cells_and_neighbors.end())
-                    {
-                      //Refinement already requested
-                    }
-                  else
-                    {
-                      if (cell->active())
-                        {
-                          cell->set_coarsen_flag();
-                          cell->clear_refine_flag();
-                        }
-                    }
-                }
-            }
+          for (const auto &cell : this->get_dof_handler().active_cell_iterators())
+            if (cell->is_locally_owned())
+              {
+                if (marked_cells_and_neighbors.find(cell) != marked_cells_and_neighbors.end())
+                  {
+                    //Refinement already requested
+                  }
+                else
+                  {
+                    if (cell->active())
+                      {
+                        cell->set_coarsen_flag();
+                        cell->clear_refine_flag();
+                      }
+                  }
+              }
+
         }
 
     }

@@ -112,11 +112,7 @@ namespace aspect
               double integrated_density_sin_component = 0;
 
               // loop over all of the cells
-              typename DoFHandler<dim>::active_cell_iterator
-              cell = this->get_dof_handler().begin_active(),
-              endc = this->get_dof_handler().end();
-
-              for (; cell!=endc; ++cell)
+              for (const auto &cell : this->get_dof_handler().active_cell_iterators())
                 if (cell->is_locally_owned())
                   {
                     fe_values.reinit (cell);
@@ -193,77 +189,72 @@ namespace aspect
 
       // loop over all of the boundary cells and if one is at
       // surface or CMB, evaluate the dynamic topography vector there.
-      typename DoFHandler<dim>::active_cell_iterator
-      cell = this->get_dof_handler().begin_active(),
-      endc = this->get_dof_handler().end();
-
-      for (; cell!=endc; ++cell)
-        if (cell->is_locally_owned())
-          if (cell->at_boundary())
+      for (const auto &cell : this->get_dof_handler().active_cell_iterators())
+        if (cell->is_locally_owned() && cell->at_boundary())
+          {
+            // see if the cell is at the *top* boundary or CMB, not just any boundary
+            unsigned int face_idx = numbers::invalid_unsigned_int;
+            bool at_upper_surface = false;
             {
-              // see if the cell is at the *top* boundary or CMB, not just any boundary
-              unsigned int face_idx = numbers::invalid_unsigned_int;
-              bool at_upper_surface = false;
-              {
-                for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
-                  {
-                    if (cell->at_boundary(f) && this->get_geometry_model().depth (cell->face(f)->center()) < cell->face(f)->minimum_vertex_distance()/3)
-                      {
-                        // if the cell is at the top boundary, assign face_idx.
-                        face_idx = f;
-                        at_upper_surface = true;
-                        break;
-                      }
-                    else if (cell->at_boundary(f) && this->get_geometry_model().depth (cell->face(f)->center())
-                             > (this->get_geometry_model().maximal_depth() - cell->face(f)->minimum_vertex_distance()/3.))
-                      {
-                        // if the cell is at the bottom boundary, assign face_idx.
-                        face_idx = f;
-                        at_upper_surface = false;
-                        break;
-                      }
-                    else
-                      continue;
-                  }
+              for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+                {
+                  if (cell->at_boundary(f) && this->get_geometry_model().depth (cell->face(f)->center()) < cell->face(f)->minimum_vertex_distance()/3)
+                    {
+                      // if the cell is at the top boundary, assign face_idx.
+                      face_idx = f;
+                      at_upper_surface = true;
+                      break;
+                    }
+                  else if (cell->at_boundary(f) && this->get_geometry_model().depth (cell->face(f)->center())
+                           > (this->get_geometry_model().maximal_depth() - cell->face(f)->minimum_vertex_distance()/3.))
+                    {
+                      // if the cell is at the bottom boundary, assign face_idx.
+                      face_idx = f;
+                      at_upper_surface = false;
+                      break;
+                    }
+                  else
+                    continue;
+                }
 
-                // if the cell is not at the boundary, keep the search loop
-                if (face_idx == numbers::invalid_unsigned_int)
-                  continue;
+              // if the cell is not at the boundary, keep the search loop
+              if (face_idx == numbers::invalid_unsigned_int)
+                continue;
+            }
+
+            // focus on the boundary cell's upper face if on the top boundary and lower face if on the bottom boundary
+            fe_face_values.reinit(cell, face_idx);
+
+            // Dynamic topography is evaluated at each quadrature
+            // point on every top/bottom cell's boundary face.  The
+            // reason to do this -- as opposed to using a single
+            // value per boundary face -- is that later in the
+            // spherical harmonic expansion, we will calculate
+            // sin(theta)*d_theta*d_phi by
+            // infinitesimal_area/radius^2. The accuracy of this
+            // transfer gets better as infinitesimal_area gets
+            // closer to zero, so using every boundary quadrature
+            // point's associated area (in the form of
+            // FEFaceValues::JxW) will lead to better accuracy in
+            // spherical harmonic expansion compared to using just
+            // one average value per face, especially in the coarse
+            // meshes.
+            fe_face_values[this->introspection().extractors.temperature].get_function_values(topo_vector, topo_values);
+
+            // if the cell at top boundary, add its contributions dynamic topography storage vector
+            if (face_idx != numbers::invalid_unsigned_int && at_upper_surface)
+              {
+                for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)
+                  surface_stored_values.push_back (std::make_pair(fe_face_values.quadrature_point(q), std::make_pair(fe_face_values.JxW(q), topo_values[q])));
               }
 
-              // focus on the boundary cell's upper face if on the top boundary and lower face if on the bottom boundary
-              fe_face_values.reinit(cell, face_idx);
-
-              // Dynamic topography is evaluated at each quadrature
-              // point on every top/bottom cell's boundary face.  The
-              // reason to do this -- as opposed to using a single
-              // value per boundary face -- is that later in the
-              // spherical harmonic expansion, we will calculate
-              // sin(theta)*d_theta*d_phi by
-              // infinitesimal_area/radius^2. The accuracy of this
-              // transfer gets better as infinitesimal_area gets
-              // closer to zero, so using every boundary quadrature
-              // point's associated area (in the form of
-              // FEFaceValues::JxW) will lead to better accuracy in
-              // spherical harmonic expansion compared to using just
-              // one average value per face, especially in the coarse
-              // meshes.
-              fe_face_values[this->introspection().extractors.temperature].get_function_values(topo_vector, topo_values);
-
-              // if the cell at top boundary, add its contributions dynamic topography storage vector
-              if (face_idx != numbers::invalid_unsigned_int && at_upper_surface)
-                {
-                  for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)
-                    surface_stored_values.push_back (std::make_pair(fe_face_values.quadrature_point(q), std::make_pair(fe_face_values.JxW(q), topo_values[q])));
-                }
-
-              // if the cell at bottom boundary, add its contributions dynamic topography storage vector
-              if (face_idx != numbers::invalid_unsigned_int && !at_upper_surface)
-                {
-                  for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)
-                    CMB_stored_values.push_back (std::make_pair(fe_face_values.quadrature_point(q), std::make_pair(fe_face_values.JxW(q), topo_values[q])));
-                }
-            }
+            // if the cell at bottom boundary, add its contributions dynamic topography storage vector
+            if (face_idx != numbers::invalid_unsigned_int && !at_upper_surface)
+              {
+                for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)
+                  CMB_stored_values.push_back (std::make_pair(fe_face_values.quadrature_point(q), std::make_pair(fe_face_values.JxW(q), topo_values[q])));
+              }
+          }
 
       // Subtract the average dynamic topography.
       // Transfer the geocentric coordinates to the spherical coordinates.
@@ -409,24 +400,19 @@ namespace aspect
       std::vector<Point<dim> > surface_cell_locations;
 
       // loop over all the cells to get the locations of the surface cells to prepare for the geoid computation.
-      typename DoFHandler<dim>::active_cell_iterator
-      cell = this->get_dof_handler().begin_active(),
-      endc = this->get_dof_handler().end();
-
-      for (; cell!=endc; ++cell)
-        if (cell->is_locally_owned())
-          if (cell->at_boundary())
-            {
-              // if the cell is at the *top* boundary, store the cell's upper face midpoint location
-              for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
-                if (cell->at_boundary(f) && this->get_geometry_model().depth (cell->face(f)->center()) < cell->face(f)->minimum_vertex_distance()/3.)
-                  {
-                    fe_face_center_values.reinit(cell,f);
-                    const Point<dim> midpoint_at_top_face = fe_face_center_values.get_quadrature_points().at(0);
-                    surface_cell_locations.push_back(midpoint_at_top_face);
-                    break;
-                  }
-            }
+      for (const auto &cell : this->get_dof_handler().active_cell_iterators())
+        if (cell->is_locally_owned() && cell->at_boundary())
+          {
+            // if the cell is at the *top* boundary, store the cell's upper face midpoint location
+            for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+              if (cell->at_boundary(f) && this->get_geometry_model().depth (cell->face(f)->center()) < cell->face(f)->minimum_vertex_distance()/3.)
+                {
+                  fe_face_center_values.reinit(cell,f);
+                  const Point<dim> midpoint_at_top_face = fe_face_center_values.get_quadrature_points().at(0);
+                  surface_cell_locations.push_back(midpoint_at_top_face);
+                  break;
+                }
+          }
 
       // Transfer the geocentric coordinates of the surface cells to the surface spherical coordinates(theta,phi)
       std::vector<std::pair<double,double> > surface_cell_spherical_coordinates;

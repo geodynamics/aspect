@@ -69,11 +69,7 @@ namespace aspect
               MaterialModel::MaterialModelOutputs<dim> adiabatic_out(n_q_points, this->n_compositional_fields());
 
               // Loop over the cells
-              typename DoFHandler<dim>::active_cell_iterator
-              cell = this->get_dof_handler().begin_active(),
-              endc = this->get_dof_handler().end();
-
-              for (; cell!=endc; ++cell)
+              for (const auto &cell : this->get_dof_handler().active_cell_iterators())
                 if (cell->is_locally_owned())
                   {
                     // Get the pressure, temperature and composition in the cell
@@ -132,11 +128,7 @@ namespace aspect
               std::copy ( Vs_depth_average.begin(), Vs_depth_average.end(), padded_Vs_depth_average.begin() + 1 );
 
               // Loop over the cells
-              typename DoFHandler<dim>::active_cell_iterator
-              cell = this->get_dof_handler().begin_active(),
-              endc = this->get_dof_handler().end();
-
-              for (; cell!=endc; ++cell)
+              for (const auto &cell : this->get_dof_handler().active_cell_iterators())
                 if (cell->is_locally_owned())
                   {
                     // Get the pressure, temperature and composition in the cell
@@ -236,11 +228,7 @@ namespace aspect
               MaterialModel::MaterialModelOutputs<dim> adiabatic_out(n_q_points, this->n_compositional_fields());
 
               // Loop over the cells
-              typename DoFHandler<dim>::active_cell_iterator
-              cell = this->get_dof_handler().begin_active(),
-              endc = this->get_dof_handler().end();
-
-              for (; cell!=endc; ++cell)
+              for (const auto &cell : this->get_dof_handler().active_cell_iterators())
                 if (cell->is_locally_owned())
                   {
                     // Get the pressure, temperature and composition in the cell
@@ -298,11 +286,7 @@ namespace aspect
 
 
               // Loop over the cells
-              typename DoFHandler<dim>::active_cell_iterator
-              cell = this->get_dof_handler().begin_active(),
-              endc = this->get_dof_handler().end();
-
-              for (; cell!=endc; ++cell)
+              for (const auto &cell : this->get_dof_handler().active_cell_iterators())
                 if (cell->is_locally_owned())
                   {
                     // Get the pressure, temperature and composition in the cell

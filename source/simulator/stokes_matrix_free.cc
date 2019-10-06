@@ -932,10 +932,7 @@ namespace aspect
         unsigned long long int total_cells_on_lvl;
         unsigned long long int n_owned_cells_on_lvl = 0;
 
-        typename Triangulation<dim>::cell_iterator
-        cell = sim.triangulation.begin(lvl),
-        endc = sim.triangulation.end(lvl);
-        for (; cell!=endc; ++cell)
+        for (const auto &cell: sim.triangulation.cell_iterators_on_level(lvl))
           if (cell->is_locally_owned_on_level())
             n_owned_cells_on_lvl += 1;
 
@@ -947,7 +944,7 @@ namespace aspect
 
         total_cells_in_hierarchy += total_cells_on_lvl;
       }
-    double ideal_work = total_cells_in_hierarchy / (double)n_proc;
+    double ideal_work = static_cast<double>(total_cells_in_hierarchy) / static_cast<double>(n_proc);
     double workload_imbalance_ratio = work_estimate / ideal_work;
 
     return workload_imbalance_ratio;

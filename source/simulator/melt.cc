@@ -1153,9 +1153,7 @@ namespace aspect
 
       create_material_model_outputs(out);
 
-      typename DoFHandler<dim>::active_cell_iterator cell = this->get_dof_handler().begin_active(),
-                                                     endc = this->get_dof_handler().end();
-      for (; cell!=endc; ++cell)
+      for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
           {
             cell_vector = 0;
@@ -1314,10 +1312,7 @@ namespace aspect
 
 
       std::vector<types::global_dof_index> local_dof_indices (this->get_fe().dofs_per_cell);
-      typename DoFHandler<dim>::active_cell_iterator
-      cell = this->get_dof_handler().begin_active(),
-      endc = this->get_dof_handler().end();
-      for (; cell != endc; ++cell)
+      for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
           {
             fe_values.reinit(cell);
@@ -1528,9 +1523,7 @@ namespace aspect
       Assert(dynamic_cast<const MaterialModel::MeltInterface<dim>*>(&this->get_material_model()) != nullptr,
              ExcMessage("Your material model does not derive from MaterialModel::MeltInterface, which is required."));
 
-      for (auto cell = this->get_dof_handler().begin_active();
-           cell != this->get_dof_handler().end();
-           ++cell)
+      for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
           {
             finite_element_values.reinit (cell);

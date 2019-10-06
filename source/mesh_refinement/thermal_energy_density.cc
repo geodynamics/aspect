@@ -63,10 +63,7 @@ namespace aspect
       MaterialModel::MaterialModelInputs<dim> in(quadrature.size(), this->n_compositional_fields());
       MaterialModel::MaterialModelOutputs<dim> out(quadrature.size(), this->n_compositional_fields());
 
-      typename DoFHandler<dim>::active_cell_iterator
-      cell = this->get_dof_handler().begin_active(),
-      endc = this->get_dof_handler().end();
-      for (; cell!=endc; ++cell)
+      for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
           {
             fe_values.reinit(cell);
@@ -115,10 +112,9 @@ namespace aspect
       // will yield convergence of the error indicators to zero as h->0)
       const double power = 1.5;
       {
-        unsigned int i=0;
-        for (cell = this->get_dof_handler().begin_active(); cell!=endc; ++cell, ++i)
+        for (const auto &cell : this->get_dof_handler().active_cell_iterators())
           if (cell->is_locally_owned())
-            indicators(i) *= std::pow(cell->diameter(), power);
+            indicators(cell->active_cell_index()) *= std::pow(cell->diameter(), power);
       }
     }
   }

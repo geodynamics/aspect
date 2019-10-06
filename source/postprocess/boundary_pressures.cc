@@ -54,47 +54,42 @@ namespace aspect
 
       // loop over all of the surface cells and if one less than h/3 away from
       // the top or bottom surface, evaluate the pressure on that face
-      typename DoFHandler<dim>::active_cell_iterator
-      cell = this->get_dof_handler().begin_active(),
-      endc = this->get_dof_handler().end();
+      for (const auto &cell : this->get_dof_handler().active_cell_iterators())
+        if (cell->is_locally_owned() && cell->at_boundary())
+          for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+            {
+              bool cell_at_top = false;
+              bool cell_at_bottom = false;
 
-      for (; cell!=endc; ++cell)
-        if (cell->is_locally_owned())
-          if (cell->at_boundary())
-            for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
-              {
-                bool cell_at_top = false;
-                bool cell_at_bottom = false;
+              // Test for top or bottom surface cell faces
+              if (cell->at_boundary(f) && this->get_geometry_model().depth (cell->face(f)->center())
+                  < cell->face(f)->minimum_vertex_distance()/3.)
+                cell_at_top = true;
+              if (cell->at_boundary(f) && this->get_geometry_model().depth (cell->face(f)->center())
+                  > (this->get_geometry_model().maximal_depth() - cell->face(f)->minimum_vertex_distance()/3.))
+                cell_at_bottom = true;
 
-                // Test for top or bottom surface cell faces
-                if (cell->at_boundary(f) && this->get_geometry_model().depth (cell->face(f)->center())
-                    < cell->face(f)->minimum_vertex_distance()/3.)
-                  cell_at_top = true;
-                if (cell->at_boundary(f) && this->get_geometry_model().depth (cell->face(f)->center())
-                    > (this->get_geometry_model().maximal_depth() - cell->face(f)->minimum_vertex_distance()/3.))
-                  cell_at_bottom = true;
+              if ( cell_at_top || cell_at_bottom )
+                {
+                  // evaluate the pressure on the face
+                  fe_face_values.reinit (cell, f);
+                  fe_face_values[this->introspection().extractors.pressure].get_function_values (this->get_solution(), pressure_vals);
 
-                if ( cell_at_top || cell_at_bottom )
-                  {
-                    // evaluate the pressure on the face
-                    fe_face_values.reinit (cell, f);
-                    fe_face_values[this->introspection().extractors.pressure].get_function_values (this->get_solution(), pressure_vals);
-
-                    // calculate the top properties
-                    if (cell_at_top)
-                      for ( unsigned int q = 0; q < fe_face_values.n_quadrature_points; ++q)
-                        {
-                          local_top_pressure += pressure_vals[q] * fe_face_values.JxW(q);
-                          local_top_area += fe_face_values.JxW(q);
-                        }
-                    if (cell_at_bottom)
-                      for ( unsigned int q = 0; q < fe_face_values.n_quadrature_points; ++q)
-                        {
-                          local_bottom_pressure += pressure_vals[q] * fe_face_values.JxW(q);
-                          local_bottom_area += fe_face_values.JxW(q);
-                        }
-                  }
-              }
+                  // calculate the top properties
+                  if (cell_at_top)
+                    for ( unsigned int q = 0; q < fe_face_values.n_quadrature_points; ++q)
+                      {
+                        local_top_pressure += pressure_vals[q] * fe_face_values.JxW(q);
+                        local_top_area += fe_face_values.JxW(q);
+                      }
+                  if (cell_at_bottom)
+                    for ( unsigned int q = 0; q < fe_face_values.n_quadrature_points; ++q)
+                      {
+                        local_bottom_pressure += pressure_vals[q] * fe_face_values.JxW(q);
+                        local_bottom_area += fe_face_values.JxW(q);
+                      }
+                }
+            }
 
       // vector for packing local values before MPI summing them
       double values[4] = {local_bottom_area, local_top_area, local_bottom_pressure, local_top_pressure};

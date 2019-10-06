@@ -68,11 +68,8 @@ namespace aspect
         Assert(!connector_functions_have_been_called,
                ExcInternalError());
 
-        for (std::list<std::function<void (aspect::SimulatorSignals<2> &)> >::const_iterator
-             p = connector_functions_2d.begin();
-             p != connector_functions_2d.end();
-             ++p)
-          (*p)(signals);
+        for (const auto &p : connector_functions_2d)
+          p(signals);
 
         connector_functions_have_been_called = true;
       }
@@ -83,11 +80,9 @@ namespace aspect
         Assert(!connector_functions_have_been_called,
                ExcInternalError());
 
-        for (std::list<std::function<void (aspect::SimulatorSignals<3> &)> >::const_iterator
-             p = connector_functions_3d.begin();
-             p != connector_functions_3d.end();
-             ++p)
-          (*p)(signals);
+        for (const auto &p : connector_functions_3d)
+          p(signals);
+
         connector_functions_have_been_called = true;
       }
     }

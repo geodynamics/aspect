@@ -35,12 +35,7 @@ namespace aspect
       // iterate over all of the cells and choose the ones at the indicated
       // boundaries for refinement (assign the largest error to them)
 
-      typename DoFHandler<dim>::active_cell_iterator
-      cell = this->get_dof_handler().begin_active(),
-      endc = this->get_dof_handler().end();
-
-      unsigned int i=0;
-      for (; cell!=endc; ++cell, ++i)
+      for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned() && cell->at_boundary())
           for (unsigned int face_no=0; face_no<GeometryInfo<dim>::faces_per_cell; ++face_no)
             if (cell->face(face_no)->at_boundary())
@@ -50,7 +45,7 @@ namespace aspect
                 if ( boundary_refinement_indicators.find(boundary_indicator) !=
                      boundary_refinement_indicators.end() )
                   {
-                    indicators(i) = 1.0;
+                    indicators(cell->active_cell_index()) = 1.0;
                     break;  // no need to loop over the rest of the faces
                   }
               }

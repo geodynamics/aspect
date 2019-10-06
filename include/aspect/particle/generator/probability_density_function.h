@@ -110,7 +110,7 @@ namespace aspect
            */
           virtual
           double
-          get_cell_weight (typename DoFHandler<dim>::active_cell_iterator &cell) const;
+          get_cell_weight (const typename DoFHandler<dim>::active_cell_iterator &cell) const;
 
         private:
           /**

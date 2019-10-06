@@ -63,10 +63,7 @@ namespace aspect
     // at all quadrature points. keep a running tally of the
     // integral over the entropy as well as the area and the
     // maximal and minimal entropy
-    typename DoFHandler<dim>::active_cell_iterator
-    cell = dof_handler.begin_active(),
-    endc = dof_handler.end();
-    for (; cell!=endc; ++cell)
+    for (const auto &cell : dof_handler.active_cell_iterators())
       if (cell->is_locally_owned())
         {
           fe_values.reinit (cell);
@@ -637,30 +634,25 @@ namespace aspect
         viscosity_per_cell_temp.reinit(triangulation.n_active_cells());
 
         viscosity_per_cell_temp = viscosity_per_cell;
-        typename DoFHandler<dim>::active_cell_iterator
-        cell,
-        end_cell = dof_handler.end();
-        for (cell = dof_handler.begin_active(); cell!=end_cell; ++cell)
-          {
-            if (cell->is_locally_owned())
-              {
-                if (skip_interior_cells && !cell->at_boundary())
-                  continue;
+        for (const auto &cell : dof_handler.active_cell_iterators())
+          if (cell->is_locally_owned())
+            {
+              if (skip_interior_cells && !cell->at_boundary())
+                continue;
 
-                for (unsigned int face_no=0; face_no<GeometryInfo<dim>::faces_per_cell; ++face_no)
-                  if (cell->at_boundary(face_no) == false)
-                    {
-                      if (cell->neighbor(face_no)->active())
-                        viscosity_per_cell[cell->active_cell_index()] = std::max(viscosity_per_cell[cell->active_cell_index()],
-                                                                                 viscosity_per_cell_temp[cell->neighbor(face_no)->active_cell_index()]);
-                      else
-                        for (unsigned int l=0; l<cell->neighbor(face_no)->n_children(); ++l)
-                          if (cell->neighbor(face_no)->child(l)->active())
-                            viscosity_per_cell[cell->active_cell_index()] = std::max(viscosity_per_cell[cell->active_cell_index()],
-                                                                                     viscosity_per_cell_temp[cell->neighbor(face_no)->child(l)->active_cell_index()]);
-                    }
-              }
-          }
+              for (unsigned int face_no=0; face_no<GeometryInfo<dim>::faces_per_cell; ++face_no)
+                if (cell->at_boundary(face_no) == false)
+                  {
+                    if (cell->neighbor(face_no)->active())
+                      viscosity_per_cell[cell->active_cell_index()] = std::max(viscosity_per_cell[cell->active_cell_index()],
+                                                                               viscosity_per_cell_temp[cell->neighbor(face_no)->active_cell_index()]);
+                    else
+                      for (unsigned int l=0; l<cell->neighbor(face_no)->n_children(); ++l)
+                        if (cell->neighbor(face_no)->child(l)->active())
+                          viscosity_per_cell[cell->active_cell_index()] = std::max(viscosity_per_cell[cell->active_cell_index()],
+                                                                                   viscosity_per_cell_temp[cell->neighbor(face_no)->child(l)->active_cell_index()]);
+                  }
+            }
       }
   }
 }

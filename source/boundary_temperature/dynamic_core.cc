@@ -665,11 +665,6 @@ namespace aspect
 
         types::boundary_id CMB_id = 0;
 
-
-        typename DoFHandler<dim>::active_cell_iterator
-        cell = this->get_dof_handler().begin_active(),
-        endc = this->get_dof_handler().end();
-
         typename MaterialModel::Interface<dim>::MaterialModelInputs in(fe_face_values.n_quadrature_points, this->n_compositional_fields());
         typename MaterialModel::Interface<dim>::MaterialModelOutputs out(fe_face_values.n_quadrature_points, this->n_compositional_fields());
 
@@ -683,7 +678,7 @@ namespace aspect
         // *out* of the mantle, not into it. we fix this when we add the local
         // contribution to the global flux
 
-        for (; cell!=endc; ++cell)
+        for (const auto &cell : this->get_dof_handler().active_cell_iterators())
           if (cell->is_locally_owned())
             for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
               if (cell->at_boundary(f))

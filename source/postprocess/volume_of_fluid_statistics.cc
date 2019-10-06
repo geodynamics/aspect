@@ -57,10 +57,7 @@ namespace aspect
                                                        .volume_fraction.extractor_scalar();
           double volume_of_fluid_vol_sum=0.0;
 
-          typename DoFHandler<dim>::active_cell_iterator
-          cell = this->get_dof_handler().begin_active(),
-          endc = this->get_dof_handler().end();
-          for (; cell!=endc; ++cell)
+          for (const auto &cell : this->get_dof_handler().active_cell_iterators())
             if (cell->is_locally_owned())
               {
                 fe_values.reinit (cell);

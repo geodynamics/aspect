@@ -40,10 +40,7 @@ namespace aspect
     set_boundary_indicators (parallel::distributed::Triangulation<dim> &triangulation) const
     {
       // iterate over all active cells and (re)set the boundary indicators
-      for (typename Triangulation<dim>::active_cell_iterator
-           cell = triangulation.begin_active();
-           cell != triangulation.end();
-           ++cell)
+      for (const auto &cell : triangulation.active_cell_iterators())
         {
 
           // first set the default boundary indicators

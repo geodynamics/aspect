@@ -53,10 +53,6 @@ namespace aspect
 
       std::vector<double> pressure_values(n_q_points);
 
-      typename DoFHandler<dim>::active_cell_iterator
-      cell = this->get_dof_handler().begin_active(),
-      endc = this->get_dof_handler().end();
-
       double local_pressure_integral = 0;
       double local_min_pressure      = std::numeric_limits<double>::max();
       double local_max_pressure      = -std::numeric_limits<double>::max();
@@ -65,7 +61,7 @@ namespace aspect
       // the temperature statistics postprocessor, we can not just loop over
       // the pressure DoFs because they may be intermingled with the
       // velocity DoFs if we use a direct solver
-      for (; cell!=endc; ++cell)
+      for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
           {
             fe_values.reinit (cell);

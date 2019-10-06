@@ -44,8 +44,7 @@ namespace aspect
       void
       set_manifold_ids(Triangulation<dim> &triangulation)
       {
-        for (typename Triangulation<dim>::active_cell_iterator cell =
-               triangulation.begin_active(); cell != triangulation.end(); ++cell)
+        for (const auto &cell : triangulation.active_cell_iterators())
           cell->set_all_manifold_ids (15);
       }
 
@@ -53,8 +52,7 @@ namespace aspect
       void
       clear_manifold_ids(Triangulation<dim> &triangulation)
       {
-        for (typename Triangulation<dim>::active_cell_iterator cell =
-               triangulation.begin_active(); cell != triangulation.end(); ++cell)
+        for (const auto &cell : triangulation.active_cell_iterators())
           cell->set_all_manifold_ids (numbers::flat_manifold_id);
       }
     }
@@ -314,8 +312,7 @@ namespace aspect
       // set_all_boundary_indicators() -- we have to do it last for
       // the inner and outer boundary, which conveniently is what
       // happens in the following loop
-      for (typename Triangulation<dim>::active_cell_iterator cell =
-             coarse_grid.begin_active(); cell != coarse_grid.end(); ++cell)
+      for (const auto &cell : coarse_grid.active_cell_iterators())
         for (unsigned int f = 0; f < GeometryInfo<dim>::faces_per_cell; ++f)
           if (cell->face(f)->at_boundary())
             cell->face(f)->set_boundary_id(f);

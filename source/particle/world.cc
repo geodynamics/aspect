@@ -211,11 +211,7 @@ namespace aspect
               types::particle_index particles_to_add_locally = 0;
 
               // Loop over all cells and determine the number of particles to generate
-              typename DoFHandler<dim>::active_cell_iterator
-              cell = this->get_dof_handler().begin_active(),
-              endc = this->get_dof_handler().end();
-
-              for (; cell!=endc; ++cell)
+              for (const auto &cell : this->get_dof_handler().active_cell_iterators())
                 if (cell->is_locally_owned())
                   {
                     const unsigned int particles_in_cell = particle_handler->n_particles_in_cell(cell);
@@ -254,11 +250,7 @@ namespace aspect
           boost::mt19937 random_number_generator;
 
           // Loop over all cells and generate or remove the particles cell-wise
-          typename DoFHandler<dim>::active_cell_iterator
-          cell = this->get_dof_handler().begin_active(),
-          endc = this->get_dof_handler().end();
-
-          for (; cell!=endc; ++cell)
+          for (const auto &cell : this->get_dof_handler().active_cell_iterators())
             if (cell->is_locally_owned())
               {
                 const unsigned int n_particles_in_cell = particle_handler->n_particles_in_cell(cell);
@@ -612,11 +604,7 @@ namespace aspect
           particle_handler->get_property_pool().reserve(2 * particle_handler->n_locally_owned_particles());
 
           // Loop over all cells and initialize the particles cell-wise
-          typename DoFHandler<dim>::active_cell_iterator
-          cell = this->get_dof_handler().begin_active(),
-          endc = this->get_dof_handler().end();
-
-          for (; cell!=endc; ++cell)
+          for (const auto &cell : this->get_dof_handler().active_cell_iterators())
             if (cell->is_locally_owned())
               {
                 typename ParticleHandler<dim>::particle_iterator_range
@@ -647,11 +635,7 @@ namespace aspect
           TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Update properties");
 
           // Loop over all cells and update the particles cell-wise
-          typename DoFHandler<dim>::active_cell_iterator
-          cell = this->get_dof_handler().begin_active(),
-          endc = this->get_dof_handler().end();
-
-          for (; cell!=endc; ++cell)
+          for (const auto &cell : this->get_dof_handler().active_cell_iterators())
             if (cell->is_locally_owned())
               {
                 typename ParticleHandler<dim>::particle_iterator_range
@@ -675,11 +659,7 @@ namespace aspect
         TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Advect");
 
         // Loop over all cells and advect the particles cell-wise
-        typename DoFHandler<dim>::active_cell_iterator
-        cell = this->get_dof_handler().begin_active(),
-        endc = this->get_dof_handler().end();
-
-        for (; cell!=endc; ++cell)
+        for (const auto &cell : this->get_dof_handler().active_cell_iterators())
           if (cell->is_locally_owned())
             {
               const typename ParticleHandler<dim>::particle_iterator_range

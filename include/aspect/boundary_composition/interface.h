@@ -332,10 +332,8 @@ namespace aspect
     BoundaryCompositionType *
     Manager<dim>::find_boundary_composition_model () const
     {
-      for (typename std::vector<std::unique_ptr<Interface<dim> > >::const_iterator
-           p = boundary_composition_objects.begin();
-           p != boundary_composition_objects.end(); ++p)
-        if (BoundaryCompositionType *x = dynamic_cast<BoundaryCompositionType *> ( (*p).get()) )
+      for (const auto &p : boundary_composition_objects)
+        if (BoundaryCompositionType *x = dynamic_cast<BoundaryCompositionType *> ( p.get()) )
           return x;
       return nullptr;
     }
@@ -347,10 +345,8 @@ namespace aspect
     bool
     Manager<dim>::has_matching_boundary_composition_model () const
     {
-      for (typename std::vector<std::unique_ptr<Interface<dim> > >::const_iterator
-           p = boundary_composition_objects.begin();
-           p != boundary_composition_objects.end(); ++p)
-        if (Plugins::plugin_type_matches<BoundaryCompositionType>(*(*p)))
+      for (const auto &p : boundary_composition_objects)
+        if (Plugins::plugin_type_matches<BoundaryCompositionType>(*p))
           return true;
 
       return false;

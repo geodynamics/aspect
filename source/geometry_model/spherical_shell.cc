@@ -249,8 +249,7 @@ namespace aspect
     void
     SphericalShell<dim>::set_manifold_ids (parallel::distributed::Triangulation<dim> &triangulation) const
     {
-      for (typename Triangulation<dim>::active_cell_iterator cell =
-             triangulation.begin_active(); cell != triangulation.end(); ++cell)
+      for (const auto &cell : triangulation.active_cell_iterators())
         cell->set_all_manifold_ids (99);
     }
 

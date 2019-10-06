@@ -46,16 +46,12 @@ namespace aspect
       const Particle::ParticleHandler<dim> &particle_handler =
         particle_postprocessor.get_particle_world().get_particle_handler();
 
-      typename DoFHandler<dim>::active_cell_iterator
-      cell = this->get_dof_handler().begin_active(),
-      endc = this->get_dof_handler().end();
-
       unsigned int local_min_particles = std::numeric_limits<unsigned int>::max();
       unsigned int local_max_particles = 0;
       const Particle::types::particle_index global_particles = particle_postprocessor.get_particle_world().n_global_particles();
 
       // compute local min/max
-      for (; cell!=endc; ++cell)
+      for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
           {
             const unsigned int particles_in_cell = particle_handler.n_particles_in_cell(cell);

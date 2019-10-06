@@ -133,7 +133,7 @@ namespace aspect
 
       std::vector<types::global_dof_index> local_dof_indices (finite_element.dofs_per_cell);
       typename DoFHandler<dim>::active_cell_iterator cell;
-      for (cell = dof_handler.begin_active(); n_left_to_find>0 && cell != dof_handler.end(); ++cell)
+      for (const auto &cell : dof_handler.active_cell_iterators())
         if (cell->is_locally_owned())
           {
             cell->get_dof_indices (local_dof_indices);
@@ -161,9 +161,11 @@ namespace aspect
 
                 // are we done searching?
                 if (n_left_to_find == 0)
-                  break; // exit inner loop, outer loop will terminate automatically
+                  break; // exit inner loop
               }
 
+            if (n_left_to_find == 0)
+              break; // exit outer loop
           }
 
     }
@@ -261,7 +263,7 @@ namespace aspect
 
     typename DoFHandler<dim>::active_cell_iterator cell;
     // loop over all local cells
-    for (cell = dof_handler.begin_active(); cell != dof_handler.end(); ++cell)
+    for (const auto &cell : dof_handler.active_cell_iterators())
       if (cell->is_locally_owned())
         {
           fe.reinit (cell);
@@ -374,7 +376,7 @@ namespace aspect
                                                           std::vector<double> (n_q_points));
 
     // loop over all local cells
-    for (cell = dof_handler.begin_active(); cell != dof_handler.end(); ++cell)
+    for (const auto &cell : dof_handler.active_cell_iterators())
       if (cell->is_locally_owned())
         {
           fe.reinit (cell);
