@@ -1827,11 +1827,11 @@ namespace aspect
           level_constraints.add_lines(mg_constrained_dofs.get_boundary_indices(level));
           level_constraints.close();
 
-#if DEAL_II_VERSION_GTE(9,2,0)
           std::set<types::boundary_id> no_flux_boundary
             = sim.boundary_velocity_manager.get_tangential_boundary_velocity_indicators();
           if (!no_flux_boundary.empty() && sim.geometry_model->has_curved_elements())
             {
+#if DEAL_II_VERSION_GTE(9,2,0)
               ConstraintMatrix user_level_constraints;
               user_level_constraints.reinit(relevant_dofs);
 
@@ -1847,11 +1847,11 @@ namespace aspect
 
               level_constraints.merge(user_level_constraints);
               level_constraints.close();
-            }
 #else
-          AssertThrow(false, ExcMessage("No normal flux for spherical domains requires "
-                                        "a deal.II version newer than 9.1"));
+              AssertThrow(false, ExcMessage("No normal flux for spherical domains requires "
+                                            "a deal.II version newer than 9.1"));
 #endif
+            }
 
           {
             typename MatrixFree<dim,double>::AdditionalData additional_data;
