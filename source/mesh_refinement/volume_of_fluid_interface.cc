@@ -122,8 +122,7 @@ namespace aspect
 
                         const typename DoFHandler<dim>::cell_iterator neighbor = cell->neighbor_or_periodic_neighbor(f);
 
-                        if (neighbor->is_artificial())
-                          continue;
+                        Assert(cell.state()==IteratorState::valid, ExcInternalError());
 
                         if ((!face->at_boundary() && !face->has_children())
                             ||
@@ -131,7 +130,7 @@ namespace aspect
                             ||
                             (face->at_boundary() && neighbor->level() == cell->level() && neighbor->active()))
                           {
-                            if (neighbor->active())
+                            if (neighbor->active() && !neighbor->is_artificial())
                               {
                                 fe_values.reinit(neighbor);
                                 fe_values[volume_of_fluid_field].get_function_values(this->get_solution(),
@@ -159,7 +158,10 @@ namespace aspect
                                    :
                                    cell->neighbor_child_on_subface(f, subface));
 
-                                Assert(!neighbor_sub->is_artificial(), ExcInternalError());
+                                Assert(neighbor_sub.state()==IteratorState::valid, ExcInternalError());
+
+                                if (neighbor_sub->is_artificial())
+                                  continue;
 
                                 fe_values.reinit(neighbor_sub);
                                 fe_values[volume_of_fluid_field].get_function_values(this->get_solution(),
@@ -214,7 +216,7 @@ namespace aspect
       std::vector<double> ic_values(qMidC.size());
 
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
-        if (cell->is_locally_owned())
+        if (!cell->is_artificial())
           {
             fe_values.reinit(cell);
             fe_values[ic_extract].get_function_values(interface_contained_global,
