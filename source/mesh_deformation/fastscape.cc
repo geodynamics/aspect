@@ -81,6 +81,7 @@ namespace aspect
       x_extent = geometry->get_extents()[0]+2*dx;
 
       //Find the number of grid points in x direction for indexing.
+      //TODO: numx and nx are always the same, why did I make two variables?
       numx = 1+x_extent/dx;
 
       //sub intervals are 1 less than points.
@@ -90,10 +91,11 @@ namespace aspect
 
       if (dim == 2)
         {
-          ny = nx; //*2-1dy_slices;
+          //ny = nx*3-1; //*2-1dy_slices;
           dy = dx;
-          y_extent = grid_extent[0].second; //(ny-1)*dy;
-          numy = numx;
+          y_extent = grid_extent[0].second*3+2*dy; //(ny-1)*dy;
+          numy = 1+y_extent/dy;
+          ny = numy;
         }
 
       if (dim == 3)
@@ -179,7 +181,7 @@ namespace aspect
                                 if (current_timestep == 1)
                                   {
                                     //double h_seed = (std::rand()%2000)/100;
-                                    temporary_variables[0][index-1] = this->get_geometry_model().height_above_reference_surface(vertex); //vertex(dim-1);   //z component
+                                    temporary_variables[0][index-1] = vertex(dim-1);   //z component
                                   }
 
 
@@ -424,7 +426,12 @@ namespace aspect
                           side = index_right;
                           jj = 2;
                         }
-                      else if ((vx[index_right-2] < 0 && vx[index_left] > 0) || (vx[index_right-2] > 0 && vx[index_left] < 0))
+                      else if (vx[index_right-2] <= 0 && vx[index_left] < 0)
+                        {
+                          side = index_left;
+                          jj = 0;
+                        }
+                      else
                         continue;
 
                       vz[index_right-1] =   vz[side-jj];
@@ -456,7 +463,12 @@ namespace aspect
                           side = index_top;
                           jj = -numx;
                         }
-                      else if ((vy[index_bot+numx-1] < 0 && vy[index_top-numx-1] > 0) || (vy[index_bot+numx-1] > 0 && vy[index_top-numx-1] < 0))
+                      else if (vy[index_bot+numx-1] <= 0 && vy[index_top-numx-1] < 0)
+                      {
+                          side = index_bot;
+                          jj = numx;
+                      }
+                      else
                         continue;
 
                       vz[index_bot-1] = vz[side+jj-1];
@@ -524,6 +536,8 @@ namespace aspect
               for (int i=0; i<=array_size; i++)
                 {
                   V[i] = (h[i] - temporary_variables[0][i])/a_dt;
+
+                  //std::cout<<h[i]<<"  "<<temporary_variables[0][i]<<"  "<<V[i]<<"  "<<vx[i]<<"  "<<vy[i]<<"  "<<vz[i]<<std::endl;
                 }
 
               MPI_Bcast(&V[0], array_size+1, MPI_DOUBLE, 0, this->get_mpi_communicator());
@@ -547,7 +561,7 @@ namespace aspect
           TableIndices<dim> idx;
 
           //this variable gives us how many slices near the boundaries to ignore,
-          //this helps with lower values due to fixed top and bottom boundaries.
+          //this helps avoid boundary conditions effecting the topography.
           int edge = (nx+1)/2;
           if (dim == 2)
             {
@@ -561,9 +575,10 @@ namespace aspect
                       int index = i+numx*((ny-1)/2);
                       V2[i-1] = V[index];
                     }
+                  //TODO: This isn't working anymore, need to figure out why.
                   else
                     {
-                      for (int ys=(edge); ys<(ny-edge); ys++)
+                      for (int ys=edge; ys<(ny-edge); ys++)
                         {
                           int index = i+numx*ys;
                           V2[i-1] += V[index];
