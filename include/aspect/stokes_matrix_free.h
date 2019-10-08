@@ -333,10 +333,10 @@ namespace aspect
       void correct_stokes_rhs();
 
       /**
-       * Computes and sets the diagonal for the A-block operators for the purpose
-       * of smoothing inside the multigrid v-cycle.
+       * Computes and sets the diagonal for the A-block operators on each level for
+       * the purpose of smoothing inside the multigrid v-cycle.
        */
-      void get_ablock_diagonals();
+      void compute_A_block_diagonals();
 
       /**
        * Declare parameters. (No actual parameters at the moment).

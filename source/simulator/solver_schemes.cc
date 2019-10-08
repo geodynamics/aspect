@@ -311,7 +311,7 @@ namespace aspect
       {
         stokes_matrix_free->evaluate_material_model();
         stokes_matrix_free->correct_stokes_rhs();
-        stokes_matrix_free->get_ablock_diagonals();
+        stokes_matrix_free->compute_A_block_diagonals();
       }
 
     // Assemble preconditioner for matrix-based

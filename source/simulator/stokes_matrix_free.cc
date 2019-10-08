@@ -63,7 +63,7 @@ namespace aspect
         // - It works on a specific level so we can ignore hanging nodes
         // - We use the normal vector given by the manifold (instead of averaging surface vectors)
         //
-        // This should go into deal.II at some point, but it is too specific at this point.
+        // This should go into deal.II at some point, but it is too specific right now.
 
         IndexSet refinement_edge_indices = mg_constrained_dofs.get_refinement_edge_indices(level);
 
@@ -1881,7 +1881,7 @@ namespace aspect
 
 
   template <int dim>
-  void StokesMatrixFreeHandler<dim>::get_ablock_diagonals()
+  void StokesMatrixFreeHandler<dim>::compute_A_block_diagonals()
   {
     for (unsigned int level=0; level < sim.triangulation.n_global_levels(); ++level)
       {
@@ -1934,7 +1934,6 @@ namespace aspect
                   cell_matrix = 0;
                   fe_values.reinit (cell);
 
-
                   typename DoFHandler<dim>::level_cell_iterator DG_cell(&(sim.triangulation),
                                                                         level,
                                                                         cell->index(),
@@ -1948,14 +1947,14 @@ namespace aspect
                       for (unsigned int k=0; k<dofs_per_cell; ++k)
                         symgrad_phi_u[k] = fe_values[velocities].symmetric_gradient (k, q);
 
+                      const double JxW = fe_values.JxW(q);
                       for (unsigned int i=0; i<dofs_per_cell; ++i)
                         for (unsigned int j=0; j<dofs_per_cell; ++j)
-                          cell_matrix(i,j) += (2*viscosity*(symgrad_phi_u[i]*symgrad_phi_u[j])
-                                               * fe_values.JxW(q));
+                          cell_matrix(i,j) += 2. * viscosity * (symgrad_phi_u[i]*symgrad_phi_u[j])
+                                              * JxW;
                     }
 
                   cell->get_mg_dof_indices (local_dof_indices);
-
 
                   boundary_constraints.distribute_local_to_global (cell_matrix,
                                                                    local_dof_indices,
