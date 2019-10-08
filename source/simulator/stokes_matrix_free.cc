@@ -866,14 +866,14 @@ namespace aspect
 
     // This requires: porting the additional stabilization terms and using a
     // different mapping in the MatrixFree operators:
-    Assert(!sim.parameters.mesh_deformation_enabled, ExcNotImplemented());
+    AssertThrow(!sim.parameters.mesh_deformation_enabled, ExcNotImplemented());
     // Sorry, not any time soon:
-    Assert(!sim.parameters.include_melt_transport, ExcNotImplemented());
+    AssertThrow(!sim.parameters.include_melt_transport, ExcNotImplemented());
     // Not very difficult to do, but will require a different mass matrix
     // operator:
-    Assert(!sim.parameters.use_locally_conservative_discretization, ExcNotImplemented());
+    AssertThrow(!sim.parameters.use_locally_conservative_discretization, ExcNotImplemented());
     // TODO: this is currently hard-coded in the header:
-    Assert(sim.parameters.stokes_velocity_degree==2, ExcNotImplemented());
+    AssertThrow(sim.parameters.stokes_velocity_degree==2, ExcNotImplemented());
 
     // sanity check:
     Assert(sim.introspection.variable("velocity").block_index==0, ExcNotImplemented());
@@ -882,21 +882,20 @@ namespace aspect
     // This is not terribly complicated, but we need to check that constraints
     // are set correctly, that the preconditioner converges, and requires
     // testing.
-    Assert(sim.geometry_model->get_periodic_boundary_pairs().size()==0, ExcNotImplemented());
+    AssertThrow(sim.geometry_model->get_periodic_boundary_pairs().size()==0, ExcNotImplemented());
 
     // We currently only support averaging that gives a constant value:
     using avg = MaterialModel::MaterialAveraging::AveragingOperation;
-    Assert((sim.parameters.material_averaging &
-            (avg::arithmetic_average | avg::harmonic_average | avg::geometric_average
-             | avg::pick_largest | avg::log_average))!=0
-           ,
-           ExcNotImplemented());
+    AssertThrow((sim.parameters.material_averaging &
+                 (avg::arithmetic_average | avg::harmonic_average | avg::geometric_average
+                  | avg::pick_largest | avg::log_average))!=0
+                , ExcMessage("The matrix-free Stokes solver currently only works if material model averaging is enabled"));
 
     // Currently cannot solve compressible flow with implicit reference density
     if (sim.material_model->is_compressible() == true)
-      Assert(sim.parameters.formulation_mass_conservation !=
-             Parameters<dim>::Formulation::MassConservation::implicit_reference_density_profile,
-             ExcNotImplemented());
+      AssertThrow(sim.parameters.formulation_mass_conservation !=
+                  Parameters<dim>::Formulation::MassConservation::implicit_reference_density_profile,
+                  ExcNotImplemented());
 
     {
       const unsigned int n_vect_doubles =
