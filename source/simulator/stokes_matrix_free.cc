@@ -1869,6 +1869,17 @@ namespace aspect
   }
 
 
+
+  template <int dim>
+  void StokesMatrixFreeHandler<dim>::build_preconditioner()
+  {
+    evaluate_material_model();
+    correct_stokes_rhs();
+    compute_A_block_diagonals();
+  }
+
+
+
   template <int dim>
   void StokesMatrixFreeHandler<dim>::compute_A_block_diagonals()
   {
