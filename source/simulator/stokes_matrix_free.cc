@@ -65,9 +65,8 @@ namespace aspect
         //
         // This should go into deal.II at some point, but it is too specific right now.
 
-        IndexSet refinement_edge_indices = mg_constrained_dofs.get_refinement_edge_indices(level);
+        const IndexSet &refinement_edge_indices = mg_constrained_dofs.get_refinement_edge_indices(level);
 
-        const double inhomogeneity = 0;
         const auto &fe = dof_handler.get_fe();
         const std::vector<Point<dim - 1>> &unit_support_points = fe.get_unit_face_support_points();
         const Quadrature<dim - 1> quadrature(unit_support_points);
@@ -76,7 +75,7 @@ namespace aspect
 
 
         FEFaceValues<dim, spacedim> fe_face_values(mapping,
-                                                   dof_handler.get_fe(),
+                                                   fe,
                                                    quadrature,
                                                    update_quadrature_points |
                                                    update_normal_vectors);
@@ -99,6 +98,8 @@ namespace aspect
                   for (unsigned int i = 0; i < face_dofs.size(); ++i)
                     if (fe.face_system_to_component_index(i).first ==
                         first_vector_component)
+                      // Refinement edge indices are going to be constrained to 0 during a
+                      // multigrid cycle and do not need no-normal-flux constraints, so skip them:
                       if (!refinement_edge_indices.is_element(face_dofs[i]))
                         {
                           const Point<dim> position = fe_face_values.quadrature_point(i);
@@ -143,12 +144,6 @@ namespace aspect
                                                           dof_indices[1],
                                                           -normal_vector[1] /
                                                           normal_vector[0]);
-
-                                  if (std::fabs(inhomogeneity / normal_vector[0]) >
-                                      std::numeric_limits<double>::epsilon())
-                                    constraints.set_inhomogeneity(
-                                      dof_indices[0],
-                                      inhomogeneity / normal_vector[0]);
                                 }
                             }
                           else
@@ -165,12 +160,6 @@ namespace aspect
                                                           dof_indices[0],
                                                           -normal_vector[0] /
                                                           normal_vector[1]);
-
-                                  if (std::fabs(inhomogeneity / normal_vector[1]) >
-                                      std::numeric_limits<double>::epsilon())
-                                    constraints.set_inhomogeneity(
-                                      dof_indices[1],
-                                      inhomogeneity / normal_vector[1]);
                                 }
                             }
                         }
