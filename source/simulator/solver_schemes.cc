@@ -328,19 +328,11 @@ namespace aspect
 
     assemble_stokes_system ();
 
-    // Update coefficients and add correction to system rhs for
-    // marix-free method
+    // build the preconditioner
     if (stokes_matrix_free)
-      {
-        stokes_matrix_free->evaluate_material_model();
-        stokes_matrix_free->correct_stokes_rhs();
-      }
-
-    // Assemble preconditioner for matrix-based
-    if (!stokes_matrix_free)
-      {
-        build_stokes_preconditioner();
-      }
+      stokes_matrix_free->build_preconditioner();
+    else
+      build_stokes_preconditioner();
 
     if (compute_initial_residual)
       {

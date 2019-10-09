@@ -235,6 +235,13 @@ namespace aspect
          */
         virtual void compute_diagonal ();
 
+        /**
+         * Manually set the diagonal inside the matrix-free object. This function is needed
+         * when using tangential constraints as the function compute_diagonal() cannot handle
+         * non-Dirichlet boundary conditions.
+         */
+        void set_diagonal (const dealii::LinearAlgebra::distributed::Vector<number> &diag);
+
       private:
 
         /**
@@ -307,23 +314,16 @@ namespace aspect
       void setup_dofs();
 
       /**
-       * Evalute the MaterialModel to query for the viscosity on the active cells,
-       * project this viscosity to the multigrid hierarchy, and cache the information
-       * for later usage. Also sets pressure scaling and information regarding the
-       * compressiblity of the flow.
+       * Evaluate the material model and update internal data structures before the
+       * actual solve().
        */
-      void evaluate_material_model();
+      void build_preconditioner();
 
       /**
        * Get the workload imbalance of the distribution
        * of the level hierarchy.
        */
       double get_workload_imbalance();
-
-      /**
-       * Add correction to system RHS for non-zero boundary condition.
-       */
-      void correct_stokes_rhs();
 
       /**
        * Declare parameters. (No actual parameters at the moment).
@@ -336,8 +336,26 @@ namespace aspect
        */
       void parse_parameters (ParameterHandler &prm);
 
-
     private:
+
+      /**
+       * Evalute the MaterialModel to query for the viscosity on the active cells,
+       * project this viscosity to the multigrid hierarchy, and cache the information
+       * for later usage. Also sets pressure scaling and information regarding the
+       * compressiblity of the flow.
+       */
+      void evaluate_material_model();
+
+      /**
+       * Add correction to system RHS for non-zero boundary condition.
+       */
+      void correct_stokes_rhs();
+
+      /**
+       * Computes and sets the diagonal for the A-block operators on each level for
+       * the purpose of smoothing inside the multigrid v-cycle.
+       */
+      void compute_A_block_diagonals();
 
       Simulator<dim> &sim;
 
