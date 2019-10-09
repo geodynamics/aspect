@@ -389,6 +389,10 @@ namespace aspect
                        parameters.output_directory + "restart.mesh.info.old");
             move_file (parameters.output_directory + "restart.resume.z",
                        parameters.output_directory + "restart.resume.z.old");
+#if DEAL_II_VERSION_GTE(9,1,0)
+            move_file (parameters.output_directory + "restart.mesh_fixed.data",
+                       parameters.output_directory + "restart.mesh_fixed.data.old");
+#endif
           }
 
         move_file (parameters.output_directory + "restart.mesh.new",
@@ -397,6 +401,10 @@ namespace aspect
                    parameters.output_directory + "restart.mesh.info");
         move_file (parameters.output_directory + "restart.resume.z.new",
                    parameters.output_directory + "restart.resume.z");
+#if DEAL_II_VERSION_GTE(9,1,0)
+        move_file (parameters.output_directory + "restart.mesh.new_fixed.data",
+                   parameters.output_directory + "restart.mesh_fixed.data");
+#endif
 
         // from now on, we know that if we get into this
         // function again that a snapshot has previously
