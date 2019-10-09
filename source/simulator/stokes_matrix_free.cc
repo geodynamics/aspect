@@ -1229,6 +1229,7 @@ namespace aspect
   }
 
 
+
   template <int dim, int velocity_degree>
   void StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::correct_stokes_rhs()
   {
@@ -1681,6 +1682,7 @@ namespace aspect
   }
 
 
+
   template <int dim, int velocity_degree>
   void StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::setup_dofs()
   {
@@ -1892,8 +1894,8 @@ namespace aspect
 
 
 
-  template <int dim>
-  void StokesMatrixFreeHandler<dim>::build_preconditioner()
+  template <int dim, int velocity_degree>
+  void StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::build_preconditioner()
   {
     evaluate_material_model();
     correct_stokes_rhs();
@@ -1902,8 +1904,8 @@ namespace aspect
 
 
 
-  template <int dim>
-  void StokesMatrixFreeHandler<dim>::compute_A_block_diagonals()
+  template <int dim, int velocity_degree>
+  void StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::compute_A_block_diagonals()
   {
     for (unsigned int level=0; level < sim.triangulation.n_global_levels(); ++level)
       {

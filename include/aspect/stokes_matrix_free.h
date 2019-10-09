@@ -306,23 +306,10 @@ namespace aspect
       virtual void setup_dofs()=0;
 
       /**
-       * Evalute the MaterialModel to query for the viscosity on the active cells,
-       * project this viscosity to the multigrid hierarchy, and cache the information
-       * for later usage. Also sets pressure scaling and information regarding the
-       * compressiblity of the flow.
+       * Evaluate the material model and update internal data structures before the
+       * actual solve().
        */
-      virtual void evaluate_material_model()=0;
-
-      /**
-       * Get the workload imbalance of the distribution
-       * of the level hierarchy.
-       */
-      virtual double get_workload_imbalance()=0;
-
-      /**
-       * Add correction to system RHS for non-zero boundary condition.
-       */
-      virtual void correct_stokes_rhs()=0;
+      virtual void build_preconditioner()=0;
 
       /**
        * Declare parameters.
@@ -374,17 +361,21 @@ namespace aspect
        * Evaluate the material model and update internal data structures before the
        * actual solve().
        */
-      void build_preconditioner();
+      void build_preconditioner() override;
 
       /**
        * Get the workload imbalance of the distribution
        * of the level hierarchy.
        */
-      double get_workload_imbalance() override;
+      double get_workload_imbalance();
 
       /**
-    private:
+       * Declare parameters. (No actual parameters at the moment).
+       */
+      static
+      void declare_parameters (ParameterHandler &prm);
 
+    private:
       /**
        * Evalute the MaterialModel to query for the viscosity on the active cells,
        * project this viscosity to the multigrid hierarchy, and cache the information
@@ -399,21 +390,16 @@ namespace aspect
       void correct_stokes_rhs();
 
       /**
-       * Parse parameters. (No actual parameters at the moment).
-       */
-      void parse_parameters (ParameterHandler &prm);
-
-      /**
-       * Declare parameters. (No actual parameters at the moment).
-       */
-      static
-      void declare_parameters (ParameterHandler &prm);
-
-      /**
        * Computes and sets the diagonal for the A-block operators on each level for
        * the purpose of smoothing inside the multigrid v-cycle.
        */
       void compute_A_block_diagonals();
+
+      /**
+       * Parse parameters. (No actual parameters at the moment).
+       */
+      void parse_parameters (ParameterHandler &prm);
+
 
       Simulator<dim> &sim;
 
