@@ -281,11 +281,55 @@ namespace aspect
   }
 
   /**
-   * Main class of the Matrix-free method. Here are all the functions for setup, assembly and solving
-   * the Stokes system.
-   */
+    * Base class for the matrix free GMG solver for the Stokes system. The
+    * actual implementation is found inside StokesMatrixFreeHandlerImplementation below.
+    */
   template<int dim>
   class StokesMatrixFreeHandler
+  {
+    public:
+      /**
+       * virtual Destructor.
+       */
+      virtual ~StokesMatrixFreeHandler();
+
+      /**
+       * Solves the Stokes linear system matrix-free. This is called
+       * by Simulator<dim>::solve_stokes().
+       */
+      virtual std::pair<double,double> solve()=0;
+
+      /**
+       * Allocates and sets up the members of the StokesMatrixFreeHandler. This
+       * is called by Simulator<dim>::setup_dofs()
+       */
+      virtual void setup_dofs()=0;
+
+      /**
+       * Evaluate the material model and update internal data structures before the
+       * actual solve().
+       */
+      virtual void build_preconditioner()=0;
+
+      /**
+       * Declare parameters.
+       */
+      static
+      void declare_parameters (ParameterHandler &prm);
+  };
+
+  /**
+   * Main class of the Matrix-free method. Here are all the functions for
+   * setup, assembly and solving the Stokes system.
+   *
+   * We need to derive from StokesMatrixFreeHandler to be able to introduce a
+   * second template argument for the degree of the Stokes finite
+   * element. This way, the main simulator does not need to know about the
+   * degree by using a pointer to the base class and we can pick the desired
+   * velocity degree at runtime.
+   */
+  template<int dim, int velocity_degree>
+  class StokesMatrixFreeHandlerImplementation: public StokesMatrixFreeHandler<dim>
   {
     public:
       /**
@@ -294,30 +338,30 @@ namespace aspect
        * Simulator that owns it, since it needs to make fairly extensive
        * changes to the internals of the simulator.
        */
-      StokesMatrixFreeHandler(Simulator<dim> &, ParameterHandler &prm);
+      StokesMatrixFreeHandlerImplementation(Simulator<dim> &, ParameterHandler &prm);
 
       /**
        * Destructor.
        */
-      ~StokesMatrixFreeHandler();
+      ~StokesMatrixFreeHandlerImplementation();
 
       /**
        * Solves the Stokes linear system matrix-free. This is called
        * by Simulator<dim>::solve_stokes().
        */
-      std::pair<double,double> solve();
+      std::pair<double,double> solve() override;
 
       /**
        * Allocates and sets up the members of the StokesMatrixFreeHandler. This
        * is called by Simulator<dim>::setup_dofs()
        */
-      void setup_dofs();
+      void setup_dofs() override;
 
       /**
        * Evaluate the material model and update internal data structures before the
        * actual solve().
        */
-      void build_preconditioner();
+      void build_preconditioner() override;
 
       /**
        * Get the workload imbalance of the distribution
@@ -331,13 +375,7 @@ namespace aspect
       static
       void declare_parameters (ParameterHandler &prm);
 
-      /**
-       * Parse parameters. (No actual parameters at the moment).
-       */
-      void parse_parameters (ParameterHandler &prm);
-
     private:
-
       /**
        * Evalute the MaterialModel to query for the viscosity on the active cells,
        * project this viscosity to the multigrid hierarchy, and cache the information
@@ -357,6 +395,12 @@ namespace aspect
        */
       void compute_A_block_diagonals();
 
+      /**
+       * Parse parameters. (No actual parameters at the moment).
+       */
+      void parse_parameters (ParameterHandler &prm);
+
+
       Simulator<dim> &sim;
 
       DoFHandler<dim> dof_handler_v;
@@ -368,10 +412,9 @@ namespace aspect
       FESystem<dim> fe_p;
       FESystem<dim> fe_projection;
 
-      // TODO: velocity degree not only 2, Choosing quadrature degree?
-      typedef MatrixFreeStokesOperators::StokesOperator<dim,2,double> StokesMatrixType;
-      typedef MatrixFreeStokesOperators::MassMatrixOperator<dim,1,double> MassMatrixType;
-      typedef MatrixFreeStokesOperators::ABlockOperator<dim,2,double> ABlockMatrixType;
+      typedef MatrixFreeStokesOperators::StokesOperator<dim,velocity_degree,double> StokesMatrixType;
+      typedef MatrixFreeStokesOperators::MassMatrixOperator<dim,velocity_degree-1,double> MassMatrixType;
+      typedef MatrixFreeStokesOperators::ABlockOperator<dim,velocity_degree,double> ABlockMatrixType;
 
       StokesMatrixType stokes_matrix;
       ABlockMatrixType velocity_matrix;
@@ -382,7 +425,7 @@ namespace aspect
       ConstraintMatrix constraints_projection;
 
       MGLevelObject<ABlockMatrixType> mg_matrices;
-      MGConstrainedDoFs              mg_constrained_dofs;
+      MGConstrainedDoFs mg_constrained_dofs;
       MGConstrainedDoFs mg_constrained_dofs_projection;
 
       dealii::LinearAlgebra::distributed::Vector<double> active_coef_dof_vec;
