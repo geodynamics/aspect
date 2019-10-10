@@ -102,10 +102,7 @@ namespace aspect
             // between their weight and the local weight integral
             unsigned int cell_index = 0;
             types::particle_index particles_created = 0;
-            typename DoFHandler<dim>::active_cell_iterator
-            cell = this->get_dof_handler().begin_active(),
-            endc = this->get_dof_handler().end();
-            for (; cell!=endc; ++cell)
+            for (const auto &cell : this->get_dof_handler().active_cell_iterators())
               if (cell->is_locally_owned())
                 {
                   const types::particle_index particles_to_create = llround(static_cast<double> (n_local_particles) *
@@ -130,10 +127,7 @@ namespace aspect
         double accumulated_cell_weight = 0.0;
 
         // compute the integral weight by quadrature
-        typename DoFHandler<dim>::active_cell_iterator
-        cell = this->get_dof_handler().begin_active(),
-        endc = this->get_dof_handler().end();
-        for (; cell!=endc; ++cell)
+        for (const auto &cell : this->get_dof_handler().active_cell_iterators())
           if (cell->is_locally_owned())
             {
               // get_cell_weight makes sure to return positive values
@@ -145,7 +139,7 @@ namespace aspect
 
       template <int dim>
       double
-      ProbabilityDensityFunction<dim>::get_cell_weight (typename DoFHandler<dim>::active_cell_iterator &cell) const
+      ProbabilityDensityFunction<dim>::get_cell_weight (const typename DoFHandler<dim>::active_cell_iterator &cell) const
       {
         // Evaluate function at all cell midpoints, sort cells according to weight
         const QMidpoint<dim> quadrature_formula;
@@ -187,9 +181,7 @@ namespace aspect
         // increase the complexity to O(N log(N)).
         std::vector<std::pair<Particles::internal::LevelInd, Particle<dim> > > local_particles;
         local_particles.reserve(n_local_particles);
-        for (typename DoFHandler<dim>::active_cell_iterator cell = this->get_dof_handler().begin_active();
-             cell!=this->get_dof_handler().end();
-             ++cell)
+        for (const auto &cell : this->get_dof_handler().active_cell_iterators())
           if (cell->is_locally_owned())
             {
               for (unsigned int i = 0; i < particles_per_cell[cell_index]; ++i)

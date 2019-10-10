@@ -206,10 +206,9 @@ void validate_shared_lib_list (const bool before_loading_shared_libs)
 
   // find everything that is interesting
   std::set<std::string> dealii_shared_lib_names;
-  for (std::set<std::string>::const_iterator p = shared_lib_names.begin();
-       p != shared_lib_names.end(); ++p)
-    if (p->find ("libdeal_II") != std::string::npos)
-      dealii_shared_lib_names.insert (*p);
+  for (const auto &p : shared_lib_names)
+    if (p.find ("libdeal_II") != std::string::npos)
+      dealii_shared_lib_names.insert (p);
 
   // produce an error if we load deal.II more than once
   if (dealii_shared_lib_names.size() != 1)
@@ -218,9 +217,8 @@ void validate_shared_lib_list (const bool before_loading_shared_libs)
       error << "........................................................\n"
             << "ASPECT currently links against different versions of the\n"
             << "deal.II library, namely the ones at these locations:\n";
-      for (std::set<std::string>::const_iterator p = dealii_shared_lib_names.begin();
-           p != dealii_shared_lib_names.end(); ++p)
-        error << "  " << *p << '\n';
+      for (const auto &p : dealii_shared_lib_names)
+        error << "  " << p << '\n';
       error << "This can not work.\n\n";
 
       if (before_loading_shared_libs)

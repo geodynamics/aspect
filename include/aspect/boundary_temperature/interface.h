@@ -362,10 +362,8 @@ namespace aspect
     BoundaryTemperatureType *
     Manager<dim>::find_boundary_temperature_model () const
     {
-      for (typename std::vector<std::unique_ptr<Interface<dim> > >::const_iterator
-           p = boundary_temperature_objects.begin();
-           p != boundary_temperature_objects.end(); ++p)
-        if (BoundaryTemperatureType *x = dynamic_cast<BoundaryTemperatureType *> ( (*p).get()) )
+      for (const auto &p : boundary_temperature_objects)
+        if (BoundaryTemperatureType *x = dynamic_cast<BoundaryTemperatureType *> ( p.get()) )
           return x;
       return nullptr;
     }
@@ -377,10 +375,8 @@ namespace aspect
     bool
     Manager<dim>::has_matching_boundary_temperature_model () const
     {
-      for (typename std::vector<std::unique_ptr<Interface<dim> > >::const_iterator
-           p = boundary_temperature_objects.begin();
-           p != boundary_temperature_objects.end(); ++p)
-        if (Plugins::plugin_type_matches<BoundaryTemperatureType>(*(*p)))
+      for (const auto &p : boundary_temperature_objects)
+        if (Plugins::plugin_type_matches<BoundaryTemperatureType>(*p))
           return true;
       return false;
     }

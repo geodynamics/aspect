@@ -60,11 +60,8 @@ namespace aspect
       else
         {
           double min = maximal_temperature(fixed_boundary_ids);
-          for (typename std::set<types::boundary_id>::const_iterator
-               p = fixed_boundary_ids.begin();
-               p != fixed_boundary_ids.end(); ++p)
-            if (p != fixed_boundary_ids.end())
-              min = std::min(min,temperature_[*p]);
+          for (const auto id : fixed_boundary_ids)
+            min = std::min(min,temperature_[id]);
           return min;
         }
     }
@@ -81,11 +78,8 @@ namespace aspect
       else
         {
           double max = -std::numeric_limits<double>::max();
-          for (typename std::set<types::boundary_id>::const_iterator
-               p = fixed_boundary_ids.begin();
-               p != fixed_boundary_ids.end(); ++p)
-            if (p != fixed_boundary_ids.end())
-              max = std::max(max,temperature_[*p]);
+          for (const auto id : fixed_boundary_ids)
+            max = std::max(max,temperature_[id]);
           return max;
         }
     }

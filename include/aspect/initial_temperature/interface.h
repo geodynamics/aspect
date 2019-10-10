@@ -265,9 +265,7 @@ namespace aspect
     InitialTemperatureType *
     Manager<dim>::find_initial_temperature_model () const
     {
-      for (typename std::list<std::unique_ptr<Interface<dim> > >::const_iterator
-           p = initial_temperature_objects.begin();
-           p != initial_temperature_objects.end(); ++p)
+      for (const auto &p : initial_temperature_objects)
         if (InitialTemperatureType *x = dynamic_cast<InitialTemperatureType *> ( (*p).get()) )
           return x;
       return nullptr;
@@ -280,10 +278,8 @@ namespace aspect
     bool
     Manager<dim>::has_matching_initial_temperature_model () const
     {
-      for (typename std::list<std::unique_ptr<Interface<dim> > >::const_iterator
-           p = initial_temperature_objects.begin();
-           p != initial_temperature_objects.end(); ++p)
-        if (Plugins::plugin_type_matches<InitialTemperatureType>(*(*p)))
+      for (const auto &p : initial_temperature_objects)
+        if (Plugins::plugin_type_matches<InitialTemperatureType>(*p))
           return true;
       return false;
     }

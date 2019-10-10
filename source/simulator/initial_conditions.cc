@@ -124,8 +124,7 @@ namespace aspect
                                  advf_mask);
 
         if (parameters.normalized_fields.size()>0 && n==1)
-          for (typename DoFHandler<dim>::active_cell_iterator cell = dof_handler.begin_active();
-               cell != dof_handler.end(); ++cell)
+          for (const auto &cell : dof_handler.active_cell_iterators())
             if (cell->is_locally_owned())
               {
                 fe_values.reinit (cell);
@@ -262,8 +261,7 @@ namespace aspect
 
     std::vector<types::global_dof_index> local_dof_indices (finite_element.dofs_per_cell);
 
-    for (typename DoFHandler<dim>::active_cell_iterator cell = dof_handler.begin_active();
-         cell != dof_handler.end(); ++cell)
+    for (const auto &cell : dof_handler.active_cell_iterators())
       if (cell->is_locally_owned())
         {
           fe_values.reinit (cell);
@@ -412,11 +410,7 @@ namespace aspect
         });
 
 
-        typename DoFHandler<dim>::active_cell_iterator
-        cell = dof_handler.begin_active(),
-        endc = dof_handler.end();
-
-        for (; cell!=endc; ++cell)
+        for (const auto &cell : dof_handler.active_cell_iterators())
           if (cell->is_locally_owned())
             {
               cell->get_dof_indices (local_dof_indices);

@@ -64,15 +64,11 @@ namespace aspect
           local_min_vel[*p] = std::numeric_limits<double>::max();
         }
 
-      typename DoFHandler<dim>::active_cell_iterator
-      cell = this->get_dof_handler().begin_active(),
-      endc = this->get_dof_handler().end();
-
       // for every surface face that is part of a geometry boundary
       // and that is owned by this processor,
       // compute the maximum, minimum, and squared*area velocity magnitude,
       // and the face area.
-      for (; cell!=endc; ++cell)
+      for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
           for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
             if (cell->face(f)->at_boundary())

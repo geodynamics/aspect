@@ -61,10 +61,6 @@ namespace aspect
 
       std::map<types::boundary_id, double> local_boundary_fluxes;
 
-      typename DoFHandler<dim>::active_cell_iterator
-      cell = this->get_dof_handler().begin_active(),
-      endc = this->get_dof_handler().end();
-
       MaterialModel::MaterialModelInputs<dim> in(fe_face_values.n_quadrature_points, this->n_compositional_fields());
       MaterialModel::MaterialModelOutputs<dim> out(fe_face_values.n_quadrature_points, this->n_compositional_fields());
 
@@ -72,7 +68,7 @@ namespace aspect
       // mass flux and that is owned by this processor,
       // integrate the normal mass flux given by the formula
       //   j =  \rho * v * n
-      for (; cell!=endc; ++cell)
+      for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
           for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
             if (cell->at_boundary(f))

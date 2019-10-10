@@ -42,18 +42,14 @@ namespace aspect
 
       const Particle::ParticleHandler<dim> &particle_handler = particle_postprocessor.get_particle_world().get_particle_handler();
 
-      unsigned int i = 0;
-      typename DoFHandler<dim>::active_cell_iterator
-      cell = this->get_dof_handler().begin_active(),
-      endc = this->get_dof_handler().end();
-      for (; cell!=endc; ++cell,++i)
+      for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
           {
             // Note  that this refinement indicator will level out the number
             // of particles per cell, therefore creating fine cells in regions
             // of high particle density and coarse cells in low particle
             // density regions.
-            indicators(i) = static_cast<float>(particle_handler.n_particles_in_cell(cell));
+            indicators(cell->active_cell_index()) = static_cast<float>(particle_handler.n_particles_in_cell(cell));
           }
     }
   }

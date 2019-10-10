@@ -32,7 +32,7 @@ namespace aspect
     {
       template <int dim>
       double
-      RandomUniform<dim>::get_cell_weight (typename DoFHandler<dim>::active_cell_iterator &/*cell*/) const
+      RandomUniform<dim>::get_cell_weight (const typename DoFHandler<dim>::active_cell_iterator &/*cell*/) const
       {
         return 1.0;
       }

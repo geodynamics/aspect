@@ -192,29 +192,24 @@ namespace aspect
 
       // The following loop perform the storage of the position and density * JxW values
       // at local quadrature points:
-      typename DoFHandler<dim>::active_cell_iterator
-      cell = this->get_dof_handler().begin_active(),
-      endc = this->get_dof_handler().end();
       MaterialModel::MaterialModelInputs<dim> in(quadrature_formula.size(),this->n_compositional_fields());
       MaterialModel::MaterialModelOutputs<dim> out(quadrature_formula.size(),this->n_compositional_fields());
       unsigned int local_cell_number = 0;
-      for (; cell!=endc; ++cell)
-        {
-          if (cell->is_locally_owned())
-            {
-              fe_values.reinit (cell);
-              const std::vector<Point<dim> > &position_point_cell = fe_values.get_quadrature_points();
-              in.reinit(fe_values, cell, this->introspection(), this->get_solution(), false);
-              this->get_material_model().evaluate(in, out);
-              for (unsigned int q = 0; q < n_quadrature_points_per_cell; ++q)
-                {
-                  density_JxW[local_cell_number * n_quadrature_points_per_cell + q] = out.densities[q] * fe_values.JxW(q);
-                  density_anomalies_JxW[local_cell_number * n_quadrature_points_per_cell + q] = (out.densities[q]-reference_density) * fe_values.JxW(q);
-                  position_point[local_cell_number * n_quadrature_points_per_cell + q] = position_point_cell[q];
-                }
-              ++local_cell_number;
-            }
-        }
+      for (const auto &cell : this->get_dof_handler().active_cell_iterators())
+        if (cell->is_locally_owned())
+          {
+            fe_values.reinit (cell);
+            const std::vector<Point<dim> > &position_point_cell = fe_values.get_quadrature_points();
+            in.reinit(fe_values, cell, this->introspection(), this->get_solution(), false);
+            this->get_material_model().evaluate(in, out);
+            for (unsigned int q = 0; q < n_quadrature_points_per_cell; ++q)
+              {
+                density_JxW[local_cell_number * n_quadrature_points_per_cell + q] = out.densities[q] * fe_values.JxW(q);
+                density_anomalies_JxW[local_cell_number * n_quadrature_points_per_cell + q] = (out.densities[q]-reference_density) * fe_values.JxW(q);
+                position_point[local_cell_number * n_quadrature_points_per_cell + q] = position_point_cell[q];
+              }
+            ++local_cell_number;
+          }
 
       // Pre-Assign the coordinates of all satellites in a vector point:
       // *** First calculate the number of satellites according to the sampling scheme:
@@ -290,47 +285,44 @@ namespace aspect
           Tensor<1,dim> local_g_anomaly;
           Tensor<2,dim> local_g_gradient;
           double local_g_potential = 0;
-          cell = this->get_dof_handler().begin_active();
           local_cell_number = 0;
-          for (; cell!=endc; ++cell)
-            {
-              if (cell->is_locally_owned())
-                {
-                  for (unsigned int q = 0; q < n_quadrature_points_per_cell; ++q)
-                    {
-                      const double dist = (position_satellite - position_point[local_cell_number * n_quadrature_points_per_cell + q]).norm();
-                      // For gravity acceleration:
-                      const double KK = G * density_JxW[local_cell_number * n_quadrature_points_per_cell + q] / std::pow(dist,3);
-                      local_g += KK * (position_satellite - position_point[local_cell_number * n_quadrature_points_per_cell + q]);
-                      // For gravity anomalies:
-                      const double KK_anomalies = G * density_anomalies_JxW[local_cell_number * n_quadrature_points_per_cell + q] / std::pow(dist,3);
-                      local_g_anomaly += KK_anomalies * (position_satellite - position_point[local_cell_number * n_quadrature_points_per_cell + q]);
-                      // For gravity potential:
-                      local_g_potential -= G * density_JxW[local_cell_number * n_quadrature_points_per_cell + q] / dist;
-                      // For gravity gradient:
-                      const double grad_KK = G * density_JxW[local_cell_number * n_quadrature_points_per_cell + q] / std::pow(dist,5);
-                      local_g_gradient[0][0] += grad_KK * (3.0
-                                                           * std::pow((position_satellite[0] - position_point[local_cell_number * n_quadrature_points_per_cell + q][0]),2)
-                                                           - std::pow(dist,2));
-                      local_g_gradient[1][1] += grad_KK * (3.0
-                                                           * std::pow((position_satellite[1] - position_point[local_cell_number * n_quadrature_points_per_cell + q][1]),2)
-                                                           - std::pow(dist,2));
-                      local_g_gradient[2][2] += grad_KK * (3.0
-                                                           * std::pow((position_satellite[2] - position_point[local_cell_number * n_quadrature_points_per_cell + q][2]),2)
-                                                           - std::pow(dist,2));
-                      local_g_gradient[0][1] += grad_KK * (3.0
-                                                           * (position_satellite[0] - position_point[local_cell_number * n_quadrature_points_per_cell + q][0])
-                                                           * (position_satellite[1] - position_point[local_cell_number * n_quadrature_points_per_cell + q][1]));
-                      local_g_gradient[0][2] += grad_KK * (3.0
-                                                           * (position_satellite[0] - position_point[local_cell_number * n_quadrature_points_per_cell + q][0])
-                                                           * (position_satellite[2] - position_point[local_cell_number * n_quadrature_points_per_cell + q][2]));
-                      local_g_gradient[1][2] += grad_KK * (3.0
-                                                           * (position_satellite[1] - position_point[local_cell_number * n_quadrature_points_per_cell + q][1])
-                                                           * (position_satellite[2] - position_point[local_cell_number * n_quadrature_points_per_cell + q][2]));
-                    }
-                  ++local_cell_number;
-                }
-            }
+          for (const auto &cell : this->get_dof_handler().active_cell_iterators())
+            if (cell->is_locally_owned())
+              {
+                for (unsigned int q = 0; q < n_quadrature_points_per_cell; ++q)
+                  {
+                    const double dist = (position_satellite - position_point[local_cell_number * n_quadrature_points_per_cell + q]).norm();
+                    // For gravity acceleration:
+                    const double KK = G * density_JxW[local_cell_number * n_quadrature_points_per_cell + q] / std::pow(dist,3);
+                    local_g += KK * (position_satellite - position_point[local_cell_number * n_quadrature_points_per_cell + q]);
+                    // For gravity anomalies:
+                    const double KK_anomalies = G * density_anomalies_JxW[local_cell_number * n_quadrature_points_per_cell + q] / std::pow(dist,3);
+                    local_g_anomaly += KK_anomalies * (position_satellite - position_point[local_cell_number * n_quadrature_points_per_cell + q]);
+                    // For gravity potential:
+                    local_g_potential -= G * density_JxW[local_cell_number * n_quadrature_points_per_cell + q] / dist;
+                    // For gravity gradient:
+                    const double grad_KK = G * density_JxW[local_cell_number * n_quadrature_points_per_cell + q] / std::pow(dist,5);
+                    local_g_gradient[0][0] += grad_KK * (3.0
+                                                         * std::pow((position_satellite[0] - position_point[local_cell_number * n_quadrature_points_per_cell + q][0]),2)
+                                                         - std::pow(dist,2));
+                    local_g_gradient[1][1] += grad_KK * (3.0
+                                                         * std::pow((position_satellite[1] - position_point[local_cell_number * n_quadrature_points_per_cell + q][1]),2)
+                                                         - std::pow(dist,2));
+                    local_g_gradient[2][2] += grad_KK * (3.0
+                                                         * std::pow((position_satellite[2] - position_point[local_cell_number * n_quadrature_points_per_cell + q][2]),2)
+                                                         - std::pow(dist,2));
+                    local_g_gradient[0][1] += grad_KK * (3.0
+                                                         * (position_satellite[0] - position_point[local_cell_number * n_quadrature_points_per_cell + q][0])
+                                                         * (position_satellite[1] - position_point[local_cell_number * n_quadrature_points_per_cell + q][1]));
+                    local_g_gradient[0][2] += grad_KK * (3.0
+                                                         * (position_satellite[0] - position_point[local_cell_number * n_quadrature_points_per_cell + q][0])
+                                                         * (position_satellite[2] - position_point[local_cell_number * n_quadrature_points_per_cell + q][2]));
+                    local_g_gradient[1][2] += grad_KK * (3.0
+                                                         * (position_satellite[1] - position_point[local_cell_number * n_quadrature_points_per_cell + q][1])
+                                                         * (position_satellite[2] - position_point[local_cell_number * n_quadrature_points_per_cell + q][2]));
+                  }
+                ++local_cell_number;
+              }
 
           // Sum local gravity components over global domain:
           const Tensor<1,dim> g          = Utilities::MPI::sum (local_g, this->get_mpi_communicator());

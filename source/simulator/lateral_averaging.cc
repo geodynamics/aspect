@@ -426,10 +426,7 @@ namespace aspect
         functors[i]->create_additional_material_model_outputs(n_q_points,out);
       }
 
-    typename DoFHandler<dim>::active_cell_iterator
-    cell = this->get_dof_handler().begin_active(),
-    endc = this->get_dof_handler().end();
-    for (; cell!=endc; ++cell)
+    for (const auto &cell : this->get_dof_handler().active_cell_iterators())
       if (cell->is_locally_owned())
         {
           fe_values.reinit (cell);

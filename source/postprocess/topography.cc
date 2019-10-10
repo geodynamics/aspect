@@ -68,10 +68,7 @@ namespace aspect
       double local_min_height = std::numeric_limits<double>::max();
 
       // loop over all of the surface cells and save the elevation to stored_value
-      typename parallel::distributed::Triangulation<dim>::active_cell_iterator cell = this->get_triangulation().begin_active(),
-                                                                               endc = this->get_triangulation().end();
-
-      for (; cell != endc; ++cell)
+      for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned() && cell->at_boundary())
           for (unsigned int face_no = 0; face_no < GeometryInfo<dim>::faces_per_cell; ++face_no)
             if (cell->face(face_no)->at_boundary())

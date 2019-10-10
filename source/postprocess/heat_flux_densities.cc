@@ -45,13 +45,9 @@ namespace aspect
       std::map<types::boundary_id, double> local_boundary_fluxes;
       std::map<types::boundary_id, double> local_areas;
 
-      typename DoFHandler<dim>::active_cell_iterator
-      cell = this->get_dof_handler().begin_active(),
-      endc = this->get_dof_handler().end();
-
       // Compute the area and heat flux of each boundary that lives on this processor.
       // Finally, sum over the processors and compute the ratio between the
-      for (; cell!=endc; ++cell)
+      for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
           for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
             if (cell->at_boundary(f))
@@ -72,12 +68,10 @@ namespace aspect
           = this->get_geometry_model().get_used_boundary_indicators ();
         std::vector<double> local_boundary_fluxes_vector;
         std::vector<double> local_areas_vector;
-        for (std::set<types::boundary_id>::const_iterator
-             p = boundary_indicators.begin();
-             p != boundary_indicators.end(); ++p)
+        for (const auto id : boundary_indicators)
           {
-            local_boundary_fluxes_vector.push_back (local_boundary_fluxes[*p]);
-            local_areas_vector.push_back (local_areas[*p]);
+            local_boundary_fluxes_vector.push_back (local_boundary_fluxes[id]);
+            local_areas_vector.push_back (local_areas[id]);
           }
 
         // then collect contributions from all processors
@@ -88,10 +82,11 @@ namespace aspect
 
         // and now take them apart into the global map again and compute ratios
         unsigned int index = 0;
-        for (std::set<types::boundary_id>::const_iterator
-             p = boundary_indicators.begin();
-             p != boundary_indicators.end(); ++p, ++index)
-          global_boundary_flux_densities[*p] = global_values[index]/global_areas[index];
+        for (const auto id : boundary_indicators)
+          {
+            global_boundary_flux_densities[id] = global_values[index]/global_areas[index];
+            ++index;
+          }
       }
 
       // now add all of the computed heat fluxes to the statistics object

@@ -1550,9 +1550,7 @@ namespace aspect
       // clear refinement flags if parameter.refinement_fraction=0.0
       if (parameters.refinement_fraction==0.0)
         {
-          for (typename Triangulation<dim>::active_cell_iterator
-               cell = triangulation.begin_active();
-               cell != triangulation.end(); ++cell)
+          for (const auto &cell : triangulation.active_cell_iterators())
             cell->clear_refine_flag ();
         }
       else
@@ -1568,9 +1566,7 @@ namespace aspect
       // clear coarsening flags if parameter.coarsening_fraction=0.0
       if (parameters.coarsening_fraction==0.0)
         {
-          for (typename Triangulation<dim>::active_cell_iterator
-               cell = triangulation.begin_active();
-               cell != triangulation.end(); ++cell)
+          for (const auto &cell : triangulation.active_cell_iterators())
             cell->clear_coarsen_flag ();
         }
       else
@@ -1810,9 +1806,7 @@ namespace aspect
         // refine_global(n).
         for (unsigned int n=0; n<parameters.initial_global_refinement; ++n)
           {
-            for (typename Triangulation<dim>::active_cell_iterator
-                 cell = triangulation.begin_active();
-                 cell != triangulation.end(); ++cell)
+            for (const auto &cell : triangulation.active_cell_iterators())
               cell->set_refine_flag ();
 
             mesh_refinement_manager.tag_additional_cells ();

@@ -61,10 +61,7 @@ namespace aspect
 
       // the values of the compositional fields are stored as block vectors for each field
       // we have to extract them in this structure
-      typename DoFHandler<dim>::active_cell_iterator
-      cell = this->get_dof_handler().begin_active(),
-      endc = this->get_dof_handler().end();
-      for (; cell!=endc; ++cell)
+      for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
           {
             fe_values.reinit(cell);
@@ -111,12 +108,9 @@ namespace aspect
       // itself scales like 1/h, so multiplying it with any factor h^s, s>1
       // will yield convergence of the error indicators to zero as h->0)
       const double power = 1.0 + dim/2.0;
-      {
-        unsigned int i=0;
-        for (cell = this->get_dof_handler().begin_active(); cell!=endc; ++cell, ++i)
-          if (cell->is_locally_owned())
-            indicators(i) *= std::pow(cell->diameter(), power);
-      }
+      for (const auto &cell : this->get_dof_handler().active_cell_iterators())
+        if (cell->is_locally_owned())
+          indicators(cell->active_cell_index()) *= std::pow(cell->diameter(), power);
     }
   }
 }
