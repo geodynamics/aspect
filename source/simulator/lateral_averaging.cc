@@ -52,7 +52,7 @@ namespace aspect
                         const MaterialModel::MaterialModelOutputs<dim> &,
                         const FEValues<dim> &fe_values,
                         const LinearAlgebra::BlockVector &solution,
-                        std::vector<double> &output)
+                        std::vector<double> &output) override
         {
           fe_values[field_].get_function_values (solution, output);
         }
@@ -66,7 +66,7 @@ namespace aspect
     class FunctorDepthAverageViscosity: public internal::FunctorBase<dim>
     {
       public:
-        bool need_material_properties() const
+        bool need_material_properties() const override
         {
           return true;
         }
@@ -75,7 +75,7 @@ namespace aspect
                         const MaterialModel::MaterialModelOutputs<dim> &out,
                         const FEValues<dim> &,
                         const LinearAlgebra::BlockVector &,
-                        std::vector<double> &output)
+                        std::vector<double> &output) override
         {
           output = out.viscosities;
         }
@@ -92,7 +92,7 @@ namespace aspect
           : field_(field), convert_to_years_(convert_to_years)
         {}
 
-        void setup(const unsigned int q_points)
+        void setup(const unsigned int q_points) override
         {
           velocity_values.resize(q_points);
         }
@@ -101,7 +101,7 @@ namespace aspect
                         const MaterialModel::MaterialModelOutputs<dim> &,
                         const FEValues<dim> &fe_values,
                         const LinearAlgebra::BlockVector &solution,
-                        std::vector<double> &output)
+                        std::vector<double> &output) override
         {
           fe_values[field_].get_function_values (solution, velocity_values);
           for (unsigned int q=0; q<output.size(); ++q)
@@ -128,13 +128,13 @@ namespace aspect
             convert_to_years_(convert_to_years)
         {}
 
-        bool need_material_properties() const
+        bool need_material_properties() const override
         {
           // this is needed because we want to access in.position in operator()
           return true;
         }
 
-        void setup(const unsigned int q_points)
+        void setup(const unsigned int q_points) override
         {
           velocity_values.resize(q_points);
         }
@@ -143,7 +143,7 @@ namespace aspect
                         const MaterialModel::MaterialModelOutputs<dim> &,
                         const FEValues<dim> &fe_values,
                         const LinearAlgebra::BlockVector &solution,
-                        std::vector<double> &output)
+                        std::vector<double> &output) override
         {
           fe_values[field_].get_function_values (solution, velocity_values);
           for (unsigned int q=0; q<output.size(); ++q)
@@ -172,14 +172,14 @@ namespace aspect
           : vs_(vs)
         {}
 
-        bool need_material_properties() const
+        bool need_material_properties() const override
         {
           return true;
         }
 
         void
         create_additional_material_model_outputs (const unsigned int n_points,
-                                                  MaterialModel::MaterialModelOutputs<dim> &outputs) const
+                                                  MaterialModel::MaterialModelOutputs<dim> &outputs) const override
         {
           outputs.additional_outputs.push_back(
             std_cxx14::make_unique<MaterialModel::SeismicAdditionalOutputs<dim>> (n_points));
@@ -189,7 +189,7 @@ namespace aspect
                         const MaterialModel::MaterialModelOutputs<dim> &out,
                         const FEValues<dim> &,
                         const LinearAlgebra::BlockVector &,
-                        std::vector<double> &output)
+                        std::vector<double> &output) override
         {
           const MaterialModel::SeismicAdditionalOutputs<dim> *seismic_outputs
             = out.template get_additional_output<const MaterialModel::SeismicAdditionalOutputs<dim> >();
@@ -221,12 +221,12 @@ namespace aspect
             gravity_model(gm)
         {}
 
-        bool need_material_properties() const
+        bool need_material_properties() const override
         {
           return true;
         }
 
-        void setup(const unsigned int q_points)
+        void setup(const unsigned int q_points) override
         {
           velocity_values.resize(q_points);
           temperature_values.resize(q_points);
@@ -237,7 +237,7 @@ namespace aspect
                         const MaterialModel::MaterialModelOutputs<dim> &out,
                         const FEValues<dim> &fe_values,
                         const LinearAlgebra::BlockVector &solution,
-                        std::vector<double> &output)
+                        std::vector<double> &output) override
         {
           fe_values[velocity_field_].get_function_values (solution, velocity_values);
           fe_values[temperature_field_].get_function_values (solution, temperature_values);

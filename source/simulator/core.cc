@@ -551,8 +551,8 @@ namespace aspect
          * function given to the constructor
          * produces for this point.
          */
-        virtual double value (const Point<dim>   &p,
-                              const unsigned int  component = 0) const;
+        double value (const Point<dim>   &p,
+                      const unsigned int  component = 0) const override;
 
         /**
          * Return all components of a
@@ -563,8 +563,8 @@ namespace aspect
          * size beforehand,
          * i.e. #n_components.
          */
-        virtual void vector_value (const Point<dim>   &p,
-                                   Vector<double>     &values) const;
+        void vector_value (const Point<dim>   &p,
+                           Vector<double>     &values) const override;
 
       private:
         /**

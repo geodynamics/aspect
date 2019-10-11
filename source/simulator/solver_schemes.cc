@@ -78,7 +78,7 @@ namespace aspect
 
         double
         value (const Point<dim> &p,
-               const unsigned int component) const
+               const unsigned int component) const override
         {
           Assert (component < this->n_components,
                   ExcIndexRange (component, 0, this->n_components));
@@ -99,7 +99,7 @@ namespace aspect
 
         void
         vector_value (const Point<dim>   &p,
-                      Vector<double>     &values) const
+                      Vector<double>     &values) const override
         {
           AssertDimension(values.size(), this->n_components);
 

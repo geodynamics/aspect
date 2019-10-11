@@ -55,8 +55,8 @@ namespace
   {
     public:
 
-      virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &/*in*/,
-                            MaterialModel::MaterialModelOutputs<dim> &out) const
+      void evaluate(const MaterialModel::MaterialModelInputs<dim> &/*in*/,
+                    MaterialModel::MaterialModelOutputs<dim> &out) const override
       {
         AdditionalOutputs1<dim> *additional;
 
