@@ -575,7 +575,6 @@ namespace aspect
                       int index = i+numx*((ny-1)/2);
                       V2[i-1] = V[index];
                     }
-                  //TODO: This isn't working anymore, need to figure out why.
                   else
                     {
                       for (int ys=edge; ys<(ny-edge); ys++)
@@ -687,7 +686,7 @@ namespace aspect
       {
         prm.enter_subsection ("Fastscape");
         {
-          prm.declare_entry("Number of steps", "5",
+          prm.declare_entry("Number of steps", "10",
                             Patterns::Integer(),
                             "Number of steps per ASPECT timestep");
           prm.declare_entry("Maximum timestep", "10e3",
@@ -705,7 +704,7 @@ namespace aspect
                              "If this is set to true, then a 2D model will only consider the "
                              "center slice fastscape gives. If set to false, then aspect will"
                              "average the inner third of what fastscape calculates.");
-          prm.declare_entry("Fastscape seed", "1",
+          prm.declare_entry("Fastscape seed", "1000",
                             Patterns::Integer(),
                             "Seed used for adding an initial 0-1 m noise to fastscape topography.");
 
