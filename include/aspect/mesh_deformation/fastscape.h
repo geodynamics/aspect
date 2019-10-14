@@ -19,14 +19,6 @@
 #define _aspect_mesh_deformation_fast_scape_h
 
 #include <aspect/mesh_deformation/interface.h>
-#include <aspect/simulator_access.h>
-#include <vector>
-#include <array>
-#include <deal.II/base/function_lib.h>
-#include <deal.II/base/timer.h>
-
-
-
 
 /*
  * Define FastScape functions as C functions. Must use exact same function/variable name

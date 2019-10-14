@@ -17,31 +17,7 @@
 
 #include <aspect/mesh_deformation/fastscape.h>
 #include <aspect/geometry_model/box.h>
-#include <deal.II/grid/grid_generator.h>
-#include <aspect/utilities.h>
-#include <deal.II/base/table.h>
-#include <deal.II/base/table_indices.h>
-
 #include <deal.II/numerics/vector_tools.h>
-
-
-#include <aspect/simulator.h>
-#include <aspect/adiabatic_conditions/interface.h>
-#include <aspect/initial_temperature/interface.h>
-#include <aspect/initial_composition/interface.h>
-#include <aspect/postprocess/particles.h>
-
-#include <deal.II/base/quadrature_lib.h>
-#include <deal.II/base/function.h>
-
-#include <deal.II/lac/full_matrix.h>
-#include <deal.II/grid/tria_iterator.h>
-#include <deal.II/dofs/dof_accessor.h>
-#include <deal.II/fe/fe_values.h>
-#include <deal.II/numerics/vector_tools.h>
-
-#include <fstream>
-#include <iostream>
 
 namespace aspect
 {
@@ -464,10 +440,10 @@ namespace aspect
                           jj = -numx;
                         }
                       else if (vy[index_bot+numx-1] <= 0 && vy[index_top-numx-1] < 0)
-                      {
+                        {
                           side = index_bot;
                           jj = numx;
-                      }
+                        }
                       else
                         continue;
 
@@ -641,8 +617,6 @@ namespace aspect
                 }
             }
 
-
-
           Functions::InterpolatedUniformGridData<dim> *velocities;
           velocities = new Functions::InterpolatedUniformGridData<dim> (grid_extent,
                                                                         table_intervals,
@@ -665,6 +639,7 @@ namespace aspect
 
         }
     }
+
 
     template <int dim>
     void FastScape<dim>::declare_parameters(ParameterHandler &prm)
@@ -781,6 +756,7 @@ namespace aspect
       prm.leave_subsection ();
     }
 
+
     template <int dim>
     void FastScape<dim>::parse_parameters(ParameterHandler &prm)
     {
@@ -847,14 +823,12 @@ namespace aspect
   {
     ASPECT_REGISTER_MESH_DEFORMATION_MODEL(FastScape,
                                            "fastscape",
-                                           "A plugin, which prescribes the surface mesh to "
-                                           "deform according to an analytically prescribed "
-                                           "function. Note that the function prescribes a "
-                                           "deformation velocity, i.e. the return value of "
-                                           "this plugin is later multiplied by the time step length "
-                                           "to compute the displacement increment in this time step. "
-                                           "The format of the "
-                                           "functions follows the syntax understood by the "
-                                           "muparser library, see Section~\\ref{sec:muparser-format}.")
+                                           "A plugin which uses the program FastScape to add surface processes "
+                                           "such as diffusion, sedimentation, and the Stream Power Law to ASPECT. "
+                                           "FastScape is initialized with ASPECT height and velocities, and then "
+                                           "continues to run in the background, updating with new ASPECT velocities "
+                                           "when called. Once FastScape has run for the given amount of timesteps, it "
+                                           "compares the initial and final heights to send a velocity back to the mesh "
+                                           "deformation plugin.")
   }
 }
