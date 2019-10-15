@@ -215,8 +215,6 @@ namespace aspect
       public SimulatorAccess<dim>
     {
       public:
-        virtual ~NewtonInterface () {};
-
         /**
          * Attach Newton outputs. Since most Newton assemblers require the
          * material model derivatives they are created in this base class
@@ -233,8 +231,6 @@ namespace aspect
     class NewtonStokesPreconditioner : public NewtonInterface<dim>
     {
       public:
-        virtual ~NewtonStokesPreconditioner () {}
-
         void
         execute (internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base,
                  internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const override;
@@ -248,8 +244,6 @@ namespace aspect
     class NewtonStokesIncompressibleTerms : public NewtonInterface<dim>
     {
       public:
-        virtual ~NewtonStokesIncompressibleTerms () {}
-
         void
         execute (internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base,
                  internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const override;
@@ -264,8 +258,6 @@ namespace aspect
       public SimulatorAccess<dim>
     {
       public:
-        virtual ~NewtonStokesCompressibleStrainRateViscosityTerm () {}
-
         void
         execute(internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base,
                 internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const override;
@@ -282,8 +274,6 @@ namespace aspect
       public SimulatorAccess<dim>
     {
       public:
-        virtual ~NewtonStokesReferenceDensityCompressibilityTerm () {}
-
         void
         execute(internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base,
                 internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const override;
@@ -302,8 +292,6 @@ namespace aspect
       public SimulatorAccess<dim>
     {
       public:
-        virtual ~NewtonStokesImplicitReferenceDensityCompressibilityTerm () {}
-
         void
         execute(internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base,
                 internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const override;
@@ -320,8 +308,6 @@ namespace aspect
       public SimulatorAccess<dim>
     {
       public:
-        virtual ~NewtonStokesIsentropicCompressionTerm () {}
-
         void
         execute(internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base,
                 internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const override;

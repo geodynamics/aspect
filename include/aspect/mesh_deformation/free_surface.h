@@ -47,8 +47,6 @@ namespace aspect
       public:
         ApplyStabilization(const double stabilization_theta);
 
-        virtual ~ApplyStabilization () {};
-
         void
         execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
                  internal::Assembly::CopyData::CopyDataBase<dim> &data) const override;
