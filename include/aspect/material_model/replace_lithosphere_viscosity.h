@@ -49,17 +49,15 @@ namespace aspect
         /**
          * Initialize the base model at the beginning of the run.
          */
-        virtual
-        void initialize();
+        void initialize() override;
 
         /**
          * Function to compute the material properties in @p out given the
          * inputs in @p in.
          */
-        virtual
         void
         evaluate (const typename Interface<dim>::MaterialModelInputs &in,
-                  typename Interface<dim>::MaterialModelOutputs &out) const;
+                  typename Interface<dim>::MaterialModelOutputs &out) const override;
 
         /**
          * Method to declare parameters related to replace lithosphere viscosity model
@@ -70,20 +68,20 @@ namespace aspect
         /**
          * Method to parse parameters related to replace lithosphere viscosity model
          */
-        virtual void
-        parse_parameters (ParameterHandler &prm);
+        void
+        parse_parameters (ParameterHandler &prm) override;
 
         /**
          * Method that indicates whether material is compressible. Replace lithosphere viscosity model is compressible
          * if and only if base model is compressible.
          */
-        virtual bool is_compressible () const;
+        bool is_compressible () const override;
 
         /**
          * Method to calculate reference viscosity for the model. The reference
          * viscosity is simply the reference  viscosity from the base model.
          */
-        virtual double reference_viscosity () const;
+        double reference_viscosity () const override;
 
       private:
 

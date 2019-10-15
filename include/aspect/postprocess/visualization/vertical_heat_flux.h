@@ -48,12 +48,17 @@ namespace aspect
           public Interface<dim>
       {
         public:
+          /**
+           * Constructor
+           */
           VerticalHeatFlux ();
 
-          virtual
+          /**
+           * @copydoc Interface<dim>::evaluate_vector_field()
+           */
           void
           evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
-                                std::vector<Vector<double> > &computed_quantities) const;
+                                std::vector<Vector<double> > &computed_quantities) const override;
       };
     }
   }

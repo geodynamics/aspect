@@ -50,10 +50,9 @@ namespace aspect
            * of this function should be to extend this vector by a number of
            * properties.
            */
-          virtual
           void
           initialize_one_particle_property (const Point<dim> &position,
-                                            std::vector<double> &particle_properties) const;
+                                            std::vector<double> &particle_properties) const override;
 
           /**
            * Update function. This function is called every time an update is
@@ -76,29 +75,27 @@ namespace aspect
            * @param [in,out] particle_properties The properties of the particle
            * that is updated within the call of this function.
            */
-          virtual
           void
           update_one_particle_property (const unsigned int data_position,
                                         const Point<dim> &position,
                                         const Vector<double> &solution,
                                         const std::vector<Tensor<1,dim> > &gradients,
-                                        const ArrayView<double> &particle_properties) const;
+                                        const ArrayView<double> &particle_properties) const override;
 
           /**
            * This implementation tells the particle manager that
            * we need to update particle properties over time.
            */
           UpdateTimeFlags
-          need_update () const;
+          need_update () const override;
 
           /**
            * Return which data has to be provided to update the property.
            * The velocity particle property needs the values of the velocity
            * solution.
            */
-          virtual
           UpdateFlags
-          get_needed_update_flags () const;
+          get_needed_update_flags () const override;
 
           /**
            * Set up the information about the names and number of components
@@ -107,9 +104,8 @@ namespace aspect
            * @return A vector that contains pairs of the property names and the
            * number of components this property plugin defines.
            */
-          virtual
           std::vector<std::pair<std::string, unsigned int> >
-          get_property_information() const;
+          get_property_information() const override;
       };
     }
   }

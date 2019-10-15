@@ -175,9 +175,9 @@ namespace aspect
          * Destructor. Made virtual since this class has virtual member
          * functions.
          */
-        virtual ~Manager ();
+        ~Manager () override;
 
-        /*
+        /**
          * Update all of the mesh refinement objects that have been requested
          * in the input file. Individual mesh refinement objects may choose to
          * implement an update function to modify object variables once per

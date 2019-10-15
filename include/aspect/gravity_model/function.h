@@ -50,8 +50,7 @@ namespace aspect
         /**
          * Return the gravity vector as a function of position.
          */
-        virtual
-        Tensor<1,dim> gravity_vector (const Point<dim> &position) const;
+        Tensor<1,dim> gravity_vector (const Point<dim> &position) const override;
 
         /**
          * Declare the parameters this class takes through input files. The
@@ -69,9 +68,8 @@ namespace aspect
          * parameters. Consequently, derived classes do not have to overload
          * this function if they do not take any runtime parameters.
          */
-        virtual
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
 
       private:
         /**

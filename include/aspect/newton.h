@@ -222,9 +222,8 @@ namespace aspect
          * material model derivatives they are created in this base class
          * already.
          */
-        virtual
         void
-        create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const;
+        create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const override;
     };
 
     /**
@@ -238,7 +237,7 @@ namespace aspect
 
         void
         execute (internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base,
-                 internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const;
+                 internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const override;
     };
 
     /**
@@ -253,7 +252,7 @@ namespace aspect
 
         void
         execute (internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base,
-                 internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const;
+                 internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const override;
     };
 
     /**
@@ -267,10 +266,9 @@ namespace aspect
       public:
         virtual ~NewtonStokesCompressibleStrainRateViscosityTerm () {}
 
-        virtual
         void
         execute(internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base,
-                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const;
+                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const override;
     };
 
     /**
@@ -286,10 +284,9 @@ namespace aspect
       public:
         virtual ~NewtonStokesReferenceDensityCompressibilityTerm () {}
 
-        virtual
         void
         execute(internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base,
-                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const;
+                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const override;
     };
 
     /**
@@ -307,10 +304,9 @@ namespace aspect
       public:
         virtual ~NewtonStokesImplicitReferenceDensityCompressibilityTerm () {}
 
-        virtual
         void
         execute(internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base,
-                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const;
+                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const override;
     };
 
     /**
@@ -326,10 +322,9 @@ namespace aspect
       public:
         virtual ~NewtonStokesIsentropicCompressionTerm () {}
 
-        virtual
         void
         execute(internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base,
-                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const;
+                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const override;
     };
   }
 }

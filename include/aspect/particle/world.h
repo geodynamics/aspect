@@ -72,7 +72,7 @@ namespace aspect
         /**
          * Default World destructor.
          */
-        ~World();
+        ~World() override;
 
         /**
          * Initialize the particle world.

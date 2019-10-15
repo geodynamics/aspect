@@ -49,8 +49,7 @@ namespace aspect
          * Return the initial composition as the adiabatic density at this
          * point.
          */
-        virtual
-        double initial_composition (const Point<dim> &position, const unsigned int n_comp) const;
+        double initial_composition (const Point<dim> &position, const unsigned int n_comp) const override;
     };
   }
 }

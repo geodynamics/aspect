@@ -79,7 +79,6 @@ namespace aspect
          * @return The interpolated value at this point. If the point lies outside
          * the set of coordinates, the function is extended by a constant.
          */
-        virtual
         Tensor<1, dim>
         gradient(const Point<dim> &p,
                  const unsigned int component = 0) const override;
@@ -94,7 +93,6 @@ namespace aspect
          * @return The interpolated value at this point. If the point lies outside
          * the set of coordinates, the function is extended by a constant.
          */
-        virtual
         double
         value(const Point<dim> &p,
               const unsigned int component = 0) const override;

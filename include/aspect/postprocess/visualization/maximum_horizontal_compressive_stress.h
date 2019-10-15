@@ -50,17 +50,16 @@ namespace aspect
           public Interface<dim>
       {
         public:
-          virtual
           void
           evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
-                                std::vector<Vector<double> > &computed_quantities) const;
+                                std::vector<Vector<double> > &computed_quantities) const override;
 
           /**
            * Return the vector of strings describing the names of the computed
            * quantities. Given the purpose of this class, this is a vector
            * with entries all equal to the name of the plugin.
            */
-          virtual std::vector<std::string> get_names () const;
+          std::vector<std::string> get_names () const override;
 
           /**
            * This functions returns information about how the individual
@@ -71,16 +70,15 @@ namespace aspect
            * components should really be part of a symmetric tensor, but
            * deal.II does not allow marking components as such.)
            */
-          virtual
           std::vector<DataComponentInterpretation::DataComponentInterpretation>
-          get_data_component_interpretation () const;
+          get_data_component_interpretation () const override;
 
           /**
            * Return which data has to be provided to compute the derived
            * quantities. The flags returned here are the ones passed to the
            * constructor of this class.
            */
-          virtual UpdateFlags get_needed_update_flags () const;
+          UpdateFlags get_needed_update_flags () const override;
       };
     }
   }

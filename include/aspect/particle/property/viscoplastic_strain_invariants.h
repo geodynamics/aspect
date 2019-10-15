@@ -50,47 +50,43 @@ namespace aspect
           */
           ViscoPlasticStrainInvariant ();
 
-          virtual void initialize ();
+          void initialize () override;
 
 
           /**
           * @copydoc aspect::Particle::Property::Interface::initialize_one_particle_property()
           **/
-          virtual
           void
           initialize_one_particle_property (const Point<dim> &position,
-                                            std::vector<double> &particle_properties) const;
+                                            std::vector<double> &particle_properties) const override;
 
           /**
           * @copydoc aspect::Particle::Property::Interface::update_one_particle_property()
           **/
-          virtual
           void
           update_one_particle_property (const unsigned int data_position,
                                         const Point<dim> &position,
                                         const Vector<double> &solution,
                                         const std::vector<Tensor<1,dim> > &gradients,
-                                        const ArrayView<double> &particle_properties) const;
+                                        const ArrayView<double> &particle_properties) const override;
 
           /**
           * @copydoc aspect::Particle::Property::Interface::need_update()
           **/
           UpdateTimeFlags
-          need_update () const;
+          need_update () const override;
 
           /**
           * @copydoc aspect::Particle::Property::Interface::get_needed_update_flags()
           **/
-          virtual
           UpdateFlags
-          get_needed_update_flags () const;
+          get_needed_update_flags () const override;
 
           /**
           * @copydoc aspect::Particle::Property::Interface::get_property_information()
           **/
-          virtual
           std::vector<std::pair<std::string, unsigned int> >
-          get_property_information() const;
+          get_property_information() const override;
 
         private:
           unsigned int n_components;

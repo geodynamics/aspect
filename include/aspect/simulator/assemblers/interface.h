@@ -103,7 +103,7 @@ namespace aspect
                                 const bool                rebuild_matrix);
           StokesPreconditioner (const StokesPreconditioner &scratch);
 
-          virtual ~StokesPreconditioner ();
+          ~StokesPreconditioner () override;
 
           FEValues<dim> finite_element_values;
 
@@ -359,7 +359,7 @@ namespace aspect
 
           StokesPreconditioner (const StokesPreconditioner &data);
 
-          virtual ~StokesPreconditioner ();
+          ~StokesPreconditioner () override;
 
           FullMatrix<double> local_matrix;
           std::vector<types::global_dof_index> local_dof_indices;

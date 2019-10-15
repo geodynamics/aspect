@@ -43,12 +43,11 @@ namespace aspect
            * Return the cell-wise averaged properties of all particles of the cell containing the
            * given positions.
            */
-          virtual
           std::vector<std::vector<double> >
           properties_at_points(const ParticleHandler<dim> &particle_handler,
                                const std::vector<Point<dim> > &positions,
                                const ComponentMask &selected_properties,
-                               const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const;
+                               const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const override;
 
           // avoid -Woverloaded-virtual:
           using Interface<dim>::properties_at_points;
@@ -63,9 +62,8 @@ namespace aspect
           /**
            * @copydoc Interface<dim>::parse_parameters()
            **/
-          virtual
           void
-          parse_parameters (ParameterHandler &prm);
+          parse_parameters (ParameterHandler &prm) override;
 
         private:
           /**

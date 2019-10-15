@@ -45,15 +45,13 @@ namespace aspect
          * For the current class, this function obviously simply returns a zero
          * value.
          */
-        virtual
         double
-        value (const Point<dim-1> &p) const;
+        value (const Point<dim-1> &p) const override;
 
         /**
          * Return the maximum value of the elevation.
          */
-        virtual
-        double max_topography () const;
+        double max_topography () const override;
     };
   }
 }

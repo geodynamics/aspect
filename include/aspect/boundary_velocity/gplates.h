@@ -189,7 +189,7 @@ namespace aspect
          */
         Tensor<1,dim>
         boundary_velocity (const types::boundary_id boundary_indicator,
-                           const Point<dim> &position) const;
+                           const Point<dim> &position) const override;
 
         // avoid -Woverloaded-virtual warning until the deprecated function
         // is removed from the interface:
@@ -199,9 +199,8 @@ namespace aspect
          * Initialization function. This function is called once at the
          * beginning of the program. Checks preconditions.
          */
-        virtual
         void
-        initialize ();
+        initialize () override;
 
         /**
          * A function that is called at the beginning of each time step. For
@@ -209,9 +208,8 @@ namespace aspect
          * necessary and outputs a warning if the end of the set of velocity
          * files is reached.
          */
-        virtual
         void
-        update ();
+        update () override;
 
         /**
          * Declare the parameters this class takes through input files.
@@ -224,7 +222,7 @@ namespace aspect
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
 
       private:
         /**

@@ -42,9 +42,8 @@ namespace aspect
         /**
          * Evaluate the solution for some entropy viscosity stabilization statistics.
          */
-        virtual
         std::pair<std::string,std::string>
-        execute (TableHandler &statistics);
+        execute (TableHandler &statistics) override;
     };
   }
 }

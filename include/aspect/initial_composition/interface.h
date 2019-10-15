@@ -115,7 +115,7 @@ namespace aspect
          * Destructor. Made virtual since this class has virtual member
          * functions.
          */
-        virtual ~Manager ();
+        ~Manager () override;
 
         /**
          * Declare the parameters of all known initial composition plugins, as

@@ -475,7 +475,7 @@ namespace aspect
           /**
            * Destructor for Manager
            */
-          ~Manager ();
+          ~Manager () override;
 
           /**
            * Initialization function. This function is called once at the

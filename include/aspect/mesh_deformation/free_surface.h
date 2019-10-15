@@ -49,10 +49,9 @@ namespace aspect
 
         virtual ~ApplyStabilization () {};
 
-        virtual
         void
         execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
-                 internal::Assembly::CopyData::CopyDataBase<dim> &data) const;
+                 internal::Assembly::CopyData::CopyDataBase<dim> &data) const override;
 
       private:
         /**
@@ -80,7 +79,7 @@ namespace aspect
          * Initialize function, which connects the set_assemblers function
          * to the appropriate Simulator signal.
          */
-        virtual void initialize();
+        void initialize() override;
 
         /**
          * Called by Simulator::set_assemblers() to allow the FreeSurface plugin
@@ -95,11 +94,10 @@ namespace aspect
          * The calling class will respect
          * these constraints when computing the new vertex positions.
          */
-        virtual
         void
         compute_velocity_constraints_on_boundary(const DoFHandler<dim> &mesh_deformation_dof_handler,
                                                  ConstraintMatrix &mesh_velocity_constraints,
-                                                 const std::set<types::boundary_id> &boundary_id) const;
+                                                 const std::set<types::boundary_id> &boundary_id) const override;
 
         /**
          * Declare parameters for the free surface handling.
@@ -110,7 +108,7 @@ namespace aspect
         /**
          * Parse parameters for the free surface handling.
          */
-        void parse_parameters (ParameterHandler &prm);
+        void parse_parameters (ParameterHandler &prm) override;
 
       private:
         /**

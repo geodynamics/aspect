@@ -37,9 +37,15 @@ namespace aspect
     class BoundaryFunction : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
+        /**
+         * Constructor.
+         */
         BoundaryFunction();
 
-        virtual void update();
+        /**
+         *
+         */
+        void update() override;
 
         /**
          * A function that creates constraints for the velocity of certain mesh
@@ -47,11 +53,10 @@ namespace aspect
          * The calling class will respect
          * these constraints when computing the new vertex positions.
          */
-        virtual
         void
         compute_velocity_constraints_on_boundary(const DoFHandler<dim> &mesh_deformation_dof_handler,
                                                  ConstraintMatrix &mesh_velocity_constraints,
-                                                 const std::set<types::boundary_id> &boundary_id) const;
+                                                 const std::set<types::boundary_id> &boundary_id) const override;
 
         /**
          * Declare parameters for the free surface handling.
@@ -62,7 +67,7 @@ namespace aspect
         /**
          * Parse parameters for the free surface handling.
          */
-        void parse_parameters (ParameterHandler &prm);
+        void parse_parameters (ParameterHandler &prm) override;
 
       private:
         /**

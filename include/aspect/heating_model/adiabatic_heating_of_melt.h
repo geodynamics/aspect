@@ -59,11 +59,10 @@ namespace aspect
         /**
          * Compute the heating model outputs for this class.
          */
-        virtual
         void
         evaluate (const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
                   const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
-                  HeatingModel::HeatingModelOutputs &heating_model_outputs) const;
+                  HeatingModel::HeatingModelOutputs &heating_model_outputs) const override;
 
         /**
          * @name Functions used in dealing with run-time parameters
@@ -80,23 +79,21 @@ namespace aspect
         /**
          * Read the parameters this class declares from the parameter file.
          */
-        virtual
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
 
         /**
          * Allow the heating model to attach additional material model outputs.
          */
-        virtual
         void
-        create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const;
+        create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const override;
 
         /**
          * Allow the heating model to attach additional material model inputs it needs.
          */
-        virtual
         void
-        create_additional_material_model_inputs(MaterialModel::MaterialModelInputs<dim> &inputs) const;
+        create_additional_material_model_inputs(MaterialModel::MaterialModelInputs<dim> &inputs) const override;
+
         /**
          * @}
          */
