@@ -44,7 +44,7 @@ namespace aspect
         /**
          * Return the gravity vector as a function of position.
          */
-        virtual Tensor<1,dim> gravity_vector (const Point<dim> &position) const;
+        Tensor<1,dim> gravity_vector (const Point<dim> &position) const override;
 
         /**
          * Declare the parameters this class takes through input files.
@@ -56,9 +56,8 @@ namespace aspect
         /**
          * Read the parameters this class declares from the parameter file.
          */
-        virtual
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
 
       private:
         /**
@@ -84,12 +83,15 @@ namespace aspect
     class RadialEarthLike : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
-        virtual void initialize();
+        /**
+         * Initialization.
+         */
+        void initialize() override;
 
         /**
          * Return the gravity vector as a function of position.
          */
-        virtual Tensor<1,dim> gravity_vector (const Point<dim> &position) const;
+        Tensor<1,dim> gravity_vector (const Point<dim> &position) const override;
     };
 
 
@@ -106,7 +108,7 @@ namespace aspect
         /**
          * Return the gravity vector as a function of position.
          */
-        virtual Tensor<1,dim> gravity_vector (const Point<dim> &position) const;
+        Tensor<1,dim> gravity_vector (const Point<dim> &position) const override;
 
         /**
          * Declare the parameters this class takes through input files.
@@ -118,9 +120,8 @@ namespace aspect
         /**
          * Read the parameters this class declares from the parameter file.
          */
-        virtual
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
 
       private:
         /**

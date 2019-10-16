@@ -54,19 +54,17 @@ namespace aspect
           /**
            * @copydoc DataPostprocessorScalar<dim>::evaluate_vector_field()
            */
-          virtual
           void
           evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
-                                std::vector<Vector<double> > &computed_quantities) const;
+                                std::vector<Vector<double> > &computed_quantities) const override;
 
 
           /**
            * Let the postprocessor manager know about the other postprocessors
            * this one depends on. Specifically, the Geoid postprocessor.
            */
-          virtual
           std::list<std::string>
-          required_other_postprocessors() const;
+          required_other_postprocessors() const override;
 
         private:
 

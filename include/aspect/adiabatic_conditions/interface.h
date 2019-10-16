@@ -58,7 +58,7 @@ namespace aspect
          * Destructor. Made virtual to enforce that derived classes also have
          * virtual destructors.
          */
-        virtual ~Interface();
+        ~Interface() override;
 
         /**
          * Initialization function. This function is called once at the

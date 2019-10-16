@@ -56,9 +56,8 @@ namespace aspect
         /**
          * Compute load balance statistics.
          */
-        virtual
         std::pair<std::string,std::string>
-        execute (TableHandler &statistics);
+        execute (TableHandler &statistics) override;
     };
   }
 }

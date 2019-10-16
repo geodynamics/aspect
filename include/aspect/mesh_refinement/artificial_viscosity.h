@@ -44,9 +44,8 @@ namespace aspect
         /**
          * @copydoc Interface<dim>::execute()
          */
-        virtual
         void
-        execute (Vector<float> &error_indicators) const;
+        execute (Vector<float> &error_indicators) const override;
 
         /**
          * Declare the parameters this class takes through input files.
@@ -58,9 +57,8 @@ namespace aspect
         /**
          * Read the parameters this class declares from the parameter file.
          */
-        virtual
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
 
       private:
 

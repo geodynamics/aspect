@@ -47,7 +47,7 @@ namespace aspect
       public:
         PlasticAdditionalOutputs(const unsigned int n_points);
 
-        virtual std::vector<double> get_nth_output(const unsigned int idx) const;
+        std::vector<double> get_nth_output(const unsigned int idx) const override;
 
         /**
          * Cohesions at the evaluation points passed to
@@ -129,8 +129,8 @@ namespace aspect
     {
       public:
 
-        virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                              MaterialModel::MaterialModelOutputs<dim> &out) const;
+        void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                      MaterialModel::MaterialModelOutputs<dim> &out) const override;
 
         /**
          * Return whether the model is compressible or not.  Incompressibility
@@ -142,21 +142,19 @@ namespace aspect
         *
         * This material model is incompressible.
          */
-        virtual bool is_compressible () const;
+        bool is_compressible () const override;
 
-        virtual double reference_viscosity () const;
+        double reference_viscosity () const override;
 
         static
         void
         declare_parameters (ParameterHandler &prm);
 
-        virtual
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
 
-        virtual
         void
-        create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const;
+        create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const override;
 
         double get_min_strain_rate() const;
 

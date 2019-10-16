@@ -49,9 +49,8 @@ namespace aspect
           /**
            * @copydoc CellDataVectorCreator<dim>::execute()
            */
-          virtual
           std::pair<std::string, Vector<float> *>
-          execute () const;
+          execute () const override;
 
       };
     }

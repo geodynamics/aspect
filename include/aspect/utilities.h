@@ -343,11 +343,12 @@ namespace aspect
     struct ThousandSep : std::numpunct<char>
     {
       protected:
-        virtual char do_thousands_sep() const
+        char do_thousands_sep() const override
         {
           return ',';
         }
-        virtual std::string do_grouping() const
+
+        std::string do_grouping() const override
         {
           return "\003";  // groups of 3 digits (this string is in octal format)
         }

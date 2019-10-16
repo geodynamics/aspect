@@ -101,10 +101,9 @@ namespace aspect
          * Function to compute the material properties in @p out given the
          * inputs in @p in.
          */
-        virtual
         void
         evaluate (const typename Interface<dim>::MaterialModelInputs &in,
-                  typename Interface<dim>::MaterialModelOutputs &out) const;
+                  typename Interface<dim>::MaterialModelOutputs &out) const override;
         /**
          * Method to declare parameters related to depth-dependent model
          */
@@ -114,21 +113,21 @@ namespace aspect
         /**
          * Method to parse parameters related to depth-dependent model
          */
-        virtual void
-        parse_parameters (ParameterHandler &prm);
+        void
+        parse_parameters (ParameterHandler &prm) override;
 
         /**
          * Method that indicates whether material is compressible. Depth dependent model is compressible
          * if and only if base model is compressible.
          */
-        virtual bool is_compressible () const;
+        bool is_compressible () const override;
 
         /**
          * Method to calculate reference viscosity for the depth-dependent model. The reference
          * viscosity is determined by evaluating the depth-dependent part of the viscosity at
          * the mean depth of the model.
          */
-        virtual double reference_viscosity () const;
+        double reference_viscosity () const override;
 
 
 

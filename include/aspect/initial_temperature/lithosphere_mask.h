@@ -127,7 +127,7 @@ namespace aspect
          * beginning of the program. Checks preconditions.
          */
         void
-        initialize ();
+        initialize () override;
 
         /**
           * Return the initial temperature as a function of position. For the
@@ -135,7 +135,7 @@ namespace aspect
           * above the lithosphere-asthenosphere boundary and nans below.
           */
         double
-        initial_temperature (const Point<dim> &position) const;
+        initial_temperature (const Point<dim> &position) const override;
 
         /**
          * Declare the parameters this class takes through input files.
@@ -148,7 +148,7 @@ namespace aspect
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
 
       private:
         /**

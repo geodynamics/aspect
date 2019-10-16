@@ -65,25 +65,22 @@ namespace aspect
         /**
          * @copydoc MaterialModel::Interface::initialize()
          */
-        virtual
         void
-        initialize ();
+        initialize () override;
 
         /**
          * @copydoc MaterialModel::Interface::evaluate()
          */
-        virtual
         void
         evaluate (const typename Interface<dim>::MaterialModelInputs &in,
-                  typename Interface<dim>::MaterialModelOutputs &out) const;
+                  typename Interface<dim>::MaterialModelOutputs &out) const override;
 
         /**
          * If this material model can produce additional named outputs
          * that are derived from NamedAdditionalOutputs, create them in here.
          */
-        virtual
         void
-        create_additional_named_outputs (typename Interface<dim>::MaterialModelOutputs &outputs) const;
+        create_additional_named_outputs (typename Interface<dim>::MaterialModelOutputs &outputs) const override;
 
         /**
          * @copydoc MaterialModel::Interface::declare_parameters()
@@ -94,22 +91,22 @@ namespace aspect
         /**
          * @copydoc MaterialModel::Interface::parse_parameters()
          */
-        virtual void
-        parse_parameters (ParameterHandler &prm);
+        void
+        parse_parameters (ParameterHandler &prm) override;
 
         /**
          * @copydoc MaterialModel::Interface::is_compressible()
          *
          * Returns value from material model providing compressibility.
          */
-        virtual bool is_compressible () const;
+        bool is_compressible () const override;
 
         /**
          * @copydoc MaterialModel::Interface::reference_viscosity()
          *
          * Taken from the material model providing viscosities
          */
-        virtual double reference_viscosity () const;
+        double reference_viscosity () const override;
 
 
 

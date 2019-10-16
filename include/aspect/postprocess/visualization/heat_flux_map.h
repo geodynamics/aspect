@@ -52,17 +52,16 @@ namespace aspect
            *
            * @copydoc Interface<dim>::update()
            */
-          void update();
+          void update() override;
 
           /**
            * Compute the heat flux for the given input cell.
            *
            * @copydoc DataPostprocessorScalar<dim>::evaluate_vector_field()
            */
-          virtual
           void
           evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
-                                std::vector<Vector<double> > &computed_quantities) const;
+                                std::vector<Vector<double> > &computed_quantities) const override;
 
           /**
            * @copydoc Interface<dim>::declare_parameters()
@@ -74,9 +73,8 @@ namespace aspect
           /**
            * @copydoc Interface<dim>::parse_parameters()
            */
-          virtual
           void
-          parse_parameters (ParameterHandler &prm);
+          parse_parameters (ParameterHandler &prm) override;
 
         private:
           /**

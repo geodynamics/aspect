@@ -49,7 +49,7 @@ namespace aspect
          * is available to calculate the pressure profile based on the initial
          * temperature and pressure conditions.
          */
-        virtual void initialize ();
+        void initialize () override;
 
 
         /**
@@ -57,10 +57,9 @@ namespace aspect
          * (outward) normal vector to the domain is also provided as
          * a second argument.
          */
-        virtual
         Tensor<1,dim>
         traction (const Point<dim> &position,
-                  const Tensor<1,dim> &normal_vector) const;
+                  const Tensor<1,dim> &normal_vector) const override;
 
 
         /**
@@ -74,9 +73,8 @@ namespace aspect
         /**
          * Read the parameters this class declares from the parameter file.
          */
-        virtual
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
 
       private:
 

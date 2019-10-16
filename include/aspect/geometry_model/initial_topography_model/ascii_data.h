@@ -53,7 +53,7 @@ namespace aspect
          * beginning of the program. Sets the boundary id of the surface boundary.
          */
         void
-        initialize ();
+        initialize () override;
 
         // avoid -Woverloaded-virtual:
         using Utilities::AsciiDataBoundary<dim>::initialize;
@@ -66,13 +66,12 @@ namespace aspect
          * @copydoc aspect::InitialTopographyModel::Interface::value()
          */
         double
-        value (const Point<dim-1> &surface_point) const;
+        value (const Point<dim-1> &surface_point) const override;
 
         /**
          * Return the maximum value of the elevation.
          */
-        virtual
-        double max_topography () const;
+        double max_topography () const override;
 
 
         /**
@@ -86,7 +85,7 @@ namespace aspect
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
 
       private:
         types::boundary_id surface_boundary_id;

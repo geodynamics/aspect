@@ -54,10 +54,9 @@ namespace aspect
          *
          * @copydoc aspect::BoundaryTemperature::Interface::boundary_temperature()
          */
-        virtual
         double
         boundary_temperature (const types::boundary_id boundary_indicator,
-                              const Point<dim> &position) const;
+                              const Point<dim> &position) const override;
 
         /**
          * A function that is called at the beginning of each time step to
@@ -65,9 +64,7 @@ namespace aspect
          * next be evaluated. For the current class, the function passes to
          * the parsed function what the current time is.
          */
-        virtual
-        void
-        update ();
+        void update () override;
 
         /**
          * Return the minimal temperature on that part of the boundary on
@@ -76,8 +73,7 @@ namespace aspect
          * This value is used in computing dimensionless numbers such as the
          * Nusselt number indicating heat flux.
          */
-        virtual
-        double minimal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const;
+        double minimal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const override;
 
         /**
          * Return the maximal temperature on that part of the boundary on
@@ -86,8 +82,7 @@ namespace aspect
          * This value is used in computing dimensionless numbers such as the
          * Nusselt number indicating heat flux.
          */
-        virtual
-        double maximal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const;
+        double maximal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const override;
 
 
         /**
@@ -106,9 +101,8 @@ namespace aspect
          * parameters. Consequently, derived classes do not have to overload
          * this function if they do not take any runtime parameters.
          */
-        virtual
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
 
       private:
         /**

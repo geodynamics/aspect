@@ -53,23 +53,20 @@ namespace aspect
          * Return the value of the initial topography as a function
          * of surface position.
          */
-        virtual
         double
-        value (const Point<dim-1> &p) const;
+        value (const Point<dim-1> &p) const override;
 
         /**
          * Return the maximum value of the elevation.
          */
-        virtual
-        double max_topography () const;
+        double max_topography () const override;
 
         static
         void
         declare_parameters (ParameterHandler &prm);
 
-        virtual
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
 
       private:
 

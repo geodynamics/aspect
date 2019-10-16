@@ -43,15 +43,12 @@ namespace aspect
         /**
          * Return the value of the topography for a point.
          */
-        virtual
-        double value (const Point<dim-1> &p) const;
+        double value (const Point<dim-1> &p) const override;
 
         /**
          * Return the maximum value of the elevation.
          */
-        virtual
-        double max_topography () const;
-
+        double max_topography () const override;
 
         /**
          * Declare the parameters this class takes through input files.
@@ -63,9 +60,8 @@ namespace aspect
         /**
          * Read the parameters this class declares from the parameter file.
          */
-        virtual
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
 
       private:
         /**

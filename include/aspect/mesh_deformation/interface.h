@@ -154,7 +154,7 @@ namespace aspect
         /**
          * Destructor for the mesh deformation handler.
          */
-        ~MeshDeformationHandler();
+        ~MeshDeformationHandler() override;
 
         /**
          * Initialization function of the MeshDeformationHandler.

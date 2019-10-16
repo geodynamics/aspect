@@ -45,9 +45,8 @@ namespace aspect
          * Evaluate the solution for laterally averaged density at the top
          * and bottom of the domain.
          */
-        virtual
         std::pair<std::string,std::string>
-        execute (TableHandler &statistics);
+        execute (TableHandler &statistics) override;
 
         /**
          * Query the density at the top surface

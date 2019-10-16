@@ -50,26 +50,23 @@ namespace aspect
         /**
          * This attaches to the Stokes solver signal.
          */
-        virtual void initialize();
+        void initialize() override;
 
         /**
          * Generate the output file.
          */
-        virtual
         std::pair<std::string,std::string>
-        execute (TableHandler &statistics);
+        execute (TableHandler &statistics) override;
 
         /**
          * Save the state of this object.
          */
-        virtual
-        void save (std::map<std::string, std::string> &status_strings) const;
+        void save (std::map<std::string, std::string> &status_strings) const override;
 
         /**
          * Restore the state of the object.
          */
-        virtual
-        void load (const std::map<std::string, std::string> &status_strings);
+        void load (const std::map<std::string, std::string> &status_strings) override;
 
         /**
          * Serialize the contents of this class as far as they are not read

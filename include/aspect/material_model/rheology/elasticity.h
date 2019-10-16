@@ -42,7 +42,7 @@ namespace aspect
       public:
         explicit ElasticAdditionalOutputs(const unsigned int n_points);
 
-        virtual std::vector<double> get_nth_output(const unsigned int idx) const;
+        std::vector<double> get_nth_output(const unsigned int idx) const override;
 
         /**
          * Elastic shear moduli at the evaluation points passed to

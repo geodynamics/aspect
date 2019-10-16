@@ -67,9 +67,9 @@ namespace aspect
         StokesOperator ();
 
         /**
-         * Reset the viscosity table.
+         * Reset object.
          */
-        void clear ();
+        void clear () override;
 
         /**
          * Fills in the viscosity table, sets the value for the pressure scaling constant,
@@ -92,7 +92,7 @@ namespace aspect
          * to matrix elements, we must apply the matrix-free operator to the unit vectors to
          * recover the diagonal.
          */
-        virtual void compute_diagonal ();
+        void compute_diagonal () override;
 
       private:
 
@@ -100,8 +100,8 @@ namespace aspect
          * Performs the application of the matrix-free operator. This function is called by
          * vmult() functions MatrixFreeOperators::Base.
          */
-        virtual void apply_add (dealii::LinearAlgebra::distributed::BlockVector<number> &dst,
-                                const dealii::LinearAlgebra::distributed::BlockVector<number> &src) const;
+        void apply_add (dealii::LinearAlgebra::distributed::BlockVector<number> &dst,
+                        const dealii::LinearAlgebra::distributed::BlockVector<number> &src) const override;
 
         /**
          * Defines the application of the cell matrix.
@@ -142,9 +142,9 @@ namespace aspect
         MassMatrixOperator ();
 
         /**
-         * Reset the viscosity table.
+         * Reset the object.
          */
-        void clear ();
+        void clear () override;
 
         /**
          * Fills in the viscosity table and sets the value for the pressure scaling constant.
@@ -160,7 +160,7 @@ namespace aspect
          * to matrix elements, we must apply the matrix-free operator to the unit vectors to
          * recover the diagonal.
          */
-        virtual void compute_diagonal ();
+        void compute_diagonal () override;
 
       private:
 
@@ -168,8 +168,8 @@ namespace aspect
          * Performs the application of the matrix-free operator. This function is called by
          * vmult() functions MatrixFreeOperators::Base.
          */
-        virtual void apply_add (dealii::LinearAlgebra::distributed::Vector<number> &dst,
-                                const dealii::LinearAlgebra::distributed::Vector<number> &src) const;
+        void apply_add (dealii::LinearAlgebra::distributed::Vector<number> &dst,
+                        const dealii::LinearAlgebra::distributed::Vector<number> &src) const override;
 
         /**
          * Defines the application of the cell matrix.
@@ -215,9 +215,9 @@ namespace aspect
         ABlockOperator ();
 
         /**
-         * Reset the viscosity table.
+         * Reset the operator.
          */
-        void clear ();
+        void clear () override;
 
         /**
          * Fills in the viscosity table and gives information regarding compressibility.
@@ -233,7 +233,7 @@ namespace aspect
          * to matrix elements, we must apply the matrix-free operator to the unit vectors to
          * recover the diagonal.
          */
-        virtual void compute_diagonal ();
+        void compute_diagonal () override;
 
         /**
          * Manually set the diagonal inside the matrix-free object. This function is needed
@@ -248,8 +248,8 @@ namespace aspect
          * Performs the application of the matrix-free operator. This function is called by
          * vmult() functions MatrixFreeOperators::Base.
          */
-        virtual void apply_add (dealii::LinearAlgebra::distributed::Vector<number> &dst,
-                                const dealii::LinearAlgebra::distributed::Vector<number> &src) const;
+        void apply_add (dealii::LinearAlgebra::distributed::Vector<number> &dst,
+                        const dealii::LinearAlgebra::distributed::Vector<number> &src) const override;
 
         /**
          * Defines the application of the cell matrix.

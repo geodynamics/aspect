@@ -60,13 +60,12 @@ namespace aspect
            * the particles.
            * @param [in] dt The length of the integration timestep.
            */
-          virtual
           void
           local_integrate_step(const typename ParticleHandler<dim>::particle_iterator &begin_particle,
                                const typename ParticleHandler<dim>::particle_iterator &end_particle,
                                const std::vector<Tensor<1,dim> > &old_velocities,
                                const std::vector<Tensor<1,dim> > &velocities,
-                               const double dt);
+                               const double dt) override;
 
           /**
            * This function is called at the end of every integration step.
@@ -78,7 +77,7 @@ namespace aspect
            * another integration step. The particle integration will continue
            * to start new integration steps until this function returns false.
            */
-          virtual bool new_integration_step();
+          bool new_integration_step() override;
 
           /**
            * Return data length of the integration related data required for
@@ -92,23 +91,21 @@ namespace aspect
            * @return The number of bytes required to store the relevant
            * integrator data for one particle.
            */
-          virtual std::size_t get_data_size() const;
+          std::size_t get_data_size() const override;
 
           /**
            * @copydoc Interface::read_data()
            */
-          virtual
           const void *
           read_data(const typename ParticleHandler<dim>::particle_iterator &particle,
-                    const void *data);
+                    const void *data) override;
 
           /**
            * @copydoc Interface::write_data()
            */
-          virtual
           void *
           write_data(const typename ParticleHandler<dim>::particle_iterator &particle,
-                     void *data) const;
+                     void *data) const override;
 
         private:
           /**
