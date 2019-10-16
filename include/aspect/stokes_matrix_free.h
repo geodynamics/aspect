@@ -291,7 +291,7 @@ namespace aspect
       /**
        * virtual Destructor.
        */
-      virtual ~StokesMatrixFreeHandler();
+      virtual ~StokesMatrixFreeHandler() = default;
 
       /**
        * Solves the Stokes linear system matrix-free. This is called
@@ -343,7 +343,7 @@ namespace aspect
       /**
        * Destructor.
        */
-      ~StokesMatrixFreeHandlerImplementation();
+      ~StokesMatrixFreeHandlerImplementation() override = default;
 
       /**
        * Solves the Stokes linear system matrix-free. This is called

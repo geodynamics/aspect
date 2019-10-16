@@ -961,12 +961,6 @@ namespace aspect
 
 
 
-  template <int dim>
-  StokesMatrixFreeHandler<dim>::~StokesMatrixFreeHandler ()
-  {}
-
-
-
   template <int dim, int degree_v, typename number>
   void
   MatrixFreeStokesOperators::ABlockOperator<dim,degree_v,number>
@@ -991,10 +985,6 @@ namespace aspect
           1./inverse_diagonal.local_element(i);
       }
   }
-
-  template <int dim, int velocity_degree>
-  StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::~StokesMatrixFreeHandlerImplementation ()
-  {}
 
 
 

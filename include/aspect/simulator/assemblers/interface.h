@@ -70,7 +70,7 @@ namespace aspect
             face_number(scratch.face_number)
           {}
 
-          virtual ~ScratchBase () {};
+          virtual ~ScratchBase ()  = default;
 
           /**
            * Cell object on which we currently operate.
@@ -344,7 +344,7 @@ namespace aspect
         template <int dim>
         struct CopyDataBase
         {
-          virtual ~CopyDataBase () {};
+          virtual ~CopyDataBase () = default;
         };
 
         /**
