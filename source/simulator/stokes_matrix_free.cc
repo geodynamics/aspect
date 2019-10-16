@@ -49,6 +49,174 @@ namespace aspect
      */
     namespace TangentialBoundaryFunctions
     {
+      template <int dim>
+      void
+      add_constraint(const std::array<types::global_dof_index,dim> &dof_indices,
+                     const Tensor<1, dim> &constraining_vector,
+                     ConstraintMatrix &constraints,
+                     const double inhomogeneity = 0)
+      {
+        // This function is modified from an internal deal.II function in vector_tools.templates.h
+        switch (dim)
+          {
+            case 2:
+            {
+              if (std::fabs(constraining_vector[0]) >
+                  std::fabs(constraining_vector[1]) + 1e-10)
+                {
+                  if (!constraints.is_constrained(dof_indices[0]) &&
+                      constraints.can_store_line(dof_indices[0]))
+                    {
+                      constraints.add_line(dof_indices[0]);
+
+                      if (std::fabs(constraining_vector[1] /
+                                    constraining_vector[0]) >
+                          std::numeric_limits<double>::epsilon())
+                        constraints.add_entry(dof_indices[0],
+                                              dof_indices[1],
+                                              -constraining_vector[1] /
+                                              constraining_vector[0]);
+
+                      if (std::fabs(inhomogeneity / constraining_vector[0]) >
+                          std::numeric_limits<double>::epsilon())
+                        constraints.set_inhomogeneity(
+                          dof_indices[0],
+                          inhomogeneity / constraining_vector[0]);
+                    }
+                }
+              else
+                {
+                  if (!constraints.is_constrained(dof_indices[1]) &&
+                      constraints.can_store_line(dof_indices[1]))
+                    {
+                      constraints.add_line(dof_indices[1]);
+
+                      if (std::fabs(constraining_vector[0] /
+                                    constraining_vector[1]) >
+                          std::numeric_limits<double>::epsilon())
+                        constraints.add_entry(dof_indices[1],
+                                              dof_indices[0],
+                                              -constraining_vector[0] /
+                                              constraining_vector[1]);
+
+                      if (std::fabs(inhomogeneity / constraining_vector[1]) >
+                          std::numeric_limits<double>::epsilon())
+                        constraints.set_inhomogeneity(
+                          dof_indices[1],
+                          inhomogeneity / constraining_vector[1]);
+                    }
+                }
+              break;
+            }
+
+            case 3:
+            {
+              if ((std::fabs(constraining_vector[0]) >=
+                   std::fabs(constraining_vector[1]) + 1e-10) &&
+                  (std::fabs(constraining_vector[0]) >=
+                   std::fabs(constraining_vector[2]) + 2e-10))
+                {
+                  if (!constraints.is_constrained(dof_indices[0]) &&
+                      constraints.can_store_line(dof_indices[0]))
+                    {
+                      constraints.add_line(dof_indices[0]);
+
+                      if (std::fabs(constraining_vector[1] /
+                                    constraining_vector[0]) >
+                          std::numeric_limits<double>::epsilon())
+                        constraints.add_entry(dof_indices[0],
+                                              dof_indices[1],
+                                              -constraining_vector[1] /
+                                              constraining_vector[0]);
+
+                      if (std::fabs(constraining_vector[2] /
+                                    constraining_vector[0]) >
+                          std::numeric_limits<double>::epsilon())
+                        constraints.add_entry(dof_indices[0],
+                                              dof_indices[2],
+                                              -constraining_vector[2] /
+                                              constraining_vector[0]);
+
+                      if (std::fabs(inhomogeneity / constraining_vector[0]) >
+                          std::numeric_limits<double>::epsilon())
+                        constraints.set_inhomogeneity(
+                          dof_indices[0],
+                          inhomogeneity / constraining_vector[0]);
+                    }
+                }
+              else if ((std::fabs(constraining_vector[1]) + 1e-10 >=
+                        std::fabs(constraining_vector[0])) &&
+                       (std::fabs(constraining_vector[1]) >=
+                        std::fabs(constraining_vector[2]) + 1e-10))
+                {
+                  if (!constraints.is_constrained(dof_indices[1]) &&
+                      constraints.can_store_line(dof_indices[1]))
+                    {
+                      constraints.add_line(dof_indices[1]);
+
+                      if (std::fabs(constraining_vector[0] /
+                                    constraining_vector[1]) >
+                          std::numeric_limits<double>::epsilon())
+                        constraints.add_entry(dof_indices[1],
+                                              dof_indices[0],
+                                              -constraining_vector[0] /
+                                              constraining_vector[1]);
+
+                      if (std::fabs(constraining_vector[2] /
+                                    constraining_vector[1]) >
+                          std::numeric_limits<double>::epsilon())
+                        constraints.add_entry(dof_indices[1],
+                                              dof_indices[2],
+                                              -constraining_vector[2] /
+                                              constraining_vector[1]);
+
+                      if (std::fabs(inhomogeneity / constraining_vector[1]) >
+                          std::numeric_limits<double>::epsilon())
+                        constraints.set_inhomogeneity(
+                          dof_indices[1],
+                          inhomogeneity / constraining_vector[1]);
+                    }
+                }
+              else
+                {
+                  if (!constraints.is_constrained(dof_indices[2]) &&
+                      constraints.can_store_line(dof_indices[2]))
+                    {
+                      constraints.add_line(dof_indices[2]);
+
+                      if (std::fabs(constraining_vector[0] /
+                                    constraining_vector[2]) >
+                          std::numeric_limits<double>::epsilon())
+                        constraints.add_entry(dof_indices[2],
+                                              dof_indices[0],
+                                              -constraining_vector[0] /
+                                              constraining_vector[2]);
+
+                      if (std::fabs(constraining_vector[1] /
+                                    constraining_vector[2]) >
+                          std::numeric_limits<double>::epsilon())
+                        constraints.add_entry(dof_indices[2],
+                                              dof_indices[1],
+                                              -constraining_vector[1] /
+                                              constraining_vector[2]);
+
+                      if (std::fabs(inhomogeneity / constraining_vector[2]) >
+                          std::numeric_limits<double>::epsilon())
+                        constraints.set_inhomogeneity(
+                          dof_indices[2],
+                          inhomogeneity / constraining_vector[2]);
+                    }
+                }
+
+              break;
+            }
+
+            default:
+              Assert(false, ExcNotImplemented());
+          }
+      }
+
+
       template <int dim, int spacedim>
       void compute_no_normal_flux_constraints_shell(const DoFHandler<dim,spacedim> &dof_handler,
                                                     const MGConstrainedDoFs        &mg_constrained_dofs,
@@ -126,42 +294,7 @@ namespace aspect
                               normal_vector[d] = 0;
                           normal_vector /= normal_vector.norm();
 
-                          // Tangential boundary only implemented for 2D currently
-                          Assert(dim==2, ExcNotImplemented());
-
-                          if (std::fabs(normal_vector[0]) >
-                              std::fabs(normal_vector[1]) + 1e-10)
-                            {
-                              if (!constraints.is_constrained(dof_indices[0]) &&
-                                  constraints.can_store_line(dof_indices[0]))
-                                {
-                                  constraints.add_line(dof_indices[0]);
-
-                                  if (std::fabs(normal_vector[1] /
-                                                normal_vector[0]) >
-                                      std::numeric_limits<double>::epsilon())
-                                    constraints.add_entry(dof_indices[0],
-                                                          dof_indices[1],
-                                                          -normal_vector[1] /
-                                                          normal_vector[0]);
-                                }
-                            }
-                          else
-                            {
-                              if (!constraints.is_constrained(dof_indices[1]) &&
-                                  constraints.can_store_line(dof_indices[1]))
-                                {
-                                  constraints.add_line(dof_indices[1]);
-
-                                  if (std::fabs(normal_vector[0] /
-                                                normal_vector[1]) >
-                                      std::numeric_limits<double>::epsilon())
-                                    constraints.add_entry(dof_indices[1],
-                                                          dof_indices[0],
-                                                          -normal_vector[0] /
-                                                          normal_vector[1]);
-                                }
-                            }
+                          add_constraint<dim>(dof_indices, normal_vector, constraints, 0.0);
                         }
                 }
       }
