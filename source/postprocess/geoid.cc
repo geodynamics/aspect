@@ -326,15 +326,25 @@ namespace aspect
       // Get the spherical harmonic coefficients of the density contribution.
       std::pair<std::vector<double>,std::vector<double> > SH_density_coes = density_contribution(outer_radius);
 
-      // Get the spherical harmonic coefficients of the surface and CMB dynamic topography
-      std::pair<std::pair<double, std::pair<std::vector<double>,std::vector<double> > >, std::pair<double, std::pair<std::vector<double>,std::vector<double> > > > SH_dyna_topo_coes;
-      SH_dyna_topo_coes = dynamic_topography_contribution(outer_radius,inner_radius);
-      std::pair<double, std::pair<std::vector<double>,std::vector<double> > > SH_surface_dyna_topo_coes = SH_dyna_topo_coes.first;
-      std::pair<double, std::pair<std::vector<double>,std::vector<double> > > SH_CMB_dyna_topo_coes = SH_dyna_topo_coes.second;
+      std::pair<double, std::pair<std::vector<double>,std::vector<double> > > SH_surface_dyna_topo_coes;
+      std::pair<double, std::pair<std::vector<double>,std::vector<double> > > SH_CMB_dyna_topo_coes;
+      // Initialize the surface and CMB density contrasts with NaNs becasue they may be unused in case of no dynamic topography contribution.
+      double surface_delta_rho = std::numeric_limits<double>::quiet_NaN();
+      double CMB_delta_rho = std::numeric_limits<double>::quiet_NaN();
+      if (remove_dynamic_topo_contribution == false)
+        {
+          // Get the spherical harmonic coefficients of the surface and CMB dynamic topography
+          std::pair<std::pair<double, std::pair<std::vector<double>,std::vector<double> > >, std::pair<double, std::pair<std::vector<double>,std::vector<double> > > > SH_dyna_topo_coes;
+          SH_dyna_topo_coes = dynamic_topography_contribution(outer_radius,inner_radius);
+          SH_surface_dyna_topo_coes = SH_dyna_topo_coes.first;
+          SH_CMB_dyna_topo_coes = SH_dyna_topo_coes.second;
 
-      // Get the density contrast at the surface and CMB
-      const double surface_delta_rho =  SH_surface_dyna_topo_coes.first - density_above;
-      const double CMB_delta_rho = density_below - SH_CMB_dyna_topo_coes.first;
+          // Get the density contrast at the surface and CMB to replace the initialized NaN values.
+          // The surface and CMB density contrasts will be used later to calculate geoid,
+          // and in spherical harmonic output of the CMB dynamic topography contribution to geoid.
+          surface_delta_rho =  SH_surface_dyna_topo_coes.first - density_above;
+          CMB_delta_rho = density_below - SH_CMB_dyna_topo_coes.first;
+        }
 
       // Compute the spherical harmonic coefficients of geoid anomaly
       std::vector<double> density_anomaly_contribution_coecos; // a vector to store cos terms of density anomaly contribution SH coefficients
@@ -357,19 +367,22 @@ namespace aspect
               density_anomaly_contribution_coecos.push_back(coecos_density_anomaly);
               density_anomaly_contribution_coesin.push_back(coesin_density_anomaly);
 
-              double coecos_surface_dyna_topo = (4 * numbers::PI * G / (surface_gravity * (2 * ideg + 1)))
-                                                * surface_delta_rho*SH_surface_dyna_topo_coes.second.first.at(ind)*outer_radius;
-              double coesin_surface_dyna_topo = (4 * numbers::PI * G / (surface_gravity * (2 * ideg + 1)))
-                                                * surface_delta_rho*SH_surface_dyna_topo_coes.second.second.at(ind)*outer_radius;
-              surface_dyna_topo_contribution_coecos.push_back(coecos_surface_dyna_topo);
-              surface_dyna_topo_contribution_coesin.push_back(coesin_surface_dyna_topo);
+              if (remove_dynamic_topo_contribution == false)
+                {
+                  double coecos_surface_dyna_topo = (4 * numbers::PI * G / (surface_gravity * (2 * ideg + 1)))
+                                                    * surface_delta_rho*SH_surface_dyna_topo_coes.second.first.at(ind)*outer_radius;
+                  double coesin_surface_dyna_topo = (4 * numbers::PI * G / (surface_gravity * (2 * ideg + 1)))
+                                                    * surface_delta_rho*SH_surface_dyna_topo_coes.second.second.at(ind)*outer_radius;
+                  surface_dyna_topo_contribution_coecos.push_back(coecos_surface_dyna_topo);
+                  surface_dyna_topo_contribution_coesin.push_back(coesin_surface_dyna_topo);
 
-              double coecos_CMB_dyna_topo = (4 * numbers::PI * G / (surface_gravity * (2 * ideg + 1)))
-                                            * CMB_delta_rho*SH_CMB_dyna_topo_coes.second.first.at(ind)*inner_radius*std::pow(inner_radius/outer_radius,ideg+1);
-              double coesin_CMB_dyna_topo = (4 * numbers::PI * G / (surface_gravity * (2 * ideg + 1)))
-                                            * CMB_delta_rho*SH_CMB_dyna_topo_coes.second.second.at(ind)*inner_radius*std::pow(inner_radius/outer_radius,ideg+1);
-              CMB_dyna_topo_contribution_coecos.push_back(coecos_CMB_dyna_topo);
-              CMB_dyna_topo_contribution_coesin.push_back(coesin_CMB_dyna_topo);
+                  double coecos_CMB_dyna_topo = (4 * numbers::PI * G / (surface_gravity * (2 * ideg + 1)))
+                                                * CMB_delta_rho*SH_CMB_dyna_topo_coes.second.first.at(ind)*inner_radius*std::pow(inner_radius/outer_radius,ideg+1);
+                  double coesin_CMB_dyna_topo = (4 * numbers::PI * G / (surface_gravity * (2 * ideg + 1)))
+                                                * CMB_delta_rho*SH_CMB_dyna_topo_coes.second.second.at(ind)*inner_radius*std::pow(inner_radius/outer_radius,ideg+1);
+                  CMB_dyna_topo_contribution_coecos.push_back(coecos_CMB_dyna_topo);
+                  CMB_dyna_topo_contribution_coesin.push_back(coesin_CMB_dyna_topo);
+                }
 
               ++ind;
             }
@@ -381,8 +394,17 @@ namespace aspect
         {
           for (unsigned int iord = 0; iord < ideg+1; iord++)
             {
-              geoid_coecos.push_back(density_anomaly_contribution_coecos.at(ind)+surface_dyna_topo_contribution_coecos.at(ind)+CMB_dyna_topo_contribution_coecos.at(ind));
-              geoid_coesin.push_back(density_anomaly_contribution_coesin.at(ind)+surface_dyna_topo_contribution_coesin.at(ind)+CMB_dyna_topo_contribution_coesin.at(ind));
+              if (remove_dynamic_topo_contribution == false)
+                {
+                  geoid_coecos.push_back(density_anomaly_contribution_coecos.at(ind)+surface_dyna_topo_contribution_coecos.at(ind)+CMB_dyna_topo_contribution_coecos.at(ind));
+                  geoid_coesin.push_back(density_anomaly_contribution_coesin.at(ind)+surface_dyna_topo_contribution_coesin.at(ind)+CMB_dyna_topo_contribution_coesin.at(ind));
+                }
+              else
+                {
+                  geoid_coecos.push_back(density_anomaly_contribution_coecos.at(ind));
+                  geoid_coesin.push_back(density_anomaly_contribution_coesin.at(ind));
+                }
+
               ind += 1;
             }
         }
@@ -489,97 +511,103 @@ namespace aspect
             }
         }
 
-      // The user can get the spherical harmonic coefficients of the surface dynamic topography contribution if needed
-      if (also_output_surface_dynamic_topo_contribution_SH_coes == true)
+      if (remove_dynamic_topo_contribution == false)
         {
-          // have a stream into which we write the SH coefficients data from surface dynamic topography contribution.
-          // The text stream is then later sent to processor 0
-          std::ostringstream output_surface_dynamic_topo_contribution_SH_coes;
-
-          // Prepare the output SH coefficients data from surface dynamic topography contribution.
-          unsigned int SH_coes_ind = 0;
-          for (unsigned int ideg =  min_degree; ideg < max_degree+1; ideg++)
+          // The user can get the spherical harmonic coefficients of the surface dynamic topography contribution if needed
+          if (also_output_surface_dynamic_topo_contribution_SH_coes == true)
             {
-              for (unsigned int iord = 0; iord < ideg+1; iord++)
+              // have a stream into which we write the SH coefficients data from surface dynamic topography contribution.
+              // The text stream is then later sent to processor 0
+              std::ostringstream output_surface_dynamic_topo_contribution_SH_coes;
+
+              // Prepare the output SH coefficients data from surface dynamic topography contribution.
+              unsigned int SH_coes_ind = 0;
+              for (unsigned int ideg =  min_degree; ideg < max_degree+1; ideg++)
                 {
-                  output_surface_dynamic_topo_contribution_SH_coes << ideg
-                                                                   << ' '
-                                                                   << iord
-                                                                   << ' '
-                                                                   << surface_dyna_topo_contribution_coecos.at(SH_coes_ind)
-                                                                   << ' '
-                                                                   << surface_dyna_topo_contribution_coesin.at(SH_coes_ind)
-                                                                   << std::endl;
-                  ++SH_coes_ind;
+                  for (unsigned int iord = 0; iord < ideg+1; iord++)
+                    {
+                      output_surface_dynamic_topo_contribution_SH_coes << ideg
+                                                                       << ' '
+                                                                       << iord
+                                                                       << ' '
+                                                                       << surface_dyna_topo_contribution_coecos.at(SH_coes_ind)
+                                                                       << ' '
+                                                                       << surface_dyna_topo_contribution_coesin.at(SH_coes_ind)
+                                                                       << std::endl;
+                      ++SH_coes_ind;
+                    }
                 }
-            }
 
-          const std::string surface_dynamic_topo_contribution_SH_coes_filename = this->get_output_directory() +
-                                                                                 "surface_dynamic_topography_contribution_SH_coefficients." +
-                                                                                 dealii::Utilities::int_to_string(this->get_timestep_number(), 5);
+              const std::string surface_dynamic_topo_contribution_SH_coes_filename = this->get_output_directory() +
+                                                                                     "surface_dynamic_topography_contribution_SH_coefficients." +
+                                                                                     dealii::Utilities::int_to_string(this->get_timestep_number(), 5);
 
-          // Because each processor already held all the SH coefficients from surface dynamic topography contribution, we only need to stop by the processor 0
-          // to get the data. On processor 0, collect all the data and put them into the output surface dynamic topography contribution SH coefficients file.
-          if (dealii::Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
-            {
-              std::ofstream surface_dynamic_topo_contribution_SH_coes_file (surface_dynamic_topo_contribution_SH_coes_filename.c_str());
-              surface_dynamic_topo_contribution_SH_coes_file << "# "
-                                                             << "degree order cosine_coefficient sine_coefficient"
-                                                             << std::endl;
-              std::ostringstream output_surface_delta_rho;
-              output_surface_delta_rho << surface_delta_rho;
-              surface_dynamic_topo_contribution_SH_coes_file << "surface density contrast(kg/m^3): "
-                                                             << output_surface_delta_rho.str()
-                                                             << std::endl;
-              // write out the data on processor 0
-              surface_dynamic_topo_contribution_SH_coes_file << output_surface_dynamic_topo_contribution_SH_coes.str();
+              // Because each processor already held all the SH coefficients from surface dynamic topography contribution, we only need to stop by the processor 0
+              // to get the data. On processor 0, collect all the data and put them into the output surface dynamic topography contribution SH coefficients file.
+              if (dealii::Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
+                {
+                  std::ofstream surface_dynamic_topo_contribution_SH_coes_file (surface_dynamic_topo_contribution_SH_coes_filename.c_str());
+                  surface_dynamic_topo_contribution_SH_coes_file << "# "
+                                                                 << "degree order cosine_coefficient sine_coefficient"
+                                                                 << std::endl;
+                  std::ostringstream output_surface_delta_rho;
+                  output_surface_delta_rho << surface_delta_rho;
+                  surface_dynamic_topo_contribution_SH_coes_file << "surface density contrast(kg/m^3): "
+                                                                 << output_surface_delta_rho.str()
+                                                                 << std::endl;
+                  // write out the data on processor 0
+                  surface_dynamic_topo_contribution_SH_coes_file << output_surface_dynamic_topo_contribution_SH_coes.str();
+                }
             }
         }
 
-      // The user can get the spherical harmonic coefficients of the CMB dynamic topography contribution if needed
-      if (also_output_CMB_dynamic_topo_contribution_SH_coes == true)
+      if (remove_dynamic_topo_contribution == false)
         {
-          // have a stream into which we write the SH coefficients data from CMB dynamic topography contribution.
-          // The text stream is then later sent to processor 0
-          std::ostringstream output_CMB_dynamic_topo_contribution_SH_coes;
-
-          // Prepare the output SH coefficients data from CMB dynamic topography contribution.
-          unsigned int SH_coes_ind = 0;
-          for (unsigned int ideg =  min_degree; ideg < max_degree+1; ideg++)
+          // The user can get the spherical harmonic coefficients of the CMB dynamic topography contribution if needed
+          if (also_output_CMB_dynamic_topo_contribution_SH_coes == true)
             {
-              for (unsigned int iord = 0; iord < ideg+1; iord++)
+              // have a stream into which we write the SH coefficients data from CMB dynamic topography contribution.
+              // The text stream is then later sent to processor 0
+              std::ostringstream output_CMB_dynamic_topo_contribution_SH_coes;
+
+              // Prepare the output SH coefficients data from CMB dynamic topography contribution.
+              unsigned int SH_coes_ind = 0;
+              for (unsigned int ideg =  min_degree; ideg < max_degree+1; ideg++)
                 {
-                  output_CMB_dynamic_topo_contribution_SH_coes << ideg
-                                                               << ' '
-                                                               << iord
-                                                               << ' '
-                                                               << CMB_dyna_topo_contribution_coecos.at(SH_coes_ind)
-                                                               << ' '
-                                                               << CMB_dyna_topo_contribution_coesin.at(SH_coes_ind)
-                                                               << std::endl;
-                  ++SH_coes_ind;
+                  for (unsigned int iord = 0; iord < ideg+1; iord++)
+                    {
+                      output_CMB_dynamic_topo_contribution_SH_coes << ideg
+                                                                   << ' '
+                                                                   << iord
+                                                                   << ' '
+                                                                   << CMB_dyna_topo_contribution_coecos.at(SH_coes_ind)
+                                                                   << ' '
+                                                                   << CMB_dyna_topo_contribution_coesin.at(SH_coes_ind)
+                                                                   << std::endl;
+                      ++SH_coes_ind;
+                    }
                 }
-            }
 
-          const std::string CMB_dynamic_topo_contribution_SH_coes_filename = this->get_output_directory() +
-                                                                             "CMB_dynamic_topography_contribution_SH_coefficients." +
-                                                                             dealii::Utilities::int_to_string(this->get_timestep_number(), 5);
+              const std::string CMB_dynamic_topo_contribution_SH_coes_filename = this->get_output_directory() +
+                                                                                 "CMB_dynamic_topography_contribution_SH_coefficients." +
+                                                                                 dealii::Utilities::int_to_string(this->get_timestep_number(), 5);
 
-          // Because each processor already held all the SH coefficients from CMB dynamic topography contribution, we only need to stop by the processor 0
-          // to get the data. On processor 0, collect all the data and put them into the output CMB dynamic topography contribution SH coefficients file.
-          if (dealii::Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
-            {
-              std::ofstream CMB_dynamic_topo_contribution_SH_coes_file (CMB_dynamic_topo_contribution_SH_coes_filename.c_str());
-              CMB_dynamic_topo_contribution_SH_coes_file << "# "
-                                                         << "degree order cosine_coefficient sine_coefficient"
-                                                         << std::endl;
-              std::ostringstream output_CMB_delta_rho;
-              output_CMB_delta_rho << CMB_delta_rho;
-              CMB_dynamic_topo_contribution_SH_coes_file << "CMB density contrast(kg/m^3): "
-                                                         << output_CMB_delta_rho.str()
-                                                         << std::endl;
-              // write out the data on processor 0
-              CMB_dynamic_topo_contribution_SH_coes_file << output_CMB_dynamic_topo_contribution_SH_coes.str();
+              // Because each processor already held all the SH coefficients from CMB dynamic topography contribution, we only need to stop by the processor 0
+              // to get the data. On processor 0, collect all the data and put them into the output CMB dynamic topography contribution SH coefficients file.
+              if (dealii::Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
+                {
+                  std::ofstream CMB_dynamic_topo_contribution_SH_coes_file (CMB_dynamic_topo_contribution_SH_coes_filename.c_str());
+                  CMB_dynamic_topo_contribution_SH_coes_file << "# "
+                                                             << "degree order cosine_coefficient sine_coefficient"
+                                                             << std::endl;
+                  std::ostringstream output_CMB_delta_rho;
+                  output_CMB_delta_rho << CMB_delta_rho;
+                  CMB_dynamic_topo_contribution_SH_coes_file << "CMB density contrast(kg/m^3): "
+                                                             << output_CMB_delta_rho.str()
+                                                             << std::endl;
+                  // write out the data on processor 0
+                  CMB_dynamic_topo_contribution_SH_coes_file << output_CMB_dynamic_topo_contribution_SH_coes.str();
+                }
             }
         }
 
@@ -839,8 +867,11 @@ namespace aspect
     Geoid<dim>::required_other_postprocessors() const
     {
       std::list<std::string> deps;
-      deps.emplace_back("dynamic topography");
-      deps.emplace_back("boundary densities");
+      if (remove_dynamic_topo_contribution == false)
+        {
+          deps.emplace_back("dynamic topography");
+          deps.emplace_back("boundary densities");
+        }
       return deps;
     }
 
@@ -912,6 +943,9 @@ namespace aspect
                             Patterns::Bool(),
                             "Option to also output the free-air gravity anomaly up to the maximum degree. "
                             "The unit of the output is in SI, hence $m/s^2$ ($1mgal = 10^-5 m/s^2$). The default is false. ");
+          prm.declare_entry("Turn off the contributon from dynamic topography","false",
+                            Patterns::Bool(),
+                            "Option to remove the contribution of dynamic topography on geoid. The default is false.");
         }
         prm.leave_subsection ();
       }
@@ -933,9 +967,22 @@ namespace aspect
           density_below = prm.get_double ("Density below");
           also_output_geoid_anomaly_SH_coes = prm.get_bool ("Also output the spherical harmonic coefficients of geoid anomaly");
           also_output_surface_dynamic_topo_contribution_SH_coes = prm.get_bool ("Also output the spherical harmonic coefficients of surface dynamic topography contribution");
+          if (also_output_surface_dynamic_topo_contribution_SH_coes == true)
+            {
+              AssertThrow(remove_dynamic_topo_contribution == false,
+                          ExcMessage("We can output the surface dynamic topography contribution "
+                                     "only if the dynamic topography contribution is not turned off."));
+            }
           also_output_CMB_dynamic_topo_contribution_SH_coes = prm.get_bool ("Also output the spherical harmonic coefficients of CMB dynamic topography contribution");
+          if (also_output_CMB_dynamic_topo_contribution_SH_coes == true)
+            {
+              AssertThrow(remove_dynamic_topo_contribution == false,
+                          ExcMessage("We can output the CMB dynamic topography contribution "
+                                     "only if the dynamic topography contribution is not turned off."));
+            }
           also_output_density_anomaly_contribution_SH_coes = prm.get_bool ("Also output the spherical harmonic coefficients of density anomaly contribution");
           also_output_gravity_anomaly = prm.get_bool ("Also output the gravity anomaly");
+          remove_dynamic_topo_contribution = prm.get_bool ("Turn off the contributon from dynamic topography");
         }
         prm.leave_subsection ();
       }
