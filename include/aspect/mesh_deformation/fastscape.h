@@ -118,6 +118,7 @@ namespace aspect
         double y_extent;
         bool slice;
         int fs_seed;
+        int surface_res;
         mutable bool restart;
         mutable int restart_step;
 

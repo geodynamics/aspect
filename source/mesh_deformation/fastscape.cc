@@ -52,7 +52,7 @@ namespace aspect
       int y_repetitions = repetitions.second;
 
       //Set nx and dx, as these will be the same regardless of dimension.
-      nx = 3+std::pow(2,initial_global_refinement+additional_refinement)*x_repetitions;
+      nx = 3+std::pow(2,surface_res+additional_refinement)*x_repetitions;
       dx = grid_extent[0].second/(nx-3);
       x_extent = geometry->get_extents()[0]+2*dx;
 
@@ -76,7 +76,7 @@ namespace aspect
 
       if (dim == 3)
         {
-          ny = 3+std::pow(2,initial_global_refinement+additional_refinement)*y_repetitions;
+          ny = 3+std::pow(2,surface_res+additional_refinement)*y_repetitions;
           dy = grid_extent[1].second/(ny-3);
           table_intervals[1] = ny-3;
           y_extent = geometry->get_extents()[1]+2*dy;
@@ -286,13 +286,13 @@ namespace aspect
               if (current_timestep == 1 || restart)
                 {
 
-                  this->get_pcout() <<"   Initializing Fastscape... "<< (1+initial_global_refinement+additional_refinement)  <<
+                  this->get_pcout() <<"   Initializing FastScape... "<< (1+surface_res+additional_refinement)  <<
                                     " levels, cell size: "<<dx<<" m."<<std::endl;
 
                   //If we are restarting from a checkpoint, load h values for fastscape so we don't lose resolution.
                   if (restart)
                     {
-                      this->get_pcout() <<"      Loading Fastscape restart file... "<<std::endl;
+                      this->get_pcout() <<"      Loading FastScape restart file... "<<std::endl;
                       restart = false;
 
                       //Load in h values.
@@ -311,7 +311,7 @@ namespace aspect
                           in.close();
                         }
                       else if (!in)
-                        AssertThrow(false,ExcMessage("Cannot open file to restart fastscape."));
+                        AssertThrow(false,ExcMessage("Cannot open file to restart FastScape."));
 
                       /*
                        * Now load the fastscape istep at time of restart.
@@ -483,7 +483,7 @@ namespace aspect
               fastscape_named_vtk_(h.get(), &vexp, &visualization_step, c, &length);
 
               //I really need to figure out a better way to make visualization files output correctly.
-              this->get_pcout() <<"   Calling Fastscape... "<<(steps-istep)<<" timesteps of "<<f_dt<<" years."<<std::endl;
+              this->get_pcout() <<"   Calling FastScape... "<<(steps-istep)<<" timesteps of "<<f_dt<<" years."<<std::endl;
               do
                 {
                   //Write fastscape visualization
@@ -504,7 +504,7 @@ namespace aspect
               //If we've reached the end time, destroy fastscape.
               if (this->get_time()+a_dt >= end_time)
                 {
-                  this->get_pcout()<<"   Destroying Fastscape..."<<std::endl;
+                  this->get_pcout()<<"   Destroying FastScape..."<<std::endl;
                   fastscape_destroy_();
                 }
 
@@ -682,6 +682,9 @@ namespace aspect
           prm.declare_entry("Fastscape seed", "1000",
                             Patterns::Integer(),
                             "Seed used for adding an initial 0-1 m noise to fastscape topography.");
+          prm.declare_entry("Surface resolution", "1",
+                            Patterns::Integer(),
+                            "This should be set to the expect ASPECT resolution level you expect at the surface.");
 
           prm.enter_subsection ("Boundary conditions");
           {
@@ -773,6 +776,7 @@ namespace aspect
           additional_refinement = prm.get_integer("Additional fastscape refinement");
           slice = prm.get_bool("Use center slice for 2d");
           fs_seed = prm.get_integer("Fastscape seed");
+          surface_res = prm.get_integer("Surface resolution");
 
           prm.enter_subsection("Boundary conditions");
           {
