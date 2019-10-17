@@ -56,9 +56,6 @@ namespace aspect
       dx = grid_extent[0].second/(nx-3);
       x_extent = geometry->get_extents()[0]+2*dx;
 
-      //Find the number of grid points in x direction for indexing.
-      //TODO: numx and nx are always the same, why did I make two variables?
-      numx = 1+x_extent/dx;
 
       //sub intervals are 1 less than points.
       table_intervals[0] = nx-3;
@@ -67,11 +64,9 @@ namespace aspect
 
       if (dim == 2)
         {
-          //ny = nx*3-1; //*2-1dy_slices;
           dy = dx;
           y_extent = grid_extent[0].second*3+2*dy; //(ny-1)*dy;
-          numy = 1+y_extent/dy;
-          ny = numy;
+          ny = 1+y_extent/dy;
         }
 
       if (dim == 3)
@@ -80,7 +75,6 @@ namespace aspect
           dy = grid_extent[1].second/(ny-3);
           table_intervals[1] = ny-3;
           y_extent = geometry->get_extents()[1]+2*dy;
-          numy = 1+y_extent/dy;
         }
 
       //Determine array size to send to fastscape
@@ -153,7 +147,7 @@ namespace aspect
                           {
                             for (int ys=0; ys<ny; ys++)
                               {
-                                double index = indx+numx*ys;
+                                double index = indx+nx*ys;
                                 if (current_timestep == 1)
                                   {
                                     //double h_seed = (std::rand()%2000)/100;
@@ -169,7 +163,7 @@ namespace aspect
                         if (dim == 3)
                           {
                             double indy = 2+vertex(1)/dy;
-                            double index = (indy-1)*numx+indx;
+                            double index = (indy-1)*nx+indx;
 
                             if (current_timestep == 1)
                               {
@@ -184,10 +178,10 @@ namespace aspect
 
           //Set ghost nodes for left and right boundaries
 
-          for (int j=0; j<numy; j++)
+          for (int j=0; j<ny; j++)
             {
-              double index_left = numx*j+1;
-              double index_right = numx*(j+1);
+              double index_left = nx*j+1;
+              double index_right = nx*(j+1);
 
               for (unsigned int i=0; i<dim+1; ++i)
                 {
@@ -199,15 +193,15 @@ namespace aspect
           //Set ghost node for top and bottom boundaries
           if (dim == 3)
             {
-              for (int j=0; j<numx; j++)
+              for (int j=0; j<nx; j++)
                 {
                   double index_bot = j+1;
-                  double index_top = numx*(numy-1)+j+1;
+                  double index_top = nx*(ny-1)+j+1;
 
                   for (unsigned int i=0; i<dim+1; ++i)
                     {
-                      temporary_variables[i][index_bot-1] = temporary_variables[i][index_bot+numx-1];
-                      temporary_variables[i][index_top-1] = temporary_variables[i][index_top-numx-1];
+                      temporary_variables[i][index_bot-1] = temporary_variables[i][index_bot+nx-1];
+                      temporary_variables[i][index_top-1] = temporary_variables[i][index_top-nx-1];
                     }
                 }
             }
@@ -389,10 +383,10 @@ namespace aspect
               //the value on opposite side.
               if (left == 0 && right == 0)
                 {
-                  for (int j=0; j<numy; j++)
+                  for (int j=0; j<ny; j++)
                     {
-                      double index_left = numx*j+1;
-                      double index_right = numx*(j+1);
+                      double index_left = nx*j+1;
+                      double index_right = nx*(j+1);
                       double side = index_left;
                       int jj = 0;
 
@@ -427,22 +421,22 @@ namespace aspect
 
               if (top == 0 && bottom == 0)
                 {
-                  for (int j=0; j<numx; j++)
+                  for (int j=0; j<nx; j++)
                     {
                       double index_bot = j+1;
-                      double index_top = numx*(numy-1)+j+1;
+                      double index_top = nx*(ny-1)+j+1;
                       double side = index_bot;
-                      int jj = numx;
+                      int jj = nx;
 
-                      if (vy[index_bot+numx-1] > 0 && vy[index_top-numx-1] >= 0)
+                      if (vy[index_bot+nx-1] > 0 && vy[index_top-nx-1] >= 0)
                         {
                           side = index_top;
-                          jj = -numx;
+                          jj = -nx;
                         }
-                      else if (vy[index_bot+numx-1] <= 0 && vy[index_top-numx-1] < 0)
+                      else if (vy[index_bot+nx-1] <= 0 && vy[index_top-nx-1] < 0)
                         {
                           side = index_bot;
-                          jj = numx;
+                          jj = nx;
                         }
                       else
                         continue;
@@ -541,21 +535,21 @@ namespace aspect
           int edge = (nx+1)/2;
           if (dim == 2)
             {
-              std::vector<double> V2(numx);
+              std::vector<double> V2(nx);
 
-              for (int i=1; i<(numx-1); i++)
+              for (int i=1; i<(nx-1); i++)
                 {
                   //Multiply edge by bottom and top, so it only takes them off if they're fixed.
                   if (slice)
                     {
-                      int index = i+numx*((ny-1)/2);
+                      int index = i+nx*((ny-1)/2);
                       V2[i-1] = V[index];
                     }
                   else
                     {
                       for (int ys=edge; ys<(ny-edge); ys++)
                         {
-                          int index = i+numx*ys;
+                          int index = i+nx*ys;
                           V2[i-1] += V[index];
                         }
                       V2[i-1] = V2[i-1]/(ny-edge*2);

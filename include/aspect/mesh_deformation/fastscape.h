@@ -108,8 +108,6 @@ namespace aspect
         int nz;
         unsigned int additional_refinement;
         unsigned int initial_global_refinement;
-        int numx;
-        int numy;
         unsigned int bottom;
         unsigned int right;
         unsigned int top;
