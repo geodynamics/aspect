@@ -49,12 +49,10 @@ namespace aspect
         // should be stored in the data vector.
         std::vector<int> property_index_to_output_index(property_information.n_components()+1,-1);
         dataset_names.push_back("id");
-        //property_index_to_output_index[0] = 0;
 
-//std::cout << "flag 1" << std::endl;
+        // output all properties that are not excluded
         unsigned int total_property_index = 0;
         unsigned int included_property_index = 0;
-        // output all properties that are not excluded
         for (unsigned int field_index = 0; field_index < property_information.n_fields(); ++field_index)
           {
             const unsigned n_components = property_information.get_components_by_field_index(field_index);
@@ -65,7 +63,6 @@ namespace aspect
               {
                 if (exclude_output_properties[i] == "all" || field_name.find(exclude_output_properties[i]) != std::string::npos)
                   {
-                    //std::cout << "found for i = " << i << std::endl;
                     found = true;
                     break;
                   }
@@ -76,7 +73,6 @@ namespace aspect
                 total_property_index++;
                 continue;
               }
-            //std::cout << "fall through for field index = " << field_index << std::endl;
 
             // HDF5 only supports 3D vector output, therefore only treat output fields as vector if we
             // have a dimension of 3 and 3 components.
@@ -97,14 +93,14 @@ namespace aspect
             for (unsigned int component_index=0; component_index<n_components; ++component_index)
               {
                 property_index_to_output_index[total_property_index] = included_property_index;
-                Assert(property_index_to_output_index.size() > total_property_index, ExcMessage("NO!!!!!! total_property_index = " + std::to_string(total_property_index) + ", property_index_to_output_index.size() = " + std::to_string(property_index_to_output_index.size())));
-                //std::cout << "flag 8: included_property_index = " << included_property_index << ", field_name = " << field_name << std::endl;
+                Assert(property_index_to_output_index.size() > total_property_index,
+                       ExcMessage("total_property_index (" + std::to_string(total_property_index) + ") is larger than property_index_to_output_index.size() (" + std::to_string(property_index_to_output_index.size()))));
                 included_property_index++;
                 total_property_index++;
               }
 
           }
-        //std::cout << "flag 10" << std::endl;
+
         total_property_index = 0;
         // Secondly store which of these data fields are vectors
         unsigned int field_position = property_information.n_fields() == 0 ? 0 : property_information.get_position_by_field_index(0);
@@ -114,14 +110,11 @@ namespace aspect
 
             const std::string field_name = property_information.get_field_name_by_index(field_index);
 
-            //std::cout << "property_index_to_output_index[" << total_property_index << "] = " << property_index_to_output_index[total_property_index] << ", field_index = " << field_index << ", field_name = " << field_name << std::endl;
             if (property_index_to_output_index[total_property_index] < 0)
               {
-                //std::cout << "continue" << std::endl;
                 total_property_index++;
                 continue;
               }
-            //std::cout << "fall through" << std::endl;
 
 
 
@@ -129,7 +122,6 @@ namespace aspect
             // If the property has dim components, we treat it as vector
             if (n_components == dim)
               {
-                //std::cout << "should not be here!!!" << std::endl;
 #if DEAL_II_VERSION_GTE(9,1,0)
                 vector_datasets.push_back(std::make_tuple(field_position+1,
                                                           field_position+n_components,
@@ -149,11 +141,9 @@ namespace aspect
         patches.resize(particle_handler.n_locally_owned_particles());
 
         typename dealii::Particles::ParticleHandler<dim>::particle_iterator particle = particle_handler.begin();
-//std::cout << "flag 50" << std::endl;
 
         for (unsigned int i=0; particle != particle_handler.end(); ++particle, ++i)
           {
-            //std::cout << "flag 51: i = " << i << std::endl;
             patches[i].vertices[0] = particle->get_location();
             patches[i].patch_index = i;
             patches[i].n_subdivisions = 1;
@@ -165,39 +155,21 @@ namespace aspect
               {
                 const ArrayView<const double> properties = particle->get_properties();
 
-                //std::cout << "flag 52: properties.size() = " << properties.size() << std::endl;
-                //unsigned int output_index = 1;
-                //unsigned int field_index = 0;
-                //unsigned int do_not_increase_for = 0;
-                //std::string field_name = "";
                 total_property_index = 0;
                 for (unsigned int property_index = 0; property_index < properties.size(); ++property_index)
                   {
-                    //std::cout << "begin particle " << i << std::endl;
-                    //std::cout << "flag 53: property_index = " << property_index << ", total_property_index = " << total_property_index << std::endl;
-
-                    const unsigned n_components = property_information.get_components_by_field_index(property_index);
-                    //field_name = property_information.get_field_name_by_index(total_property_index);
-
                     if (property_index_to_output_index[total_property_index] < 0)
                       {
-                        //std::cout << "flag 54: continue -> total_property_index = " << total_property_index << ", property_index_to_output_index[total_property_index] = " << property_index_to_output_index[total_property_index] << std::endl;
                         total_property_index++;
                         continue;
                       }
 
-                    //std::cout << "flag 55: fall through -> total_property_index = " << total_property_index << ", property_index_to_output_index[total_property_index] = " << property_index_to_output_index[total_property_index] << std::endl;
-                    //std::cout << "flag 56: properties[property_index] = " << properties[property_index] << std::endl;
-
                     patches[i].data(property_index_to_output_index[total_property_index]+1,0) = properties[property_index];
 
-                    //output_index++;
                     total_property_index++;
                   }
               }
-            //std::cout << "end particle " << i << std::endl;
           }
-        //std::cout << "end build patch" << std::endl;
       }
 
       template <int dim>
