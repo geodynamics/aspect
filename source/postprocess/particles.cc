@@ -94,7 +94,8 @@ namespace aspect
               {
                 property_index_to_output_index[total_property_index] = included_property_index;
                 Assert(property_index_to_output_index.size() > total_property_index,
-                       ExcMessage("total_property_index (" + std::to_string(total_property_index) + ") is larger than property_index_to_output_index.size() (" + std::to_string(property_index_to_output_index.size()))));
+                       ExcMessage("total_property_index (" + std::to_string(total_property_index)
+                                  + ") is larger than property_index_to_output_index.size() (" + std::to_string(property_index_to_output_index.size())));
                 included_property_index++;
                 total_property_index++;
               }
