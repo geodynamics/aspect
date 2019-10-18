@@ -79,7 +79,11 @@ namespace aspect
      * This function takes a string argument that is interpreted as a map
      * of the form "key1 : value1, key2 : value2, etc", and then parses
      * it to return a vector of these values where the values are ordered
-     * in the same order as a given set of keys.
+     * in the same order as a given set of keys. If @p allow_subentries
+     * is set to 'true' it also allows entries of the form
+     * "key1: value1|value2|value3, etc", in which case the returned
+     * vector will have more entries than the provided
+     * @p list_of_keys.
      *
      * This function also considers a number of special cases:
      * - If the input string consists of only a comma separated
@@ -95,7 +99,7 @@ namespace aspect
      *   increases the size of the output vector by 1. For example,
      *   some Material models require background fields, but input
      *   files may not.
-     * - Three special keys are recognized:
+     * - Two special keys are recognized:
      *      all --> Assign the associated value to all fields.
      *              Only one value is allowed in this case.
      *      background --> Assign associated value to the background.
@@ -110,6 +114,14 @@ namespace aspect
      * @param[in] property_name A name that identifies the type of property
      *   that is being parsed by this function and that is used in generating
      *   error messages if the map does not conform to the expected format.
+     * @param [in] allow_subentries If true allow having multiple subentries
+     *   for each key. If false only allow a single entry per key. In either
+     *   case each key is only allowed to appear once.
+     * @param [out] subentry_structure If handed over this
+     *   vector will be filled with as many components as
+     *   keys (+1 if there is a background field). Each value represents
+     *   how many subentries were found for this key. The sum over all
+     *   entries is the length of the returned vector of values.
      *
      * @return A vector of values that are parsed from the map, provided
      *   in the order in which the keys appear in the @p list_of_keys argument.
@@ -118,7 +130,9 @@ namespace aspect
     parse_map_to_double_array (const std::string &key_value_map,
                                const std::vector<std::string> &list_of_keys,
                                const bool has_background_field,
-                               const std::string &property_name);
+                               const std::string &property_name,
+                               const bool allow_subentries = false,
+                               std::shared_ptr<std::vector<unsigned int> > subentry_structure = nullptr);
 
     /**
      * This function takes a string argument that is assumed to represent
