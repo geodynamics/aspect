@@ -328,7 +328,7 @@ namespace aspect
         Threads::Thread<void> background_thread;
 
         /**
-         * Stores the particle property fields which are exluded from ouptut
+         * Stores the particle property fields which are excluded from output
          * to the visualization file.
          */
         std::vector<std::string> exclude_output_properties;

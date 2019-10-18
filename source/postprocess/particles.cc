@@ -41,38 +41,27 @@ namespace aspect
                                          const std::vector<std::string> &exclude_output_properties,
                                          const bool only_group_3d_vectors)
       {
-        // First store the names of the data fields
+        // First store the names of the data fields that should be written
         dataset_names.reserve(property_information.n_components()+1);
-
-        // This is a list which tells wheter a property should be exluded (if < 0)
-        // or included (> 0). If included, it stores the index at which the data
-        // should be stored in the data vector.
-        std::vector<int> property_index_to_output_index(property_information.n_components()+1,-1);
         dataset_names.push_back("id");
 
-        // output all properties that are not excluded
-        unsigned int total_property_index = 0;
-        unsigned int included_property_index = 0;
+        // This is a map from an index for the particle property vector to an index in the output
+        // vector. Values equal 0 indicate a property will not be written, values bigger 0
+        // indicate into which output entry the property value should be written.
+        std::vector<unsigned int> property_index_to_output_index(property_information.n_components(),0);
+
+        // Start the output index from 1, because 0 is occupied by the "id"
+        unsigned int output_index = 1;
         for (unsigned int field_index = 0; field_index < property_information.n_fields(); ++field_index)
           {
+            // Determine some info about the field.
             const unsigned n_components = property_information.get_components_by_field_index(field_index);
             const std::string field_name = property_information.get_field_name_by_index(field_index);
-
-            bool found = false;
-            for (unsigned int i = 0; i < exclude_output_properties.size(); ++i)
-              {
-                if (exclude_output_properties[i] == "all" || field_name.find(exclude_output_properties[i]) != std::string::npos)
-                  {
-                    found = true;
-                    break;
-                  }
-              }
-
-            if (found == true)
-              {
-                total_property_index++;
-                continue;
-              }
+            const unsigned int field_position = property_information.n_fields() == 0
+                                                ?
+                                                0
+                                                :
+                                                property_information.get_position_by_field_index(field_index);
 
             // HDF5 only supports 3D vector output, therefore only treat output fields as vector if we
             // have a dimension of 3 and 3 components.
@@ -82,44 +71,31 @@ namespace aspect
                                          :
                                          dim == 3 && n_components == 3;
 
-            // If it is a 1D element, or a vector, print just the name, otherwise append the index after an underscore
-            if ((n_components == 1) || field_is_vector)
-              for (unsigned int component_index=0; component_index<n_components; ++component_index)
-                dataset_names.push_back(field_name);
-            else
-              for (unsigned int component_index=0; component_index<n_components; ++component_index)
-                dataset_names.push_back(field_name + "_" + Utilities::to_string(component_index));
+            // Determine if this field should be excluded, if so, skip it
+            bool found = false;
+            for (unsigned int i = 0; i < exclude_output_properties.size(); ++i)
+              if (exclude_output_properties[i] == "all" || field_name.find(exclude_output_properties[i]) != std::string::npos)
+                {
+                  found = true;
+                  break;
+                }
 
+            if (found == true)
+              continue;
+
+            // For each component record its name and position in output vector
             for (unsigned int component_index=0; component_index<n_components; ++component_index)
               {
-                property_index_to_output_index[total_property_index] = included_property_index;
-                Assert(property_index_to_output_index.size() > total_property_index,
-                       ExcMessage("total_property_index (" + std::to_string(total_property_index)
-                                  + ") is larger than property_index_to_output_index.size() (" + std::to_string(property_index_to_output_index.size())));
-                included_property_index++;
-                total_property_index++;
+                // If it is a 1D element, or a vector, print just the name, otherwise append the index after an underscore
+                if ((n_components == 1) || field_is_vector)
+                  dataset_names.push_back(field_name);
+                else
+                  dataset_names.push_back(field_name + "_" + Utilities::to_string(component_index));
+
+                property_index_to_output_index[field_position + component_index] = output_index;
+                ++output_index;
               }
 
-          }
-
-        total_property_index = 0;
-        // Secondly store which of these data fields are vectors
-        unsigned int field_position = property_information.n_fields() == 0 ? 0 : property_information.get_position_by_field_index(0);
-        for (unsigned int field_index = 0; field_index < property_information.n_fields(); ++field_index)
-          {
-            const unsigned n_components = property_information.get_components_by_field_index(field_index);
-
-            const std::string field_name = property_information.get_field_name_by_index(field_index);
-
-            if (property_index_to_output_index[total_property_index] < 0)
-              {
-                total_property_index++;
-                continue;
-              }
-
-
-
-            total_property_index += n_components;
             // If the property has dim components, we treat it as vector
             if (n_components == dim)
               {
@@ -134,13 +110,10 @@ namespace aspect
                                                           field_name));
 #endif
               }
-            field_position = field_position+n_components;
-
           }
 
-        // Third build the actual patch data
+        // Now build the actual patch data
         patches.resize(particle_handler.n_locally_owned_particles());
-
         typename dealii::Particles::ParticleHandler<dim>::particle_iterator particle = particle_handler.begin();
 
         for (unsigned int i=0; particle != particle_handler.end(); ++particle, ++i)
@@ -156,18 +129,10 @@ namespace aspect
               {
                 const ArrayView<const double> properties = particle->get_properties();
 
-                total_property_index = 0;
                 for (unsigned int property_index = 0; property_index < properties.size(); ++property_index)
                   {
-                    if (property_index_to_output_index[total_property_index] < 0)
-                      {
-                        total_property_index++;
-                        continue;
-                      }
-
-                    patches[i].data(property_index_to_output_index[total_property_index]+1,0) = properties[property_index];
-
-                    total_property_index++;
+                    if (property_index_to_output_index[property_index] > 0)
+                      patches[i].data(property_index_to_output_index[property_index],0) = properties[property_index];
                   }
               }
           }
