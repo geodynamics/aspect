@@ -132,7 +132,7 @@ namespace aspect
         {
           for (unsigned int idx = 0; idx < this->get_volume_of_fluid_handler().get_n_fields(); ++idx)
             {
-                ostream << "\t" << "VOF_" << this->get_volume_of_fluid_handler().name_for_field_index(idx);
+              ostream << "\t" << "VOF_" << this->get_volume_of_fluid_handler().name_for_field_index(idx);
             }
         }
 
@@ -164,12 +164,12 @@ namespace aspect
       const FEValuesExtractors::Scalar &extractor_pressure = this->introspection().extractors.pressure;
       const FEValuesExtractors::Scalar &extractor_temperature = this->introspection().extractors.temperature;
       const FEValuesExtractors::Vector &extractor_velocity = this->introspection().extractors.velocities;
-      
+
       const unsigned int n_vof_fields = this->get_parameters().volume_of_fluid_tracking_enabled
-          ?
-          this->get_volume_of_fluid_handler().get_n_fields()
-          :
-          0;
+                                        ?
+                                        this->get_volume_of_fluid_handler().get_n_fields()
+                                        :
+                                        0;
 
       write_out_header(interpolated_data_stream);
 
@@ -300,12 +300,12 @@ namespace aspect
       const FEValuesExtractors::Scalar &extractor_pressure = this->introspection().extractors.pressure;
       const FEValuesExtractors::Scalar &extractor_temperature = this->introspection().extractors.temperature;
       const FEValuesExtractors::Vector &extractor_velocity = this->introspection().extractors.velocities;
-      
+
       const unsigned int n_vof_fields = this->get_parameters().volume_of_fluid_tracking_enabled
-          ?
-          this->get_volume_of_fluid_handler().get_n_fields()
-          :
-          0;
+                                        ?
+                                        this->get_volume_of_fluid_handler().get_n_fields()
+                                        :
+                                        0;
 
       write_out_header(interpolated_data_stream);
 
@@ -458,7 +458,7 @@ namespace aspect
       const FEValuesExtractors::Scalar &extractor_pressure = this->introspection().extractors.pressure;
       const FEValuesExtractors::Scalar &extractor_temperature = this->introspection().extractors.temperature;
       const FEValuesExtractors::Vector &extractor_velocity = this->introspection().extractors.velocities;
-      
+
       std::vector<Point<dim>> vof_refined_unit_recenters(4);
 
       for (unsigned int i=0; i<2; ++i)
@@ -478,12 +478,12 @@ namespace aspect
           refined_cell_location[i] = 2*((point[0]>0.5)?1:0)+
                                      ((point[1]>0.5)?1:0);
         }
-      
+
       const unsigned int n_vof_fields = this->get_parameters().volume_of_fluid_tracking_enabled
-          ?
-          this->get_volume_of_fluid_handler().get_n_fields()
-          :
-          0;
+                                        ?
+                                        this->get_volume_of_fluid_handler().get_n_fields()
+                                        :
+                                        0;
 
       write_out_header(interpolated_data_stream);
 
