@@ -84,32 +84,78 @@ TEST_CASE("Utilities::parse_map_to_double_array")
 
   {
     INFO("check 9: ");
-    auto subentry_structure = std::make_shared<std::vector<unsigned int>>();
+    auto n_values_per_key = std::make_shared<std::vector<unsigned int>>();
 
     compare_vectors_approx(aspect::Utilities::parse_map_to_double_array ("C1:100, C2:200|100, C3:300, C4:400, C5:500, background:0",
     {"C1","C2","C3","C4","C5"},
     true,
     "TestField",
     true,
-    subentry_structure),
+    n_values_per_key),
     {0.0,100.0,200.0,100.0,300.0,400.0,500.0});
 
-    REQUIRE(*subentry_structure == std::vector<unsigned int>({1,1,2,1,1,1}));
+    REQUIRE(*n_values_per_key == std::vector<unsigned int>({1,1,2,1,1,1}));
   }
 
   {
     INFO("check 10: ");
-    auto subentry_structure = std::make_shared<std::vector<unsigned int>>();
+    auto n_values_per_key = std::make_shared<std::vector<unsigned int>>();
 
     compare_vectors_approx(aspect::Utilities::parse_map_to_double_array ("C1:100, C2:200|, C3:300, C4:400, C5:500",
     {"C1","C2","C3","C4","C5"},
     false,
     "TestField",
     true,
-    subentry_structure),
+    n_values_per_key),
     {100.0,200.0,300.0,400.0,500.0});
 
-    REQUIRE(*subentry_structure == std::vector<unsigned int>({1,1,1,1,1}));
+    REQUIRE(*n_values_per_key == std::vector<unsigned int>({1,1,1,1,1}));
+  }
+
+  {
+    INFO("check 11: ");
+    auto n_values_per_key = std::make_shared<std::vector<unsigned int>>();
+
+    compare_vectors_approx(aspect::Utilities::parse_map_to_double_array ("C1:100, C2:200|300, C3:300, C4:400, C5:500",
+    {"C1","C2","C3","C4","C5"},
+    false,
+    "TestField",
+    true,
+    n_values_per_key),
+    {100.0,200.0,300.0,300.0,400.0,500.0});
+
+    REQUIRE(*n_values_per_key == std::vector<unsigned int>({1,2,1,1,1}));
+
+    compare_vectors_approx(aspect::Utilities::parse_map_to_double_array ("C1:100, C2:200|300, C3:300, C4:400, C5:500",
+    {"C1","C2","C3","C4","C5"},
+    false,
+    "TestField",
+    true,
+    n_values_per_key),
+    {100.0,200.0,300.0,300.0,400.0,500.0});
+  }
+
+  {
+    INFO("check 12: ");
+    auto n_values_per_key = std::make_shared<std::vector<unsigned int>>();
+
+    compare_vectors_approx(aspect::Utilities::parse_map_to_double_array ("all:300|400",
+    {"C1","C2"},
+    false,
+    "TestField",
+    true,
+    n_values_per_key),
+    {300.0,400.0,300.0,400.0});
+
+    REQUIRE(*n_values_per_key == std::vector<unsigned int> ({2,2}));
+
+    compare_vectors_approx(aspect::Utilities::parse_map_to_double_array ("all:100|200",
+    {"C1","C2"},
+    false,
+    "TestField",
+    true,
+    n_values_per_key),
+    {100.0,200.0,100.0,200.0});
   }
 
   INFO("check complete");
@@ -169,13 +215,13 @@ TEST_CASE("Utilities::parse_map_to_double_array FAIL ON PURPOSE")
   // Subentries not allowed
   INFO("check fail 7: ");
   REQUIRE_THROWS_WITH(
-    aspect::Utilities::parse_map_to_double_array ("C1:100, C2:|200, C3:300, C4:400, C5:500",
+    aspect::Utilities::parse_map_to_double_array ("C1:100, C2:100|200, C3:300, C4:400, C5:500",
   {"C1","C2","C3","C4","C5"},
   false,
   "TestField"), Contains("The required format for field"));
 
   // Wrong subentry format
-  INFO("check fail 7: ");
+  INFO("check fail 8: ");
   REQUIRE_THROWS_WITH(
     aspect::Utilities::parse_map_to_double_array ("C1:100, C2:|200, C3:300, C4:400, C5:500",
   {"C1","C2","C3","C4","C5"},
@@ -184,13 +230,60 @@ TEST_CASE("Utilities::parse_map_to_double_array FAIL ON PURPOSE")
   true), Contains("The required format for field"));
 
   // No subentries
-  INFO("check fail 8: ");
+  INFO("check fail 9: ");
   REQUIRE_THROWS_WITH(
     aspect::Utilities::parse_map_to_double_array ("C1:100, C2:|, C3:300, C4:400, C5:500",
   {"C1","C2","C3","C4","C5"},
   false,
   "TestField",
   true), Contains("The required format for field"));
+
+  // Wrong input structure
+  {
+    INFO("check fail 10: ");
+    auto n_values_per_key = std::make_shared<std::vector<unsigned int>>();
+
+    compare_vectors_approx(aspect::Utilities::parse_map_to_double_array ("C1:100, C2:200|300, C3:300, C4:400, C5:500",
+    {"C1","C2","C3","C4","C5"},
+    false,
+    "TestField",
+    true,
+    n_values_per_key),
+    {100.0,200.0,300.0,300.0,400.0,500.0});
+
+    REQUIRE(*n_values_per_key == std::vector<unsigned int>({1,2,1,1,1}));
+
+    REQUIRE_THROWS_WITH(aspect::Utilities::parse_map_to_double_array ("C1:100|200, C2:300, C3:300, C4:400, C5:500",
+    {"C1","C2","C3","C4","C5"},
+    false,
+    "TestField",
+    true,
+    n_values_per_key),
+    Contains("the expected number of entries"));
+  }
+
+  {
+    INFO("check fail 11: ");
+    auto n_values_per_key = std::make_shared<std::vector<unsigned int>>();
+
+    compare_vectors_approx(aspect::Utilities::parse_map_to_double_array ("all:300|400",
+    {"C1","C2"},
+    false,
+    "TestField",
+    true,
+    n_values_per_key),
+    {300.0,400.0,300.0,400.0});
+
+    REQUIRE(*n_values_per_key == std::vector<unsigned int>({2,2}));
+
+    REQUIRE_THROWS_WITH(aspect::Utilities::parse_map_to_double_array ("all:100|200|300",
+    {"C1","C2"},
+    false,
+    "TestField",
+    true,
+    n_values_per_key),
+    Contains("the expected number of entries"));
+  }
 }
 
 

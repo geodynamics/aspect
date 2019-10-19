@@ -94,8 +94,8 @@ namespace aspect
                                const std::vector<std::string> &input_field_names,
                                const bool has_background_field,
                                const std::string &property_name,
-                               const bool allow_subentries,
-                               std::shared_ptr<std::vector<unsigned int> > subentry_structure)
+                               const bool allow_multiple_values_per_key,
+                               std::shared_ptr<std::vector<unsigned int> > n_values_per_key)
     {
       std::vector<std::string> field_names = input_field_names;
       if (has_background_field)
@@ -103,18 +103,28 @@ namespace aspect
 
       const unsigned int n_fields = field_names.size();
       std::vector<double> return_values;
-      if (subentry_structure)
-        subentry_structure->resize(n_fields,0);
 
-      const auto key_pattern = (allow_subentries)
+      const bool check_structure = (n_values_per_key && n_values_per_key->size() != 0);
+      const bool store_structure = (n_values_per_key && n_values_per_key->size() == 0);
+
+      if (store_structure)
+        n_values_per_key->resize(n_fields,0);
+
+      if (check_structure)
+        AssertThrow(n_values_per_key->size() == n_fields,
+                    ExcMessage("When providing an expected structure for input parameter " + property_name + " you need to provide "
+                               + "as many entries in the structure vector as there are input field names (+1 if there is a background field). "
+                               + "The current structure vector has " + std::to_string(n_values_per_key->size()) + " entries, but there are "
+                               + std::to_string(n_fields) + " field names." ));
+
+      const auto key_pattern = (allow_multiple_values_per_key)
                                ?
                                Patterns::List(Patterns::Double(),
                                               1,
                                               std::numeric_limits<unsigned int>::max(),
                                               "|")
                                :
-                               Patterns::Double()
-                               ;
+                               Patterns::Double();
 
       // Parse the string depending on what Pattern we are dealing with
       if (Patterns::Map(Patterns::Anything(),
@@ -159,18 +169,29 @@ namespace aspect
                                ExcMessage ("There is only one "
                                            + property_name
                                            + " value given. The keyword `all' is "
-                                           "expected but is not found. Please"
+                                           "expected but is not found. Please "
                                            "check your "
                                            + property_name
                                            + " list."));
 
+                  const std::vector<std::string> values = dealii::Utilities::split_string_list(key_and_value[1], '|');
+
                   // Assign all the elements to the "all" value
                   for (unsigned int field_index=0; field_index<n_fields; ++field_index)
                     {
-                      return_map[field_index].push_back(Utilities::string_to_double(key_and_value[1]));
+                      for (const auto &value : values)
+                        {
+                          return_map[field_index].push_back(Utilities::string_to_double(value));
 
-                      if (subentry_structure)
-                        (*subentry_structure)[field_index] = 1;
+                          if (store_structure)
+                            ++(*n_values_per_key)[field_index];
+                        }
+
+                      if (check_structure)
+                        AssertThrow((*n_values_per_key)[field_index] == values.size(),
+                                    ExcMessage("The key <" + key_and_value[0] + "> in <"+ property_name + "> does not have "
+                                               + "the expected number of values. It expects " + std::to_string((*n_values_per_key)[field_index])
+                                               + " values, but we found " + std::to_string(values.size()) + " values."));
                     }
                 }
               // Handle lists of multiple entries
@@ -237,15 +258,21 @@ namespace aspect
                                            "is not set, the default names are "
                                            "C_1, C_2, ..., C_n."));
 
-                  const std::vector<std::string> subfield_entries = dealii::Utilities::split_string_list(key_and_value[1], '|');
+                  const std::vector<std::string> values = dealii::Utilities::split_string_list(key_and_value[1], '|');
 
-                  for (const auto &entry : subfield_entries)
+                  for (const auto &value : values)
                     {
-                      return_map[field_index].push_back(Utilities::string_to_double(entry));
+                      return_map[field_index].push_back(Utilities::string_to_double(value));
 
-                      if (subentry_structure)
-                        ++(*subentry_structure)[field_index];
+                      if (store_structure)
+                        ++(*n_values_per_key)[field_index];
                     }
+
+                  if (check_structure)
+                    AssertThrow((*n_values_per_key)[field_index] == values.size(),
+                                ExcMessage("The key <" + key_and_value[0] + "> in <"+ property_name + "> does not have "
+                                           + "the expected number of values. It expects " + std::to_string((*n_values_per_key)[field_index])
+                                           + " values, but we found " + std::to_string(values.size()) + " values."));
                 }
             }
 
@@ -260,10 +287,18 @@ namespace aspect
                                                        n_fields,
                                                        property_name);
 
-          if (subentry_structure)
+          if (store_structure)
             {
               for (unsigned int i=0; i<n_fields; ++i)
-                (*subentry_structure)[i] = 1;
+                (*n_values_per_key)[i] = 1;
+            }
+
+          if (check_structure)
+            {
+              for (unsigned int i=0; i<n_fields; ++i)
+                AssertThrow((*n_values_per_key)[i] == 1,
+                            ExcMessage("The input parameter " + property_name + " does not have "
+                                       + "the expected number of values for field index " + std::to_string(i) + "."));
             }
         }
       else
@@ -273,7 +308,8 @@ namespace aspect
                        ExcMessage ("The required format for field <"
                                    + property_name
                                    + "> was not found. Specify a comma separated "
-                                   "list of `<double>' or `<id> : <double>|<double>|...'."));
+                                   + "list of `<double>' or `<key1> : <double>|<double>|..., "
+                                   + "<key2> : <double>|... , ... '."));
         }
       return return_values;
     }

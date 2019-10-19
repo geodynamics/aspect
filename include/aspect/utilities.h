@@ -79,7 +79,7 @@ namespace aspect
      * This function takes a string argument that is interpreted as a map
      * of the form "key1 : value1, key2 : value2, etc", and then parses
      * it to return a vector of these values where the values are ordered
-     * in the same order as a given set of keys. If @p allow_subentries
+     * in the same order as a given set of keys. If @p allow_multiple_values_per_key
      * is set to 'true' it also allows entries of the form
      * "key1: value1|value2|value3, etc", in which case the returned
      * vector will have more entries than the provided
@@ -93,7 +93,8 @@ namespace aspect
      *   where "key1", "key2", ... are exactly the keys provided by the
      *   @p list_of_keys in the same order as provided. In this situation,
      *   if a background field is required, the background value is
-     *   assigned to the first element of the output vector.
+     *   assigned to the first element of the output vector. This form only
+     *   allows a single value per key.
      * - Whether or not a background field is required depends on
      *   the parameter being parsed. Requiring a background field
      *   increases the size of the output vector by 1. For example,
@@ -114,25 +115,36 @@ namespace aspect
      * @param[in] property_name A name that identifies the type of property
      *   that is being parsed by this function and that is used in generating
      *   error messages if the map does not conform to the expected format.
-     * @param [in] allow_subentries If true allow having multiple subentries
-     *   for each key. If false only allow a single entry per key. In either
+     * @param [in] allow_multiple_values_per_key If true allow having multiple values
+     *   for each key. If false only allow a single value per key. In either
      *   case each key is only allowed to appear once.
-     * @param [out] subentry_structure If handed over this
-     *   vector will be filled with as many components as
-     *   keys (+1 if there is a background field). Each value represents
-     *   how many subentries were found for this key. The sum over all
-     *   entries is the length of the returned vector of values.
+     * @param [in,out] n_values_per_key A pointer to a vector of unsigned
+     *   integers. If no pointer is handed over nothing happens. If a pointer
+     *   to an empty vector is handed over, the vector
+     *   is resized with as many components as
+     *   keys (+1 if there is a background field). Each value then stores
+     *   how many values were found for this key. The sum over all
+     *   entries is the length of the return value of this function.
+     *   If a pointer to an existing vector with one or more entries is
+     *   handed over (e.g. a n_values_per_key vector created by a
+     *   previous call to this function) then this vector is used as
+     *   expected structure of the input parameter, and it is checked that
+     *   @p key_value_map fulfills this structure.
      *
      * @return A vector of values that are parsed from the map, provided
      *   in the order in which the keys appear in the @p list_of_keys argument.
+     *   If multiple values per key are allowed, the vector contains first all
+     *   values for key 1, then all values for key 2 and so forth. Using the
+     *   @p n_values_per_key vector allows the caller to sort entries in the
+     *   returned vector to specific keys.
      */
     std::vector<double>
     parse_map_to_double_array (const std::string &key_value_map,
                                const std::vector<std::string> &list_of_keys,
                                const bool has_background_field,
                                const std::string &property_name,
-                               const bool allow_subentries = false,
-                               std::shared_ptr<std::vector<unsigned int> > subentry_structure = nullptr);
+                               const bool allow_multiple_values_per_key = false,
+                               std::shared_ptr<std::vector<unsigned int> > n_values_per_key = nullptr);
 
     /**
      * This function takes a string argument that is assumed to represent
