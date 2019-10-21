@@ -94,7 +94,7 @@ namespace aspect
         // Noticed that the size of matrix A is n_particles x matrix_dimension
         // which usually is not a square matrix. Therefore, we solve Ax=r by
         // solving A^TAx= A^Tr.
-        const unsigned int matrix_dimension = (dim == 2) ? 4: 7;
+        const unsigned int matrix_dimension = (dim == 2) ? 4: 8;
         dealii::LAPACKFullMatrix<double> A(n_particles, matrix_dimension);
         Vector<double> r(n_particles);
         r = 0;
@@ -121,6 +121,7 @@ namespace aspect
                 A(index, 4) = relative_particle_position[0] * relative_particle_position[1];
                 A(index, 5) = relative_particle_position[0] * relative_particle_position[2];
                 A(index, 6) = relative_particle_position[1] * relative_particle_position[2];
+                A(index, 7) = relative_particle_position[0] * relative_particle_position[1] * relative_particle_position[2];
               }
           }
 
@@ -157,7 +158,8 @@ namespace aspect
                 interpolated_value += c[3] * relative_support_point_location[2] +
                                       c[4] * relative_support_point_location[0] * relative_support_point_location[1] +
                                       c[5] * relative_support_point_location[0] * relative_support_point_location[2] +
-                                      c[6] * relative_support_point_location[1] * relative_support_point_location[2];
+                                      c[6] * relative_support_point_location[1] * relative_support_point_location[2] +
+                                      c[7] * relative_support_point_location[0] * relative_support_point_location[1] * relative_support_point_location[2];
               }
 
             // Overshoot and undershoot correction of interpolated particle property.
@@ -171,8 +173,6 @@ namespace aspect
           }
         return cell_properties;
       }
-
-
 
       template <int dim>
       void
