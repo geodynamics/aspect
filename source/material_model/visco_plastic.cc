@@ -194,12 +194,12 @@ namespace aspect
 
           // Third step: plastic yielding
 
-          // Calculate Drucker-Prager yield strength (i.e. yield stress)
-          const double yield_strength = drucker_prager_plasticity.compute_stress(current_cohesion,current_friction,std::max(pressure,0.0));
+          // Calculate Drucker-Prager yield stress
+          const double yield_stress = drucker_prager_plasticity.compute_yield_stress(current_cohesion,current_friction,std::max(pressure,0.0));
 
-          // If the viscous stress is greater than the yield strength, indicate we are in the yielding regime.
+          // If the viscous stress is greater than the yield stress, indicate we are in the yielding regime.
           const double viscous_stress = 2. * viscosity_pre_yield * edot_ii;
-          if (viscous_stress >= yield_strength)
+          if (viscous_stress >= yield_stress)
             composition_yielding[j] = true;
 
           // Select if yield viscosity is based on Drucker Prager or stress limiter rheology
@@ -208,15 +208,15 @@ namespace aspect
             {
               case stress_limiter:
               {
-                const double viscosity_limiter = yield_strength / (2.0 * ref_strain_rate)
+                const double viscosity_limiter = yield_stress / (2.0 * ref_strain_rate)
                                                  * std::pow((edot_ii/ref_strain_rate), 1./exponents_stress_limiter[j] - 1.0);
                 viscosity_yield = 1. / ( 1./viscosity_limiter + 1./viscosity_pre_yield);
                 break;
               }
               case drucker_prager:
               {
-                // If the viscous stress is greater than the yield strength, rescale the viscosity back to yield surface
-                if (viscous_stress >= yield_strength)
+                // If the viscous stress is greater than the yield stress, rescale the viscosity back to yield surface
+                if (viscous_stress >= yield_stress)
                   viscosity_yield = drucker_prager_plasticity.compute_viscosity(current_cohesion,current_friction,std::max(pressure,0.0), edot_ii);
                 break;
               }
@@ -818,7 +818,7 @@ namespace aspect
                                    "the full finite strain tensor through particles."
                                    "When only the second invariant of the strain is tracked, one has the option to "
                                    "track the full strain or only the plastic strain. In the latter case, strain is only tracked "
-                                   "in case the material is plastically yielding, i.e. the viscous stess > yield strength. "
+                                   "in case the material is plastically yielding, i.e. the viscous stess > yield stress. "
                                    ""
                                    "\n\n"
                                    "Viscous stress may also be limited by a non-linear stress limiter "

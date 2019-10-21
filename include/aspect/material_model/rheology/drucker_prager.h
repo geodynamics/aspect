@@ -59,9 +59,9 @@ namespace aspect
            * Compute the plastic yield stress based on the Drucker Prager yield criterion.
            */
           double
-          compute_stress (const double cohesion,
-                          const double angle_internal_friction,
-                          const double pressure) const;
+          compute_yield_stress (const double cohesion,
+                                const double angle_internal_friction,
+                                const double pressure) const;
 
           /**
            * Compute the plastic viscosity with the yield stress and effective strain rate.
@@ -85,7 +85,7 @@ namespace aspect
            * the rheology model.
            */
           double
-          get_max_yield_strength () const;
+          get_max_yield_stress () const;
 
           /**
            * Return the values of the cohesions for each composition used in the
@@ -116,7 +116,7 @@ namespace aspect
           /**
            * Limit maximum yield stress from drucker prager yield criterion.
            */
-          double max_yield_strength;
+          double max_yield_stress;
 
       };
     }

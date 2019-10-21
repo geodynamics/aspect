@@ -40,21 +40,21 @@ namespace aspect
 
       template <int dim>
       double
-      DruckerPrager<dim>::compute_stress (const double cohesion,
-                                          const double angle_internal_friction,
-                                          const double pressure) const
+      DruckerPrager<dim>::compute_yield_stress (const double cohesion,
+                                                const double angle_internal_friction,
+                                                const double pressure) const
       {
         const double sin_phi = std::sin(angle_internal_friction);
         const double cos_phi = std::cos(angle_internal_friction);
-        const double strength_inv_part = 1. / (std::sqrt(3.0) * (3.0 + sin_phi));
+        const double stress_inv_part = 1. / (std::sqrt(3.0) * (3.0 + sin_phi));
 
-        double yield_strength = ( (dim==3)
+        double yield_stress = ( (dim==3)
                                   ?
-                                  ( 6.0 * cohesion * cos_phi + 6.0 * pressure * sin_phi) * strength_inv_part
+                                  ( 6.0 * cohesion * cos_phi + 6.0 * pressure * sin_phi) * stress_inv_part
                                   :
                                   cohesion * cos_phi + pressure * sin_phi);
 
-        return std::min(yield_strength, max_yield_strength);
+        return std::min(yield_stress, max_yield_stress);
       }
 
 
@@ -66,11 +66,11 @@ namespace aspect
                                              const double pressure,
                                              const double effective_strain_rate) const
       {
-        const double yield_strength = compute_stress(cohesion, angle_internal_friction, pressure);
+        const double yield_stress = compute_yield_stress(cohesion, angle_internal_friction, pressure);
 
         const double strain_rate_effective_inv = 1./(2.*effective_strain_rate);
 
-        return yield_strength * strain_rate_effective_inv;
+        return yield_stress * strain_rate_effective_inv;
       }
 
 
@@ -82,14 +82,14 @@ namespace aspect
       {
         const double sin_phi = std::sin(angle_internal_friction);
 
-        const double strength_inv_part = 1. / (std::sqrt(3.0) * (3.0 + sin_phi));
+        const double stress_inv_part = 1. / (std::sqrt(3.0) * (3.0 + sin_phi));
 
         const double strain_rate_effective_inv = 1./(2.*effective_strain_rate);
 
         const double viscosity_pressure_derivative = sin_phi * strain_rate_effective_inv *
                                                      (dim == 3
                                                       ?
-                                                      (6.0 * strength_inv_part)
+                                                      (6.0 * stress_inv_part)
                                                       :
                                                       1);
 
@@ -100,9 +100,9 @@ namespace aspect
 
       template <int dim>
       double
-      DruckerPrager<dim>::get_max_yield_strength () const
+      DruckerPrager<dim>::get_max_yield_stress () const
       {
-        return max_yield_strength;
+        return max_yield_stress;
       }
 
 
@@ -168,7 +168,7 @@ namespace aspect
                                                             "Cohesions");
 
         // Limit maximum value of the drucker-prager yield stress
-        max_yield_strength = prm.get_double("Maximum yield stress");
+        max_yield_stress = prm.get_double("Maximum yield stress");
       }
 
     }
