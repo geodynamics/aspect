@@ -765,7 +765,7 @@ namespace aspect
         /**
          * Destructor.
          */
-        virtual ~NamedAdditionalMaterialOutputs();
+        ~NamedAdditionalMaterialOutputs() override;
 
         /**
          * Return a reference to the vector of names of the additional
@@ -779,9 +779,9 @@ namespace aspect
          */
         virtual std::vector<double> get_nth_output(const unsigned int idx) const = 0;
 
-        virtual void average (const MaterialAveraging::AveragingOperation /*operation*/,
-                              const FullMatrix<double>  &/*projection_matrix*/,
-                              const FullMatrix<double>  &/*expansion_matrix*/)
+        void average (const MaterialAveraging::AveragingOperation /*operation*/,
+                      const FullMatrix<double>  &/*projection_matrix*/,
+                      const FullMatrix<double>  &/*expansion_matrix*/) override
         {}
 
       private:
@@ -800,7 +800,7 @@ namespace aspect
       public:
         SeismicAdditionalOutputs(const unsigned int n_points);
 
-        virtual std::vector<double> get_nth_output(const unsigned int idx) const;
+        std::vector<double> get_nth_output(const unsigned int idx) const override;
 
         /**
          * Seismic s-wave velocities at the evaluation points passed to
@@ -845,7 +845,7 @@ namespace aspect
         ReactionRateOutputs (const unsigned int n_points,
                              const unsigned int n_comp);
 
-        virtual std::vector<double> get_nth_output(const unsigned int idx) const;
+        std::vector<double> get_nth_output(const unsigned int idx) const override;
 
         /**
          * Reaction rates for all compositional fields at the evaluation points
@@ -883,7 +883,7 @@ namespace aspect
         PrescribedFieldOutputs (const unsigned int n_points,
                                 const unsigned int n_comp);
 
-        virtual std::vector<double> get_nth_output(const unsigned int idx) const;
+        std::vector<double> get_nth_output(const unsigned int idx) const override;
 
         /**
          * Prescribed field outputs for all compositional fields at the evaluation points
@@ -914,7 +914,7 @@ namespace aspect
       public:
         PrescribedTemperatureOutputs (const unsigned int n_points);
 
-        virtual std::vector<double> get_nth_output(const unsigned int idx) const;
+        std::vector<double> get_nth_output(const unsigned int idx) const override;
 
         /**
          * Prescribed field outputs for the temperature field at the evaluation points
@@ -940,12 +940,12 @@ namespace aspect
           : rhs_u(n_points), rhs_p(n_points), rhs_melt_pc(n_points)
         {}
 
-        virtual ~AdditionalMaterialOutputsStokesRHS()
+        ~AdditionalMaterialOutputsStokesRHS() override
         {}
 
-        virtual void average (const MaterialAveraging::AveragingOperation /*operation*/,
-                              const FullMatrix<double>  &/*projection_matrix*/,
-                              const FullMatrix<double>  &/*expansion_matrix*/)
+        void average (const MaterialAveraging::AveragingOperation /*operation*/,
+                      const FullMatrix<double>  &/*projection_matrix*/,
+                      const FullMatrix<double>  &/*expansion_matrix*/) override
         {
           // TODO: not implemented
         }
@@ -984,12 +984,12 @@ namespace aspect
           : elastic_force(n_points, numbers::signaling_nan<Tensor<2,dim> >() )
         {}
 
-        virtual ~ElasticOutputs()
+        ~ElasticOutputs() override
         {}
 
-        virtual void average (const MaterialAveraging::AveragingOperation operation,
-                              const FullMatrix<double>  &/*projection_matrix*/,
-                              const FullMatrix<double>  &/*expansion_matrix*/)
+        void average (const MaterialAveraging::AveragingOperation operation,
+                      const FullMatrix<double>  &/*projection_matrix*/,
+                      const FullMatrix<double>  &/*expansion_matrix*/) override
         {
           AssertThrow(operation == MaterialAveraging::AveragingOperation::none,ExcNotImplemented());
           return;
