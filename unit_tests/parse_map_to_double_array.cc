@@ -259,7 +259,7 @@ TEST_CASE("Utilities::parse_map_to_double_array FAIL ON PURPOSE")
     "TestField",
     true,
     n_values_per_key),
-    Contains("the expected number of entries"));
+    Contains("the expected number of values"));
   }
 
   {
@@ -282,7 +282,7 @@ TEST_CASE("Utilities::parse_map_to_double_array FAIL ON PURPOSE")
     "TestField",
     true,
     n_values_per_key),
-    Contains("the expected number of entries"));
+    Contains("the expected number of values"));
   }
 }
 
