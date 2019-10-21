@@ -120,9 +120,9 @@ namespace aspect
         double density_below;
 
         /**
-         * A parameter to control whether to turn off the dynamic topography contribution on geoid
+         * A parameter to control whether to include the dynamic topography contribution on geoid
          */
-        bool remove_dynamic_topo_contribution;
+        bool include_dynamic_topo_contribution;
 
         /**
          * Function to compute the real spherical harmonic coefficients (cos and sin part) from min degree to max degree

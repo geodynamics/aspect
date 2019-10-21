@@ -329,9 +329,9 @@ namespace aspect
       std::pair<double, std::pair<std::vector<double>,std::vector<double> > > SH_surface_dyna_topo_coes;
       std::pair<double, std::pair<std::vector<double>,std::vector<double> > > SH_CMB_dyna_topo_coes;
       // Initialize the surface and CMB density contrasts with NaNs becasue they may be unused in case of no dynamic topography contribution.
-      double surface_delta_rho = std::numeric_limits<double>::quiet_NaN();
-      double CMB_delta_rho = std::numeric_limits<double>::quiet_NaN();
-      if (remove_dynamic_topo_contribution == false)
+      double surface_delta_rho = numbers::signaling_nan<double>();
+      double CMB_delta_rho = numbers::signaling_nan<double>();
+      if (include_dynamic_topo_contribution == true)
         {
           // Get the spherical harmonic coefficients of the surface and CMB dynamic topography
           std::pair<std::pair<double, std::pair<std::vector<double>,std::vector<double> > >, std::pair<double, std::pair<std::vector<double>,std::vector<double> > > > SH_dyna_topo_coes;
@@ -367,7 +367,7 @@ namespace aspect
               density_anomaly_contribution_coecos.push_back(coecos_density_anomaly);
               density_anomaly_contribution_coesin.push_back(coesin_density_anomaly);
 
-              if (remove_dynamic_topo_contribution == false)
+              if (include_dynamic_topo_contribution == true)
                 {
                   double coecos_surface_dyna_topo = (4 * numbers::PI * G / (surface_gravity * (2 * ideg + 1)))
                                                     * surface_delta_rho*SH_surface_dyna_topo_coes.second.first.at(ind)*outer_radius;
@@ -394,7 +394,7 @@ namespace aspect
         {
           for (unsigned int iord = 0; iord < ideg+1; iord++)
             {
-              if (remove_dynamic_topo_contribution == false)
+              if (include_dynamic_topo_contribution == true)
                 {
                   geoid_coecos.push_back(density_anomaly_contribution_coecos.at(ind)+surface_dyna_topo_contribution_coecos.at(ind)+CMB_dyna_topo_contribution_coecos.at(ind));
                   geoid_coesin.push_back(density_anomaly_contribution_coesin.at(ind)+surface_dyna_topo_contribution_coesin.at(ind)+CMB_dyna_topo_contribution_coesin.at(ind));
@@ -511,7 +511,7 @@ namespace aspect
             }
         }
 
-      if (remove_dynamic_topo_contribution == false)
+      if (include_dynamic_topo_contribution == true)
         {
           // The user can get the spherical harmonic coefficients of the surface dynamic topography contribution if needed
           if (also_output_surface_dynamic_topo_contribution_SH_coes == true)
@@ -559,10 +559,7 @@ namespace aspect
                   surface_dynamic_topo_contribution_SH_coes_file << output_surface_dynamic_topo_contribution_SH_coes.str();
                 }
             }
-        }
 
-      if (remove_dynamic_topo_contribution == false)
-        {
           // The user can get the spherical harmonic coefficients of the CMB dynamic topography contribution if needed
           if (also_output_CMB_dynamic_topo_contribution_SH_coes == true)
             {
@@ -867,7 +864,7 @@ namespace aspect
     Geoid<dim>::required_other_postprocessors() const
     {
       std::list<std::string> deps;
-      if (remove_dynamic_topo_contribution == false)
+      if (include_dynamic_topo_contribution == true)
         {
           deps.emplace_back("dynamic topography");
           deps.emplace_back("boundary densities");
@@ -904,6 +901,9 @@ namespace aspect
       {
         prm.enter_subsection("Geoid");
         {
+          prm.declare_entry("Include the contributon from dynamic topography", "true",
+                            Patterns::Bool(),
+                            "Option to include the contribution from dynamic topography on geoid. The default is true.");
           prm.declare_entry("Maximum degree","20",
                             Patterns::Integer (0),
                             "This parameter can be a random positive integer. However, the value normally should not exceed the maximum "
@@ -943,9 +943,6 @@ namespace aspect
                             Patterns::Bool(),
                             "Option to also output the free-air gravity anomaly up to the maximum degree. "
                             "The unit of the output is in SI, hence $m/s^2$ ($1mgal = 10^-5 m/s^2$). The default is false. ");
-          prm.declare_entry("Turn off the contributon from dynamic topography","false",
-                            Patterns::Bool(),
-                            "Option to remove the contribution of dynamic topography on geoid. The default is false.");
         }
         prm.leave_subsection ();
       }
@@ -960,6 +957,7 @@ namespace aspect
       {
         prm.enter_subsection("Geoid");
         {
+          include_dynamic_topo_contribution = prm.get_bool ("Include the contributon from dynamic topography");
           max_degree = prm.get_integer ("Maximum degree");
           min_degree = prm.get_integer ("Minimum degree");
           output_in_lat_lon = prm.get_bool ("Output data in geographical coordinates");
@@ -969,20 +967,19 @@ namespace aspect
           also_output_surface_dynamic_topo_contribution_SH_coes = prm.get_bool ("Also output the spherical harmonic coefficients of surface dynamic topography contribution");
           if (also_output_surface_dynamic_topo_contribution_SH_coes == true)
             {
-              AssertThrow(remove_dynamic_topo_contribution == false,
+              AssertThrow(include_dynamic_topo_contribution == true,
                           ExcMessage("We can output the surface dynamic topography contribution "
-                                     "only if the dynamic topography contribution is not turned off."));
+                                     "only if the dynamic topography contribution is included."));
             }
           also_output_CMB_dynamic_topo_contribution_SH_coes = prm.get_bool ("Also output the spherical harmonic coefficients of CMB dynamic topography contribution");
           if (also_output_CMB_dynamic_topo_contribution_SH_coes == true)
             {
-              AssertThrow(remove_dynamic_topo_contribution == false,
+              AssertThrow(include_dynamic_topo_contribution == true,
                           ExcMessage("We can output the CMB dynamic topography contribution "
-                                     "only if the dynamic topography contribution is not turned off."));
+                                     "only if the dynamic topography contribution is included."));
             }
           also_output_density_anomaly_contribution_SH_coes = prm.get_bool ("Also output the spherical harmonic coefficients of density anomaly contribution");
           also_output_gravity_anomaly = prm.get_bool ("Also output the gravity anomaly");
-          remove_dynamic_topo_contribution = prm.get_bool ("Turn off the contributon from dynamic topography");
         }
         prm.leave_subsection ();
       }

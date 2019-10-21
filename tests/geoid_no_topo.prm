@@ -1,7 +1,8 @@
 # A simple pure math setup to compute geoid in single degree 2 order 0 perturbation density field.
 # The perturbation is added to a constant density, i.e., degree 0 order 0 component.
-# The analytic solution of the denbsity integral contribution of this case should be -0.53059320038
+# The analytic solution of the density integral contribution of this case should be -0.53059320038
 # for (2,0) component and 14.1570019498 for degree 0 order 0.
+# The contribution from dynamic topography is not included.
 
 set Dimension                              = 3
 set Use years in output instead of seconds = true
@@ -91,7 +92,7 @@ subsection Postprocess
     set Output data in geographical coordinates = true
     set Also output the spherical harmonic coefficients of geoid anomaly = true
     set Also output the spherical harmonic coefficients of density anomaly contribution = true
-    set Turn off the contributon from dynamic topography = true
+    set Include the contributon from dynamic topography = false
 
     set Also output the gravity anomaly  = true
   end
