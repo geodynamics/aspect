@@ -162,8 +162,9 @@ namespace aspect
                                        + field_entry
                                        + "> does not appear to follow this pattern."));
 
+              // Handle special key "all"
               // If there is one entry in the list the keyword "all" must be found.
-              if ((field_entries.size() == 1) && (n_fields != 1))
+              if ((field_entries.size() == 1) && (n_fields != 1 || key_and_value[0] == "all"))
                 {
                   AssertThrow (key_and_value[0] == "all",
                                ExcMessage ("There is only one "
@@ -198,7 +199,7 @@ namespace aspect
               else
                 {
                   // Ensure that the special keyword "all" was not used when multiple entries exist.
-                  AssertThrow (key_and_value[0] != "all" || n_fields == 1,
+                  AssertThrow (key_and_value[0] != "all",
                                ExcMessage ("There are multiple "
                                            + property_name
                                            + " values found, the keyword `all' is not "
