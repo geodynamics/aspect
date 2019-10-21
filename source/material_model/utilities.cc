@@ -829,25 +829,25 @@ namespace aspect
       PhaseFunction<dim>::declare_parameters (ParameterHandler &prm)
       {
         prm.declare_entry ("Phase transition depths", "",
-                           Patterns::List (Patterns::Double(0)),
+                           Patterns::Anything(),
                            "A list of depths where phase transitions occur. Values must "
                            "monotonically increase. "
                            "Units: $m$.");
         prm.declare_entry ("Phase transition widths", "",
-                           Patterns::List (Patterns::Double(0)),
+                           Patterns::Anything(),
                            "A list of widths for each phase transition, in terms of depth. The phase functions "
                            "are scaled with these values, leading to a jump between phases "
                            "for a value of zero and a gradual transition for larger values. "
                            "List must have the same number of entries as Phase transition depths. "
                            "Units: $m$.");
         prm.declare_entry ("Phase transition pressures", "",
-                           Patterns::List (Patterns::Double(0)),
+                           Patterns::Anything(),
                            "A list of pressures where phase transitions occur. Values must "
                            "monotonically increase. Define transition by depth instead of "
                            "pressure must be set to false to use this parameter. "
                            "Units: $Pa$.");
         prm.declare_entry ("Phase transition pressure widths", "",
-                           Patterns::List (Patterns::Double(0)),
+                           Patterns::Anything(),
                            "A list of widths for each phase transition, in terms of pressure. The phase functions "
                            "are scaled with these values, leading to a jump between phases "
                            "for a value of zero and a gradual transition for larger values. "
@@ -863,7 +863,7 @@ namespace aspect
                            "phase transition data from Phase transition pressures and "
                            "Phase transition pressure widths.");
         prm.declare_entry ("Phase transition temperatures", "",
-                           Patterns::List (Patterns::Double(0)),
+                           Patterns::Anything(),
                            "A list of temperatures where phase transitions occur. Higher or lower "
                            "temperatures lead to phase transition occurring in smaller or greater "
                            "depths than given in Phase transition depths, depending on the "
@@ -871,7 +871,7 @@ namespace aspect
                            "List must have the same number of entries as Phase transition depths. "
                            "Units: $\\si{K}$.");
         prm.declare_entry ("Phase transition Clapeyron slopes", "",
-                           Patterns::List (Patterns::Double()),
+                           Patterns::Anything(),
                            "A list of Clapeyron slopes for each phase transition. A positive "
                            "Clapeyron slope indicates that the phase transition will occur in "
                            "a greater depth, if the temperature is higher than the one given in "
@@ -888,43 +888,62 @@ namespace aspect
       void
       PhaseFunction<dim>::parse_parameters (ParameterHandler &prm)
       {
-        transition_depths = Utilities::string_to_double
-                            (Utilities::split_string_list(prm.get ("Phase transition depths")));
-        transition_widths= Utilities::string_to_double
-                           (Utilities::split_string_list(prm.get ("Phase transition widths")));
-        transition_pressures = Utilities::string_to_double
-                               (Utilities::split_string_list(prm.get ("Phase transition pressures")));
-        transition_pressure_widths= Utilities::string_to_double
-                                    (Utilities::split_string_list(prm.get ("Phase transition pressure widths")));
-        use_depth_instead_of_pressure = prm.get_bool ("Define transition by depth instead of pressure");
-        transition_temperatures = Utilities::string_to_double
-                                  (Utilities::split_string_list(prm.get ("Phase transition temperatures")));
-        transition_slopes = Utilities::string_to_double
-                            (Utilities::split_string_list(prm.get ("Phase transition Clapeyron slopes")));
+        // Establish that a background field is required here
+        const bool has_background_field = true;
 
-        // make sure to check against the depth lists for size errors, since using depth
+        // Retrieve the list of composition names
+        const std::vector<std::string> list_of_composition_names = this->introspection().get_composition_names();
+
+        auto phase_transitions_per_composition = std::make_shared<std::vector<unsigned int>>(list_of_composition_names.size(),0);
+
+        use_depth_instead_of_pressure = prm.get_bool ("Define transition by depth instead of pressure");
+
         if (use_depth_instead_of_pressure)
           {
-            if (transition_widths.size() != transition_depths.size() ||
-                transition_temperatures.size() != transition_depths.size() ||
-                transition_slopes.size() != transition_depths.size())
-              AssertThrow(false, ExcMessage("Error: At least one list that gives input parameters for the phase "
-                                            "transitions has the wrong size. Currently checking against transition depths. "
-                                            "If phase transitions in terms of pressure inputs are desired, check to make sure "
-                                            "'Define transition by depth instead of pressure = false'."));
+            transition_depths          = Utilities::parse_map_to_double_array (prm.get("Phase transition depths"),
+                                                                               list_of_composition_names,
+                                                                               has_background_field,
+                                                                               "Phase transition depths",
+                                                                               true,
+                                                                               phase_transitions_per_composition);
+
+            transition_widths          = Utilities::parse_map_to_double_array (prm.get("Phase transition widths"),
+                                                                               list_of_composition_names,
+                                                                               has_background_field,
+                                                                               "Phase transition widths",
+                                                                               true,
+                                                                               phase_transitions_per_composition);
           }
-        // make sure to check against the pressure lists for size errors,
-        // since pressure is being used instead of depth.
         else
           {
-            if (transition_pressure_widths.size() != transition_pressures.size() ||
-                transition_temperatures.size() != transition_pressures.size() ||
-                transition_slopes.size() != transition_pressures.size())
-              AssertThrow(false, ExcMessage("Error: At least one list that gives input parameters for the phase "
-                                            "transitions has the wrong size. Currently checking against transition pressures. "
-                                            "If phase transitions in terms of depth inputs are desired, check to make sure "
-                                            "'Define transition by depth instead of pressure = true'."));
+            transition_pressures = Utilities::parse_map_to_double_array (prm.get("Phase transition pressures"),
+                                                                         list_of_composition_names,
+                                                                         has_background_field,
+                                                                         "Phase transition pressures",
+                                                                         true,
+                                                                         phase_transitions_per_composition);
+
+            transition_pressure_widths = Utilities::parse_map_to_double_array (prm.get("Phase transition pressure widths"),
+                                                                               list_of_composition_names,
+                                                                               has_background_field,
+                                                                               "Phase transition pressure widths",
+                                                                               true,
+                                                                               phase_transitions_per_composition);
           }
+
+        transition_temperatures = Utilities::parse_map_to_double_array (prm.get("Phase transition temperatures"),
+                                                                        list_of_composition_names,
+                                                                        has_background_field,
+                                                                        "Phase transition temperatures",
+                                                                        true,
+                                                                        phase_transitions_per_composition);
+
+        transition_slopes = Utilities::parse_map_to_double_array (prm.get("Phase transition Clapeyron slopes"),
+                                                                  list_of_composition_names,
+                                                                  has_background_field,
+                                                                  "Phase transition Clapeyron slopes",
+                                                                  true,
+                                                                  phase_transitions_per_composition);
       }
     }
   }
