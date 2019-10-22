@@ -91,13 +91,13 @@ namespace aspect
 
     std::vector<double>
     parse_map_to_double_array (const std::string &input_string,
-                               const std::vector<std::string> &input_field_names,
+                               const std::vector<std::string> &list_of_keys,
                                const bool has_background_field,
                                const std::string &property_name,
                                const bool allow_multiple_values_per_key,
                                std::shared_ptr<std::vector<unsigned int> > n_values_per_key)
     {
-      std::vector<std::string> field_names = input_field_names;
+      std::vector<std::string> field_names = list_of_keys;
       if (has_background_field)
         field_names.insert(field_names.begin(),"background");
 
@@ -297,8 +297,11 @@ namespace aspect
             {
               for (unsigned int i=0; i<n_fields; ++i)
                 AssertThrow((*n_values_per_key)[i] == 1,
-                            ExcMessage("The input parameter " + property_name + " does not have "
-                                       + "the expected number of values for field index " + std::to_string(i) + "."));
+                            ExcMessage("The input parameter " + property_name + " seems to consist of a list "
+                                       "of doubles. In this case we only allow a single value per provided key, but the "
+                                       "assumed structure that was provided to the function expects " + std::to_string((*n_values_per_key)[i]) +
+                                       " values for key " + field_names[i] + ". To specify more than one value per field for this input parameter, "
+                                       "you need to use the format " + field_names[i] + ":value1|value2|..."));
             }
         }
       else
