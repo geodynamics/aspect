@@ -100,6 +100,8 @@ namespace aspect
         // Retrieve the list of composition names
         const std::vector<std::string> list_of_composition_names = this->introspection().get_composition_names();
 
+        n_phases_per_composition.reset(new std::vector<unsigned int>());
+
         // Parse multicomponent properties
         densities = Utilities::parse_map_to_double_array (prm.get("Densities"),
                                                           list_of_composition_names,

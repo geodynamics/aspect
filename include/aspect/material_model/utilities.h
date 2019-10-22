@@ -34,6 +34,8 @@ namespace aspect
 
   namespace MaterialModel
   {
+    template <int dim> class MaterialModelInputs;
+
     using namespace dealii;
 
     /**
@@ -286,6 +288,16 @@ namespace aspect
                             const double depth,
                             const double pressure_depth_derivative,
                             const unsigned int phase_index);
+
+        /**
+         * Constructor that computes the necessary values from
+         * existing objects.
+         */
+        PhaseFunctionInputs(const SimulatorAccess<dim> &simulator_access,
+                            const MaterialModelInputs<dim> &material_in,
+                            const unsigned int input_index,
+                            const double reference_density,
+                            const unsigned int phase_index_);
 
         double temperature;
         double pressure;
