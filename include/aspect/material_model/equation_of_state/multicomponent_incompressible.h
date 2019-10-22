@@ -59,7 +59,7 @@ namespace aspect
            * determines which entry of the vector of inputs is used.
            */
           void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                        const unsigned int q,
+                        const unsigned int input_index,
                         MaterialModel::EquationOfStateOutputs<dim> &out) const;
 
           /**
@@ -113,6 +113,8 @@ namespace aspect
            * Vector of specific heat capacities with one entry per composition.
            */
           std::vector<double> specific_heats;
+
+          std::shared_ptr<std::vector<unsigned int> > n_phases_per_composition;
       };
     }
   }

@@ -272,6 +272,11 @@ namespace aspect
          * Input parameters for the drucker prager plasticity.
          */
         Rheology::DruckerPragerParameters drucker_prager_parameters;
+
+        /**
+         * Object that handles phase transitions.
+         */
+        MaterialUtilities::PhaseFunction<dim> phase_function;
     };
 
   }
