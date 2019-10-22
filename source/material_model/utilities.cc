@@ -725,9 +725,11 @@ namespace aspect
         if (use_depth_instead_of_pressure)
           {
             // calculate the deviation from the transition point (convert temperature to depth)
-            const double depth_deviation = in.depth - transition_depths[in.phase_index]
-                                           - transition_slopes[in.phase_index] / in.pressure_depth_derivative
-                                           * (in.temperature - transition_temperatures[in.phase_index]);
+            double depth_deviation = in.depth - transition_depths[in.phase_index];
+
+            if (in.pressure_depth_derivative != 0.0)
+              depth_deviation -= transition_slopes[in.phase_index] / in.pressure_depth_derivative
+                                 * (in.temperature - transition_temperatures[in.phase_index]);
 
             // use delta function for width = 0
             if (transition_widths[in.phase_index] == 0)
@@ -894,7 +896,7 @@ namespace aspect
         // Retrieve the list of composition names
         const std::vector<std::string> list_of_composition_names = this->introspection().get_composition_names();
 
-        auto phase_transitions_per_composition = std::make_shared<std::vector<unsigned int>>(list_of_composition_names.size(),0);
+        auto phase_transitions_per_composition = std::make_shared<std::vector<unsigned int>>();
 
         use_depth_instead_of_pressure = prm.get_bool ("Define transition by depth instead of pressure");
 
