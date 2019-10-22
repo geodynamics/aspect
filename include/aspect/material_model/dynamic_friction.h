@@ -140,9 +140,9 @@ namespace aspect
 
         EquationOfState::MulticomponentIncompressible<dim> equation_of_state;
 
-       /*
-         * Objects for computing plastic stresses, viscosities, and additional outputs
-         */
+        /*
+          * Objects for computing plastic stresses, viscosities, and additional outputs
+          */
         Rheology::DruckerPrager<dim> drucker_prager_plasticity;
 
         /**

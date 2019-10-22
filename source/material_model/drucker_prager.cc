@@ -105,8 +105,8 @@ namespace aspect
               else
                 {
                   // plasticity
-                  const double eta_plastic = drucker_prager_plasticity.compute_viscosity(cohesion,angle_of_internal_friction,pressure, std::sqrt(strain_rate_effective));                  
-                  
+                  const double eta_plastic = drucker_prager_plasticity.compute_viscosity(cohesion,angle_of_internal_friction,pressure, std::sqrt(strain_rate_effective));
+
                   const double viscosity_pressure_derivative = drucker_prager_plasticity.compute_derivative(angle_of_internal_friction,std::sqrt(strain_rate_effective));
 
                   // Cut off the viscosity between a minimum and maximum value to avoid
@@ -189,7 +189,7 @@ namespace aspect
         prm.enter_subsection("Drucker Prager");
         {
           EquationOfState::LinearizedIncompressible<dim>::declare_parameters (prm);
-          
+
           Rheology::DruckerPrager<dim>::declare_parameters(prm);
 
           prm.declare_entry ("Reference temperature", "293",
@@ -224,7 +224,7 @@ namespace aspect
                              "Units: $W/m/K$.");
           prm.enter_subsection ("Viscosity");
           {
-  
+
             prm.declare_entry ("Minimum viscosity", "1e19",
                                Patterns::Double (0),
                                "The value of the minimum viscosity cutoff $\\eta_min$. Units: $Pa\\;s$.");
