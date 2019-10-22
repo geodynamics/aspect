@@ -97,6 +97,11 @@ namespace aspect
       std::string
       ParticlePropertyInformation::get_field_name_by_index(const unsigned int field_index) const
       {
+        Assert(field_index < field_names.size(),
+               ExcMessage("The number of field names (" + std::to_string(field_names.size())
+                          + ") is smaller than the requested field index ("
+                          + std::to_string(field_index) + ")."));
+
         return field_names[field_index];
       }
 
