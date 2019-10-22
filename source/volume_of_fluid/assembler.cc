@@ -213,6 +213,7 @@ namespace aspect
                                            face->boundary_id(),
                                            scratch.face_finite_element_values.quadrature_point(q),
                                            field.composition_index) *
+                                         this->get_timestep() *
                                          current_u *
                                          scratch.face_finite_element_values.normal_vector(q) *
                                          scratch.face_finite_element_values.JxW(q);
@@ -265,7 +266,7 @@ namespace aspect
             }
           else if (face_flux < 0.0) // edge is upwind (inflow boundary), so use the volume fraction implied by the boundary condition
             {
-              flux_volume_of_fluid = -boundary_fluid_flux/face_flux;
+              flux_volume_of_fluid = boundary_fluid_flux/face_flux;
             }
           else // Cell is upwind of boundary, so compute the volume fraction on the advected volume
             {
