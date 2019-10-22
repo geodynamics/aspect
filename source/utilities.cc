@@ -89,21 +89,51 @@ namespace aspect
 
 
 
-    std::vector<double> parse_map_to_double_array (const std::string &input_string,
-                                                   const std::vector<std::string> &input_field_names,
-                                                   const bool has_background_field,
-                                                   const std::string &property_name)
+    std::vector<double>
+    parse_map_to_double_array (const std::string &input_string,
+                               const std::vector<std::string> &list_of_keys,
+                               const bool has_background_field,
+                               const std::string &property_name,
+                               const bool allow_multiple_values_per_key,
+                               std::shared_ptr<std::vector<unsigned int> > n_values_per_key)
     {
-      std::vector<std::string> field_names = input_field_names;
+      std::vector<std::string> field_names = list_of_keys;
       if (has_background_field)
         field_names.insert(field_names.begin(),"background");
 
       const unsigned int n_fields = field_names.size();
-      std::vector<double> return_values(n_fields,std::numeric_limits<double>::quiet_NaN());
+      std::vector<double> return_values;
+
+      const bool check_structure = (n_values_per_key && n_values_per_key->size() != 0);
+      const bool store_structure = (n_values_per_key && n_values_per_key->size() == 0);
+
+      if (store_structure)
+        n_values_per_key->resize(n_fields,0);
+
+      if (check_structure)
+        AssertThrow(n_values_per_key->size() == n_fields,
+                    ExcMessage("When providing an expected structure for input parameter " + property_name + " you need to provide "
+                               + "as many entries in the structure vector as there are input field names (+1 if there is a background field). "
+                               + "The current structure vector has " + std::to_string(n_values_per_key->size()) + " entries, but there are "
+                               + std::to_string(n_fields) + " field names." ));
+
+      const auto key_pattern = (allow_multiple_values_per_key)
+                               ?
+                               Patterns::List(Patterns::Double(),
+                                              1,
+                                              std::numeric_limits<unsigned int>::max(),
+                                              "|")
+                               :
+                               Patterns::Double();
 
       // Parse the string depending on what Pattern we are dealing with
-      if (Patterns::Map(Patterns::Anything(),Patterns::Double(),1,n_fields).match(input_string))
+      if (Patterns::Map(Patterns::Anything(),
+                        key_pattern,
+                        1,
+                        n_fields).match(input_string))
         {
+          std::vector<std::vector<double> > return_map(n_fields,std::vector<double> ());
+
           // Split the list by comma delimited components,
           // then by colon delimited field name and value.
           const std::vector<std::string> field_entries = dealii::Utilities::split_string_list(input_string, ',');
@@ -139,14 +169,30 @@ namespace aspect
                                ExcMessage ("There is only one "
                                            + property_name
                                            + " value given. The keyword `all' is "
-                                           "expected but is not found. Please"
+                                           "expected but is not found. Please "
                                            "check your "
                                            + property_name
                                            + " list."));
 
+                  const std::vector<std::string> values = dealii::Utilities::split_string_list(key_and_value[1], '|');
+
                   // Assign all the elements to the "all" value
                   for (unsigned int field_index=0; field_index<n_fields; ++field_index)
-                    return_values[field_index] = Utilities::string_to_double(key_and_value[1]);
+                    {
+                      for (const auto &value : values)
+                        {
+                          return_map[field_index].push_back(Utilities::string_to_double(value));
+
+                          if (store_structure)
+                            ++(*n_values_per_key)[field_index];
+                        }
+
+                      if (check_structure)
+                        AssertThrow((*n_values_per_key)[field_index] == values.size(),
+                                    ExcMessage("The key <" + key_and_value[0] + "> in <"+ property_name + "> does not have "
+                                               + "the expected number of values. It expects " + std::to_string((*n_values_per_key)[field_index])
+                                               + " values, but we found " + std::to_string(values.size()) + " values."));
+                    }
                 }
               // Handle lists of multiple entries
               else
@@ -185,7 +231,7 @@ namespace aspect
                                            "One example of where to check this is if "
                                            "Compositional fields are used, "
                                            "then check the id list "
-                                           "from `set Names of fields' in the"
+                                           "from `set Names of fields' in the "
                                            "Compositional fields subsection. "
                                            "Alternatively, if `set Names of fields' "
                                            "is not set, the default names are "
@@ -194,7 +240,7 @@ namespace aspect
                   const unsigned int field_index = std::distance(field_names.begin(),field_name);
 
                   // Throw an error if this index was already set ...there can be only one
-                  AssertThrow (std::isnan(return_values[field_index]) == true,
+                  AssertThrow (return_map[field_index].size() == 0,
                                ExcMessage ("The keyword <"
                                            + key_and_value[0]
                                            + "> in "
@@ -206,15 +252,33 @@ namespace aspect
                                            "One example of where to check this is if "
                                            "Compositional fields are used, "
                                            "then check the id list "
-                                           "from `set Names of fields' in the"
+                                           "from `set Names of fields' in the "
                                            "Compositional fields subsection. "
                                            "Alternatively, if `set Names of fields' "
                                            "is not set, the default names are "
                                            "C_1, C_2, ..., C_n."));
 
-                  return_values[field_index] = Utilities::string_to_double(key_and_value[1]);
+                  const std::vector<std::string> values = dealii::Utilities::split_string_list(key_and_value[1], '|');
+
+                  for (const auto &value : values)
+                    {
+                      return_map[field_index].push_back(Utilities::string_to_double(value));
+
+                      if (store_structure)
+                        ++(*n_values_per_key)[field_index];
+                    }
+
+                  if (check_structure)
+                    AssertThrow((*n_values_per_key)[field_index] == values.size(),
+                                ExcMessage("The key <" + key_and_value[0] + "> in <"+ property_name + "> does not have "
+                                           + "the expected number of values. It expects " + std::to_string((*n_values_per_key)[field_index])
+                                           + " values, but we found " + std::to_string(values.size()) + " values."));
                 }
             }
+
+          for (const auto &entry: return_map)
+            for (const auto &sub_entry: entry)
+              return_values.push_back(sub_entry);
         }
       else if (Patterns::List(Patterns::Double(),1,n_fields).match(input_string))
         {
@@ -222,6 +286,23 @@ namespace aspect
           return_values = possibly_extend_from_1_to_N (dealii::Utilities::string_to_double(dealii::Utilities::split_string_list(input_string)),
                                                        n_fields,
                                                        property_name);
+
+          if (store_structure)
+            {
+              for (unsigned int i=0; i<n_fields; ++i)
+                (*n_values_per_key)[i] = 1;
+            }
+
+          if (check_structure)
+            {
+              for (unsigned int i=0; i<n_fields; ++i)
+                AssertThrow((*n_values_per_key)[i] == 1,
+                            ExcMessage("The input parameter " + property_name + " seems to consist of a list "
+                                       "of doubles. In this case we only allow a single value per provided key, but the "
+                                       "assumed structure that was provided to the function expects " + std::to_string((*n_values_per_key)[i]) +
+                                       " values for key " + field_names[i] + ". To specify more than one value per field for this input parameter, "
+                                       "you need to use the format " + field_names[i] + ":value1|value2|..."));
+            }
         }
       else
         {
@@ -230,7 +311,8 @@ namespace aspect
                        ExcMessage ("The required format for field <"
                                    + property_name
                                    + "> was not found. Specify a comma separated "
-                                   "list of `<double>' or `<id> : <double>'."));
+                                   + "list of `<double>' or `<key1> : <double>|<double>|..., "
+                                   + "<key2> : <double>|... , ... '."));
         }
       return return_values;
     }
