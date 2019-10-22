@@ -250,8 +250,6 @@ namespace aspect
          */
         ComponentMask get_volumetric_composition_mask() const;
 
-        std::vector<double> angles_internal_friction;
-        std::vector<double> cohesions;
         std::vector<double> exponents_stress_limiter;
 
         /**

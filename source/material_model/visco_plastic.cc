@@ -575,20 +575,8 @@ namespace aspect
           // Dislocation creep parameters
           Rheology::DislocationCreep<dim>::declare_parameters(prm);
 
-
-          // Plasticity parameters
-          prm.declare_entry ("Angles of internal friction", "0",
-                             Patterns::List(Patterns::Double(0)),
-                             "List of angles of internal friction, $\\phi$, for background material and compositional fields, "
-                             "for a total of N+1 values, where N is the number of compositional fields. "
-                             "For a value of zero, in 2D the von Mises criterion is retrieved. "
-                             "Angles higher than 30 degrees are harder to solve numerically. Units: degrees.");
-          prm.declare_entry ("Cohesions", "1e20",
-                             Patterns::List(Patterns::Double(0)),
-                             "List of cohesions, $C$, for background material and compositional fields, "
-                             "for a total of N+1 values, where N is the number of compositional fields. "
-                             "The extremely large default cohesion value (1e20 Pa) prevents the viscous stress from "
-                             "exceeding the yield stress. Units: $Pa$.");
+          // Drucker Prager plasticity parameters
+          Rheology::DruckerPrager<dim>::declare_parameters(prm);
 
           // Stress limiter parameters
           prm.declare_entry ("Stress limiter exponents", "1.0",
@@ -597,13 +585,6 @@ namespace aspect
                              "for background material and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
                              "Units: none.");
-
-          // Limit maximum value of the drucker-prager yield stress
-          prm.declare_entry ("Maximum yield stress", "1e12", Patterns::Double(0),
-                             "Limits the maximum value of the yield stress determined by the "
-                             "drucker-prager plasticity parameters. Default value is chosen so this "
-                             "is not automatically used. Values of 100e6--1000e6 $Pa$ have been used "
-                             "in previous models. Units: $Pa$");
 
           // Temperature in viscosity laws to include an adiabat (note units of K/Pa)
           prm.declare_entry ("Adiabat temperature gradient for viscosity", "0.0", Patterns::Double(0),
