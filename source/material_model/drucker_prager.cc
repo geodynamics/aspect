@@ -105,11 +105,9 @@ namespace aspect
               else
                 {
                   // plasticity
-                  const MaterialUtilities::DruckerPragerInputs plastic_in(cohesion, angle_of_internal_friction, pressure, std::sqrt(strain_rate_effective));
-                  MaterialUtilities::DruckerPragerOutputs plastic_out;
-                  MaterialUtilities::compute_drucker_prager_yielding<dim> (plastic_in, plastic_out);
-
-                  const double eta_plastic = plastic_out.plastic_viscosity;
+                  const double eta_plastic = drucker_prager_plasticity.compute_viscosity(cohesion,angle_of_internal_friction,pressure, std::sqrt(strain_rate_effective));                  
+                  
+                  const double viscosity_pressure_derivative = drucker_prager_plasticity.compute_derivative(angle_of_internal_friction,std::sqrt(strain_rate_effective));
 
                   // Cut off the viscosity between a minimum and maximum value to avoid
                   // a numerically unfavourable large viscosity range.
@@ -128,7 +126,7 @@ namespace aspect
                                                       / ((eta_plastic + minimum_viscosity + maximum_viscosity) * (eta_plastic + minimum_viscosity + maximum_viscosity));
                       const SymmetricTensor<2,dim> effective_viscosity_strain_rate_derivatives
                         = -0.5 * averaging_factor * (eta_plastic / edot_ii_strict) * strain_rate_deviator;
-                      const double effective_viscosity_pressure_derivatives = averaging_factor * plastic_out.viscosity_pressure_derivative;
+                      const double effective_viscosity_pressure_derivatives = averaging_factor * viscosity_pressure_derivative;
 
                       derivatives->viscosity_derivative_wrt_strain_rate[i] = deviator_tensor<dim>() * effective_viscosity_strain_rate_derivatives;
 
@@ -191,6 +189,8 @@ namespace aspect
         prm.enter_subsection("Drucker Prager");
         {
           EquationOfState::LinearizedIncompressible<dim>::declare_parameters (prm);
+          
+          Rheology::DruckerPrager<dim>::declare_parameters(prm);
 
           prm.declare_entry ("Reference temperature", "293",
                              Patterns::Double (0),
@@ -224,6 +224,7 @@ namespace aspect
                              "Units: $W/m/K$.");
           prm.enter_subsection ("Viscosity");
           {
+  
             prm.declare_entry ("Minimum viscosity", "1e19",
                                Patterns::Double (0),
                                "The value of the minimum viscosity cutoff $\\eta_min$. Units: $Pa\\;s$.");
@@ -262,6 +263,9 @@ namespace aspect
         prm.enter_subsection("Drucker Prager");
         {
           equation_of_state.parse_parameters (prm);
+
+          drucker_prager_plasticity.initialize_simulator (this->get_simulator());
+          drucker_prager_plasticity.parse_parameters(prm);
 
           reference_T                = prm.get_double ("Reference temperature");
           reference_eta              = prm.get_double ("Reference viscosity");

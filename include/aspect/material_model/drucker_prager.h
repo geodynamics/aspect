@@ -22,6 +22,7 @@
 #define _aspect_material_model_drucker_prager_h
 
 #include <aspect/material_model/interface.h>
+#include <aspect/material_model/rheology/drucker_prager.h>
 #include <aspect/material_model/equation_of_state/linearized_incompressible.h>
 #include <aspect/simulator_access.h>
 
@@ -145,6 +146,11 @@ namespace aspect
         double thermal_conductivities;
 
         EquationOfState::LinearizedIncompressible<dim> equation_of_state;
+
+        /*
+         * Objects for computing plastic stresses, viscosities, and additional outputs
+         */
+        Rheology::DruckerPrager<dim> drucker_prager_plasticity;
 
         /**
          * The angle of internal friction
