@@ -403,7 +403,7 @@ namespace aspect
           // First compute the equation of state variables and thermodynamic properties
           equation_of_state.evaluate(in, i, eos_outputs_all_phases);
 
-          MaterialUtilities::PhaseFunctionInputs<dim> phase_inputs(this,in,i,eos_outputs_all_phases.densities[0],0);
+          MaterialUtilities::PhaseFunctionInputs<dim> phase_inputs(*this,in,i,eos_outputs_all_phases.densities[0],0);
 
           compute_equation_of_state_phase_transitions(eos_outputs_all_phases,
                                                       phase_function,
