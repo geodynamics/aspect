@@ -33,12 +33,12 @@ namespace aspect
       void
       MulticomponentIncompressible<dim>::
       evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-               const unsigned int q,
+               const unsigned int input_index,
                MaterialModel::EquationOfStateOutputs<dim> &out) const
       {
         for (unsigned int c=0; c < out.densities.size(); ++c)
           {
-            out.densities[c] = densities[c] * (1 - thermal_expansivities[c] * (in.temperature[q] - reference_T));
+            out.densities[c] = densities[c] * (1 - thermal_expansivities[c] * (in.temperature[input_index] - reference_T));
             out.thermal_expansion_coefficients[c] = thermal_expansivities[c];
             out.specific_heat_capacities[c] = specific_heats[c];
             out.compressibilities[c] = 0.0;
@@ -99,21 +99,29 @@ namespace aspect
         // Retrieve the list of composition names
         const std::vector<std::string> list_of_composition_names = this->introspection().get_composition_names();
 
+        n_phases_per_composition.reset(new std::vector<unsigned int>());
+
         // Parse multicomponent properties
         densities = Utilities::parse_map_to_double_array (prm.get("Densities"),
                                                           list_of_composition_names,
                                                           has_background_field,
-                                                          "Densities");
+                                                          "Densities",
+                                                          true,
+                                                          n_phases_per_composition);
 
         thermal_expansivities = Utilities::parse_map_to_double_array (prm.get("Thermal expansivities"),
                                                                       list_of_composition_names,
                                                                       has_background_field,
-                                                                      "Thermal expansivities");
+                                                                      "Thermal expansivities",
+                                                                      true,
+                                                                      n_phases_per_composition);
 
         specific_heats = Utilities::parse_map_to_double_array (prm.get("Heat capacities"),
                                                                list_of_composition_names,
                                                                has_background_field,
-                                                               "Specific heats");
+                                                               "Specific heats",
+                                                               true,
+                                                               n_phases_per_composition);
       }
     }
   }

@@ -34,6 +34,8 @@ namespace aspect
 
   namespace MaterialModel
   {
+    template <int dim> class MaterialModelInputs;
+
     using namespace dealii;
 
     /**
@@ -343,6 +345,16 @@ namespace aspect
                             const double pressure_depth_derivative,
                             const unsigned int phase_index);
 
+        /**
+         * Constructor that computes the necessary values from
+         * existing objects.
+         */
+        PhaseFunctionInputs(const SimulatorAccess<dim> &simulator_access,
+                            const MaterialModelInputs<dim> &material_in,
+                            const unsigned int input_index,
+                            const double reference_density,
+                            const unsigned int phase_index_);
+
         double temperature;
         double pressure;
         double depth;
@@ -384,6 +396,13 @@ namespace aspect
            * phase transition number @p phase_index.
            */
           double get_transition_slope (const unsigned int phase_index) const;
+
+          /**
+           * Return how many phase transitions there are for composition
+           * @p composition_index.
+           */
+          unsigned int
+          n_phase_transitions_for_composition (const unsigned int composition_index) const;
 
           /**
            * Declare the parameters this class takes through input files.

@@ -24,6 +24,7 @@
 #include <deal.II/base/signaling_nan.h>
 #include <aspect/newton.h>
 #include <aspect/adiabatic_conditions/interface.h>
+#include <aspect/gravity_model/interface.h>
 
 namespace aspect
 {
@@ -394,13 +395,21 @@ namespace aspect
       const ComponentMask volumetric_compositions = get_volumetric_composition_mask();
 
       EquationOfStateOutputs<dim> eos_outputs (this->n_compositional_fields()+1);
+      EquationOfStateOutputs<dim> eos_outputs_all_phases (this->n_compositional_fields()+1+phase_function.n_phase_transitions());
 
       // Loop through all requested points
       for (unsigned int i=0; i < in.temperature.size(); ++i)
         {
-          equation_of_state.evaluate(in, i, eos_outputs);
-
           // First compute the equation of state variables and thermodynamic properties
+          equation_of_state.evaluate(in, i, eos_outputs_all_phases);
+
+          MaterialUtilities::PhaseFunctionInputs<dim> phase_inputs(this,in,i,eos_outputs_all_phases.densities[0],0);
+
+          compute_equation_of_state_phase_transitions(eos_outputs_all_phases,
+                                                      phase_function,
+                                                      phase_inputs,
+                                                      eos_outputs);
+
           const std::vector<double> volume_fractions = MaterialUtilities::compute_volume_fractions(in.composition[i], volumetric_compositions);
 
           // not strictly correct if thermal expansivities are different, since we are interpreting
@@ -505,6 +514,8 @@ namespace aspect
       {
         prm.enter_subsection ("Visco Plastic");
         {
+          MaterialUtilities::PhaseFunction<dim>::declare_parameters(prm);
+
           EquationOfState::MulticomponentIncompressible<dim>::declare_parameters (prm);
 
           Rheology::StrainDependent<dim>::declare_parameters (prm);
@@ -631,6 +642,10 @@ namespace aspect
       {
         prm.enter_subsection ("Visco Plastic");
         {
+          // Phase transition parameters
+          phase_function.initialize_simulator (this->get_simulator());
+          phase_function.parse_parameters (prm);
+
           // Equation of state parameters
           equation_of_state.initialize_simulator (this->get_simulator());
           equation_of_state.parse_parameters (prm);

@@ -92,6 +92,13 @@ namespace aspect
        */
       std::vector<double> entropy_derivative_temperature;
     };
+
+    template <int dim>
+    void
+    compute_equation_of_state_phase_transitions(const EquationOfStateOutputs<dim> &eos_outputs_all_phases,
+                                                const MaterialUtilities::PhaseFunction<dim> &phase_function,
+                                                MaterialUtilities::PhaseFunctionInputs<dim> &phase_in,
+                                                EquationOfStateOutputs<dim> &eos_outputs);
   }
 }
 
