@@ -118,6 +118,11 @@ namespace aspect
         double density_below;
 
         /**
+         * A parameter to control whether to include the dynamic topography contribution on geoid
+         */
+        bool include_dynamic_topo_contribution;
+
+        /**
          * Function to compute the real spherical harmonic coefficients (cos and sin part) from min degree to max degree
          * The input spherical_function is a vector of vectors.
          * The inner vector stores theta, phi, spherical infinitesimal, and function value on a spherical surface.
