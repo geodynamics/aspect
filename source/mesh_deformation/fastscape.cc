@@ -52,7 +52,7 @@ namespace aspect
       int y_repetitions = repetitions.second;
 
       //Set nx and dx, as these will be the same regardless of dimension.
-      nx = 3+std::pow(2,surface_res+additional_refinement)*x_repetitions;
+      nx = 3+std::pow(2,surface_resolution+additional_refinement)*x_repetitions;
       dx = grid_extent[0].second/(nx-3);
       x_extent = geometry->get_extents()[0]+2*dx;
 
@@ -71,7 +71,7 @@ namespace aspect
 
       if (dim == 3)
         {
-          ny = 3+std::pow(2,surface_res+additional_refinement)*y_repetitions;
+          ny = 3+std::pow(2,surface_resolution+additional_refinement)*y_repetitions;
           dy = grid_extent[1].second/(ny-3);
           table_intervals[1] = ny-3;
           y_extent = geometry->get_extents()[1]+2*dy;
@@ -109,10 +109,11 @@ namespace aspect
            */
           std::vector<std::vector<double>> temporary_variables(dim+1, std::vector<double>(array_size+1,std::numeric_limits<double>::epsilon()));
           std::vector<double> V(array_size);
+          double precision = 0.001;
 
           // Get a quadrature rule that exists only on the corners, and increase the refinement if specified.
           const QIterated<dim-1> face_corners (QTrapez<1>(),
-                                               pow(2,additional_refinement));
+                                               pow(2,additional_refinement+resolution_difference));
 
           FEFaceValues<dim> fe_face_values (this->get_mapping(),
                                             this->get_fe(),
@@ -124,7 +125,6 @@ namespace aspect
           cell = this->get_dof_handler().begin_active(),
           endc = this->get_dof_handler().end();
 
-          //TODO: At some point it'd be good to check that the surface is all at one refinement level.
           for (; cell != endc; ++cell)
             if (cell->is_locally_owned() && cell->at_boundary())
               for (unsigned int face_no = 0; face_no < GeometryInfo<dim>::faces_per_cell; ++face_no)
@@ -143,6 +143,11 @@ namespace aspect
                         //This tells us which x point we're at
                         double indx = 2+vertex(0)/dx;
 
+                        // If our x or y index isn't close to a whole number, then it's likely an artifact
+                        // from using an over-resolved quadrature rule, in that case ignore it.
+                        if (indx - floor(indx) >= precision)
+                        	continue;
+
                         if (dim == 2)
                           {
                             for (int ys=0; ys<ny; ys++)
@@ -150,7 +155,6 @@ namespace aspect
                                 double index = indx+nx*ys;
                                 if (current_timestep == 1)
                                   {
-                                    //double h_seed = (std::rand()%2000)/100;
                                     temporary_variables[0][index-1] = vertex(dim-1);   //z component
                                   }
 
@@ -163,11 +167,14 @@ namespace aspect
                         if (dim == 3)
                           {
                             double indy = 2+vertex(1)/dy;
+                            if (indy - floor(indy) >= precision)
+                            	continue;
+
                             double index = (indy-1)*nx+indx;
 
                             if (current_timestep == 1)
                               {
-                                temporary_variables[0][index-1] = vertex(dim-1); //this->get_geometry_model().height_above_reference_surface(vertex); //vertex(dim-1);   //z component
+                                temporary_variables[0][index-1] = vertex(dim-1);   //z component
                               }
 
                             for (unsigned int i=0; i<dim; ++i)
@@ -177,7 +184,6 @@ namespace aspect
                   }
 
           //Set ghost nodes for left and right boundaries
-
           for (int j=0; j<ny; j++)
             {
               double index_left = nx*j+1;
@@ -280,7 +286,7 @@ namespace aspect
               if (current_timestep == 1 || restart)
                 {
 
-                  this->get_pcout() <<"   Initializing FastScape... "<< (1+surface_res+additional_refinement)  <<
+                  this->get_pcout() <<"   Initializing FastScape... "<< (1+surface_resolution+additional_refinement)  <<
                                     " levels, cell size: "<<dx<<" m."<<std::endl;
 
                   //If we are restarting from a checkpoint, load h values for fastscape so we don't lose resolution.
@@ -679,6 +685,9 @@ namespace aspect
           prm.declare_entry("Surface resolution", "1",
                             Patterns::Integer(),
                             "This should be set to the expect ASPECT resolution level you expect at the surface.");
+          prm.declare_entry("Resolution difference", "0",
+                            Patterns::Integer(),
+                            "This should be set to the expect ASPECT resolution level you expect at the surface.");
 
           prm.enter_subsection ("Boundary conditions");
           {
@@ -770,7 +779,8 @@ namespace aspect
           additional_refinement = prm.get_integer("Additional fastscape refinement");
           slice = prm.get_bool("Use center slice for 2d");
           fs_seed = prm.get_integer("Fastscape seed");
-          surface_res = prm.get_integer("Surface resolution");
+          surface_resolution = prm.get_integer("Surface resolution");
+          resolution_difference = prm.get_integer("Resolution difference");
 
           prm.enter_subsection("Boundary conditions");
           {
