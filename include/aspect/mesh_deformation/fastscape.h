@@ -120,6 +120,7 @@ namespace aspect
         mutable bool restart;
         mutable int restart_step;
         int resolution_difference;
+        mutable double keep_time;
 
         double m;
         double n;

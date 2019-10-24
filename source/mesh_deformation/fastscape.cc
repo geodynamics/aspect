@@ -18,6 +18,7 @@
 #include <aspect/mesh_deformation/fastscape.h>
 #include <aspect/geometry_model/box.h>
 #include <deal.II/numerics/vector_tools.h>
+#include <ctime>
 
 namespace aspect
 {
@@ -215,7 +216,7 @@ namespace aspect
           //Run fastscape on single processor.
           if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
             {
-
+              TimerOutput::Scope timer_section(this->get_computing_timer(), "Fastscape 1 proc");
               /*
                * Initialize the variables that will be sent to fastscape.
                * These have to be doubles of array_size, which C++ doesn't like,
@@ -484,6 +485,9 @@ namespace aspect
 
               //I really need to figure out a better way to make visualization files output correctly.
               this->get_pcout() <<"   Calling FastScape... "<<(steps-istep)<<" timesteps of "<<f_dt<<" years."<<std::endl;
+              {
+           	  auto t_start = std::chrono::high_resolution_clock::now();
+
               do
                 {
                   //Write fastscape visualization
@@ -501,6 +505,11 @@ namespace aspect
                 }
               while (istep<steps);
 
+              auto t_end = std::chrono::high_resolution_clock::now();
+              keep_time += std::chrono::duration<double>(t_end-t_start).count();
+              this->get_pcout()<<"      Total FastScape runtime... "<<round(keep_time*1000)/1000<<"s"<<std::endl;
+              }
+
               //If we've reached the end time, destroy fastscape.
               if (this->get_time()+a_dt >= end_time)
                 {
@@ -512,14 +521,13 @@ namespace aspect
               for (int i=0; i<=array_size; i++)
                 {
                   V[i] = (h[i] - temporary_variables[0][i])/a_dt;
-
-                  //std::cout<<h[i]<<"  "<<temporary_variables[0][i]<<"  "<<V[i]<<"  "<<vx[i]<<"  "<<vy[i]<<"  "<<vz[i]<<std::endl;
                 }
 
               MPI_Bcast(&V[0], array_size+1, MPI_DOUBLE, 0, this->get_mpi_communicator());
             }
           else
             {
+        	  TimerOutput::Scope timer_section(this->get_computing_timer(), "Fastscape 1 proc");
               for (int i=0; i<dim+1; i++)
                 MPI_Send(&temporary_variables[i][0], array_size+1, MPI_DOUBLE, 0, 42, this->get_mpi_communicator());
 
