@@ -775,8 +775,8 @@ namespace aspect
       const double radius = get_radius(position_point);
       std::array<double,dim> position_array;
       position_array[0] = radius + transformed_point(2);
-      position_array[1] = transformed_point(1);
-      position_array[2] = transformed_point(0);
+      position_array[1] = transformed_point(0);
+      position_array[2] = transformed_point(1);
 
       return position_array;
     }
@@ -797,10 +797,10 @@ namespace aspect
       // We receive radius, longitude, latitude and we need to turn it first back into
       // longitude, latitude, depth for internal use, and push_forward to cartesian coordiantes.
       Point<3> position_point;
-      position_point(0) = position_tensor[2];
-      position_point(1) = position_tensor[1];
+      position_point(0) = position_tensor[1];
+      position_point(1) = position_tensor[2];
 
-      const double radius = semi_major_axis_a / (std::sqrt(1 - eccentricity * eccentricity * std::sin(position_point(1)) * std::sin(position_point(1))));
+      const double radius = semi_major_axis_a / (std::sqrt(1 - eccentricity * eccentricity * std::sin(position_point(0)) * std::sin(position_point(0))));
       position_point(2) = position_tensor[0] - radius;
 
       Point<3> transformed_point = manifold.push_forward(position_point);
