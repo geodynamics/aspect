@@ -147,7 +147,7 @@ namespace aspect
                         // If our x or y index isn't close to a whole number, then it's likely an artifact
                         // from using an over-resolved quadrature rule, in that case ignore it.
                         if (indx - floor(indx) >= precision)
-                        	continue;
+                          continue;
 
                         if (dim == 2)
                           {
@@ -169,7 +169,7 @@ namespace aspect
                           {
                             double indy = 2+vertex(1)/dy;
                             if (indy - floor(indy) >= precision)
-                            	continue;
+                              continue;
 
                             double index = (indy-1)*nx+indx;
 
@@ -486,28 +486,28 @@ namespace aspect
               //I really need to figure out a better way to make visualization files output correctly.
               this->get_pcout() <<"   Calling FastScape... "<<(steps-istep)<<" timesteps of "<<f_dt<<" years."<<std::endl;
               {
-           	  auto t_start = std::chrono::high_resolution_clock::now();
+                auto t_start = std::chrono::high_resolution_clock::now();
 
-              do
-                {
-                  //Write fastscape visualization
-                  //visualization_step = istep+restart_step;
-                  //fastscape_named_vtk_(h.get(), &vexp, &visualization_step, c, &length);
+                do
+                  {
+                    //Write fastscape visualization
+                    //visualization_step = istep+restart_step;
+                    //fastscape_named_vtk_(h.get(), &vexp, &visualization_step, c, &length);
 
-                  //execute step, this increases timestep counter
-                  fastscape_execute_step_();
+                    //execute step, this increases timestep counter
+                    fastscape_execute_step_();
 
-                  //get value of time step counter
-                  fastscape_get_step_(&istep);
+                    //get value of time step counter
+                    fastscape_get_step_(&istep);
 
-                  //outputs new h values
-                  fastscape_copy_h_(h.get());
-                }
-              while (istep<steps);
+                    //outputs new h values
+                    fastscape_copy_h_(h.get());
+                  }
+                while (istep<steps);
 
-              auto t_end = std::chrono::high_resolution_clock::now();
-              keep_time += std::chrono::duration<double>(t_end-t_start).count();
-              this->get_pcout()<<"      Total FastScape runtime... "<<round(keep_time*1000)/1000<<"s"<<std::endl;
+                auto t_end = std::chrono::high_resolution_clock::now();
+                keep_time += std::chrono::duration<double>(t_end-t_start).count();
+                this->get_pcout()<<"      Total FastScape runtime... "<<round(keep_time*1000)/1000<<"s"<<std::endl;
               }
 
               //If we've reached the end time, destroy fastscape.
@@ -527,7 +527,7 @@ namespace aspect
             }
           else
             {
-        	  TimerOutput::Scope timer_section(this->get_computing_timer(), "Fastscape 1 proc");
+              TimerOutput::Scope timer_section(this->get_computing_timer(), "Fastscape 1 proc");
               for (int i=0; i<dim+1; i++)
                 MPI_Send(&temporary_variables[i][0], array_size+1, MPI_DOUBLE, 0, 42, this->get_mpi_communicator());
 
