@@ -3,7 +3,7 @@ Loading shared library <./libdrucker_prager_derivatives_2d.so>
 
 * Connecting signals
 
-Testing DruckerPrager derivatives against analytical derivatives
+Testing DruckerPrager derivatives against finite difference derivatives
 pressure: point = 0, Finite difference = 5.42254e+10, Analytical derivative = 5.42254e+10
 pressure: point = 1, Finite difference = 4.2881e+10, Analytical derivative = 4.2881e+10
 pressure: point = 2, Finite difference = 2.49368e+10, Analytical derivative = 2.49368e+10

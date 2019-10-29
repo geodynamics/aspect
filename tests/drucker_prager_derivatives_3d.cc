@@ -18,7 +18,7 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
        aspect::Assemblers::Manager<dim> &)
 {
 
-  std::cout << std::endl << "Testing DruckerPrager derivatives against analytical derivatives " << std::endl;
+  std::cout << std::endl << "Testing DruckerPrager derivatives against finite difference derivatives " << std::endl;
 
   using namespace aspect::MaterialModel;
 
