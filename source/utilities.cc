@@ -95,7 +95,8 @@ namespace aspect
                                const bool has_background_field,
                                const std::string &property_name,
                                const bool allow_multiple_values_per_key,
-                               std::shared_ptr<std::vector<unsigned int> > n_values_per_key)
+                               std::shared_ptr<std::vector<unsigned int> > n_values_per_key,
+                               const bool allow_empty_keys)
     {
       std::vector<std::string> field_names = list_of_keys;
       if (has_background_field)
@@ -126,10 +127,12 @@ namespace aspect
                                :
                                Patterns::Double();
 
+      const unsigned int n_minimal_keys = allow_empty_keys ? 0 : 1;
+
       // Parse the string depending on what Pattern we are dealing with
       if (Patterns::Map(Patterns::Anything(),
                         key_pattern,
-                        1,
+                        n_minimal_keys,
                         n_fields).match(input_string))
         {
           std::vector<std::vector<double> > return_map(n_fields,std::vector<double> ());
@@ -138,13 +141,14 @@ namespace aspect
           // then by colon delimited field name and value.
           const std::vector<std::string> field_entries = dealii::Utilities::split_string_list(input_string, ',');
 
-          AssertThrow ( (field_entries.size() == n_fields)
-                        || (field_entries.size() == 1),
-                        ExcMessage ("The number of "
-                                    + property_name
-                                    + " in the list must equal one of the following values:\n"
-                                    "1 (one value for all fields, including background, using the keyword=`all'), \n"
-                                    "or " + std::to_string(n_fields) + " (the number of fields, possibly plus 1 if a background field is expected)."));
+          if (!allow_empty_keys)
+            AssertThrow ( (field_entries.size() == n_fields)
+                          || (field_entries.size() == 1),
+                          ExcMessage ("The number of "
+                                      + property_name
+                                      + " in the list must equal one of the following values:\n"
+                                      "1 (one value for all fields, including background, using the keyword=`all'), \n"
+                                      "or " + std::to_string(n_fields) + " (the number of fields, possibly plus 1 if a background field is expected)."));
 
           // Parse by entry
           for (const auto &field_entry : field_entries)
@@ -315,6 +319,15 @@ namespace aspect
                                    + "list of `<double>' or `<key1> : <double>|<double>|..., "
                                    + "<key2> : <double>|... , ... '."));
         }
+
+      if (check_structure && return_values.size() == 0)
+        {
+          for (unsigned int i=0; i<n_fields; ++i)
+            AssertThrow((*n_values_per_key)[i] == 0,
+                        ExcMessage("The input parameter " + property_name + " does not have "
+                                   + "the expected number of values for field index " + std::to_string(i) + "."));
+        }
+
       return return_values;
     }
 

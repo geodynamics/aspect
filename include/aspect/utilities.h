@@ -130,6 +130,8 @@ namespace aspect
      *   previous call to this function) then this vector is used as
      *   expected structure of the input parameter, and it is checked that
      *   @p key_value_map fulfills this structure.
+     * @param [in] allow_empty_keys Whether to allow empty keys that have
+     *   no associated entries. This also allows a completely empty map.
      *
      * @return A vector of values that are parsed from the map, provided
      *   in the order in which the keys appear in the @p list_of_keys argument.
@@ -144,7 +146,8 @@ namespace aspect
                                const bool has_background_field,
                                const std::string &property_name,
                                const bool allow_multiple_values_per_key = false,
-                               std::shared_ptr<std::vector<unsigned int> > n_values_per_key = nullptr);
+                               std::shared_ptr<std::vector<unsigned int> > n_values_per_key = nullptr,
+                               const bool allow_empty_keys = false);
 
     /**
      * This function takes a string argument that is assumed to represent

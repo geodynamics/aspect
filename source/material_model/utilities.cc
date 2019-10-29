@@ -954,7 +954,7 @@ namespace aspect
         // Retrieve the list of composition names
         const std::vector<std::string> list_of_composition_names = this->introspection().get_composition_names();
 
-        auto phase_transitions_per_composition = std::make_shared<std::vector<unsigned int>>();
+        n_phase_transitions_per_composition.reset(new std::vector<unsigned int>());
 
         use_depth_instead_of_pressure = prm.get_bool ("Define transition by depth instead of pressure");
 
@@ -965,14 +965,16 @@ namespace aspect
                                                                                has_background_field,
                                                                                "Phase transition depths",
                                                                                true,
-                                                                               phase_transitions_per_composition);
+                                                                               n_phase_transitions_per_composition,
+                                                                               true);
 
             transition_widths          = Utilities::parse_map_to_double_array (prm.get("Phase transition widths"),
                                                                                list_of_composition_names,
                                                                                has_background_field,
                                                                                "Phase transition widths",
                                                                                true,
-                                                                               phase_transitions_per_composition);
+                                                                               n_phase_transitions_per_composition,
+                                                                               true);
           }
         else
           {
@@ -981,14 +983,16 @@ namespace aspect
                                                                          has_background_field,
                                                                          "Phase transition pressures",
                                                                          true,
-                                                                         phase_transitions_per_composition);
+                                                                         n_phase_transitions_per_composition,
+                                                                         true);
 
             transition_pressure_widths = Utilities::parse_map_to_double_array (prm.get("Phase transition pressure widths"),
                                                                                list_of_composition_names,
                                                                                has_background_field,
                                                                                "Phase transition pressure widths",
                                                                                true,
-                                                                               phase_transitions_per_composition);
+                                                                               n_phase_transitions_per_composition,
+                                                                               true);
           }
 
         transition_temperatures = Utilities::parse_map_to_double_array (prm.get("Phase transition temperatures"),
@@ -996,14 +1000,16 @@ namespace aspect
                                                                         has_background_field,
                                                                         "Phase transition temperatures",
                                                                         true,
-                                                                        phase_transitions_per_composition);
+                                                                        n_phase_transitions_per_composition,
+                                                                        true);
 
         transition_slopes = Utilities::parse_map_to_double_array (prm.get("Phase transition Clapeyron slopes"),
                                                                   list_of_composition_names,
                                                                   has_background_field,
                                                                   "Phase transition Clapeyron slopes",
                                                                   true,
-                                                                  phase_transitions_per_composition);
+                                                                  n_phase_transitions_per_composition,
+                                                                  true);
       }
     }
   }
