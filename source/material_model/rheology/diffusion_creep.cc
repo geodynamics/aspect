@@ -20,6 +20,7 @@
 
 
 #include <aspect/material_model/rheology/diffusion_creep.h>
+#include <aspect/material_model/utilities.h>
 #include <aspect/utilities.h>
 
 #include <deal.II/base/signaling_nan.h>
@@ -44,6 +45,21 @@ namespace aspect
                                               const double temperature,
                                               const unsigned int composition) const
       {
+        compute_viscosity(pressure,temperature,composition, std::vector<double>());
+      }
+
+
+      template <int dim>
+      double
+      DiffusionCreep<dim>::compute_viscosity (const double pressure,
+                                              const double temperature,
+                                              const unsigned int composition,
+                                              const std::vector<double> &gammas) const
+      {
+        const double combined_prefactor = MaterialModel::Utilities::phase_average_value(gammas, prefactors_diffusion, composition);
+        // TODO: Add other parameters and use them below
+
+
         // Power law creep equation
         //    viscosity = 0.5 * A^(-1/n) * d^(m/n) * exp((E + P*V)/(nRT))
         // A: prefactor,
@@ -64,6 +80,7 @@ namespace aspect
       void
       DiffusionCreep<dim>::declare_parameters (ParameterHandler &prm)
       {
+        // TODO: same modifications as for EquationsOfState::MulticomponentIncompressible
         prm.declare_entry ("Prefactors for diffusion creep", "1.5e-15",
                            Patterns::List(Patterns::Double(0)),
                            "List of viscosity prefactors, $A$, for background material and compositional fields, "
@@ -94,6 +111,8 @@ namespace aspect
       void
       DiffusionCreep<dim>::parse_parameters (ParameterHandler &prm)
       {
+        // TODO: same modifications as for EquationsOfState::MulticomponentIncompressible
+
         // increment by one for background:
         const unsigned int n_fields = this->n_compositional_fields() + 1;
 

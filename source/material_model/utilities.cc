@@ -700,6 +700,16 @@ namespace aspect
 
 
 
+      double phase_average_value (const std::vector<double> &phase_function_values,
+                                  const std::vector<double> parameter_values,
+                                  const unsigned int start_index)
+      {
+        // TODO: implementation
+        return 0.0;
+      }
+
+
+
       DruckerPragerInputs::DruckerPragerInputs(const double cohesion_,
                                                const double friction_angle_,
                                                const double pressure_,

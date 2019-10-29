@@ -63,6 +63,17 @@ namespace aspect
                              const double temperature,
                              const unsigned int composition) const;
 
+          /**
+           * Compute the viscosity based on the diffusion creep law in the
+           * presence of different material phases as determined by the phase function
+           * parameters @p gammas. TODO: extend, how many gammas? for which composition?
+           */
+          double
+          compute_viscosity (const double pressure,
+                             const double temperature,
+                             const unsigned int composition,
+                             const std::vector<double> &gammas) const;
+
         private:
 
           /**
