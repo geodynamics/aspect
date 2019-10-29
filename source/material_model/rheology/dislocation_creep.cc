@@ -43,17 +43,40 @@ namespace aspect
       DislocationCreep<dim>::compute_viscosity (const double strain_rate,
                                                 const double pressure,
                                                 const double temperature,
-                                                const unsigned int composition) const
+                                                const unsigned int composition,
+                                                const std::pair<std::vector<double>, const std::vector<unsigned int>> &gamma_inputs) const
       {
+        // If there is phase chage
+        //  Phase change: average flow lay parameters from phase, where gamma_inputs is not nullptr
+        //  No phase change: take flow lay parameters from composition
+        double prefactors_dislocation_c;
+        double activation_energies_dislocation_c;
+        double activation_volumes_dislocation_c;
+        double stress_exponents_dislocation_c;
+        if (gamma_inputs != std::pair<std::vector<double>, const std::vector<unsigned int>>())
+          {
+            prefactors_dislocation_c = MaterialModel::MaterialUtilities::phase_average_value(gamma_inputs, prefactors_dislocation, composition, true);
+            activation_energies_dislocation_c = MaterialModel::MaterialUtilities::phase_average_value(gamma_inputs, activation_energies_dislocation, composition);
+            activation_volumes_dislocation_c = MaterialModel::MaterialUtilities::phase_average_value(gamma_inputs, activation_volumes_dislocation , composition);
+            stress_exponents_dislocation_c = MaterialModel::MaterialUtilities::phase_average_value(gamma_inputs, stress_exponents_dislocation, composition);
+          }
+        else
+          {
+            prefactors_dislocation_c = prefactors_dislocation[composition];
+            activation_energies_dislocation_c = activation_energies_dislocation[composition];
+            activation_volumes_dislocation_c = activation_volumes_dislocation[composition];
+            stress_exponents_dislocation_c = stress_exponents_dislocation[composition];
+          }
+
         // Power law creep equation:
         //    viscosity = 0.5 * A^(-1/n) * edot_ii^((1-n)/n) * exp((E + P*V)/(nRT))
         // A: prefactor, edot_ii: square root of second invariant of deviatoric strain rate tensor,
         // E: activation energy, P: pressure,
         // V; activation volume, n: stress exponent, R: gas constant, T: temperature.
-        const double viscosity_dislocation = 0.5 * std::pow(prefactors_dislocation[composition],-1/stress_exponents_dislocation[composition]) *
-                                             std::exp((activation_energies_dislocation[composition] + pressure*activation_volumes_dislocation[composition])/
-                                                      (constants::gas_constant*temperature*stress_exponents_dislocation[composition])) *
-                                             std::pow(strain_rate,((1. - stress_exponents_dislocation[composition])/stress_exponents_dislocation[composition]));
+        const double viscosity_dislocation = 0.5 * std::pow(prefactors_dislocation_c,-1/stress_exponents_dislocation_c) *
+                                             std::exp((activation_energies_dislocation_c + pressure*activation_volumes_dislocation_c)/
+                                                      (constants::gas_constant*temperature*stress_exponents_dislocation_c)) *
+                                             std::pow(strain_rate,((1. - stress_exponents_dislocation_c)/stress_exponents_dislocation_c));
         return viscosity_dislocation;
       }
 
@@ -64,23 +87,23 @@ namespace aspect
       DislocationCreep<dim>::declare_parameters (ParameterHandler &prm)
       {
         prm.declare_entry ("Prefactors for dislocation creep", "1.1e-16",
-                           Patterns::List(Patterns::Double(0)),
+                           Patterns::Anything(),
                            "List of viscosity prefactors, $A$, for background material and compositional fields, "
                            "for a total of N+1 values, where N is the number of compositional fields. "
                            "If only one value is given, then all use the same value. "
                            "Units: $Pa^{-n_{\\text{dislocation}}} s^{-1}$");
         prm.declare_entry ("Stress exponents for dislocation creep", "3.5",
-                           Patterns::List(Patterns::Double(0)),
+                           Patterns::Anything(),
                            "List of stress exponents, $n_{\\text{dislocation}}$, for background material and compositional fields, "
                            "for a total of N+1 values, where N is the number of compositional fields. "
                            "If only one value is given, then all use the same value.  Units: None");
         prm.declare_entry ("Activation energies for dislocation creep", "530e3",
-                           Patterns::List(Patterns::Double(0)),
+                           Patterns::Anything(),
                            "List of activation energies, $E_a$, for background material and compositional fields, "
                            "for a total of N+1 values, where N is the number of compositional fields. "
                            "If only one value is given, then all use the same value.  Units: $J / mol$");
         prm.declare_entry ("Activation volumes for dislocation creep", "1.4e-5",
-                           Patterns::List(Patterns::Double(0)),
+                           Patterns::Anything(),
                            "List of activation volumes, $V_a$, for background material and compositional fields, "
                            "for a total of N+1 values, where N is the number of compositional fields. "
                            "If only one value is given, then all use the same value.  Units: $m^3 / mol$");
@@ -90,23 +113,40 @@ namespace aspect
 
       template <int dim>
       void
-      DislocationCreep<dim>::parse_parameters (ParameterHandler &prm)
+      DislocationCreep<dim>::parse_parameters (ParameterHandler &prm, const std::shared_ptr<std::vector<unsigned int>> expected_n_phases_per_composition)
       {
-        // increment by one for background:
-        const unsigned int n_fields = this->n_compositional_fields() + 1;
+        // Retrieve the list of composition names
+        const std::vector<std::string> list_of_composition_names = this->introspection().get_composition_names();
 
-        prefactors_dislocation = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Prefactors for dislocation creep"))),
-                                                                         n_fields,
-                                                                         "Prefactors for dislocation creep");
-        stress_exponents_dislocation = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Stress exponents for dislocation creep"))),
-                                                                               n_fields,
-                                                                               "Stress exponents for dislocation creep");
-        activation_energies_dislocation = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Activation energies for dislocation creep"))),
-                                                                                  n_fields,
-                                                                                  "Activation energies for dislocation creep");
-        activation_volumes_dislocation = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Activation volumes for dislocation creep"))),
-                                                                                 n_fields,
-                                                                                 "Activation volumes for dislocation creep");
+        const bool has_background_field = true;
+
+        // Read parameters, each of size of number of composition + number of phases + 1
+        prefactors_dislocation = Utilities::parse_map_to_double_array(prm.get("Prefactors for dislocation creep"),
+                                                                      list_of_composition_names,
+                                                                      has_background_field,
+                                                                      "Prefactors for dislocation creep",
+                                                                      true,
+                                                                      expected_n_phases_per_composition);
+
+        stress_exponents_dislocation = Utilities::parse_map_to_double_array(prm.get("Stress exponents for dislocation creep"),
+                                                                            list_of_composition_names,
+                                                                            has_background_field,
+                                                                            "Stress exponents for dislocation creep",
+                                                                            true,
+                                                                            expected_n_phases_per_composition);
+
+        activation_energies_dislocation = Utilities::parse_map_to_double_array(prm.get("Activation energies for dislocation creep"),
+                                                                               list_of_composition_names,
+                                                                               has_background_field,
+                                                                               "Activation energies for dislocation creep",
+                                                                               true,
+                                                                               expected_n_phases_per_composition);
+        activation_volumes_dislocation  = Utilities::parse_map_to_double_array(prm.get("Activation volumes for dislocation creep"),
+                                                                               list_of_composition_names,
+                                                                               has_background_field,
+                                                                               "Activation volumes for dislocation creep",
+                                                                               true,
+                                                                               expected_n_phases_per_composition);
       }
     }
   }

@@ -52,7 +52,8 @@ namespace aspect
            * Read the parameters from the parameter file.
            */
           void
-          parse_parameters (ParameterHandler &prm);
+          parse_parameters (ParameterHandler &prm, const std::shared_ptr<std::vector<unsigned int>> expected_n_phases_per_composition =
+                              std::shared_ptr<std::vector<unsigned int>>());
 
           /**
            * Compute the viscosity based on the dislocation creep law.
@@ -61,7 +62,8 @@ namespace aspect
           compute_viscosity (const double strain_rate,
                              const double pressure,
                              const double temperature,
-                             const unsigned int composition) const;
+                             const unsigned int composition,
+                             const std::pair<std::vector<double>, const std::vector<unsigned int>> &gamma_inputs) const;
 
         private:
 

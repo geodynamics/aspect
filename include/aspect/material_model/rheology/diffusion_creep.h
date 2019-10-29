@@ -53,15 +53,19 @@ namespace aspect
            * Read the parameters from the parameter file.
            */
           void
-          parse_parameters (ParameterHandler &prm);
+          parse_parameters (ParameterHandler &prm, const std::shared_ptr<std::vector<unsigned int>> expected_n_phases_per_composition =
+                              std::shared_ptr<std::vector<unsigned int>>());
 
           /**
-           * Compute the viscosity based on the diffusion creep law.
+           * Compute the viscosity based on the diffusion creep law in the
+           * presence of different material phases as determined by the phase function
+           * parameters @p gammas. TODO: extend, how many gammas? for which composition?
            */
           double
           compute_viscosity (const double pressure,
                              const double temperature,
-                             const unsigned int composition) const;
+                             const unsigned int composition,
+                             const std::pair<std::vector<double>, const std::vector<unsigned int>> &gamma_inputs= {}) const;
 
         private:
 

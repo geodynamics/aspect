@@ -270,6 +270,14 @@ namespace aspect
                             const std::vector<double> &parameter_values,
                             const CompositionalAveragingOperation &average_type);
 
+      /**
+       * TODO: Add documentation (see averag value above for template)
+       */
+      double phase_average_value (const std::pair<std::vector<double>, const std::vector<unsigned int>> &gamma_inputs,
+                                  const std::vector<double> &parameter_values,
+                                  const unsigned int composition,
+                                  const bool by_log = false);
+
 
       /**
        * A data structure with all inputs for the

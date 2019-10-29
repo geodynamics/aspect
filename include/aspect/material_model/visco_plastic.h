@@ -308,7 +308,8 @@ namespace aspect
                                           const std::vector<double> &composition,
                                           const SymmetricTensor<2,dim> &strain_rate,
                                           const ViscosityScheme &viscous_type,
-                                          const YieldScheme &yield_type) const;
+                                          const YieldScheme &yield_type,
+                                          const std::pair<std::vector<double>, const std::vector<unsigned int>> &gamma_inputs= {}) const;
 
 
         /**
@@ -366,7 +367,6 @@ namespace aspect
          * Input parameters for the drucker prager plasticity.
          */
         Rheology::DruckerPragerParameters drucker_prager_parameters;
-
         /**
          * Object that handles phase transitions.
          */

@@ -1,0 +1,16 @@
+New: Visco-plastic material model can now have phases in a single compostion leading to
+mupliple phases and compostions in total. To do this, user need to give additional
+values in 'subsection Material model'. First, user need to provide information about
+phase transitions, this is one example:
+'set Phase transition depths = background:50e3|75e3, right:50e3|75e3'
+Note that composition is marked with name 'background' and 'right' while phases are
+separated by '|'.
+Then, user need to provide information about material properties, this is one example:
+'set Densities = background:3300|3400|3500, right:3600|3700|3800'
+Note that, for each composition, entries for properties should be one more than entries
+of phase transitions.
+If these entries are provided, the program will calculate density and viscosity by averaging
+among phases.
+
+<br>
+(Haoyuan Li, 2020/03/05)
