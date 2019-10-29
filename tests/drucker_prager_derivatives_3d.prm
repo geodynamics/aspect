@@ -1,0 +1,112 @@
+# This test checks wether the derivatives of the drucker prager
+# material model are the same as the finite difference derivatives 
+# created by the drucker prager material model. Significantly, the
+# temperature, composition, pressure and strain rate values 
+# evaluated by the material are all specified within 
+# drucker_prager_derivatives_3d.cc and the model parameters defined 
+# below are not used in the test.
+set Additional shared libraries = tests/libdrucker_prager_derivatives_3d.so
+
+set Dimension                              = 3
+set End time                               = 0
+set Use years in output instead of seconds = true
+set Nonlinear solver scheme                = iterated Advection and Newton Stokes
+set Max nonlinear iterations               = 0
+
+# Model geometry (100x100 km, 10 km spacing)
+subsection Geometry model
+  set Model name = box
+  subsection Box
+    set X repetitions = 10
+    set Y repetitions = 10
+    set X extent      = 100e3
+    set Y extent      = 100e3
+  end
+end
+
+# Mesh refinement specifications 
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 0
+  set Time steps between mesh refinement = 0
+end
+
+
+# Boundary classifications (fixed T boundaries, prescribed velocity) 
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = bottom, top, left, right
+end
+
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = bottom y: function, top y: function, left x: function, right x: function
+end
+
+subsection Boundary velocity model
+  subsection Function
+    set Variable names      = x,y,z
+    set Function constants  = m=0.0005, year=1
+    set Function expression = if (x<50e3 , -1*m/year, 1*m/year); if (y<50e3 , 1*m/year, -1*m/year); 0
+  end
+end
+
+# Temperature boundary and initial conditions
+subsection Boundary temperature model
+  set List of model names = box
+  subsection Box
+    set Bottom temperature = 273
+    set Left temperature   = 273
+    set Right temperature  = 273
+    set Top temperature    = 273
+  end
+end
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Function expression = 273
+  end
+end
+
+# Compositional fields used to track finite strain invariant
+subsection Compositional fields
+  set Number of fields = 0
+end
+
+# Material model (values for background material)
+subsection Material model
+  set Model name = drucker prager
+  subsection Drucker Prager
+    subsection Viscosity
+      set Reference strain rate = 1e-20
+      set Angle of internal friction = 30.
+    end
+  end
+end
+
+# Gravity model
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 10.0
+  end
+end
+
+# Post processing
+# named additional outputs includes the weakened cohesions and friction angles
+subsection Postprocess
+  set List of postprocessors = velocity statistics, mass flux statistics, visualization
+  subsection Visualization
+    set Interpolate output = false
+    set List of output variables = viscosity, strain rate
+    set Output format            = gnuplot
+  end
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Number of cheap Stokes solver steps = 0
+  end
+end
