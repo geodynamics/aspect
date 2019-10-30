@@ -5,13 +5,20 @@
 #include <aspect/simulator_access.h>
 #include <aspect/newton.h>
 #include <aspect/utilities.h>
+#include <aspect/parameters.h>
+
+#include <deal.II/base/exceptions.h>
+#include <memory>
+#include <functional>
 
 #include <iostream>
 
 template<int dim>
-int f()
+void f(const aspect::SimulatorAccess<dim> &simulator_access,
+       aspect::Assemblers::Manager<dim> &)
 {
-  std::cout << std::endl << "Test with dimension " << dim << std::endl;
+
+  std::cout << std::endl << "Testing DruckerPrager derivatives against finite difference derivatives " << std::endl;
 
   using namespace aspect::MaterialModel;
 
@@ -54,53 +61,41 @@ int f()
   in_base.strain_rate[0][0][0] = 1e-12;
   in_base.strain_rate[0][0][1] = 1e-12;
   in_base.strain_rate[0][1][1] = 1e-11;
-  if (dim == 3)
-    {
-      in_base.strain_rate[0][2][0] = 1e-12;
-      in_base.strain_rate[0][2][1] = 1e-12;
-      in_base.strain_rate[0][2][2] = 1e-11;
-    }
+  in_base.strain_rate[0][2][0] = 1e-12;
+  in_base.strain_rate[0][2][1] = 1e-12;
+  in_base.strain_rate[0][2][2] = 1e-11;
 
   in_base.strain_rate[1] = SymmetricTensor<2,dim>(in_base.strain_rate[0]);
   in_base.strain_rate[1][0][0] = -1.71266e-13;
   in_base.strain_rate[1][0][1] = -5.82647e-12;
   in_base.strain_rate[1][1][1] = 4.21668e-14;
-  if (dim == 3)
-    {
-      in_base.strain_rate[1][2][0] = -5.42647e-12;
-      in_base.strain_rate[1][2][1] = -5.22647e-12;
-      in_base.strain_rate[1][2][2] = 4.21668e-14;
-    }
+  in_base.strain_rate[1][2][0] = -5.42647e-12;
+  in_base.strain_rate[1][2][1] = -5.22647e-12;
+  in_base.strain_rate[1][2][2] = 4.21668e-14;
+
   in_base.strain_rate[2] = SymmetricTensor<2,dim>(in_base.strain_rate[0]);
   in_base.strain_rate[2][1][1] = 1e-13;
   in_base.strain_rate[2][0][1] = 1e-11;
   in_base.strain_rate[2][0][0] = -1e-12;
-  if (dim == 3)
-    {
-      in_base.strain_rate[2][2][0] = 1e-11;
-      in_base.strain_rate[2][2][1] = 1e-11;
-      in_base.strain_rate[2][2][2] = -1e-12;
-    }
+  in_base.strain_rate[2][2][0] = 1e-11;
+  in_base.strain_rate[2][2][1] = 1e-11;
+  in_base.strain_rate[2][2][2] = -1e-12;
+
   in_base.strain_rate[3] = SymmetricTensor<2,dim>(in_base.strain_rate[0]);
   in_base.strain_rate[3][1][1] = 4.9e-21;
   in_base.strain_rate[3][0][1] = 4.9e-21;
   in_base.strain_rate[3][0][0] = 4.9e-21;
-  if (dim == 3)
-    {
-      in_base.strain_rate[3][2][0] = 4.9e-21;
-      in_base.strain_rate[3][2][1] = 4.9e-21;
-      in_base.strain_rate[3][2][2] = 4.9e-21;
-    }
+  in_base.strain_rate[3][2][0] = 4.9e-21;
+  in_base.strain_rate[3][2][1] = 4.9e-21;
+  in_base.strain_rate[3][2][2] = 4.9e-21;
+
   in_base.strain_rate[4] = SymmetricTensor<2,dim>(in_base.strain_rate[0]);
   in_base.strain_rate[4][1][1] = 1e-11;
   in_base.strain_rate[4][0][1] = 1e-11;
   in_base.strain_rate[4][0][0] = 1e-11;
-  if (dim == 3)
-    {
-      in_base.strain_rate[4][2][0] = 1e-11;
-      in_base.strain_rate[4][2][1] = 1e-11;
-      in_base.strain_rate[4][2][2] = 1e-11;
-    }
+  in_base.strain_rate[4][2][0] = 1e-11;
+  in_base.strain_rate[4][2][1] = 1e-11;
+  in_base.strain_rate[4][2][2] = 1e-11;
 
   // initialize some variables we will need later.
   const double finite_difference_accuracy = 1e-7;
@@ -112,15 +107,13 @@ int f()
   MaterialModelOutputs<dim> out_dviscositydpressure(5,3);
   MaterialModelOutputs<dim> out_dviscositydstrainrate(5,3);
 
-  if (out_base.template get_additional_output<MaterialModelDerivatives<dim> >() != nullptr)
-    throw "error";
-
-  out_base.additional_outputs.push_back(std_cxx14::make_unique<MaterialModelDerivatives<dim> > (5));
-
   // initialize the material we want to test.
-  DruckerPrager<dim> mat;
-  ParameterHandler prm;
-  mat.declare_parameters(prm);
+  aspect::ParameterHandler prm;
+
+  const aspect::MaterialModel::DruckerPrager<dim> const_material_model = dynamic_cast<const aspect::MaterialModel::DruckerPrager<dim> &>(simulator_access.get_material_model());
+  aspect::MaterialModel::DruckerPrager<dim> material_model = const_cast<aspect::MaterialModel::DruckerPrager<dim> &>(const_material_model);
+
+  material_model.declare_parameters(prm);
 
   prm.enter_subsection("Material model");
   {
@@ -137,9 +130,11 @@ int f()
   }
   prm.leave_subsection();
 
-  mat.parse_parameters(prm);
+  const_cast<aspect::MaterialModel::Interface<dim> &>(simulator_access.get_material_model()).parse_parameters(prm);
 
-  mat.evaluate(in_base, out_base);
+  out_base.additional_outputs.push_back(std_cxx14::make_unique<MaterialModelDerivatives<dim> > (5));
+
+  simulator_access.get_material_model().evaluate(in_base, out_base);
 
   // set up additional output for the derivatives
   MaterialModelDerivatives<dim> *derivatives;
@@ -149,7 +144,6 @@ int f()
   // have a bool so we know whether the test has succeed or not.
   bool Error = false;
 
-
   // test the pressure derivative.
   MaterialModelInputs<dim> in_dviscositydpressure(in_base);
   in_dviscositydpressure.pressure[0] *= finite_difference_factor;
@@ -158,7 +152,7 @@ int f()
   in_dviscositydpressure.pressure[3] *= finite_difference_factor;
   in_dviscositydpressure.pressure[4] *= finite_difference_factor;
 
-  mat.evaluate(in_dviscositydpressure, out_dviscositydpressure);
+  simulator_access.get_material_model().evaluate(in_dviscositydpressure, out_dviscositydpressure);
 
   for (unsigned int i = 0; i < 5; i++)
     {
@@ -193,7 +187,7 @@ int f()
         }
 
 
-      mat.evaluate(in_dviscositydstrainrate, out_dviscositydstrainrate);
+      simulator_access.get_material_model().evaluate(in_dviscositydstrainrate, out_dviscositydstrainrate);
 
       for (unsigned int i = 0; i < 5; i++)
         {
@@ -225,21 +219,24 @@ int f()
       std::cout << "OK" << std::endl;
     }
 
-  return 42;
 }
 
-int exit_function()
+template <>
+void f(const aspect::SimulatorAccess<2> &,
+       aspect::Assemblers::Manager<2> &)
 {
-  exit(0);
-  return 42;
+  AssertThrow(false,dealii::ExcInternalError());
 }
 
-// run this function by initializing a global variable by it
-// test 2D
-int test2d = f<2>(); // Testing min function
-// test 3D
-int test3d = f<3>(); // Testing min function
-// exit
-int kl = exit_function();
+template <int dim>
+void signal_connector (aspect::SimulatorSignals<dim> &signals)
+{
+  using namespace dealii;
+  std::cout << "* Connecting signals" << std::endl;
+  signals.set_assemblers.connect (std::bind(&f<dim>,
+                                            std::placeholders::_1,
+                                            std::placeholders::_2));
+}
 
-
+ASPECT_REGISTER_SIGNALS_CONNECTOR(signal_connector<2>,
+                                  signal_connector<3>)
