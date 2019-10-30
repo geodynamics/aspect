@@ -1,10 +1,12 @@
-# Copy of visco_plastic.prm, but include a phase transition for the EoS
+# Copy of visco_plastic_phases.prm, but include multiple
+# compositions and have different numbers of phase transitions
+# for different compositions (including 0).
 
 set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 0
 set Use years in output instead of seconds = true
-set Nonlinear solver scheme                = single Advection, iterated Stokes
+set Nonlinear solver scheme                = no Advection, no Stokes
 set Max nonlinear iterations               = 1
 set Output directory                       = visco_plastic
 set Timing output frequency                = 1
@@ -23,7 +25,7 @@ end
 # Mesh refinement specifications 
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
-  set Initial global refinement          = 0
+  set Initial global refinement          = 2
   set Time steps between mesh refinement = 0
 end
 
@@ -55,18 +57,32 @@ subsection Initial temperature model
   end
 end
 
-# Material model (values for background material)
+subsection Compositional fields
+  set Number of fields = 2
+  # background is assumed to be lithosphere
+  set Names of fields  = upper_crust, lower_crust
+end
+
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Function expression = (y > 80000) ? 1.0 : 0.0; \
+                              (y > 50000) ? ((y <= 80000) ? 1.0 : 0.0) : 0.0
+  end
+end
+
 subsection Material model
   set Model name = visco plastic
   subsection Visco Plastic
-    set Phase transition depths = 50e3
-    set Phase transition widths = 1e3
-    set Phase transition temperatures = 273
-    set Phase transition Clapeyron slopes = 0
+    set Phase transition depths = upper_crust: 10e3, background: 70e3|90e3
+    set Phase transition widths = upper_crust: 1e3,background: 1e3|1e3
+    set Phase transition temperatures = upper_crust: 1000, background: 1000|1000
+    set Phase transition Clapeyron slopes = upper_crust: 0, background: 0|0 
 
-    set Densities = background:3300|3400
-    set Thermal expansivities = background:3.5e-5|2e-5
-    set Heat capacities = background:1200|1000
+    set Densities = upper_crust: 2700|2750, lower_crust: 2850, background:3300|3400|3500
+    set Thermal expansivities = upper_crust: 1e-5|1.5e-5, lower_crust: 7e-5, background:3.5e-5|2e-5|1e-5
+    set Heat capacities = upper_crust: 900|800, lower_crust: 600, background:1200|1000|700
 
     set Reference strain rate = 1.e-16
     set Viscous flow law = dislocation

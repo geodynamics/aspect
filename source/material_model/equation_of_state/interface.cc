@@ -28,23 +28,26 @@ namespace aspect
   namespace MaterialModel
   {
     template <int dim>
-    EquationOfStateOutputs<dim>::EquationOfStateOutputs(const unsigned int n_compositions)
+    EquationOfStateOutputs<dim>::EquationOfStateOutputs(const unsigned int n_individual_compositions_and_phases)
       :
-      densities(n_compositions, numbers::signaling_nan<double>()),
-      thermal_expansion_coefficients(n_compositions, numbers::signaling_nan<double>()),
-      specific_heat_capacities(n_compositions, numbers::signaling_nan<double>()),
-      compressibilities(n_compositions, numbers::signaling_nan<double>()),
-      entropy_derivative_pressure(n_compositions, numbers::signaling_nan<double>()),
-      entropy_derivative_temperature(n_compositions, numbers::signaling_nan<double>())
+      densities(n_individual_compositions_and_phases, numbers::signaling_nan<double>()),
+      thermal_expansion_coefficients(n_individual_compositions_and_phases, numbers::signaling_nan<double>()),
+      specific_heat_capacities(n_individual_compositions_and_phases, numbers::signaling_nan<double>()),
+      compressibilities(n_individual_compositions_and_phases, numbers::signaling_nan<double>()),
+      entropy_derivative_pressure(n_individual_compositions_and_phases, numbers::signaling_nan<double>()),
+      entropy_derivative_temperature(n_individual_compositions_and_phases, numbers::signaling_nan<double>())
     {}
 
     template <int dim>
     void
-    compute_equation_of_state_phase_transitions(const EquationOfStateOutputs<dim> &eos_outputs_all_phases,
-                                                const MaterialUtilities::PhaseFunction<dim> &phase_function,
-                                                MaterialUtilities::PhaseFunctionInputs<dim> &phase_in,
-                                                EquationOfStateOutputs<dim> &eos_outputs)
+    phase_average_equation_of_state_outputs(const EquationOfStateOutputs<dim> &eos_outputs_all_phases,
+                                            const MaterialUtilities::PhaseFunction<dim> &phase_function,
+                                            MaterialUtilities::PhaseFunctionInputs<dim> &phase_in,
+                                            EquationOfStateOutputs<dim> &eos_outputs)
     {
+      const std::vector<unsigned int> n_phases_per_composition =
+        phase_function.n_phase_transitions_for_each_composition();
+
       unsigned int j=0;
       for (unsigned int c=0; c<eos_outputs.densities.size(); ++c)
         {
@@ -58,20 +61,22 @@ namespace aspect
           eos_outputs.entropy_derivative_pressure[c] = eos_outputs_all_phases.entropy_derivative_pressure[j];
           eos_outputs.entropy_derivative_temperature[c] = eos_outputs_all_phases.entropy_derivative_temperature[j];
 
-          const unsigned int base_index = j;
           ++j;
 
-          for (unsigned int p=0; p<phase_function.n_phase_transitions_for_composition(c); ++p)
+          for (unsigned int p=0; p<n_phases_per_composition[c]; ++p, ++j)
             {
               Assert(j<eos_outputs_all_phases.densities.size(),
                      ExcInternalError());
 
               phase_in.phase_index = j-c-1;
-              eos_outputs.densities[c] += phase_function.compute_value(phase_in) * (eos_outputs_all_phases.densities[j]-eos_outputs_all_phases.densities[base_index]);
-              eos_outputs.thermal_expansion_coefficients[c] += phase_function.compute_value(phase_in) * (eos_outputs_all_phases.thermal_expansion_coefficients[j]-eos_outputs_all_phases.thermal_expansion_coefficients[base_index]);
-              eos_outputs.specific_heat_capacities[c] += phase_function.compute_value(phase_in) * (eos_outputs_all_phases.specific_heat_capacities[j]-eos_outputs_all_phases.specific_heat_capacities[base_index]);
+              const double gamma = phase_function.compute_value(phase_in);
 
-              ++j;
+              eos_outputs.densities[c] += gamma * (eos_outputs_all_phases.densities[j]-eos_outputs_all_phases.densities[j-1]);
+              eos_outputs.thermal_expansion_coefficients[c] += gamma * (eos_outputs_all_phases.thermal_expansion_coefficients[j]-eos_outputs_all_phases.thermal_expansion_coefficients[j-1]);
+              eos_outputs.specific_heat_capacities[c] += gamma * (eos_outputs_all_phases.specific_heat_capacities[j]-eos_outputs_all_phases.specific_heat_capacities[j-1]);
+              eos_outputs.compressibilities[c] = gamma * (eos_outputs_all_phases.compressibilities[j]-eos_outputs_all_phases.compressibilities[j-1]);
+              eos_outputs.entropy_derivative_pressure[c] = gamma * (eos_outputs_all_phases.entropy_derivative_pressure[j]-eos_outputs_all_phases.entropy_derivative_pressure[j-1]);
+              eos_outputs.entropy_derivative_temperature[c] = gamma * (eos_outputs_all_phases.entropy_derivative_temperature[j]-eos_outputs_all_phases.entropy_derivative_temperature[j-1]);
             }
         }
     }
@@ -85,10 +90,10 @@ namespace aspect
   {
 #define INSTANTIATE(dim) \
   template struct EquationOfStateOutputs<dim>; \
-  template void compute_equation_of_state_phase_transitions<dim> (const EquationOfStateOutputs<dim> &, \
-                                                                  const MaterialUtilities::PhaseFunction<dim> &, \
-                                                                  MaterialUtilities::PhaseFunctionInputs<dim> &, \
-                                                                  EquationOfStateOutputs<dim> &);
+  template void phase_average_equation_of_state_outputs<dim> (const EquationOfStateOutputs<dim> &, \
+                                                              const MaterialUtilities::PhaseFunction<dim> &, \
+                                                              MaterialUtilities::PhaseFunctionInputs<dim> &, \
+                                                              EquationOfStateOutputs<dim> &);
 
     ASPECT_INSTANTIATE(INSTANTIATE)
   }

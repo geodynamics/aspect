@@ -896,10 +896,10 @@ namespace aspect
 
 
       template <int dim>
-      unsigned int
-      PhaseFunction<dim>::n_phase_transitions_for_composition (const unsigned int composition_index) const
+      const std::vector<unsigned int> &
+      PhaseFunction<dim>::n_phase_transitions_for_each_composition () const
       {
-        return (*n_phase_transitions_per_composition)[composition_index];
+        return *n_phase_transitions_per_composition;
       }
 
 
