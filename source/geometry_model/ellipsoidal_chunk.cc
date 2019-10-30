@@ -800,7 +800,7 @@ namespace aspect
       position_point(0) = position_tensor[1];
       position_point(1) = position_tensor[2];
 
-      const double radius = semi_major_axis_a / (std::sqrt(1 - eccentricity * eccentricity * std::sin(position_point(0)) * std::sin(position_point(0))));
+      const double radius = semi_major_axis_a / (std::sqrt(1 - eccentricity * eccentricity * std::sin(position_point(1)) * std::sin(position_point(1))));
       position_point(2) = position_tensor[0] - radius;
 
       Point<3> transformed_point = manifold.push_forward(position_point);
