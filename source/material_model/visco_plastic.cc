@@ -24,7 +24,6 @@
 #include <deal.II/base/signaling_nan.h>
 #include <aspect/newton.h>
 #include <aspect/adiabatic_conditions/interface.h>
-#include <aspect/gravity_model/interface.h>
 
 namespace aspect
 {
@@ -405,10 +404,10 @@ namespace aspect
 
           MaterialUtilities::PhaseFunctionInputs<dim> phase_inputs(*this,in,i,eos_outputs_all_phases.densities[0],0);
 
-          compute_equation_of_state_phase_transitions(eos_outputs_all_phases,
-                                                      phase_function,
-                                                      phase_inputs,
-                                                      eos_outputs);
+          phase_average_equation_of_state_outputs(eos_outputs_all_phases,
+                                                  phase_function,
+                                                  phase_inputs,
+                                                  eos_outputs);
 
           const std::vector<double> volume_fractions = MaterialUtilities::compute_volume_fractions(in.composition[i], volumetric_compositions);
 
@@ -627,9 +626,17 @@ namespace aspect
           phase_function.initialize_simulator (this->get_simulator());
           phase_function.parse_parameters (prm);
 
+          auto n_phase_transitions_for_each_composition =
+            std::make_shared<std::vector<unsigned int>>(phase_function.n_phase_transitions_for_each_composition());
+
+          // We require one more entries for density, etc as there are phase transitions
+          for (auto &n_phases: *n_phase_transitions_for_each_composition)
+            n_phases += 1;
+
           // Equation of state parameters
           equation_of_state.initialize_simulator (this->get_simulator());
-          equation_of_state.parse_parameters (prm);
+          equation_of_state.parse_parameters (prm,
+                                              n_phase_transitions_for_each_composition);
 
           strain_rheology.initialize_simulator (this->get_simulator());
           strain_rheology.parse_parameters(prm);

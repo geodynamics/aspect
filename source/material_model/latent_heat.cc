@@ -105,19 +105,7 @@ namespace aspect
             // Loop through phase transitions
             for (unsigned int phase=0; phase<phase_function.n_phase_transitions(); ++phase)
               {
-                const double depth = this->get_geometry_model().depth(in.position[i]);
-                const double pressure_depth_derivative = (depth > 0)
-                                                         ?
-                                                         pressure / depth
-                                                         :
-                                                         this->get_gravity_model().gravity_vector(in.position[i]).norm() * reference_rho;
-
-                const MaterialUtilities::PhaseFunctionInputs<dim> phase_in(temperature,
-                                                                           pressure,
-                                                                           depth,
-                                                                           pressure_depth_derivative,
-                                                                           phase);
-
+                const MaterialUtilities::PhaseFunctionInputs<dim> phase_in(*this,in,i,reference_rho,phase);
                 const double phaseFunction = phase_function.compute_value(phase_in);
 
                 // Note that for the densities we have a list of jumps, so the index used
