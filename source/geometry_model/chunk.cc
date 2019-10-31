@@ -114,9 +114,9 @@ namespace aspect
           }
           case 3:
           {
-            output_vertex[0] = input_vertex[0]*std::cos(input_vertex[2])*std::cos(input_vertex[1]); // x=rsinthetacosphi
-            output_vertex[1] = input_vertex[0]*std::cos(input_vertex[2])*std::sin(input_vertex[1]); // y=rsinthetasinphi
-            output_vertex[2] = input_vertex[0]*std::sin(input_vertex[2]); // z=rcostheta
+            output_vertex[0] = input_vertex[0]*std::sin(input_vertex[2])*std::cos(input_vertex[1]); // x=rsinthetacosphi
+            output_vertex[1] = input_vertex[0]*std::sin(input_vertex[2])*std::sin(input_vertex[1]); // y=rsinthetasinphi
+            output_vertex[2] = input_vertex[0]*std::cos(input_vertex[2]); // z=rcostheta
             break;
           }
           default:
@@ -162,7 +162,7 @@ namespace aspect
             if (output_vertex[1] < 0.0)
               if (output_vertex[1] < point1_lon - 100 * std::abs(point1_lon)*std::numeric_limits<double>::epsilon())
                 output_vertex[1] += 2.0 * numbers::PI;
-            output_vertex[2] = std::asin(v[2]/radius);
+            output_vertex[2] = std::acos(v[2]/radius);
             break;
           }
           default:
