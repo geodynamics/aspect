@@ -4063,7 +4063,7 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 {\it Description:} Possible approximations for the density derivatives in the mass conservation equation. Note that this parameter is only evaluated if `Formulation' is set to `custom'. Other formulations ignore the value of this parameter.
 
 
-{\it Possible values:} Any one of incompressible, isentropic compression, hydrostatic compression, reference density profile, implicit reference density profile, ask material model
+{\it Possible values:} Any one of incompressible, isentropic compression, hydrostatic compression, reference density profile, implicit reference density profile, projected density field, ask material model
 \item {\it Parameter name:} {\tt Temperature equation}
 \phantomsection\label{parameters:Formulation/Temperature equation}
 \label{parameters:Formulation/Temperature_20equation}
@@ -6016,6 +6016,8 @@ If the function you are describing represents a vector-valued function with mult
 
 The following composition models are available:
 
+`adiabatic density': Specify the initial composition as the adiabatic reference density at each position. Note that only the field with the name 'density\_field' will be filled for all other fields this plugin returns 0.0.
+
 `ascii data': Implementation of a model in which the initial composition is derived from files containing data in ascii format. Note the required format of the input data: The first lines may contain any number of comments if they begin with `\#', but one of these lines needs to contain the number of grid points in each dimension as for example `\# POINTS: 3 3'. The order of the data columns has to be `x', `y', `composition1', `composition2', etc. in a 2d model and `x', `y', `z', `composition1', `composition2', etc. in a 3d model, according to the number of compositional fields, which means that there has to be a single column for every composition in the model.Note that the data in the input files need to be sorted in a specific order: the first coordinate needs to ascend first, followed by the second and the third at last in order to assign the correct data to the prescribed coordinates. If you use a spherical model, then the assumed grid changes. `x' will be replaced by the radial distance of the point to the bottom of the model, `y' by the azimuth angle and `z' by the polar angle measured positive from the north pole. The grid will be assumed to be a latitude-longitude grid. Note that the order of spherical coordinates is `r', `phi', `theta' and not `r', `theta', `phi', since this allows for dimension independent expressions.
 
 `ascii data layered': Implementation of a model in which the initial composition is derived from files containing data in ascii format. Each file defines a surface on which compositional fields are defined. Between the surfaces, the fields can be chosen to be constant (with a value defined by the nearest shallower surface), or linearly interpolated between surfaces. Note the required format of the input ascii data file: The first lines may contain any number of comments if they begin with `\#', but one of these lines needs to contain the number of grid points in each dimension as for example `\# POINTS: 3 3'. The order of the data columns has to be `x', `y', `composition1', `composition2' etc. in a 2d model and `x', `y', `z', `composition1', `composition2' etc. in a 3d model; i.e. the columns before the lcompositional field always contains the position of the surface along the vertical direction. The first column needs to ascend first, followed by the second in order to assign the correct data to the prescribed coordinates. If you use a spherical model, then the assumed grid changes. `x' will be replaced by the azimuth angle and `y' (if 3D) by the polar angle measured positive from the north pole. The last column will be the distance of the point from the origin (i.e. radial position). The grid in this case will be a latitude-longitude grid. Note that the order of spherical coordinates in 3D is `phi', `theta', `r', `T'and not `theta', `phi', `r', `T' as this is more consistent with other ASPECT plugins. Outside of the region defined by the grid, the plugin will use the value at the edge of the region.
@@ -6027,7 +6029,7 @@ The following composition models are available:
 `world builder': Specify the initial composition through the World Builder. More information on the World Builder can be found at \url{https://geodynamicworldbuilder.github.io}. Make sure to specify the location of the World Builder file in the parameter 'World builder file'.
 
 
-{\it Possible values:} A comma-separated list of any of ascii data, ascii data layered, function, porosity, world builder
+{\it Possible values:} A comma-separated list of any of adiabatic density, ascii data, ascii data layered, function, porosity, world builder
 \item {\it Parameter name:} {\tt List of model operators}
 \phantomsection\label{parameters:Initial composition model/List of model operators}
 \label{parameters:Initial_20composition_20model/List_20of_20model_20operators}
@@ -6060,6 +6062,8 @@ The following composition models are available:
 
 {\it Description:} Select one of the following models:
 
+`adiabatic density': Specify the initial composition as the adiabatic reference density at each position. Note that only the field with the name 'density\_field' will be filled for all other fields this plugin returns 0.0.
+
 `ascii data': Implementation of a model in which the initial composition is derived from files containing data in ascii format. Note the required format of the input data: The first lines may contain any number of comments if they begin with `\#', but one of these lines needs to contain the number of grid points in each dimension as for example `\# POINTS: 3 3'. The order of the data columns has to be `x', `y', `composition1', `composition2', etc. in a 2d model and `x', `y', `z', `composition1', `composition2', etc. in a 3d model, according to the number of compositional fields, which means that there has to be a single column for every composition in the model.Note that the data in the input files need to be sorted in a specific order: the first coordinate needs to ascend first, followed by the second and the third at last in order to assign the correct data to the prescribed coordinates. If you use a spherical model, then the assumed grid changes. `x' will be replaced by the radial distance of the point to the bottom of the model, `y' by the azimuth angle and `z' by the polar angle measured positive from the north pole. The grid will be assumed to be a latitude-longitude grid. Note that the order of spherical coordinates is `r', `phi', `theta' and not `r', `theta', `phi', since this allows for dimension independent expressions.
 
 `ascii data layered': Implementation of a model in which the initial composition is derived from files containing data in ascii format. Each file defines a surface on which compositional fields are defined. Between the surfaces, the fields can be chosen to be constant (with a value defined by the nearest shallower surface), or linearly interpolated between surfaces. Note the required format of the input ascii data file: The first lines may contain any number of comments if they begin with `\#', but one of these lines needs to contain the number of grid points in each dimension as for example `\# POINTS: 3 3'. The order of the data columns has to be `x', `y', `composition1', `composition2' etc. in a 2d model and `x', `y', `z', `composition1', `composition2' etc. in a 3d model; i.e. the columns before the lcompositional field always contains the position of the surface along the vertical direction. The first column needs to ascend first, followed by the second in order to assign the correct data to the prescribed coordinates. If you use a spherical model, then the assumed grid changes. `x' will be replaced by the azimuth angle and `y' (if 3D) by the polar angle measured positive from the north pole. The last column will be the distance of the point from the origin (i.e. radial position). The grid in this case will be a latitude-longitude grid. Note that the order of spherical coordinates in 3D is `phi', `theta', `r', `T'and not `theta', `phi', `r', `T' as this is more consistent with other ASPECT plugins. Outside of the region defined by the grid, the plugin will use the value at the edge of the region.
@@ -6073,7 +6077,7 @@ The following composition models are available:
 \textbf{Warning}: This parameter provides an old and deprecated way of specifying initial composition models and shouldn't be used. Please use 'List of model names' instead.
 
 
-{\it Possible values:} Any one of ascii data, ascii data layered, function, porosity, world builder, unspecified
+{\it Possible values:} Any one of adiabatic density, ascii data, ascii data layered, function, porosity, world builder, unspecified
 \item {\it Parameter name:} {\tt Volume of fluid intialization type}
 \phantomsection\label{parameters:Initial composition model/Volume of fluid intialization type}
 \label{parameters:Initial_20composition_20model/Volume_20of_20fluid_20intialization_20type}
@@ -16963,6 +16967,23 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Include the contributon from dynamic topography}
+\phantomsection\label{parameters:Postprocess/Geoid/Include the contributon from dynamic topography}
+\label{parameters:Postprocess/Geoid/Include_20the_20contributon_20from_20dynamic_20topography}
+
+
+\index[prmindex]{Include the contributon from dynamic topography}
+\index[prmindexfull]{Postprocess!Geoid!Include the contributon from dynamic topography}
+{\it Value:} true
+
+
+{\it Default:} true
+
+
+{\it Description:} Option to include the contribution from dynamic topography on geoid. The default is true.
+
+
+{\it Possible values:} A boolean value (true or false)
 \item {\it Parameter name:} {\tt Maximum degree}
 \phantomsection\label{parameters:Postprocess/Geoid/Maximum degree}
 \label{parameters:Postprocess/Geoid/Maximum_20degree}
@@ -17395,6 +17416,23 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 
 
 {\it Possible values:} A comma-separated list of any of none, dx, ucd, gnuplot, povray, eps, gmv, tecplot, tecplot\_binary, vtk, vtu, hdf5, svg, deal.II intermediate, ascii
+\item {\it Parameter name:} {\tt Exclude output properties}
+\phantomsection\label{parameters:Postprocess/Particles/Exclude output properties}
+\label{parameters:Postprocess/Particles/Exclude_20output_20properties}
+
+
+\index[prmindex]{Exclude output properties}
+\index[prmindexfull]{Postprocess!Particles!Exclude output properties}
+{\it Value:} 
+
+
+{\it Default:} 
+
+
+{\it Description:} A comma seperated list of strings which exclude all particleproperty fields which contain these strings. If one of the entries is 'all', only a id will be provided for every point.
+
+
+{\it Possible values:} Any string
 \item {\it Parameter name:} {\tt Integration scheme}
 \phantomsection\label{parameters:Postprocess/Particles/Integration scheme}
 \label{parameters:Postprocess/Particles/Integration_20scheme}

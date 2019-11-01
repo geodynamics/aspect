@@ -202,6 +202,9 @@ SimulatorAccess -> N6aspect12HeatingModel16ShearHeatingMeltILi2EEE [style="dotte
 N6aspect12HeatingModel9InterfaceILi2EEE -> Simulator [len=15, weight=50];
 
 N6aspect18InitialComposition9InterfaceILi2EEE [label="Initial composition interface", height=.8,width=.8,shape="rect",fillcolor="green"]
+N6aspect18InitialComposition16AdiabaticDensityILi2EEE [label="adiabatic\ndensity", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
+N6aspect18InitialComposition16AdiabaticDensityILi2EEE -> N6aspect18InitialComposition9InterfaceILi2EEE [len=3, weight=50];
+SimulatorAccess -> N6aspect18InitialComposition16AdiabaticDensityILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
 N6aspect18InitialComposition9AsciiDataILi2EEE [label="ascii data", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
 N6aspect18InitialComposition9AsciiDataILi2EEE -> N6aspect18InitialComposition9InterfaceILi2EEE [len=3, weight=50];
 SimulatorAccess -> N6aspect18InitialComposition9AsciiDataILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
