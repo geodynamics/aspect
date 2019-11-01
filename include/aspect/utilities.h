@@ -73,8 +73,6 @@ namespace aspect
                                  const unsigned int N,
                                  const std::string &id_text);
 
-
-
     /**
      * This function takes a string argument that is interpreted as a map
      * of the form "key1 : value1, key2 : value2, etc", and then parses
@@ -96,18 +94,18 @@ namespace aspect
      *   assigned to the first element of the output vector. This form only
      *   allows a single value per key.
      * - Whether or not a background field is required depends on
-     *   the parameter being parsed. Requiring a background field
-     *   increases the size of the output vector by 1. For example,
-     *   some Material models require background fields, but input
-     *   files may not.
+     *   @p has_background_field. Requiring a background field
+     *   inserts "background" into the @p list_of_keys at the front
+     *   of the list. For example, some Material models require
+     *   background fields, but input files may not.
      * - Two special keys are recognized:
      *      all --> Assign the associated value to all fields.
-     *              Only one value is allowed in this case.
+     *              Only one key is allowed in this case.
      *      background --> Assign associated value to the background.
      *
      * @param[in] key_value_map The string representation of the map
      *   to be parsed.
-     * @param[in] list_of_keys A list of valid key names that are allowed
+     * @param[in] list_of_keys A list of N valid key names that are allowed
      *   to appear in the map. The order of these keys determines the order
      *   of values that are returned by this function.
      * @param[in] has_background_field If true, expect N+1 values and allow
@@ -129,15 +127,18 @@ namespace aspect
      *   handed over (e.g. a n_values_per_key vector created by a
      *   previous call to this function) then this vector is used as
      *   expected structure of the input parameter, and it is checked that
-     *   @p key_value_map fulfills this structure.
-     * @param [in] allow_empty_keys Whether to allow empty keys that have
-     *   no associated entries. This also allows a completely empty map.
+     *   @p key_value_map fulfills this structure. This can be used to assert
+     *   that several input parameters prescribe the same number of values
+     *   to each key.
+     * @param [in] allow_missing_keys Whether to allow that some keys are
+     *   not set to any values, i.e. they do not appear at all in the
+     *   @p key_value_map. This also allows a completely empty map.
      *
      * @return A vector of values that are parsed from the map, provided
      *   in the order in which the keys appear in the @p list_of_keys argument.
      *   If multiple values per key are allowed, the vector contains first all
      *   values for key 1, then all values for key 2 and so forth. Using the
-     *   @p n_values_per_key vector allows the caller to sort entries in the
+     *   @p n_values_per_key vector allows the caller to associate entries in the
      *   returned vector to specific keys.
      */
     std::vector<double>
@@ -147,7 +148,7 @@ namespace aspect
                                const std::string &property_name,
                                const bool allow_multiple_values_per_key = false,
                                std::shared_ptr<std::vector<unsigned int> > n_values_per_key = nullptr,
-                               const bool allow_empty_keys = false);
+                               const bool allow_missing_keys = false);
 
     /**
      * This function takes a string argument that is assumed to represent
