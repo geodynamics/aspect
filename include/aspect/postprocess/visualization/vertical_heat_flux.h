@@ -54,7 +54,7 @@ namespace aspect
           VerticalHeatFlux ();
 
           /**
-           * @copydoc Interface<dim>::evaluate_vector_field()
+           * Evaluate the vertical heat flux for the current cell.
            */
           void
           evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
