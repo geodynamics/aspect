@@ -853,24 +853,12 @@ namespace aspect
 
     current_constraints.copy_from(new_current_constraints);
 
-#ifdef DEBUG
-    IndexSet locally_active_dofs;
-    DoFTools::extract_locally_active_dofs(dof_handler, locally_active_dofs);
-    const std::vector<IndexSet> locally_owned_per_proc
-#if DEAL_II_VERSION_GTE(9,2,0)
-      = dof_handler.compute_locally_owned_dofs_per_processor();
-#else
-      = dof_handler.locally_owned_dofs_per_processor();
-#endif
-
-
-    Assert(current_constraints.is_consistent_in_parallel(
-             locally_owned_per_proc,
-             locally_active_dofs,
-             mpi_communicator,
-             /*verbose = */ false),
-           ExcMessage("Inconsistent Constraints detected!"));
-#endif
+    // TODO: We should use current_constraints.is_consistent_in_parallel()
+    // here to assert that our constraints are consistent between
+    // processors. This got removed in
+    // https://github.com/geodynamics/aspect/pull/3282 because it triggered in
+    // normal computations due to small floating point differences. See
+    // https://github.com/geodynamics/aspect/issues/3248 for the discussion.
   }
 
 
