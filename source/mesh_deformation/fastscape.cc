@@ -108,7 +108,8 @@ namespace aspect
            * Initialize a vector of temporary variables to hold: z component, Vx, Vy, and Vz.
            * For some reason I need to add one to the temporary array_size but not V.
            */
-          std::vector<std::vector<double>> temporary_variables(dim+1, std::vector<double>(array_size+1,std::numeric_limits<double>::epsilon()));
+          //std::vector<std::vector<double>> temporary_variables(dim+2, std::vector<double>(1,0));
+          std::vector<std::vector<double>> temporary_variables(dim+2, std::vector<double>());
           std::vector<double> V(array_size);
           double precision = 0.001;
 
@@ -161,7 +162,7 @@ namespace aspect
 
 
                                 for (unsigned int i=0; i<dim; ++i)
-                                  temporary_variables[i+1][index-1] = vel[corner][i]*year_in_seconds;
+                                  temporary_variables[i+2][index-1] = vel[corner][i]*year_in_seconds;
                               }
                           }
 
@@ -173,45 +174,15 @@ namespace aspect
 
                             double index = (indy-1)*nx+indx;
 
-                            if (current_timestep == 1)
-                              {
-                                temporary_variables[0][index-1] = vertex(dim-1);   //z component
-                              }
+                            temporary_variables[1].push_back(index-1);
+                            temporary_variables[0].push_back(vertex(dim-1));   //z component
+
 
                             for (unsigned int i=0; i<dim; ++i)
-                              temporary_variables[i+1][index-1] = vel[corner][i]*year_in_seconds;
+                              temporary_variables[i+2].push_back(vel[corner][i]*year_in_seconds);
                           }
                       }
                   }
-
-          //Set ghost nodes for left and right boundaries
-          for (int j=0; j<ny; j++)
-            {
-              double index_left = nx*j+1;
-              double index_right = nx*(j+1);
-
-              for (unsigned int i=0; i<dim+1; ++i)
-                {
-                  temporary_variables[i][index_left-1] = temporary_variables[i][index_left];
-                  temporary_variables[i][index_right-1] = temporary_variables[i][index_right-2];
-                }
-            }
-
-          //Set ghost node for top and bottom boundaries
-          if (dim == 3)
-            {
-              for (int j=0; j<nx; j++)
-                {
-                  double index_bot = j+1;
-                  double index_top = nx*(ny-1)+j+1;
-
-                  for (unsigned int i=0; i<dim+1; ++i)
-                    {
-                      temporary_variables[i][index_bot-1] = temporary_variables[i][index_bot+nx-1];
-                      temporary_variables[i][index_top-1] = temporary_variables[i][index_top-nx-1];
-                    }
-                }
-            }
 
           //Run fastscape on single processor.
           if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
@@ -231,6 +202,7 @@ namespace aspect
               int istep = 0;
               int steps = nstep;
               std::srand(fs_seed);
+              std::vector<double> h_old(array_size);
 
               //Create variables for output directory and restart file
               std::string filename;
@@ -240,50 +212,65 @@ namespace aspect
               const std::string restart_filename = filename + "fastscape_h_restart.txt";
               const std::string restart_step_filename = filename + "fastscape_steps_restart.txt";
 
-              //Initialize kf and kd across array, and set the velocities and h values to what processor zero has.
+              //Initialize all FastScape variables.
               for (int i=0; i<=array_size; i++)
                 {
-                  h[i] = temporary_variables[0][i];
-                  vx[i] = temporary_variables[1][i];
-                  vz[i] = temporary_variables[dim][i];
-
-                  if (dim == 2)
-                    vy[i]=0;
-
-                  if (dim == 3)
-                    vy[i]=temporary_variables[2][i];
+                  h[i] = 0;
+                  vx[i] = 0;
+                  vz[i] = 0;
+                  vy[i] = 0;
 
                   kf[i] = kff;
                   kd[i] = kdd;
                 }
 
+              //Get info for first processor.
+              for (unsigned int i=0; i<temporary_variables[1].size(); i++)
+                {
+                  h[temporary_variables[1][i]]= temporary_variables[0][i];
+                  vx[temporary_variables[1][i]]= temporary_variables[2][i];
+                  vz[temporary_variables[1][i]]= temporary_variables[dim+1][i];
+
+                  if (dim == 2 )
+                    vy[temporary_variables[1][i]]=0;
+
+                  if (dim == 3)
+                    vy[temporary_variables[1][i]]=temporary_variables[3][i];
+
+                }
+
               for (unsigned int p=1; p<Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()); ++p)
                 {
                   MPI_Status status;
-                  for (int i=0; i<dim+1; i++)
-                    MPI_Recv(&temporary_variables[i][0], array_size+1, MPI_DOUBLE, p, 42, this->get_mpi_communicator(), &status);
+                  MPI_Probe(p, 42, this->get_mpi_communicator(), &status);
+                  int incoming_size = 0;
+                  MPI_Get_count(&status, MPI_DOUBLE, &incoming_size);
 
-                  /*
-                   * All values are initialized to epsilon, if a processor has a value
-                   * that is not epsilon, then it's at the surface.
-                   * TODO: Maybe it'd be better to instead track the index and value?
-                   */
-                  for (int i=0; i<=array_size; i++)
-                    if (temporary_variables[1][i] != std::numeric_limits<double>::epsilon())
-                      {
-                        h[i]= temporary_variables[0][i];
-                        vx[i]=temporary_variables[1][i];
-                        vz[i]= temporary_variables[dim][i];
+                  for (unsigned int i=0; i<temporary_variables.size(); ++i)
+                    {
+                      temporary_variables[i].resize(incoming_size);
+                    }
 
-                        if (dim == 2 )
-                          vy[i]=0;
+                  for (unsigned int i=0; i<temporary_variables.size(); i++)
+                    MPI_Recv(&temporary_variables[i][0], incoming_size, MPI_DOUBLE, p, 42, this->get_mpi_communicator(), &status);
 
-                        if (dim == 3)
-                          vy[i]=temporary_variables[2][i];
-                      }
+                  //Get info from other processors.
+                  for (unsigned int i=0; i<temporary_variables[1].size(); i++)
+                    {
+                      h[temporary_variables[1][i]]= temporary_variables[0][i];
+                      vx[temporary_variables[1][i]]=temporary_variables[2][i];
+                      vz[temporary_variables[1][i]]= temporary_variables[dim+1][i];
+
+                      if (dim == 2 )
+                        vy[temporary_variables[1][i]]=0;
+
+                      if (dim == 3)
+                        vy[temporary_variables[1][i]]=temporary_variables[3][i];
+
+                    }
+
                 }
 
-              //If it's the first time this is called, or we are restarting from a checkpoint, initialize fastscape.
               if (current_timestep == 1 || restart)
                 {
 
@@ -365,7 +352,7 @@ namespace aspect
                       double h_seed = (std::rand()%2000)/100;
                       h[i] = h[i] + h_seed;
                     }
-                  temporary_variables[0][i] = h[i];
+                  h_old[i] = h[i];
                 }
 
               //Get current fastscape timestep.
@@ -386,14 +373,30 @@ namespace aspect
                 }
 
 
-              //If opposite boundaries are both open, set as periodic and replace ghost nodes with
-              //the value on opposite side.
-              if (left == 0 && right == 0)
+              //Now we set the ghost nodes at the left and right boundaries.
+              for (int j=0; j<ny; j++)
                 {
-                  for (int j=0; j<ny; j++)
+                  double index_left = nx*j+1;
+                  double index_right = nx*(j+1);
+
+                  //Generally, they will always be set to the same values as the
+                  //inner nodes next to them.
+                  vz[index_right-1] =   vz[index_right-2];
+                  vz[index_left-1] =    vz[index_left];
+
+                  vy[index_right-1] = vy[index_right-2];
+                  vy[index_left-1] =  vy[index_left];
+
+                  vx[index_right-1] = vx[index_right-2];
+                  vx[index_left-1] =  vx[index_left];
+
+                  h[index_right-1] = h[index_right-2];
+                  h[index_left-1] = h[index_left];
+
+                  //If we set the boundaries as periodic, then reset any values to the
+                  //nodes on the opposite side.
+                  if (left == 0 && right == 0)
                     {
-                      double index_left = nx*j+1;
-                      double index_right = nx*(j+1);
                       double side = index_left;
                       int jj = 0;
 
@@ -425,13 +428,26 @@ namespace aspect
                     }
                 }
 
-
-              if (top == 0 && bottom == 0)
+              //Now do the same for the top and bottom ghost nodes.
+              for (int j=0; j<nx; j++)
                 {
-                  for (int j=0; j<nx; j++)
+                  double index_bot = j+1;
+                  double index_top = nx*(ny-1)+j+1;
+
+                  vz[index_bot-1] = vz[index_bot+nx-1];
+                  vz[index_top-1] = vz[index_top-nx-1];
+
+                  vy[index_bot-1] = vy[index_bot+nx-1];
+                  vy[index_top-1] =  vy[index_top-nx-1];
+
+                  vx[index_bot-1] = vx[index_bot+nx-1];
+                  vx[index_top-1] =  vx[index_top-nx-1];
+
+                  h[index_bot-1] = h[index_bot+nx-1];
+                  h[index_top-1] = h[index_top-nx-1];
+
+                  if (bottom == 0 && top == 0)
                     {
-                      double index_bot = j+1;
-                      double index_top = nx*(ny-1)+j+1;
                       double side = index_bot;
                       int jj = nx;
 
@@ -462,6 +478,7 @@ namespace aspect
                     }
                 }
 
+
               //Find a fastscape timestep that is below our maximum timestep.
               double f_dt = a_dt/steps;
               while (f_dt>max_timestep)
@@ -481,12 +498,12 @@ namespace aspect
               //Initialize first time step, and update steps.
               int visualization_step = istep+restart_step;
               steps = istep+steps;
-              fastscape_named_vtk_(h.get(), &vexp, &visualization_step, c, &length);
 
               //I really need to figure out a better way to make visualization files output correctly.
               this->get_pcout() <<"   Calling FastScape... "<<(steps-istep)<<" timesteps of "<<f_dt<<" years."<<std::endl;
               {
                 auto t_start = std::chrono::high_resolution_clock::now();
+                fastscape_named_vtk_(h.get(), &vexp, &visualization_step, c, &length);
 
                 do
                   {
@@ -520,7 +537,7 @@ namespace aspect
               //Find out our velocities from the change in height.
               for (int i=0; i<=array_size; i++)
                 {
-                  V[i] = (h[i] - temporary_variables[0][i])/a_dt;
+                  V[i] = (h[i] - h_old[i])/a_dt;
                 }
 
               MPI_Bcast(&V[0], array_size+1, MPI_DOUBLE, 0, this->get_mpi_communicator());
@@ -528,8 +545,10 @@ namespace aspect
           else
             {
               TimerOutput::Scope timer_section(this->get_computing_timer(), "Fastscape 1 proc");
-              for (int i=0; i<dim+1; i++)
-                MPI_Send(&temporary_variables[i][0], array_size+1, MPI_DOUBLE, 0, 42, this->get_mpi_communicator());
+
+              for (unsigned int i=0; i<temporary_variables.size(); i++)
+                MPI_Send(&temporary_variables[i][0], temporary_variables[1].size(), MPI_DOUBLE, 0, 42, this->get_mpi_communicator());
+
 
               MPI_Bcast(&V[0], array_size+1, MPI_DOUBLE, 0, this->get_mpi_communicator());
             }
@@ -546,6 +565,7 @@ namespace aspect
 
           //this variable gives us how many slices near the boundaries to ignore,
           //this helps avoid boundary conditions effecting the topography.
+          //TODO: make sure 2d still works.
           int edge = (nx+1)/2;
           if (dim == 2)
             {
