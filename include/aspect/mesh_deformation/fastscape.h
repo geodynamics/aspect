@@ -41,6 +41,8 @@ void fastscape_set_dt_(double *dtt);
 void fastscape_init_h_(double *hp);
 void fastscape_set_erosional_parameters_(double *kkf,const double *kkfsed,const double *mm,const double *nnn,
                                          double *kkd,const double *kkdsed,const double *gg1,const double *gg2,const double *pp);
+void fastscape_set_marine_parameters_(const double *sl, const double *p1, const double *p2, const double *z1,
+                                      const double *z2, const double *r, const double *l, const double *kds1, const double *kds2);
 
 void fastscape_view_();
 void fastscape_set_bc_(const int *jbc);
@@ -134,6 +136,18 @@ namespace aspect
         double dx;
         double dy;
         double end_time;
+
+        //Marine parameters
+        double sl;
+        double p1;
+        double p2;
+        double z1;
+        double z2;
+        double r;
+        double l;
+        double kds1;
+        double kds2;
+        bool use_marine;
 
         std::array<std::pair<double,double>,dim> grid_extent;
         std::array< unsigned int, dim > table_intervals;

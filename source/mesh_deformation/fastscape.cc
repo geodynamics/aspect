@@ -332,6 +332,9 @@ namespace aspect
 
                   //Set erosional parameters. May have to move this if sed values are updated over time.
                   fastscape_set_erosional_parameters_(kf.get(), &kfsed, &m, &n, kd.get(), &kdsed, &g, &g, &p);
+
+                  if (use_marine)
+                    fastscape_set_marine_parameters_(&sl, &p1, &p2, &z1, &z2, &r, &l, &kds1, &kds2);
                 }
               else
                 {
@@ -716,6 +719,9 @@ namespace aspect
           prm.declare_entry("Resolution difference", "0",
                             Patterns::Integer(),
                             "This should be set to the expect ASPECT resolution level you expect at the surface.");
+          prm.declare_entry ("Use marine parameters", "false",
+                             Patterns::Bool (),
+                             "Flag to use marine parameters");
 
           prm.enter_subsection ("Boundary conditions");
           {
@@ -774,6 +780,47 @@ namespace aspect
                               "An unstabilized free surface can overshoot its ");
           }
           prm.leave_subsection();
+
+          prm.enter_subsection ("Marine parameters");
+          {
+            prm.declare_entry("Sea level", "0",
+                              Patterns::Double(),
+                              "Theta parameter described in \\cite{KMM2010}. "
+                              "An unstabilized free surface can overshoot its ");
+            prm.declare_entry("Sand porosity", "0.1",
+                              Patterns::Double(),
+                              "Theta parameter described in \\cite{KMM2010}. "
+                              "An unstabilized free surface can overshoot its ");
+            prm.declare_entry("Shale porosity", "0.05",
+                              Patterns::Double(),
+                              "Theta parameter described in \\cite{KMM2010}. "
+                              "An unstabilized free surface can overshoot its ");
+            prm.declare_entry("Sand e-folding depth", "1e4",
+                              Patterns::Double(),
+                              "Theta parameter described in \\cite{KMM2010}. "
+                              "An unstabilized free surface can overshoot its ");
+            prm.declare_entry("Shale e-folding depth", "1e4",
+                              Patterns::Double(),
+                              "Theta parameter described in \\cite{KMM2010}. "
+                              "An unstabilized free surface can overshoot its ");
+            prm.declare_entry("Sand-shale ratio", "0.75",
+                              Patterns::Double(),
+                              "Theta parameter described in \\cite{KMM2010}. "
+                              "An unstabilized free surface can overshoot its ");
+            prm.declare_entry("Depth averaging thickness", "250",
+                              Patterns::Double(),
+                              "Theta parameter described in \\cite{KMM2010}. "
+                              "An unstabilized free surface can overshoot its ");
+            prm.declare_entry("Sand transport coefficient", "1e-3",
+                              Patterns::Double(),
+                              "Theta parameter described in \\cite{KMM2010}. "
+                              "An unstabilized free surface can overshoot its ");
+            prm.declare_entry("Shale transport coefficient", "1e-3",
+                              Patterns::Double(),
+                              "Theta parameter described in \\cite{KMM2010}. "
+                              "An unstabilized free surface can overshoot its ");
+          }
+          prm.leave_subsection();
         }
         prm.leave_subsection();
       }
@@ -809,6 +856,7 @@ namespace aspect
           fs_seed = prm.get_integer("Fastscape seed");
           surface_resolution = prm.get_integer("Surface resolution");
           resolution_difference = prm.get_integer("Resolution difference");
+          use_marine = prm.get_bool("Use marine parameters");
 
           prm.enter_subsection("Boundary conditions");
           {
@@ -832,6 +880,20 @@ namespace aspect
             g = prm.get_double("Bedrock deposition coefficient");
             gsed = prm.get_double("Sediment deposition coefficient");
             p = prm.get_double("Multi-direction slope exponent");
+          }
+          prm.leave_subsection();
+
+          prm.enter_subsection("Marine parameters");
+          {
+            sl = prm.get_double("Sea level");
+            p1 = prm.get_double("Sand porosity");
+            p2 = prm.get_double("Shale porosity");
+            z1 = prm.get_double("Sand e-folding depth");
+            z2 = prm.get_double("Shale e-folding depth");
+            r = prm.get_double("Sand-shale ratio");
+            l = prm.get_double("Depth averaging thickness");
+            kds1 = prm.get_double("Sand transport coefficient");
+            kds2 = prm.get_double("Shale transport coefficient");
           }
           prm.leave_subsection();
 
