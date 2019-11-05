@@ -294,8 +294,6 @@ namespace aspect
 
               const double theta=spos[2];
 
-              Tensor<1,dim> g;
-
               const double gammma = 1.0;
               const double R1 = 0.5;
               const double R2 = 1.0;
