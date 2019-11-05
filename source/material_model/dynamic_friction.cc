@@ -58,7 +58,11 @@ namespace aspect
           const double phi = std::atan (mu);
 
           // Compute the viscosity according to the Drucker-Prager yield criterion.
-          const double plastic_viscosity = drucker_prager_plasticity.compute_viscosity(cohesions[i], phi, std::max(pressure,0.0), std::sqrt(strain_rate_dev_inv2));
+          const double plastic_viscosity = drucker_prager_plasticity.compute_viscosity(cohesions[i],
+                                                                                       phi,
+                                                                                       std::max(pressure,0.0),
+                                                                                       std::sqrt(strain_rate_dev_inv2),
+                                                                                       drucker_prager_parameters.max_yield_stress);
 
           // Cut off the viscosity between a minimum and maximum value to avoid
           // a numerically unfavourable large viscosity range.
@@ -212,7 +216,8 @@ namespace aspect
           equation_of_state.parse_parameters (prm);
 
           drucker_prager_plasticity.initialize_simulator (this->get_simulator());
-          drucker_prager_plasticity.parse_parameters(prm);
+          drucker_prager_parameters = drucker_prager_plasticity.parse_parameters(prm);
+
 
           reference_T = prm.get_double ("Reference temperature");
 

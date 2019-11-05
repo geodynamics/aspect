@@ -105,7 +105,11 @@ namespace aspect
               else
                 {
                   // plasticity
-                  const double eta_plastic = drucker_prager_plasticity.compute_viscosity(cohesion,angle_of_internal_friction,pressure, std::sqrt(strain_rate_effective));
+                  const double eta_plastic = drucker_prager_plasticity.compute_viscosity(cohesion,
+                                                                                         angle_of_internal_friction,
+                                                                                         pressure,
+                                                                                         std::sqrt(strain_rate_effective),
+                                                                                         drucker_prager_parameters.max_yield_stress);
 
                   const double viscosity_pressure_derivative = drucker_prager_plasticity.compute_derivative(angle_of_internal_friction,std::sqrt(strain_rate_effective));
 
@@ -265,7 +269,7 @@ namespace aspect
           equation_of_state.parse_parameters (prm);
 
           drucker_prager_plasticity.initialize_simulator (this->get_simulator());
-          drucker_prager_plasticity.parse_parameters(prm);
+          drucker_prager_parameters = drucker_prager_plasticity.parse_parameters(prm);
 
           reference_T                = prm.get_double ("Reference temperature");
           reference_eta              = prm.get_double ("Reference viscosity");

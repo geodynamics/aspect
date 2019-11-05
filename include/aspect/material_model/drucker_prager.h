@@ -152,6 +152,11 @@ namespace aspect
          */
         Rheology::DruckerPrager<dim> drucker_prager_plasticity;
 
+        /*
+         * Input parameters for Drucker Prager plasticity.
+         */
+        Rheology::DruckerPragerParameters drucker_prager_parameters;
+
         /**
          * The angle of internal friction
          */

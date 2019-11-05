@@ -143,8 +143,7 @@ namespace aspect
       // Calculate viscosities for each of the individual compositional phases
       std::vector<double> composition_viscosities(volume_fractions.size());
       std::vector<bool> composition_yielding(volume_fractions.size());
-      std::vector<double> cohesions(drucker_prager_plasticity.get_cohesions());
-      std::vector<double> angles_internal_friction(drucker_prager_plasticity.get_angles_internal_friction());
+
       for (unsigned int j=0; j < volume_fractions.size(); ++j)
         {
           // Compute viscosity from iffusion creep law
@@ -185,17 +184,17 @@ namespace aspect
           // Calculate the strain weakening factors for cohesion, friction and viscosity. If no brittle and/or viscous strain weakening is applied, the factors are 1.
           const std::array<double, 3> weakening_factors = strain_rheology.compute_strain_weakening_factors(j, composition);
 
-          const double current_cohesion = cohesions[j] * weakening_factors[0];
-          const double current_friction = angles_internal_friction[j] * weakening_factors[1];
+          const double current_cohesion = drucker_prager_parameters.cohesions[j] * weakening_factors[0];
+          const double current_friction = drucker_prager_parameters.angles_internal_friction[j] * weakening_factors[1];
           viscosity_pre_yield *= weakening_factors[2];
-
-          // Weakened friction and cohesion values
-          std::pair<double, double> yield_parameters (current_cohesion, current_friction);
 
           // Third step: plastic yielding
 
           // Calculate Drucker-Prager yield stress
-          const double yield_stress = drucker_prager_plasticity.compute_yield_stress(current_cohesion,current_friction,std::max(pressure,0.0));
+          const double yield_stress = drucker_prager_plasticity.compute_yield_stress(current_cohesion,
+                                                                                     current_friction,
+                                                                                     std::max(pressure,0.0),
+                                                                                     drucker_prager_parameters.max_yield_stress);
 
           // If the viscous stress is greater than the yield stress, indicate we are in the yielding regime.
           const double viscous_stress = 2. * viscosity_pre_yield * edot_ii;
@@ -217,7 +216,11 @@ namespace aspect
               {
                 // If the viscous stress is greater than the yield stress, rescale the viscosity back to yield surface
                 if (viscous_stress >= yield_stress)
-                  viscosity_yield = drucker_prager_plasticity.compute_viscosity(current_cohesion,current_friction,std::max(pressure,0.0), edot_ii);
+                  viscosity_yield = drucker_prager_plasticity.compute_viscosity(current_cohesion,
+                                                                                current_friction,
+                                                                                std::max(pressure,0.0),
+                                                                                edot_ii,
+                                                                                drucker_prager_parameters.max_yield_stress);
                 break;
               }
               default:
@@ -248,24 +251,18 @@ namespace aspect
 
       if (plastic_out != nullptr)
         {
-          double C = 0.;
-          double phi = 0.;
-
-          std::vector<double> cohesions(drucker_prager_plasticity.get_cohesions());
-          std::vector<double> angles_internal_friction(drucker_prager_plasticity.get_angles_internal_friction());
+          plastic_out->cohesions[i] = 0;
+          plastic_out->friction_angles[i] = 0;
+          plastic_out->yielding[i] = plastic_yielding ? 1 : 0;
 
           // set to weakened values, or unweakened values when strain weakening is not used
           for (unsigned int j=0; j < volume_fractions.size(); ++j)
             {
               // Calculate the strain weakening factors and weakened values
               const std::array<double, 3> weakening_factors = strain_rheology.compute_strain_weakening_factors(j, in.composition[i]);
-              C   += volume_fractions[j] * (cohesions[j] * weakening_factors[0]);
-              phi += volume_fractions[j] * (angles_internal_friction[j] * weakening_factors[1]);
+              plastic_out->cohesions[i]   += volume_fractions[j] * (drucker_prager_parameters.cohesions[j] * weakening_factors[0]);
+              plastic_out->friction_angles[i] += volume_fractions[j] * (drucker_prager_parameters.angles_internal_friction[j] * weakening_factors[1]);
             }
-
-          plastic_out->cohesions[i] = C;
-          plastic_out->friction_angles[i] = phi * 180. / numbers::PI;
-          plastic_out->yielding[i] = plastic_yielding ? 1 : 0;
         }
     }
 
@@ -667,7 +664,7 @@ namespace aspect
 
           // Plasticity parameters
           drucker_prager_plasticity.initialize_simulator (this->get_simulator());
-          drucker_prager_plasticity.parse_parameters(prm);
+          drucker_prager_parameters = drucker_prager_plasticity.parse_parameters(prm);
 
           // Stress limiter parameter
           exponents_stress_limiter  = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Stress limiter exponents"))),

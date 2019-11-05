@@ -33,15 +33,31 @@ namespace aspect
 
     namespace Rheology
     {
+      /**
+         * A data structure with all input file parameters relevant to Drucker-Prager plasticity.
+         */
+      struct DruckerPragerParameters
+      {
+        /**
+         * List of internal friction angles (phi).
+         */
+        std::vector<double> angles_internal_friction;
+
+        /**
+         * List of the cohesions.
+         */
+        std::vector<double> cohesions;
+
+        /**
+         * Limit maximum yield stress from drucker prager yield criterion.
+         */
+        double max_yield_stress;
+      };
+
       template <int dim>
       class DruckerPrager : public ::aspect::SimulatorAccess<dim>
       {
         public:
-          /**
-           * Constructor.
-           */
-          DruckerPrager();
-
           /**
            * Declare the parameters this function takes through input files.
            */
@@ -50,9 +66,11 @@ namespace aspect
           declare_parameters (ParameterHandler &prm);
 
           /**
-           * Read the parameters from the parameter file.
+           * Read the parameters from the parameter file. These parameters might
+           * be modified outside of this class for each call to the functions below,
+           * so the read parameters are returned to the caller instead of stored as members.
            */
-          void
+          DruckerPragerParameters
           parse_parameters (ParameterHandler &prm);
 
           /**
@@ -61,7 +79,8 @@ namespace aspect
           double
           compute_yield_stress (const double cohesion,
                                 const double angle_internal_friction,
-                                const double pressure) const;
+                                const double pressure,
+                                const double max_yield_stress) const;
 
           /**
            * Compute the plastic viscosity with the yield stress and effective strain rate.
@@ -70,7 +89,8 @@ namespace aspect
           compute_viscosity (const double cohesion,
                              const double angle_internal_friction,
                              const double pressure,
-                             const double effective_strain_rate) const;
+                             const double effective_strain_rate,
+                             const double max_yield_stress) const;
 
           /**
            * Compute the derivative of the plastic viscosity with respect to pressure.
@@ -78,46 +98,6 @@ namespace aspect
           double
           compute_derivative (const double angle_internal_friction,
                               const double effective_strain_rate) const;
-
-
-          /**
-           * Return the value of the maximum yield stress for each composition used in
-           * the rheology model.
-           */
-          double
-          get_max_yield_stress () const;
-
-          /**
-           * Return the values of the cohesions for each composition used in the
-           * rheology model.
-           */
-          std::vector<double>
-          get_cohesions () const;
-
-          /**
-           * Return the values of the angles of internal friction for each
-           * composition used in the rheology model.
-           */
-          std::vector<double>
-          get_angles_internal_friction () const;
-
-        private:
-
-          /**
-           * List of internal friction angles (phi).
-           */
-          std::vector<double> angles_internal_friction;
-
-          /**
-           * List of the cohesions.
-           */
-          std::vector<double> cohesions;
-
-          /**
-           * Limit maximum yield stress from drucker prager yield criterion.
-           */
-          double max_yield_stress;
-
       };
     }
   }

@@ -269,6 +269,11 @@ namespace aspect
          * Objects for computing plastic stresses, viscosities, and additional outputs
          */
         Rheology::DruckerPrager<dim> drucker_prager_plasticity;
+
+        /*
+         * Input parameters for the drucker prager plasticity.
+         */
+        Rheology::DruckerPragerParameters drucker_prager_parameters;
     };
 
   }

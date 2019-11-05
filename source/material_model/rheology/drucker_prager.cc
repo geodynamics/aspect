@@ -33,16 +33,11 @@ namespace aspect
     namespace Rheology
     {
       template <int dim>
-      DruckerPrager<dim>::DruckerPrager ()
-      {}
-
-
-
-      template <int dim>
       double
       DruckerPrager<dim>::compute_yield_stress (const double cohesion,
                                                 const double angle_internal_friction,
-                                                const double pressure) const
+                                                const double pressure,
+                                                const double max_yield_stress) const
       {
         const double sin_phi = std::sin(angle_internal_friction);
         const double cos_phi = std::cos(angle_internal_friction);
@@ -64,9 +59,10 @@ namespace aspect
       DruckerPrager<dim>::compute_viscosity (const double cohesion,
                                              const double angle_internal_friction,
                                              const double pressure,
-                                             const double effective_strain_rate) const
+                                             const double effective_strain_rate,
+                                             const double max_yield_stress) const
       {
-        const double yield_stress = compute_yield_stress(cohesion, angle_internal_friction, pressure);
+        const double yield_stress = compute_yield_stress(cohesion, angle_internal_friction, pressure, max_yield_stress);
 
         const double strain_rate_effective_inv = 1./(2.*effective_strain_rate);
 
@@ -99,32 +95,6 @@ namespace aspect
 
 
       template <int dim>
-      double
-      DruckerPrager<dim>::get_max_yield_stress () const
-      {
-        return max_yield_stress;
-      }
-
-
-
-      template <int dim>
-      std::vector<double>
-      DruckerPrager<dim>::get_cohesions () const
-      {
-        return cohesions;
-      }
-
-
-
-      template <int dim>
-      std::vector<double>
-      DruckerPrager<dim>::get_angles_internal_friction () const
-      {
-        return angles_internal_friction;
-      }
-
-
-      template <int dim>
       void
       DruckerPrager<dim>::declare_parameters (ParameterHandler &prm)
       {
@@ -150,25 +120,29 @@ namespace aspect
 
 
       template <int dim>
-      void
+      DruckerPragerParameters
       DruckerPrager<dim>::parse_parameters (ParameterHandler &prm)
       {
+        DruckerPragerParameters parameters;
+
         // increment by one for background:
         const unsigned int n_fields = this->n_compositional_fields() + 1;
 
-        angles_internal_friction = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Angles of internal friction"))),
-                                                                           n_fields,
-                                                                           "Angles of internal friction");
+        parameters.angles_internal_friction = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Angles of internal friction"))),
+                                                                                      n_fields,
+                                                                                      "Angles of internal friction");
         // Convert angles from degrees to radians
         for (unsigned int i = 0; i<n_fields; ++i)
-          angles_internal_friction[i] *= numbers::PI/180.0;
+          parameters.angles_internal_friction[i] *= numbers::PI/180.0;
 
-        cohesions = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Cohesions"))),
-                                                            n_fields,
-                                                            "Cohesions");
+        parameters.cohesions = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Cohesions"))),
+                                                                       n_fields,
+                                                                       "Cohesions");
 
         // Limit maximum value of the drucker-prager yield stress
-        max_yield_stress = prm.get_double("Maximum yield stress");
+        parameters.max_yield_stress = prm.get_double("Maximum yield stress");
+
+        return parameters;
       }
 
     }
