@@ -1,13 +1,29 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 2.2.0-pre (mesh_def_initial_topo, 156ec3e12)
+--     . using deal.II 9.1.1
+--     .       with 32 bit indices and vectorization level 1 (128 bits)
+--     . using Trilinos 12.14.1
+--     . using p4est 2.0.0
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+-----------------------------------------------------------------------------
 
+-----------------------------------------------------------------------------
+-- For information on how to cite ASPECT, see:
+--   https://aspect.geodynamics.org/citing.html?ver=2.2.0-pre&sha=156ec3e12&src=code
+-----------------------------------------------------------------------------
 Number of active cells: 2,560 (on 5 levels)
 Number of degrees of freedom: 34,068 (20,930+2,673+10,465)
 
 Number of mesh deformation degrees of freedom: 5346
+   Added initial topography to grid
+
 *** Timestep 0:  t=0 years
    Solving mesh velocity system... 0 iterations.
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 40+0 iterations.
+   Solving Stokes system... 41+0 iterations.
 
    Postprocessing:
 
@@ -15,7 +31,7 @@ Number of mesh deformation degrees of freedom: 5346
      Temperature contrast across model domain (K):  0
      Reference depth (m):                           0
      Reference temperature (K):                     0
-     Reference pressure (Pa):                       0
+     Reference pressure (Pa):                       1.65e+06
      Reference gravity (m/s^2):                     10
      Reference density (kg/m^3):                    3300
      Reference thermal expansion coefficient (1/K): 4e-05
@@ -25,62 +41,82 @@ Number of mesh deformation degrees of freedom: 5346
      Reference thermal diffusivity (m^2/s):         1.13939e-06
      Rayleigh number:                               0
 
-     Topography min/max:       0 m, 0 m
-     RMS, max velocity:        0.11 m/year, 0.399 m/year
+     Topography min/max:       0 m, 100 m
+     RMS, max velocity:        0.137 m/year, 0.415 m/year
      Writing graphical output: output1.tmp/solution/solution-00000
 
-*** Timestep 1:  t=3917.03 years
+*** Timestep 1:  t=3770.51 years
    Solving mesh velocity system... 7 iterations.
-   Solving temperature system... 7 iterations.
+   Solving temperature system... 8 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 46+0 iterations.
 
    Postprocessing:
-     Topography min/max:       -1386 m, 415.3 m
-     RMS, max velocity:        0.071 m/year, 0.265 m/year
+     Topography min/max:       -1284 m, 901.9 m
+     RMS, max velocity:        0.0981 m/year, 0.289 m/year
      Writing graphical output: output1.tmp/solution/solution-00001
 
 *** Snapshot created!
 
-*** Timestep 2:  t=9716.95 years
+*** Timestep 2:  t=9133.17 years
    Solving mesh velocity system... 7 iterations.
-   Solving temperature system... 20 iterations.
+   Solving temperature system... 23 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 44+0 iterations.
 
    Postprocessing:
-     Topography min/max:       -127.4 m, 226.8 m
-     RMS, max velocity:        0.0464 m/year, 0.189 m/year
+     Topography min/max:       -183.4 m, 241.7 m
+     RMS, max velocity:        0.047 m/year, 0.184 m/year
      Writing graphical output: output1.tmp/solution/solution-00002
 
-*** Timestep 3:  t=17975.3 years
+*** Timestep 3:  t=17626.4 years
    Solving mesh velocity system... 7 iterations.
-   Solving temperature system... 18 iterations.
+   Solving temperature system... 22 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 44+0 iterations.
 
    Postprocessing:
-     Topography min/max:       -331 m, 82.47 m
-     RMS, max velocity:        0.035 m/year, 0.139 m/year
+     Topography min/max:       -295.5 m, 205.8 m
+     RMS, max velocity:        0.0353 m/year, 0.138 m/year
      Writing graphical output: output1.tmp/solution/solution-00003
 
 *** Snapshot created!
 
-*** Timestep 4:  t=29246.3 years
+*** Timestep 4:  t=28970.8 years
    Solving mesh velocity system... 7 iterations.
-   Solving temperature system... 10 iterations.
+   Solving temperature system... 11 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 45+0 iterations.
 
    Postprocessing:
-     Topography min/max:       -162.1 m, 28.86 m
-     RMS, max velocity:        0.0373 m/year, 0.153 m/year
+     Topography min/max:       -107.1 m, 85.99 m
+     RMS, max velocity:        0.0374 m/year, 0.153 m/year
      Writing graphical output: output1.tmp/solution/solution-00004
 
 Termination requested by criterion: end step
 
 
-+---------------------------------------------+------------+------------+
-+---------------------------------+-----------+------------+------------+
-+---------------------------------+-----------+------------+------------+
++----------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start     |      15.7s |            |
+|                                              |            |            |
+| Section                          | no. calls |  wall time | % of total |
++----------------------------------+-----------+------------+------------+
+| Assemble Stokes system           |         5 |      3.21s |        20% |
+| Assemble temperature system      |         5 |      4.92s |        31% |
+| Build Stokes preconditioner      |         5 |      2.14s |        14% |
+| Build temperature preconditioner |         5 |    0.0478s |       0.3% |
+| Create snapshot                  |         2 |     0.426s |       2.7% |
+| Initialization                   |         1 |    0.0733s |      0.47% |
+| Mesh deformation                 |         5 |      1.33s |       8.5% |
+| Postprocessing                   |         5 |     0.894s |       5.7% |
+| Setup dof systems                |         1 |     0.175s |       1.1% |
+| Setup initial conditions         |         1 |     0.249s |       1.6% |
+| Setup matrices                   |         1 |      0.18s |       1.1% |
+| Solve Stokes system              |         5 |      1.08s |       6.9% |
+| Solve temperature system         |         5 |    0.0325s |      0.21% |
++----------------------------------+-----------+------------+------------+
 
+-----------------------------------------------------------------------------
+-- For information on how to cite ASPECT, see:
+--   https://aspect.geodynamics.org/citing.html?ver=2.2.0-pre&sha=156ec3e12&src=code
+-----------------------------------------------------------------------------
