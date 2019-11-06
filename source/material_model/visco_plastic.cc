@@ -663,8 +663,8 @@ namespace aspect
           dislocation_creep.parse_parameters(prm);
 
           // Plasticity parameters
-          drucker_prager_plasticity.initialize_simulator (this->get_simulator());
-          drucker_prager_parameters = drucker_prager_plasticity.parse_parameters(prm);
+          drucker_prager_parameters = drucker_prager_plasticity.parse_parameters(this->n_compositional_fields()+1,
+                                                                                 prm);
 
           // Stress limiter parameter
           exponents_stress_limiter  = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Stress limiter exponents"))),

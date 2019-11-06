@@ -62,7 +62,7 @@ namespace aspect
                                                                                        phi,
                                                                                        std::max(pressure,0.0),
                                                                                        std::sqrt(strain_rate_dev_inv2),
-                                                                                       drucker_prager_parameters.max_yield_stress);
+                                                                                       std::numeric_limits<double>::infinity());
 
           // Cut off the viscosity between a minimum and maximum value to avoid
           // a numerically unfavourable large viscosity range.
@@ -141,8 +141,6 @@ namespace aspect
         {
           EquationOfState::MulticomponentIncompressible<dim>::declare_parameters (prm, 4.e-5);
 
-          Rheology::DruckerPrager<dim>::declare_parameters(prm);
-
           prm.declare_entry ("Reference temperature", "293",
                              Patterns::Double (0),
                              "The reference temperature $T_0$. Units: $\\si{K}$.");
@@ -214,10 +212,6 @@ namespace aspect
         {
           equation_of_state.initialize_simulator (this->get_simulator());
           equation_of_state.parse_parameters (prm);
-
-          drucker_prager_plasticity.initialize_simulator (this->get_simulator());
-          drucker_prager_parameters = drucker_prager_plasticity.parse_parameters(prm);
-
 
           reference_T = prm.get_double ("Reference temperature");
 

@@ -22,9 +22,6 @@
 #include <aspect/material_model/rheology/drucker_prager.h>
 #include <aspect/utilities.h>
 
-#include <deal.II/base/signaling_nan.h>
-#include <deal.II/base/parameter_handler.h>
-
 
 namespace aspect
 {
@@ -121,18 +118,16 @@ namespace aspect
 
       template <int dim>
       DruckerPragerParameters
-      DruckerPrager<dim>::parse_parameters (ParameterHandler &prm)
+      DruckerPrager<dim>::parse_parameters (const unsigned int n_fields,
+                                            ParameterHandler &prm)
       {
         DruckerPragerParameters parameters;
-
-        // increment by one for background:
-        const unsigned int n_fields = this->n_compositional_fields() + 1;
 
         parameters.angles_internal_friction = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Angles of internal friction"))),
                                                                                       n_fields,
                                                                                       "Angles of internal friction");
         // Convert angles from degrees to radians
-        for (unsigned int i = 0; i<n_fields; ++i)
+        for (unsigned int i = 0; i<parameters.angles_internal_friction.size(); ++i)
           parameters.angles_internal_friction[i] *= numbers::PI/180.0;
 
         parameters.cohesions = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Cohesions"))),

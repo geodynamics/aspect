@@ -23,7 +23,6 @@
 
 #include <aspect/global.h>
 #include <aspect/material_model/interface.h>
-#include <aspect/simulator_access.h>
 
 namespace aspect
 {
@@ -55,7 +54,7 @@ namespace aspect
       };
 
       template <int dim>
-      class DruckerPrager : public ::aspect::SimulatorAccess<dim>
+      class DruckerPrager
       {
         public:
           /**
@@ -69,9 +68,14 @@ namespace aspect
            * Read the parameters from the parameter file. These parameters might
            * be modified outside of this class for each call to the functions below,
            * so the read parameters are returned to the caller instead of stored as members.
+           *
+           * @param [in] n_fields The number of expected values for the angle of friction and
+           * cohesion lists. Generally either the number of compositional fields or this number
+           * plus one (for a background field), depending on how the user handles background fields.
            */
           DruckerPragerParameters
-          parse_parameters (ParameterHandler &prm);
+          parse_parameters (const unsigned int n_fields,
+                            ParameterHandler &prm);
 
           /**
            * Compute the plastic yield stress based on the Drucker Prager yield criterion.

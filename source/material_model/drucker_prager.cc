@@ -109,7 +109,7 @@ namespace aspect
                                                                                          angle_of_internal_friction,
                                                                                          pressure,
                                                                                          std::sqrt(strain_rate_effective),
-                                                                                         drucker_prager_parameters.max_yield_stress);
+                                                                                         std::numeric_limits<double>::infinity());
 
                   const double viscosity_pressure_derivative = drucker_prager_plasticity.compute_derivative(angle_of_internal_friction,std::sqrt(strain_rate_effective));
 
@@ -194,8 +194,6 @@ namespace aspect
         {
           EquationOfState::LinearizedIncompressible<dim>::declare_parameters (prm);
 
-          Rheology::DruckerPrager<dim>::declare_parameters(prm);
-
           prm.declare_entry ("Reference temperature", "293",
                              Patterns::Double (0),
                              "The reference temperature $T_0$. The reference temperature is used "
@@ -267,9 +265,6 @@ namespace aspect
         prm.enter_subsection("Drucker Prager");
         {
           equation_of_state.parse_parameters (prm);
-
-          drucker_prager_plasticity.initialize_simulator (this->get_simulator());
-          drucker_prager_parameters = drucker_prager_plasticity.parse_parameters(prm);
 
           reference_T                = prm.get_double ("Reference temperature");
           reference_eta              = prm.get_double ("Reference viscosity");
