@@ -76,6 +76,7 @@ pipeline {
         cmake \
         -D ASPECT_USE_PETSC='OFF' \
         -D ASPECT_PRECOMPILE_HEADERS='ON' \
+        -D COTIRE_MAXIMUM_NUMBER_OF_UNITY_INCLUDES='100' \
         ..
         '''
 
