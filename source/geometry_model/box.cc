@@ -41,14 +41,23 @@ namespace aspect
       topo_model = const_cast<InitialTopographyModel::Interface<dim>*>(&this->get_initial_topography_model());
       // Check that initial topography is required.
       // If so, connect the initial topography function
-      // to the right signal.
+      // to the right signals: It should be applied after
+      // the final initial adaptive refinement and after a restart.
       if (dynamic_cast<InitialTopographyModel::ZeroTopography<dim>*>(topo_model) == nullptr)
-        this->get_signals().pre_set_initial_state.connect(
-          [&](typename parallel::distributed::Triangulation<dim> &tria)
         {
-          this->topography(tria);
+          this->get_signals().pre_set_initial_state.connect(
+            [&](typename parallel::distributed::Triangulation<dim> &tria)
+          {
+            this->topography(tria);
+          }
+          );
+          this->get_signals().post_resume_load_user_data.connect(
+            [&](typename parallel::distributed::Triangulation<dim> &tria)
+          {
+            this->topography(tria);
+          }
+          );
         }
-      );
     }
 
 
