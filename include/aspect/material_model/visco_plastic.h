@@ -26,6 +26,7 @@
 #include <aspect/simulator_access.h>
 #include <aspect/material_model/rheology/diffusion_creep.h>
 #include <aspect/material_model/rheology/dislocation_creep.h>
+#include <aspect/material_model/rheology/drucker_prager.h>
 #include <aspect/material_model/equation_of_state/multicomponent_incompressible.h>
 
 #include<deal.II/fe/component_mask.h>
@@ -64,7 +65,7 @@ namespace aspect
         std::vector<double> friction_angles;
 
         /**
-         * The area where the viscous stress exceeds the plastic yield strength,
+         * The area where the viscous stress exceeds the plastic yield stress,
          * and viscosity is rescaled back to the yield envelope.
          */
         std::vector<double> yielding;
@@ -249,14 +250,7 @@ namespace aspect
          */
         ComponentMask get_volumetric_composition_mask() const;
 
-        std::vector<double> angles_internal_friction;
-        std::vector<double> cohesions;
         std::vector<double> exponents_stress_limiter;
-
-        /**
-         * Limit maximum yield stress from drucker-prager.
-         */
-        double max_yield_strength;
 
         /**
          * temperature gradient added to temperature used in the flow law.
@@ -270,6 +264,16 @@ namespace aspect
          */
         Rheology::DiffusionCreep<dim> diffusion_creep;
         Rheology::DislocationCreep<dim> dislocation_creep;
+
+        /*
+         * Objects for computing plastic stresses, viscosities, and additional outputs
+         */
+        Rheology::DruckerPrager<dim> drucker_prager_plasticity;
+
+        /*
+         * Input parameters for the drucker prager plasticity.
+         */
+        Rheology::DruckerPragerParameters drucker_prager_parameters;
     };
 
   }

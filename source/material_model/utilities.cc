@@ -699,64 +699,6 @@ namespace aspect
       }
 
 
-
-      DruckerPragerInputs::DruckerPragerInputs(const double cohesion_,
-                                               const double friction_angle_,
-                                               const double pressure_,
-                                               const double effective_strain_rate_,
-                                               const double max_yield_strength_)
-        :
-        cohesion(cohesion_),
-        friction_angle(friction_angle_),
-        pressure(pressure_),
-        effective_strain_rate(effective_strain_rate_),
-        max_yield_strength(max_yield_strength_)
-      {}
-
-
-      DruckerPragerOutputs::DruckerPragerOutputs ()
-        :
-        yield_strength(numbers::signaling_nan<double>()),
-        plastic_viscosity(numbers::signaling_nan<double>()),
-        viscosity_pressure_derivative(numbers::signaling_nan<double>())
-      {}
-
-
-
-      template <int dim>
-      void
-      compute_drucker_prager_yielding (const DruckerPragerInputs &in,
-                                       DruckerPragerOutputs &out)
-      {
-        // plasticity
-        const double sin_phi = std::sin(in.friction_angle);
-        const double cos_phi = std::cos(in.friction_angle);
-        const double strength_inv_part = 1. / (std::sqrt(3.0) * (3.0 + sin_phi));
-
-        out.yield_strength = ( (dim==3)
-                               ?
-                               ( 6.0 * in.cohesion * cos_phi + 6.0 * in.pressure * sin_phi) * strength_inv_part
-                               :
-                               in.cohesion * cos_phi + in.pressure * sin_phi);
-
-        out.yield_strength = std::min(out.yield_strength, in.max_yield_strength);
-
-        // Rescale the viscosity back onto the yield surface
-        const double strain_rate_effective_inv = 1./(2.*in.effective_strain_rate);
-        out.plastic_viscosity = out.yield_strength * strain_rate_effective_inv;
-
-        out.viscosity_pressure_derivative = sin_phi * strain_rate_effective_inv *
-                                            (dim == 3
-                                             ?
-                                             (6.0 * strength_inv_part)
-                                             :
-                                             1);
-
-        return;
-      }
-
-
-
       template <int dim>
       PhaseFunctionInputs<dim>::PhaseFunctionInputs(const double temperature_,
                                                     const double pressure_,
@@ -997,10 +939,6 @@ namespace aspect
     namespace MaterialUtilities
     {
 #define INSTANTIATE(dim) \
-  template \
-  void \
-  compute_drucker_prager_yielding<dim> (const DruckerPragerInputs &, \
-                                        DruckerPragerOutputs &); \
   template struct PhaseFunctionInputs<dim>; \
   template class PhaseFunction<dim>;
 

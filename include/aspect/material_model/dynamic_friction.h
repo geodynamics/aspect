@@ -23,6 +23,7 @@
 
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>
+#include <aspect/material_model/rheology/drucker_prager.h>
 #include <aspect/material_model/equation_of_state/multicomponent_incompressible.h>
 
 namespace aspect
@@ -138,6 +139,11 @@ namespace aspect
         MaterialUtilities::CompositionalAveragingOperation viscosity_averaging;
 
         EquationOfState::MulticomponentIncompressible<dim> equation_of_state;
+
+        /*
+          * Objects for computing plastic stresses, viscosities, and additional outputs
+          */
+        Rheology::DruckerPrager<dim> drucker_prager_plasticity;
 
         /**
          * The dynamic coefficient of friction
