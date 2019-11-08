@@ -550,7 +550,7 @@ namespace aspect
               TimerOutput::Scope timer_section(this->get_computing_timer(), "Fastscape 1 proc");
 
               for (unsigned int i=0; i<temporary_variables.size(); i++)
-                MPI_Send(&temporary_variables[i][0], temporary_variables[1].size(), MPI_DOUBLE, 0, 42, this->get_mpi_communicator());
+                MPI_Ssend(&temporary_variables[i][0], temporary_variables[1].size(), MPI_DOUBLE, 0, 42, this->get_mpi_communicator());
 
 
               MPI_Bcast(&V[0], array_size+1, MPI_DOUBLE, 0, this->get_mpi_communicator());
