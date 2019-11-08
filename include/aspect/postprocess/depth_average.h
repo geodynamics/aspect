@@ -98,10 +98,10 @@ namespace aspect
         double last_output_time;
 
         /**
-         * The format in which to produce graphical output. This also
-         * determines the extension of the file name to which to write.
+         * The formats in which to produce graphical output. This also
+         * determines the extension of the file names to which to write.
          */
-        DataOutBase::OutputFormat output_format;
+        std::vector<std::string> output_formats;
 
         /**
          * Number of zones in depth direction over which we are supposed to
@@ -113,11 +113,6 @@ namespace aspect
          * List of the quantities to calculate for each depth zone.
          */
         std::vector<std::string> variables;
-
-        /**
-         * Whether to use plain ascii text output
-         */
-        bool ascii_output;
 
         /**
          * A structure for a single time step record.
