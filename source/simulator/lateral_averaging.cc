@@ -263,6 +263,51 @@ namespace aspect
         std::vector<Tensor<1,dim> > temperature_gradients;
         std::vector<double> temperature_values;
     };
+
+
+
+    template <int dim>
+    class FunctorDepthAverageVerticalMassFlux: public internal::FunctorBase<dim>
+    {
+      public:
+        FunctorDepthAverageVerticalMassFlux(const FEValuesExtractors::Vector &velocity_field,
+                                            const GravityModel::Interface<dim> *gm)
+          : velocity_field_(velocity_field),
+            gravity_model(gm)
+        {}
+
+        bool need_material_properties() const override
+        {
+          return true;
+        }
+
+        void setup(const unsigned int q_points) override
+        {
+          velocity_values.resize(q_points);
+        }
+
+        void operator()(const MaterialModel::MaterialModelInputs<dim> &in,
+                        const MaterialModel::MaterialModelOutputs<dim> &out,
+                        const FEValues<dim> &fe_values,
+                        const LinearAlgebra::BlockVector &solution,
+                        std::vector<double> &output) override
+        {
+          fe_values[velocity_field_].get_function_values (solution, velocity_values);
+
+          for (unsigned int q=0; q<output.size(); ++q)
+            {
+              const Tensor<1,dim> gravity = gravity_model->gravity_vector(in.position[q]);
+              const Tensor<1,dim> vertical = -gravity/( gravity.norm() != 0.0 ?
+                                                        gravity.norm() : 1.0 );
+
+              output[q] = std::fabs(velocity_values[q] * vertical) * out.densities[q];
+            }
+        }
+
+        const FEValuesExtractors::Vector velocity_field_;
+        const GravityModel::Interface<dim> *gravity_model;
+        std::vector<Tensor<1,dim> > velocity_values;
+    };
   }
 
   namespace internal
@@ -574,6 +619,15 @@ namespace aspect
 
 
   template <int dim>
+  void LateralAveraging<dim>::get_vertical_mass_flux_averages(std::vector<double> &values) const
+  {
+    values = get_averages(values.size(),
+                          std::vector<std::string>(1,"vertical_mass_flux"))[0];
+  }
+
+
+
+  template <int dim>
   std::vector<std::vector<double> >
   LateralAveraging<dim>::get_averages(const unsigned int n_slices,
                                       const std::vector<std::string> &property_names) const
@@ -624,6 +678,12 @@ namespace aspect
             functors.push_back(std_cxx14::make_unique<FunctorDepthAverageVerticalHeatFlux<dim>>
                                (this->introspection().extractors.velocities,
                                 this->introspection().extractors.temperature,
+                                &this->get_gravity_model()));
+          }
+        else if (property_names[property_index] == "vertical_mass_flux")
+          {
+            functors.push_back(std_cxx14::make_unique<FunctorDepthAverageVerticalMassFlux<dim>>
+                               (this->introspection().extractors.velocities,
                                 &this->get_gravity_model()));
           }
         else

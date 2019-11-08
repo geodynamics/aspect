@@ -306,7 +306,7 @@ namespace aspect
             "all|temperature|composition|"
             "adiabatic temperature|adiabatic pressure|adiabatic density|adiabatic density derivative|"
             "velocity magnitude|sinking velocity|Vs|Vp|"
-            "viscosity|vertical heat flux";
+            "viscosity|vertical heat flux|vertical mass flux";
           prm.declare_entry("List of output variables", "all",
                             Patterns::MultipleSelection(variables.c_str()),
                             "A comma separated list which specifies which quantities to "
@@ -420,6 +420,9 @@ namespace aspect
 
             if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "vertical heat flux") != output_variables.end() )
               variables.push_back("vertical_heat_flux");
+
+            if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "vertical mass flux") != output_variables.end() )
+              variables.push_back("vertical_mass_flux");
           }
 
           output_formats = Utilities::split_string_list(prm.get("Output format"));
