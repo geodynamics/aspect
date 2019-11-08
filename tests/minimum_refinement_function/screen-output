@@ -11,8 +11,8 @@ Number of degrees of freedom: 948 (578+81+289)
      Writing graphical output:           output-minimum_refinement_function/solution/solution-00000
      RMS, max velocity:                  3.8e-06 m/year, 5.98e-06 m/year
      Temperature min/avg/max:            1623 K, 1743 K, 1873 K
-     Heat fluxes through boundary parts: 6.779e-12 W, 0 W, 0 W, 2.014 W
-     Writing depth average:              output-minimum_refinement_function/depth_average.gnuplot
+     Heat fluxes through boundary parts: 8.837e-12 W, 0 W, 0 W, 2.014 W
+     Writing depth average:              output-minimum_refinement_function/depth_average
 
 Number of active cells: 214 (on 5 levels)
 Number of degrees of freedom: 3,113 (1,906+254+953)
@@ -26,8 +26,8 @@ Number of degrees of freedom: 3,113 (1,906+254+953)
      Writing graphical output:           output-minimum_refinement_function/solution/solution-00001
      RMS, max velocity:                  3.8e-06 m/year, 6.03e-06 m/year
      Temperature min/avg/max:            1623 K, 1745 K, 1873 K
-     Heat fluxes through boundary parts: 8.868e-12 W, 0 W, 0 W, 1.002 W
-     Writing depth average:              output-minimum_refinement_function/depth_average.gnuplot
+     Heat fluxes through boundary parts: 1.527e-11 W, 0 W, 0 W, 1.002 W
+     Writing depth average:              output-minimum_refinement_function/depth_average
 
 Number of active cells: 628 (on 6 levels)
 Number of degrees of freedom: 8,799 (5,400+699+2,700)
@@ -41,8 +41,8 @@ Number of degrees of freedom: 8,799 (5,400+699+2,700)
      Writing graphical output:           output-minimum_refinement_function/solution/solution-00002
      RMS, max velocity:                  3.8e-06 m/year, 6.04e-06 m/year
      Temperature min/avg/max:            1623 K, 1747 K, 1873 K
-     Heat fluxes through boundary parts: 1.355e-11 W, 0 W, 0 W, 0.4997 W
-     Writing depth average:              output-minimum_refinement_function/depth_average.gnuplot
+     Heat fluxes through boundary parts: 2.385e-11 W, 0 W, 0 W, 0.4997 W
+     Writing depth average:              output-minimum_refinement_function/depth_average
 
 Number of active cells: 1,492 (on 7 levels)
 Number of degrees of freedom: 20,806 (12,786+1,627+6,393)
@@ -71,8 +71,8 @@ Number of degrees of freedom: 20,806 (12,786+1,627+6,393)
      Writing graphical output:           output-minimum_refinement_function/solution/solution-00003
      RMS, max velocity:                  3.8e-06 m/year, 6.04e-06 m/year
      Temperature min/avg/max:            1623 K, 1747 K, 1873 K
-     Heat fluxes through boundary parts: 1.822e-11 W, 0 W, 0 W, 0.2496 W
-     Writing depth average:              output-minimum_refinement_function/depth_average.gnuplot
+     Heat fluxes through boundary parts: 3.242e-11 W, 0 W, 0 W, 0.2496 W
+     Writing depth average:              output-minimum_refinement_function/depth_average
 
 Number of active cells: 1,564 (on 7 levels)
 Number of degrees of freedom: 21,736 (13,358+1,699+6,679)

@@ -25,10 +25,10 @@ Number of degrees of freedom: 53,381 (25,090+3,201+12,545+12,545)
      Rayleigh number:                               0
 
      Writing graphical output:           output-adiabatic_conditions_composition_function/solution/solution-00000
-     RMS, max velocity:                  3.48e-15 m/s, 1.82e-14 m/s
+     RMS, max velocity:                  3.02e-15 m/s, 9.08e-15 m/s
      Temperature min/avg/max:            1613 K, 1613 K, 1613 K
-     Heat fluxes through boundary parts: 6.772e-16 W, -1.399e-15 W, 0 W, 0 W
-     Writing depth average:              output-adiabatic_conditions_composition_function/depth_average.gnuplot
+     Heat fluxes through boundary parts: -7.8e-16 W, -5.747e-18 W, 0 W, 0 W
+     Writing depth average:              output-adiabatic_conditions_composition_function/depth_average
 
 Termination requested by criterion: end time
 

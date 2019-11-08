@@ -29,7 +29,7 @@ Number of degrees of freedom: 14,505 (4,290+2,097+4,290+561+2,145+561+561)
      Compositions min/max/mass: 1.438e-28/0.2/1.257e+08 // 1.438e-28/0.2/1.257e+08
      RMS, max velocity:         0.00292 m/year, 0.00958 m/year
      Temperature min/avg/max:   293 K, 1519 K, 1625 K
-     Writing depth average:     output-particle_melt_advection/depth_average.gnuplot
+     Writing depth average:     output-particle_melt_advection/depth_average
      Writing particle output:   output-particle_melt_advection/particles/particles-00000
 
 *** Timestep 1:  t=3221.68 years

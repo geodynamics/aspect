@@ -45,7 +45,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
      Temperature min/avg/max: 0 K, 0 K, 0 K
      RMS, max velocity:       1.05 m/s, 1.1 m/s
-     Writing depth average:   output-no_adiabatic_heating_03/depth_average.gnuplot
+     Writing depth average:   output-no_adiabatic_heating_03/depth_average
 
 *** Timestep 1:  t=0.0284091 seconds
    Solving temperature system... 17 iterations.

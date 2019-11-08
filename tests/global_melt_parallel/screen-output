@@ -81,7 +81,7 @@ Number of degrees of freedom: 5,641 (1,666+801+1,666+225+833+225+225)
      Compositions min/max/mass: 0/0/0 // 0/0/0
      RMS, max velocity:         0.00109 m/year, 0.00296 m/year
      Temperature min/avg/max:   293 K, 2023 K, 3700 K
-     Writing depth average:     output-global_melt_parallel/depth_average.gnuplot
+     Writing depth average:     output-global_melt_parallel/depth_average
 
 *** Timestep 1:  t=1e+06 years
    Solving temperature system... 14 iterations.
@@ -135,7 +135,7 @@ Number of degrees of freedom: 5,641 (1,666+801+1,666+225+833+225+225)
      Compositions min/max/mass: 0/0/0 // 0/0/0
      RMS, max velocity:         0.00111 m/year, 0.00304 m/year
      Temperature min/avg/max:   293 K, 2023 K, 3700 K
-     Writing depth average:     output-global_melt_parallel/depth_average.gnuplot
+     Writing depth average:     output-global_melt_parallel/depth_average
 
 *** Timestep 2:  t=2e+06 years
    Solving temperature system... 13 iterations.
@@ -180,7 +180,7 @@ Number of degrees of freedom: 5,641 (1,666+801+1,666+225+833+225+225)
      Compositions min/max/mass: 0/0/0 // 0/0/0
      RMS, max velocity:         0.00113 m/year, 0.0031 m/year
      Temperature min/avg/max:   293 K, 2023 K, 3700 K
-     Writing depth average:     output-global_melt_parallel/depth_average.gnuplot
+     Writing depth average:     output-global_melt_parallel/depth_average
 
 *** Timestep 3:  t=3e+06 years
    Solving temperature system... 12 iterations.
@@ -216,7 +216,7 @@ Number of degrees of freedom: 5,641 (1,666+801+1,666+225+833+225+225)
      Compositions min/max/mass: 0/0/0 // 0/0/0
      RMS, max velocity:         0.00114 m/year, 0.00316 m/year
      Temperature min/avg/max:   293 K, 2023 K, 3700 K
-     Writing depth average:     output-global_melt_parallel/depth_average.gnuplot
+     Writing depth average:     output-global_melt_parallel/depth_average
 
 Termination requested by criterion: end time
 

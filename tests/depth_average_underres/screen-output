@@ -13,7 +13,7 @@ Number of degrees of freedom: 84 (50+9+25)
      that does not have any quadrature points in it.
      Consider reducing the number of depth layers for averaging.
 
-     Writing depth average: output-depth_average_underres/depth_average.gnuplot
+     Writing depth average: output-depth_average_underres/depth_average
 
 Termination requested by criterion: end time
 
