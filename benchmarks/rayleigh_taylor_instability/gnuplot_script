@@ -8,37 +8,6 @@ h1=256e3
 ampl=4000
 
 plot[][]\
-'vy_fieldstone.dat' u 7:8 w p ps .5 pt 5 t 'analytical',\
+'vy_analytical.dat' u 7:8 w p ps .5 pt 5 t 'analytical',\
 'vy.dat' u (2*pi*h1/$1):($15) w lp t 'ASPECT'
-
-#'vy_fieldstone.dat' u 7:6 w lp t 'fieldstone',\
-
-
-
-
-
-#g=10
-#h2=256e3
-#rho1=3300
-#rho2=3000
-#lambda=256e3
-#eta1=1e21
-#eta2=1e21
-
-#phi2=2*pi*h2/lambda
-#, K(x)*(rho1-rho2)/2/eta2*g lw 5
-#c11(x) = (eta1*2*x**2)/(eta2*(cosh(2*x)-1-2*x**2)) - (2*phi2**2)/(cosh(2*phi2)-1-2*phi2**2)
-#d12(x) = (eta1*(sinh(2*x) -2*x))/(eta2*(cosh(2*x)-1-2*x**2)) + (sinh(2*phi2)-2*phi2)/(cosh(2*phi2)-1-2*phi2**2)
-#i21(x) = (eta1*phi2*(sinh(2*x)+2*x))/(eta2*(cosh(2*x)-1-2*x**2)) + (phi2*(sinh(2*phi2)+2*phi2))/(cosh(2*phi2)-1-2*phi2**2) 
-#j22(x) = (eta1*2*x**2*phi2)/(eta2*(cosh(2*x)-1-2*x**2))-(2*phi2**3)/(cosh(2*phi2)-1-2*phi2**2 )
-K(x)=-d12(x)/(c11(x)*j22(x)-d12(x)*i21(x))
-#plot[2:8][]\
-#-d12(x)/(c11(x)*j22(x)-d12(x)*i21(x)) lw 5 ,K(x)
-
-#phi1=2*pi*h1/lambda
-#c11 = (eta1*2*phi1**2)/(eta2*(cosh(2*phi1)-1-2*phi1**2)) - (2*phi2**2)/(cosh(2*phi2)-1-2*phi2**2)
-#d12 = (eta1*(sinh(2*phi1) -2*phi1))/(eta2*(cosh(2*phi1)-1-2*phi1**2)) + (sinh(2*phi2)-2*phi2)/(cosh(2*phi2)-1-2*phi2**2)
-#i21 = (eta1*phi2*(sinh(2*phi1)+2*phi1))/(eta2*(cosh(2*phi1)-1-2*phi1**2)) + (phi2*(sinh(2*phi2)+2*phi2))/(cosh(2*phi2)-1-2*phi2**2) 
-#j22 = (eta1*2*phi1**2*phi2)/(eta2*(cosh(2*phi1)-1-2*phi1**2))-(2*phi2**3)/(cosh(2*phi2)-1-2*phi2**2 )
-#K=-d12/(c11*j22-d12*i21)
 

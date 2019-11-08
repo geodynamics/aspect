@@ -21,7 +21,6 @@ end
 
 subsection Material model
   set Model name  = RTinstabilityMaterial
-  #set Material averaging = harmonic average
   subsection RTinstability
      set eta1 = 1e21
      set eta2 = 1e21

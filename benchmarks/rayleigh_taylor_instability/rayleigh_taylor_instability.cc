@@ -17,6 +17,7 @@
   along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
+
 #include <aspect/simulator.h>
 #include <aspect/material_model/simple.h>
 #include <aspect/boundary_velocity/interface.h>
@@ -59,7 +60,7 @@ namespace aspect
             {
               const Point<dim> &pos = in.position[i];
 
-              if ( pos[1]< 256e3 + amplitude*cos(pos[0]/lambda*6.28318530718))
+              if ( pos[1]< 256e3 + amplitude*std::cos(pos[0]/lambda*2.0*numbers::PI))
                 {
                   out.viscosities[i] = eta2;
                   out.densities[i] = rho2;
@@ -113,13 +114,13 @@ namespace aspect
                                  "Viscosity of the mantle.");
               prm.declare_entry ("eta2", "1e23",
                                  Patterns::Double (0),
-                                 "Viscosity in the Inclusion.");
+                                 "Viscosity in the inclusion.");
               prm.declare_entry ("rho1", "3200",
                                  Patterns::Double (0),
                                  "density of the mantle.");
               prm.declare_entry ("rho2", "3232",
                                  Patterns::Double (0),
-                                 "density in the Inclusion.");
+                                 "density in the inclusion.");
               prm.declare_entry ("amplitude", "1000",
                                  Patterns::Double (0),
                                  "perturbation amplitude.");
@@ -198,24 +199,6 @@ namespace aspect
     {
       return false;
     }
-
-    /**
-      * A postprocessor that evaluates the accuracy of the solution.
-      *
-      * The implementation of error evaluators that correspond to the
-      * benchmarks defined in the Donea and Huerta FEM book (see manual).
-      */
-    template <int dim>
-    class RTinstabilityPostprocessor : public Postprocess::Interface<dim>, public ::aspect::SimulatorAccess<dim>
-    {
-      public:
-        /**
-         * Generate graphical output from the current solution.
-         */
-        virtual
-        std::pair<std::string,std::string>
-        execute (TableHandler &statistics);
-    };
 
   }
 }
