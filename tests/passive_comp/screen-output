@@ -28,7 +28,7 @@ Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
      RMS, max velocity:                  5.11e-08 m/s, 6.3e-08 m/s
      Temperature min/avg/max:            0 K, 0 K, 0 K
      Heat fluxes through boundary parts: 39.09 W, 12.3 W
-     Writing depth average:              output-passive_comp/depth_average.gnuplot
+     Writing depth average:              output-passive_comp/depth_average
 
 *** Timestep 1:  t=2.81625e+12 seconds
    Solving temperature system... 27 iterations.
@@ -41,7 +41,7 @@ Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
      RMS, max velocity:                  5.11e-08 m/s, 6.3e-08 m/s
      Temperature min/avg/max:            -1.939e-06 K, 0.0001666 K, 0.0008265 K
      Heat fluxes through boundary parts: 296.7 W, 185 W
-     Writing depth average:              output-passive_comp/depth_average.gnuplot
+     Writing depth average:              output-passive_comp/depth_average
 
 *** Timestep 2:  t=5.6325e+12 seconds
    Solving temperature system... 17 iterations.
@@ -54,7 +54,7 @@ Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
      RMS, max velocity:                  5.11e-08 m/s, 6.3e-08 m/s
      Temperature min/avg/max:            -2.204e-06 K, 0.0003337 K, 0.001549 K
      Heat fluxes through boundary parts: 218 W, 167.5 W
-     Writing depth average:              output-passive_comp/depth_average.gnuplot
+     Writing depth average:              output-passive_comp/depth_average
 
 *** Timestep 3:  t=8e+12 seconds
    Solving temperature system... 15 iterations.
@@ -67,7 +67,7 @@ Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
      RMS, max velocity:                  5.11e-08 m/s, 6.3e-08 m/s
      Temperature min/avg/max:            -3.129e-06 K, 0.0004743 K, 0.002085 K
      Heat fluxes through boundary parts: 180.9 W, 182 W
-     Writing depth average:              output-passive_comp/depth_average.gnuplot
+     Writing depth average:              output-passive_comp/depth_average
 
 Termination requested by criterion: end time
 

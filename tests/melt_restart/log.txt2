@@ -47,7 +47,7 @@ Number of degrees of freedom: 5,641 (1,666+801+1,666+225+833+225+225)
      Compositions min/max/mass: 0/0/0 // 0/0/0
      RMS, max velocity:         0.00111 m/year, 0.00303 m/year
      Temperature min/avg/max:   293 K, 2023 K, 3700 K
-     Writing depth average:     output2.tmp/depth_average.gnuplot
+     Writing depth average:     output2.tmp/depth_average
 
 Termination requested by criterion: end time
 *** Snapshot created!

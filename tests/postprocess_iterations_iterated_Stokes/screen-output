@@ -15,7 +15,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
      Writing heat flux map:            output-postprocess_iterations_iterated_Stokes/heat_flux.00000.0000
      Temperature min/avg/max:          0 K, 0 K, 0 K
      RMS, max velocity:                1 m/s, 1 m/s
-     Writing depth average:            output-postprocess_iterations_iterated_Stokes/depth_average.gnuplot
+     Writing depth average:            output-postprocess_iterations_iterated_Stokes/depth_average
      Pressure at top/bottom of domain: -1.982e-19 Pa, 9.531 Pa
      Computing dynamic topography      
 
@@ -28,7 +28,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
      Writing heat flux map:            output-postprocess_iterations_iterated_Stokes/heat_flux.00000.0001
      Temperature min/avg/max:          0 K, 0 K, 0 K
      RMS, max velocity:                1.05 m/s, 1.09 m/s
-     Writing depth average:            output-postprocess_iterations_iterated_Stokes/depth_average.gnuplot
+     Writing depth average:            output-postprocess_iterations_iterated_Stokes/depth_average
      Pressure at top/bottom of domain: 1.013e-15 Pa, 9.652 Pa
      Computing dynamic topography      
 
@@ -41,7 +41,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
      Writing heat flux map:            output-postprocess_iterations_iterated_Stokes/heat_flux.00000.0002
      Temperature min/avg/max:          0 K, 0 K, 0 K
      RMS, max velocity:                1.05 m/s, 1.1 m/s
-     Writing depth average:            output-postprocess_iterations_iterated_Stokes/depth_average.gnuplot
+     Writing depth average:            output-postprocess_iterations_iterated_Stokes/depth_average
      Pressure at top/bottom of domain: 1.367e-15 Pa, 9.544 Pa
      Computing dynamic topography      
 
@@ -54,7 +54,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
      Writing heat flux map:            output-postprocess_iterations_iterated_Stokes/heat_flux.00000.0003
      Temperature min/avg/max:          0 K, 0 K, 0 K
      RMS, max velocity:                1.05 m/s, 1.1 m/s
-     Writing depth average:            output-postprocess_iterations_iterated_Stokes/depth_average.gnuplot
+     Writing depth average:            output-postprocess_iterations_iterated_Stokes/depth_average
      Pressure at top/bottom of domain: 9.645e-16 Pa, 9.532 Pa
      Computing dynamic topography      
 
@@ -67,7 +67,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
      Writing heat flux map:            output-postprocess_iterations_iterated_Stokes/heat_flux.00000.0004
      Temperature min/avg/max:          0 K, 0 K, 0 K
      RMS, max velocity:                1.05 m/s, 1.1 m/s
-     Writing depth average:            output-postprocess_iterations_iterated_Stokes/depth_average.gnuplot
+     Writing depth average:            output-postprocess_iterations_iterated_Stokes/depth_average
      Pressure at top/bottom of domain: 8.812e-16 Pa, 9.531 Pa
      Computing dynamic topography      
 
@@ -83,7 +83,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
      Writing heat flux map:            output-postprocess_iterations_iterated_Stokes/heat_flux.00001.0000
      Temperature min/avg/max:          0 K, 0.003199 K, 0.003461 K
      RMS, max velocity:                1.05 m/s, 1.1 m/s
-     Writing depth average:            output-postprocess_iterations_iterated_Stokes/depth_average.gnuplot
+     Writing depth average:            output-postprocess_iterations_iterated_Stokes/depth_average
      Pressure at top/bottom of domain: 1.18e-15 Pa, 9.531 Pa
      Computing dynamic topography      
 
@@ -99,7 +99,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
      Writing heat flux map:            output-postprocess_iterations_iterated_Stokes/heat_flux.00002.0000
      Temperature min/avg/max:          0 K, 0.006334 K, 0.006918 K
      RMS, max velocity:                1.05 m/s, 1.1 m/s
-     Writing depth average:            output-postprocess_iterations_iterated_Stokes/depth_average.gnuplot
+     Writing depth average:            output-postprocess_iterations_iterated_Stokes/depth_average
      Pressure at top/bottom of domain: 9.298e-16 Pa, 9.531 Pa
      Computing dynamic topography      
 
@@ -115,7 +115,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
      Writing heat flux map:            output-postprocess_iterations_iterated_Stokes/heat_flux.00003.0000
      Temperature min/avg/max:          0 K, 0.009388 K, 0.01037 K
      RMS, max velocity:                1.05 m/s, 1.1 m/s
-     Writing depth average:            output-postprocess_iterations_iterated_Stokes/depth_average.gnuplot
+     Writing depth average:            output-postprocess_iterations_iterated_Stokes/depth_average
      Pressure at top/bottom of domain: 1.367e-15 Pa, 9.531 Pa
      Computing dynamic topography      
 
@@ -131,7 +131,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
      Writing heat flux map:            output-postprocess_iterations_iterated_Stokes/heat_flux.00004.0000
      Temperature min/avg/max:          0 K, 0.01094 K, 0.01215 K
      RMS, max velocity:                1.05 m/s, 1.1 m/s
-     Writing depth average:            output-postprocess_iterations_iterated_Stokes/depth_average.gnuplot
+     Writing depth average:            output-postprocess_iterations_iterated_Stokes/depth_average
      Pressure at top/bottom of domain: 1.193e-15 Pa, 9.531 Pa
      Computing dynamic topography      
 

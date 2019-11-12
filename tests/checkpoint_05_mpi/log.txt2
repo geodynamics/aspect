@@ -9,7 +9,7 @@ Number of degrees of freedom: 13,764 (9,539+4,225)
    Solving Stokes system... done.
 
    Postprocessing:
-     Writing depth average:    output2.tmp/depth_average.gnuplot
+     Writing depth average:    output2.tmp/depth_average
      Writing graphical output: output2.tmp/solution/solution-00008
      Temperature min/avg/max:  1.007 K, 1.041 K, 1.088 K
      RMS, max velocity:        4.45e-09 m/s, 1.06e-08 m/s
@@ -19,7 +19,7 @@ Number of degrees of freedom: 13,764 (9,539+4,225)
    Solving Stokes system... done.
 
    Postprocessing:
-     Writing depth average:    output2.tmp/depth_average.gnuplot
+     Writing depth average:    output2.tmp/depth_average
      Writing graphical output: output2.tmp/solution/solution-00009
      Temperature min/avg/max:  1.007 K, 1.041 K, 1.087 K
      RMS, max velocity:        4.41e-09 m/s, 1.05e-08 m/s
