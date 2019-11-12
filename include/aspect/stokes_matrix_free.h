@@ -84,7 +84,7 @@ namespace aspect
         /**
          * Returns the viscosity table.
          */
-        const Table<2, VectorizedArray<number> > &
+        const Table<1, VectorizedArray<number> > &
         get_viscosity_x_2_table();
 
         /**
@@ -114,7 +114,7 @@ namespace aspect
         /**
          * Table which stores the viscosity on each quadrature point.
          */
-        Table<2, VectorizedArray<number> > viscosity_x_2;
+        Table<1, VectorizedArray<number> > viscosity_x_2;
 
         /**
          * Pressure scaling constant.
@@ -191,7 +191,7 @@ namespace aspect
         /**
          * Table which stores the viscosity on each quadrature point.
          */
-        Table<2, VectorizedArray<number> > one_over_viscosity;
+        Table<1, VectorizedArray<number> > one_over_viscosity;
 
         /**
          * Pressure scaling constant.
@@ -270,7 +270,7 @@ namespace aspect
         /**
          * Table which stores the viscosity on each quadrature point.
          */
-        Table<2, VectorizedArray<number> > viscosity_x_2;
+        Table<1, VectorizedArray<number> > viscosity_x_2;
 
         /**
           * Information on the compressibility of the flow.
