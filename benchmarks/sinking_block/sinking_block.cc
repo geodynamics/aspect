@@ -150,7 +150,7 @@ namespace aspect
                                  Patterns::Double (0),
                                  "density in the Inclusion.");
               prm.declare_entry ("method", "0",
-                                 Patterns::Integer (0),
+                                 Patterns::Integer (0,2),
                                  "density field treatment. Acceptable values are "
                                  "0 (full densities), 1 (reduced densities), and "
                                  "2 (vertically averaged density profile is removed"
@@ -176,7 +176,7 @@ namespace aspect
               eta2 = prm.get_double ("eta2");
               rho1 = prm.get_double ("rho1");
               rho2 = prm.get_double ("rho2");
-              method = prm.get_double ("method");
+              method = prm.get_integer ("method");
             }
             prm.leave_subsection();
           }
