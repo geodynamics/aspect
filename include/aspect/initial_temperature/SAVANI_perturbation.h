@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -64,13 +64,19 @@ namespace aspect
          * pointers.
          */
         void
-        initialize ();
+        initialize () override;
+
+        /**
+         * Return the Vs as a function of position.
+         */
+        //TODO
+        virtual
+        double get_Vs (const Point<dim> &position) const;
 
         /**
          * Return the initial temperature as a function of position.
          */
-        virtual
-        double initial_temperature (const Point<dim> &position) const;
+        double initial_temperature (const Point<dim> &position) const override;
 
         /**
          * Declare the parameters this class takes through input files.
@@ -82,9 +88,8 @@ namespace aspect
         /**
          * Read the parameters this class declares from the parameter file.
          */
-        virtual
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
 
 
       private:
@@ -160,13 +165,13 @@ namespace aspect
          * Pointer to an object that reads and processes the spherical
          * harmonics coefficients
          */
-        std::shared_ptr<internal::SAVANI::SphericalHarmonicsLookup> spherical_harmonics_lookup;
+        std::unique_ptr<internal::SAVANI::SphericalHarmonicsLookup> spherical_harmonics_lookup;
 
         /**
          * Pointer to an object that reads and processes the depths for the
          * spline knot points.
          */
-        std::shared_ptr<internal::SAVANI::SplineDepthsLookup> spline_depths_lookup;
+        std::unique_ptr<internal::SAVANI::SplineDepthsLookup> spline_depths_lookup;
 
         /**
          * Object containing the data profile.

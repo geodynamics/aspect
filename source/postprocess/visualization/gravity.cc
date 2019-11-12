@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -35,7 +35,7 @@ namespace aspect
       Gravity ()
         :
         DataPostprocessorVector<dim> ("gravity",
-                                      update_q_points)
+                                      update_quadrature_points)
       {}
 
 

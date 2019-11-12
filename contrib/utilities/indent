@@ -1,0 +1,77 @@
+#!/bin/bash
+## ---------------------------------------------------------------------
+##
+##  Copyright (C) 2015 by the ASPECT authors
+##
+##  This file is part of ASPECT.
+##
+##  ASPECT is free software; you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation; either version 2, or (at your option)
+##  any later version.
+##
+##  ASPECT is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with ASPECT; see the file LICENSE.  If not see
+##  <http://www.gnu.org/licenses/>.
+##
+## ---------------------------------------------------------------------
+
+if test ! -d source -o ! -d include ; then
+  echo "*** This script must be run from the top-level directory of ASPECT."
+  exit
+fi
+
+if test ! -f contrib/utilities/astyle.rc ; then
+  echo "*** No style file doc/astyle.rc found."
+  exit
+fi
+
+if test -z "`which astyle`" ; then
+  echo "*** No astyle program found."
+  exit
+fi
+
+if test "`astyle --version 2>&1`" != "Artistic Style Version 2.04" ; then
+  echo "*** Found a version of astyle different than the required version 2.04."
+  exit
+fi
+
+
+# collect all header and source files and process them in batches of 50 files
+# with up to 10 in parallel
+echo "--- Indenting all ASPECT header and source files"
+
+find tests include source benchmarks cookbooks unit_tests \( -name '*.cc' -o -name '*.h' \) -print | xargs -n 50 -P 10 astyle --options=contrib/utilities/astyle.rc
+
+# remove execute permission on source files:
+find tests include source benchmarks cookbooks unit_tests \( -name '*.cc' -o -name '*.h' -o -name '*.prm' \) -print | xargs -n 50 -P 10 chmod -x
+
+# convert dos formatted files to unix file format by stripping out 
+# carriage returns (15=0x0D):
+dos_to_unix()
+{
+    f=$1
+    tr -d '\015' <$f >$f.tmp
+    diff -q $f $f.tmp >/dev/null || mv $f.tmp $f
+    rm -f $f.tmp
+}
+export -f dos_to_unix
+find tests include source unit_tests cookbooks benchmarks \( -name '*.cc' -o -name '*.h' -o -name '*.prm' \) -print | xargs -n 1 -P 10 -I {} bash -c 'dos_to_unix "$@"' _ {} 
+
+# convert tabs to two spaces:
+tab_to_space()
+{
+    f=$1
+    # awkward tab replacement because of OSX sed, do not change unless you test it on OSX
+    TAB=$'\t'
+    sed -e "s/$TAB/  /g" $f >$f.tmp
+    diff -q $f $f.tmp >/dev/null || mv $f.tmp $f
+    rm -f $f.tmp
+}
+export -f tab_to_space
+find tests include source unit_tests cookbooks benchmarks \( -name '*.cc' -o -name '*.h' -o -name '*.prm' -o -name 'CMakeLists.txt' -o -name '*.cmake' \) -print | xargs -n 1 -P 10 -I {} bash -c 'tab_to_space "$@"' _ {} 

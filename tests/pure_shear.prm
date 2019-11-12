@@ -128,6 +128,7 @@ subsection Postprocess
   set List of postprocessors = particles, visualization, composition statistics
 
   subsection Visualization
+    set Interpolate output = false
     set List of output variables = strain rate, shear stress
     set Time between graphical output = 0.05
   end

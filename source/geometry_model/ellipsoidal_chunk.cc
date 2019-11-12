@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -22,11 +22,6 @@
 #include <aspect/geometry_model/ellipsoidal_chunk.h>
 #include <aspect/utilities.h>
 #include <deal.II/grid/tria_iterator.h>
-
-#if !DEAL_II_VERSION_GTE(9,0,0)
-#include <deal.II/grid/tria_boundary_lib.h>
-#endif
-
 #include <deal.II/grid/tria_accessor.h>
 #include <deal.II/grid/grid_generator.h>
 #include <deal.II/grid/grid_tools.h>
@@ -49,8 +44,7 @@ namespace aspect
       void
       set_manifold_ids(Triangulation<dim> &triangulation)
       {
-        for (typename Triangulation<dim>::active_cell_iterator cell =
-               triangulation.begin_active(); cell != triangulation.end(); ++cell)
+        for (const auto &cell : triangulation.active_cell_iterators())
           cell->set_all_manifold_ids (15);
       }
 
@@ -58,9 +52,8 @@ namespace aspect
       void
       clear_manifold_ids(Triangulation<dim> &triangulation)
       {
-        for (typename Triangulation<dim>::active_cell_iterator cell =
-               triangulation.begin_active(); cell != triangulation.end(); ++cell)
-          cell->set_all_manifold_ids (numbers::invalid_manifold_id);
+        for (const auto &cell : triangulation.active_cell_iterators())
+          cell->set_all_manifold_ids (numbers::flat_manifold_id);
       }
     }
 
@@ -114,12 +107,19 @@ namespace aspect
     {
       AssertThrow (dim == 3,ExcMessage ("This can currently only be used in 3d."));
 
+      // The following converts phi, theta and negative depth to x, y, z
+      // Depth is measured perpendicular to the ellipsoid surface
+      // (i.e. along a vector which does not generally pass through the origin)
+      // Expressions can be found in Ellipsoidal and Cartesian Coordinates Conversion
+      // Subirana, Zornoza and Hernandez-Pajares, 2011:
+      // https://gssc.esa.int/navipedia/index.php/Ellipsoidal_and_Cartesian_Coordinates_Conversion
+
       const double phi   = phi_theta_d[0]; // Longitude in radians
       const double theta = phi_theta_d[1]; // Latitude in radians
       const double d     = phi_theta_d[2]; // The negative depth (a depth of 10 meters is -10)
 
       const double R_bar = semi_major_axis_a / std::sqrt(1 - (eccentricity * eccentricity *
-                                                              std::sin(theta) * std::sin(theta)));
+                                                              std::sin(theta) * std::sin(theta))); // radius of curvature of the prime vertical
 
       return Point<3> ((R_bar + d) * std::cos(phi) * std::cos(theta),
                        (R_bar + d) * std::sin(phi) * std::cos(theta),
@@ -130,23 +130,28 @@ namespace aspect
     Point<3>
     EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::pull_back_ellipsoid(const Point<3> &x, const double semi_major_axis_a, const double eccentricity) const
     {
+      // The following converts x, y, z to phi, theta and negative depth
+      // Depth is measured perpendicular to the ellipsoid surface
+      // (i.e. along a vector which does not generally pass through the origin)
+      // Expressions can be found in Ellipsoidal and Cartesian Coordinates Conversion
+      // Subirana, Zornoza and Hernandez-Pajares, 2011:
+      // https://gssc.esa.int/navipedia/index.php/Ellipsoidal_and_Cartesian_Coordinates_Conversion
+
       AssertThrow (dim == 3,ExcMessage ("This can currently only be used in 3d."));
-      const double R    = semi_major_axis_a;
-      const double b      = std::sqrt(R * R * (1 - eccentricity * eccentricity));
-      const double ep     = std::sqrt((R * R - b * b) / (b * b));
-      const double p      = std::sqrt(x(0) * x(0) + x(1) * x(1));
-      const double th     = std::atan2(R * x(2), b * p);
-      const double phi    = std::atan2(x(1), x(0));
-      const double theta  = std::atan2(x(2) + ep * ep * b * std::pow(std::sin(th),3),
-                                       (p - (eccentricity * eccentricity * R  * std::pow(std::cos(th),3))));
-      const double R_bar = R / (std::sqrt(1 - eccentricity * eccentricity * std::sin(theta) * std::sin(theta)));
-      const double R_plus_d = p / std::cos(theta);
+      const double R      = semi_major_axis_a; // semi-major axis
+      const double b      = R * std::sqrt(1 - eccentricity * eccentricity); // semi-minor axis
+      const double p      = std::sqrt(x(0) * x(0) + x(1) * x(1)); // distance from origin projected onto x-y plane
+      const double th     = std::atan2(R * x(2), b * p); // starting guess for theta
+      const double phi    = std::atan2(x(1), x(0)); // azimuth (geodetic longitude)
+      const double theta  = std::atan2(x(2) + (R * R - b * b) / b * std::pow(std::sin(th),3),
+                                       (p - (eccentricity * eccentricity * R  * std::pow(std::cos(th),3)))); // first iterate for theta
+      const double R_bar  = R / (std::sqrt(1 - eccentricity * eccentricity * std::sin(theta) * std::sin(theta))); // first iterate for R_bar
 
       Point<3> phi_theta_d;
       phi_theta_d[0] = phi;
 
       phi_theta_d[1] = theta;
-      phi_theta_d[2] = R_plus_d - R_bar;
+      phi_theta_d[2] = p / std::cos(theta) - R_bar; // first iterate for d
       return phi_theta_d;
     }
 
@@ -188,7 +193,7 @@ namespace aspect
 
     /**
      * TODO: These functions (pull back and push forward) should be changed that they always
-     * take an return 3D points, because 2D points make no sense for an ellipsoid, even with
+     * take and return 3D points, because 2D points make no sense for an ellipsoid, even with
      * a 2D triangulation. To do this correctly we need to add the spacedim to the triangulation
      * in ASPECT. What is now presented is just a temporary fix to get access to the pull back
      * function from outside. The push forward function can't be fixed in this way, because
@@ -220,14 +225,12 @@ namespace aspect
       return push_forward_ellipsoid (push_forward_topography(chart_point), semi_major_axis_a, eccentricity);
     }
 
-#if DEAL_II_VERSION_GTE(9,0,0)
     template <int dim>
     std::unique_ptr<Manifold<dim,3> >
     EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::clone() const
     {
       return std_cxx14::make_unique<EllipsoidalChunkGeometry>(*this);
     }
-#endif
 
     template <int dim>
     void
@@ -309,8 +312,7 @@ namespace aspect
       // set_all_boundary_indicators() -- we have to do it last for
       // the inner and outer boundary, which conveniently is what
       // happens in the following loop
-      for (typename Triangulation<dim>::active_cell_iterator cell =
-             coarse_grid.begin_active(); cell != coarse_grid.end(); ++cell)
+      for (const auto &cell : coarse_grid.active_cell_iterators())
         for (unsigned int f = 0; f < GeometryInfo<dim>::faces_per_cell; ++f)
           if (cell->face(f)->at_boundary())
             cell->face(f)->set_boundary_id(f);
@@ -473,16 +475,16 @@ namespace aspect
             }
 
           AssertThrow (missing != 0,
-                       ExcMessage ("Only two or three of the four corners points should be provided."));
+                       ExcMessage ("Only two or three of the four corner points should be provided."));
           AssertThrow (missing == 1 || missing == 2,
-                       ExcMessage ("Please provide two or three corners points."));
+                       ExcMessage ("Please provide two or three corner points."));
 
           std::vector<double> temp;
 
           if (present[0])
             {
               temp = Utilities::string_to_double(Utilities::split_string_list(NEcorner,':'));
-              AssertThrow (temp.size() == 2, ExcMessage ("Number of coordinates given for the NE-corner should be two (longitude:latitude)."));
+              AssertThrow (temp.size() == 2, ExcMessage ("Two coordinates should be given for the NE-corner (longitude:latitude)."));
               corners[0] = Point<2>(temp[0],temp[1]);
             }
           else
@@ -491,7 +493,7 @@ namespace aspect
           if (present[1])
             {
               temp = Utilities::string_to_double(Utilities::split_string_list(NWcorner,':'));
-              AssertThrow (temp.size() == 2, ExcMessage ("Number of coordinates given for the NW-corner should be two (longitude:latitude)."));
+              AssertThrow (temp.size() == 2, ExcMessage ("Two coordinates should be given for the NW-corner (longitude:latitude)."));
               corners[1] = Point<2>(temp[0],temp[1]);
             }
           else
@@ -500,7 +502,7 @@ namespace aspect
           if (present[2])
             {
               temp = Utilities::string_to_double(Utilities::split_string_list(SWcorner,':'));
-              AssertThrow (temp.size() == 2, ExcMessage ("Number of coordinates given for the SW-corner should be two (longitude:latitude)."));
+              AssertThrow (temp.size() == 2, ExcMessage ("Two coordinates should be given for the SW-corner (longitude:latitude)."));
               corners[2] = Point<2>(temp[0],temp[1]);
             }
           else
@@ -509,7 +511,7 @@ namespace aspect
           if (present[3])
             {
               temp = Utilities::string_to_double(Utilities::split_string_list(SEcorner,':'));
-              AssertThrow (temp.size() == 2, ExcMessage ("Number of coordinates given for the SE-corner should be two (longitude:latitude)."));
+              AssertThrow (temp.size() == 2, ExcMessage ("Two coordinates should be given for the SE-corner (longitude:latitude)."));
               corners[3] = Point<2>(temp[0],temp[1]);
             }
           else
@@ -519,10 +521,10 @@ namespace aspect
           bottom_depth = prm.get_double("Depth");
           semi_major_axis_a = prm.get_double("Semi-major axis");
           eccentricity = prm.get_double("Eccentricity");
-          semi_minor_axis_b=std::sqrt((1 - pow(eccentricity,2)) * pow(semi_major_axis_a,2));
-          EW_subdiv = prm.get_double("East-West subdivisions");
-          NS_subdiv = prm.get_double("North-South subdivisions");
-          depth_subdiv = prm.get_double("Depth subdivisions");
+          semi_minor_axis_b = std::sqrt((1 - pow(eccentricity,2.)) * pow(semi_major_axis_a,2.));
+          EW_subdiv = prm.get_integer("East-West subdivisions");
+          NS_subdiv = prm.get_integer("North-South subdivisions");
+          depth_subdiv = prm.get_integer("Depth subdivisions");
 
           // Check whether the corners of the rectangle are really place correctly
           if (present[0] == true && present[1] == true)
@@ -548,15 +550,15 @@ namespace aspect
           if (missing == 2)
             {
               AssertThrow ((present[0] == true && present[2] == true) || (present[1] == true && present[3] == true),
-                           ExcMessage ("Please provide to opposing corners."));
+                           ExcMessage ("Please provide two opposing corners."));
 
               if (present[0] == true && present[2] == true)
                 AssertThrow (corners[0][0] > corners[2][0] && corners[0][1] > corners[2][1],
-                             ExcMessage ("The North-East corner (" + boost::lexical_cast<std::string>(corners[0][0]) + ":"  + boost::lexical_cast<std::string>(corners[0][1]) + ") must be strictly North and East of the South-West corner (" + boost::lexical_cast<std::string>(corners[2][0]) + ":"  + boost::lexical_cast<std::string>(corners[2][1]) + ") when only two points are given."));
+                             ExcMessage ("The Northeast corner (" + boost::lexical_cast<std::string>(corners[0][0]) + ":"  + boost::lexical_cast<std::string>(corners[0][1]) + ") must be strictly north and east of the Southwest corner (" + boost::lexical_cast<std::string>(corners[2][0]) + ":"  + boost::lexical_cast<std::string>(corners[2][1]) + ") when only two points are given."));
 
               if (present[1] == true && present[3] == true)
                 AssertThrow (corners[1][0] < corners[3][0] && corners[1][1] > corners[3][1],
-                             ExcMessage ("The North-West corner (" + boost::lexical_cast<std::string>(corners[1][0]) + ":"  + boost::lexical_cast<std::string>(corners[1][1]) + ") must be strictly North and West of the South-East corner (" + boost::lexical_cast<std::string>(corners[3][0]) + ":"  + boost::lexical_cast<std::string>(corners[3][1]) + ") when only two points are given."));
+                             ExcMessage ("The Northwest corner (" + boost::lexical_cast<std::string>(corners[1][0]) + ":"  + boost::lexical_cast<std::string>(corners[1][1]) + ") must be strictly north and west of the Southeast corner (" + boost::lexical_cast<std::string>(corners[3][0]) + ":"  + boost::lexical_cast<std::string>(corners[3][1]) + ") when only two points are given."));
             }
 
 
@@ -740,9 +742,9 @@ namespace aspect
     bool
     EllipsoidalChunk<dim>::point_is_in_domain(const Point<dim> &point) const
     {
-      AssertThrow(this->get_free_surface_boundary_indicators().size() == 0 ||
+      AssertThrow(!this->get_parameters().mesh_deformation_enabled ||
                   this->get_timestep_number() == 0,
-                  ExcMessage("After displacement of the free surface, this function can no longer be used to determine whether a point lies in the domain or not."));
+                  ExcMessage("After displacement of the mesh, this function can no longer be used to determine whether a point lies in the domain or not."));
 
       // dim = 3
       const Point<dim> ellipsoidal_point = manifold.pull_back(point);
@@ -773,8 +775,8 @@ namespace aspect
       const double radius = get_radius(position_point);
       std::array<double,dim> position_array;
       position_array[0] = radius + transformed_point(2);
-      position_array[1] = transformed_point(1);
-      position_array[2] = transformed_point(0);
+      position_array[1] = transformed_point(0);
+      position_array[2] = transformed_point(1);
 
       return position_array;
     }
@@ -795,8 +797,8 @@ namespace aspect
       // We receive radius, longitude, latitude and we need to turn it first back into
       // longitude, latitude, depth for internal use, and push_forward to cartesian coordiantes.
       Point<3> position_point;
-      position_point(0) = position_tensor[2];
-      position_point(1) = position_tensor[1];
+      position_point(0) = position_tensor[1];
+      position_point(1) = position_tensor[2];
 
       const double radius = semi_major_axis_a / (std::sqrt(1 - eccentricity * eccentricity * std::sin(position_point(1)) * std::sin(position_point(1))));
       position_point(2) = position_tensor[0] - radius;
@@ -839,9 +841,12 @@ namespace aspect
                                    "two opposing points (SW and NE or NW and SE) a coordinate parallel ellipsoidal "
                                    "chunk geometry will be created. 2) by defining three points a non-coordinate "
                                    "parallel ellipsoidal chunk will be created. The points are defined in the input "
-                                   "file by longitude:latitude. It is also possible to define additional subdivisions of the "
-                                   "mesh in each direction. Faces of the model are defined as 0, west; 1,east; 2, south; 3, "
-                                   "north; 4, inner; 5, outer.\n\n"
+                                   "file by longitude:latitude. It is also possible to define additional subdivisions "
+                                   "of the mesh in each direction. The boundary of the domain is formed by linear "
+                                   "interpolation in longitude-latitude space between adjacent points "
+                                   "(i.e. [lon, lat](f) = [lon1*f + lon2*(1-f), lat1*f + lat2*(1-f)], "
+                                   "where f is a value between 0 and 1). Faces of the model are defined as "
+                                   "0, west; 1,east; 2, south; 3, north; 4, inner; 5, outer.\n\n"
                                    "This geometry model supports initial topography for deforming the initial mesh.")
   }
 }

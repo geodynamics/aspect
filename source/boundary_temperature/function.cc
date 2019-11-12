@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -103,10 +103,10 @@ namespace aspect
 
           prm.declare_entry ("Minimal temperature", "273",
                              Patterns::Double (),
-                             "Minimal temperature. Units: K.");
+                             "Minimal temperature. Units: $\\si{K}$.");
           prm.declare_entry ("Maximal temperature", "3773",
                              Patterns::Double (),
-                             "Maximal temperature. Units: K.");
+                             "Maximal temperature. Units: $\\si{K}$.");
         }
         prm.leave_subsection();
       }

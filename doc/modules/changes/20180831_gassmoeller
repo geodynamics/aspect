@@ -1,8 +1,0 @@
-Fixed: The global entropy variation that is used in the artificial
-viscosity computation was always computed with a quadrature of the 
-polynomial degree of the temperature (even for compositional fields).
-This is fixed now, and causes minor changes in the stabilization for
-compositional fields if they use a different element order than the
-temperature (usually not the case).
-<br>
-(Rene Gassmoeller, 2018/08/31)

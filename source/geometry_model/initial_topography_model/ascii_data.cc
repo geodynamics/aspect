@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -149,7 +149,7 @@ namespace aspect
                                              "Implementation of a model in which the surface "
                                              "topography is derived from a file containing data "
                                              "in ascii format. The following geometry models "
-                                             "are currently supported: box, chunk, shperical shell. "
+                                             "are currently supported: box. "
                                              "Note the required format of the "
                                              "input data: The first lines may contain any number of comments "
                                              "if they begin with `#', but one of these lines needs to "

@@ -1,0 +1,25 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Iterations for composition solver 1
+# 10: Iterations for Stokes solver
+# 11: Velocity iterations in Stokes preconditioner
+# 12: Schur complement iterations in Stokes preconditioner
+# 13: Minimal value for composition porosity
+# 14: Maximal value for composition porosity
+# 15: Global mass for composition porosity
+# 16: Minimal temperature (K)
+# 17: Average temperature (K)
+# 18: Maximal temperature (K)
+# 19: Max entropy viscosity (W/(m*K))
+# 20: Average entropy viscosity (W/(m*K))
+0 0.000000000000e+00 0.000000000000e+00 1024 9539 4225 4225 0 0          7 52 26 1.00000000e-01 5.00000000e-01 1.78515625e-01 1.00000000e-01 1.78515625e-01 5.00000000e-01 0.00000000e+00 0.00000000e+00 
+1 1.562499961249e-03 1.562499961249e-03 1024 9539 4225 4225 6 6 4294967295  0  0 8.40562303e-02 5.19162213e-01 1.78515625e-01 8.40562343e-02 1.78515623e-01 5.19162245e-01 4.53237182e-04 4.53236230e-04 
+2 3.124999922497e-03 1.562499961249e-03 1024 9539 4225 4225 6 6 4294967295  0  0 7.37806362e-02 5.32856529e-01 1.78515625e-01 7.37806473e-02 1.78515621e-01 5.32856560e-01 4.53237182e-04 6.89054903e-05 
+3 4.687499883746e-03 1.562499961249e-03 1024 9539 4225 4225 6 6 4294967295  0  0 7.00684497e-02 5.39591002e-01 1.78515625e-01 7.00684690e-02 1.78515620e-01 5.39590997e-01 4.53237153e-04 6.29960629e-05 
+4 5.000000000000e-03 3.125001162539e-04 1024 9539 4225 4225 5 5 4294967295  0  0 7.00242942e-02 5.40286654e-01 1.78515625e-01 7.00243161e-02 1.78515620e-01 5.40286638e-01 4.53237124e-04 5.97093642e-05 

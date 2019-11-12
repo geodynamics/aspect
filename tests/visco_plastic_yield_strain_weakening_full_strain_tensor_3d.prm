@@ -1,0 +1,132 @@
+# Global parameters
+set Dimension                              = 3
+set Start time                             = 0
+set End time                               = 1e2
+set Use years in output instead of seconds = true
+set Nonlinear solver scheme                = single Advection, iterated Stokes
+set Max nonlinear iterations               = 1
+set Output directory                       = visco_plastic_yield_strain_weakening_full_strain_tensor_3d
+set Timing output frequency                = 1
+
+# Model geometry (100x10x100 km, 10 km spacing)
+subsection Geometry model
+  set Model name = box
+  subsection Box
+    set X repetitions = 10
+    set Y repetitions = 1
+    set Z repetitions = 10
+    set X extent      = 100e3
+    set Y extent      = 10e3
+    set Z extent      = 100e3
+  end
+end
+
+# Mesh refinement specifications 
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 0
+  set Time steps between mesh refinement = 0
+end
+
+
+# Boundary classifications (fixed T boundaries, prescribed velocity) 
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = bottom, top, left, right, front, back
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = front, back
+  set Prescribed velocity boundary indicators = bottom z: function, top z: function, left x: function, right x: function
+end
+
+# Velocity on boundaries characterized by functions
+subsection Boundary velocity model
+  subsection Function
+    set Variable names      = x,y,z
+    set Function constants  = m=0.0005, year=1
+    set Function expression = if (x<50e3 , -1*m/year, 1*m/year); 0; if (z<50e3 , 1*m/year, -1*m/year);
+  end
+end
+
+# Temperature boundary and initial conditions
+subsection Boundary temperature model
+  set List of model names = initial temperature
+end
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Function expression = 273
+  end
+end
+
+# Compositional fields used to track finite strain
+subsection Compositional fields
+  set Number of fields = 9
+  set Names of fields = s11, s12, s13, s21, s22, s23, s31, s32, s33
+end
+
+# The compositional fields have an initial value 0 or 0.5
+subsection Initial composition model
+  set Model name = function
+  subsection Function
+    set Variable names      = x,y,z
+    set Function expression = 0.5; 0; 0; 0; 0.5; 0; 0; 0; 0.5
+  end
+end
+
+# Boundary composition specification
+subsection Boundary composition model
+  set List of model names = initial composition
+end
+
+# Material model (values for background material and strain fields)
+subsection Material model
+  set Model name = visco plastic
+  subsection Visco Plastic
+    set Reference strain rate = 1.e-16
+    set Viscous flow law = dislocation
+    set Prefactors for dislocation creep = 5.e-23
+    set Stress exponents for dislocation creep = 1.0
+    set Activation energies for dislocation creep = 0.
+    set Activation volumes for dislocation creep = 0.
+    set Yield mechanism = drucker
+    set Angles of internal friction = 0.
+    set Cohesions = 1.e6
+    set Strain weakening mechanism = finite strain tensor
+    set Start plasticity strain weakening intervals = 0.
+    set End plasticity strain weakening intervals = 1.0
+    set Start prefactor strain weakening intervals = 0.
+    set End prefactor strain weakening intervals = 1.0
+    set Cohesion strain weakening factors = 0.5
+    set Friction strain weakening factors = 0.5
+    set Prefactor strain weakening factors = 0.5
+  end
+end
+
+# Gravity model
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 10.0
+  end
+end
+
+# Post processing
+subsection Postprocess
+  set List of postprocessors = velocity statistics, mass flux statistics, visualization
+  subsection Visualization
+    set Interpolate output = false
+    set List of output variables = viscosity, strain rate, named additional outputs
+    set Output format            = gnuplot
+  end
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Number of cheap Stokes solver steps = 0
+  end
+end

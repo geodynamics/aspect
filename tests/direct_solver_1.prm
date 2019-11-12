@@ -151,6 +151,7 @@ subsection Postprocess
   set List of postprocessors = visualization
 
   subsection Visualization
+    set Interpolate output = false
 
     set Number of grouped files       = 0
     set Output format                 = vtu

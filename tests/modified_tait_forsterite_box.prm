@@ -1,0 +1,101 @@
+# This test ensures that the Modified Tait
+# material model works with compositional fields
+# enabled
+
+set Dimension                              = 2
+set End time                               = 0
+set Adiabatic surface temperature          = 1000
+
+subsection Boundary temperature model
+  set List of model names = initial temperature 
+end
+
+subsection Compositional fields
+  set Number of fields          = 1 
+end
+
+subsection Initial composition model
+  set List of model names = function
+  subsection Function
+    set Function expression = 1
+  end
+end
+
+subsection Geometry model
+  set Model name = box 
+  subsection Box
+    set X extent                = 400e3 
+    set X repetitions           = 1
+    set Y extent                = 400e3  
+    set Y repetitions           = 1
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical 
+  subsection Vertical
+    set Magnitude = 9.81 
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function 
+  subsection Function
+    set Variable names      = x,y
+    set Function expression = 1000 + y/400
+  end
+end
+
+# The following properties are for forsterite.
+# They are taken from Holland and Powell (2011).
+# Note that the heat capacity function had to be converted
+# from a molar basis to mass basis
+# (Cp(specific) = Cp(molar)/molar_mass)
+# The Einstein temperature is calculated empirically from the
+# expression in Holland and Powell
+# (Einstein temperature  = 10636 / (S/n + 6.44)), where
+# S is the standard state molar entropy and n is the number of atoms
+# per formula unit.
+
+subsection Material model
+  set Model name         = modified tait
+  subsection Modified Tait model
+    set Reference pressure = 1e5
+    set Reference temperature = 298.15
+    set Reference density = 3222.5
+    set Reference isothermal bulk modulus = 128.5e9
+    set Reference bulk modulus derivative = 3.84
+    set Reference thermal expansivity = 2.85e-5
+    set Einstein temperature = 531.117
+    subsection Reference heat capacity function
+      set Variable names = T
+      set Function expression = (233.3 + 0.001494*T - 603800.0/T/T - 1869.7/sqrt(T))/0.1406931
+    end
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement              = 0         
+  set Initial global refinement                = 1
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = left, right, top, bottom
+end
+
+
+subsection Postprocess
+  set List of postprocessors = visualization
+
+  subsection Visualization
+    set Output format = gnuplot
+    set List of output variables = material properties
+    set Time between graphical output = 0
+    set Number of grouped files       = 0
+
+    subsection Material properties
+      set List of material properties = density, thermal expansivity, specific heat
+    end
+  end
+end
+

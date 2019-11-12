@@ -1,0 +1,38 @@
+
+Number of active cells: 96 (on 1 levels)
+Number of degrees of freedom: 4,030 (2,910+150+970)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 60+0 iterations.
+
+   Postprocessing:
+
+     Model domain depth (m):                        2.89e+06
+     Temperature contrast across model domain (K):  0
+     Reference depth (m):                           0
+     Reference temperature (K):                     0
+     Reference pressure (Pa):                       0
+     Reference gravity (m/s^2):                     10
+     Reference density (kg/m^3):                    3458.4
+     Reference thermal expansion coefficient (1/K): 3e-05
+     Reference specific heat capacity (J/(K*kg)):   1250
+     Reference thermal conductivity (W/(m*K)):      4.125
+     Reference viscosity (Pa*s):                    1e+21
+     Reference thermal diffusivity (m^2/s):         9.54198e-07
+     Rayleigh number:                               0
+
+     Density at top/bottom of domain:  3301 kg/m^3, 3301 kg/m^3
+     Pressure at top/bottom of domain: -2.025e+04 Pa, 9.538e+10 Pa
+     Computing dynamic topography      
+     Writing geoid anomaly:            output-spectral_comparison/geoid_anomaly.00000
+     Writing graphical output:         output-spectral_comparison/solution/solution-00000
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

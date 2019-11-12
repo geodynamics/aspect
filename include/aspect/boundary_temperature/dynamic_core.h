@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -113,9 +113,8 @@ namespace aspect
          *   temperature.
          * @param location The location of the point at which we ask for the temperature.
          **/
-        virtual
         double  boundary_temperature (const types::boundary_id            boundary_indicator,
-                                      const Point<dim>                    &location) const;
+                                      const Point<dim>                    &location) const override;
 
         /**
          * Return the minimal temperature on that part of the boundary
@@ -124,8 +123,7 @@ namespace aspect
          * This value is used in computing dimensionless numbers such as the
          * Nusselt number indicating heat flux.
          */
-        virtual
-        double minimal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const;
+        double minimal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const override;
 
         /**
          * Return the maximal temperature on that part of the boundary
@@ -134,8 +132,7 @@ namespace aspect
          * This value is used in computing dimensionless numbers such as the
          * Nusselt number indicating heat flux.
          */
-        virtual
-        double maximal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const;
+        double maximal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const override;
 
         /**
          * Declare the parameters this class takes through input files.
@@ -149,17 +146,14 @@ namespace aspect
          * Read the parameters this class declares from the parameter
          * file.
          */
-        virtual
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
 
         /**
          * This function update the core-mantle boundary (CMB) temperature by
          * the core energy balance solver using the core-mantle boundary heat flux.
          */
-        virtual
-        void
-        update();
+        void update() override;
 
         /**
          * Pass core data to other modules

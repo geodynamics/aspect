@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -21,7 +21,11 @@
 #include <aspect/lateral_averaging.h>
 #include <aspect/material_model/interface.h>
 #include <aspect/gravity_model/interface.h>
-#include <aspect/geometry_model/interface.h>
+#include <aspect/geometry_model/box.h>
+#include <aspect/geometry_model/chunk.h>
+#include <aspect/geometry_model/ellipsoidal_chunk.h>
+#include <aspect/geometry_model/spherical_shell.h>
+#include <aspect/geometry_model/two_merged_boxes.h>
 
 #include <deal.II/fe/fe_values.h>
 #include <deal.II/base/quadrature_lib.h>
@@ -48,7 +52,7 @@ namespace aspect
                         const MaterialModel::MaterialModelOutputs<dim> &,
                         const FEValues<dim> &fe_values,
                         const LinearAlgebra::BlockVector &solution,
-                        std::vector<double> &output)
+                        std::vector<double> &output) override
         {
           fe_values[field_].get_function_values (solution, output);
         }
@@ -62,7 +66,7 @@ namespace aspect
     class FunctorDepthAverageViscosity: public internal::FunctorBase<dim>
     {
       public:
-        bool need_material_properties() const
+        bool need_material_properties() const override
         {
           return true;
         }
@@ -71,7 +75,7 @@ namespace aspect
                         const MaterialModel::MaterialModelOutputs<dim> &out,
                         const FEValues<dim> &,
                         const LinearAlgebra::BlockVector &,
-                        std::vector<double> &output)
+                        std::vector<double> &output) override
         {
           output = out.viscosities;
         }
@@ -88,7 +92,7 @@ namespace aspect
           : field_(field), convert_to_years_(convert_to_years)
         {}
 
-        void setup(const unsigned int q_points)
+        void setup(const unsigned int q_points) override
         {
           velocity_values.resize(q_points);
         }
@@ -97,7 +101,7 @@ namespace aspect
                         const MaterialModel::MaterialModelOutputs<dim> &,
                         const FEValues<dim> &fe_values,
                         const LinearAlgebra::BlockVector &solution,
-                        std::vector<double> &output)
+                        std::vector<double> &output) override
         {
           fe_values[field_].get_function_values (solution, velocity_values);
           for (unsigned int q=0; q<output.size(); ++q)
@@ -124,13 +128,13 @@ namespace aspect
             convert_to_years_(convert_to_years)
         {}
 
-        bool need_material_properties() const
+        bool need_material_properties() const override
         {
           // this is needed because we want to access in.position in operator()
           return true;
         }
 
-        void setup(const unsigned int q_points)
+        void setup(const unsigned int q_points) override
         {
           velocity_values.resize(q_points);
         }
@@ -139,7 +143,7 @@ namespace aspect
                         const MaterialModel::MaterialModelOutputs<dim> &,
                         const FEValues<dim> &fe_values,
                         const LinearAlgebra::BlockVector &solution,
-                        std::vector<double> &output)
+                        std::vector<double> &output) override
         {
           fe_values[field_].get_function_values (solution, velocity_values);
           for (unsigned int q=0; q<output.size(); ++q)
@@ -168,25 +172,24 @@ namespace aspect
           : vs_(vs)
         {}
 
-        bool need_material_properties() const
+        bool need_material_properties() const override
         {
           return true;
         }
 
         void
         create_additional_material_model_outputs (const unsigned int n_points,
-                                                  MaterialModel::MaterialModelOutputs<dim> &outputs) const
+                                                  MaterialModel::MaterialModelOutputs<dim> &outputs) const override
         {
           outputs.additional_outputs.push_back(
-            std::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
-            (new MaterialModel::SeismicAdditionalOutputs<dim> (n_points)));
+            std_cxx14::make_unique<MaterialModel::SeismicAdditionalOutputs<dim>> (n_points));
         }
 
         void operator()(const MaterialModel::MaterialModelInputs<dim> &,
                         const MaterialModel::MaterialModelOutputs<dim> &out,
                         const FEValues<dim> &,
                         const LinearAlgebra::BlockVector &,
-                        std::vector<double> &output)
+                        std::vector<double> &output) override
         {
           const MaterialModel::SeismicAdditionalOutputs<dim> *seismic_outputs
             = out.template get_additional_output<const MaterialModel::SeismicAdditionalOutputs<dim> >();
@@ -218,12 +221,12 @@ namespace aspect
             gravity_model(gm)
         {}
 
-        bool need_material_properties() const
+        bool need_material_properties() const override
         {
           return true;
         }
 
-        void setup(const unsigned int q_points)
+        void setup(const unsigned int q_points) override
         {
           velocity_values.resize(q_points);
           temperature_values.resize(q_points);
@@ -234,7 +237,7 @@ namespace aspect
                         const MaterialModel::MaterialModelOutputs<dim> &out,
                         const FEValues<dim> &fe_values,
                         const LinearAlgebra::BlockVector &solution,
-                        std::vector<double> &output)
+                        std::vector<double> &output) override
         {
           fe_values[velocity_field_].get_function_values (solution, velocity_values);
           fe_values[temperature_field_].get_function_values (solution, temperature_values);
@@ -291,6 +294,50 @@ namespace aspect
     void
     FunctorBase<dim>::setup(const unsigned int /*q_points*/)
     {}
+
+    template <int dim>
+    QAnisotropic<dim>
+    get_quadrature_formula(const unsigned int lateral_quadrature_degree,
+                           const unsigned int depth_dimension);
+
+    template <>
+    QAnisotropic<3>
+    get_quadrature_formula(const unsigned int lateral_quadrature_degree,
+                           const unsigned int depth_dimension)
+    {
+      const unsigned int dim = 3;
+
+      if (depth_dimension == dim)
+        return QAnisotropic<dim> (QGauss<1>(lateral_quadrature_degree),
+                                  QGauss<1>(lateral_quadrature_degree),
+                                  QIterated<1>(QMidpoint<1>(),10));
+      else if (depth_dimension == 1)
+        return QAnisotropic<dim> (QIterated<1>(QMidpoint<1>(),10),
+                                  QGauss<1>(lateral_quadrature_degree),
+                                  QGauss<1>(lateral_quadrature_degree));
+
+      return QAnisotropic<dim>(QGauss<1>(lateral_quadrature_degree),
+                               QGauss<1>(lateral_quadrature_degree),
+                               QIterated<1>(QMidpoint<1>(),10));
+    }
+
+    template <>
+    QAnisotropic<2>
+    get_quadrature_formula(const unsigned int lateral_quadrature_degree,
+                           const unsigned int depth_dimension)
+    {
+      const unsigned int dim = 2;
+
+      if (depth_dimension == dim)
+        return QAnisotropic<dim> (QGauss<1>(lateral_quadrature_degree),
+                                  QIterated<1>(QMidpoint<1>(),10));
+      else if (depth_dimension == 1)
+        return QAnisotropic<dim> (QIterated<1>(QMidpoint<1>(),10),
+                                  QGauss<1>(lateral_quadrature_degree));
+
+      return QAnisotropic<dim>(QGauss<1>(lateral_quadrature_degree),
+                               QIterated<1>(QMidpoint<1>(),10));
+    }
   }
 
 
@@ -313,22 +360,56 @@ namespace aspect
                                              std::vector<double>(n_slices,0.0));
     std::vector<double> volume(n_slices,0.0);
 
-    // this yields 10^dim quadrature points evenly distributed in the interior of the cell.
-    // We avoid points on the faces, as they would be counted more than once.
-    const QIterated<dim> quadrature_formula (QMidpoint<1>(),
-                                             10);
-    const unsigned int n_q_points = quadrature_formula.size();
+    // We would like to use a quadrature formula that is appropriately accurate laterally,
+    // but has a higher resolution in depth (to have values for all depth slices, even if there
+    // are adaptively coarsened cells that are much bigger than individual slices).
+    // For that we need to know the depth direction in the unit cell coordinate system, which
+    // is only unique (= the same for all cells) in some geometries. In these geometries we
+    // can optimize the quadrature, otherwise we need to use a high-resolution quadrature in
+    // all directions, which is more expensive.
+    // The Chunk geometry model has depth as first dimension (radius, lon, lat),
+    // all others with unique direction have it last; however, the Chunk and
+    // EllipsoidalChunk geometry have not been successfully tested with
+    // the lower quadrature, so we leave it at the conservative quadrature for now.
+
+    unsigned int geometry_unique_depth_direction;
+    if (Plugins::plugin_type_matches<GeometryModel::Box<dim> >(this->get_geometry_model()) ||
+        Plugins::plugin_type_matches<GeometryModel::SphericalShell<dim> >(this->get_geometry_model()) ||
+        Plugins::plugin_type_matches<GeometryModel::TwoMergedBoxes<dim> >(this->get_geometry_model()))
+      geometry_unique_depth_direction = dim;
+    else if (Plugins::plugin_type_matches<GeometryModel::Chunk<dim> >(this->get_geometry_model()) ||
+             Plugins::plugin_type_matches<GeometryModel::EllipsoidalChunk<dim> >(this->get_geometry_model()))
+      geometry_unique_depth_direction = numbers::invalid_unsigned_int;
+    else
+      geometry_unique_depth_direction = numbers::invalid_unsigned_int;
+
+    const unsigned int max_fe_degree = std::max(this->introspection().polynomial_degree.velocities,
+                                                std::max(this->introspection().polynomial_degree.temperature,
+                                                         this->introspection().polynomial_degree.compositional_fields));
+
+    // We want to integrate over a polynomial of degree p = max_fe_degree, for which we
+    // need a quadrature of at least q, with p <= 2q-1 --> q >= (p+1)/2
+    const unsigned int lateral_quadrature_degree = static_cast<unsigned int>(std::ceil((max_fe_degree+1.0)/2.0));
+
+    std::unique_ptr<Quadrature<dim> > quadrature_formula;
+    if (geometry_unique_depth_direction != numbers::invalid_unsigned_int)
+      quadrature_formula = std_cxx14::make_unique<Quadrature<dim> >(internal::get_quadrature_formula<dim>(lateral_quadrature_degree,
+                                                                    geometry_unique_depth_direction));
+    else
+      quadrature_formula = std_cxx14::make_unique<Quadrature<dim> >(QIterated<dim>(QMidpoint<1>(),10));
+
+    const unsigned int n_q_points = quadrature_formula->size();
     const double max_depth = this->get_geometry_model().maximal_depth();
 
     FEValues<dim> fe_values (this->get_mapping(),
                              this->get_fe(),
-                             quadrature_formula,
+                             *quadrature_formula,
                              update_values | update_gradients | update_quadrature_points | update_JxW_values);
 
     std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),
                                                           std::vector<double> (n_q_points));
     std::vector<std::vector<double> > output_values(n_properties,
-                                                    std::vector<double>(quadrature_formula.size()));
+                                                    std::vector<double>(n_q_points));
 
     MaterialModel::MaterialModelInputs<dim> in(n_q_points,
                                                this->n_compositional_fields());
@@ -338,17 +419,14 @@ namespace aspect
     bool functors_need_material_output = false;
     for (unsigned int i=0; i<n_properties; ++i)
       {
-        functors[i]->setup(quadrature_formula.size());
+        functors[i]->setup(n_q_points);
         if (functors[i]->need_material_properties())
           functors_need_material_output = true;
 
         functors[i]->create_additional_material_model_outputs(n_q_points,out);
       }
 
-    typename DoFHandler<dim>::active_cell_iterator
-    cell = this->get_dof_handler().begin_active(),
-    endc = this->get_dof_handler().end();
-    for (; cell!=endc; ++cell)
+    for (const auto &cell : this->get_dof_handler().active_cell_iterators())
       if (cell->is_locally_owned())
         {
           fe_values.reinit (cell);
@@ -505,51 +583,48 @@ namespace aspect
       {
         if (property_names[property_index] == "temperature")
           {
-            functors.push_back(std::unique_ptr<internal::FunctorBase<dim> >(
-                                 new FunctorDepthAverageField<dim> (this->introspection().extractors.temperature)));
+            functors.push_back(std_cxx14::make_unique<FunctorDepthAverageField<dim>>
+                               (this->introspection().extractors.temperature));
           }
         else if (property_names[property_index].substr(0,2) == "C_")
           {
             const unsigned int c =
               Utilities::string_to_int(property_names[property_index].substr(2,std::string::npos));
 
-            functors.push_back(std::unique_ptr<internal::FunctorBase<dim> >(
-                                 new FunctorDepthAverageField<dim> (this->introspection().extractors.compositional_fields[c])));
+            functors.push_back(std_cxx14::make_unique<FunctorDepthAverageField<dim>> (
+                                 this->introspection().extractors.compositional_fields[c]));
           }
         else if (property_names[property_index] == "velocity_magnitude")
           {
-            functors.push_back(std::unique_ptr<internal::FunctorBase<dim> >(
-                                 new FunctorDepthAverageVelocityMagnitude<dim> (this->introspection().extractors.velocities,
-                                                                                this->convert_output_to_years())));
+            functors.push_back(std_cxx14::make_unique<FunctorDepthAverageVelocityMagnitude<dim>>
+                               (this->introspection().extractors.velocities,
+                                this->convert_output_to_years()));
           }
         else if (property_names[property_index] == "sinking_velocity")
           {
-            functors.push_back(std::unique_ptr<internal::FunctorBase<dim> >(
-                                 new FunctorDepthAverageSinkingVelocity<dim> (this->introspection().extractors.velocities,
-                                                                              &this->get_gravity_model(),
-                                                                              this->convert_output_to_years())));
+            functors.push_back(std_cxx14::make_unique<FunctorDepthAverageSinkingVelocity<dim>>
+                               (this->introspection().extractors.velocities,
+                                &this->get_gravity_model(),
+                                this->convert_output_to_years()));
           }
         else if (property_names[property_index] == "Vs")
           {
-            functors.push_back(std::unique_ptr<internal::FunctorBase<dim> >(
-                                 new FunctorDepthAverageVsVp<dim> (true /* Vs */)));
+            functors.push_back(std_cxx14::make_unique<FunctorDepthAverageVsVp<dim>> (true /* Vs */));
           }
         else if (property_names[property_index] == "Vp")
           {
-            functors.push_back(std::unique_ptr<internal::FunctorBase<dim> >(
-                                 new FunctorDepthAverageVsVp<dim> (false /* Vp */)));
+            functors.push_back(std_cxx14::make_unique<FunctorDepthAverageVsVp<dim>> (false /* Vp */));
           }
         else if (property_names[property_index] == "viscosity")
           {
-            functors.push_back(std::unique_ptr<internal::FunctorBase<dim> >(
-                                 new FunctorDepthAverageViscosity<dim>()));
+            functors.push_back(std_cxx14::make_unique<FunctorDepthAverageViscosity<dim>>());
           }
         else if (property_names[property_index] == "vertical_heat_flux")
           {
-            functors.push_back(std::unique_ptr<internal::FunctorBase<dim> >(
-                                 new FunctorDepthAverageVerticalHeatFlux<dim> (this->introspection().extractors.velocities,
-                                                                               this->introspection().extractors.temperature,
-                                                                               &this->get_gravity_model())));
+            functors.push_back(std_cxx14::make_unique<FunctorDepthAverageVerticalHeatFlux<dim>>
+                               (this->introspection().extractors.velocities,
+                                this->introspection().extractors.temperature,
+                                &this->get_gravity_model()));
           }
         else
           {

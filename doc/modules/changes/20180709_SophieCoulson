@@ -1,5 +1,0 @@
-New: ASPECT now has a Patch on S40RTS initial temperature model which combines S40RTS and 
-an ascii grid containing an upper mantle tomography. Data is input in Vs and converted to 
-temperature within the function (using the same method as S40RTS_perturbation).
-<br>
-(Sophie Coulson, 2018/07/09)

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -48,14 +48,17 @@ namespace aspect
        * future that calculation could be implemented in a material model with CopyOutputs
        * (once they exist). For more thoughts on that, see the documentation for the
        * grain lag angle postprocessor.
-      */
+       */
       template<int dim>
       class ISARotationTimescale: public CellDataVectorCreator<dim>, public SimulatorAccess<dim>
       {
         public:
 
-          virtual std::pair<std::string, Vector<float> *>
-          execute() const;
+          /**
+           * @copydoc CellDataVectorCreator<dim>::execute()
+           */
+          std::pair<std::string, Vector<float> *>
+          execute() const override;
 
       };
     }

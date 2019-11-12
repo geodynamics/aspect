@@ -152,6 +152,7 @@ subsection Postprocess
   set List of postprocessors = temperature statistics #, visualization
 
   subsection Visualization
+    set Interpolate output = false
 
     set List of output variables      = material properties, nonadiabatic temperature
 

@@ -1,8 +1,0 @@
-New: ASPECT can now call PerpleX to calculate material properties, phase
-amounts and compositions on-the-fly. A simple material model (PerpleX lookup)
-is provided which uses PerpleX to provide densities, compressibilities,
-thermal expansivities and heat capacities on a cell-by-cell basis. This
-model is provided as a proof-of-concept; more efficient procedures
-will be required for production runs.
-<br>
-(Bob Myhill, 2018/06/25)

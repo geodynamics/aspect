@@ -13,7 +13,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
    Postprocessing:
      Compositions min/max/mass: 1/1/1
      Writing graphical output:  output-exponential_decay/solution/solution-00000
-     Errors                     time=0.000000e+00 ndofs= 1237 C_L2_current= 1.083745e-16 C_L2_max= 1.083745e-16 T_L2_current= 1.083745e-16 T_L2_max= 1.083745e-16
+     Errors                     time=0.000000e+00 ndofs= 1237 C_L2_current= 1.100813e-16 C_L2_max= 1.100813e-16 T_L2_current= 1.100813e-16 T_L2_max= 1.100813e-16
 
 *** Timestep 1:  t=10 seconds
    Solving composition reactions in 312 substep(s).
@@ -96,7 +96,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
    Solving composition reactions in 312 substep(s).
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
-   Solving Stokes system... 2+0 iterations.
+   Solving Stokes system... 3+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: 0.003882/0.003882/0.003882
@@ -107,7 +107,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
    Solving composition reactions in 312 substep(s).
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
-   Solving Stokes system... 2+0 iterations.
+   Solving Stokes system... 3+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: 0.00194/0.00194/0.00194
@@ -118,7 +118,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
    Solving composition reactions in 312 substep(s).
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
-   Solving Stokes system... 3+0 iterations.
+   Solving Stokes system... 2+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: 0.0009691/0.0009691/0.0009691

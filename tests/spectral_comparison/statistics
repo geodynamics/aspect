@@ -1,0 +1,16 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Iterations for temperature solver
+# 8: Iterations for Stokes solver
+# 9: Velocity iterations in Stokes preconditioner
+# 10: Schur complement iterations in Stokes preconditioner
+# 11: Density at top (kg/m^3)
+# 12: Density at bottom (kg/m^3)
+# 13: Pressure at top (Pa)
+# 14: Pressure at bottom (Pa)
+# 15: Visualization file name
+0 0.000000000000e+00 0.000000000000e+00 96 3060 970 0 59 62 366 3.30110480e+03 3.30064733e+03 -2.02529816e+04 9.53756052e+10 output-spectral_comparison/solution/solution-00000 

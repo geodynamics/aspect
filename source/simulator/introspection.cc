@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -110,9 +110,9 @@ namespace aspect
                     const unsigned int degree)
     {
       if (discontinuous)
-        return std::shared_ptr<FiniteElement<dim> >(new FE_DGP<dim>(degree));
+        return std::make_shared<FE_DGP<dim>>(degree);
       else
-        return std::shared_ptr<FiniteElement<dim> >(new FE_Q<dim>(degree));
+        return std::make_shared<FE_Q<dim>>(degree);
     }
 
 
@@ -123,9 +123,9 @@ namespace aspect
                     const unsigned int degree)
     {
       if (discontinuous)
-        return std::shared_ptr<FiniteElement<dim> >(new FE_DGQ<dim>(degree));
+        return std::make_shared<FE_DGQ<dim>>(degree);
       else
-        return std::shared_ptr<FiniteElement<dim> >(new FE_Q<dim>(degree));
+        return std::make_shared<FE_Q<dim>>(degree);
     }
   }
 
@@ -141,18 +141,26 @@ namespace aspect
     const unsigned int n_velocity_blocks = parameters.use_direct_stokes_solver ? 0 : 1;
     variables.push_back(
       VariableDeclaration<dim>("velocity",
-                               std::shared_ptr<FiniteElement<dim> >(
-                                 new FE_Q<dim>(parameters.stokes_velocity_degree)),
+                               std::make_shared<FE_Q<dim>>(parameters.stokes_velocity_degree),
                                dim,
                                n_velocity_blocks));
 
-    variables.push_back(
-      VariableDeclaration<dim>(
-        "pressure",
-        internal::new_FE_Q_or_DGP<dim>(parameters.use_locally_conservative_discretization,
-                                       parameters.stokes_velocity_degree-1),
-        1,
-        1));
+    if (parameters.use_equal_order_interpolation_for_stokes == false)
+      variables.push_back(
+        VariableDeclaration<dim>(
+          "pressure",
+          internal::new_FE_Q_or_DGP<dim>(parameters.use_locally_conservative_discretization,
+                                         parameters.stokes_velocity_degree-1),
+          1,
+          1));
+    else
+      variables.push_back(
+        VariableDeclaration<dim>(
+          "pressure",
+          std::shared_ptr<FiniteElement<dim> >(new FE_Q<dim>(parameters.stokes_velocity_degree)),
+          1,
+          1));
+
 
     variables.push_back(
       VariableDeclaration<dim>(

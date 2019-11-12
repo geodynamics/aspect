@@ -28,10 +28,6 @@
 #include <deal.II/grid/tria_accessor.h>
 #include <deal.II/grid/grid_tools.h>
 
-#if !DEAL_II_VERSION_GTE(9,0,0)
-#include <deal.II/grid/tria_boundary_lib.h>
-#endif
-
 
 namespace aspect
 {
@@ -186,8 +182,6 @@ namespace aspect
     }
 
 
-
-#if DEAL_II_VERSION_GTE(9,0,0)
     template <int dim>
     std::unique_ptr<Manifold<dim,dim> >
     Chunk<dim>::ChunkGeometry::
@@ -195,22 +189,6 @@ namespace aspect
     {
       return std_cxx14::make_unique<ChunkGeometry>(*this);
     }
-#endif
-
-
-
-#if !DEAL_II_VERSION_GTE(9,0,0)
-    template <int dim>
-    void
-    Chunk<dim>::initialize ()
-    {
-      // Call function to connect the set/clear manifold id functions
-      // to the right signal
-      connect_to_signal(this->get_signals());
-
-    }
-#endif
-
 
 
     template <int dim>
@@ -225,50 +203,6 @@ namespace aspect
                                                  point2,
                                                  true);
 
-#if !DEAL_II_VERSION_GTE(9,0,0)
-      // At this point, all boundary faces have their correct boundary
-      // indicators, but the edges do not. We want the edges of curved
-      // faces to be curved as well, so we set the edge boundary indicators
-      // to the same boundary indicators as their faces.
-      for (typename Triangulation<dim>::active_cell_iterator
-           cell = coarse_grid.begin_active();
-           cell != coarse_grid.end(); ++cell)
-        for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
-          if (cell->face(f)->at_boundary())
-            // Set edges on the radial faces; both adjacent faces
-            // should agree on where new points along the boundary lie
-            // for these edges, so the order of the boundaries does not matter
-            if ((cell->face(f)->boundary_id() == 2)
-                ||
-                (cell->face(f)->boundary_id() == 3))
-              cell->face(f)->set_all_boundary_ids(cell->face(f)->boundary_id());
-
-      for (typename Triangulation<dim>::active_cell_iterator
-           cell = coarse_grid.begin_active();
-           cell != coarse_grid.end(); ++cell)
-        for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
-          if (cell->face(f)->at_boundary())
-            // Set edges on the radial faces; both adjacent faces
-            // should agree on where new points along the boundary lie
-            // for these edges, so the order of the boundaries does not matter
-            if ((cell->face(f)->boundary_id() == 4)
-                ||
-                (cell->face(f)->boundary_id() == 5))
-              cell->face(f)->set_all_boundary_ids(cell->face(f)->boundary_id());
-
-      for (typename Triangulation<dim>::active_cell_iterator
-           cell = coarse_grid.begin_active();
-           cell != coarse_grid.end(); ++cell)
-        for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
-          if (cell->face(f)->at_boundary())
-            // (Re-)Set edges on the spherical shells to ensure that
-            // they are all curved as expected
-            if ((cell->face(f)->boundary_id() == 0)
-                ||
-                (cell->face(f)->boundary_id() == 1))
-              cell->face(f)->set_all_boundary_ids(cell->face(f)->boundary_id());
-#endif
-
       // Transform box into spherical chunk
       GridTools::transform (
         [&](const Point<dim> &p) -> Point<dim>
@@ -280,101 +214,10 @@ namespace aspect
       // Deal with a curved mesh
       // Attach the real manifold to slot 15.
       coarse_grid.set_manifold (15, manifold);
-      for (typename Triangulation<dim>::active_cell_iterator cell =
-             coarse_grid.begin_active(); cell != coarse_grid.end(); ++cell)
-        cell->set_all_manifold_ids (15);
-
-#if !DEAL_II_VERSION_GTE(9,0,0)
-      // On the boundary faces, set boundary objects.
-      // The east and west boundaries are straight,
-      // the inner and outer boundary are part of
-      // a spherical shell. In 3D, the north and south boundaries
-      // are part of a cone with the tip at the origin.
-      static const StraightBoundary<dim> boundary_straight;
-
-      // Attach boundary objects to the straight east and west boundaries
-      coarse_grid.set_boundary(2, boundary_straight);
-      coarse_grid.set_boundary(3, boundary_straight);
-
-      if (dim == 3)
-        {
-          // Define the center point of the greater radius end of the
-          // north and south boundary cones.
-          // These lie along the z-axis.
-          Point<dim> center;
-          Point<dim> north, south;
-          const double outer_radius = point2[0];
-          north[dim-1] = outer_radius * std::sin(point2[2]);
-          south[dim-1] = outer_radius * std::sin(point1[2]);
-          // Define the radius of the cones
-          const double north_radius = std::sqrt(outer_radius*outer_radius-north[dim-1]*north[dim-1]);
-          const double south_radius = std::sqrt(outer_radius*outer_radius-south[dim-1]*south[dim-1]);
-          static const ConeBoundary<dim> boundary_cone_north(0.0,north_radius,center,north);
-          static const ConeBoundary<dim> boundary_cone_south(0.0,south_radius,center,south);
-
-          // Attach boundary objects to the conical north and south boundaries
-          // If one of the boundaries lies at the equator,
-          // just use the straight boundary.
-          if (point2[2] != 0.0)
-            coarse_grid.set_boundary (5, boundary_cone_north);
-          else
-            coarse_grid.set_boundary (5, boundary_straight);
-
-          if (point1[2] != 0.0)
-            coarse_grid.set_boundary (4, boundary_cone_south);
-          else
-            coarse_grid.set_boundary (4, boundary_straight);
-        }
-
-      // Attach shell boundary objects to the curved inner and outer boundaries
-      static const HyperShellBoundary<dim> boundary_shell;
-      coarse_grid.set_boundary (0, boundary_shell);
-      coarse_grid.set_boundary (1, boundary_shell);
-#endif
-    }
-
-#if !DEAL_II_VERSION_GTE(9,0,0)
-    template <int dim>
-    void
-    Chunk<dim>::set_manifold_ids (typename parallel::distributed::Triangulation<dim> &triangulation)
-    {
-      // Set all cells, faces and edges to manifold_id 15
-      for (typename Triangulation<dim>::active_cell_iterator cell =
-             triangulation.begin_active(); cell != triangulation.end(); ++cell)
+      for (const auto &cell : coarse_grid.active_cell_iterators())
         cell->set_all_manifold_ids (15);
     }
 
-    template <int dim>
-    void
-    Chunk<dim>::clear_manifold_ids (typename parallel::distributed::Triangulation<dim> &triangulation)
-    {
-      // Clear the manifold_id from the faces and edges at the boundary
-      // so that the boundary objects can be used
-      for (typename Triangulation<dim>::active_cell_iterator cell =
-             triangulation.begin_active(); cell != triangulation.end(); ++cell)
-        for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
-          if (cell->face(f)->at_boundary())
-            cell->face(f)->set_all_manifold_ids (numbers::invalid_manifold_id);
-    }
-
-    template <int dim>
-    void
-    Chunk<dim>::connect_to_signal (SimulatorSignals<dim> &signals)
-    {
-      // Connect the topography function to the signal
-      signals.pre_compute_no_normal_flux_constraints.connect (
-        [&](typename parallel::distributed::Triangulation<dim> &tria)
-      {
-        this->clear_manifold_ids(tria);
-      });
-
-      signals.post_compute_no_normal_flux_constraints.connect (
-        [&](typename parallel::distributed::Triangulation<dim> &tria)
-      {
-        this->set_manifold_ids(tria);
-      });
-    }
-#endif
 
     template <int dim>
     std::set<types::boundary_id>
@@ -586,9 +429,9 @@ namespace aspect
     bool
     Chunk<dim>::point_is_in_domain(const Point<dim> &point) const
     {
-      AssertThrow(this->get_free_surface_boundary_indicators().size() == 0 ||
+      AssertThrow(!this->get_parameters().mesh_deformation_enabled ||
                   this->get_timestep_number() == 0,
-                  ExcMessage("After displacement of the free surface, this function can no longer be used to determine whether a point lies in the domain or not."));
+                  ExcMessage("After displacement of the mesh, this function can no longer be used to determine whether a point lies in the domain or not."));
 
       AssertThrow(dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(&this->get_initial_topography_model()) != nullptr,
                   ExcMessage("After adding topography, this function can no longer be used to determine whether a point lies in the domain or not."));
@@ -655,10 +498,10 @@ namespace aspect
         {
           prm.declare_entry ("Chunk inner radius", "0",
                              Patterns::Double (0),
-                             "Radius at the bottom surface of the chunk. Units: m.");
+                             "Radius at the bottom surface of the chunk. Units: $\\si{m}$.");
           prm.declare_entry ("Chunk outer radius", "1",
                              Patterns::Double (0),
-                             "Radius at the top surface of the chunk. Units: m.");
+                             "Radius at the top surface of the chunk. Units: $\\si{m}$.");
 
           prm.declare_entry ("Chunk minimum longitude", "0",
                              Patterns::Double (-180, 360), // enables crossing of either hemisphere

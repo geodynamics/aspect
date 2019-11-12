@@ -1,0 +1,30 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Iterations for composition solver 1
+# 10: Iterations for Stokes solver
+# 11: Velocity iterations in Stokes preconditioner
+# 12: Schur complement iterations in Stokes preconditioner
+# 13: Number of advected particles
+# 14: Minimal particles per cell: 
+# 15: Average particles per cell: 
+# 16: Maximal particles per cell: 
+# 17: Minimal cells per process
+# 18: Maximal cells per process
+# 19: Average cells per process
+# 20: Minimal particles per process
+# 21: Maximal particles per process
+# 22: Average particles per process
+# 23: Minimal local particle to cell ratio
+# 24: Maximal local particle to cell ratio
+# 25: Average local particle to cell ratio
+0 0.000000000000e+00 0.000000000000e+00 16 187  81  81 0 0 14 16  90 1000 54 62 73 4  4  4.0000 250 250 250.0000 62.5000 62.5000 62.5000 
+0 0.000000000000e+00 0.000000000000e+00 28 323 141 141 0 0 17 19 191 1000 10 35 73 4  8  7.0000  61 500 250.0000 15.2500 62.5000 33.1562 
+0 0.000000000000e+00 0.000000000000e+00 31 359 157 157 0 0 17 19 206 1000 10 32 71 4 13  7.7500 127 446 250.0000 15.8750 62.5000 35.5457 
+0 0.000000000000e+00 0.000000000000e+00 40 441 193 193 0 0 17 19 192 1000  9 25 71 4 16 10.0000 177 311 250.0000 14.7500 62.5000 33.1250 
+0 0.000000000000e+00 0.000000000000e+00 52 592 260 260 0 0 17 19 197 1000  1 19 71 4 21 13.0000 133 375 250.0000  6.3333 62.5000 30.9861 

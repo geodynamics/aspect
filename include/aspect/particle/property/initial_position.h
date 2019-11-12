@@ -50,10 +50,9 @@ namespace aspect
            * of this function should be to extend this vector by a number of
            * properties.
            */
-          virtual
           void
           initialize_one_particle_property (const Point<dim> &position,
-                                            std::vector<double> &particle_properties) const;
+                                            std::vector<double> &particle_properties) const override;
 
           /**
            * Set up the information about the names and number of components
@@ -62,9 +61,8 @@ namespace aspect
            * @return A vector that contains pairs of the property names and the
            * number of components this property plugin defines.
            */
-          virtual
           std::vector<std::pair<std::string, unsigned int> >
-          get_property_information() const;
+          get_property_information() const override;
       };
     }
   }

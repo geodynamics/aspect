@@ -63,30 +63,29 @@ namespace aspect
          * equation as $\nabla \cdot (\rho \mathbf u)=0$ (compressible Stokes)
          * or as $\nabla \cdot \mathbf{u}=0$ (incompressible Stokes).
          */
-        virtual bool is_compressible () const;
+        bool is_compressible () const override;
 
         /**
          * Initialization function. This function is called once at the
          * beginning of the program after parse_parameters is run and after
          * the SimulatorAccess (if applicable) is initialized.
          */
-        virtual
         void
-        initialize ();
+        initialize () override;
 
-        virtual void evaluate(const typename Interface<dim>::MaterialModelInputs &in,
-                              typename Interface<dim>::MaterialModelOutputs &out) const;
+        void evaluate(const typename Interface<dim>::MaterialModelInputs &in,
+                      typename Interface<dim>::MaterialModelOutputs &out) const override;
 
-        virtual void melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
-                                     std::vector<double> &melt_fractions) const;
+        void melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
+                             std::vector<double> &melt_fractions) const override;
 
         /**
          * @name Reference quantities
          * @{
          */
-        virtual double reference_viscosity () const;
+        double reference_viscosity () const override;
 
-        virtual double reference_darcy_coefficient () const;
+        double reference_darcy_coefficient () const override;
 
         /**
          * @}
@@ -106,16 +105,15 @@ namespace aspect
         /**
          * Read the parameters this class declares from the parameter file.
          */
-        virtual
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
+
         /**
          * @}
          */
 
-        virtual
         void
-        create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const;
+        create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const override;
 
 
       private:

@@ -2,7 +2,7 @@
 Number of active cells: 640 (on 4 levels)
 Number of degrees of freedom: 8,716 (5,346+697+2,673)
 
-Number of free surface degrees of freedom: 1394
+Number of mesh deformation degrees of freedom: 1394
 *** Timestep 0:  t=0 years
    Solving mesh velocity system... 0 iterations.
    Solving temperature system... 0 iterations.
@@ -17,7 +17,7 @@ Number of free surface degrees of freedom: 1394
 Number of active cells: 664 (on 5 levels)
 Number of degrees of freedom: 9,184 (5,634+733+2,817)
 
-Number of free surface degrees of freedom: 1466
+Number of mesh deformation degrees of freedom: 1466
 *** Timestep 0:  t=0 years
    Solving mesh velocity system... 0 iterations.
    Solving temperature system... 0 iterations.
@@ -26,7 +26,7 @@ Number of free surface degrees of freedom: 1466
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 5.97035e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 5.97036e-08
 
 
    Postprocessing:
@@ -71,7 +71,7 @@ Number of free surface degrees of freedom: 1466
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1.60184
 
    Solving Stokes system... 0+1 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 8.05229e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 8.05228e-08
 
 
    Postprocessing:
@@ -86,7 +86,7 @@ Number of free surface degrees of freedom: 1466
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.47092
 
    Solving Stokes system... 0+1 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 4.82384e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 4.82385e-08
 
 
    Postprocessing:
@@ -167,7 +167,7 @@ Number of free surface degrees of freedom: 1466
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.0264859
 
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 3.83786e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 3.83785e-08
 
 
    Postprocessing:
@@ -197,7 +197,7 @@ Number of free surface degrees of freedom: 1466
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.0085094
 
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 6.13105e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 6.13106e-08
 
 
    Postprocessing:

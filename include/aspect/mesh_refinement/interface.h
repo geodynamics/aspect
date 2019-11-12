@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -175,9 +175,9 @@ namespace aspect
          * Destructor. Made virtual since this class has virtual member
          * functions.
          */
-        virtual ~Manager ();
+        ~Manager () override;
 
-        /*
+        /**
          * Update all of the mesh refinement objects that have been requested
          * in the input file. Individual mesh refinement objects may choose to
          * implement an update function to modify object variables once per
@@ -318,7 +318,7 @@ namespace aspect
          * A list of mesh refinement objects that have been requested in the
          * parameter file.
          */
-        std::list<std::shared_ptr<Interface<dim> > > mesh_refinement_objects;
+        std::list<std::unique_ptr<Interface<dim> > > mesh_refinement_objects;
     };
 
 
@@ -329,7 +329,7 @@ namespace aspect
     bool
     Manager<dim>::has_matching_mesh_refinement_strategy () const
     {
-      for (typename std::list<std::shared_ptr<Interface<dim> > >::const_iterator
+      for (typename std::list<std::unique_ptr<Interface<dim> > >::const_iterator
            p = mesh_refinement_objects.begin();
            p != mesh_refinement_objects.end(); ++p)
         if (Plugins::plugin_type_matches<MeshRefinementType>(*(*p)))
@@ -347,19 +347,19 @@ namespace aspect
     Manager<dim>::get_matching_mesh_refinement_strategy () const
     {
       AssertThrow(has_matching_mesh_refinement_strategy<MeshRefinementType> (),
-                  ExcMessage("You asked MeshRefinement:Manager::get_matching_mesh_refinement_strategy() for a "
+                  ExcMessage("You asked MeshRefinement::Manager::get_matching_mesh_refinement_strategy() for a "
                              "mesh refinement strategy of type <" + boost::core::demangle(typeid(MeshRefinementType).name()) + "> "
                              "that could not be found in the current model. Activate this "
                              "mesh refinement strategy in the input file."));
 
-      for (typename std::list<std::shared_ptr<Interface<dim> > >::const_iterator
+      for (typename std::list<std::unique_ptr<Interface<dim> > >::const_iterator
            p = mesh_refinement_objects.begin();
            p != mesh_refinement_objects.end(); ++p)
         if (Plugins::plugin_type_matches<MeshRefinementType>(*(*p)))
           return Plugins::get_plugin_as_type<MeshRefinementType>(*(*p));
 
       // We will never get here, because we had the Assert above. Just to avoid warnings.
-      typename std::list<std::shared_ptr<Interface<dim> > >::const_iterator mesh_refinement_strategy;
+      typename std::list<std::unique_ptr<Interface<dim> > >::const_iterator mesh_refinement_strategy;
       return Plugins::get_plugin_as_type<MeshRefinementType>(*(*mesh_refinement_strategy));
     }
 

@@ -1,0 +1,78 @@
+#### 
+# This test is based on the Continental Extension Cookbook
+# There, the initial temperature is computed through a
+# somewhat cumbersome function specified in the input file. 
+# With the continental geotherm plugin, one only has to 
+# specify the boundary temperature constraints and layer
+# thicknesses of the upper crust, lower crust and mantle
+# lithosphere. Other parameters such as layer densities
+# are read from other sections in the input file, ensuring
+# consistency between the parameters set for the initial
+# temperature and those in the material model and compositional
+# heating plugins. 
+
+include $ASPECT_SOURCE_DIR/cookbooks/continental_extension.prm
+
+set Timing output frequency                = 100
+
+#### Parameters describing the model
+
+# Model geometry (40x10 km, 10 km spacing)
+subsection Geometry model
+  set Model name = box
+  subsection Box
+    set X repetitions = 40
+    set Y repetitions = 10
+    set X extent      = 400e3
+    set Y extent      = 100e3
+  end
+end
+
+# Mesh refinement specifications (no mesh refinement, 
+# but the coarse mesh is already 40x10, see above)
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 0
+  set Time steps between mesh refinement = 0
+end
+
+
+# Number and names of compositional fields
+# The four compositional fields represent the upper crust, lower crust, mantle
+# and a 'seed' placed in the mantle to help localize deformation.
+subsection Compositional fields
+  set Number of fields = 4
+  set Names of fields = upper_crust, lower_crust, lithospheric_mantle, seed
+end
+
+
+# Temperature boundary conditions
+# Top and bottom (fixed) temperatures are consistent with the initial temperature field
+# Note that while temperatures are specified for the model sides, these values are
+# not used as the sides are not specified "Fixed temperature boundaries".  Rather,
+# these boundaries are insulating (zero net heat flux).
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = bottom, top
+  set List of model names = box
+
+  subsection Box
+    set Bottom temperature = 1573
+    set Top temperature    =  273
+  end
+end
+
+# Initial temperature field
+subsection Initial temperature model
+  set Model name = continental geotherm
+  subsection Continental geotherm
+          set Lithosphere-Asthenosphere boundary isotherm = 1573.
+          set Surface temperature = 273.
+          set Layer thicknesses = 20000., 10000., 70000.
+  end
+end
+
+
+# Post processing
+subsection Postprocess
+  set List of postprocessors = temperature statistics
+end

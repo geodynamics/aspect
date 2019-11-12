@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -24,6 +24,7 @@
 
 #include <deal.II/base/multithread_info.h>
 #include <deal.II/base/revision.h>
+#include <deal.II/base/vectorization.h>
 
 #include <cstring>
 
@@ -125,9 +126,20 @@ void print_aspect_header(Stream &stream)
 
   stream << "--     . using deal.II " << DEAL_II_PACKAGE_VERSION;
   if (strcmp(DEAL_II_GIT_BRANCH,"") != 0)
-    stream << " (" << DEAL_II_GIT_BRANCH << ", " << DEAL_II_GIT_SHORTREV << ")\n";
-  else
-    stream << "\n";
+    stream << " (" << DEAL_II_GIT_BRANCH << ", " << DEAL_II_GIT_SHORTREV << ")";
+  stream << "\n";
+  stream << "--     .       with "
+#ifdef DEAL_II_WITH_64BIT_INDICES
+         << "64"
+#else
+         << "32"
+#endif
+         << " bit indices and vectorization level ";
+  const unsigned int n_vect_bits =
+    dealii::VectorizedArray<double>::n_array_elements * 8 * sizeof(double);
+
+  stream << DEAL_II_COMPILER_VECTORIZATION_LEVEL
+         << " (" << n_vect_bits << " bits)\n";
 
 #ifdef ASPECT_USE_PETSC
   stream << "--     . using PETSc "

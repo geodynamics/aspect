@@ -63,7 +63,7 @@ namespace aspect
 
           // If dislocation viscosities and boundary area work fractions are provided, reduce the
           // overall heating by this amount (which is assumed to increase surface energy)
-          if (disl_viscosities_out != 0)
+          if (disl_viscosities_out != nullptr)
             {
               heating_model_outputs.heating_source_terms[q] *= 1 - disl_viscosities_out->boundary_area_change_work_fractions[q] *
                                                                material_model_outputs.viscosities[q] / disl_viscosities_out->dislocation_viscosities[q];

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -90,10 +90,9 @@ namespace aspect
     {
       Assert (mesh_refinement_objects.size() > 0, ExcInternalError());
 
-      // call the update() functions of all
-      // refinement plugins.
+      // call the update() functions of all refinement plugins.
       unsigned int index = 0;
-      for (typename std::list<std::shared_ptr<Interface<dim> > >::const_iterator
+      for (typename std::list<std::unique_ptr<Interface<dim> > >::const_iterator
            p = mesh_refinement_objects.begin();
            p != mesh_refinement_objects.end(); ++p, ++index)
         {
@@ -161,7 +160,7 @@ namespace aspect
       std::vector<Vector<float> > all_error_indicators (mesh_refinement_objects.size(),
                                                         Vector<float>(error_indicators.size()));
       unsigned int index = 0;
-      for (typename std::list<std::shared_ptr<Interface<dim> > >::const_iterator
+      for (typename std::list<std::unique_ptr<Interface<dim> > >::const_iterator
            p = mesh_refinement_objects.begin();
            p != mesh_refinement_objects.end(); ++p, ++index)
         {
@@ -268,7 +267,7 @@ namespace aspect
       // call the tag_additional_cells() functions of all
       // plugins we have here in turns.
       unsigned int index = 0;
-      for (typename std::list<std::shared_ptr<Interface<dim> > >::const_iterator
+      for (typename std::list<std::unique_ptr<Interface<dim> > >::const_iterator
            p = mesh_refinement_objects.begin();
            p != mesh_refinement_objects.end(); ++p, ++index)
         {
@@ -441,7 +440,7 @@ namespace aspect
     void
     Manager<dim>::parse_parameters (ParameterHandler &prm)
     {
-      Assert (std::get<dim>(registered_plugins).plugins != 0,
+      Assert (std::get<dim>(registered_plugins).plugins != nullptr,
               ExcMessage ("No mesh refinement plugins registered!?"));
 
       // find out which plugins are requested and the various other
@@ -485,7 +484,7 @@ namespace aspect
                    ExcMessage ("You need to provide at least one mesh refinement criterion in the input file!"));
       for (unsigned int name=0; name<plugin_names.size(); ++name)
         {
-          mesh_refinement_objects.push_back (std::shared_ptr<Interface<dim> >
+          mesh_refinement_objects.push_back (std::unique_ptr<Interface<dim> >
                                              (std::get<dim>(registered_plugins)
                                               .create_plugin (plugin_names[name],
                                                               "Mesh refinement::Refinement criteria merge operation")));
@@ -535,10 +534,10 @@ namespace aspect
     {
       template <>
       std::list<internal::Plugins::PluginList<MeshRefinement::Interface<2> >::PluginInfo> *
-      internal::Plugins::PluginList<MeshRefinement::Interface<2> >::plugins = 0;
+      internal::Plugins::PluginList<MeshRefinement::Interface<2> >::plugins = nullptr;
       template <>
       std::list<internal::Plugins::PluginList<MeshRefinement::Interface<3> >::PluginInfo> *
-      internal::Plugins::PluginList<MeshRefinement::Interface<3> >::plugins = 0;
+      internal::Plugins::PluginList<MeshRefinement::Interface<3> >::plugins = nullptr;
     }
   }
 

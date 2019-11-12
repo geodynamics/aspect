@@ -63,9 +63,9 @@ end
 subsection Initial temperature model
   set Model name = function
   subsection Function
-        set Variable names = x,y
-	set Coordinate system = cartesian
-	set Function expression = if ((x > 0.6 && x < 0.8 && y > 0.1 && y < 0.5), 8000, 0)
+    set Variable names = x,y
+    set Coordinate system = cartesian
+    set Function expression = if ((x > 0.6 && x < 0.8 && y > 0.1 && y < 0.5), 8000, 0)
   end
 end
 
@@ -91,6 +91,7 @@ subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, temperature statistics, heat flux statistics, depth average
 
   subsection Visualization
+    set Interpolate output = false
     set Output format                 = gnuplot
     set Time between graphical output = 1e6
     set Number of grouped files       = 0

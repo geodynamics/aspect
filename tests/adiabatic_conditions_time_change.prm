@@ -64,7 +64,7 @@ subsection Material model
     set Reference temperature         = 1613 # default: 293
     set Thermal conductivity          = 1e-6 # default: 4.7
     set Thermal expansion coefficient = 2e-5
-    set Viscosity                     = 1    # default: 5e24
+    set Viscosity                     = 1e21    # default: 5e24
   end
 end
 
@@ -95,6 +95,7 @@ subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, basic statistics,  temperature statistics, heat flux statistics
   
   subsection Visualization
+    set Interpolate output = false
     set Time between graphical output = 1e-5
     set List of output variables = adiabat
     set Output format = gnuplot

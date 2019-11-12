@@ -1,0 +1,26 @@
+
+Loading shared library <./libsol_cx_4_equal_order.so>
+
+Number of active cells: 256 (on 5 levels)
+Number of degrees of freedom: 1,156 (578+289+289)
+
+*** Timestep 0:  t=0 years
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 15+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 3.40433e-08
+
+
+   Postprocessing:
+     Errors u_L1, p_L1, u_L2, p_L2: 8.544583e-05, 1.095742e-01, 1.249133e-04, 1.100052e-01
+     Writing graphical output:      output-sol_cx_4_equal_order/solution/solution-00000
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

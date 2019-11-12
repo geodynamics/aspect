@@ -27,56 +27,6 @@ namespace aspect
   namespace MaterialModel
   {
     template <int dim>
-    double
-    DiffusionDislocation<dim>::
-    average_value ( const std::vector<double> &composition,
-                    const std::vector<double> &parameter_values,
-                    const enum averaging_scheme &average_type) const
-    {
-      double averaged_parameter = 0.0;
-      const std::vector<double> volume_fractions = compute_volume_fractions(composition);
-
-      switch (average_type)
-        {
-          case arithmetic:
-          {
-            for (unsigned int i=0; i< volume_fractions.size(); ++i)
-              averaged_parameter += volume_fractions[i]*parameter_values[i];
-            break;
-          }
-          case harmonic:
-          {
-            for (unsigned int i=0; i< volume_fractions.size(); ++i)
-              averaged_parameter += volume_fractions[i]/(parameter_values[i]);
-            averaged_parameter = 1.0/averaged_parameter;
-            break;
-          }
-          case geometric:
-          {
-            for (unsigned int i=0; i < volume_fractions.size(); ++i)
-              averaged_parameter += volume_fractions[i]*std::log(parameter_values[i]);
-            averaged_parameter = std::exp(averaged_parameter);
-            break;
-          }
-          case maximum_composition:
-          {
-            const unsigned int i = (unsigned int)(std::max_element( volume_fractions.begin(),
-                                                                    volume_fractions.end() )
-                                                  - volume_fractions.begin());
-            averaged_parameter = parameter_values[i];
-            break;
-          }
-          default:
-          {
-            AssertThrow( false, ExcNotImplemented() );
-            break;
-          }
-        }
-      return averaged_parameter;
-    }
-
-
-    template <int dim>
     std::vector<double>
     DiffusionDislocation<dim>::
     calculate_isostrain_viscosities ( const std::vector<double> &volume_fractions,
@@ -232,7 +182,7 @@ namespace aspect
           const double temperature = in.temperature[i];
           const double pressure= in.pressure[i];
           const std::vector<double> composition = in.composition[i];
-          const std::vector<double> volume_fractions = compute_volume_fractions(composition);
+          const std::vector<double> volume_fractions = MaterialUtilities::compute_volume_fractions(composition);
 
           // Averaging composition-field dependent properties
 
@@ -265,7 +215,7 @@ namespace aspect
               // We have given the user freedom to apply alternative bounds, because in diffusion-dominated
               // creep (where n_diff=1) viscosities are stress and strain-rate independent, so the calculation
               // of compositional field viscosities is consistent with any averaging scheme.
-              out.viscosities[i] = average_value(composition, composition_viscosities, viscosity_averaging);
+              out.viscosities[i] = MaterialUtilities::average_value(volume_fractions, composition_viscosities, viscosity_averaging);
             }
 
           out.densities[i] = density;
@@ -325,7 +275,7 @@ namespace aspect
         {
           // Reference and minimum/maximum values
           prm.declare_entry ("Reference temperature", "293", Patterns::Double(0),
-                             "For calculating density by thermal expansivity. Units: $K$");
+                             "For calculating density by thermal expansivity. Units: $\\si{K}$");
           prm.declare_entry ("Minimum strain rate", "1.4e-20", Patterns::Double(0),
                              "Stabilizes strain dependent viscosity. Units: $1 / s$");
           prm.declare_entry ("Minimum viscosity", "1e17", Patterns::Double(0),
@@ -486,17 +436,8 @@ namespace aspect
                                                                           n_fields,
                                                                           "Thermal expansivities");
 
-          // Rheological parameters
-          if (prm.get ("Viscosity averaging scheme") == "harmonic")
-            viscosity_averaging = harmonic;
-          else if (prm.get ("Viscosity averaging scheme") == "arithmetic")
-            viscosity_averaging = arithmetic;
-          else if (prm.get ("Viscosity averaging scheme") == "geometric")
-            viscosity_averaging = geometric;
-          else if (prm.get ("Viscosity averaging scheme") == "maximum composition")
-            viscosity_averaging = maximum_composition;
-          else
-            AssertThrow(false, ExcMessage("Not a valid viscosity averaging scheme"));
+          viscosity_averaging = MaterialUtilities::parse_compositional_averaging_operation ("Viscosity averaging scheme",
+                                prm);
 
           // Rheological parameters
           // Diffusion creep parameters (Stress exponents often but not always 1)

@@ -1,0 +1,116 @@
+# A testcase that demonstrates that interpolating material model
+# outputs into compositional fields and diffusing them works.
+#
+# The property copied into the compositional field 'prescribed field', 
+# is a Gaussian with an amplitude of 1, namely exp(-0.5*x*x). 
+# We choose the diffusion length scale in a way that its amplitude
+# should be reduced to 0.95 when the diffusion equation is solved. 
+#
+# The test also contains another compositional field that does
+# not use this method, so it should remain zero everywhere
+# (which is what the initial condition is).
+
+set Dimension = 2
+set End time                               = 0
+set Start time                             = 0
+set Adiabatic surface temperature          = 0
+set Surface pressure                       = 0
+set Use years in output instead of seconds = false
+
+subsection Solver parameters
+  subsection Diffusion solver parameters
+    set Diffusion length scale = 0.23241476
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 0.1
+    set Y extent = 10
+    set Y repetitions = 100
+  end
+end
+
+subsection Compositional fields
+  set Number of fields = 2
+  set Names of fields  = normal_field, diffused_field
+  set Compositional field methods = field, prescribed field with diffusion
+end
+
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Function expression = 0.1
+  end
+end
+
+subsection Initial composition model
+  set Model name = function
+  subsection Function
+    set Function expression = 0.0; 0.0
+  end
+end
+
+subsection Boundary composition model
+  set Fixed composition boundary indicators = top
+  set Model name = function
+  subsection Function
+    set Function expression = 0; 0
+  end
+end
+
+
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 1.0
+  end
+end
+
+
+subsection Material model
+  set Model name = prescribed field material
+
+  subsection Simple model
+    set Reference density             = 1    # default: 3300
+    set Reference specific heat       = 1250
+    set Reference temperature         = 0    # default: 293
+    set Thermal conductivity          = 1e-6 # default: 4.7
+    set Thermal expansion coefficient = 1
+    set Viscosity                     = 1    # default: 5e24
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 1
+end
+
+
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = 0, 1, 2, 3
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, composition statistics
+
+  subsection Visualization
+    set Interpolate output = false
+
+    set List of output variables      = named additional outputs
+    set Number of grouped files       = 0
+    set Output format                 = vtu
+    set Time between graphical output = 0                                                                                # default: 1e8
+  end
+end

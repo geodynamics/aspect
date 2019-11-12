@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2012 - 2017 by the authors of the ASPECT code.
+ Copyright (C) 2012 - 2019 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -22,17 +22,17 @@
 #define _aspect_particle_world_h
 
 #include <aspect/global.h>
-#include <aspect/particle/particle.h>
-#include <aspect/particle/particle_accessor.h>
-#include <aspect/particle/particle_iterator.h>
-#include <aspect/particle/particle_handler.h>
+
+#include <deal.II/particles/particle.h>
+#include <deal.II/particles/particle_accessor.h>
+#include <deal.II/particles/particle_iterator.h>
+#include <deal.II/particles/particle_handler.h>
+#include <deal.II/particles/property_pool.h>
 
 #include <aspect/particle/generator/interface.h>
 #include <aspect/particle/integrator/interface.h>
 #include <aspect/particle/interpolator/interface.h>
 #include <aspect/particle/property/interface.h>
-#include <aspect/particle/property_pool.h>
-#include <aspect/particle/output/interface.h>
 
 #include <aspect/simulator_access.h>
 #include <aspect/simulator_signals.h>
@@ -47,6 +47,7 @@ namespace aspect
   namespace Particle
   {
     using namespace dealii;
+    using namespace dealii::Particles;
 
     /**
      * This class manages the storage and handling of particles. It provides
@@ -71,7 +72,7 @@ namespace aspect
         /**
          * Default World destructor.
          */
-        ~World();
+        ~World() override;
 
         /**
          * Initialize the particle world.
@@ -91,7 +92,7 @@ namespace aspect
          *
          * @return The particle handler for this world.
          */
-        const ParticleHandler<dim> &
+        const Particles::ParticleHandler<dim> &
         get_particle_handler() const;
 
         /**
@@ -166,12 +167,6 @@ namespace aspect
         void update_particles();
 
         /**
-         * Generate the selected particle output.
-         */
-        std::string
-        generate_output() const;
-
-        /**
          * Serialize the contents of this class.
          */
         template <class Archive>
@@ -241,15 +236,10 @@ namespace aspect
         std::unique_ptr<Property::Manager<dim> > property_manager;
 
         /**
-         * Pointer to an output object
-         */
-        std::unique_ptr<Output::Interface<dim> > output;
-
-        /**
          * Particle handler object that is responsible for storing and
          * managing the internal particle structures.
          */
-        std::unique_ptr<ParticleHandler<dim> > particle_handler;
+        std::unique_ptr<Particles::ParticleHandler<dim> > particle_handler;
 
         /**
          * Strategy for particle load balancing.

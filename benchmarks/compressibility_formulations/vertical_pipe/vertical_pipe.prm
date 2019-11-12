@@ -1,0 +1,142 @@
+# This is a benchmark to illustrate the effect of different formulations
+# of compressibility. It starts from a simple downward pipe flow model,
+# in which material enters a vertical pipe with a prescribed velocity.
+# Due to gravity and pressure the material compresses and the velocity
+# changes to conserve mass.
+
+set Additional shared libraries = ../plugins/libcompressibility_formulations.so
+
+set Dimension = 2
+
+set End time                               = 2e8
+set Use years in output instead of seconds = true
+set Adiabatic surface temperature          = 1600
+set Nonlinear solver scheme                = iterated Advection and Stokes
+set Nonlinear solver tolerance             = 1e-12
+set Max nonlinear iterations               = 25
+
+set Output directory                       = output-vertical_pipe
+
+subsection Adiabatic conditions model
+  subsection Compute profile
+    set Number of points = 1000000
+    set Composition reference profile = function
+  end
+end
+
+subsection Discretization
+  set Use locally conservative discretization = true
+  set Use discontinuous composition discretization = true
+  set Use discontinuous temperature discretization = true
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-12
+  end
+end
+
+subsection Formulation
+  set Mass conservation = projected density field
+  set Temperature equation = real density
+end
+
+subsection Compositional fields
+  set Number of fields = 1
+  set Names of fields = density_field
+  set Compositional field methods = prescribed field
+end
+
+
+subsection Initial composition model
+  set Model name = adiabatic density
+end
+
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 10000
+    set Y extent = 1000000
+    set Y repetitions = 8
+  end
+end
+
+
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 10.0
+  end
+end
+
+
+subsection Heating model
+  set List of model names = adiabatic heating, shear heating
+end
+
+
+############### Boundary conditions
+# We only fix the temperature at the upper boundary, the other boundaries
+# are insulating.
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = top
+  set List of model names = box
+
+  subsection Box
+    set Top temperature = 1600
+  end
+end
+
+# To guarantuee a steady downward flow, we fix the velocity
+# at the bottom, leave the top open, and set it to free slip on the sides. 
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = bottom:function
+  set Tangential velocity boundary indicators = left, right
+
+  subsection Function
+    set Function expression = 0;-1e-2
+    set Variable names      = x,y
+  end
+end
+
+subsection Initial temperature model
+  set Model name = adiabatic
+end
+
+
+subsection Material model
+  set Model name = compressibility formulations
+
+  subsection Simple compressible model
+    set Thermal conductivity = 0.0
+  end
+end
+
+
+# We use a global refinement of 0 to have a single cell in width. More cells
+# allow for instabilities at the open boundary that would influence the
+# accuracy with increasing resolution.
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0 
+  set Initial global refinement          = 0
+  set Time steps between mesh refinement = 0
+end
+
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, temperature statistics, mass flux statistics, material statistics
+
+  subsection Visualization
+    set Number of grouped files       = 1
+    set Output format                 = vtu
+
+    # We are only interested in the last timestep (when the system hast reached
+    # a steady state). For following the development of the system or checking
+    # if the solution already reached steady state, this parameter can be set 
+    # to a smaller value.
+    set Time between graphical output = 1e7
+    set List of output variables = nonadiabatic temperature, nonadiabatic pressure, heating, material properties, strain rate
+  end
+end

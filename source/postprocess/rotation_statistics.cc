@@ -76,10 +76,7 @@ namespace aspect
       double local_scalar_angular_momentum = 0.0;
       double local_scalar_moment_of_inertia = 0.0;
 
-      typename DoFHandler<2>::active_cell_iterator
-      cell = this->get_dof_handler().begin_active(),
-      endc = this->get_dof_handler().end();
-      for (; cell!=endc; ++cell)
+      for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
           {
             fe_values.reinit (cell);
@@ -175,10 +172,7 @@ namespace aspect
       Tensor<1,3> local_angular_momentum;
       SymmetricTensor<2,3> local_moment_of_inertia;
 
-      typename DoFHandler<3>::active_cell_iterator
-      cell = this->get_dof_handler().begin_active(),
-      endc = this->get_dof_handler().end();
-      for (; cell!=endc; ++cell)
+      for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
           {
             fe_values.reinit (cell);

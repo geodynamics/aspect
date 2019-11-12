@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__postprocess_visualization_geoid_h
-#define __aspect__postprocess_visualization_geoid_h
+#ifndef _aspect_postprocess_visualization_geoid_h
+#define _aspect_postprocess_visualization_geoid_h
 
 #include <aspect/simulator_access.h>
 #include <aspect/postprocess/visualization.h>
@@ -34,47 +34,37 @@ namespace aspect
     namespace VisualizationPostprocessors
     {
       /**
-       * A class derived from CellDataVectorCreator that takes an output
-       * vector and computes a variable that represents the geoid
-       * topography. This quantity, strictly speaking, only makes sense at the
-       * surface of the domain. Thus, the value is set to zero in all the
-       * cells inside of the domain.
+       * A class derived from DataPostprocessorScalar that computes a variable
+       * that represents the geoid topography. This quantity, strictly
+       * speaking, only makes sense at the surface of the domain. Thus, the
+       * value is set to zero in all the cells inside of the domain.
        *
        * The member functions are all implementations of those declared in the
        * base class. See there for their meaning.
        */
       template <int dim>
       class Geoid
-        : public CellDataVectorCreator<dim>,
-          public SimulatorAccess<dim>
+        : public DataPostprocessorScalar<dim>,
+          public SimulatorAccess<dim>,
+          public Interface<dim>
       {
         public:
+          Geoid();
+
           /**
-           * Get the visualization vector for the geoid.
-           *
-           * @return A pair of values with the following meaning: - The first
-           * element provides the name by which this data should be written to
-           * the output file. - The second element is a pointer to a vector
-           * with one element per active cell on the current processor.
-           * Elements corresponding to active cells that are either artificial
-           * or ghost cells (in deal.II language, see the deal.II glossary)
-           * will be ignored but must nevertheless exist in the returned
-           * vector. While implementations of this function must create this
-           * vector, ownership is taken over by the caller of this function
-           * and the caller will take care of destroying the vector pointed
-           * to.
+           * @copydoc DataPostprocessorScalar<dim>::evaluate_vector_field()
            */
-          virtual
-          std::pair<std::string, Vector<float> *>
-          execute () const;
+          void
+          evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
+                                std::vector<Vector<double> > &computed_quantities) const override;
+
 
           /**
            * Let the postprocessor manager know about the other postprocessors
            * this one depends on. Specifically, the Geoid postprocessor.
            */
-          virtual
           std::list<std::string>
-          required_other_postprocessors() const;
+          required_other_postprocessors() const override;
 
         private:
 

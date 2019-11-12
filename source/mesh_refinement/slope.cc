@@ -21,6 +21,8 @@
 
 #include <aspect/mesh_refinement/slope.h>
 #include <aspect/gravity_model/interface.h>
+#include <aspect/geometry_model/interface.h>
+#include <aspect/geometry_model/initial_topography_model/zero_topography.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
@@ -43,33 +45,37 @@ namespace aspect
       // iterate over all of the cells, get a face normal, then
       // dot it with the local gravity
 
-      typename DoFHandler<dim>::active_cell_iterator
-      cell = this->get_dof_handler().begin_active(),
-      endc = this->get_dof_handler().end();
-
-      unsigned int i=0;
-      for (; cell!=endc; ++cell, ++i)
+      for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned() && cell->at_boundary())
-          for (unsigned int face_no=0; face_no<GeometryInfo<dim>::faces_per_cell; ++face_no)
-            if (cell->face(face_no)->at_boundary())
-              {
-                const types::boundary_id boundary_indicator
-                  = cell->face(face_no)->boundary_id();
+          {
+            const unsigned int idx = cell->active_cell_index();
+            for (unsigned int face_no=0; face_no<GeometryInfo<dim>::faces_per_cell; ++face_no)
+              if (cell->face(face_no)->at_boundary())
+                {
+                  const types::boundary_id boundary_indicator
+                    = cell->face(face_no)->boundary_id();
 
-                if ( this->get_free_surface_boundary_indicators().find(boundary_indicator) !=
-                     this->get_free_surface_boundary_indicators().end() )
-                  {
-                    fe_face_values.reinit(cell, face_no);
+                  // Use cases for this plugin include a deforming mesh,
+                  // or a fixed mesh with initial topography
+                  if ( (this->get_parameters().mesh_deformation_enabled &&
+                        this->get_mesh_deformation_boundary_indicators().find(boundary_indicator) !=
+                        this->get_mesh_deformation_boundary_indicators().end()) ||
+                       (dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(&this->get_initial_topography_model())
+                        == nullptr &&
+                        this->get_geometry_model().translate_symbolic_boundary_name_to_id("top") == boundary_indicator)  )
+                    {
+                      fe_face_values.reinit(cell, face_no);
 
-                    const Tensor<1,dim> normal( fe_face_values.normal_vector(0) ); // Only one q point
-                    const Point<dim> midpoint = fe_face_values.quadrature_point(0);
-                    const Tensor<1,dim> gravity = this->get_gravity_model().gravity_vector(midpoint);
+                      const Tensor<1,dim> normal( fe_face_values.normal_vector(0) ); // Only one q point
+                      const Point<dim> midpoint = fe_face_values.quadrature_point(0);
+                      const Tensor<1,dim> gravity = this->get_gravity_model().gravity_vector(midpoint);
 
-                    indicators(i) = std::acos( std::abs ( normal * gravity / gravity.norm() ) ) // Don't care whether gravity is in the opposite direction
-                                    * std::pow( cell->diameter(), double(dim-1)); // scale with approximate surface area of the cell
-                    break;  // no need to loop over the rest of the faces
-                  }
-              }
+                      indicators(idx) = std::acos( std::abs ( normal * gravity / gravity.norm() ) ) // Don't care whether gravity is in the opposite direction
+                                        * std::pow( cell->diameter(), double(dim-1)); // scale with approximate surface area of the cell
+                      break;  // no need to loop over the rest of the faces
+                    }
+                }
+          }
 
     }
   }
@@ -83,7 +89,8 @@ namespace aspect
     ASPECT_REGISTER_MESH_REFINEMENT_CRITERION(Slope,
                                               "slope",
                                               "A class that implements a mesh refinement criterion intended for "
-                                              "use with a free surface. It calculates a local slope based on "
+                                              "use with deforming mesh boundaries, like the free surface. "
+                                              "It calculates a local slope based on "
                                               "the angle between the surface normal and the local gravity vector. "
                                               "Cells with larger angles are marked for refinement."
                                               "\n\n"

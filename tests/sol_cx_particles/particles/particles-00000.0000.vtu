@@ -1,73 +1,36 @@
-<?xml version="1.0"?>
-<VTKFile type="UnstructuredGrid" version="0.1" byte_order="LittleEndian">
-  <UnstructuredGrid>
-    <Piece NumberOfPoints="10" NumberOfCells="10">
-      <Points>
-        <DataArray name="Position" type="Float64" NumberOfComponents="3" Format="ascii">
-          0.698638 0.488281 0.0
-          0.93075 0.385335 0.0
-          0.9136 0.379988 0.0
-          0.0594657 0.512448 0.0
-          0.11308 0.616816 0.0
-          0.480201 0.795591 0.0
-          0.382262 0.961657 0.0
-          0.547752 0.742393 0.0
-          0.702535 0.625866 0.0
-          0.994835 0.758158 0.0
-        </DataArray>
-      </Points>
-      <Cells>
-        <DataArray type="Int32" Name="connectivity" Format="ascii">
-          0
-          1
-          2
-          3
-          4
-          5
-          6
-          7
-          8
-          9
-        </DataArray>
-        <DataArray type="Int32" Name="offsets" Format="ascii">
-          1
-          2
-          3
-          4
-          5
-          6
-          7
-          8
-          9
-          10
-        </DataArray>
-        <DataArray type="UInt8" Name="types" Format="ascii">
-          1
-          1
-          1
-          1
-          1
-          1
-          1
-          1
-          1
-          1
-        </DataArray>
-      </Cells>
-      <PointData Scalars="scalars">
-        <DataArray type="UInt64" Name="id" NumberOfComponents="1" Format="ascii">
-          0
-          1
-          2
-          3
-          4
-          5
-          6
-          7
-          8
-          9
-        </DataArray>
-      </PointData>
-    </Piece>
-  </UnstructuredGrid>
+<?xml version="1.0" ?> 
+<!-- 
+# vtk DataFile Version 3.0
+#This file was generated 
+<VTKFile type="UnstructuredGrid" version="0.1" compressor="vtkZLibDataCompressor" byte_order="LittleEndian">
+<UnstructuredGrid>
+<FieldData>
+<DataArray type="Float32" Name="TIME" NumberOfTuples="1" format="ascii">0</DataArray>
+</FieldData>
+<Piece NumberOfPoints="64" NumberOfCells="64" >
+  <Points>
+    <DataArray type="Float32" NumberOfComponents="3" format="binary">
+AQAAAAADAAAAAwAAlgAAAA==eNpN0FENwzAMQMFCKBQT2FYIhmIIg2JohjJlWtaLFOXJuY8ox/F+HN+91jqv591Nz6/X/farL+ZNb9/4xje+8YMf/OAHf75uv/pi3vT2gQ984AOf+MQnPvGFL3zhC7/set/uoJOu1/23Jx100ts3vvGNb/zgBz/4wS970kEnvX3gAx/4wCc+8YlPfOELX/j6+w/WK1Mx
+    </DataArray>
+  </Points>
+
+  <Cells>
+    <DataArray type="Int32" Name="connectivity" format="binary">
+AQAAAAABAAAAAQAAaQAAAA==eNoNwwVSAkAAAMADpaQ7pEGluyT//yt2ZzaEECJG/fDTmHETJk35ZdqMWXPmLVi0ZNmKVWvWbdi05bdtO3bt2Xfg0JFjf/z1z4lTZ85duHTl2o1bd+49ePTk2Yv/Xr159+HTl2+rngfh
+    </DataArray>
+    <DataArray type="Int32" Name="offsets" format="binary">
+AQAAAAABAAAAAQAAagAAAA==eNoNwwVSAgEAAMCjOwQJ6ZKQBun8/6vYndlQEARhI0aNGTdh0pRpM2bNmbdg0S9Llv22YtWadX9s2LRl245de/YdOHTkr2MnTp3559yFS1eu3bh1595/Dx49efbi1Zt3Hz59+fYDzB4IIQ==
+    </DataArray>
+    <DataArray type="UInt8" Name="types" format="binary">
+AQAAAEAAAABAAAAADAAAAA==eNpjZKQMAAAIYABB
+    </DataArray>
+  </Cells>
+  <PointData Scalars="scalars">
+    <DataArray type="Float32" Name="function" NumberOfComponents="3" format="binary">
+AQAAAAADAAAAAwAAxwAAAA==eNptkb0JAkEQhTcUNN1EUxHMrgF3kYvMrMAq9EIR7MMOxApOEy3AAgzNDowPE1/gDl8wGz2W9+bnm/ipryEcctDL++Gt6Pl9bfqybEw/xzPzb46d6ce3crPn/tUWvRuc3Cz7jt6T1suyb8TM8i/CdLv6+03Ln4qWP3kezWP/mse05sleHXq0r3m0b/Z6sQ494kntciMT7ksPmZMnWbEOPbwFObMX69DDG3FfsiJn3ohMyJO3YJbcyJxZ9iVbZtmXM/8A8lyu6Q==    </DataArray>
+    <DataArray type="Float32" Name="id" format="binary">
+AQAAAAABAAAAAQAAhwAAAA==eNoVxBEUwmAAhdEfgiAIgiAYBEEwCILOae0EQRAEQTAIgmAQBMEwDMNhGIZhGIZhGIbd3vnuC+G/YugSUVBy40UYhVAnIiZhRkZOwYEjJ0rOXLhy486DJy/efPgS0hAqVKlRp0GTFhFtOnSJ6dFnQMKYCVNmzFmwJGPFmg05W3bs0x/bmyjY    </DataArray>
+  </PointData>
+ </Piece>
+ </UnstructuredGrid>
 </VTKFile>

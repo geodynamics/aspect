@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -156,10 +156,10 @@ namespace aspect
     {
       template <>
       std::list<internal::Plugins::PluginList<GravityModel::Interface<2> >::PluginInfo> *
-      internal::Plugins::PluginList<GravityModel::Interface<2> >::plugins = 0;
+      internal::Plugins::PluginList<GravityModel::Interface<2> >::plugins = nullptr;
       template <>
       std::list<internal::Plugins::PluginList<GravityModel::Interface<3> >::PluginInfo> *
-      internal::Plugins::PluginList<GravityModel::Interface<3> >::plugins = 0;
+      internal::Plugins::PluginList<GravityModel::Interface<3> >::plugins = nullptr;
     }
   }
 

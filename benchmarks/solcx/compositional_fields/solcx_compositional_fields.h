@@ -20,7 +20,6 @@ namespace aspect
         {
           for (unsigned int i=0; i < in.position.size(); ++i)
             {
-              const Point<dim> &pos = in.position[i];
               out.densities[i] = in.composition[i][0];
               out.viscosities[i] = in.composition[i][1];
               out.compressibilities[i] = 0;

@@ -55,17 +55,13 @@ namespace aspect
 
       // iterate over all of the cells and choose the ones at the upper
       // boundary for refinement (assign the largest error to them)
-      typename DoFHandler<dim>::active_cell_iterator
-      cell = this->get_dof_handler().begin_active(),
-      endc = this->get_dof_handler().end();
-      unsigned int i=0;
-      for (; cell!=endc; ++cell, ++i)
+      for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
           {
             fe_values.reinit (cell);
             const double depth = this->get_geometry_model().depth(fe_values.quadrature_point(0));
             if (cell->at_boundary() && depth < cell->diameter())
-              indicators(i) = 1.0;
+              indicators(cell->active_cell_index()) = 1.0;
           }
     }
   }

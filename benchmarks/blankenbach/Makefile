@@ -17,7 +17,7 @@
 
 
 # specify all refinements to run here:
-refinements:=4 5 6 7
+refinements:=3 4 5 6
 
 # bases_without is "case1a case1b ..."
 bases:=$(wildcard base_case*.prm)

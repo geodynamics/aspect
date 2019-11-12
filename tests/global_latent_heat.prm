@@ -1,0 +1,169 @@
+# This is a test or the latent heat of melt heating model
+# and its interaction with other heating plugins. 
+# A constant heating rate is described using the function
+# heating model, and this heating should lead to melting
+# of approximately 0.01/s (so that the maximum porosity at
+# the end of the model run (t=1s) should be approximately
+# 1%. In practice, this value is slightly lower because 
+# some heat is also used to increase the temperature of 
+# the material.
+
+
+set Dimension                              = 2
+
+set Use years in output instead of seconds = false
+set End time                               = 1
+set Maximum time step                      = 0.01
+set Output directory                       = output_latent_heat
+set Nonlinear solver scheme                = single Advection, no Stokes
+
+set Pressure normalization                 = surface
+set Surface pressure                       = 0
+set Adiabatic surface temperature          = 1000
+set Use operator splitting = true
+
+subsection Prescribed Stokes solution
+  set Model name = function
+  subsection Velocity function
+    set Function expression = 0;0
+  end
+  subsection Pressure function
+    set Function expression = 0
+  end
+  subsection Fluid pressure function
+    set Function expression = 0
+  end
+  subsection Compaction pressure function
+    set Function expression = 0
+  end
+  subsection Fluid velocity function
+    set Function expression = 0;0
+  end
+end
+
+subsection Compositional fields
+  set Number of fields = 2
+  set Names of fields  = porosity, peridotite
+end
+
+subsection Melt settings
+  set Include melt transport               = true
+  set Melt scaling factor threshold        = 1e-8
+  set Use discontinuous compaction pressure = false
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-7
+  end
+
+  subsection Operator splitting parameters
+    set Reaction time step                     = 0.00001
+  end
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1
+    set Y extent = 1
+  end
+end
+
+
+subsection Initial temperature model
+  set List of model names = function
+
+  subsection Function
+    set Function constants  = amplitude=500, width=50000, b=100000
+    set Function expression = 1000
+  end
+end
+
+subsection Initial composition model
+  set List of model names = function
+  subsection Function
+   set Function expression = 0; 0
+  end
+end
+
+subsection Boundary velocity model
+  set Zero velocity boundary indicators       =
+  set Prescribed velocity boundary indicators =
+end
+
+subsection Boundary composition model
+  set Allow fixed composition on outflow boundaries = false
+  set Model name = initial composition
+end
+
+
+subsection Heating model
+  set List of model names = latent heat melt, function
+
+  subsection Latent heat melt
+    set Melting entropy change = -1000
+  end 
+
+  subsection Function
+    set Function expression = 1e4
+  end 
+end
+
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 0.0
+  end
+end
+
+
+subsection Material model
+  set Model name = melt global
+
+  subsection Melt global
+    set Thermal conductivity          = 0
+    set Reference shear viscosity     = 5e22
+    set Thermal viscosity exponent    = 0
+    set Exponential melt weakening factor    = 0
+    set Include melting and freezing  = true
+    set Melting time scale for operator splitting = 0.0005
+
+    set Thermal expansion coefficient = 0
+    set Reference specific heat       = 100
+    set Reference temperature         = 1000
+    set Reference solid density       = 1000
+    set Reference melt density        = 1000
+    set Depletion solidus change      = 0
+    set Pressure solidus change       = 0
+
+    set Surface solidus               = 1000
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial global refinement                = 0
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 0
+  set Minimum refinement level                 = 0
+end
+
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, temperature statistics, composition statistics, visualization
+
+  subsection Visualization
+    set Time between graphical output = 0
+    set List of output variables = material properties, nonadiabatic temperature, melt fraction
+
+    subsection Material properties
+      set List of material properties = density,thermal expansivity,specific heat,viscosity,reaction terms
+    end
+  end
+end
+
+

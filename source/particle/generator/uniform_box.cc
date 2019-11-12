@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2019 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -36,7 +36,7 @@ namespace aspect
     {
       template <int dim>
       void
-      UniformBox<dim>::generate_particles(std::multimap<types::LevelInd, Particle<dim> > &particles)
+      UniformBox<dim>::generate_particles(std::multimap<Particles::internal::LevelInd, Particle<dim> > &particles)
       {
         const Tensor<1,dim> P_diff = P_max - P_min;
 
@@ -50,7 +50,7 @@ namespace aspect
         // Calculate separation of particles
         for (unsigned int i = 0; i < dim; ++i)
           {
-            n_particles_per_direction[i] = round(std::pow(n_particles * std::pow(P_diff[i],dim) / volume, 1./dim));
+            n_particles_per_direction[i] = static_cast<unsigned int>(round(std::pow(n_particles * std::pow(P_diff[i],dim) / volume, 1./dim)));
             spacing[i] = P_diff[i] / fmax(n_particles_per_direction[i] - 1,1);
           }
 

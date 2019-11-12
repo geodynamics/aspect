@@ -54,7 +54,7 @@ namespace aspect
         /**
          * Pointer to the material model used as the base model
          */
-        std::shared_ptr<MaterialModel::Interface<dim> > base_model;
+        std::unique_ptr<MaterialModel::Interface<dim> > base_model;
 
         /**
          * Parameters determining the initial decay rate.
@@ -186,8 +186,8 @@ namespace aspect
           // class; it will get a chance to read its parameters below after we
           // leave the current section
           base_model.reset(create_material_model<dim>(prm.get("Base model")));
-          if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(base_model.get()))
-            sim->initialize_simulator (this->get_simulator());
+          if (Plugins::plugin_type_matches<SimulatorAccess<dim>>(*base_model))
+            Plugins::get_plugin_as_type<SimulatorAccess<dim>>(*base_model).initialize_simulator (this->get_simulator());
 
           half_life              = prm.get_double ("Half life");
         }
@@ -210,8 +210,7 @@ namespace aspect
         {
           const unsigned int n_points = out.viscosities.size();
           out.additional_outputs.push_back(
-            std::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
-            (new MaterialModel::ReactionRateOutputs<dim> (n_points, this->n_compositional_fields())));
+            std_cxx14::make_unique<MaterialModel::ReactionRateOutputs<dim>> (n_points, this->n_compositional_fields()));
         }
     }
   }
@@ -455,10 +454,10 @@ namespace aspect
                                        VectorTools::L2_norm,
                                        &comp_T);
 
-    const double current_error = std::sqrt(Utilities::MPI::sum(cellwise_errors_composition.norm_sqr(),MPI_COMM_WORLD));
+    const double current_error = VectorTools::compute_global_error(this->get_triangulation(), cellwise_errors_composition, VectorTools::L2_norm);
     max_error = std::max(max_error, current_error);
 
-    const double current_error_T = std::sqrt(Utilities::MPI::sum(cellwise_errors_temperature.norm_sqr(),MPI_COMM_WORLD));
+    const double current_error_T = VectorTools::compute_global_error(this->get_triangulation(), cellwise_errors_temperature, VectorTools::L2_norm);
     max_error_T = std::max(max_error_T, current_error_T);
 
     std::ostringstream os;

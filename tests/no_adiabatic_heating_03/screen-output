@@ -45,7 +45,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
      Temperature min/avg/max: 0 K, 0 K, 0 K
      RMS, max velocity:       1.05 m/s, 1.1 m/s
-     Writing depth average:   output-no_adiabatic_heating_03/depth_average.gnuplot
+     Writing depth average:   output-no_adiabatic_heating_03/depth_average
 
 *** Timestep 1:  t=0.0284091 seconds
    Solving temperature system... 17 iterations.
@@ -55,7 +55,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 
    Postprocessing:
-     Temperature min/avg/max: 0 K, 0.003202 K, 0.003462 K
+     Temperature min/avg/max: 0 K, 0.003199 K, 0.003461 K
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
 *** Timestep 2:  t=0.0568181 seconds
@@ -66,7 +66,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 
    Postprocessing:
-     Temperature min/avg/max: 0 K, 0.006333 K, 0.006918 K
+     Temperature min/avg/max: 0 K, 0.006334 K, 0.006918 K
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
 *** Timestep 3:  t=0.0852272 seconds
@@ -77,7 +77,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 
    Postprocessing:
-     Temperature min/avg/max: 0 K, 0.009376 K, 0.01037 K
+     Temperature min/avg/max: 0 K, 0.009388 K, 0.01037 K
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
 *** Timestep 4:  t=0.1 seconds
@@ -88,7 +88,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 
    Postprocessing:
-     Temperature min/avg/max: 0 K, 0.01093 K, 0.01215 K
+     Temperature min/avg/max: 0 K, 0.01094 K, 0.01215 K
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
 Termination requested by criterion: end time

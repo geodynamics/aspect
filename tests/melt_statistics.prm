@@ -144,6 +144,7 @@ subsection Postprocess
   set List of postprocessors = melt statistics
 
   subsection Visualization
+    set Interpolate output = false
     set Number of grouped files = 1
     set Time between graphical output = 0.01
     set List of output variables = melt fraction

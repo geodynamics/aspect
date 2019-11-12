@@ -19,19 +19,19 @@
    Loading new velocity file did not succeed.
    Assuming constant boundary conditions for rest of model run.
 
-Number of active cells: 3,072 (on 5 levels)
-Number of degrees of freedom: 41,280 (25,344+3,264+12,672)
+Number of active cells: 192 (on 3 levels)
+Number of degrees of freedom: 2,832 (1,728+240+864)
 
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 138+0 iterations.
+   Solving Stokes system... 75+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-burnman_seismic_test/solution/solution-00000
-     RMS, max velocity:                  0.319 m/year, 1.61 m/year
-     Temperature min/avg/max:            273 K, 2082 K, 3500 K
-     Heat fluxes through boundary parts: -1.315e+06 W, 3.033e+06 W
+     RMS, max velocity:                  0.506 m/year, 3.09 m/year
+     Temperature min/avg/max:            273 K, 2055 K, 3500 K
+     Heat fluxes through boundary parts: -4.729e+07 W, 3.881e+07 W
 
 Termination requested by criterion: end time
 

@@ -96,6 +96,7 @@ subsection Postprocess
   set List of postprocessors = compressibility
 
   subsection Visualization
+    set Interpolate output = false
 
     set List of output variables      = density
     set Number of grouped files       = 0

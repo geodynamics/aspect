@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -67,7 +67,7 @@ namespace aspect
       Adiabat<dim>::
       get_needed_update_flags () const
       {
-        return update_q_points;
+        return update_quadrature_points;
       }
 
 

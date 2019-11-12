@@ -45,7 +45,7 @@ namespace aspect
          * beginning of the program after parse_parameters is run and after
          * the SimulatorAccess (if applicable) is initialized.
          */
-        void initialize ();
+        void initialize () override;
 
         /**
          * Add initial topography to the mesh.
@@ -62,8 +62,7 @@ namespace aspect
         /**
          * Generate a coarse mesh for the geometry described by this class.
          */
-        virtual
-        void create_coarse_mesh (parallel::distributed::Triangulation<dim> &coarse_grid) const;
+        void create_coarse_mesh (parallel::distributed::Triangulation<dim> &coarse_grid) const override;
 
         /**
          * Return a point that denotes the size of the box in each dimension
@@ -85,8 +84,7 @@ namespace aspect
          *
          * We return 1/100th of the diameter of the box.
          */
-        virtual
-        double length_scale () const;
+        double length_scale () const override;
 
 
         /**
@@ -105,21 +103,23 @@ namespace aspect
          * Note that the depth is calculated with respect to the
          * surface without initial topography.
          */
-        virtual
-        double depth(const Point<dim> &position) const;
+        double depth(const Point<dim> &position) const override;
 
         /**
          * Return the height of the given position relative to
          * the initial box height.
          */
-        virtual
-        double height_above_reference_surface(const Point<dim> &position) const;
+        double height_above_reference_surface(const Point<dim> &position) const override;
 
-        virtual
-        Point<dim> representative_point(const double depth) const;
+        /**
+         * @copydoc Interface::representative_point()
+         */
+        Point<dim> representative_point(const double depth) const override;
 
-        virtual
-        double maximal_depth() const;
+        /**
+         * @copydoc Interface::maximal_depth()
+         */
+        double maximal_depth() const override;
 
         /**
          * Return the set of boundary indicators that are used by this model.
@@ -130,9 +130,8 @@ namespace aspect
          * the first two being the faces perpendicular to the x-axis, the next
          * two perpendicular to the y-axis, etc.
          */
-        virtual
         std::set<types::boundary_id>
-        get_used_boundary_indicators () const;
+        get_used_boundary_indicators () const override;
 
         /**
          * Return a mapping from symbolic names of each part of the boundary
@@ -146,58 +145,51 @@ namespace aspect
          * {"right"->1}, {"front"->2}, {"back"->3}, {"bottom"->4},
          * {"top"->5}}</code> in 3d.
          */
-        virtual
         std::map<std::string,types::boundary_id>
-        get_symbolic_boundary_names_map () const;
+        get_symbolic_boundary_names_map () const override;
 
         /**
          * Return the set of periodic boundaries as described in the input
          * file.
          */
-        virtual
         std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int> >
-        get_periodic_boundary_pairs () const;
+        get_periodic_boundary_pairs () const override;
 
         /**
          * @copydoc Interface::has_curved_elements()
          *
          * A box has only straight boundaries and cells, so return false.
          */
-        virtual
         bool
-        has_curved_elements() const;
+        has_curved_elements() const override;
 
         /**
          * Return whether the given point lies within the domain specified
          * by the geometry. This function does not take into account
          * initial or dynamic surface topography.
          */
-        virtual
         bool
-        point_is_in_domain(const Point<dim> &p) const;
+        point_is_in_domain(const Point<dim> &point) const override;
 
-        /*
+        /**
          * Returns what the natural coordinate system for this geometry model is,
          * which for a box is Cartesian.
          */
-        virtual
-        aspect::Utilities::Coordinates::CoordinateSystem natural_coordinate_system() const;
+        aspect::Utilities::Coordinates::CoordinateSystem natural_coordinate_system() const override;
 
         /**
          * Takes the Cartesian points (x,z or x,y,z) and returns standardized
          * coordinates which are most 'natural' to the geometry model. For a box
          * the results is unchanged and is (x,z) in 2d or (x,y,z) in 3d.
          */
-        virtual
-        std::array<double,dim> cartesian_to_natural_coordinates(const Point<dim> &position) const;
+        std::array<double,dim> cartesian_to_natural_coordinates(const Point<dim> &position) const override;
 
         /**
          * Undoes the action of cartesian_to_natural_coordinates, and turns the
          * coordinate system which is most 'natural' to the geometry model into
          * Cartesian coordinates.
          */
-        virtual
-        Point<dim> natural_to_cartesian_coordinates(const std::array<double,dim> &position) const;
+        Point<dim> natural_to_cartesian_coordinates(const std::array<double,dim> &position) const override;
 
         /**
          * Declare the parameters this class takes through input files.
@@ -209,9 +201,8 @@ namespace aspect
         /**
          * Read the parameters this class declares from the parameter file.
          */
-        virtual
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
 
       private:
         /**

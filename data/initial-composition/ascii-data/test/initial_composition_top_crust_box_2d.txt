@@ -1,0 +1,10 @@
+# Test data for layered ascii data initial composition conditions.
+# The following data defines a surface in 2D cartesian space which
+# will be used to define the top of the crust in
+# tests/ascii_data_layered_initial_composition_2d_box.prm.
+# Only next line is parsed in format: [nx] [ny] because of keyword "POINTS:"
+# POINTS: 3
+# Columns: x y composition1
+0.     100000. 1
+50000  100000. 1
+100000 100000. 1

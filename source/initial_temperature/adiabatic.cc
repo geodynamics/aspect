@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -263,7 +263,7 @@ namespace aspect
                              "If this value is larger than 0, the initial temperature profile will "
                              "not be adiabatic, but subadiabatic. This value gives the maximal "
                              "deviation from adiabaticity. Set to 0 for an adiabatic temperature "
-                             "profile. Units: K.\n\n"
+                             "profile. Units: $\\si{K}$.\n\n"
                              "The function object in the Function subsection "
                              "represents the compositional fields that will be used as a reference "
                              "profile for calculating the thermal diffusivity. "
@@ -310,7 +310,8 @@ namespace aspect
               prm.enter_subsection("Function");
               try
                 {
-                  function.reset (new Functions::ParsedFunction<1>(n_compositional_fields));
+                  function
+                    = std_cxx14::make_unique<Functions::ParsedFunction<1>>(n_compositional_fields);
                   function->parse_parameters (prm);
                 }
               catch (...)

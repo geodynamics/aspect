@@ -96,7 +96,6 @@ namespace aspect
         {
           boundary_temperature_objects[i]->update();
         }
-      return;
     }
 
 
@@ -183,6 +182,8 @@ namespace aspect
                                             "the conversion function complained as follows: "
                                             + error));
           }
+
+        allow_fixed_temperature_on_outflow_boundaries = prm.get_bool ("Allow fixed temperature on outflow boundaries");
       }
       prm.leave_subsection ();
 
@@ -191,7 +192,7 @@ namespace aspect
       for (unsigned int i=0; i<model_names.size(); ++i)
         {
           // create boundary temperature objects
-          boundary_temperature_objects.push_back (std::shared_ptr<Interface<dim> >
+          boundary_temperature_objects.push_back (std::unique_ptr<Interface<dim> >
                                                   (std::get<dim>(registered_plugins)
                                                    .create_plugin (model_names[i],
                                                                    "Boundary temperature::Model names")));
@@ -262,7 +263,7 @@ namespace aspect
 
 
     template <int dim>
-    const std::vector<std::shared_ptr<Interface<dim> > > &
+    const std::vector<std::unique_ptr<Interface<dim> > > &
     Manager<dim>::get_active_boundary_temperature_conditions () const
     {
       return boundary_temperature_objects;
@@ -276,6 +277,16 @@ namespace aspect
     {
       return fixed_temperature_boundary_indicators;
     }
+
+
+
+    template <int dim>
+    bool
+    Manager<dim>::allows_fixed_temperature_on_outflow_boundaries() const
+    {
+      return allow_fixed_temperature_on_outflow_boundaries;
+    }
+
 
 
     template <int dim>
@@ -301,7 +312,7 @@ namespace aspect
                           std::get<dim>(registered_plugins).get_description_string());
 
         prm.declare_entry("List of model operators", "add",
-                          Patterns::MultipleSelection("add|subtract|minimum|maximum"),
+                          Patterns::MultipleSelection(Utilities::get_model_operator_options()),
                           "A comma-separated list of operators that "
                           "will be used to append the listed temperature models onto "
                           "the previous models. If only one operator is given, "
@@ -343,6 +354,33 @@ namespace aspect
                            "implemented in a plugin in the BoundaryTemperature "
                            "group, unless an existing implementation in this group "
                            "already provides what you want.");
+        prm.declare_entry ("Allow fixed temperature on outflow boundaries", "true",
+                           Patterns::Bool (),
+                           "When the temperature is fixed on a given boundary as determined "
+                           "by the list of 'Fixed temperature boundary indicators', there "
+                           "might be parts of the boundary where material flows out and "
+                           "one may want to prescribe the temperature only on the parts of "
+                           "the boundary where there is inflow. This parameter determines "
+                           "if temperatures are only prescribed at these inflow parts of the "
+                           "boundary (if false) or everywhere on a given boundary, independent "
+                           "of the flow direction (if true)."
+                           "Note that in this context, `fixed' refers to the fact that these "
+                           "are the boundary indicators where Dirichlet boundary conditions are "
+                           "applied, and does not imply that the boundary temperature is "
+                           "time-independent. "
+                           "\n\n"
+                           "Mathematically speaking, the temperature satisfies an "
+                           "advection-diffusion equation. For this type of equation, one can "
+                           "prescribe the temperature even on outflow boundaries as long as the "
+                           "diffusion coefficient is nonzero. This would correspond to the "
+                           "``true'' setting of this parameter, which is correspondingly the "
+                           "default. In practice, however, this would only make physical sense "
+                           "if the diffusion coefficient is actually quite large to prevent "
+                           "the creation of a boundary layer. "
+                           "In addition, if there is no diffusion, one can only impose "
+                           "Dirichlet boundary conditions (i.e., prescribe a fixed temperature "
+                           "value at the boundary) at those boundaries where material flows in. "
+                           "This would correspond to the ``false'' setting of this parameter.");
       }
       prm.leave_subsection ();
 
@@ -370,10 +408,10 @@ namespace aspect
     {
       template <>
       std::list<internal::Plugins::PluginList<BoundaryTemperature::Interface<2> >::PluginInfo> *
-      internal::Plugins::PluginList<BoundaryTemperature::Interface<2> >::plugins = 0;
+      internal::Plugins::PluginList<BoundaryTemperature::Interface<2> >::plugins = nullptr;
       template <>
       std::list<internal::Plugins::PluginList<BoundaryTemperature::Interface<3> >::PluginInfo> *
-      internal::Plugins::PluginList<BoundaryTemperature::Interface<3> >::plugins = 0;
+      internal::Plugins::PluginList<BoundaryTemperature::Interface<3> >::plugins = nullptr;
     }
   }
 

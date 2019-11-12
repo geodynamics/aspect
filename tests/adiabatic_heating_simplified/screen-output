@@ -12,7 +12,7 @@ Number of degrees of freedom: 17,820 (10,914+1,449+5,457)
      Heating rate (average/total):  -3.51e-11 W/kg, -194.5 W
 
 *** Timestep 1:  t=5.73562e+12 seconds
-   Solving temperature system... 8 iterations.
+   Solving temperature system... 7 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 

@@ -52,13 +52,10 @@ namespace aspect
 
       for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
         {
-          typename DoFHandler<dim>::active_cell_iterator
-          cell = this->get_dof_handler().begin_active(),
-          endc = this->get_dof_handler().end();
-          unsigned int i=0;
-          for (; cell!=endc; ++cell, ++i)
+          for (const auto &cell : this->get_dof_handler().active_cell_iterators())
             if (cell->is_locally_owned())
               {
+                const unsigned int idx = cell->active_cell_index();
                 fe_values.reinit(cell);
                 fe_values[this->introspection().extractors.compositional_fields[c]].get_function_gradients (this->get_solution(),
                     composition_gradients);
@@ -67,7 +64,7 @@ namespace aspect
                 // composition gradient. Note that quadrature points and dofs
                 // are enumerated in the same order.
                 for (unsigned int j=0; j<this->get_fe().base_element(this->introspection().base_elements.compositional_fields).dofs_per_cell; ++j)
-                  this_indicator[i] += composition_gradients[j].norm();
+                  this_indicator[idx] += composition_gradients[j].norm();
 
                 // Scale gradient in each cell with the correct power of h. Otherwise,
                 // error indicators do not reduce when refined if there is a density
@@ -75,7 +72,7 @@ namespace aspect
                 // refining, so anything >1 should work. (note that the gradient
                 // itself scales like 1/h, so multiplying it with any factor h^s, s>1
                 // will yield convergence of the error indicators to zero as h->0)
-                this_indicator[i] *= std::pow(cell->diameter(), power);
+                this_indicator[idx] *= std::pow(cell->diameter(), power);
               }
           indicators.add(composition_scaling_factors[c], this_indicator);
         }

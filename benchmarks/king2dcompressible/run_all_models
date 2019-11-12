@@ -3,7 +3,7 @@
 for formulation in ala tala; do
   for di in 0.25 0.5 1.0; do
     for rayleigh in 1e4 1e5; do
-      for refinement in 4 5 6 7; do
+      for refinement in 3 4 5 6; do
         echo "subsection Adiabatic conditions model" > current.prm
         echo "  subsection Function" >> current.prm
         echo "    set Function constants  = Di=$di, gamma=1.0" >> current.prm

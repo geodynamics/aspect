@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -22,6 +22,7 @@
 #include <aspect/simulator.h>
 #include <aspect/global.h>
 #include <aspect/melt.h>
+#include <aspect/stokes_matrix_free.h>
 
 #include <deal.II/base/signaling_nan.h>
 #include <deal.II/lac/solver_gmres.h>
@@ -399,7 +400,7 @@ namespace aspect
     solver_control.enable_history_data();
 
     SolverGMRES<LinearAlgebra::Vector>   solver (solver_control,
-                                                 SolverGMRES<LinearAlgebra::Vector>::AdditionalData(30,true));
+                                                 SolverGMRES<LinearAlgebra::Vector>::AdditionalData(parameters.advection_gmres_restart_length,true));
 
     // check if matrix and/or RHS are zero
     // note: to avoid a warning, we compare against numeric_limits<double>::min() instead of 0 here
@@ -427,8 +428,8 @@ namespace aspect
     build_advection_preconditioner(advection_field, preconditioner);
 
     TimerOutput::Scope timer (computing_timer, (advection_field.is_temperature() ?
-                                                "   Solve temperature system" :
-                                                "   Solve composition system"));
+                                                "Solve temperature system" :
+                                                "Solve composition system"));
     if (advection_field.is_temperature())
       {
         pcout << "   Solving temperature system... " << std::flush;
@@ -524,8 +525,13 @@ namespace aspect
   std::pair<double,double>
   Simulator<dim>::solve_stokes ()
   {
-    TimerOutput::Scope timer (computing_timer, "   Solve Stokes system");
+    TimerOutput::Scope timer (computing_timer, "Solve Stokes system");
     pcout << "   Solving Stokes system... " << std::flush;
+
+    if (parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::block_gmg)
+      {
+        return stokes_matrix_free->solve();
+      }
 
     // extract Stokes parts of solution vector, without any ghost elements
     LinearAlgebra::BlockVector distributed_stokes_solution (introspection.index_sets.stokes_partitioning, mpi_communicator);
@@ -665,7 +671,7 @@ namespace aspect
         // linearized_stokes_variables has a different
         // layout than current_linearization_point, which also contains all the
         // other solution variables.
-        if (!assemble_newton_stokes_system)
+        if (assemble_newton_stokes_system == false)
           {
             linearized_stokes_initial_guess.block (block_vel) = current_linearization_point.block (block_vel);
             linearized_stokes_initial_guess.block (block_p) = current_linearization_point.block (block_p);
@@ -677,12 +683,12 @@ namespace aspect
         else
           {
             // The Newton solver solves for updates to variables, for which our best guess is zero when
-            // the it isn't the first nonlinear iteration. When it is the first nonlinear iteration, we
+            // it isn't the first nonlinear iteration. When it is the first nonlinear iteration, we
             // have to assemble the full (non-defect correction) Picard, to get the boundary conditions
-            // right in combination with being able to use the initial guess optimally. So we may never
+            // right in combination with being able to use the initial guess optimally. So we should never
             // end up here when it is the first nonlinear iteration.
             Assert(nonlinear_iteration != 0,
-                   ExcMessage ("The Newton solver may not be active in the first nonlinear iteration"));
+                   ExcMessage ("The Newton solver should not be active in the first nonlinear iteration."));
 
             linearized_stokes_initial_guess.block (block_vel) = 0;
             linearized_stokes_initial_guess.block (block_p) = 0;
@@ -790,7 +796,7 @@ namespace aspect
             SolverFGMRES<LinearAlgebra::BlockVector>
             solver(solver_control_cheap, mem,
                    SolverFGMRES<LinearAlgebra::BlockVector>::
-                   AdditionalData(parameters.stokes_gmres_restart_length, true));
+                   AdditionalData(parameters.stokes_gmres_restart_length));
 
             solver.solve (stokes_block,
                           distributed_stokes_solution,
@@ -803,7 +809,7 @@ namespace aspect
         // step 1b: take the stronger solver in case
         // the simple solver failed and attempt solving
         // it in n_expensive_stokes_solver_steps steps or less.
-        catch (SolverControl::NoConvergence)
+        catch (const SolverControl::NoConvergence &)
           {
             // use the value defined by the user
             // OR
@@ -815,7 +821,7 @@ namespace aspect
             SolverFGMRES<LinearAlgebra::BlockVector>
             solver(solver_control_expensive, mem,
                    SolverFGMRES<LinearAlgebra::BlockVector>::
-                   AdditionalData(number_of_temporary_vectors, true));
+                   AdditionalData(number_of_temporary_vectors));
 
             try
               {
@@ -857,8 +863,6 @@ namespace aspect
 
                     f.close();
 
-                    // avoid a deadlock that was fixed after deal.II 8.5.0
-#if DEAL_II_VERSION_GTE(9,0,0)
                     AssertThrow (false,
                                  ExcMessage (std::string("The iterative Stokes solver "
                                                          "did not converge. It reported the following error:\n\n")
@@ -866,24 +870,10 @@ namespace aspect
                                              exc.what()
                                              + "\n See " + parameters.output_directory+"solver_history.txt"
                                              + " for convergence history."));
-#else
-                    std::cerr << "The iterative Stokes solver "
-                              << "did not converge. It reported the following error:\n\n"
-                              << exc.what()
-                              << "\n See "
-                              << parameters.output_directory
-                              << "solver_history.txt for convergence history."
-                              << std::endl;
-                    std::abort();
-#endif
                   }
                 else
                   {
-#if DEAL_II_VERSION_GTE(9,0,0)
                     throw QuietException();
-#else
-                    std::abort();
-#endif
                   }
               }
           }
@@ -922,7 +912,7 @@ namespace aspect
 
     // do some cleanup now that we have the solution
     remove_nullspace(solution, distributed_stokes_solution);
-    if (!assemble_newton_stokes_system)
+    if (assemble_newton_stokes_system == false)
       this->last_pressure_normalization_adjustment = normalize_pressure(solution);
 
     // convert melt pressures:

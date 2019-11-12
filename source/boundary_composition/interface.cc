@@ -97,7 +97,6 @@ namespace aspect
         {
           boundary_composition_objects[i]->update();
         }
-      return;
     }
 
 
@@ -184,6 +183,16 @@ namespace aspect
                                             "the conversion function complained as follows: "
                                             + error));
           }
+
+        if (prm.get ("Allow fixed composition on outflow boundaries") == "true")
+          allow_fixed_composition_on_outflow_boundaries = true;
+        else if (prm.get ("Allow fixed composition on outflow boundaries") == "false")
+          allow_fixed_composition_on_outflow_boundaries = false;
+        else if (prm.get ("Allow fixed composition on outflow boundaries") == "false for models without melt")
+          allow_fixed_composition_on_outflow_boundaries = this->get_parameters().include_melt_transport;
+        else
+          AssertThrow(false, ExcMessage("'Allow fixed composition on outflow boundaries' "
+                                        "must be set to 'true' or 'false', or to its default value."));
       }
       prm.leave_subsection ();
 
@@ -192,7 +201,7 @@ namespace aspect
       for (unsigned int i=0; i<model_names.size(); ++i)
         {
           // create boundary composition objects
-          boundary_composition_objects.push_back (std::shared_ptr<Interface<dim> >
+          boundary_composition_objects.push_back (std::unique_ptr<Interface<dim> >
                                                   (std::get<dim>(registered_plugins)
                                                    .create_plugin (model_names[i],
                                                                    "Boundary composition::Model names")));
@@ -235,7 +244,7 @@ namespace aspect
 
 
     template <int dim>
-    const std::vector<std::shared_ptr<Interface<dim> > > &
+    const std::vector<std::unique_ptr<Interface<dim> > > &
     Manager<dim>::get_active_boundary_composition_conditions () const
     {
       return boundary_composition_objects;
@@ -248,6 +257,15 @@ namespace aspect
     Manager<dim>::get_fixed_composition_boundary_indicators() const
     {
       return fixed_composition_boundary_indicators;
+    }
+
+
+
+    template <int dim>
+    bool
+    Manager<dim>::allows_fixed_composition_on_outflow_boundaries() const
+    {
+      return allow_fixed_composition_on_outflow_boundaries;
     }
 
 
@@ -275,7 +293,7 @@ namespace aspect
                           std::get<dim>(registered_plugins).get_description_string());
 
         prm.declare_entry("List of model operators", "add",
-                          Patterns::MultipleSelection("add|subtract|minimum|maximum"),
+                          Patterns::MultipleSelection(Utilities::get_model_operator_options()),
                           "A comma-separated list of operators that "
                           "will be used to append the listed composition models onto "
                           "the previous models. If only one operator is given, "
@@ -315,6 +333,44 @@ namespace aspect
                            "implemented in a plugin in the BoundaryComposition "
                            "group, unless an existing implementation in this group "
                            "already provides what you want.");
+        prm.declare_entry ("Allow fixed composition on outflow boundaries", "false for models without melt",
+                           Patterns::Selection("true|false|false for models without melt"),
+                           "When the composition is fixed on a given boundary as determined "
+                           "by the list of 'Fixed composition boundary indicators', there "
+                           "might be parts of the boundary where material flows out and "
+                           "one may want to prescribe the composition only on those parts of "
+                           "the boundary where there is inflow. This parameter determines "
+                           "if compositions are only prescribed at these inflow parts of the "
+                           "boundary (if false) or everywhere on a given boundary, independent "
+                           "of the flow direction (if true). By default, this parameter is set "
+                           "to false, except in models with melt transport (see below). "
+                           "Note that in this context, `fixed' refers to the fact that these "
+                           "are the boundary indicators where Dirichlet boundary conditions are "
+                           "applied, and does not imply that the boundary composition is "
+                           "time-independent. "
+                           "\n\n"
+                           "Mathematically speaking, the compositional fields satisfy an "
+                           "advection equation that has no diffusion. For this equation, one "
+                           "can only impose Dirichlet boundary conditions (i.e., prescribe a "
+                           "fixed compositional field value at the boundary) at those boundaries "
+                           "where material flows in. This would correspond to the ``false'' "
+                           "setting of this parameter, which is correspondingly the default. "
+                           "On the other hand, on a finite dimensional discretization such as "
+                           "the one one obtains from the finite element method, it is possible "
+                           "to also prescribe values on outflow boundaries, even though this may "
+                           "make no physical sense. This would then correspond to the ``true'' "
+                           "setting of this parameter."
+                           "\n\n"
+                           "A warning for models with melt transport: In models with fluid flow, "
+                           "some compositional fields (in particular the porosity) might be "
+                           "transported with the fluid velocity, and would need to set the "
+                           "constraints based on the fluid velocity. However, this is currently "
+                           "not possible, because we reuse the same matrix for all compositional "
+                           "fields, and therefore can not use different constraints for different "
+                           "fields. Consequently, we set this parameter to true by default in "
+                           "models where melt transport is enabled. Be aware that if you change "
+                           "this default setting, you will not use the melt velocity, but the solid "
+                           "velocity to determine on which parts of the boundaries there is outflow.");
       }
       prm.leave_subsection ();
 
@@ -342,10 +398,10 @@ namespace aspect
     {
       template <>
       std::list<internal::Plugins::PluginList<BoundaryComposition::Interface<2> >::PluginInfo> *
-      internal::Plugins::PluginList<BoundaryComposition::Interface<2> >::plugins = 0;
+      internal::Plugins::PluginList<BoundaryComposition::Interface<2> >::plugins = nullptr;
       template <>
       std::list<internal::Plugins::PluginList<BoundaryComposition::Interface<3> >::PluginInfo> *
-      internal::Plugins::PluginList<BoundaryComposition::Interface<3> >::plugins = 0;
+      internal::Plugins::PluginList<BoundaryComposition::Interface<3> >::plugins = nullptr;
     }
   }
 

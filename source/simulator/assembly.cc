@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -27,7 +27,7 @@
 #include <aspect/simulator/assemblers/interface.h>
 #include <aspect/melt.h>
 #include <aspect/newton.h>
-#include <aspect/free_surface.h>
+#include <aspect/mesh_deformation/interface.h>
 #include <aspect/simulator/assemblers/stokes.h>
 #include <aspect/simulator/assemblers/advection.h>
 
@@ -156,16 +156,22 @@ namespace aspect
         // do nothing, because we assembled div u =0 above already
       }
     else if (parameters.formulation_mass_conservation ==
-             Parameters<dim>::Formulation::MassConservation::isothermal_compression)
+             Parameters<dim>::Formulation::MassConservation::isentropic_compression)
       {
         assemblers->stokes_system.push_back(
-          std_cxx14::make_unique<aspect::Assemblers::StokesIsothermalCompressionTerm<dim> >());
+          std_cxx14::make_unique<aspect::Assemblers::StokesIsentropicCompressionTerm<dim> >());
       }
     else if (parameters.formulation_mass_conservation ==
              Parameters<dim>::Formulation::MassConservation::hydrostatic_compression)
       {
         assemblers->stokes_system.push_back(
           std_cxx14::make_unique<aspect::Assemblers::StokesHydrostaticCompressionTerm<dim> >());
+      }
+    else if (parameters.formulation_mass_conservation ==
+             Parameters<dim>::Formulation::MassConservation::projected_density_field)
+      {
+        assemblers->stokes_system.push_back(
+          std_cxx14::make_unique<aspect::Assemblers::StokesProjectedDensityFieldTerm<dim> >());
       }
     else
       AssertThrow(false,
@@ -186,6 +192,12 @@ namespace aspect
 
     assemblers->advection_system.push_back(
       std_cxx14::make_unique<aspect::Assemblers::AdvectionSystem<dim> >());
+
+    // add the diffusion assemblers if we have fields that use this method
+    if (std::find(parameters.compositional_field_methods.begin(), parameters.compositional_field_methods.end(),
+                  Parameters<dim>::AdvectionFieldMethod::prescribed_field_with_diffusion) != parameters.compositional_field_methods.end())
+      assemblers->advection_system.push_back(
+        std_cxx14::make_unique<aspect::Assemblers::DiffusionSystem<dim> >());
 
     if (parameters.use_discontinuous_temperature_discretization ||
         parameters.use_discontinuous_composition_discretization)
@@ -247,28 +259,16 @@ namespace aspect
         && !assemble_newton_stokes_system)
       {
         set_default_assemblers();
-
-        // Let the free surface add its assembler:
-        if (parameters.free_surface_enabled)
-          free_surface->set_assemblers();
       }
     else if (parameters.include_melt_transport
              && !assemble_newton_stokes_system)
       {
         melt_handler->set_assemblers(*assemblers);
-
-        // Let the free surface add its assembler:
-        if (parameters.free_surface_enabled)
-          free_surface->set_assemblers();
       }
     else if (!parameters.include_melt_transport
              && assemble_newton_stokes_system)
       {
         newton_handler->set_assemblers(*assemblers);
-
-        // Let the free surface add its assembler:
-        if (parameters.free_surface_enabled)
-          free_surface->set_assemblers();
       }
     else if (parameters.include_melt_transport
              && assemble_newton_stokes_system)
@@ -352,6 +352,9 @@ namespace aspect
   void
   Simulator<dim>::assemble_stokes_preconditioner ()
   {
+    if (stokes_matrix_free)
+      return;
+
     system_preconditioner_matrix = 0;
 
     const QGauss<dim> quadrature_formula(parameters.stokes_velocity_degree+1);
@@ -417,10 +420,18 @@ namespace aspect
     if (rebuild_stokes_preconditioner == false)
       return;
 
-    if (parameters.use_direct_stokes_solver)
+    if (parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::block_gmg)
       return;
+    else if (parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::block_amg)
+      {
+        // continue below
+      }
+    else if (parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::direct_solver)
+      return;
+    else
+      AssertThrow(false, ExcNotImplemented());
 
-    TimerOutput::Scope timer (computing_timer, "   Build Stokes preconditioner");
+    TimerOutput::Scope timer (computing_timer, "Build Stokes preconditioner");
     pcout << "   Rebuilding Stokes preconditioner..." << std::flush;
 
     // first assemble the raw matrices necessary for the preconditioner
@@ -434,11 +445,11 @@ namespace aspect
                                       constant_modes);
 
     if (parameters.include_melt_transport)
-      Mp_preconditioner.reset (new LinearAlgebra::PreconditionAMG());
+      Mp_preconditioner = std_cxx14::make_unique<LinearAlgebra::PreconditionAMG>();
     else
-      Mp_preconditioner.reset (new LinearAlgebra::PreconditionILU());
+      Mp_preconditioner = std_cxx14::make_unique<LinearAlgebra::PreconditionILU>();
 
-    Amg_preconditioner.reset (new LinearAlgebra::PreconditionAMG());
+    Amg_preconditioner = std_cxx14::make_unique<LinearAlgebra::PreconditionAMG>();
 
     LinearAlgebra::PreconditionAMG::AdditionalData Amg_data;
 #ifdef ASPECT_USE_PETSC
@@ -508,7 +519,7 @@ namespace aspect
         Mp_preconditioner_AMG->initialize (system_preconditioner_matrix.block(1,1), Amg_data);
       }
 
-    if (parameters.free_surface_enabled || parameters.include_melt_transport || parameters.use_full_A_block_preconditioner)
+    if (parameters.mesh_deformation_enabled || parameters.include_melt_transport || parameters.use_full_A_block_preconditioner)
       Amg_preconditioner->initialize (system_matrix.block(0,0),
                                       Amg_data);
     else
@@ -667,18 +678,43 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::assemble_stokes_system ()
   {
+    std::string timer_section_name = "Assemble Stokes system";
+
+    // Matrix-free, only assemble RHS
+    if (stokes_matrix_free)
+      {
+        rebuild_stokes_matrix = false;
+        timer_section_name += " rhs";
+      }
+    else if (assemble_newton_stokes_system)
+      {
+        if (!assemble_newton_stokes_matrix)
+          timer_section_name += " rhs";
+        else if (assemble_newton_stokes_matrix && newton_handler->parameters.newton_derivative_scaling_factor == 0)
+          timer_section_name += " Picard";
+        else if (assemble_newton_stokes_matrix && newton_handler->parameters.newton_derivative_scaling_factor != 0)
+          timer_section_name += " Newton";
+      }
+
     TimerOutput::Scope timer (computing_timer,
-                              (!assemble_newton_stokes_system ?
-                               "   Assemble Stokes system" :
-                               (assemble_newton_stokes_matrix ?
-                                (newton_handler->parameters.newton_derivative_scaling_factor == 0 ?
-                                 "   Assemble Stokes system Picard" :
-                                 "   Assemble Stokes system Newton")
-                                :
-                                "   Assemble Stokes system rhs")));
+                              timer_section_name);
+
 
     if (rebuild_stokes_matrix == true)
       system_matrix = 0;
+
+    // We are using constraints.distribute_local_to_global() without a matrix
+    // if we do not rebuild the Stokes matrix. This produces incorrect results
+    // when having inhomogeneous constraints. Make sure that we can not have
+    // this situation (no active boundary conditions means that only
+    // no-slip/free slip are used). This should not happen as we set this up
+    // correctly before calling this function.
+    // Note that for Dirichlet boundary conditions in matrix-free computations,
+    // we will update the right-hand side with boundary information in
+    // StokesMatrixFreeHandler::correct_stokes_rhs().
+    if (!stokes_matrix_free)
+      Assert(rebuild_stokes_matrix || boundary_velocity_manager.get_active_boundary_velocity_conditions().size()==0,
+             ExcInternalError("If we have inhomogeneous constraints, we must re-assemble the system matrix."));
 
     system_rhs = 0;
     if (do_pressure_rhs_compatibility_modification)
@@ -790,8 +826,8 @@ namespace aspect
                                                  LinearAlgebra::PreconditionILU &preconditioner)
   {
     TimerOutput::Scope timer (computing_timer, (advection_field.is_temperature() ?
-                                                "   Build temperature preconditioner" :
-                                                "   Build composition preconditioner"));
+                                                "Build temperature preconditioner" :
+                                                "Build composition preconditioner"));
 
     const unsigned int block_idx = advection_field.block_index(introspection);
     preconditioner.initialize (system_matrix.block(block_idx, block_idx));
@@ -851,8 +887,8 @@ namespace aspect
           scratch.current_velocity_divergences);
 
     // get the mesh velocity, as we need to subtract it off of the advection systems
-    if (parameters.free_surface_enabled)
-      scratch.finite_element_values[introspection.extractors.velocities].get_function_values(free_surface->mesh_velocity,
+    if (parameters.mesh_deformation_enabled)
+      scratch.finite_element_values[introspection.extractors.velocities].get_function_values(mesh_deformation->mesh_velocity,
           scratch.mesh_velocity_values);
 
     // compute material properties and heating terms
@@ -962,8 +998,8 @@ namespace aspect
                 scratch.face_current_velocity_values);
 
             // get the mesh velocity, as we need to subtract it off of the advection systems
-            if (parameters.free_surface_enabled)
-              (*scratch.face_finite_element_values)[introspection.extractors.velocities].get_function_values(free_surface->mesh_velocity,
+            if (parameters.mesh_deformation_enabled)
+              (*scratch.face_finite_element_values)[introspection.extractors.velocities].get_function_values(mesh_deformation->mesh_velocity,
                   scratch.face_mesh_velocity_values);
 
             if (assemblers->advection_system_assembler_on_face_properties[advection_field.field_index()].need_face_material_model_data)
@@ -1075,8 +1111,8 @@ namespace aspect
   void Simulator<dim>::assemble_advection_system (const AdvectionField &advection_field)
   {
     TimerOutput::Scope timer (computing_timer, (advection_field.is_temperature() ?
-                                                "   Assemble temperature system" :
-                                                "   Assemble composition system"));
+                                                "Assemble temperature system" :
+                                                "Assemble composition system"));
 
     const unsigned int block_idx = advection_field.block_index(introspection);
 
@@ -1123,10 +1159,15 @@ namespace aspect
     const bool allocate_neighbor_contributions = !assemblers->advection_system_on_interior_face.empty() &&
                                                  assemblers->advection_system_assembler_on_face_properties[advection_field.field_index()].need_face_finite_element_evaluation;;
 
+    const bool use_supg = (parameters.advection_stabilization_method
+                           == Parameters<dim>::AdvectionStabilizationMethod::supg);
+
+    // When using SUPG, we need to compute hessians to be able to compute the residual:
     const UpdateFlags update_flags = update_values |
                                      update_gradients |
                                      update_quadrature_points |
-                                     update_JxW_values;
+                                     update_JxW_values |
+                                     ((use_supg) ? update_hessians : UpdateFlags(0));
 
     const UpdateFlags face_update_flags = (allocate_face_quadrature ?
                                            update_values |

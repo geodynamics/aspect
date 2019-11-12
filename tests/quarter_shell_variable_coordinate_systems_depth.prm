@@ -63,9 +63,9 @@ end
 subsection Initial temperature model
   set Model name = function
   subsection Function
-        set Variable names = d, na
-	set Coordinate system = depth
-	set Function expression = if ((d < 0.65), 8000, 0)
+    set Variable names = d, na
+    set Coordinate system = depth
+    set Function expression = if ((d < 0.65), 8000, 0)
   end
 end
 
@@ -91,6 +91,7 @@ subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, temperature statistics, heat flux statistics, depth average
 
   subsection Visualization
+    set Interpolate output = false
     set Output format                 = gnuplot
     set Time between graphical output = 1e6
     set Number of grouped files       = 0

@@ -1,4 +1,4 @@
-# Copyright (C) 2013 - 2018 by the authors of the ASPECT code.
+# Copyright (C) 2013 - 2019 by the authors of the ASPECT code.
 #
 # This file is part of ASPECT.
 #
@@ -37,6 +37,7 @@ _detailed(
 #        ASPECT_RUN_ALL_TESTS:      ${ASPECT_RUN_ALL_TESTS}
 #        ASPECT_USE_SHARED_LIBS:    ${ASPECT_USE_SHARED_LIBS}
 #        ASPECT_HAVE_LINK_H:        ${ASPECT_HAVE_LINK_H}
+#        ASPECT_WITH_WORLD_BUILDER  ${ASPECT_WITH_WORLD_BUILDER} ${WORLD_BUILDER_SOURCE_DIR}
 #        CMAKE_BUILD_TYPE:          ${CMAKE_BUILD_TYPE}
 #        ASPECT_PRECOMPILE_HEADERS: ${ASPECT_PRECOMPILE_HEADERS}
 #        CMAKE_INSTALL_PREFIX:      ${CMAKE_INSTALL_PREFIX}
@@ -67,6 +68,13 @@ ENDIF()
 GET_PROPERTY(_COMPILE_FLAGS TARGET aspect PROPERTY COMPILE_FLAGS)
 _detailed("#
 #        COMPILE_FLAGS:             ${_COMPILE_FLAGS}
+")
+
+_detailed("#
+#        _WITH_CXX14:               ${DEAL_II_WITH_CXX14}
+#        _WITH_CXX17:               ${DEAL_II_WITH_CXX17}
+#        _MPI_VERSION:              ${DEAL_II_MPI_VERSION}
+#        _WITH_64BIT_INDICES:       ${DEAL_II_WITH_64BIT_INDICES}
 ")
 
 

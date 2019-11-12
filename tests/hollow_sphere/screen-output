@@ -6,20 +6,20 @@ Number of degrees of freedom: 28,690 (20,790+970+6,930)
 
 *** Timestep 0:  t=0 seconds
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+46 iterations.
-      Relative  nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+   Solving Stokes system... 0+83 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative  nonlinear residual (Stokes system) after nonlinear iteration 2: 4.28149e-13
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 5.4683e-13
 
 
    Postprocessing:
      Writing graphical output:              output-hollow_sphere/solution/solution-00000
      RMS, max velocity:                     1.54 m/s, 4.59 m/s
-     Pressure at top/bottom of domain:      -9.419e-08 Pa, 500 Pa
+     Pressure at top/bottom of domain:      -1.701e-10 Pa, 500 Pa
      Computing dynamic topography           
-     Errors u_L1, p_L1, u_L2, p_L2 topo_L2: 1.571219e-02, 1.225284e-01, 7.689527e-03, 1.256502e-01, 1.077410e-04
+     Errors u_L1, p_L1, u_L2, p_L2 topo_L2: 1.499947e-02, 1.218423e-01, 7.573727e-03, 1.253778e-01, 1.086393e-04
 
 Termination requested by criterion: end time
 

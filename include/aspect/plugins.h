@@ -301,9 +301,9 @@ namespace aspect
       {
         // if any plugins have been registered, then delete
         // the list
-        if (plugins != 0)
+        if (plugins != nullptr)
           delete plugins;
-        plugins = 0;
+        plugins = nullptr;
       }
 
 
@@ -318,7 +318,7 @@ namespace aspect
       {
         // see if this is the first time we get into this
         // function and if so initialize the static member variable
-        if (plugins == 0)
+        if (plugins == nullptr)
           plugins = new std::list<PluginInfo>();
 
         // verify that the same name has not previously been
@@ -345,7 +345,7 @@ namespace aspect
       PluginList<InterfaceClass>::
       get_pattern_of_names ()
       {
-        Assert (plugins != 0,
+        Assert (plugins != nullptr,
                 ExcMessage ("No plugins registered!?"));
 
         // get all names and put them into a data structure that keeps
@@ -422,7 +422,7 @@ namespace aspect
       PluginList<InterfaceClass>::
       declare_parameters (ParameterHandler &prm)
       {
-        Assert (plugins != 0,
+        Assert (plugins != nullptr,
                 ExcMessage ("No postprocessors registered!?"));
 
         for (typename std::list<PluginInfo>::const_iterator
@@ -440,7 +440,7 @@ namespace aspect
                      const std::string &documentation)
       {
         (void)documentation;
-        Assert (plugins != 0,
+        Assert (plugins != nullptr,
                 ExcMessage ("No postprocessors registered!?"));
         AssertThrow (name != "unspecified",
                      ExcMessage(std::string("A plugin must have a name!\n\n"
@@ -468,7 +468,7 @@ namespace aspect
             }
 
         AssertThrow (false, ExcUnknownPlugin(name));
-        return 0;
+        return nullptr;
       }
 
 

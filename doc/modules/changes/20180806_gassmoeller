@@ -1,5 +1,0 @@
-Fixed: Fixed a bug in the 'Named additional outputs' postprocessor, which
-would cause a segmentation fault if more than one named additional material
-output object was active in the same model.
-<br>
-(Rene Gassmoeller, 2018/08/06)

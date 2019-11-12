@@ -89,13 +89,12 @@ subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, right, bottom
 end
 
-subsection Free surface
-  set Free surface boundary indicators = top
-end
-
-subsection Free surface
-  set Free surface stabilization theta = 0.5
-  set Surface velocity projection = vertical
+subsection Mesh deformation
+  set Mesh deformation boundary indicators = top: free surface
+  subsection Free surface
+    set Free surface stabilization theta = 0.5
+    set Surface velocity projection = vertical
+  end
 end
 
 subsection Compositional fields
@@ -118,6 +117,7 @@ end
 subsection Postprocess
   set List of postprocessors = visualization,topography,velocity statistics,
   subsection Visualization
+    set Interpolate output = false
     set Output format = gnuplot
     set Time between graphical output = 1.e4
   end

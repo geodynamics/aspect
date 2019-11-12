@@ -1,0 +1,21 @@
+
+Number of active cells: 486 (on 1 levels)
+Number of degrees of freedom: 19,472 (14,079+700+4,693)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 200+16 iterations.
+
+   Postprocessing:
+     RMS, max velocity:       1.12e-09 m/s, 8.88e-09 m/s
+     Temperature min/avg/max: 500 K, 781.7 K, 1000 K
+     Writing depth average:   output-ascii_data_layered_initial_temperature_3d_chunk/depth_average
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

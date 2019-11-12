@@ -1,0 +1,88 @@
+# This test ensures that the multicomponent compressible
+# material model works with compositional fields
+# enabled
+
+set Dimension                              = 2
+set End time                               = 0
+
+subsection Boundary temperature model
+  set List of model names = initial temperature 
+end
+
+subsection Compositional fields
+  set Number of fields          = 1 
+end
+
+subsection Initial composition model
+  set List of model names = function
+  subsection Function
+    set Function expression = 1
+  end
+end
+
+subsection Geometry model
+  set Model name = box 
+  subsection Box
+    set X extent                = 400e3 
+    set X repetitions           = 1
+    set Y extent                = 400e3  
+    set Y repetitions           = 1
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical 
+  subsection Vertical
+    set Magnitude = 9.81 
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function 
+  subsection Function
+    set Variable names      = x,y
+    set Function expression = 1000 + y/400
+  end
+end
+
+# The following properties are for forsterite.
+# They are approximate values based on the dataset of Holland and Powell (2011).
+# Note that the heat capacity is the specific isochoric heat capacity (Cv [J/kg]).
+
+subsection Material model
+  set Model name         = multicomponent compressible
+  subsection Multicomponent compressible
+    set Reference temperatures = 298.15
+    set Reference densities = 3222.5
+    set Reference isothermal compressibilities = 7.8e-12
+    set Isothermal bulk modulus pressure derivatives = 3.84
+    set Reference thermal expansivities = 2.85e-5
+    set Isochoric specific heats = 1230.
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement              = 0         
+  set Initial global refinement                = 1
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = left, right, top, bottom
+end
+
+
+subsection Postprocess
+  set List of postprocessors = visualization
+
+  subsection Visualization
+    set Output format = gnuplot
+    set List of output variables = material properties
+    set Time between graphical output = 0
+    set Number of grouped files       = 0
+
+    subsection Material properties
+      set List of material properties = density, thermal expansivity, compressibility, specific heat
+    end
+  end
+end
+

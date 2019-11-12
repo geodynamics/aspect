@@ -55,22 +55,18 @@ namespace aspect
         public:
           MaterialProperties ();
 
-          virtual
           std::vector<std::string>
-          get_names () const;
+          get_names () const override;
 
-          virtual
           std::vector<DataComponentInterpretation::DataComponentInterpretation>
-          get_data_component_interpretation () const;
+          get_data_component_interpretation () const override;
 
-          virtual
           UpdateFlags
-          get_needed_update_flags () const;
+          get_needed_update_flags () const override;
 
-          virtual
           void
           evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
-                                std::vector<Vector<double> > &computed_quantities) const;
+                                std::vector<Vector<double> > &computed_quantities) const override;
 
 
           /**
@@ -83,9 +79,8 @@ namespace aspect
           /**
            * Read the parameters this class declares from the parameter file.
            */
-          virtual
           void
-          parse_parameters (ParameterHandler &prm);
+          parse_parameters (ParameterHandler &prm) override;
 
         private:
           std::vector<std::string> property_names;

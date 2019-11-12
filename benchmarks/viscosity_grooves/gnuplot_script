@@ -1,0 +1,38 @@
+set term pdf enhanced
+set log xy
+set xlabel 'h'
+set ylabel '||e||_{L_2}'
+set key outside
+
+set output 'conv_0p1.pdf'
+plot[][]\
+x**3*.2 lt -1 lw 3 t 'h^3',x**2*.6 lt -1 lw 3 dashtype 2 t 'h^2',\
+'conv_L1_eps0.1.dat' u (1./2**$1):9  w lp lt 1 pt 1 t 'v, 1x1',\
+'conv_L1_eps0.1.dat' u (1./2**$1):10 w lp lt 1 pt 2 t 'p, 1x1',\
+'conv_L2_eps0.1.dat' u (2./2**$1):9  w lp lt 2 pt 1 t 'v, 2x2',\
+'conv_L2_eps0.1.dat' u (2./2**$1):10 w lp lt 2 pt 2 t 'p, 2x2',\
+'conv_L3_eps0.1.dat' u (3./2**$1):9  w lp lt 3 pt 1 t 'v, 3x3',\
+'conv_L3_eps0.1.dat' u (3./2**$1):10 w lp lt 3 pt 2 t 'p, 3x3'
+
+
+set output 'conv_0p01.pdf'
+plot[][]\
+'conv_L1_eps0.01.dat' u (1./2**$1):9  w lp lt 1 t 'v, 1x1',\
+'conv_L1_eps0.01.dat' u (1./2**$1):10 w lp lt 1 t 'p, 1x1',\
+'conv_L2_eps0.01.dat' u (2./2**$1):9  w lp lt 2 t 'v, 2x2',\
+'conv_L2_eps0.01.dat' u (2./2**$1):10 w lp lt 2 t 'p, 2x2',\
+'conv_L3_eps0.01.dat' u (3./2**$1):9  w lp lt 3 t 'v, 3x3',\
+'conv_L3_eps0.01.dat' u (3./2**$1):10 w lp lt 3 t 'p, 3x3',\
+x**3 lt -1 t 'h^3',x**2 lt -1 t 'h^2'
+
+set output 'conv_0p001.pdf'
+plot[][]\
+'conv_L1_eps0.001.dat' u (1./2**$1):9  w lp lt 1 t 'v, 1x1',\
+'conv_L1_eps0.001.dat' u (1./2**$1):10 w lp lt 1 t 'p, 1x1',\
+'conv_L2_eps0.001.dat' u (2./2**$1):9  w lp lt 2 t 'v, 2x2',\
+'conv_L2_eps0.001.dat' u (2./2**$1):10 w lp lt 2 t 'p, 2x2',\
+'conv_L3_eps0.001.dat' u (3./2**$1):9  w lp lt 3 t 'v, 3x3',\
+'conv_L3_eps0.001.dat' u (3./2**$1):10 w lp lt 3 t 'p, 3x3',\
+x**3 lt -1 t 'h^3',x**2 lt -1 t 'h^2'
+
+

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -239,8 +239,7 @@ namespace aspect
         {
           const unsigned int n_points = out.viscosities.size();
           out.additional_outputs.push_back(
-            std::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
-            (new MaterialModel::SeismicAdditionalOutputs<dim> (n_points)));
+            std_cxx14::make_unique<MaterialModel::SeismicAdditionalOutputs<dim>> (n_points));
         }
     }
   }

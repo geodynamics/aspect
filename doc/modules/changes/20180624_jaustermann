@@ -1,4 +1,0 @@
-New: ASPECT can now read in a depth-dependent vs to density conversion file, which
-can be used for S40RTS and SAVANI.
-<br>
-(Jacky Austermann, 2018/06/24)

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -49,7 +49,7 @@ namespace aspect
 
           if (this->introspection().compositional_name_exists("porosity") &&  this->get_timestep_number() > 0)
             {
-              const double porosity_idx = this->introspection().compositional_index_for_name("porosity");
+              const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
               double melting_rate = 0.0;
 
               if (!use_operator_split)

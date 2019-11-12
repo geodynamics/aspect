@@ -123,10 +123,6 @@ subsection Melt settings
   set Include melt transport                  = true
 end
 
-subsection Free surface
-  set Free surface stabilization theta = 0.5
-end
-
 subsection Compositional fields
   set Number of fields = 1
   set Names of fields = porosity
@@ -144,6 +140,7 @@ subsection Postprocess
   set List of postprocessors = topography,velocity statistics, visualization, composition statistics
 
   subsection Visualization
+    set Interpolate output = false
     set List of output variables =  melt material properties, material properties
     set Time between graphical output = 0
 

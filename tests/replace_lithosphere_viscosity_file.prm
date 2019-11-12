@@ -1,0 +1,70 @@
+# Test replace lithosphere viscosity material model
+# using base model ''simple'' and lithosphere-asthenosphere
+# boundary taken from file
+
+
+set Dimension                              = 3
+set Use years in output instead of seconds = false
+set Start time                             = 0
+set End time                               = 1e05
+
+
+subsection Material model
+  set Model name = replace lithosphere viscosity
+  subsection Replace lithosphere viscosity
+    set Base model = simple
+    set Lithosphere viscosity = 1e25
+    set Depth specification method = File
+  end
+
+  subsection Simple model
+    set Thermal expansion coefficient = 4e-5
+    set Viscosity                     = 1e22
+  end
+end
+
+
+subsection Geometry model
+  set Model name = spherical shell
+
+  subsection Spherical shell
+    set Inner radius  = 3481000
+    set Outer radius  = 6336000
+  end
+end
+
+
+subsection Boundary velocity model
+  set Zero velocity boundary indicators       = bottom
+  set Tangential velocity boundary indicators = top
+end
+
+
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Coordinate system = depth
+    set Function constants = temp=2500
+    set Function expression = temp
+  end
+
+end
+
+
+subsection Gravity model
+  set Model name = radial constant
+  subsection Radial constant
+    set Magnitude = 10
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial global refinement          = 0
+  set Initial adaptive refinement        = 0
+end
+
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics
+end

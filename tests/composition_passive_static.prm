@@ -91,6 +91,7 @@ subsection Postprocess
   set List of postprocessors = visualization, composition statistics
 
   subsection Visualization
+    set Interpolate output = false
     set Time between graphical output = 0.1
     set Output format                 = gnuplot
  end

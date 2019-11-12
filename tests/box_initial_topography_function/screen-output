@@ -1,0 +1,37 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+Number of active cells: 4 (on 2 levels)
+Number of degrees of freedom: 84 (50+9+25)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 12+0 iterations.
+
+Number of active cells: 10 (on 3 levels)
+Number of degrees of freedom: 189 (114+18+57)
+
+   Added initial topography to grid
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 23+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-box_initial_topography_function/solution/solution-00000
+     RMS, max velocity:        3.81e-09 m/year, 9.44e-09 m/year
+     Topography min/max:       0 m, 2e+04 m
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------

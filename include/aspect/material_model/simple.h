@@ -22,6 +22,7 @@
 #define _aspect_material_model_simple_h
 
 #include <aspect/material_model/interface.h>
+#include <aspect/material_model/equation_of_state/linearized_incompressible.h>
 #include <aspect/simulator_access.h>
 
 namespace aspect
@@ -44,8 +45,8 @@ namespace aspect
     class Simple : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
-        virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                              MaterialModel::MaterialModelOutputs<dim> &out) const;
+        void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                      MaterialModel::MaterialModelOutputs<dim> &out) const override;
 
         /**
          * @name Qualitative properties one can ask a material model
@@ -60,7 +61,7 @@ namespace aspect
          * equation as $\nabla \cdot (\rho \mathbf u)=0$ (compressible Stokes)
          * or as $\nabla \cdot \mathbf{u}=0$ (incompressible Stokes).
          */
-        virtual bool is_compressible () const;
+        bool is_compressible () const override;
         /**
          * @}
          */
@@ -69,7 +70,7 @@ namespace aspect
          * @name Reference quantities
          * @{
          */
-        virtual double reference_viscosity () const;
+        double reference_viscosity () const override;
         /**
          * @}
          */
@@ -88,30 +89,27 @@ namespace aspect
         /**
          * Read the parameters this class declares from the parameter file.
          */
-        virtual
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
+
         /**
          * @}
          */
 
       private:
-        double reference_rho;
         double reference_T;
         double eta;
         double composition_viscosity_prefactor;
         double thermal_viscosity_exponent;
         double maximum_thermal_prefactor;
         double minimum_thermal_prefactor;
-        double thermal_alpha;
-        double reference_specific_heat;
 
         /**
          * The thermal conductivity.
          */
         double k_value;
 
-        double compositional_delta_rho;
+        EquationOfState::LinearizedIncompressible<dim> equation_of_state;
     };
 
   }

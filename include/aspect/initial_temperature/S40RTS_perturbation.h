@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -35,8 +35,40 @@ namespace aspect
     {
       namespace S40RTS
       {
-        class SphericalHarmonicsLookup;
-        class SplineDepthsLookup;
+        class SphericalHarmonicsLookup
+        {
+          public:
+            SphericalHarmonicsLookup(const std::string &filename,
+                                     const MPI_Comm &comm);
+
+            /// Declare a function that returns the cosine coefficients
+            const std::vector<double> &
+            cos_coeffs() const;
+
+            /// Declare a function that returns the sine coefficients
+            const std::vector<double> &
+            sin_coeffs() const;
+
+            unsigned int maxdegree() const;
+
+          private:
+            unsigned int order;
+            std::vector<double> a_lm;
+            std::vector<double> b_lm;
+        };
+
+        class SplineDepthsLookup
+        {
+          public:
+            SplineDepthsLookup(const std::string &filename,
+                               const MPI_Comm &comm);
+
+            const std::vector<double> &
+            spline_depths() const;
+
+          private:
+            std::vector<double> depths;
+        };
       }
     }
 
@@ -67,7 +99,7 @@ namespace aspect
          * pointers.
          */
         void
-        initialize ();
+        initialize () override;
 
         /**
          * Return the Vs as a function of position.
@@ -78,8 +110,7 @@ namespace aspect
         /**
          * Return the initial temperature as a function of position.
          */
-        virtual
-        double initial_temperature (const Point<dim> &position) const;
+        double initial_temperature (const Point<dim> &position) const override;
 
         /**
          * Declare the parameters this class takes through input files.
@@ -91,9 +122,8 @@ namespace aspect
         /**
          * Read the parameters this class declares from the parameter file.
          */
-        virtual
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
 
       private:
 
@@ -171,13 +201,13 @@ namespace aspect
          * Pointer to an object that reads and processes the spherical
          * harmonics coefficients
          */
-        std::shared_ptr<internal::S40RTS::SphericalHarmonicsLookup> spherical_harmonics_lookup;
+        std::unique_ptr<internal::S40RTS::SphericalHarmonicsLookup> spherical_harmonics_lookup;
 
         /**
          * Pointer to an object that reads and processes the depths for the
          * spline knot points.
          */
-        std::shared_ptr<internal::S40RTS::SplineDepthsLookup> spline_depths_lookup;
+        std::unique_ptr<internal::S40RTS::SplineDepthsLookup> spline_depths_lookup;
 
         /**
          * Object containing the data profile.

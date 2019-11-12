@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -53,17 +53,13 @@ namespace aspect
       FEFaceValues<dim> fe_face_values (this->get_mapping(),
                                         this->get_fe(),
                                         quadrature_formula,
-                                        update_values         | update_gradients |
-                                        update_normal_vectors |
-                                        update_q_points       | update_JxW_values);
+                                        update_values            | update_gradients |
+                                        update_normal_vectors    |
+                                        update_quadrature_points | update_JxW_values);
 
       std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (quadrature_formula.size()));
 
       std::map<types::boundary_id, double> local_boundary_fluxes;
-
-      typename DoFHandler<dim>::active_cell_iterator
-      cell = this->get_dof_handler().begin_active(),
-      endc = this->get_dof_handler().end();
 
       MaterialModel::MaterialModelInputs<dim> in(fe_face_values.n_quadrature_points, this->n_compositional_fields());
       MaterialModel::MaterialModelOutputs<dim> out(fe_face_values.n_quadrature_points, this->n_compositional_fields());
@@ -72,12 +68,7 @@ namespace aspect
       // mass flux and that is owned by this processor,
       // integrate the normal mass flux given by the formula
       //   j =  \rho * v * n
-      //
-      // for the spherical shell geometry, note that for the inner boundary,
-      // the normal vector points *into* the core, i.e. we compute the flux
-      // *out* of the mantle, not into it. we fix this when we add the local
-      // contribution to the global flux
-      for (; cell!=endc; ++cell)
+      for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
           for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
             if (cell->at_boundary(f))
@@ -130,7 +121,7 @@ namespace aspect
           global_boundary_fluxes[*p] = global_values[index];
       }
 
-      // now add all of the computed heat fluxes to the statistics object
+      // now add all of the computed mass fluxes to the statistics object
       // and create a single string that can be output to the screen
       std::ostringstream screen_text;
       unsigned int index = 0;
@@ -186,7 +177,7 @@ namespace aspect
                                   "the core into the mantle when the domain describes the "
                                   "mantle, then you need to multiply the result by -1."
                                   "\n\n"
-                                  "\\note{In geodynamics, the term ``mass flux'' is often understand "
+                                  "\\note{In geodynamics, the term ``mass flux'' is often understood "
                                   "to be the quantity $\\rho \\mathbf v$, which is really a mass "
                                   "flux \\textit{density}, i.e., a vector-valued field. In contrast "
                                   "to this, the current postprocessor only computes the integrated "

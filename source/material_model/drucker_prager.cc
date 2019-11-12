@@ -39,9 +39,10 @@ namespace aspect
       MaterialModel::MaterialModelDerivatives<dim> *derivatives;
       derivatives = out.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim> >();
 
+      EquationOfStateOutputs<dim> eos_outputs (1);
+
       for (unsigned int i=0; i < in.temperature.size(); ++i)
         {
-          const double temperature = in.temperature[i];
           // To avoid negative yield strengths and eventually viscosities,
           // we make sure the pressure is not negative
           const double pressure=std::max(in.pressure[i],0.0);
@@ -66,9 +67,14 @@ namespace aspect
               // The negative of the second principle invariant is equal to 0.5 e_dot_dev_ij e_dot_dev_ji,
               // where e_dot_dev is the deviatoric strain rate tensor. The square root of this quantity
               // gives the common definition of effective strain rate.
-              const double edot_ii_strict = (this->simulator_is_initialized() == false
+              const double edot_ii_strict = (this->simulator_is_past_initialization() == false
                                              ?
-                                             // no simulator object available -- we are probably in a unit test
+                                             // no simulator object available via
+                                             // the SimulatorAccess base class, or the
+                                             // Simulator itself has not been completely
+                                             // initialized. This might mean that we are
+                                             // in a unit test, or at least that we can't
+                                             // rely on any simulator information
                                              std::fabs(second_invariant(strain_rate_deviator))
                                              :
                                              // simulator object is available, but we need to treat the
@@ -80,8 +86,6 @@ namespace aspect
                                               reference_strain_rate * reference_strain_rate
                                               :
                                               std::fabs(second_invariant(strain_rate_deviator))));
-
-              const double sqrt3 = std::sqrt(3.0);
 
               const double strain_rate_effective = edot_ii_strict;
 
@@ -101,19 +105,13 @@ namespace aspect
               else
                 {
                   // plasticity
-                  const double sin_phi = std::sin(angle_of_internal_friction);
-                  const double cos_phi = std::cos(angle_of_internal_friction);
-                  const double strain_rate_effective_inv = 1./(2.*std::sqrt(strain_rate_effective));
-                  const double strength_inv_part = 1./(sqrt3*(3.0+sin_phi));
+                  const double eta_plastic = drucker_prager_plasticity.compute_viscosity(cohesion,
+                                                                                         angle_of_internal_friction,
+                                                                                         pressure,
+                                                                                         std::sqrt(strain_rate_effective),
+                                                                                         std::numeric_limits<double>::infinity());
 
-                  const double strength = ( (dim==3)
-                                            ?
-                                            ( 6.0 * cohesion * cos_phi + 6.0 * pressure * sin_phi) * strength_inv_part
-                                            :
-                                            cohesion * cos_phi + pressure * sin_phi );
-
-                  // Rescale the viscosity back onto the yield surface
-                  const double eta_plastic = strength * strain_rate_effective_inv;
+                  const double viscosity_pressure_derivative = drucker_prager_plasticity.compute_derivative(angle_of_internal_friction,std::sqrt(strain_rate_effective));
 
                   // Cut off the viscosity between a minimum and maximum value to avoid
                   // a numerically unfavourable large viscosity range.
@@ -132,12 +130,7 @@ namespace aspect
                                                       / ((eta_plastic + minimum_viscosity + maximum_viscosity) * (eta_plastic + minimum_viscosity + maximum_viscosity));
                       const SymmetricTensor<2,dim> effective_viscosity_strain_rate_derivatives
                         = -0.5 * averaging_factor * (eta_plastic / edot_ii_strict) * strain_rate_deviator;
-                      const double effective_viscosity_pressure_derivatives = averaging_factor * sin_phi * strain_rate_effective_inv *
-                                                                              (dim == 3
-                                                                               ?
-                                                                               (6.0 * strength_inv_part)
-                                                                               :
-                                                                               1);
+                      const double effective_viscosity_pressure_derivatives = averaging_factor * viscosity_pressure_derivative;
 
                       derivatives->viscosity_derivative_wrt_strain_rate[i] = deviator_tensor<dim>() * effective_viscosity_strain_rate_derivatives;
 
@@ -153,23 +146,17 @@ namespace aspect
                     }
                 }
             }
-          out.densities[i] = reference_rho * (1.0 - thermal_expansivity * (temperature - reference_T));
-          out.thermal_expansion_coefficients[i] = thermal_expansivity;
-          // Specific heat at the given positions.
-          out.specific_heat[i] = reference_specific_heat;
-          // Thermal conductivity at the given positions.
+
+          equation_of_state.evaluate(in, i, eos_outputs);
+
+          out.densities[i] = eos_outputs.densities[0];
+          out.thermal_expansion_coefficients[i] = eos_outputs.thermal_expansion_coefficients[0];
+          out.specific_heat[i] = eos_outputs.specific_heat_capacities[0];
           out.thermal_conductivities[i] = thermal_conductivities;
-          // Compressibility at the given positions.
-          // The compressibility is given as
-          // $\frac 1\rho \frac{\partial\rho}{\partial p}$.
-          out.compressibilities[i] = 0.0;
-          // Pressure derivative of entropy at the given positions.
-          out.entropy_derivative_pressure[i] = 0.0;
-          // Temperature derivative of entropy at the given positions.
-          out.entropy_derivative_temperature[i] = 0.0;
-          // Change in composition due to chemical reactions at the
-          // given positions. The term reaction_terms[i][c] is the
-          // change in compositional field c at point i.
+          out.compressibilities[i] = eos_outputs.compressibilities[0];
+          out.entropy_derivative_pressure[i] = eos_outputs.entropy_derivative_pressure[0];
+          out.entropy_derivative_temperature[i] = eos_outputs.entropy_derivative_temperature[0];
+
           for (unsigned int c=0; c < in.composition[i].size(); ++c)
             out.reaction_terms[i][c] = 0.0;
         }
@@ -205,13 +192,12 @@ namespace aspect
       {
         prm.enter_subsection("Drucker Prager");
         {
-          prm.declare_entry ("Reference density", "3300",
-                             Patterns::Double (0),
-                             "The reference density $\\rho_0$. Units: $kg/m^3$.");
+          EquationOfState::LinearizedIncompressible<dim>::declare_parameters (prm);
+
           prm.declare_entry ("Reference temperature", "293",
                              Patterns::Double (0),
                              "The reference temperature $T_0$. The reference temperature is used "
-                             "in the density calculation. Units: $K$.");
+                             "in the density calculation. Units: $\\si{K}$.");
           prm.declare_entry ("Reference viscosity", "1e22",
                              Patterns::Double (0),
                              "The reference viscosity that is used for pressure scaling. "
@@ -238,16 +224,9 @@ namespace aspect
                              Patterns::Double (0),
                              "The value of the thermal conductivity $k$. "
                              "Units: $W/m/K$.");
-          prm.declare_entry ("Reference specific heat", "1250",
-                             Patterns::Double (0),
-                             "The value of the specific heat $C_p$. "
-                             "Units: $J/kg/K$.");
-          prm.declare_entry ("Thermal expansion coefficient", "2e-5",
-                             Patterns::Double (0),
-                             "The value of the thermal expansion coefficient $\\beta$. "
-                             "Units: $1/K$.");
           prm.enter_subsection ("Viscosity");
           {
+
             prm.declare_entry ("Minimum viscosity", "1e19",
                                Patterns::Double (0),
                                "The value of the minimum viscosity cutoff $\\eta_min$. Units: $Pa\\;s$.");
@@ -285,12 +264,11 @@ namespace aspect
       {
         prm.enter_subsection("Drucker Prager");
         {
-          reference_rho              = prm.get_double ("Reference density");
+          equation_of_state.parse_parameters (prm);
+
           reference_T                = prm.get_double ("Reference temperature");
           reference_eta              = prm.get_double ("Reference viscosity");
           thermal_conductivities     = prm.get_double ("Thermal conductivity");
-          reference_specific_heat    = prm.get_double ("Reference specific heat");
-          thermal_expansivity        = prm.get_double ("Thermal expansion coefficient");
           prm.enter_subsection ("Viscosity");
           {
             minimum_viscosity          = prm.get_double ("Minimum viscosity");
@@ -311,13 +289,10 @@ namespace aspect
       this->model_dependence.specific_heat = NonlinearDependence::none;
       this->model_dependence.thermal_conductivity = NonlinearDependence::none;
       this->model_dependence.viscosity = NonlinearDependence::strain_rate;
-      this->model_dependence.density = NonlinearDependence::none;
+      this->model_dependence.density = NonlinearDependence::temperature;
 
       if (angle_of_internal_friction==0.0)
         this->model_dependence.viscosity |= NonlinearDependence::pressure;
-
-      if (thermal_expansivity != 0)
-        this->model_dependence.density = NonlinearDependence::temperature;
     }
   }
 }

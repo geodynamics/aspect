@@ -11,7 +11,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
      Writing graphical output:           output-blankenbach_approximation/solution/solution-00000
      RMS, max velocity:                  17.9 m/s, 25.3 m/s
      Temperature min/avg/max:            0 K, 0.5 K, 1 K
-     Heat fluxes through boundary parts: -5.912e-06 W, 5.912e-06 W, -4.884 W, 4.884 W
+     Heat fluxes through boundary parts: 0 W, 0 W, -4.884 W, 4.884 W
      Heating rate (average/total):       0 W/kg, 0 W
 
 *** Timestep 1:  t=0.00061685 seconds
@@ -22,7 +22,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
      Writing graphical output:           output-blankenbach_approximation/solution/solution-00001
      RMS, max velocity:                  17.9 m/s, 25.5 m/s
      Temperature min/avg/max:            0 K, 0.5 K, 1 K
-     Heat fluxes through boundary parts: -6.519e-06 W, 6.519e-06 W, -4.838 W, 4.838 W
+     Heat fluxes through boundary parts: 0 W, 0 W, -4.825 W, 4.825 W
      Heating rate (average/total):       0 W/kg, 0 W
 
 *** Timestep 2:  t=0.00122973 seconds
@@ -33,7 +33,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
      Writing graphical output:           output-blankenbach_approximation/solution/solution-00002
      RMS, max velocity:                  18 m/s, 25.7 m/s
      Temperature min/avg/max:            0 K, 0.5 K, 1 K
-     Heat fluxes through boundary parts: -6.815e-06 W, 6.815e-06 W, -4.732 W, 4.732 W
+     Heat fluxes through boundary parts: 0 W, 0 W, -4.705 W, 4.705 W
      Heating rate (average/total):       0 W/kg, 0 W
 
 *** Timestep 3:  t=0.00183762 seconds
@@ -44,7 +44,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
      Writing graphical output:           output-blankenbach_approximation/solution/solution-00003
      RMS, max velocity:                  18 m/s, 26 m/s
      Temperature min/avg/max:            0 K, 0.5 K, 1 K
-     Heat fluxes through boundary parts: -7.21e-06 W, 7.21e-06 W, -4.559 W, 4.559 W
+     Heat fluxes through boundary parts: 0 W, 0 W, -4.524 W, 4.524 W
      Heating rate (average/total):       0 W/kg, 0 W
 
 *** Timestep 4:  t=0.002 seconds
@@ -55,7 +55,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
      Writing graphical output:           output-blankenbach_approximation/solution/solution-00004
      RMS, max velocity:                  18.1 m/s, 26 m/s
      Temperature min/avg/max:            0 K, 0.5 K, 1 K
-     Heat fluxes through boundary parts: -7.341e-06 W, 7.341e-06 W, -4.503 W, 4.503 W
+     Heat fluxes through boundary parts: 0 W, 0 W, -4.467 W, 4.467 W
      Heating rate (average/total):       0 W/kg, 0 W
 
 Termination requested by criterion: end time

@@ -26,19 +26,19 @@ Number of degrees of freedom: 2,724 (1,666+225+833)
      Writing graphical output:           output-simple_incompressible/solution/solution-00000
      RMS, max velocity:                  0.507 m/year, 0.971 m/year
      Temperature min/avg/max:            273 K, 1630 K, 4250 K
-     Heat fluxes through boundary parts: -5.644e+05 W, 5.205e+05 W, 2170 W, 2170 W
-     Writing depth average:              output-simple_incompressible/depth_average.gnuplot
+     Heat fluxes through boundary parts: 4.4e+06 W, -2.328e+06 W, 0 W, 0 W
+     Writing depth average:              output-simple_incompressible/depth_average
 
 *** Timestep 1:  t=100000 years
-   Solving temperature system... 11 iterations.
+   Solving temperature system... 13 iterations.
    Solving Stokes system... 17+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-simple_incompressible/solution/solution-00001
-     RMS, max velocity:                  0.506 m/year, 0.974 m/year
-     Temperature min/avg/max:            273 K, 1632 K, 4250 K
-     Heat fluxes through boundary parts: -5.34e+05 W, 4.99e+05 W, 1895 W, 1895 W
-     Writing depth average:              output-simple_incompressible/depth_average.gnuplot
+     RMS, max velocity:                  0.506 m/year, 0.969 m/year
+     Temperature min/avg/max:            273 K, 1631 K, 4250 K
+     Heat fluxes through boundary parts: -1.014e+06 W, -1.277e+06 W, 0 W, 0 W
+     Writing depth average:              output-simple_incompressible/depth_average
 
 Termination requested by criterion: end time
 

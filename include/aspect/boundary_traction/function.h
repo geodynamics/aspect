@@ -54,11 +54,10 @@ namespace aspect
          * (outward) normal vector to the domain is also provided as
          * a second argument.
          */
-        virtual
         Tensor<1,dim>
         boundary_traction (const types::boundary_id boundary_indicator,
                            const Point<dim> &position,
-                           const Tensor<1,dim> &normal_vector) const;
+                           const Tensor<1,dim> &normal_vector) const override;
 
         /**
          * A function that is called at the beginning of each time step to
@@ -66,9 +65,8 @@ namespace aspect
          * next be evaluated. For the current class, the function passes to
          * the parsed function what the current time is.
          */
-        virtual
         void
-        update ();
+        update () override;
 
         /**
          * Declare the parameters this class takes through input files. The
@@ -86,9 +84,8 @@ namespace aspect
          * parameters. Consequently, derived classes do not have to overload
          * this function if they do not take any runtime parameters.
          */
-        virtual
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
 
       private:
         /**

@@ -44,10 +44,9 @@ namespace aspect
          * current class, this function obviously simply returns a zero
          * tensor.
          */
-        virtual
         Tensor<1,dim>
         boundary_velocity (const types::boundary_id boundary_indicator,
-                           const Point<dim> &position) const;
+                           const Point<dim> &position) const override;
 
         // avoid -Woverloaded-virtual warning until the deprecated function
         // is removed from the interface:

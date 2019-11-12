@@ -1,9 +1,0 @@
-Fixed: The 'compositional heating' heating plugin had a parameter
-'Use compositional field for heat production averaging' that was used
-inconsistently with its description. Its first entry did not correspond
-to the background field, but to the first compositional field, and the
-last value was ignored. This is fixed now, the first entry is used for
-the background field, and all following values determine whether to include
-the compositional fields.
-<br>
-(Rene Gassmoeller, 2018/05/21)

@@ -220,6 +220,7 @@ subsection Postprocess
   set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, depth average, heating statistics
 
   subsection Visualization
+    set Interpolate output = false
     set Time between graphical output = 1e-3
     set List of output variables      = material properties, adiabat, thermal conductivity, heating, artificial viscosity
   end

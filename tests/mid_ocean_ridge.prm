@@ -14,8 +14,8 @@ end
 
 subsection Postprocess
   subsection Visualization
-    set Output format      = gnuplot
     set Interpolate output = false
+    set Output format      = gnuplot
   end
 end
 

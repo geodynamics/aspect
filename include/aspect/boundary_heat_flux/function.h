@@ -47,12 +47,11 @@ namespace aspect
         /**
          * Return the boundary heat flux as a function of position.
          */
-        virtual
         std::vector<Tensor<1,dim> >
         heat_flux (const types::boundary_id boundary_indicator,
                    const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
                    const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
-                   const std::vector<Tensor<1,dim> > &normal_vectors) const;
+                   const std::vector<Tensor<1,dim> > &normal_vectors) const override;
 
         /**
          * A function that is called at the beginning of each time step to
@@ -60,9 +59,7 @@ namespace aspect
          * next be evaluated. For the current class, the function passes to
          * the parsed function what the current time is.
          */
-        virtual
-        void
-        update ();
+        void update () override;
 
         /**
          * Declare the parameters this class takes through input files. The
@@ -80,9 +77,8 @@ namespace aspect
          * parameters. Consequently, derived classes do not have to overload
          * this function if they do not take any runtime parameters.
          */
-        virtual
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
 
       private:
         /**

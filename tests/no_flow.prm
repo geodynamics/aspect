@@ -11,7 +11,7 @@ set Dimension = 2
 
 set CFL number                             = 1.0
 
-set Use conduction timestep		   = true
+set Use conduction timestep       = true
 
 set End time                               = 1
 
@@ -114,6 +114,7 @@ subsection Postprocess
   set List of postprocessors = visualization
 
   subsection Visualization
+    set Interpolate output = false
     set Number of grouped files       = 0
 
     set Output format                 = gnuplot

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -86,7 +86,7 @@ namespace aspect
       MaterialProperties<dim>::
       get_needed_update_flags () const
       {
-        return update_gradients | update_values  | update_q_points;
+        return update_gradients | update_values  | update_quadrature_points;
       }
 
       template <int dim>
@@ -213,10 +213,6 @@ namespace aspect
         {
           prm.enter_subsection("Visualization");
           {
-            // Find out which variables are registered separately
-            std::vector<std::string> variable_names;
-            variable_names = Utilities::split_string_list(prm.get("List of output variables"));
-
             prm.enter_subsection("Material properties");
             {
               // Get property names and compare against variable names
@@ -226,13 +222,6 @@ namespace aspect
                                      "'Postprocess/Visualization/Material properties/List of material properties' "
                                      "contains entries more than once. This is not allowed. "
                                      "Please check your parameter file."));
-
-              for (std::vector<std::string>::const_iterator p = variable_names.begin();
-                   p != variable_names.end(); ++p)
-                AssertThrow((std::find(property_names.begin(),property_names.end(),*p)) == property_names.end(),
-                            ExcMessage("Visualization postprocessor "
-                                       + *p
-                                       + " is listed separately and in the list of material properties."));
             }
             prm.leave_subsection();
           }

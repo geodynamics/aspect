@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2013 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2013 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -137,7 +137,7 @@ namespace aspect
          * Destructor. Made virtual since this class has virtual member
          * functions.
          */
-        virtual ~Manager ();
+        ~Manager () override;
 
         /**
          * A function that is called at the beginning of each time step and
@@ -214,7 +214,7 @@ namespace aspect
          * Return a list of pointers to all boundary composition models
          * currently used in the computation, as specified in the input file.
          */
-        const std::vector<std::shared_ptr<Interface<dim> > > &
+        const std::vector<std::unique_ptr<Interface<dim> > > &
         get_active_boundary_composition_conditions () const;
 
         /**
@@ -261,6 +261,13 @@ namespace aspect
         const std::set<types::boundary_id> &
         get_fixed_composition_boundary_indicators() const;
 
+        /*
+         * Return whether Dirichlet boundary conditions will be applied
+         * on parts of the boundaries where material flows out.
+         */
+        bool
+        allows_fixed_composition_on_outflow_boundaries() const;
+
         /**
          * For the current plugin subsystem, write a connection graph of all of the
          * plugins we know about, in the format that the
@@ -288,7 +295,7 @@ namespace aspect
          * A list of boundary composition objects that have been requested in the
          * parameter file.
          */
-        std::vector<std::shared_ptr<Interface<dim> > > boundary_composition_objects;
+        std::vector<std::unique_ptr<Interface<dim> > > boundary_composition_objects;
 
         /**
          * A list of names of boundary composition objects that have been requested
@@ -309,6 +316,12 @@ namespace aspect
          * will be applied.
          */
         std::set<types::boundary_id> fixed_composition_boundary_indicators;
+
+        /**
+         * Whether we allow the composition to be fixed on parts of the boundary
+         * where material flows out of the domain.
+         */
+        bool allow_fixed_composition_on_outflow_boundaries;
     };
 
 
@@ -319,10 +332,8 @@ namespace aspect
     BoundaryCompositionType *
     Manager<dim>::find_boundary_composition_model () const
     {
-      for (typename std::vector<std::shared_ptr<Interface<dim> > >::const_iterator
-           p = boundary_composition_objects.begin();
-           p != boundary_composition_objects.end(); ++p)
-        if (BoundaryCompositionType *x = dynamic_cast<BoundaryCompositionType *> ( (*p).get()) )
+      for (const auto &p : boundary_composition_objects)
+        if (BoundaryCompositionType *x = dynamic_cast<BoundaryCompositionType *> ( p.get()) )
           return x;
       return nullptr;
     }
@@ -334,10 +345,8 @@ namespace aspect
     bool
     Manager<dim>::has_matching_boundary_composition_model () const
     {
-      for (typename std::vector<std::shared_ptr<Interface<dim> > >::const_iterator
-           p = boundary_composition_objects.begin();
-           p != boundary_composition_objects.end(); ++p)
-        if (Plugins::plugin_type_matches<BoundaryCompositionType>(*(*p)))
+      for (const auto &p : boundary_composition_objects)
+        if (Plugins::plugin_type_matches<BoundaryCompositionType>(*p))
           return true;
 
       return false;
@@ -352,13 +361,13 @@ namespace aspect
     Manager<dim>::get_matching_boundary_composition_model () const
     {
       AssertThrow(has_matching_boundary_composition_model<BoundaryCompositionType> (),
-                  ExcMessage("You asked BoundaryComposition:Manager::get_boundary_composition_model() for a "
+                  ExcMessage("You asked BoundaryComposition::Manager::get_boundary_composition_model() for a "
                              "boundary composition model of type <" + boost::core::demangle(typeid(BoundaryCompositionType).name()) + "> "
                              "that could not be found in the current model. Activate this "
                              "boundary composition model in the input file."));
 
-      typename std::vector<std::shared_ptr<Interface<dim> > >::const_iterator boundary_composition_model;
-      for (typename std::vector<std::shared_ptr<Interface<dim> > >::const_iterator
+      typename std::vector<std::unique_ptr<Interface<dim> > >::const_iterator boundary_composition_model;
+      for (typename std::vector<std::unique_ptr<Interface<dim> > >::const_iterator
            p = boundary_composition_objects.begin();
            p != boundary_composition_objects.end(); ++p)
         if (Plugins::plugin_type_matches<BoundaryCompositionType>(*(*p)))

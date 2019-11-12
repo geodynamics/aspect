@@ -40,8 +40,8 @@ subsection Boundary temperature model
   set Fixed temperature boundary indicators   = top, bottom
 end
 
-subsection Free surface
-  set Free surface boundary indicators 		= top
+subsection Mesh deformation
+  set Mesh deformation boundary indicators     = top: free surface
 end
 
 subsection Heating model
@@ -71,10 +71,10 @@ end
 
 subsection Postprocess
   set List of postprocessors = topography
-  	subsection Topography
-		set Time between text output 			= 0
-		set Output to file = true
-	end  
+  subsection Topography
+    set Time between text output       = 0
+    set Output to file = true
+  end
 end
 
 subsection Termination criteria

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -54,7 +54,7 @@ namespace aspect
          * beginning of the program. Checks preconditions.
          */
         void
-        initialize ();
+        initialize () override;
 
         // avoid -Woverloaded-virtual:
         using Utilities::AsciiDataBoundary<dim>::initialize;
@@ -66,7 +66,7 @@ namespace aspect
          * is reached.
          */
         void
-        update ();
+        update () override;
 
         /**
          * Return the boundary velocity as a function of position. For the
@@ -74,7 +74,7 @@ namespace aspect
          */
         Tensor<1,dim>
         boundary_velocity (const types::boundary_id boundary_indicator,
-                           const Point<dim> &position) const;
+                           const Point<dim> &position) const override;
 
         // avoid -Woverloaded-virtual warning until the deprecated function
         // is removed from the interface:
@@ -91,7 +91,7 @@ namespace aspect
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
 
 
       private:

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -40,7 +40,7 @@ namespace aspect
           const Point<dim> position = in.position[i];
           const double temperature = in.temperature[i];
           const std::vector<double> composition = in.composition[i];
-          const std::vector<double> volume_fractions = compute_volume_fractions(composition);
+          const std::vector<double> volume_fractions = MaterialUtilities::compute_volume_fractions(composition);
 
           SymmetricTensor<2,dim> strain_rate;
           if (in.strain_rate.size())

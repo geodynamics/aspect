@@ -51,16 +51,14 @@ namespace aspect
         /**
          * Parse parameters
          */
-        virtual
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
 
         /**
          * Execute the command
          */
-        virtual
         std::pair<std::string,std::string>
-        execute (TableHandler &statistics);
+        execute (TableHandler &statistics) override;
 
       private:
         std::string command;

@@ -1,5 +1,0 @@
-New: Compositional fields can now be advected with the melt velocity
-(as opposed to the solid velocity), and this option can be used by 
-selecting the 'melt field' advection method in the input file.
-<br>
-(Juliane Dannberg, 2018/06/19)

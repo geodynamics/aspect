@@ -32,13 +32,24 @@ subsection Mesh refinement
 end
 
 
+# The nonlinear solver typically converges more quickly
+# when no cheap Stokes solver steps are used for 
+# problems with Drucker-Prager plasticity. 
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Number of cheap Stokes solver steps = 0
+  end
+end
+
 # Free surface boundary classifications.
 # Advecting the free surface vertically rather than
 # in the surface normal direction can result in a
 # more stable mesh when the deformation is large
-subsection Free surface
-  set Free surface boundary indicators = top
-  set Surface velocity projection = vertical
+subsection Mesh deformation
+  set Mesh deformation boundary indicators = top: free surface
+  subsection Free surface
+    set Surface velocity projection = vertical
+  end
 end
 
 
@@ -56,12 +67,12 @@ end
 
 
 # Number and name of compositional fields
-# The field eii is used for tracking the finite strain invariant
+# The field plastic_strain is used for tracking the plastic finite strain invariant
 # upper: brittle upper crust; seed: 'weaker' brittle region
 # lower: viscous lower crust
 subsection Compositional fields
   set Number of fields = 4
-  set Names of fields = eii, upper, seed, lower
+  set Names of fields = plastic_strain, upper, seed, lower
 end
 
 
@@ -128,32 +139,34 @@ subsection Material model
   subsection Visco Plastic
 
     set Reference temperature = 273
-    set Minimum strain rate = 1.e-20
+    set Minimum strain rate   = 1.e-20
     set Reference strain rate = 1.e-16
-    set Minimum viscosity = 1e18
-    set Maximum viscosity = 1e26
+    set Minimum viscosity     = 1e18
+    set Maximum viscosity     = 1e26
 
     set Thermal diffusivities = 1.e-6
-    set Heat capacities = 750.
-    set Densities = 2800
+    set Heat capacities       = 750.
+    set Densities             = 2800
     set Thermal expansivities = 0.
 
     set Viscosity averaging scheme = harmonic
-    set Viscous flow law = dislocation
+    set Viscous flow law           = dislocation
 
-    set Prefactors for dislocation creep = 5.e-25, 5.e-25, 5.e-25, 5.e-25, 5.e-21
-    set Stress exponents for dislocation creep = 1.0
+    set Prefactors for dislocation creep          = 5.e-25, 5.e-25, 5.e-25, 5.e-25, 5.e-21
+    set Stress exponents for dislocation creep    = 1.0
     set Activation energies for dislocation creep = 0.
-    set Activation volumes for dislocation creep = 0.
+    set Activation volumes for dislocation creep  = 0.
 
-    set Angles of internal friction = 30., 30., 30., 4., 30.
-    set Cohesions = 20.e6, 20.e6, 20.e6, 2.e6, 1.e11
+    set Angles of internal friction =   30.,   30.,   30.,   4.,   30.
+    set Cohesions                   = 20.e6, 20.e6, 20.e6, 2.e6, 1.e11
 
-    set Use strain weakening = true
-    set Start strain weakening intervals  = 0.5    , 0.5   , 0.5   , 0.5, 0.5
-    set End strain weakening intervals    = 1.5    , 1.5   , 1.5   , 1.5, 1.5
-    set Cohesion strain weakening factors = 0.1    , 0.1   , 0.1   , 1.0, 1.0
-    set Friction strain weakening factors = 0.13333, 0.1333, 0.1333, 1.0, 1.0
+    set Use strain weakening         = true
+    set Use plastic strain weakening = true
+
+    set Start plasticity strain weakening intervals  =     0.5,    0.5,    0.5, 0.5, 0.5
+    set End plasticity strain weakening intervals    =     1.5,    1.5,    1.5, 1.5, 1.5
+    set Cohesion strain weakening factors            =     0.1,    0.1,    0.1, 1.0, 1.0
+    set Friction strain weakening factors            = 0.13333, 0.1333, 0.1333, 1.0, 1.0
 
   end
 end
@@ -176,11 +189,5 @@ subsection Postprocess
     set List of output variables = density, viscosity, strain rate, error indicator, partition
     set Time between graphical output = 1e5
     set Interpolate output = false
-  end
-end
-
-subsection Solver parameters
-  subsection Stokes solver parameters
-    set Number of cheap Stokes solver steps = 0
   end
 end

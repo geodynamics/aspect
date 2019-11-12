@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2016 - 2017 by the authors of the ASPECT code.
+ Copyright (C) 2016 - 2019 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -42,9 +42,24 @@ namespace aspect
         /**
          * Calculate some statistics about the memory.
          */
-        virtual
         std::pair<std::string,std::string>
-        execute (TableHandler &statistics);
+        execute (TableHandler &statistics) override;
+
+        /**
+         * Declare the parameters this class takes through input files.
+         */
+        static
+        void
+        declare_parameters (ParameterHandler &prm);
+
+        /**
+         * Read the parameters this class declares from the parameter file.
+         */
+        void
+        parse_parameters (ParameterHandler &prm) override;
+
+      private:
+        bool output_vmpeak;
     };
   }
 }

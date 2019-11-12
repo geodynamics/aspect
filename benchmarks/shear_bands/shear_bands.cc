@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -323,20 +323,14 @@ namespace aspect
     void
     ShearBandsInitialCondition<dim>::initialize ()
     {
-      if (dynamic_cast<const ShearBandsMaterial<dim> *>(&this->get_material_model()) != NULL)
-        {
-          const ShearBandsMaterial<dim> *
-          material_model
-            = dynamic_cast<const ShearBandsMaterial<dim> *>(&this->get_material_model());
+      AssertThrow(Plugins::plugin_type_matches<const ShearBandsMaterial<dim>>(this->get_material_model()),
+                  ExcMessage("Initial condition shear bands only works with the material model shear bands."));
 
-          background_porosity = material_model->get_background_porosity();
-        }
-      else
-        {
-          AssertThrow(false,
-                      ExcMessage("Initial condition shear bands only works with the material model shear bands."));
-        }
+      const ShearBandsMaterial<dim> &
+      material_model
+        = Plugins::get_plugin_as_type<const ShearBandsMaterial<dim>>(this->get_material_model());
 
+      background_porosity = material_model.get_background_porosity();
 
       AssertThrow(noise_amplitude < background_porosity,
                   ExcMessage("Amplitude of the white noise must be smaller "
@@ -351,19 +345,14 @@ namespace aspect
       white_noise.TableBase<dim,double>::reinit(size_idx);
       std::array<std::pair<double,double>,dim> grid_extents;
 
-      if (dynamic_cast<const GeometryModel::Box<dim> *>(&this->get_geometry_model()) != NULL)
-        {
-          const GeometryModel::Box<dim> *
-          geometry_model
-            = dynamic_cast<const GeometryModel::Box<dim> *>(&this->get_geometry_model());
+      AssertThrow(Plugins::plugin_type_matches<const GeometryModel::Box<dim>>(this->get_geometry_model()),
+                  ExcMessage("Initial condition shear bands only works with the box geometry model."));
 
-          extents = geometry_model->get_extents();
-        }
-      else
-        {
-          AssertThrow(false,
-                      ExcMessage("Initial condition shear bands only works with the box geometry model."));
-        }
+      const GeometryModel::Box<dim> &
+      geometry_model
+        = Plugins::get_plugin_as_type<const GeometryModel::Box<dim>>(this->get_geometry_model());
+
+      extents = geometry_model.get_extents();
 
       for (unsigned int d=0; d<dim; ++d)
         {
@@ -506,20 +495,14 @@ namespace aspect
     void
     PlaneWaveMeltBandsInitialCondition<dim>::initialize ()
     {
-      if (dynamic_cast<const ShearBandsMaterial<dim> *>(&this->get_material_model()) != NULL)
-        {
-          const ShearBandsMaterial<dim> *
-          material_model
-            = dynamic_cast<const ShearBandsMaterial<dim> *>(&this->get_material_model());
+      AssertThrow(Plugins::plugin_type_matches<ShearBandsMaterial<dim>>(this->get_material_model()),
+                  ExcMessage("Initial condition shear bands only works with the material model shear bands."));
 
-          background_porosity = material_model->get_background_porosity();
-        }
-      else
-        {
-          AssertThrow(false,
-                      ExcMessage("Initial condition plane wave melt bands only works with the material model shear bands."));
-        }
+      const ShearBandsMaterial<dim> &
+      material_model
+        = Plugins::get_plugin_as_type<const ShearBandsMaterial<dim>>(this->get_material_model());
 
+      background_porosity = material_model.get_background_porosity();
 
       AssertThrow(amplitude < 1.0,
                   ExcMessage("Amplitude of the melt bands must be smaller "
@@ -758,22 +741,17 @@ namespace aspect
     void
     ShearBandsGrowthRate<dim>::initialize ()
     {
-      if (dynamic_cast<const ShearBandsMaterial<dim> *>(&this->get_material_model()) != NULL)
-        {
-          const ShearBandsMaterial<dim> *
-          material_model
-            = dynamic_cast<const ShearBandsMaterial<dim> *>(&this->get_material_model());
+      AssertThrow(Plugins::plugin_type_matches<const ShearBandsMaterial<dim>>(this->get_material_model()),
+                  ExcMessage("Postprocessor shear bands growth rate only works with the material model shear bands."));
 
-          background_porosity = material_model->get_background_porosity();
-          eta_0               = material_model->reference_viscosity();
-          xi_0                = material_model->get_reference_compaction_viscosity();
-          alpha               = material_model->get_porosity_exponent();
-        }
-      else
-        {
-          AssertThrow(false,
-                      ExcMessage("Postprocessor shear bands growth rate only works with the material model shear bands."));
-        }
+      const ShearBandsMaterial<dim> &
+      material_model
+        = Plugins::get_plugin_as_type<const ShearBandsMaterial<dim>>(this->get_material_model());
+
+      background_porosity = material_model.get_background_porosity();
+      eta_0               = material_model.reference_viscosity();
+      xi_0                = material_model.get_reference_compaction_viscosity();
+      alpha               = material_model.get_porosity_exponent();
 
       const PlaneWaveMeltBandsInitialCondition<dim> &initial_composition
         = this->get_initial_composition_manager().template
@@ -793,18 +771,12 @@ namespace aspect
       const Point<dim> upper_boundary_point = this->get_geometry_model().representative_point(0.0);
       const Point<dim> lower_boundary_point = this->get_geometry_model().representative_point(this->get_geometry_model().maximal_depth());
 
-      // get the map of boundary indicators and velocity bounfary conditions
-      const std::map<types::boundary_id,std::shared_ptr<BoundaryVelocity::Interface<dim> > >
-      bvs = this->get_prescribed_boundary_velocity();
       types::boundary_id upper_boundary = this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
       types::boundary_id lower_boundary = this->get_geometry_model().translate_symbolic_boundary_name_to_id("bottom");
 
-      // get the velocities at the upper and lower boundary
-      typename std::map<types::boundary_id,std::shared_ptr<BoundaryVelocity::Interface<dim> > >::const_iterator
-      it = bvs.find(upper_boundary);
-      const double max_velocity = it->second->boundary_velocity(it->first,upper_boundary_point).norm();
-      it = bvs.find(lower_boundary);
-      const double min_velocity = it->second->boundary_velocity(it->first,lower_boundary_point).norm();
+      const BoundaryVelocity::Manager<dim> &bm = this->get_boundary_velocity_manager();
+      const double max_velocity = bm.boundary_velocity(upper_boundary, upper_boundary_point).norm();
+      const double min_velocity = bm.boundary_velocity(lower_boundary, lower_boundary_point).norm();
 
       const double strain_rate = 0.5 * (max_velocity + min_velocity) / this->get_geometry_model().maximal_depth();
       const double theta = std::atan(std::sin(initial_band_angle) / (std::cos(initial_band_angle) - time * strain_rate/sqrt(2.0) * std::sin(initial_band_angle)));
@@ -863,12 +835,17 @@ namespace aspect
                                             :
                                             (1.0 - background_porosity) / (amplitude * background_porosity) * global_velocity_divergence_min);
 
+      const double relative_error = (analytical_growth_rate != 0.0) ?
+                                    std::abs(numerical_growth_rate - analytical_growth_rate)/analytical_growth_rate
+                                    :
+                                    1.0;
+
       // compute and output error
       std::ostringstream os;
       os << std::scientific << initial_band_angle
          << ", " << analytical_growth_rate
          << ", " << numerical_growth_rate
-         << ", " << std::abs(numerical_growth_rate - analytical_growth_rate)/analytical_growth_rate;
+         << ", " << relative_error;
 
       return std::make_pair("Initial angle, Analytical growth rate, Modelled growth rate, Error:", os.str());
     }

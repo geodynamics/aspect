@@ -18,15 +18,13 @@ namespace aspect
     const types::global_dof_index first_pressure_dof =
       simulator_access.introspection().system_dofs_per_block[0];
 
-    const double pressure_scaling = simulator_access.get_pressure_scaling();
-    const double value = 100.0 / pressure_scaling;
+    const double value = 100;
 
     current_constraints.add_line(first_pressure_dof);
     current_constraints.set_inhomogeneity (first_pressure_dof, value);
 
     std::cout << "adding constraint idx= " << first_pressure_dof
               << " to value= " << value
-              << " with pressure_scaling= " << pressure_scaling
               << std::endl;
   }
 

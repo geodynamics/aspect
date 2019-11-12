@@ -16,8 +16,8 @@
 # Leng08     1   2.47                   24.3           1.3542 ,1.3587 
 # WE schrott     2.411  24.3                    0.510  1.30194982e+00 -1.31280279e+00
 # We new         2.455  24.7                    0.5115 1.34274053e+00 -1.35403894e+00
-# no-1/3 	 2.456	24.7			0.5117 1.34669982e+00  -1.35134127e+00
-# with, exact grad 					1.34253646e+00 -1.35382342e+00
+# no-1/3    2.456  24.7      0.5117 1.34669982e+00  -1.35134127e+00
+# with, exact grad           1.34253646e+00 -1.35382342e+00
 
 
 # ALA  10^4 0.5 3.8200 35.9000 52.8000 35.1000 0.5217 1.3818 1.3830
@@ -263,6 +263,7 @@ subsection Postprocess
   set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, depth average, heating statistics
 
   subsection Visualization
+    set Interpolate output = false
     set Time between graphical output = 1e-3
     set List of output variables      = material properties, adiabat, thermal conductivity, heating, artificial viscosity
   end
