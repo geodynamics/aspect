@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2019 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -31,7 +31,7 @@ namespace aspect
     {
       template <int dim>
       void
-      UniformRadial<dim>::generate_particles(std::multimap<types::LevelInd, Particle<dim> > &particles)
+      UniformRadial<dim>::generate_particles(std::multimap<Particles::internal::LevelInd, Particle<dim> > &particles)
       {
         // Create the array of shell to deal with
         const double radial_spacing = (P_max[0] - P_min[0]) / fmax(radial_layers-1,1);
@@ -48,7 +48,7 @@ namespace aspect
             for (unsigned int i = 0; i < radial_layers; ++i)
               {
                 const double radius = P_min[0] + (radial_spacing * i);
-                particles_per_layer[i] = round(n_particles * radius / total_radius);
+                particles_per_layer[i] = static_cast<unsigned int>(round(n_particles * radius / total_radius));
               }
           }
         else if (dim == 3)
@@ -59,7 +59,7 @@ namespace aspect
             for (unsigned int i = 0; i < radial_layers; ++i)
               {
                 const double area = std::pow(P_min[0] + (radial_spacing * i),2);
-                particles_per_layer[i] = round(n_particles * area / total_area);
+                particles_per_layer[i] = static_cast<unsigned int>(round(n_particles * area / total_area));
               }
           }
         else
@@ -94,8 +94,13 @@ namespace aspect
               }
             else if (dim == 3)
               {
-                const unsigned int theta_particles = round(sqrt(particles_per_layer[i]));
-                const unsigned int phi_particles = round ((double) particles_per_layer[i] / (double) theta_particles);
+                const unsigned int theta_particles = static_cast<unsigned int>(
+                                                       round(sqrt(particles_per_layer[i])));
+                const unsigned int phi_particles = static_cast<unsigned int>(
+                                                     round(
+                                                       static_cast<double>(particles_per_layer[i])
+                                                       /
+                                                       static_cast<double>(theta_particles)));
                 const double theta_spacing = (P_max[2] - P_min[2]) / fmax(theta_particles-1,1);
 
                 for (unsigned int j = 0; j < theta_particles; ++j)
@@ -103,7 +108,7 @@ namespace aspect
                     spherical_coordinates[2] = P_min[2] + j * theta_spacing;
 
                     // Average value of sin(n) from 0 to 180 degrees is (2/pi)
-                    const unsigned int adjusted_phi_particles = std::max(static_cast<unsigned int> (phi_particles * std::sin(spherical_coordinates[2])),(unsigned int) 1);
+                    const unsigned int adjusted_phi_particles = std::max(static_cast<unsigned int> (phi_particles * std::sin(spherical_coordinates[2])), 1u);
                     const double phi_spacing = (P_max[1] - P_min[1]) / fmax(adjusted_phi_particles-1,1);
                     for (unsigned int k = 0; k < adjusted_phi_particles; ++k)
                       {

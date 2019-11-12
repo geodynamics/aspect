@@ -294,8 +294,6 @@ namespace aspect
 
               const double theta=spos[2];
 
-              Tensor<1,dim> g;
-
               const double gammma = 1.0;
               const double R1 = 0.5;
               const double R2 = 1.0;
@@ -501,13 +499,13 @@ namespace aspect
     std::pair<std::string,std::string>
     HollowSpherePostprocessor<dim>::execute (TableHandler &)
     {
-      std::shared_ptr<Function<dim> > ref_func;
+      std::unique_ptr<Function<dim> > ref_func;
       {
-        const HollowSphereMaterial<dim> *
+        const HollowSphereMaterial<dim> &
         material_model
-          = dynamic_cast<const HollowSphereMaterial<dim> *>(&this->get_material_model());
+          = Plugins::get_plugin_as_type<const HollowSphereMaterial<dim>>(this->get_material_model());
 
-        ref_func.reset (new AnalyticSolutions::FunctionHollowSphere<dim>(material_model->get_mmm()));
+        ref_func.reset (new AnalyticSolutions::FunctionHollowSphere<dim>(material_model.get_mmm()));
       }
 
       const QGauss<dim> quadrature_formula (this->introspection().polynomial_degree.velocities+2);
@@ -550,10 +548,10 @@ namespace aspect
                                          VectorTools::L2_norm,
                                          &comp_p);
 
-      const double u_l1 =  Utilities::MPI::sum(cellwise_errors_u.l1_norm(),this->get_mpi_communicator());
-      const double p_l1 =  Utilities::MPI::sum(cellwise_errors_p.l1_norm(),this->get_mpi_communicator());
-      const double u_l2 =  std::sqrt(Utilities::MPI::sum(cellwise_errors_ul2.norm_sqr(),this->get_mpi_communicator()));
-      const double p_l2 =  std::sqrt(Utilities::MPI::sum(cellwise_errors_pl2.norm_sqr(),this->get_mpi_communicator()));
+      const double u_l1 = VectorTools::compute_global_error(this->get_triangulation(), cellwise_errors_u, VectorTools::L1_norm);
+      const double p_l1 = VectorTools::compute_global_error(this->get_triangulation(), cellwise_errors_p, VectorTools::L1_norm);
+      const double u_l2 = VectorTools::compute_global_error(this->get_triangulation(), cellwise_errors_ul2, VectorTools::L2_norm);
+      const double p_l2 = VectorTools::compute_global_error(this->get_triangulation(), cellwise_errors_pl2, VectorTools::L2_norm);
       const double topo_l2 = compute_dynamic_topography_error();
 
       std::ostringstream os;
@@ -597,7 +595,7 @@ namespace aspect
                                        this->get_fe(),
                                        quadrature_formula,
                                        update_values | update_gradients |
-                                       update_q_points | update_JxW_values);
+                                       update_quadrature_points | update_JxW_values);
       LinearAlgebra::BlockVector topo_vector = dynamic_topography.topography_vector();
       std::vector<double> topo_values(quadrature_formula.size());
 

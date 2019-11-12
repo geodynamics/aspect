@@ -51,9 +51,8 @@ namespace aspect
         /**
          * Evaluate the solution and compute the requested depth averages.
          */
-        virtual
         std::pair<std::string,std::string>
-        execute (TableHandler &statistics);
+        execute (TableHandler &statistics) override;
 
         /**
          * Declare the parameters this class takes through input files.
@@ -65,21 +64,18 @@ namespace aspect
         /**
          * Read the parameters this class declares from the parameter file.
          */
-        virtual
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
 
         /**
          * Save the state of this object.
          */
-        virtual
-        void save (std::map<std::string, std::string> &status_strings) const;
+        void save (std::map<std::string, std::string> &status_strings) const override;
 
         /**
          * Restore the state of the object.
          */
-        virtual
-        void load (const std::map<std::string, std::string> &status_strings);
+        void load (const std::map<std::string, std::string> &status_strings) override;
 
         /**
          * Serialize the contents of this class as far as they are not read
@@ -102,10 +98,10 @@ namespace aspect
         double last_output_time;
 
         /**
-         * The format in which to produce graphical output. This also
-         * determines the extension of the file name to which to write.
+         * The formats in which to produce graphical output. This also
+         * determines the extension of the file names to which to write.
          */
-        DataOutBase::OutputFormat output_format;
+        std::vector<std::string> output_formats;
 
         /**
          * Number of zones in depth direction over which we are supposed to
@@ -117,11 +113,6 @@ namespace aspect
          * List of the quantities to calculate for each depth zone.
          */
         std::vector<std::string> variables;
-
-        /**
-         * Whether to use plain ascii text output
-         */
-        bool ascii_output;
 
         /**
          * A structure for a single time step record.

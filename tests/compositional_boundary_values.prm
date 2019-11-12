@@ -119,8 +119,5 @@ subsection Boundary composition model
   set List of model names = box
   subsection Box
     set Left composition = 10, 10
-    set Right composition = 20, 20
-    set Bottom composition = 30, 30
-    set Top composition = 40, 40
   end
 end

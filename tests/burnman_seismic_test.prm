@@ -123,7 +123,7 @@ subsection Mesh refinement
   set Refinement fraction                = 0.4
   set Coarsening fraction                = 0.05
   set Initial adaptive refinement        = 0
-  set Initial global refinement          = 4
+  set Initial global refinement          = 2
   set Strategy                           = temperature
   set Time steps between mesh refinement = 5
 end
@@ -141,10 +141,11 @@ subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, temperature statistics, heat flux statistics
 
   subsection Visualization
+    set Interpolate output = false
     set Output format                 = gnuplot
     set Time between graphical output = 0
     set Number of grouped files       = 0
-    set List of output variables      = material properties, gravity, adiabat, nonadiabatic temperature, nonadiabatic pressure, named additional outputs
+    set List of output variables      = named additional outputs
   end
 
   subsection Depth average

@@ -114,6 +114,7 @@ subsection Postprocess
   set List of postprocessors = velocity statistics, boundary pressures
 
   subsection Visualization
+    set Interpolate output = false
      set Time between graphical output = 0
      end
 end

@@ -1,0 +1,83 @@
+############### Global parameters
+# This is a manufactured solution by Dave May (unpublished).
+
+set Additional shared libraries            = ./libviscosity_grooves.so
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 0
+set Use years in output instead of seconds = false
+set Nonlinear solver scheme                = single Advection, single Stokes
+set Output directory                       = output_viscosity_grooves
+set Pressure normalization                 = volume
+
+############### Parameters describing the model
+
+subsection Geometry model
+  set Model name = box
+  subsection Box
+    set X extent = 2
+    set Y extent = 2
+  end
+end
+
+#Boundary conditions
+
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = 0  : ViscosityGroovesBoundary, \
+                                                1  : ViscosityGroovesBoundary, \
+                                                2  : ViscosityGroovesBoundary, \
+                                                3  : ViscosityGroovesBoundary
+end
+
+subsection Material model
+  set Model name = ViscosityGroovesMaterial
+end
+
+subsection Gravity model
+  set Model name = ViscosityGroovesGravity
+end
+
+# This is the epsilon parameter
+
+subsection ViscosityGrooves benchmark
+   set Viscosity parameter = 0.01
+end 
+
+############### Parameters describing the temperature field
+
+subsection Boundary temperature model
+  set List of model names = box
+end
+
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Function expression = 0
+  end
+end
+
+############### Parameters describing the discretization
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0  
+  set Initial global refinement          = 5
+end
+
+############### Parameters describing what to do with the solution
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, ViscosityGroovesPostprocessor
+  subsection Visualization
+    set Output format = vtu
+    set List of output variables = density, viscosity, strain rate, gravity
+  end
+end
+
+# Because it is a benchmark lower solver tolerance is set.
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-12
+    set Number of cheap Stokes solver steps = 0
+  end
+end

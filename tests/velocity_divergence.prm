@@ -48,6 +48,7 @@ subsection Boundary temperature model
 end
 
 subsection Boundary composition model
+  set Allow fixed composition on outflow boundaries = true
   set List of model names = initial composition
 end
 
@@ -157,7 +158,6 @@ subsection Postprocess
   set List of postprocessors = visualization,composition statistics,velocity statistics, mass flux statistics
 
   subsection Visualization
-
     set List of output variables      = material properties, nonadiabatic temperature, melt fraction, strain rate
 
     subsection Material properties

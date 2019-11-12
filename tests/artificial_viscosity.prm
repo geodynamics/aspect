@@ -122,6 +122,7 @@ subsection Postprocess
   set List of postprocessors = composition statistics, temperature statistics, visualization
 
   subsection Visualization
+    set Interpolate output = false
 
     set List of output variables      = artificial viscosity, artificial viscosity composition
 

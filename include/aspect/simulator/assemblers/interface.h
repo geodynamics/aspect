@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2017 by the authors of the ASPECT code.
+  Copyright (C) 2017 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -70,7 +70,7 @@ namespace aspect
             face_number(scratch.face_number)
           {}
 
-          virtual ~ScratchBase () {};
+          virtual ~ScratchBase ()  = default;
 
           /**
            * Cell object on which we currently operate.
@@ -100,10 +100,10 @@ namespace aspect
                                 const unsigned int        n_compositional_fields,
                                 const unsigned int        stokes_dofs_per_cell,
                                 const bool                add_compaction_pressure,
-                                const bool                rebuild_stokes_matrix);
+                                const bool                rebuild_matrix);
           StokesPreconditioner (const StokesPreconditioner &scratch);
 
-          virtual ~StokesPreconditioner ();
+          ~StokesPreconditioner () override;
 
           FEValues<dim> finite_element_values;
 
@@ -154,11 +154,11 @@ namespace aspect
                         const unsigned int        n_compositional_fields,
                         const unsigned int        stokes_dofs_per_cell,
                         const bool                add_compaction_pressure,
-                        const bool                use_reference_profile,
+                        const bool                use_reference_density_profile,
                         const bool                rebuild_stokes_matrix,
-                        const bool                rebuild_stokes_newton_matrix);
+                        const bool                rebuild_newton_stokes_matrix);
 
-          StokesSystem (const StokesSystem<dim> &data);
+          StokesSystem (const StokesSystem<dim> &scratch);
 
           FEFaceValues<dim> face_finite_element_values;
 
@@ -218,8 +218,8 @@ namespace aspect
                            const UpdateFlags         update_flags,
                            const UpdateFlags         face_update_flags,
                            const unsigned int        n_compositional_fields,
-                           const typename Simulator<dim>::AdvectionField     &advection_field);
-          AdvectionSystem (const AdvectionSystem &data);
+                           const typename Simulator<dim>::AdvectionField     &field);
+          AdvectionSystem (const AdvectionSystem &scratch);
 
           FEValues<dim> finite_element_values;
 
@@ -241,6 +241,7 @@ namespace aspect
            */
           std::vector<double>         phi_field;
           std::vector<Tensor<1,dim> > grad_phi_field;
+          std::vector<double>         laplacian_phi_field;
           std::vector<double>         face_phi_field;
           std::vector<Tensor<1,dim> > face_grad_phi_field;
           std::vector<double>         neighbor_face_phi_field;
@@ -343,7 +344,7 @@ namespace aspect
         template <int dim>
         struct CopyDataBase
         {
-          virtual ~CopyDataBase () {};
+          virtual ~CopyDataBase () = default;
         };
 
         /**
@@ -358,7 +359,7 @@ namespace aspect
 
           StokesPreconditioner (const StokesPreconditioner &data);
 
-          virtual ~StokesPreconditioner ();
+          ~StokesPreconditioner () override;
 
           FullMatrix<double> local_matrix;
           std::vector<types::global_dof_index> local_dof_indices;

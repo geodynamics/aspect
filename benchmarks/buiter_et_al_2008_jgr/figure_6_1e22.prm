@@ -1,6 +1,7 @@
 include figure_6_1e20.prm
 
 set Dimension                              = 2
+set Output directory                       = output_figure_6_1e22
 
 subsection Material model
   set Model name = visco plastic

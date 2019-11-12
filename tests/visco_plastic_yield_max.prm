@@ -1,4 +1,4 @@
-# This test check that the maximum yield stress is causing the
+# This test checks that the maximum yield stress is causing the
 # effective viscosity to change by the correct amount. The velocity
 # boundary conditions create a constant applied strain rate 3.1709e-16 1/s
 # (0.0005 m/y / 50e3 m / sec2yr). The drucker prager parameters create
@@ -106,6 +106,7 @@ subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, mass flux statistics
 
   subsection Visualization
+    set Interpolate output = false
     set List of output variables      = strain rate, viscosity
     set Output format                 = gnuplot
     set Time between graphical output = 0.25e6

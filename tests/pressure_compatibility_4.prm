@@ -103,6 +103,7 @@ subsection Postprocess
   set List of postprocessors = velocity statistics, pressure statistics, temperature statistics, mass flux statistics
 
   subsection Visualization
+    set Interpolate output = false
     set List of output variables = density
     set Time between graphical output = 0
   end

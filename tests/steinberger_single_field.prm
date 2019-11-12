@@ -106,6 +106,7 @@ subsection Postprocess
 
 
   subsection Visualization
+    set Interpolate output = false
     set Output format                 = vtu
     set List of output variables      = material properties
 

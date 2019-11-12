@@ -1,5 +1,3 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
 Number of active cells: 256 (on 5 levels)
 Number of degrees of freedom: 6,823 (2,178+289+1,089+1,089+1,089+1,089)
@@ -38,13 +36,13 @@ system preconditioner matrix nnz by block:
 
 *** Timestep 1:  t=0.03125 seconds
    Solving temperature system... 11 iterations.
-   Solving C_2 system ... 12 iterations.
+   Solving C_2 system ... 11 iterations.
    Solving C_3 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 33+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass:         0/1/0.9991 // -0.02736/2.013/0.05938 // 1/1/2
+     Compositions min/max/mass:         0/1/0.9991 // -0.02189/1.964/0.05938 // 1/1/2
      System matrix memory consumption:  1.52 MB
                                         
 Total system matrix memory consumption: 1.52 MB.
@@ -69,14 +67,14 @@ system preconditioner matrix nnz by block:
 
 
 *** Timestep 2:  t=0.0625 seconds
-   Solving temperature system... 12 iterations.
+   Solving temperature system... 13 iterations.
    Solving C_2 system ... 13 iterations.
    Solving C_3 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 47+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass:         0/1/0.9991 // -0.04068/2.801/0.08909 // 1/1/2
+     Compositions min/max/mass:         0/1/0.9991 // -0.05054/2.855/0.08909 // 1/1/2
      System matrix memory consumption:  1.52 MB
                                         
 Total system matrix memory consumption: 1.52 MB.
@@ -101,14 +99,14 @@ system preconditioner matrix nnz by block:
 
 
 *** Timestep 3:  t=0.09375 seconds
-   Solving temperature system... 12 iterations.
-   Solving C_2 system ... 13 iterations.
+   Solving temperature system... 13 iterations.
+   Solving C_2 system ... 14 iterations.
    Solving C_3 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 45+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass:         0/1/0.9991 // -0.03924/3.441/0.1188 // 1/1/2
+     Compositions min/max/mass:         0/1/0.9991 // -0.05176/3.629/0.1188 // 1/1/2
      System matrix memory consumption:  1.52 MB
                                         
 Total system matrix memory consumption: 1.52 MB.
@@ -133,14 +131,14 @@ system preconditioner matrix nnz by block:
 
 
 *** Timestep 4:  t=0.125 seconds
-   Solving temperature system... 12 iterations.
-   Solving C_2 system ... 12 iterations.
+   Solving temperature system... 13 iterations.
+   Solving C_2 system ... 13 iterations.
    Solving C_3 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 43+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass:         0/1/0.9991 // -0.03414/3.966/0.1483 // 1/1/2
+     Compositions min/max/mass:         0/1/0.9991 // -0.05232/4.298/0.1483 // 1/1/2
      System matrix memory consumption:  1.52 MB
                                         
 Total system matrix memory consumption: 1.52 MB.
@@ -165,14 +163,14 @@ system preconditioner matrix nnz by block:
 
 
 *** Timestep 5:  t=0.15625 seconds
-   Solving temperature system... 12 iterations.
+   Solving temperature system... 13 iterations.
    Solving C_2 system ... 13 iterations.
    Solving C_3 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 46+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass:         0/1/0.9991 // -0.01623/4.565/0.178 // 1/1/2
+     Compositions min/max/mass:         0/1/0.9991 // -0.05753/4.952/0.1779 // 1/1/2
      System matrix memory consumption:  1.52 MB
                                         
 Total system matrix memory consumption: 1.52 MB.
@@ -198,13 +196,13 @@ system preconditioner matrix nnz by block:
 
 *** Timestep 6:  t=0.1875 seconds
    Solving temperature system... 12 iterations.
-   Solving C_2 system ... 12 iterations.
+   Solving C_2 system ... 13 iterations.
    Solving C_3 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 42+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass:         0/1/0.9991 // -0.01009/5.155/0.2076 // 1/1/2
+     Compositions min/max/mass:         0/1/0.9991 // -0.0516/5.621/0.2076 // 1/1/2
      System matrix memory consumption:  1.52 MB
                                         
 Total system matrix memory consumption: 1.52 MB.
@@ -229,14 +227,14 @@ system preconditioner matrix nnz by block:
 
 
 *** Timestep 7:  t=0.21875 seconds
-   Solving temperature system... 12 iterations.
-   Solving C_2 system ... 12 iterations.
+   Solving temperature system... 13 iterations.
+   Solving C_2 system ... 13 iterations.
    Solving C_3 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 44+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass:         0/1/0.9991 // -0.01185/5.712/0.2373 // 1/1/2
+     Compositions min/max/mass:         0/1/0.9991 // -0.02952/6.281/0.2372 // 1/1/2
      System matrix memory consumption:  1.52 MB
                                         
 Total system matrix memory consumption: 1.52 MB.
@@ -261,14 +259,14 @@ system preconditioner matrix nnz by block:
 
 
 *** Timestep 8:  t=0.25 seconds
-   Solving temperature system... 12 iterations.
-   Solving C_2 system ... 13 iterations.
+   Solving temperature system... 13 iterations.
+   Solving C_2 system ... 14 iterations.
    Solving C_3 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 42+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass:         0/1/0.9991 // -0.006997/6.236/0.2669 // 1/1/2
+     Compositions min/max/mass:         0/1/0.9991 // -0.02048/6.927/0.2669 // 1/1/2
      System matrix memory consumption:  1.52 MB
                                         
 Total system matrix memory consumption: 1.52 MB.
@@ -293,14 +291,14 @@ system preconditioner matrix nnz by block:
 
 
 *** Timestep 9:  t=0.28125 seconds
-   Solving temperature system... 12 iterations.
+   Solving temperature system... 13 iterations.
    Solving C_2 system ... 13 iterations.
    Solving C_3 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 44+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass:         0/1/0.9991 // -0.008033/6.752/0.2966 // 1/1/2
+     Compositions min/max/mass:         0/1/0.9991 // -0.01981/7.544/0.2966 // 1/1/2
      System matrix memory consumption:  1.52 MB
                                         
 Total system matrix memory consumption: 1.52 MB.
@@ -325,14 +323,14 @@ system preconditioner matrix nnz by block:
 
 
 *** Timestep 10:  t=0.3 seconds
-   Solving temperature system... 10 iterations.
+   Solving temperature system... 11 iterations.
    Solving C_2 system ... 12 iterations.
    Solving C_3 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 46+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass:         0/1/0.9991 // -0.01106/7.325/0.3231 // 1/1/2
+     Compositions min/max/mass:         0/1/0.9991 // -0.02552/8.181/0.323 // 1/1/2
      System matrix memory consumption:  1.52 MB
                                         
 Total system matrix memory consumption: 1.52 MB.

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -39,7 +39,7 @@ namespace aspect
     void
     PatchOnS40RTS<dim>::initialize ()
     {
-      Utilities::AsciiDataInitial<dim>::initialize(1);
+      this->Utilities::AsciiDataInitial<dim>::initialize(1);
     }
 
 

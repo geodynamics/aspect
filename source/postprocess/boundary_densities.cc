@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -42,7 +42,7 @@ namespace aspect
                                         quadrature_formula_face,
                                         update_values |
                                         update_gradients |
-                                        update_q_points |
+                                        update_quadrature_points |
                                         update_JxW_values);
 
       double local_top_density = 0.;
@@ -56,66 +56,61 @@ namespace aspect
 
       // loop over all of the surface cells and if one less than h/3 away from
       // the top or bottom surface, evaluate the density on that face
-      typename DoFHandler<dim>::active_cell_iterator
-      cell = this->get_dof_handler().begin_active(),
-      endc = this->get_dof_handler().end();
+      for (const auto &cell : this->get_dof_handler().active_cell_iterators())
+        if (cell->is_locally_owned() && cell->at_boundary())
+          for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+            {
+              bool cell_at_top = false;
+              bool cell_at_bottom = false;
 
-      for (; cell!=endc; ++cell)
-        if (cell->is_locally_owned())
-          if (cell->at_boundary())
-            for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
-              {
-                bool cell_at_top = false;
-                bool cell_at_bottom = false;
+              // Test for top or bottom surface cell faces
+              if (cell->at_boundary(f) && this->get_geometry_model().depth (cell->face(f)->center())
+                  < cell->face(f)->minimum_vertex_distance()/3.)
+                cell_at_top = true;
+              if (cell->at_boundary(f) && this->get_geometry_model().depth (cell->face(f)->center())
+                  > (this->get_geometry_model().maximal_depth() - cell->face(f)->minimum_vertex_distance()/3.))
+                cell_at_bottom = true;
 
-                // Test for top or bottom surface cell faces
-                if (cell->at_boundary(f) && this->get_geometry_model().depth (cell->face(f)->center())
-                    < cell->face(f)->minimum_vertex_distance()/3.)
-                  cell_at_top = true;
-                if (cell->at_boundary(f) && this->get_geometry_model().depth (cell->face(f)->center())
-                    > (this->get_geometry_model().maximal_depth() - cell->face(f)->minimum_vertex_distance()/3.))
-                  cell_at_bottom = true;
+              if ( cell_at_top || cell_at_bottom )
+                {
+                  // handle surface cells
+                  fe_face_values.reinit (cell, f);
+                  fe_face_values[this->introspection().extractors.temperature]
+                  .get_function_values (this->get_solution(), in.temperature);
+                  fe_face_values[this->introspection().extractors.pressure]
+                  .get_function_values (this->get_solution(), in.pressure);
+                  fe_face_values[this->introspection().extractors.velocities]
+                  .get_function_symmetric_gradients (this->get_solution(), in.strain_rate);
 
-                if ( cell_at_top || cell_at_bottom )
-                  {
-                    // handle surface cells
-                    fe_face_values.reinit (cell, f);
-                    fe_face_values[this->introspection().extractors.temperature]
-                    .get_function_values (this->get_solution(), in.temperature);
-                    fe_face_values[this->introspection().extractors.pressure]
-                    .get_function_values (this->get_solution(), in.pressure);
-                    fe_face_values[this->introspection().extractors.velocities]
-                    .get_function_symmetric_gradients (this->get_solution(), in.strain_rate);
+                  in.position = fe_face_values.get_quadrature_points();
 
-                    in.position = fe_face_values.get_quadrature_points();
+                  for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+                    fe_face_values[this->introspection().extractors.compositional_fields[c]]
+                    .get_function_values(this->get_solution(),
+                                         composition_values[c]);
+                  for (unsigned int i=0; i<fe_face_values.n_quadrature_points; ++i)
+                    {
+                      for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+                        in.composition[i][c] = composition_values[c][i];
+                    }
 
-                    for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-                      fe_face_values[this->introspection().extractors.compositional_fields[c]]
-                      .get_function_values(this->get_solution(),
-                                           composition_values[c]);
-                    for (unsigned int i=0; i<fe_face_values.n_quadrature_points; ++i)
+                  this->get_material_model().evaluate(in, out);
+
+                  // calculate the top/bottom properties
+                  if (cell_at_top)
+                    for ( unsigned int q = 0; q < fe_face_values.n_quadrature_points; ++q)
                       {
-                        for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-                          in.composition[i][c] = composition_values[c][i];
+                        local_top_density += out.densities[q] * fe_face_values.JxW(q);
+                        local_top_area += fe_face_values.JxW(q);
                       }
-
-                    this->get_material_model().evaluate(in, out);
-
-                    // calculate the top/bottom properties
-                    if (cell_at_top)
-                      for ( unsigned int q = 0; q < fe_face_values.n_quadrature_points; ++q)
-                        {
-                          local_top_density += out.densities[q] * fe_face_values.JxW(q);
-                          local_top_area += fe_face_values.JxW(q);
-                        }
-                    if (cell_at_bottom)
-                      for ( unsigned int q = 0; q < fe_face_values.n_quadrature_points; ++q)
-                        {
-                          local_bottom_density += out.densities[q] * fe_face_values.JxW(q);
-                          local_bottom_area += fe_face_values.JxW(q);
-                        }
-                  }
-              }
+                  if (cell_at_bottom)
+                    for ( unsigned int q = 0; q < fe_face_values.n_quadrature_points; ++q)
+                      {
+                        local_bottom_density += out.densities[q] * fe_face_values.JxW(q);
+                        local_bottom_area += fe_face_values.JxW(q);
+                      }
+                }
+            }
 
       // vector for packing local values before MPI summing them
       double values[4] = {local_bottom_area, local_top_area, local_bottom_density, local_top_density};

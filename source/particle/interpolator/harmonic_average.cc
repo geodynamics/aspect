@@ -118,16 +118,64 @@ namespace aspect
                 ++non_empty_neighbors;
               }
 
-            AssertThrow(non_empty_neighbors != 0,
-                        ExcMessage("A cell and all of its neighbors do not contain any particles. "
-                                   "The `harmonic average' interpolation scheme does not support this case."));
+            if (!allow_cells_without_particles)
+              {
+                AssertThrow(non_empty_neighbors != 0,
+                            ExcMessage("A cell and all of its neighbors do not contain any particles. "
+                                       "The `harmonic average' interpolation scheme does not support this case unless specified "
+                                       "in Allow cells without particles."));
+              }
 
             for (unsigned int i = 0; i < n_particle_properties; ++i)
-              if (selected_properties[i])
-                cell_properties[i] = non_empty_neighbors/cell_properties[i];
+              {
+                if (selected_properties[i] && non_empty_neighbors !=0)
+                  cell_properties[i] = non_empty_neighbors/cell_properties[i];
+                // Assume property is zero for any areas with no particles
+                else if (allow_cells_without_particles && non_empty_neighbors == 0)
+                  cell_properties[i] = 0;
+              }
+
           }
 
         return std::vector<std::vector<double> > (positions.size(),cell_properties);
+      }
+
+
+
+      template <int dim>
+      void
+      HarmonicAverage<dim>::declare_parameters (ParameterHandler &prm)
+      {
+        prm.enter_subsection("Postprocess");
+        {
+          prm.enter_subsection("Particles");
+          {
+            prm.declare_entry ("Allow cells without particles", "false",
+                               Patterns::Bool (),
+                               "By default, every cell needs to contain particles to use this interpolator "
+                               "plugin. If this parameter is set to true, cells are allowed to have no particles, "
+                               "in which case the interpolator will return 0 for the cell's properties.");
+          }
+          prm.leave_subsection ();
+        }
+        prm.leave_subsection ();
+      }
+
+
+
+      template <int dim>
+      void
+      HarmonicAverage<dim>::parse_parameters (ParameterHandler &prm)
+      {
+        prm.enter_subsection("Postprocess");
+        {
+          prm.enter_subsection("Particles");
+          {
+            allow_cells_without_particles = prm.get_bool("Allow cells without particles");
+          }
+          prm.leave_subsection ();
+        }
+        prm.leave_subsection ();
       }
     }
   }

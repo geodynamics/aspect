@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -19,8 +19,8 @@
 */
 
 
-#ifndef _aspect_geometry_model__initial_topography_prm_polygon_h
-#define _aspect_geometry_model__initial_topography_prm_polygon_h
+#ifndef _aspect_geometry_model_initial_topography_prm_polygon_h
+#define _aspect_geometry_model_initial_topography_prm_polygon_h
 
 #include <aspect/geometry_model/initial_topography_model/interface.h>
 
@@ -43,15 +43,12 @@ namespace aspect
         /**
          * Return the value of the topography for a point.
          */
-        virtual
-        double value (const Point<dim-1> &p) const;
+        double value (const Point<dim-1> &p) const override;
 
         /**
          * Return the maximum value of the elevation.
          */
-        virtual
-        double max_topography () const;
-
+        double max_topography () const override;
 
         /**
          * Declare the parameters this class takes through input files.
@@ -63,9 +60,8 @@ namespace aspect
         /**
          * Read the parameters this class declares from the parameter file.
          */
-        virtual
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
 
       private:
         /**

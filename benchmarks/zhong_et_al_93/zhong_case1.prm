@@ -96,7 +96,7 @@ subsection Postprocess
   end
 
   subsection Dynamic topography
-    set Density above			    = 0
+    set Density above          = 0
   end
 
 

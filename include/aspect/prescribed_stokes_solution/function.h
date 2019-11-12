@@ -51,9 +51,8 @@ namespace aspect
         /**
          * Return the velocity and pressure as a function of position.
          */
-        virtual
         void
-        stokes_solution (const Point<dim> &p, Vector<double> &value) const;
+        stokes_solution (const Point<dim> &position, Vector<double> &value) const override;
 
         /**
          * A function that is called at the beginning of each time step to
@@ -61,9 +60,8 @@ namespace aspect
          * pressure values will next be evaluated. For the current class,
          * the function passes to the parsed function what the current time is.
          */
-        virtual
         void
-        update ();
+        update () override;
 
         /**
          * Declare the parameters this class takes through input files.
@@ -75,9 +73,8 @@ namespace aspect
         /**
          * Read the parameters this class declares from the parameter file.
          */
-        virtual
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
 
       private:
         /**

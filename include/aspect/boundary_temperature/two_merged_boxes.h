@@ -47,9 +47,8 @@ namespace aspect
          *
          * @copydoc aspect::BoundaryTemperature::Interface::boundary_temperature()
          */
-        virtual
         double boundary_temperature (const types::boundary_id boundary_indicator,
-                                     const Point<dim> &position) const;
+                                     const Point<dim> &position) const override;
 
         /**
          * Return the minimal the temperature on that part of the boundary on
@@ -58,8 +57,7 @@ namespace aspect
          * This value is used in computing dimensionless numbers such as the
          * Nusselt number indicating heat flux.
          */
-        virtual
-        double minimal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const;
+        double minimal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const override;
 
         /**
          * Return the maximal the temperature on that part of the boundary on
@@ -68,8 +66,7 @@ namespace aspect
          * This value is used in computing dimensionless numbers such as the
          * Nusselt number indicating heat flux.
          */
-        virtual
-        double maximal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const;
+        double maximal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const override;
 
         /**
          * Declare the parameters this class takes through input files. This
@@ -82,9 +79,8 @@ namespace aspect
         /**
          * Read the parameters this class declares from the parameter file.
          */
-        virtual
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
 
       private:
         /**

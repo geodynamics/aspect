@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -50,9 +50,7 @@ namespace aspect
     void
     MaximumRefinementFunction<dim>::tag_additional_cells () const
     {
-      for (typename Triangulation<dim>::active_cell_iterator
-           cell = this->get_triangulation().begin_active();
-           cell != this->get_triangulation().end(); ++cell)
+      for (const auto &cell : this->get_triangulation().active_cell_iterators())
         {
           if (cell->is_locally_owned())
             {

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2018 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -86,7 +86,7 @@ namespace aspect
             n_components = prm.get_integer ("Number of components");
             try
               {
-                function.reset (new Functions::ParsedFunction<dim>(n_components));
+                function = std_cxx14::make_unique<Functions::ParsedFunction<dim>>(n_components);
                 function->parse_parameters (prm);
               }
             catch (...)

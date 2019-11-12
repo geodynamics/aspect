@@ -1,58 +1,43 @@
-<?xml version="1.0"?>
-<VTKFile type="UnstructuredGrid" version="0.1" byte_order="LittleEndian">
-  <UnstructuredGrid>
-    <Piece NumberOfPoints="3" NumberOfCells="3">
-      <Points>
-        <DataArray name="Position" type="Float64" NumberOfComponents="3" Format="ascii">
-          0.494965 0.428092 0.0
-          0.567373 0.471472 0.0
-          0.73618 0.449805 0.0
-        </DataArray>
-      </Points>
-      <Cells>
-        <DataArray type="Int32" Name="connectivity" Format="ascii">
-          0
-          1
-          2
-        </DataArray>
-        <DataArray type="Int32" Name="offsets" Format="ascii">
-          1
-          2
-          3
-        </DataArray>
-        <DataArray type="UInt8" Name="types" Format="ascii">
-          1
-          1
-          1
-        </DataArray>
-      </Cells>
-      <PointData Scalars="scalars">
-        <DataArray type="UInt64" Name="id" NumberOfComponents="1" Format="ascii">
-          0
-          1
-          2
-        </DataArray>
-        <DataArray type="Float64" Name="velocity" NumberOfComponents="3" Format="ascii">
-          0.000153148 -0.000149057 0
-          0.000178376 -0.000209787 0
-          7.99316e-05 -0.000331299 0
-        </DataArray>
-        <DataArray type="Float64" Name="function" NumberOfComponents="3" Format="ascii">
-          0 5.20428e-11 0
-          0 2.92932e-13 0
-          0 4.63574e-13 0
-        </DataArray>
-        <DataArray type="Float64" Name="initial C_1" NumberOfComponents="1" Format="ascii">
-          5.20428e-11
-          2.92932e-13
-          4.63574e-13
-        </DataArray>
-        <DataArray type="Float64" Name="initial position" NumberOfComponents="3" Format="ascii">
-          0.485782 0.434821 0
-          0.556657 0.481879 0
-          0.730867 0.467838 0
-        </DataArray>
-      </PointData>
-    </Piece>
-  </UnstructuredGrid>
+<?xml version="1.0" ?> 
+<!-- 
+# vtk DataFile Version 3.0
+#This file was generated 
+<VTKFile type="UnstructuredGrid" version="0.1" compressor="vtkZLibDataCompressor" byte_order="LittleEndian">
+<UnstructuredGrid>
+<FieldData>
+<DataArray type="Float32" Name="CYCLE" NumberOfTuples="1" format="ascii">1</DataArray>
+<DataArray type="Float32" Name="TIME" NumberOfTuples="1" format="ascii">70</DataArray>
+</FieldData>
+<Piece NumberOfPoints="3" NumberOfCells="3" >
+  <Points>
+    <DataArray type="Float32" NumberOfComponents="3" format="binary">
+AQAAACQAAAAkAAAAJAAAAA==eNrrzf5rd0Lvth0DEDTaC9pXJX8Es43KbOzPej0DswHkxwq9
+    </DataArray>
+  </Points>
+
+  <Cells>
+    <DataArray type="Int32" Name="connectivity" format="binary">
+AQAAAAwAAAAMAAAAEQAAAA==eNpjYGBgYARiJiAGAAAcAAQ=
+    </DataArray>
+    <DataArray type="Int32" Name="offsets" format="binary">
+AQAAAAwAAAAMAAAAEQAAAA==eNpjZGBgYAJiZiAGAAA0AAc=
+    </DataArray>
+    <DataArray type="UInt8" Name="types" format="binary">
+AQAAAAMAAAADAAAACwAAAA==eNpjZGQEAAAJAAQ=
+    </DataArray>
+  </Cells>
+  <PointData Scalars="scalars">
+    <DataArray type="Float32" Name="velocity" NumberOfComponents="3" format="binary">
+AQAAACQAAAAkAAAAJQAAAA==eNq7UqRgWR8hs5MBCLYLWlvqe8aA2asbllvUvl8LZgMAzEwK8Q==    </DataArray>
+    <DataArray type="Float32" Name="function" NumberOfComponents="3" format="binary">
+AQAAACQAAAAkAAAAHAAAAA==eNpjYGBg+PAoRY8BBl4s0YKza5i0QRQAbkEExA==    </DataArray>
+    <DataArray type="Float32" Name="initial position" NumberOfComponents="3" format="binary">
+AQAAACQAAAAkAAAAJQAAAA==eNpL3PHD7s2Ce3YMQCDUyGd/ccc3MFteyto+q+M9mA0A/cMLZw==    </DataArray>
+    <DataArray type="Float32" Name="id" format="binary">
+AQAAAAwAAAAMAAAAEAAAAA==eNpjYACBBnsg4QAABIcBAA==    </DataArray>
+    <DataArray type="Float32" Name="initial C_1" format="binary">
+AQAAAAwAAAAMAAAAFAAAAA==eNr78ChFj+HFEi2GGiZtACctBMQ=    </DataArray>
+  </PointData>
+ </Piece>
+ </UnstructuredGrid>
 </VTKFile>

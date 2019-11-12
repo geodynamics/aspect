@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2015 - 2018 by the authors of the ASPECT code.
+ Copyright (C) 2015 - 2019 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -21,16 +21,18 @@
 #ifndef _aspect_particle_property_interface_h
 #define _aspect_particle_property_interface_h
 
-#include <aspect/particle/particle.h>
-#include <aspect/particle/particle_handler.h>
-#include <aspect/particle/interpolator/interface.h>
-#include <aspect/particle/property_pool.h>
-
-#include <aspect/simulator_access.h>
+#include <aspect/global.h>
 #include <aspect/plugins.h>
 
-#include <memory>
+#include <aspect/particle/interpolator/interface.h>
+#include <aspect/simulator_access.h>
+
+#include <deal.II/particles/particle.h>
+#include <deal.II/particles/particle_handler.h>
+#include <deal.II/particles/property_pool.h>
 #include <deal.II/fe/fe_update_flags.h>
+
+#include <memory>
 
 namespace aspect
 {
@@ -38,6 +40,8 @@ namespace aspect
   {
     namespace Property
     {
+      using namespace dealii::Particles;
+
       /**
        * This class is used to store all the necessary information to translate
        * between the data structure of the particle properties (a flat vector of
@@ -471,7 +475,7 @@ namespace aspect
           /**
            * Destructor for Manager
            */
-          ~Manager ();
+          ~Manager () override;
 
           /**
            * Initialization function. This function is called once at the
@@ -632,7 +636,7 @@ namespace aspect
            * A list of property objects that have been requested in the
            * parameter file.
            */
-          std::list<std::shared_ptr<Interface<dim> > > property_list;
+          std::list<std::unique_ptr<Interface<dim> > > property_list;
 
           /**
            * A class that stores all information about the particle properties,

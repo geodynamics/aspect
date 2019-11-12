@@ -1,0 +1,111 @@
+# like periodix_box2.prm. This test shows bugs inside
+# SimulatorAccess<dim>::get_fe() and handling of nullspace constraints that
+# happen if one MPI process does not own any DoFs. We force this here be using
+# a coarse mesh and 4 tasks.
+
+# MPI: 4
+
+set Dimension = 2
+set CFL number                             = 1.0
+set End time                               = 1e6
+set Output directory                       = output
+set Adiabatic surface temperature          = 0
+set Surface pressure                       = 0
+set Pressure normalization                 = no
+set Use years in output instead of seconds = true
+set Nonlinear solver scheme                = single Advection, single Stokes
+
+subsection Boundary temperature model
+  set List of model names = constant
+  subsection Constant
+    set Boundary indicator to temperature mappings = 0:0,1:0,2:0,3:0
+  end
+end
+
+
+subsection Discretization
+  set Stokes velocity polynomial degree       = 2
+  set Temperature polynomial degree           = 2
+  set Use locally conservative discretization = false
+  subsection Stabilization parameters
+    set alpha = 2
+    set beta  = 0.078
+    set cR    = 0.5   # default: 0.11
+  end
+end
+
+
+subsection Geometry model
+  set Model name = box
+  subsection Box
+    set X periodic = true
+    set Y periodic = true
+    set X extent = 1.e6 
+    set Y extent = 5.e5
+    set Z extent = 5.e5
+  end
+end
+
+
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 10.0
+  end
+end
+
+
+subsection Initial temperature model
+  set Model name = function
+  subsection Function 
+    set Variable names      = x,y
+    set Function expression = if((sqrt((x-1.e5)^2+(y-4.0e5)^2)<5.0e4) | (sqrt((x-3.e5)^2+(y-2.e5)^2)<1.0e5) , 800.0, 0)
+  end
+end
+
+
+subsection Material model
+  set Model name = simple
+  subsection Simple model
+    set Reference density             = 3300
+    set Reference specific heat       = 1250
+    set Reference temperature         = 0.0
+    set Thermal conductivity          = 4.7
+    set Thermal expansion coefficient = 4e-5
+    set Viscosity                     = 1.e20
+  end
+end
+
+subsection Mesh refinement
+  set Additional refinement times        = 
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 0
+  set Refinement fraction                = 0.3
+  set Coarsening fraction                = 0.05
+  set Strategy                           = temperature
+  set Time steps between mesh refinement = 0                       # default: 10
+end
+
+
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Nullspace removal
+  set Remove nullspace                        = net translation
+end
+
+subsection Termination criteria
+  set Termination criteria = end step
+  set End step = 10
+end
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, basic statistics, visualization
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1.e-7
+  end
+end

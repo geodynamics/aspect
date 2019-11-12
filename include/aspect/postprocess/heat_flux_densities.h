@@ -44,9 +44,8 @@ namespace aspect
         /**
          * Evaluate.
          */
-        virtual
         std::pair<std::string,std::string>
-        execute (TableHandler &statistics);
+        execute (TableHandler &statistics) override;
     };
   }
 }

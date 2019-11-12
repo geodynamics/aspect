@@ -555,19 +555,14 @@ namespace aspect
       std::cout << "Initialize solitary wave solution"
                 << std::endl;
 
-      if (dynamic_cast<const SolitaryWaveMaterial<dim> *>(&this->get_material_model()) != NULL)
-        {
-          const SolitaryWaveMaterial<dim> *
-          material_model
-            = dynamic_cast<const SolitaryWaveMaterial<dim> *>(&this->get_material_model());
+      AssertThrow(Plugins::plugin_type_matches<const SolitaryWaveMaterial<dim>>(this->get_material_model()),
+                  ExcMessage("Initial condition Solitary Wave only works with the material model Solitary wave."));
 
-          compaction_length = material_model->length_scaling(background_porosity);
-        }
-      else
-        {
-          AssertThrow(false,
-                      ExcMessage("Initial condition Solitary Wave only works with the material model Solitary wave."));
-        }
+      const SolitaryWaveMaterial<dim> &
+      material_model
+        = Plugins::get_plugin_as_type<const SolitaryWaveMaterial<dim>>(this->get_material_model());
+
+      compaction_length = material_model.length_scaling(background_porosity);
 
       AnalyticSolutions::compute_porosity(amplitude,
                                           background_porosity,
@@ -945,17 +940,9 @@ namespace aspect
 
       double delta=0;
 
-      if (dynamic_cast<const SolitaryWaveMaterial<dim> *>(&this->get_material_model()) != NULL)
-        {
-          delta = compute_phase_shift();
-          // reset the phase shift of the analytical solution so we can compare the shape of the wave
-          ref_func->set_delta(delta);
-        }
-      else
-        {
-          AssertThrow(false,
-                      ExcMessage("Postprocessor Solitary Wave only works with the material model Solitary wave."));
-        }
+      delta = compute_phase_shift();
+      // reset the phase shift of the analytical solution so we can compare the shape of the wave
+      ref_func->set_delta(delta);
 
       // what we want to compare:
       // (1) error of the numerical phase speed c:
@@ -992,9 +979,8 @@ namespace aspect
                                          VectorTools::L2_norm,
                                          &comp_p);
 
-      double e_f = std::sqrt(Utilities::MPI::sum(cellwise_errors_f.norm_sqr(),MPI_COMM_WORLD));
-      double e_p = std::sqrt(Utilities::MPI::sum(cellwise_errors_p.norm_sqr(),MPI_COMM_WORLD));
-
+      const double e_f = VectorTools::compute_global_error(this->get_triangulation(), cellwise_errors_f, VectorTools::L2_norm);
+      const double e_p = VectorTools::compute_global_error(this->get_triangulation(), cellwise_errors_p, VectorTools::L2_norm);
 
       std::ostringstream os;
       os << std::scientific << e_f / amplitude

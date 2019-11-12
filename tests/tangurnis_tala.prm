@@ -301,6 +301,7 @@ subsection Postprocess
   end
 
   subsection Visualization
+    set Interpolate output = false
     set List of output variables      = density, adiabat
 
     # VTU file output supports grouping files from several CPUs into one file

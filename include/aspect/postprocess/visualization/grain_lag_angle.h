@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -55,14 +55,17 @@ namespace aspect
        * to step forward in time. Basically, the calculation of GOL would have to lag one
        * timestep behind the other quantities in order to get the gradients, but we're
        * often interested in GOL in a steady-state flow anyway.
-      */
+       */
       template<int dim>
       class GrainLagAngle: public CellDataVectorCreator<dim>, public SimulatorAccess<dim>
       {
         public:
 
-          virtual std::pair<std::string, Vector<float> *>
-          execute() const;
+          /**
+           * @copydoc CellDataVectorCreator<dim>::execute()
+           */
+          std::pair<std::string, Vector<float> *>
+          execute() const override;
 
       };
     }

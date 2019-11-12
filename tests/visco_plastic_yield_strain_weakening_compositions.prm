@@ -100,7 +100,7 @@ subsection Material model
     set Yield mechanism = drucker
     set Angles of internal friction = 0.
     set Cohesions = 1.e6,1e1,1e7
-    set Use strain weakening = true
+    set Strain weakening mechanism = plastic weakening with total strain only
     set Start plasticity strain weakening intervals = 0.
     set End plasticity strain weakening intervals = 1.0
     set Cohesion strain weakening factors = 0.5
@@ -121,6 +121,7 @@ end
 subsection Postprocess
   set List of postprocessors = velocity statistics, mass flux statistics, visualization
   subsection Visualization
+    set Interpolate output = false
     set List of output variables = strain rate, named additional outputs, material properties
     set Output format            = gnuplot
   end

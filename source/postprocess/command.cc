@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -36,7 +36,7 @@ namespace aspect
           // null pointer. System is guaranteed to return non-zero if it finds
           // a terminal and zero if there is none (like on the compute nodes of
           // some cluster architectures, e.g. IBM BlueGene/Q)
-          AssertThrow(system((char *)0) != 0,
+          AssertThrow(system(nullptr) != 0,
                       ExcMessage("The \"command\" postprocessor required a command-processor, "
                                  "which appears to be unavailable on this system."));
 

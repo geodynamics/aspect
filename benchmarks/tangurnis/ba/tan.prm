@@ -107,7 +107,7 @@ subsection Material model
     set Di                            = 0
     set gamma                         = 1 # infinity really, but is not used if Di=0
 
-    set a                             = 0 	# constant viscosity
+    set a                             = 0   # constant viscosity
 
     set wavenumber                    = 1
   end

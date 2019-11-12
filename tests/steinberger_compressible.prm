@@ -96,6 +96,7 @@ subsection Postprocess
 
 
   subsection Visualization
+    set Interpolate output = false
     set Output format                 = vtu
     set List of output variables      = density
     set Time between graphical output = 0

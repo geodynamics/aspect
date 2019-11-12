@@ -1,5 +1,0 @@
-New: ASPECT now does some basic checks that essential parameters (such
-as the number of compositional fields) are the same before creating a
-checkpoint and after restarting from it.
-<br>
-(Wolfgang Bangerth, 2018/06/18)

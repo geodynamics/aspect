@@ -98,12 +98,11 @@ subsection Boundary velocity model
   set Zero velocity boundary indicators       = inner, east, west
 end
 
-subsection Free surface
-  set Free surface boundary indicators = outer
-end
-
-subsection Free surface
-  set Free surface stabilization theta = 0.5
+subsection Mesh deformation
+  set Mesh deformation boundary indicators = outer: free surface
+  subsection Free surface
+    set Free surface stabilization theta = 0.5
+  end
 end
 
 subsection Termination criteria

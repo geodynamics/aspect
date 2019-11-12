@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -213,7 +213,7 @@ namespace aspect
       {
         const std::vector< Point<dim> > points = get_unit_support_points_for_velocity(simulator_access);
         const Quadrature<dim> quadrature (points);
-        FEValues<dim> fe_values (simulator_access.get_fe(), quadrature, update_q_points);
+        FEValues<dim> fe_values (simulator_access.get_fe(), quadrature, update_quadrature_points);
         typename DoFHandler<dim>::active_cell_iterator cell;
 
         // Loop over all cells

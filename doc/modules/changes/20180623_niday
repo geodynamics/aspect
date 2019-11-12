@@ -1,3 +1,0 @@
-New: Function GeometryModel::Interface::cartesian_to_other_coordinates converts between defined coordinate systems. This might break some plugins, which can be fixed by including aspect/geometry_model/interface.h
-<br>
-(Bart Niday, 2018/06/23)

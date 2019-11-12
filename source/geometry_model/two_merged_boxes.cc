@@ -40,10 +40,7 @@ namespace aspect
     set_boundary_indicators (parallel::distributed::Triangulation<dim> &triangulation) const
     {
       // iterate over all active cells and (re)set the boundary indicators
-      for (typename Triangulation<dim>::active_cell_iterator
-           cell = triangulation.begin_active();
-           cell != triangulation.end();
-           ++cell)
+      for (const auto &cell : triangulation.active_cell_iterators())
         {
 
           // first set the default boundary indicators
@@ -277,9 +274,9 @@ namespace aspect
     bool
     TwoMergedBoxes<dim>::point_is_in_domain(const Point<dim> &point) const
     {
-      AssertThrow(this->get_free_surface_boundary_indicators().size() == 0 ||
-                  this->get_timestep_number() == 0,
-                  ExcMessage("After displacement of the free surface, this function can no longer be used to determine whether a point lies in the domain or not."));
+      AssertThrow(!this->get_parameters().mesh_deformation_enabled == 0 ||
+                  this->simulator_is_past_initialization() == false,
+                  ExcMessage("After displacement of the mesh, this function can no longer be used to determine whether a point lies in the domain or not."));
 
       AssertThrow(dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(&this->get_initial_topography_model()) != nullptr,
                   ExcMessage("After adding topography, this function can no longer be used to determine whether a point lies in the domain or not."));
@@ -345,26 +342,26 @@ namespace aspect
           // Total box extents
           prm.declare_entry ("X extent", "1",
                              Patterns::Double (0),
-                             "Extent of the box in x-direction. Units: m.");
+                             "Extent of the box in x-direction. Units: $\\si{m}$.");
           prm.declare_entry ("Y extent", "1",
                              Patterns::Double (0),
-                             "Extent of the box in y-direction. Units: m.");
+                             "Extent of the box in y-direction. Units: $\\si{m}$.");
           prm.declare_entry ("Z extent", "1",
                              Patterns::Double (0),
                              "Extent of the box in z-direction. This value is ignored "
-                             "if the simulation is in 2d. Units: m.");
+                             "if the simulation is in 2d. Units: $\\si{m}$.");
 
           // Total box origin
           prm.declare_entry ("Box origin X coordinate", "0",
                              Patterns::Double (),
-                             "X coordinate of box origin. Units: m.");
+                             "X coordinate of box origin. Units: $\\si{m}$.");
           prm.declare_entry ("Box origin Y coordinate", "0",
                              Patterns::Double (),
-                             "Y coordinate of box origin. Units: m.");
+                             "Y coordinate of box origin. Units: $\\si{m}$.");
           prm.declare_entry ("Box origin Z coordinate", "0",
                              Patterns::Double (),
                              "Z coordinate of box origin. This value is ignored "
-                             "if the simulation is in 2d. Units: m.");
+                             "if the simulation is in 2d. Units: $\\si{m}$.");
 
           // Lower box repetitions
           prm.declare_entry ("X repetitions", "1",

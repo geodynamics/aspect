@@ -150,8 +150,7 @@ subsection Material model
     set Cohesions = 1.e6,1.e6,1.e6
 
     # Strain weakening
-    set Use strain weakening = true
-    set Use plastic strain weakening = true
+    set Strain weakening mechanism = plastic weakening with plastic strain only
     set Start plasticity strain weakening intervals = 0.
     set End plasticity strain weakening intervals = 1.0
     set Cohesion strain weakening factors = 0.5

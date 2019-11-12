@@ -5,11 +5,15 @@
 
 set Dimension                              = 2
 set Start time                             = 0
-set End time                               = 0.1
+set End time                               = 0.001
 set Use years in output instead of seconds = true
 
 set Pressure normalization                 = volume
 
+subsection Termination criteria
+  set Termination criteria = end step
+  set End step = 5
+end
 
 subsection Geometry model
   set Model name = box
@@ -81,16 +85,11 @@ subsection Initial composition model
 end
 
 
-############### Parameters describing the discretization
-
 subsection Mesh refinement
   set Initial global refinement          = 4
   set Initial adaptive refinement        = 0
 end
 
-
-
-############### Parameters describing what to do with the solution
 
 subsection Postprocess
   set List of postprocessors = visualization, point values
@@ -102,9 +101,13 @@ subsection Postprocess
   end
 
   subsection Visualization
+    set Interpolate output = false
     set Output format                 = vtu
     set Time between graphical output = 0
-    set List of output variables = density, viscosity
+    set List of output variables = density, viscosity, artificial viscosity composition
+    subsection Artificial viscosity composition
+      set Name of compositional field = C_1
+    end
   end
 end
 

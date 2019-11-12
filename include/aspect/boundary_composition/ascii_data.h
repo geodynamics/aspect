@@ -54,7 +54,7 @@ namespace aspect
          * beginning of the program. Checks preconditions.
          */
         void
-        initialize ();
+        initialize () override;
 
         // avoid -Woverloaded-virtual:
         using Utilities::AsciiDataBoundary<dim>::initialize;
@@ -66,7 +66,7 @@ namespace aspect
          * is reached.
          */
         void
-        update ();
+        update () override;
 
         /**
          * Return the boundary composition as a function of position. For the
@@ -77,7 +77,7 @@ namespace aspect
         double
         boundary_composition (const types::boundary_id boundary_indicator,
                               const Point<dim> &position,
-                              const unsigned int compositional_field) const;
+                              const unsigned int compositional_field) const override;
 
         /**
          * Declare the parameters this class takes through input files.
@@ -90,7 +90,7 @@ namespace aspect
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
     };
   }
 }

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -127,7 +127,7 @@ namespace aspect
          * Destructor. Made virtual since this class has virtual member
          * functions.
          */
-        virtual ~Manager ();
+        ~Manager () override;
 
         /**
          * A function that is called at the beginning of each time step and
@@ -195,12 +195,12 @@ namespace aspect
          * Return pointers to all boundary velocity models
          * currently used in the computation, as specified in the input file.
          * The function returns a map between a boundary identifier and a vector
-         * of shared pointers that represent the names of prescribed velocity
+         * of unique pointers that represent the names of prescribed velocity
          * boundary models for this boundary. If there are no prescribed
          * boundary velocity plugins for a particular boundary this boundary
          * identifier will not appear in the map.
          */
-        const std::map<types::boundary_id,std::vector<std::shared_ptr<BoundaryVelocity::Interface<dim> > > > &
+        const std::map<types::boundary_id,std::vector<std::unique_ptr<BoundaryVelocity::Interface<dim> > > > &
         get_active_boundary_velocity_conditions () const;
 
         /**
@@ -294,7 +294,7 @@ namespace aspect
          * A list of boundary velocity objects that have been requested in the
          * parameter file.
          */
-        std::map<types::boundary_id,std::vector<std::shared_ptr<BoundaryVelocity::Interface<dim> > > > boundary_velocity_objects;
+        std::map<types::boundary_id,std::vector<std::unique_ptr<BoundaryVelocity::Interface<dim> > > > boundary_velocity_objects;
 
         /**
          * Map from boundary id to a pair
@@ -327,13 +327,9 @@ namespace aspect
     BoundaryVelocityType *
     Manager<dim>::find_boundary_velocity_model () const
     {
-      for (typename std::map<types::boundary_id,std::vector<std::shared_ptr<BoundaryVelocity::Interface<dim> > > >::const_iterator
-           boundary = boundary_velocity_objects.begin();
-           boundary != boundary_velocity_objects.end(); ++boundary)
-        for (typename std::vector<std::shared_ptr<BoundaryVelocity::Interface<dim>>>::const_iterator
-             p = boundary->second.begin();
-             p != boundary->second.end(); ++p)
-          if (BoundaryVelocityType *x = dynamic_cast<BoundaryVelocityType *> ( (*p).get()) )
+      for (const auto &boundary : boundary_velocity_objects)
+        for (const auto &p : boundary.second)
+          if (BoundaryVelocityType *x = dynamic_cast<BoundaryVelocityType *> ( p.get()) )
             return x;
       return nullptr;
     }
@@ -345,13 +341,9 @@ namespace aspect
     bool
     Manager<dim>::has_matching_boundary_velocity_model () const
     {
-      for (typename std::map<types::boundary_id,std::vector<std::shared_ptr<BoundaryVelocity::Interface<dim> > > >::const_iterator
-           boundary = boundary_velocity_objects.begin();
-           boundary != boundary_velocity_objects.end(); ++boundary)
-        for (typename std::vector<std::shared_ptr<BoundaryVelocity::Interface<dim>>>::const_iterator
-             p = boundary->second.begin();
-             p != boundary->second.end(); ++p)
-          if (Plugins::plugin_type_matches<BoundaryVelocityType>(*(*p)))
+      for (const auto &boundary : boundary_velocity_objects)
+        for (const auto &p : boundary.second)
+          if (Plugins::plugin_type_matches<BoundaryVelocityType>(*p))
             return true;
       return false;
     }
@@ -364,20 +356,16 @@ namespace aspect
     Manager<dim>::get_matching_boundary_velocity_model () const
     {
       AssertThrow(has_matching_boundary_velocity_model<BoundaryVelocityType> (),
-                  ExcMessage("You asked BoundaryVelocity:Manager::get_boundary_velocity_model() for a "
+                  ExcMessage("You asked BoundaryVelocity::Manager::get_boundary_velocity_model() for a "
                              "boundary velocity model of type <" + boost::core::demangle(typeid(BoundaryVelocityType).name()) + "> "
                              "that could not be found in the current model. Activate this "
                              "boundary velocity model in the input file."));
 
-      typename std::map<types::boundary_id,std::vector<std::shared_ptr<BoundaryVelocity::Interface<dim> > > >::const_iterator boundary_velocity_model;
-      for (typename std::map<types::boundary_id,std::vector<std::shared_ptr<BoundaryVelocity::Interface<dim> > > >::const_iterator
-           boundary = boundary_velocity_objects.begin();
-           boundary != boundary_velocity_objects.end(); ++boundary)
-        for (typename std::vector<std::shared_ptr<BoundaryVelocity::Interface<dim>>>::const_iterator
-             p = boundary->second.begin();
-             p != boundary->second.end(); ++p)
-          if (Plugins::plugin_type_matches<BoundaryVelocityType>(*(*p)))
-            return Plugins::get_plugin_as_type<BoundaryVelocityType>(*(*p));
+      typename std::map<types::boundary_id,std::vector<std::unique_ptr<BoundaryVelocity::Interface<dim> > > >::const_iterator boundary_velocity_model;
+      for (const auto &boundary : boundary_velocity_objects)
+        for (const auto &p : boundary)
+          if (Plugins::plugin_type_matches<BoundaryVelocityType>(*p))
+            return Plugins::get_plugin_as_type<BoundaryVelocityType>(*p);
 
       // We will never get here, because we had the Assert above. Just to avoid warnings.
       return Plugins::get_plugin_as_type<BoundaryVelocityType>(*(*boundary_velocity_model));

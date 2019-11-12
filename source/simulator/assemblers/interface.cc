@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2017 by the authors of the ASPECT code.
+  Copyright (C) 2017 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -198,29 +198,30 @@ namespace aspect
                                  update_flags),
           face_finite_element_values (face_quadrature.size() > 0
                                       ?
-                                      new FEFaceValues<dim> (mapping,
-                                                             finite_element, face_quadrature,
-                                                             face_update_flags)
+                                      std_cxx14::make_unique<FEFaceValues<dim>> (mapping,
+                                                                                 finite_element, face_quadrature,
+                                                                                 face_update_flags)
                                       :
                                       nullptr),
           neighbor_face_finite_element_values (face_quadrature.size() > 0
                                                ?
-                                               new FEFaceValues<dim> (mapping,
-                                                                      finite_element, face_quadrature,
-                                                                      face_update_flags)
+                                               std_cxx14::make_unique<FEFaceValues<dim>> (mapping,
+                                                                                          finite_element, face_quadrature,
+                                                                                          face_update_flags)
                                                :
                                                nullptr),
           subface_finite_element_values (face_quadrature.size() > 0
                                          ?
-                                         new FESubfaceValues<dim> (mapping,
-                                                                   finite_element, face_quadrature,
-                                                                   face_update_flags)
+                                         std_cxx14::make_unique<FESubfaceValues<dim>> (mapping,
+                                                                                       finite_element, face_quadrature,
+                                                                                       face_update_flags)
                                          :
                                          nullptr),
           local_dof_indices (finite_element.dofs_per_cell),
 
           phi_field (advection_element.dofs_per_cell, numbers::signaling_nan<double>()),
           grad_phi_field (advection_element.dofs_per_cell, numbers::signaling_nan<Tensor<1,dim> >()),
+          laplacian_phi_field (advection_element.dofs_per_cell, numbers::signaling_nan<double>()),
           face_phi_field ((face_quadrature.size() > 0 ? advection_element.dofs_per_cell : 0),
                           numbers::signaling_nan<double>()),
           face_grad_phi_field ((face_quadrature.size() > 0 ? advection_element.dofs_per_cell : 0),
@@ -285,32 +286,33 @@ namespace aspect
                                  scratch.finite_element_values.get_update_flags()),
           face_finite_element_values (scratch.face_finite_element_values.get()
                                       ?
-                                      new FEFaceValues<dim> (scratch.face_finite_element_values->get_mapping(),
-                                                             scratch.face_finite_element_values->get_fe(),
-                                                             scratch.face_finite_element_values->get_quadrature(),
-                                                             scratch.face_finite_element_values->get_update_flags())
+                                      std_cxx14::make_unique<FEFaceValues<dim>> (scratch.face_finite_element_values->get_mapping(),
+                                                                                 scratch.face_finite_element_values->get_fe(),
+                                                                                 scratch.face_finite_element_values->get_quadrature(),
+                                                                                 scratch.face_finite_element_values->get_update_flags())
                                       :
                                       nullptr),
           neighbor_face_finite_element_values (scratch.neighbor_face_finite_element_values.get()
                                                ?
-                                               new FEFaceValues<dim> (scratch.neighbor_face_finite_element_values->get_mapping(),
-                                                                      scratch.neighbor_face_finite_element_values->get_fe(),
-                                                                      scratch.neighbor_face_finite_element_values->get_quadrature(),
-                                                                      scratch.neighbor_face_finite_element_values->get_update_flags())
+                                               std_cxx14::make_unique<FEFaceValues<dim>> (scratch.neighbor_face_finite_element_values->get_mapping(),
+                                                                                          scratch.neighbor_face_finite_element_values->get_fe(),
+                                                                                          scratch.neighbor_face_finite_element_values->get_quadrature(),
+                                                                                          scratch.neighbor_face_finite_element_values->get_update_flags())
                                                :
                                                nullptr),
           subface_finite_element_values (scratch.subface_finite_element_values.get()
                                          ?
-                                         new FESubfaceValues<dim> (scratch.subface_finite_element_values->get_mapping(),
-                                                                   scratch.subface_finite_element_values->get_fe(),
-                                                                   scratch.subface_finite_element_values->get_quadrature(),
-                                                                   scratch.subface_finite_element_values->get_update_flags())
+                                         std_cxx14::make_unique<FESubfaceValues<dim>> (scratch.subface_finite_element_values->get_mapping(),
+                                                                                       scratch.subface_finite_element_values->get_fe(),
+                                                                                       scratch.subface_finite_element_values->get_quadrature(),
+                                                                                       scratch.subface_finite_element_values->get_update_flags())
                                          :
                                          nullptr),
           local_dof_indices (scratch.finite_element_values.get_fe().dofs_per_cell),
 
           phi_field (scratch.phi_field),
           grad_phi_field (scratch.grad_phi_field),
+          laplacian_phi_field (scratch.laplacian_phi_field),
           face_phi_field (scratch.face_phi_field),
           face_grad_phi_field (scratch.face_grad_phi_field),
           neighbor_face_phi_field (scratch.neighbor_face_phi_field),

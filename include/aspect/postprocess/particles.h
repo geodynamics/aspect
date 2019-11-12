@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
+ Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -25,8 +25,8 @@
 #include <aspect/particle/world.h>
 
 #include <aspect/simulator_access.h>
-#include <aspect/particle/particle.h>
 
+#include <deal.II/particles/particle_handler.h>
 #include <deal.II/base/data_out_base.h>
 #include <tuple>
 
@@ -34,7 +34,6 @@ namespace aspect
 {
   namespace Postprocess
   {
-#if DEAL_II_VERSION_GTE(9,0,0)
     namespace internal
     {
       /**
@@ -54,28 +53,38 @@ namespace aspect
            * internally until the destructor is called. This function needs to be called before one of the
            * write function of the base class can be called to write the output data.
            */
-          void build_patches(const Particle::ParticleHandler<dim> &particle_handler,
-                             const aspect::Particle::Property::ParticlePropertyInformation &property_information);
+          void build_patches(const Particles::ParticleHandler<dim> &particle_handler,
+                             const aspect::Particle::Property::ParticlePropertyInformation &property_information,
+                             const std::vector<std::string> &exclude_output_properties,
+                             const bool only_group_3d_vectors);
 
         private:
           /**
            * Implementation of the corresponding function of the base class.
            */
-          virtual const std::vector<DataOutBase::Patch<0,dim> > &
-          get_patches () const;
+          const std::vector<DataOutBase::Patch<0,dim> > &
+          get_patches () const override;
 
           /**
            * Implementation of the corresponding function of the base class.
            */
-          virtual std::vector< std::string >
-          get_dataset_names () const;
+          std::vector< std::string >
+          get_dataset_names () const override;
 
           /**
            * Implementation of the corresponding function of the base class.
            */
-          virtual
+#if DEAL_II_VERSION_GTE(9,1,0)
+          std::vector<
+          std::tuple<unsigned int,
+              unsigned int,
+              std::string,
+              DataComponentInterpretation::DataComponentInterpretation> >
+              get_nonscalar_data_ranges () const override;
+#else
           std::vector<std::tuple<unsigned int, unsigned int, std::string> >
-          get_vector_data_ranges () const;
+          get_vector_data_ranges() const override;
+#endif
 
           /**
            * Output information that is filled by build_patches() and
@@ -91,10 +100,19 @@ namespace aspect
           /**
            * Store which of the data fields are vectors.
            */
-          std::vector<std::tuple<unsigned int, unsigned int, std::string> > vector_datasets;
+#if DEAL_II_VERSION_GTE(9,1,0)
+          std::vector<
+          std::tuple<unsigned int,
+              unsigned int,
+              std::string,
+              DataComponentInterpretation::DataComponentInterpretation> >
+              vector_datasets;
+#else
+          std::vector<std::tuple<unsigned int, unsigned int, std::string> >
+          vector_datasets;
+#endif
       };
     }
-#endif
 
     /**
      * A Postprocessor that creates particles, which follow the
@@ -117,7 +135,7 @@ namespace aspect
         /**
          * Destructor.
          */
-        ~Particles();
+        ~Particles() override;
 
         /**
          * Generate the particles. This can not be done in another
@@ -170,20 +188,17 @@ namespace aspect
          * contains a numerical value of this data. If there is nothing to
          * print, simply return two empty strings.
          */
-        virtual
-        std::pair<std::string,std::string> execute (TableHandler &statistics);
+        std::pair<std::string,std::string> execute (TableHandler &statistics) override;
 
         /**
          * Save the state of this object.
          */
-        virtual
-        void save (std::map<std::string, std::string> &status_strings) const;
+        void save (std::map<std::string, std::string> &status_strings) const override;
 
         /**
          * Restore the state of the object.
          */
-        virtual
-        void load (const std::map<std::string, std::string> &status_strings);
+        void load (const std::map<std::string, std::string> &status_strings) override;
 
         /**
          * Serialize the contents of this class as far as they are not read
@@ -202,9 +217,8 @@ namespace aspect
         /**
          * Read the parameters this class declares from the parameter file.
          */
-        virtual
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
 
       private:
         /**
@@ -233,7 +247,6 @@ namespace aspect
          */
         void set_last_output_time (const double current_time);
 
-#if DEAL_II_VERSION_GTE(9,0,0)
         /**
          * Consecutively counted number indicating the how-manyth time we will
          * create output the next time we get to it.
@@ -309,6 +322,12 @@ namespace aspect
         Threads::Thread<void> background_thread;
 
         /**
+         * Stores the particle property fields which are excluded from output
+         * to the visualization file.
+         */
+        std::vector<std::string> exclude_output_properties;
+
+        /**
          * A function that writes the text in the second argument to a file
          * with the name given in the first argument. The function is run on a
          * separate thread to allow computations to continue even though
@@ -339,7 +358,6 @@ namespace aspect
         void write_master_files (const internal::ParticleOutput<dim> &data_out,
                                  const std::string &solution_file_prefix,
                                  const std::vector<std::string> &filenames);
-#endif
     };
   }
 }

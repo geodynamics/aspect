@@ -54,14 +54,13 @@ namespace aspect
         /**
          * Connect the callback functions to the respective signals.
          */
-        void initialize();
+        void initialize() override;
 
         /**
          * Write all global statistics columns into the statistics object.
          */
-        virtual
         std::pair<std::string,std::string>
-        execute (TableHandler &statistics);
+        execute (TableHandler &statistics) override;
 
         /**
          * Declare the parameters this class takes through input files.
@@ -73,9 +72,8 @@ namespace aspect
         /**
          * Read the parameters this class declares from the parameter file.
          */
-        virtual
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
 
 
       private:

@@ -14,33 +14,33 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
 
 *** Timestep 1:  t=0.03125 seconds
    Solving temperature system... 11 iterations.
-   Solving C_1 system ... 11 iterations.
-   Solving C_2 system ... 12 iterations.
+   Solving C_1 system ... 10 iterations.
+   Solving C_2 system ... 11 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 31+0 iterations.
+   Solving Stokes system... 32+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: -0.03882/1.044/0.969 // -0.02427/1.008/0.03015
+     Compositions min/max/mass: -0.03593/1.043/0.969 // -0.02436/0.9834/0.03015
 
 *** Timestep 2:  t=0.0625 seconds
-   Solving temperature system... 12 iterations.
-   Solving C_1 system ... 12 iterations.
-   Solving C_2 system ... 12 iterations.
+   Solving temperature system... 13 iterations.
+   Solving C_1 system ... 13 iterations.
+   Solving C_2 system ... 14 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 47+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: -0.05886/1.072/0.9599 // -0.0235/0.9932/0.03923
+     Compositions min/max/mass: -0.05965/1.072/0.9596 // -0.02176/0.9957/0.03959
 
 *** Timestep 3:  t=0.09375 seconds
-   Solving temperature system... 12 iterations.
-   Solving C_1 system ... 12 iterations.
-   Solving C_2 system ... 13 iterations.
+   Solving temperature system... 13 iterations.
+   Solving C_1 system ... 13 iterations.
+   Solving C_2 system ... 14 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 45+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: -0.06562/1.075/0.9541 // -0.02755/0.9625/0.04511
+     Compositions min/max/mass: -0.07176/1.085/0.9545 // -0.0307/0.9769/0.04465
 
 *** Timestep 4:  t=0.125 seconds
    Solving temperature system... 13 iterations.
@@ -50,17 +50,17 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving Stokes system... 43+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: -0.06213/1.074/0.9462 // -0.03071/0.9694/0.05291
+     Compositions min/max/mass: -0.07506/1.082/0.9468 // -0.03943/0.9812/0.05229
 
 *** Timestep 5:  t=0.15625 seconds
-   Solving temperature system... 12 iterations.
+   Solving temperature system... 13 iterations.
    Solving C_1 system ... 12 iterations.
-   Solving C_2 system ... 12 iterations.
+   Solving C_2 system ... 13 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 46+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: -0.05479/1.069/0.9396 // -0.01049/0.9688/0.05953
+     Compositions min/max/mass: -0.07365/1.085/0.9407 // -0.03218/0.98/0.05842
 
 *** Timestep 6:  t=0.1875 seconds
    Solving temperature system... 12 iterations.
@@ -70,47 +70,47 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving Stokes system... 42+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: -0.04743/1.058/0.9331 // -0.007101/0.964/0.06609
+     Compositions min/max/mass: -0.06903/1.08/0.9344 // -0.02232/0.9824/0.06472
 
 *** Timestep 7:  t=0.21875 seconds
-   Solving temperature system... 12 iterations.
+   Solving temperature system... 13 iterations.
    Solving C_1 system ... 12 iterations.
    Solving C_2 system ... 12 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 44+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: -0.0407/1.041/0.9263 // -0.004693/0.9683/0.07278
+     Compositions min/max/mass: -0.06337/1.07/0.928 // -0.01679/0.9856/0.07111
 
 *** Timestep 8:  t=0.25 seconds
-   Solving temperature system... 12 iterations.
+   Solving temperature system... 13 iterations.
    Solving C_1 system ... 12 iterations.
-   Solving C_2 system ... 12 iterations.
+   Solving C_2 system ... 13 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 42+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: -0.03539/1.021/0.9202 // -0.002974/0.9638/0.07891
+     Compositions min/max/mass: -0.05917/1.055/0.9221 // -0.02033/0.9868/0.07698
 
 *** Timestep 9:  t=0.28125 seconds
-   Solving temperature system... 12 iterations.
-   Solving C_1 system ... 11 iterations.
-   Solving C_2 system ... 12 iterations.
+   Solving temperature system... 13 iterations.
+   Solving C_1 system ... 12 iterations.
+   Solving C_2 system ... 13 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 44+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: -0.03189/1.019/0.9152 // -0.002547/0.9598/0.08392
+     Compositions min/max/mass: -0.05589/1.037/0.9174 // -0.01705/0.9887/0.08165
 
 *** Timestep 10:  t=0.3 seconds
-   Solving temperature system... 10 iterations.
-   Solving C_1 system ... 10 iterations.
+   Solving temperature system... 11 iterations.
+   Solving C_1 system ... 11 iterations.
    Solving C_2 system ... 12 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 46+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: -0.03066/1.019/0.9108 // -0.001729/0.9705/0.08826
+     Compositions min/max/mass: -0.05399/1.027/0.9133 // -0.0178/1.015/0.08573
 
 Termination requested by criterion: end time
 

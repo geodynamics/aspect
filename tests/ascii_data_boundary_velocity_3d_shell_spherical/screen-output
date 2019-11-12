@@ -3,36 +3,56 @@
    Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/shell_3d_bottom_spherical.0.txt.
 
 
-   Loading new data file did not succeed.
-   Assuming constant boundary conditions for rest of model run.
+   From this timestep onwards, ASPECT will not attempt to load new Ascii data files.
+   This is either because ASPECT has already read all the files necessary to impose
+   the requested boundary condition, or that the last available file has been read.
+   If the Ascii data represented a time-dependent boundary condition,
+   that time-dependence ends at this timestep  (i.e. the boundary condition
+   will continue unchanged from the last known state into the future).
 
 
    Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/shell_3d_top_spherical.0.txt.
 
 
-   Loading new data file did not succeed.
-   Assuming constant boundary conditions for rest of model run.
+   From this timestep onwards, ASPECT will not attempt to load new Ascii data files.
+   This is either because ASPECT has already read all the files necessary to impose
+   the requested boundary condition, or that the last available file has been read.
+   If the Ascii data represented a time-dependent boundary condition,
+   that time-dependence ends at this timestep  (i.e. the boundary condition
+   will continue unchanged from the last known state into the future).
 
 
    Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/shell_3d_east_spherical.0.txt.
 
 
-   Loading new data file did not succeed.
-   Assuming constant boundary conditions for rest of model run.
+   From this timestep onwards, ASPECT will not attempt to load new Ascii data files.
+   This is either because ASPECT has already read all the files necessary to impose
+   the requested boundary condition, or that the last available file has been read.
+   If the Ascii data represented a time-dependent boundary condition,
+   that time-dependence ends at this timestep  (i.e. the boundary condition
+   will continue unchanged from the last known state into the future).
 
 
    Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/shell_3d_west_spherical.0.txt.
 
 
-   Loading new data file did not succeed.
-   Assuming constant boundary conditions for rest of model run.
+   From this timestep onwards, ASPECT will not attempt to load new Ascii data files.
+   This is either because ASPECT has already read all the files necessary to impose
+   the requested boundary condition, or that the last available file has been read.
+   If the Ascii data represented a time-dependent boundary condition,
+   that time-dependence ends at this timestep  (i.e. the boundary condition
+   will continue unchanged from the last known state into the future).
 
 
    Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/shell_3d_south_spherical.0.txt.
 
 
-   Loading new data file did not succeed.
-   Assuming constant boundary conditions for rest of model run.
+   From this timestep onwards, ASPECT will not attempt to load new Ascii data files.
+   This is either because ASPECT has already read all the files necessary to impose
+   the requested boundary condition, or that the last available file has been read.
+   If the Ascii data represented a time-dependent boundary condition,
+   that time-dependence ends at this timestep  (i.e. the boundary condition
+   will continue unchanged from the last known state into the future).
 
 Number of active cells: 24 (on 2 levels)
 Number of degrees of freedom: 1,277 (915+57+305)
@@ -40,22 +60,22 @@ Number of degrees of freedom: 1,277 (915+57+305)
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 96+0 iterations.
+   Solving Stokes system... 101+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  3.45 m/year, 10.9 m/year
-     Temperature min/avg/max:            273 K, 1482 K, 3000 K
-     Heat fluxes through boundary parts: -2.681e+11 W, 8.071e+11 W, 5.002e+09 W, 4.981e+09 W, 5.649e+09 W
+     RMS, max velocity:                  3.44 m/year, 10.9 m/year
+     Temperature min/avg/max:            273 K, 1489 K, 3000 K
+     Heat fluxes through boundary parts: -3.218e+13 W, -7.167e+13 W, -1.125e+16 W, 1.134e+16 W, -0.01314 W
 
 *** Timestep 1:  t=1000 years
    Solving temperature system... 9 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 20+0 iterations.
+   Solving Stokes system... 21+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  3.45 m/year, 10.9 m/year
-     Temperature min/avg/max:            273 K, 1481 K, 3000 K
-     Heat fluxes through boundary parts: -2.677e+11 W, 8.043e+11 W, 4.977e+09 W, 4.912e+09 W, 5.605e+09 W
+     RMS, max velocity:                  3.44 m/year, 10.9 m/year
+     Temperature min/avg/max:            273 K, 1488 K, 3000 K
+     Heat fluxes through boundary parts: -4.882e+15 W, 1.754e+16 W, -1.125e+16 W, 1.134e+16 W, -0.01316 W
 
 Termination requested by criterion: end time
 

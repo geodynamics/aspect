@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -39,16 +39,11 @@ namespace aspect
     void
     AsciiData<dim>::initialize ()
     {
-      const std::map<types::boundary_id,std::vector<std::shared_ptr<BoundaryVelocity::Interface<dim> > > >
-      bvs = this->get_boundary_velocity_manager().get_active_boundary_velocity_conditions();
-      for (typename std::map<types::boundary_id,std::vector<std::shared_ptr<BoundaryVelocity::Interface<dim> > > >::const_iterator
-           p = bvs.begin();
-           p != bvs.end(); ++p)
+      for (const auto &p : this->get_boundary_velocity_manager().get_active_boundary_velocity_conditions())
         {
-          for (typename std::vector<std::shared_ptr<BoundaryVelocity::Interface<dim> > >::const_iterator
-               plugin = p->second.begin(); plugin != p->second.end(); ++plugin)
-            if (plugin->get() == this)
-              boundary_ids.insert(p->first);
+          for (const auto &plugin : p.second)
+            if (plugin.get() == this)
+              boundary_ids.insert(p.first);
         }
       AssertThrow(*(boundary_ids.begin()) != numbers::invalid_boundary_id,
                   ExcMessage("Did not find the boundary indicator for the prescribed data plugin."));
@@ -56,6 +51,8 @@ namespace aspect
       Utilities::AsciiDataBoundary<dim>::initialize(boundary_ids,
                                                     dim);
     }
+
+
 
     template <int dim>
     void
@@ -99,8 +96,8 @@ namespace aspect
           prm.declare_entry ("Use spherical unit vectors", "false",
                              Patterns::Bool (),
                              "Specify velocity as r, phi, and theta components "
-                             "instead of x, y, and z. Positive velocities point up, north, "
-                             "and east (in 3D) or out and clockwise (in 2D). "
+                             "instead of x, y, and z. Positive velocities point up, east, "
+                             "and north (in 3D) or out and clockwise (in 2D). "
                              "This setting only makes sense for spherical geometries."
                             );
         }

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -66,7 +66,7 @@ namespace aspect
       double
       LayeredFlow_pressure (const Point<2> &,
                             const double &,
-                            const double epsilon)
+                            const double)
       {
         return 0;
       }
@@ -306,11 +306,12 @@ namespace aspect
     boundary_velocity (const types::boundary_id ,
                        const Point<2> &p) const
     {
-      const LayeredFlowMaterial<2> *
+      const LayeredFlowMaterial<2> &
       material_model
-        = dynamic_cast<const LayeredFlowMaterial<2> *>(&this->get_material_model());
-      return AnalyticSolutions::LayeredFlow_velocity (p, material_model->get_beta(),
-                                                      material_model->get_epsilon());
+        = Plugins::get_plugin_as_type<const LayeredFlowMaterial<2>>(this->get_material_model());
+
+      return AnalyticSolutions::LayeredFlow_velocity (p, material_model.get_beta(),
+                                                      material_model.get_epsilon());
     }
 
 
@@ -348,14 +349,14 @@ namespace aspect
     std::pair<std::string,std::string>
     LayeredFlowPostprocessor<dim>::execute (TableHandler &)
     {
-      std_cxx1x::shared_ptr<Function<dim> > ref_func;
+      std::unique_ptr<Function<dim> > ref_func;
       {
-        const LayeredFlowMaterial<dim> *
+        const LayeredFlowMaterial<dim> &
         material_model
-          = dynamic_cast<const LayeredFlowMaterial<dim> *>(&this->get_material_model());
+          = Plugins::get_plugin_as_type<const LayeredFlowMaterial<dim>>(this->get_material_model());
 
-        ref_func.reset (new AnalyticSolutions::FunctionLayeredFlow<dim>(material_model->get_beta(),
-                                                                        material_model->get_epsilon()));
+        ref_func.reset (new AnalyticSolutions::FunctionLayeredFlow<dim>(material_model.get_beta(),
+                                                                        material_model.get_epsilon()));
       }
 
       const QGauss<dim> quadrature_formula (this->introspection().polynomial_degree.velocities+2);
@@ -384,11 +385,10 @@ namespace aspect
                                          VectorTools::L2_norm,
                                          &comp_p);
 
-      const double u_l2 =  std::sqrt(Utilities::MPI::sum(cellwise_errors_ul2.norm_sqr(),this->get_mpi_communicator()));
-      const double p_l2 =  std::sqrt(Utilities::MPI::sum(cellwise_errors_pl2.norm_sqr(),this->get_mpi_communicator()));
+      const double u_l2 = VectorTools::compute_global_error(this->get_triangulation(), cellwise_errors_ul2, VectorTools::L2_norm);
+      const double p_l2 = VectorTools::compute_global_error(this->get_triangulation(), cellwise_errors_pl2, VectorTools::L2_norm);
 
       std::ostringstream os;
-
       os << std::scientific <<  u_l2
          << ", " << p_l2;
 

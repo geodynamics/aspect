@@ -45,22 +45,20 @@ namespace aspect
       public SimulatorAccess<dim>
     {
       public:
-        /*
+        /**
          * At the beginning of each time step, update the time for the
          * ParsedFunction.
          */
-        virtual
         void
-        update ();
+        update () override;
 
         /**
          * After cells have been marked for coarsening/refinement, apply
          * additional criteria independent of the error estimate.
          *
          */
-        virtual
         void
-        tag_additional_cells () const;
+        tag_additional_cells () const override;
 
         /**
          * Declare the parameters this class takes through input files.
@@ -72,9 +70,8 @@ namespace aspect
         /**
          * Read the parameters this class declares from the parameter file.
          */
-        virtual
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
 
       private:
         /**

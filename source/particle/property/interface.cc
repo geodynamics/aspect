@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2018 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -97,6 +97,11 @@ namespace aspect
       std::string
       ParticlePropertyInformation::get_field_name_by_index(const unsigned int field_index) const
       {
+        Assert(field_index < field_names.size(),
+               ExcMessage("The number of field names (" + std::to_string(field_names.size())
+                          + ") is smaller than the requested field index ("
+                          + std::to_string(field_index) + ")."));
+
         return field_names[field_index];
       }
 
@@ -240,7 +245,7 @@ namespace aspect
         std::vector<std::vector<std::pair<std::string, unsigned int> > > info;
 
         // Get the property information of the selected plugins
-        for (typename std::list<std::shared_ptr<Interface<dim> > >::const_iterator
+        for (typename std::list<std::unique_ptr<Interface<dim> > >::const_iterator
              p = property_list.begin(); p!=property_list.end(); ++p)
           {
             (*p)->initialize();
@@ -262,7 +267,7 @@ namespace aspect
         std::vector<double> particle_properties;
         particle_properties.reserve(property_information.n_components());
 
-        for (typename std::list<std::shared_ptr<Interface<dim> > >::const_iterator
+        for (typename std::list<std::unique_ptr<Interface<dim> > >::const_iterator
              p = property_list.begin(); p!=property_list.end(); ++p)
           {
             (*p)->initialize_one_particle_property(particle->get_location(),
@@ -292,7 +297,7 @@ namespace aspect
         particle_properties.reserve(property_information.n_components());
 
         unsigned int property_index = 0;
-        for (typename std::list<std::shared_ptr<Interface<dim> > >::const_iterator
+        for (typename std::list<std::unique_ptr<Interface<dim> > >::const_iterator
              p = property_list.begin(); p!=property_list.end(); ++p, ++property_index)
           {
             switch ((*p)->late_initialization_mode())
@@ -350,7 +355,7 @@ namespace aspect
                                          const std::vector<Tensor<1,dim> > &gradients) const
       {
         unsigned int plugin_index = 0;
-        for (typename std::list<std::shared_ptr<Interface<dim> > >::const_iterator
+        for (typename std::list<std::unique_ptr<Interface<dim> > >::const_iterator
              p = property_list.begin(); p!=property_list.end(); ++p,++plugin_index)
           {
             (*p)->update_one_particle_property(property_information.get_position_by_plugin_index(plugin_index),
@@ -366,7 +371,7 @@ namespace aspect
       Manager<dim>::need_update () const
       {
         UpdateTimeFlags update = update_never;
-        for (typename std::list<std::shared_ptr<Interface<dim> > >::const_iterator
+        for (typename std::list<std::unique_ptr<Interface<dim> > >::const_iterator
              p = property_list.begin(); p!=property_list.end(); ++p)
           {
             update = std::max(update,(*p)->need_update());
@@ -379,7 +384,7 @@ namespace aspect
       Manager<dim>::get_needed_update_flags () const
       {
         UpdateFlags update = update_default;
-        for (typename std::list<std::shared_ptr<Interface<dim> > >::const_iterator
+        for (typename std::list<std::unique_ptr<Interface<dim> > >::const_iterator
              p = property_list.begin(); p!=property_list.end(); ++p)
           {
             update |= (*p)->get_needed_update_flags();
@@ -462,7 +467,7 @@ namespace aspect
       void
       Manager<dim>::parse_parameters (ParameterHandler &prm)
       {
-        Assert (std::get<dim>(registered_plugins).plugins != 0,
+        Assert (std::get<dim>(registered_plugins).plugins != nullptr,
                 ExcMessage ("No postprocessors registered!?"));
         std::vector<std::string> prop_names;
 
@@ -503,7 +508,7 @@ namespace aspect
                                 .create_plugin (prop_names[name],
                                                 "Particle property plugins");
 
-            property_list.push_back (std::shared_ptr<Property::Interface<dim> >
+            property_list.push_back (std::unique_ptr<Property::Interface<dim> >
                                      (particle_property));
 
             if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*property_list.back()))
@@ -550,10 +555,10 @@ namespace aspect
     {
       template <>
       std::list<internal::Plugins::PluginList<Particle::Property::Interface<2> >::PluginInfo> *
-      internal::Plugins::PluginList<Particle::Property::Interface<2> >::plugins = 0;
+      internal::Plugins::PluginList<Particle::Property::Interface<2> >::plugins = nullptr;
       template <>
       std::list<internal::Plugins::PluginList<Particle::Property::Interface<3> >::PluginInfo> *
-      internal::Plugins::PluginList<Particle::Property::Interface<3> >::plugins = 0;
+      internal::Plugins::PluginList<Particle::Property::Interface<3> >::plugins = nullptr;
     }
   }
 

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -19,8 +19,8 @@
 */
 
 
-#ifndef _aspect_geometry_model__initial_topography_model_zero_topography_h
-#define _aspect_geometry_model__initial_topography_model_zero_topography_h
+#ifndef _aspect_geometry_model_initial_topography_model_zero_topography_h
+#define _aspect_geometry_model_initial_topography_model_zero_topography_h
 
 #include <aspect/geometry_model/initial_topography_model/interface.h>
 
@@ -45,15 +45,13 @@ namespace aspect
          * For the current class, this function obviously simply returns a zero
          * value.
          */
-        virtual
         double
-        value (const Point<dim-1> &p) const;
+        value (const Point<dim-1> &p) const override;
 
         /**
          * Return the maximum value of the elevation.
          */
-        virtual
-        double max_topography () const;
+        double max_topography () const override;
     };
   }
 }

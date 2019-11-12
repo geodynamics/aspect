@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -132,7 +132,7 @@ namespace aspect
       for (unsigned int i=0; i<model_names.size(); ++i)
         {
           // create initial temperature objects
-          initial_temperature_objects.push_back (std::shared_ptr<Interface<dim> >
+          initial_temperature_objects.push_back (std::unique_ptr<Interface<dim> >
                                                  (std::get<dim>(registered_plugins)
                                                   .create_plugin (model_names[i],
                                                                   "Initial temperature model::Model names")));
@@ -153,7 +153,7 @@ namespace aspect
       double temperature = 0.0;
       int i = 0;
 
-      for (typename std::list<std::shared_ptr<InitialTemperature::Interface<dim> > >::const_iterator initial_temperature_object = initial_temperature_objects.begin();
+      for (typename std::list<std::unique_ptr<InitialTemperature::Interface<dim> > >::const_iterator initial_temperature_object = initial_temperature_objects.begin();
            initial_temperature_object != initial_temperature_objects.end();
            ++initial_temperature_object)
         {
@@ -174,7 +174,7 @@ namespace aspect
 
 
     template <int dim>
-    const std::list<std::shared_ptr<Interface<dim> > > &
+    const std::list<std::unique_ptr<Interface<dim> > > &
     Manager<dim>::get_active_initial_temperature_conditions () const
     {
       return initial_temperature_objects;
@@ -204,7 +204,7 @@ namespace aspect
                           std::get<dim>(registered_plugins).get_description_string());
 
         prm.declare_entry("List of model operators", "add",
-                          Patterns::MultipleSelection("add|subtract|minimum|maximum"),
+                          Patterns::MultipleSelection(Utilities::get_model_operator_options()),
                           "A comma-separated list of operators that "
                           "will be used to append the listed temperature models onto "
                           "the previous models. If only one operator is given, "
@@ -256,10 +256,10 @@ namespace aspect
     {
       template <>
       std::list<internal::Plugins::PluginList<InitialTemperature::Interface<2> >::PluginInfo> *
-      internal::Plugins::PluginList<InitialTemperature::Interface<2> >::plugins = 0;
+      internal::Plugins::PluginList<InitialTemperature::Interface<2> >::plugins = nullptr;
       template <>
       std::list<internal::Plugins::PluginList<InitialTemperature::Interface<3> >::PluginInfo> *
-      internal::Plugins::PluginList<InitialTemperature::Interface<3> >::plugins = 0;
+      internal::Plugins::PluginList<InitialTemperature::Interface<3> >::plugins = nullptr;
     }
   }
 

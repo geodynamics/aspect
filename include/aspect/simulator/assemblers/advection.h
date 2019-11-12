@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2017 by the authors of the ASPECT code.
+  Copyright (C) 2017 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -38,14 +38,29 @@ namespace aspect
       public SimulatorAccess<dim>
     {
       public:
-        virtual
         void
-        execute(internal::Assembly::Scratch::ScratchBase<dim>  &scratch,
-                internal::Assembly::CopyData::CopyDataBase<dim> &data) const;
+        execute(internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base,
+                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const override;
 
-        virtual
         std::vector<double>
-        compute_residual(internal::Assembly::Scratch::ScratchBase<dim>  &scratch) const;
+        compute_residual(internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base) const override;
+    };
+
+    /**
+     * This class assembles the terms for the matrix and right-hand-side equation for the
+     * current cell in case we only want to solve the diffusion equation.
+     */
+    template <int dim>
+    class DiffusionSystem : public Assemblers::Interface<dim>,
+      public SimulatorAccess<dim>
+    {
+      public:
+        void
+        execute(internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base,
+                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const override;
+
+        std::vector<double>
+        compute_residual(internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base) const override;
     };
 
     /**
@@ -58,10 +73,9 @@ namespace aspect
       public SimulatorAccess<dim>
     {
       public:
-        virtual
         void
-        execute(internal::Assembly::Scratch::ScratchBase<dim>  &scratch,
-                internal::Assembly::CopyData::CopyDataBase<dim> &data) const;
+        execute(internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base,
+                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const override;
     };
 
     /**
@@ -73,10 +87,9 @@ namespace aspect
       public SimulatorAccess<dim>
     {
       public:
-        virtual
         void
-        execute(internal::Assembly::Scratch::ScratchBase<dim>  &scratch,
-                internal::Assembly::CopyData::CopyDataBase<dim> &data) const;
+        execute(internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base,
+                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const override;
     };
 
     /**
@@ -88,10 +101,9 @@ namespace aspect
       public SimulatorAccess<dim>
     {
       public:
-        virtual
         void
-        execute(internal::Assembly::Scratch::ScratchBase<dim>  &scratch,
-                internal::Assembly::CopyData::CopyDataBase<dim> &data) const;
+        execute(internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base,
+                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const override;
     };
   }
 }

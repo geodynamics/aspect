@@ -1,0 +1,9 @@
+# test that output/original.prm is written correctly
+
+# based on no_flow.prm:
+include $ASPECT_SOURCE_DIR/tests/no_flow.prm
+
+# Note: the line above also checks that ASPECT_SOURCE_DIR is not being replaced
+
+# The reference output will contain an additional line with the output
+# directory below this line:

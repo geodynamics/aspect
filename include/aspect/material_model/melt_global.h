@@ -55,10 +55,10 @@ namespace aspect
          * equation as $\nabla \cdot (\rho \mathbf u)=0$ (compressible Stokes)
          * or as $\nabla \cdot \mathbf{u}=0$ (incompressible Stokes).
          */
-        virtual bool is_compressible () const;
+        bool is_compressible () const override;
 
-        virtual void evaluate(const typename Interface<dim>::MaterialModelInputs &in,
-                              typename Interface<dim>::MaterialModelOutputs &out) const;
+        void evaluate(const typename Interface<dim>::MaterialModelInputs &in,
+                      typename Interface<dim>::MaterialModelOutputs &out) const override;
 
         /**
          * Compute the equilibrium melt fractions for the given input conditions.
@@ -68,16 +68,16 @@ namespace aspect
          * @param melt_fractions Vector of doubles that is filled with the
          * equilibrium melt fraction for each given input conditions.
          */
-        virtual void melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
-                                     std::vector<double> &melt_fractions) const;
+        void melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
+                             std::vector<double> &melt_fractions) const override;
 
         /**
          * @name Reference quantities
          * @{
          */
-        virtual double reference_viscosity () const;
+        double reference_viscosity () const override;
 
-        virtual double reference_darcy_coefficient () const;
+        double reference_darcy_coefficient () const override;
 
 
         /**
@@ -98,16 +98,14 @@ namespace aspect
         /**
          * Read the parameters this class declares from the parameter file.
          */
-        virtual
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
         /**
          * @}
          */
 
-        virtual
         void
-        create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const;
+        create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const override;
 
 
       private:
@@ -132,6 +130,8 @@ namespace aspect
         double melt_compressibility;
         bool include_melting_and_freezing;
         double melting_time_scale;
+        double alpha_depletion;
+        double delta_eta_depletion_max;
 
         // entropy change upon melting
         double peridotite_melting_entropy_change;

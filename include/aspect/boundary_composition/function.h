@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2014 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -49,19 +49,16 @@ namespace aspect
          *
          * @copydoc aspect::BoundaryComposition::Interface::boundary_composition()
          */
-        virtual
         double boundary_composition (const types::boundary_id boundary_indicator,
                                      const Point<dim> &position,
-                                     const unsigned int compositional_field) const;
+                                     const unsigned int compositional_field) const override;
         /**
          * A function that is called at the beginning of each time step to
          * indicate what the model time is for which the boundary values will
          * next be evaluated. For the current class, the function passes to
          * the parsed function what the current time is.
          */
-        virtual
-        void
-        update ();
+        void update () override;
 
         /**
          * Declare the parameters this class takes through input files. The
@@ -70,8 +67,7 @@ namespace aspect
          * this function if they do not take any runtime parameters.
          */
         static
-        void
-        declare_parameters (ParameterHandler &prm);
+        void declare_parameters (ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
@@ -79,9 +75,7 @@ namespace aspect
          * parameters. Consequently, derived classes do not have to overload
          * this function if they do not take any runtime parameters.
          */
-        virtual
-        void
-        parse_parameters (ParameterHandler &prm);
+        void parse_parameters (ParameterHandler &prm) override;
 
       private:
         /**

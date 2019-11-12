@@ -8,11 +8,11 @@ Number of degrees of freedom: 4,030 (2,910+150+970)
 *** Timestep 0:  t=0 seconds
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 87+0 iterations.
+   Solving Stokes system... 94+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-initial_condition_patch_on_S40RTS/solution/solution-00000
-     Temperature min/avg/max:  1350 K, 1557 K, 1686 K
+     Temperature min/avg/max:  1350 K, 1567 K, 1692 K
 
 Termination requested by criterion: end time
 

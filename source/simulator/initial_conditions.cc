@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -124,8 +124,7 @@ namespace aspect
                                  advf_mask);
 
         if (parameters.normalized_fields.size()>0 && n==1)
-          for (typename DoFHandler<dim>::active_cell_iterator cell = dof_handler.begin_active();
-               cell != dof_handler.end(); ++cell)
+          for (const auto &cell : dof_handler.active_cell_iterators())
             if (cell->is_locally_owned())
               {
                 fe_values.reinit (cell);
@@ -262,8 +261,7 @@ namespace aspect
 
     std::vector<types::global_dof_index> local_dof_indices (finite_element.dofs_per_cell);
 
-    for (typename DoFHandler<dim>::active_cell_iterator cell = dof_handler.begin_active();
-         cell != dof_handler.end(); ++cell)
+    for (const auto &cell : dof_handler.active_cell_iterators())
       if (cell->is_locally_owned())
         {
           fe_values.reinit (cell);
@@ -303,8 +301,16 @@ namespace aspect
     // overwrite the relevant composition block only
     const unsigned int blockidx = advection_field.block_index(introspection);
     solution.block(blockidx) = particle_solution.block(blockidx);
-    old_solution.block(blockidx) = particle_solution.block(blockidx);
-    old_old_solution.block(blockidx) = particle_solution.block(blockidx);
+
+    // In the first timestep initialize all solution vectors with the initial
+    // particle solution, identical to the end of the
+    // Simulator<dim>::set_initial_temperature_and_compositional_fields ()
+    // function.
+    if (timestep_number == 0)
+      {
+        old_solution.block(blockidx) = particle_solution.block(blockidx);
+        old_old_solution.block(blockidx) = particle_solution.block(blockidx);
+      }
   }
 
 
@@ -404,11 +410,7 @@ namespace aspect
         });
 
 
-        typename DoFHandler<dim>::active_cell_iterator
-        cell = dof_handler.begin_active(),
-        endc = dof_handler.end();
-
-        for (; cell!=endc; ++cell)
+        for (const auto &cell : dof_handler.active_cell_iterators())
           if (cell->is_locally_owned())
             {
               cell->get_dof_indices (local_dof_indices);

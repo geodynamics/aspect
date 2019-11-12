@@ -116,6 +116,7 @@ subsection Postprocess
   set List of postprocessors = compressibility, visualization
 
   subsection Visualization
+    set Interpolate output = false
 
     set List of output variables      = density, volumetric strain rate
     set Number of grouped files       = 0

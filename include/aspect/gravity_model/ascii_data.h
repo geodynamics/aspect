@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -19,8 +19,8 @@
 */
 
 
-#ifndef _aspect__gravity_model_ascii_data_h
-#define _aspect__gravity_model_ascii_data_h
+#ifndef _aspect_gravity_model_ascii_data_h
+#define _aspect_gravity_model_ascii_data_h
 
 #include <aspect/gravity_model/interface.h>
 #include <aspect/utilities.h>
@@ -52,7 +52,7 @@ namespace aspect
          * beginning of the program. Checks preconditions.
          */
         void
-        initialize ();
+        initialize () override;
 
         // avoid -Woverloaded-virtual:
         using Utilities::AsciiDataProfile<dim>::initialize;
@@ -60,8 +60,7 @@ namespace aspect
         /**
          * Return the gravity as a function of position.
          */
-        virtual
-        Tensor<1,dim> gravity_vector (const Point<dim> &position) const;
+        Tensor<1,dim> gravity_vector (const Point<dim> &position) const override;
 
         /**
          * Declare the parameters this class takes through input files. The
@@ -79,15 +78,14 @@ namespace aspect
          * parameters. Consequently, derived classes do not have to overload
          * this function if they do not take any runtime parameters.
          */
-        virtual
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
 
       private:
         /**
          * Object containing the data profile.
          */
-        std::shared_ptr<aspect::Utilities::AsciiDataLookup<1> > profile;
+        std::unique_ptr<aspect::Utilities::AsciiDataLookup<1> > profile;
 
         /**
          * The column index of the gravity column in the data file.

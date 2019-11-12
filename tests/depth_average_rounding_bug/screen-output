@@ -10,8 +10,8 @@ Number of degrees of freedom: 527 (375+27+125)
    Postprocessing:
      RMS, max velocity:                  124 m/year, 298 m/year
      Temperature min/avg/max:            1613 K, 1613 K, 1613 K
-     Heat fluxes through boundary parts: 3.579e-06 W, 1.898e-05 W, 1.327e-05 W, 1.321e-05 W, 4.03e-06 W, 7.131e-06 W
-     Writing depth average:              output-depth_average_rounding_bug/depth_average.gnuplot
+     Heat fluxes through boundary parts: 0.4749 W, -2.174 W, 0 W, 0 W, -2.605e+15 W, 2.602e+15 W
+     Writing depth average:              output-depth_average_rounding_bug/depth_average
 
 Termination requested by criterion: end time
 

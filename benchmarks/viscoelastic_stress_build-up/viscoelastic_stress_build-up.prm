@@ -120,6 +120,7 @@ end
 
 # Composition boundary conditions
 subsection Boundary composition model
+  set Allow fixed composition on outflow boundaries = true
   set Fixed composition boundary indicators   = bottom, top, left, right
   set List of model names = initial composition
 end

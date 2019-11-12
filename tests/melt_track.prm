@@ -168,11 +168,13 @@ subsection Postprocess
     set List of particle properties   = melt particle
     set Time between data output      = 0
     set Number of particles           = 10
+    set Data output format = gnuplot
   end
 
   set List of postprocessors = particles,visualization,composition statistics,velocity statistics,solitary wave statistics
 
   subsection Visualization
+    set Interpolate output = false
 
     set List of output variables      = density, viscosity, thermal expansivity, melt material properties 
 

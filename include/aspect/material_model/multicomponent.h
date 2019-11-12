@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2014 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -23,7 +23,8 @@
 
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>
-#include <deal.II/base/parameter_handler.h>
+#include <aspect/material_model/equation_of_state/multicomponent_incompressible.h>
+
 
 namespace aspect
 {
@@ -69,8 +70,8 @@ namespace aspect
          * inputs in @p in. If MaterialModelInputs.strain_rate has the length
          * 0, then the viscosity does not need to be computed.
          */
-        virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                              MaterialModel::MaterialModelOutputs<dim> &out) const;
+        void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                      MaterialModel::MaterialModelOutputs<dim> &out) const override;
 
         /**
          * @name Qualitative properties one can ask a material model
@@ -80,7 +81,8 @@ namespace aspect
         /**
          * This model is not compressible, so this returns false.
          */
-        virtual bool is_compressible () const;
+        bool is_compressible () const override;
+
         /**
          * @}
          */
@@ -89,7 +91,7 @@ namespace aspect
          * @name Reference quantities
          * @{
          */
-        virtual double reference_viscosity () const;
+        double reference_viscosity () const override;
         /**
          * @}
          */
@@ -109,9 +111,9 @@ namespace aspect
         /**
          * Read the parameters this class declares from the parameter file.
          */
-        virtual
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
+
         /**
          * @}
          */
@@ -124,31 +126,9 @@ namespace aspect
         double reference_T;
 
         /**
-         * Enumeration for selecting which averaging scheme to use. Select
-         * between harmonic, arithmetic, geometric, and maximum_composition.
-         * The max composition scheme simply uses the parameter of whichever
-         * field has the highest volume fraction.
+         * Enumeration for selecting which viscosity averaging scheme to use.
          */
-        enum AveragingScheme
-        {
-          harmonic,
-          arithmetic,
-          geometric,
-          maximum_composition
-        };
-
-
-        AveragingScheme viscosity_averaging;
-
-        double average_value (const std::vector<double> &composition,
-                              const std::vector<double> &parameter_values,
-                              const enum AveragingScheme &average_type) const;
-
-
-        /**
-         * Vector for field densities, read from parameter file .
-         */
-        std::vector<double> densities;
+        MaterialUtilities::CompositionalAveragingOperation viscosity_averaging;
 
         /**
          * Vector for field viscosities, read from parameter file.
@@ -156,19 +136,11 @@ namespace aspect
         std::vector<double> viscosities;
 
         /**
-         * Vector for field thermal expansivities, read from parameter file.
-         */
-        std::vector<double> thermal_expansivities;
-
-        /**
          * Vector for field thermal conductivities, read from parameter file.
          */
         std::vector<double> thermal_conductivities;
 
-        /**
-         * Vector for field specific heats, read from parameter file.
-         */
-        std::vector<double> specific_heats;
+        EquationOfState::MulticomponentIncompressible<dim> equation_of_state;
     };
 
   }

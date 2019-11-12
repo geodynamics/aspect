@@ -50,45 +50,48 @@ namespace aspect
         /**
          * Initialization function.
          */
-        virtual void initialize ();
+        void initialize () override;
 
         /**
          * Some plugins need to know whether the adiabatic conditions are
          * already calculated, this is always true for the Function class.
          */
-        virtual bool is_initialized() const;
+        bool is_initialized() const override;
 
         /**
          * Return the adiabatic temperature at a given point of the domain.
          */
-        virtual double temperature (const Point<dim> &p) const;
+        double temperature (const Point<dim> &p) const override;
 
 
         /**
          * Return the adiabatic pressure at a given point of the domain.
          */
-        virtual double pressure (const Point<dim> &p) const;
+        double pressure (const Point<dim> &p) const override;
 
         /**
          * Return the reference_density at a given point of the domain.
          */
-        virtual
-        double density (const Point<dim> &p) const;
+        double density (const Point<dim> &p) const override;
 
         /**
          * Return the derivative of the density with respect to depth
          * at the given point @p p.
          */
-        virtual
-        double density_derivative (const Point<dim> &p) const;
+        double density_derivative (const Point<dim> &p) const override;
 
+        /**
+         * Declare the parameters for the input files.
+         */
         static
         void
         declare_parameters (ParameterHandler &prm);
 
-        virtual
+        /**
+         * Read the parameters from the parameter file.
+         */
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
 
       private:
 

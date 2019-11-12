@@ -13,11 +13,11 @@ subsection Initial temperature model
    set Model name = function
    subsection Function
       set Variable names = x,y
-      set Function constants = ymax=1.0e6, xtr=2.200e6, vsub=7.927e-10, \
+      set Function constants = ymax=1.0e6, xtrm=2.200e6, vsub=7.927e-10, \
                                ageop=9.46e14, Tm=1673, Ts=273, kappa=1e-6 
-      set Function expression = (((x>0.0) && (x<=xtr)) ? \
+      set Function expression = (((x>0.0) && (x<=xtrm)) ? \
                                  (Ts + (Tm-Ts)*(1-erfc((ymax-y)/(2*sqrt(kappa*(x/vsub)))))) : \
-                                 (x>xtr) ? \
+                                 (x>xtrm) ? \
                                   (Ts + (Tm-Ts)*(1-erfc((ymax-y)/(2*sqrt(kappa*ageop))))) :\
                                   (Tm) ) 
    end

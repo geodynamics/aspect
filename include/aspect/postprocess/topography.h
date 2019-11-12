@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -33,7 +33,7 @@ namespace aspect
 
     /**
      * A postprocessor that outputs the surface topography to file.
-
+     *
      * @ingroup Postprocessing
      */
     template <int dim>
@@ -43,8 +43,7 @@ namespace aspect
         /**
          * Output topography [m] to file
          */
-        virtual
-        std::pair<std::string,std::string> execute (TableHandler &statistics);
+        std::pair<std::string,std::string> execute (TableHandler &statistics) override;
 
         /**
          * @name Functions used in dealing with run-time parameters
@@ -60,9 +59,8 @@ namespace aspect
         /**
          * Read the parameters this class declares from the parameter file.
          */
-        virtual
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
         /**
          * @}
          */

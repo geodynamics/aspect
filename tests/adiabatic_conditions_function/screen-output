@@ -9,7 +9,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
    Postprocessing:
      Writing graphical output: output-adiabatic_conditions_function/solution/solution-00000
-     Writing depth average:    output-adiabatic_conditions_function/depth_average.gnuplot
+     Writing depth average:    output-adiabatic_conditions_function/depth_average
 
 Termination requested by criterion: end time
 

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -55,7 +55,7 @@ namespace aspect
               std::istringstream in(Utilities::read_and_distribute_file_content(filename, comm));
 
               in >> order;
-              getline(in,temp);  // throw away the rest of the line
+              std::getline(in,temp);  // throw away the rest of the line
 
               const unsigned int num_layers = 28;
 
@@ -69,7 +69,7 @@ namespace aspect
                       in >> new_val;
                       coeffs.push_back(0.01*new_val);
                     }
-                  getline(in,temp);
+                  std::getline(in,temp);
                 }
 
               // reorder the coefficients into sin and cos coefficients. a_lm will be the cos coefficients
@@ -128,8 +128,8 @@ namespace aspect
               // Read data from disk and distribute among processes
               std::istringstream in(Utilities::read_and_distribute_file_content(filename, comm));
 
-              getline(in,temp);  // throw away the rest of the line
-              getline(in,temp);  // throw away the rest of the line
+              std::getline(in,temp);  // throw away the rest of the line
+              std::getline(in,temp);  // throw away the rest of the line
 
               const unsigned int num_splines = 28;
               depths.resize(num_splines);
@@ -161,8 +161,12 @@ namespace aspect
     void
     SAVANIPerturbation<dim>::initialize()
     {
-      spherical_harmonics_lookup.reset(new internal::SAVANI::SphericalHarmonicsLookup(data_directory+harmonics_coeffs_file_name,this->get_mpi_communicator()));
-      spline_depths_lookup.reset(new internal::SAVANI::SplineDepthsLookup(data_directory+spline_depth_file_name,this->get_mpi_communicator()));
+      spherical_harmonics_lookup
+        = std_cxx14::make_unique<internal::SAVANI::SphericalHarmonicsLookup>(data_directory+harmonics_coeffs_file_name,
+                                                                             this->get_mpi_communicator());
+      spline_depths_lookup
+        = std_cxx14::make_unique<internal::SAVANI::SplineDepthsLookup>(data_directory+spline_depth_file_name,
+                                                                       this->get_mpi_communicator());
 
       if (vs_to_density_method == file)
         {
@@ -171,6 +175,7 @@ namespace aspect
         }
 
     }
+
 
     template <>
     double
@@ -184,19 +189,21 @@ namespace aspect
       return 0;
     }
 
+    template <>
+    double
+    SAVANIPerturbation<2>::
+    get_Vs (const Point<2> &/*position*/) const
+    {
+      Assert (false, ExcNotImplemented());
+      return 0;
+    }
 
     template <>
     double
     SAVANIPerturbation<3>::
-    initial_temperature (const Point<3> &position) const
+    get_Vs (const Point<3> &position) const
     {
       const unsigned int dim = 3;
-
-      // use either the user-input reference temperature as background temperature
-      // (incompressible model) or the adiabatic temperature profile (compressible model)
-      const double background_temperature = this->get_material_model().is_compressible() ?
-                                            this->get_adiabatic_conditions().temperature(position) :
-                                            reference_temperature;
 
       // get the degree from the input file (60)
       unsigned int max_degree = spherical_harmonics_lookup->maxdegree();
@@ -278,7 +285,24 @@ namespace aspect
       s.set_points(depth_values,spline_values);
 
       // Get value at specific depth
-      const double perturbation = s(scoord[0]);
+      return s(scoord[0]);
+
+    }
+
+
+    template <>
+    double
+    SAVANIPerturbation<3>::
+    initial_temperature (const Point<3> &position) const
+    {
+      // use either the user-input reference temperature as background temperature
+      // (incompressible model) or the adiabatic temperature profile (compressible model)
+      const double background_temperature = this->get_material_model().is_compressible() ?
+                                            this->get_adiabatic_conditions().temperature(position) :
+                                            reference_temperature;
+
+      //Read in Vs perturbation data using function above
+      const double perturbation = get_Vs (position);
 
       // Get the vs to density conversion
       const double depth = this->get_geometry_model().depth(position);

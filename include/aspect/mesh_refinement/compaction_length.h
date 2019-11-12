@@ -50,9 +50,8 @@ namespace aspect
          * After cells have been marked for coarsening/refinement, apply
          * additional criteria independent of the error estimate.
          */
-        virtual
         void
-        tag_additional_cells () const;
+        tag_additional_cells () const override;
 
         /**
          * Declare the parameters this class takes through input files.
@@ -64,9 +63,8 @@ namespace aspect
         /**
          * Read the parameters this class declares from the parameter file.
          */
-        virtual
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
 
       private:
         /**

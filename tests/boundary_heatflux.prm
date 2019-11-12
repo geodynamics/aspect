@@ -7,11 +7,11 @@
 
 #           Ts = 90 K
 #      ------------------
-#      |		|
-#      |		|   flux = 0 at sides
-#      |		|
+#      |                |
+#      |                |   flux = 0 at sides
+#      |                |
 #      ------------------
-#	 q = 4 mW / m^2
+#        q = 4 mW / m^2
 #
 
 # At the top, we define the number of space dimensions we would like to
@@ -121,6 +121,7 @@ end
 subsection Postprocess
   set List of postprocessors = temperature statistics, heat flux statistics, visualization
   subsection Visualization
+    set Interpolate output = false
     set List of output variables      =  heat flux map
   end
 end

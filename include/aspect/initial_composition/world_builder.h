@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -47,8 +47,7 @@ namespace aspect
          * Return the initial composition as a function of position and number
          * of compositional field.
          */
-        virtual
-        double initial_composition (const Point<dim> &position, const unsigned int n_comp) const;
+        double initial_composition (const Point<dim> &position, const unsigned int n_comp) const override;
 
     };
   }

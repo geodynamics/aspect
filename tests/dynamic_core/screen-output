@@ -13,11 +13,11 @@ Number of degrees of freedom: 10,656 (6,528+864+3,264)
    Postprocessing:
      CMB heat flux out of the core 0.953 TW,
 
-*** Timestep 1:  t=897592 years
+*** Timestep 1:  t=897658 years
    Dynamic core data updated.
      Tc(K)          Ri(km)         Xi             dT/dt(K/year)  dR/dt(km/year) dX/dt(1/year)  
-     4100.03        2019.21        0.046542       3.48113e-08    -2.46563e-07   -1.84406e-12   
-   Solving temperature system... 13 iterations.
+     4100.03        2019.21        0.046542       3.48103e-08    -2.46566e-07   -1.84409e-12   
+   Solving temperature system... 14 iterations.
    Solving Stokes system... 63+0 iterations.
 
    Postprocessing:
@@ -26,12 +26,12 @@ Number of degrees of freedom: 10,656 (6,528+864+3,264)
 *** Timestep 2:  t=1e+06 years
    Dynamic core data updated.
      Tc(K)          Ri(km)         Xi             dT/dt(K/year)  dR/dt(km/year) dX/dt(1/year)  
-     4100.03        2019.19        0.0465418      3.47836e-08    -2.46416e-07   -1.84267e-12   
+     4100.03        2019.19        0.0465418      3.51848e-08    -2.49221e-07   -1.86364e-12   
    Solving temperature system... 10 iterations.
    Solving Stokes system... 42+0 iterations.
 
    Postprocessing:
-     CMB heat flux out of the core 0.952 TW,
+     CMB heat flux out of the core 0.87 TW,
 
 Termination requested by criterion: end time
 

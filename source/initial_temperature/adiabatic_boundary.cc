@@ -79,10 +79,10 @@ namespace aspect
         {
           prm.declare_entry ("Isotherm temperature", "1673.15",
                              Patterns::Double (0),
-                             "The value of the isothermal boundary temperature. Units: Kelvin.");
+                             "The value of the isothermal boundary temperature. Units: $\\si{K}$.");
           prm.declare_entry ("Surface temperature", "273.15",
                              Patterns::Double (0),
-                             "The value of the surface temperature. Units: Kelvin.");
+                             "The value of the surface temperature. Units: $\\si{K}$.");
           prm.declare_entry ("Adiabatic temperature gradient", "0.0005",
                              Patterns::Double (0),
                              "The value of the adiabatic temperature gradient. Units: $K m^{-1}$.");
@@ -109,6 +109,48 @@ namespace aspect
         prm.leave_subsection();
       }
       prm.leave_subsection();
+
+      AssertThrow ((dynamic_cast<const GeometryModel::EllipsoidalChunk<dim>*>
+                    (&this->get_geometry_model()) != nullptr),
+                   ExcMessage ("This initial condition can only be used if the geometry "
+                               "is an ellipsoidal chunk."));
+
+      const std::string filename = data_directory+isotherm_file_name;
+
+      /**
+       * Read data from disk and distribute among processes
+       */
+      std::istringstream in(Utilities::read_and_distribute_file_content(filename, this->get_mpi_communicator()));
+
+      /**
+       * Reading data lines.
+       */
+      double latitude_iso, longitude_iso, depth_iso;
+      while (in >> latitude_iso >> longitude_iso >> depth_iso)
+        {
+          latitudes_iso.push_back(latitude_iso);
+          longitudes_iso.push_back(longitude_iso);
+          depths_iso.push_back(depth_iso*1000.);
+        }
+
+      /**
+       * Find first 2 numbers that are different to use in
+       * calculating half the difference between each position as delta.
+       */
+      if (std::fabs(latitudes_iso[0] - latitudes_iso[1]) > 1e-9)
+        {
+          /**
+           * Calculate delta as half the latitude distance.
+          */
+          delta = std::fabs((0.5)*(latitudes_iso[0] - latitudes_iso[1]));
+        }
+      else
+        {
+          /**
+           * Calculate delta as half the longitude distance.
+          */
+          delta = std::fabs((0.5)*(longitudes_iso[0] - longitudes_iso[1]));
+        }
 
     }
 

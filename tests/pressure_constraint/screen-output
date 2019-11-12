@@ -4,16 +4,16 @@ Loading shared library <./libpressure_constraint.so>
 Number of active cells: 16 (on 3 levels)
 Number of degrees of freedom: 268 (162+25+81)
 
-adding constraint idx= 162 to value= 2 with pressure_scaling= 50
+adding constraint idx= 162 to value= 100
 *** Timestep 0:  t=0 seconds
-adding constraint idx= 162 to value= 2 with pressure_scaling= 50
+adding constraint idx= 162 to value= 100
    Solving temperature system... 11 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 31+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  0.183 m/s, 0.249 m/s
-     Pressure min/avg/max:               96 Pa, 98 Pa, 100 Pa
+     Pressure min/avg/max:               4996 Pa, 4998 Pa, 5000 Pa
      Mass fluxes through boundary parts: -0.1667 kg/s, 0.1667 kg/s, 0 kg/s, 0 kg/s
                                          
 Total system matrix memory consumption: 0.06 MB.
@@ -32,14 +32,14 @@ system preconditioner matrix nnz by block:
 
 
 *** Timestep 1:  t=0.1 seconds
-adding constraint idx= 162 to value= 2 with pressure_scaling= 50
+adding constraint idx= 162 to value= 100
    Solving temperature system... 9 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 2+0 iterations.
+   Solving Stokes system... 17+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  0.183 m/s, 0.249 m/s
-     Pressure min/avg/max:               96 Pa, 98 Pa, 100 Pa
+     Pressure min/avg/max:               4996 Pa, 4998 Pa, 5000 Pa
      Mass fluxes through boundary parts: -0.1667 kg/s, 0.1667 kg/s, 0 kg/s, 0 kg/s
                                          
 Total system matrix memory consumption: 0.06 MB.

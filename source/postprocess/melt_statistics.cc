@@ -61,12 +61,8 @@ namespace aspect
       double local_min_melt = std::numeric_limits<double>::max();
       double local_max_melt = -std::numeric_limits<double>::max();
 
-      typename DoFHandler<dim>::active_cell_iterator
-      cell = this->get_dof_handler().begin_active(),
-      endc = this->get_dof_handler().end();
-
       // compute the integral quantities by quadrature
-      for (; cell!=endc; ++cell)
+      for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
           {
             // fill material model inputs

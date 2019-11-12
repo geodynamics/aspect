@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -19,8 +19,8 @@
 */
 
 
-#ifndef _aspect__initial_temperature_ascii_profile_h
-#define _aspect__initial_temperature_ascii_profile_h
+#ifndef _aspect_initial_temperature_ascii_profile_h
+#define _aspect_initial_temperature_ascii_profile_h
 
 #include <aspect/initial_temperature/interface.h>
 #include <aspect/utilities.h>
@@ -53,7 +53,7 @@ namespace aspect
         /**
          * Initialization function.
          */
-        virtual void initialize ();
+        void initialize () override;
 
         // avoid -Woverloaded-virtual:
         using Utilities::AsciiDataProfile<dim>::initialize;
@@ -61,7 +61,7 @@ namespace aspect
         /**
          * Return the temperature at a given point of the domain.
          */
-        virtual double initial_temperature (const Point<dim> &p) const;
+        double initial_temperature (const Point<dim> &p) const override;
 
         /**
          * Declare the parameters for the input files.
@@ -74,7 +74,7 @@ namespace aspect
          * Read the parameters from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
 
       private:
 

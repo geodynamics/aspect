@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -73,14 +73,11 @@ namespace aspect
 
       double
       burstedde_pressure (const Point<3> &pos,
-                          const double eta)
+                          const double /*eta*/)
       {
         const double x = pos[0];
         const double y = pos[1];
         const double z = pos[2];
-
-        const double min_eta = 1.0;
-        const double max_eta = eta;
 
         return x*y*z+x*x*x*y*y*y*z-5./32.;
       }
@@ -404,7 +401,7 @@ namespace aspect
 
     template <int dim>
     void
-    BursteddeGravity<dim>::declare_parameters (ParameterHandler &prm)
+    BursteddeGravity<dim>::declare_parameters (ParameterHandler &)
     {
       //nothing to declare here. This plugin will however, read parameters
       //declared by the material model in the "Burstedde benchmark" section
@@ -442,15 +439,15 @@ namespace aspect
 
     template <int dim>
     std::pair<std::string,std::string>
-    BursteddePostprocessor<dim>::execute (TableHandler &statistics)
+    BursteddePostprocessor<dim>::execute (TableHandler &)
     {
-      std::shared_ptr<Function<dim> > ref_func;
+      std::unique_ptr<Function<dim> > ref_func;
       {
-        const BursteddeMaterial<dim> *
+        const BursteddeMaterial<dim> &
         material_model
-          = dynamic_cast<const BursteddeMaterial<dim> *>(&this->get_material_model());
+          = Plugins::get_plugin_as_type<const BursteddeMaterial<dim>>(this->get_material_model());
 
-        ref_func.reset (new AnalyticSolutions::FunctionBurstedde<dim>(material_model->get_beta()));
+        ref_func.reset (new AnalyticSolutions::FunctionBurstedde<dim>(material_model.get_beta()));
       }
 
       const QGauss<dim> quadrature_formula (this->introspection().polynomial_degree.velocities+2);
@@ -493,10 +490,10 @@ namespace aspect
                                          VectorTools::L2_norm,
                                          &comp_p);
 
-      const double u_l1 = Utilities::MPI::sum(cellwise_errors_u.l1_norm(),this->get_mpi_communicator());
-      const double p_l1 = Utilities::MPI::sum(cellwise_errors_p.l1_norm(),this->get_mpi_communicator());
-      const double u_l2 = std::sqrt(Utilities::MPI::sum(cellwise_errors_ul2.norm_sqr(),this->get_mpi_communicator()));
-      const double p_l2 = std::sqrt(Utilities::MPI::sum(cellwise_errors_pl2.norm_sqr(),this->get_mpi_communicator()));
+      const double u_l1 = VectorTools::compute_global_error(this->get_triangulation(), cellwise_errors_u, VectorTools::L1_norm);
+      const double p_l1 = VectorTools::compute_global_error(this->get_triangulation(), cellwise_errors_p, VectorTools::L1_norm);
+      const double u_l2 = VectorTools::compute_global_error(this->get_triangulation(), cellwise_errors_ul2, VectorTools::L2_norm);
+      const double p_l2 = VectorTools::compute_global_error(this->get_triangulation(), cellwise_errors_pl2, VectorTools::L2_norm);
 
       std::ostringstream os;
 

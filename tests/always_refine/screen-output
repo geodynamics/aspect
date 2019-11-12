@@ -26,29 +26,29 @@ Number of degrees of freedom: 1,020 (386+55+193+193+193)
 
    Postprocessing:
      Writing graphical output:  output-always_refine/solution/solution-00001
-     Temperature min/avg/max:   0 K, 0.4999 K, 1 K
-     Compositions min/max/mass: -0.01799/1.048/0.4592 // -0.01278/1.077/0.4168
+     Temperature min/avg/max:   0 K, 0.5011 K, 1 K
+     Compositions min/max/mass: -0.006514/1.046/0.4591 // -0.01399/1.066/0.4168
 
 Number of active cells: 40 (on 4 levels)
 Number of degrees of freedom: 1,020 (386+55+193+193+193)
 
 *** Timestep 2:  t=0.1875 seconds
    Solving temperature system... 9 iterations.
-   Solving C_1 system ... 10 iterations.
-   Solving C_2 system ... 9 iterations.
+   Solving C_1 system ... 11 iterations.
+   Solving C_2 system ... 10 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 17+0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-always_refine/solution/solution-00002
-     Temperature min/avg/max:   0 K, 0.5002 K, 1 K
-     Compositions min/max/mass: -0.00408/1.055/0.4601 // -0.01546/1.063/0.4162
+     Temperature min/avg/max:   0 K, 0.5036 K, 1 K
+     Compositions min/max/mass: -0.007209/1.061/0.46 // -0.02002/1.071/0.4161
 
 Number of active cells: 40 (on 4 levels)
 Number of degrees of freedom: 1,020 (386+55+193+193+193)
 
 *** Timestep 3:  t=0.3125 seconds
-   Solving temperature system... 10 iterations.
+   Solving temperature system... 11 iterations.
    Solving C_1 system ... 12 iterations.
    Solving C_2 system ... 13 iterations.
    Rebuilding Stokes preconditioner...
@@ -56,38 +56,38 @@ Number of degrees of freedom: 1,020 (386+55+193+193+193)
 
    Postprocessing:
      Writing graphical output:  output-always_refine/solution/solution-00003
-     Temperature min/avg/max:   0 K, 0.5005 K, 1 K
-     Compositions min/max/mass: -0.001255/1.042/0.4605 // -0.009279/1.03/0.4155
+     Temperature min/avg/max:   0 K, 0.506 K, 1 K
+     Compositions min/max/mass: -0.003341/1.052/0.4603 // -0.01607/1.05/0.4153
 
 Number of active cells: 40 (on 4 levels)
 Number of degrees of freedom: 1,020 (386+55+193+193+193)
 
 *** Timestep 4:  t=0.4375 seconds
-   Solving temperature system... 8 iterations.
+   Solving temperature system... 9 iterations.
    Solving C_1 system ... 10 iterations.
-   Solving C_2 system ... 9 iterations.
+   Solving C_2 system ... 10 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 16+0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-always_refine/solution/solution-00004
-     Temperature min/avg/max:   0 K, 0.4998 K, 1 K
-     Compositions min/max/mass: -0.001417/1.027/0.4606 // -0.002872/0.99/0.4149
+     Temperature min/avg/max:   0 K, 0.5079 K, 1 K
+     Compositions min/max/mass: -0.00311/1.041/0.4605 // -0.01845/1.022/0.4147
 
 Number of active cells: 40 (on 4 levels)
 Number of degrees of freedom: 1,020 (386+55+193+193+193)
 
 *** Timestep 5:  t=0.5 seconds
-   Solving temperature system... 8 iterations.
-   Solving C_1 system ... 9 iterations.
-   Solving C_2 system ... 9 iterations.
+   Solving temperature system... 9 iterations.
+   Solving C_1 system ... 10 iterations.
+   Solving C_2 system ... 10 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 16+0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-always_refine/solution/solution-00005
-     Temperature min/avg/max:   0 K, 0.4992 K, 1 K
-     Compositions min/max/mass: -0.001443/1.02/0.4606 // -0.001283/0.9584/0.4153
+     Temperature min/avg/max:   0 K, 0.5083 K, 1 K
+     Compositions min/max/mass: -0.003011/1.035/0.4605 // -0.01499/0.9936/0.4151
 
 Number of active cells: 40 (on 4 levels)
 Number of degrees of freedom: 1,020 (386+55+193+193+193)

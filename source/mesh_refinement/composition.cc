@@ -49,7 +49,7 @@ namespace aspect
                                               this->get_solution(),
                                               this_indicator,
                                               this->introspection().component_masks.compositional_fields[c],
-                                              0,
+                                              nullptr,
                                               0,
                                               this->get_triangulation().locally_owned_subdomain());
           // compute indicators += c*this_indicator:

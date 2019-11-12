@@ -129,6 +129,7 @@ subsection Postprocess
   set List of postprocessors = composition statistics, visualization, ExponentialDecayPostprocessor
 
   subsection Visualization
+    set Interpolate output = false
     set Time between graphical output = 0
   end
 end

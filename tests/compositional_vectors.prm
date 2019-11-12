@@ -41,6 +41,7 @@ end
 subsection Postprocess
   set List of postprocessors = visualization
   subsection Visualization
+    set Interpolate output = false
     set List of output variables = compositional vector
     set Output format = gnuplot    
     subsection Compositional fields as vectors

@@ -1,0 +1,13 @@
+set term pdf enhanced
+set output 'plot.pdf'
+set xlabel '{/Symbol f}_1'
+set ylabel 'max(v_y)'
+set log y 
+
+h1=256e3
+ampl=4000
+
+plot[][]\
+'vy_analytical.dat' u 7:8 w p ps .5 pt 5 t 'analytical',\
+'vy.dat' u (2*pi*h1/$1):($15) w lp t 'ASPECT'
+

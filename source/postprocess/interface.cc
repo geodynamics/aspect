@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -98,19 +98,17 @@ namespace aspect
       // call the execute() functions of all postprocessor objects we have
       // here in turns
       std::list<std::pair<std::string,std::string> > output_list;
-      for (typename std::vector<std::shared_ptr<Interface<dim> > >::iterator
-           p = postprocessors.begin();
-           p != postprocessors.end(); ++p)
+      for (auto &p : postprocessors)
         {
           try
             {
               // first call the update() function.
-              (*p)->update();
+              p->update();
 
               // call the execute() function. if it produces any output
               // then add it to the list
               std::pair<std::string,std::string> output
-                = (*p)->execute (statistics);
+                = p->execute (statistics);
 
               if (output.first.size() + output.second.size() > 0)
                 output_list.push_back (output);
@@ -129,7 +127,7 @@ namespace aspect
               std::cerr << "Exception on MPI process <"
                         << Utilities::MPI::this_mpi_process(MPI_COMM_WORLD)
                         << "> while running postprocessor <"
-                        << typeid(**p).name()
+                        << typeid(*p).name()
                         << ">: " << std::endl
                         << exc.what() << std::endl
                         << "Aborting!" << std::endl
@@ -147,7 +145,7 @@ namespace aspect
               std::cerr << "Exception on MPI process <"
                         << Utilities::MPI::this_mpi_process(MPI_COMM_WORLD)
                         << "> while running postprocessor <"
-                        << typeid(**p).name()
+                        << typeid(*p).name()
                         << ">: " << std::endl;
               std::cerr << "Unknown exception!" << std::endl
                         << "Aborting!" << std::endl
@@ -215,7 +213,7 @@ namespace aspect
     void
     Manager<dim>::parse_parameters (ParameterHandler &prm)
     {
-      Assert (std::get<dim>(registered_plugins).plugins != 0,
+      Assert (std::get<dim>(registered_plugins).plugins != nullptr,
               ExcMessage ("No postprocessors registered!?"));
 
       // first find out which postprocessors are requested
@@ -238,13 +236,16 @@ namespace aspect
                      "all") != postprocessor_names.end())
         {
           postprocessor_names.clear();
-          for (typename std::list<typename internal::Plugins::PluginList<Interface<dim> >::PluginInfo>::const_iterator
+          for (typename std::list<typename aspect::internal::Plugins::PluginList<Interface<dim> >::PluginInfo>::const_iterator
                p = std::get<dim>(registered_plugins).plugins->begin();
                p != std::get<dim>(registered_plugins).plugins->end(); ++p)
             postprocessor_names.push_back (std::get<0>(*p));
         }
 
-      // see if the user specified "global statistics" somewhere; if so, remove it from the list
+      // see if the user specified "global statistics" somewhere; if so, remove
+      // it from the list because we will *always* want to have it and so
+      // whether or not it has been explicitly provided by the user makes no
+      // difference.
       std::vector<std::string>::iterator new_end
         = std::remove (postprocessor_names.begin(),
                        postprocessor_names.end(),
@@ -259,7 +260,7 @@ namespace aspect
       // their own parameters
       for (unsigned int name=0; name<postprocessor_names.size(); ++name)
         {
-          postprocessors.push_back (std::shared_ptr<Interface<dim> >
+          postprocessors.push_back (std::unique_ptr<Interface<dim> >
                                     (std::get<dim>(registered_plugins)
                                      .create_plugin (postprocessor_names[name],
                                                      "Postprocessor plugins")));
@@ -317,13 +318,13 @@ namespace aspect
       // have found a cycle in the dependencies and that is clearly a problem
       std::vector<bool> already_assigned (postprocessors.size(), false);
       std::vector<std::string> sorted_names;
-      std::vector<std::shared_ptr<Interface<dim> > > sorted_postprocessors;
+      std::vector<std::unique_ptr<Interface<dim> > > sorted_postprocessors;
       while (sorted_names.size() < postprocessors.size())
         {
           bool at_least_one_element_added = false;
 
           {
-            typename std::vector<std::shared_ptr<Interface<dim> > >::const_iterator
+            typename std::vector<std::unique_ptr<Interface<dim> > >::const_iterator
             pp = postprocessors.begin();
             for (unsigned int i=0; i<postprocessor_names.size(); ++i, ++pp)
               if (already_assigned[i] == false)
@@ -345,11 +346,14 @@ namespace aspect
                   // if we have unmet dependencies, there is nothing we can do
                   // right now for this postprocessor (but we will come back for it)
                   //
-                  // if there are none, add this postprocessor
+                  // if there are none, add this postprocessor. using move semantics
+                  // removes the postprocessor from the 'postprocessors' array,
+                  // which is ok since we will swap the two arrays at the end of the
+                  // function.
                   if (unmet_dependencies == false)
                     {
                       sorted_names.push_back (postprocessor_names[i]);
-                      sorted_postprocessors.push_back (postprocessors[i]);
+                      sorted_postprocessors.emplace_back (std::move(postprocessors[i]));
                       already_assigned[i] = true;
                       at_least_one_element_added = true;
                     }
@@ -363,7 +367,7 @@ namespace aspect
               out << "While sorting postprocessors by their dependencies, "
                   "ASPECT encountered a cycle in dependencies. The following "
                   "postprocessors are involved:\n";
-              typename std::vector<std::shared_ptr<Interface<dim> > >::const_iterator
+              typename std::vector<std::unique_ptr<Interface<dim> > >::const_iterator
               pp = postprocessors.begin();
               for (unsigned int i=0; i<postprocessor_names.size(); ++i, ++pp)
                 if (already_assigned[i] == false)
@@ -427,10 +431,10 @@ namespace aspect
     {
       template <>
       std::list<internal::Plugins::PluginList<Postprocess::Interface<2> >::PluginInfo> *
-      internal::Plugins::PluginList<Postprocess::Interface<2> >::plugins = 0;
+      internal::Plugins::PluginList<Postprocess::Interface<2> >::plugins = nullptr;
       template <>
       std::list<internal::Plugins::PluginList<Postprocess::Interface<3> >::PluginInfo> *
-      internal::Plugins::PluginList<Postprocess::Interface<3> >::plugins = 0;
+      internal::Plugins::PluginList<Postprocess::Interface<3> >::plugins = nullptr;
     }
   }
 

@@ -143,11 +143,14 @@ namespace aspect
                                        VectorTools::L2_norm,
                                        &comp_p);
 
+    const double u_l2 = VectorTools::compute_global_error(this->get_triangulation(), cellwise_errors_u, VectorTools::L2_norm);
+    const double p_l2 = VectorTools::compute_global_error(this->get_triangulation(), cellwise_errors_p, VectorTools::L2_norm);
+
     std::ostringstream os;
     os << std::scientific
        << "ndofs= " << this->get_solution().size()
-       << " u_L2= " << std::sqrt(Utilities::MPI::sum(cellwise_errors_u.norm_sqr(),MPI_COMM_WORLD))
-       << " p_L2= "  << std::sqrt(Utilities::MPI::sum(cellwise_errors_p.norm_sqr(),MPI_COMM_WORLD))
+       << " u_L2= " << u_l2
+       << " p_L2= " << p_l2
        ;
 
     return std::make_pair("Errors", os.str());

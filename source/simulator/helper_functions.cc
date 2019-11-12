@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -21,6 +21,7 @@
 
 #include <aspect/simulator.h>
 #include <aspect/melt.h>
+#include <aspect/volume_of_fluid/handler.h>
 #include <aspect/newton.h>
 #include <aspect/global.h>
 
@@ -31,7 +32,7 @@
 #include <aspect/particle/generator/interface.h>
 #include <aspect/particle/integrator/interface.h>
 #include <aspect/particle/interpolator/interface.h>
-#include <aspect/particle/output/interface.h>
+#include <aspect/particle/property/interface.h>
 #include <aspect/postprocess/visualization.h>
 
 #include <deal.II/base/index_set.h>
@@ -201,7 +202,8 @@ namespace aspect
      * it, so we need to work on a copy. This copy is deleted at the end
      * of this function.
      */
-    void do_output_statistics (const std::string stat_file_name,
+    // We need to pass the arguments by value, as this function can be called on a separate thread:
+    void do_output_statistics (const std::string stat_file_name, //NOLINT(performance-unnecessary-value-param)
                                const TableHandler *copy_of_table)
     {
       // write into a temporary file for now so that we don't
@@ -275,7 +277,6 @@ namespace aspect
     Particle::Generator::write_plugin_graph<dim>(out);
     Particle::Integrator::write_plugin_graph<dim>(out);
     Particle::Interpolator::write_plugin_graph<dim>(out);
-    Particle::Output::write_plugin_graph<dim>(out);
     Particle::Property::Manager<dim>::write_plugin_graph(out);
     Postprocess::Manager<dim>::write_plugin_graph(out);
     Postprocess::Visualization<dim>::write_plugin_graph(out);
@@ -313,6 +314,18 @@ namespace aspect
 
 
   template <int dim>
+  void
+  Simulator<dim>::
+  compute_pressure_scaling_factor()
+  {
+    // Determine how to treat the pressure. we have to scale it for the solver
+    // to make velocities and pressures of roughly the same (numerical) size
+    pressure_scaling = material_model->reference_viscosity() / geometry_model->length_scale();
+  }
+
+
+
+  template <int dim>
   double
   Simulator<dim>::
   get_maximal_velocity (const LinearAlgebra::BlockVector &solution) const
@@ -333,10 +346,7 @@ namespace aspect
     // loop over all locally owned cells and evaluate the velocities at each
     // quadrature point (i.e. each node). keep a running tally of the largest
     // such velocity
-    typename DoFHandler<dim>::active_cell_iterator
-    cell = dof_handler.begin_active(),
-    endc = dof_handler.end();
-    for (; cell!=endc; ++cell)
+    for (const auto &cell : dof_handler.active_cell_iterators())
       if (cell->is_locally_owned())
         {
           fe_values.reinit (cell);
@@ -514,17 +524,12 @@ namespace aspect
     double max_local_speed_over_meshsize = 0;
     double min_local_conduction_timestep = std::numeric_limits<double>::max();
 
-    typename DoFHandler<dim>::active_cell_iterator
-    cell = dof_handler.begin_active(),
-    endc = dof_handler.end();
-
-
     MaterialModel::MaterialModelInputs<dim> in(n_q_points,
                                                introspection.n_compositional_fields);
     MaterialModel::MaterialModelOutputs<dim> out(n_q_points,
                                                  introspection.n_compositional_fields);
 
-    for (; cell!=endc; ++cell)
+    for (const auto &cell : dof_handler.active_cell_iterators())
       if (cell->is_locally_owned())
         {
           fe_values.reinit (cell);
@@ -613,6 +618,8 @@ namespace aspect
     // make sure that the timestep doesn't increase too fast
     if (time_step != 0)
       new_time_step = std::min(new_time_step, time_step + time_step * parameters.maximum_relative_increase_time_step);
+    else
+      new_time_step = std::min(new_time_step, parameters.maximum_first_time_step);
 
     new_time_step = termination_manager.check_for_last_time_step(std::min(new_time_step,
                                                                           parameters.maximum_time_step));
@@ -650,10 +657,7 @@ namespace aspect
 
     if (timestep_number > 1)
       {
-        typename DoFHandler<dim>::active_cell_iterator
-        cell = dof_handler.begin_active(),
-        endc = dof_handler.end();
-        for (; cell!=endc; ++cell)
+        for (const auto &cell : dof_handler.active_cell_iterators())
           if (cell->is_locally_owned())
             {
               fe_values.reinit (cell);
@@ -677,10 +681,7 @@ namespace aspect
       }
     else
       {
-        typename DoFHandler<dim>::active_cell_iterator
-        cell = dof_handler.begin_active(),
-        endc = dof_handler.end();
-        for (; cell!=endc; ++cell)
+        for (const auto &cell : dof_handler.active_cell_iterators())
           if (cell->is_locally_owned())
             {
               fe_values.reinit (cell);
@@ -719,9 +720,7 @@ namespace aspect
     FEValues<dim> mesh_points (*mapping, finite_element, mesh_support_points, update_quadrature_points);
     std::vector<types::global_dof_index> cell_dof_indices (finite_element.dofs_per_cell);
 
-    typename DoFHandler<dim>::active_cell_iterator cell = dof_handler.begin_active(),
-                                                   endc = dof_handler.end();
-    for (; cell != endc; ++cell)
+    for (const auto &cell : dof_handler.active_cell_iterators())
       if (cell->is_locally_owned())
         {
           mesh_points.reinit(cell);
@@ -766,10 +765,7 @@ namespace aspect
 
         std::vector<double> pressure_values(n_q_points);
 
-        typename DoFHandler<dim>::active_cell_iterator
-        cell = dof_handler.begin_active(),
-        endc = dof_handler.end();
-        for (; cell != endc; ++cell)
+        for (const auto &cell : dof_handler.active_cell_iterators())
           if (cell->is_locally_owned())
             {
               for (unsigned int face_no = 0; face_no < GeometryInfo<dim>::faces_per_cell; ++face_no)
@@ -804,10 +800,7 @@ namespace aspect
 
         std::vector<double> pressure_values(n_q_points);
 
-        typename DoFHandler<dim>::active_cell_iterator
-        cell = dof_handler.begin_active(),
-        endc = dof_handler.end();
-        for (; cell != endc; ++cell)
+        for (const auto &cell : dof_handler.active_cell_iterators())
           if (cell->is_locally_owned())
             {
               fe_values.reinit (cell);
@@ -832,11 +825,20 @@ namespace aspect
       const double my_temp[2] = {my_pressure, my_area};
       double temp[2];
       Utilities::MPI::sum (my_temp, mpi_communicator, temp);
+      const double pressure = temp[0];
+      const double area = temp[1];
+
+      Assert (area > 0,
+              ExcMessage("While computing the average pressure, the area/volume "
+                         "to integrate over was found to be zero or negative. This "
+                         "indicates that no appropriate surface faces were found, "
+                         "which is typically the case if the geometry model is not "
+                         "set up correctly."));
 
       if (parameters.pressure_normalization == "surface")
-        pressure_adjustment = -temp[0]/temp[1] + parameters.surface_pressure;
+        pressure_adjustment = -pressure/area + parameters.surface_pressure;
       else if (parameters.pressure_normalization == "volume")
-        pressure_adjustment = -temp[0]/temp[1];
+        pressure_adjustment = -pressure/area;
       else
         AssertThrow(false, ExcNotImplemented());
     }
@@ -863,10 +865,7 @@ namespace aspect
                                                         finite_element.base_element(introspection.variable("fluid pressure").base_index).dofs_per_cell
                                                         : finite_element.base_element(introspection.base_elements.pressure).dofs_per_cell);
             std::vector<types::global_dof_index> local_dof_indices (finite_element.dofs_per_cell);
-            typename DoFHandler<dim>::active_cell_iterator
-            cell = dof_handler.begin_active(),
-            endc = dof_handler.end();
-            for (; cell != endc; ++cell)
+            for (const auto &cell : dof_handler.active_cell_iterators())
               if (cell->is_locally_owned())
                 {
                   cell->get_dof_indices (local_dof_indices);
@@ -904,10 +903,8 @@ namespace aspect
                                                  introspection.variable("fluid pressure").first_component_index
                                                  : introspection.component_indices.pressure);
         std::vector<types::global_dof_index> local_dof_indices (finite_element.dofs_per_cell);
-        typename DoFHandler<dim>::active_cell_iterator
-        cell = dof_handler.begin_active(),
-        endc = dof_handler.end();
-        for (; cell != endc; ++cell)
+
+        for (const auto &cell : dof_handler.active_cell_iterators())
           if (cell->is_locally_owned())
             {
               // identify the first pressure dof
@@ -962,10 +959,7 @@ namespace aspect
                                                         : finite_element.base_element(introspection.base_elements.pressure).dofs_per_cell);
 
             std::vector<types::global_dof_index> local_dof_indices (finite_element.dofs_per_cell);
-            typename DoFHandler<dim>::active_cell_iterator
-            cell = dof_handler.begin_active(),
-            endc = dof_handler.end();
-            for (; cell != endc; ++cell)
+            for (const auto &cell : dof_handler.active_cell_iterators())
               if (cell->is_locally_owned())
                 {
                   cell->get_dof_indices (local_dof_indices);
@@ -1003,10 +997,7 @@ namespace aspect
         Assert(!parameters.include_melt_transport, ExcNotImplemented());
         const unsigned int pressure_component = introspection.component_indices.pressure;
         std::vector<types::global_dof_index> local_dof_indices (finite_element.dofs_per_cell);
-        typename DoFHandler<dim>::active_cell_iterator
-        cell = dof_handler.begin_active(),
-        endc = dof_handler.end();
-        for (; cell != endc; ++cell)
+        for (const auto &cell : dof_handler.active_cell_iterators())
           if (cell->is_locally_owned())
             {
               // identify the first pressure dof
@@ -1041,7 +1032,7 @@ namespace aspect
     //
     // We have to deal with several complications:
     // - we can have an FE_Q or an FE_DGP for the pressure
-    // - we might use a direct solver, so pressure and velocity is in the same block
+    // - we might use a direct solver, so pressure and velocity are in the same block
     // - we might have melt transport, where we need to operate only on p_f
     //
     // We ensure int_\Omega f = 0 by computing a correction factor
@@ -1053,9 +1044,10 @@ namespace aspect
     //
     // We can compute
     //   c = \int f = (f, 1) = (f, \sum_i \phi_i) = \sum_i (f, \phi_i) = \sum_i F_i
-    // which is just the sum over the RHS vector for FE_Q. For FE_DGP we need
-    // to restrict to 0th shape functions on each cell because this is how we
-    // represent the function 1.
+    // which is just the sum over the RHS vector for FE_Q. For FE_DGP
+    // we need to restrict to 0th shape functions on each cell,
+    // because this is the shape function that is constant 1. (The
+    // other shape functions have mean value zero.)
     //
     // To make the adjustment fnew = f - c/|\Omega|
     // note that
@@ -1124,10 +1116,7 @@ namespace aspect
                                                  introspection.variable("fluid pressure").first_component_index
                                                  : introspection.component_indices.pressure);
         std::vector<types::global_dof_index> local_dof_indices (finite_element.dofs_per_cell);
-        typename DoFHandler<dim>::active_cell_iterator
-        cell = dof_handler.begin_active(),
-        endc = dof_handler.end();
-        for (; cell != endc; ++cell)
+        for (const auto &cell : dof_handler.active_cell_iterators())
           if (cell->is_locally_owned())
             {
               // identify the first pressure dof
@@ -1148,7 +1137,7 @@ namespace aspect
         const double correction = - global_int_rhs / global_volume;
 
         // Now modify our RHS with the correction factor:
-        for (cell = dof_handler.begin_active(); cell != endc; ++cell)
+        for (const auto &cell : dof_handler.active_cell_iterators())
           if (cell->is_locally_owned())
             {
               // identify the first pressure dof
@@ -1168,8 +1157,6 @@ namespace aspect
 
         vector.compress(VectorOperation::add);
       }
-
-
   }
 
 
@@ -1261,6 +1248,14 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::apply_limiter_to_dg_solutions (const AdvectionField &advection_field)
   {
+    // TODO: Modify to more robust method
+    // Skip if this composition field is being set from the volume_of_fluid handler
+    if (!advection_field.is_temperature() &&
+        parameters.volume_of_fluid_tracking_enabled)
+      if (volume_of_fluid_handler->field_index_for_name(introspection.name_for_compositional_index(advection_field.compositional_variable))
+          != volume_of_fluid_handler->get_n_fields())
+        return;
+
     /*
      * First setup the quadrature points which are used to find the maximum and minimum solution values at those points.
      * A quadrature formula that combines all quadrature points constructed as all tensor products of
@@ -1275,7 +1270,7 @@ namespace aspect
 
     const unsigned int n_q_points_1 = quadrature_formula_1.size();
     const unsigned int n_q_points_2 = quadrature_formula_2.size();
-    const unsigned int n_q_points   = dim * n_q_points_2 *std::pow(n_q_points_1, dim-1) ;
+    const unsigned int n_q_points   = dim * n_q_points_2 * static_cast<unsigned int>(std::pow(n_q_points_1, dim-1));
 
     std::vector< Point <dim> > quadrature_points;
     quadrature_points.reserve(n_q_points);
@@ -1411,82 +1406,78 @@ namespace aspect
 
     std::vector<types::global_dof_index> local_dof_indices (finite_element.dofs_per_cell);
 
-    typename DoFHandler<dim>::active_cell_iterator
-    cell = dof_handler.begin_active(),
-    endc = dof_handler.end();
-    for (; cell != endc; ++cell)
-      {
-        if (cell->is_locally_owned())
-          {
-            cell->get_dof_indices (local_dof_indices);
-            // used to find the maximum, minimum
-            fe_values.reinit (cell);
-            fe_values[field].get_function_values(solution, values);
-            // used for the numerical integration
-            fe_values_0.reinit (cell);
-            fe_values_0[field].get_function_values(solution, values_0);
+    for (const auto &cell : dof_handler.active_cell_iterators())
+      if (cell->is_locally_owned())
+        {
+          cell->get_dof_indices (local_dof_indices);
+          // used to find the maximum, minimum
+          fe_values.reinit (cell);
+          fe_values[field].get_function_values(solution, values);
+          // used for the numerical integration
+          fe_values_0.reinit (cell);
+          fe_values_0[field].get_function_values(solution, values_0);
 
-            // Find the local max and local min
-            const double min_solution_local = *std::min_element (values.begin(), values.end());
-            const double max_solution_local = *std::max_element (values.begin(), values.end());
-            // Find the trouble cell
-            if (min_solution_local < min_solution_exact_global
-                || max_solution_local > max_solution_exact_global)
-              {
-                // Compute the cell area and cell solution average
-                double local_area = 0.0;
-                double local_solution_average = 0.0;
-                for (unsigned int q = 0; q < n_q_points_0; ++q)
-                  {
-                    local_area += fe_values_0.JxW(q);
-                    local_solution_average += values_0[q]*fe_values_0.JxW(q);
-                  }
-                local_solution_average /= local_area;
+          // Find the local max and local min
+          const double min_solution_local = *std::min_element (values.begin(), values.end());
+          const double max_solution_local = *std::max_element (values.begin(), values.end());
+          // Find the trouble cell
+          if (min_solution_local < min_solution_exact_global
+              || max_solution_local > max_solution_exact_global)
+            {
+              // Compute the cell area and cell solution average
+              double local_area = 0.0;
+              double local_solution_average = 0.0;
+              for (unsigned int q = 0; q < n_q_points_0; ++q)
+                {
+                  local_area += fe_values_0.JxW(q);
+                  local_solution_average += values_0[q]*fe_values_0.JxW(q);
+                }
+              local_solution_average /= local_area;
 
-                /*
-                 * Define theta: a scaling constant used to correct the old solution by the formula
-                 *   new_value = theta * (old_value-old_solution_cell_average)+old_solution_cell_average
-                 * where theta \in [0,1] defined as below.
-                 * After the correction, the new solution does not exceed the user-given
-                 * exact global maximum/minimum values. Meanwhile, the new solution's cell average
-                 * equals to the old solution's cell average.
-                 */
-                double theta = 1.0;
-                if (std::abs(max_solution_local-local_solution_average) > std::numeric_limits<double>::min())
-                  {
-                    theta = std::min(theta, std::abs((max_solution_exact_global-local_solution_average)
-                                                     / (max_solution_local-local_solution_average)));
-                  }
-                if (std::abs(min_solution_local-local_solution_average) > std::numeric_limits<double>::min())
-                  {
-                    theta = std::min(theta, std::abs((min_solution_exact_global-local_solution_average)
-                                                     / (min_solution_local-local_solution_average)));
-                  }
+              /*
+               * Define theta: a scaling constant used to correct the old solution by the formula
+               *   new_value = theta * (old_value-old_solution_cell_average)+old_solution_cell_average
+               * where theta \in [0,1] defined as below.
+               * After the correction, the new solution does not exceed the user-given
+               * exact global maximum/minimum values. Meanwhile, the new solution's cell average
+               * equals to the old solution's cell average.
+               */
+              double theta = 1.0;
+              if (std::abs(max_solution_local-local_solution_average) > std::numeric_limits<double>::min())
+                {
+                  theta = std::min(theta, std::abs((max_solution_exact_global-local_solution_average)
+                                                   / (max_solution_local-local_solution_average)));
+                }
+              if (std::abs(min_solution_local-local_solution_average) > std::numeric_limits<double>::min())
+                {
+                  theta = std::min(theta, std::abs((min_solution_exact_global-local_solution_average)
+                                                   / (min_solution_local-local_solution_average)));
+                }
 
-                /* Modify the advection degrees of freedom of the numerical solution.
-                 * Note that we are using DG elements, so every DoF on a locally owned cell is locally owned;
-                 * this means that we do not need to check whether the 'distributed_solution' vector actually
-                 * stores the element we read from/write to here.
-                 */
-                for (unsigned int j = 0;
-                     j < finite_element.base_element(advection_field.base_element(introspection)).dofs_per_cell;
-                     ++j)
-                  {
-                    const unsigned int support_point_index = finite_element.component_to_system_index(
-                                                               (advection_field.is_temperature()
-                                                                ?
-                                                                introspection.component_indices.temperature
-                                                                :
-                                                                introspection.component_indices.compositional_fields[advection_field.compositional_variable]
-                                                               ),
-                                                               /*dof index within component=*/ j);
-                    const double solution_value = solution(local_dof_indices[support_point_index]);
-                    const double limited_solution_value = theta * (solution_value-local_solution_average) + local_solution_average;
-                    distributed_solution(local_dof_indices[support_point_index]) = limited_solution_value;
-                  }
-              }
-          }
-      }
+              /* Modify the advection degrees of freedom of the numerical solution.
+               * Note that we are using DG elements, so every DoF on a locally owned cell is locally owned;
+               * this means that we do not need to check whether the 'distributed_solution' vector actually
+               * stores the element we read from/write to here.
+               */
+              for (unsigned int j = 0;
+                   j < finite_element.base_element(advection_field.base_element(introspection)).dofs_per_cell;
+                   ++j)
+                {
+                  const unsigned int support_point_index = finite_element.component_to_system_index(
+                                                             (advection_field.is_temperature()
+                                                              ?
+                                                              introspection.component_indices.temperature
+                                                              :
+                                                              introspection.component_indices.compositional_fields[advection_field.compositional_variable]
+                                                             ),
+                                                             /*dof index within component=*/ j);
+                  const double solution_value = solution(local_dof_indices[support_point_index]);
+                  const double limited_solution_value = theta * (solution_value-local_solution_average) + local_solution_average;
+                  distributed_solution(local_dof_indices[support_point_index]) = limited_solution_value;
+                }
+            }
+        }
+
     distributed_solution.compress(VectorOperation::insert);
     // now get back to the original vector
     solution.block(block_idx) = distributed_solution.block(block_idx);
@@ -1583,12 +1574,10 @@ namespace aspect
     // on every cell, compute the update, and then on every cell put the result into the
     // distributed_vector vector. Only after the loop over all cells do we copy distributed_vector
     // back onto the solution vector.
-    // So even though we touch some DoF twice, we always start from the same value, compute the
+    // So even though we touch some DoF more than once, we always start from the same value, compute the
     // same value, and then overwrite the same value in distributed_vector.
-    // TODO: make this more effective
-    typename DoFHandler<dim>::active_cell_iterator cell = dof_handler.begin_active(),
-                                                   endc = dof_handler.end();
-    for (; cell!=endc; ++cell)
+    // TODO: make this more efficient.
+    for (const auto &cell : dof_handler.active_cell_iterators())
       if (cell->is_locally_owned())
         {
           fe_values_C.reinit (cell);
@@ -1721,7 +1710,157 @@ namespace aspect
     old_old_solution.block(block_T) = distributed_vector.block(block_T);
 
     operator_split_reaction_vector.block(block_T) = distributed_reaction_vector.block(block_T);
+
+    initialize_current_linearization_point();
+  }
+
+
+
+  template <int dim>
+  void Simulator<dim>::initialize_current_linearization_point ()
+  {
+    // Start with a simple copy of the last timestep
     current_linearization_point = old_solution;
+
+    // If possible use an extrapolated solution from last and
+    // previous to last timestep.
+    if (timestep_number > 1)
+      {
+        // TODO: Trilinos sadd does not like ghost vectors even as input. Copy
+        // into distributed vectors for now:
+        LinearAlgebra::BlockVector distr_solution (system_rhs);
+        distr_solution = old_solution;
+        LinearAlgebra::BlockVector distr_old_solution (system_rhs);
+        distr_old_solution = old_old_solution;
+        distr_solution.sadd ((1 + time_step/old_time_step),
+                             -time_step/old_time_step,
+                             distr_old_solution);
+        current_linearization_point = distr_solution;
+      }
+  }
+
+
+
+  template <int dim>
+  void Simulator<dim>::interpolate_material_output_into_advection_field (const AdvectionField &adv_field)
+  {
+    // we need some temporary vectors to store our updates to composition in
+    // before we copy them over to the solution vector in the end
+    LinearAlgebra::BlockVector distributed_vector (introspection.index_sets.system_partitioning,
+                                                   mpi_communicator);
+
+    if (adv_field.is_temperature())
+      pcout << "   Copying properties into prescribed temperature field."
+            << std::endl;
+    else
+      {
+        const std::string name_of_field = introspection.name_for_compositional_index(adv_field.compositional_variable);
+
+        pcout << "   Copying properties into prescribed compositional field " + name_of_field + "."
+              << std::endl;
+      }
+
+    // Create an FEValues object that allows us to interpolate onto the solution
+    // vector. To make this happen, we need to have a quadrature formula that
+    // consists of the support points of the advection field finite element
+    const Quadrature<dim> quadrature(dof_handler.get_fe().base_element(adv_field.base_element(introspection))
+                                     .get_unit_support_points());
+
+    FEValues<dim> fe_values (*mapping,
+                             dof_handler.get_fe(),
+                             quadrature,
+                             update_quadrature_points | update_values | update_gradients);
+
+    std::vector<types::global_dof_index> local_dof_indices (dof_handler.get_fe().dofs_per_cell);
+    MaterialModel::MaterialModelInputs<dim> in(quadrature.size(), introspection.n_compositional_fields);
+    MaterialModel::MaterialModelOutputs<dim> out(quadrature.size(), introspection.n_compositional_fields);
+
+    // add the prescribed field outputs that will be used for interpolating
+    material_model->create_additional_named_outputs(out);
+
+    MaterialModel::PrescribedFieldOutputs<dim> *prescribed_field_out
+      = out.template get_additional_output<MaterialModel::PrescribedFieldOutputs<dim> >();
+    MaterialModel::PrescribedTemperatureOutputs<dim> *prescribed_temperature_out
+      = out.template get_additional_output<MaterialModel::PrescribedTemperatureOutputs<dim> >();
+
+    // check if the material model computes the correct prescribed field outputs
+    if (adv_field.is_temperature())
+      {
+        AssertThrow(prescribed_temperature_out != nullptr,
+                    ExcMessage("You are trying to use a prescribed temperature field, "
+                               "but the material model you use does not support interpolating properties "
+                               "(it does not create PrescribedTemperatureOutputs, which is required for this "
+                               "temperature field type)."));
+      }
+    else
+      {
+        AssertThrow(prescribed_field_out != nullptr,
+                    ExcMessage("You are trying to use a prescribed advection field, "
+                               "but the material model you use does not support interpolating properties "
+                               "(it does not create PrescribedFieldOutputs, which is required for this "
+                               "advection field type)."));
+      }
+
+    // Make a loop first over all cells, and then over all degrees of freedom in each element
+    // to interpolate material properties onto a solution vector.
+
+    // Note that the values for some degrees of freedom are set more than once in the loop
+    // below where we assign the new values to distributed_vector (if they are located on the
+    // interface between cells), as we loop over all cells, and then over all degrees of freedom
+    // on each cell. But even though we touch some DoF more than once, we always compute the same value,
+    // and then overwrite the same value in distributed_vector.
+    for (const auto &cell : dof_handler.active_cell_iterators())
+      if (cell->is_locally_owned())
+        {
+          fe_values.reinit (cell);
+          cell->get_dof_indices (local_dof_indices);
+          in.reinit(fe_values, cell, introspection, solution);
+
+          material_model->evaluate(in, out);
+
+          // Interpolate material properties onto the advection fields
+          const unsigned int advection_dofs_per_cell =
+            dof_handler.get_fe().base_element(adv_field.base_element(introspection)).dofs_per_cell;
+
+          for (unsigned int j=0; j<advection_dofs_per_cell; ++j)
+            {
+              const unsigned int dof_idx
+                = dof_handler.get_fe().component_to_system_index(adv_field.component_index(introspection),
+                                                                 /*dof index within component=*/ j);
+
+              // Skip degrees of freedom that are not locally owned. These
+              // will eventually be handled by one of the other processors.
+              if (dof_handler.locally_owned_dofs().is_element(local_dof_indices[dof_idx]))
+                {
+                  if (adv_field.is_temperature())
+                    {
+                      Assert(numbers::is_finite(prescribed_temperature_out->prescribed_temperature_outputs[j]),
+                             ExcMessage("You are trying to use a prescribed advection field, "
+                                        "but the material model you use does not fill the PrescribedFieldOutputs "
+                                        "for your prescribed field, which is required for this method."));
+
+                      distributed_vector(local_dof_indices[dof_idx])
+                        = prescribed_temperature_out->prescribed_temperature_outputs[j];
+                    }
+                  else
+                    {
+                      Assert(numbers::is_finite(prescribed_field_out->prescribed_field_outputs[j][adv_field.compositional_variable]),
+                             ExcMessage("You are trying to use a prescribed advection field, "
+                                        "but the material model you use does not fill the PrescribedFieldOutputs "
+                                        "for your prescribed field, which is required for this method."));
+
+                      distributed_vector(local_dof_indices[dof_idx])
+                        = prescribed_field_out->prescribed_field_outputs[j][adv_field.compositional_variable];
+                    }
+                }
+            }
+        }
+
+    // Put the final values into the solution vector, also
+    // updating the ghost elements of the 'solution' vector.
+    const unsigned int advection_block = adv_field.block_index(introspection);
+    distributed_vector.block(advection_block).compress(VectorOperation::insert);
+    solution.block(advection_block) = distributed_vector.block(advection_block);
   }
 
 
@@ -1734,7 +1873,7 @@ namespace aspect
     if (parameters.formulation_mass_conservation == Parameters<dim>::Formulation::MassConservation::ask_material_model)
       {
         if (material_model->is_compressible() == true)
-          parameters.formulation_mass_conservation = Parameters<dim>::Formulation::MassConservation::isothermal_compression;
+          parameters.formulation_mass_conservation = Parameters<dim>::Formulation::MassConservation::isentropic_compression;
         else
           parameters.formulation_mass_conservation = Parameters<dim>::Formulation::MassConservation::incompressible;
       }
@@ -1748,7 +1887,7 @@ namespace aspect
                                "but the provided material model reports that it is compressible. "
                                "Please check the consistency of your material model and selected formulation."));
       }
-    else if (parameters.formulation_mass_conservation == Parameters<dim>::Formulation::MassConservation::isothermal_compression
+    else if (parameters.formulation_mass_conservation == Parameters<dim>::Formulation::MassConservation::isentropic_compression
              || parameters.formulation_mass_conservation == Parameters<dim>::Formulation::MassConservation::reference_density_profile
              || parameters.formulation_mass_conservation == Parameters<dim>::Formulation::MassConservation::implicit_reference_density_profile)
       {
@@ -1762,17 +1901,17 @@ namespace aspect
     // Ensure that the correct heating terms have been selected for the chosen combined formulation
     // Note that if the combined formulation is 'custom' there is no check
     // (useful e.g. for smaller scale lithospheric models with shear heating but without adiabatic heating)
-    if (parameters.formulation == Parameters<dim>::Formulation::isothermal_compression)
+    if (parameters.formulation == Parameters<dim>::Formulation::isentropic_compression)
       {
         AssertThrow(heating_model_manager.adiabatic_heating_enabled(),
                     ExcMessage("ASPECT detected an inconsistency in the provided input file. "
-                               "The `isothermal compression' formulation expects adiabatic heating to be enabled, "
+                               "The `isentropic compression' formulation expects adiabatic heating to be enabled, "
                                "but the `adiabatic heating' plugin has not been selected in the input file. "
                                "Please check the consistency of your input file."));
 
         AssertThrow(heating_model_manager.shear_heating_enabled(),
                     ExcMessage("ASPECT detected an inconsistency in the provided input file. "
-                               "The `isothermal compression' formulation expects shear heating to be enabled, "
+                               "The `isentropic compression' formulation expects shear heating to be enabled, "
                                "but the `shear heating' plugin has not been selected in the input file. "
                                "Please check the consistency of your input file."));
       }
@@ -1818,6 +1957,72 @@ namespace aspect
   }
 
 
+  template <int dim>
+  void
+  Simulator<dim>::replace_outflow_boundary_ids(const unsigned int offset)
+  {
+    const QGauss<dim-1> quadrature_formula (finite_element.base_element(introspection.base_elements.temperature).degree+1);
+
+    FEFaceValues<dim> fe_face_values (*mapping,
+                                      finite_element,
+                                      quadrature_formula,
+                                      update_values   | update_normal_vectors |
+                                      update_quadrature_points | update_JxW_values);
+
+    std::vector<Tensor<1,dim> > face_current_velocity_values (fe_face_values.n_quadrature_points);
+
+    // Loop over all of the boundary faces, ...
+    for (const auto &cell : dof_handler.active_cell_iterators())
+      if (!cell->is_artificial())
+        for (unsigned int face_number=0; face_number<GeometryInfo<dim>::faces_per_cell; ++face_number)
+          {
+            typename DoFHandler<dim>::face_iterator face = cell->face(face_number);
+            if (face->at_boundary())
+              {
+                Assert(face->boundary_id() <= offset,
+                       ExcMessage("If you do not 'Allow fixed temperature/composition on outflow boundaries', "
+                                  "you are only allowed to use boundary ids between 0 and 128."));
+
+                fe_face_values.reinit (cell, face_number);
+                fe_face_values[introspection.extractors.velocities].get_function_values(current_linearization_point,
+                                                                                        face_current_velocity_values);
+
+                // ... check if the face is an outflow boundary by integrating the normal velocities
+                // (flux through the boundary) as: int u*n ds = Sum_q u(x_q)*n(x_q) JxW(x_q)...
+                double integrated_flow = 0;
+                for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)
+                  {
+                    integrated_flow += (face_current_velocity_values[q] * fe_face_values.normal_vector(q)) *
+                                       fe_face_values.JxW(q);
+                  }
+
+                // ... and change the boundary id of any outflow boundary faces.
+                if (integrated_flow > 0)
+                  face->set_boundary_id(face->boundary_id() + offset);
+              }
+          }
+  }
+
+
+  template <int dim>
+  void
+  Simulator<dim>::restore_outflow_boundary_ids(const unsigned int offset)
+  {
+    // Loop over all of the boundary faces...
+    for (const auto &cell : dof_handler.active_cell_iterators())
+      if (!cell->is_artificial())
+        for (unsigned int face_number=0; face_number<GeometryInfo<dim>::faces_per_cell; ++face_number)
+          {
+            typename DoFHandler<dim>::face_iterator face = cell->face(face_number);
+            if (face->at_boundary())
+              {
+                // ... and reset all of the boundary ids we changed in replace_outflow_boundary_ids above.
+                if (face->boundary_id() >= offset)
+                  face->set_boundary_id(face->boundary_id() - offset);
+              }
+          }
+  }
+
 
   namespace
   {
@@ -1848,7 +2053,6 @@ namespace aspect
     std::set<types::boundary_id> boundary_indicator_lists[6]
       = { boundary_velocity_manager.get_zero_boundary_velocity_indicators(),
           boundary_velocity_manager.get_tangential_boundary_velocity_indicators(),
-          parameters.free_surface_boundary_indicators,
           std::set<types::boundary_id>()   // to be prescribed velocity and traction boundary indicators
         };
 
@@ -2010,8 +2214,6 @@ namespace aspect
                      is_element( (*p).first.second, boundary_indicator_lists[0] ) == false && // zero velocity
                      is_element( (*p).first.first, boundary_indicator_lists[1] ) == false && // tangential velocity
                      is_element( (*p).first.second, boundary_indicator_lists[1] ) == false && // tangential velocity
-                     is_element( (*p).first.first, boundary_indicator_lists[2] ) == false && // free surface
-                     is_element( (*p).first.second, boundary_indicator_lists[2] ) == false && // free surface
                      is_element( (*p).first.first, boundary_indicator_lists[3] ) == false && // prescribed traction or velocity
                      is_element( (*p).first.second, boundary_indicator_lists[3] ) == false,  // prescribed traction or velocity
                      ExcMessage("Periodic boundaries must not have boundary conditions set."));
@@ -2163,6 +2365,7 @@ namespace aspect
   template void Simulator<dim>::denormalize_pressure(const double pressure_adjustment, \
                                                      LinearAlgebra::BlockVector &vector, \
                                                      const LinearAlgebra::BlockVector &relevant_vector) const; \
+  template void Simulator<dim>::compute_pressure_scaling_factor (); \
   template double Simulator<dim>::get_maximal_velocity (const LinearAlgebra::BlockVector &solution) const; \
   template std::pair<double,double> Simulator<dim>::get_extrapolated_advection_field_range (const AdvectionField &advection_field) const; \
   template void Simulator<dim>::maybe_write_timing_output () const; \
@@ -2178,7 +2381,10 @@ namespace aspect
   template void Simulator<dim>::interpolate_onto_velocity_system(const TensorFunction<1,dim> &func, LinearAlgebra::Vector &vec);\
   template void Simulator<dim>::apply_limiter_to_dg_solutions(const AdvectionField &advection_field); \
   template void Simulator<dim>::compute_reactions(); \
+  template void Simulator<dim>::interpolate_material_output_into_advection_field(const AdvectionField &adv_field); \
   template void Simulator<dim>::check_consistency_of_formulation(); \
+  template void Simulator<dim>::replace_outflow_boundary_ids(const unsigned int boundary_id_offset); \
+  template void Simulator<dim>::restore_outflow_boundary_ids(const unsigned int boundary_id_offset); \
   template void Simulator<dim>::check_consistency_of_boundary_conditions() const; \
   template double Simulator<dim>::compute_initial_newton_residual(const LinearAlgebra::BlockVector &linearized_stokes_initial_guess); \
   template double Simulator<dim>::compute_Eisenstat_Walker_linear_tolerance(const bool EisenstatWalkerChoiceOne, \

@@ -52,41 +52,29 @@ namespace aspect
         MaterialModel::MaterialModelOutputs<dim> out(n_q_points,
                                                      this->n_compositional_fields());
 
-        // Set up cell iterator for looping
-        typename DoFHandler<dim>::active_cell_iterator
-        cell = this->get_dof_handler().begin_active(),
-        endc = this->get_dof_handler().end();
-
         // Loop over cells and calculate tauISA in each one
         // Note that we start after timestep 0 because we need the strain rate,
         // which doesn't exist during the initial step
-        for (; cell != endc; ++cell)
-          {
-            if (cell->is_locally_owned() && this->get_timestep_number() > 0)
-              {
+        for (const auto &cell : this->get_dof_handler().active_cell_iterators())
+          if (cell->is_locally_owned() && this->get_timestep_number() > 0)
+            {
 
-                // Fill the material model objects for the cell (for strain rate)
-                fe_values.reinit(cell);
-                in.reinit(fe_values, cell, this->introspection(),
-                          this->get_solution(), true);
+              // Fill the material model objects for the cell (for strain rate)
+              fe_values.reinit(cell);
+              in.reinit(fe_values, cell, this->introspection(),
+                        this->get_solution(), true);
 
-                // Calculate eigenvalues of strain rate and take maximum (absolute value)
-                // to get tauISA, the timescale for grain rotation toward the infinite strain axis
-#if DEAL_II_VERSION_GTE(9,0,0)
-                // eigenvalues() is not present in older dealii versions
-                const SymmetricTensor<2, dim> strain_rate = in.strain_rate[0];
-                const std::array<double, dim> strain_rate_eigenvalues = eigenvalues(
-                                                                          strain_rate);
-                const double lambda1 = std::max(std::abs(strain_rate_eigenvalues[0]),
-                                                std::abs(strain_rate_eigenvalues[dim-1]));
-                const double tauISA = 1.0 / lambda1;
+              // Calculate eigenvalues of strain rate and take maximum (absolute value)
+              // to get tauISA, the timescale for grain rotation toward the infinite strain axis
+              const SymmetricTensor<2, dim> strain_rate = in.strain_rate[0];
+              const std::array<double, dim> strain_rate_eigenvalues = eigenvalues(
+                                                                        strain_rate);
+              const double lambda1 = std::max(std::abs(strain_rate_eigenvalues[0]),
+                                              std::abs(strain_rate_eigenvalues[dim-1]));
+              const double tauISA = 1.0 / lambda1;
 
-                (*return_value.second)(cell->active_cell_index()) = tauISA;
-#else
-                AssertThrow (false, ExcMessage ("This postprocessor cannot be used with deal.II versions before 9.0."));
-#endif
-              }
-          }
+              (*return_value.second)(cell->active_cell_index()) = tauISA;
+            }
 
         return return_value;
       }

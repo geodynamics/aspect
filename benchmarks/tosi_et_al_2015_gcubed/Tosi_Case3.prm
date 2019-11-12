@@ -1,5 +1,7 @@
 include Tosi_base.prm
 
+set Additional shared libraries            = ./libtosi_benchmark.so
+
 set Output directory                       = Case3_6
 
 # Between the cases the "Pressure viscosity parameter" ($\Delta_{\eta}_z$),
@@ -10,7 +12,7 @@ subsection Material model
 
   subsection Tosi benchmark
     set Pressure viscosity parameter  = 10
-    set Yield stress		      = 0
+    set Yield stress          = 0
     set Nonlinear viscosity constant  = 0
   end
 end

@@ -64,7 +64,7 @@ namespace aspect
       void
       parse_parameters (ParameterHandler &prm);
 
-      std::shared_ptr<Utilities::AsciiDataBoundary<dim> > member;
+      std::unique_ptr<Utilities::AsciiDataBoundary<dim> > member;
 
       std::set<types::boundary_id> boundary_ids;
   };
@@ -78,15 +78,14 @@ namespace aspect
   void
   AsciiBoundaryMember<dim>::initialize ()
   {
-    const std::map<types::boundary_id,std::shared_ptr<BoundaryVelocity::Interface<dim> > >
-    bvs = this->get_prescribed_boundary_velocity();
-    for (typename std::map<types::boundary_id,std::shared_ptr<BoundaryVelocity::Interface<dim> > >::const_iterator
-         p = bvs.begin();
-         p != bvs.end(); ++p)
-      {
-        if (p->second.get() == this)
-          boundary_ids.insert(p->first);
-      }
+    const std::map<types::boundary_id,std::vector<std::unique_ptr<BoundaryVelocity::Interface<dim> > > > &
+    bvs = this->get_boundary_velocity_manager().get_active_boundary_velocity_conditions();
+    for (const auto &boundary : bvs)
+      for (const auto &p : boundary.second)
+        {
+          if (p.get() == this)
+            boundary_ids.insert(boundary.first);
+        }
     AssertThrow(*(boundary_ids.begin()) != numbers::invalid_boundary_id,
                 ExcMessage("Did not find the boundary indicator for the prescribed data plugin."));
 
@@ -137,7 +136,7 @@ namespace aspect
   {
     prm.enter_subsection("Boundary velocity model");
     {
-      member.reset(new Utilities::AsciiDataBoundary<dim>);
+      member = std_cxx14::make_unique<Utilities::AsciiDataBoundary<dim>>();
       member->initialize_simulator(this->get_simulator());
 
       member->parse_parameters(prm);

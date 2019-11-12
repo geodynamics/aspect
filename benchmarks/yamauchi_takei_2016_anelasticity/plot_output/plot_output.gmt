@@ -1,0 +1,48 @@
+#!/bin/bash
+
+###############################################################################################
+# Plot output of Yamauchi & Takei 2016 anelasticity model benchmark
+###############################################################################################
+
+gmt gmtset FONT_LABEL 12p
+gmt gmtset FONT_ANNOT_PRIMARY 12p
+
+make_bench_plot(){
+	
+	ps="YT16_benchmark.ps"
+	jpg="YT16_benchmark.jpg"
+	rgn="-R400/1400/4.1/4.7"
+	scale="-JX12c/8c"
+	col_arr=(red blue)
+	
+	gmt psbasemap $rgn $scale -B0 -K > $ps
+	
+	i=0
+	for z in $(seq 50 25 75); do
+		awk 'NR>1{if ($3==(100-'$z')*1000){print $7-273}}' ${outfold}/point_values.txt > temp.out
+	    awk '{if ($2==((100-'$z')*1000) && NR>4) {print $3}}' $boxfile > vs.in
+		paste temp.out vs.in | gmt psxy $rgn $scale -W1p,${col_arr[$i]} -O -K >> $ps
+		gmt psxy ${z}km_picked.txt $rgn $scale -W1p,${col_arr[$i]},'.' -O -K >> $ps
+		i=$[${i}+1]
+		
+	done	
+	
+	gmt psbasemap $rgn $scale -Bpx100+l"Temperature (@~\260@~C)" -Bpy0.1f0.01+l"V@-S@- (km s@+-1@+)" -BWSne -O -K >> $ps 
+	
+	gmt pslegend -R0/1/0/1 $scale -Dx0.25c/0.25c+w7.1c+jBL -F+gwhite+p0.75p+r4p -O << EOF >> $ps
+	N 1
+	S 0.3c - 0.5c - 1p,red,. 0.8c 50 km (Digitized from Figure 20)
+	S 0.3c - 0.5c - 1p,red 0.8c 50 km ASPECT output
+	S 0.3c - 0.5c - 1p,blue,. 0.8c 75 km (Digitized from Figure 20)
+	S 0.3c - 0.5c - 1p,blue 0.8c 75 km ASPECT output
+EOF
+	
+	
+	gmt ps2raster $ps -Tj -E300 -A0.25c -P -Z
+	open $jpg
+	rm *.in *.out
+}
+	
+outfold="../output_yamauchi_takei_2016_anelasticity"
+boxfile="../../../data/initial-temperature/ascii-data/test/box_2d_Vs_YT16.txt"
+make_bench_plot

@@ -1,0 +1,73 @@
+
+Number of active cells: 64 (on 4 levels)
+Number of degrees of freedom: 948 (578+81+289)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.816 m/s, 1.37 m/s
+     Temperature min/avg/max:            0 K, 0.1027 K, 1 K
+     Heat fluxes through boundary parts: -6.27e-08 W, 0 W, -4.888e-07 W, -5.556e-06 W
+     Writing graphical output:           output-supg/solution/solution-00000
+
+*** Timestep 1:  t=0.0883883 seconds
+   Solving temperature system... 9 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.816 m/s, 1.37 m/s
+     Temperature min/avg/max:            -0.07756 K, 0.1026 K, 1.184 K
+     Heat fluxes through boundary parts: -0.0005422 W, 2.784e-05 W, -0.004388 W, -0.04871 W
+
+*** Timestep 2:  t=0.176777 seconds
+   Solving temperature system... 9 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.816 m/s, 1.37 m/s
+     Temperature min/avg/max:            -0.1149 K, 0.1024 K, 1.194 K
+     Heat fluxes through boundary parts: -0.001294 W, 1.494e-05 W, -0.004375 W, -0.04951 W
+     Writing graphical output:           output-supg/solution/solution-00001
+
+*** Timestep 3:  t=0.265165 seconds
+   Solving temperature system... 9 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.816 m/s, 1.37 m/s
+     Temperature min/avg/max:            -0.1392 K, 0.1023 K, 1.062 K
+     Heat fluxes through boundary parts: -0.001992 W, -8.314e-05 W, -0.00428 W, -0.04988 W
+     Writing graphical output:           output-supg/solution/solution-00002
+
+*** Timestep 4:  t=0.353553 seconds
+   Solving temperature system... 9 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.816 m/s, 1.37 m/s
+     Temperature min/avg/max:            -0.1428 K, 0.1022 K, 1.044 K
+     Heat fluxes through boundary parts: 0.0007492 W, -0.0001964 W, -0.004209 W, -0.04905 W
+     Writing graphical output:           output-supg/solution/solution-00003
+
+*** Timestep 5:  t=0.441942 seconds
+   Solving temperature system... 9 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.816 m/s, 1.37 m/s
+     Temperature min/avg/max:            -0.1388 K, 0.102 K, 1.017 K
+     Heat fluxes through boundary parts: 0.006001 W, -2.352e-05 W, -0.003868 W, -0.04637 W
+     Writing graphical output:           output-supg/solution/solution-00004
+
+*** Timestep 6:  t=0.5 seconds
+   Solving temperature system... 9 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.816 m/s, 1.37 m/s
+     Temperature min/avg/max:            -0.1352 K, 0.1019 K, 0.9727 K
+     Heat fluxes through boundary parts: 0.008709 W, 0.0003185 W, -0.00336 W, -0.04345 W
+     Writing graphical output:           output-supg/solution/solution-00005
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

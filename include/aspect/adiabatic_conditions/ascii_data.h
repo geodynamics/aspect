@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -19,8 +19,8 @@
 */
 
 
-#ifndef _aspect__adiabatic_conditions_ascii_data_h
-#define _aspect__adiabatic_conditions_ascii_data_h
+#ifndef _aspect_adiabatic_conditions_ascii_data_h
+#define _aspect_adiabatic_conditions_ascii_data_h
 
 
 #include <aspect/adiabatic_conditions/interface.h>
@@ -54,7 +54,7 @@ namespace aspect
          * adiabatic conditions along a vertical transect of the geometry
          * based on the given material model and other quantities.
          */
-        virtual void initialize ();
+        void initialize () override;
 
         // avoid -Woverloaded-virtual:
         using Utilities::AsciiDataProfile<dim>::initialize;
@@ -69,30 +69,28 @@ namespace aspect
          * profile. This way the plugin behaves differently at initialization
          * time of the adiabatic conditions and during the main model run.
          */
-        virtual bool is_initialized() const;
+        bool is_initialized() const override;
 
         /**
          * Return the adiabatic temperature at a given point of the domain.
          */
-        virtual double temperature (const Point<dim> &p) const;
+        double temperature (const Point<dim> &p) const override;
 
         /**
          * Return the adiabatic pressure at a given point of the domain.
          */
-        virtual double pressure (const Point<dim> &p) const;
+        double pressure (const Point<dim> &p) const override;
 
         /**
          * Return the reference density at a given point of the domain.
          */
-        virtual double density (const Point<dim> &p) const;
+        double density (const Point<dim> &p) const override;
 
         /**
          * Return the derivative of the density with respect to depth
          * at the given point @p p.
          */
-        virtual
-        double density_derivative (const Point<dim> &p) const;
-
+        double density_derivative (const Point<dim> &p) const override;
 
         /**
          * Declare the parameters for the input files.
@@ -105,7 +103,7 @@ namespace aspect
          * Read the parameters from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
 
       private:
 

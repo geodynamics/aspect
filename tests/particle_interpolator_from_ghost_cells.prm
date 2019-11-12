@@ -79,6 +79,7 @@ subsection Postprocess
   set List of postprocessors = particles, particle count statistics
 
   subsection Visualization
+    set Interpolate output = false
     set Time between graphical output = 0
     set List of output variables = particle count, partition
   end

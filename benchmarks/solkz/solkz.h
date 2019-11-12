@@ -747,12 +747,9 @@ namespace aspect
         {
           AnalyticSolutions::FunctionSolKz<dim> ref_func(this->introspection().n_components);
 
-          if (dynamic_cast<const SolKzMaterial<dim> *>(&this->get_material_model()) == NULL)
-            {
-              AssertThrow(false,
-                          ExcMessage(
-                            "Postprocessor SolKzPostprocessor only works with the material model SolKzn."));
-            }
+          AssertThrow(Plugins::plugin_type_matches<const SolKzMaterial<dim>>(this->get_material_model()),
+                      ExcMessage(
+                        "Postprocessor SolKzPostprocessor only works with the material model SolKzn."));
 
           const QGauss<dim> quadrature_formula(this->introspection().polynomial_degree.velocities + 2);
 
@@ -795,12 +792,10 @@ namespace aspect
                                             VectorTools::L2_norm,
                                             &comp_p);
 
-          const double u_l1 = Utilities::MPI::sum(cellwise_errors_u.l1_norm(), this->get_mpi_communicator());
-          const double p_l1 = Utilities::MPI::sum(cellwise_errors_p.l1_norm(), this->get_mpi_communicator());
-          const double u_l2 = std::sqrt(
-                                Utilities::MPI::sum(cellwise_errors_ul2.norm_sqr(), this->get_mpi_communicator()));
-          const double p_l2 = std::sqrt(
-                                Utilities::MPI::sum(cellwise_errors_pl2.norm_sqr(), this->get_mpi_communicator()));
+          const double u_l1 = VectorTools::compute_global_error(this->get_triangulation(), cellwise_errors_u, VectorTools::L1_norm);
+          const double p_l1 = VectorTools::compute_global_error(this->get_triangulation(), cellwise_errors_p, VectorTools::L1_norm);
+          const double u_l2 = VectorTools::compute_global_error(this->get_triangulation(), cellwise_errors_ul2, VectorTools::L2_norm);
+          const double p_l2 = VectorTools::compute_global_error(this->get_triangulation(), cellwise_errors_pl2, VectorTools::L2_norm);
 
           std::ostringstream os;
           os << std::scientific << u_l1

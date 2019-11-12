@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -36,7 +36,7 @@ namespace aspect
     {
       /**
        * A class derived from DataPostprocessor that outputs the temperature
-       anomaly (temperature-depth average of temperature).
+       * anomaly (temperature-depth average of temperature).
        */
       template <int dim>
       class TemperatureAnomaly
@@ -47,14 +47,12 @@ namespace aspect
         public:
           TemperatureAnomaly ();
 
-          virtual
           void
           evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
-                                std::vector<Vector<double> > &computed_quantities) const;
+                                std::vector<Vector<double> > &computed_quantities) const override;
 
-          virtual
           void
-          update ();
+          update () override;
 
           /**
            * Declare the parameters this class takes through input files.
@@ -66,9 +64,8 @@ namespace aspect
           /**
            * Read the parameters this class declares from the parameter file.
            */
-          virtual
           void
-          parse_parameters (ParameterHandler &prm);
+          parse_parameters (ParameterHandler &prm) override;
 
         private:
           /**

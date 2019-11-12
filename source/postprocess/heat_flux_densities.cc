@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -45,13 +45,9 @@ namespace aspect
       std::map<types::boundary_id, double> local_boundary_fluxes;
       std::map<types::boundary_id, double> local_areas;
 
-      typename DoFHandler<dim>::active_cell_iterator
-      cell = this->get_dof_handler().begin_active(),
-      endc = this->get_dof_handler().end();
-
       // Compute the area and heat flux of each boundary that lives on this processor.
       // Finally, sum over the processors and compute the ratio between the
-      for (; cell!=endc; ++cell)
+      for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
           for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
             if (cell->at_boundary(f))
@@ -72,12 +68,10 @@ namespace aspect
           = this->get_geometry_model().get_used_boundary_indicators ();
         std::vector<double> local_boundary_fluxes_vector;
         std::vector<double> local_areas_vector;
-        for (std::set<types::boundary_id>::const_iterator
-             p = boundary_indicators.begin();
-             p != boundary_indicators.end(); ++p)
+        for (const auto id : boundary_indicators)
           {
-            local_boundary_fluxes_vector.push_back (local_boundary_fluxes[*p]);
-            local_areas_vector.push_back (local_areas[*p]);
+            local_boundary_fluxes_vector.push_back (local_boundary_fluxes[id]);
+            local_areas_vector.push_back (local_areas[id]);
           }
 
         // then collect contributions from all processors
@@ -88,10 +82,11 @@ namespace aspect
 
         // and now take them apart into the global map again and compute ratios
         unsigned int index = 0;
-        for (std::set<types::boundary_id>::const_iterator
-             p = boundary_indicators.begin();
-             p != boundary_indicators.end(); ++p, ++index)
-          global_boundary_flux_densities[*p] = global_values[index]/global_areas[index];
+        for (const auto id : boundary_indicators)
+          {
+            global_boundary_flux_densities[id] = global_values[index]/global_areas[index];
+            ++index;
+          }
       }
 
       // now add all of the computed heat fluxes to the statistics object
@@ -134,20 +129,27 @@ namespace aspect
   {
     ASPECT_REGISTER_POSTPROCESSOR(HeatFluxDensities,
                                   "heat flux densities",
-                                  "A postprocessor that computes some statistics about "
-                                  "the (conductive) heat flux density for each boundary "
-                                  "id. The heat flux density is computed in outward "
-                                  "direction, i.e., from the domain to the outside, using the "
-                                  "formula $\\frac{1}{|\\Gamma_i|} \\int_{\\Gamma_i} -k \\nabla T \\cdot \\mathbf n$ "
-                                  "where $\\Gamma_i$ is the part of the boundary with indicator $i$, "
-                                  "$k$ is the thermal conductivity as reported by the material model, "
-                                  "$T$ is the temperature, and $\\mathbf n$ is the outward normal. "
-                                  "Note that the quantity so computed does not include any energy "
-                                  "transported across the boundary by material transport in cases "
-                                  "where $\\mathbf u \\cdot \\mathbf n \\neq 0$."
+                                  "A postprocessor that computes some statistics "
+                                  "about the heat flux density for each boundary id. "
+                                  "The heat flux density across each boundary "
+                                  "is computed in outward "
+                                  "direction, i.e., from the domain to the "
+                                  "outside. The heat flux is computed as sum "
+                                  "of advective heat flux and conductive heat "
+                                  "flux through Neumann boundaries, both "
+                                  "computed as integral over the boundary area, "
+                                  "and conductive heat flux through Dirichlet "
+                                  "boundaries, which is computed using the "
+                                  "consistent boundary flux method as described "
+                                  "in ``Gresho, Lee, Sani, Maslanik, Eaton (1987). "
+                                  "The consistent Galerkin FEM for computing "
+                                  "derived boundary quantities in thermal and or "
+                                  "fluids problems. International Journal for "
+                                  "Numerical Methods in Fluids, 7(4), 371-394.''"
                                   "\n\n"
-                                  "Note that the ``heat flux'' postprocessor computes the same "
-                                  "quantity as the one here, but not divided by the area of "
+                                  "Note that the ``heat flux statistics'' "
+                                  "postprocessor computes the same quantity as "
+                                  "the one here, but not divided by the area of "
                                   "the surface. In other words, it computes the "
                                   "\\textit{total} heat flux through each boundary."
                                  )

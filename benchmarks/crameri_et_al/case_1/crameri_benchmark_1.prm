@@ -100,9 +100,11 @@ subsection Boundary velocity model
   set Zero velocity boundary indicators       = bottom
 end
 
-subsection Free surface
-  set Free surface boundary indicators = top
-  set Free surface stabilization theta = 0.5
+subsection Mesh deformation
+  set Mesh deformation boundary indicators = top: free surface
+  subsection Free surface
+    set Free surface stabilization theta = 0.5
+  end
 end
 
 subsection Compositional fields

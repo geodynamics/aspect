@@ -47,35 +47,33 @@ namespace aspect
         public:
           CompositionalVector ();
 
-          virtual
           std::vector<std::string>
-          get_names () const;
+          get_names () const override;
 
-          virtual
           std::vector<DataComponentInterpretation::DataComponentInterpretation>
-          get_data_component_interpretation () const;
+          get_data_component_interpretation () const override;
 
-          virtual
           UpdateFlags
-          get_needed_update_flags () const;
+          get_needed_update_flags () const override;
 
-          virtual
           void
           evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
-                                std::vector<Vector<double> > &computed_quantities) const;
+                                std::vector<Vector<double> > &computed_quantities) const override;
 
           static
           void
           declare_parameters (ParameterHandler &prm);
 
-          virtual
           void
-          parse_parameters (ParameterHandler &prm);
+          parse_parameters (ParameterHandler &prm) override;
 
         private:
-          /* Names of vector fields. */
+          /**
+           * Names of vector fields.
+           */
           std::vector<std::string> vector_names;
-          /*
+
+          /**
            * Stores sets of compositional field indices to
            * be visualized together as vector fields.
            */

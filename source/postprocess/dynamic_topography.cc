@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -67,7 +67,7 @@ namespace aspect
                                       quadrature_formula,
                                       update_values |
                                       update_gradients |
-                                      update_q_points |
+                                      update_quadrature_points |
                                       update_JxW_values);
 
       FEFaceValues<dim> fe_face_values (this->get_mapping(),
@@ -76,7 +76,7 @@ namespace aspect
                                         update_JxW_values |
                                         update_values |
                                         update_gradients |
-                                        update_q_points);
+                                        update_quadrature_points);
 
       // Storage for shape function values for the current solution.
       // Used for constructing the known side of the CBF system.
@@ -111,96 +111,91 @@ namespace aspect
 
       // Loop over all of the surface cells and if one less than h/3 away from
       // one of the top or bottom boundaries, assemble CBF system for it.
-      typename DoFHandler<dim>::active_cell_iterator
-      cell = this->get_dof_handler().begin_active(),
-      endc = this->get_dof_handler().end();
+      for (const auto &cell : this->get_dof_handler().active_cell_iterators())
+        if (cell->is_locally_owned() && cell->at_boundary())
+          {
+            // see if the cell is at the *top* or *bottom* boundary, not just any boundary
+            unsigned int face_idx = numbers::invalid_unsigned_int;
+            for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+              {
+                const double depth_face_center = this->get_geometry_model().depth (cell->face(f)->center());
+                const double upper_depth_cutoff = cell->face(f)->minimum_vertex_distance()/3.0;
+                const double lower_depth_cutoff = this->get_geometry_model().maximal_depth() - cell->face(f)->minimum_vertex_distance()/3.0;
 
-      for (; cell!=endc; ++cell)
-        if (cell->is_locally_owned())
-          if (cell->at_boundary())
-            {
-              // see if the cell is at the *top* or *bottom* boundary, not just any boundary
-              unsigned int face_idx = numbers::invalid_unsigned_int;
-              for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
-                {
-                  const double depth_face_center = this->get_geometry_model().depth (cell->face(f)->center());
-                  const double upper_depth_cutoff = cell->face(f)->minimum_vertex_distance()/3.0;
-                  const double lower_depth_cutoff = this->get_geometry_model().maximal_depth() - cell->face(f)->minimum_vertex_distance()/3.0;
+                // Check if cell is at upper and lower surface at the same time
+                if (depth_face_center < upper_depth_cutoff && depth_face_center > lower_depth_cutoff)
+                  AssertThrow(false, ExcMessage("Your geometry model is so small that the upper and lower boundary of "
+                                                "the domain are bordered by the same cell. "
+                                                "Consider using a higher mesh resolution.") );
 
-                  // Check if cell is at upper and lower surface at the same time
-                  if (depth_face_center < upper_depth_cutoff && depth_face_center > lower_depth_cutoff)
-                    AssertThrow(false, ExcMessage("Your geometry model is so small that the upper and lower boundary of "
-                                                  "the domain are bordered by the same cell. "
-                                                  "Consider using a higher mesh resolution.") );
+                // Check if the face is at the top or bottom boundary
+                if (depth_face_center < upper_depth_cutoff || depth_face_center > lower_depth_cutoff)
+                  {
+                    face_idx = f;
+                    break;
+                  }
+              }
 
-                  // Check if the face is at the top or bottom boundary
-                  if (depth_face_center < upper_depth_cutoff || depth_face_center > lower_depth_cutoff)
-                    {
-                      face_idx = f;
-                      break;
-                    }
-                }
+            if (face_idx == numbers::invalid_unsigned_int)
+              continue;
 
-              if (face_idx == numbers::invalid_unsigned_int)
-                continue;
+            fe_volume_values.reinit (cell);
+            fe_face_values.reinit (cell, face_idx);
 
-              fe_volume_values.reinit (cell);
-              fe_face_values.reinit (cell, face_idx);
+            local_vector = 0.;
+            local_mass_matrix = 0.;
 
-              local_vector = 0.;
-              local_mass_matrix = 0.;
+            // Evaluate the material model in the cell volume.
+            MaterialModel::MaterialModelInputs<dim> in_volume(fe_volume_values, cell, this->introspection(), this->get_solution());
+            MaterialModel::MaterialModelOutputs<dim> out_volume(fe_volume_values.n_quadrature_points, this->n_compositional_fields());
+            this->get_material_model().evaluate(in_volume, out_volume);
 
-              // Evaluate the material model in the cell volume.
-              MaterialModel::MaterialModelInputs<dim> in_volume(fe_volume_values, cell, this->introspection(), this->get_solution());
-              MaterialModel::MaterialModelOutputs<dim> out_volume(fe_volume_values.n_quadrature_points, this->n_compositional_fields());
-              this->get_material_model().evaluate(in_volume, out_volume);
+            // Evaluate the material model on the cell face.
+            MaterialModel::MaterialModelInputs<dim> in_face(fe_face_values, cell, this->introspection(), this->get_solution());
+            MaterialModel::MaterialModelOutputs<dim> out_face(fe_face_values.n_quadrature_points, this->n_compositional_fields());
+            this->get_material_model().evaluate(in_face, out_face);
 
-              // Evaluate the material model on the cell face.
-              MaterialModel::MaterialModelInputs<dim> in_face(fe_face_values, cell, this->introspection(), this->get_solution());
-              MaterialModel::MaterialModelOutputs<dim> out_face(fe_face_values.n_quadrature_points, this->n_compositional_fields());
-              this->get_material_model().evaluate(in_face, out_face);
+            // Get solution values for the divergence of the velocity, which is not
+            // computed by the material model.
+            fe_volume_values[this->introspection().extractors.velocities].get_function_divergences (this->get_solution(), div_solution);
 
-              // Get solution values for the divergence of the velocity, which is not
-              // computed by the material model.
-              fe_volume_values[this->introspection().extractors.velocities].get_function_divergences (this->get_solution(), div_solution);
+            for (unsigned int q=0; q<n_q_points; ++q)
+              {
+                const double eta = out_volume.viscosities[q];
+                const double density = out_volume.densities[q];
+                const bool is_compressible = this->get_material_model().is_compressible();
+                const Tensor<1,dim> gravity = this->get_gravity_model().gravity_vector(in_volume.position[q]);
 
-              for (unsigned int q=0; q<n_q_points; ++q)
-                {
-                  const double eta = out_volume.viscosities[q];
-                  const double density = out_volume.densities[q];
-                  const bool is_compressible = this->get_material_model().is_compressible();
-                  const Tensor<1,dim> gravity = this->get_gravity_model().gravity_vector(in_volume.position[q]);
+                // Set up shape function values
+                for (unsigned int k=0; k<dofs_per_cell; ++k)
+                  {
+                    phi_u[k] = fe_volume_values[this->introspection().extractors.velocities].value(k,q);
+                    epsilon_phi_u[k] = fe_volume_values[this->introspection().extractors.velocities].symmetric_gradient(k,q);
+                    div_phi_u[k] = fe_volume_values[this->introspection().extractors.velocities].divergence (k, q);
+                  }
 
-                  // Set up shape function values
-                  for (unsigned int k=0; k<dofs_per_cell; ++k)
-                    {
-                      phi_u[k] = fe_volume_values[this->introspection().extractors.velocities].value(k,q);
-                      epsilon_phi_u[k] = fe_volume_values[this->introspection().extractors.velocities].symmetric_gradient(k,q);
-                      div_phi_u[k] = fe_volume_values[this->introspection().extractors.velocities].divergence (k, q);
-                    }
+                for (unsigned int i = 0; i<dofs_per_cell; ++i)
+                  {
+                    // Viscous stress part
+                    local_vector(i) += 2.0 * eta * ( epsilon_phi_u[i] * in_volume.strain_rate[q]
+                                                     - (is_compressible ? 1./3. * div_phi_u[i] * div_solution[q] : 0.0) ) * fe_volume_values.JxW(q);
+                    // Pressure and compressibility parts
+                    local_vector(i) -= div_phi_u[i] * in_volume.pressure[q] * fe_volume_values.JxW(q);
+                    // Force part
+                    local_vector(i) -= density * gravity * phi_u[i] * fe_volume_values.JxW(q);
+                  }
+              }
+            // Assemble the mass matrix for cell face. Since we are using GLL
+            // quadrature, the mass matrix will be diagonal, and we can just assemble it into a vector.
+            for (unsigned int q=0; q < n_face_q_points; ++q)
+              for (unsigned int i=0; i<dofs_per_cell; ++i)
+                local_mass_matrix(i) += fe_face_values[this->introspection().extractors.velocities].value(i,q) *
+                                        fe_face_values[this->introspection().extractors.velocities].value(i,q) *
+                                        fe_face_values.JxW(q);
 
-                  for (unsigned int i = 0; i<dofs_per_cell; ++i)
-                    {
-                      // Viscous stress part
-                      local_vector(i) += 2.0 * eta * ( epsilon_phi_u[i] * in_volume.strain_rate[q]
-                                                       - (is_compressible ? 1./3. * div_phi_u[i] * div_solution[q] : 0.0) ) * fe_volume_values.JxW(q);
-                      // Pressure and compressibility parts
-                      local_vector(i) -= div_phi_u[i] * in_volume.pressure[q] * fe_volume_values.JxW(q);
-                      // Force part
-                      local_vector(i) -= density * gravity * phi_u[i] * fe_volume_values.JxW(q);
-                    }
-                }
-              // Assemble the mass matrix for cell face. Since we are using GLL
-              // quadrature, the mass matrix will be diagonal, and we can just assemble it into a vector.
-              for (unsigned int q=0; q < n_face_q_points; ++q)
-                for (unsigned int i=0; i<dofs_per_cell; ++i)
-                  local_mass_matrix(i) += fe_face_values[this->introspection().extractors.velocities].value(i,q) *
-                                          fe_face_values[this->introspection().extractors.velocities].value(i,q) *
-                                          fe_face_values.JxW(q);
-
-              cell->distribute_local_to_global( local_vector, rhs_vector );
-              cell->distribute_local_to_global( local_mass_matrix, mass_matrix );
-            }
+            cell->distribute_local_to_global( local_vector, rhs_vector );
+            cell->distribute_local_to_global( local_mass_matrix, mass_matrix );
+          }
 
       rhs_vector.compress(VectorOperation::add);
       mass_matrix.compress(VectorOperation::add);
@@ -225,7 +220,7 @@ namespace aspect
                                            this->get_fe(),
                                            support_quadrature,
                                            update_values | update_normal_vectors
-                                           | update_gradients | update_q_points);
+                                           | update_gradients | update_quadrature_points);
 
       std::vector<Tensor<1,dim> > stress_support_values( support_quadrature.size() );
       std::vector<double> topo_values( support_quadrature.size() );
@@ -238,144 +233,141 @@ namespace aspect
                                           this->get_fe(),
                                           output_quadrature,
                                           update_values | update_normal_vectors | update_gradients |
-                                          update_q_points | update_JxW_values);
+                                          update_quadrature_points | update_JxW_values);
       std::vector<Tensor<1,dim> > stress_output_values( output_quadrature.size() );
 
 
-      cell = this->get_dof_handler().begin_active();
-      endc = this->get_dof_handler().end();
-      for (; cell != endc; ++cell)
-        if (cell->is_locally_owned())
-          if (cell->at_boundary())
-            {
-              // see if the cell is at the *top* boundary, not just any boundary
-              unsigned int face_idx = numbers::invalid_unsigned_int;
-              // if the face is at the upper surface 'at_upper_surface' will be true, if
-              // it is at the lower surface 'at_upper_surface' will be false. The default
-              // is true and will be changed to false if it's at the lower boundary. If the
-              // cell is at neither boundary the loop will continue to the next cell.
-              bool at_upper_surface = true;
-              for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
-                {
-                  const double depth_face_center = this->get_geometry_model().depth (cell->face(f)->center());
-                  const double upper_depth_cutoff = cell->face(f)->minimum_vertex_distance()/3.0;
-                  const double lower_depth_cutoff = this->get_geometry_model().maximal_depth() - cell->face(f)->minimum_vertex_distance()/3.0;
+      for (const auto &cell : this->get_dof_handler().active_cell_iterators())
+        if (cell->is_locally_owned() && cell->at_boundary())
+          {
+            // see if the cell is at the *top* boundary, not just any boundary
+            unsigned int face_idx = numbers::invalid_unsigned_int;
+            // if the face is at the upper surface 'at_upper_surface' will be true, if
+            // it is at the lower surface 'at_upper_surface' will be false. The default
+            // is true and will be changed to false if it's at the lower boundary. If the
+            // cell is at neither boundary the loop will continue to the next cell.
+            bool at_upper_surface = true;
+            for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+              {
+                const double depth_face_center = this->get_geometry_model().depth (cell->face(f)->center());
+                const double upper_depth_cutoff = cell->face(f)->minimum_vertex_distance()/3.0;
+                const double lower_depth_cutoff = this->get_geometry_model().maximal_depth() - cell->face(f)->minimum_vertex_distance()/3.0;
 
-                  // Check if cell is at upper and lower surface at the same time
-                  if (depth_face_center < upper_depth_cutoff && depth_face_center > lower_depth_cutoff)
-                    AssertThrow(false, ExcMessage("Your geometry model is so small that the upper and lower boundary of "
-                                                  "the domain are bordered by the same cell. "
-                                                  "Consider using a higher mesh resolution.") );
+                // Check if cell is at upper and lower surface at the same time
+                if (depth_face_center < upper_depth_cutoff && depth_face_center > lower_depth_cutoff)
+                  AssertThrow(false, ExcMessage("Your geometry model is so small that the upper and lower boundary of "
+                                                "the domain are bordered by the same cell. "
+                                                "Consider using a higher mesh resolution.") );
 
-                  // Check if the face is at the top boundary
-                  if (depth_face_center < upper_depth_cutoff)
-                    {
-                      at_upper_surface = true;
-                      face_idx = f;
-                      break;
-                    }
-                  // or at the bottom boundary
-                  else if (depth_face_center > lower_depth_cutoff)
-                    {
-                      face_idx = f;
-                      at_upper_surface = false;
-                      break;
-                    }
-                }
+                // Check if the face is at the top boundary
+                if (depth_face_center < upper_depth_cutoff)
+                  {
+                    at_upper_surface = true;
+                    face_idx = f;
+                    break;
+                  }
+                // or at the bottom boundary
+                else if (depth_face_center > lower_depth_cutoff)
+                  {
+                    face_idx = f;
+                    at_upper_surface = false;
+                    break;
+                  }
+              }
 
-              if (face_idx == numbers::invalid_unsigned_int)
-                continue;
+            if (face_idx == numbers::invalid_unsigned_int)
+              continue;
 
-              fe_support_values.reinit (cell, face_idx);
+            fe_support_values.reinit (cell, face_idx);
 
-              // Evaluate the material model on the cell face.
-              MaterialModel::MaterialModelInputs<dim> in_support(fe_support_values, cell, this->introspection(), this->get_solution());
-              MaterialModel::MaterialModelOutputs<dim> out_support(fe_support_values.n_quadrature_points, this->n_compositional_fields());
-              this->get_material_model().evaluate(in_support, out_support);
+            // Evaluate the material model on the cell face.
+            MaterialModel::MaterialModelInputs<dim> in_support(fe_support_values, cell, this->introspection(), this->get_solution());
+            MaterialModel::MaterialModelOutputs<dim> out_support(fe_support_values.n_quadrature_points, this->n_compositional_fields());
+            this->get_material_model().evaluate(in_support, out_support);
 
-              fe_support_values[this->introspection().extractors.velocities].get_function_values( topo_vector, stress_support_values );
-              cell->face(face_idx)->get_dof_indices (face_dof_indices);
-              for ( unsigned int i = 0; i < face_dof_indices.size(); ++i)
-                {
-                  // Given the face dof, we get the component and overall cell dof index.
-                  const std::pair<unsigned int, unsigned int> component_index = this->get_fe().face_system_to_component_index(i);
-                  const unsigned int component = component_index.first;
-                  const unsigned int support_index = component_index.second;
-                  // Dynamic topography is stored in the temperature component.
-                  if (component == this->introspection().component_indices.temperature)
-                    {
-                      // Compute the local gravity at the support point.
-                      const Point<dim> point = fe_support_values.quadrature_point(support_index);
-                      const double gravity_norm = this->get_gravity_model().gravity_vector(point).norm();
-                      const Tensor<1,dim> normal = fe_support_values.normal_vector(support_index);
+            fe_support_values[this->introspection().extractors.velocities].get_function_values( topo_vector, stress_support_values );
+            cell->face(face_idx)->get_dof_indices (face_dof_indices);
+            for ( unsigned int i = 0; i < face_dof_indices.size(); ++i)
+              {
+                // Given the face dof, we get the component and overall cell dof index.
+                const std::pair<unsigned int, unsigned int> component_index = this->get_fe().face_system_to_component_index(i);
+                const unsigned int component = component_index.first;
+                const unsigned int support_index = component_index.second;
+                // Dynamic topography is stored in the temperature component.
+                if (component == this->introspection().component_indices.temperature)
+                  {
+                    // Compute the local gravity at the support point.
+                    const Point<dim> point = fe_support_values.quadrature_point(support_index);
+                    const double gravity_norm = this->get_gravity_model().gravity_vector(point).norm();
+                    const Tensor<1,dim> normal = fe_support_values.normal_vector(support_index);
 
-                      // Compute the dynamic topography, formulae are slightly different
-                      // for upper and lower boundaries.
-                      double dynamic_topography;
-                      if (at_upper_surface)
-                        {
-                          const double delta_rho = out_support.densities[support_index] - density_above;
-                          dynamic_topography = (-stress_support_values[support_index]*normal - surface_pressure)
-                                               / delta_rho / gravity_norm;
-                        }
-                      else
-                        {
-                          const double delta_rho = out_support.densities[support_index] - density_below;
-                          dynamic_topography = (-stress_support_values[support_index]*normal - bottom_pressure)
-                                               / delta_rho / gravity_norm;
-                        }
-                      distributed_topo_vector[ face_dof_indices[i] ] = dynamic_topography * (backward_advection ? -1. : 1.);
-                    }
-                }
+                    // Compute the dynamic topography, formulae are slightly different
+                    // for upper and lower boundaries.
+                    double dynamic_topography;
+                    if (at_upper_surface)
+                      {
+                        const double delta_rho = out_support.densities[support_index] - density_above;
+                        dynamic_topography = (-stress_support_values[support_index]*normal - surface_pressure)
+                                             / delta_rho / gravity_norm;
+                      }
+                    else
+                      {
+                        const double delta_rho = out_support.densities[support_index] - density_below;
+                        dynamic_topography = (-stress_support_values[support_index]*normal - bottom_pressure)
+                                             / delta_rho / gravity_norm;
+                      }
+                    distributed_topo_vector[ face_dof_indices[i] ] = dynamic_topography * (backward_advection ? -1. : 1.);
+                  }
+              }
 
-              // Also evaluate the dynamic topography on the cell faces. This is more convenient
-              // for ASCII output, as well as for use with the visualization postprocessor.
-              fe_output_values.reinit(cell, face_idx);
+            // Also evaluate the dynamic topography on the cell faces. This is more convenient
+            // for ASCII output, as well as for use with the visualization postprocessor.
+            fe_output_values.reinit(cell, face_idx);
 
-              // Evaluate the material model on the cell face.
-              MaterialModel::MaterialModelInputs<dim> in_output(fe_output_values, cell, this->introspection(), this->get_solution());
-              MaterialModel::MaterialModelOutputs<dim> out_output(fe_output_values.n_quadrature_points, this->n_compositional_fields());
-              this->get_material_model().evaluate(in_output, out_output);
+            // Evaluate the material model on the cell face.
+            MaterialModel::MaterialModelInputs<dim> in_output(fe_output_values, cell, this->introspection(), this->get_solution());
+            MaterialModel::MaterialModelOutputs<dim> out_output(fe_output_values.n_quadrature_points, this->n_compositional_fields());
+            this->get_material_model().evaluate(in_output, out_output);
 
-              fe_output_values[this->introspection().extractors.velocities].get_function_values( topo_vector, stress_output_values );
+            fe_output_values[this->introspection().extractors.velocities].get_function_values( topo_vector, stress_output_values );
 
-              // Compute the average dynamic topography at the cell face.
-              double face_area = 0.;
-              double dynamic_topography = 0.;
-              for (unsigned int q=0; q < output_quadrature.size(); ++q)
-                {
-                  const Point<dim> point = fe_output_values.quadrature_point(q);
-                  const Tensor<1,dim> normal = fe_output_values.normal_vector(q);
-                  const double gravity_norm = this->get_gravity_model().gravity_vector(point).norm();
+            // Compute the average dynamic topography at the cell face.
+            double face_area = 0.;
+            double dynamic_topography = 0.;
+            for (unsigned int q=0; q < output_quadrature.size(); ++q)
+              {
+                const Point<dim> point = fe_output_values.quadrature_point(q);
+                const Tensor<1,dim> normal = fe_output_values.normal_vector(q);
+                const double gravity_norm = this->get_gravity_model().gravity_vector(point).norm();
 
-                  if (at_upper_surface)
-                    {
-                      const double delta_rho = out_output.densities[q] - density_above;
-                      dynamic_topography += (-stress_output_values[q]*normal - surface_pressure)
-                                            / delta_rho / gravity_norm * fe_output_values.JxW(q);
-                    }
-                  else
-                    {
-                      const double delta_rho = out_output.densities[q] - density_below;
+                if (at_upper_surface)
+                  {
+                    const double delta_rho = out_output.densities[q] - density_above;
+                    dynamic_topography += (-stress_output_values[q]*normal - surface_pressure)
+                                          / delta_rho / gravity_norm * fe_output_values.JxW(q);
+                  }
+                else
+                  {
+                    const double delta_rho = out_output.densities[q] - density_below;
 
-                      dynamic_topography += (-stress_output_values[q]*normal - bottom_pressure)
-                                            / delta_rho / gravity_norm * fe_output_values.JxW(q);
-                    }
-                  face_area += fe_output_values.JxW(q);
-                }
-              // Get the average dynamic topography for the cell
-              dynamic_topography = dynamic_topography * (backward_advection ? -1. : 1.) / face_area;
+                    dynamic_topography += (-stress_output_values[q]*normal - bottom_pressure)
+                                          / delta_rho / gravity_norm * fe_output_values.JxW(q);
+                  }
+                face_area += fe_output_values.JxW(q);
+              }
+            // Get the average dynamic topography for the cell
+            dynamic_topography = dynamic_topography * (backward_advection ? -1. : 1.) / face_area;
 
-              // Maybe keep track of surface output vector.
-              if (output_surface && at_upper_surface)
-                stored_values_surface.push_back(std::make_pair(cell->face(face_idx)->center(), dynamic_topography));
-              // Maybe keep track of bottom output vector.
-              if (output_bottom && !at_upper_surface)
-                stored_values_bottom.push_back(std::make_pair(cell->face(face_idx)->center(), dynamic_topography));
+            // Maybe keep track of surface output vector.
+            if (output_surface && at_upper_surface)
+              stored_values_surface.push_back(std::make_pair(cell->face(face_idx)->center(), dynamic_topography));
+            // Maybe keep track of bottom output vector.
+            if (output_bottom && !at_upper_surface)
+              stored_values_bottom.push_back(std::make_pair(cell->face(face_idx)->center(), dynamic_topography));
 
-              // Add the value to the vector for the visualization postprocessor.
-              visualization_values(cell->active_cell_index()) = dynamic_topography;
-            }
+            // Add the value to the vector for the visualization postprocessor.
+            visualization_values(cell->active_cell_index()) = dynamic_topography;
+          }
       distributed_topo_vector.compress(VectorOperation::insert);
       topo_vector = distributed_topo_vector;
 

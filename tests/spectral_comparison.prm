@@ -1,0 +1,15 @@
+# A test for the geoid, gravity and dynamic topography posprocessor
+
+set Dimension                              = 3 
+
+include $ASPECT_SOURCE_DIR/benchmarks/geoid-spectral-comparison/spectral-comparison.prm
+
+subsection Mesh refinement
+  set Initial global refinement = 0
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Number of cheap Stokes solver steps             = 200
+  end
+end

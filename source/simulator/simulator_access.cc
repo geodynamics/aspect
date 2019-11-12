@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -20,7 +20,8 @@
 
 
 #include <aspect/simulator.h>
-#include <aspect/free_surface.h>
+#include <aspect/mesh_deformation/free_surface.h>
+#include <aspect/mesh_deformation/interface.h>
 
 namespace aspect
 {
@@ -255,10 +256,11 @@ namespace aspect
 
   template <int dim>
   void
-  SimulatorAccess<dim>::get_artificial_viscosity (Vector<float> &viscosity_per_cell) const
+  SimulatorAccess<dim>::get_artificial_viscosity (Vector<float> &viscosity_per_cell,
+                                                  const bool skip_interior_cells) const
   {
     const typename Simulator<dim>::AdvectionField advection_field = Simulator<dim>::AdvectionField::temperature();
-    simulator->get_artificial_viscosity(viscosity_per_cell, advection_field);
+    simulator->get_artificial_viscosity(viscosity_per_cell, advection_field, skip_interior_cells);
   }
 
   template <int dim>
@@ -309,9 +311,9 @@ namespace aspect
   const LinearAlgebra::BlockVector &
   SimulatorAccess<dim>::get_mesh_velocity () const
   {
-    Assert( simulator->parameters.free_surface_enabled,
-            ExcMessage("You cannot get the mesh velocity with no free surface."));
-    return simulator->free_surface->mesh_velocity;
+    Assert( simulator->parameters.mesh_deformation_enabled,
+            ExcMessage("You cannot get the mesh velocity if mesh deformation is not enabled."));
+    return simulator->mesh_deformation->mesh_velocity;
   }
 
 
@@ -354,7 +356,7 @@ namespace aspect
   const MaterialModel::Interface<dim> &
   SimulatorAccess<dim>::get_material_model () const
   {
-    Assert (simulator->material_model.get() != 0,
+    Assert (simulator->material_model.get() != nullptr,
             ExcMessage("You can not call this function if no such model is actually available."));
     return *simulator->material_model.get();
   }
@@ -378,7 +380,7 @@ namespace aspect
 
 
   template <int dim>
-  const std::map<types::boundary_id,std::shared_ptr<BoundaryTraction::Interface<dim> > > &
+  const std::map<types::boundary_id,std::unique_ptr<BoundaryTraction::Interface<dim> > > &
   SimulatorAccess<dim>::get_boundary_traction () const
   {
     return simulator->boundary_traction;
@@ -419,7 +421,7 @@ namespace aspect
   const BoundaryHeatFlux::Interface<dim> &
   SimulatorAccess<dim>::get_boundary_heat_flux () const
   {
-    Assert (simulator->boundary_heat_flux.get() != 0,
+    Assert (simulator->boundary_heat_flux.get() != nullptr,
             ExcMessage("You can not call this function if no such model is actually available."));
     return *simulator->boundary_heat_flux.get();
   }
@@ -483,32 +485,13 @@ namespace aspect
 
   template <int dim>
   const std::set<types::boundary_id> &
-  SimulatorAccess<dim>::get_free_surface_boundary_indicators () const
+  SimulatorAccess<dim>::get_mesh_deformation_boundary_indicators () const
   {
-    return simulator->parameters.free_surface_boundary_indicators;
+    Assert( simulator->parameters.mesh_deformation_enabled,
+            ExcMessage("You cannot get the mesh deformation boundary indicators if mesh deformation is not enabled."));
+    return simulator->mesh_deformation->get_active_mesh_deformation_boundary_indicators();
   }
 
-
-  template <int dim>
-  const std::map<types::boundary_id,std::shared_ptr<BoundaryVelocity::Interface<dim> > >
-  SimulatorAccess<dim>::get_prescribed_boundary_velocity () const
-  {
-    const std::map<types::boundary_id,std::vector<std::shared_ptr<BoundaryVelocity::Interface<dim> > > > &
-    boundary_map = simulator->boundary_velocity_manager.get_active_boundary_velocity_conditions();
-
-    std::map<types::boundary_id,std::shared_ptr<BoundaryVelocity::Interface<dim> > >
-    legacy_map;
-
-    for (typename std::map<types::boundary_id,std::vector<std::shared_ptr<BoundaryVelocity::Interface<dim> > > >::const_iterator
-         boundary = boundary_map.begin(); boundary != boundary_map.end(); ++boundary)
-      {
-        Assert (boundary->second.size() <= 1,
-                ExcMessage("You can only use this function if there is at most one boundary velocity plugin per boundary."));
-        legacy_map[boundary->first] = boundary->second.front();
-      }
-
-    return legacy_map;
-  }
 
 
   template <int dim>
@@ -523,7 +506,7 @@ namespace aspect
   const InitialTopographyModel::Interface<dim> &
   SimulatorAccess<dim>::get_initial_topography_model () const
   {
-    Assert (simulator->initial_topography_model.get() != 0,
+    Assert (simulator->initial_topography_model.get() != nullptr,
             ExcMessage("You can not call this function if no such model is actually available."));
     return *simulator->initial_topography_model.get();
   }
@@ -533,7 +516,7 @@ namespace aspect
   const GeometryModel::Interface<dim> &
   SimulatorAccess<dim>::get_geometry_model () const
   {
-    Assert (simulator->geometry_model.get() != 0,
+    Assert (simulator->geometry_model.get() != nullptr,
             ExcMessage("You can not call this function if no such model is actually available."));
     return *simulator->geometry_model.get();
   }
@@ -542,7 +525,7 @@ namespace aspect
   const GravityModel::Interface<dim> &
   SimulatorAccess<dim>::get_gravity_model () const
   {
-    Assert (simulator->gravity_model.get() != 0,
+    Assert (simulator->gravity_model.get() != nullptr,
             ExcMessage("You can not call this function if no such model is actually available."));
     return *simulator->gravity_model.get();
   }
@@ -552,7 +535,7 @@ namespace aspect
   const AdiabaticConditions::Interface<dim> &
   SimulatorAccess<dim>::get_adiabatic_conditions () const
   {
-    Assert (simulator->adiabatic_conditions.get() != 0,
+    Assert (simulator->adiabatic_conditions.get() != nullptr,
             ExcMessage("You can not call this function if no such model is actually available."));
     return *simulator->adiabatic_conditions.get();
   }
@@ -612,16 +595,25 @@ namespace aspect
   const MeltHandler<dim> &
   SimulatorAccess<dim>::get_melt_handler () const
   {
-    Assert (simulator->melt_handler.get() != 0,
+    Assert (simulator->melt_handler.get() != nullptr,
             ExcMessage("You can not call this function if melt transport is not enabled."));
     return *(simulator->melt_handler);
+  }
+
+  template <int dim>
+  const VolumeOfFluidHandler<dim> &
+  SimulatorAccess<dim>::get_volume_of_fluid_handler () const
+  {
+    Assert (simulator->volume_of_fluid_handler.get() != nullptr,
+            ExcMessage("You can not call this function if volume of fluid interface tracking is not enabled."));
+    return *(simulator->volume_of_fluid_handler);
   }
 
   template <int dim>
   const NewtonHandler<dim> &
   SimulatorAccess<dim>::get_newton_handler () const
   {
-    Assert (simulator->newton_handler.get() != 0,
+    Assert (simulator->newton_handler.get() != nullptr,
             ExcMessage("You can not call this function if the Newton solver is not enabled."));
     return *(simulator->newton_handler);
   }
@@ -633,7 +625,7 @@ namespace aspect
   SimulatorAccess<dim>::get_world_builder () const
   {
 #ifdef ASPECT_USE_WORLD_BUILDER
-    Assert (simulator->world_builder.get() != 0,
+    Assert (simulator->world_builder.get() != nullptr,
             ExcMessage("You can not call this function if the World Builder is not enabled. "
                        "Enable it by providing a path to a world builder file."));
 #else
@@ -648,13 +640,13 @@ namespace aspect
 
 
   template <int dim>
-  const FreeSurfaceHandler<dim> &
-  SimulatorAccess<dim>::get_free_surface_handler () const
+  const MeshDeformation::MeshDeformationHandler<dim> &
+  SimulatorAccess<dim>::get_mesh_deformation_handler () const
   {
-    Assert (simulator->free_surface.get() != 0,
-            ExcMessage("You can not call this function if the free surface is not enabled."));
+    Assert (simulator->mesh_deformation.get() != nullptr,
+            ExcMessage("You cannot call this function if mesh deformation is not enabled."));
 
-    return *(simulator->free_surface);
+    return *(simulator->mesh_deformation);
   }
 
   template <int dim>
@@ -689,12 +681,17 @@ namespace aspect
     return simulator->current_constraints;
   }
 
+
+
   template <int dim>
   bool
-  SimulatorAccess<dim>::simulator_is_initialized () const
+  SimulatorAccess<dim>::simulator_is_past_initialization () const
   {
-    return (simulator != nullptr);
+    return ((simulator != nullptr)
+            &&
+            (simulator->simulator_is_past_initialization == true));
   }
+
 
   template <int dim>
   double
@@ -714,7 +711,7 @@ namespace aspect
   bool
   SimulatorAccess<dim>::model_has_prescribed_stokes_solution () const
   {
-    return (simulator->prescribed_stokes_solution.get() != 0);
+    return (simulator->prescribed_stokes_solution.get() != nullptr);
   }
 
   template <int dim>

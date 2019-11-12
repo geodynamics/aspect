@@ -85,6 +85,7 @@ end
 subsection Postprocess
   set List of postprocessors = visualization
   subsection Visualization
+    set Interpolate output = false
     set List of output variables = geoid
     set Output format = gnuplot
   end
@@ -99,6 +100,7 @@ subsection Postprocess
     set Also output the spherical harmonic coefficients of surface dynamic topography contribution = false
     set Also output the spherical harmonic coefficients of CMB dynamic topography contribution = false
     set Also output the spherical harmonic coefficients of density anomaly contribution = false
+    set Include the contributon from dynamic topography = true
   end
 
   subsection Dynamic topography

@@ -1,0 +1,34 @@
+# astyle indentation style for ASPECT
+# Run astyle on all files with:
+#    astyle --options=contrib/utilities/astyle.rc `find include source | egrep '\.(h|cc)$'`
+#
+# Note: you NEED to use astyle version 2.04 for correct results (older
+# versions or 2.05 will not work)!
+
+--style=gnu
+
+# use spaces instead of tabs:
+--convert-tabs
+--indent-preprocessor
+--indent=spaces=2
+--indent-namespaces
+--indent-labels
+--min-conditional-indent=0
+
+# add a space between if/for/while and following '(':
+--pad-header
+
+# indent the 'public/protected/private' specifiers, and further indent the
+# rest of the declarations
+--indent-classes
+
+# indent case labels in a switch statement
+--indent-switches
+
+# write things as 'char *p', not 'char* p'
+--align-pointer=name
+--align-reference=name
+
+--max-instatement-indent=80
+--suffix=none
+--quiet
