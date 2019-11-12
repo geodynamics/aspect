@@ -5,39 +5,41 @@ Number of active cells: 2,560 (on 5 levels)
 Number of degrees of freedom: 34,068 (20,930+2,673+10,465)
 
 Number of mesh deformation degrees of freedom: 5346
-*** Timestep 2:  t=9716.95 years
+   Added initial topography to grid
+
+*** Timestep 2:  t=9133.17 years
    Solving mesh velocity system... 7 iterations.
-   Solving temperature system... 20 iterations.
+   Solving temperature system... 23 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 44+0 iterations.
 
    Postprocessing:
-     Topography min/max:       -127.4 m, 226.8 m
-     RMS, max velocity:        0.0464 m/year, 0.189 m/year
+     Topography min/max:       -183.4 m, 241.7 m
+     RMS, max velocity:        0.047 m/year, 0.184 m/year
      Writing graphical output: output1.tmp/solution/solution-00002
 
-*** Timestep 3:  t=17975.3 years
+*** Timestep 3:  t=17626.4 years
    Solving mesh velocity system... 7 iterations.
-   Solving temperature system... 18 iterations.
+   Solving temperature system... 22 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 44+0 iterations.
 
    Postprocessing:
-     Topography min/max:       -331 m, 82.47 m
-     RMS, max velocity:        0.035 m/year, 0.139 m/year
+     Topography min/max:       -295.5 m, 205.8 m
+     RMS, max velocity:        0.0353 m/year, 0.138 m/year
      Writing graphical output: output1.tmp/solution/solution-00003
 
 *** Snapshot created!
 
-*** Timestep 4:  t=29246.3 years
+*** Timestep 4:  t=28970.8 years
    Solving mesh velocity system... 7 iterations.
-   Solving temperature system... 10 iterations.
+   Solving temperature system... 11 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 45+0 iterations.
 
    Postprocessing:
-     Topography min/max:       -162.1 m, 28.86 m
-     RMS, max velocity:        0.0373 m/year, 0.153 m/year
+     Topography min/max:       -107.1 m, 85.99 m
+     RMS, max velocity:        0.0374 m/year, 0.153 m/year
      Writing graphical output: output1.tmp/solution/solution-00004
 
 Termination requested by criterion: end step

@@ -39,6 +39,12 @@ subsection Geometry model
     set X repetitions = 5
     set Y repetitions = 2
   end
+  subsection Initial topography model
+    set Model name = function
+    subsection Function
+      set Function expression = (500e3-x)/500e3*100
+    end
+  end
 end
 
 
