@@ -71,9 +71,11 @@ subsection Formulation
   set Enable elasticity = true
 end
 
-subsection Free surface
-  set Free surface boundary indicators = top
-  set Surface velocity projection = normal
+subsection Mesh deformation
+  set Mesh deformation boundary indicators = top: free surface
+  subsection Free surface
+    set Surface velocity projection = normal
+  end
 end
 
 # Velocity boundary conditions
