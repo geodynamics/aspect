@@ -112,7 +112,7 @@ namespace aspect
                           const std::pair<unsigned int, unsigned int> &cell_range) const;
 
         /**
-         * Table which stores the viscosity on each quadrature point.
+         * Table which stores a viscosity value for each cell.
          */
         Table<1, VectorizedArray<number> > viscosity_x_2;
 
@@ -189,7 +189,7 @@ namespace aspect
                                      const std::pair<unsigned int,unsigned int>       &cell_range) const;
 
         /**
-         * Table which stores the viscosity on each quadrature point.
+         * Table which stores a viscosity value for each cell.
          */
         Table<1, VectorizedArray<number> > one_over_viscosity;
 
@@ -268,7 +268,7 @@ namespace aspect
                                      const std::pair<unsigned int,unsigned int>       &cell_range) const;
 
         /**
-         * Table which stores the viscosity on each quadrature point.
+         * Table which stores a viscosity value for each cell.
          */
         Table<1, VectorizedArray<number> > viscosity_x_2;
 

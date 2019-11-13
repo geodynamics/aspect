@@ -709,7 +709,7 @@ namespace aspect
 
     for (unsigned int cell=cell_range.first; cell<cell_range.second; ++cell)
       {
-        VectorizedArray<number> cell_viscosity_x_2 = viscosity_x_2(cell);
+        const VectorizedArray<number> &cell_viscosity_x_2 = viscosity_x_2(cell);
 
         velocity.reinit (cell);
         velocity.read_dof_values (src.block(0));
@@ -814,7 +814,7 @@ namespace aspect
 
     for (unsigned int cell=cell_range.first; cell<cell_range.second; ++cell)
       {
-        VectorizedArray<number> cell_one_over_viscosity = one_over_viscosity(cell);
+        const VectorizedArray<number> &cell_one_over_viscosity = one_over_viscosity(cell);
 
         pressure.reinit (cell);
         pressure.read_dof_values(src);
@@ -883,7 +883,7 @@ namespace aspect
     FEEvaluation<dim,degree_p,degree_p+2,1,number> pressure (data, 0);
     for (unsigned int cell=cell_range.first; cell<cell_range.second; ++cell)
       {
-        VectorizedArray<number> cell_one_over_viscosity = one_over_viscosity(cell);
+        const VectorizedArray<number> &cell_one_over_viscosity = one_over_viscosity(cell);
 
         pressure.reinit (cell);
         AlignedVector<VectorizedArray<number> > diagonal(pressure.dofs_per_cell);
@@ -981,7 +981,7 @@ namespace aspect
 
     for (unsigned int cell=cell_range.first; cell<cell_range.second; ++cell)
       {
-        VectorizedArray<number> cell_viscosity_x_2 = viscosity_x_2(cell);
+        const VectorizedArray<number> &cell_viscosity_x_2 = viscosity_x_2(cell);
 
         velocity.reinit (cell);
         velocity.read_dof_values(src);
@@ -1052,7 +1052,7 @@ namespace aspect
     FEEvaluation<dim,degree_v,degree_v+1,dim,number> velocity (data, 0);
     for (unsigned int cell=cell_range.first; cell<cell_range.second; ++cell)
       {
-        VectorizedArray<number> cell_viscosity_x_2 = viscosity_x_2(cell);
+        const VectorizedArray<number> &cell_viscosity_x_2 = viscosity_x_2(cell);
 
         velocity.reinit (cell);
         AlignedVector<VectorizedArray<number> > diagonal(velocity.dofs_per_cell);
@@ -1365,7 +1365,6 @@ namespace aspect
     sim.current_constraints.distribute(u0);
     u0.update_ghost_values();
 
-    const Table<1, VectorizedArray<double> > viscosity_x_2 = stokes_matrix.get_viscosity_x_2_table();
     FEEvaluation<dim,velocity_degree,velocity_degree+1,dim,double>
     velocity (*stokes_matrix.get_matrix_free(), 0);
     FEEvaluation<dim,velocity_degree-1,velocity_degree+1,1,double>
@@ -1373,7 +1372,7 @@ namespace aspect
 
     for (unsigned int cell=0; cell<stokes_matrix.get_matrix_free()->n_macro_cells(); ++cell)
       {
-        VectorizedArray<double> cell_viscosity_x_2 = viscosity_x_2(cell);
+        const VectorizedArray<double> &cell_viscosity_x_2 = stokes_matrix.get_viscosity_x_2_table()(cell);
 
         velocity.reinit (cell);
         velocity.read_dof_values_plain (u0.block(0));
