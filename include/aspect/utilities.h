@@ -94,10 +94,11 @@ namespace aspect
      *   assigned to the first element of the output vector. This form only
      *   allows a single value per key.
      * - Whether or not a background field is required depends on
-     *   @p has_background_field. Requiring a background field
-     *   inserts "background" into the @p list_of_keys at the front
-     *   of the list. For example, some Material models require
-     *   background fields, but input files may not.
+     *   @p expects_background_field. Requiring a background field
+     *   inserts "background" into the @p list_of_keys as the first entry
+     *   in the list. Some calling functions (like some material models)
+     *   require values for background fields, while others may not
+     *   need background values.
      * - Two special keys are recognized:
      *      all --> Assign the associated value to all fields.
      *              Only one key is allowed in this case.
@@ -108,7 +109,7 @@ namespace aspect
      * @param[in] list_of_keys A list of N valid key names that are allowed
      *   to appear in the map. The order of these keys determines the order
      *   of values that are returned by this function.
-     * @param[in] has_background_field If true, expect N+1 values and allow
+     * @param[in] expects_background_field If true, expect N+1 values and allow
      *   setting of the background using the key "background".
      * @param[in] property_name A name that identifies the type of property
      *   that is being parsed by this function and that is used in generating
@@ -139,12 +140,12 @@ namespace aspect
      *   If multiple values per key are allowed, the vector contains first all
      *   values for key 1, then all values for key 2 and so forth. Using the
      *   @p n_values_per_key vector allows the caller to associate entries in the
-     *   returned vector to specific keys.
+     *   returned vector with specific keys.
      */
     std::vector<double>
     parse_map_to_double_array (const std::string &key_value_map,
                                const std::vector<std::string> &list_of_keys,
-                               const bool has_background_field,
+                               const bool expects_background_field,
                                const std::string &property_name,
                                const bool allow_multiple_values_per_key = false,
                                std::shared_ptr<std::vector<unsigned int> > n_values_per_key = nullptr,

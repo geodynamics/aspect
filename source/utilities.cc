@@ -89,6 +89,11 @@ namespace aspect
 
     namespace
     {
+      // This is a helper function used in parse_map_to_double_array below.
+      // It takes an input_string that is expected to follow the input format
+      // explained in the documentation of the parse_map_to_double_array function
+      // and parses it into a multimap, only performing rudimentary error checking
+      // for correct formatting.
       std::multimap<std::string, double>
       parse_string_to_map (const std::string &input_string,
                            const std::vector<std::string> &list_of_keys,
@@ -132,8 +137,8 @@ namespace aspect
                     const std::vector<std::string> values = dealii::Utilities::split_string_list(key_and_value[1], '|');
 
                     // Assign all the values to all fields
-                    for (const auto &key: list_of_keys)
-                      for (const auto &value : values)
+                    for (const std::string &key: list_of_keys)
+                      for (const std::string &value : values)
                         {
                           parsed_map.emplace(key, Utilities::string_to_double(value));
                         }
@@ -192,14 +197,14 @@ namespace aspect
     std::vector<double>
     parse_map_to_double_array (const std::string &input_string,
                                const std::vector<std::string> &list_of_keys,
-                               const bool has_background_field,
+                               const bool expects_background_field,
                                const std::string &property_name,
                                const bool allow_multiple_values_per_key,
                                std::shared_ptr<std::vector<unsigned int> > n_values_per_key,
                                const bool allow_missing_keys)
     {
       std::vector<std::string> field_names = list_of_keys;
-      if (has_background_field)
+      if (expects_background_field)
         field_names.insert(field_names.begin(),"background");
       const unsigned int n_fields = field_names.size();
 
@@ -221,15 +226,17 @@ namespace aspect
                                  + "The current structure vector has " + std::to_string(n_values_per_key->size()) + " entries, but there are "
                                  + std::to_string(n_fields) + " field names." ));
 
-        for (const auto &entry: parsed_map)
+        for (const std::pair<std::string, double> &key_and_value: parsed_map)
           {
-            const auto field_name = std::find(field_names.begin(),field_names.end(),entry.first);
+            const std::vector<std::string>::iterator field_name =
+              std::find(field_names.begin(),field_names.end(),key_and_value.first);
+
             // Ensure that each key is in the list of field names
             AssertThrow (field_name != field_names.end(),
-                         ExcMessage ("The keyword <" + entry.first + "> in "
+                         ExcMessage ("The keyword <" + key_and_value.first + "> in "
                                      + property_name + " does not match any entries "
                                      "from the list of field names"
-                                     + ((has_background_field)
+                                     + ((expects_background_field)
                                         ?
                                         " (plus `background' for the background field). "
                                         :
@@ -252,7 +259,7 @@ namespace aspect
           *n_values_per_key = values_per_key;
 
         unsigned int field_index = 0;
-        for (const auto &n_values: values_per_key)
+        for (const unsigned int &n_values: values_per_key)
           {
             if (allow_multiple_values_per_key == false)
               AssertThrow (n_values <= 1,
@@ -292,9 +299,10 @@ namespace aspect
       // Finally: Convert the map into a vector of doubles, sorted in the order
       // of the field_names input parameter
       std::vector<double> return_values;
-      for (const auto &field_name: field_names)
+      for (const std::string &field_name: field_names)
         {
-          const auto entry_range = parsed_map.equal_range(field_name);
+          const std::pair<std::multimap<std::string, double>::const_iterator,
+                std::multimap<std::string, double>::const_iterator> entry_range = parsed_map.equal_range(field_name);
 
           for (auto entry = entry_range.first; entry != entry_range.second; ++entry)
             return_values.push_back(entry->second);
