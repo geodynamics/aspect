@@ -1,7 +1,7 @@
-# Test the 'depth average' postprocessor on a coarse mesh version of
-# convection_box.prm. This test makes no sense since we average over 10 depth
-# intervals but we only compute on a 4x4 mesh -- This is sufficient to produce
-# reasonable data, but not enough for actual resolution.
+# Test the 'depth average' postprocessor, specifically the
+# vertical mass flux value. In this model the mass flux
+# is upwards and varies linearly from 0.5 to 1.0 across
+# the model.
 
 set Dimension                              = 2
 
