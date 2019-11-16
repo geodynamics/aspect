@@ -155,6 +155,8 @@ wait # newton_solver_benchmark_set/nonlinear_channel_flow depends on nonlinear_c
 
 ( (cd viscoelastic_stress_build-up && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
 
+( (cd viscoelastic_plastic_shear_bands && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
+
 ( (cd zhong_et_al_93 && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
 
 ( (cd compressibility_benchmarks/plugins && make_lib && cd .. && bash run.sh ) || { echo "FAILED"; exit 1; } ) &
