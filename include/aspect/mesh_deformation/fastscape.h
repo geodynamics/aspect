@@ -55,6 +55,8 @@ void fastscape_get_step_(int *sstep);
 void fastscape_execute_step_();
 void fastscape_named_vtk_(double *fp, const double *vexp, int *astep, const char *c, int *length);
 void fastscape_copy_h_(double *hp);
+void fastscape_strati_(int *nstepp, int *nreflectorp, int *nfreqp, const double *vexp);
+void folder_output_(int *length, int *astep, const char *c);
 
 //end run
 void fastscape_debug_();
@@ -148,6 +150,9 @@ namespace aspect
         double kds1;
         double kds2;
         bool use_marine;
+
+        //Stratigraphy parameters
+        bool use_strat;
 
         std::array<std::pair<double,double>,dim> grid_extent;
         std::array< unsigned int, dim > table_intervals;

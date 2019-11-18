@@ -335,6 +335,9 @@ namespace aspect
 
                   if (use_marine)
                     fastscape_set_marine_parameters_(&sl, &p1, &p2, &z1, &z2, &r, &l, &kds1, &kds2);
+
+                  folder_output_(&length, &restart_step, c);
+
                 }
               else
                 {
@@ -502,11 +505,19 @@ namespace aspect
               int visualization_step = istep+restart_step;
               steps = istep+steps;
 
+              int nstepp = 200000;
+              int nreflectorp = 4;
+              int nfreqp = 1;
+
               //I really need to figure out a better way to make visualization files output correctly.
               this->get_pcout() <<"   Calling FastScape... "<<(steps-istep)<<" timesteps of "<<f_dt<<" years."<<std::endl;
               {
                 auto t_start = std::chrono::high_resolution_clock::now();
-                fastscape_named_vtk_(h.get(), &vexp, &visualization_step, c, &length);
+
+                if(use_strat && current_timestep == 1)
+                	fastscape_strati_(&nstepp, &nreflectorp, &steps, &vexp);
+				else if(!use_strat)
+                    fastscape_named_vtk_(h.get(), &vexp, &visualization_step, c, &length);
 
                 do
                   {
@@ -722,6 +733,9 @@ namespace aspect
           prm.declare_entry ("Use marine parameters", "false",
                              Patterns::Bool (),
                              "Flag to use marine parameters");
+          prm.declare_entry ("Use stratigraphy", "false",
+                             Patterns::Bool (),
+                             "Flag to use marine parameters");
 
           prm.enter_subsection ("Boundary conditions");
           {
@@ -787,35 +801,35 @@ namespace aspect
                               Patterns::Double(),
                               "Theta parameter described in \\cite{KMM2010}. "
                               "An unstabilized free surface can overshoot its ");
-            prm.declare_entry("Sand porosity", "0.1",
+            prm.declare_entry("Sand porosity", "0.0",
                               Patterns::Double(),
                               "Theta parameter described in \\cite{KMM2010}. "
                               "An unstabilized free surface can overshoot its ");
-            prm.declare_entry("Shale porosity", "0.05",
+            prm.declare_entry("Shale porosity", "0.0",
                               Patterns::Double(),
                               "Theta parameter described in \\cite{KMM2010}. "
                               "An unstabilized free surface can overshoot its ");
-            prm.declare_entry("Sand e-folding depth", "1e4",
+            prm.declare_entry("Sand e-folding depth", "1e3",
                               Patterns::Double(),
                               "Theta parameter described in \\cite{KMM2010}. "
                               "An unstabilized free surface can overshoot its ");
-            prm.declare_entry("Shale e-folding depth", "1e4",
+            prm.declare_entry("Shale e-folding depth", "1e3",
                               Patterns::Double(),
                               "Theta parameter described in \\cite{KMM2010}. "
                               "An unstabilized free surface can overshoot its ");
-            prm.declare_entry("Sand-shale ratio", "0.75",
+            prm.declare_entry("Sand-shale ratio", "0.5",
                               Patterns::Double(),
                               "Theta parameter described in \\cite{KMM2010}. "
                               "An unstabilized free surface can overshoot its ");
-            prm.declare_entry("Depth averaging thickness", "250",
+            prm.declare_entry("Depth averaging thickness", "1e2",
                               Patterns::Double(),
                               "Theta parameter described in \\cite{KMM2010}. "
                               "An unstabilized free surface can overshoot its ");
-            prm.declare_entry("Sand transport coefficient", "1e-3",
+            prm.declare_entry("Sand transport coefficient", "5e2",
                               Patterns::Double(),
                               "Theta parameter described in \\cite{KMM2010}. "
                               "An unstabilized free surface can overshoot its ");
-            prm.declare_entry("Shale transport coefficient", "1e-3",
+            prm.declare_entry("Shale transport coefficient", "2.5e2",
                               Patterns::Double(),
                               "Theta parameter described in \\cite{KMM2010}. "
                               "An unstabilized free surface can overshoot its ");
@@ -857,6 +871,7 @@ namespace aspect
           surface_resolution = prm.get_integer("Surface resolution");
           resolution_difference = prm.get_integer("Resolution difference");
           use_marine = prm.get_bool("Use marine parameters");
+          use_strat = prm.get_bool("Use stratigraphy");
 
           prm.enter_subsection("Boundary conditions");
           {
