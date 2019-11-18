@@ -98,12 +98,23 @@ namespace aspect
               // Loop through all compositions
               for (unsigned int j=0; j < volume_fractions.size(); ++j)
                 {
+                  // Calculate the square root of the second moment invariant for the deviatoric
+                  // strain rate tensor, which includes both viscous and elastic components.
+                  // The first time this function is called (first iteration of first time step)
+                  // a specified "reference" strain rate is used as the returned value would
+                  // otherwise be zero.
+                  const SymmetricTensor<2,dim> edot = 2. * (deviator(strain_rate)) + stress_old / (elastic_shear_moduli[j] * dte);
+                  const double edot_ii = ( (this->get_timestep_number() == 0 && strain_rate.norm() <= std::numeric_limits<double>::min() )
+                                           ?
+                                           reference_strain_rate
+                                           :
+                                           std::max(std::sqrt(std::fabs(second_invariant(edot))), minimum_strain_rate) );
 
                   // Calculate viscoelastic viscosity (equation 28 from Moresi et al., 2003)
                   viscosities_ve[j] = viscosities_pre_yield[j] * dte / (dte + (viscosities_pre_yield[j]/elastic_shear_moduli[j]));
 
                   // Calculate updated viscoselastic stress magnitude, which will be compared with the plastic yield stress
-                  stresses_ve[j] = viscosities_ve[j] * std::sqrt(std::fabs(second_invariant((2. * (deviator(strain_rate)) + stress_old / (elastic_shear_moduli[j] * dte) ) ) ) );
+                  stresses_ve[j] = viscosities_ve[j] * edot_ii;
 
                   // Calculate plastic yield stress
                   stresses_yield[j] = ( (dim==3)
@@ -117,7 +128,7 @@ namespace aspect
                   // If the viscoelastic stress is less than the yield stress, the yield viscosity is equal to the pre-yield (viscoelastic) value.
                   if ( stresses_ve[j] >= stresses_yield[j]  )
                     {
-                      viscosities_vep[j] = stresses_yield[j] / std::sqrt(std::fabs(second_invariant((2. * (deviator(strain_rate)) + stress_old / (elastic_shear_moduli[j] * dte) ) ) ) );
+                      viscosities_vep[j] = stresses_yield[j] / edot_ii;
                     }
                   else
                     {
