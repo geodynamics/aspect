@@ -67,6 +67,7 @@ DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
 #include <aspect/termination_criteria/interface.h>
 #include <aspect/postprocess/interface.h>
 #include <aspect/adiabatic_conditions/interface.h>
+#include <aspect/particle/world.h>
 
 #include <boost/iostreams/tee.hpp>
 #include <boost/iostreams/stream.hpp>
@@ -1735,6 +1736,11 @@ namespace aspect
       BoundaryVelocity::Manager<dim>                                          boundary_velocity_manager;
       std::map<types::boundary_id,std::unique_ptr<BoundaryTraction::Interface<dim> > > boundary_traction;
       const std::unique_ptr<BoundaryHeatFlux::Interface<dim> >                boundary_heat_flux;
+
+      /**
+       * The world holding the particles
+       */
+      std::unique_ptr<Particle::World<dim> > particle_world;
 
       /**
        * @}

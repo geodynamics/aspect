@@ -22,7 +22,6 @@
 #define _aspect_postprocess_particle_h
 
 #include <aspect/postprocess/interface.h>
-#include <aspect/particle/world.h>
 
 #include <aspect/simulator_access.h>
 
@@ -138,40 +137,6 @@ namespace aspect
         ~Particles() override;
 
         /**
-         * Generate the particles. This can not be done in another
-         * place, because we want to generate the particles
-         * before the first timestep, but after the initial conditions have
-         * been set.
-         */
-        void
-        generate_particles();
-
-        /**
-         * Initialize particle properties. This can not be done in another
-         * place, because we want to initialize the particle properties
-         * before the first timestep, but after the initial conditions have
-         * been set.
-         */
-        void
-        initialize_particles();
-
-        /**
-         * Returns a const reference to the particle world, in case anyone
-         * wants to query something about particles.
-         */
-        const Particle::World<dim> &
-        get_particle_world() const;
-
-        /**
-         * Returns a reference to the particle world, in case anyone wants to
-         * change something within the particle world. Use with care, usually
-         * you want to only let the functions within the particle subsystem
-         * change member variables of the particle world.
-         */
-        Particle::World<dim> &
-        get_particle_world();
-
-        /**
          * Execute this postprocessor. Derived classes will implement this
          * function to do whatever they want to do to evaluate the solution at
          * the current time step.
@@ -221,11 +186,6 @@ namespace aspect
         parse_parameters (ParameterHandler &prm) override;
 
       private:
-        /**
-         * The world holding the particles
-         */
-        Particle::World<dim> world;
-
         /**
          * Interval between output (in years if appropriate simulation
          * parameter is set, otherwise seconds)

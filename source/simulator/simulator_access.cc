@@ -720,6 +720,25 @@ namespace aspect
   {
     return simulator->postprocess_manager;
   }
+
+
+  template <int dim>
+  const Particle::World<dim> &
+  SimulatorAccess<dim>::get_particle_world() const
+  {
+    Assert (simulator->particle_world.get() != nullptr,
+            ExcMessage("You can not call this function if there is no particle world."));
+    return *simulator->particle_world.get();
+  }
+
+  template <int dim>
+  Particle::World<dim> &
+  SimulatorAccess<dim>::get_particle_world()
+  {
+    Assert (simulator->particle_world.get() != nullptr,
+            ExcMessage("You can not call this function if there is no particle world."));
+    return *simulator->particle_world.get();
+  }
 }
 
 

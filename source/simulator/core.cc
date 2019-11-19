@@ -28,6 +28,7 @@
 #include <aspect/stokes_matrix_free.h>
 #include <aspect/mesh_deformation/interface.h>
 #include <aspect/citation_info.h>
+#include <aspect/postprocess/particles.h>
 
 #ifdef ASPECT_USE_WORLD_BUILDER
 #  include <world_builder/world.h>
@@ -190,7 +191,7 @@ namespace aspect
                    nullptr),
 #endif
     boundary_heat_flux (BoundaryHeatFlux::create_boundary_heat_flux<dim>(prm)),
-
+    particle_world(nullptr),
     time (numbers::signaling_nan<double>()),
     time_step (numbers::signaling_nan<double>()),
     old_time_step (numbers::signaling_nan<double>()),
@@ -396,6 +397,16 @@ namespace aspect
     postprocess_manager.initialize_simulator (*this);
     postprocess_manager.parse_parameters (prm);
 
+    if (postprocess_manager.template has_matching_postprocessor<Postprocess::Particles<dim> >())
+      {
+        particle_world.reset(new Particle::World<dim>());
+        if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(particle_world.get()))
+          sim->initialize_simulator (*this);
+
+        particle_world->parse_parameters(prm);
+        particle_world->initialize();
+      }
+
     mesh_refinement_manager.initialize_simulator (*this);
     mesh_refinement_manager.parse_parameters (prm);
 
@@ -505,6 +516,7 @@ namespace aspect
   template <int dim>
   Simulator<dim>::~Simulator ()
   {
+    particle_world.reset(nullptr);
     // wait if there is a thread that's still writing the statistics
     // object (set from the output_statistics() function)
     output_statistics_thread.join();
@@ -1760,6 +1772,18 @@ namespace aspect
           Assert (false, ExcNotImplemented());
       }
 
+    if (particle_world.get() != nullptr)
+      {
+        // Do not advect the particles in the initial refinement stage
+        const bool in_initial_refinement = (timestep_number == 0)
+                                           && (pre_refinement_step < parameters.initial_adaptive_refinement);
+        if (!in_initial_refinement)
+          // Advance the particles in the world to the current time
+          particle_world->advance_timestep();
+
+        if (particle_world->get_property_manager().need_update() == Particle::Property::update_output_step)
+          particle_world->update_particles();
+      }
     pcout << std::endl;
   }
 

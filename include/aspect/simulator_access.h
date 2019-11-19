@@ -25,6 +25,7 @@
 #include <aspect/global.h>
 #include <aspect/parameters.h>
 #include <aspect/introspection.h>
+#include <aspect/particle/world.h>
 
 #include <deal.II/base/table_handler.h>
 #include <deal.II/base/timer.h>
@@ -150,6 +151,12 @@ namespace aspect
   }
 
   template <int dim> class NewtonHandler;
+
+
+  namespace Particle
+  {
+    template <int dim> class World;
+  }
 
   /**
    * SimulatorAccess is a base class for different plugins like postprocessors.
@@ -889,6 +896,22 @@ namespace aspect
        */
       const Postprocess::Manager<dim> &
       get_postprocess_manager () const;
+
+      /**
+       * Returns a const reference to the particle world, in case anyone
+       * wants to query something about particles.
+       */
+      const Particle::World<dim> &
+      get_particle_world() const;
+
+      /**
+       * Returns a reference to the particle world, in case anyone wants to
+       * change something within the particle world. Use with care, usually
+       * you want to only let the functions within the particle subsystem
+       * change member variables of the particle world.
+       */
+      Particle::World<dim> &
+      get_particle_world();
 
       /** @} */
 
