@@ -1,6 +1,10 @@
-import argparse
 import os
 import json
+import subprocess
+
+
+aspect_binary = "./aspect"
+postprocess_binary = "aspect-postprocess"
 
 
 default_prm_template = "./solkz_Q2_Q1.template.prm"
@@ -34,16 +38,16 @@ def generate_prm(source_template, global_ref, adaptive_ref=0):
                     .replace(global_ref_template, str(global_ref))
                     .replace(adaptive_ref_template, str(adaptive_ref))
                 )
-    return ((global_ref, adaptive_ref), output_directory)
+    return ((global_ref, adaptive_ref), dest_filename, output_directory)
 
 
 def generate_comparison_json(run_directories, json_dest):
     comparisions = []
     for a, b in zip(run_directories[:-1], run_directories[1:]):
         a_ref = a[0][0]
-        a_dir = a[1]
+        a_dir = a[2]
         b_ref = b[0][0]
-        b_dir = b[1]
+        b_dir = b[2]
         assert a_ref + 1 == b_ref
         entry = {
             "label": "$2^{"+str(b_ref)+"}",
@@ -56,7 +60,12 @@ def generate_comparison_json(run_directories, json_dest):
 
 
 if __name__ == "__main__":
+    comparision_json = "./convergence_comparison.json"
     files = []
     for r in range(3, 7):
         files.append(generate_prm(default_prm_template, r))
-    generate_comparison_json(files, "./convergence_comparison.json")
+    generate_comparison_json(files, comparision_json)
+    for l in files:
+        subprocess.call([aspect_binary, l[1]])
+    subprocess.call([postprocess_binary, "convergence", comparision_json,
+                     "-o", "comparison.csv"])
