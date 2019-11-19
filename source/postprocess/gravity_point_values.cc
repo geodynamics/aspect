@@ -111,22 +111,24 @@ namespace aspect
              << "# 10: gravity_norm" << '\n'
              << "# 11: gravity_theory" << '\n'
              << "# 12: gravity potential" << '\n'
-             << "# 13: gravity_anomaly_x" << '\n'
-             << "# 14: gravity_anomaly_y" << '\n'
-             << "# 15: gravity_anomaly_z" << '\n'
-             << "# 16: gravity_anomaly_norm" << '\n'
-             << "# 17: gravity_gradient_xx" << '\n'
-             << "# 18: gravity_gradient_yy" << '\n'
-             << "# 19: gravity_gradient_zz" << '\n'
-             << "# 20: gravity_gradient_xy" << '\n'
-             << "# 21: gravity_gradient_xz" << '\n'
-             << "# 22: gravity_gradient_yz" << '\n'
-             << "# 23: gravity_gradient_theory_xx" << '\n'
-             << "# 24: gravity_gradient_theory_yy" << '\n'
-             << "# 25: gravity_gradient_theory_zz" << '\n'
-             << "# 26: gravity_gradient_theory_xy" << '\n'
-             << "# 27: gravity_gradient_theory_xz" << '\n'
-             << "# 28: gravity_gradient_theory_yz" << '\n'
+             << "# 13: gravity_full_norm" << '\n'
+             << "# 14: gravity full_potential" << '\n'
+             << "# 15: gravity_anomaly_x" << '\n'
+             << "# 16: gravity_anomaly_y" << '\n'
+             << "# 17: gravity_anomaly_z" << '\n'
+             << "# 18: gravity_anomaly_norm" << '\n'
+             << "# 19: gravity_gradient_xx" << '\n'
+             << "# 20: gravity_gradient_yy" << '\n'
+             << "# 21: gravity_gradient_zz" << '\n'
+             << "# 22: gravity_gradient_xy" << '\n'
+             << "# 23: gravity_gradient_xz" << '\n'
+             << "# 24: gravity_gradient_yz" << '\n'
+             << "# 25: gravity_gradient_theory_xx" << '\n'
+             << "# 26: gravity_gradient_theory_yy" << '\n'
+             << "# 27: gravity_gradient_theory_zz" << '\n'
+             << "# 28: gravity_gradient_theory_xy" << '\n'
+             << "# 29: gravity_gradient_theory_xz" << '\n'
+             << "# 30: gravity_gradient_theory_yz" << '\n'
              << '\n';
 
       // Get quadrature formula and increase the degree of quadrature over the velocity
@@ -333,6 +335,8 @@ namespace aspect
           // analytical solution to calculate the theoretical gravity and gravity gradient
           // from a uniform density model. Can only be used if concentric density profile.
           double g_theory = 0;
+          double g_beneath = 0;
+          double g_potential_beneath = 0;
           Tensor<2,dim> g_gradient_theory;
           if (satellites_coordinate[p][0] <= model_inner_radius)
             {
@@ -347,6 +351,8 @@ namespace aspect
             {
               g_theory = G * numbers::PI * 4/3 * reference_density * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
                          /  std::pow(satellites_coordinate[p][0],2);
+              g_beneath = G * numbers::PI * 4/3 * beneath_density * std::pow(model_inner_radius,3) / std::pow(satellites_coordinate[p][0],2);
+              g_potential_beneath = G * numbers::PI * 4/3 * beneath_density * std::pow(model_inner_radius,3) / satellites_coordinate[p][0];
               g_gradient_theory[0][0] = -G * numbers::PI * 4/3 * reference_density
                                         * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
                                         * (std::pow(satellites_coordinate[p][0], 2) - 3.0 * pow(position_satellite[0],2))
@@ -386,9 +392,11 @@ namespace aspect
                      << std::setprecision(18) << g << ' '
                      << std::setprecision(18) << g.norm() << ' '
                      << std::setprecision(18) << g_theory << ' '
-                     << std::setprecision(9) << g_potential << ' '
-                     << std::setprecision(9) << g_anomaly << ' '
-                     << std::setprecision(9) << g_anomaly.norm() << ' '
+                     << std::setprecision(9)  << g_potential << ' '
+                     << std::setprecision(18) << g.norm() + g_beneath << ' '
+                     << std::setprecision(9)  << g_potential + g_potential_beneath << ' '
+                     << std::setprecision(9)  << g_anomaly << ' '
+                     << std::setprecision(9)  << g_anomaly.norm() << ' '
                      << g_gradient[0][0] *1e9 << ' '
                      << g_gradient[1][1] *1e9 << ' '
                      << g_gradient[2][2] *1e9 << ' '
@@ -486,6 +494,10 @@ namespace aspect
                              Patterns::Double (0.0),
                              "Gravity anomalies may be computed using density "
                              "anomalies relative to a reference density.");
+          prm.declare_entry ("Density beneath", "0",
+                             Patterns::Double (0.0),
+                             "The density beneath the inner radius is prescribed "
+                             "as a constant.");
           prm.declare_entry ("List of radius", "",
                              Patterns::List (Patterns::Double(0)),
                              "Parameter for the list sampling scheme: "
@@ -556,6 +568,7 @@ namespace aspect
           minimum_colatitude  = prm.get_double ("Minimum latitude") + 90;
           maximum_colatitude  = prm.get_double ("Maximum latitude") + 90;
           reference_density   = prm.get_double ("Reference density");
+          density_beneath     = prm.get_double ("Density beneath");
           radius_list    = Utilities::string_to_double(Utilities::split_string_list(prm.get("List of radius")));
           longitude_list = Utilities::string_to_double(Utilities::split_string_list(prm.get("List of longitude")));
           latitude_list  = Utilities::string_to_double(Utilities::split_string_list(prm.get("List of latitude")));

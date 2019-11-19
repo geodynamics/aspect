@@ -224,6 +224,11 @@ namespace aspect
         double reference_density;
 
         /**
+         * Specify a density constant beneath the inner radius
+         */
+        double density_beneath;
+
+        /**
          * Specify the sampling scheme determining if gravity calculation is performed
          * for a map of points or a list of points.
          */
