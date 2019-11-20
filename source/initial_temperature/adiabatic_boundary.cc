@@ -27,153 +27,111 @@
 
 namespace aspect
 {
-  namespace InitialTemperature
-  {
-
-
-    template <int dim>
-    AdiabaticBoundary<dim>::AdiabaticBoundary ()
-    :
-	surface_boundary_id(1)
-	{}
-
-    template <int dim>
-    void
-	AdiabaticBoundary<dim>::initialize ()
+    namespace InitialTemperature
     {
-      // Find the boundary indicator that represents the surface
-      surface_boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id("outer");
 
-      std::set<types::boundary_id> surface_boundary_set;
-      surface_boundary_set.insert(surface_boundary_id);
 
-      // The input ascii table contains two components, the crust depth and the LAB depth
-      Utilities::AsciiDataBoundary<dim>::initialize(surface_boundary_set,
-                                                    2);
-    }
+        template <int dim>
+        AdiabaticBoundary<dim>::AdiabaticBoundary ()
+                :
+                surface_boundary_id(1)
+        {}
 
-    template <int dim>
-    double
-    AdiabaticBoundary<dim>::initial_temperature (const Point<dim> &position) const
-    {
-      const double depth = this->get_geometry_model().depth(position);
-       const double isotherm_depth              =
-    	    		                              Utilities::AsciiDataBoundary<dim>::get_data_component(surface_boundary_id, position, 0);
-       //std::cout<<isotherm_depth<<std::endl;
-      if (depth > isotherm_depth)
-        return isotherm_temperature + (depth - isotherm_depth) * temperature_gradient;
-      else
-        return surface_temperature + (depth/isotherm_depth) * (isotherm_temperature - surface_temperature);
-    }
-
-    template <int dim>
-    void
-    AdiabaticBoundary<dim>::declare_parameters(ParameterHandler &prm)
-    {
-      prm.enter_subsection ("Initial temperature model");
-      {
-        Utilities::AsciiDataBase<dim>::declare_parameters(prm,
-    	    	     	    	         	               "$ASPECT_SOURCE_DIR/data/initial-temperature/ascii-data/",
-    	    	     	    	         	               "litho.kenya.txt");
-        prm.enter_subsection("Adiabatic boundary");
+        template <int dim>
+        void
+        AdiabaticBoundary<dim>::initialize ()
         {
-          prm.declare_entry ("Isotherm temperature", "1673.15",
-                             Patterns::Double (0),
-                             "The value of the isothermal boundary temperature. Units: $\\si{K}$.");
-          prm.declare_entry ("Surface temperature", "273.15",
-                             Patterns::Double (0),
-                             "The value of the surface temperature. Units: $\\si{K}$.");
-          prm.declare_entry ("Adiabatic temperature gradient", "0.0005",
-                             Patterns::Double (0),
-                             "The value of the adiabatic temperature gradient. Units: $K m^{-1}$.");
-        }
-        prm.leave_subsection();
-      }
-      prm.leave_subsection();
-    }
+            // Find the boundary indicator that represents the surface
+            surface_boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id("outer");
 
-    template <int dim>
-    void
-    AdiabaticBoundary<dim>::parse_parameters(ParameterHandler &prm)
-    {
-      prm.enter_subsection ("Initial temperature model");
-      {
-    	Utilities::AsciiDataBase<dim>::parse_parameters(prm);
+            std::set<types::boundary_id> surface_boundary_set;
+            surface_boundary_set.insert(surface_boundary_id);
 
-        prm.enter_subsection("Adiabatic boundary");
-        {
-          isotherm_temperature = prm.get_double("Isotherm temperature");
-          surface_temperature  = prm.get_double("Surface temperature");
-          temperature_gradient = prm.get_double("Adiabatic temperature gradient");
-        }
-        prm.leave_subsection();
-      }
-      prm.leave_subsection();
-
-      AssertThrow ((dynamic_cast<const GeometryModel::EllipsoidalChunk<dim>*>
-                    (&this->get_geometry_model()) != nullptr),
-                   ExcMessage ("This initial condition can only be used if the geometry "
-                               "is an ellipsoidal chunk."));
-
-      const std::string filename = data_directory+isotherm_file_name;
-
-      /**
-       * Read data from disk and distribute among processes
-       */
-      std::istringstream in(Utilities::read_and_distribute_file_content(filename, this->get_mpi_communicator()));
-
-      /**
-       * Reading data lines.
-       */
-      double latitude_iso, longitude_iso, depth_iso;
-      while (in >> latitude_iso >> longitude_iso >> depth_iso)
-        {
-          latitudes_iso.push_back(latitude_iso);
-          longitudes_iso.push_back(longitude_iso);
-          depths_iso.push_back(depth_iso*1000.);
+            // The input ascii table contains two components, the crust depth and the LAB depth
+            Utilities::AsciiDataBoundary<dim>::initialize(surface_boundary_set,
+                                                          2);
         }
 
-      /**
-       * Find first 2 numbers that are different to use in
-       * calculating half the difference between each position as delta.
-       */
-      if (std::fabs(latitudes_iso[0] - latitudes_iso[1]) > 1e-9)
+        template <int dim>
+        double
+        AdiabaticBoundary<dim>::initial_temperature (const Point<dim> &position) const
         {
-          /**
-           * Calculate delta as half the latitude distance.
-          */
-          delta = std::fabs((0.5)*(latitudes_iso[0] - latitudes_iso[1]));
+            const double depth = this->get_geometry_model().depth(position);
+            const double isotherm_depth              =
+                    Utilities::AsciiDataBoundary<dim>::get_data_component(surface_boundary_id, position, 0);
+            //std::cout<<isotherm_depth<<std::endl;
+            if (depth > isotherm_depth)
+                return isotherm_temperature + (depth - isotherm_depth) * temperature_gradient;
+            else
+                return surface_temperature + (depth/isotherm_depth) * (isotherm_temperature - surface_temperature);
         }
-      else
+
+        template <int dim>
+        void
+        AdiabaticBoundary<dim>::declare_parameters(ParameterHandler &prm)
         {
-          /**
-           * Calculate delta as half the longitude distance.
-          */
-          delta = std::fabs((0.5)*(longitudes_iso[0] - longitudes_iso[1]));
+            prm.enter_subsection ("Initial temperature model");
+            {
+                Utilities::AsciiDataBase<dim>::declare_parameters(prm,
+                                                                  "$ASPECT_SOURCE_DIR/data/initial-temperature/ascii-data/",
+                                                                  "litho.kenya.txt");
+                prm.enter_subsection("Adiabatic boundary");
+                {
+                    prm.declare_entry ("Isotherm temperature", "1673.15",
+                                       Patterns::Double (0),
+                                       "The value of the isothermal boundary temperature. Units: Kelvin.");
+                    prm.declare_entry ("Surface temperature", "273.15",
+                                       Patterns::Double (0),
+                                       "The value of the surface temperature. Units: Kelvin.");
+                    prm.declare_entry ("Adiabatic temperature gradient", "0.0005",
+                                       Patterns::Double (0),
+                                       "The value of the adiabatic temperature gradient. Units: $K m^{-1}$.");
+                }
+                prm.leave_subsection();
+            }
+            prm.leave_subsection();
+        }
+
+        template <int dim>
+        void
+        AdiabaticBoundary<dim>::parse_parameters(ParameterHandler &prm)
+        {
+            prm.enter_subsection ("Initial temperature model");
+            {
+                Utilities::AsciiDataBase<dim>::parse_parameters(prm);
+
+                prm.enter_subsection("Adiabatic boundary");
+                {
+                    isotherm_temperature = prm.get_double("Isotherm temperature");
+                    surface_temperature  = prm.get_double("Surface temperature");
+                    temperature_gradient = prm.get_double("Adiabatic temperature gradient");
+                }
+                prm.leave_subsection();
+            }
+            prm.leave_subsection();
+
         }
 
     }
-
-  }
 
 }
 
 
 namespace aspect
 {
-  namespace InitialTemperature
-  {
-    ASPECT_REGISTER_INITIAL_TEMPERATURE_MODEL(AdiabaticBoundary,
-                                              "adiabatic boundary",
-                                              "An initial temperature condition that allows for discretizing "
-                                              "the model domain into two layers separated by a user-defined "
-                                              "isothermal boundary using a table look-up approach. The user includes an "
-                                              "input ascii data file that is formatted as 3 columns of `latitude', "
-                                              "`longitude', and `depth', where `depth' is in kilometers and "
-                                              "represents the depth of an initial temperature of 1673.15 K (by default). "
-                                              "The temperature is defined from the surface (273.15 K) to the isotherm "
-                                              "as a linear gradient. Below the isotherm the temperature increases "
-                                              "approximately adiabatically (0.0005 K per meter). This initial temperature condition "
-                                              "is designed specifically for the ellipsoidal chunk geometry model.")
-  }
+    namespace InitialTemperature
+    {
+        ASPECT_REGISTER_INITIAL_TEMPERATURE_MODEL(AdiabaticBoundary,
+        "adiabatic boundary",
+        "An initial temperature condition that allows for discretizing "
+        "the model domain into two layers separated by a user-defined "
+        "isothermal boundary using a table look-up approach. The user includes an "
+        "input ascii data file that is formatted as 3 columns of `latitude', "
+        "`longitude', and `depth', where `depth' is in kilometers and "
+        "represents the depth of an initial temperature of 1673.15 K (by default). "
+        "The temperature is defined from the surface (273.15 K) to the isotherm "
+        "as a linear gradient. Below the isotherm the temperature increases "
+        "approximately adiabatically (0.0005 K per meter). This initial temperature condition "
+        "is designed specifically for the ellipsoidal chunk geometry model.")
+    }
 }

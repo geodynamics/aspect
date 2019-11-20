@@ -28,6 +28,8 @@
 #include <Array.h>
 #endif
 
+#include <netcdf.h>
+
 #include <array>
 #include <deal.II/base/point.h>
 
@@ -918,7 +920,6 @@ namespace aspect
     }
 
 
-<<<<<<< HEAD
     //Evaluate the cosine and sine terms of a real spherical harmonic.
     //This is a fully normalized harmonic, that is to say, inner products
     //of these functions should integrate to a kronecker delta over
@@ -927,12 +928,6 @@ namespace aspect
                                                       const unsigned int m, // order
                                                       const double theta,   // colatitude (radians)
                                                       const double phi )    // longitude (radians)
-=======
-    std::pair<double,double> real_spherical_harmonic( const unsigned int l,
-                                                      const unsigned int m,
-                                                      const double theta,
-                                                      const double phi)
->>>>>>> 8a9b54510ef62c0353f219b983371a0a675b3f23
     {
       const double sqrt_2 = numbers::SQRT2;
       const std::complex<double> sph_harm_val = boost::math::spherical_harmonic( l, m, theta, phi );
@@ -2109,13 +2104,7 @@ namespace aspect
                                "a spherical shell, chunk or box geometry."));
 
 
-<<<<<<< HEAD
-      for (typename std::set<types::boundary_id>::const_iterator
-	     boundary_id = boundary_ids.begin();
-           boundary_id != boundary_ids.end(); ++boundary_id)
-=======
       for (const auto &boundary_id : boundary_ids)
->>>>>>> 8a9b54510ef62c0353f219b983371a0a675b3f23
         {
           lookups.insert(std::make_pair(boundary_id,
                                         std_cxx14::make_unique<Utilities::AsciiDataLookup<dim-1>>
@@ -2148,12 +2137,8 @@ namespace aspect
                                   filename
                                   +
                                   "> not found!"));
-<<<<<<< HEAD
 
-          lookups.find(*boundary_id)->second->load_file(filename,this->get_mpi_communicator());
-=======
           lookups.find(boundary_id)->second->load_file(filename,this->get_mpi_communicator());
->>>>>>> 8a9b54510ef62c0353f219b983371a0a675b3f23
 
           // If the boundary condition is constant, switch off time_dependence
           // immediately. If not, also load the second file for interpolation.
@@ -2347,16 +2332,8 @@ namespace aspect
 
               const bool load_both_files = std::abs(current_file_number - old_file_number) >= 1;
 
-<<<<<<< HEAD
-              for (typename std::map<types::boundary_id,
-		     std::shared_ptr<Utilities::AsciiDataLookup<dim-1> > >::iterator
-		     boundary_id = lookups.begin();
-                   boundary_id != lookups.end(); ++boundary_id)
-                update_data(boundary_id->first,load_both_files);
-=======
               for (const auto &boundary_id : lookups)
                 update_data(boundary_id.first, load_both_files);
->>>>>>> 8a9b54510ef62c0353f219b983371a0a675b3f23
             }
 
           time_weight = time_steps_since_start
@@ -3233,9 +3210,6 @@ namespace aspect
           {
             return std::max(x,y);
           }
-<<<<<<< HEAD
-	default:
-=======
           case Utilities::Operator::replace_if_valid:
           {
             if (std::isnan(y))
@@ -3244,7 +3218,6 @@ namespace aspect
               return y;
           }
           default:
->>>>>>> 8a9b54510ef62c0353f219b983371a0a675b3f23
           {
             Assert (false, ExcInternalError());
           }
