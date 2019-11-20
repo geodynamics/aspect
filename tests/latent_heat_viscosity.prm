@@ -17,11 +17,13 @@ subsection Material model
     set Viscosity                     = 1e21
     set Thermal viscosity exponent    = 15.0
     set Reference temperature         = 1600
-    set Phase transition depths       = 410000, 660000
-    set Phase transition widths       = 20000, 20000
-    set Phase transition temperatures = 1600, 1600
-    set Phase transition Clapeyron slopes = 3e6, -2e6
-    set Phase transition density jumps = 100, 200
+    # 'background' or 'all' are identical identifiers, because there is just
+    # background material
+    set Phase transition depths           = all:410000|660000
+    set Phase transition widths           = background:20000|20000
+    set Phase transition temperatures     = all:1600|1600
+    set Phase transition Clapeyron slopes = all:3e6|-2e6
+    set Phase transition density jumps    = 100, 200
     set Corresponding phase for density jump = 0, 0
     set Viscosity prefactors          = 1, 10, 100
   end

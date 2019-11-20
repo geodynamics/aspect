@@ -87,233 +87,227 @@ namespace aspect
       return input_table;
     }
 
+    namespace
+    {
+      // This is a helper function used in parse_map_to_double_array below.
+      // It takes an input_string that is expected to follow the input format
+      // explained in the documentation of the parse_map_to_double_array function
+      // and parses it into a multimap, only performing rudimentary error checking
+      // for correct formatting.
+      std::multimap<std::string, double>
+      parse_string_to_map (const std::string &input_string,
+                           const std::vector<std::string> &list_of_keys,
+                           const std::string &property_name)
+      {
+        std::multimap<std::string, double> parsed_map;
+
+        if (Patterns::Map(Patterns::Anything(),
+                          Patterns::List(Patterns::Double(),
+                                         0,
+                                         std::numeric_limits<unsigned int>::max(),
+                                         "|")).match(input_string))
+          {
+            // Split the list by comma delimited components.
+            const std::vector<std::string> field_entries = dealii::Utilities::split_string_list(input_string, ',');
+
+            for (const auto &field_entry : field_entries)
+              {
+                // Split each entry into string and value ( <id> : <value>)
+                std::vector<std::string> key_and_value = Utilities::split_string_list (field_entry, ':');
+
+                // Ensure that each entry has the correct form.
+                AssertThrow (key_and_value.size() == 2,
+                             ExcMessage ("The format for mapped "
+                                         + property_name
+                                         + "requires that each entry has the "
+                                         "form `<key> : <value>' "
+                                         ", but the entry <"
+                                         + field_entry
+                                         + "> does not appear to follow this pattern."));
+
+                // Handle special key "all", which must be the only entry if found
+                if (key_and_value[0] == "all")
+                  {
+                    AssertThrow (field_entries.size() == 1,
+                                 ExcMessage ("The keyword `all' in the property "
+                                             + property_name
+                                             + " is only allowed if there is no other "
+                                             "keyword."));
+
+                    const std::vector<std::string> values = dealii::Utilities::split_string_list(key_and_value[1], '|');
+
+                    // Assign all the values to all fields
+                    for (const std::string &key: list_of_keys)
+                      for (const std::string &value : values)
+                        {
+                          parsed_map.emplace(key, Utilities::string_to_double(value));
+                        }
+                  }
+                // Handle lists of multiple unique entries
+                else
+                  {
+                    AssertThrow (parsed_map.find(key_and_value[0]) == parsed_map.end(),
+                                 ExcMessage ("The keyword <"
+                                             + key_and_value[0]
+                                             + "> in "
+                                             + property_name
+                                             + " is listed multiple times. "
+                                             "Check that you have only one value for "
+                                             "each field id in your list."));
+
+                    const std::vector<std::string> values = dealii::Utilities::split_string_list(key_and_value[1], '|');
+
+                    for (const auto &value : values)
+                      {
+                        parsed_map.emplace(key_and_value[0],Utilities::string_to_double(value));
+                      }
+                  }
+              }
+          }
+        else if (Patterns::List(Patterns::Double(),1,list_of_keys.size()).match(input_string))
+          {
+            // Handle the format of a comma separated list of doubles, with no keywords
+            const std::vector<double> values = possibly_extend_from_1_to_N (dealii::Utilities::string_to_double(dealii::Utilities::split_string_list(input_string)),
+                                                                            list_of_keys.size(),
+                                                                            property_name);
+
+            for (unsigned int i=0; i<values.size(); ++i)
+              {
+                // list_of_keys and values have the same length, which is guaranteed by the
+                // call to possibly_extend_from_1_to_N() above
+                parsed_map.emplace(list_of_keys[i],values[i]);
+              }
+          }
+        else
+          {
+            // No Patterns matches were found!
+            AssertThrow (false,
+                         ExcMessage ("The required format for property <"
+                                     + property_name
+                                     + "> was not found. Specify a comma separated "
+                                     + "list of `<double>' or `<key1> : <double>|<double>|..., "
+                                     + "<key2> : <double>|... , ... '."));
+          }
+
+        return parsed_map;
+      }
+    }
 
 
     std::vector<double>
     parse_map_to_double_array (const std::string &input_string,
                                const std::vector<std::string> &list_of_keys,
-                               const bool has_background_field,
+                               const bool expects_background_field,
                                const std::string &property_name,
                                const bool allow_multiple_values_per_key,
-                               std::shared_ptr<std::vector<unsigned int> > n_values_per_key)
+                               std::shared_ptr<std::vector<unsigned int> > n_values_per_key,
+                               const bool allow_missing_keys)
     {
       std::vector<std::string> field_names = list_of_keys;
-      if (has_background_field)
+      if (expects_background_field)
         field_names.insert(field_names.begin(),"background");
-
       const unsigned int n_fields = field_names.size();
-      std::vector<double> return_values;
 
-      const bool check_structure = (n_values_per_key && n_values_per_key->size() != 0);
-      const bool store_structure = (n_values_per_key && n_values_per_key->size() == 0);
+      // First: parse the string into a map depending on what Pattern we are dealing with
+      std::multimap<std::string, double> parsed_map = parse_string_to_map(input_string,
+                                                                          field_names,
+                                                                          property_name);
 
-      if (store_structure)
-        n_values_per_key->resize(n_fields,0);
+      // Second: Now check that the structure of the map is as expected
+      {
+        const bool check_structure = (n_values_per_key && n_values_per_key->size() != 0);
+        const bool store_structure = (n_values_per_key && n_values_per_key->size() == 0);
+        std::vector<unsigned int> values_per_key(n_fields, 0);
 
-      if (check_structure)
-        AssertThrow(n_values_per_key->size() == n_fields,
-                    ExcMessage("When providing an expected structure for input parameter " + property_name + " you need to provide "
-                               + "as many entries in the structure vector as there are input field names (+1 if there is a background field). "
-                               + "The current structure vector has " + std::to_string(n_values_per_key->size()) + " entries, but there are "
-                               + std::to_string(n_fields) + " field names." ));
+        if (check_structure)
+          AssertThrow(n_values_per_key->size() == n_fields,
+                      ExcMessage("When providing an expected structure for input parameter " + property_name + " you need to provide "
+                                 + "as many entries in the structure vector as there are input field names (+1 if there is a background field). "
+                                 + "The current structure vector has " + std::to_string(n_values_per_key->size()) + " entries, but there are "
+                                 + std::to_string(n_fields) + " field names." ));
 
-      const auto key_pattern = (allow_multiple_values_per_key)
-                               ?
-                               Patterns::List(Patterns::Double(),
-                                              1,
-                                              std::numeric_limits<unsigned int>::max(),
-                                              "|")
-                               :
-                               Patterns::Double();
+        for (const std::pair<std::string, double> &key_and_value: parsed_map)
+          {
+            const std::vector<std::string>::iterator field_name =
+              std::find(field_names.begin(),field_names.end(),key_and_value.first);
 
-      // Parse the string depending on what Pattern we are dealing with
-      if (Patterns::Map(Patterns::Anything(),
-                        key_pattern,
-                        1,
-                        n_fields).match(input_string))
-        {
-          std::vector<std::vector<double> > return_map(n_fields,std::vector<double> ());
+            // Ensure that each key is in the list of field names
+            AssertThrow (field_name != field_names.end(),
+                         ExcMessage ("The keyword <" + key_and_value.first + "> in "
+                                     + property_name + " does not match any entries "
+                                     "from the list of field names"
+                                     + ((expects_background_field)
+                                        ?
+                                        " (plus `background' for the background field). "
+                                        :
+                                        ". ")
+                                     + "Check that you only use valid names.\n\n"
+                                     "One example of where to check this is if "
+                                     "Compositional fields are used, "
+                                     "then check the id list "
+                                     "from `set Names of fields' in the "
+                                     "Compositional fields subsection. "
+                                     "Alternatively, if `set Names of fields' "
+                                     "is not set, the default names are "
+                                     "C_1, C_2, ..., C_n."));
 
-          // Split the list by comma delimited components,
-          // then by colon delimited field name and value.
-          const std::vector<std::string> field_entries = dealii::Utilities::split_string_list(input_string, ',');
+            const unsigned int field_index = std::distance(field_names.begin(), field_name);
+            values_per_key[field_index] += 1;
+          }
 
-          AssertThrow ( (field_entries.size() == n_fields)
-                        || (field_entries.size() == 1),
-                        ExcMessage ("The number of "
-                                    + property_name
-                                    + " in the list must equal one of the following values:\n"
-                                    "1 (one value for all fields, including background, using the keyword=`all'), \n"
-                                    "or " + std::to_string(n_fields) + " (the number of fields, possibly plus 1 if a background field is expected)."));
+        if (store_structure)
+          *n_values_per_key = values_per_key;
 
-          // Parse by entry
-          for (const auto &field_entry : field_entries)
-            {
-              // Split each entry into string and value ( <id> : <value>)
-              std::vector<std::string> key_and_value = Utilities::split_string_list (field_entry, ':');
-
-              // Ensure that each entry has the correct form.
-              AssertThrow (key_and_value.size() == 2,
-                           ExcMessage ("The format for mapped "
+        unsigned int field_index = 0;
+        for (const unsigned int &n_values: values_per_key)
+          {
+            if (allow_multiple_values_per_key == false)
+              AssertThrow (n_values <= 1,
+                           ExcMessage ("The keyword <"
+                                       + field_names[field_index]
+                                       + "> in "
                                        + property_name
-                                       + "requires that each entry has the "
-                                       "form `<id> : <value>' "
-                                       ", but the entry <"
-                                       + field_entry
-                                       + "> does not appear to follow this pattern."));
+                                       + " has multiple values, which is unexpected. "
+                                       "Check that you have only one value for "
+                                       "each field id in your list."));
 
-              // If there is one entry in the list the keyword "all" must be found.
-              if ((field_entries.size() == 1) && (n_fields != 1))
-                {
-                  AssertThrow (key_and_value[0] == "all",
-                               ExcMessage ("There is only one "
-                                           + property_name
-                                           + " value given. The keyword `all' is "
-                                           "expected but is not found. Please "
-                                           "check your "
-                                           + property_name
-                                           + " list."));
+            if (allow_missing_keys == false)
+              AssertThrow (n_values > 0,
+                           ExcMessage ("The keyword <"
+                                       + field_names[field_index]
+                                       + "> in "
+                                       + property_name
+                                       + " is not listed, although it is expected. "
+                                       "Check that you have at least one value for "
+                                       "each field id in your list (possibly plus "
+                                       "`background` if a background field is expected "
+                                       "for this property)."));
 
-                  const std::vector<std::string> values = dealii::Utilities::split_string_list(key_and_value[1], '|');
+            if (check_structure)
+              {
+                AssertThrow((*n_values_per_key)[field_index] == n_values,
+                            ExcMessage("The key <" + field_names[field_index] + "> in <"+ property_name + "> does not have "
+                                       + "the expected number of values. It expects " + std::to_string((*n_values_per_key)[field_index])
+                                       + " values, but we found " + std::to_string(n_values) + " values."));
 
-                  // Assign all the elements to the "all" value
-                  for (unsigned int field_index=0; field_index<n_fields; ++field_index)
-                    {
-                      for (const auto &value : values)
-                        {
-                          return_map[field_index].push_back(Utilities::string_to_double(value));
+              }
 
-                          if (store_structure)
-                            ++(*n_values_per_key)[field_index];
-                        }
+            ++field_index;
+          }
+      }
 
-                      if (check_structure)
-                        AssertThrow((*n_values_per_key)[field_index] == values.size(),
-                                    ExcMessage("The key <" + key_and_value[0] + "> in <"+ property_name + "> does not have "
-                                               + "the expected number of values. It expects " + std::to_string((*n_values_per_key)[field_index])
-                                               + " values, but we found " + std::to_string(values.size()) + " values."));
-                    }
-                }
-              // Handle lists of multiple entries
-              else
-                {
-                  // Ensure that the special keyword "all" was not used when multiple entries exist.
-                  AssertThrow (key_and_value[0] != "all" || n_fields == 1,
-                               ExcMessage ("There are multiple "
-                                           + property_name
-                                           + " values found, the keyword `all' is not "
-                                           "allowed. Please check your "
-                                           + property_name
-                                           + " list."));
-
-                  // Continue with placing values into the correct positions according to
-                  // the order of names passed to this function in the argument list_of_field_names.
-                  std::vector<std::string>::iterator field_name
-                    = std::find(field_names.begin(),field_names.end(),key_and_value[0]);
-
-                  // Ensure that each non-special keyword found is also contained in
-                  // the list of field names, and insert the associated
-                  // values to the correct index position.
-                  AssertThrow (field_name != field_names.end(),
-                               ExcMessage ("The keyword <"
-                                           + key_and_value[0]
-                                           + "> in "
-                                           + property_name
-                                           + " does not match any entries "
-                                           "from the list of field names"
-                                           + ((has_background_field)
-                                              ?
-                                              " (plus `background' for the background field). "
-                                              :
-                                              ". ")
-                                           + "Check that you have a value for "
-                                           "each field id in your list.\n\n"
-                                           "One example of where to check this is if "
-                                           "Compositional fields are used, "
-                                           "then check the id list "
-                                           "from `set Names of fields' in the "
-                                           "Compositional fields subsection. "
-                                           "Alternatively, if `set Names of fields' "
-                                           "is not set, the default names are "
-                                           "C_1, C_2, ..., C_n."));
-
-                  const unsigned int field_index = std::distance(field_names.begin(),field_name);
-
-                  // Throw an error if this index was already set ...there can be only one
-                  AssertThrow (return_map[field_index].size() == 0,
-                               ExcMessage ("The keyword <"
-                                           + key_and_value[0]
-                                           + "> in "
-                                           + property_name
-                                           + " is listed multiple times. "
-                                           "Check that you have only one value for "
-                                           "each field id in your list."
-                                           "\n\n"
-                                           "One example of where to check this is if "
-                                           "Compositional fields are used, "
-                                           "then check the id list "
-                                           "from `set Names of fields' in the "
-                                           "Compositional fields subsection. "
-                                           "Alternatively, if `set Names of fields' "
-                                           "is not set, the default names are "
-                                           "C_1, C_2, ..., C_n."));
-
-                  const std::vector<std::string> values = dealii::Utilities::split_string_list(key_and_value[1], '|');
-
-                  for (const auto &value : values)
-                    {
-                      return_map[field_index].push_back(Utilities::string_to_double(value));
-
-                      if (store_structure)
-                        ++(*n_values_per_key)[field_index];
-                    }
-
-                  if (check_structure)
-                    AssertThrow((*n_values_per_key)[field_index] == values.size(),
-                                ExcMessage("The key <" + key_and_value[0] + "> in <"+ property_name + "> does not have "
-                                           + "the expected number of values. It expects " + std::to_string((*n_values_per_key)[field_index])
-                                           + " values, but we found " + std::to_string(values.size()) + " values."));
-                }
-            }
-
-          for (const auto &entry: return_map)
-            for (const auto &sub_entry: entry)
-              return_values.push_back(sub_entry);
-        }
-      else if (Patterns::List(Patterns::Double(),1,n_fields).match(input_string))
+      // Finally: Convert the map into a vector of doubles, sorted in the order
+      // of the field_names input parameter
+      std::vector<double> return_values;
+      for (const std::string &field_name: field_names)
         {
-          // Handle the format of a comma separated list of doubles, with no keywords
-          return_values = possibly_extend_from_1_to_N (dealii::Utilities::string_to_double(dealii::Utilities::split_string_list(input_string)),
-                                                       n_fields,
-                                                       property_name);
+          const std::pair<std::multimap<std::string, double>::const_iterator,
+                std::multimap<std::string, double>::const_iterator> entry_range = parsed_map.equal_range(field_name);
 
-          if (store_structure)
-            {
-              for (unsigned int i=0; i<n_fields; ++i)
-                (*n_values_per_key)[i] = 1;
-            }
+          for (auto entry = entry_range.first; entry != entry_range.second; ++entry)
+            return_values.push_back(entry->second);
+        }
 
-          if (check_structure)
-            {
-              for (unsigned int i=0; i<n_fields; ++i)
-                AssertThrow((*n_values_per_key)[i] == 1,
-                            ExcMessage("The input parameter " + property_name + " seems to consist of a list "
-                                       "of doubles. In this case we only allow a single value per provided key, but the "
-                                       "assumed structure that was provided to the function expects " + std::to_string((*n_values_per_key)[i]) +
-                                       " values for key " + field_names[i] + ". To specify more than one value per field for this input parameter, "
-                                       "you need to use the format " + field_names[i] + ":value1|value2|..."));
-            }
-        }
-      else
-        {
-          // No Patterns matches were found!
-          AssertThrow (false,
-                       ExcMessage ("The required format for field <"
-                                   + property_name
-                                   + "> was not found. Specify a comma separated "
-                                   + "list of `<double>' or `<key1> : <double>|<double>|..., "
-                                   + "<key2> : <double>|... , ... '."));
-        }
       return return_values;
     }
 
