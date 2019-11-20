@@ -9064,6 +9064,25 @@ of global refinement is visualized in Fig.~\ref{fig:solkz}.
   \end{center}
 \end{figure}
 
+\subsubsection{SolKz Relative Convergence}
+\label{sec:benchmark-relative-solkz}
+
+In some cases it is desirable to demonstrate the convergence of a problem
+without having the ability to compare to the true solution.
+In the field of computational algorithms, one of the standard approaches is to
+demonstrate that the difference between successively refined solutions
+converges to zero.
+As an example of this procedure, we apply this approach to the SolKz benchmark
+problem.
+
+The procedure in question is inherently a comparison of computational models at
+different levels of refinement, so the procedure is separated into specifying
+that \aspect{} export the necessary data to make the comparision and a separate
+postprocessing script to actualy make the convergence computation.
+
+...
+
+\note{The comparsion of successively refined solutionos is done by using integration by quadrature to compute the norm of the difference. However, in order for this to be done, it is necessary to be able to associate corresponding quadrature points between runs. This is currently done efficiently by imposing a consistent order on the quadrature points in a manner which can be reasonably expected not to be significantly dependent on minor numeric variations, however the only ordering algorithm currently implemented is for the \texttt{box} geometry.}
 
 \subsubsection{The ``inclusion'' Stokes benchmark}
 \label{sec:benchmark-inclusion}
