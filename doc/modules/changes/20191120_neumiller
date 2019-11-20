@@ -1,0 +1,5 @@
+New: Aspect can now read files from a url provided that the user has libdap installed.
+The adiabatic_boundary has also been modified to read files similar to how other
+functions read.
+<br>
+(Kodi Neumiller, 2019/11/20)
