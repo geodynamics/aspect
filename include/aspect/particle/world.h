@@ -44,10 +44,26 @@
 
 namespace aspect
 {
+  template<int dim>
+  class SimulatorSignals;
+
   namespace Particle
   {
     using namespace dealii;
     using namespace dealii::Particles;
+
+    namespace Generator
+    {
+      template <int dim>
+      class Interface;
+    }
+
+
+    namespace Property
+    {
+      template <int dim>
+      class Manager;
+    }
 
     /**
      * This class manages the storage and handling of particles. It provides
