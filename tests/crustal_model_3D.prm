@@ -36,18 +36,15 @@ subsection Boundary velocity model
   set Prescribed velocity boundary indicators = left: function, right:function, bottom:function
 end
 
-subsection Free surface
-  set Free surface boundary indicators        = top
+subsection Mesh deformation 
+  set Mesh deformation boundary indicators        = top: free surface
+  # Advecting the free surface vertically rather than
+  # in the surface normal direction can result in a
+  # more stable mesh when the deformation is large
+  subsection Free surface
+    set Surface velocity projection = vertical
+  end
 end
-
-
-# Advecting the free surface vertically rather than
-# in the surface normal direction can result in a
-# more stable mesh when the deformation is large
-subsection Free surface
-  set Surface velocity projection = vertical
-end
-
 
 subsection Material model
   set Model name = drucker prager

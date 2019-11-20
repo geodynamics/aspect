@@ -30,12 +30,8 @@
 #include <deal.II/base/function_lib.h>
 #include <deal.II/base/exceptions.h>
 #include <deal.II/base/signaling_nan.h>
-
-#if DEAL_II_VERSION_GTE(9,0,0)
 #include <deal.II/base/patterns.h>
-#else
-#include <deal.II/base/parameter_handler.h>
-#endif
+
 
 #include <aspect/geometry_model/box.h>
 #include <aspect/geometry_model/spherical_shell.h>
@@ -91,152 +87,227 @@ namespace aspect
       return input_table;
     }
 
-
-
-    std::vector<double> parse_map_to_double_array (const std::string &input_string,
-                                                   const std::vector<std::string> &input_field_names,
-                                                   const bool has_background_field,
-                                                   const std::string &property_name)
+    namespace
     {
-      std::vector<std::string> field_names = input_field_names;
-      if (has_background_field)
+      // This is a helper function used in parse_map_to_double_array below.
+      // It takes an input_string that is expected to follow the input format
+      // explained in the documentation of the parse_map_to_double_array function
+      // and parses it into a multimap, only performing rudimentary error checking
+      // for correct formatting.
+      std::multimap<std::string, double>
+      parse_string_to_map (const std::string &input_string,
+                           const std::vector<std::string> &list_of_keys,
+                           const std::string &property_name)
+      {
+        std::multimap<std::string, double> parsed_map;
+
+        if (Patterns::Map(Patterns::Anything(),
+                          Patterns::List(Patterns::Double(),
+                                         0,
+                                         std::numeric_limits<unsigned int>::max(),
+                                         "|")).match(input_string))
+          {
+            // Split the list by comma delimited components.
+            const std::vector<std::string> field_entries = dealii::Utilities::split_string_list(input_string, ',');
+
+            for (const auto &field_entry : field_entries)
+              {
+                // Split each entry into string and value ( <id> : <value>)
+                std::vector<std::string> key_and_value = Utilities::split_string_list (field_entry, ':');
+
+                // Ensure that each entry has the correct form.
+                AssertThrow (key_and_value.size() == 2,
+                             ExcMessage ("The format for mapped "
+                                         + property_name
+                                         + "requires that each entry has the "
+                                         "form `<key> : <value>' "
+                                         ", but the entry <"
+                                         + field_entry
+                                         + "> does not appear to follow this pattern."));
+
+                // Handle special key "all", which must be the only entry if found
+                if (key_and_value[0] == "all")
+                  {
+                    AssertThrow (field_entries.size() == 1,
+                                 ExcMessage ("The keyword `all' in the property "
+                                             + property_name
+                                             + " is only allowed if there is no other "
+                                             "keyword."));
+
+                    const std::vector<std::string> values = dealii::Utilities::split_string_list(key_and_value[1], '|');
+
+                    // Assign all the values to all fields
+                    for (const std::string &key: list_of_keys)
+                      for (const std::string &value : values)
+                        {
+                          parsed_map.emplace(key, Utilities::string_to_double(value));
+                        }
+                  }
+                // Handle lists of multiple unique entries
+                else
+                  {
+                    AssertThrow (parsed_map.find(key_and_value[0]) == parsed_map.end(),
+                                 ExcMessage ("The keyword <"
+                                             + key_and_value[0]
+                                             + "> in "
+                                             + property_name
+                                             + " is listed multiple times. "
+                                             "Check that you have only one value for "
+                                             "each field id in your list."));
+
+                    const std::vector<std::string> values = dealii::Utilities::split_string_list(key_and_value[1], '|');
+
+                    for (const auto &value : values)
+                      {
+                        parsed_map.emplace(key_and_value[0],Utilities::string_to_double(value));
+                      }
+                  }
+              }
+          }
+        else if (Patterns::List(Patterns::Double(),1,list_of_keys.size()).match(input_string))
+          {
+            // Handle the format of a comma separated list of doubles, with no keywords
+            const std::vector<double> values = possibly_extend_from_1_to_N (dealii::Utilities::string_to_double(dealii::Utilities::split_string_list(input_string)),
+                                                                            list_of_keys.size(),
+                                                                            property_name);
+
+            for (unsigned int i=0; i<values.size(); ++i)
+              {
+                // list_of_keys and values have the same length, which is guaranteed by the
+                // call to possibly_extend_from_1_to_N() above
+                parsed_map.emplace(list_of_keys[i],values[i]);
+              }
+          }
+        else
+          {
+            // No Patterns matches were found!
+            AssertThrow (false,
+                         ExcMessage ("The required format for property <"
+                                     + property_name
+                                     + "> was not found. Specify a comma separated "
+                                     + "list of `<double>' or `<key1> : <double>|<double>|..., "
+                                     + "<key2> : <double>|... , ... '."));
+          }
+
+        return parsed_map;
+      }
+    }
+
+
+    std::vector<double>
+    parse_map_to_double_array (const std::string &input_string,
+                               const std::vector<std::string> &list_of_keys,
+                               const bool expects_background_field,
+                               const std::string &property_name,
+                               const bool allow_multiple_values_per_key,
+                               std::shared_ptr<std::vector<unsigned int> > n_values_per_key,
+                               const bool allow_missing_keys)
+    {
+      std::vector<std::string> field_names = list_of_keys;
+      if (expects_background_field)
         field_names.insert(field_names.begin(),"background");
-
       const unsigned int n_fields = field_names.size();
-      std::vector<double> return_values(n_fields,std::numeric_limits<double>::quiet_NaN());
 
-      // Parse the string depending on what Pattern we are dealing with
-      if (Patterns::Map(Patterns::Anything(),Patterns::Double(),1,n_fields).match(input_string))
-        {
-          // Split the list by comma delimited components,
-          // then by colon delimited field name and value.
-          const std::vector<std::string> field_entries = dealii::Utilities::split_string_list(input_string, ',');
+      // First: parse the string into a map depending on what Pattern we are dealing with
+      std::multimap<std::string, double> parsed_map = parse_string_to_map(input_string,
+                                                                          field_names,
+                                                                          property_name);
 
-          AssertThrow ( (field_entries.size() == n_fields)
-                        || (field_entries.size() == 1),
-                        ExcMessage ("The number of "
-                                    + property_name
-                                    + " in the list must equal one of the following values:\n"
-                                    "1 (one value for all fields, including background, using the keyword=`all'), \n"
-                                    "or " + std::to_string(n_fields) + " (the number of fields, possibly plus 1 if a background field is expected)."));
+      // Second: Now check that the structure of the map is as expected
+      {
+        const bool check_structure = (n_values_per_key && n_values_per_key->size() != 0);
+        const bool store_structure = (n_values_per_key && n_values_per_key->size() == 0);
+        std::vector<unsigned int> values_per_key(n_fields, 0);
 
-          // Parse by entry
-          for (std::vector<std::string>::const_iterator field_entry = field_entries.begin();
-               field_entry != field_entries.end(); ++field_entry)
-            {
-              // Split each entry into string and value ( <id> : <value>)
-              std::vector<std::string> key_and_value = Utilities::split_string_list (*field_entry, ':');
+        if (check_structure)
+          AssertThrow(n_values_per_key->size() == n_fields,
+                      ExcMessage("When providing an expected structure for input parameter " + property_name + " you need to provide "
+                                 + "as many entries in the structure vector as there are input field names (+1 if there is a background field). "
+                                 + "The current structure vector has " + std::to_string(n_values_per_key->size()) + " entries, but there are "
+                                 + std::to_string(n_fields) + " field names." ));
 
-              // Ensure that each entry has the correct form.
-              AssertThrow (key_and_value.size() == 2,
-                           ExcMessage ("The format for mapped "
+        for (const std::pair<std::string, double> &key_and_value: parsed_map)
+          {
+            const std::vector<std::string>::iterator field_name =
+              std::find(field_names.begin(),field_names.end(),key_and_value.first);
+
+            // Ensure that each key is in the list of field names
+            AssertThrow (field_name != field_names.end(),
+                         ExcMessage ("The keyword <" + key_and_value.first + "> in "
+                                     + property_name + " does not match any entries "
+                                     "from the list of field names"
+                                     + ((expects_background_field)
+                                        ?
+                                        " (plus `background' for the background field). "
+                                        :
+                                        ". ")
+                                     + "Check that you only use valid names.\n\n"
+                                     "One example of where to check this is if "
+                                     "Compositional fields are used, "
+                                     "then check the id list "
+                                     "from `set Names of fields' in the "
+                                     "Compositional fields subsection. "
+                                     "Alternatively, if `set Names of fields' "
+                                     "is not set, the default names are "
+                                     "C_1, C_2, ..., C_n."));
+
+            const unsigned int field_index = std::distance(field_names.begin(), field_name);
+            values_per_key[field_index] += 1;
+          }
+
+        if (store_structure)
+          *n_values_per_key = values_per_key;
+
+        unsigned int field_index = 0;
+        for (const unsigned int &n_values: values_per_key)
+          {
+            if (allow_multiple_values_per_key == false)
+              AssertThrow (n_values <= 1,
+                           ExcMessage ("The keyword <"
+                                       + field_names[field_index]
+                                       + "> in "
                                        + property_name
-                                       + "requires that each entry has the "
-                                       "form `<id> : <value>' "
-                                       ", but the entry <"
-                                       + *field_entry
-                                       + "> does not appear to follow this pattern."));
+                                       + " has multiple values, which is unexpected. "
+                                       "Check that you have only one value for "
+                                       "each field id in your list."));
 
-              // If there is one entry in the list the keyword "all" must be found.
-              if ((field_entries.size() == 1) && (n_fields != 1))
-                {
-                  AssertThrow (key_and_value[0] == "all",
-                               ExcMessage ("There is only one "
-                                           + property_name
-                                           + " value given. The keyword `all' is "
-                                           "expected but is not found. Please"
-                                           "check your "
-                                           + property_name
-                                           + " list."));
+            if (allow_missing_keys == false)
+              AssertThrow (n_values > 0,
+                           ExcMessage ("The keyword <"
+                                       + field_names[field_index]
+                                       + "> in "
+                                       + property_name
+                                       + " is not listed, although it is expected. "
+                                       "Check that you have at least one value for "
+                                       "each field id in your list (possibly plus "
+                                       "`background` if a background field is expected "
+                                       "for this property)."));
 
-                  // Assign all the elements to the "all" value
-                  for (unsigned int field_index=0; field_index<n_fields; ++field_index)
-                    return_values[field_index] = Utilities::string_to_double(key_and_value[1]);
-                }
-              // Handle lists of multiple entries
-              else
-                {
-                  // Ensure that the special keyword "all" was not used when multiple entries exist.
-                  AssertThrow (key_and_value[0] != "all" || n_fields == 1,
-                               ExcMessage ("There are multiple "
-                                           + property_name
-                                           + " values found, the keyword `all' is not "
-                                           "allowed. Please check your "
-                                           + property_name
-                                           + " list."));
+            if (check_structure)
+              {
+                AssertThrow((*n_values_per_key)[field_index] == n_values,
+                            ExcMessage("The key <" + field_names[field_index] + "> in <"+ property_name + "> does not have "
+                                       + "the expected number of values. It expects " + std::to_string((*n_values_per_key)[field_index])
+                                       + " values, but we found " + std::to_string(n_values) + " values."));
 
-                  // Continue with placing values into the correct positions according to
-                  // the order of names passed to this function in the argument list_of_field_names.
-                  std::vector<std::string>::iterator field_name
-                    = std::find(field_names.begin(),field_names.end(),key_and_value[0]);
+              }
 
-                  // Ensure that each non-special keyword found is also contained in
-                  // the list of field names, and insert the associated
-                  // values to the correct index position.
-                  AssertThrow (field_name != field_names.end(),
-                               ExcMessage ("The keyword <"
-                                           + key_and_value[0]
-                                           + "> in "
-                                           + property_name
-                                           + " does not match any entries "
-                                           "from the list of field names"
-                                           + ((has_background_field)
-                                              ?
-                                              " (plus `background' for the background field). "
-                                              :
-                                              ". ")
-                                           + "Check that you have a value for "
-                                           "each field id in your list.\n\n"
-                                           "One example of where to check this is if "
-                                           "Compositional fields are used, "
-                                           "then check the id list "
-                                           "from `set Names of fields' in the"
-                                           "Compositional fields subsection. "
-                                           "Alternatively, if `set Names of fields' "
-                                           "is not set, the default names are "
-                                           "C_1, C_2, ..., C_n."));
+            ++field_index;
+          }
+      }
 
-                  const unsigned int field_index = std::distance(field_names.begin(),field_name);
-
-                  // Throw an error if this index was already set ...there can be only one
-                  AssertThrow (std::isnan(return_values[field_index]) == true,
-                               ExcMessage ("The keyword <"
-                                           + key_and_value[0]
-                                           + "> in "
-                                           + property_name
-                                           + " is listed multiple times. "
-                                           "Check that you have only one value for "
-                                           "each field id in your list."
-                                           "\n\n"
-                                           "One example of where to check this is if "
-                                           "Compositional fields are used, "
-                                           "then check the id list "
-                                           "from `set Names of fields' in the"
-                                           "Compositional fields subsection. "
-                                           "Alternatively, if `set Names of fields' "
-                                           "is not set, the default names are "
-                                           "C_1, C_2, ..., C_n."));
-
-                  return_values[field_index] = Utilities::string_to_double(key_and_value[1]);
-                }
-            }
-        }
-      else if (Patterns::List(Patterns::Double(),1,n_fields).match(input_string))
+      // Finally: Convert the map into a vector of doubles, sorted in the order
+      // of the field_names input parameter
+      std::vector<double> return_values;
+      for (const std::string &field_name: field_names)
         {
-          // Handle the format of a comma separated list of doubles, with no keywords
-          return_values = possibly_extend_from_1_to_N (dealii::Utilities::string_to_double(dealii::Utilities::split_string_list(input_string)),
-                                                       n_fields,
-                                                       property_name);
+          const std::pair<std::multimap<std::string, double>::const_iterator,
+                std::multimap<std::string, double>::const_iterator> entry_range = parsed_map.equal_range(field_name);
+
+          for (auto entry = entry_range.first; entry != entry_range.second; ++entry)
+            return_values.push_back(entry->second);
         }
-      else
-        {
-          // No Patterns matches were found!
-          AssertThrow (false,
-                       ExcMessage ("The required format for field <"
-                                   + property_name
-                                   + "> was not found. Specify a comma separated "
-                                   "list of `<double>' or `<id> : <double>'."));
-        }
+
       return return_values;
     }
 
@@ -270,11 +341,8 @@ namespace aspect
       char fn_split = '(', fn_end = ')';
       std::vector<std::string> var_name_list;
 
-      for (std::vector<std::string>::const_iterator var_decl_iterator = var_declarations.begin();
-           var_decl_iterator != var_declarations.end();
-           ++var_decl_iterator)
+      for (const auto &var_decl : var_declarations)
         {
-          const std::string &var_decl = *var_decl_iterator;
           if (var_decl.find(fn_split) != std::string::npos && var_decl[var_decl.length()-1]==fn_end)
             {
               const std::string fn_name = var_decl.substr(0, var_decl.find(fn_split));
@@ -359,8 +427,7 @@ namespace aspect
 
       unsigned int dofs_per_cell = dof_handler.get_fe().dofs_per_cell;
       std::vector<types::global_dof_index> indices(dofs_per_cell);
-      for (typename DoFHandler<dim>::active_cell_iterator cell=dof_handler.begin_active();
-           cell!=dof_handler.end(); ++cell)
+      for (const auto &cell : dof_handler.active_cell_iterators())
         if (cell->is_locally_owned())
           {
             cell->get_dof_indices(indices);
@@ -1747,6 +1814,7 @@ namespace aspect
     AsciiDataLookup<dim>::get_data(const Point<dim> &position,
                                    const unsigned int component) const
     {
+      Assert(component<components, ExcMessage("Invalid component index"));
       return data[component]->value(position);
     }
 
@@ -2153,9 +2221,12 @@ namespace aspect
       time_dependent = false;
       // Give warning if first processor
       this->get_pcout() << std::endl
-                        << "   Loading new data file did not succeed." << std::endl
-                        << "   Assuming constant boundary conditions for rest of model run."
-                        << std::endl << std::endl;
+                        << "   From this timestep onwards, ASPECT will not attempt to load new Ascii data files." << std::endl
+                        << "   This is either because ASPECT has already read all the files necessary to impose" << std::endl
+                        << "   the requested boundary condition, or that the last available file has been read." << std::endl
+                        << "   If the Ascii data represented a time-dependent boundary condition," << std::endl
+                        << "   that time-dependence ends at this timestep  (i.e. the boundary condition" << std::endl
+                        << "   will continue unchanged from the last known state into the future)." << std::endl << std::endl;
     }
 
     template <int dim>
@@ -2167,17 +2238,16 @@ namespace aspect
     {
       if (this->get_time() - first_data_file_model_time >= 0.0)
         {
-          Point<dim> internal_position = position;
+          const std::array<double,dim> natural_position = this->get_geometry_model().cartesian_to_natural_coordinates(position);
 
-          if (dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()) != nullptr
-              || dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model()) != nullptr
-              || dynamic_cast<const GeometryModel::Sphere<dim>*> (&this->get_geometry_model()) != nullptr)
+          Point<dim> internal_position;
+          for (unsigned int i = 0; i < dim; i++)
+            internal_position[i] = natural_position[i];
+
+          // The chunk model has latitude as natural coordinate. We need to convert this to colatitude
+          if (dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model()) != nullptr && dim == 3)
             {
-              const std::array<double,dim> spherical_position =
-                Utilities::Coordinates::cartesian_to_spherical_coordinates(position);
-
-              for (unsigned int i = 0; i < dim; i++)
-                internal_position[i] = spherical_position[i];
+              internal_position[2] = numbers::PI/2. - internal_position[2];
             }
 
           const std::array<unsigned int,dim-1> boundary_dimensions =
@@ -2279,6 +2349,174 @@ namespace aspect
 
 
     template <int dim>
+    AsciiDataLayered<dim>::AsciiDataLayered ()
+    {}
+
+
+
+    template <int dim>
+    void
+    AsciiDataLayered<dim>::initialize(const unsigned int components)
+    {
+      AssertThrow ((Plugins::plugin_type_matches<GeometryModel::SphericalShell<dim> >(this->get_geometry_model()) ||
+                    Plugins::plugin_type_matches<GeometryModel::Chunk<dim> >(this->get_geometry_model()) ||
+                    Plugins::plugin_type_matches<GeometryModel::Sphere<dim> >(this->get_geometry_model()) ||
+                    Plugins::plugin_type_matches<GeometryModel::Box<dim> >(this->get_geometry_model())),
+                   ExcMessage ("This ascii data plugin can only be used when using "
+                               "a spherical shell, chunk, sphere or box geometry."));
+
+      // Create the lookups for each file
+      number_of_layer_boundaries = data_file_names.size();
+      for (unsigned int i=0; i<number_of_layer_boundaries; ++i)
+        {
+          const std::string filename = data_directory + data_file_names[i];
+          AssertThrow(Utilities::fexists(filename),
+                      ExcMessage (std::string("Ascii data file <")
+                                  +
+                                  filename
+                                  +
+                                  "> not found!"));
+
+          lookups.push_back(std_cxx14::make_unique<Utilities::AsciiDataLookup<dim-1>> (components,
+                                                                                       this->scale_factor));
+          lookups[i]->load_file(filename,this->get_mpi_communicator());
+        }
+    }
+
+
+
+    template <int dim>
+    double
+    AsciiDataLayered<dim>::
+    get_data_component (const Point<dim> &position,
+                        const unsigned int component) const
+    {
+      // Get the location of the component in the coordinate system of the ascii data input
+      const std::array<double,dim> natural_position = this->get_geometry_model().cartesian_to_natural_coordinates(position);
+
+      Point<dim> internal_position;
+      for (unsigned int i = 0; i < dim; i++)
+        internal_position[i] = natural_position[i];
+
+      // The chunk model has latitude as natural coordinate. We need to convert this to colatitude
+      if (Plugins::plugin_type_matches<GeometryModel::Chunk<dim> >(this->get_geometry_model()) && dim == 3)
+        {
+          internal_position[2] = numbers::PI/2. - internal_position[2];
+        }
+
+      double vertical_position;
+      Point<dim-1> horizontal_position;
+      if (Plugins::plugin_type_matches<GeometryModel::Box<dim> >(this->get_geometry_model()))
+        {
+          // in cartesian coordinates, the vertical component comes last
+          vertical_position = internal_position[dim-1];
+          for (unsigned int i = 0; i < dim-1; i++)
+            horizontal_position[i] = internal_position[i];
+        }
+      else
+        {
+          // in spherical coordinates, the vertical component comes first
+          vertical_position = internal_position[0];
+          for (unsigned int i = 0; i < dim-1; i++)
+            horizontal_position[i] = internal_position[i+1];
+        }
+
+      // Find which layer we're in
+      unsigned int layer_boundary_index=0;
+      // if position < position of the first boundary layer, stop
+      double old_difference_in_vertical_position = vertical_position - lookups[layer_boundary_index]->get_data(horizontal_position,0);
+      double difference_in_vertical_position = old_difference_in_vertical_position;
+      while (difference_in_vertical_position > 0. && layer_boundary_index < number_of_layer_boundaries-1)
+        {
+          ++layer_boundary_index;
+          old_difference_in_vertical_position = difference_in_vertical_position;
+          difference_in_vertical_position = vertical_position - lookups[layer_boundary_index]->get_data(horizontal_position,0);
+        }
+
+      if (interpolation_scheme == "piecewise constant")
+        {
+          return lookups[layer_boundary_index]->get_data(horizontal_position,component); // takes value from layer above
+        }
+      else if (interpolation_scheme == "linear")
+        {
+          if (difference_in_vertical_position > 0 || layer_boundary_index == 0) // if the point is above the first layer or below the last
+            {
+              return lookups[layer_boundary_index]->get_data(horizontal_position,component);
+            }
+          else
+            {
+              const double f = difference_in_vertical_position/(difference_in_vertical_position-old_difference_in_vertical_position);
+              return ((1.-f)*lookups[layer_boundary_index]->get_data(horizontal_position,component) +
+                      f*lookups[layer_boundary_index-1]->get_data(horizontal_position,component));
+            }
+        }
+      return 0;
+    }
+
+
+    template <int dim>
+    void
+    AsciiDataLayered<dim>::declare_parameters (ParameterHandler  &prm,
+                                               const std::string &default_directory,
+                                               const std::string &default_filename,
+                                               const std::string &subsection_name)
+    {
+      Utilities::AsciiDataBase<dim>::declare_parameters(prm,
+                                                        default_directory,
+                                                        default_filename,
+                                                        subsection_name);
+
+      prm.enter_subsection (subsection_name);
+      {
+        prm.declare_entry ("Data directory",
+                           default_directory,
+                           Patterns::DirectoryName (),
+                           "The name of a directory that contains the model data. This path "
+                           "may either be absolute (if starting with a `/') or relative to "
+                           "the current directory. The path may also include the special "
+                           "text `$ASPECT_SOURCE_DIR' which will be interpreted as the path "
+                           "in which the ASPECT source files were located when ASPECT was "
+                           "compiled. This interpretation allows, for example, to reference "
+                           "files located in the `data/' subdirectory of ASPECT. ");
+
+        prm.declare_entry ("Data file names",
+                           default_filename,
+                           Patterns::List (Patterns::Anything()),
+                           "The file names of the model data (comma separated). ");
+
+        prm.declare_entry ("Interpolation scheme", "linear",
+                           Patterns::Selection("piecewise constant|linear"),
+                           "Method to interpolate between layer boundaries. Select from "
+                           "piecewise constant or linear. Piecewise constant takes the "
+                           "value from the nearest layer boundary above the data point. "
+                           "The linear option interpolates linearly between layer boundaries. "
+                           "Above and below the domain given by the layer boundaries, the values are"
+                           "given by the top and bottom layer boundary.");
+
+      }
+      prm.leave_subsection();
+    }
+
+
+    template <int dim>
+    void
+    AsciiDataLayered<dim>::parse_parameters (ParameterHandler &prm,
+                                             const std::string &subsection_name)
+    {
+      Utilities::AsciiDataBase<dim>::parse_parameters(prm, subsection_name);
+
+      prm.enter_subsection(subsection_name);
+      {
+        data_directory = Utilities::expand_ASPECT_SOURCE_DIR(prm.get ("Data directory"));
+        data_file_names = Utilities::split_string_list(prm.get ("Data file names"), ',');
+        interpolation_scheme = prm.get("Interpolation scheme");
+      }
+      prm.leave_subsection();
+    }
+
+
+
+    template <int dim>
     AsciiDataInitial<dim>::AsciiDataInitial ()
     {}
 
@@ -2292,7 +2530,7 @@ namespace aspect
                    || (dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model())) != nullptr
                    || (dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model())) != nullptr,
                    ExcMessage ("This ascii data plugin can only be used when using "
-                               "a spherical shell, chunk or box geometry."));
+                               "a spherical shell, chunk, or box geometry."));
 
       lookup = std_cxx14::make_unique<Utilities::AsciiDataLookup<dim>> (components,
                                                                         this->scale_factor);
@@ -2794,6 +3032,13 @@ namespace aspect
           {
             return std::max(x,y);
           }
+          case Utilities::Operator::replace_if_valid:
+          {
+            if (std::isnan(y))
+              return x;
+            else
+              return y;
+          }
           default:
           {
             Assert (false, ExcInternalError());
@@ -2826,14 +3071,23 @@ namespace aspect
             operator_list[i] = Operator(Operator::minimum);
           else if (operator_names[i] == "maximum")
             operator_list[i] = Operator(Operator::maximum);
+          else if (operator_names[i] == "replace if valid")
+            operator_list[i] = Operator(Operator::replace_if_valid);
           else
             AssertThrow(false,
                         ExcMessage ("ASPECT only accepts the following operators: "
-                                    "add, subtract, minimum and maximum. But your parameter file "
+                                    "add, subtract, minimum, maximum, and replace if valid. But your parameter file "
                                     "contains: " + operator_names[i] + ". Please check your parameter file.") );
         }
 
       return operator_list;
+    }
+
+
+
+    const std::string get_model_operator_options()
+    {
+      return "add|subtract|minimum|maximum|replace if valid";
     }
 
 
@@ -2975,6 +3229,8 @@ namespace aspect
     template class AsciiDataBase<3>;
     template class AsciiDataBoundary<2>;
     template class AsciiDataBoundary<3>;
+    template class AsciiDataLayered<2>;
+    template class AsciiDataLayered<3>;
     template class AsciiDataInitial<2>;
     template class AsciiDataInitial<3>;
     template class AsciiDataProfile<1>;

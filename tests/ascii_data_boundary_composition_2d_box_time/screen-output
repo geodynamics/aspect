@@ -21,110 +21,114 @@ Number of degrees of freedom: 1,581 (738+105+369+369)
      Compositions min/max/mass:          0/0.033/3.594e+10
 
 *** Timestep 1:  t=81806.7 years
-   Solving temperature system... 51 iterations.
+   Solving temperature system... 29 iterations.
    Solving C_1 system ... 18 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 22+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  1 m/year, 1.01 m/year
-     Temperature min/avg/max:            0 K, 1435 K, 1926 K
-     Heat fluxes through boundary parts: -1.199e+08 W, 1.199e+08 W, 9.111e+07 W, 8.88e+07 W
-     Compositions min/max/mass:          0/0.0321/3.42e+10
+     Temperature min/avg/max:            0 K, 1488 K, 1947 K
+     Heat fluxes through boundary parts: -1.247e+08 W, 1.242e+08 W, 3.303e+05 W, 2.799e+05 W
+     Compositions min/max/mass:          0/0.03208/3.421e+10
 
-*** Timestep 2:  t=163720 years
-   Solving temperature system... 19 iterations.
+*** Timestep 2:  t=163699 years
+   Solving temperature system... 17 iterations.
    Solving C_1 system ... 19 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 20+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  1 m/year, 1.01 m/year
+     Temperature min/avg/max:            0 K, 1488 K, 1917 K
+     Heat fluxes through boundary parts: -1.26e+08 W, 1.242e+08 W, 4.464e+05 W, 2.896e+05 W
+     Compositions min/max/mass:          0/0.3185/3.906e+10
+
+*** Timestep 3:  t=245583 years
+   Solving temperature system... 17 iterations.
+   Solving C_1 system ... 18 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 21+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  1 m/year, 1.01 m/year
-     Temperature min/avg/max:            0 K, 1362 K, 1853 K
-     Heat fluxes through boundary parts: -1.14e+08 W, 1.14e+08 W, 1.446e+08 W, 1.409e+08 W
-     Compositions min/max/mass:          0/0.3186/3.939e+10
+     Temperature min/avg/max:            0 K, 1489 K, 1963 K
+     Heat fluxes through boundary parts: -1.294e+08 W, 1.241e+08 W, 5.497e+05 W, 2.851e+05 W
+     Compositions min/max/mass:          0/0.7279/5.374e+10
 
-*** Timestep 3:  t=245671 years
-   Solving temperature system... 19 iterations.
-   Solving C_1 system ... 18 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 20+0 iterations.
-
-   Postprocessing:
-     RMS, max velocity:                  1 m/year, 1.01 m/year
-     Temperature min/avg/max:            0 K, 1292 K, 1736 K
-     Heat fluxes through boundary parts: -1.083e+08 W, 1.082e+08 W, 1.181e+08 W, 1.149e+08 W
-     Compositions min/max/mass:          0/0.7284/5.479e+10
-
-*** Timestep 4:  t=327697 years
+*** Timestep 4:  t=327503 years
 
    Loading Ascii data boundary file ASPECT_DIR/data/boundary-composition/ascii-data/test/box_2d_left.2.txt.
 
-   Solving temperature system... 12 iterations.
-   Solving C_1 system ... 16 iterations.
+   Solving temperature system... 17 iterations.
+   Solving C_1 system ... 17 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 18+0 iterations.
+   Solving Stokes system... 22+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  1 m/year, 1.01 m/year
-     Temperature min/avg/max:            0 K, 1229 K, 1693 K
-     Heat fluxes through boundary parts: -1.031e+08 W, 1.031e+08 W, 1.014e+08 W, 9.902e+07 W
-     Compositions min/max/mass:          0/0.8615/7.415e+10
+     Temperature min/avg/max:            0 K, 1492 K, 2426 K
+     Heat fluxes through boundary parts: -1.364e+08 W, 1.241e+08 W, 5.801e+05 W, 2.819e+05 W
+     Compositions min/max/mass:          0/0.8625/7.241e+10
 
-*** Timestep 5:  t=409751 years
-   Solving temperature system... 11 iterations.
+*** Timestep 5:  t=409394 years
+   Solving temperature system... 18 iterations.
    Solving C_1 system ... 17 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 20+0 iterations.
+   Solving Stokes system... 22+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  1 m/year, 1 m/year
-     Temperature min/avg/max:            0 K, 1174 K, 1662 K
-     Heat fluxes through boundary parts: -9.862e+07 W, 9.859e+07 W, 8.9e+07 W, 8.694e+07 W
-     Compositions min/max/mass:          0/0.5756/8.507e+10
+     RMS, max velocity:                  1 m/year, 1.01 m/year
+     Temperature min/avg/max:            0 K, 1498 K, 3210 K
+     Heat fluxes through boundary parts: -1.48e+08 W, 1.241e+08 W, 5.958e+05 W, 2.811e+05 W
+     Compositions min/max/mass:          0/0.6277/8.387e+10
 
-*** Timestep 6:  t=491865 years
-   Solving temperature system... 11 iterations.
-   Solving C_1 system ... 16 iterations.
+*** Timestep 6:  t=491316 years
+   Solving temperature system... 18 iterations.
+   Solving C_1 system ... 17 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 20+0 iterations.
+   Solving Stokes system... 23+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  1 m/year, 1 m/year
-     Temperature min/avg/max:            0 K, 1125 K, 1631 K
-     Heat fluxes through boundary parts: -9.456e+07 W, 9.453e+07 W, 8.028e+07 W, 7.857e+07 W
-     Compositions min/max/mass:          0/0.4997/8.695e+10
+     RMS, max velocity:                  1 m/year, 1.01 m/year
+     Temperature min/avg/max:            0 K, 1508 K, 4344 K
+     Heat fluxes through boundary parts: -1.64e+08 W, 1.241e+08 W, 6.058e+05 W, 2.807e+05 W
+     Compositions min/max/mass:          0/0.5599/8.673e+10
 
-*** Timestep 7:  t=574009 years
+*** Timestep 7:  t=573213 years
 
    Loading Ascii data boundary file ASPECT_DIR/data/boundary-composition/ascii-data/test/box_2d_left.3.txt.
 
 
-   Loading new data file did not succeed.
-   Assuming constant boundary conditions for rest of model run.
+   From this timestep onwards, ASPECT will not attempt to load new Ascii data files.
+   This is either because ASPECT has already read all the files necessary to impose
+   the requested boundary condition, or that the last available file has been read.
+   If the Ascii data represented a time-dependent boundary condition,
+   that time-dependence ends at this timestep  (i.e. the boundary condition
+   will continue unchanged from the last known state into the future).
 
-   Solving temperature system... 11 iterations.
+   Solving temperature system... 18 iterations.
    Solving C_1 system ... 17 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 20+0 iterations.
+   Solving Stokes system... 23+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  1 m/year, 1 m/year
-     Temperature min/avg/max:            0 K, 1079 K, 1610 K
-     Heat fluxes through boundary parts: -9.085e+07 W, 9.083e+07 W, 7.372e+07 W, 7.233e+07 W
-     Compositions min/max/mass:          0/0.4221/8.724e+10
+     RMS, max velocity:                  1 m/year, 1.01 m/year
+     Temperature min/avg/max:            0 K, 1524 K, 5784 K
+     Heat fluxes through boundary parts: -1.827e+08 W, 1.241e+08 W, 6.129e+05 W, 2.81e+05 W
+     Compositions min/max/mass:          0/0.4799/8.747e+10
 
 *** Timestep 8:  t=600000 years
-   Solving temperature system... 8 iterations.
+   Solving temperature system... 12 iterations.
    Solving C_1 system ... 10 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 19+0 iterations.
+   Solving Stokes system... 21+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  1 m/year, 1 m/year
-     Temperature min/avg/max:            0 K, 1068 K, 1602 K
-     Heat fluxes through boundary parts: -8.993e+07 W, 8.99e+07 W, 6.047e+07 W, 5.634e+07 W
-     Compositions min/max/mass:          0/0.4/8.688e+10
+     RMS, max velocity:                  1 m/year, 1.01 m/year
+     Temperature min/avg/max:            0 K, 1531 K, 6313 K
+     Heat fluxes through boundary parts: -1.891e+08 W, 1.24e+08 W, 6.249e+05 W, 2.81e+05 W
+     Compositions min/max/mass:          0/0.4582/8.715e+10
 
 Termination requested by criterion: end time
 

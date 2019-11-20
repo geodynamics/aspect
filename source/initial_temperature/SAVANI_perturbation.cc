@@ -176,6 +176,7 @@ namespace aspect
 
     }
 
+
     template <>
     double
     SAVANIPerturbation<2>::
@@ -188,19 +189,21 @@ namespace aspect
       return 0;
     }
 
+    template <>
+    double
+    SAVANIPerturbation<2>::
+    get_Vs (const Point<2> &/*position*/) const
+    {
+      Assert (false, ExcNotImplemented());
+      return 0;
+    }
 
     template <>
     double
     SAVANIPerturbation<3>::
-    initial_temperature (const Point<3> &position) const
+    get_Vs (const Point<3> &position) const
     {
       const unsigned int dim = 3;
-
-      // use either the user-input reference temperature as background temperature
-      // (incompressible model) or the adiabatic temperature profile (compressible model)
-      const double background_temperature = this->get_material_model().is_compressible() ?
-                                            this->get_adiabatic_conditions().temperature(position) :
-                                            reference_temperature;
 
       // get the degree from the input file (60)
       unsigned int max_degree = spherical_harmonics_lookup->maxdegree();
@@ -282,7 +285,24 @@ namespace aspect
       s.set_points(depth_values,spline_values);
 
       // Get value at specific depth
-      const double perturbation = s(scoord[0]);
+      return s(scoord[0]);
+
+    }
+
+
+    template <>
+    double
+    SAVANIPerturbation<3>::
+    initial_temperature (const Point<3> &position) const
+    {
+      // use either the user-input reference temperature as background temperature
+      // (incompressible model) or the adiabatic temperature profile (compressible model)
+      const double background_temperature = this->get_material_model().is_compressible() ?
+                                            this->get_adiabatic_conditions().temperature(position) :
+                                            reference_temperature;
+
+      //Read in Vs perturbation data using function above
+      const double perturbation = get_Vs (position);
 
       // Get the vs to density conversion
       const double depth = this->get_geometry_model().depth(position);

@@ -25,8 +25,14 @@ MESSAGE(STATUS "====================================================")
 # Set the name of the project and target:
 SET(TARGET "aspect")
 
-FILE(GLOB_RECURSE TARGET_SRC  "source/*.cc" "unit_tests/*.cc" "include/*.h" "contrib/catch/catch.hpp")
-INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR}/include include  contrib/catch)
+FILE(GLOB_RECURSE TARGET_SRC
+     "source/*.cc" "unit_tests/*.cc" "include/*.h" "contrib/catch/catch.hpp")
+
+# Set up include directories. Put the ASPECT header files
+# to the front of the list, whereas the 'catch' headers can
+# be preempted by the system
+INCLUDE_DIRECTORIES(BEFORE ${CMAKE_BINARY_DIR}/include include)
+INCLUDE_DIRECTORIES(AFTER  contrib/catch)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
@@ -34,7 +40,7 @@ LIST(APPEND CMAKE_MODULE_PATH
   ${CMAKE_SOURCE_DIR}
   )
 
-FIND_PACKAGE(deal.II 8.5.0 QUIET
+FIND_PACKAGE(deal.II 9.0.0 QUIET
   HINTS ${deal.II_DIR} ${DEAL_II_DIR} ../ ../../ $ENV{DEAL_II_DIR}
   )
 IF(NOT ${deal.II_FOUND})
@@ -88,7 +94,7 @@ IF (NOT _DEALII_GOOD)
 ENDIF()
 
 DEAL_II_INITIALIZE_CACHED_VARIABLES()
-PROJECT(${TARGET})
+PROJECT(${TARGET} CXX)
 
 IF (ASPECT_USE_PETSC)
 FOREACH(_source_file ${TARGET_SRC})
@@ -146,6 +152,7 @@ CONFIGURE_FILE(
 # Next, set up the testsuite
 
 SET(ASPECT_RUN_ALL_TESTS OFF CACHE BOOL "Set up complete test suite to run.")
+SET(ASPECT_NEED_TEST_CONFIGURE ON CACHE BOOL "If true, reconfigure test project.")
 SET(ASPECT_COMPARE_TEST_RESULTS ON CACHE BOOL "Compare test results with high accuracy.")
 
 CONFIGURE_FILE(
@@ -159,8 +166,9 @@ CONFIGURE_FILE(
   @ONLY
 )
 
+# enable all tests and force a re-run of the cmake configuration in the test/ folder:
 ADD_CUSTOM_TARGET(setup_tests
-  COMMAND ${CMAKE_COMMAND} -D ASPECT_RUN_ALL_TESTS=ON -D PRINT_TEST_SUMMARY_AS_IMPORTANT=ON . >/dev/null
+  COMMAND ${CMAKE_COMMAND} -D ASPECT_RUN_ALL_TESTS=ON -D ASPECT_NEED_TEST_CONFIGURE=ON . >/dev/null
   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
   COMMENT "Enabling all tests ...")
 
@@ -216,13 +224,18 @@ IF(EXISTS ${CMAKE_SOURCE_DIR}/unit_tests/CMakeLists.txt)
   ADD_DEPENDENCIES(test run_unit_tests)
 ENDIF()
 
-IF(EXISTS ${CMAKE_SOURCE_DIR}/tests/CMakeLists.txt)
+IF(EXISTS ${CMAKE_SOURCE_DIR}/tests/CMakeLists.txt
+  AND ${ASPECT_NEED_TEST_CONFIGURE})
+
   # Hook up the tests:
   FILE(APPEND ${CMAKE_BINARY_DIR}/CTestTestfile.cmake "SUBDIRS(tests)\n")
 
   FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests)
 
   SET(aspect_binary ${CMAKE_BINARY_DIR}/aspect)
+
+  # set a flag so we don't need to rerun this configuration step every time:
+  SET(ASPECT_NEED_TEST_CONFIGURE OFF CACHE BOOL "" FORCE)
 
   MESSAGE(STATUS "Setting up test project, see tests/setup_tests.log for details.")
   EXECUTE_PROCESS(
@@ -260,7 +273,7 @@ ADD_CUSTOM_TARGET(generate_reference_output
 # Provide "indent" target for indenting all headers and source files
 ADD_CUSTOM_TARGET(indent
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-  COMMAND ./doc/indent
+  COMMAND ./contrib/utilities/indent
   COMMENT "Indenting all ASPECT header and source files..."
   )
 
@@ -322,6 +335,8 @@ FILE(WRITE ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/print_usage.cmake
 #      ${_make_command} distclean      - to clean the directory from all generated
 #                               files (includes clean, runclean and the removal
 #                               of the generated build system)
+#      ${_make_command} setup_tests    - enable all tests and re-run test detection
+#      ${_make_command} indent         - fix indentation of all source files
 #      ${_make_command} info           - to view this message again
 \")")
 
@@ -378,8 +393,8 @@ ENDIF()
 # See whether we can verify that every plugin we load is compiled against
 # the same deal.II library
 SET(ASPECT_HAVE_LINK_H ON CACHE BOOL "If ON, link.h exists and is usable.")
-INCLUDE (CheckIncludeFiles)
-CHECK_INCLUDE_FILES ("link.h" _HAVE_LINK_H)
+INCLUDE (CheckIncludeFileCXX)
+CHECK_INCLUDE_FILE_CXX ("link.h" _HAVE_LINK_H)
 IF (NOT _HAVE_LINK_H)
   SET(ASPECT_HAVE_LINK_H OFF CACHE BOOL "" FORCE)
 ENDIF()
@@ -412,13 +427,13 @@ ENDIF()
 # Check whether we can find the WorldBuilder and enable it.
 SET(ASPECT_WITH_WORLD_BUILDER ON CACHE BOOL "If ON the World Builder is compiled togheter with ASPECT.")
 IF (NOT EXISTS ${CMAKE_SOURCE_DIR}/contrib/WorldBuilder/VERSION)
-  MESSAGE("-- World Builder not found.")
+  MESSAGE(STATUS "World Builder not found.")
   SET(ASPECT_WITH_WORLD_BUILDER OFF CACHE BOOL "" FORCE)
 ENDIF()
 IF (ASPECT_WITH_WORLD_BUILDER)
   SET(WORLD_BUILDER_SOURCE_DIR "${CMAKE_SOURCE_DIR}/contrib/WorldBuilder")
   INCLUDE("${WORLD_BUILDER_SOURCE_DIR}/cmake/version.cmake")
-  MESSAGE("-- World Builder version ${WORLD_BUILDER_VERSION} found.")
+  MESSAGE(STATUS "World Builder version ${WORLD_BUILDER_VERSION} found.")
 
   # add source and include dirs:
   FILE(GLOB_RECURSE _files "contrib/WorldBuilder/source/*.cc")

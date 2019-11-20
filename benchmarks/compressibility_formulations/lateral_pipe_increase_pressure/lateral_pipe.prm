@@ -1,0 +1,154 @@
+# This is a benchmark to illustrate the effect of different formulations
+# of compressibility. It starts from a simple lateral pipe flow model.
+# There is no prescribed velocity and one end of the pipe is left open.
+# Then the pressure at the open end is contiuously increased over time,
+# which should lead to a compression of the material in the pipe.
+# This effect can not be captured by all common compressibility
+# approximations except the projected density approximation if it
+# used the full (instead of the adiabatic) pressure.
+
+set Additional shared libraries = ../plugins/libcompressibility_formulations.so
+
+set Dimension = 2
+
+# 1e7 years
+set End time                               = 31557600e7
+set Use years in output instead of seconds = false
+set Adiabatic surface temperature          = 1600
+set Nonlinear solver scheme                = iterated Advection and Stokes
+set Nonlinear solver tolerance             = 1e-12
+set Maximum time step                      = 31557600e5
+set Pressure normalization                 = no
+set Output directory                       = output-lateral-pipe
+set Max nonlinear iterations               = 10
+
+subsection Adiabatic conditions model
+  subsection Compute profile
+    set Number of points = 100000
+    set Composition reference profile = function
+  end
+end
+
+subsection Discretization
+   set Use locally conservative discretization = true
+   set Use discontinuous composition discretization = true
+   set Use discontinuous temperature discretization = true
+end
+
+subsection Solver parameters
+  set Temperature solver tolerance = 1e-12
+  set Temperature solver tolerance = 1e-12
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-12
+  end
+end
+
+subsection Formulation
+  set Mass conservation = projected density field
+  set Temperature equation = real density
+end
+
+subsection Compositional fields
+  set Number of fields = 1
+  set Names of fields = density_field
+  set Compositional field methods = prescribed field
+end
+
+subsection Initial composition model
+  set Model name = adiabatic density
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set Y extent = 100000
+    set X extent = 1000000
+    set X repetitions = 32
+  end
+end
+
+
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 0.0
+  end
+end
+
+
+subsection Heating model
+  set List of model names =
+end
+
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators =
+end
+
+
+subsection Boundary traction model
+  set Prescribed traction boundary indicators = right:function
+
+  subsection Function
+# This generates a pressure of e * 100 MPa at 10 Myr
+    #set Function expression = -10 * t / (3600*24*365.25); 0.0
+    set Function expression = -1e8 * exp (t / (1e7*3600*24*365.25)); 0.0
+  end
+end
+
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = left:function
+  set Tangential velocity boundary indicators = bottom,top
+
+  subsection Function
+    set Function expression = 0.0;0.0
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 1600
+  end
+end
+
+
+subsection Material model
+  set Model name = compressibility formulations
+
+  subsection Simple compressible model
+    set Thermal conductivity = 0.0
+# We need to change the reference viscosity here
+# slightly, to improve the accuracy, because
+# of a more appropriate pressure scaling.
+# This model is somewhat unusual in that all
+# velocities are driven by dynamic pressure.
+    set Viscosity = 1e20
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0 
+  set Initial global refinement          = 0
+  set Time steps between mesh refinement = 0
+end
+
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, temperature statistics, mass flux statistics, material statistics, pressure statistics
+
+  subsection Visualization
+    set Number of grouped files       = 1
+    set Output format                 = vtu
+
+    # We are only interested in the last timestep (when the system hast reached
+    # a steady state). For following the development of the system or checking
+    # if the solution already reached steady state, this parameter can be set 
+    # to a smaller value.
+    set Time between graphical output = 1e7
+    set List of output variables = adiabat, nonadiabatic temperature, nonadiabatic pressure, heating, material properties, strain rate
+  end
+end

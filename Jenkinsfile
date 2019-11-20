@@ -2,21 +2,21 @@
 
 pipeline {
   agent {
-    docker {
-        image 'dealii/dealii:v8.5.1-gcc-mpi-fulldepscandi-debugrelease'
-	// We mount /repos into the docker image. This allows us to cache
-	// the git repo by setting "advanced clone behaviors". If the
-	// directory does not exist, this will be ignored.
-	args '-v /repos:/repos:ro'
+    dockerfile {
+      dir 'contrib/ci'
+      // We mount /repos into the docker image. This allows us to cache
+      // the git repo by setting "advanced clone behaviors". If the
+      // directory does not exist, this will be ignored.
+      args '-v /repos:/repos:ro'
     }
   }
 
   options {
-    timeout(time: 2, unit: 'HOURS') 
+    timeout(time: 3, unit: 'HOURS')
   }
 
   stages {
-    stage ("info") {
+    stage ("Print Info") {
       steps {
         echo "PR: ${env.CHANGE_ID} - ${env.CHANGE_TITLE}"
         echo "CHANGE_AUTHOR_EMAIL: ${env.CHANGE_AUTHOR_EMAIL}"
@@ -26,19 +26,19 @@ pipeline {
       }
     }
 
-    stage ("Check permissions") {
+    stage ("Check Permissions") {
       when {
-	allOf {
-            not {branch 'master'}
-            not {changeRequest authorEmail: "rene.gassmoeller@mailbox.org"}
-            not {changeRequest authorEmail: "timo.heister@gmail.com"}
-            not {changeRequest authorEmail: "bangerth@colostate.edu"}
-            not {changeRequest authorEmail: "judannberg@gmail.com"}
-            not {changeRequest authorEmail: "ja3170@columbia.edu"}
-            not {changeRequest authorEmail: "jbnaliboff@ucdavis.edu"}
-            not {changeRequest authorEmail: "menno.fraters@outlook.com"}
-            not {changeRequest authorEmail: "a.c.glerum@uu.nl"}
-	    }
+        allOf {
+          not {branch 'master'}
+          not {changeRequest authorEmail: "rene.gassmoeller@mailbox.org"}
+          not {changeRequest authorEmail: "timo.heister@gmail.com"}
+          not {changeRequest authorEmail: "bangerth@colostate.edu"}
+          not {changeRequest authorEmail: "judannberg@gmail.com"}
+          not {changeRequest authorEmail: "ja3170@columbia.edu"}
+          not {changeRequest authorEmail: "jbnaliboff@ucdavis.edu"}
+          not {changeRequest authorEmail: "menno.fraters@outlook.com"}
+          not {changeRequest authorEmail: "a.c.glerum@uu.nl"}
+        }
       }
       steps {
         // For /rebuild to work you need to:
@@ -47,73 +47,118 @@ pipeline {
         // 3) in project settings select "add property" "Trigger build on pr comment" with
         //    the phrase ".*/rebuild.*" (without quotes)
         sh '''
-          wget -q -O - https://api.github.com/repos/geodynamics/aspect/issues/${CHANGE_ID}/labels | grep 'ready to test' || \
-          { echo "This commit will only be tested when it has the label 'ready to test'. Trigger a rebuild by adding a comment that contains '/rebuild'..."; exit 1; }
+        wget -q -O - https://api.github.com/repos/geodynamics/aspect/issues/${CHANGE_ID}/labels | grep 'ready to test' || \
+        { echo "This commit will only be tested when it has the label 'ready to test'. Trigger a rebuild by adding a comment that contains '/rebuild'..."; exit 1; }
         '''
       }
     }
 
-    stage('Check indentation') {
+    stage('Check Indentation') {
       steps {
-        sh './doc/indent'
+        sh './contrib/utilities/indent'
         sh 'git diff > changes-astyle.diff'
         archiveArtifacts artifacts: 'changes-astyle.diff', fingerprint: true
         sh '''
-	  git diff --exit-code || \
-	  { echo "Please check indentation, see artifacts in the top right corner!"; exit 1; }
-	  '''
-        }
+        git diff --exit-code || \
+        { echo "Please check indentation, see artifacts in the top right corner!"; exit 1; }
+        '''
+      }
     }
 
     stage('Build') {
-      options {timeout(time: 15, unit: 'MINUTES')}
+      options {
+        timeout(time: 30, unit: 'MINUTES')
+      }
       steps {
         sh '''
-          export NP=`grep -c ^processor /proc/cpuinfo`
-          mkdir -p /home/dealii/build-gcc-fast
-          cd /home/dealii/build-gcc-fast
-          cmake -G "Ninja" \
-	  	-D CMAKE_CXX_FLAGS='-Werror' \
-	  	-D ASPECT_TEST_GENERATOR=Ninja \
-		-D ASPECT_USE_PETSC=OFF \
-		-D ASPECT_RUN_ALL_TESTS=ON \
-		-D ASPECT_PRECOMPILE_HEADERS=ON \
-		$WORKSPACE/
-          ninja -j $NP
+        # running cmake...
+        mkdir build-gcc-fast
+        cd build-gcc-fast
+
+        cmake \
+        -G 'Ninja' \
+        -D CMAKE_CXX_FLAGS='-Werror' \
+        -D ASPECT_TEST_GENERATOR='Ninja' \
+        -D ASPECT_USE_PETSC='OFF' \
+        -D ASPECT_RUN_ALL_TESTS='ON' \
+        -D ASPECT_PRECOMPILE_HEADERS='ON' \
+        ..
         '''
-      } 
+
+        sh '''
+        # compiling...
+        cd build-gcc-fast
+        ninja
+        '''
+      }
     }
 
-    stage('Prebuild tests') {
-      options {timeout(time: 90, unit: 'MINUTES')}
+    stage('Build Documentation') {
       steps {
-        sh '''
-          export OMPI_MCA_btl=self,tcp
-          cd /home/dealii/build-gcc-fast/tests
-          echo "Prebuilding tests..."
-	  ninja -k 0 tests || true
-	  '''
-	  }
+        sh 'cd doc && ./update_parameters.sh ./build-gcc-fast/aspect'
+        sh 'cd doc && make manual.pdf || touch ~/FAILED-DOC'
+        archiveArtifacts artifacts: 'doc/manual/manual.log', allowEmptyArchive: true
+        sh 'if [ -f ~/FAILED-DOC ]; then exit 1; fi'
+      }
     }
 
-    stage('Run tests') {
-      options {timeout(time: 90, unit: 'MINUTES')}
+    stage('Test') {
+      options {
+        timeout(time: 150, unit: 'MINUTES')
+      }
       steps {
+        // Let ninja prebuild the test libraries and run
+        // the tests to create the output files in parallel. We
+        // want this to always succeed, because it does not generate
+        // useful output (we do this further down using 'ctest', however
+        // ctest can not run ninja in parallel, so this is the
+        // most efficient way to build the tests).
         sh '''
-          export OMPI_MCA_btl=self,tcp
-          rm -f /home/dealii/build-gcc-fast/FAILED
-          cd /home/dealii/build-gcc-fast
-          ctest --output-on-failure -j4 || { touch FAILED; }
-          echo "Generating reference output..."
+        # prebuilding tests...
+        cd build-gcc-fast/tests
+        ninja -k 0 tests || true
+        '''
+
+        // Output the test results using ctest. Since
+        // the tests were prebuild in the previous shell
+        // command, this will be fast although it is not
+        // running in parallel. We use the ninja test generator, which
+        // does not support running ctest with -j.
+        sh '''
+        # generating test results...
+        cd build-gcc-fast
+        ctest \
+        --no-compress-output \
+        --test-action Test \
+        --output-on-failure
+        '''
+      }
+      post {
+        always {
+          // Generate the 'Tests' output page in Jenkins
+          xunit testTimeMargin: '3000',
+          thresholdMode: 1,
+          thresholds: [failed(), skipped()],
+          tools: [CTest(pattern: 'build-gcc-fast/Testing/**/*.xml')]
+
+          // Update the reference test output with the new test results
+          sh '''
+          # generating reference output...
+          cd build-gcc-fast
           ninja generate_reference_output
-        '''
-        sh 'git diff tests > changes-test-results.diff'
-        archiveArtifacts artifacts: 'changes-test-results.diff', fingerprint: true
-        sh 'if [ -f /home/dealii/build-gcc-fast/FAILED ]; then exit 1; fi'
-        sh 'git diff --exit-code --name-only'
+          '''
+
+          // Generate the 'Artifacts' diff-file that can be
+          // used to update the test results
+          sh 'git diff tests > changes-test-results.diff'
+          archiveArtifacts artifacts: 'changes-test-results.diff'
+        }
       }
     }
   }
-
-  post { cleanup { cleanWs() } }
+  post {
+    cleanup {
+      cleanWs()
+    }
+  }
 }

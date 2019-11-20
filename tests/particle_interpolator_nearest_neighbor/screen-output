@@ -227,8 +227,8 @@ Number of degrees of freedom: 23,467 (5,042+649+2,521+5,085+5,085+5,085)
      Compositions min/max/mass:    -0.1455/1.071/0.6022 // 0/0/0 // 0/0/0
      Number of advected particles: 9395
 
-Number of active cells: 574 (on 7 levels)
-Number of degrees of freedom: 23,814 (5,106+657+2,553+5,166+5,166+5,166)
+Number of active cells: 577 (on 7 levels)
+Number of degrees of freedom: 23,947 (5,138+661+2,569+5,193+5,193+5,193)
 
 Termination requested by criterion: end time
 

@@ -1,5 +1,3 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
 Number of active cells: 3,072 (on 6 levels)
 Number of degrees of freedom: 40,836 (25,090+3,201+12,545)
@@ -7,11 +5,11 @@ Number of degrees of freedom: 40,836 (25,090+3,201+12,545)
 *** Timestep 0:  t=0 seconds
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 43+0 iterations.
+   Solving Stokes system... 42+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-adiabatic_initial_conditions_points/solution/solution-00000
-     Writing depth average:    output-adiabatic_initial_conditions_points/depth_average.gnuplot
+     Writing depth average:    output-adiabatic_initial_conditions_points/depth_average
 
 Termination requested by criterion: end time
 

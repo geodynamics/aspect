@@ -117,11 +117,7 @@ namespace aspect
         simulator_access.get_artificial_viscosity(artificial_viscosity, true);
 
         // loop over all of the surface cells and evaluate the heat flux
-        typename DoFHandler<dim>::active_cell_iterator
-        cell = simulator_access.get_dof_handler().begin_active(),
-        endc = simulator_access.get_dof_handler().end();
-
-        for (; cell!=endc; ++cell)
+        for (const auto &cell : simulator_access.get_dof_handler().active_cell_iterators())
           if (cell->is_locally_owned() && cell->at_boundary())
             {
               fe_volume_values.reinit (cell);
@@ -254,11 +250,7 @@ namespace aspect
                                     boundary_id,
                                     face_in,
                                     face_out,
-#if DEAL_II_VERSION_GTE(9,0,0)
                                     fe_face_values.get_normal_vectors()
-#else
-                                    fe_face_values.get_all_normal_vectors()
-#endif
                                   );
 
                       // For inhomogeneous Neumann boundaries we know the heat flux across the boundary at each point,
@@ -349,11 +341,7 @@ namespace aspect
         std::vector<double> heat_flux_values(n_face_q_points);
 
         // loop over all of the surface cells and evaluate the heat flux
-        typename DoFHandler<dim>::active_cell_iterator
-        cell = simulator_access.get_dof_handler().begin_active(),
-        endc = simulator_access.get_dof_handler().end();
-
-        for (; cell!=endc; ++cell)
+        for (const auto &cell : simulator_access.get_dof_handler().active_cell_iterators())
           if (cell->is_locally_owned() && cell->at_boundary())
             {
               for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
@@ -407,11 +395,7 @@ namespace aspect
                                       boundary_id,
                                       face_in,
                                       face_out,
-#if DEAL_II_VERSION_GTE(9,0,0)
                                       fe_face_values.get_normal_vectors()
-#else
-                                      fe_face_values.get_all_normal_vectors()
-#endif
                                     );
 
                         for (unsigned int q=0; q < n_face_q_points; ++q)
@@ -452,11 +436,7 @@ namespace aspect
       std::vector<std::pair<Point<dim>,double> > stored_values;
 
       // loop over all of the surface cells and evaluate the heat flux
-      typename DoFHandler<dim>::active_cell_iterator
-      cell = this->get_dof_handler().begin_active(),
-      endc = this->get_dof_handler().end();
-
-      for (; cell!=endc; ++cell)
+      for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
           for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
             if (cell->at_boundary(f) &&

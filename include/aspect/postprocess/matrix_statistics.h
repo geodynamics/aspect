@@ -42,9 +42,8 @@ namespace aspect
         /**
          * Compute matrix statistics.
          */
-        virtual
         std::pair<std::string,std::string>
-        execute (TableHandler &statistics);
+        execute (TableHandler &statistics) override;
     };
   }
 }

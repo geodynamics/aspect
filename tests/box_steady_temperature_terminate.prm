@@ -1,0 +1,84 @@
+# A test for the 'steady state temperature' termination criterion
+
+set Dimension = 2
+set CFL number                             = 1.0
+set End time                               = 5e9
+set Start time                             = 0
+set Adiabatic surface temperature          = 0
+set Surface pressure                       = 0
+set Use years in output instead of seconds = false  # default: true
+set Nonlinear solver scheme                = single Advection, single Stokes
+set Use conduction timestep = true
+
+subsection Boundary temperature model
+  set List of model names = box
+end
+
+
+subsection Gravity model
+  set Model name = vertical
+end
+
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1.2
+    set Y extent = 1
+  end
+end
+
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = (1-y)*x
+  end
+end
+
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Reference density             = 1
+    set Reference specific heat       = 1
+    set Reference temperature         = 1
+    set Thermal conductivity          = 1
+    set Thermal expansion coefficient = 0.1
+    set Viscosity                     = 1e-3
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 3
+end
+
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = left, right, top, bottom
+end
+
+subsection Postprocess
+  set List of postprocessors = temperature statistics, velocity statistics
+
+  subsection Visualization
+    set List of output variables = material properties
+    set Time between graphical output = 0.1
+  end
+end
+
+subsection Termination criteria
+  set Checkpoint on termination = true
+  set Termination criteria      = steady state temperature
+
+  subsection Steady state temperature
+    set Maximum relative deviation = 1e-8
+    set Time in steady state       = 1
+  end
+end
+

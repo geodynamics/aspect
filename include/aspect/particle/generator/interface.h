@@ -24,12 +24,7 @@
 #include <aspect/plugins.h>
 #include <aspect/simulator_access.h>
 
-#if DEAL_II_VERSION_GTE(9,0,0)
 #include <deal.II/particles/particle.h>
-#else
-#include <aspect/particle/particle.h>
-#endif
-
 #include <deal.II/base/parameter_handler.h>
 #include <deal.II/base/exceptions.h>
 
@@ -51,10 +46,8 @@ namespace aspect
      */
     namespace Generator
     {
-#if DEAL_II_VERSION_GTE(9,0,0)
       using namespace dealii::Particles;
       using dealii::Particles::Particle;
-#endif
 
       /**
        * Exception denoting a division by zero.
@@ -85,7 +78,7 @@ namespace aspect
            * Destructor. Made virtual so that derived classes can be created
            * and destroyed through pointers to the base class.
            */
-          virtual ~Interface ();
+          ~Interface () override;
 
           /**
            * Initialization function. This function is called once at the

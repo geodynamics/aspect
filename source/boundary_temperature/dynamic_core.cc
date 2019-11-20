@@ -96,11 +96,11 @@ namespace aspect
         {
           prm.declare_entry ("Outer temperature", "0",
                              Patterns::Double (),
-                             "Temperature at the outer boundary (lithosphere water/air). Units: $K$.");
+                             "Temperature at the outer boundary (lithosphere water/air). Units: $\\si{K}$.");
           prm.declare_entry ("Inner temperature", "6000",
                              Patterns::Double (),
                              "Temperature at the inner boundary (core mantle boundary) at the "
-                             "beginning. Units: $K$.");
+                             "beginning. Units: $\\si{K}$.");
           prm.declare_entry ("dT over dt", "0",
                              Patterns::Double (),
                              "Initial CMB temperature changing rate. Units: $K/year$.");
@@ -160,7 +160,7 @@ namespace aspect
           {
             prm.declare_entry ("Tm0","1695",
                                Patterns::Double (0),
-                               "Melting curve (\\cite{NPB+04} eq. (40)) parameter Tm0. Units: $K$.");
+                               "Melting curve (\\cite{NPB+04} eq. (40)) parameter Tm0. Units: $\\si{K}$.");
             prm.declare_entry ("Tm1","10.9",
                                Patterns::Double (),
                                "Melting curve (\\cite{NPB+04} eq. (40)) parameter Tm1. Units: $1/Tpa$.");
@@ -302,7 +302,8 @@ namespace aspect
     DynamicCore<dim>::read_data_OES()
     {
       data_OES.clear();
-      if (name_OES.size()==0) return;
+      if (name_OES.size()==0)
+        return;
       std::istringstream in(Utilities::read_and_distribute_file_content(name_OES.c_str(),
                                                                         this->get_mpi_communicator()));
       if (in.good())
@@ -664,11 +665,6 @@ namespace aspect
 
         types::boundary_id CMB_id = 0;
 
-
-        typename DoFHandler<dim>::active_cell_iterator
-        cell = this->get_dof_handler().begin_active(),
-        endc = this->get_dof_handler().end();
-
         typename MaterialModel::Interface<dim>::MaterialModelInputs in(fe_face_values.n_quadrature_points, this->n_compositional_fields());
         typename MaterialModel::Interface<dim>::MaterialModelOutputs out(fe_face_values.n_quadrature_points, this->n_compositional_fields());
 
@@ -682,7 +678,7 @@ namespace aspect
         // *out* of the mantle, not into it. we fix this when we add the local
         // contribution to the global flux
 
-        for (; cell!=endc; ++cell)
+        for (const auto &cell : this->get_dof_handler().active_cell_iterators())
           if (cell->is_locally_owned())
             for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
               if (cell->at_boundary(f))
@@ -982,7 +978,7 @@ namespace aspect
   namespace BoundaryTemperature
   {
     ASPECT_REGISTER_BOUNDARY_TEMPERATURE_MODEL(DynamicCore,
-                                               "Dynamic core",
+                                               "dynamic core",
                                                "This is a boundary temperature model working only with spherical "
                                                "shell geometry and core statistics postprocessor. The temperature "
                                                "at the top is constant, and the core mantle boundary temperature "

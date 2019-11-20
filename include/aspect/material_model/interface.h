@@ -180,179 +180,196 @@ namespace aspect
     template <int dim>
     struct MaterialModelInputs
     {
-        /**
-         * Constructor. Initialize the various arrays of this structure with the
-         * given number of quadrature points and (finite element) components.
-         *
-         * @param n_points The number of quadrature points for which input
-         * quantities will be provided.
-         * @param n_comp The number of vector quantities (in the order in which
-         * the Introspection class reports them) for which input will be
-         * provided.
-         */
-        MaterialModelInputs(const unsigned int n_points,
-                            const unsigned int n_comp);
+      /**
+       * Constructor. Initialize the various arrays of this structure with the
+       * given number of quadrature points and (finite element) components.
+       *
+       * @param n_points The number of quadrature points for which input
+       * quantities will be provided.
+       * @param n_comp The number of vector quantities (in the order in which
+       * the Introspection class reports them) for which input will be
+       * provided.
+       */
+      MaterialModelInputs(const unsigned int n_points,
+                          const unsigned int n_comp);
 
-        /**
-         * Constructor. Initialize the arrays of the structure with the number
-         * of points in the `input_data` structure, and fills them appropriately.
-         *
-         * @param input_data The data used to populate the material model input quantities.
-         * @param introspection A reference to the simulator introspection object.
-         * @param use_strain_rate Whether to compute the strain rates.
-         */
-        MaterialModelInputs(const DataPostprocessorInputs::Vector<dim> &input_data,
-                            const Introspection<dim> &introspection,
-                            const bool use_strain_rate = true);
-
-
-        /**
-         * Constructor. Initializes the various arrays of this
-         * structure with the FEValues and introspection objects and
-         * the solution_vector. This constructor calls the function
-         * reinit to populate the newly created arrays.
-         *
-         * @param fe_values An FEValuesBase object used to evaluate the finite elements.
-         * @param cell The currently active cell for the fe_values object.
-         * @param introspection A reference to the simulator introspection object.
-         * @param solution_vector The finite element vector from which to construct the inputs.
-         * @param use_strain_rates Whether to compute the strain rates.
-         */
-        MaterialModelInputs(const FEValuesBase<dim,dim> &fe_values,
-                            const typename DoFHandler<dim>::active_cell_iterator &cell,
-                            const Introspection<dim> &introspection,
-                            const LinearAlgebra::BlockVector &solution_vector,
-                            const bool use_strain_rates = true);
-
-        /**
-         * Copy Constructor.
-         */
-        MaterialModelInputs(const MaterialModelInputs<dim> &material);
-
-        /**
-         * Function to re-initialize and populate the pre-existing arrays
-         * created by the constructor MaterialModelInputs.
-         */
-        void reinit(const FEValuesBase<dim,dim> &fe_values,
-                    const typename DoFHandler<dim>::active_cell_iterator &cell,
-                    const Introspection<dim> &introspection,
-                    const LinearAlgebra::BlockVector &solution_vector,
-                    const bool use_strain_rates = true);
+      /**
+       * Constructor. Initialize the arrays of the structure with the number
+       * of points in the `input_data` structure, and fills them appropriately.
+       *
+       * @param input_data The data used to populate the material model input quantities.
+       * @param introspection A reference to the simulator introspection object.
+       * @param use_strain_rate Whether to compute the strain rates.
+       */
+      MaterialModelInputs(const DataPostprocessorInputs::Vector<dim> &input_data,
+                          const Introspection<dim> &introspection,
+                          const bool use_strain_rate = true);
 
 
-        /**
-         * Vector with global positions where the material has to be evaluated
-         * in evaluate().
-         */
-        std::vector<Point<dim> > position;
+      /**
+       * Constructor. Initializes the various arrays of this
+       * structure with the FEValues and introspection objects and
+       * the solution_vector. This constructor calls the function
+       * reinit to populate the newly created arrays.
+       *
+       * @param fe_values An FEValuesBase object used to evaluate the finite elements.
+       * @param cell The currently active cell for the fe_values object.
+       * @param introspection A reference to the simulator introspection object.
+       * @param solution_vector The finite element vector from which to construct the inputs.
+       * @param use_strain_rates Whether to compute the strain rates.
+       */
+      MaterialModelInputs(const FEValuesBase<dim,dim> &fe_values,
+                          const typename DoFHandler<dim>::active_cell_iterator &cell,
+                          const Introspection<dim> &introspection,
+                          const LinearAlgebra::BlockVector &solution_vector,
+                          const bool use_strain_rates = true);
 
-        /**
-         * Temperature values at the points given in the #position vector.
-         */
-        std::vector<double> temperature;
+      /**
+       * Copy constructor. This constructor copies all data members of the
+       * source object except for the additional input data (of type
+       * AdditionalMaterialInputs) pointers, stored in the
+       * `source.additional_inputs` member variable.
+       *
+       * This is because these pointers can not be copied (they
+       * are unique to the @p source object). Since they can also not
+       * be recreated without the original code that created these objects
+       * in the first place, this constructor throws an exception if the
+       * @p source object had any additional input data objects
+       * associated with it.
+       */
+      MaterialModelInputs (const MaterialModelInputs &source);
 
-        /**
-         * Pressure values at the points given in the #position vector.
-         */
-        std::vector<double> pressure;
+      /**
+       * Move constructor. This constructor simply moves all members.
+       */
+      MaterialModelInputs (MaterialModelInputs &&) = default;
 
-        /**
-         * Pressure gradients at the points given in the #position vector.
-         * This is important for the heating models.
-         */
-        std::vector<Tensor<1,dim> > pressure_gradient;
+      /**
+       * Copy operator. Copying these objects is expensive and
+       * consequently prohibited
+       */
+      MaterialModelInputs &operator= (const MaterialModelInputs &source) = delete;
 
-        /**
-         * Velocity values at the points given in the #position vector.
-         * This value is mostly important in the case of determining
-         * whether material crossed a certain region (e.g. a phase boundary).
-         * The timestep that is needed for this check can be requested from
-         * SimulatorAccess.
-         */
-        std::vector<Tensor<1,dim> > velocity;
+      /**
+       * Move operator.
+       */
+      MaterialModelInputs &operator= (MaterialModelInputs &&) = default;
 
-        /**
-         * Values of the compositional fields at the points given in the
-         * #position vector: composition[i][c] is the compositional field c at
-         * point i.
-         */
-        std::vector<std::vector<double> > composition;
+      /**
+       * Function to re-initialize and populate the pre-existing arrays
+       * created by the constructor MaterialModelInputs.
+       */
+      void reinit(const FEValuesBase<dim,dim> &fe_values,
+                  const typename DoFHandler<dim>::active_cell_iterator &cell,
+                  const Introspection<dim> &introspection,
+                  const LinearAlgebra::BlockVector &solution_vector,
+                  const bool use_strain_rates = true);
 
-        /**
-         * Strain rate at the points given in the #position vector. Only the
-         * viscosity may depend on these values. This std::vector can be set to
-         * size 0 if the viscosity is not needed.
-         *
-         * @note The strain rate is computed as $\varepsilon(\mathbf u)=\frac 12
-         * (\nabla \mathbf u + \nabla \mathbf u^T)$, regardless of whether the
-         * model is compressible or not. This is relevant since in some other
-         * contexts, the strain rate in the compressible case is computed as
-         * $\varepsilon(\mathbf u)=\frac 12 (\nabla \mathbf u + \nabla \mathbf
-         * u^T) - \frac 13 \nabla \cdot \mathbf u \mathbf 1$.
-         */
-        std::vector<SymmetricTensor<2,dim> > strain_rate;
 
-        /**
-         * Optional reference to the cell that contains these quadrature
-         * points. This allows for evaluating properties at the cell vertices
-         * and interpolating to the quadrature points, or to query the cell for
-         * material ids, neighbors, or other information that is not available
-         * solely from the locations. Note that not all calling functions can set
-         * this reference. In these cases it will be a nullptr, so make sure
-         * that your material model either fails with a proper error message
-         * or provide an alternative calculation for these cases.
-         *
-         * @deprecated Use DoFHandler<dim>::active_cell_iterator current_cell instead.
-         */
-        const typename DoFHandler<dim>::active_cell_iterator *cell DEAL_II_DEPRECATED;
+      /**
+       * Vector with global positions where the material has to be evaluated
+       * in evaluate().
+       */
+      std::vector<Point<dim> > position;
 
-        /**
-         * Optional cell object that contains these quadrature
-         * points. This allows for evaluating properties at the cell vertices
-         * and interpolating to the quadrature points, or to query the cell for
-         * material ids, neighbors, or other information that is not available
-         * solely from the locations. Note that not all calling functions will
-         * set this cell iterator. In these cases it will be an invalid iterator
-         * constructed using the default constructor, so make sure that your
-         * material model either fails
-         * with a proper error message, or provides an alternative calculation for
-         * these cases. You can detect this with
-         * @code
-         * if (in.current_cell.state() == IteratorState::valid)
-         * @endcode
-         */
-        typename DoFHandler<dim>::active_cell_iterator current_cell;
+      /**
+       * Temperature values at the points given in the #position vector.
+       */
+      std::vector<double> temperature;
 
-        /**
-         * Vector of shared pointers to additional material model input
-         * objects that can be added to MaterialModelInputs. By default,
-         * no inputs are added.
-         */
-        std::vector<std::shared_ptr<AdditionalMaterialInputs<dim> > > additional_inputs;
+      /**
+       * Pressure values at the points given in the #position vector.
+       */
+      std::vector<double> pressure;
 
-        /**
-         * Given an additional material model input class as explicitly specified
-         * template argument, returns a pointer to this additional material model
-         * input object if it is used in the current simulation.
-         * If the output does not exist, a null pointer is returned.
-         */
-        template <class AdditionalInputType>
-        AdditionalInputType *get_additional_input();
+      /**
+       * Pressure gradients at the points given in the #position vector.
+       * This is important for the heating models.
+       */
+      std::vector<Tensor<1,dim> > pressure_gradient;
 
-        /**
-         * Constant version of get_additional_input() returning a const pointer.
-         */
-        template <class AdditionalInputType>
-        const AdditionalInputType *get_additional_input() const;
+      /**
+       * Velocity values at the points given in the #position vector.
+       * This value is mostly important in the case of determining
+       * whether material crossed a certain region (e.g. a phase boundary).
+       * The timestep that is needed for this check can be requested from
+       * SimulatorAccess.
+       */
+      std::vector<Tensor<1,dim> > velocity;
 
-      private:
-        /**
-         * Assignment operator. It is forbidden to copy this object, because this
-         * would be too expensive. Hence, this function is private and no
-         * implementation is provided, so that trying to use it will throw an
-         * error indicating where the problem is.
-         */
-        MaterialModelInputs &operator=(const MaterialModelInputs &material);
+      /**
+       * Values of the compositional fields at the points given in the
+       * #position vector: composition[i][c] is the compositional field c at
+       * point i.
+       */
+      std::vector<std::vector<double> > composition;
+
+      /**
+       * Strain rate at the points given in the #position vector. Only the
+       * viscosity may depend on these values. This std::vector can be set to
+       * size 0 if the viscosity is not needed.
+       *
+       * @note The strain rate is computed as $\varepsilon(\mathbf u)=\frac 12
+       * (\nabla \mathbf u + \nabla \mathbf u^T)$, regardless of whether the
+       * model is compressible or not. This is relevant since in some other
+       * contexts, the strain rate in the compressible case is computed as
+       * $\varepsilon(\mathbf u)=\frac 12 (\nabla \mathbf u + \nabla \mathbf
+       * u^T) - \frac 13 \nabla \cdot \mathbf u \mathbf 1$.
+       */
+      std::vector<SymmetricTensor<2,dim> > strain_rate;
+
+      /**
+       * Optional reference to the cell that contains these quadrature
+       * points. This allows for evaluating properties at the cell vertices
+       * and interpolating to the quadrature points, or to query the cell for
+       * material ids, neighbors, or other information that is not available
+       * solely from the locations. Note that not all calling functions can set
+       * this reference. In these cases it will be a nullptr, so make sure
+       * that your material model either fails with a proper error message
+       * or provide an alternative calculation for these cases.
+       *
+       * @deprecated Use DoFHandler<dim>::active_cell_iterator current_cell instead.
+       */
+      const typename DoFHandler<dim>::active_cell_iterator *cell DEAL_II_DEPRECATED;
+
+      /**
+       * Optional cell object that contains these quadrature
+       * points. This allows for evaluating properties at the cell vertices
+       * and interpolating to the quadrature points, or to query the cell for
+       * material ids, neighbors, or other information that is not available
+       * solely from the locations. Note that not all calling functions will
+       * set this cell iterator. In these cases it will be an invalid iterator
+       * constructed using the default constructor, so make sure that your
+       * material model either fails
+       * with a proper error message, or provides an alternative calculation for
+       * these cases. You can detect this with
+       * @code
+       * if (in.current_cell.state() == IteratorState::valid)
+       * @endcode
+       */
+      typename DoFHandler<dim>::active_cell_iterator current_cell;
+
+      /**
+       * Vector of shared pointers to additional material model input
+       * objects that can be added to MaterialModelInputs. By default,
+       * no inputs are added.
+       */
+      std::vector<std::unique_ptr<AdditionalMaterialInputs<dim> > > additional_inputs;
+
+      /**
+       * Given an additional material model input class as explicitly specified
+       * template argument, returns a pointer to this additional material model
+       * input object if it is used in the current simulation.
+       * If the output does not exist, a null pointer is returned.
+       */
+      template <class AdditionalInputType>
+      AdditionalInputType *get_additional_input();
+
+      /**
+       * Constant version of get_additional_input() returning a const pointer.
+       */
+      template <class AdditionalInputType>
+      const AdditionalInputType *get_additional_input() const;
     };
 
 
@@ -380,6 +397,38 @@ namespace aspect
        */
       MaterialModelOutputs (const unsigned int n_points,
                             const unsigned int n_comp);
+
+      /**
+       * Copy constructor. This constructor copies all data members of the
+       * source object except for the additional output data (of type
+       * AdditionalMaterialOutputs) pointers, stored in the
+       * `source.additional_outputs` member variable.
+       *
+       * This is because these pointers can not be copied (they
+       * are unique to the @p source object). Since they can also not
+       * be recreated without the original code that created these objects
+       * in the first place, this constructor throws an exception if the
+       * @p source object had any additional output data objects
+       * associated with it.
+       */
+      MaterialModelOutputs (const MaterialModelOutputs &source);
+
+      /**
+       * Move constructor. This constructor simply moves all members.
+       */
+      MaterialModelOutputs (MaterialModelOutputs &&) = default;
+
+      /**
+       * Copy operator. Copying these objects is expensive, and consequently
+       * prohibited.
+       */
+      MaterialModelOutputs &operator= (const MaterialModelOutputs &source) = delete;
+
+      /**
+       * Move operator.
+       */
+      MaterialModelOutputs &operator= (MaterialModelOutputs &&) = default;
+
 
       /**
        * Viscosity $\eta$ values at the given positions.
@@ -471,7 +520,7 @@ namespace aspect
        * objects that can then be added to MaterialModelOutputs. By default,
        * no outputs are added.
        */
-      std::vector<std::shared_ptr<AdditionalMaterialOutputs<dim> > > additional_outputs;
+      std::vector<std::unique_ptr<AdditionalMaterialOutputs<dim> > > additional_outputs;
 
       /**
        * Given an additional material model output class as explicitly specified
@@ -488,7 +537,14 @@ namespace aspect
        */
       template <class AdditionalOutputType>
       const AdditionalOutputType *get_additional_output() const;
+
+      /**
+       * Steal the additional outputs from @p other. The destination (@p
+       * this), is expected to currently have no additional outputs.
+       */
+      void move_additional_outputs_from(MaterialModelOutputs<dim> &other);
     };
+
 
 
     /**
@@ -658,8 +714,11 @@ namespace aspect
     class AdditionalMaterialOutputs
     {
       public:
-        virtual ~AdditionalMaterialOutputs()
-        {}
+        /**
+         * Destructor. Made virtual to enable storing pointers to this
+         * base class.
+         */
+        virtual ~AdditionalMaterialOutputs() = default;
 
         virtual void average (const MaterialAveraging::AveragingOperation /*operation*/,
                               const FullMatrix<double>  &/*projection_matrix*/,
@@ -706,7 +765,7 @@ namespace aspect
         /**
          * Destructor.
          */
-        virtual ~NamedAdditionalMaterialOutputs();
+        ~NamedAdditionalMaterialOutputs() override;
 
         /**
          * Return a reference to the vector of names of the additional
@@ -720,9 +779,9 @@ namespace aspect
          */
         virtual std::vector<double> get_nth_output(const unsigned int idx) const = 0;
 
-        virtual void average (const MaterialAveraging::AveragingOperation /*operation*/,
-                              const FullMatrix<double>  &/*projection_matrix*/,
-                              const FullMatrix<double>  &/*expansion_matrix*/)
+        void average (const MaterialAveraging::AveragingOperation /*operation*/,
+                      const FullMatrix<double>  &/*projection_matrix*/,
+                      const FullMatrix<double>  &/*expansion_matrix*/) override
         {}
 
       private:
@@ -741,7 +800,7 @@ namespace aspect
       public:
         SeismicAdditionalOutputs(const unsigned int n_points);
 
-        virtual std::vector<double> get_nth_output(const unsigned int idx) const;
+        std::vector<double> get_nth_output(const unsigned int idx) const override;
 
         /**
          * Seismic s-wave velocities at the evaluation points passed to
@@ -786,7 +845,7 @@ namespace aspect
         ReactionRateOutputs (const unsigned int n_points,
                              const unsigned int n_comp);
 
-        virtual std::vector<double> get_nth_output(const unsigned int idx) const;
+        std::vector<double> get_nth_output(const unsigned int idx) const override;
 
         /**
          * Reaction rates for all compositional fields at the evaluation points
@@ -824,7 +883,7 @@ namespace aspect
         PrescribedFieldOutputs (const unsigned int n_points,
                                 const unsigned int n_comp);
 
-        virtual std::vector<double> get_nth_output(const unsigned int idx) const;
+        std::vector<double> get_nth_output(const unsigned int idx) const override;
 
         /**
          * Prescribed field outputs for all compositional fields at the evaluation points
@@ -836,6 +895,36 @@ namespace aspect
         std::vector<std::vector<double> > prescribed_field_outputs;
     };
 
+    /**
+     * Additional output fields for prescribed temperature outputs to be added to
+     * the MaterialModel::MaterialModelOutputs structure and filled in the
+     * MaterialModel::Interface::evaluate() function.
+     *
+     * This structure is used if the temperature field is solved using the
+     * advection scheme "prescribed field".
+     * (See Parameters::AdvectionFieldMethod for more information.)
+     * Then, while updating the temperature field, a structure of this
+     * type is created, given to the material model, and the material model
+     * outputs will finally be interpolated onto the
+     * temperature field.
+     */
+    template <int dim>
+    class PrescribedTemperatureOutputs : public NamedAdditionalMaterialOutputs<dim>
+    {
+      public:
+        PrescribedTemperatureOutputs (const unsigned int n_points);
+
+        std::vector<double> get_nth_output(const unsigned int idx) const override;
+
+        /**
+         * Prescribed field outputs for the temperature field at the evaluation points
+         * that are passed to the instance of MaterialModel::Interface::evaluate()
+         * that fills the current object.
+         * prescribed_temperature_outputs[q] is the prescribed field output at the evaluation point q
+         * for the temperature.
+         */
+        std::vector<double> prescribed_temperature_outputs;
+    };
 
     /**
      * A class for additional output fields to be added to the RHS of the
@@ -851,12 +940,12 @@ namespace aspect
           : rhs_u(n_points), rhs_p(n_points), rhs_melt_pc(n_points)
         {}
 
-        virtual ~AdditionalMaterialOutputsStokesRHS()
+        ~AdditionalMaterialOutputsStokesRHS() override
         {}
 
-        virtual void average (const MaterialAveraging::AveragingOperation /*operation*/,
-                              const FullMatrix<double>  &/*projection_matrix*/,
-                              const FullMatrix<double>  &/*expansion_matrix*/)
+        void average (const MaterialAveraging::AveragingOperation /*operation*/,
+                      const FullMatrix<double>  &/*projection_matrix*/,
+                      const FullMatrix<double>  &/*expansion_matrix*/) override
         {
           // TODO: not implemented
         }
@@ -895,12 +984,12 @@ namespace aspect
           : elastic_force(n_points, numbers::signaling_nan<Tensor<2,dim> >() )
         {}
 
-        virtual ~ElasticOutputs()
+        ~ElasticOutputs() override
         {}
 
-        virtual void average (const MaterialAveraging::AveragingOperation operation,
-                              const FullMatrix<double>  &/*projection_matrix*/,
-                              const FullMatrix<double>  &/*expansion_matrix*/)
+        void average (const MaterialAveraging::AveragingOperation operation,
+                      const FullMatrix<double>  &/*projection_matrix*/,
+                      const FullMatrix<double>  &/*expansion_matrix*/) override
         {
           AssertThrow(operation == MaterialAveraging::AveragingOperation::none,ExcNotImplemented());
           return;
@@ -1249,6 +1338,14 @@ namespace aspect
             return result;
         }
       return nullptr;
+    }
+
+
+    template <int dim>
+    void MaterialModelOutputs<dim>::move_additional_outputs_from(MaterialModelOutputs<dim> &other)
+    {
+      Assert(this->additional_outputs.empty(), ExcMessage("Destination of move needs to be empty!"));
+      this->additional_outputs = std::move(other.additional_outputs);
     }
 
 

@@ -1,65 +1,81 @@
------------------------------------------------------------------------------
--- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
---     . version 1.4.pre
---     . running in DEBUG mode
---     . running with 2 MPI processes
---     . using Trilinos
------------------------------------------------------------------------------
 
 Number of active cells: 16 (on 3 levels)
 Number of degrees of freedom: 349 (162+25+81+81)
 
 *** Timestep 0:  t=0 seconds
-   Solving temperature system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 20 iterations.
+   Solving Stokes system... 15+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:           0.000133 m/s, 0.000329 m/s
-     Compositions min/max/mass:   0/1/0.2092
-     Writing graphical output:    output-particle_load_balancing_repartition/solution-00000
-     Number of advected particles: 100
+     Number of advected particles:        1000
+     Particle count per cell min/avg/max: 54, 62, 73
+     Cells per process min/max/avg:       4/4/4
 
-Number of active cells: 10 (on 3 levels)
-Number of degrees of freedom: 246 (114+18+57+57)
+Number of active cells: 28 (on 4 levels)
+Number of degrees of freedom: 605 (282+41+141+141)
 
-*** Timestep 1:  t=100 seconds
-   Solving temperature system... 0 iterations.
-   Solving C_1 system ... 13 iterations.
+*** Timestep 0:  t=0 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 19 iterations.
+   Solving Stokes system... 18+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:           0.000159 m/s, 0.000376 m/s
-     Compositions min/max/mass:   -0.1126/1.043/0.1966
-     Writing graphical output:    output-particle_load_balancing_repartition/solution-00001
-     Number of advected particles: 100
+     Number of advected particles:        1000
+     Particle count per cell min/avg/max: 10, 35, 73
+     Cells per process min/max/avg:       4/8/7
 
-Number of active cells: 10 (on 3 levels)
-Number of degrees of freedom: 246 (114+18+57+57)
+Number of active cells: 31 (on 4 levels)
+Number of degrees of freedom: 673 (314+45+157+157)
+
+*** Timestep 0:  t=0 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 18+0 iterations.
+
+   Postprocessing:
+     Number of advected particles:        1000
+     Particle count per cell min/avg/max: 10, 32, 71
+     Cells per process min/max/avg:       4/12/7.75
+
+Number of active cells: 40 (on 4 levels)
+Number of degrees of freedom: 827 (386+55+193+193)
+
+*** Timestep 0:  t=0 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 18+0 iterations.
+
+   Postprocessing:
+     Number of advected particles:        1000
+     Particle count per cell min/avg/max: 9, 25, 71
+     Cells per process min/max/avg:       8/12/10
+
+Number of active cells: 52 (on 5 levels)
+Number of degrees of freedom: 1,112 (520+72+260+260)
+
+*** Timestep 0:  t=0 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 18+0 iterations.
+
+   Postprocessing:
+     Number of advected particles:        1000
+     Particle count per cell min/avg/max: 1, 19, 71
+     Cells per process min/max/avg:       9/16/13
+
+Number of active cells: 70 (on 5 levels)
+Number of degrees of freedom: 1,500 (702+96+351+351)
 
 Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |     0.187s |            |
-|                                             |            |            |
-| Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         2 |     0.033s |        18% |
-| Assemble composition system     |         2 |   0.00473s |       2.5% |
-| Assemble temperature system     |         2 |   0.00505s |       2.7% |
-| Build Stokes preconditioner     |         2 |    0.0164s |       8.8% |
-| Build composition preconditioner|         2 |  0.000346s |      0.18% |
-| Build temperature preconditioner|         2 |  0.000612s |      0.33% |
-| Solve Stokes system             |         2 |   0.00915s |       4.9% |
-| Solve composition system        |         2 |   0.00186s |      0.99% |
-| Solve temperature system        |         2 |   0.00142s |      0.76% |
-| Initialization                  |         2 |    0.0493s |        26% |
-| Postprocessing                  |         2 |   0.00565s |         3% |
-| Refine mesh structure, part 1   |         2 |   0.00453s |       2.4% |
-| Refine mesh structure, part 2   |         2 |   0.00276s |       1.5% |
-| Setup dof systems               |         3 |    0.0483s |        26% |
 +---------------------------------+-----------+------------+------------+
 

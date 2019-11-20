@@ -85,9 +85,8 @@ namespace aspect
              * coordinates phi, theta and depth, also accounting for the
              * topography.
              */
-            virtual
             Point<3>
-            pull_back(const Point<3> &space_point) const;
+            pull_back(const Point<3> &space_point) const override;
 
             /**
              * The deal.ii pull back function in 2d. This function should
@@ -103,18 +102,14 @@ namespace aspect
              * returns cartesian points x,y and z, also accounting for the
              * topography.
              */
-            virtual
             Point<3>
-            push_forward(const Point<3> &chart_point) const;
+            push_forward(const Point<3> &chart_point) const override;
 
-#if DEAL_II_VERSION_GTE(9,0,0)
             /**
              * Return a copy of this manifold.
              */
-            virtual
             std::unique_ptr<Manifold<dim,3> >
-            clone() const;
-#endif
+            clone() const override;
 
           private:
             /**
@@ -153,25 +148,22 @@ namespace aspect
         /**
          * Initialize function
          */
-        virtual
         void
-        initialize ();
+        initialize () override;
 
 
         /**
          * Generate a coarse mesh for the geometry described by this class.
          */
-        virtual
         void
-        create_coarse_mesh(parallel::distributed::Triangulation<dim> &coarse_grid) const;
+        create_coarse_mesh(parallel::distributed::Triangulation<dim> &coarse_grid) const override;
 
         /**
          * Return the typical length scale one would expect of features in this geometry,
          * assuming realistic parameters.
          */
-        virtual
         double
-        length_scale() const;
+        length_scale() const override;
 
         /**
          * Return the depth that corresponds to the given
@@ -186,40 +178,36 @@ namespace aspect
          * all cases one will use a gravity model that also matches
          * these definitions.
          */
-        virtual
         double
-        depth(const Point<dim> &position) const;
+        depth(const Point<dim> &position) const override;
 
         /**
          * Placeholder for a function returning the height of the given
          * position relative to the reference model surface.
          */
-        virtual
         double
-        height_above_reference_surface(const Point<dim> &position) const;
+        height_above_reference_surface(const Point<dim> &position) const override;
 
         /**
          * Returns a point in the center of the domain.
          */
-        virtual Point<dim>
-        representative_point(const double depth) const;
+        Point<dim>
+        representative_point(const double depth) const override;
 
         /**
          * Return whether the given point lies within the domain specified
          * by the geometry. This function does not take into account
          * initial or dynamic surface topography.
          */
-        virtual
         bool
-        point_is_in_domain(const Point<dim> &point) const;
+        point_is_in_domain(const Point<dim> &point) const override;
 
         /**
          * Returns the bottom depth which was used to create the geometry and
          * which is defined by the depth parameter.
          */
-        virtual
         double
-        maximal_depth() const;
+        maximal_depth() const override;
 
         /**
          * Return the set of boundary indicators that are used by this model. This
@@ -230,21 +218,20 @@ namespace aspect
          * two being the faces perpendicular to the x-axis, the next two perpendicular
          * to the y-axis, etc.
          */
-        virtual std::set<types::boundary_id>
-        get_used_boundary_indicators() const;
+        std::set<types::boundary_id>
+        get_used_boundary_indicators() const override;
 
-        /*
-        *Set symbolic names for boundaries (mrtf)
-        */
-        virtual std::map<std::string,types::boundary_id>
-        get_symbolic_boundary_names_map() const;
+        /**
+         * Set symbolic names for boundaries (mrtf)
+         */
+        std::map<std::string,types::boundary_id>
+        get_symbolic_boundary_names_map() const override;
 
-        /*
+        /**
          * Returns what the natural coordinate system for this geometry model is,
          * which for a Ellipsoidal chunk is Ellisoidal.
          */
-        virtual
-        aspect::Utilities::Coordinates::CoordinateSystem natural_coordinate_system() const;
+        aspect::Utilities::Coordinates::CoordinateSystem natural_coordinate_system() const override;
 
         /**
          * Takes the Cartesian points (x,z or x,y,z) and returns standardized
@@ -253,16 +240,14 @@ namespace aspect
          * longitude, latitude) in 3d. Note that internally the coordinates are
          * stored in longitude, latitude, depth.
          */
-        virtual
-        std::array<double,dim> cartesian_to_natural_coordinates(const Point<dim> &position) const;
+        std::array<double,dim> cartesian_to_natural_coordinates(const Point<dim> &position) const override;
 
         /**
          * Undoes the action of cartesian_to_natural_coordinates, and turns the
          * coordinate system which is most 'natural' to the geometry model into
          * Cartesian coordinates.
          */
-        virtual
-        Point<dim> natural_to_cartesian_coordinates(const std::array<double,dim> &position) const;
+        Point<dim> natural_to_cartesian_coordinates(const std::array<double,dim> &position) const override;
 
         /**
          * Declare the parameters this class takes through input files.
@@ -275,9 +260,8 @@ namespace aspect
          * Read the parameters this class declares from the parameter
          * file.
          */
-        virtual
         void
-        parse_parameters(ParameterHandler &prm);
+        parse_parameters(ParameterHandler &prm) override;
 
         /**
          * Calculate radius at current position.

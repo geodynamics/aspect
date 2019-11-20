@@ -5,26 +5,26 @@ Number of degrees of freedom: 2,724 (1,666+225+833)
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+359 iterations.
+   Solving Stokes system... 200+330 iterations.
 
    Postprocessing:
      Writing graphical output:           output-steinberger_viscosity_adiabatic/solution/solution-00000
-     RMS, max velocity:                  0.0794 m/year, 0.282 m/year
+     RMS, max velocity:                  0.0794 m/year, 0.283 m/year
      Temperature min/avg/max:            273 K, 2254 K, 4250 K
-     Heat fluxes through boundary parts: -7.336e+05 W, 1.094e+06 W, 0 W, 0 W
-     Writing depth average:              output-steinberger_viscosity_adiabatic/depth_average.gnuplot
+     Heat fluxes through boundary parts: -2.916e+05 W, -2.388e+05 W, 0 W, 0 W
+     Writing depth average:              output-steinberger_viscosity_adiabatic/depth_average
 
 *** Timestep 1:  t=100000 years
    Solving temperature system... 9 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+190 iterations.
+   Solving Stokes system... 200+171 iterations.
 
    Postprocessing:
      Writing graphical output:           output-steinberger_viscosity_adiabatic/solution/solution-00001
-     RMS, max velocity:                  0.0848 m/year, 0.288 m/year
-     Temperature min/avg/max:            273 K, 2253 K, 4250 K
-     Heat fluxes through boundary parts: -2.247e+07 W, 3.587e+07 W, 0 W, 0 W
-     Writing depth average:              output-steinberger_viscosity_adiabatic/depth_average.gnuplot
+     RMS, max velocity:                  0.0834 m/year, 0.278 m/year
+     Temperature min/avg/max:            273 K, 2254 K, 4250 K
+     Heat fluxes through boundary parts: -5.483e+05 W, 4.469e+05 W, 0 W, 0 W
+     Writing depth average:              output-steinberger_viscosity_adiabatic/depth_average
 
 Termination requested by criterion: end time
 

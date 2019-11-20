@@ -1,8 +1,11 @@
 # Refine the upper 150 km of the mesh so lithosphere structure is resolved.
-# For depth of 1000 km, level = 7  gives element size of 1000/(2^7) = 7.8125 km
-# Total refinements = initial global + intial adaptive = 7
 # Function expression asks if the depth is less than the lithosphere depth and
-# then refinement level = 7, else refinement level = 0
+# then refinement level = 7, else refinement level = 0. 
+# Note, the minimum refinement level for the lower 850 km of the mesh would be 
+# coarser than the initial one level of global refinement. This would then lead
+# to coarsening in the future. 
+# To avoid this, you may want to set this 'else' value to the same as the number
+# of initial global refinement steps.
 
 subsection Mesh refinement
   set Initial global refinement          = 3
@@ -13,7 +16,7 @@ subsection Mesh refinement
   subsection Minimum refinement function
     set Coordinate system   = cartesian
     set Variable names      = x,y
-    set Function constants  = ymax=1e6, lith=1.5e5
+    set Function constants  = ymax=1.e6, lith=1.5e5
     set Function expression = ((ymax-y<=lith) ? 7 : 0)
   end
 end

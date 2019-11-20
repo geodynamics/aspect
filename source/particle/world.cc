@@ -101,7 +101,7 @@ namespace aspect
     }
 
     template <int dim>
-    const ParticleHandler<dim> &
+    const Particles::ParticleHandler<dim> &
     World<dim>::get_particle_handler() const
     {
       return *particle_handler.get();
@@ -114,28 +114,7 @@ namespace aspect
       return *interpolator;
     }
 
-#if !DEAL_II_VERSION_GTE(9,0,0)
-    template <int dim>
-    std::string
-    World<dim>::generate_output() const
-    {
-      // If we do not write output
-      // return early with the number of particles that were advected
-      if (!output)
-        return "";
 
-      TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Output");
-      const double output_time = (this->convert_output_to_years() ?
-                                  this->get_time() / year_in_seconds :
-                                  this->get_time());
-
-      const std::string filename = output->output_particle_data(*particle_handler,
-                                                                property_manager->get_data_info(),
-                                                                output_time);
-
-      return filename;
-    }
-#endif
 
     template <int dim>
     types::particle_index
@@ -232,11 +211,7 @@ namespace aspect
               types::particle_index particles_to_add_locally = 0;
 
               // Loop over all cells and determine the number of particles to generate
-              typename DoFHandler<dim>::active_cell_iterator
-              cell = this->get_dof_handler().begin_active(),
-              endc = this->get_dof_handler().end();
-
-              for (; cell!=endc; ++cell)
+              for (const auto &cell : this->get_dof_handler().active_cell_iterators())
                 if (cell->is_locally_owned())
                   {
                     const unsigned int particles_in_cell = particle_handler->n_particles_in_cell(cell);
@@ -254,10 +229,8 @@ namespace aspect
 
 #if DEAL_II_VERSION_GTE(9,1,0)
               MPI_Scan(&particles_to_add_locally, &local_start_index, 1, DEAL_II_PARTICLE_INDEX_MPI_TYPE, MPI_SUM, this->get_mpi_communicator());
-#elif DEAL_II_VERSION_GTE(9,0,0)
-              MPI_Scan(&particles_to_add_locally, &local_start_index, 1, PARTICLE_INDEX_MPI_TYPE, MPI_SUM, this->get_mpi_communicator());
 #else
-              MPI_Scan(&particles_to_add_locally, &local_start_index, 1, ASPECT_PARTICLE_INDEX_MPI_TYPE, MPI_SUM, this->get_mpi_communicator());
+              MPI_Scan(&particles_to_add_locally, &local_start_index, 1, PARTICLE_INDEX_MPI_TYPE, MPI_SUM, this->get_mpi_communicator());
 #endif
 
               local_start_index -= particles_to_add_locally;
@@ -277,11 +250,7 @@ namespace aspect
           boost::mt19937 random_number_generator;
 
           // Loop over all cells and generate or remove the particles cell-wise
-          typename DoFHandler<dim>::active_cell_iterator
-          cell = this->get_dof_handler().begin_active(),
-          endc = this->get_dof_handler().end();
-
-          for (; cell!=endc; ++cell)
+          for (const auto &cell : this->get_dof_handler().active_cell_iterators())
             if (cell->is_locally_owned())
               {
                 const unsigned int n_particles_in_cell = particle_handler->n_particles_in_cell(cell);
@@ -292,7 +261,7 @@ namespace aspect
                   {
                     for (unsigned int i = n_particles_in_cell; i < min_particles_per_cell; ++i,++local_next_particle_index)
                       {
-                        std::pair<aspect::Particles::internal::LevelInd,Particle<dim> > new_particle = generator->generate_particle(cell,local_next_particle_index);
+                        std::pair<Particles::internal::LevelInd,Particles::Particle<dim> > new_particle = generator->generate_particle(cell,local_next_particle_index);
 
                         const std::vector<double> particle_properties =
                           property_manager->initialize_late_particle(new_particle.second.get_location(),
@@ -601,12 +570,12 @@ namespace aspect
     {
       TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Generate");
 
-      std::multimap<Particles::internal::LevelInd, Particle<dim> > particles;
+      std::multimap<Particles::internal::LevelInd, Particles::Particle<dim> > particles;
       generator->generate_particles(particles);
 
-      std::multimap<typename Triangulation<dim>::active_cell_iterator, Particle<dim> > new_particles;
+      std::multimap<typename Triangulation<dim>::active_cell_iterator, Particles::Particle<dim> > new_particles;
 
-      for (typename std::multimap<Particles::internal::LevelInd, Particle<dim> >::const_iterator particle = particles.begin();
+      for (typename std::multimap<Particles::internal::LevelInd, Particles::Particle<dim> >::const_iterator particle = particles.begin();
            particle != particles.end(); ++particle)
         new_particles.insert(new_particles.end(),
                              std::make_pair(typename Triangulation<dim>::active_cell_iterator(&this->get_triangulation(),
@@ -635,11 +604,7 @@ namespace aspect
           particle_handler->get_property_pool().reserve(2 * particle_handler->n_locally_owned_particles());
 
           // Loop over all cells and initialize the particles cell-wise
-          typename DoFHandler<dim>::active_cell_iterator
-          cell = this->get_dof_handler().begin_active(),
-          endc = this->get_dof_handler().end();
-
-          for (; cell!=endc; ++cell)
+          for (const auto &cell : this->get_dof_handler().active_cell_iterators())
             if (cell->is_locally_owned())
               {
                 typename ParticleHandler<dim>::particle_iterator_range
@@ -670,11 +635,7 @@ namespace aspect
           TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Update properties");
 
           // Loop over all cells and update the particles cell-wise
-          typename DoFHandler<dim>::active_cell_iterator
-          cell = this->get_dof_handler().begin_active(),
-          endc = this->get_dof_handler().end();
-
-          for (; cell!=endc; ++cell)
+          for (const auto &cell : this->get_dof_handler().active_cell_iterators())
             if (cell->is_locally_owned())
               {
                 typename ParticleHandler<dim>::particle_iterator_range
@@ -698,11 +659,7 @@ namespace aspect
         TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Advect");
 
         // Loop over all cells and advect the particles cell-wise
-        typename DoFHandler<dim>::active_cell_iterator
-        cell = this->get_dof_handler().begin_active(),
-        endc = this->get_dof_handler().end();
-
-        for (; cell!=endc; ++cell)
+        for (const auto &cell : this->get_dof_handler().active_cell_iterators())
           if (cell->is_locally_owned())
             {
               const typename ParticleHandler<dim>::particle_iterator_range
@@ -762,10 +719,6 @@ namespace aspect
     {
       aspect::oarchive oa (os);
       oa << (*this);
-#if !DEAL_II_VERSION_GTE(9,0,0)
-      if (output)
-        output->save(os);
-#endif
     }
 
     template <int dim>
@@ -774,10 +727,6 @@ namespace aspect
     {
       aspect::iarchive ia (is);
       ia >> (*this);
-#if !DEAL_II_VERSION_GTE(9,0,0)
-      if (output)
-        output->load(is);
-#endif
     }
 
     template <int dim>
@@ -843,12 +792,6 @@ namespace aspect
       prm.leave_subsection ();
 
       Generator::declare_parameters<dim>(prm);
-
-      // Output of particle related data has been moved to deal.II from version 9.0 on
-      // The relevant code now lives in postprocess/particles.cc
-#if !DEAL_II_VERSION_GTE(9,0,0)
-      Output::declare_parameters<dim>(prm);
-#endif
       Integrator::declare_parameters<dim>(prm);
       Interpolator::declare_parameters<dim>(prm);
       Property::Manager<dim>::declare_parameters(prm);
@@ -874,8 +817,8 @@ namespace aspect
                              "diameter in one time step and therefore skip the layer "
                              "of ghost cells around the local subdomain."));
 
-      AssertThrow(!this->get_parameters().free_surface_enabled,
-                  ExcMessage("Combining particles and a free surface is currently untested "
+      AssertThrow(!this->get_parameters().mesh_deformation_enabled,
+                  ExcMessage("Combining particles and a deforming mesh is currently untested "
                              "and not officially supported. If you disable this assertion make "
                              "sure you benchmark the particle accuracy, and carefully check for "
                              "problems related to storing the particle reference coordinates for "
@@ -942,24 +885,6 @@ namespace aspect
         sim->initialize_simulator (this->get_simulator());
       generator->parse_parameters(prm);
       generator->initialize();
-
-      // Output of particle related data has been moved to deal.II from version 9.0 on
-      // The relevant code now lives in postprocess/particles.cc
-#if !DEAL_II_VERSION_GTE(9,0,0)
-      // Create an output object depending on what the parameters specify
-      output.reset(Output::create_particle_output<dim>
-                   (prm));
-
-      // We allow to not generate any output plugin, in which case output is
-      // a null pointer. Only initialize output if it was created.
-      if (output)
-        {
-          if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(output.get()))
-            sim->initialize_simulator (this->get_simulator());
-          output->parse_parameters(prm);
-          output->initialize();
-        }
-#endif
 
       // Create an integrator object depending on the specified parameter
       integrator.reset(Integrator::create_particle_integrator<dim> (prm));

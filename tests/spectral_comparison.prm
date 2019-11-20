@@ -7,3 +7,9 @@ include $ASPECT_SOURCE_DIR/benchmarks/geoid-spectral-comparison/spectral-compari
 subsection Mesh refinement
   set Initial global refinement = 0
 end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Number of cheap Stokes solver steps             = 200
+  end
+end

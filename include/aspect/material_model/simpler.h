@@ -22,6 +22,8 @@
 #define _aspect_material_model_simpler_h
 
 #include <aspect/material_model/interface.h>
+#include <aspect/material_model/rheology/constant_viscosity.h>
+#include <aspect/material_model/equation_of_state/linearized_incompressible.h>
 
 namespace aspect
 {
@@ -44,12 +46,12 @@ namespace aspect
     {
       public:
 
-        virtual bool is_compressible () const;
+        bool is_compressible () const override;
 
-        virtual double reference_viscosity () const;
+        double reference_viscosity () const override;
 
-        virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                              MaterialModel::MaterialModelOutputs<dim> &out) const;
+        void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                      MaterialModel::MaterialModelOutputs<dim> &out) const override;
 
 
         /**
@@ -66,20 +68,19 @@ namespace aspect
         /**
          * Read the parameters this class declares from the parameter file.
          */
-        virtual
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
+
         /**
          * @}
          */
 
       private:
-        double reference_rho;
         double reference_T;
-        double eta;
-        double thermal_alpha;
-        double reference_specific_heat;
         double k_value;
+
+        Rheology::ConstantViscosity constant_rheology;
+        EquationOfState::LinearizedIncompressible<dim> equation_of_state;
     };
 
   }

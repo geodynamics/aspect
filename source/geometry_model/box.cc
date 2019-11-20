@@ -41,14 +41,23 @@ namespace aspect
       topo_model = const_cast<InitialTopographyModel::Interface<dim>*>(&this->get_initial_topography_model());
       // Check that initial topography is required.
       // If so, connect the initial topography function
-      // to the right signal.
+      // to the right signals: It should be applied after
+      // the final initial adaptive refinement and after a restart.
       if (dynamic_cast<InitialTopographyModel::ZeroTopography<dim>*>(topo_model) == nullptr)
-        this->get_signals().pre_set_initial_state.connect(
-          [&](typename parallel::distributed::Triangulation<dim> &tria)
         {
-          this->topography(tria);
+          this->get_signals().pre_set_initial_state.connect(
+            [&](typename parallel::distributed::Triangulation<dim> &tria)
+          {
+            this->topography(tria);
+          }
+          );
+          this->get_signals().post_resume_load_user_data.connect(
+            [&](typename parallel::distributed::Triangulation<dim> &tria)
+          {
+            this->topography(tria);
+          }
+          );
         }
-      );
     }
 
 
@@ -268,9 +277,8 @@ namespace aspect
     bool
     Box<dim>::point_is_in_domain(const Point<dim> &point) const
     {
-      AssertThrow(this->get_free_surface_boundary_indicators().size() == 0 ||
-                  // we are still before the first time step has started
-                  this->get_timestep_number() == numbers::invalid_unsigned_int,
+      AssertThrow(!this->get_parameters().mesh_deformation_enabled ||
+                  this->simulator_is_past_initialization() == false,
                   ExcMessage("After displacement of the free surface, this function can no longer be used to determine whether a point lies in the domain or not."));
 
       AssertThrow(dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(&this->get_initial_topography_model()) != nullptr,
@@ -326,25 +334,25 @@ namespace aspect
         {
           prm.declare_entry ("X extent", "1",
                              Patterns::Double (0),
-                             "Extent of the box in x-direction. Units: m.");
+                             "Extent of the box in x-direction. Units: $\\si{m}$.");
           prm.declare_entry ("Y extent", "1",
                              Patterns::Double (0),
-                             "Extent of the box in y-direction. Units: m.");
+                             "Extent of the box in y-direction. Units: $\\si{m}$.");
           prm.declare_entry ("Z extent", "1",
                              Patterns::Double (0),
                              "Extent of the box in z-direction. This value is ignored "
-                             "if the simulation is in 2d. Units: m.");
+                             "if the simulation is in 2d. Units: $\\si{m}$.");
 
           prm.declare_entry ("Box origin X coordinate", "0",
                              Patterns::Double (),
-                             "X coordinate of box origin. Units: m.");
+                             "X coordinate of box origin. Units: $\\si{m}$.");
           prm.declare_entry ("Box origin Y coordinate", "0",
                              Patterns::Double (),
-                             "Y coordinate of box origin. Units: m.");
+                             "Y coordinate of box origin. Units: $\\si{m}$.");
           prm.declare_entry ("Box origin Z coordinate", "0",
                              Patterns::Double (),
                              "Z coordinate of box origin. This value is ignored "
-                             "if the simulation is in 2d. Units: m.");
+                             "if the simulation is in 2d. Units: $\\si{m}$.");
 
           prm.declare_entry ("X repetitions", "1",
                              Patterns::Integer (1),

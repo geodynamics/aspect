@@ -135,7 +135,7 @@ namespace aspect
         return;
 
       inputs.additional_inputs.push_back(
-        std::make_shared<MaterialModel::MeltInputs<dim>> (inputs.position.size()));
+        std_cxx14::make_unique<MaterialModel::MeltInputs<dim>> (inputs.position.size()));
     }
   }
 }

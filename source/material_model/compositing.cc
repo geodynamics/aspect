@@ -81,16 +81,45 @@ namespace aspect
 
     template <int dim>
     void
+    Compositing<dim>::initialize ()
+    {
+      // initialize all models
+      for (auto &model : models)
+        model->initialize();
+    }
+
+
+    template <int dim>
+    void
     Compositing<dim>::evaluate(const typename Interface<dim>::MaterialModelInputs &in,
                                typename Interface<dim>::MaterialModelOutputs &out) const
     {
       typename Interface<dim>::MaterialModelOutputs base_output(out.viscosities.size(),
                                                                 this->introspection().n_compositional_fields);
 
+      // Move the additional outputs to base_output so that our models can fill them if desired:
+      base_output.move_additional_outputs_from(out);
+
       for (unsigned int i=0; i<models.size(); ++i)
         {
           models[i]->evaluate(in, base_output);
           copy_required_properties(i, base_output, out);
+        }
+
+      // Finally, we move the additional outputs back into place:
+      out.move_additional_outputs_from(base_output);
+    }
+
+
+
+    template <int dim>
+    void
+    Compositing<dim>::
+    create_additional_named_outputs (typename Interface<dim>::MaterialModelOutputs &outputs) const
+    {
+      for (unsigned int i=0; i<models.size(); ++i)
+        {
+          models[i]->create_additional_named_outputs(outputs);
         }
     }
 

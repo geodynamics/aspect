@@ -34,77 +34,77 @@ Number of degrees of freedom: 7,441 (4,568+589+2,284)
      RMS, max velocity: 0.381 m/year, 0.914 m/year
 
 *** Timestep 1:  t=4918.22 years
-   Solving temperature system... 13 iterations.
+   Solving temperature system... 12 iterations.
    Solving Stokes system... 54+0 iterations.
 
    Postprocessing:
-     RMS, max velocity: 0.382 m/year, 0.917 m/year
+     RMS, max velocity: 0.381 m/year, 0.917 m/year
 
-*** Timestep 2:  t=9775.83 years
+*** Timestep 2:  t=9779.18 years
    Solving temperature system... 12 iterations.
+   Solving Stokes system... 45+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 0.382 m/year, 0.919 m/year
+
+*** Timestep 3:  t=14586.2 years
+   Solving temperature system... 11 iterations.
+   Solving Stokes system... 46+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 0.383 m/year, 0.921 m/year
+
+*** Timestep 4:  t=19343.8 years
+   Solving temperature system... 11 iterations.
    Solving Stokes system... 47+0 iterations.
 
    Postprocessing:
-     RMS, max velocity: 0.382 m/year, 0.92 m/year
+     RMS, max velocity: 0.383 m/year, 0.923 m/year
 
-*** Timestep 3:  t=14578.5 years
-   Solving temperature system... 12 iterations.
-   Solving Stokes system... 47+0 iterations.
-
-   Postprocessing:
-     RMS, max velocity: 0.383 m/year, 0.922 m/year
-
-*** Timestep 4:  t=19331.6 years
+*** Timestep 5:  t=24057.1 years
    Solving temperature system... 11 iterations.
    Solving Stokes system... 47+0 iterations.
 
    Postprocessing:
      RMS, max velocity: 0.384 m/year, 0.924 m/year
 
-*** Timestep 5:  t=24040.3 years
-   Solving temperature system... 11 iterations.
-   Solving Stokes system... 47+0 iterations.
-
-   Postprocessing:
-     RMS, max velocity: 0.384 m/year, 0.925 m/year
-
-*** Timestep 6:  t=28709.6 years
+*** Timestep 6:  t=28730.8 years
    Solving temperature system... 11 iterations.
    Solving Stokes system... 46+0 iterations.
 
    Postprocessing:
      RMS, max velocity: 0.384 m/year, 0.925 m/year
 
-*** Timestep 7:  t=33343.9 years
+*** Timestep 7:  t=33369.5 years
    Solving temperature system... 11 iterations.
    Solving Stokes system... 46+0 iterations.
 
    Postprocessing:
-     RMS, max velocity: 0.384 m/year, 0.926 m/year
+     RMS, max velocity: 0.384 m/year, 0.925 m/year
 
-*** Timestep 8:  t=37947.7 years
+*** Timestep 8:  t=37977.4 years
    Solving temperature system... 10 iterations.
    Solving Stokes system... 46+0 iterations.
 
    Postprocessing:
      RMS, max velocity: 0.384 m/year, 0.925 m/year
 
-*** Timestep 9:  t=42524.7 years
+*** Timestep 9:  t=42558.4 years
    Solving temperature system... 11 iterations.
    Solving Stokes system... 46+0 iterations.
 
    Postprocessing:
-     RMS, max velocity: 0.384 m/year, 0.925 m/year
+     RMS, max velocity: 0.384 m/year, 0.924 m/year
 
-*** Timestep 10:  t=47078.7 years
-   Solving temperature system... 11 iterations.
+*** Timestep 10:  t=47116.4 years
+   Solving temperature system... 10 iterations.
    Solving Stokes system... 45+0 iterations.
 
    Postprocessing:
-     RMS, max velocity: 0.384 m/year, 0.924 m/year
+     RMS, max velocity: 0.383 m/year, 0.923 m/year
 
-Number of active cells: 433 (on 7 levels)
-Number of degrees of freedom: 6,769 (4,156+535+2,078)
+Number of active cells: 439 (on 7 levels)
+Number of degrees of freedom: 6,847 (4,204+541+2,102)
 
 Termination requested by criterion: end step
 

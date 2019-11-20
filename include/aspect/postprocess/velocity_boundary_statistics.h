@@ -45,9 +45,8 @@ namespace aspect
         /**
          * Evaluate the solution for some velocity boundary statistics.
          */
-        virtual
         std::pair<std::string,std::string>
-        execute (TableHandler &statistics);
+        execute (TableHandler &statistics) override;
     };
   }
 }

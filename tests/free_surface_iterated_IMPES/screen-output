@@ -2,37 +2,37 @@
 Number of active cells: 640 (on 4 levels)
 Number of degrees of freedom: 8,716 (5,346+697+2,673)
 
-Number of free surface degrees of freedom: 1394
+Number of mesh deformation degrees of freedom: 1394
 *** Timestep 0:  t=0 years
    Solving mesh velocity system... 0 iterations.
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+12 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.45536e-16, 1
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.67381e-16, 1
       Relative nonlinear residual (total system) after nonlinear iteration 1: 1
 
    Solving temperature system... 0 iterations.
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.45536e-16, 4.3798e-08
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.67381e-16, 4.3798e-08
       Relative nonlinear residual (total system) after nonlinear iteration 2: 4.3798e-08
 
 
 Number of active cells: 664 (on 5 levels)
 Number of degrees of freedom: 9,184 (5,634+733+2,817)
 
-Number of free surface degrees of freedom: 1466
+Number of mesh deformation degrees of freedom: 1466
 *** Timestep 0:  t=0 years
    Solving mesh velocity system... 0 iterations.
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+12 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.10553e-16, 1
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.97023e-16, 1
       Relative nonlinear residual (total system) after nonlinear iteration 1: 1
 
    Solving temperature system... 0 iterations.
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.10553e-16, 5.97035e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 5.97035e-08
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.97023e-16, 5.97036e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 5.97036e-08
 
 
    Postprocessing:
@@ -74,7 +74,7 @@ Number of free surface degrees of freedom: 1466
 
    Solving temperature system... 4 iterations.
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 6.68294e-08, 6.43749e-08
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 6.68294e-08, 6.4375e-08
       Relative nonlinear residual (total system) after nonlinear iteration 4: 6.68294e-08
 
 
@@ -130,7 +130,7 @@ Number of free surface degrees of freedom: 1466
 
    Solving temperature system... 3 iterations.
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.88383e-08, 7.51653e-09
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.88383e-08, 7.51654e-09
       Relative nonlinear residual (total system) after nonlinear iteration 4: 1.88383e-08
 
 
@@ -274,8 +274,8 @@ Number of free surface degrees of freedom: 1466
 
    Solving temperature system... 4 iterations.
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 7.57618e-08, 8.50402e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 3: 8.50402e-08
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 7.57618e-08, 8.50401e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 8.50401e-08
 
 
    Postprocessing:

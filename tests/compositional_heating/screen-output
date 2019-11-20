@@ -9,7 +9,7 @@ Number of degrees of freedom: 1,885 (882+121+441+441)
    Solving Stokes system... 2+0 iterations.
 
    Postprocessing:
-     Heat fluxes through boundary parts: 0 W, 0 W, -2758 W, 7696 W
+     Heat fluxes through boundary parts: 0 W, 0 W, -2500 W, 7000 W
      Temperature min/avg/max:            273 K, 1016 K, 1543 K
 
 
@@ -19,8 +19,8 @@ Number of degrees of freedom: 1,885 (882+121+441+441)
 +---------------------------------+-----------+------------+------------+
 
 *** Timestep 1:  t=3.60914e+08 years
-   Solving temperature system... 50 iterations.
-   Solving upper system ... 10 iterations.
+   Solving temperature system... 39 iterations.
+   Solving upper system ... 9 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 2+0 iterations.
 
@@ -35,13 +35,13 @@ Number of degrees of freedom: 1,885 (882+121+441+441)
 +---------------------------------+-----------+------------+------------+
 
 *** Timestep 2:  t=1e+09 years
-   Solving temperature system... 52 iterations.
-   Solving upper system ... 11 iterations.
+   Solving temperature system... 40 iterations.
+   Solving upper system ... 12 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 2+0 iterations.
 
    Postprocessing:
-     Heat fluxes through boundary parts: 0 W, 0 W, -2573 W, 6745 W
+     Heat fluxes through boundary parts: 0 W, 0 W, -2569 W, 6751 W
      Temperature min/avg/max:            273 K, 1004 K, 1543 K
 
 

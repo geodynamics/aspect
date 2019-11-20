@@ -206,10 +206,9 @@ void validate_shared_lib_list (const bool before_loading_shared_libs)
 
   // find everything that is interesting
   std::set<std::string> dealii_shared_lib_names;
-  for (std::set<std::string>::const_iterator p = shared_lib_names.begin();
-       p != shared_lib_names.end(); ++p)
-    if (p->find ("libdeal_II") != std::string::npos)
-      dealii_shared_lib_names.insert (*p);
+  for (const auto &p : shared_lib_names)
+    if (p.find ("libdeal_II") != std::string::npos)
+      dealii_shared_lib_names.insert (p);
 
   // produce an error if we load deal.II more than once
   if (dealii_shared_lib_names.size() != 1)
@@ -218,9 +217,8 @@ void validate_shared_lib_list (const bool before_loading_shared_libs)
       error << "........................................................\n"
             << "ASPECT currently links against different versions of the\n"
             << "deal.II library, namely the ones at these locations:\n";
-      for (std::set<std::string>::const_iterator p = dealii_shared_lib_names.begin();
-           p != dealii_shared_lib_names.end(); ++p)
-        error << "  " << *p << '\n';
+      for (const auto &p : dealii_shared_lib_names)
+        error << "  " << p << '\n';
       error << "This can not work.\n\n";
 
       if (before_loading_shared_libs)
@@ -328,9 +326,11 @@ void possibly_load_shared_libs (const std::string &parameters)
     }
 }
 
-/*
- * Current implementation for reading from stdin requires use of a std::string,
- * so this function will read until the end of the stream
+
+/**
+ * Read until we reach the end of the given stream, and return the contents
+ * so obtained in a std::string object that contains the individual
+ * lines read separated by `\n` characters.
  */
 std::string
 read_until_end (std::istream &input)
@@ -349,7 +349,7 @@ read_until_end (std::istream &input)
 
 
 /**
- * Takes the name of a parameter file and return all parameters in that file
+ * Take the name of a parameter file and return all parameters in that file
  * as a string. If @p parameter_file_name is "--" read the parameters from
  * std::cin instead.
  */
@@ -746,6 +746,10 @@ int main (int argc, char *argv[])
         }
       else
         {
+          // If only help or version is requested, we are done.
+          if (output_help || output_version)
+            return 0;
+
           // We hook into the abort handler on ranks != 0 to avoid an MPI
           // deadlock. The deal.II library will call std::abort() when an
           // Assert is triggered, which can lead to a deadlock because it
@@ -773,7 +777,7 @@ int main (int argc, char *argv[])
         {
           if (i_am_proc_0)
             print_help();
-          return 2;
+          return 0;
         }
 
       // See where to read input from, then do the reading and

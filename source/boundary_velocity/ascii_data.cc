@@ -39,16 +39,11 @@ namespace aspect
     void
     AsciiData<dim>::initialize ()
     {
-      const std::map<types::boundary_id,std::vector<std::shared_ptr<BoundaryVelocity::Interface<dim> > > >
-      bvs = this->get_boundary_velocity_manager().get_active_boundary_velocity_conditions();
-      for (typename std::map<types::boundary_id,std::vector<std::shared_ptr<BoundaryVelocity::Interface<dim> > > >::const_iterator
-           p = bvs.begin();
-           p != bvs.end(); ++p)
+      for (const auto &p : this->get_boundary_velocity_manager().get_active_boundary_velocity_conditions())
         {
-          for (typename std::vector<std::shared_ptr<BoundaryVelocity::Interface<dim> > >::const_iterator
-               plugin = p->second.begin(); plugin != p->second.end(); ++plugin)
-            if (plugin->get() == this)
-              boundary_ids.insert(p->first);
+          for (const auto &plugin : p.second)
+            if (plugin.get() == this)
+              boundary_ids.insert(p.first);
         }
       AssertThrow(*(boundary_ids.begin()) != numbers::invalid_boundary_id,
                   ExcMessage("Did not find the boundary indicator for the prescribed data plugin."));
@@ -56,6 +51,8 @@ namespace aspect
       Utilities::AsciiDataBoundary<dim>::initialize(boundary_ids,
                                                     dim);
     }
+
+
 
     template <int dim>
     void

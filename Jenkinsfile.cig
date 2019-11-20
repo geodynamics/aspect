@@ -2,13 +2,14 @@
 
 pipeline {
   agent {
-    docker {
-      image 'gassmoeller/aspect-tester:8.5.0'
+    // first build a docker image for running the tests from the repo
+    dockerfile {
+      dir 'contrib/ci'
     }
   }
 
   options {
-    timeout(time: 2, unit: 'HOURS')
+    timeout(time: 3, unit: 'HOURS')
   }
 
   stages {
@@ -37,114 +38,159 @@ pipeline {
         }
       }
       steps {
+        // For /rebuild to work you need to:
+        // 1) select "issue comment" to be delivered in the github webhook setting
+        // 2) install "GitHub PR Comment Build Plugin" on Jenkins
+        // 3) in project settings select "add property" "Trigger build on pr comment" with
+        //    the phrase ".*/rebuild.*" (without quotes)
         sh '''
-          wget -q -O - https://api.github.com/repos/geodynamics/aspect/issues/${CHANGE_ID}/labels | grep 'ready to test' || \
-          { echo "This commit will only be tested when it has the label 'ready to test'"; exit 1; }
+        wget -q -O - https://api.github.com/repos/geodynamics/aspect/issues/${CHANGE_ID}/labels | grep 'ready to test' || \
+        { echo "This commit will only be tested when it has the label 'ready to test'. Trigger a rebuild by adding a comment that contains '/rebuild'..."; exit 1; }
         '''
       }
     }
 
     stage('Check Indentation') {
       steps {
-        sh './doc/indent'
+        sh './contrib/utilities/indent'
         sh 'git diff > changes-astyle.diff'
         archiveArtifacts artifacts: 'changes-astyle.diff', fingerprint: true
         sh '''
-          git diff --exit-code || \
-          { echo "Please check indentation, see artifacts in the top right corner!"; exit 1; }
+        git diff --exit-code || \
+        { echo "Please check indentation, see artifacts in the top right corner!"; exit 1; }
+        '''
+      }
+    }
+
+    stage('Unity Build') {
+      options {
+        timeout(time: 30, unit: 'MINUTES')
+      }
+      steps {
+        sh '''
+        # running cmake for unity build...
+        mkdir build-gcc-unity
+        cd build-gcc-unity
+
+        # Set up build system and compile ASPECT
+        cmake \
+        -D ASPECT_USE_PETSC='OFF' \
+        -D ASPECT_PRECOMPILE_HEADERS='ON' \
+        -D COTIRE_MAXIMUM_NUMBER_OF_UNITY_INCLUDES='100' \
+        ..
+        '''
+
+        sh '''
+        # executing unity build...
+        cd build-gcc-unity
+        make aspect_unity
         '''
       }
     }
 
     stage('Build') {
       options {
-        timeout(time: 15, unit: 'MINUTES')
+        timeout(time: 30, unit: 'MINUTES')
       }
       steps {
-        sh 'mkdir build-gcc-fast'
-
         sh '''
-          cd build-gcc-fast
+        # running cmake...
+        mkdir build-gcc-fast
+        cd build-gcc-fast
 
-          # Set up build system and compile ASPECT
-          cmake \
-            -G 'Ninja' \
-            -D CMAKE_CXX_FLAGS='-Werror' \
-            -D ASPECT_TEST_GENERATOR='Ninja' \
-            -D ASPECT_USE_PETSC='OFF' \
-            -D ASPECT_RUN_ALL_TESTS='ON' \
-            -D ASPECT_PRECOMPILE_HEADERS='ON' \
-            ..
+        cmake \
+        -G 'Ninja' \
+        -D CMAKE_CXX_FLAGS='-Werror --coverage' \
+        -D ASPECT_TEST_GENERATOR='Ninja' \
+        -D ASPECT_USE_PETSC='OFF' \
+        -D ASPECT_RUN_ALL_TESTS='ON' \
+        -D ASPECT_PRECOMPILE_HEADERS='ON' \
+        ..
         '''
 
         sh '''
-          cd build-gcc-fast
-          ninja
+        # compiling...
+        cd build-gcc-fast
+        ninja
         '''
+      }
+    }
+
+    stage('Build Documentation') {
+      steps {
+        sh 'cd doc && ./update_parameters.sh ./build-gcc-fast/aspect'
+        sh 'cd doc && make manual.pdf || touch ~/FAILED-DOC'
+        archiveArtifacts artifacts: 'doc/manual/manual.log', allowEmptyArchive: true
+        sh 'if [ -f ~/FAILED-DOC ]; then exit 1; fi'
       }
     }
 
     stage('Test') {
       options {
-        timeout(time: 90, unit: 'MINUTES')
+        timeout(time: 150, unit: 'MINUTES')
+      }
+      environment {
+        COVERALLS_REPO_TOKEN = credentials('Coveralls-Repo-Token-ASPECT')
       }
       steps {
+        // Let ninja prebuild the test libraries and run
+        // the tests to create the output files in parallel. We
+        // want this to always succeed, because it does not generate
+        // useful output (we do this further down using 'ctest', however
+        // ctest can not run ninja in parallel, so this is the
+        // most efficient way to build the tests).
         sh '''
-          # This export avoids a warning about
-          # a discovered, but unconnected infiniband network.
-          export OMPI_MCA_btl=self,tcp
-
-          cd build-gcc-fast/tests
-
-          # Let ninja prebuild the test libraries and run
-          # the tests to create the output files in parallel. We
-          # want this to always succeed, because it does not generate
-          # useful output (we do this further down using 'ctest', however
-          # ctest can not run ninja in parallel, so this is the
-          # most efficient way to build the tests).
-          ninja -k 0 tests || true
+        # prebuilding tests...
+        cd build-gcc-fast/tests
+        ninja -k 0 tests || true
         '''
 
+        // Output the test results using ctest. Since
+        // the tests were prebuild in the previous shell
+        // command, this will be fast although it is not
+        // running in parallel. We use the ninja test generator, which
+        // does not support running ctest with -j.
         sh '''
-          # Avoid the warning described above
-          export OMPI_MCA_btl=self,tcp
-
-          cd build-gcc-fast
-
-          # Output the test results using ctest. Since
-          # the tests were prebuild in the previous shell
-          # command, this will be fast although it is not
-          # running in parallel.
-          ctest \
-            --no-compress-output \
-            --test-action Test
+        # generating test results...
+        cd build-gcc-fast
+        ctest \
+        --no-compress-output \
+        --test-action Test \
+        --output-on-failure
         '''
       }
       post {
         always {
           // Generate the 'Tests' output page in Jenkins
           xunit testTimeMargin: '3000',
-            thresholdMode: 1,
-            thresholds: [failed(), skipped()],
-            tools: [CTest(pattern: 'build-gcc-fast/Testing/**/*.xml')]
+          thresholdMode: 1,
+          thresholds: [failed(), skipped()],
+          tools: [CTest(pattern: 'build-gcc-fast/Testing/**/*.xml')]
 
           // Update the reference test output with the new test results
           sh '''
-            export OMPI_MCA_btl=self,tcp
-            cd build-gcc-fast
-            ninja generate_reference_output
+          # generating reference output...
+          cd build-gcc-fast
+          ninja generate_reference_output
           '''
-
-          // Revert the change to the mpirun command we made above, so
-          // that the modification does not show up in the 'git diff' command
-          sh 'git checkout tests/CMakeLists.txt'
 
           // Generate the 'Artifacts' diff-file that can be
           // used to update the test results
           sh 'git diff tests > changes-test-results.diff'
-          archiveArtifacts artifacts: 'changes-test-results.diff', fingerprint: true
+          archiveArtifacts artifacts: 'changes-test-results.diff'
+
+          // post the coverage results to coveralls
+          sh '''
+          cd build-gcc-fast
+          coveralls -r ../ -b . -i source --gcov-options '\\-lp'
+          '''
         }
       }
+    }
+  }
+  post {
+    cleanup {
+      cleanWs()
     }
   }
 }

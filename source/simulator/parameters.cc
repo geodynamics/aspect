@@ -25,7 +25,7 @@
 #include <aspect/melt.h>
 #include <aspect/volume_of_fluid/handler.h>
 #include <aspect/newton.h>
-#include <aspect/free_surface.h>
+#include <aspect/mesh_deformation/free_surface.h>
 
 #include <deal.II/base/parameter_handler.h>
 
@@ -181,8 +181,9 @@ namespace aspect
 
     const std::string allowed_solver_schemes = "single Advection, single Stokes|iterated Advection and Stokes|"
                                                "single Advection, iterated Stokes|no Advection, iterated Stokes|"
-                                               "iterated Advection and Newton Stokes|single Advection, no Stokes|"
-                                               "IMPES|iterated IMPES|iterated Stokes|Newton Stokes|Stokes only|Advection only|"
+                                               "iterated Advection and Newton Stokes|single Advection, iterated Newton Stokes|"
+                                               "single Advection, no Stokes|IMPES|iterated IMPES|"
+                                               "iterated Stokes|Newton Stokes|Stokes only|Advection only|"
                                                "first timestep only, single Stokes|no Advection, no Stokes";
 
     prm.declare_entry ("Nonlinear solver scheme", "single Advection, single Stokes",
@@ -206,6 +207,10 @@ namespace aspect
                        "The `iterated Advection and Newton Stokes' scheme iterates by alternating the solution "
                        "of the temperature, composition and Stokes equations, using Picard iterations for the "
                        "temperature and composition, and Newton iterations for the Stokes system. "
+                       "The `single Advection, iterated Newton Stokes' scheme solves "
+                       "the temperature and composition equations once at the beginning of each time step and "
+                       "then iterates out the solution of the Stokes equation, using Newton iterations for the "
+                       "Stokes system. "
                        "The `first timestep only, single Stokes' scheme solves the Stokes equations exactly "
                        "once, at the first time step. No nonlinear iterations are done, and the temperature and "
                        "composition systems are not solved. "
@@ -316,8 +321,30 @@ namespace aspect
                          "the composition system gets solved. See `Stokes solver "
                          "parameters/Linear solver tolerance' for more details.");
 
+      prm.enter_subsection ("Advection solver parameters");
+      {
+        prm.declare_entry ("GMRES solver restart length", "50",
+                           Patterns::Integer(1),
+                           "This is the number of iterations that define the "
+                           "GMRES solver restart length. Increasing this "
+                           "parameter makes the solver more robust and decreases "
+                           "the number of iterations. Be aware that "
+                           "increasing this number increases the memory usage "
+                           "of the advection solver, and makes individual "
+                           "iterations more expensive.");
+      }
+      prm.leave_subsection();
+
+
       prm.enter_subsection ("Stokes solver parameters");
       {
+        prm.declare_entry ("Stokes solver type", "block AMG",
+                           Patterns::Selection(StokesSolverType::pattern()),
+                           "This is the type of solver used on the Stokes system. The block geometric "
+                           "multigrid solver currently has a limited implementation and therefore the user "
+                           "may trigger Asserts in the code when using this solver. If this is the case, "
+                           "the user should switch to block AMG.");
+
         prm.declare_entry ("Use direct solver for Stokes system", "false",
                            Patterns::Bool(),
                            "If set to true the linear system for the Stokes equation will "
@@ -495,8 +522,8 @@ namespace aspect
                            "``prescribed field with diffusion'' method is selected for a field. "
                            "More precisely, this length scale represents the square root of the "
                            "product of diffusivity and time in the diffusion equation, and controls "
-                           "the distance over which features are diffused."
-                           "Units: m.");
+                           "the distance over which features are diffused. "
+                           "Units: $\\si{m}$.");
       }
       prm.leave_subsection ();
     }
@@ -505,13 +532,13 @@ namespace aspect
     prm.enter_subsection("Formulation");
     {
       prm.declare_entry ("Formulation", "custom",
-                         Patterns::Selection ("isothermal compression|custom|anelastic liquid approximation|Boussinesq approximation"),
+                         Patterns::Selection ("isentropic compression|custom|anelastic liquid approximation|Boussinesq approximation"),
                          "Select a formulation for the basic equations. Different "
                          "published formulations are available in ASPECT (see the list of "
                          "possible values for this parameter in the manual for available options). "
                          "Two ASPECT specific options are\n"
                          "\\begin{enumerate}\n"
-                         "  \\item `isothermal compression': ASPECT's original "
+                         "  \\item `isentropic compression': ASPECT's original "
                          "formulation, using the explicit compressible mass equation, "
                          "and the full density for the temperature equation.\n"
                          "  \\item `custom': A custom selection of `Mass conservation' and "
@@ -528,8 +555,9 @@ namespace aspect
                          "density that depends on temperature and depth and not on the pressure.}");
 
       prm.declare_entry ("Mass conservation", "ask material model",
-                         Patterns::Selection ("incompressible|isothermal compression|hydrostatic compression|"
+                         Patterns::Selection ("incompressible|isentropic compression|hydrostatic compression|"
                                               "reference density profile|implicit reference density profile|"
+                                              "projected density field|"
                                               "ask material model"),
                          "Possible approximations for the density derivatives in the mass "
                          "conservation equation. Note that this parameter is only evaluated "
@@ -576,13 +604,13 @@ namespace aspect
     }
     prm.leave_subsection();
 
-    prm.enter_subsection ("Free surface");
+    prm.enter_subsection ("Mesh deformation");
     {
-      prm.declare_entry ("Free surface boundary indicators", "",
+      prm.declare_entry ("Mesh deformation boundary indicators", "",
                          Patterns::List (Patterns::Anything()),
                          "A comma separated list of names denoting those boundaries "
-                         "where there is a free surface. Set to nothing to disable all "
-                         "free surface computations."
+                         "where there is some type of mesh deformation. Set to nothing to disable all "
+                         "deformation computations."
                          "\n\n"
                          "The names of the boundaries listed here can either by "
                          "numbers (in which case they correspond to the numerical "
@@ -787,7 +815,7 @@ namespace aspect
                          "The polynomial degree to use for the velocity variables "
                          "in the Stokes system. The polynomial degree for the pressure "
                          "variable will then be one less in order to make the velocity/pressure "
-                         "pair conform with the usual LBB (Babuska-Brezzi) condition. In "
+                         "pair conform with the usual LBB (Babu{\\v s}ka-Brezzi) condition. In "
                          "other words, we are using a Taylor-Hood element for the Stokes "
                          "equations and this parameter indicates the polynomial degree of it. "
                          "As an example, a value of 2 for this parameter will yield the "
@@ -853,7 +881,46 @@ namespace aspect
                          "the error is generally smaller with this choice."
                          "\n\n"
                          "For an in-depth discussion of these issues and a quantitative evaluation "
-                         "of the different choices, see \\cite {KHB12}.");
+                         "of the different choices, see \\cite{KHB12}.");
+      prm.declare_entry ("Use equal order interpolation for Stokes", "false",
+                         Patterns::Bool(),
+                         "By default (i.e., when this parameter is set to its default value "
+                         "`false') \\aspect{} uses finite element combinations in which the "
+                         "pressure shape functions are polynomials one degree lower than "
+                         "the shape functions for the velocity. An example is the "
+                         "Taylor-Hood element that uses $Q_k$ elements for the velocity "
+                         "and $Q_{k-1}$ for the pressure. This is because using the "
+                         "\\textit{same} polynomial degree for both the velocity and the "
+                         "pressure turns out to violate some mathematical properties "
+                         "necessary to make the problem solvable. (In particular, the"
+                         "condition in question goes by the name ``inf-sup'' or "
+                         "Babu{\\v s}ka-Brezzi or LBB condition.) A consequence of "
+                         "violating this condition is that the pressure may show "
+                         "oscillations and not converge to the correct pressure."
+                         "\n\n"
+                         "That said, people have often used $Q_1$ elements for both the"
+                         "velocity and pressure anyway. This is commonly referred to as "
+                         "using the Q1-Q1 method. It is, by default, not stable as "
+                         "mentioned above, but it can be made stable by adding small "
+                         "amount of compressibility to the model. There are numerous "
+                         "ways to do that. Today, the way that is generally considered "
+                         "to be the best approach is the one by Dohrmann and Bochev "
+                         "\\cite{DohrmannBochev2004}."
+                         "\n\n"
+                         "When this parameter is set to ``true'', then \\aspect{} "
+                         "will use this method by using $Q_k\times Q_k$ elements for "
+                         "velocity and pressure, respectively, where $k$ is the value "
+                         "provided for the parameter ``Stokes velocity polynomial "
+                         "degree''."
+                         "\n\n"
+                         "\\note{While \\aspect{} \\textit{allows} you to use this "
+                         "  method, it is generally understood that this is not a "
+                         "  great idea as it leads to rather low accuracy in "
+                         "  general. It also leads to substantial problems when "
+                         "  using free surfaces. As a consequence, the presence "
+                         "  of this parameter should not be seen as an "
+                         "  endorsement of the method, or a suggestion to "
+                         "  actually use it. It simply makes the method available.}");
       prm.declare_entry ("Use discontinuous temperature discretization", "false",
                          Patterns::Bool (),
                          "Whether to use a temperature discretization that is discontinuous "
@@ -869,6 +936,12 @@ namespace aspect
 
       prm.enter_subsection ("Stabilization parameters");
       {
+        prm.declare_entry ("Stabilization method", "entropy viscosity",
+                           Patterns::Selection("entropy viscosity|SUPG"),
+                           "Select the method for stabilizing the advection equation. The original "
+                           "method implemented is 'entropy viscosity' as described in \\cite {KHB12}. "
+                           "SUPG is currently experimental.");
+
         prm.declare_entry ("Use artificial viscosity smoothing", "false",
                            Patterns::Bool (),
                            "If set to false, the artificial viscosity of a cell is computed and "
@@ -876,6 +949,7 @@ namespace aspect
                            "If set to true, the maximum of the artificial viscosity in "
                            "the cell as well as the neighbors of the cell is computed and used "
                            "instead.");
+
         prm.declare_entry ("alpha", "2",
                            Patterns::Integer (1, 2),
                            "The exponent $\\alpha$ in the entropy viscosity stabilization. Valid "
@@ -887,7 +961,7 @@ namespace aspect
                            "approach is discussed in \\cite{GPP11}.) Note that this is not the "
                            "thermal expansion coefficient, also commonly referred to as $\\alpha$."
                            "Units: None.");
-        prm.declare_entry ("cR", "0.33",
+        prm.declare_entry ("cR", "0.11",
                            Patterns::List(Patterns::Double (0)),
                            "The $c_R$ factor in the entropy viscosity "
                            "stabilization. This parameter controls the part of the entropy viscosity "
@@ -904,16 +978,15 @@ namespace aspect
                            "Heister and Bangerth that describes ASPECT, see \\cite{KHB12}. "
                            "This parameter corresponds "
                            "to the factor $\\alpha_E$ in the formulas following equation (15) of "
-                           "the paper. After further experiments, we have also chosen to use a "
-                           "different value than described there.) Units: None.");
-        prm.declare_entry ("beta", "0.078",
+                           "the paper.) Units: None.");
+        prm.declare_entry ("beta", "0.052",
                            Patterns::List(Patterns::Double (0)),
                            "The $\\beta$ factor in the artificial viscosity "
                            "stabilization. This parameter controls the maximum dissipation of the "
                            "entropy viscosity, which is the part that only scales with the cell diameter "
                            "and the maximum velocity in the cell, but does not depend on the solution "
-                           "field itself or its residual. An appropriate value for 2d is 0.078 and "
-                           "0.117 for 3d. (For historical reasons, the name used here is different "
+                           "field itself or its residual. An appropriate value for 2d is 0.052 and "
+                           "0.78 for 3d. (For historical reasons, the name used here is different "
                            "from the one used in the 2012 paper by Kronbichler, "
                            "Heister and Bangerth that describes ASPECT, see \\cite{KHB12}. "
                            "This parameter can be given as a single value or as a list with as "
@@ -924,10 +997,7 @@ namespace aspect
                            "for the temperature, which already has some physical diffusion. "
                            "This parameter corresponds "
                            "to the factor $\\alpha_{\\text{max}}$ in the formulas following equation (15) of "
-                           "the paper. After further experiments, we have also chosen to use a "
-                           "different value than described there: It can be chosen as stated there for "
-                           "uniformly refined meshes, but it needs to be chosen larger if the mesh has "
-                           "cells that are not squares or cubes.) Units: None.");
+                           "the paper.) Units: None.");
         prm.declare_entry ("gamma", "0.0",
                            Patterns::Double (0),
                            "The strain rate scaling factor in the artificial viscosity "
@@ -995,6 +1065,32 @@ namespace aspect
     }
     prm.leave_subsection ();
 
+    prm.enter_subsection ("Temperature field");
+    {
+      prm.declare_entry ("Temperature method", "field",
+                         Patterns::Selection("field|prescribed field"),
+                         "A comma separated list denoting the solution method of the "
+                         "temperature field. Each entry of the list must be "
+                         "one of the currently implemented field types."
+                         "\n\n"
+                         "These choices correspond to the following methods by which "
+                         "the temperature field gains its values:"
+                         "\\begin{itemize}"
+                         "\\item ``field'': If the temperature is marked with this "
+                         "method, then its values are computed in each time step by "
+                         "solving the temperature advection-diffusion equation. In other words, "
+                         "this corresponds to the usual notion of a temperature. "
+                         "\n"
+                         "\\item ``prescribed field'': The value of the temperature is determined "
+                         "in each time step from the material model. If a compositional field is "
+                         "marked with this method, then the value of a specific additional material "
+                         "model output, called the `PrescribedTemperatureOutputs' is interpolated "
+                         "onto the temperature. This field does not change otherwise, it is not "
+                         "advected with the flow. \n"
+                         "\\end{itemize}");
+    }
+    prm.leave_subsection();
+
     prm.enter_subsection ("Compositional fields");
     {
       prm.declare_entry ("Number of fields", "0",
@@ -1008,8 +1104,7 @@ namespace aspect
                          Patterns::List (Patterns::Selection("field|particles|volume of fluid|static|melt field|prescribed field|prescribed field with diffusion")),
                          "A comma separated list denoting the solution method of each "
                          "compositional field. Each entry of the list must be "
-                         "one of the currently implemented field types: "
-                         "``field'', ``particles'', or ``static''."
+                         "one of the currently implemented field types."
                          "\n\n"
                          "These choices correspond to the following methods by which "
                          "compositional fields gain their values:"
@@ -1138,9 +1233,6 @@ namespace aspect
     // declare the VolumeOfFluid parameters
     VolumeOfFluidHandler<dim>::declare_parameters(prm);
 
-    // also declare the parameters that the FreeSurfaceHandler needs
-    FreeSurfaceHandler<dim>::declare_parameters (prm);
-
     // then, finally, let user additions that do not go through the usual
     // plugin mechanism, declare their parameters if they have subscribed
     // to the relevant signals
@@ -1188,6 +1280,8 @@ namespace aspect
         nonlinear_solver = NonlinearSolver::no_Advection_iterated_Stokes;
       else if (solver_scheme == "iterated Advection and Newton Stokes" || solver_scheme == "Newton Stokes")
         nonlinear_solver = NonlinearSolver::iterated_Advection_and_Newton_Stokes;
+      else if (solver_scheme == "single Advection, iterated Newton Stokes")
+        nonlinear_solver = NonlinearSolver::single_Advection_iterated_Newton_Stokes;
       else if (solver_scheme == "single Advection, no Stokes" || solver_scheme == "Advection only")
         nonlinear_solver = NonlinearSolver::single_Advection_no_Stokes;
       else if (solver_scheme == "first timestep only, single Stokes")
@@ -1203,9 +1297,19 @@ namespace aspect
       temperature_solver_tolerance    = prm.get_double ("Temperature solver tolerance");
       composition_solver_tolerance    = prm.get_double ("Composition solver tolerance");
 
+      prm.enter_subsection ("Advection solver parameters");
+      {
+        advection_gmres_restart_length     = prm.get_integer("GMRES solver restart length");
+      }
+      prm.leave_subsection ();
+
       prm.enter_subsection ("Stokes solver parameters");
       {
-        use_direct_stokes_solver        = prm.get_bool("Use direct solver for Stokes system");
+        stokes_solver_type = StokesSolverType::parse(prm.get("Stokes solver type"));
+        if (prm.get_bool("Use direct solver for Stokes system"))
+          stokes_solver_type = StokesSolverType::direct_solver;
+        use_direct_stokes_solver        = stokes_solver_type==StokesSolverType::direct_solver;
+
         linear_stokes_solver_tolerance  = prm.get_double ("Linear solver tolerance");
         n_cheap_stokes_solver_steps     = prm.get_integer ("Number of cheap Stokes solver steps");
         n_expensive_stokes_solver_steps = prm.get_integer ("Maximum number of expensive Stokes solver steps");
@@ -1344,9 +1448,9 @@ namespace aspect
       // in Simulator<dim>::check_consistency_of_formulation() after the initialization of
       // material models, heating plugins, and adiabatic conditions.
       formulation = Formulation::parse(prm.get("Formulation"));
-      if (formulation == Formulation::isothermal_compression)
+      if (formulation == Formulation::isentropic_compression)
         {
-          formulation_mass_conservation = Formulation::MassConservation::isothermal_compression;
+          formulation_mass_conservation = Formulation::MassConservation::isentropic_compression;
           formulation_temperature_equation = Formulation::TemperatureEquation::real_density;
         }
       else if (formulation == Formulation::boussinesq_approximation)
@@ -1460,6 +1564,8 @@ namespace aspect
       composition_degree     = prm.get_integer ("Composition polynomial degree");
       use_locally_conservative_discretization
         = prm.get_bool ("Use locally conservative discretization");
+      use_equal_order_interpolation_for_stokes
+        = prm.get_bool ("Use equal order interpolation for Stokes");
       use_discontinuous_temperature_discretization
         = prm.get_bool("Use discontinuous temperature discretization");
       use_discontinuous_composition_discretization
@@ -1471,6 +1577,7 @@ namespace aspect
 
       prm.enter_subsection ("Stabilization parameters");
       {
+        advection_stabilization_method = AdvectionStabilizationMethod::parse(prm.get("Stabilization method"));
         use_artificial_viscosity_smoothing  = prm.get_bool ("Use artificial viscosity smoothing");
         stabilization_alpha                 = prm.get_integer ("alpha");
 
@@ -1496,19 +1603,53 @@ namespace aspect
       }
       prm.leave_subsection ();
 
-      AssertThrow (use_locally_conservative_discretization ||
+      AssertThrow ((use_locally_conservative_discretization ||
+                    use_equal_order_interpolation_for_stokes)
+                   ||
                    (stokes_velocity_degree > 1),
                    ExcMessage ("The polynomial degree for the velocity field "
                                "specified in the 'Stokes velocity polynomial degree' "
                                "parameter must be at least 2, unless you are using "
+                               "the 'Use equal order interpolation for Stokes' parameter, "
+                               "or if you are using "
                                "a locally conservative discretization as specified by the "
                                "'Use locally conservative discretization' parameter. "
-                               "This is because in the former case, the pressure element "
+                               "In both of these cases, the polynomial degree used for the "
+                               "velocity may be equal to one."
+                               "\n\n"
+                               "The restriction exists because by default, the pressure element "
                                "is of one degree lower and continuous, and if you selected "
                                "a linear element for the velocity, you'd need a continuous "
-                               "element of degree zero for the pressure, which does not exist."))
+                               "element of degree zero for the pressure, which does not exist. "
+                               "On the other hand, if using equal-order interpolation, "
+                               "choosing the polynomial degree as one yields a Q1-Q1 "
+                               "element; using a locally conservative discretization "
+                               "with polynomial degree of one yields a Q1-P0 "
+                               "element."));
+
+      AssertThrow (! (use_locally_conservative_discretization &&
+                      use_equal_order_interpolation_for_stokes),
+                   ExcMessage ("You have tried to use both the 'Use locally "
+                               "conservative discretization' and 'Use equal order "
+                               "interpolation for Stokes' parameters in the input "
+                               "file. However, their use is incompatible: you "
+                               "can only select one of the two."));
     }
     prm.leave_subsection ();
+
+    prm.enter_subsection ("Temperature field");
+    {
+      std::string x_temperature_method
+        = prm.get ("Temperature method");
+
+      if (x_temperature_method == "field")
+        temperature_method = AdvectionFieldMethod::fem_field;
+      else if (x_temperature_method == "prescribed field")
+        temperature_method = AdvectionFieldMethod::prescribed_field;
+      else
+        AssertThrow(false,ExcNotImplemented());
+    }
+    prm.leave_subsection();
 
     prm.enter_subsection ("Compositional fields");
     {
@@ -1610,7 +1751,13 @@ namespace aspect
           else if (x_compositional_field_methods[i] == "particles")
             compositional_field_methods[i] = AdvectionFieldMethod::particles;
           else if (x_compositional_field_methods[i] == "volume of fluid")
-            compositional_field_methods[i] = AdvectionFieldMethod::volume_of_fluid;
+            {
+              AssertThrow (dim==2,
+                           ExcMessage ("The 'volume of fluid' method is currently "
+                                       "only implemented for two-dimensional "
+                                       "computations."));
+              compositional_field_methods[i] = AdvectionFieldMethod::volume_of_fluid;
+            }
           else if (x_compositional_field_methods[i] == "static")
             compositional_field_methods[i] = AdvectionFieldMethod::static_field;
           else if (x_compositional_field_methods[i] == "melt field")
@@ -1633,15 +1780,6 @@ namespace aspect
         AssertThrow (this->include_melt_transport,
                      ExcMessage ("The advection method 'melt field' can only be selected if melt "
                                  "transport is used in the simulation."));
-
-      if (std::find(compositional_field_methods.begin(), compositional_field_methods.end(), AdvectionFieldMethod::prescribed_field)
-          != compositional_field_methods.end()
-          ||
-          std::find(compositional_field_methods.begin(), compositional_field_methods.end(), AdvectionFieldMethod::prescribed_field_with_diffusion)
-          != compositional_field_methods.end())
-        AssertThrow (!this->use_discontinuous_composition_discretization,
-                     ExcMessage ("The advection method 'prescribed field' has not yet been tested with "
-                                 "a discontinuous composition discretization."));
 
       const std::vector<std::string> x_mapped_particle_properties
         = Utilities::split_string_list
@@ -1770,26 +1908,13 @@ namespace aspect
   parse_geometry_dependent_parameters(ParameterHandler &prm,
                                       const GeometryModel::Interface<dim> &geometry_model)
   {
-    prm.enter_subsection ("Free surface");
+    prm.enter_subsection ("Mesh deformation");
     {
-      try
-        {
-          const std::vector<types::boundary_id> x_free_surface_boundary_indicators
-            = geometry_model.translate_symbolic_boundary_names_to_ids(Utilities::split_string_list
-                                                                      (prm.get ("Free surface boundary indicators")));
-          free_surface_boundary_indicators
-            = std::set<types::boundary_id> (x_free_surface_boundary_indicators.begin(),
-                                            x_free_surface_boundary_indicators.end());
-
-          free_surface_enabled = !free_surface_boundary_indicators.empty();
-        }
-      catch (const std::string &error)
-        {
-          AssertThrow (false, ExcMessage ("While parsing the entry <Free surface/Free surface "
-                                          "boundary indicators>, there was an error. Specifically, "
-                                          "the conversion function complained as follows: "
-                                          + error));
-        }
+      // Test here for whether there are any boundary indicators active
+      // for which mesh deformation objects are to be set.
+      const std::vector<std::string> x_mesh_deformation_boundary_indicators
+        = Utilities::split_string_list(prm.get("Mesh deformation boundary indicators"),";");
+      mesh_deformation_enabled = !x_mesh_deformation_boundary_indicators.empty();
     }
     prm.leave_subsection();
 
@@ -1916,6 +2041,7 @@ namespace aspect
     Parameters<dim>::declare_parameters (prm);
     Melt::Parameters<dim>::declare_parameters (prm);
     Newton::Parameters::declare_parameters (prm);
+    MeshDeformation::MeshDeformationHandler<dim>::declare_parameters (prm);
     Postprocess::Manager<dim>::declare_parameters (prm);
     MeshRefinement::Manager<dim>::declare_parameters (prm);
     TerminationCriteria::Manager<dim>::declare_parameters (prm);

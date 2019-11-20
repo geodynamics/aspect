@@ -42,16 +42,15 @@ namespace aspect
         /**
          * Evaluate the solution for the geoid in spherical harmonics and then transfer it to grid output.
          */
-        virtual
         std::pair<std::string,std::string>
-        execute (TableHandler &statistics);
+        execute (TableHandler &statistics) override;
 
         /**
          * Register with the simulator the other postprocessors that we need
          * (namely: dynamic topography).
          */
         std::list<std::string>
-        required_other_postprocessors() const;
+        required_other_postprocessors() const override;
 
         /**
          * Declare the parameters this class takes through input files.
@@ -63,9 +62,8 @@ namespace aspect
         /**
          * Read the parameters this class declares from the parameter file.
          */
-        virtual
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
 
         /**
          * Evaluate the geoid solution at a point. The evaluation point
@@ -118,6 +116,11 @@ namespace aspect
          */
         double density_above;
         double density_below;
+
+        /**
+         * A parameter to control whether to include the dynamic topography contribution on geoid
+         */
+        bool include_dynamic_topo_contribution;
 
         /**
          * Function to compute the real spherical harmonic coefficients (cos and sin part) from min degree to max degree

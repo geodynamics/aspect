@@ -73,13 +73,15 @@ namespace aspect
                                  const unsigned int N,
                                  const std::string &id_text);
 
-
-
     /**
      * This function takes a string argument that is interpreted as a map
      * of the form "key1 : value1, key2 : value2, etc", and then parses
      * it to return a vector of these values where the values are ordered
-     * in the same order as a given set of keys.
+     * in the same order as a given set of keys. If @p allow_multiple_values_per_key
+     * is set to 'true' it also allows entries of the form
+     * "key1: value1|value2|value3, etc", in which case the returned
+     * vector will have more entries than the provided
+     * @p list_of_keys.
      *
      * This function also considers a number of special cases:
      * - If the input string consists of only a comma separated
@@ -89,36 +91,65 @@ namespace aspect
      *   where "key1", "key2", ... are exactly the keys provided by the
      *   @p list_of_keys in the same order as provided. In this situation,
      *   if a background field is required, the background value is
-     *   assigned to the first element of the output vector.
+     *   assigned to the first element of the output vector. This form only
+     *   allows a single value per key.
      * - Whether or not a background field is required depends on
-     *   the parameter being parsed. Requiring a background field
-     *   increases the size of the output vector by 1. For example,
-     *   some Material models require background fields, but input
-     *   files may not.
-     * - Three special keys are recognized:
+     *   @p expects_background_field. Requiring a background field
+     *   inserts "background" into the @p list_of_keys as the first entry
+     *   in the list. Some calling functions (like some material models)
+     *   require values for background fields, while others may not
+     *   need background values.
+     * - Two special keys are recognized:
      *      all --> Assign the associated value to all fields.
-     *              Only one value is allowed in this case.
+     *              Only one key is allowed in this case.
      *      background --> Assign associated value to the background.
      *
      * @param[in] key_value_map The string representation of the map
      *   to be parsed.
-     * @param[in] list_of_keys A list of valid key names that are allowed
+     * @param[in] list_of_keys A list of N valid key names that are allowed
      *   to appear in the map. The order of these keys determines the order
      *   of values that are returned by this function.
-     * @param[in] has_background_field If true, expect N+1 values and allow
+     * @param[in] expects_background_field If true, expect N+1 values and allow
      *   setting of the background using the key "background".
      * @param[in] property_name A name that identifies the type of property
      *   that is being parsed by this function and that is used in generating
      *   error messages if the map does not conform to the expected format.
+     * @param [in] allow_multiple_values_per_key If true allow having multiple values
+     *   for each key. If false only allow a single value per key. In either
+     *   case each key is only allowed to appear once.
+     * @param [in,out] n_values_per_key A pointer to a vector of unsigned
+     *   integers. If no pointer is handed over nothing happens. If a pointer
+     *   to an empty vector is handed over, the vector
+     *   is resized with as many components as
+     *   keys (+1 if there is a background field). Each value then stores
+     *   how many values were found for this key. The sum over all
+     *   entries is the length of the return value of this function.
+     *   If a pointer to an existing vector with one or more entries is
+     *   handed over (e.g. a n_values_per_key vector created by a
+     *   previous call to this function) then this vector is used as
+     *   expected structure of the input parameter, and it is checked that
+     *   @p key_value_map fulfills this structure. This can be used to assert
+     *   that several input parameters prescribe the same number of values
+     *   to each key.
+     * @param [in] allow_missing_keys Whether to allow that some keys are
+     *   not set to any values, i.e. they do not appear at all in the
+     *   @p key_value_map. This also allows a completely empty map.
      *
      * @return A vector of values that are parsed from the map, provided
      *   in the order in which the keys appear in the @p list_of_keys argument.
+     *   If multiple values per key are allowed, the vector contains first all
+     *   values for key 1, then all values for key 2 and so forth. Using the
+     *   @p n_values_per_key vector allows the caller to associate entries in the
+     *   returned vector with specific keys.
      */
     std::vector<double>
     parse_map_to_double_array (const std::string &key_value_map,
                                const std::vector<std::string> &list_of_keys,
-                               const bool has_background_field,
-                               const std::string &property_name);
+                               const bool expects_background_field,
+                               const std::string &property_name,
+                               const bool allow_multiple_values_per_key = false,
+                               std::shared_ptr<std::vector<unsigned int> > n_values_per_key = nullptr,
+                               const bool allow_missing_keys = false);
 
     /**
      * This function takes a string argument that is assumed to represent
@@ -343,11 +374,12 @@ namespace aspect
     struct ThousandSep : std::numpunct<char>
     {
       protected:
-        virtual char do_thousands_sep() const
+        char do_thousands_sep() const override
         {
           return ',';
         }
-        virtual std::string do_grouping() const
+
+        std::string do_grouping() const override
         {
           return "\003";  // groups of 3 digits (this string is in octal format)
         }
@@ -562,7 +594,7 @@ namespace aspect
          * therefore when using this constructor it is necessary to provide
          * this list in the first uncommented line of the data file.
          */
-        AsciiDataLookup(const double scale_factor);
+        explicit AsciiDataLookup(const double scale_factor);
 
         /**
          * Loads a data text file. Throws an exception if the file does not
@@ -579,7 +611,9 @@ namespace aspect
          *
          * @param position The current position to compute the data (velocity,
          * temperature, etc.)
-         * @param component The index of the data column to be returned.
+         * @param component The index (starting at 0) of the data column to be
+         * returned. The index is therefore less than the number of data
+         * columns in the data file (or specified in the constructor).
          */
         double
         get_data(const Point<dim> &position,
@@ -939,6 +973,85 @@ namespace aspect
     };
 
 
+    /**
+     * A base class that implements conditions determined from a
+     * layered AsciiData input file.
+     */
+    template <int dim>
+    class AsciiDataLayered : public Utilities::AsciiDataBase<dim>, public SimulatorAccess<dim>
+    {
+      public:
+        /**
+         * Constructor
+         */
+        AsciiDataLayered();
+
+        /**
+         * Initialization function. This function is called once at the
+         * beginning of the program. Checks preconditions.
+         */
+        virtual
+        void
+        initialize (const unsigned int components);
+
+
+        /**
+         * Returns the data component at the given position.
+         */
+        double
+        get_data_component (const Point<dim> &position,
+                            const unsigned int component) const;
+
+
+        /**
+         * Declare the parameters all derived classes take from input files.
+         */
+        static
+        void
+        declare_parameters (ParameterHandler  &prm,
+                            const std::string &default_directory,
+                            const std::string &default_filename,
+                            const std::string &subsection_name = "Ascii data model");
+
+        /**
+         * Read the parameters from the parameter file.
+         */
+        void
+        parse_parameters (ParameterHandler &prm,
+                          const std::string &subsection_name = "Ascii data model");
+
+      protected:
+        /**
+         * Pointer to an object that reads and processes data we get from text
+         * files.
+         */
+        std::vector<std::unique_ptr<aspect::Utilities::AsciiDataLookup<dim-1> >> lookups;
+
+      private:
+
+        /**
+         * Directory in which the data files are present.
+         */
+        std::string data_directory;
+
+        /**
+         * Filenames of data files.
+         */
+        std::vector<std::string> data_file_names;
+
+        /**
+         * Number of layer boundaries in the model.
+         */
+        unsigned int number_of_layer_boundaries;
+
+        /**
+         * Interpolation scheme for profile averaging.
+         */
+        std::string interpolation_scheme;
+
+
+    };
+
 
     /**
      * A base class that reads in a data profile and provides its values.
@@ -1121,7 +1234,8 @@ namespace aspect
           add,
           subtract,
           minimum,
-          maximum
+          maximum,
+          replace_if_valid
         };
 
         /**
@@ -1159,6 +1273,11 @@ namespace aspect
      * entry in the list must match one of the allowed operations.
      */
     std::vector<Operator> create_model_operator_list(const std::vector<std::string> &operator_names);
+
+    /**
+     * Create a string of model operators for use in declare_parameters
+     */
+    const std::string get_model_operator_options();
 
     /**
      * A function that returns a SymmetricTensor, whose entries are zero, except for

@@ -11,8 +11,8 @@ Number of degrees of freedom: 2,724 (1,666+225+833)
      Writing graphical output:           output-quarter_shell_variable_coordinate_systems_cartesian/solution/solution-00000
      RMS, max velocity:                  5.7e-13 m/year, 1.72e-12 m/year
      Temperature min/avg/max:            0 K, 1095 K, 8000 K
-     Heat fluxes through boundary parts: -1.559e+06 W, -2.838e+05 W, 0 W, 0 W
-     Writing depth average:              output-quarter_shell_variable_coordinate_systems_cartesian/depth_average.gnuplot
+     Heat fluxes through boundary parts: -5.089e+05 W, -7.508e+04 W, -7.168e-13 W, -6.394e-13 W
+     Writing depth average:              output-quarter_shell_variable_coordinate_systems_cartesian/depth_average
 
 Termination requested by criterion: end time
 

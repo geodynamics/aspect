@@ -137,7 +137,7 @@ namespace aspect
          * Destructor. Made virtual since this class has virtual member
          * functions.
          */
-        virtual ~Manager ();
+        ~Manager () override;
 
         /**
          * A function that is called at the beginning of each time step and
@@ -214,7 +214,7 @@ namespace aspect
          * Return a list of pointers to all boundary composition models
          * currently used in the computation, as specified in the input file.
          */
-        const std::vector<std::shared_ptr<Interface<dim> > > &
+        const std::vector<std::unique_ptr<Interface<dim> > > &
         get_active_boundary_composition_conditions () const;
 
         /**
@@ -295,7 +295,7 @@ namespace aspect
          * A list of boundary composition objects that have been requested in the
          * parameter file.
          */
-        std::vector<std::shared_ptr<Interface<dim> > > boundary_composition_objects;
+        std::vector<std::unique_ptr<Interface<dim> > > boundary_composition_objects;
 
         /**
          * A list of names of boundary composition objects that have been requested
@@ -332,10 +332,8 @@ namespace aspect
     BoundaryCompositionType *
     Manager<dim>::find_boundary_composition_model () const
     {
-      for (typename std::vector<std::shared_ptr<Interface<dim> > >::const_iterator
-           p = boundary_composition_objects.begin();
-           p != boundary_composition_objects.end(); ++p)
-        if (BoundaryCompositionType *x = dynamic_cast<BoundaryCompositionType *> ( (*p).get()) )
+      for (const auto &p : boundary_composition_objects)
+        if (BoundaryCompositionType *x = dynamic_cast<BoundaryCompositionType *> ( p.get()) )
           return x;
       return nullptr;
     }
@@ -347,10 +345,8 @@ namespace aspect
     bool
     Manager<dim>::has_matching_boundary_composition_model () const
     {
-      for (typename std::vector<std::shared_ptr<Interface<dim> > >::const_iterator
-           p = boundary_composition_objects.begin();
-           p != boundary_composition_objects.end(); ++p)
-        if (Plugins::plugin_type_matches<BoundaryCompositionType>(*(*p)))
+      for (const auto &p : boundary_composition_objects)
+        if (Plugins::plugin_type_matches<BoundaryCompositionType>(*p))
           return true;
 
       return false;
@@ -370,8 +366,8 @@ namespace aspect
                              "that could not be found in the current model. Activate this "
                              "boundary composition model in the input file."));
 
-      typename std::vector<std::shared_ptr<Interface<dim> > >::const_iterator boundary_composition_model;
-      for (typename std::vector<std::shared_ptr<Interface<dim> > >::const_iterator
+      typename std::vector<std::unique_ptr<Interface<dim> > >::const_iterator boundary_composition_model;
+      for (typename std::vector<std::unique_ptr<Interface<dim> > >::const_iterator
            p = boundary_composition_objects.begin();
            p != boundary_composition_objects.end(); ++p)
         if (Plugins::plugin_type_matches<BoundaryCompositionType>(*(*p)))

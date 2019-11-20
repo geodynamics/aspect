@@ -97,7 +97,6 @@ namespace aspect
         {
           boundary_composition_objects[i]->update();
         }
-      return;
     }
 
 
@@ -202,7 +201,7 @@ namespace aspect
       for (unsigned int i=0; i<model_names.size(); ++i)
         {
           // create boundary composition objects
-          boundary_composition_objects.push_back (std::shared_ptr<Interface<dim> >
+          boundary_composition_objects.push_back (std::unique_ptr<Interface<dim> >
                                                   (std::get<dim>(registered_plugins)
                                                    .create_plugin (model_names[i],
                                                                    "Boundary composition::Model names")));
@@ -245,7 +244,7 @@ namespace aspect
 
 
     template <int dim>
-    const std::vector<std::shared_ptr<Interface<dim> > > &
+    const std::vector<std::unique_ptr<Interface<dim> > > &
     Manager<dim>::get_active_boundary_composition_conditions () const
     {
       return boundary_composition_objects;
@@ -294,7 +293,7 @@ namespace aspect
                           std::get<dim>(registered_plugins).get_description_string());
 
         prm.declare_entry("List of model operators", "add",
-                          Patterns::MultipleSelection("add|subtract|minimum|maximum"),
+                          Patterns::MultipleSelection(Utilities::get_model_operator_options()),
                           "A comma-separated list of operators that "
                           "will be used to append the listed composition models onto "
                           "the previous models. If only one operator is given, "

@@ -69,8 +69,8 @@ FUNCTION(SHOULD_ENABLE_TEST _filename)
     IF(ASPECT_USE_PETSC)
       SET(_use_test OFF PARENT_SCOPE)
     ENDIF()
-  ELSE()
 
+  ELSE()
     # merge multiple lines:
     STRING (REPLACE ";" "" _input_lines "${_input_lines}")
 
@@ -164,7 +164,7 @@ FOREACH(_test ${_tests})
     # even if the folder with reference data for this test doesn't contain any
     # files. This is useful when you are constructing a new test.
     ADD_CUSTOM_TARGET(tests.${_testname}
-	DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/screen-output)
+      DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/screen-output)
 
     MATH(EXPR _n_tests "${_n_tests} + 1")
 
@@ -189,7 +189,7 @@ FOREACH(_test ${_tests})
     FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/output-${_testname})
 
     FILE(GLOB_RECURSE _outputs RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/${_testname}/
-	${CMAKE_CURRENT_SOURCE_DIR}/${_testname}/[a-zA-Z0-9]*)
+  ${CMAKE_CURRENT_SOURCE_DIR}/${_testname}/[a-zA-Z0-9]*)
     FOREACH(_output ${_outputs})
 
       # get the directory name we should work on; for cmake <2.8.11, the
@@ -217,16 +217,16 @@ FOREACH(_test ${_tests})
     # to know where exactly they are run.
     ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${_testname}.x.prm
       COMMAND cp ${CMAKE_CURRENT_SOURCE_DIR}/${_testname}.prm
-		 ${CMAKE_CURRENT_BINARY_DIR}/${_testname}.x.prm
+              ${CMAKE_CURRENT_BINARY_DIR}/${_testname}.x.prm
       COMMAND echo ''
-		 >> ${CMAKE_CURRENT_BINARY_DIR}/${_testname}.x.prm
+              >> ${CMAKE_CURRENT_BINARY_DIR}/${_testname}.x.prm
       COMMAND echo 'set Output directory = output-${_testname}'
-		 >> ${CMAKE_CURRENT_BINARY_DIR}/${_testname}.x.prm
+              >> ${CMAKE_CURRENT_BINARY_DIR}/${_testname}.x.prm
       COMMAND echo '${_testlib}'
-		 >> ${CMAKE_CURRENT_BINARY_DIR}/${_testname}.x.prm
+              >> ${CMAKE_CURRENT_BINARY_DIR}/${_testname}.x.prm
       COMMAND ${PERL_EXECUTABLE} -pi
-		 -e 's!\\@SOURCE_DIR\\@!${CMAKE_CURRENT_SOURCE_DIR}!g;'
-		 ${CMAKE_CURRENT_BINARY_DIR}/${_testname}.x.prm
+              -e 's!\\@SOURCE_DIR\\@!${CMAKE_CURRENT_SOURCE_DIR}!g;'
+              ${CMAKE_CURRENT_BINARY_DIR}/${_testname}.x.prm
       DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${_testname}.prm
       )
 
@@ -245,10 +245,10 @@ FOREACH(_test ${_tests})
     # detect the optional script <_testname>.sh that a test can use to process
     # output (currently screen-output only).
     IF(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${_testname}.sh)
-        SET(_replacement_script "${CMAKE_CURRENT_SOURCE_DIR}/${_testname}.sh")
-        SET(_testdepends ${_testdepends} ${CMAKE_CURRENT_SOURCE_DIR}/${_testname}.sh)
+      SET(_replacement_script "${CMAKE_CURRENT_SOURCE_DIR}/${_testname}.sh")
+      SET(_testdepends ${_testdepends} ${CMAKE_CURRENT_SOURCE_DIR}/${_testname}.sh)
     ELSE()
-        SET(_replacement_script "${CMAKE_CURRENT_SOURCE_DIR}/cmake/default")
+      SET(_replacement_script "${CMAKE_CURRENT_SOURCE_DIR}/cmake/default")
     ENDIF()
 
     # If a .prm contains the keyword "EXPECT FAILURE", make sure aspect fails
@@ -267,7 +267,7 @@ FOREACH(_test ${_tests})
     ENDIF()
 
     FILE(GLOB_RECURSE _relative_output_filenames RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/${_testname}/
-	${CMAKE_CURRENT_SOURCE_DIR}/${_testname}/[a-zA-Z0-9]*)
+         ${CMAKE_CURRENT_SOURCE_DIR}/${_testname}/[a-zA-Z0-9]*)
     SET(_output_files "")
 
     FOREACH(_name ${_relative_output_filenames})
@@ -275,18 +275,25 @@ FOREACH(_test ${_tests})
       SET(_output_files ${_output_files} ${_path_and_name})
     ENDFOREACH()
 
+    # fail is the user forgot to create reference files instead of silently passing the test
+    IF("${_output_files}" STREQUAL "")
+      MESSAGE(FATAL_ERROR "test ${_testname}.prm is missing a folder with reference data")
+    ENDIF()
+
     # run command
     IF("${_mpi_count}" STREQUAL "1")
-      ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/screen-output
-	COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/cmake/run_test.sh ${EXPECT} ${ASPECT_BINARY} ${CMAKE_CURRENT_BINARY_DIR}/${_testname}.x.prm ${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/screen-output.tmp
-	COMMAND ${_replacement_script} screen-output <${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/screen-output.tmp >${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/screen-output
-	DEPENDS ${ASPECT_BINARY} ${CMAKE_CURRENT_BINARY_DIR}/${_testname}.x.prm ${_testdepends})
+      ADD_CUSTOM_COMMAND(
+        OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/screen-output
+        COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/cmake/run_test.sh ${EXPECT} ${ASPECT_BINARY} ${CMAKE_CURRENT_BINARY_DIR}/${_testname}.x.prm ${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/screen-output.tmp
+        COMMAND ${_replacement_script} screen-output <${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/screen-output.tmp >${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/screen-output
+        DEPENDS ${ASPECT_BINARY} ${CMAKE_CURRENT_BINARY_DIR}/${_testname}.x.prm ${_testdepends})
     ELSE()
-      ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/screen-output
-	COMMAND mpirun -np ${_mpi_count} ${ASPECT_BINARY} ${CMAKE_CURRENT_BINARY_DIR}/${_testname}.x.prm
-		> ${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/screen-output.tmp
-	COMMAND ${_replacement_script} screen-output <${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/screen-output.tmp >${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/screen-output
-	DEPENDS ${ASPECT_BINARY} ${CMAKE_CURRENT_BINARY_DIR}/${_testname}.x.prm ${_testdepends})
+      ADD_CUSTOM_COMMAND(
+        OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/screen-output
+        COMMAND mpirun -np ${_mpi_count} ${ASPECT_BINARY} ${CMAKE_CURRENT_BINARY_DIR}/${_testname}.x.prm
+                > ${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/screen-output.tmp
+        COMMAND ${_replacement_script} screen-output <${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/screen-output.tmp >${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/screen-output
+        DEPENDS ${ASPECT_BINARY} ${CMAKE_CURRENT_BINARY_DIR}/${_testname}.x.prm ${_testdepends})
     ENDIF()
 
 
@@ -297,51 +304,49 @@ FOREACH(_test ${_tests})
       # instead of ${_output_name} here, to avoid having to specify BYPRODUCTS
       # for ninja.
       FOREACH(_output_name ${_output_files})
-  	ADD_CUSTOM_COMMAND(OUTPUT ${_output_name}.notime
-  	  COMMAND ${PERL_EXECUTABLE}
-  		  ${CMAKE_CURRENT_SOURCE_DIR}/normalize.pl
-  		  ${_output_name} ${ASPECT_BASE_DIR}
-  		  >${_output_name}.notime
-            DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/screen-output)
+        ADD_CUSTOM_COMMAND(OUTPUT ${_output_name}.notime
+          COMMAND ${PERL_EXECUTABLE}
+                  ${CMAKE_CURRENT_SOURCE_DIR}/normalize.pl
+                  ${_output_name} ${ASPECT_BASE_DIR}
+                  >${_output_name}.notime
+          DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/screen-output)
       ENDFOREACH()
-  
+
       # Create commands to copy and normalize reference output
       FOREACH(_name ${_relative_output_filenames})
-  	ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/${_name}.cmp.notime
-  	  COMMAND ${PERL_EXECUTABLE}
-  		  ${CMAKE_CURRENT_SOURCE_DIR}/normalize.pl
-  		  ${CMAKE_CURRENT_SOURCE_DIR}/${_testname}/${_name} ${ASPECT_BASE_DIR}
-  		  >${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/${_name}.cmp.notime
-            DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${_testname}/${_name})
+        ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/${_name}.cmp.notime
+          COMMAND ${PERL_EXECUTABLE}
+                  ${CMAKE_CURRENT_SOURCE_DIR}/normalize.pl
+                  ${CMAKE_CURRENT_SOURCE_DIR}/${_testname}/${_name} ${ASPECT_BASE_DIR}
+                  >${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/${_name}.cmp.notime
+          DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${_testname}/${_name})
       ENDFOREACH()
-  
+
       # Now create commands to diff reference with output file:
       FOREACH(_name ${_relative_output_filenames})
         # the normalized reference file:
         SET(_ref_file ${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/${_name}.cmp.notime)
         # the normalized output file:
         SET(_run_file ${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/${_name}.notime)
-  
+
         # generate .diff file:
         ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/${_name}.diff
-  	COMMAND
-  	    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/diff_test.sh 
-  		${TEST_DIFF}
-  		${_testname}/${_name}
-  		${CMAKE_CURRENT_SOURCE_DIR}
-  		${CMAKE_CURRENT_BINARY_DIR}
-  		${ASPECT_COMPARE_TEST_RESULTS}
-  	DEPENDS ${_ref_file}
-  		${_run_file})
-  
+          COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/cmake/diff_test.sh
+                  ${TEST_DIFF}
+                  ${_testname}/${_name}
+                  ${CMAKE_CURRENT_SOURCE_DIR}
+                  ${CMAKE_CURRENT_BINARY_DIR}
+                  ${ASPECT_COMPARE_TEST_RESULTS}
+          DEPENDS ${_ref_file} ${_run_file})
+
         # Add the target for this output file to the dependencies of this
         # test. Note that a target may not contain "/" but outputs can be
         # in subdirectories (for example solution/solution...), so replace them.
         STRING(REPLACE "/" "-" _target_name ${_testname}.${_name}.diff)
         ADD_CUSTOM_TARGET(${_target_name}
-  	DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/${_name}.diff)
+          DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/${_name}.diff)
         ADD_DEPENDENCIES(tests.${_testname} ${_target_name})
-  
+
       ENDFOREACH()
     ENDIF()
 
@@ -349,25 +354,14 @@ FOREACH(_test ${_tests})
     # and declare it to ctest
     ADD_DEPENDENCIES(tests tests.${_testname})
     ADD_TEST(NAME ${_testname}
-      COMMAND
-	 ${CMAKE_COMMAND}
-	    -DBINARY_DIR=${CMAKE_BINARY_DIR}
-	    -DTESTNAME=tests.${_testname}
-	    -DERROR="Test ${_testname} failed"
-	    -P ${CMAKE_SOURCE_DIR}/run_test.cmake
-	  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-      )
-    SET_TESTS_PROPERTIES(${_testname} PROPERTIES
-	  TIMEOUT ${TEST_TIME_LIMIT}
-      )
-
+      COMMAND ${CMAKE_COMMAND}
+              -DBINARY_DIR=${CMAKE_BINARY_DIR}
+              -DTESTNAME=tests.${_testname}
+              -DERROR="Test ${_testname} failed"
+              -P ${CMAKE_SOURCE_DIR}/run_test.cmake
+      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+    SET_TESTS_PROPERTIES(${_testname} PROPERTIES TIMEOUT ${TEST_TIME_LIMIT})
   ENDIF()
 ENDFOREACH()
 
-# display as important for 'make setup_tests' (stdout is hidden)
-IF(PRINT_TEST_SUMMARY_AS_IMPORTANT)
-  SET(PRINT_TEST_SUMMARY_AS_IMPORTANT OFF CACHE INTERNAL "" FORCE)
-  MESSAGE("Added ${_n_tests} tests.")
-ELSE()
-  MESSAGE(STATUS "Added ${_n_tests} tests.")
-ENDIF()
+MESSAGE("     Found ${_n_tests} tests.")

@@ -1,17 +1,4 @@
------------------------------------------------------------------------------
--- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
---     . version 2.1.0-pre (master, f534df314)
---     . using deal.II 9.0.0
---     . using Trilinos 12.10.1
---     . using p4est 2.0.0
---     . running in DEBUG mode
---     . running with 1 MPI process
------------------------------------------------------------------------------
 
------------------------------------------------------------------------------
--- For information on how to cite ASPECT, see:
---   https://aspect.geodynamics.org/citing.html?ver=2.1.0-pre&melt=1&sha=f534df314&src=code
------------------------------------------------------------------------------
 Number of active cells: 192 (on 4 levels)
 Number of degrees of freedom: 5,641 (1,666+801+1,666+225+833+225+225)
 
@@ -94,7 +81,7 @@ Number of degrees of freedom: 5,641 (1,666+801+1,666+225+833+225+225)
      Compositions min/max/mass: 0/0/0 // 0/0/0
      RMS, max velocity:         0.00109 m/year, 0.00296 m/year
      Temperature min/avg/max:   293 K, 2023 K, 3700 K
-     Writing depth average:     output1.tmp/depth_average.gnuplot
+     Writing depth average:     output1.tmp/depth_average
 
 *** Snapshot created!
 
@@ -105,17 +92,8 @@ Number of degrees of freedom: 5,641 (1,666+801+1,666+225+833+225+225)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+4 iterations.
    Solving for u_f in 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 9.93345e-07, 0, 0, 1.07483e-05
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 1.07483e-05
-
-   Solving temperature system... 3 iterations.
-   Skipping porosity composition solve because RHS is zero.
-   Skipping peridotite composition solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+4 iterations.
-   Solving for u_f in 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.02087e-11, 0, 0, 8.57628e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 8.57628e-07
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 6.49544e-07, 0, 0, 7.74054e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 7.74054e-06
 
 
    Postprocessing:
@@ -130,25 +108,6 @@ Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      5.77s |            |
-|                                             |            |            |
-| Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |        10 |     0.684s |        12% |
-| Assemble composition system     |        20 |      1.29s |        22% |
-| Assemble temperature system     |        10 |     0.744s |        13% |
-| Build Stokes preconditioner     |        10 |     0.582s |        10% |
-| Build temperature preconditioner|        10 |   0.00718s |      0.12% |
-| Solve Stokes system             |        10 |       1.1s |        19% |
-| Solve temperature system        |        10 |   0.00358s |         0% |
-| Create snapshot                 |         2 |    0.0311s |      0.54% |
-| Initialization                  |         1 |    0.0156s |      0.27% |
-| Postprocessing                  |         2 |      0.75s |        13% |
-| Setup dof systems               |         1 |   0.00911s |      0.16% |
-| Setup initial conditions        |         1 |     0.032s |      0.55% |
 +---------------------------------+-----------+------------+------------+
 
------------------------------------------------------------------------------
--- For information on how to cite ASPECT, see:
---   https://aspect.geodynamics.org/citing.html?ver=2.1.0-pre&melt=1&sha=f534df314&src=code
------------------------------------------------------------------------------

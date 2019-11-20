@@ -12,8 +12,10 @@ set Use years in output instead of seconds = true
 set End time                               = 0
 
 ############### Parameters describing the model
-# We create a coordinate parallel ellipsoidal chunk with
+# We create a coordinate-parallel ellipsoidal chunk with
 # a large eccentricity (0.5).
+# The coordinate-parallel implementation takes two opposite
+# corners of the chunk as input.
 
 subsection Geometry model
   set Model name = ellipsoidal chunk

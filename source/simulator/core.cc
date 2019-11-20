@@ -25,7 +25,8 @@
 #include <aspect/melt.h>
 #include <aspect/volume_of_fluid/handler.h>
 #include <aspect/newton.h>
-#include <aspect/free_surface.h>
+#include <aspect/stokes_matrix_free.h>
+#include <aspect/mesh_deformation/interface.h>
 #include <aspect/citation_info.h>
 
 #ifdef ASPECT_USE_WORLD_BUILDER
@@ -54,10 +55,6 @@ namespace WorldBuilder
 #include <deal.II/dofs/dof_accessor.h>
 #include <deal.II/dofs/dof_tools.h>
 
-#include <deal.II/fe/fe_q.h>
-#include <deal.II/fe/fe_dgq.h>
-#include <deal.II/fe/fe_dgp.h>
-#include <deal.II/fe/fe_values.h>
 #include <deal.II/fe/mapping_q.h>
 #include <deal.II/fe/mapping_cartesian.h>
 
@@ -104,8 +101,8 @@ namespace aspect
      * Helper function to construct mapping for the model.
      * The mapping is given by a degree four MappingQ for the case
      * of a curved mesh, and a cartesian mapping for a rectangular mesh that is
-     * not deformed. Use a MappingQ1 if the mesh is deformed.
-     * If a free surface is enabled, each mapping is later swapped out for a
+     * not deformed. Use a MappingQ1 if the initial mesh is deformed.
+     * If mesh deformation is enabled, each mapping is later swapped out for a
      * MappingQ1Eulerian, which allows for mesh deformation during the
      * computation.
      */
@@ -145,12 +142,14 @@ namespace aspect
   Simulator<dim>::Simulator (const MPI_Comm mpi_communicator_,
                              ParameterHandler &prm)
     :
+    simulator_is_past_initialization (false),
     assemblers (std_cxx14::make_unique<Assemblers::Manager<dim>>()),
     parameters (prm, mpi_communicator_),
     melt_handler (parameters.include_melt_transport ?
                   std_cxx14::make_unique<MeltHandler<dim>>(prm) :
                   nullptr),
-    newton_handler (parameters.nonlinear_solver == NonlinearSolver::iterated_Advection_and_Newton_Stokes ?
+    newton_handler ((parameters.nonlinear_solver == NonlinearSolver::iterated_Advection_and_Newton_Stokes ||
+                     parameters.nonlinear_solver == NonlinearSolver::single_Advection_iterated_Newton_Stokes) ?
                     std_cxx14::make_unique<NewtonHandler<dim>>() :
                     nullptr),
     post_signal_creation(
@@ -199,10 +198,24 @@ namespace aspect
     nonlinear_iteration (numbers::invalid_unsigned_int),
 
     triangulation (mpi_communicator,
-                   typename Triangulation<dim>::MeshSmoothing
-                   (Triangulation<dim>::smoothing_on_refinement |
-                    Triangulation<dim>::smoothing_on_coarsening),
-                   parallel::distributed::Triangulation<dim>::mesh_reconstruction_after_repartitioning),
+                   (parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::block_gmg
+                    ?
+                    typename Triangulation<dim>::MeshSmoothing
+                    (Triangulation<dim>::smoothing_on_refinement |
+                     Triangulation<dim>::smoothing_on_coarsening |
+                     Triangulation<dim>::limit_level_difference_at_vertices)
+                    :
+                    typename Triangulation<dim>::MeshSmoothing
+                    (Triangulation<dim>::smoothing_on_refinement |
+                     Triangulation<dim>::smoothing_on_coarsening))
+                   ,
+                   (parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::block_gmg
+                    ?
+                    typename parallel::distributed::Triangulation<dim>::Settings
+                    (parallel::distributed::Triangulation<dim>::mesh_reconstruction_after_repartitioning |
+                     parallel::distributed::Triangulation<dim>::construct_multigrid_hierarchy)
+                    :
+                    parallel::distributed::Triangulation<dim>::mesh_reconstruction_after_repartitioning)),
 
     mapping(construct_mapping<dim>(*geometry_model,*initial_topography_model)),
 
@@ -212,10 +225,12 @@ namespace aspect
     dof_handler (triangulation),
 
     last_pressure_normalization_adjustment (numbers::signaling_nan<double>()),
+    pressure_scaling (numbers::signaling_nan<double>()),
 
     rebuild_stokes_matrix (true),
     assemble_newton_stokes_matrix (true),
-    assemble_newton_stokes_system (parameters.nonlinear_solver == NonlinearSolver::iterated_Advection_and_Newton_Stokes ? true : false),
+    assemble_newton_stokes_system ((parameters.nonlinear_solver == NonlinearSolver::iterated_Advection_and_Newton_Stokes ||
+                                    parameters.nonlinear_solver == NonlinearSolver::single_Advection_iterated_Newton_Stokes) ? true : false),
     rebuild_stokes_preconditioner (true)
   {
     if (Utilities::MPI::this_mpi_process(mpi_communicator) == 0)
@@ -336,16 +351,13 @@ namespace aspect
     adiabatic_conditions->parse_parameters (prm);
     adiabatic_conditions->initialize ();
 
-    // Initialize the free surface handler
-    if (parameters.free_surface_enabled)
+    // Initialize the mesh deformation handler
+    if (parameters.mesh_deformation_enabled)
       {
-        // Pressure normalization doesn't really make sense with a free surface, and if we do
-        // use it, we can run into problems with geometry_model->depth().
-        AssertThrow ( parameters.pressure_normalization == "no",
-                      ExcMessage("The free surface scheme can only be used with no pressure normalization") );
-
-        // Allocate the FreeSurfaceHandler object
-        free_surface = std_cxx14::make_unique<FreeSurfaceHandler<dim>>(*this, prm );
+        // Allocate the MeshDeformationHandler object
+        mesh_deformation = std_cxx14::make_unique<MeshDeformation::MeshDeformationHandler<dim>>(*this);
+        mesh_deformation->initialize_simulator(*this);
+        mesh_deformation->parse_parameters(prm);
       }
 
     // Initialize the melt handler
@@ -357,11 +369,28 @@ namespace aspect
 
     // If the solver type is a Newton type of solver, we need to set make sure
     // assemble_newton_stokes_system set to true.
-    if (parameters.nonlinear_solver == NonlinearSolver::iterated_Advection_and_Newton_Stokes)
+    if (parameters.nonlinear_solver == NonlinearSolver::iterated_Advection_and_Newton_Stokes ||
+        parameters.nonlinear_solver == NonlinearSolver::single_Advection_iterated_Newton_Stokes)
       {
         assemble_newton_stokes_system = true;
         newton_handler->initialize_simulator(*this);
         newton_handler->parameters.parse_parameters(prm);
+      }
+
+    if (parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::block_gmg)
+      {
+        switch (parameters.stokes_velocity_degree)
+          {
+            case 2:
+              stokes_matrix_free = std_cxx14::make_unique<StokesMatrixFreeHandlerImplementation<dim,2>>(*this, prm);
+              break;
+            case 3:
+              stokes_matrix_free = std_cxx14::make_unique<StokesMatrixFreeHandlerImplementation<dim,3>>(*this, prm);
+              break;
+            default:
+              AssertThrow(false, ExcMessage("The finite element degree for the Stokes system you selected is not supported yet."));
+          }
+
       }
 
     postprocess_manager.initialize_simulator (*this);
@@ -399,12 +428,6 @@ namespace aspect
         bv->parse_parameters (prm);
         bv->initialize ();
       }
-
-    // determine how to treat the pressure. we have to scale it for the solver
-    // to make velocities and pressures of roughly the same (numerical) size,
-    // and we may have to fix up the right hand side vector before solving for
-    // compressible models if there are no in-/outflow boundaries
-    pressure_scaling = material_model->reference_viscosity() / geometry_model->length_scale();
 
     std::set<types::boundary_id> open_velocity_boundary_indicators
       = geometry_model->get_used_boundary_indicators();
@@ -528,8 +551,8 @@ namespace aspect
          * function given to the constructor
          * produces for this point.
          */
-        virtual double value (const Point<dim>   &p,
-                              const unsigned int  component = 0) const;
+        double value (const Point<dim>   &p,
+                      const unsigned int  component = 0) const override;
 
         /**
          * Return all components of a
@@ -540,8 +563,8 @@ namespace aspect
          * size beforehand,
          * i.e. #n_components.
          */
-        virtual void vector_value (const Point<dim>   &p,
-                                   Vector<double>     &values) const;
+        void vector_value (const Point<dim>   &p,
+                           Vector<double>     &values) const override;
 
       private:
         /**
@@ -621,6 +644,21 @@ namespace aspect
 
     nonlinear_iteration = 0;
 
+    // Re-compute the pressure scaling factor. In some sense, it would be nice
+    // if we did this not just once per time step, but once for each solve --
+    // i.e., multiple times per time step if we iterate out the nonlinearity
+    // during a Newton or Picard iteration. But that's more work,
+    // and the function would need to be called in more different places.
+    // Unless we have evidence that that's necessary, let's assume that
+    // the reference viscosity does not change too much between nonlinear
+    // iterations and that it's ok to update it only once per time step.
+    //
+    // The call to this function must precede the one to the computation
+    // of constraints because some kinds of constraints require scaling
+    // pressure degrees of freedom to a size adjusted by the pressure_scaling
+    // factor.
+    compute_pressure_scaling_factor();
+
     // then interpolate the current boundary velocities. copy constraints
     // into current_constraints and then add to current_constraints
     compute_current_constraints ();
@@ -645,6 +683,8 @@ namespace aspect
     heating_model_manager.update();
     adiabatic_conditions->update();
     mesh_refinement_manager.update();
+    if (parameters.mesh_deformation_enabled)
+      mesh_deformation->update();
 
     if (prescribed_stokes_solution.get())
       prescribed_stokes_solution->update();
@@ -656,6 +696,7 @@ namespace aspect
     for (auto &p : boundary_traction)
       p.second->update ();
   }
+
 
 
   template <int dim>
@@ -776,59 +817,48 @@ namespace aspect
     // to reinit the sparsity pattern.
     // If the mesh got refined and the size of the linear system changed, the old and new constraint
     // matrices will have different entries, and we can not easily compare them.
-    // However, in case of mesh refinement we have to rebuild the matrix anyway, so we can skip the
-    // step that checks if constraints have changed.
-    bool mesh_has_changed = (current_constraints.get_local_lines().size()
-                             != new_current_constraints.get_local_lines().size())
-                            ||
-                            (current_constraints.get_local_lines()
-                             != new_current_constraints.get_local_lines());
+    // Note that we can have a situation where mesh_has_changed==true on only some of the machines,
+    // so we need to do the MPI::sum below in all cases to avoid a deadlock.
+    const bool mesh_has_changed = (current_constraints.get_local_lines().size()
+                                   != new_current_constraints.get_local_lines().size())
+                                  ||
+                                  (current_constraints.get_local_lines()
+                                   != new_current_constraints.get_local_lines());
+    // Figure out if any entry that was constrained before is now no longer constrained:
+    bool constraints_changed = false;
 
-    if (!mesh_has_changed)
+    if (mesh_has_changed)
       {
-        bool constrained_dofs_set_changed = false;
-
-#if DEAL_II_VERSION_GTE(9,0,0)
+        // The mesh changed, so we know we need to update the constraints:
+        constraints_changed = true;
+      }
+    else
+      {
+        // the mesh has not changed on our machine, so compare the constraints:
         for (auto &row: current_constraints.get_lines())
           {
             if (!new_current_constraints.is_constrained(row.index))
               {
-                constrained_dofs_set_changed = true;
+                constraints_changed = true;
                 break;
               }
           }
-#else
-        for (const auto row: current_constraints.get_local_lines())
-          {
-            // Decide if we need to construct a new sparsity pattern.
-            // This is only necessary if at least one of the DoFs that were
-            // constrained in the previous time step are not constrained any more,
-            // because in this case we will need additionl matrix entries.
-            // The matrices will be reassembled in each timestep regardless,
-            // so the values of the constraints do not matter for the sparsity pattern.
-            if (current_constraints.is_constrained(row)
-                != new_current_constraints.is_constrained(row))
-              {
-                constrained_dofs_set_changed = true;
-                break;
-              }
-          }
-#endif
-
-        const bool any_constrained_dofs_set_changed = Utilities::MPI::sum(constrained_dofs_set_changed ? 1 : 0,
-                                                                          mpi_communicator) > 0;
-        if (any_constrained_dofs_set_changed)
-          rebuild_sparsity_and_matrices = true;
       }
 
-#if DEAL_II_VERSION_GTE(9,0,0)
+    // If at least one processor has different constraints, force rebuilding the matrices:
+    const bool any_constrained_dofs_set_changed = Utilities::MPI::sum(constraints_changed ? 1 : 0,
+                                                                      mpi_communicator) > 0;
+    if (any_constrained_dofs_set_changed)
+      rebuild_sparsity_and_matrices = true;
+
     current_constraints.copy_from(new_current_constraints);
-#else
-    current_constraints.clear ();
-    current_constraints.reinit (introspection.index_sets.system_relevant_set);
-    current_constraints.merge (new_current_constraints);
-    current_constraints.close();
-#endif
+
+    // TODO: We should use current_constraints.is_consistent_in_parallel()
+    // here to assert that our constraints are consistent between
+    // processors. This got removed in
+    // https://github.com/geodynamics/aspect/pull/3282 because it triggered in
+    // normal computations due to small floating point differences. See
+    // https://github.com/geodynamics/aspect/issues/3248 for the discussion.
   }
 
 
@@ -905,7 +935,20 @@ namespace aspect
               coupling[x.pressure][x.velocities[d]] = DoFTools::always;
             }
         }
-      coupling[x.temperature][x.temperature] = DoFTools::always;
+      // Do not allocate a temperature matrix if no temperature
+      // solves are going to be performed.
+      if (!(parameters.nonlinear_solver == NonlinearSolver::Kind::no_Advection_iterated_Stokes
+            ||
+            parameters.nonlinear_solver == NonlinearSolver::Kind::no_Advection_no_Stokes
+            ||
+            parameters.nonlinear_solver == NonlinearSolver::Kind::first_timestep_only_single_Stokes))
+        coupling[x.temperature][x.temperature] = DoFTools::always;
+
+      // For equal-order interpolation, we need a stabilization term
+      // in the bottom right of Stokes matrix. Make sure we have the
+      // necessary entries.
+      if (parameters.use_equal_order_interpolation_for_stokes == true)
+        coupling[x.pressure][x.pressure] = DoFTools::always;
 
       // If we have at least one compositional field that is a FEM field, we
       // create a matrix block in the first compositional block. Its sparsity
@@ -921,6 +964,19 @@ namespace aspect
           const unsigned int volume_of_fluid_block = volume_of_fluid_handler->field_struct_for_field_index(0)
                                                      .volume_fraction.first_component_index;
           coupling[volume_of_fluid_block][volume_of_fluid_block] = DoFTools::always;
+        }
+      if (stokes_matrix_free)
+        {
+          // do not allocate memory for the Stokes matrix:
+          Assert(!parameters.include_melt_transport, ExcNotImplemented());
+          for (unsigned int c=0; c<dim; ++c)
+            for (unsigned int d=0; d<dim; ++d)
+              coupling[x.velocities[c]][x.velocities[d]] = DoFTools::none;
+          for (unsigned int d=0; d<dim; ++d)
+            {
+              coupling[x.velocities[d]][x.pressure] = DoFTools::none;
+              coupling[x.pressure][x.velocities[d]] = DoFTools::none;
+            }
         }
     }
 
@@ -1013,10 +1069,17 @@ namespace aspect
     Mp_preconditioner.reset ();
     system_preconditioner_matrix.clear ();
 
-    // The preconditioner matrix is only used for the Stokes block (velocity and Schur complement) and is of course not
-    // used if we use a direct solver.
-    if (parameters.use_direct_stokes_solver)
+    // The preconditioner matrix is only used for the Stokes block (velocity and Schur complement) and only needed if we actually solve iteratively and matrix-based
+    if (parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::block_gmg)
       return;
+    else if (parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::block_amg)
+      {
+        // continue below
+      }
+    else if (parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::direct_solver)
+      return;
+    else
+      AssertThrow(false, ExcNotImplemented());
 
     Table<2,DoFTools::Coupling> coupling (introspection.n_components,
                                           introspection.n_components);
@@ -1281,21 +1344,21 @@ namespace aspect
       pcout.get_stream().imbue(s);
     }
 
-    // We need to setup the free surface degrees of freedom first if there is a free
-    // surface active, since the mapping must be in place before applying boundary
+    // We need to set up the mesh deformation degrees of freedom first if mesh deformation
+    // is active, since the mapping must be in place before applying boundary
     // conditions that rely on it (such as no flux BCs).
-    if (parameters.free_surface_enabled)
-      free_surface->setup_dofs();
+    if (parameters.mesh_deformation_enabled)
+      mesh_deformation->setup_dofs();
 
 
-    // reinit the constraints matrix and make hanging node constraints
+    // Reconstruct the constraint-matrix:
     constraints.clear();
     constraints.reinit(introspection.index_sets.system_relevant_set);
 
-    DoFTools::make_hanging_node_constraints (dof_handler,
-                                             constraints);
+    // Set up the constraints for periodic boundary conditions:
 
-    // Now set up the constraints for periodic boundary conditions
+    // Note: this has to happen _before_ we do hanging node constraints,
+    // because inconsistent contraints could be generated in parallel otherwise.
     {
       typedef std::set< std::pair< std::pair< types::boundary_id, types::boundary_id>, unsigned int> >
       periodic_boundary_set;
@@ -1309,9 +1372,11 @@ namespace aspect
                                                  (*p).second,       // cartesian direction for translational symmetry
                                                  constraints);
         }
-
-
     }
+
+    //  Make hanging node constraints:
+    DoFTools::make_hanging_node_constraints (dof_handler,
+                                             constraints);
 
 
     compute_initial_velocity_boundary_constraints(constraints);
@@ -1336,6 +1401,10 @@ namespace aspect
 
     rebuild_stokes_matrix         = true;
     rebuild_stokes_preconditioner = true;
+
+    // Setup matrix-free dofs
+    if (stokes_matrix_free)
+      stokes_matrix_free->setup_dofs();
   }
 
 
@@ -1453,7 +1522,7 @@ namespace aspect
     system_trans(dof_handler);
 
     std::unique_ptr<parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector> >
-    freesurface_trans;
+    mesh_deformation_trans;
 
     {
       TimerOutput::Scope timer (computing_timer, "Refine mesh structure, part 1");
@@ -1480,9 +1549,7 @@ namespace aspect
       // clear refinement flags if parameter.refinement_fraction=0.0
       if (parameters.refinement_fraction==0.0)
         {
-          for (typename Triangulation<dim>::active_cell_iterator
-               cell = triangulation.begin_active();
-               cell != triangulation.end(); ++cell)
+          for (const auto &cell : triangulation.active_cell_iterators())
             cell->clear_refine_flag ();
         }
       else
@@ -1498,9 +1565,7 @@ namespace aspect
       // clear coarsening flags if parameter.coarsening_fraction=0.0
       if (parameters.coarsening_fraction==0.0)
         {
-          for (typename Triangulation<dim>::active_cell_iterator
-               cell = triangulation.begin_active();
-               cell != triangulation.end(); ++cell)
+          for (const auto &cell : triangulation.active_cell_iterators())
             cell->clear_coarsen_flag ();
         }
       else
@@ -1516,17 +1581,17 @@ namespace aspect
       x_system[0] = &solution;
       x_system[1] = &old_solution;
 
-      if (parameters.free_surface_enabled)
-        x_system.push_back( &free_surface->mesh_velocity );
+      if (parameters.mesh_deformation_enabled)
+        x_system.push_back( &mesh_deformation->mesh_velocity );
 
       std::vector<const LinearAlgebra::Vector *> x_fs_system (1);
 
-      if (parameters.free_surface_enabled)
+      if (parameters.mesh_deformation_enabled)
         {
-          x_fs_system[0] = &free_surface->mesh_displacements;
-          freesurface_trans
+          x_fs_system[0] = &mesh_deformation->mesh_displacements;
+          mesh_deformation_trans
             = std_cxx14::make_unique<parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector>>
-              (free_surface->free_surface_dof_handler);
+              (mesh_deformation->mesh_deformation_dof_handler);
         }
 
 
@@ -1536,8 +1601,8 @@ namespace aspect
       triangulation.prepare_coarsening_and_refinement();
       system_trans.prepare_for_coarsening_and_refinement(x_system);
 
-      if (parameters.free_surface_enabled)
-        freesurface_trans->prepare_for_coarsening_and_refinement(x_fs_system);
+      if (parameters.mesh_deformation_enabled)
+        mesh_deformation_trans->prepare_for_coarsening_and_refinement(x_fs_system);
 
       triangulation.execute_coarsening_and_refinement ();
     } // leave the timed section
@@ -1553,14 +1618,14 @@ namespace aspect
 
       distributed_system.reinit(introspection.index_sets.system_partitioning, mpi_communicator);
       old_distributed_system.reinit(introspection.index_sets.system_partitioning, mpi_communicator);
-      if (parameters.free_surface_enabled)
+      if (parameters.mesh_deformation_enabled)
         distributed_mesh_velocity.reinit(introspection.index_sets.system_partitioning, mpi_communicator);
 
       std::vector<LinearAlgebra::BlockVector *> system_tmp (2);
       system_tmp[0] = &distributed_system;
       system_tmp[1] = &old_distributed_system;
 
-      if (parameters.free_surface_enabled)
+      if (parameters.mesh_deformation_enabled)
         system_tmp.push_back(&distributed_mesh_velocity);
 
       // transfer the data previously stored into the vectors indexed by
@@ -1585,23 +1650,23 @@ namespace aspect
       constraints.distribute (old_distributed_system);
       old_solution = old_distributed_system;
 
-      // do the same as above also for the free surface solution
-      if (parameters.free_surface_enabled)
+      // do the same as above, but for the mesh deformation solution
+      if (parameters.mesh_deformation_enabled)
         {
           constraints.distribute (distributed_mesh_velocity);
-          free_surface->mesh_velocity = distributed_mesh_velocity;
+          mesh_deformation->mesh_velocity = distributed_mesh_velocity;
 
           LinearAlgebra::Vector distributed_mesh_displacements;
 
-          distributed_mesh_displacements.reinit(free_surface->mesh_locally_owned,
+          distributed_mesh_displacements.reinit(mesh_deformation->mesh_locally_owned,
                                                 mpi_communicator);
 
           std::vector<LinearAlgebra::Vector *> system_tmp (1);
           system_tmp[0] = &distributed_mesh_displacements;
 
-          freesurface_trans->interpolate (system_tmp);
-          free_surface->mesh_vertex_constraints.distribute (distributed_mesh_displacements);
-          free_surface->mesh_displacements = distributed_mesh_displacements;
+          mesh_deformation_trans->interpolate (system_tmp);
+          mesh_deformation->mesh_vertex_constraints.distribute (distributed_mesh_displacements);
+          mesh_deformation->mesh_displacements = distributed_mesh_displacements;
         }
 
       // Possibly load data of plugins associated with cells
@@ -1621,29 +1686,15 @@ namespace aspect
   {
     // start any scheme with an extrapolated value from the previous
     // two time steps if those are available
-    current_linearization_point = old_solution;
+    initialize_current_linearization_point();
 
-    if (timestep_number > 1)
-      {
-        // TODO: Trilinos sadd does not like ghost vectors even as input. Copy
-        // into distributed vectors for now:
-        LinearAlgebra::BlockVector distr_solution (system_rhs);
-        distr_solution = old_solution;
-        LinearAlgebra::BlockVector distr_old_solution (system_rhs);
-        distr_old_solution = old_old_solution;
-        distr_solution.sadd ((1 + time_step/old_time_step),
-                             -time_step/old_time_step,
-                             distr_old_solution);
-        current_linearization_point = distr_solution;
-      }
-
-    // The free surface scheme is currently not built to work inside a nonlinear solver.
-    // We do the free surface execution at the beginning of the timestep for a specific reason.
+    // The mesh deformation scheme is currently not built to work inside a nonlinear solver.
+    // We do the mesh deformation execution at the beginning of the timestep for a specific reason.
     // The time step size is calculated AFTER the whole solve_timestep() function.  If we call
-    // free_surface_execute() after the Stokes solve, it will be before we know what the appropriate
+    // mesh_deformation_execute() after the Stokes solve, it will be before we know what the appropriate
     // time step to take is, and we will timestep the boundary incorrectly.
-    if (parameters.free_surface_enabled)
-      free_surface->execute ();
+    if (parameters.mesh_deformation_enabled)
+      mesh_deformation->execute ();
 
     // Compute the reactions of compositional fields and temperature in case of operator splitting.
     if (parameters.use_operator_splitting)
@@ -1678,6 +1729,12 @@ namespace aspect
         case NonlinearSolver::iterated_Advection_and_Newton_Stokes:
         {
           solve_iterated_advection_and_newton_stokes();
+          break;
+        }
+
+        case NonlinearSolver::single_Advection_iterated_Newton_Stokes:
+        {
+          solve_single_advection_iterated_newton_stokes();
           break;
         }
 
@@ -1748,9 +1805,7 @@ namespace aspect
         // refine_global(n).
         for (unsigned int n=0; n<parameters.initial_global_refinement; ++n)
           {
-            for (typename Triangulation<dim>::active_cell_iterator
-                 cell = triangulation.begin_active();
-                 cell != triangulation.end(); ++cell)
+            for (const auto &cell : triangulation.active_cell_iterators())
               cell->set_refine_flag ();
 
             mesh_refinement_manager.tag_additional_cells ();
@@ -1790,7 +1845,9 @@ namespace aspect
           }
       }
 
-    // start the principal loop over time steps:
+    // Start the principal loop over time steps. At this point, everything
+    // is completely initialized, so set that status as well
+    simulator_is_past_initialization = true;
     do
       {
         // Only solve if we are not in pre-refinement, or we do not want to skip
@@ -1804,13 +1861,19 @@ namespace aspect
             solve_timestep ();
           }
 
-        // see if we have to start over with a new adaptive refinement cycle
-        // at the beginning of the simulation.
+        // See if we have to start over with a new adaptive refinement cycle
+        // at the beginning of the simulation. If so, set the
+        // simulator_is_past_initialization variable back to false because we will
+        // have to re-initialize some variables such as the size of vectors,
+        // the initial state, etc.
         if (timestep_number == 0)
           {
             const bool initial_refinement_done = maybe_do_initial_refinement(max_refinement_level);
             if (initial_refinement_done)
-              goto start_time_iteration;
+              {
+                simulator_is_past_initialization = false;
+                goto start_time_iteration;
+              }
           }
 
         // if we postprocess nonlinear iterations, this function is called within
@@ -1827,17 +1890,26 @@ namespace aspect
         // see if we want to write a timing summary
         maybe_write_timing_output();
 
-        // update values for timestep, increment time step by one. then prepare
-        // for the next time step by shifting solution vectors
-        // by one time step
+        // update values for timestep, increment time step by one.
         old_time_step = time_step;
         time_step = new_time_step;
         time += time_step;
         ++timestep_number;
-        {
-          old_old_solution      = old_solution;
-          old_solution          = solution;
-        }
+
+        // prepare for the next time step by shifting solution vectors
+        // by one time step. In timestep 0 (just increased in the
+        // line above) initialize both old_solution
+        // and old_old_solution with the currently computed solution.
+        if (timestep_number == 1)
+          {
+            old_old_solution      = solution;
+            old_solution          = solution;
+          }
+        else
+          {
+            old_old_solution      = old_solution;
+            old_solution          = solution;
+          }
 
         // check whether to terminate the simulation. the
         // first part of the pair indicates whether to terminate
@@ -1860,6 +1932,8 @@ namespace aspect
     computing_timer.print_summary ();
 
     CitationInfo::print_info_block (pcout);
+
+    stokes_matrix_free.reset();
   }
 }
 

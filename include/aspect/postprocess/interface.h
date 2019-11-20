@@ -431,7 +431,7 @@ namespace aspect
                              "that could not be found in the current model. Activate this "
                              "postprocessor in the input file."));
 
-      typename std::vector<std::shared_ptr<Interface<dim> > >::const_iterator postprocessor;
+      typename std::vector<std::unique_ptr<Interface<dim> > >::const_iterator postprocessor;
       for (const auto &p : postprocessors)
         if (Plugins::plugin_type_matches<PostprocessorType>(*p))
           return Plugins::get_plugin_as_type<PostprocessorType>(*p);

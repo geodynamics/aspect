@@ -55,8 +55,7 @@ namespace aspect
         /**
          * Return the initial temperature as a function of position.
          */
-        virtual
-        double initial_temperature (const Point<dim> &position) const;
+        double initial_temperature (const Point<dim> &position) const override;
 
         /**
          * Declare the parameters that this class needs.
@@ -67,8 +66,7 @@ namespace aspect
         /**
          * Read the parameters above from the parameter file.
          */
-        virtual
-        void parse_parameters (ParameterHandler &prm);
+        void parse_parameters (ParameterHandler &prm) override;
 
       private:
         std::vector<double>  latitudes_iso;

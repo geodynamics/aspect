@@ -20,9 +20,9 @@ Number of degrees of freedom: 17,989 (8,450+1,089+4,225+4,225)
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass:       0.08469/0.5172/0.1785
-     Temperature min/avg/max:         0.08469 K, 0.1785 K, 0.5172 K
-     Max / average entropy viscosity: 0.000227 W/(m*K), 0.000227 W/(m*K)
+     Compositions min/max/mass:       0.08406/0.5192/0.1785
+     Temperature min/avg/max:         0.08406 K, 0.1785 K, 0.5192 K
+     Max / average entropy viscosity: 0.000453 W/(m*K), 0.000453 W/(m*K)
 
 *** Timestep 2:  t=0.003125 years
    Solving temperature system... 6 iterations.
@@ -31,9 +31,9 @@ Number of degrees of freedom: 17,989 (8,450+1,089+4,225+4,225)
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass:       0.07308/0.532/0.1785
-     Temperature min/avg/max:         0.07308 K, 0.1785 K, 0.532 K
-     Max / average entropy viscosity: 0.000453 W/(m*K), 9.43e-05 W/(m*K)
+     Compositions min/max/mass:       0.07378/0.5329/0.1785
+     Temperature min/avg/max:         0.07378 K, 0.1785 K, 0.5329 K
+     Max / average entropy viscosity: 0.000453 W/(m*K), 6.89e-05 W/(m*K)
 
 *** Timestep 3:  t=0.0046875 years
    Solving temperature system... 6 iterations.
@@ -42,9 +42,9 @@ Number of degrees of freedom: 17,989 (8,450+1,089+4,225+4,225)
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass:       0.06781/0.5407/0.1785
-     Temperature min/avg/max:         0.06781 K, 0.1785 K, 0.5407 K
-     Max / average entropy viscosity: 0.000453 W/(m*K), 8.81e-05 W/(m*K)
+     Compositions min/max/mass:       0.07007/0.5396/0.1785
+     Temperature min/avg/max:         0.07007 K, 0.1785 K, 0.5396 K
+     Max / average entropy viscosity: 0.000453 W/(m*K), 6.3e-05 W/(m*K)
 
 *** Timestep 4:  t=0.005 years
    Solving temperature system... 5 iterations.
@@ -53,9 +53,9 @@ Number of degrees of freedom: 17,989 (8,450+1,089+4,225+4,225)
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass:       0.06754/0.5416/0.1785
-     Temperature min/avg/max:         0.06754 K, 0.1785 K, 0.5416 K
-     Max / average entropy viscosity: 0.000453 W/(m*K), 8.62e-05 W/(m*K)
+     Compositions min/max/mass:       0.07002/0.5403/0.1785
+     Temperature min/avg/max:         0.07002 K, 0.1785 K, 0.5403 K
+     Max / average entropy viscosity: 0.000453 W/(m*K), 5.97e-05 W/(m*K)
 
 Termination requested by criterion: end time
 

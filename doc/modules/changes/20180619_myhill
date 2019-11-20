@@ -1,6 +1,0 @@
-Fixed: When gnuplot was used as the output format for the 'depth average'
-postprocessor plugin, the first two columns were labeled 'x' 'y', even though
-'depth' and 'time' are always the first two variables. This is now fixed
-provided deal.II 9.0 or newer is used.
-<br>
-(Bob Myhill, 2018/06/19)

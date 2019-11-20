@@ -1,0 +1,27 @@
+
+Number of active cells: 64 (on 4 levels)
+Number of degrees of freedom: 1,749 (578+81+289+289+64+192+256)
+
+*** Timestep 0:  t=0 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving volume of fluid system... 0 iterations.
+   Solving volume of fluid system... 0 iterations.
+
+   Postprocessing:
+     Global volume of fluid volumes (m^3): 0.5
+
+*** Timestep 1:  t=0.03125 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving volume of fluid system... 1 iterations.
+   Solving volume of fluid system... 0 iterations.
+
+   Postprocessing:
+     Global volume of fluid volumes (m^3): 0.531
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

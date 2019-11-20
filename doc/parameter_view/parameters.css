@@ -36,6 +36,15 @@ ul {
   background-color: #ccc;
 }
 
+
+/* show a + in front of expandable things and a - if it is expanded: */
+.collapsible:not(.active)::before {
+    content: "[+]";
+}
+.active::before {
+    content: "[−]";
+}
+
 /* Style the collapsible content. Note: hidden by default */
 .content {
   padding: 5px;

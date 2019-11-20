@@ -20,7 +20,6 @@
 
 
 #include <aspect/material_model/multicomponent.h>
-#include <aspect/simulator.h>
 #include <aspect/utilities.h>
 
 #include <numeric>
@@ -36,47 +35,30 @@ namespace aspect
     evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
              MaterialModel::MaterialModelOutputs<dim> &out) const
     {
+      EquationOfStateOutputs<dim> eos_outputs (this->n_compositional_fields()+1);
+
       for (unsigned int i=0; i < in.temperature.size(); ++i)
         {
-          const double temperature = in.temperature[i];
-          const std::vector<double> composition = in.composition[i];
-          const std::vector<double> volume_fractions = MaterialUtilities::compute_volume_fractions(composition);
+          const std::vector<double> volume_fractions = MaterialUtilities::compute_volume_fractions(in.composition[i]);
+
+          equation_of_state.evaluate(in, i, eos_outputs);
 
           out.viscosities[i] = MaterialUtilities::average_value (volume_fractions, viscosities, viscosity_averaging);
-          out.specific_heat[i] = MaterialUtilities::average_value (volume_fractions, specific_heats, MaterialUtilities::arithmetic);
-
+          out.specific_heat[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.specific_heat_capacities, MaterialUtilities::arithmetic);
+          out.thermal_expansion_coefficients[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.thermal_expansion_coefficients, MaterialUtilities::arithmetic);
+          out.compressibilities[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.compressibilities, MaterialUtilities::arithmetic);
+          out.entropy_derivative_pressure[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.entropy_derivative_pressure, MaterialUtilities::arithmetic);
+          out.entropy_derivative_temperature[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.entropy_derivative_temperature, MaterialUtilities::arithmetic);
 
           // Arithmetic averaging of thermal conductivities
           // This may not be strictly the most reasonable thing, but for most Earth materials we hope
           // that they do not vary so much that it is a big problem.
           out.thermal_conductivities[i] = MaterialUtilities::average_value (volume_fractions, thermal_conductivities, MaterialUtilities::arithmetic);
 
-          double density = 0.0;
-          for (unsigned int j=0; j < volume_fractions.size(); ++j)
-            {
-              // not strictly correct if thermal expansivities are different, since we are interpreting
-              // these compositions as volume fractions, but the error introduced should not be too bad.
-              const double temperature_factor= (1.0 - thermal_expansivities[j] * (temperature - reference_T));
-              density += volume_fractions[j] * densities[j] * temperature_factor;
-            }
-          out.densities[i] = density;
+          // not strictly correct if thermal expansivities are different, since we are interpreting
+          // these compositions as volume fractions, but the error introduced should not be too bad.
+          out.densities[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.densities, MaterialUtilities::arithmetic);
 
-
-          out.thermal_expansion_coefficients[i] = MaterialUtilities::average_value (volume_fractions, thermal_expansivities, MaterialUtilities::arithmetic);
-
-
-          // Compressibility at the given positions.
-          // The compressibility is given as
-          // $\frac 1\rho \frac{\partial\rho}{\partial p}$.
-          // (here we use an incompressible medium)
-          out.compressibilities[i] = 0.0;
-          // Pressure derivative of entropy at the given positions.
-          out.entropy_derivative_pressure[i] = 0.0;
-          // Temperature derivative of entropy at the given positions.
-          out.entropy_derivative_temperature[i] = 0.0;
-          // Change in composition due to chemical reactions at the
-          // given positions. The term reaction_terms[i][c] is the
-          // change in compositional field c at point i.
           for (unsigned int c=0; c<in.composition[i].size(); ++c)
             out.reaction_terms[i][c] = 0.0;
 
@@ -96,7 +78,7 @@ namespace aspect
     Multicomponent<dim>::
     is_compressible () const
     {
-      return false;
+      return equation_of_state.is_compressible();
     }
 
     template <int dim>
@@ -107,40 +89,27 @@ namespace aspect
       {
         prm.enter_subsection("Multicomponent");
         {
+          EquationOfState::MulticomponentIncompressible<dim>::declare_parameters (prm, 4.e-5);
+
           prm.declare_entry ("Reference temperature", "293",
                              Patterns::Double (0),
-                             "The reference temperature $T_0$. Units: $K$.");
-          prm.declare_entry ("Densities", "3300.",
-                             Patterns::Anything(),
-                             "List of densities for background mantle and compositional fields,"
-                             "for a total of N+1 values, where N is the number of compositional fields."
-                             "If only one value is given, then all use the same value.  Units: $kg / m^3$");
+                             "The reference temperature $T_0$. Units: $\\si{K}$.");
           prm.declare_entry ("Viscosities", "1.e21",
                              Patterns::Anything(),
                              "List of viscosities for background mantle and compositional fields,"
                              "for a total of N+1 values, where N is the number of compositional fields."
                              "If only one value is given, then all use the same value. Units: $Pa \\, s$");
-          prm.declare_entry ("Thermal expansivities", "4.e-5",
-                             Patterns::Anything(),
-                             "List of thermal expansivities for background mantle and compositional fields,"
-                             "for a total of N+1 values, where N is the number of compositional fields."
-                             "If only one value is given, then all use the same value. Units: $1/K$");
-          prm.declare_entry ("Specific heats", "1250.",
-                             Patterns::Anything(),
-                             "List of specific heats $C_p$ for background mantle and compositional fields,"
-                             "for a total of N+1 values, where N is the number of compositional fields."
-                             "If only one value is given, then all use the same value. Units: $J /kg /K$");
           prm.declare_entry ("Thermal conductivities", "4.7",
                              Patterns::Anything(),
                              "List of thermal conductivities for background mantle and compositional fields,"
                              "for a total of N+1 values, where N is the number of compositional fields."
                              "If only one value is given, then all use the same value. Units: $W/m/K$.");
-          prm.declare_entry("Viscosity averaging scheme", "harmonic",
-                            Patterns::Selection("arithmetic|harmonic|geometric|maximum composition"),
-                            "When more than one compositional field is present at a point "
-                            "with different viscosities, we need to come up with an average "
-                            "viscosity at that point.  Select a weighted harmonic, arithmetic, "
-                            "geometric, or maximum composition.");
+          prm.declare_entry ("Viscosity averaging scheme", "harmonic",
+                             Patterns::Selection("arithmetic|harmonic|geometric|maximum composition"),
+                             "When more than one compositional field is present at a point "
+                             "with different viscosities, we need to come up with an average "
+                             "viscosity at that point.  Select a weighted harmonic, arithmetic, "
+                             "geometric, or maximum composition.");
         }
         prm.leave_subsection();
       }
@@ -155,6 +124,9 @@ namespace aspect
       {
         prm.enter_subsection("Multicomponent");
         {
+          equation_of_state.initialize_simulator (this->get_simulator());
+          equation_of_state.parse_parameters (prm);
+
           reference_T = prm.get_double ("Reference temperature");
 
           viscosity_averaging = MaterialUtilities::parse_compositional_averaging_operation ("Viscosity averaging scheme",
@@ -166,12 +138,6 @@ namespace aspect
           // Retrieve the list of composition names
           const std::vector<std::string> list_of_composition_names = this->introspection().get_composition_names();
 
-          // Parse multicomponent properties
-          densities = Utilities::parse_map_to_double_array (prm.get("Densities"),
-                                                            list_of_composition_names,
-                                                            has_background_field,
-                                                            "Densities");
-
           viscosities = Utilities::parse_map_to_double_array (prm.get("Viscosities"),
                                                               list_of_composition_names,
                                                               has_background_field,
@@ -181,17 +147,6 @@ namespace aspect
                                                                          list_of_composition_names,
                                                                          has_background_field,
                                                                          "Thermal conductivities");
-
-          thermal_expansivities = Utilities::parse_map_to_double_array (prm.get("Thermal expansivities"),
-                                                                        list_of_composition_names,
-                                                                        has_background_field,
-                                                                        "Thermal expansivities");
-
-          specific_heats = Utilities::parse_map_to_double_array (prm.get("Specific heats"),
-                                                                 list_of_composition_names,
-                                                                 has_background_field,
-                                                                 "Specific heats");
-
         }
         prm.leave_subsection();
       }

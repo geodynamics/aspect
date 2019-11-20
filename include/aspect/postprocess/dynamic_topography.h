@@ -43,9 +43,8 @@ namespace aspect
         /**
          * Evaluate the solution for the dynamic topography.
          */
-        virtual
         std::pair<std::string,std::string>
-        execute (TableHandler &statistics);
+        execute (TableHandler &statistics) override;
 
         /**
          * Return the topography vector as calculated by CBF formulation.
@@ -68,15 +67,14 @@ namespace aspect
         /**
          * Register the other postprocessor that we need: BoundaryPressures
          */
-        virtual
         std::list<std::string>
-        required_other_postprocessors() const;
+        required_other_postprocessors() const override;
 
         /**
          * Parse the parameters for the postprocessor.
          */
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
 
         /**
          * Declare the parameters for the postprocessor.

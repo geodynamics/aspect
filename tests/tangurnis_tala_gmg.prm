@@ -1,0 +1,18 @@
+# TanGurnis benchmark TALA using geometric multigrid preconditioner
+
+include $ASPECT_SOURCE_DIR/benchmarks/tangurnis/tala/tan.prm 
+
+subsection Material model
+  set Material averaging = harmonic average
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Stokes solver type = block GMG
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0                       # default: 2
+  set Initial global refinement          = 3                       # default: 2
+end

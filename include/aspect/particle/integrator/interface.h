@@ -24,14 +24,8 @@
 #include <aspect/plugins.h>
 #include <aspect/global.h>
 
-#if DEAL_II_VERSION_GTE(9,0,0)
 #include <deal.II/particles/particle.h>
 #include <deal.II/particles/particle_handler.h>
-#else
-#include <aspect/particle/particle.h>
-#include <aspect/particle/particle_handler.h>
-#endif
-
 #include <deal.II/base/parameter_handler.h>
 
 namespace aspect
@@ -41,10 +35,7 @@ namespace aspect
     namespace Integrator
     {
       using namespace dealii;
-
-#if DEAL_II_VERSION_GTE(9,0,0)
       using namespace dealii::Particles;
-#endif
 
       /**
        * An abstract class defining virtual methods for performing integration

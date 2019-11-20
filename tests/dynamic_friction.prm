@@ -36,15 +36,14 @@ subsection Boundary velocity model
   set Tangential velocity boundary indicators = bottom
 end
 
-subsection Free surface
-  set Free surface boundary indicators        = top
-end
-
-# Advecting the free surface vertically rather than
-# in the surface normal direction can result in a
-# more stable mesh when the deformation is large
-subsection Free surface
-  set Surface velocity projection = vertical
+subsection Mesh deformation
+  set Mesh deformation boundary indicators        = top: free surface
+  # Advecting the free surface vertically rather than
+  # in the surface normal direction can result in a
+  # more stable mesh when the deformation is large
+  subsection Free surface
+    set Surface velocity projection = vertical
+  end
 end
 
 subsection Material model

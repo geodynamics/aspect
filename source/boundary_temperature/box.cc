@@ -60,11 +60,8 @@ namespace aspect
       else
         {
           double min = maximal_temperature(fixed_boundary_ids);
-          for (typename std::set<types::boundary_id>::const_iterator
-               p = fixed_boundary_ids.begin();
-               p != fixed_boundary_ids.end(); ++p)
-            if (p != fixed_boundary_ids.end())
-              min = std::min(min,temperature_[*p]);
+          for (const auto id : fixed_boundary_ids)
+            min = std::min(min,temperature_[id]);
           return min;
         }
     }
@@ -81,11 +78,8 @@ namespace aspect
       else
         {
           double max = -std::numeric_limits<double>::max();
-          for (typename std::set<types::boundary_id>::const_iterator
-               p = fixed_boundary_ids.begin();
-               p != fixed_boundary_ids.end(); ++p)
-            if (p != fixed_boundary_ids.end())
-              max = std::max(max,temperature_[*p]);
+          for (const auto id : fixed_boundary_ids)
+            max = std::max(max,temperature_[id]);
           return max;
         }
     }
@@ -100,24 +94,24 @@ namespace aspect
         {
           prm.declare_entry ("Left temperature", "1",
                              Patterns::Double (),
-                             "Temperature at the left boundary (at minimal x-value). Units: K.");
+                             "Temperature at the left boundary (at minimal $x$-value). Units: $\\si{K}$.");
           prm.declare_entry ("Right temperature", "0",
                              Patterns::Double (),
-                             "Temperature at the right boundary (at maximal x-value). Units: K.");
+                             "Temperature at the right boundary (at maximal $x$-value). Units: $\\si{K}$.");
           prm.declare_entry ("Bottom temperature", "0",
                              Patterns::Double (),
-                             "Temperature at the bottom boundary (at minimal z-value). Units: K.");
+                             "Temperature at the bottom boundary (at minimal $z$-value). Units: $\\si{K}$.");
           prm.declare_entry ("Top temperature", "0",
                              Patterns::Double (),
-                             "Temperature at the top boundary (at maximal x-value). Units: K.");
+                             "Temperature at the top boundary (at maximal $x$-value). Units: $\\si{K}$.");
           if (dim==3)
             {
               prm.declare_entry ("Front temperature", "0",
                                  Patterns::Double (),
-                                 "Temperature at the front boundary (at minimal y-value). Units: K.");
+                                 "Temperature at the front boundary (at minimal $y$-value). Units: $\\si{K}$.");
               prm.declare_entry ("Back temperature", "0",
                                  Patterns::Double (),
-                                 "Temperature at the back boundary (at maximal y-value). Units: K.");
+                                 "Temperature at the back boundary (at maximal $y$-value). Units: $\\si{K}$.");
             }
         }
         prm.leave_subsection ();

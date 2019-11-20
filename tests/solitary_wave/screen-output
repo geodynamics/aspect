@@ -11,7 +11,7 @@ Number of degrees of freedom: 20,864 (5,778+2,725+5,778+805+2,889+2,889)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+11 iterations.
    Solving for u_f in 9 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.61e-16, 0.999743
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.57727e-16, 0.999743
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.999743
 
    Skipping temperature solve because RHS is zero.
@@ -19,15 +19,15 @@ Number of degrees of freedom: 20,864 (5,778+2,725+5,778+805+2,889+2,889)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
    Solving for u_f in 9 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.61e-16, 9.3646e-11
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 9.3646e-11
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.57727e-16, 9.36476e-11
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 9.36476e-11
 
 
    Postprocessing:
      Writing graphical output:          output-solitary_wave/solution/solution-00000
      Compositions min/max/mass:         0.001/0.01/13.3
      RMS, max velocity:                 0.000166 m/year, 0.000167 m/year
-     Errors e_f, e_p_c_bar, e_c, delta: 2.027221e-04, 1.080947e+00, 0.000000e+00, 3.221824e-16
+     Errors e_f, e_p_c_bar, e_c, delta: 2.027221e-04, 1.080947e+00, 0.000000e+00, 4.179663e-16
 
 *** Timestep 1:  t=2000 years
    Skipping temperature solve because RHS is zero.
@@ -35,14 +35,14 @@ Number of degrees of freedom: 20,864 (5,778+2,725+5,778+805+2,889+2,889)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+5 iterations.
    Solving for u_f in 9 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.91098e-05, 2.37933e-06
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 2.37933e-06
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.91122e-05, 2.37904e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 2.37904e-06
 
 
    Postprocessing:
      Compositions min/max/mass:         0.001/0.01/13.3
      RMS, max velocity:                 0.000166 m/year, 0.000167 m/year
-     Errors e_f, e_p_c_bar, e_c, delta: 6.480725e-04, 1.080900e+00, 1.551644e-02, 5.141342e-03
+     Errors e_f, e_p_c_bar, e_c, delta: 6.488111e-04, 1.080881e+00, 1.551336e-02, 5.140321e-03
 
 Termination requested by criterion: end time
 

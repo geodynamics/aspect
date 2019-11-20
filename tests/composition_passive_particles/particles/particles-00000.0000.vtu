@@ -1,73 +1,34 @@
-<?xml version="1.0"?>
-<VTKFile type="UnstructuredGrid" version="0.1" byte_order="LittleEndian">
-  <UnstructuredGrid>
-    <Piece NumberOfPoints="10" NumberOfCells="10">
-      <Points>
-        <DataArray name="Position" type="Float64" NumberOfComponents="3" Format="ascii">
-          1.29455 0.476561 0.0
-          1.973 0.395669 0.0
-          1.9044 0.384976 0.0
-          0.237863 0.524897 0.0
-          0.20232 0.608633 0.0
-          0.920802 0.841182 0.0
-          0.779048 0.923314 0.0
-          1.19101 0.734787 0.0
-          1.31014 0.626733 0.0
-          1.97934 0.766315 0.0
-        </DataArray>
-      </Points>
-      <Cells>
-        <DataArray type="Int32" Name="connectivity" Format="ascii">
-          0
-          1
-          2
-          3
-          4
-          5
-          6
-          7
-          8
-          9
-        </DataArray>
-        <DataArray type="Int32" Name="offsets" Format="ascii">
-          1
-          2
-          3
-          4
-          5
-          6
-          7
-          8
-          9
-          10
-        </DataArray>
-        <DataArray type="UInt8" Name="types" Format="ascii">
-          1
-          1
-          1
-          1
-          1
-          1
-          1
-          1
-          1
-          1
-        </DataArray>
-      </Cells>
-      <PointData Scalars="scalars">
-        <DataArray type="UInt64" Name="id" NumberOfComponents="1" Format="ascii">
-          0
-          1
-          2
-          3
-          4
-          5
-          6
-          7
-          8
-          9
-        </DataArray>
-      </PointData>
-    </Piece>
-  </UnstructuredGrid>
+<?xml version="1.0" ?> 
+<!-- 
+# vtk DataFile Version 3.0
+#This file was generated 
+<VTKFile type="UnstructuredGrid" version="0.1" compressor="vtkZLibDataCompressor" byte_order="LittleEndian">
+<UnstructuredGrid>
+<FieldData>
+<DataArray type="Float32" Name="TIME" NumberOfTuples="1" format="ascii">0</DataArray>
+</FieldData>
+<Piece NumberOfPoints="10" NumberOfCells="10" >
+  <Points>
+    <DataArray type="Float32" NumberOfComponents="3" format="binary">
+AQAAAHgAAAB4AAAAZQAAAA==eNq7sXmp/bn/n+0YgMCk+4+96tRTYHbo4c/2i6WPgtl+k4rtlsSz2YPYfLr+dlHnpcHsrTuz7deHh4PZa/Pd7f3icsDsX0Uz7P9K2YDZczctt59UqABmC0f/tbfRdQGzATZhIwg=
+    </DataArray>
+  </Points>
+
+  <Cells>
+    <DataArray type="Int32" Name="connectivity" format="binary">
+AQAAACgAAAAoAAAAIAAAAA==eNoNw4kNACAMBKDT+nX/hYWEJBlOy+X2eH22HwK8AC4=
+    </DataArray>
+    <DataArray type="Int32" Name="offsets" format="binary">
+AQAAACgAAAAoAAAAIAAAAA==eNoNw4kNACAMBKDzrbr/wEJCS9IdTpfb8nh9fgOYADg=
+    </DataArray>
+    <DataArray type="UInt8" Name="types" format="binary">
+AQAAAAoAAAAKAAAACwAAAA==eNpjZIQBAABBAAs=
+    </DataArray>
+  </Cells>
+  <PointData Scalars="scalars">
+    <DataArray type="Float32" Name="id" format="binary">
+AQAAACgAAAAoAAAAIwAAAA==eNpjYACBBnsg4QBEQNwAxAuA+AAQPwBiBkcGBgFHAGdtBdI=    </DataArray>
+  </PointData>
+ </Piece>
+ </UnstructuredGrid>
 </VTKFile>

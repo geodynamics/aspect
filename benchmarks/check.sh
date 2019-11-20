@@ -29,12 +29,34 @@ run_prm ()
     done
 }
 
-# run aspect on all .prm files in the current folder or any subdirectory
+run_coarse_prm ()
+{
+    for prm in "$@"
+    do
+        echo "Running '$prm' at `pwd` with '$BUILD' ..."
+        cp $prm $prm.tmp
+        echo "set End time=0" >> $prm.tmp
+	echo "subsection Mesh refinement" >> $prm.tmp
+	echo "set Initial global refinement          = 2" >> $prm.tmp
+	echo "end" >>$prm.tmp
+
+        $BUILD/aspect $prm.tmp >/dev/null || { rm -f $prm.tmp; return 2; }
+        rm -f $prm.tmp
+    done
+
+}
+
+
+# Run aspect on all .prm files in the current folder or any
+# subdirectory; however, exclude files named parameters.prm and
+# original.prm as these are created by previous ASPECT runs and placed
+# in the output directories (where they can't be run from since paths
+# don't match up any more).
 run_all_prms ()
 {
     for prm in `find . -name "*prm"`;
     do
-        if [ "`basename $prm`" = "parameters.prm" ];
+        if [ "`basename $prm`" = "parameters.prm" -o "`basename $prm`" = "original.prm" ];
         then
 	        continue;
         fi
@@ -80,7 +102,7 @@ echo "Please be patient..."
 
 ( (cd finite_strain && make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
 
-( (cd geoid-spectral-comparison; run_all_prms ) || { echo "FAILED"; exit 1; } ) &
+( (cd geoid-spectral-comparison && run_coarse_prm "spectral-comparison.prm" ) || { echo "FAILED"; exit 1; } ) &
 
 ( (cd hollow_sphere; make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
 
@@ -133,7 +155,11 @@ wait # newton_solver_benchmark_set/nonlinear_channel_flow depends on nonlinear_c
 
 ( (cd viscoelastic_stress_build-up && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
 
+( (cd viscoelastic_plastic_shear_bands && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
+
 ( (cd zhong_et_al_93 && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
+
+( (cd compressibility_benchmarks/plugins && make_lib && cd .. && bash run.sh ) || { echo "FAILED"; exit 1; } ) &
 
 wait
 

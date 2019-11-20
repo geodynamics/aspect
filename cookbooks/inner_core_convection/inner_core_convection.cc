@@ -169,8 +169,7 @@ namespace aspect
       if (compute_quadratic_pressure_profile)
         {
           // Compute a quadratic hydrostatic pressure profile, based on a linear gravity model.
-          AssertThrow (dynamic_cast<const GravityModel::RadialLinear<dim>*>(&this->get_gravity_model())
-                       != 0,
+          AssertThrow (Plugins::plugin_type_matches<const GravityModel::RadialLinear<dim>>(this->get_gravity_model()),
                        ExcMessage ("Automatic computation of the hydrostatic pressure profile is "
                                    "only implemented for the 'radial linear' gravity model."));
 

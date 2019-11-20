@@ -69,10 +69,10 @@ namespace aspect
         {
           prm.declare_entry ("Minimal temperature", "0",
                              Patterns::Double (),
-                             "Minimal temperature. Units: K.");
+                             "Minimal temperature. Units: $\\si{K}$.");
           prm.declare_entry ("Maximal temperature", "3773",
                              Patterns::Double (),
-                             "Maximal temperature. Units: K.");
+                             "Maximal temperature. Units: $\\si{K}$.");
         }
         prm.leave_subsection ();
       }

@@ -19,8 +19,8 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
    Solving Stokes system... 35+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:         0.000327 m/s, 0.000728 m/s
-     Compositions min/max/mass: -0.002207/1.002/0.1825
+     RMS, max velocity:         0.000327 m/s, 0.000727 m/s
+     Compositions min/max/mass: -0.001642/1.001/0.1825
      Writing particle output:   output-particle_integrator_euler/particles/particles-00001
 
 Termination requested by criterion: end time

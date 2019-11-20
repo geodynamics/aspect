@@ -86,9 +86,8 @@ namespace aspect
         /**
          * Evaluate the solution for the heat flux.
          */
-        virtual
         std::pair<std::string,std::string>
-        execute (TableHandler &statistics);
+        execute (TableHandler &statistics) override;
     };
   }
 }

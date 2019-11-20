@@ -1,0 +1,17 @@
+# Test data for layered ascii data initial temperature conditions.
+# The following data defines a surface in 3D cartesian space which
+# will be used to define the 500 K isotherm in
+# tests/ascii_data_layered_initial_temperature_3d_box.prm and
+# tests/ascii_data_layered_initial_temperature_piecewise_constant_3d_box.prm.
+# Only next line is parsed in format: [nx] [ny] because of keyword "POINTS:"
+# POINTS: 3 3
+# Columns: x y z temperature[K]
+0.     0.     550000. 500.
+300000 0.     550000. 500.
+600000 0.     550000. 500.
+0.     300000 500000. 500.
+300000 300000 500000. 500.
+600000 300000 500000. 500.
+0.     600000 600000. 500.
+300000 600000 600000. 500.
+600000 100000 600000. 500.

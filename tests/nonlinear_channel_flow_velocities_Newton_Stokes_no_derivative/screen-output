@@ -1,5 +1,3 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
 Loading shared library <./libnonlinear_channel_flow_velocities_Newton_Stokes_no_derivative.so>
 
@@ -66,7 +64,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+3 iterations.
+   Solving Stokes system... 200+4 iterations.
       Relative nonlinear residual (total Newton system) after nonlinear iteration 12: 5.94949e-09, norm of the rhs: 4.33434e+09, newton_derivative_scaling_factor: 0
 
    Skipping temperature solve because RHS is zero.
@@ -151,7 +149,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 2+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 6.65077e-11, norm of the rhs: 4.84523e+07
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 6.65076e-11, norm of the rhs: 4.84523e+07
 
 
    Postprocessing:

@@ -12,10 +12,6 @@ Number of degrees of freedom: 84 (50+9+25)
 * evaluate called without additional outputs!
 * evaluate called without additional outputs!
 * evaluate called without additional outputs!
-* evaluate called without additional outputs!
-* evaluate called without additional outputs!
-* evaluate called without additional outputs!
-* evaluate called without additional outputs!
    Solving temperature system... 0 iterations.
 * create_additional_material_model_outputs() called
    creating additional output!
@@ -55,4 +51,4 @@ Termination requested by criterion: end time
 +---------------------------------+-----------+------------+------------+
 +---------------------------------+-----------+------------+------------+
 
-called without: 16 with: 4
+called without: 12 with: 4

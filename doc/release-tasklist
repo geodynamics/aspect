@@ -15,7 +15,7 @@
     - format is X.Y.Z for a release, X.Y.Z-pre for the dev version or X.Y.Z-rcW for release candidates
     - backwards incompatible changes require incrementing X, adding features incrementing Y
   . setup:
-      export OLDVER=1.5.0;export VER=2.0.0;export VERSHORT=2.0;export NEXTVER=2.1.0-pre
+      export OLDVER=2.0.0;export VER=2.1.0;export VERSHORT=2.1;export NEXTVER=2.2.0-pre
       export DEALSRCDIR=/ssd/deal-git/
   . fix doxygen errors:
       find include -name "*h" -print | xargs -n 1 $DEALSRCDIR/contrib/utilities/checkdoxygen.py
@@ -25,9 +25,11 @@
     . make manual.pdf
     . grep undefined manual/manual.log    # try to remove some
     . make aspect.tag
+    . and check for warnings
   . fix formatting, copyright years:
       find . -name "*.h" -print | while read file;do $DEALSRCDIR/contrib/utilities/wrapcomments.py $file >temp;mv temp $file;done
-      ./doc/indent
+      . note: we started ignoring the rewrapping of comments, but we should still fix wrong indentation or other problems
+      ./contrib/utilities/indent
       ./doc/update_copyright.sh
       git commit -a -m "doxygen formatting, comment wrapping"
       # create a pull-request
@@ -37,12 +39,13 @@
       cd doc;./bump_version.sh $NEXTVER; cd ..
       git commit -m "release task: update version and changes.h"
       # create a PR
-  . create a branch, bump version: # TODO: this should be 2.0.0-pre not 2.0.0
+  . create a branch, bump version (note, make sure the PR above is included)
       git checkout post-release-$VER && \
       git checkout -b aspect-$VERSHORT && \
       cd doc && ./bump_version.sh $VER && cd .. && \
       git commit -m "release task: update version info"
   . compile aspect, make sure you have a symlink in the main directory for the next step
+    - make sure the WorldBuilder is found! (git submodule init)
   . update doc/manual/parameters.tex and documentation:
       cd doc && ./update_parameters.sh && make manual.pdf && cp manual.pdf manual-$VER.pdf && cd .. && \
       git add doc/manual/parameters.tex && \
@@ -60,7 +63,16 @@
   . create a tar file:
       cd doc && make manual.pdf && cp manual.pdf aspect-manual-$TAG.pdf && cd ..
       export PREFIX=aspect-$TAG && rm -rf $PREFIX.tar.gz && \
-      git archive --format=tar.gz --prefix=$PREFIX/ HEAD >$PREFIX.tar.gz && rm -rf $PREFIX
+      git archive --format=tar.gz --prefix=$PREFIX/ HEAD >temp.tar.gz && \
+      rm -fr $PREFIX/ && \
+      tar xf temp.tar.gz && \
+      cd contrib/WorldBuilder/ && \
+      git archive --format=tar.gz --prefix=$PREFIX/contrib/WorldBuilder/ HEAD >temp.tar.gz && \
+      cd ../.. && \
+      tar xf contrib/WorldBuilder/temp.tar.gz && \
+      tar czf $PREFIX.tar.gz $PREFIX/ && \
+      rm -rf contrib/WorldBuilder/temp.tar.gz
+
   . final testing by extracting tarball, compiling, and running:
       tar xf $PREFIX.tar.gz
       cd $PREFIX
@@ -78,11 +90,12 @@
   . sign:
       gpg --detach-sign --armor aspect-$TAG.tar.gz
       sha1sum aspect-$TAG.tar.gz
-      gpg --detach-sign --armor manual-$TAG.pdf
-      sha1sum aspect-$TAG.tar.gz manual-$TAG.pdf >sha1sum-$TAG.txt
+      gpg --detach-sign --armor aspect-manual-$TAG.pdf
+      sha1sum aspect-$TAG.tar.gz aspect-manual-$TAG.pdf >sha1sum-$TAG.txt
   . create a release on github, upload tar.gz and manual-$VER.pdf
-  . readme / release notes: add zenodo DOI button
-  . link it on download.html, update version info etc.
+  . update website (www repo):
+    - header.include: add link to changes
+    - index.html: add news entry
   . create zenodo release for source code:
     - https://zenodo.org/deposit?page=1&size=20
     - title: ASPECT v2.0.0
@@ -91,20 +104,99 @@
     - cig community!
     - update zenodo badge in README.md to newest version (see badge button on the right of zenodo page)
     - add zenodo badge also to the release on github (on top, see 2.0.1 for an example)
+    - readme / release notes: add zenodo DOI button
   . create figshare DOI for manual
-  . update doc/manual/aspect.bib with src and manual doi
-  . update aspect.geodynamics.org/cite.html
+  . update doc/manual/manual.bib with src and manual doi
+  . update aspect.geodynamics.org/cite.html and citing.html in www repo:
+    - change link in cite.html
+    - add new version in citing.html, search for "<option"
+    - run aspect/doc/ python3 make_cite_html.py add to www
   . update http://geodynamics.org/cig/software/aspect/:
        update current release number
        create entry for the new release
        update the list of contributors
        ... (to be completed when we go through the 2.0 release process)
+  . update docker image geodynamics/aspect:
+    - modify docker/Dockerfile and docker/build.sh to checkout the release
+      cd docker && ./build.sh
+      docker push geodynamics/aspect:v$TAG
   . announce on
        cig-all@geodynamics.org
-       aspect-devel@geodynamics.org
-       cig-mc@geodynamics.org
-       cig-cs@geodynamics.org
+       https://community.geodynamics.org/c/aspect
        dealii@googlegroups.com
+
+
+Announcement for 2.1.0 (April 29, 2019)
+-----------------------------------------
+We are pleased to announce the release of ASPECT 2.1.0. ASPECT is the Advanced
+Solver for Problems in Earth's ConvecTion. It uses modern numerical methods such
+as adaptive mesh refinement, multigrid, and a modular software design to
+provide a fast, flexible, and extensible mantle convection solver. ASPECT is
+available from
+
+                   https://aspect.geodynamics.org/
+
+and the release is available from
+
+        https://geodynamics.org/cig/software/aspect/
+
+and
+
+        https://github.com/geodynamics/aspect/releases/tag/v2.1.0
+
+This release includes the following significant changes:
+- New: ASPECT has a new plugin system that allows it to prescribe a fixed
+  heat flux (instead of prescribing the temperature) at the model boundaries.
+- New: Compositional fields can optionally be advected with the melt velocity.
+- New: There is now a visualization postprocessor that outputs the compaction
+  length, the characteristic length scale of melt transport.
+- New: ASPECT can optionally use the Geodynamic World Builder
+  (https://github.com/GeodynamicWorldBuilder/WorldBuilder/) to create complex
+  initial conditions for temperature and composition.
+- New: ASPECT can now read in a depth-dependent vs to density conversion file, which
+  can be used with the included tomography model plugins.
+- New: ASPECT can now read in a depth-dependent initial temperature from file.
+- New: The 'ascii data' and 'function' boundary velocity plugins now allow
+  velocities to be specified along spherical (up, east, north) unit vectors.
+- New: Added a visualization plugin that directly outputs the strain rate tensor.
+- New: ASPECT can now call PerpleX to calculate material properties, phase
+  amounts and compositions on-the-fly. This model is provided as a
+  proof-of-concept; more efficient procedures are required for production runs.
+- New: ASPECT now outputs a dynamically generated URL based on used features to
+  ask people to cite appropriate papers.
+- New: ASPECT has two visualization postprocessors which calculate and output
+  the grain lag angle and the infinite strain axis (ISA) rotation timescale,
+  respectively. These two quantities can be used to calculate the grain
+  orientation lag parameter of Kaminski and Ribe (G3, 2002).
+- Improved: The artificial diffusion term that is added in the entropy
+  viscosity method to the temperature and composition equations is now computed
+  as the maximum of the physical diffusion and entropy viscosity instead of the
+  sum. This reduces numerical diffusion for the temperature field.
+- New: Compositional fields can now be prescribed to a value that is computed
+  in the material model as an additional output at every time step.
+- Changed: The heat flux through boundary cells is now computed using the
+  consistent boundary flux method as described in Gresho, et al. (1987), which
+  is much more accurate than the previously used method.
+- New: ASPECT can now calculate gravity anomalies in addition to the geoid.
+- New: ASPECT now outputs a file named original.prm in the output directory
+  with the exact content of the parameter it got started with.
+- New: Added basic support for a volume-of-fluid interface tracking advection
+  method in 2D incompressible box models. The VoF method is an efficient method
+  to track a distinct compositional field without artificial diffusion.
+- New: There is now an option to output visualization data as higher order
+  polynomials. This is an improvement in accuracy and requires less disk space
+  than the 'Interpolate output' option that was available before. However the
+  new output can only be read by ParaView version 5.5 and newer and is
+  therefore disabled by default.
+- New: Several new benchmark cases were added.
+- Many other fixes and smaller improvements.
+
+A complete list of changes and their contributing authors can be found at
+  https://aspect.geodynamics.org/doc/doxygen/changes_between_2_80_80_and_2_81_80.html
+
+Wolfgang Bangerth, Juliane Dannberg, Rene Gassmoeller, Timo Heister,
+Jacqueline Austermann, Menno Fraters, Anne Glerum, John Naliboff,
+and many other contributors.
 
 
 Announcement for 2.0.1 (June 21, 2018)

@@ -49,17 +49,15 @@ namespace aspect
           /**
            * @copydoc CellDataVectorCreator<dim>::execute()
            */
-          virtual
           std::pair<std::string, Vector<float> *>
-          execute () const;
+          execute () const override;
 
           /**
            * Let the postprocessor manager know about the other postprocessors
            * this one depends on. Specifically, the particles postprocessor.
            */
-          virtual
           std::list<std::string>
-          required_other_postprocessors() const;
+          required_other_postprocessors() const override;
       };
     }
   }

@@ -27,7 +27,6 @@
 
 #include <deal.II/numerics/data_postprocessor.h>
 
-#if DEAL_II_VERSION_GTE(9,0,0)
 namespace aspect
 {
   namespace Postprocess
@@ -56,13 +55,11 @@ namespace aspect
         public:
           StrainRateTensor ();
 
-          virtual
           void
           evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
-                                std::vector<Vector<double> > &computed_quantities) const;
+                                std::vector<Vector<double> > &computed_quantities) const override;
       };
     }
   }
 }
-#endif
 #endif

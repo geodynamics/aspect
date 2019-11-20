@@ -207,7 +207,7 @@ namespace aspect
       get_Vp_averages(std::vector<double> &values) const;
 
       /**
-       * Compute a lateral average of the heat flux, with the sign
+       * Compute a lateral average of the vertical heat flux, with the sign
        * convention of positive heat flux when it flows upwards.
        *
        * @param values The output vector of laterally averaged values. The
@@ -216,6 +216,20 @@ namespace aspect
        */
       void
       get_vertical_heat_flux_averages(std::vector<double> &values) const;
+
+      /**
+       * Compute a lateral average of the vertical mass flux. Note that
+       * while get_vertical_heat_flux_averages() computes the average
+       * vertical heat flux (positive or negative), this function computes
+       * the average of the total mass flux through a certain layer
+       * (both down- and upward motion counted positively).
+       *
+       * @param values The output vector of laterally averaged values. The
+       * function takes the pre-existing size of this vector as the number of
+       * depth slices.
+       */
+      void
+      get_vertical_mass_flux_averages(std::vector<double> &values) const;
 
     private:
       /**

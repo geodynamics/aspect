@@ -20,6 +20,7 @@
 
 
 #include <aspect/material_model/simpler.h>
+#include <aspect/material_model/equation_of_state/interface.h>
 
 
 namespace aspect
@@ -31,7 +32,7 @@ namespace aspect
     Simpler<dim>::
     is_compressible () const
     {
-      return false;
+      return equation_of_state.is_compressible ();
     }
 
     template <int dim>
@@ -39,7 +40,7 @@ namespace aspect
     Simpler<dim>::
     reference_viscosity () const
     {
-      return eta;
+      return constant_rheology.compute_viscosity();
     }
 
     template <int dim>
@@ -48,14 +49,19 @@ namespace aspect
     evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
              MaterialModel::MaterialModelOutputs<dim> &out) const
     {
+      // The Simpler model does not depend on composition
+      EquationOfStateOutputs<dim> eos_outputs (1);
+
       for (unsigned int i=0; i<in.position.size(); ++i)
         {
-          out.viscosities[i] = eta;
-          out.densities[i] = reference_rho * (1.0 - thermal_alpha * (in.temperature[i] - reference_T));
-          out.thermal_expansion_coefficients[i] = thermal_alpha;
-          out.specific_heat[i] = reference_specific_heat;
+          equation_of_state.evaluate(in, i, eos_outputs);
+
+          out.viscosities[i] = constant_rheology.compute_viscosity();
+          out.densities[i] = eos_outputs.densities[0];
+          out.thermal_expansion_coefficients[i] = eos_outputs.thermal_expansion_coefficients[0];
+          out.specific_heat[i] = eos_outputs.specific_heat_capacities[0];
           out.thermal_conductivities[i] = k_value;
-          out.compressibilities[i] = 0.0;
+          out.compressibilities[i] = eos_outputs.compressibilities[0];
 
           for (unsigned int c=0; c<in.composition[i].size(); ++c)
             out.reaction_terms[i][c] = 0.0;
@@ -72,29 +78,17 @@ namespace aspect
       {
         prm.enter_subsection("Simpler model");
         {
-          prm.declare_entry ("Reference density", "3300",
-                             Patterns::Double (0),
-                             "Reference density $\\rho_0$. Units: $kg/m^3$.");
+          EquationOfState::LinearizedIncompressible<dim>::declare_parameters (prm);
+
           prm.declare_entry ("Reference temperature", "293",
                              Patterns::Double (0),
                              "The reference temperature $T_0$. The reference temperature is used "
-                             "in the density formula. Units: $K$.");
-          prm.declare_entry ("Viscosity", "5e24",
-                             Patterns::Double (0),
-                             "The value of the viscosity $\\eta$. Units: $kg/m/s$.");
+                             "in the density formula. Units: $\\si{K}$.");
           prm.declare_entry ("Thermal conductivity", "4.7",
                              Patterns::Double (0),
                              "The value of the thermal conductivity $k$. "
                              "Units: $W/m/K$.");
-          prm.declare_entry ("Reference specific heat", "1250",
-                             Patterns::Double (0),
-                             "The value of the specific heat $C_p$. "
-                             "Units: $J/kg/K$.");
-          prm.declare_entry ("Thermal expansion coefficient", "2e-5",
-                             Patterns::Double (0),
-                             "The value of the thermal expansion coefficient $\\beta$. "
-                             "Units: $1/K$.");
-
+          Rheology::ConstantViscosity::declare_parameters(prm,5e24);
         }
         prm.leave_subsection();
       }
@@ -111,12 +105,12 @@ namespace aspect
       {
         prm.enter_subsection("Simpler model");
         {
-          reference_rho              = prm.get_double ("Reference density");
+          equation_of_state.parse_parameters (prm);
+
           reference_T                = prm.get_double ("Reference temperature");
-          eta                        = prm.get_double ("Viscosity");
           k_value                    = prm.get_double ("Thermal conductivity");
-          reference_specific_heat    = prm.get_double ("Reference specific heat");
-          thermal_alpha              = prm.get_double ("Thermal expansion coefficient");
+
+          constant_rheology.parse_parameters(prm);
         }
         prm.leave_subsection();
       }

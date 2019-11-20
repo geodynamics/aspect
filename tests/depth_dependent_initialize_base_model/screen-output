@@ -33,34 +33,34 @@ Number of degrees of freedom: 7,056 (4,320+576+2,160)
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 108+0 iterations.
+   Solving Stokes system... 43+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  0.0611 m/year, 0.159 m/year
+     RMS, max velocity:                  0.0609 m/year, 0.158 m/year
      Temperature min/avg/max:            273 K, 2048 K, 3500 K
-     Heat fluxes through boundary parts: -9.333e+07 W, 7.666e+06 W
-     Writing depth average:              output-depth_dependent_initialize_base_model/depth_average.gnuplot
+     Heat fluxes through boundary parts: -9.148e+07 W, 3.063e+06 W
+     Writing depth average:              output-depth_dependent_initialize_base_model/depth_average
 
-*** Timestep 1:  t=892758 years
-   Solving temperature system... 9 iterations.
+*** Timestep 1:  t=896882 years
+   Solving temperature system... 11 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 43+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  0.0613 m/year, 0.16 m/year
-     Temperature min/avg/max:            273 K, 2032 K, 3500 K
-     Heat fluxes through boundary parts: -1.75e+08 W, 4.277e+07 W
+     RMS, max velocity:                  0.0611 m/year, 0.157 m/year
+     Temperature min/avg/max:            273 K, 2029 K, 3500 K
+     Heat fluxes through boundary parts: -8.425e+07 W, 3.24e+06 W
 
 *** Timestep 2:  t=1e+06 years
    Solving temperature system... 8 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 38+0 iterations.
+   Solving Stokes system... 36+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  0.0614 m/year, 0.16 m/year
-     Temperature min/avg/max:            273 K, 2030 K, 3500 K
-     Heat fluxes through boundary parts: -2.706e+08 W, 7.784e+07 W
-     Writing depth average:              output-depth_dependent_initialize_base_model/depth_average.gnuplot
+     RMS, max velocity:                  0.0611 m/year, 0.157 m/year
+     Temperature min/avg/max:            273 K, 2026 K, 3500 K
+     Heat fluxes through boundary parts: -8.485e+07 W, 3.062e+06 W
+     Writing depth average:              output-depth_dependent_initialize_base_model/depth_average
 
 Termination requested by criterion: end time
 

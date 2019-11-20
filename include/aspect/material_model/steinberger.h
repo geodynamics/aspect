@@ -23,7 +23,6 @@
 
 #include <aspect/material_model/interface.h>
 
-#include <aspect/material_model/grain_size.h>
 #include <aspect/simulator_access.h>
 
 namespace aspect
@@ -130,15 +129,14 @@ namespace aspect
          * Initialization function. Loads the material data and sets up
          * pointers.
          */
-        virtual
         void
-        initialize ();
+        initialize () override;
 
         /**
          * Called at the beginning of each time step and allows the material
          * model to update internal data structures.
          */
-        virtual void update();
+        void update() override;
 
         /**
          * @name Physical parameters used in the basic equations
@@ -215,7 +213,7 @@ namespace aspect
          * equation as $\nabla \cdot (\rho \mathbf u)=0$ (compressible Stokes)
          * or as $\nabla \cdot \mathbf{u}=0$ (incompressible Stokes).
          */
-        virtual bool is_compressible () const;
+        bool is_compressible () const override;
         /**
          * @}
          */
@@ -224,7 +222,7 @@ namespace aspect
          * @name Reference quantities
          * @{
          */
-        virtual double reference_viscosity () const;
+        double reference_viscosity () const override;
         /**
          * @}
          */
@@ -234,10 +232,9 @@ namespace aspect
          * inputs in @p in. If MaterialModelInputs.strain_rate has the length
          * 0, then the viscosity does not need to be computed.
          */
-        virtual
         void
         evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                 MaterialModel::MaterialModelOutputs<dim> &out) const;
+                 MaterialModel::MaterialModelOutputs<dim> &out) const override;
 
         /**
          * @name Functions used in dealing with run-time parameters
@@ -253,16 +250,14 @@ namespace aspect
         /**
          * Read the parameters this class declares from the parameter file.
          */
-        virtual
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
         /**
          * @}
          */
 
-        virtual
         void
-        create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const;
+        create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const override;
 
 
       private:
@@ -308,19 +303,19 @@ namespace aspect
          * List of pointers to objects that read and process data we get from
          * Perplex files.
          */
-        std::vector<std::shared_ptr<Lookup::PerplexReader> > material_lookup;
+        std::vector<std::unique_ptr<MaterialModel::MaterialUtilities::Lookup::PerplexReader> > material_lookup;
 
         /**
          * Pointer to an object that reads and processes data for the lateral
          * temperature dependency of viscosity.
          */
-        std::shared_ptr<internal::LateralViscosityLookup> lateral_viscosity_lookup;
+        std::unique_ptr<internal::LateralViscosityLookup> lateral_viscosity_lookup;
 
         /**
          * Pointer to an object that reads and processes data for the radial
          * viscosity profile.
          */
-        std::shared_ptr<internal::RadialViscosityLookup> radial_viscosity_lookup;
+        std::unique_ptr<internal::RadialViscosityLookup> radial_viscosity_lookup;
 
     };
   }

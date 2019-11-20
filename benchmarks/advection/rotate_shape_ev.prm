@@ -1,0 +1,14 @@
+# Like rotate_shape_supg but with entropy viscosity
+
+set Dimension                              = 2
+
+include rotate_shape_supg.prm
+
+set Output directory                       = output-rotate-shape-ev
+
+subsection Discretization
+  subsection Stabilization parameters
+    set Stabilization method = entropy viscosity
+  end
+end
+

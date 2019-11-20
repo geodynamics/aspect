@@ -63,9 +63,9 @@ end
 subsection Initial temperature model
   set Model name = function
   subsection Function
-        set Variable names = r,phi
-	set Coordinate system = spherical
-	set Function expression = if ((r <0.8 && r >0.5 && phi <  3.14159265/2 && phi > 3.14159265/4), 8000, 0)
+    set Variable names = r,phi
+    set Coordinate system = spherical
+    set Function expression = if ((r <0.8 && r >0.5 && phi <  3.14159265/2 && phi > 3.14159265/4), 8000, 0)
   end
 end
 

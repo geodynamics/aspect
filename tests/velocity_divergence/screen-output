@@ -9,14 +9,14 @@ Number of degrees of freedom: 140,997 (66,306+8,385+33,153+33,153)
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+8 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.26451e-16, 2.31216e-16, 1
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.02015e-16, 2.1633e-16, 1
       Relative nonlinear residual (total system) after nonlinear iteration 1: 1
 
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.26451e-16, 2.31216e-16, 4.16982e-08
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.02015e-16, 2.1633e-16, 4.16982e-08
       Relative nonlinear residual (total system) after nonlinear iteration 2: 4.16982e-08
 
 
@@ -27,24 +27,24 @@ Number of degrees of freedom: 140,997 (66,306+8,385+33,153+33,153)
      Mass fluxes through boundary parts: -5.25e+07 kg/yr, 5.25e+07 kg/yr, 0 kg/yr, 0 kg/yr
 
 *** Timestep 1:  t=250 years
-   Solving temperature system... 12 iterations.
+   Solving temperature system... 16 iterations.
    Solving porosity system ... 14 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.000494119, 0.993777, 4.16921e-08
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.000654052, 0.993777, 4.16921e-08
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.993777
 
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.18886e-13, 9.81588e-11, 4.16921e-08
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 7.58309e-13, 3.44293e-11, 4.16921e-08
       Relative nonlinear residual (total system) after nonlinear iteration 2: 4.16921e-08
 
 
    Postprocessing:
      Writing graphical output:           output-velocity_divergence/solution/solution-00001
-     Compositions min/max/mass:          -0.0006016/0.0006079/249.8
+     Compositions min/max/mass:          -0.0005962/0.0006025/248.4
      RMS, max velocity:                  0.539 m/year, 0.998 m/year
      Mass fluxes through boundary parts: -5.25e+07 kg/yr, 5.25e+07 kg/yr, 0 kg/yr, 0 kg/yr
 

@@ -51,10 +51,9 @@ namespace aspect
          *
          * @copydoc aspect::BoundaryComposition::Interface::boundary_composition()
          */
-        virtual
         double boundary_composition (const types::boundary_id boundary_indicator,
                                      const Point<dim> &position,
-                                     const unsigned int compositional_field) const;
+                                     const unsigned int compositional_field) const override;
 
         /**
          * Return the minimal composition on that part of the boundary on
@@ -81,9 +80,8 @@ namespace aspect
         /**
          * Read the parameters this class declares from the parameter file.
          */
-        virtual
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
 
       private:
         /**

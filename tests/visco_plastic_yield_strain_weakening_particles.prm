@@ -1,0 +1,23 @@
+include $ASPECT_SOURCE_DIR/tests/visco_plastic_yield_strain_weakening.prm
+
+# Particles mapped to the Compositional fields used to track finite strain invariant
+subsection Compositional fields
+  set Compositional field methods = particles
+  set Mapped particle properties =  total_strain:total_strain
+end
+
+# Post processing
+# named additional outputs includes the weakened cohesions and friction angles
+subsection Postprocess
+  set List of postprocessors = velocity statistics, mass flux statistics, visualization, particles
+
+  subsection Particles
+    set Number of particles = 1e5
+    set Time between data output = 0
+    set Data output format = none
+    set List of particle properties = viscoplastic strain invariants
+    set Particle generator name = random uniform
+    set Interpolation scheme = nearest neighbor
+  end
+end
+

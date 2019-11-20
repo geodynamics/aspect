@@ -5,7 +5,7 @@ Number of degrees of freedom: 40,836 (25,090+3,201+12,545)
 *** Timestep 0:  t=0 seconds
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 42+0 iterations.
+   Solving Stokes system... 41+0 iterations.
 
    Postprocessing:
 
@@ -24,10 +24,10 @@ Number of degrees of freedom: 40,836 (25,090+3,201+12,545)
      Rayleigh number:                               0
 
      Writing graphical output:           output-adiabatic_conditions/solution/solution-00000
-     RMS, max velocity:                  1.75e+06 m/s, 1.35e+07 m/s
+     RMS, max velocity:                  7.88e+04 m/s, 3.07e+05 m/s
      Temperature min/avg/max:            1613 K, 1613 K, 1613 K
-     Heat fluxes through boundary parts: 4.382e+05 W, -1.424e+06 W, 0 W, 0 W
-     Writing depth average:              output-adiabatic_conditions/depth_average.gnuplot
+     Heat fluxes through boundary parts: -4.587e+04 W, 19.98 W, 0 W, 0 W
+     Writing depth average:              output-adiabatic_conditions/depth_average
 
 Termination requested by criterion: end time
 

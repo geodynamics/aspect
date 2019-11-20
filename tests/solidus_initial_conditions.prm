@@ -61,9 +61,9 @@ subsection Initial temperature model
     set Lithosphere thickness = 500e3
     subsection Perturbation
       set Temperature amplitude           = 100  
-  	  set Lithosphere thickness amplitude = 250e3
-	  set Lateral wave number one         = 12
-	  set Lateral wave number two         = 6
+      set Lithosphere thickness amplitude = 250e3
+      set Lateral wave number one         = 12
+      set Lateral wave number two         = 6
     end
     subsection Data
       set Solidus filename = $ASPECT_SOURCE_DIR/data/initial-temperature/solidus.Mars

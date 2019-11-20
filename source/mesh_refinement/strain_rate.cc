@@ -45,19 +45,16 @@ namespace aspect
 
       std::vector<SymmetricTensor<2,dim> > strain_rates (quadrature.size());
 
-      typename DoFHandler<dim>::active_cell_iterator
-      cell = this->get_dof_handler().begin_active(),
-      endc = this->get_dof_handler().end();
-      unsigned int j=0;
-      for (; cell!=endc; ++cell, ++j)
+      for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
           {
+            const unsigned int idx = cell->active_cell_index();
             fe_values.reinit(cell);
 
             fe_values[this->introspection().extractors.velocities].get_function_symmetric_gradients (this->get_solution(),
                 strain_rates);
 
-            indicators(j) = strain_rates[0].norm();
+            indicators(idx) = strain_rates[0].norm();
           }
 
     }

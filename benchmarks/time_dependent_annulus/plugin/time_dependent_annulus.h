@@ -364,9 +364,9 @@ namespace aspect
                                              VectorTools::L2_norm,
                                              &comp_rho);
 
-          const double u_l2 = std::sqrt(Utilities::MPI::sum(cellwise_errors_ul2.norm_sqr(),this->get_mpi_communicator()));
-          const double p_l2 = std::sqrt(Utilities::MPI::sum(cellwise_errors_pl2.norm_sqr(), this->get_mpi_communicator()));
-          const double rho_l2 = std::sqrt(Utilities::MPI::sum(cellwise_errors_rhol2.norm_sqr(), this->get_mpi_communicator()));
+          const double u_l2 = VectorTools::compute_global_error(this->get_triangulation(), cellwise_errors_ul2, VectorTools::L2_norm);
+          const double p_l2 = VectorTools::compute_global_error(this->get_triangulation(), cellwise_errors_pl2, VectorTools::L2_norm);
+          const double rho_l2 = VectorTools::compute_global_error(this->get_triangulation(), cellwise_errors_rhol2, VectorTools::L2_norm);
 
           statistics.add_value ("Error_u_l2", u_l2);
           statistics.add_value ("Error_p_l2", p_l2);

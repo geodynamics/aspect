@@ -69,6 +69,7 @@ namespace aspect
         single_Advection_iterated_Stokes,
         no_Advection_iterated_Stokes,
         iterated_Advection_and_Newton_Stokes,
+        single_Advection_iterated_Newton_Stokes,
         single_Advection_no_Stokes,
         first_timestep_only_single_Stokes,
         no_Advection_no_Stokes
@@ -138,7 +139,7 @@ namespace aspect
       {
         boussinesq_approximation,
         anelastic_liquid_approximation,
-        isothermal_compression,
+        isentropic_compression,
         custom
       };
 
@@ -150,8 +151,8 @@ namespace aspect
       Kind
       parse(const std::string &input)
       {
-        if (input == "isothermal compression")
-          return Formulation::isothermal_compression;
+        if (input == "isentropic compression")
+          return Formulation::isentropic_compression;
         else if (input == "anelastic liquid approximation")
           return Formulation::anelastic_liquid_approximation;
         else if (input == "Boussinesq approximation")
@@ -178,11 +179,12 @@ namespace aspect
          */
         enum Kind
         {
-          isothermal_compression,
+          isentropic_compression,
           hydrostatic_compression,
           reference_density_profile,
           implicit_reference_density_profile,
           incompressible,
+          projected_density_field,
           ask_material_model
         };
 
@@ -193,8 +195,8 @@ namespace aspect
         static Kind
         parse(const std::string &input)
         {
-          if (input == "isothermal compression")
-            return Formulation::MassConservation::isothermal_compression;
+          if (input == "isentropic compression")
+            return Formulation::MassConservation::isentropic_compression;
           else if (input == "hydrostatic compression")
             return Formulation::MassConservation::hydrostatic_compression;
           else if (input == "reference density profile")
@@ -203,13 +205,15 @@ namespace aspect
             return Formulation::MassConservation::implicit_reference_density_profile;
           else if (input == "incompressible")
             return Formulation::MassConservation::incompressible;
+          else if (input == "projected density field")
+            return Formulation::MassConservation::projected_density_field;
           else if (input == "ask material model")
             return Formulation::MassConservation::ask_material_model;
           else
             AssertThrow(false, ExcNotImplemented());
 
           return Formulation::MassConservation::Kind();
-        };
+        }
       };
 
       /**
@@ -245,8 +249,77 @@ namespace aspect
             AssertThrow(false, ExcNotImplemented());
 
           return Formulation::TemperatureEquation::Kind();
-        };
+        }
       };
+    };
+
+    /**
+     * A struct to provide the setting for "Stabilization method"
+     */
+    struct AdvectionStabilizationMethod
+    {
+      enum Kind
+      {
+        entropy_viscosity,
+        supg
+      };
+
+      /**
+       * This function translates an input string into the
+       * available enum options.
+       */
+      static
+      Kind
+      parse(const std::string &input)
+      {
+        if (input == "entropy viscosity")
+          return entropy_viscosity;
+        else if (input == "SUPG")
+          return supg;
+        else
+          AssertThrow(false, ExcNotImplemented());
+
+        return Kind();
+      }
+
+      static std::string get_options_string()
+      {
+        return "entropy viscosity|SUPG";
+      }
+    };
+
+    /**
+     * This enum represents the different choices for the linear solver
+     * for the Stoke system. See @p stokes_solver_type.
+     */
+    struct StokesSolverType
+    {
+      enum Kind
+      {
+        block_amg,
+        direct_solver,
+        block_gmg
+      };
+
+      static const std::string pattern()
+      {
+        return "block AMG|direct solver|block GMG";
+      }
+
+      static Kind
+      parse(const std::string &input)
+      {
+        if (input == "block AMG")
+          return block_amg;
+        else if (input == "direct solver")
+          return direct_solver;
+        else if (input == "block GMG")
+          return block_gmg;
+        else
+          AssertThrow(false, ExcNotImplemented());
+
+        return Kind();
+      }
     };
 
     /**
@@ -317,6 +390,7 @@ namespace aspect
      */
     typename NonlinearSolver::Kind nonlinear_solver;
 
+    typename AdvectionStabilizationMethod::Kind advection_stabilization_method;
     double                         nonlinear_tolerance;
     bool                           resume_computation;
     double                         start_time;
@@ -347,8 +421,13 @@ namespace aspect
     double                         temperature_solver_tolerance;
     double                         composition_solver_tolerance;
 
-    // subsection: Stokes parameters
+    // subsection: Advection solver parameters
+    unsigned int                   advection_gmres_restart_length;
+
+    // subsection: Stokes solver parameters
     bool                           use_direct_stokes_solver;
+    typename StokesSolverType::Kind stokes_solver_type;
+
     double                         linear_stokes_solver_tolerance;
     unsigned int                   n_cheap_stokes_solver_steps;
     unsigned int                   n_expensive_stokes_solver_steps;
@@ -384,7 +463,7 @@ namespace aspect
      * equations ASPECT will solve.
      * Common formulations are the Boussinesq or Anelastic Liquid
      * Approximations (BA, ALA). ASPECT's original formulation is termed
-     * 'isothermal compression'. 'Custom' allows
+     * 'isentropic compression'. 'Custom' allows
      * to set the approximations individually per equation.
      */
     typename Formulation::Kind formulation;
@@ -392,7 +471,7 @@ namespace aspect
     /**
      * Determines how to formulate the mass conservation equation in ASPECT.
      * Common approximations are 'incompressible' or 'reference density profile'.
-     * ASPECT's original formulation is termed 'isothermal compression'. See the
+     * ASPECT's original formulation is termed 'isentropic compression'. See the
      * manual for more details about the individual terms.
      */
     typename Formulation::MassConservation::Kind formulation_mass_conservation;
@@ -500,12 +579,24 @@ namespace aspect
      */
     unsigned int                   stokes_velocity_degree;
     bool                           use_locally_conservative_discretization;
+    bool                           use_equal_order_interpolation_for_stokes;
     bool                           use_discontinuous_temperature_discretization;
     bool                           use_discontinuous_composition_discretization;
     unsigned int                   temperature_degree;
     unsigned int                   composition_degree;
     std::string                    pressure_normalization;
     MaterialModel::MaterialAveraging::AveragingOperation material_averaging;
+
+    /**
+     * @}
+     */
+
+    /**
+     * @name Parameters that have to do with the temperature field
+     * @{
+     */
+
+    typename AdvectionFieldMethod::Kind temperature_method;
 
     /**
      * @}
@@ -540,11 +631,10 @@ namespace aspect
      * @}
      */
     /**
-     * @name Parameters that have to do with free surface
+     * @name Parameters that have to do with mesh deformation
      * @{
      */
-    bool                           free_surface_enabled;
-    std::set<types::boundary_id>   free_surface_boundary_indicators;
+    bool                           mesh_deformation_enabled;
     /**
      * @}
      */

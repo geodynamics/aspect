@@ -115,7 +115,7 @@ namespace aspect
          * Destructor. Made virtual since this class has virtual member
          * functions.
          */
-        virtual ~Manager ();
+        ~Manager () override;
 
         /**
          * Declare the parameters of all known initial composition plugins, as
@@ -179,7 +179,7 @@ namespace aspect
          * Return a list of pointers to all initial composition models
          * currently used in the computation, as specified in the input file.
          */
-        const std::list<std::shared_ptr<Interface<dim> > > &
+        const std::list<std::unique_ptr<Interface<dim> > > &
         get_active_initial_composition_conditions () const;
 
         /**
@@ -242,7 +242,7 @@ namespace aspect
          * A list of initial composition objects that have been requested in the
          * parameter file.
          */
-        std::list<std::shared_ptr<Interface<dim> > > initial_composition_objects;
+        std::list<std::unique_ptr<Interface<dim> > > initial_composition_objects;
 
         /**
          * A list of names of initial composition objects that have been requested
@@ -277,10 +277,8 @@ namespace aspect
     InitialCompositionType *
     Manager<dim>::find_initial_composition_model () const
     {
-      for (typename std::list<std::shared_ptr<Interface<dim> > >::const_iterator
-           p = initial_composition_objects.begin();
-           p != initial_composition_objects.end(); ++p)
-        if (InitialCompositionType *x = dynamic_cast<InitialCompositionType *> ( (*p).get()) )
+      for (const auto &p : initial_composition_objects)
+        if (InitialCompositionType *x = dynamic_cast<InitialCompositionType *> ( p.get()) )
           return x;
       return nullptr;
     }
@@ -292,10 +290,8 @@ namespace aspect
     bool
     Manager<dim>::has_matching_initial_composition_model () const
     {
-      for (typename std::list<std::shared_ptr<Interface<dim> > >::const_iterator
-           p = initial_composition_objects.begin();
-           p != initial_composition_objects.end(); ++p)
-        if (Plugins::plugin_type_matches<InitialCompositionType>(*(*p)))
+      for (const auto &p : initial_composition_objects)
+        if (Plugins::plugin_type_matches<InitialCompositionType>(*p))
           return true;
       return false;
     }
@@ -313,12 +309,10 @@ namespace aspect
                              "that could not be found in the current model. Activate this "
                              "initial composition model in the input file."));
 
-      typename std::list<std::shared_ptr<Interface<dim> > >::const_iterator initial_composition_model;
-      for (typename std::list<std::shared_ptr<Interface<dim> > >::const_iterator
-           p = initial_composition_objects.begin();
-           p != initial_composition_objects.end(); ++p)
-        if (Plugins::plugin_type_matches<InitialCompositionType>(*(*p)))
-          return Plugins::get_plugin_as_type<InitialCompositionType>(*(*p));
+      typename std::list<std::unique_ptr<Interface<dim> > >::const_iterator initial_composition_model;
+      for (const auto &p : initial_composition_objects)
+        if (Plugins::plugin_type_matches<InitialCompositionType>(*p))
+          return Plugins::get_plugin_as_type<InitialCompositionType>(*p);
 
       // We will never get here, because we had the Assert above. Just to avoid warnings.
       return Plugins::get_plugin_as_type<InitialCompositionType>(*(*initial_composition_model));

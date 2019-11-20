@@ -137,7 +137,7 @@ namespace aspect
                                        VectorTools::L2_norm,
                                        &comp_porosity);
 
-    const double poro_l2 = std::sqrt(Utilities::MPI::sum(cellwise_errors_porosity.norm_sqr(),this->get_mpi_communicator()));
+    const double poro_l2 = VectorTools::compute_global_error(this->get_triangulation(), cellwise_errors_porosity, VectorTools::L2_norm);
 
     std::ostringstream os;
     os << std::scientific << poro_l2;

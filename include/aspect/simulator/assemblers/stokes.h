@@ -37,10 +37,9 @@ namespace aspect
       public SimulatorAccess<dim>
     {
       public:
-        virtual
         void
         execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
-                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const;
+                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const override;
     };
 
     /**
@@ -52,10 +51,9 @@ namespace aspect
       public SimulatorAccess<dim>
     {
       public:
-        virtual
         void
         execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
-                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const;
+                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const override;
     };
 
     /**
@@ -67,15 +65,14 @@ namespace aspect
       public SimulatorAccess<dim>
     {
       public:
-        virtual
         void
         execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
-                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const;
+                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const override;
 
         /**
          * Create AdditionalMaterialOutputsStokesRHS if we need to do so.
          */
-        virtual void create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const;
+        void create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const override;
     };
 
     /**
@@ -87,10 +84,9 @@ namespace aspect
       public SimulatorAccess<dim>
     {
       public:
-        virtual
         void
         execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
-                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const;
+                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const override;
     };
 
     /**
@@ -107,10 +103,9 @@ namespace aspect
       public SimulatorAccess<dim>
     {
       public:
-        virtual
         void
         execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
-                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const;
+                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const override;
     };
 
     /**
@@ -127,10 +122,9 @@ namespace aspect
       public SimulatorAccess<dim>
     {
       public:
-        virtual
         void
         execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
-                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const;
+                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const override;
     };
 
     /**
@@ -143,14 +137,31 @@ namespace aspect
      * $\kappa = \frac{1}{\rho} \frac{\partial rho}{\partial p}$.
      */
     template <int dim>
-    class StokesIsothermalCompressionTerm : public Assemblers::Interface<dim>,
+    class StokesIsentropicCompressionTerm : public Assemblers::Interface<dim>,
       public SimulatorAccess<dim>
     {
       public:
-        virtual
         void
         execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
-                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const;
+                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const override;
+    };
+
+    /**
+     * This class assembles the right-hand-side term of the Stokes equation
+     * that is caused by the variable density in the mass conservation equation.
+     * This class approximates this term as
+     * $ - \nabla \cdot \mathbf{u} = \frac{1}{\rho} \frac{\partial \rho}{\partial t} + \frac{1}{\rho} \nabla \rho \cdot \mathbf{u}$
+     * where the right-hand side velocity is explicitly taken from the last timestep,
+     * and the density is taken from a compositional field called 'density_field'.
+     */
+    template <int dim>
+    class StokesProjectedDensityFieldTerm : public Assemblers::Interface<dim>,
+      public SimulatorAccess<dim>
+    {
+      public:
+        void
+        execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
+                internal::Assembly::CopyData::CopyDataBase<dim> &data) const override;
     };
 
 
@@ -171,10 +182,9 @@ namespace aspect
       public SimulatorAccess<dim>
     {
       public:
-        virtual
         void
         execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
-                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const;
+                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const override;
     };
 
     /**
@@ -186,10 +196,9 @@ namespace aspect
       public SimulatorAccess<dim>
     {
       public:
-        virtual
         void
         execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
-                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const;
+                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const override;
     };
 
     /**
@@ -204,10 +213,9 @@ namespace aspect
       public SimulatorAccess<dim>
     {
       public:
-        virtual
         void
         execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
-                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const;
+                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const override;
     };
   }
 }

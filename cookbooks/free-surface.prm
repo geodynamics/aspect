@@ -109,17 +109,19 @@ end
 # Here is the major new section to the parameter file,
 # specifying the parameter for running free surface
 # calculations
-subsection Free surface
+subsection Mesh deformation
 # We specify a comma delimited list of the free surface boundaries
 # for the model. In this case, it is just the top boundary
 # of the box geometry model.
-  set Free surface boundary indicators = top
+  set Mesh deformation boundary indicators = top: free surface
   # We need to specify the free surface stabilization parameter
   # theta, between zero and one.  If it is zero, there is no stabilization
   # and you are likely to see a sloshing instability develop.  If
   # it is one, the surface should be the most stable, though you
   # may find that the rates that it moves are fairly damped
-  set Free surface stabilization theta = 0.5
+  subsection Free surface
+    set Free surface stabilization theta = 0.5
+  end
 end
 
 # We also include the topography postprocessor, which just calculates

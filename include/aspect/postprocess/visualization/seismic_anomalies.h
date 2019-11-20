@@ -46,9 +46,8 @@ namespace aspect
           /**
            * @copydoc CellDataVectorCreator<dim>::execute()
            */
-          virtual
           std::pair<std::string, Vector<float> *>
-          execute () const;
+          execute () const override;
 
           /**
            * Declare the parameters this class takes through input files.
@@ -60,9 +59,8 @@ namespace aspect
           /**
            * Read the parameters this class declares from the parameter file.
            */
-          virtual
           void
-          parse_parameters (ParameterHandler &prm);
+          parse_parameters (ParameterHandler &prm) override;
 
         private:
 
@@ -103,9 +101,8 @@ namespace aspect
           /**
            * @copydoc CellDataVectorCreator<dim>::execute()
            */
-          virtual
           std::pair<std::string, Vector<float> *>
-          execute () const;
+          execute () const override;
 
           /**
            * Declare the parameters this class takes through input files.
@@ -117,9 +114,8 @@ namespace aspect
           /**
            * Read the parameters this class declares from the parameter file.
            */
-          virtual
           void
-          parse_parameters (ParameterHandler &prm);
+          parse_parameters (ParameterHandler &prm) override;
 
         private:
 

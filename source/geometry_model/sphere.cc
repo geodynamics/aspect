@@ -23,29 +23,16 @@
 #include <aspect/geometry_model/initial_topography_model/zero_topography.h>
 
 #include <deal.II/grid/grid_generator.h>
-
-#if !DEAL_II_VERSION_GTE(9,0,0)
-#include <deal.II/grid/tria_boundary_lib.h>
-#endif
+#include <aspect/utilities.h>
 
 namespace aspect
 {
   namespace GeometryModel
   {
-    /*
-      intel 18 incorrectly complains:
-
-      warning #411: class template "aspect::GeometryModel::Sphere<dim>" defines no constructor to initialize the following:
-      const member "aspect::GeometryModel::Sphere<dim>::spherical_manifold"
-
-      even though SphericalManifold's constructor has only one argument with a default.
-    */
     template <int dim>
     Sphere<dim>::Sphere()
-#if DEAL_II_VERSION_GTE(9,0,0)
       :
       spherical_manifold()
-#endif
     {}
 
 
@@ -59,13 +46,8 @@ namespace aspect
                                  Point<dim>(),
                                  R);
 
-#if DEAL_II_VERSION_GTE(9,0,0)
       coarse_grid.set_manifold(0,spherical_manifold);
       coarse_grid.set_all_manifold_ids_on_boundary(0);
-#else
-      static const HyperBallBoundary<dim> boundary_ball(Point<dim>(), R);
-      coarse_grid.set_boundary (0, boundary_ball);
-#endif
     }
 
 
@@ -158,9 +140,9 @@ namespace aspect
     bool
     Sphere<dim>::point_is_in_domain(const Point<dim> &point) const
     {
-      AssertThrow(this->get_free_surface_boundary_indicators().size() == 0 ||
+      AssertThrow(!this->get_parameters().mesh_deformation_enabled ||
                   this->get_timestep_number() == 0,
-                  ExcMessage("After displacement of the free surface, this function can no longer be used to determine whether a point lies in the domain or not."));
+                  ExcMessage("After displacement of the mesh, this function can no longer be used to determine whether a point lies in the domain or not."));
 
       AssertThrow(dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(&this->get_initial_topography_model()) != nullptr,
                   ExcMessage("After adding topography, this function can no longer be used to determine whether a point lies in the domain or not."));
@@ -174,11 +156,30 @@ namespace aspect
     }
 
 
+
+    template <int dim>
+    std::array<double,dim>
+    Sphere<dim>::cartesian_to_natural_coordinates(const Point<dim> &position) const
+    {
+      return Utilities::Coordinates::cartesian_to_spherical_coordinates<dim>(position);
+    }
+
+
+
     template <int dim>
     aspect::Utilities::Coordinates::CoordinateSystem
     Sphere<dim>::natural_coordinate_system() const
     {
       return aspect::Utilities::Coordinates::CoordinateSystem::spherical;
+    }
+
+
+
+    template <int dim>
+    Point<dim>
+    Sphere<dim>::natural_to_cartesian_coordinates(const std::array<double,dim> &position) const
+    {
+      return Utilities::Coordinates::spherical_to_cartesian_coordinates<dim>(position);
     }
 
 
@@ -193,7 +194,7 @@ namespace aspect
         {
           prm.declare_entry ("Radius", "6371000",
                              Patterns::Double (0),
-                             "Radius of the sphere. Units: m.");
+                             "Radius of the sphere. Units: $\\si{m}$.");
         }
         prm.leave_subsection();
       }

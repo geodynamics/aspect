@@ -90,8 +90,7 @@ namespace aspect
     {
       Assert (mesh_refinement_objects.size() > 0, ExcInternalError());
 
-      // call the update() functions of all
-      // refinement plugins.
+      // call the update() functions of all refinement plugins.
       unsigned int index = 0;
       for (typename std::list<std::unique_ptr<Interface<dim> > >::const_iterator
            p = mesh_refinement_objects.begin();

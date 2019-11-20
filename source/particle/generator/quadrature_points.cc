@@ -45,31 +45,24 @@ namespace aspect
 
 #if DEAL_II_VERSION_GTE(9,1,0)
         MPI_Scan(&n_particles_to_generate, &prefix_sum, 1, DEAL_II_PARTICLE_INDEX_MPI_TYPE, MPI_SUM, this->get_mpi_communicator());
-#elif DEAL_II_VERSION_GTE(9,0,0)
-        MPI_Scan(&n_particles_to_generate, &prefix_sum, 1, PARTICLE_INDEX_MPI_TYPE, MPI_SUM, this->get_mpi_communicator());
 #else
-        MPI_Scan(&n_particles_to_generate, &prefix_sum, 1, ASPECT_PARTICLE_INDEX_MPI_TYPE, MPI_SUM, this->get_mpi_communicator());
+        MPI_Scan(&n_particles_to_generate, &prefix_sum, 1, PARTICLE_INDEX_MPI_TYPE, MPI_SUM, this->get_mpi_communicator());
 #endif
 
         particle_index = prefix_sum - n_particles_to_generate;
 
-        typename parallel::distributed::Triangulation<dim>::active_cell_iterator
-        cell = this->get_triangulation().begin_active(), endc = this->get_triangulation().end();
-
-        for (; cell != endc; cell++)
-          {
-            if (cell->is_locally_owned())
-              {
-                fe_values.reinit(cell);
-                for (unsigned int i = 0; i < quadrature_formula.size(); i++)
-                  {
-                    const Particle<dim> particle(fe_values.get_quadrature_points()[i], quadrature_formula.get_points()[i], particle_index);
-                    const Particles::internal::LevelInd cell_index(cell->level(), cell->index());
-                    particles.insert(std::make_pair(cell_index, particle));
-                    ++particle_index;
-                  }
-              }
-          }
+        for (const auto &cell : this->get_triangulation().active_cell_iterators())
+          if (cell->is_locally_owned())
+            {
+              fe_values.reinit(cell);
+              for (unsigned int i = 0; i < quadrature_formula.size(); i++)
+                {
+                  const Particle<dim> particle(fe_values.get_quadrature_points()[i], quadrature_formula.get_points()[i], particle_index);
+                  const Particles::internal::LevelInd cell_index(cell->level(), cell->index());
+                  particles.insert(std::make_pair(cell_index, particle));
+                  ++particle_index;
+                }
+            }
       }
 
 

@@ -3128,22 +3128,18 @@ namespace aspect
         std::pair<std::string,std::string>
         execute (TableHandler &/*statistics*/)
         {
-          std::shared_ptr<Function<dim> > ref_func;
-          if (dynamic_cast<const SolCxMaterial<dim> *>(&this->get_material_model()) != NULL)
-            {
-              const SolCxMaterial<dim> *
-              material_model
-                = dynamic_cast<const SolCxMaterial<dim> *>(&this->get_material_model());
+          std::unique_ptr<Function<dim> > ref_func;
 
-              ref_func.reset (new AnalyticSolutions::FunctionSolCx<dim>(material_model->get_eta_B(),
-                                                                        material_model->get_background_density(),
-                                                                        this->n_compositional_fields()));
-            }
-          else
-            {
-              AssertThrow(false,
-                          ExcMessage("Postprocessor DuretzEtAl only works with the material model SolCx, SolKz, and Inclusion."));
-            }
+          AssertThrow(Plugins::plugin_type_matches<const SolCxMaterial<dim>>(this->get_material_model()),
+                      ExcMessage("Postprocessor DuretzEtAl only works with the material model SolCx, SolKz, and Inclusion."));
+
+          const SolCxMaterial<dim> &
+          material_model
+            = Plugins::get_plugin_as_type<const SolCxMaterial<dim>>(this->get_material_model());
+
+          ref_func.reset (new AnalyticSolutions::FunctionSolCx<dim>(material_model.get_eta_B(),
+                                                                    material_model.get_background_density(),
+                                                                    this->n_compositional_fields()));
 
           const QGauss<dim> quadrature_formula (this->introspection().polynomial_degree.velocities + 2);
 
@@ -3186,10 +3182,10 @@ namespace aspect
                                              VectorTools::L2_norm,
                                              &comp_p);
 
-          const double u_l1 = Utilities::MPI::sum(cellwise_errors_u.l1_norm(),this->get_mpi_communicator());
-          const double p_l1 = Utilities::MPI::sum(cellwise_errors_p.l1_norm(),this->get_mpi_communicator());
-          const double u_l2 = std::sqrt(Utilities::MPI::sum(cellwise_errors_ul2.norm_sqr(),this->get_mpi_communicator()));
-          const double p_l2 = std::sqrt(Utilities::MPI::sum(cellwise_errors_pl2.norm_sqr(),this->get_mpi_communicator()));
+          const double u_l1 = VectorTools::compute_global_error(this->get_triangulation(), cellwise_errors_u, VectorTools::L1_norm);
+          const double p_l1 = VectorTools::compute_global_error(this->get_triangulation(), cellwise_errors_p, VectorTools::L1_norm);
+          const double u_l2 = VectorTools::compute_global_error(this->get_triangulation(), cellwise_errors_ul2, VectorTools::L2_norm);
+          const double p_l2 = VectorTools::compute_global_error(this->get_triangulation(), cellwise_errors_pl2, VectorTools::L2_norm);
 
           std::ostringstream os;
           os << std::scientific << u_l1

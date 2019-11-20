@@ -69,7 +69,7 @@ namespace aspect
          */
         void fill (const LinearAlgebra::BlockVector &solution,
                    const FEValuesBase<dim>          &fe_values,
-                   const Introspection<dim>         &introspection);
+                   const Introspection<dim>         &introspection) override;
     };
 
     template <int dim>
@@ -123,7 +123,7 @@ namespace aspect
          */
         void average (const MaterialAveraging::AveragingOperation operation,
                       const FullMatrix<double>  &projection_matrix,
-                      const FullMatrix<double>  &expansion_matrix);
+                      const FullMatrix<double>  &expansion_matrix) override;
     };
 
     /**
@@ -211,9 +211,8 @@ namespace aspect
          * melt material model properties they are created in this base class
          * already.
          */
-        virtual
         void
-        create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const;
+        create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const override;
     };
 
     /**
@@ -224,10 +223,9 @@ namespace aspect
     class MeltStokesPreconditioner : public MeltInterface<dim>
     {
       public:
-        virtual
         void
         execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
-                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const;
+                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const override;
     };
 
     /**
@@ -238,10 +236,9 @@ namespace aspect
     class MeltStokesSystem : public MeltInterface<dim>
     {
       public:
-        virtual
         void
         execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
-                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const;
+                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const override;
     };
 
 
@@ -254,10 +251,9 @@ namespace aspect
     class MeltStokesSystemBoundary : public MeltInterface<dim>
     {
       public:
-        virtual
         void
         execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
-                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const;
+                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const override;
     };
 
     /**
@@ -268,18 +264,16 @@ namespace aspect
     class MeltAdvectionSystem : public MeltInterface<dim>
     {
       public:
-        virtual
         void
         execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
-                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const;
+                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const override;
 
         /**
          * Compute the residual of the advection system on a single cell in
          * the case of melt migration.
          */
-        virtual
         std::vector<double>
-        compute_residual(internal::Assembly::Scratch::ScratchBase<dim> &scratch_base) const;
+        compute_residual(internal::Assembly::Scratch::ScratchBase<dim> &scratch_base) const override;
     };
 
     /**
@@ -291,10 +285,9 @@ namespace aspect
     class MeltPressureRHSCompatibilityModification : public MeltInterface<dim>
     {
       public:
-        virtual
         void
         execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
-                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const;
+                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const override;
     };
 
     /**
@@ -304,10 +297,9 @@ namespace aspect
     class MeltBoundaryTraction : public MeltInterface<dim>
     {
       public:
-        virtual
         void
         execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
-                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const;
+                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const override;
     };
   }
 
@@ -421,7 +413,7 @@ namespace aspect
       /**
        * Setup SimulatorAccess for the plugins related to melt transport.
        */
-      void initialize_simulator (const Simulator<dim> &simulator_object);
+      void initialize_simulator (const Simulator<dim> &simulator_object) override;
 
       /**
        * Compute fluid velocity and solid pressure in this ghosted solution vector.

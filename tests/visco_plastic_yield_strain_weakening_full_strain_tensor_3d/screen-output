@@ -1,0 +1,64 @@
+
+Number of active cells: 100 (on 1 levels)
+Number of degrees of freedom: 17,441 (3,969+242+1,323+1,323+1,323+1,323+1,323+1,323+1,323+1,323+1,323+1,323)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Solving s11 system ... 0 iterations.
+   Skipping s12 composition solve because RHS is zero.
+   Skipping s13 composition solve because RHS is zero.
+   Skipping s21 composition solve because RHS is zero.
+   Solving s22 system ... 0 iterations.
+   Skipping s23 composition solve because RHS is zero.
+   Skipping s31 composition solve because RHS is zero.
+   Skipping s32 composition solve because RHS is zero.
+   Solving s33 system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+7 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+
+
+   Postprocessing:
+     RMS, max velocity:                  0.000408 m/year, 0.000691 m/year
+     Mass fluxes through boundary parts: 1.651e+09 kg/yr, 1.651e+09 kg/yr, 0 kg/yr, 0 kg/yr, -1.651e+09 kg/yr, -1.651e+09 kg/yr
+     Writing graphical output:           output-visco_plastic_yield_strain_weakening_full_strain_tensor_3d/solution/solution-00000
+
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+
+*** Timestep 1:  t=100 years
+   Solving temperature system... 0 iterations.
+   Solving s11 system ... 6 iterations.
+   Solving s12 system ... 12 iterations.
+   Solving s13 system ... 12 iterations.
+   Solving s21 system ... 12 iterations.
+   Solving s22 system ... 0 iterations.
+   Solving s23 system ... 12 iterations.
+   Solving s31 system ... 12 iterations.
+   Solving s32 system ... 12 iterations.
+   Solving s33 system ... 6 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 7.39749e-08
+
+
+   Postprocessing:
+     RMS, max velocity:                  0.000408 m/year, 0.000691 m/year
+     Mass fluxes through boundary parts: 1.651e+09 kg/yr, 1.651e+09 kg/yr, 0 kg/yr, 0 kg/yr, -1.651e+09 kg/yr, -1.651e+09 kg/yr
+
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

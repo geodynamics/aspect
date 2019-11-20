@@ -2,7 +2,7 @@
 Number of active cells: 640 (on 4 levels)
 Number of degrees of freedom: 8,716 (5,346+697+2,673)
 
-Number of free surface degrees of freedom: 1394
+Number of mesh deformation degrees of freedom: 1394
 *** Timestep 0:  t=0 years
    Solving mesh velocity system... 0 iterations.
    Solving temperature system... 0 iterations.
@@ -12,7 +12,7 @@ Number of free surface degrees of freedom: 1394
 Number of active cells: 664 (on 5 levels)
 Number of degrees of freedom: 9,184 (5,634+733+2,817)
 
-Number of free surface degrees of freedom: 1466
+Number of mesh deformation degrees of freedom: 1466
 *** Timestep 0:  t=0 years
    Solving mesh velocity system... 0 iterations.
    Solving temperature system... 0 iterations.
@@ -22,7 +22,7 @@ Number of free surface degrees of freedom: 1466
 Number of active cells: 688 (on 5 levels)
 Number of degrees of freedom: 9,548 (5,858+761+2,929)
 
-Number of free surface degrees of freedom: 1522
+Number of mesh deformation degrees of freedom: 1522
 *** Timestep 0:  t=0 years
    Solving mesh velocity system... 0 iterations.
    Solving temperature system... 0 iterations.
@@ -101,7 +101,7 @@ Number of free surface degrees of freedom: 1522
 Number of active cells: 727 (on 5 levels)
 Number of degrees of freedom: 10,016 (6,146+797+3,073)
 
-Number of free surface degrees of freedom: 1594
+Number of mesh deformation degrees of freedom: 1594
 
 
 +---------------------------------------------+------------+------------+
@@ -130,7 +130,7 @@ Number of free surface degrees of freedom: 1594
 
 *** Timestep 8:  t=8.84988e+06 years
    Solving mesh velocity system... 1 iterations.
-   Solving temperature system... 34 iterations.
+   Solving temperature system... 33 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+15 iterations.
 
@@ -161,7 +161,7 @@ Number of free surface degrees of freedom: 1594
 Number of active cells: 808 (on 5 levels)
 Number of degrees of freedom: 11,147 (6,842+884+3,421)
 
-Number of free surface degrees of freedom: 1768
+Number of mesh deformation degrees of freedom: 1768
 
 
 +---------------------------------------------+------------+------------+

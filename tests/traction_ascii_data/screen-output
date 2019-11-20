@@ -6,8 +6,12 @@
    Loading Ascii data boundary file ASPECT_DIR/data/boundary-traction/ascii-data/test/box_2d_left.1.txt.
 
 
-   Loading new data file did not succeed.
-   Assuming constant boundary conditions for rest of model run.
+   From this timestep onwards, ASPECT will not attempt to load new Ascii data files.
+   This is either because ASPECT has already read all the files necessary to impose
+   the requested boundary condition, or that the last available file has been read.
+   If the Ascii data represented a time-dependent boundary condition,
+   that time-dependence ends at this timestep  (i.e. the boundary condition
+   will continue unchanged from the last known state into the future).
 
 Number of active cells: 4,608 (on 5 levels)
 Number of degrees of freedom: 61,140 (37,570+4,785+18,785)
@@ -16,19 +20,19 @@ Number of degrees of freedom: 61,140 (37,570+4,785+18,785)
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 200+49 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.6621e-16, 1
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.73824e-16, 1
       Relative nonlinear residual (total system) after nonlinear iteration 1: 1
 
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 200+30 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.6621e-16, 0.172827
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.73824e-16, 0.172827
       Relative nonlinear residual (total system) after nonlinear iteration 2: 0.172827
 
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 200+33 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.6621e-16, 0.0233251
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.73824e-16, 0.0233251
       Relative nonlinear residual (total system) after nonlinear iteration 3: 0.0233251
 
 

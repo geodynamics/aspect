@@ -189,7 +189,7 @@ namespace aspect
       // their own parameters
       for (unsigned int name=0; name<model_names.size(); ++name)
         {
-          heating_model_objects.push_back (std::shared_ptr<Interface<dim> >
+          heating_model_objects.push_back (std::unique_ptr<Interface<dim> >
                                            (std::get<dim>(registered_plugins)
                                             .create_plugin (model_names[name],
                                                             "Heating model::Model names")));
@@ -207,11 +207,9 @@ namespace aspect
     void
     Manager<dim>::update ()
     {
-      for (typename std::list<std::shared_ptr<HeatingModel::Interface<dim> > >::const_iterator
-           heating_model = heating_model_objects.begin();
-           heating_model != heating_model_objects.end(); ++heating_model)
+      for (const auto &heating_model : heating_model_objects)
         {
-          (*heating_model)->update();
+          heating_model->update();
         }
     }
 
@@ -236,11 +234,9 @@ namespace aspect
       const MaterialModel::ReactionRateOutputs<dim> *reaction_rate_outputs
         = material_model_outputs.template get_additional_output<MaterialModel::ReactionRateOutputs<dim> >();
 
-      for (typename std::list<std::shared_ptr<HeatingModel::Interface<dim> > >::const_iterator
-           heating_model = heating_model_objects.begin();
-           heating_model != heating_model_objects.end(); ++heating_model)
+      for (const auto &heating_model : heating_model_objects)
         {
-          (*heating_model)->evaluate(material_model_inputs, material_model_outputs, individual_heating_outputs);
+          heating_model->evaluate(material_model_inputs, material_model_outputs, individual_heating_outputs);
           for (unsigned int q=0; q<heating_model_outputs.heating_source_terms.size(); ++q)
             {
               heating_model_outputs.heating_source_terms[q] += individual_heating_outputs.heating_source_terms[q];
@@ -252,6 +248,7 @@ namespace aspect
                                   "if the model does not use operator splitting."));
               heating_model_outputs.rates_of_temperature_change[q] += individual_heating_outputs.rates_of_temperature_change[q];
             }
+          individual_heating_outputs.reset();
         }
 
       // If the heating model does not get the reaction rate outputs, it can not correctly compute
@@ -270,18 +267,14 @@ namespace aspect
     create_additional_material_model_inputs_and_outputs(MaterialModel::MaterialModelInputs<dim>  &material_model_inputs,
                                                         MaterialModel::MaterialModelOutputs<dim> &material_model_outputs) const
     {
-      for (typename std::list<std::shared_ptr<HeatingModel::Interface<dim> > >::const_iterator
-           heating_model = heating_model_objects.begin();
-           heating_model != heating_model_objects.end(); ++heating_model)
+      for (const auto &heating_model : heating_model_objects)
         {
-          (*heating_model)->create_additional_material_model_inputs(material_model_inputs);
+          heating_model->create_additional_material_model_inputs(material_model_inputs);
         }
 
-      for (typename std::list<std::shared_ptr<HeatingModel::Interface<dim> > >::const_iterator
-           heating_model = heating_model_objects.begin();
-           heating_model != heating_model_objects.end(); ++heating_model)
+      for (const auto &heating_model : heating_model_objects)
         {
-          (*heating_model)->create_additional_material_model_outputs(material_model_outputs);
+          heating_model->create_additional_material_model_outputs(material_model_outputs);
         }
     }
 
@@ -296,7 +289,7 @@ namespace aspect
 
 
     template <int dim>
-    const std::list<std::shared_ptr<Interface<dim> > > &
+    const std::list<std::unique_ptr<Interface<dim> > > &
     Manager<dim>::get_active_heating_models () const
     {
       return heating_model_objects;
@@ -352,6 +345,20 @@ namespace aspect
       lhs_latent_heat_terms(n_points,numbers::signaling_nan<double>())
     {
     }
+
+
+
+    void
+    HeatingModelOutputs::reset()
+    {
+      for (unsigned int q=0; q<heating_source_terms.size(); ++q)
+        {
+          heating_source_terms[q] = numbers::signaling_nan<double>();
+          lhs_latent_heat_terms[q] = numbers::signaling_nan<double>();
+          rates_of_temperature_change[q] = 0.0;
+        }
+    }
+
 
 
     template <int dim>

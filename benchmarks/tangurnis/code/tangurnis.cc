@@ -365,20 +365,21 @@ namespace aspect
     AssertThrow(Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()) == 1,
                 ExcNotImplemented());
 
-    const MaterialModel::TanGurnis<dim> *
-    material_model = dynamic_cast<const MaterialModel::TanGurnis<dim> *>(&this->get_material_model());
+    AssertThrow(Plugins::plugin_type_matches<const MaterialModel::TanGurnis<dim>>(this->get_material_model()),
+                ExcMessage("tan gurnis postprocessor only works with tan gurnis material model"));
 
-    AssertThrow(material_model!=NULL, ExcMessage("tan gurnis postprocessor only works with tan gurnis material model"));
+    const MaterialModel::TanGurnis<dim> &
+    material_model = Plugins::get_plugin_as_type<const MaterialModel::TanGurnis<dim>>(this->get_material_model());
 
     double ref=1.0/this->get_triangulation().begin_active()->minimum_vertex_distance();
     std::ofstream f ((this->get_output_directory() + "vel_" +
                       Utilities::int_to_string(static_cast<unsigned int>(ref)) +
                       ".csv").c_str());
     f.precision (16);
-    f << material_model->parameter_Di() << ' '
-      << material_model->parameter_gamma() << ' '
-      << material_model->parameter_wavenumber() << ' '
-      << material_model->parameter_a();
+    f << material_model.parameter_Di() << ' '
+      << material_model.parameter_gamma() << ' '
+      << material_model.parameter_wavenumber() << ' '
+      << material_model.parameter_a();
 
     // pad the first line to the same number of columns as the data below to make MATLAB happy
     for (unsigned int i=4; i<7+this->get_heating_model_manager().get_active_heating_models().size(); ++i)
@@ -398,9 +399,7 @@ namespace aspect
     MaterialModel::MaterialModelInputs<dim> in(fe_values.n_quadrature_points, this->n_compositional_fields());
     MaterialModel::MaterialModelOutputs<dim> out(fe_values.n_quadrature_points, this->n_compositional_fields());
 
-    std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (n_q_points));
-
-    const std::list<std::shared_ptr<HeatingModel::Interface<dim> > > &heating_model_objects = this->get_heating_model_manager().get_active_heating_models();
+    const std::list<std::unique_ptr<HeatingModel::Interface<dim> > > &heating_model_objects = this->get_heating_model_manager().get_active_heating_models();
 
     std::vector<HeatingModel::HeatingModelOutputs> heating_model_outputs (heating_model_objects.size(),
                                                                           HeatingModel::HeatingModelOutputs (n_q_points, this->n_compositional_fields()));
@@ -411,23 +410,7 @@ namespace aspect
     for (; cell != endc; ++cell)
       {
         fe_values.reinit (cell);
-        fe_values[this->introspection().extractors.temperature].get_function_values (this->get_solution(), in.temperature);
-        fe_values[this->introspection().extractors.pressure].get_function_values (this->get_solution(), in.pressure);
-        fe_values[this->introspection().extractors.velocities].get_function_values (this->get_solution(), in.velocity);
-        fe_values[this->introspection().extractors.pressure].get_function_gradients (this->get_solution(), in.pressure_gradient);
-
-        for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-          fe_values[this->introspection().extractors.compositional_fields[c]].get_function_values(this->get_solution(),
-              composition_values[c]);
-        for (unsigned int i=0; i<fe_values.n_quadrature_points; ++i)
-          {
-            for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-              in.composition[i][c] = composition_values[c][i];
-          }
-
-        fe_values[this->introspection().extractors.velocities].get_function_symmetric_gradients (this->get_solution(),
-            in.strain_rate);
-        in.position = fe_values.get_quadrature_points();
+        in.reinit(fe_values,cell,this->introspection(),this->get_solution(),true);
 
         this->get_material_model().evaluate(in, out);
 
@@ -441,7 +424,7 @@ namespace aspect
           }
 
         unsigned int index = 0;
-        for (typename std::list<std::shared_ptr<HeatingModel::Interface<dim> > >::const_iterator
+        for (typename std::list<std::unique_ptr<HeatingModel::Interface<dim> > >::const_iterator
              heating_model = heating_model_objects.begin();
              heating_model != heating_model_objects.end(); ++heating_model, ++index)
           {

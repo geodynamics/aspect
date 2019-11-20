@@ -114,7 +114,7 @@ namespace aspect
          * Destructor. Made virtual since this class has virtual member
          * functions.
          */
-        virtual ~Manager ();
+        ~Manager () override;
 
         /**
          * Declare the parameters of all known initial conditions plugins, as
@@ -176,7 +176,7 @@ namespace aspect
          * Return a list of pointers to all initial temperature models
          * currently used in the computation, as specified in the input file.
          */
-        const std::list<std::shared_ptr<Interface<dim> > > &
+        const std::list<std::unique_ptr<Interface<dim> > > &
         get_active_initial_temperature_conditions () const;
 
         /**
@@ -240,7 +240,7 @@ namespace aspect
          * A list of initial temperature objects that have been requested in the
          * parameter file.
          */
-        std::list<std::shared_ptr<Interface<dim> > > initial_temperature_objects;
+        std::list<std::unique_ptr<Interface<dim> > > initial_temperature_objects;
 
         /**
          * A list of names of initial temperature objects that have been requested
@@ -265,9 +265,7 @@ namespace aspect
     InitialTemperatureType *
     Manager<dim>::find_initial_temperature_model () const
     {
-      for (typename std::list<std::shared_ptr<Interface<dim> > >::const_iterator
-           p = initial_temperature_objects.begin();
-           p != initial_temperature_objects.end(); ++p)
+      for (const auto &p : initial_temperature_objects)
         if (InitialTemperatureType *x = dynamic_cast<InitialTemperatureType *> ( (*p).get()) )
           return x;
       return nullptr;
@@ -280,10 +278,8 @@ namespace aspect
     bool
     Manager<dim>::has_matching_initial_temperature_model () const
     {
-      for (typename std::list<std::shared_ptr<Interface<dim> > >::const_iterator
-           p = initial_temperature_objects.begin();
-           p != initial_temperature_objects.end(); ++p)
-        if (Plugins::plugin_type_matches<InitialTemperatureType>(*(*p)))
+      for (const auto &p : initial_temperature_objects)
+        if (Plugins::plugin_type_matches<InitialTemperatureType>(*p))
           return true;
       return false;
     }
@@ -301,8 +297,8 @@ namespace aspect
                              "that could not be found in the current model. Activate this "
                              "initial temperature model in the input file."));
 
-      typename std::list<std::shared_ptr<Interface<dim> > >::const_iterator initial_temperature_model;
-      for (typename std::list<std::shared_ptr<Interface<dim> > >::const_iterator
+      typename std::list<std::unique_ptr<Interface<dim> > >::const_iterator initial_temperature_model;
+      for (typename std::list<std::unique_ptr<Interface<dim> > >::const_iterator
            p = initial_temperature_objects.begin();
            p != initial_temperature_objects.end(); ++p)
         if (Plugins::plugin_type_matches<InitialTemperatureType>(*(*p)))

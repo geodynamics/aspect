@@ -1,0 +1,69 @@
+# This test is to check that the layered ascii data initial temperature
+# plugin works in a 2D box with temperature defined as linear
+# between isotherms and constant below and above the
+# first and last isotherm (with a value taken from that isotherm).
+
+set Dimension                              = 2
+set Use years in output instead of seconds = true
+set End time                               = 0
+
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 600e3
+    set Y extent = 660e3
+    set X repetitions = 3
+    set Y repetitions = 5
+  end
+end
+
+
+subsection Initial temperature model
+  set Model name = ascii data layered
+  subsection Ascii data model
+    set Data directory        = $ASPECT_SOURCE_DIR/data/initial-temperature/ascii-data/test/
+    set Data file names       = initial_isotherm_1000K_box_2d.txt, initial_isotherm_500K_box_2d.txt
+    set Interpolation scheme  = linear
+  end
+end
+
+    
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = left, right, top, bottom
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 10
+  end
+end
+
+
+subsection Material model
+  set Model name = simple
+  subsection Simple model
+    set Viscosity = 1e21
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial global refinement                = 1
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 0
+  set Strategy                                 = temperature
+end
+
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, temperature statistics, depth average
+  
+  subsection Depth average
+    set Time between graphical output = 0
+    set Number of zones = 10
+  end
+end

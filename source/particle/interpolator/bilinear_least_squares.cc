@@ -110,11 +110,11 @@ namespace aspect
             const double particle_property_value = particle->get_properties()[property_index];
             r[index] = particle_property_value;
 
-            const Point<dim> position = particle->get_location();
+            const Point<dim> particle_position = particle->get_location();
             A(index,0) = 1;
-            A(index,1) = (position[0] - approximated_cell_midpoint[0])/cell_diameter;
-            A(index,2) = (position[1] - approximated_cell_midpoint[1])/cell_diameter;
-            A(index,3) = (position[0] - approximated_cell_midpoint[0]) * (position[1] - approximated_cell_midpoint[1])/std::pow(cell_diameter,2);
+            A(index,1) = (particle_position[0] - approximated_cell_midpoint[0])/cell_diameter;
+            A(index,2) = (particle_position[1] - approximated_cell_midpoint[1])/cell_diameter;
+            A(index,3) = (particle_position[0] - approximated_cell_midpoint[0]) * (particle_position[1] - approximated_cell_midpoint[1])/std::pow(cell_diameter,2);
           }
 
         dealii::LAPACKFullMatrix<double> B(matrix_dimension, matrix_dimension);

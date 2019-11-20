@@ -67,20 +67,20 @@ namespace aspect
       {
         // Add declaration for volume fraction field
         vars.push_back(VariableDeclaration<dim>("volume_fraction_"+volume_of_fluid_field_names[f],
-                                                std::shared_ptr<FiniteElement<dim>>(
+                                                std::unique_ptr<FiniteElement<dim>>(
                                                   new FE_DGQ<dim>(0)),
                                                 1,
                                                 1));
 
         // Add declaration for reconstructed interface cache
         vars.push_back(VariableDeclaration<dim>("volume_of_fluid_interface_reconstruction_"+volume_of_fluid_field_names[f],
-                                                std::shared_ptr<FiniteElement<dim>>(
+                                                std::unique_ptr<FiniteElement<dim>>(
                                                   new FE_DGQ<dim>(0)),
                                                 dim+1,
                                                 1));
 
         vars.push_back(VariableDeclaration<dim>("volume_of_fluid_contour_"+volume_of_fluid_field_names[f],
-                                                std::shared_ptr<FiniteElement<dim>>(
+                                                std::unique_ptr<FiniteElement<dim>>(
                                                   new FE_DGQ<dim>(1)),
                                                 1,
                                                 1));
@@ -99,14 +99,14 @@ namespace aspect
 
       prm.declare_entry ("Volume of Fluid solver tolerance", "1e-12",
                          Patterns::Double(0,1),
-                         "The relative tolerance up to which the linear system"
-                         "for the Volume of Fluid system gets solved. See"
-                         "'Solver parameters/Composition solver tolerance'"
+                         "The relative tolerance up to which the linear system "
+                         "for the Volume of Fluid system gets solved. See "
+                         "'Solver parameters/Composition solver tolerance' "
                          "for more details.");
 
       prm.declare_entry ("Number initialization samples", "3",
                          Patterns::Integer (1),
-                         "Number of divisions per dimension when computing the initial volume fracitons."
+                         "Number of divisions per dimension when computing the initial volume fractions."
                          "If set to the default of 3 for a 2D model, then initialization will be based on "
                          "the initialization criterion at $3^2=9$ points within each cell. If the initialization "
                          "based on a composition style initial condition, a larger value may be desired for better "
@@ -263,7 +263,7 @@ namespace aspect
     AssertThrow(dynamic_cast<const MappingCartesian<dim> *>(&(this->get_mapping())),
                 ExcMessage("Volume of Fluid Interface Tracking currently requires Cartesian Mappings"));
 
-    AssertThrow(!this->get_parameters().free_surface_enabled,
+    AssertThrow(!this->get_parameters().mesh_deformation_enabled,
                 ExcMessage("Volume of Fluid Interface Tracking is currently incompatible with the Free Surface implementation."));
 
     AssertThrow(!this->get_parameters().include_melt_transport,

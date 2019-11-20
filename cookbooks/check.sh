@@ -17,23 +17,29 @@ then
 fi
 
 
-# run aspect on all .prm files in the current folder
+# Run aspect on all .prm files in the current folder; however,
+# exclude files named parameters.prm and original.prm as these
+# are created by previous ASPECT runs and placed in the output
+# directories (where they can't be run from since paths don't
+# match up any more).
 run_all_prms ()
 {
     for prm in `ls *prm`;
     do
-    if [ "`basename $prm`" = "parameters.prm" ];
-    then
+      if [ "`basename $prm`" = "parameters.prm" -o "`basename $prm`" = "original.prm" ];
+      then
 	continue;
-    fi
-    echo "Running '$prm' at `pwd` with '$BUILD' ..."
-    cp $prm $prm.tmp
-    echo "set End time=0" >> $prm.tmp
-    echo "set Max nonlinear iterations = 5" >> $prm.tmp
+      fi
 
-    $BUILD/aspect $prm.tmp >/dev/null || { rm -f $prm.tmp; return 2; }
-    rm -f $prm.tmp
+      echo "Running '$prm' at `pwd` with '$BUILD' ..."
+      cp $prm $prm.tmp
+      echo "set End time=0" >> $prm.tmp
+      echo "set Max nonlinear iterations = 5" >> $prm.tmp
+
+      $BUILD/aspect $prm.tmp >/dev/null || { rm -f $prm.tmp; return 2; }
+      rm -f $prm.tmp
     done
+
     return 0;
 }
 

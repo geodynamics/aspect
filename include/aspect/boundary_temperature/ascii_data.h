@@ -53,7 +53,7 @@ namespace aspect
          * beginning of the program. Checks preconditions.
          */
         void
-        initialize ();
+        initialize () override;
 
         // avoid -Woverloaded-virtual:
         using Utilities::AsciiDataBoundary<dim>::initialize;
@@ -64,8 +64,7 @@ namespace aspect
          * necessary and outputs a warning if the end of the set of data files
          * is reached.
          */
-        void
-        update ();
+        void update () override;
 
         /**
          * Return the boundary temperature as a function of position. For the
@@ -75,7 +74,7 @@ namespace aspect
          */
         double
         boundary_temperature (const types::boundary_id boundary_indicator,
-                              const Point<dim> &position) const;
+                              const Point<dim> &position) const override;
 
         /**
          * Return the minimal the temperature on that part of the boundary on
@@ -84,7 +83,7 @@ namespace aspect
          * This value is used in computing dimensionless numbers such as the
          * Nusselt number indicating heat flux.
          */
-        double minimal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const;
+        double minimal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const override;
 
         /**
          * Return the maximal the temperature on that part of the boundary on
@@ -93,7 +92,7 @@ namespace aspect
          * This value is used in computing dimensionless numbers such as the
          * Nusselt number indicating heat flux.
          */
-        double maximal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const;
+        double maximal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const override;
 
 
         /**
@@ -107,7 +106,7 @@ namespace aspect
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
     };
   }
 }

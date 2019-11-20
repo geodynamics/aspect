@@ -9,15 +9,15 @@ Number of degrees of freedom: 14,505 (4,290+2,097+4,290+561+2,145+561+561)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 38+0 iterations.
    Solving for u_f in 13 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.50805e-16, 1.17203e-16, 0, 0.000956596
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.61474e-16, 1.5319e-16, 0, 0.000956596
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.000956596
 
    Postprocessing:
      Writing graphical output:           output-average_density_boundary_fluid_pressure/solution/solution-00000.0000
      Compositions min/max/mass:          0/0.07253/8.923e+08 // 0/0/0
-     RMS, max velocity:                  8.02e-07 m/year, 4.19e-06 m/year
+     RMS, max velocity:                  8.85e-07 m/year, 4.83e-06 m/year
      Temperature min/avg/max:            293 K, 1210 K, 1624 K
-     Mass fluxes through boundary parts: 0 kg/yr, -89.22 kg/yr, 85.73 kg/yr, 0 kg/yr
+     Mass fluxes through boundary parts: 0 kg/yr, 18.22 kg/yr, -20.22 kg/yr, 0 kg/yr
 
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
@@ -25,34 +25,34 @@ Number of degrees of freedom: 14,505 (4,290+2,097+4,290+561+2,145+561+561)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
    Solving for u_f in 13 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.50805e-16, 1.17203e-16, 0, 7.95357e-09
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 7.95357e-09
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.61474e-16, 1.5319e-16, 0, 9.23112e-09
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 9.23112e-09
 
    Postprocessing:
      Writing graphical output:           output-average_density_boundary_fluid_pressure/solution/solution-00000.0001
      Compositions min/max/mass:          0/0.07253/8.923e+08 // 0/0/0
-     RMS, max velocity:                  8.02e-07 m/year, 4.19e-06 m/year
+     RMS, max velocity:                  8.85e-07 m/year, 4.83e-06 m/year
      Temperature min/avg/max:            293 K, 1210 K, 1624 K
-     Mass fluxes through boundary parts: 0 kg/yr, -89.22 kg/yr, 85.73 kg/yr, 0 kg/yr
+     Mass fluxes through boundary parts: 0 kg/yr, 18.22 kg/yr, -20.22 kg/yr, 0 kg/yr
 
 
 *** Timestep 1:  t=100000 years
    Solving composition reactions in 50 substep(s).
-   Solving temperature system... 5 iterations.
-   Solving porosity system ... 3 iterations.
+   Solving temperature system... 6 iterations.
+   Solving porosity system ... 4 iterations.
    Skipping peridotite composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 13+0 iterations.
+   Solving Stokes system... 15+0 iterations.
    Solving for u_f in 13 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.00035945, 0.00216443, 0, 7.06593e-06
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00216443
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.000416768, 0.00426217, 0, 9.66278e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00426217
 
    Postprocessing:
      Writing graphical output:           output-average_density_boundary_fluid_pressure/solution/solution-00001.0000
-     Compositions min/max/mass:          -7.948e-05/0.07254/8.922e+08 // 0/0/0
-     RMS, max velocity:                  9.25e-07 m/year, 4.58e-06 m/year
+     Compositions min/max/mass:          -0.0001483/0.07254/8.922e+08 // 0/0/0
+     RMS, max velocity:                  9.84e-07 m/year, 5.3e-06 m/year
      Temperature min/avg/max:            293 K, 1210 K, 1624 K
-     Mass fluxes through boundary parts: 0 kg/yr, -366 kg/yr, 369.9 kg/yr, 0 kg/yr
+     Mass fluxes through boundary parts: 0 kg/yr, -348.3 kg/yr, 348.4 kg/yr, 0 kg/yr
 
    Solving temperature system... 3 iterations.
    Solving porosity system ... 3 iterations.
@@ -60,15 +60,15 @@ Number of degrees of freedom: 14,505 (4,290+2,097+4,290+561+2,145+561+561)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
    Solving for u_f in 13 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.69564e-08, 3.61841e-05, 0, 8.82077e-09
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 3.61841e-05
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.94064e-08, 3.80197e-05, 0, 9.61903e-09
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 3.80197e-05
 
    Postprocessing:
      Writing graphical output:           output-average_density_boundary_fluid_pressure/solution/solution-00001.0001
-     Compositions min/max/mass:          -7.132e-05/0.07254/8.923e+08 // 0/0/0
-     RMS, max velocity:                  9.25e-07 m/year, 4.58e-06 m/year
+     Compositions min/max/mass:          -0.0001414/0.07254/8.923e+08 // 0/0/0
+     RMS, max velocity:                  9.84e-07 m/year, 5.3e-06 m/year
      Temperature min/avg/max:            293 K, 1210 K, 1624 K
-     Mass fluxes through boundary parts: 0 kg/yr, -366 kg/yr, 369.9 kg/yr, 0 kg/yr
+     Mass fluxes through boundary parts: 0 kg/yr, -348.3 kg/yr, 348.4 kg/yr, 0 kg/yr
 
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
@@ -76,15 +76,15 @@ Number of degrees of freedom: 14,505 (4,290+2,097+4,290+561+2,145+561+561)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
    Solving for u_f in 13 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.49171e-13, 1.17138e-15, 0, 8.82077e-09
-      Relative nonlinear residual (total system) after nonlinear iteration 3: 8.82077e-09
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.90172e-13, 8.06466e-15, 0, 9.61903e-09
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 9.61903e-09
 
    Postprocessing:
      Writing graphical output:           output-average_density_boundary_fluid_pressure/solution/solution-00001.0002
-     Compositions min/max/mass:          -7.132e-05/0.07254/8.923e+08 // 0/0/0
-     RMS, max velocity:                  9.25e-07 m/year, 4.58e-06 m/year
+     Compositions min/max/mass:          -0.0001414/0.07254/8.923e+08 // 0/0/0
+     RMS, max velocity:                  9.84e-07 m/year, 5.3e-06 m/year
      Temperature min/avg/max:            293 K, 1210 K, 1624 K
-     Mass fluxes through boundary parts: 0 kg/yr, -366 kg/yr, 369.9 kg/yr, 0 kg/yr
+     Mass fluxes through boundary parts: 0 kg/yr, -348.3 kg/yr, 348.4 kg/yr, 0 kg/yr
 
 
 Termination requested by criterion: end time
