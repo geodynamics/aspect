@@ -484,13 +484,27 @@ namespace aspect
                                       solver_control);
 
         if (Utilities::MPI::this_mpi_process(mpi_communicator) == 0)
-          AssertThrow (false,
-                       ExcMessage (std::string("The iterative advection solver "
-                                               "did not converge. It reported the following error:\n\n")
-                                   +
-                                   exc.what()))
-          else
-            throw QuietException();
+          {
+            // output solver history
+            std::ofstream f((parameters.output_directory+"solver_history.txt").c_str());
+
+            // Only request the solver history if a history has actually been created
+            for (unsigned int i=0; i<solver_control.get_history_data().size(); ++i)
+              f << i << " " << solver_control.get_history_data()[i] << "\n";
+
+            f.close();
+
+            AssertThrow (false,
+                         ExcMessage (std::string("The iterative advection solver "
+                                                 "did not converge. It reported the following error:\n\n")
+                                     +
+                                     exc.what()
+                                     + "\n The required residual for convergence is: " + std::to_string(tolerance)
+                                     + ".\n See " + parameters.output_directory+"solver_history.txt"
+                                     + " for convergence history."));
+          }
+        else
+          throw QuietException();
       }
 
     // signal successful solver
@@ -868,7 +882,8 @@ namespace aspect
                                                          "did not converge. It reported the following error:\n\n")
                                              +
                                              exc.what()
-                                             + "\n See " + parameters.output_directory+"solver_history.txt"
+                                             + "\n The required residual for convergence is: " + std::to_string(solver_tolerance)
+                                             + ".\n See " + parameters.output_directory+"solver_history.txt"
                                              + " for convergence history."));
                   }
                 else
