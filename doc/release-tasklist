@@ -120,6 +120,8 @@
     - modify docker/Dockerfile and docker/build.sh to checkout the release
       cd docker && ./build.sh
       docker push geodynamics/aspect:v$TAG
+  . update the spack installation package with the latest tarball, 
+    see https://github.com/spack/spack/pull/13830 for an example
   . announce on
        cig-all@geodynamics.org
        https://community.geodynamics.org/c/aspect
