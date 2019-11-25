@@ -1,0 +1,12 @@
+# This file can be used to install either ASPECT, or only its dependencies
+# using the 'spack' package manager. Usage: `spack install` in this directory
+# will install the development version of ASPECT with minimal dependencies.
+# `spack install --only dependencies` will only install ASPECT's dependencies,
+# after which ASPECT can be compiled from this folder as usual.
+
+spack:
+  specs:
+  - aspect@develop
+    ^dealii@9.1.1~ginkgo~symengine~petsc~slepc~adol-c+optflags~gmsh+metis~netcdf~oce~arpack~scalapack~assimp~sundials
+    ^trilinos~suite-sparse~hypre
+    ^suite-sparse@5.2.0
