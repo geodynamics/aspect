@@ -18,6 +18,7 @@
   <http://www.gnu.org/licenses/>.
 */
 
+#ifdef ASPECT_WITH_WORLD_BUILDER
 #ifndef _aspect_initial_temperature_world_builder_h
 #define _aspect_initial_temperature_world_builder_h
 
@@ -56,4 +57,5 @@ namespace aspect
   }
 }
 
+#endif
 #endif

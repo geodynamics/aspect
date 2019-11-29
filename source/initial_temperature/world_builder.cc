@@ -18,7 +18,7 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#ifdef ASPECT_USE_WORLD_BUILDER
+#ifdef ASPECT_WITH_WORLD_BUILDER
 #include <aspect/initial_temperature/world_builder.h>
 #include <world_builder/world.h>
 #include <aspect/geometry_model/interface.h>
