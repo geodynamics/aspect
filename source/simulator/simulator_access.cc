@@ -619,7 +619,7 @@ namespace aspect
   }
 
 
-
+#ifdef ASPECT_WITH_WORLD_BUILDER
   template <int dim>
   const WorldBuilder::World &
   SimulatorAccess<dim>::get_world_builder () const
@@ -629,7 +629,7 @@ namespace aspect
                        "Enable it by providing a path to a world builder file."));
     return *(simulator->world_builder);
   }
-
+#endif
 
 
   template <int dim>

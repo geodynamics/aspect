@@ -759,7 +759,7 @@ namespace aspect
        */
       const NewtonHandler<dim> &
       get_newton_handler () const;
-
+#ifdef ASPECT_WITH_WORLD_BUILDER
       /**
        * Return a reference to the world builder that controls the setup of
        * initial conditions.
@@ -769,7 +769,7 @@ namespace aspect
        */
       const WorldBuilder::World &
       get_world_builder () const;
-
+#endif
       /**
        * Return a reference to the mesh deformation handler. This function will
        * throw an exception if mesh deformation is not activated.

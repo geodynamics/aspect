@@ -30,7 +30,9 @@
 #include <aspect/citation_info.h>
 #include <aspect/postprocess/particles.h>
 
-#  include <world_builder/world.h>
+#ifdef ASPECT_WITH_WORLD_BUILDER
+#include <world_builder/world.h>
+#endif
 
 #include <aspect/simulator/assemblers/interface.h>
 #include <aspect/geometry_model/initial_topography_model/zero_topography.h>
@@ -176,9 +178,11 @@ namespace aspect
     gravity_model (GravityModel::create_gravity_model<dim>(prm)),
     prescribed_stokes_solution (PrescribedStokesSolution::create_prescribed_stokes_solution<dim>(prm)),
     adiabatic_conditions (AdiabaticConditions::create_adiabatic_conditions<dim>(prm)),
+#ifdef ASPECT_WITH_WORLD_BUILDER
     world_builder (parameters.world_builder_file != "" ?
                    std_cxx14::make_unique<WorldBuilder::World>(parameters.world_builder_file) :
                    nullptr),
+#endif
     boundary_heat_flux (BoundaryHeatFlux::create_boundary_heat_flux<dim>(prm)),
     particle_world(nullptr),
     time (numbers::signaling_nan<double>()),
