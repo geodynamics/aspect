@@ -38,13 +38,6 @@ namespace aspect
     boundary_temperature (const types::boundary_id boundary_indicator,
                           const Point<dim> &/*position*/) const
     {
-      // verify that the geometry is a box since only for this geometry
-      // do we know for sure what boundary indicators it uses and what they mean
-      Assert (dynamic_cast<const GeometryModel::Box<dim>*>(&this->get_geometry_model())
-              != nullptr,
-              ExcMessage ("This boundary model is only implemented if the geometry is "
-                          "a box."));
-
       Assert (boundary_indicator<2*dim, ExcMessage ("Given boundary indicator needs to be less than 2*dimension."));
       return temperature_[boundary_indicator];
     }
@@ -149,6 +142,13 @@ namespace aspect
               default:
                 Assert (false, ExcNotImplemented());
             }
+
+          // verify that the geometry is a box since only for this geometry
+          // do we know for sure what boundary indicators it uses and what they mean
+          AssertThrow (Plugins::plugin_type_matches<const GeometryModel::Box<dim>>(this->get_geometry_model()),
+                       ExcMessage ("This boundary model is only implemented if the geometry is "
+                                   "a box."));
+
         }
         prm.leave_subsection ();
       }

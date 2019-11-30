@@ -45,14 +45,6 @@ namespace aspect
     boundary_temperature (const types::boundary_id            boundary_indicator,
                           const Point<dim>                    &/*location*/) const
     {
-      // verify that the geometry is in fact a spherical shell since only
-      // for this geometry do we know for sure what boundary indicators it
-      // uses and what they mean
-      Assert (dynamic_cast<const GeometryModel::SphericalShell<dim>*>(&this->get_geometry_model())
-              != nullptr,
-              ExcMessage ("This boundary model is only implemented if the geometry is "
-                          "in fact a spherical shell."));
-
       switch (boundary_indicator)
         {
           case 0:
@@ -223,6 +215,13 @@ namespace aspect
       {
         prm.enter_subsection("Dynamic core");
         {
+          // verify that the geometry is in fact a spherical shell since only
+          // for this geometry do we know for sure what boundary indicators it
+          // uses and what they mean
+          AssertThrow (Plugins::plugin_type_matches<const GeometryModel::SphericalShell<dim>>(this->get_geometry_model()),
+                       ExcMessage ("This boundary model is only implemented if the geometry is "
+                                   "a spherical shell."));
+
           inner_temperature = prm.get_double ("Inner temperature");
           outer_temperature = prm.get_double ("Outer temperature");
           init_dT_dt        = prm.get_double ("dT over dt") / year_in_seconds;
@@ -596,12 +595,10 @@ namespace aspect
           // Read data of other energy source
           read_data_OES();
 
-          const GeometryModel::SphericalShell<dim> *spherical_shell_geometry =
-            dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&(this->get_geometry_model()));
-          AssertThrow (spherical_shell_geometry != nullptr,
-                       ExcMessage ("This boundary model is only implemented if the geometry is "
-                                   "in fact a spherical shell."));
-          Rc=spherical_shell_geometry->inner_radius();
+          const GeometryModel::SphericalShell<dim> &spherical_shell_geometry =
+            Plugins::get_plugin_as_type<const GeometryModel::SphericalShell<dim>> (this->get_geometry_model());
+
+          Rc=spherical_shell_geometry.inner_radius();
           Mc=get_Mass(Rc);
           P_Core=get_Pressure(0);
 
@@ -609,7 +606,7 @@ namespace aspect
           if (this->get_adiabatic_conditions().is_initialized() && !this->get_material_model().is_compressible())
             {
               Point<dim> p1;
-              p1(0) = spherical_shell_geometry->inner_radius();
+              p1(0) = spherical_shell_geometry.inner_radius();
               dTa   = this->get_adiabatic_conditions().temperature(p1)
                       - this->get_adiabatic_surface_temperature();
             }
