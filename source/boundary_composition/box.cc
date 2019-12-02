@@ -39,12 +39,6 @@ namespace aspect
                           const Point<dim> &/*position*/,
                           const unsigned int compositional_field) const
     {
-      // verify that the geometry is a box since only for this geometry
-      // do we know for sure what boundary indicators it uses and what they mean
-      Assert (Plugins::plugin_type_matches<const GeometryModel::Box<dim>>(this->get_geometry_model()),
-              ExcMessage ("This boundary model is only implemented if the geometry is "
-                          "a box."));
-
       Assert (boundary_indicator<2*dim, ExcMessage ("The given boundary indicator needs to be less than 2*dimension.."));
       return composition_values[boundary_indicator][compositional_field];
     }
@@ -140,6 +134,12 @@ namespace aspect
     void
     Box<dim>::initialize()
     {
+      // verify that the geometry is a box since only for this geometry
+      // do we know for sure what boundary indicators it uses and what they mean
+      AssertThrow (Plugins::plugin_type_matches<const GeometryModel::Box<dim>>(this->get_geometry_model()),
+                   ExcMessage ("This boundary model is only implemented if the geometry is "
+                               "a box."));
+
       // Verify that each of the lists for boundary values
       // has the requisite number of elements if it is in the set
       // of prescribed boundary indicators.
