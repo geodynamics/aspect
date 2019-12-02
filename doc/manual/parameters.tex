@@ -8271,7 +8271,7 @@ This model uses the following equations for the density: \begin{align}  \rho(p,T
 
 Plasticity limits viscous stress through a Drucker Prager yield criterion, where the yield stress in 3D is  $\sigma_y = \frac{6C\cos(\phi) + 2P\sin(\phi)} {\sqrt(3)(3+\sin(\phi))}$ and $\sigma_y = C\cos(\phi) + P\sin(\phi)$ in 2D. Above, $C$ is cohesion and $\phi$  is the angle of internal friction.  Note that the 2D form is equivalent to the Mohr Coulomb yield surface.  If $\phi$ is 0, the yield stress is fixed and equal to the cohesion (Von Mises yield criterion). When the viscous stress ($2v{\varepsilon}_{ii}$) exceeds the yield stress, the viscosity is rescaled back to the yield surface: $v_{y}=\sigma_{y}/(2{\varepsilon}_{ii})$. This form of plasticity is commonly used in geodynamic models. See, for example, Thieulot, C. (2011), PEPI 188, pp. 47-68. 
 
-The user has the option to linearly reduce the cohesion and internal friction angle as a function of the finite strain magnitude. The finite strain invariant or full strain tensor is calculated through compositional fields within the material model. This implementation is identical to the compositional field finite strain plugin and cookbook described in the manual (author: Gassmoeller, Dannberg). If the user selects to track the finite strain invariant ($e_{ii}$), a single compositional field tracks the value derived from $e_{ii}^t = (e_{ii})^{(t-1)} + \dot{e}_{ii}\; dt$, where $t$ and $t-1$ are the current and prior time steps, $\dot{e}_{ii}$ is the second invariant of the strain rate tensor and $dt$ is the time step size. In the case of the full strain tensor $F$, the finite strain magnitude is derived from the second invariant of the symmetric stretching tensor $L$, where $L = F [F]^T$. The user must specify a single compositional field for the finite strain invariant or multiple fields (4 in 2D, 9 in 3D) for the finite strain tensor. These field(s) must be the first listed compositional fields in the parameter file. Note that one or more of the finite strain tensor components must be assigned a non-zero value initially. This value can be be quite small (e.g., 1.e-8), but still non-zero. While the option to track and use the full finite strain tensor exists, tracking the associated compositional fields is computationally expensive in 3D. Similarly, the finite strain magnitudes may in fact decrease if the orientation of the deformation field switches through time. Consequently, the ideal solution is track the finite strain invariant (single compositional) field within the material and track the full finite strain tensor through particles.When only the second invariant of the strain is tracked, one has the option to track the full strain or only the plastic strain. In the latter case, strain is only tracked in case the material is plastically yielding, i.e. the viscous stess > yield strength. 
+The user has the option to linearly reduce the cohesion and internal friction angle as a function of the finite strain magnitude. The finite strain invariant or full strain tensor is calculated through compositional fields within the material model. This implementation is identical to the compositional field finite strain plugin and cookbook described in the manual (author: Gassmoeller, Dannberg). If the user selects to track the finite strain invariant ($e_{ii}$), a single compositional field tracks the value derived from $e_{ii}^t = (e_{ii})^{(t-1)} + \dot{e}_{ii}\; dt$, where $t$ and $t-1$ are the current and prior time steps, $\dot{e}_{ii}$ is the second invariant of the strain rate tensor and $dt$ is the time step size. In the case of the full strain tensor $F$, the finite strain magnitude is derived from the second invariant of the symmetric stretching tensor $L$, where $L = F [F]^T$. The user must specify a single compositional field for the finite strain invariant or multiple fields (4 in 2D, 9 in 3D) for the finite strain tensor. These field(s) must be the first listed compositional fields in the parameter file. Note that one or more of the finite strain tensor components must be assigned a non-zero value initially. This value can be be quite small (e.g., 1.e-8), but still non-zero. While the option to track and use the full finite strain tensor exists, tracking the associated compositional fields is computationally expensive in 3D. Similarly, the finite strain magnitudes may in fact decrease if the orientation of the deformation field switches through time. Consequently, the ideal solution is track the finite strain invariant (single compositional) field within the material and track the full finite strain tensor through particles.When only the second invariant of the strain is tracked, one has the option to track the full strain or only the plastic strain. In the latter case, strain is only tracked in case the material is plastically yielding, i.e. the viscous stess > yield stress. 
 
 Viscous stress may also be limited by a non-linear stress limiter that has a form similar to the Peierls creep mechanism. This stress limiter assigns an effective viscosity $\sigma_{\text{eff}} = \frac{\tau_y}{2\varepsilon_y} {\frac{\varepsilon_{ii}}{\varepsilon_y}}^{\frac{1}{n_y}-1}$ Above $\tau_y$ is a yield stress, $\varepsilon_y$ is the reference strain rate, $\varepsilon_{ii}$ is the strain rate and $n_y$ is the stress limiter exponent.  The yield stress, $\tau_y$, is defined through the Drucker Prager yield criterion formulation. This method of limiting viscous stress has been used in various forms within the geodynamic literature \cite{chri92,vavv02,cibi13,cibi15}.When $n_y$ is 1, it essentially becomes a linear viscosity model, and in the limit $n_y\rightarrow \infty$ it converges to the standard viscosity rescaling method (concretely, values $n_y>20$ are large enough).
 
@@ -10942,7 +10942,7 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 {\it Description:} A list of Clapeyron slopes for each phase transition. A positive Clapeyron slope indicates that the phase transition will occur in a greater depth, if the temperature is higher than the one given in Phase transition temperatures and in a smaller depth, if the temperature is smaller than the one given in Phase transition temperatures. For negative slopes the other way round. List must have the same number of entries as Phase transition depths. Units: $Pa/K$.
 
 
-{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$]
+{\it Possible values:} Any string
 \item {\it Parameter name:} {\tt Phase transition density jumps}
 \phantomsection\label{parameters:Material model/Latent heat/Phase transition density jumps}
 \label{parameters:Material_20model/Latent_20heat/Phase_20transition_20density_20jumps}
@@ -10976,7 +10976,7 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 {\it Description:} A list of depths where phase transitions occur. Values must monotonically increase. Units: $m$.
 
 
-{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
+{\it Possible values:} Any string
 \item {\it Parameter name:} {\tt Phase transition pressure widths}
 \phantomsection\label{parameters:Material model/Latent heat/Phase transition pressure widths}
 \label{parameters:Material_20model/Latent_20heat/Phase_20transition_20pressure_20widths}
@@ -10993,7 +10993,7 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 {\it Description:} A list of widths for each phase transition, in terms of pressure. The phase functions are scaled with these values, leading to a jump between phases for a value of zero and a gradual transition for larger values. List must have the same number of entries as Phase transition pressures. Define transition by depth instead of pressure must be set to false to use this parameter. Units: $Pa$.
 
 
-{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
+{\it Possible values:} Any string
 \item {\it Parameter name:} {\tt Phase transition pressures}
 \phantomsection\label{parameters:Material model/Latent heat/Phase transition pressures}
 \label{parameters:Material_20model/Latent_20heat/Phase_20transition_20pressures}
@@ -11010,7 +11010,7 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 {\it Description:} A list of pressures where phase transitions occur. Values must monotonically increase. Define transition by depth instead of pressure must be set to false to use this parameter. Units: $Pa$.
 
 
-{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
+{\it Possible values:} Any string
 \item {\it Parameter name:} {\tt Phase transition temperatures}
 \phantomsection\label{parameters:Material model/Latent heat/Phase transition temperatures}
 \label{parameters:Material_20model/Latent_20heat/Phase_20transition_20temperatures}
@@ -11027,7 +11027,7 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 {\it Description:} A list of temperatures where phase transitions occur. Higher or lower temperatures lead to phase transition occurring in smaller or greater depths than given in Phase transition depths, depending on the Clapeyron slope given in Phase transition Clapeyron slopes. List must have the same number of entries as Phase transition depths. Units: $\si{K}$.
 
 
-{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
+{\it Possible values:} Any string
 \item {\it Parameter name:} {\tt Phase transition widths}
 \phantomsection\label{parameters:Material model/Latent heat/Phase transition widths}
 \label{parameters:Material_20model/Latent_20heat/Phase_20transition_20widths}
@@ -11044,7 +11044,7 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 {\it Description:} A list of widths for each phase transition, in terms of depth. The phase functions are scaled with these values, leading to a jump between phases for a value of zero and a gradual transition for larger values. List must have the same number of entries as Phase transition depths. Units: $m$.
 
 
-{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
+{\it Possible values:} Any string
 \item {\it Parameter name:} {\tt Reference density}
 \phantomsection\label{parameters:Material model/Latent heat/Reference density}
 \label{parameters:Material_20model/Latent_20heat/Reference_20density}
@@ -16690,10 +16690,10 @@ The file format then consists of lines with Euclidean coordinates followed by th
 {\it Description:} A comma separated list which specifies which quantities to average in each depth slice. It defaults to averaging all available quantities, but this can be an expensive operation, so you may want to select only a few.
 
 List of options:
-all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic density|adiabatic density derivative|velocity magnitude|sinking velocity|Vs|Vp|viscosity|vertical heat flux
+all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic density|adiabatic density derivative|velocity magnitude|sinking velocity|Vs|Vp|viscosity|vertical heat flux|vertical mass flux
 
 
-{\it Possible values:} A comma-separated list of any of all, temperature, composition, adiabatic temperature, adiabatic pressure, adiabatic density, adiabatic density derivative, velocity magnitude, sinking velocity, Vs, Vp, viscosity, vertical heat flux
+{\it Possible values:} A comma-separated list of any of all, temperature, composition, adiabatic temperature, adiabatic pressure, adiabatic density, adiabatic density derivative, velocity magnitude, sinking velocity, Vs, Vp, viscosity, vertical heat flux, vertical mass flux
 \item {\it Parameter name:} {\tt Number of zones}
 \phantomsection\label{parameters:Postprocess/Depth average/Number of zones}
 \label{parameters:Postprocess/Depth_20average/Number_20of_20zones}
@@ -16718,16 +16718,16 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 
 \index[prmindex]{Output format}
 \index[prmindexfull]{Postprocess!Depth average!Output format}
-{\it Value:} gnuplot
+{\it Value:} gnuplot, txt
 
 
-{\it Default:} gnuplot
+{\it Default:} gnuplot, txt
 
 
-{\it Description:} The format in which the output shall be produced. The format in which the output is generated also determines the extension of the file into which data is written. The list of possible output formats that can be given here is documented in the appendix of the manual where the current parameter is described.
+{\it Description:} A list of formats in which the output shall be produced. The format in which the output is generated also determines the extension of the file into which data is written. The list of possible output formats that can be given here is documented in the appendix of the manual where the current parameter is described. By default the output is written as gnuplot file (for plotting), and as a simple text file.
 
 
-{\it Possible values:} Any one of none, dx, ucd, gnuplot, povray, eps, gmv, tecplot, tecplot\_binary, vtk, vtu, hdf5, svg, deal.II intermediate, txt
+{\it Possible values:} A comma-separated list of any of none, dx, ucd, gnuplot, povray, eps, gmv, tecplot, tecplot\_binary, vtk, vtu, hdf5, svg, deal.II intermediate, txt
 \item {\it Parameter name:} {\tt Time between graphical output}
 \phantomsection\label{parameters:Postprocess/Depth average/Time between graphical output}
 \label{parameters:Postprocess/Depth_20average/Time_20between_20graphical_20output}

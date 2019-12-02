@@ -2414,19 +2414,19 @@ The number of zones in depth direction within which we are to compute averages. 
 </Number_20of_20zones>
 <Output_20format>
 <value>
-gnuplot
+gnuplot, txt
 </value>
 <default_value>
-gnuplot
+gnuplot, txt
 </default_value>
 <documentation>
-The format in which the output shall be produced. The format in which the output is generated also determines the extension of the file into which data is written. The list of possible output formats that can be given here is documented in the appendix of the manual where the current parameter is described.
+A list of formats in which the output shall be produced. The format in which the output is generated also determines the extension of the file into which data is written. The list of possible output formats that can be given here is documented in the appendix of the manual where the current parameter is described. By default the output is written as gnuplot file (for plotting), and as a simple text file.
 </documentation>
 <pattern>
 126
 </pattern>
 <pattern_description>
-[Selection none|dx|ucd|gnuplot|povray|eps|gmv|tecplot|tecplot_binary|vtk|vtu|hdf5|svg|deal.II intermediate|txt ]
+[MultipleSelection none|dx|ucd|gnuplot|povray|eps|gmv|tecplot|tecplot_binary|vtk|vtu|hdf5|svg|deal.II intermediate|txt ]
 </pattern_description>
 </Output_20format>
 <List_20of_20output_20variables>
@@ -2440,13 +2440,13 @@ all
 A comma separated list which specifies which quantities to average in each depth slice. It defaults to averaging all available quantities, but this can be an expensive operation, so you may want to select only a few.
 
 List of options:
-all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic density|adiabatic density derivative|velocity magnitude|sinking velocity|Vs|Vp|viscosity|vertical heat flux
+all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic density|adiabatic density derivative|velocity magnitude|sinking velocity|Vs|Vp|viscosity|vertical heat flux|vertical mass flux
 </documentation>
 <pattern>
 127
 </pattern>
 <pattern_description>
-[MultipleSelection all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic density|adiabatic density derivative|velocity magnitude|sinking velocity|Vs|Vp|viscosity|vertical heat flux ]
+[MultipleSelection all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic density|adiabatic density derivative|velocity magnitude|sinking velocity|Vs|Vp|viscosity|vertical heat flux|vertical mass flux ]
 </pattern_description>
 </List_20of_20output_20variables>
 </Depth_20average>
@@ -5575,7 +5575,7 @@ This model uses the following equations for the density: \begin{align}  \rho(p,T
 
 Plasticity limits viscous stress through a Drucker Prager yield criterion, where the yield stress in 3D is  $\sigma_y = \frac{6C\cos(\phi) + 2P\sin(\phi)} {\sqrt(3)(3+\sin(\phi))}$ and $\sigma_y = C\cos(\phi) + P\sin(\phi)$ in 2D. Above, $C$ is cohesion and $\phi$  is the angle of internal friction.  Note that the 2D form is equivalent to the Mohr Coulomb yield surface.  If $\phi$ is 0, the yield stress is fixed and equal to the cohesion (Von Mises yield criterion). When the viscous stress ($2v{\varepsilon}_{ii}$) exceeds the yield stress, the viscosity is rescaled back to the yield surface: $v_{y}=\sigma_{y}/(2{\varepsilon}_{ii})$. This form of plasticity is commonly used in geodynamic models. See, for example, Thieulot, C. (2011), PEPI 188, pp. 47-68. 
 
-The user has the option to linearly reduce the cohesion and internal friction angle as a function of the finite strain magnitude. The finite strain invariant or full strain tensor is calculated through compositional fields within the material model. This implementation is identical to the compositional field finite strain plugin and cookbook described in the manual (author: Gassmoeller, Dannberg). If the user selects to track the finite strain invariant ($e_{ii}$), a single compositional field tracks the value derived from $e_{ii}^t = (e_{ii})^{(t-1)} + \dot{e}_{ii}\; dt$, where $t$ and $t-1$ are the current and prior time steps, $\dot{e}_{ii}$ is the second invariant of the strain rate tensor and $dt$ is the time step size. In the case of the full strain tensor $F$, the finite strain magnitude is derived from the second invariant of the symmetric stretching tensor $L$, where $L = F [F]^T$. The user must specify a single compositional field for the finite strain invariant or multiple fields (4 in 2D, 9 in 3D) for the finite strain tensor. These field(s) must be the first listed compositional fields in the parameter file. Note that one or more of the finite strain tensor components must be assigned a non-zero value initially. This value can be be quite small (e.g., 1.e-8), but still non-zero. While the option to track and use the full finite strain tensor exists, tracking the associated compositional fields is computationally expensive in 3D. Similarly, the finite strain magnitudes may in fact decrease if the orientation of the deformation field switches through time. Consequently, the ideal solution is track the finite strain invariant (single compositional) field within the material and track the full finite strain tensor through particles.When only the second invariant of the strain is tracked, one has the option to track the full strain or only the plastic strain. In the latter case, strain is only tracked in case the material is plastically yielding, i.e. the viscous stess &gt; yield strength. 
+The user has the option to linearly reduce the cohesion and internal friction angle as a function of the finite strain magnitude. The finite strain invariant or full strain tensor is calculated through compositional fields within the material model. This implementation is identical to the compositional field finite strain plugin and cookbook described in the manual (author: Gassmoeller, Dannberg). If the user selects to track the finite strain invariant ($e_{ii}$), a single compositional field tracks the value derived from $e_{ii}^t = (e_{ii})^{(t-1)} + \dot{e}_{ii}\; dt$, where $t$ and $t-1$ are the current and prior time steps, $\dot{e}_{ii}$ is the second invariant of the strain rate tensor and $dt$ is the time step size. In the case of the full strain tensor $F$, the finite strain magnitude is derived from the second invariant of the symmetric stretching tensor $L$, where $L = F [F]^T$. The user must specify a single compositional field for the finite strain invariant or multiple fields (4 in 2D, 9 in 3D) for the finite strain tensor. These field(s) must be the first listed compositional fields in the parameter file. Note that one or more of the finite strain tensor components must be assigned a non-zero value initially. This value can be be quite small (e.g., 1.e-8), but still non-zero. While the option to track and use the full finite strain tensor exists, tracking the associated compositional fields is computationally expensive in 3D. Similarly, the finite strain magnitudes may in fact decrease if the orientation of the deformation field switches through time. Consequently, the ideal solution is track the finite strain invariant (single compositional) field within the material and track the full finite strain tensor through particles.When only the second invariant of the strain is tracked, one has the option to track the full strain or only the plastic strain. In the latter case, strain is only tracked in case the material is plastically yielding, i.e. the viscous stess &gt; yield stress. 
 
 Viscous stress may also be limited by a non-linear stress limiter that has a form similar to the Peierls creep mechanism. This stress limiter assigns an effective viscosity $\sigma_{\text{eff}} = \frac{\tau_y}{2\varepsilon_y} {\frac{\varepsilon_{ii}}{\varepsilon_y}}^{\frac{1}{n_y}-1}$ Above $\tau_y$ is a yield stress, $\varepsilon_y$ is the reference strain rate, $\varepsilon_{ii}$ is the strain rate and $n_y$ is the stress limiter exponent.  The yield stress, $\tau_y$, is defined through the Drucker Prager yield criterion formulation. This method of limiting viscous stress has been used in various forms within the geodynamic literature \cite{chri92,vavv02,cibi13,cibi15}.When $n_y$ is 1, it essentially becomes a linear viscosity model, and in the limit $n_y\rightarrow \infty$ it converges to the standard viscosity rescaling method (concretely, values $n_y&gt;20$ are large enough).
 
@@ -8261,7 +8261,7 @@ A list of depths where phase transitions occur. Values must monotonically increa
 463
 </pattern>
 <pattern_description>
-[List of &lt;[Double 0...MAX_DOUBLE (inclusive)]&gt; of length 0...4294967295 (inclusive)]
+[Anything]
 </pattern_description>
 </Phase_20transition_20depths>
 <Phase_20transition_20widths>
@@ -8274,7 +8274,7 @@ A list of widths for each phase transition, in terms of depth. The phase functio
 464
 </pattern>
 <pattern_description>
-[List of &lt;[Double 0...MAX_DOUBLE (inclusive)]&gt; of length 0...4294967295 (inclusive)]
+[Anything]
 </pattern_description>
 </Phase_20transition_20widths>
 <Phase_20transition_20pressures>
@@ -8287,7 +8287,7 @@ A list of pressures where phase transitions occur. Values must monotonically inc
 465
 </pattern>
 <pattern_description>
-[List of &lt;[Double 0...MAX_DOUBLE (inclusive)]&gt; of length 0...4294967295 (inclusive)]
+[Anything]
 </pattern_description>
 </Phase_20transition_20pressures>
 <Phase_20transition_20pressure_20widths>
@@ -8300,7 +8300,7 @@ A list of widths for each phase transition, in terms of pressure. The phase func
 466
 </pattern>
 <pattern_description>
-[List of &lt;[Double 0...MAX_DOUBLE (inclusive)]&gt; of length 0...4294967295 (inclusive)]
+[Anything]
 </pattern_description>
 </Phase_20transition_20pressure_20widths>
 <Define_20transition_20by_20depth_20instead_20of_20pressure>
@@ -8330,7 +8330,7 @@ A list of temperatures where phase transitions occur. Higher or lower temperatur
 468
 </pattern>
 <pattern_description>
-[List of &lt;[Double 0...MAX_DOUBLE (inclusive)]&gt; of length 0...4294967295 (inclusive)]
+[Anything]
 </pattern_description>
 </Phase_20transition_20temperatures>
 <Phase_20transition_20Clapeyron_20slopes>
@@ -8343,7 +8343,7 @@ A list of Clapeyron slopes for each phase transition. A positive Clapeyron slope
 469
 </pattern>
 <pattern_description>
-[List of &lt;[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]&gt; of length 0...4294967295 (inclusive)]
+[Anything]
 </pattern_description>
 </Phase_20transition_20Clapeyron_20slopes>
 </Latent_20heat>
@@ -12005,23 +12005,6 @@ List of cohesions, $C$, for background material and compositional fields, for a 
 [List of &lt;[Double 0...MAX_DOUBLE (inclusive)]&gt; of length 0...4294967295 (inclusive)]
 </pattern_description>
 </Cohesions>
-<Stress_20limiter_20exponents>
-<value>
-1.0
-</value>
-<default_value>
-1.0
-</default_value>
-<documentation>
-List of stress limiter exponents, $n_{\text{lim}}$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. Units: none.
-</documentation>
-<pattern>
-686
-</pattern>
-<pattern_description>
-[List of &lt;[Double 0...MAX_DOUBLE (inclusive)]&gt; of length 0...4294967295 (inclusive)]
-</pattern_description>
-</Stress_20limiter_20exponents>
 <Maximum_20yield_20stress>
 <value>
 1e12
@@ -12033,12 +12016,29 @@ List of stress limiter exponents, $n_{\text{lim}}$, for background material and 
 Limits the maximum value of the yield stress determined by the drucker-prager plasticity parameters. Default value is chosen so this is not automatically used. Values of 100e6--1000e6 $Pa$ have been used in previous models. Units: $Pa$
 </documentation>
 <pattern>
-687
+686
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
 </pattern_description>
 </Maximum_20yield_20stress>
+<Stress_20limiter_20exponents>
+<value>
+1.0
+</value>
+<default_value>
+1.0
+</default_value>
+<documentation>
+List of stress limiter exponents, $n_{\text{lim}}$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. Units: none.
+</documentation>
+<pattern>
+687
+</pattern>
+<pattern_description>
+[List of &lt;[Double 0...MAX_DOUBLE (inclusive)]&gt; of length 0...4294967295 (inclusive)]
+</pattern_description>
+</Stress_20limiter_20exponents>
 <Adiabat_20temperature_20gradient_20for_20viscosity>
 <value>
 0.0

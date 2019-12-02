@@ -72,6 +72,8 @@ namespace aspect
            * @param [in] n_fields The number of expected values for the angle of friction and
            * cohesion lists. Generally either the number of compositional fields or this number
            * plus one (for a background field), depending on how the user handles background fields.
+           *
+           * @param [in] prm The ParameterHandler to read from.
            */
           DruckerPragerParameters
           parse_parameters (const unsigned int n_fields,
