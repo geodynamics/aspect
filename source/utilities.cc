@@ -1755,6 +1755,7 @@ namespace aspect
           grid_extent[i].first = temp_coord;
 
           // The first coordinate value
+          coordinate_values[i].clear();
           coordinate_values[i].push_back(temp_coord);
 
           // The grid spacing
