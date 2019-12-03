@@ -1,0 +1,153 @@
+# This parameter file constructs a simple shear benchmark, which is adapted from Farrington et al. 2014,
+# (Geophysics, Geochemsitry, Geosystems). A uniform material undergoes simple shear at a constant rate
+# up until time=1.  At this point the shearing velocity is reduced to zero, and elastic stresses relax.
+# The material model is viscoelastic plastic, with a cohesion value of 3.5. This value is slightly
+# higher than the visco-elastic stress at time=1, meaning that yielding does not occur, and the
+# analytic (visco-elastic) solution should be reasonably well approximated.
+# This setup demonstrates an important difference between viscoelastic plastic, and visco-plastic rheology.
+# In a comparable setup, the visco-plastic rheology will exhibit yielding in the first velocity iteration,
+# as the value pre-yield stress magnitude is 5.
+# The analytic solution follows the expression in Farrington et al., and describes the
+# non-viscous portion of the total stress. This is equivalent to the magnitude of the stored stress
+# history tensor. The three independent components of this tensor are tracked with compositional fields
+# (stress_xx, stress_yy, stress_xy). The choice of elastic timestip (Fixed elastic time step) and
+# numerical timestep (Maximum time step) determine the degree of convergence with the analytic
+# solution. The values set in the parameter file allow the model to be executed relatively quickly, but
+# result in some discrepancy with the analytic solution. Reducing the elastic and numerical timesteps by a
+# factor of 0.1, results in very close convergence to the analytic solution (as noted in Farrington et al.)
+# Note that the parameter file does not currently output a direct measure of the stored stress
+# history tensor (magnitude). We used Paraview to construct this metric and output value in plain text format
+# (using the save data method of the Plot Over Line filter).
+
+
+# Global parameters
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 8
+set Use years in output instead of seconds = false
+set Resume computation                     = auto
+set CFL number                             = 1.0
+set Maximum time step                      = 0.025
+set Output directory                       = viscoelastic_plastic_simple_shear
+set Pressure normalization                 = surface
+set Surface pressure                       = 0.
+
+
+set Nonlinear solver scheme                = iterated Stokes
+set Max nonlinear iterations               = 30
+set Nonlinear solver tolerance             = 1e-5
+set Max nonlinear iterations in pre-refinement      = 0
+
+
+# Solver settings
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Number of cheap Stokes solver steps = 200
+    set Linear solver tolerance                         = 1e-5
+  end
+end
+
+
+subsection Geometry model
+  set Model name = box
+  subsection Box
+    set X extent  = 1.0
+    set Y extent  = 1.0
+    set X repetitions = 32
+    set Y repetitions = 32
+    set X periodic = true
+  end
+end
+
+# Velocity boundary conditions
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = bottom:function, top:function
+end
+
+subsection Boundary velocity model
+  subsection Function
+    set Function expression = if(t<1, if (y > 0.5, 0.05, 0), 0); \
+                              0
+  end
+end
+
+# Formulation classification
+subsection Formulation
+  set Enable elasticity = true
+end
+
+# Gravity model
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 1
+  end
+end
+
+# Number and name of compositional fields
+subsection Compositional fields
+  set Number of fields = 4
+  set Names of fields  = stress_xx, stress_yy, stress_xy, goo
+end
+
+# Composition boundary conditions
+subsection Boundary composition model
+  set List of model names = initial composition
+end
+
+# Spatial domain of different compositional fields.
+# The elastic stress tensor components are equal to 0 initially.
+subsection Initial composition model
+  set Model name = function
+  subsection Function
+    set Function expression = 0.0;0.0;0.0;1.0
+  end
+end
+
+# Material model
+subsection Material model
+
+  set Model name = viscoelastic plastic
+
+  subsection Viscoelastic Plastic
+    set Densities                   =  1
+    set Linear viscosities          = 1.e2
+    set Elastic shear moduli        = 1.e2
+    set Fixed elastic time step     = 0.01
+    set Use fixed elastic time step = true
+    set Use stress averaging        = true
+    set Viscosity averaging scheme  = maximum composition
+    set Cohesions                   = 3.5
+    set Minimum viscosity           = 1e-3
+    set Maximum viscosity           = 1e3
+    set Reference viscosity         = 10
+
+  end
+
+end
+
+
+# The temperature plays no role in this model
+subsection Boundary temperature model
+  set List of model names = box
+end
+
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Function expression = 0
+  end
+end
+
+
+
+# Post processing
+subsection Postprocess
+  set List of postprocessors = visualization
+  subsection Visualization
+    set Time between graphical output = 0.1
+    set List of output variables = viscosity, strain rate, named additional outputs
+    set Interpolate output = true
+    set Write higher order output = true
+  end
+end

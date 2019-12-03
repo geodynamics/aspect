@@ -48,6 +48,8 @@ namespace aspect
       std::vector<double> elastic_shear_moduli(elastic_rheology.get_elastic_shear_moduli());
       EquationOfStateOutputs<dim> eos_outputs (this->n_compositional_fields()+1);
 
+      const double dte = elastic_rheology.elastic_timestep();
+
       for (unsigned int i=0; i < in.temperature.size(); ++i)
         {
           const std::vector<double> composition = in.composition[i];
@@ -77,17 +79,6 @@ namespace aspect
 
           if (in.strain_rate.size())
             {
-              // Calculate the square root of the second moment invariant for the deviatoric strain rate tensor.
-              // The first time this function is called (first iteration of first time step)
-              // a specified "reference" strain rate is used as the returned value would
-              // otherwise be zero.
-              const double edot_ii = ( (this->get_timestep_number() == 0 && strain_rate.norm() <= std::numeric_limits<double>::min() )
-                                       ?
-                                       reference_strain_rate
-                                       :
-                                       std::max(std::sqrt(std::fabs(second_invariant(deviator(strain_rate)))),
-                                                minimum_strain_rate) );
-
               const std::vector<double> viscosities_pre_yield = linear_viscosities;
 
               // TODO: Add strain-weakening of cohesion and friction
@@ -95,18 +86,37 @@ namespace aspect
               const std::vector<double> phi = angles_internal_friction;
 
               // Initialize variables
-              std::vector<double> stresses_viscous(volume_fractions.size());
+              std::vector<double> stresses_ve(volume_fractions.size());
               std::vector<double> stresses_yield(volume_fractions.size());
-              std::vector<double> viscosities_viscoplastic(volume_fractions.size());
-              std::vector<double> viscosities_viscoelastic(volume_fractions.size());
+              std::vector<double> viscosities_ve(volume_fractions.size());
+              std::vector<double> viscosities_vep(volume_fractions.size());
+
+              SymmetricTensor<2,dim> stress_old;
+              for (unsigned int j=0; j < SymmetricTensor<2,dim>::n_independent_components; ++j)
+                stress_old[SymmetricTensor<2,dim>::unrolled_to_component_indices(j)] = composition[j];
 
               // Loop through all compositions
               for (unsigned int j=0; j < volume_fractions.size(); ++j)
                 {
+                  // Calculate the square root of the second moment invariant for the deviatoric
+                  // strain rate tensor, which includes both viscous and elastic components.
+                  // The first time this function is called (first iteration of first time step)
+                  // a specified "reference" strain rate is used as the returned value would
+                  // otherwise be zero.
+                  const SymmetricTensor<2,dim> edot = 2. * (deviator(strain_rate)) + stress_old / (elastic_shear_moduli[j] * dte);
+                  const double edot_ii = ( (this->get_timestep_number() == 0 && strain_rate.norm() <= std::numeric_limits<double>::min() )
+                                           ?
+                                           reference_strain_rate
+                                           :
+                                           std::max(std::sqrt(std::fabs(second_invariant(edot))), minimum_strain_rate) );
 
-                  // Note that edot_ii is the full computed strain rate, which includes elastic stresses
-                  stresses_viscous[j] = 2. * viscosities_pre_yield[j] * edot_ii;
+                  // Calculate viscoelastic viscosity (equation 28 from Moresi et al., 2003)
+                  viscosities_ve[j] = viscosities_pre_yield[j] * dte / (dte + (viscosities_pre_yield[j]/elastic_shear_moduli[j]));
 
+                  // Calculate updated viscoselastic stress magnitude, which will be compared with the plastic yield stress
+                  stresses_ve[j] = viscosities_ve[j] * edot_ii;
+
+                  // Calculate plastic yield stress
                   stresses_yield[j] = ( (dim==3)
                                         ?
                                         ( 6.0 * coh[j] * std::cos(phi[j]) + 6.0 * std::max(pressure,0.0) * std::sin(phi[j]) )
@@ -114,25 +124,21 @@ namespace aspect
                                         :
                                         coh[j] * std::cos(phi[j]) + std::max(pressure,0.0) * std::sin(phi[j]) );
 
-                  // If the viscous stress is greater than the yield strength, rescale the viscosity back to yield surface.
-                  // If the viscous stress is less than the yield stress, the yield viscosity is equal to the pre-yield value.
-                  if ( stresses_viscous[j] >= stresses_yield[j]  )
+                  // If the viscoelastic stress is greater than the yield strength, rescale the viscosity back to yield surface.
+                  // If the viscoelastic stress is less than the yield stress, the yield viscosity is equal to the pre-yield (viscoelastic) value.
+                  if ( stresses_ve[j] >= stresses_yield[j]  )
                     {
-                      viscosities_viscoplastic[j] = stresses_yield[j] / (2.0 * edot_ii);
+                      viscosities_vep[j] = stresses_yield[j] / edot_ii;
                     }
                   else
                     {
-                      viscosities_viscoplastic[j] = viscosities_pre_yield[j];
+                      viscosities_vep[j] = viscosities_ve[j];
                     }
                 }
 
-              // Average viscosity and shear modulus
-              const double average_viscosity = MaterialUtilities::average_value(volume_fractions, viscosities_viscoplastic, viscosity_averaging);
               average_elastic_shear_moduli[i] = MaterialUtilities::average_value(volume_fractions, elastic_shear_moduli, viscosity_averaging);
 
-              // Average viscoelastic (e.g., effective) viscosity (equation 28 in Moresi et al., 2003, J. Comp. Phys.)
-              out.viscosities[i] = elastic_rheology.calculate_viscoelastic_viscosity(average_viscosity,
-                                                                                     average_elastic_shear_moduli[i]);
+              out.viscosities[i] = MaterialUtilities::average_value(volume_fractions, viscosities_vep, viscosity_averaging);
 
               // Fill the material properties that are part of the elastic additional outputs
               if (ElasticAdditionalOutputs<dim> *elastic_out = out.template get_additional_output<ElasticAdditionalOutputs<dim> >())
@@ -372,7 +378,7 @@ namespace aspect
                                    "Choi et al. (2013), J. Geophys. Res., v. 118, p. 2429-2444. "
                                    "Keller et al. (2013), Geophys. J. Int., v. 195, p. 1406-1442. "
                                    "\n\n "
-                                   "The overview below directly follows Moresi et al. (2003) eqns. 23-32. "
+                                   "The overview below directly follows Moresi et al. (2003) eqns. 23-38. "
                                    "However, an important distinction between this material model and "
                                    "the studies above is the use of compositional fields, rather than "
                                    "tracers, to track individual components of the viscoelastic stress "
@@ -433,6 +439,14 @@ namespace aspect
                                    "$F^{e,t} = -\\frac{\\eta_{eff}}{\\mu \\Delta t^{e}} \\tau^{t}$. "
                                    "This force term is added onto the right-hand side force vector in the "
                                    "system of equations. "
+                                   "\n\n "
+                                   "When plastic yielding occurs, the effective viscosity in equation 29 and 30 is the "
+                                   "plastic viscosity (equation 35). If the current stress is below the plastic "
+                                   "yield stress, the effective viscosity is still as defined in equation 28. "
+                                   "During non-linear iterations, we define the current stress prior to yielding "
+                                   "(e.g., value compared to yield stress) as "
+                                   "$\\tau^{t + \\Delta t^{e}} = \\eta_{eff} \\left ( 2\\hat{D}^{t + \\triangle t^{e}} + "
+                                   "\\frac{\\tau^{t}}{\\mu \\Delta t^{e}} \\right ) $"
                                    "\n\n "
                                    "The value of each compositional field representing distinct rock types at a "
                                    "point is interpreted to be a volume fraction of that rock type. If the sum of "

@@ -11,6 +11,10 @@ Number of degrees of freedom: 9,287 (3,362+441+441+1,681+1,681+1,681)
    Solving Stokes system... 27+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 5.64787e-08
+
 
    Postprocessing:
      RMS, max velocity:     0.0258 m/year, 0.0444 m/year
@@ -28,8 +32,28 @@ Number of degrees of freedom: 9,287 (3,362+441+441+1,681+1,681+1,681)
    Solving stress_yy system ... 11 iterations.
    Solving stress_xy system ... 12 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 15+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 9.17506e-06
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 5.64932e-08
+
+
+   Postprocessing:
+     RMS, max velocity:     0.0258 m/year, 0.0444 m/year
+     Writing depth average: output-viscoelastic_plastic_numerical_elastic_time_step_yield/depth_average
+
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+
+*** Timestep 2:  t=2000 years
+   Solving temperature system... 0 iterations.
+   Solving stress_xx system ... 12 iterations.
+   Solving stress_yy system ... 12 iterations.
+   Solving stress_xy system ... 12 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 5.64932e-08
 
 
    Postprocessing:
