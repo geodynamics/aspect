@@ -100,13 +100,13 @@ namespace aspect
             if (n_components == dim)
               {
 #if DEAL_II_VERSION_GTE(9,1,0)
-                vector_datasets.push_back(std::make_tuple(field_position+1,
-                                                          field_position+n_components,
+                vector_datasets.push_back(std::make_tuple(property_index_to_output_index[field_position],
+                                                          property_index_to_output_index[field_position]+n_components-1,
                                                           field_name,
                                                           DataComponentInterpretation::component_is_part_of_vector));
 #else
-                vector_datasets.push_back(std::make_tuple(field_position+1,
-                                                          field_position+n_components,
+                vector_datasets.push_back(std::make_tuple(property_index_to_output_index[field_position],
+                                                          property_index_to_output_index[field_position]+n_components-1,
                                                           field_name));
 #endif
               }
