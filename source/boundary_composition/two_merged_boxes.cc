@@ -38,13 +38,6 @@ namespace aspect
                           const Point<dim> &/*position*/,
                           const unsigned int compositional_field) const
     {
-      // verify that the geometry is a box since only for this geometry
-      // do we know for sure what boundary indicators it uses and what they mean
-      Assert (dynamic_cast<const GeometryModel::TwoMergedBoxes<dim>*>(&this->get_geometry_model())
-              != nullptr,
-              ExcMessage ("This boundary model is only useful if the geometry is "
-                          "a box with additional lithosphere boundary indicators."));
-
       Assert (boundary_indicator<2*dim+2*(dim-1), ExcMessage ("The given boundary indicator needs to be less than 2*dimension+2*(dim-1)."));
 
       return composition_values[boundary_indicator][compositional_field];
@@ -167,6 +160,12 @@ namespace aspect
     void
     TwoMergedBoxes<dim>::initialize()
     {
+      // verify that the geometry is a box since only for this geometry
+      // do we know for sure what boundary indicators it uses and what they mean
+      AssertThrow (Plugins::plugin_type_matches<const GeometryModel::TwoMergedBoxes<dim>>(this->get_geometry_model()),
+                   ExcMessage ("This boundary model is only useful if the geometry is "
+                               "a box with additional lithosphere boundary indicators."));
+
       // verify that each of the lists for boundary values
       // has the requisite number of elements
       for (unsigned int f=0; f<2*dim+2*(dim-1); ++f)

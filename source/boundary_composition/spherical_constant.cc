@@ -64,8 +64,7 @@ namespace aspect
     SphericalConstant<dim>::
     minimal_composition (const std::set<types::boundary_id> &) const
     {
-      const GeometryModel::Interface<dim> *geometry_model = &this->get_geometry_model();
-      if (dynamic_cast<const GeometryModel::Sphere<dim>*>(geometry_model) != nullptr)
+      if (Plugins::plugin_type_matches<const GeometryModel::Sphere<dim>>(this->get_geometry_model()))
         return outer_composition;
       else
         return std::min (inner_composition, outer_composition);
@@ -78,8 +77,7 @@ namespace aspect
     SphericalConstant<dim>::
     maximal_composition (const std::set<types::boundary_id> &) const
     {
-      const GeometryModel::Interface<dim> *geometry_model = &this->get_geometry_model();
-      if (dynamic_cast<const GeometryModel::Sphere<dim>*>(geometry_model) != nullptr)
+      if (Plugins::plugin_type_matches<const GeometryModel::Sphere<dim>>(this->get_geometry_model()))
         return outer_composition;
       else
         return std::max (inner_composition, outer_composition);

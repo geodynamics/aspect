@@ -37,12 +37,6 @@ namespace aspect
     boundary_temperature (const types::boundary_id boundary_indicator,
                           const Point<dim> &) const
     {
-      // verify that the geometry is a box since only for this geometry
-      // do we know for sure what boundary indicators it uses and what they mean
-      Assert (dynamic_cast<const GeometryModel::TwoMergedBoxes<dim>*>(&this->get_geometry_model()) != nullptr,
-              ExcMessage ("This boundary model is only useful if the geometry is "
-                          "a box with additional boundary indicators."));
-
       Assert (boundary_indicator<2*dim+2*(dim-1), ExcMessage ("Given boundary indicator needs to be less than 2*dimension+2*(dimension-1)."));
 
       return temperature_values[boundary_indicator];
@@ -145,6 +139,12 @@ namespace aspect
       {
         prm.enter_subsection("Box with lithosphere boundary indicators");
         {
+          // verify that the geometry is a box since only for this geometry
+          // do we know for sure what boundary indicators it uses and what they mean
+          AssertThrow (Plugins::plugin_type_matches<const GeometryModel::TwoMergedBoxes<dim>>(this->get_geometry_model()),
+                       ExcMessage ("This boundary model is only useful if the geometry is "
+                                   "a box with additional boundary indicators."));
+
           switch (dim)
             {
               case 2:
