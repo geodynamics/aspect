@@ -43,7 +43,7 @@ namespace aspect
       // If so, connect the initial topography function
       // to the right signals: It should be applied after
       // the final initial adaptive refinement and after a restart.
-      if (dynamic_cast<InitialTopographyModel::ZeroTopography<dim>*>(topo_model) == nullptr)
+      if (Plugins::plugin_type_matches<InitialTopographyModel::ZeroTopography<dim>>(*topo_model) == false)
         {
           this->get_signals().pre_set_initial_state.connect(
             [&](typename parallel::distributed::Triangulation<dim> &tria)
@@ -281,8 +281,9 @@ namespace aspect
                   this->simulator_is_past_initialization() == false,
                   ExcMessage("After displacement of the free surface, this function can no longer be used to determine whether a point lies in the domain or not."));
 
-      AssertThrow(dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(&this->get_initial_topography_model()) != nullptr,
-                  ExcMessage("After adding topography, this function can no longer be used to determine whether a point lies in the domain or not."));
+      AssertThrow(Plugins::plugin_type_matches<const InitialTopographyModel::ZeroTopography<dim>>(this->get_initial_topography_model()),
+                  ExcMessage("After adding topography, this function can no longer be used "
+                             "to determine whether a point lies in the domain or not."));
 
       for (unsigned int d = 0; d < dim; d++)
         if (point[d] > extents[d]+box_origin[d]+std::numeric_limits<double>::epsilon()*extents[d] ||

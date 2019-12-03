@@ -21,9 +21,6 @@
 
 #include <aspect/gravity_model/radial.h>
 #include <aspect/geometry_model/interface.h>
-#include <aspect/geometry_model/box.h>
-#include <aspect/geometry_model/two_merged_boxes.h>
-#include <aspect/geometry_model/sphere.h>
 #include <aspect/utilities.h>
 
 #include <deal.II/base/tensor.h>
@@ -79,12 +76,10 @@ namespace aspect
       }
       prm.leave_subsection ();
 
-      AssertThrow (Plugins::plugin_type_matches<const GeometryModel::Box<dim> >(this->get_geometry_model()) == false,
-                   ExcMessage ("Gravity model 'radial constant' should not be used with geometry model 'box'."));
-
-      AssertThrow (Plugins::plugin_type_matches<const GeometryModel::TwoMergedBoxes<dim> >(this->get_geometry_model()) == false,
-                   ExcMessage ("Gravity model 'radial constant' should not be used with geometry model 'box with "
-                               "lithosphere boundary indicators'."));
+      AssertThrow (this->get_geometry_model().natural_coordinate_system() == Utilities::Coordinates::spherical ||
+                   this->get_geometry_model().natural_coordinate_system() == Utilities::Coordinates::ellipsoidal,
+                   ExcMessage ("Gravity model 'radial constant' should not be used with geometry models that "
+                               "do not have either a spherical or ellipsoidal natural coordinate system."));
     }
 
 // ------------------------------ RadialEarthLike -------------------
@@ -175,11 +170,11 @@ namespace aspect
         prm.leave_subsection ();
       }
       prm.leave_subsection ();
-      AssertThrow (dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model()) == nullptr,
-                   ExcMessage ("Gravity model 'radial linear' should not be used with geometry model 'box'."));
-      AssertThrow (dynamic_cast<const GeometryModel::TwoMergedBoxes<dim>*> (&this->get_geometry_model()) == nullptr,
-                   ExcMessage ("Gravity model 'radial linear' should not be used with geometry model 'box with "
-                               "lithosphere boundary indicators'."));
+
+      AssertThrow (this->get_geometry_model().natural_coordinate_system() == Utilities::Coordinates::spherical ||
+                   this->get_geometry_model().natural_coordinate_system() == Utilities::Coordinates::ellipsoidal,
+                   ExcMessage ("Gravity model 'radial linear' should not be used with geometry models that "
+                               "do not have either a spherical or ellipsoidal natural coordinate system."));
 
     }
   }

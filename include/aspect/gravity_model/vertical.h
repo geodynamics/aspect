@@ -23,6 +23,7 @@
 #define _aspect_gravity_model_vertical_h
 
 #include <aspect/gravity_model/interface.h>
+#include <aspect/simulator_access.h>
 
 namespace aspect
 {

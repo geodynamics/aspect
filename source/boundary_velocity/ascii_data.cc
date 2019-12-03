@@ -20,7 +20,6 @@
 
 
 #include <aspect/global.h>
-#include <aspect/geometry_model/box.h>
 #include <aspect/boundary_velocity/ascii_data.h>
 
 #include <deal.II/base/parameter_handler.h>
@@ -123,7 +122,7 @@ namespace aspect
         {
           use_spherical_unit_vectors = prm.get_bool("Use spherical unit vectors");
           if (use_spherical_unit_vectors)
-            AssertThrow ((dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model())) == nullptr,
+            AssertThrow (this->get_geometry_model().natural_coordinate_system() == Utilities::Coordinates::spherical,
                          ExcMessage ("Spherical unit vectors should not be used "
                                      "when geometry model is not spherical."));
         }
