@@ -23,6 +23,7 @@
 #include <world_builder/world.h>
 #include <aspect/geometry_model/interface.h>
 #include <aspect/gravity_model/interface.h>
+#include <aspect/citation_info.h>
 
 
 namespace aspect
@@ -32,6 +33,14 @@ namespace aspect
     template <int dim>
     WorldBuilder<dim>::WorldBuilder ()
     {}
+
+    template <int dim>
+    void
+    WorldBuilder<dim>::
+    initialize()
+    {
+      CitationInfo::add("GWB");
+    }
 
     template <int dim>
     double

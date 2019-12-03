@@ -49,6 +49,15 @@ namespace aspect
         WorldBuilder ();
 
         /**
+         * Initialization function. This function is called once at the
+         * beginning of the program after parse_parameters is run and after
+         * the SimulatorAccess (if applicable) is initialized.
+         */
+        virtual
+        void
+        initialize ();
+
+        /**
          * Return the initial temperature as a function of position.
          */
         double initial_temperature (const Point<dim> &position) const override;

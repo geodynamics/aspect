@@ -22,12 +22,20 @@
 #include <aspect/initial_composition/world_builder.h>
 #include <aspect/geometry_model/interface.h>
 #include <world_builder/world.h>
+#include <aspect/citation_info.h>
 
 
 namespace aspect
 {
   namespace InitialComposition
   {
+    template <int dim>
+    void
+    WorldBuilder<dim>::
+    initialize()
+    {
+      CitationInfo::add("GWB");
+    }
 
     template <int dim>
     double
