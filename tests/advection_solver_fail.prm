@@ -1,0 +1,11 @@
+# This is a copy of simple_incompressible.prm that decreases solver
+# tolerance to provoke a crash and check the error message and
+# solver history output.
+
+# EXPECT FAILURE
+
+include $ASPECT_SOURCE_DIR/tests/simple_incompressible.prm
+
+subsection Solver parameters
+  set Temperature solver tolerance = 1e-35
+end

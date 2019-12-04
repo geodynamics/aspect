@@ -375,6 +375,39 @@ namespace aspect
 
   }
 
+  namespace
+  {
+    void linear_solver_failed(const std::string &solver_name,
+                              const std::string output_filename,
+                              const std::vector<SolverControl> &solver_controls,
+                              const std::exception &exc)
+    {
+      // output solver history
+      std::ofstream f((output_filename).c_str());
+
+      for (unsigned int i=0; i<solver_controls.size(); ++i)
+        {
+          if (i>0)
+            f << "\n";
+
+          // Only request the solver history if a history has actually been created
+          for (unsigned int j=0; j<solver_controls[i].get_history_data().size(); ++j)
+            f << j << " " << solver_controls[i].get_history_data()[j] << "\n";
+        }
+
+      f.close();
+
+      AssertThrow (false,
+                   ExcMessage ("The " + solver_name
+                               + " did not converge. It reported the following error:\n\n"
+                               +
+                               exc.what()
+                               + "\n The required residual for convergence is: " + std::to_string(solver_controls.front().tolerance())
+                               + ".\n See " + output_filename
+                               + " for convergence history."));
+    }
+  }
+
   template <int dim>
   double Simulator<dim>::solve_advection (const AdvectionField &advection_field)
   {
@@ -485,23 +518,10 @@ namespace aspect
 
         if (Utilities::MPI::this_mpi_process(mpi_communicator) == 0)
           {
-            // output solver history
-            std::ofstream f((parameters.output_directory+"solver_history.txt").c_str());
-
-            // Only request the solver history if a history has actually been created
-            for (unsigned int i=0; i<solver_control.get_history_data().size(); ++i)
-              f << i << " " << solver_control.get_history_data()[i] << "\n";
-
-            f.close();
-
-            AssertThrow (false,
-                         ExcMessage (std::string("The iterative advection solver "
-                                                 "did not converge. It reported the following error:\n\n")
-                                     +
-                                     exc.what()
-                                     + "\n The required residual for convergence is: " + std::to_string(tolerance)
-                                     + ".\n See " + parameters.output_directory+"solver_history.txt"
-                                     + " for convergence history."));
+            linear_solver_failed("iterative advection solver",
+                                 parameters.output_directory+"solver_history.txt",
+                                 std::vector<SolverControl> {solver_control},
+                                 exc);
           }
         else
           throw QuietException();
@@ -859,32 +879,12 @@ namespace aspect
 
                 if (Utilities::MPI::this_mpi_process(mpi_communicator) == 0)
                   {
-                    // output solver history
-                    std::ofstream f((parameters.output_directory+"solver_history.txt").c_str());
-
-                    // Only request the solver history if a history has actually been created
-                    if (parameters.n_cheap_stokes_solver_steps > 0)
-                      {
-                        for (unsigned int i=0; i<solver_control_cheap.get_history_data().size(); ++i)
-                          f << i << " " << solver_control_cheap.get_history_data()[i] << "\n";
-
-                        f << "\n";
-                      }
-
-
-                    for (unsigned int i=0; i<solver_control_expensive.get_history_data().size(); ++i)
-                      f << i << " " << solver_control_expensive.get_history_data()[i] << "\n";
-
-                    f.close();
-
-                    AssertThrow (false,
-                                 ExcMessage (std::string("The iterative Stokes solver "
-                                                         "did not converge. It reported the following error:\n\n")
-                                             +
-                                             exc.what()
-                                             + "\n The required residual for convergence is: " + std::to_string(solver_tolerance)
-                                             + ".\n See " + parameters.output_directory+"solver_history.txt"
-                                             + " for convergence history."));
+                    linear_solver_failed("iterative Stokes solver",
+                                         parameters.output_directory+"solver_history.txt",
+                                         parameters.n_cheap_stokes_solver_steps > 0 ?
+                                         std::vector<SolverControl> {solver_control_cheap, solver_control_expensive} :
+                                         std::vector<SolverControl> {solver_control_expensive},
+                                         exc);
                   }
                 else
                   {
