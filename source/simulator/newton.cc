@@ -24,6 +24,7 @@
 #include <aspect/simulator/assemblers/stokes.h>
 
 #include <aspect/simulator.h>
+#include <aspect/citation_info.h>
 
 namespace aspect
 {
@@ -266,6 +267,7 @@ namespace aspect
     Parameters::
     parse_parameters (ParameterHandler &prm)
     {
+      CitationInfo::add("NewtonSolver");
       prm.enter_subsection ("Solver parameters");
       {
         prm.enter_subsection ("Newton solver parameters");
