@@ -1,0 +1,24 @@
+{
+"version":"0.2",
+"cross section": [[100e3,100e3],[400e3,500e3]],
+"coordinate system":{"model":"cartesian"},
+"maximum distance between coordinates": 5e3,
+"interpolation":"none",
+"features":
+[
+  {"model":"continental plate","name":"First continental plate", "max depth":250e3, "coordinates":[[-1e3,500e3],[500e3,500e3],[250e3,750e3],[500e3,1000e3],[-1e3,1000e3]],
+    "temperature models":[{"model":"uniform", "temperature":150}],
+    "composition models":[{"model":"uniform", "compositions":[0]}]},
+     
+  {"model":"subducting plate","name":"First subducting plate", "max depth":250e3, "coordinates":[[750e3,100e3],[500e3,300e3],[1000e3,750e3]], "dip point":[1200e3,500e3],
+    "segments":[{"length":200e3, "thickness":[100e3,100e3], "angle":[45]}, {"length":200e3, "thickness":[100e3], "angle":[60]}, {"length":150e3, "thickness":[100e3,100e3], "angle":[90]}],
+    "sections":
+    [
+       {"coordinate":1, "segments":[{"length":200e3, "thickness":[100e3,100e3], "angle":[45]}, {"length":100e3, "thickness":[100e3], "angle":[30]}, {"length":150e3, "thickness":[100e3], "angle":[30]}]},
+       {"coordinate":2, "segments":[{"length":200e3, "thickness":[200e3,100e3], "angle":[30]}, {"length":100e3, "thickness":[100e3], "angle":[30]}, {"length":150e3, "thickness":[100e3,0], "angle":[70]}]}
+     ],
+     "temperature models":[{"model":"uniform", "temperature":150}],
+     "composition models":[{"model":"uniform", "compositions":[0]}]}
+     
+]
+}

@@ -619,24 +619,17 @@ namespace aspect
   }
 
 
-
+#ifdef ASPECT_WITH_WORLD_BUILDER
   template <int dim>
   const WorldBuilder::World &
   SimulatorAccess<dim>::get_world_builder () const
   {
-#ifdef ASPECT_USE_WORLD_BUILDER
     Assert (simulator->world_builder.get() != nullptr,
             ExcMessage("You can not call this function if the World Builder is not enabled. "
                        "Enable it by providing a path to a world builder file."));
-#else
-    AssertThrow (false,
-                 ExcMessage ("Configuration of ASPECT did not find a copy of the "
-                             "WorldBuilder library. Consequently, accessing it "
-                             "can not work at runtime."));
-#endif
     return *(simulator->world_builder);
   }
-
+#endif
 
 
   template <int dim>

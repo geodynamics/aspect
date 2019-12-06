@@ -1,0 +1,16 @@
+{
+  "version":"0.2",
+  "features":
+  [
+    {"model":"oceanic plate", "name":"oceanic plate A", "coordinates":[[-1e3,-1e3],[2001e3,-1e3],[2001e3,1000e3],[-1e3,1000e3]],
+     "temperature models":[{"model":"plate model", "max depth":95e3, "spreading velocity":0.005, "ridge coordinates":[[1200e3,-1e3],[1200e3,1000e3]]}],
+     "composition models":[{"model":"uniform", "compositions":[0], "max depth":10e3},
+                           {"model":"uniform", "compositions":[1], "min depth":10e3, "max depth":95e3}]},
+
+    {"model":"oceanic plate", "name":"oceanic plate B", "coordinates":[[-1e3,1000e3],[2001e3,1000e3],[2001e3,2001e3],[-1e3,2001e3]],
+     "temperature models":[{"model":"plate model", "max depth":95e3, "spreading velocity":0.005, "ridge coordinates":[[800e3,1000e3],[800e3,2000e3]]}],
+     "composition models":[{"model":"uniform", "compositions":[0], "max depth":10e3},
+                           {"model":"uniform", "compositions":[1], "min depth":10e3, "max depth":95e3}]}
+
+  ]
+}

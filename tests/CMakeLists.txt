@@ -58,7 +58,8 @@ ENDFUNCTION()
 # 1. "LINEAR ALGEBRA: PETSC" - only run with PETSc, "LINEAR ALGEBRA: PETSC
 # TRILINOS" - run with PETSc and Trilinos. If neither is present we only run
 # using Trilinos.
-# 2. "QUICK_TEST" - enable the test even if RUN_ALL_TESTS is false 
+# 2. "WORLD BUILDER" - only run with World Builder.
+# 3. "QUICK_TEST" - enable the test even if RUN_ALL_TESTS is false 
 FUNCTION(SHOULD_ENABLE_TEST _filename)
 
   FILE(STRINGS ${_filename} _input_lines
@@ -79,6 +80,14 @@ FUNCTION(SHOULD_ENABLE_TEST _filename)
     ENDIF()
 
     IF (NOT ${_input_lines} MATCHES "TRILINOS" AND NOT ASPECT_USE_PETSC)
+      SET(_use_test OFF PARENT_SCOPE)
+    ENDIF()
+  ENDIF()
+
+  FILE(STRINGS ${_filename} _input_lines
+  REGEX "WORLD BUILDER")
+  IF(NOT "${_input_lines}" STREQUAL "")
+    IF (${_input_lines} MATCHES "WORLD BUILDER" AND NOT ASPECT_WITH_WORLD_BUILDER)
       SET(_use_test OFF PARENT_SCOPE)
     ENDIF()
   ENDIF()

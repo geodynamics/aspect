@@ -1,0 +1,2206 @@
+\section{/}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: Root object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [version, features]\end{itemize}
+\section{/version}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The major and minor version number for which the input file was written.
+\end{itemize}\section{/cross section}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 2
+\item {\bf maxItems}: 2
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: This is an array of two points along where the cross section is taken
+\end{itemize}\section{/cross section/items}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 2
+\item {\bf maxItems}: 2
+\item {\bf documentation}: 
+\end{itemize}\subsection{/cross section/items/items}
+\begin{itemize}\item {\bf type}: number
+\end{itemize}\section{/potential mantle temperature}
+\begin{itemize}\item {\bf default value}: 1600.0
+\item {\bf type}: number
+\item {\bf documentation}: The potential temperature of the mantle at the surface in Kelvin.
+\end{itemize}\section{/surface temperature}
+\begin{itemize}\item {\bf default value}: 293.15
+\item {\bf type}: number
+\item {\bf documentation}: The temperature at the surface in Kelvin.
+\end{itemize}\section{/force surface temperature}
+\begin{itemize}\item {\bf default value}: false
+\item {\bf type}: boolean
+\item {\bf documentation}: Force the provided surface temperature to be set at the surface
+\end{itemize}\section{/thermal expansion coefficient}
+\begin{itemize}\item {\bf default value}: 0.000035
+\item {\bf type}: number
+\item {\bf documentation}: The thermal expansion coefficient in $K^{-1}$.
+\end{itemize}\section{/specific heat}
+\begin{itemize}\item {\bf default value}: 1250.0
+\item {\bf type}: number
+\item {\bf documentation}: The specific heat in $J kg^{-1} K^{-1}.$
+\end{itemize}\section{/thermal diffusivity}
+\begin{itemize}\item {\bf default value}: 8.04e-7
+\item {\bf type}: number
+\item {\bf documentation}: The thermal diffusivity in $m^{2} s^{-1}$.
+\end{itemize}\section{/maximum distance between coordinates}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: This enforces a maximum distance (in degree for spherical coordinates or meter in cartesian coordinates) between coordinates in the model. If the distance is larger, extra points are added by interpolation. Requires interpolation to be not 'none'.
+\end{itemize}\section{/interpolation}
+\begin{itemize}\item {\bf default value}: none
+\item {\bf type}: string
+\item {\bf documentation}: What type of interpolation should be used to enforce the minimum points per distance parameter. Options are none, linear and monotone spline.
+\end{itemize}\section{/coordinate system}
+\begin{itemize}\item {\bf documentation}: A coordinate system. Cartesian or spherical.
+\item {\bf default value}: cartesian
+\item {\bf type}: object
+\end{itemize}
+\section{/coordinate system/oneOf/1}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: Coordinate sysetm object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model]\end{itemize}
+\subsection{/coordinate system/oneOf/1/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name which the user has given to the feature.
+\item {\bf enum}: [cartesian]\end{itemize}\section{/coordinate system/oneOf/2}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: Coordinate sysetm object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model, depth method]\end{itemize}
+\subsection{/coordinate system/oneOf/2/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name which the user has given to the feature.
+\item {\bf enum}: [spherical]\end{itemize}\subsection{/coordinate system/oneOf/2/depth method}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: Which depth method to use in the spherical case. The available options are 'starting point' and 'begin segment'.
+\item {\bf enum}: [starting point, begin segment, continuous]\end{itemize}\section{/features}
+\begin{itemize}\item {\bf documentation}: A list of features.
+\item {\bf default value}: 
+\item {\bf type}: array
+\end{itemize}\section{/features/items}
+
+\subsection{/features/items/oneOf/1}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: continental plate object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model, coordinates]\end{itemize}
+\subsection{/features/items/oneOf/1/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name which the user has given to the feature.
+\item {\bf enum}: [continental plate]\end{itemize}\subsection{/features/items/oneOf/1/name}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name which the user has given to the feature.
+\end{itemize}\subsection{/features/items/oneOf/1/coordinates}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 1
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: An array of 2d Points representing an array of coordinates where the feature is located.
+\end{itemize}\subsection{/features/items/oneOf/1/coordinates/items}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 2
+\item {\bf maxItems}: 2
+\item {\bf documentation}: 
+\end{itemize}\subsubsection{/features/items/oneOf/1/coordinates/items/items}
+\begin{itemize}\item {\bf type}: number
+\end{itemize}\subsection{/features/items/oneOf/1/min depth}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: The depth to which this feature is present
+\end{itemize}\subsection{/features/items/oneOf/1/max depth}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: The depth to which this feature is present
+\end{itemize}\subsection{/features/items/oneOf/1/temperature models}
+\begin{itemize}\item {\bf documentation}: A list of temperature models.
+\item {\bf default value}: 
+\item {\bf type}: array
+\end{itemize}\subsection{/features/items/oneOf/1/temperature models/items}
+
+\subsubsection{/features/items/oneOf/1/temperature models/items/oneOf/1}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: Temperature object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model]\end{itemize}
+\subsubsection{/features/items/oneOf/1/temperature models/items/oneOf/1/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the temperature model.
+\item {\bf enum}: [adiabatic]\end{itemize}\subsubsection{/features/items/oneOf/1/temperature models/items/oneOf/1/min depth}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: The depth in meters from which the temperature of this feature is present.
+\end{itemize}\subsubsection{/features/items/oneOf/1/temperature models/items/oneOf/1/max depth}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: The depth in meters to which the temperature of this feature is present.
+\end{itemize}\subsubsection{/features/items/oneOf/1/temperature models/items/oneOf/1/potential mantle temperature}
+\begin{itemize}\item {\bf default value}: -1.0
+\item {\bf type}: number
+\item {\bf documentation}: The potential temperature of the mantle at the surface in Kelvin. If the value is lower then zero, the global value is used.
+\end{itemize}\subsubsection{/features/items/oneOf/1/temperature models/items/oneOf/1/thermal expansion coefficient}
+\begin{itemize}\item {\bf default value}: -1.0
+\item {\bf type}: number
+\item {\bf documentation}: The thermal expansion coefficient in $K^{-1}$. If the value is lower then zero, the global value is used.
+\end{itemize}\subsubsection{/features/items/oneOf/1/temperature models/items/oneOf/1/specific heat}
+\begin{itemize}\item {\bf default value}: -1.0
+\item {\bf type}: number
+\item {\bf documentation}: The specific heat in $J kg^{-1} K^{-1}$. If the value is lower then zero, the global value is used.
+\end{itemize}\subsubsection{/features/items/oneOf/1/temperature models/items/oneOf/1/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or substract the value to the previously define value (substract).
+\item {\bf enum}: [replace, add, substract]\end{itemize}\subsubsection{/features/items/oneOf/1/temperature models/items/oneOf/2}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: Temperature model object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model, max depth]\end{itemize}
+\subsubsection{/features/items/oneOf/1/temperature models/items/oneOf/2/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the temperature model.
+\item {\bf enum}: [linear]\end{itemize}\subsubsection{/features/items/oneOf/1/temperature models/items/oneOf/2/min depth}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: The depth in meters from which the temperature of this feature is present.
+\end{itemize}\subsubsection{/features/items/oneOf/1/temperature models/items/oneOf/2/max depth}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: The depth in meters to which the temperature of this feature is present.
+\end{itemize}\subsubsection{/features/items/oneOf/1/temperature models/items/oneOf/2/top temperature}
+\begin{itemize}\item {\bf default value}: 293.15
+\item {\bf type}: number
+\item {\bf documentation}: The temperature at the top in degree Kelvin of this feature.If the value is below zero, the an adiabatic temperature is used.
+\end{itemize}\subsubsection{/features/items/oneOf/1/temperature models/items/oneOf/2/bottom temperature}
+\begin{itemize}\item {\bf default value}: -1.0
+\item {\bf type}: number
+\item {\bf documentation}: The temperature at the top in degree Kelvin of this feature. If the value is below zero, an adiabatic temperature is used.
+\end{itemize}\subsubsection{/features/items/oneOf/1/temperature models/items/oneOf/2/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value (add).
+\end{itemize}\subsubsection{/features/items/oneOf/1/temperature models/items/oneOf/3}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: Temperature model object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model, temperature]\end{itemize}
+\subsubsection{/features/items/oneOf/1/temperature models/items/oneOf/3/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the temperature model.
+\item {\bf enum}: [uniform]\end{itemize}\subsubsection{/features/items/oneOf/1/temperature models/items/oneOf/3/min depth}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: The depth in meters from which the temperature of this feature is present.
+\end{itemize}\subsubsection{/features/items/oneOf/1/temperature models/items/oneOf/3/max depth}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: The depth in meters to which the temperature of this feature is present.
+\end{itemize}\subsubsection{/features/items/oneOf/1/temperature models/items/oneOf/3/temperature}
+\begin{itemize}\item {\bf default value}: 293.15
+\item {\bf type}: number
+\item {\bf documentation}: The temperature in degree Kelvin which this feature should have
+\end{itemize}\subsubsection{/features/items/oneOf/1/temperature models/items/oneOf/3/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or substract the value to the previously define value (substract).
+\item {\bf enum}: [replace, add, substract]\end{itemize}\subsection{/features/items/oneOf/1/composition models}
+\begin{itemize}\item {\bf documentation}: A list of composition models.
+\item {\bf default value}: 
+\item {\bf type}: array
+\end{itemize}\subsection{/features/items/oneOf/1/composition models/items}
+
+\subsubsection{/features/items/oneOf/1/composition models/items/oneOf/1}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: Uniform compositional model object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model, compositions]\end{itemize}
+\subsubsection{/features/items/oneOf/1/composition models/items/oneOf/1/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the composition model.
+\item {\bf enum}: [uniform]\end{itemize}\subsubsection{/features/items/oneOf/1/composition models/items/oneOf/1/min depth}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: The depth in meters from which the composition of this feature is present.
+\end{itemize}\subsubsection{/features/items/oneOf/1/composition models/items/oneOf/1/max depth}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: The depth in meters to which the composition of this feature is present.
+\end{itemize}\subsubsection{/features/items/oneOf/1/composition models/items/oneOf/1/compositions}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list with the labels of the composition which are present there.
+\end{itemize}\subsubsection{/features/items/oneOf/1/composition models/items/oneOf/1/compositions/items}
+\begin{itemize}\item {\bf default value}: 0
+\item {\bf type}: integer
+\item {\bf documentation}: 
+\end{itemize}\subsubsection{/features/items/oneOf/1/composition models/items/oneOf/1/fractions}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 1
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: TA list of compositional fractions corresponding to the compositions list.
+\end{itemize}\subsubsection{/features/items/oneOf/1/composition models/items/oneOf/1/fractions/items}
+\begin{itemize}\item {\bf default value}: 1.0
+\item {\bf type}: number
+\item {\bf documentation}: 
+\end{itemize}\subsubsection{/features/items/oneOf/1/composition models/items/oneOf/1/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value (add, not implemented). Replacing implies that all values not explicitly defined are set to zero.
+\item {\bf enum}: [replace]\end{itemize}\subsection{/features/items/oneOf/2}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: feature object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model, coordinates]\end{itemize}
+\subsection{/features/items/oneOf/2/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name which the user has given to the feature.
+\item {\bf enum}: [fault]\end{itemize}\subsection{/features/items/oneOf/2/name}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name which the user has given to the feature.
+\end{itemize}\subsection{/features/items/oneOf/2/coordinates}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 1
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: An array of 2d Points representing an array of coordinates where the feature is located.
+\end{itemize}\subsection{/features/items/oneOf/2/coordinates/items}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 2
+\item {\bf maxItems}: 2
+\item {\bf documentation}: 
+\end{itemize}\subsubsection{/features/items/oneOf/2/coordinates/items/items}
+\begin{itemize}\item {\bf type}: number
+\end{itemize}\subsection{/features/items/oneOf/2/min depth}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: The depth to which this feature is present
+\end{itemize}\subsection{/features/items/oneOf/2/max depth}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: The depth to which this feature is present
+\end{itemize}\subsection{/features/items/oneOf/2/dip point}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 2
+\item {\bf maxItems}: 2
+\item {\bf documentation}: The depth to which this feature is present
+\end{itemize}\subsection{/features/items/oneOf/2/dip point/items}
+\begin{itemize}\item {\bf type}: number
+\end{itemize}\subsection{/features/items/oneOf/2/segments}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: The depth to which this feature is present
+\end{itemize}\subsection{/features/items/oneOf/2/segments/items}
+\begin{itemize}\item {\bf type}: object
+\item {\bf additionalProperties}: false
+\item {\bf documentation}: 
+\item {\bf required}: [length, thickness, angle]\end{itemize}
+\subsubsection{/features/items/oneOf/2/segments/items/length}
+\begin{itemize}\item {\bf type}: number
+\end{itemize}\subsubsection{/features/items/oneOf/2/segments/items/thickness}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 1
+\item {\bf maxItems}: 2
+\end{itemize}\subsubsection{/features/items/oneOf/2/segments/items/thickness/items}
+\begin{itemize}\item {\bf type}: number
+\end{itemize}\subsubsection{/features/items/oneOf/2/segments/items/top truncation}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 1
+\item {\bf maxItems}: 2
+\end{itemize}\subsubsection{/features/items/oneOf/2/segments/items/top truncation/items}
+\begin{itemize}\item {\bf type}: number
+\end{itemize}\subsubsection{/features/items/oneOf/2/segments/items/angle}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 1
+\item {\bf maxItems}: 2
+\end{itemize}\subsubsection{/features/items/oneOf/2/segments/items/angle/items}
+\begin{itemize}\item {\bf type}: number
+\end{itemize}\subsubsection{/features/items/oneOf/2/segments/items/temperature models}
+\begin{itemize}\item {\bf documentation}: 
+\item {\bf default value}: 
+\item {\bf type}: array
+\end{itemize}\subsubsection{/features/items/oneOf/2/segments/items/temperature models/items}
+
+\subsubsection{/features/items/oneOf/2/segments/items/temperature models/items/oneOf/1}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: Temperature object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model]\end{itemize}
+\paragraph{/features/items/oneOf/2/segments/items/temperature models/items/oneOf/1/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the temperature model.
+\item {\bf enum}: [adiabatic]\end{itemize}\paragraph{/features/items/oneOf/2/segments/items/temperature models/items/oneOf/1/min distance fault center}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: todo The depth in meters from which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/2/segments/items/temperature models/items/oneOf/1/max distance fault center}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: todo The depth in meters to which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/2/segments/items/temperature models/items/oneOf/1/potential mantle temperature}
+\begin{itemize}\item {\bf default value}: -1.0
+\item {\bf type}: number
+\item {\bf documentation}: The potential temperature of the mantle at the surface in Kelvin. If the value is lower then zero, the global value is used.
+\end{itemize}\paragraph{/features/items/oneOf/2/segments/items/temperature models/items/oneOf/1/thermal expansion coefficient}
+\begin{itemize}\item {\bf default value}: -1.0
+\item {\bf type}: number
+\item {\bf documentation}: The thermal expansion coefficient in $K^{-1}$. If the value is lower then zero, the global value is used.
+\end{itemize}\paragraph{/features/items/oneOf/2/segments/items/temperature models/items/oneOf/1/specific heat}
+\begin{itemize}\item {\bf default value}: -1.0
+\item {\bf type}: number
+\item {\bf documentation}: The specific heat in $J kg^{-1} K^{-1}$. If the value is lower then zero, the global value is used.
+\end{itemize}\paragraph{/features/items/oneOf/2/segments/items/temperature models/items/oneOf/1/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or substract the value to the previously define value (substract).
+\item {\bf enum}: [replace, add, substract]\end{itemize}\subsubsection{/features/items/oneOf/2/segments/items/temperature models/items/oneOf/2}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: Temperature model object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model, max distance fault center]\end{itemize}
+\paragraph{/features/items/oneOf/2/segments/items/temperature models/items/oneOf/2/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the temperature model.
+\item {\bf enum}: [linear]\end{itemize}\paragraph{/features/items/oneOf/2/segments/items/temperature models/items/oneOf/2/min distance fault center}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: The minimum distance to the center of the fault. This determines where the linear temperature starts.
+\end{itemize}\paragraph{/features/items/oneOf/2/segments/items/temperature models/items/oneOf/2/max distance fault center}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: The minimum distance to the center of the fault. This determines where the linear temperature end.
+\end{itemize}\paragraph{/features/items/oneOf/2/segments/items/temperature models/items/oneOf/2/top temperature}
+\begin{itemize}\item {\bf default value}: 293.15
+\item {\bf type}: number
+\item {\bf documentation}: The temperature at the top in degree Kelvin of this feature.If the value is below zero, the an adiabatic temperature is used.
+\end{itemize}\paragraph{/features/items/oneOf/2/segments/items/temperature models/items/oneOf/2/bottom temperature}
+\begin{itemize}\item {\bf default value}: -1.0
+\item {\bf type}: number
+\item {\bf documentation}: The temperature at the top in degree Kelvin of this feature. If the value is below zero, an adiabatic temperature is used.
+\end{itemize}\paragraph{/features/items/oneOf/2/segments/items/temperature models/items/oneOf/2/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value (add).
+\end{itemize}\subsubsection{/features/items/oneOf/2/segments/items/temperature models/items/oneOf/3}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: Temperature model object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model, temperature]\end{itemize}
+\paragraph{/features/items/oneOf/2/segments/items/temperature models/items/oneOf/3/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the temperature model.
+\item {\bf enum}: [uniform]\end{itemize}\paragraph{/features/items/oneOf/2/segments/items/temperature models/items/oneOf/3/min distance fault center}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: todo The depth in meters from which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/2/segments/items/temperature models/items/oneOf/3/max distance fault center}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: todo The depth in meters to which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/2/segments/items/temperature models/items/oneOf/3/temperature}
+\begin{itemize}\item {\bf default value}: 293.15
+\item {\bf type}: number
+\item {\bf documentation}: The temperature in degree Kelvin which this feature should have
+\end{itemize}\paragraph{/features/items/oneOf/2/segments/items/temperature models/items/oneOf/3/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or substract the value to the previously define value (substract).
+\item {\bf enum}: [replace, add, substract]\end{itemize}\subsubsection{/features/items/oneOf/2/segments/items/composition models}
+\begin{itemize}\item {\bf documentation}: 
+\item {\bf default value}: 
+\item {\bf type}: array
+\end{itemize}\subsubsection{/features/items/oneOf/2/segments/items/composition models/items}
+
+\subsubsection{/features/items/oneOf/2/segments/items/composition models/items/oneOf/1}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: Uniform compositional model object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model, compositions]\end{itemize}
+\paragraph{/features/items/oneOf/2/segments/items/composition models/items/oneOf/1/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the composition model.
+\item {\bf enum}: [uniform]\end{itemize}\paragraph{/features/items/oneOf/2/segments/items/composition models/items/oneOf/1/min distance fault center}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: todo The depth in meters from which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/2/segments/items/composition models/items/oneOf/1/max distance fault center}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: todo The depth in meters to which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/2/segments/items/composition models/items/oneOf/1/compositions}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list with the labels of the composition which are present there.
+\end{itemize}\paragraph{/features/items/oneOf/2/segments/items/composition models/items/oneOf/1/compositions/items}
+\begin{itemize}\item {\bf default value}: 0
+\item {\bf type}: integer
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/2/segments/items/composition models/items/oneOf/1/fractions}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 1
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: TA list of compositional fractions corresponding to the compositions list.
+\end{itemize}\paragraph{/features/items/oneOf/2/segments/items/composition models/items/oneOf/1/fractions/items}
+\begin{itemize}\item {\bf default value}: 1.0
+\item {\bf type}: number
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/2/segments/items/composition models/items/oneOf/1/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value (add, not implemented). Replacing implies that all values not explicitly defined are set to zero.
+\item {\bf enum}: [replace]\end{itemize}\subsection{/features/items/oneOf/2/temperature models}
+\begin{itemize}\item {\bf documentation}: A list of temperature models.
+\item {\bf default value}: 
+\item {\bf type}: array
+\end{itemize}\subsection{/features/items/oneOf/2/temperature models/items}
+
+\subsubsection{/features/items/oneOf/2/temperature models/items/oneOf/1}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: Temperature object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model]\end{itemize}
+\subsubsection{/features/items/oneOf/2/temperature models/items/oneOf/1/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the temperature model.
+\item {\bf enum}: [adiabatic]\end{itemize}\subsubsection{/features/items/oneOf/2/temperature models/items/oneOf/1/min distance fault center}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: todo The depth in meters from which the composition of this feature is present.
+\end{itemize}\subsubsection{/features/items/oneOf/2/temperature models/items/oneOf/1/max distance fault center}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: todo The depth in meters to which the composition of this feature is present.
+\end{itemize}\subsubsection{/features/items/oneOf/2/temperature models/items/oneOf/1/potential mantle temperature}
+\begin{itemize}\item {\bf default value}: -1.0
+\item {\bf type}: number
+\item {\bf documentation}: The potential temperature of the mantle at the surface in Kelvin. If the value is lower then zero, the global value is used.
+\end{itemize}\subsubsection{/features/items/oneOf/2/temperature models/items/oneOf/1/thermal expansion coefficient}
+\begin{itemize}\item {\bf default value}: -1.0
+\item {\bf type}: number
+\item {\bf documentation}: The thermal expansion coefficient in $K^{-1}$. If the value is lower then zero, the global value is used.
+\end{itemize}\subsubsection{/features/items/oneOf/2/temperature models/items/oneOf/1/specific heat}
+\begin{itemize}\item {\bf default value}: -1.0
+\item {\bf type}: number
+\item {\bf documentation}: The specific heat in $J kg^{-1} K^{-1}$. If the value is lower then zero, the global value is used.
+\end{itemize}\subsubsection{/features/items/oneOf/2/temperature models/items/oneOf/1/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or substract the value to the previously define value (substract).
+\item {\bf enum}: [replace, add, substract]\end{itemize}\subsubsection{/features/items/oneOf/2/temperature models/items/oneOf/2}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: Temperature model object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model, max distance fault center]\end{itemize}
+\subsubsection{/features/items/oneOf/2/temperature models/items/oneOf/2/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the temperature model.
+\item {\bf enum}: [linear]\end{itemize}\subsubsection{/features/items/oneOf/2/temperature models/items/oneOf/2/min distance fault center}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: The minimum distance to the center of the fault. This determines where the linear temperature starts.
+\end{itemize}\subsubsection{/features/items/oneOf/2/temperature models/items/oneOf/2/max distance fault center}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: The minimum distance to the center of the fault. This determines where the linear temperature end.
+\end{itemize}\subsubsection{/features/items/oneOf/2/temperature models/items/oneOf/2/top temperature}
+\begin{itemize}\item {\bf default value}: 293.15
+\item {\bf type}: number
+\item {\bf documentation}: The temperature at the top in degree Kelvin of this feature.If the value is below zero, the an adiabatic temperature is used.
+\end{itemize}\subsubsection{/features/items/oneOf/2/temperature models/items/oneOf/2/bottom temperature}
+\begin{itemize}\item {\bf default value}: -1.0
+\item {\bf type}: number
+\item {\bf documentation}: The temperature at the top in degree Kelvin of this feature. If the value is below zero, an adiabatic temperature is used.
+\end{itemize}\subsubsection{/features/items/oneOf/2/temperature models/items/oneOf/2/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value (add).
+\end{itemize}\subsubsection{/features/items/oneOf/2/temperature models/items/oneOf/3}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: Temperature model object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model, temperature]\end{itemize}
+\subsubsection{/features/items/oneOf/2/temperature models/items/oneOf/3/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the temperature model.
+\item {\bf enum}: [uniform]\end{itemize}\subsubsection{/features/items/oneOf/2/temperature models/items/oneOf/3/min distance fault center}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: todo The depth in meters from which the composition of this feature is present.
+\end{itemize}\subsubsection{/features/items/oneOf/2/temperature models/items/oneOf/3/max distance fault center}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: todo The depth in meters to which the composition of this feature is present.
+\end{itemize}\subsubsection{/features/items/oneOf/2/temperature models/items/oneOf/3/temperature}
+\begin{itemize}\item {\bf default value}: 293.15
+\item {\bf type}: number
+\item {\bf documentation}: The temperature in degree Kelvin which this feature should have
+\end{itemize}\subsubsection{/features/items/oneOf/2/temperature models/items/oneOf/3/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or substract the value to the previously define value (substract).
+\item {\bf enum}: [replace, add, substract]\end{itemize}\subsection{/features/items/oneOf/2/composition models}
+\begin{itemize}\item {\bf documentation}: A list of composition models.
+\item {\bf default value}: 
+\item {\bf type}: array
+\end{itemize}\subsection{/features/items/oneOf/2/composition models/items}
+
+\subsubsection{/features/items/oneOf/2/composition models/items/oneOf/1}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: Uniform compositional model object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model, compositions]\end{itemize}
+\subsubsection{/features/items/oneOf/2/composition models/items/oneOf/1/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the composition model.
+\item {\bf enum}: [uniform]\end{itemize}\subsubsection{/features/items/oneOf/2/composition models/items/oneOf/1/min distance fault center}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: todo The depth in meters from which the composition of this feature is present.
+\end{itemize}\subsubsection{/features/items/oneOf/2/composition models/items/oneOf/1/max distance fault center}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: todo The depth in meters to which the composition of this feature is present.
+\end{itemize}\subsubsection{/features/items/oneOf/2/composition models/items/oneOf/1/compositions}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list with the labels of the composition which are present there.
+\end{itemize}\subsubsection{/features/items/oneOf/2/composition models/items/oneOf/1/compositions/items}
+\begin{itemize}\item {\bf default value}: 0
+\item {\bf type}: integer
+\item {\bf documentation}: 
+\end{itemize}\subsubsection{/features/items/oneOf/2/composition models/items/oneOf/1/fractions}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 1
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: TA list of compositional fractions corresponding to the compositions list.
+\end{itemize}\subsubsection{/features/items/oneOf/2/composition models/items/oneOf/1/fractions/items}
+\begin{itemize}\item {\bf default value}: 1.0
+\item {\bf type}: number
+\item {\bf documentation}: 
+\end{itemize}\subsubsection{/features/items/oneOf/2/composition models/items/oneOf/1/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value (add, not implemented). Replacing implies that all values not explicitly defined are set to zero.
+\item {\bf enum}: [replace]\end{itemize}\subsection{/features/items/oneOf/2/sections}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list of feature properties for a coordinate.
+\end{itemize}\subsection{/features/items/oneOf/2/sections/items}
+\begin{itemize}\item {\bf documentation}: 
+\item {\bf default value}: 
+\item {\bf type}: object
+\end{itemize}
+\subsubsection{/features/items/oneOf/2/sections/items/min depth}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: The depth to which this feature is present
+\end{itemize}\subsubsection{/features/items/oneOf/2/sections/items/max depth}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: The depth to which this feature is present
+\end{itemize}\subsubsection{/features/items/oneOf/2/sections/items/dip point}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 2
+\item {\bf maxItems}: 2
+\item {\bf documentation}: The depth to which this feature is present
+\end{itemize}\subsubsection{/features/items/oneOf/2/sections/items/dip point/items}
+\begin{itemize}\item {\bf type}: number
+\end{itemize}\subsubsection{/features/items/oneOf/2/sections/items/segments}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: The depth to which this feature is present
+\end{itemize}\subsubsection{/features/items/oneOf/2/sections/items/segments/items}
+\begin{itemize}\item {\bf type}: object
+\item {\bf additionalProperties}: false
+\item {\bf documentation}: 
+\item {\bf required}: [length, thickness, angle]\end{itemize}
+\subsubsection{/features/items/oneOf/2/sections/items/segments/items/length}
+\begin{itemize}\item {\bf type}: number
+\end{itemize}\subsubsection{/features/items/oneOf/2/sections/items/segments/items/thickness}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 1
+\item {\bf maxItems}: 2
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/segments/items/thickness/items}
+\begin{itemize}\item {\bf type}: number
+\end{itemize}\subsubsection{/features/items/oneOf/2/sections/items/segments/items/top truncation}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 1
+\item {\bf maxItems}: 2
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/segments/items/top truncation/items}
+\begin{itemize}\item {\bf type}: number
+\end{itemize}\subsubsection{/features/items/oneOf/2/sections/items/segments/items/angle}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 1
+\item {\bf maxItems}: 2
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/segments/items/angle/items}
+\begin{itemize}\item {\bf type}: number
+\end{itemize}\subsubsection{/features/items/oneOf/2/sections/items/segments/items/temperature models}
+\begin{itemize}\item {\bf documentation}: 
+\item {\bf default value}: 
+\item {\bf type}: array
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/segments/items/temperature models/items}
+
+\paragraph{/features/items/oneOf/2/sections/items/segments/items/temperature models/items/oneOf/1}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: Temperature object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model]\end{itemize}
+\paragraph{/features/items/oneOf/2/sections/items/segments/items/temperature models/items/oneOf/1/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the temperature model.
+\item {\bf enum}: [adiabatic]\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/segments/items/temperature models/items/oneOf/1/min distance fault center}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: todo The depth in meters from which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/segments/items/temperature models/items/oneOf/1/max distance fault center}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: todo The depth in meters to which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/segments/items/temperature models/items/oneOf/1/potential mantle temperature}
+\begin{itemize}\item {\bf default value}: -1.0
+\item {\bf type}: number
+\item {\bf documentation}: The potential temperature of the mantle at the surface in Kelvin. If the value is lower then zero, the global value is used.
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/segments/items/temperature models/items/oneOf/1/thermal expansion coefficient}
+\begin{itemize}\item {\bf default value}: -1.0
+\item {\bf type}: number
+\item {\bf documentation}: The thermal expansion coefficient in $K^{-1}$. If the value is lower then zero, the global value is used.
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/segments/items/temperature models/items/oneOf/1/specific heat}
+\begin{itemize}\item {\bf default value}: -1.0
+\item {\bf type}: number
+\item {\bf documentation}: The specific heat in $J kg^{-1} K^{-1}$. If the value is lower then zero, the global value is used.
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/segments/items/temperature models/items/oneOf/1/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or substract the value to the previously define value (substract).
+\item {\bf enum}: [replace, add, substract]\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/segments/items/temperature models/items/oneOf/2}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: Temperature model object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model, max distance fault center]\end{itemize}
+\paragraph{/features/items/oneOf/2/sections/items/segments/items/temperature models/items/oneOf/2/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the temperature model.
+\item {\bf enum}: [linear]\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/segments/items/temperature models/items/oneOf/2/min distance fault center}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: The minimum distance to the center of the fault. This determines where the linear temperature starts.
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/segments/items/temperature models/items/oneOf/2/max distance fault center}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: The minimum distance to the center of the fault. This determines where the linear temperature end.
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/segments/items/temperature models/items/oneOf/2/top temperature}
+\begin{itemize}\item {\bf default value}: 293.15
+\item {\bf type}: number
+\item {\bf documentation}: The temperature at the top in degree Kelvin of this feature.If the value is below zero, the an adiabatic temperature is used.
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/segments/items/temperature models/items/oneOf/2/bottom temperature}
+\begin{itemize}\item {\bf default value}: -1.0
+\item {\bf type}: number
+\item {\bf documentation}: The temperature at the top in degree Kelvin of this feature. If the value is below zero, an adiabatic temperature is used.
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/segments/items/temperature models/items/oneOf/2/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value (add).
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/segments/items/temperature models/items/oneOf/3}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: Temperature model object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model, temperature]\end{itemize}
+\paragraph{/features/items/oneOf/2/sections/items/segments/items/temperature models/items/oneOf/3/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the temperature model.
+\item {\bf enum}: [uniform]\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/segments/items/temperature models/items/oneOf/3/min distance fault center}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: todo The depth in meters from which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/segments/items/temperature models/items/oneOf/3/max distance fault center}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: todo The depth in meters to which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/segments/items/temperature models/items/oneOf/3/temperature}
+\begin{itemize}\item {\bf default value}: 293.15
+\item {\bf type}: number
+\item {\bf documentation}: The temperature in degree Kelvin which this feature should have
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/segments/items/temperature models/items/oneOf/3/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or substract the value to the previously define value (substract).
+\item {\bf enum}: [replace, add, substract]\end{itemize}\subsubsection{/features/items/oneOf/2/sections/items/segments/items/composition models}
+\begin{itemize}\item {\bf documentation}: 
+\item {\bf default value}: 
+\item {\bf type}: array
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/segments/items/composition models/items}
+
+\paragraph{/features/items/oneOf/2/sections/items/segments/items/composition models/items/oneOf/1}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: Uniform compositional model object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model, compositions]\end{itemize}
+\paragraph{/features/items/oneOf/2/sections/items/segments/items/composition models/items/oneOf/1/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the composition model.
+\item {\bf enum}: [uniform]\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/segments/items/composition models/items/oneOf/1/min distance fault center}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: todo The depth in meters from which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/segments/items/composition models/items/oneOf/1/max distance fault center}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: todo The depth in meters to which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/segments/items/composition models/items/oneOf/1/compositions}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list with the labels of the composition which are present there.
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/segments/items/composition models/items/oneOf/1/compositions/items}
+\begin{itemize}\item {\bf default value}: 0
+\item {\bf type}: integer
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/segments/items/composition models/items/oneOf/1/fractions}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 1
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: TA list of compositional fractions corresponding to the compositions list.
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/segments/items/composition models/items/oneOf/1/fractions/items}
+\begin{itemize}\item {\bf default value}: 1.0
+\item {\bf type}: number
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/segments/items/composition models/items/oneOf/1/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value (add, not implemented). Replacing implies that all values not explicitly defined are set to zero.
+\item {\bf enum}: [replace]\end{itemize}\subsubsection{/features/items/oneOf/2/sections/items/temperature models}
+\begin{itemize}\item {\bf documentation}: A list of temperature models.
+\item {\bf default value}: 
+\item {\bf type}: array
+\end{itemize}\subsubsection{/features/items/oneOf/2/sections/items/temperature models/items}
+
+\subsubsection{/features/items/oneOf/2/sections/items/temperature models/items/oneOf/1}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: Temperature object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model]\end{itemize}
+\paragraph{/features/items/oneOf/2/sections/items/temperature models/items/oneOf/1/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the temperature model.
+\item {\bf enum}: [adiabatic]\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/temperature models/items/oneOf/1/min distance fault center}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: todo The depth in meters from which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/temperature models/items/oneOf/1/max distance fault center}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: todo The depth in meters to which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/temperature models/items/oneOf/1/potential mantle temperature}
+\begin{itemize}\item {\bf default value}: -1.0
+\item {\bf type}: number
+\item {\bf documentation}: The potential temperature of the mantle at the surface in Kelvin. If the value is lower then zero, the global value is used.
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/temperature models/items/oneOf/1/thermal expansion coefficient}
+\begin{itemize}\item {\bf default value}: -1.0
+\item {\bf type}: number
+\item {\bf documentation}: The thermal expansion coefficient in $K^{-1}$. If the value is lower then zero, the global value is used.
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/temperature models/items/oneOf/1/specific heat}
+\begin{itemize}\item {\bf default value}: -1.0
+\item {\bf type}: number
+\item {\bf documentation}: The specific heat in $J kg^{-1} K^{-1}$. If the value is lower then zero, the global value is used.
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/temperature models/items/oneOf/1/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or substract the value to the previously define value (substract).
+\item {\bf enum}: [replace, add, substract]\end{itemize}\subsubsection{/features/items/oneOf/2/sections/items/temperature models/items/oneOf/2}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: Temperature model object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model, max distance fault center]\end{itemize}
+\paragraph{/features/items/oneOf/2/sections/items/temperature models/items/oneOf/2/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the temperature model.
+\item {\bf enum}: [linear]\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/temperature models/items/oneOf/2/min distance fault center}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: The minimum distance to the center of the fault. This determines where the linear temperature starts.
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/temperature models/items/oneOf/2/max distance fault center}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: The minimum distance to the center of the fault. This determines where the linear temperature end.
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/temperature models/items/oneOf/2/top temperature}
+\begin{itemize}\item {\bf default value}: 293.15
+\item {\bf type}: number
+\item {\bf documentation}: The temperature at the top in degree Kelvin of this feature.If the value is below zero, the an adiabatic temperature is used.
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/temperature models/items/oneOf/2/bottom temperature}
+\begin{itemize}\item {\bf default value}: -1.0
+\item {\bf type}: number
+\item {\bf documentation}: The temperature at the top in degree Kelvin of this feature. If the value is below zero, an adiabatic temperature is used.
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/temperature models/items/oneOf/2/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value (add).
+\end{itemize}\subsubsection{/features/items/oneOf/2/sections/items/temperature models/items/oneOf/3}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: Temperature model object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model, temperature]\end{itemize}
+\paragraph{/features/items/oneOf/2/sections/items/temperature models/items/oneOf/3/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the temperature model.
+\item {\bf enum}: [uniform]\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/temperature models/items/oneOf/3/min distance fault center}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: todo The depth in meters from which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/temperature models/items/oneOf/3/max distance fault center}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: todo The depth in meters to which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/temperature models/items/oneOf/3/temperature}
+\begin{itemize}\item {\bf default value}: 293.15
+\item {\bf type}: number
+\item {\bf documentation}: The temperature in degree Kelvin which this feature should have
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/temperature models/items/oneOf/3/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or substract the value to the previously define value (substract).
+\item {\bf enum}: [replace, add, substract]\end{itemize}\subsubsection{/features/items/oneOf/2/sections/items/composition models}
+\begin{itemize}\item {\bf documentation}: A list of composition models.
+\item {\bf default value}: 
+\item {\bf type}: array
+\end{itemize}\subsubsection{/features/items/oneOf/2/sections/items/composition models/items}
+
+\subsubsection{/features/items/oneOf/2/sections/items/composition models/items/oneOf/1}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: Uniform compositional model object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model, compositions]\end{itemize}
+\paragraph{/features/items/oneOf/2/sections/items/composition models/items/oneOf/1/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the composition model.
+\item {\bf enum}: [uniform]\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/composition models/items/oneOf/1/min distance fault center}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: todo The depth in meters from which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/composition models/items/oneOf/1/max distance fault center}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: todo The depth in meters to which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/composition models/items/oneOf/1/compositions}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list with the labels of the composition which are present there.
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/composition models/items/oneOf/1/compositions/items}
+\begin{itemize}\item {\bf default value}: 0
+\item {\bf type}: integer
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/composition models/items/oneOf/1/fractions}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 1
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: TA list of compositional fractions corresponding to the compositions list.
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/composition models/items/oneOf/1/fractions/items}
+\begin{itemize}\item {\bf default value}: 1.0
+\item {\bf type}: number
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/composition models/items/oneOf/1/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value (add, not implemented). Replacing implies that all values not explicitly defined are set to zero.
+\item {\bf enum}: [replace]\end{itemize}\subsubsection{/features/items/oneOf/2/sections/items/coordinate}
+\begin{itemize}\item {\bf default value}: 0
+\item {\bf type}: integer
+\item {\bf documentation}: The coordinate which should be overwritten
+\end{itemize}\subsection{/features/items/oneOf/3}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: feature object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model, coordinates]\end{itemize}
+\subsection{/features/items/oneOf/3/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name which the user has given to the feature.
+\item {\bf enum}: [mantle layer]\end{itemize}\subsection{/features/items/oneOf/3/name}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name which the user has given to the feature.
+\end{itemize}\subsection{/features/items/oneOf/3/coordinates}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 1
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: An array of 2d Points representing an array of coordinates where the feature is located.
+\end{itemize}\subsection{/features/items/oneOf/3/coordinates/items}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 2
+\item {\bf maxItems}: 2
+\item {\bf documentation}: 
+\end{itemize}\subsubsection{/features/items/oneOf/3/coordinates/items/items}
+\begin{itemize}\item {\bf type}: number
+\end{itemize}\subsection{/features/items/oneOf/3/min depth}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: The depth to which this feature is present
+\end{itemize}\subsection{/features/items/oneOf/3/max depth}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: The depth to which this feature is present
+\end{itemize}\subsection{/features/items/oneOf/3/temperature models}
+\begin{itemize}\item {\bf documentation}: A list of temperature models.
+\item {\bf default value}: 
+\item {\bf type}: array
+\end{itemize}\subsection{/features/items/oneOf/3/temperature models/items}
+
+\subsubsection{/features/items/oneOf/3/temperature models/items/oneOf/1}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: Temperature object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model]\end{itemize}
+\subsubsection{/features/items/oneOf/3/temperature models/items/oneOf/1/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the temperature model.
+\item {\bf enum}: [adiabatic]\end{itemize}\subsubsection{/features/items/oneOf/3/temperature models/items/oneOf/1/min depth}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: The depth in meters from which the temperature of this feature is present.
+\end{itemize}\subsubsection{/features/items/oneOf/3/temperature models/items/oneOf/1/max depth}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: The depth in meters to which the temperature of this feature is present.
+\end{itemize}\subsubsection{/features/items/oneOf/3/temperature models/items/oneOf/1/potential mantle temperature}
+\begin{itemize}\item {\bf default value}: -1.0
+\item {\bf type}: number
+\item {\bf documentation}: The potential temperature of the mantle at the surface in Kelvin. If the value is lower then zero, the global value is used.
+\end{itemize}\subsubsection{/features/items/oneOf/3/temperature models/items/oneOf/1/thermal expansion coefficient}
+\begin{itemize}\item {\bf default value}: -1.0
+\item {\bf type}: number
+\item {\bf documentation}: The thermal expansion coefficient in $K^{-1}$. If the value is lower then zero, the global value is used.
+\end{itemize}\subsubsection{/features/items/oneOf/3/temperature models/items/oneOf/1/specific heat}
+\begin{itemize}\item {\bf default value}: -1.0
+\item {\bf type}: number
+\item {\bf documentation}: The specific heat in $J kg^{-1} K^{-1}$. If the value is lower then zero, the global value is used.
+\end{itemize}\subsubsection{/features/items/oneOf/3/temperature models/items/oneOf/1/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or substract the value to the previously define value (substract).
+\item {\bf enum}: [replace, add, substract]\end{itemize}\subsubsection{/features/items/oneOf/3/temperature models/items/oneOf/2}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: Temperature model object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model, max depth]\end{itemize}
+\subsubsection{/features/items/oneOf/3/temperature models/items/oneOf/2/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the temperature model.
+\item {\bf enum}: [linear]\end{itemize}\subsubsection{/features/items/oneOf/3/temperature models/items/oneOf/2/min depth}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: The depth in meters from which the temperature of this feature is present.
+\end{itemize}\subsubsection{/features/items/oneOf/3/temperature models/items/oneOf/2/max depth}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: The depth in meters to which the temperature of this feature is present.
+\end{itemize}\subsubsection{/features/items/oneOf/3/temperature models/items/oneOf/2/top temperature}
+\begin{itemize}\item {\bf default value}: 293.15
+\item {\bf type}: number
+\item {\bf documentation}: The temperature at the top in degree Kelvin of this feature.If the value is below zero, the an adiabatic temperature is used.
+\end{itemize}\subsubsection{/features/items/oneOf/3/temperature models/items/oneOf/2/bottom temperature}
+\begin{itemize}\item {\bf default value}: -1.0
+\item {\bf type}: number
+\item {\bf documentation}: The temperature at the top in degree Kelvin of this feature. If the value is below zero, an adiabatic temperature is used.
+\end{itemize}\subsubsection{/features/items/oneOf/3/temperature models/items/oneOf/2/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value (add).
+\end{itemize}\subsubsection{/features/items/oneOf/3/temperature models/items/oneOf/3}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: Temperature model object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model, temperature]\end{itemize}
+\subsubsection{/features/items/oneOf/3/temperature models/items/oneOf/3/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the temperature model.
+\item {\bf enum}: [uniform]\end{itemize}\subsubsection{/features/items/oneOf/3/temperature models/items/oneOf/3/min depth}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: The depth in meters from which the temperature of this feature is present.
+\end{itemize}\subsubsection{/features/items/oneOf/3/temperature models/items/oneOf/3/max depth}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: The depth in meters to which the temperature of this feature is present.
+\end{itemize}\subsubsection{/features/items/oneOf/3/temperature models/items/oneOf/3/temperature}
+\begin{itemize}\item {\bf default value}: 293.15
+\item {\bf type}: number
+\item {\bf documentation}: The temperature in degree Kelvin which this feature should have
+\end{itemize}\subsubsection{/features/items/oneOf/3/temperature models/items/oneOf/3/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or substract the value to the previously define value (substract).
+\item {\bf enum}: [replace, add, substract]\end{itemize}\subsection{/features/items/oneOf/3/composition models}
+\begin{itemize}\item {\bf documentation}: A list of composition models.
+\item {\bf default value}: 
+\item {\bf type}: array
+\end{itemize}\subsection{/features/items/oneOf/3/composition models/items}
+
+\subsubsection{/features/items/oneOf/3/composition models/items/oneOf/1}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: Uniform compositional model object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model, compositions]\end{itemize}
+\subsubsection{/features/items/oneOf/3/composition models/items/oneOf/1/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the composition model.
+\item {\bf enum}: [uniform]\end{itemize}\subsubsection{/features/items/oneOf/3/composition models/items/oneOf/1/min depth}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: The depth in meters from which the composition of this feature is present.
+\end{itemize}\subsubsection{/features/items/oneOf/3/composition models/items/oneOf/1/max depth}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: The depth in meters to which the composition of this feature is present.
+\end{itemize}\subsubsection{/features/items/oneOf/3/composition models/items/oneOf/1/compositions}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list with the labels of the composition which are present there.
+\end{itemize}\subsubsection{/features/items/oneOf/3/composition models/items/oneOf/1/compositions/items}
+\begin{itemize}\item {\bf default value}: 0
+\item {\bf type}: integer
+\item {\bf documentation}: 
+\end{itemize}\subsubsection{/features/items/oneOf/3/composition models/items/oneOf/1/fractions}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 1
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: TA list of compositional fractions corresponding to the compositions list.
+\end{itemize}\subsubsection{/features/items/oneOf/3/composition models/items/oneOf/1/fractions/items}
+\begin{itemize}\item {\bf default value}: 1.0
+\item {\bf type}: number
+\item {\bf documentation}: 
+\end{itemize}\subsubsection{/features/items/oneOf/3/composition models/items/oneOf/1/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value (add, not implemented). Replacing implies that all values not explicitly defined are set to zero.
+\item {\bf enum}: [replace]\end{itemize}\subsection{/features/items/oneOf/4}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: feature object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model, coordinates]\end{itemize}
+\subsection{/features/items/oneOf/4/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name which the user has given to the feature.
+\item {\bf enum}: [oceanic plate]\end{itemize}\subsection{/features/items/oneOf/4/name}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name which the user has given to the feature.
+\end{itemize}\subsection{/features/items/oneOf/4/coordinates}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 1
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: An array of 2d Points representing an array of coordinates where the feature is located.
+\end{itemize}\subsection{/features/items/oneOf/4/coordinates/items}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 2
+\item {\bf maxItems}: 2
+\item {\bf documentation}: 
+\end{itemize}\subsubsection{/features/items/oneOf/4/coordinates/items/items}
+\begin{itemize}\item {\bf type}: number
+\end{itemize}\subsection{/features/items/oneOf/4/min depth}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: The depth to which this feature is present
+\end{itemize}\subsection{/features/items/oneOf/4/max depth}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: The depth to which this feature is present
+\end{itemize}\subsection{/features/items/oneOf/4/temperature models}
+\begin{itemize}\item {\bf documentation}: A list of temperature models.
+\item {\bf default value}: 
+\item {\bf type}: array
+\end{itemize}\subsection{/features/items/oneOf/4/temperature models/items}
+
+\subsubsection{/features/items/oneOf/4/temperature models/items/oneOf/1}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: Temperature object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model]\end{itemize}
+\subsubsection{/features/items/oneOf/4/temperature models/items/oneOf/1/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the temperature model.
+\item {\bf enum}: [adiabatic]\end{itemize}\subsubsection{/features/items/oneOf/4/temperature models/items/oneOf/1/min depth}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: The depth in meters from which the temperature of this feature is present.
+\end{itemize}\subsubsection{/features/items/oneOf/4/temperature models/items/oneOf/1/max depth}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: The depth in meters to which the temperature of this feature is present.
+\end{itemize}\subsubsection{/features/items/oneOf/4/temperature models/items/oneOf/1/potential mantle temperature}
+\begin{itemize}\item {\bf default value}: -1.0
+\item {\bf type}: number
+\item {\bf documentation}: The potential temperature of the mantle at the surface in Kelvin. If the value is lower then zero, the global value is used.
+\end{itemize}\subsubsection{/features/items/oneOf/4/temperature models/items/oneOf/1/thermal expansion coefficient}
+\begin{itemize}\item {\bf default value}: -1.0
+\item {\bf type}: number
+\item {\bf documentation}: The thermal expansion coefficient in $K^{-1}$. If the value is lower then zero, the global value is used.
+\end{itemize}\subsubsection{/features/items/oneOf/4/temperature models/items/oneOf/1/specific heat}
+\begin{itemize}\item {\bf default value}: -1.0
+\item {\bf type}: number
+\item {\bf documentation}: The specific heat in $J kg^{-1} K^{-1}$. If the value is lower then zero, the global value is used.
+\end{itemize}\subsubsection{/features/items/oneOf/4/temperature models/items/oneOf/1/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or substract the value to the previously define value (substract).
+\item {\bf enum}: [replace, add, substract]\end{itemize}\subsubsection{/features/items/oneOf/4/temperature models/items/oneOf/2}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: Temperature model object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model, max depth]\end{itemize}
+\subsubsection{/features/items/oneOf/4/temperature models/items/oneOf/2/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the temperature model.
+\item {\bf enum}: [linear]\end{itemize}\subsubsection{/features/items/oneOf/4/temperature models/items/oneOf/2/min depth}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: The depth in meters from which the temperature of this feature is present.
+\end{itemize}\subsubsection{/features/items/oneOf/4/temperature models/items/oneOf/2/max depth}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: The depth in meters to which the temperature of this feature is present.
+\end{itemize}\subsubsection{/features/items/oneOf/4/temperature models/items/oneOf/2/top temperature}
+\begin{itemize}\item {\bf default value}: 293.15
+\item {\bf type}: number
+\item {\bf documentation}: The temperature at the top in degree Kelvin of this feature.If the value is below zero, the an adiabatic temperature is used.
+\end{itemize}\subsubsection{/features/items/oneOf/4/temperature models/items/oneOf/2/bottom temperature}
+\begin{itemize}\item {\bf default value}: -1.0
+\item {\bf type}: number
+\item {\bf documentation}: The temperature at the top in degree Kelvin of this feature. If the value is below zero, an adiabatic temperature is used.
+\end{itemize}\subsubsection{/features/items/oneOf/4/temperature models/items/oneOf/2/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value (add).
+\end{itemize}\subsubsection{/features/items/oneOf/4/temperature models/items/oneOf/3}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: Temperature model object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model, ridge coordinates, spreading velocity, max depth]\end{itemize}
+\subsubsection{/features/items/oneOf/4/temperature models/items/oneOf/3/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the temperature model.
+\item {\bf enum}: [plate model]\end{itemize}\subsubsection{/features/items/oneOf/4/temperature models/items/oneOf/3/min depth}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: The depth in meters from which the temperature of this feature is present.
+\end{itemize}\subsubsection{/features/items/oneOf/4/temperature models/items/oneOf/3/max depth}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: The depth in meters to which the temperature of this feature is present.
+\end{itemize}\subsubsection{/features/items/oneOf/4/temperature models/items/oneOf/3/top temperature}
+\begin{itemize}\item {\bf default value}: 293.15
+\item {\bf type}: number
+\item {\bf documentation}: The temperature in degree Kelvin which this feature should have
+\end{itemize}\subsubsection{/features/items/oneOf/4/temperature models/items/oneOf/3/bottom temperature}
+\begin{itemize}\item {\bf default value}: -1.0
+\item {\bf type}: number
+\item {\bf documentation}: The temperature in degree Kelvin which this feature should have
+\end{itemize}\subsubsection{/features/items/oneOf/4/temperature models/items/oneOf/3/spreading velocity}
+\begin{itemize}\item {\bf default value}: -1.0
+\item {\bf type}: number
+\item {\bf documentation}: The spreading velocity of the plate in meter per year. This is the velocity with which one side moves away from the ridge.
+\end{itemize}\subsubsection{/features/items/oneOf/4/temperature models/items/oneOf/3/ridge coordinates}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 2
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list of 2d points which define the location of the ridge.
+\end{itemize}\subsubsection{/features/items/oneOf/4/temperature models/items/oneOf/3/ridge coordinates/items}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 2
+\item {\bf maxItems}: 2
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/4/temperature models/items/oneOf/3/ridge coordinates/items/items}
+\begin{itemize}\item {\bf type}: number
+\end{itemize}\subsubsection{/features/items/oneOf/4/temperature models/items/oneOf/3/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or substract the value to the previously define value (substract).
+\item {\bf enum}: [replace, add, substract]\end{itemize}\subsubsection{/features/items/oneOf/4/temperature models/items/oneOf/4}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: Temperature model object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model, temperature]\end{itemize}
+\subsubsection{/features/items/oneOf/4/temperature models/items/oneOf/4/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the temperature model.
+\item {\bf enum}: [uniform]\end{itemize}\subsubsection{/features/items/oneOf/4/temperature models/items/oneOf/4/min depth}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: The depth in meters from which the temperature of this feature is present.
+\end{itemize}\subsubsection{/features/items/oneOf/4/temperature models/items/oneOf/4/max depth}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: The depth in meters to which the temperature of this feature is present.
+\end{itemize}\subsubsection{/features/items/oneOf/4/temperature models/items/oneOf/4/temperature}
+\begin{itemize}\item {\bf default value}: 293.15
+\item {\bf type}: number
+\item {\bf documentation}: The temperature in degree Kelvin which this feature should have
+\end{itemize}\subsubsection{/features/items/oneOf/4/temperature models/items/oneOf/4/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or substract the value to the previously define value (substract).
+\item {\bf enum}: [replace, add, substract]\end{itemize}\subsection{/features/items/oneOf/4/composition models}
+\begin{itemize}\item {\bf documentation}: A list of composition models.
+\item {\bf default value}: 
+\item {\bf type}: array
+\end{itemize}\subsection{/features/items/oneOf/4/composition models/items}
+
+\subsubsection{/features/items/oneOf/4/composition models/items/oneOf/1}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: Uniform compositional model object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model, compositions]\end{itemize}
+\subsubsection{/features/items/oneOf/4/composition models/items/oneOf/1/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the composition model.
+\item {\bf enum}: [uniform]\end{itemize}\subsubsection{/features/items/oneOf/4/composition models/items/oneOf/1/min depth}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: The depth in meters from which the composition of this feature is present.
+\end{itemize}\subsubsection{/features/items/oneOf/4/composition models/items/oneOf/1/max depth}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: The depth in meters to which the composition of this feature is present.
+\end{itemize}\subsubsection{/features/items/oneOf/4/composition models/items/oneOf/1/compositions}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list with the labels of the composition which are present there.
+\end{itemize}\subsubsection{/features/items/oneOf/4/composition models/items/oneOf/1/compositions/items}
+\begin{itemize}\item {\bf default value}: 0
+\item {\bf type}: integer
+\item {\bf documentation}: 
+\end{itemize}\subsubsection{/features/items/oneOf/4/composition models/items/oneOf/1/fractions}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 1
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: TA list of compositional fractions corresponding to the compositions list.
+\end{itemize}\subsubsection{/features/items/oneOf/4/composition models/items/oneOf/1/fractions/items}
+\begin{itemize}\item {\bf default value}: 1.0
+\item {\bf type}: number
+\item {\bf documentation}: 
+\end{itemize}\subsubsection{/features/items/oneOf/4/composition models/items/oneOf/1/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value (add). Replacing implies that all values not explicitly defined are set to zero.
+\item {\bf enum}: [replace]\end{itemize}\subsection{/features/items/oneOf/5}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: feature object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model, coordinates]\end{itemize}
+\subsection{/features/items/oneOf/5/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name which the user has given to the feature.
+\item {\bf enum}: [subducting plate]\end{itemize}\subsection{/features/items/oneOf/5/name}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name which the user has given to the feature.
+\end{itemize}\subsection{/features/items/oneOf/5/coordinates}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 1
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: An array of 2d Points representing an array of coordinates where the feature is located.
+\end{itemize}\subsection{/features/items/oneOf/5/coordinates/items}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 2
+\item {\bf maxItems}: 2
+\item {\bf documentation}: 
+\end{itemize}\subsubsection{/features/items/oneOf/5/coordinates/items/items}
+\begin{itemize}\item {\bf type}: number
+\end{itemize}\subsection{/features/items/oneOf/5/min depth}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: The depth to which this feature is present
+\end{itemize}\subsection{/features/items/oneOf/5/max depth}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: The depth to which this feature is present
+\end{itemize}\subsection{/features/items/oneOf/5/dip point}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 2
+\item {\bf maxItems}: 2
+\item {\bf documentation}: The depth to which this feature is present
+\end{itemize}\subsection{/features/items/oneOf/5/dip point/items}
+\begin{itemize}\item {\bf type}: number
+\end{itemize}\subsection{/features/items/oneOf/5/segments}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: The depth to which this feature is present
+\end{itemize}\subsection{/features/items/oneOf/5/segments/items}
+\begin{itemize}\item {\bf type}: object
+\item {\bf additionalProperties}: false
+\item {\bf documentation}: 
+\item {\bf required}: [length, thickness, angle]\end{itemize}
+\subsubsection{/features/items/oneOf/5/segments/items/length}
+\begin{itemize}\item {\bf type}: number
+\end{itemize}\subsubsection{/features/items/oneOf/5/segments/items/thickness}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 1
+\item {\bf maxItems}: 2
+\end{itemize}\subsubsection{/features/items/oneOf/5/segments/items/thickness/items}
+\begin{itemize}\item {\bf type}: number
+\end{itemize}\subsubsection{/features/items/oneOf/5/segments/items/top truncation}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 1
+\item {\bf maxItems}: 2
+\end{itemize}\subsubsection{/features/items/oneOf/5/segments/items/top truncation/items}
+\begin{itemize}\item {\bf type}: number
+\end{itemize}\subsubsection{/features/items/oneOf/5/segments/items/angle}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 1
+\item {\bf maxItems}: 2
+\end{itemize}\subsubsection{/features/items/oneOf/5/segments/items/angle/items}
+\begin{itemize}\item {\bf type}: number
+\end{itemize}\subsubsection{/features/items/oneOf/5/segments/items/temperature models}
+\begin{itemize}\item {\bf documentation}: 
+\item {\bf default value}: 
+\item {\bf type}: array
+\end{itemize}\subsubsection{/features/items/oneOf/5/segments/items/temperature models/items}
+
+\subsubsection{/features/items/oneOf/5/segments/items/temperature models/items/oneOf/1}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: Temperature object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model]\end{itemize}
+\paragraph{/features/items/oneOf/5/segments/items/temperature models/items/oneOf/1/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the temperature model.
+\item {\bf enum}: [adiabatic]\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/temperature models/items/oneOf/1/min distance slab top}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: todo The depth in meters from which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/temperature models/items/oneOf/1/max distance slab top}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: todo The depth in meters to which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/temperature models/items/oneOf/1/potential mantle temperature}
+\begin{itemize}\item {\bf default value}: -1.0
+\item {\bf type}: number
+\item {\bf documentation}: The potential temperature of the mantle at the surface in Kelvin. If the value is lower then zero, the global value is used.
+\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/temperature models/items/oneOf/1/thermal expansion coefficient}
+\begin{itemize}\item {\bf default value}: -1.0
+\item {\bf type}: number
+\item {\bf documentation}: The thermal expansion coefficient in $K^{-1}$. If the value is lower then zero, the global value is used.
+\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/temperature models/items/oneOf/1/specific heat}
+\begin{itemize}\item {\bf default value}: -1.0
+\item {\bf type}: number
+\item {\bf documentation}: The specific heat in $J kg^{-1} K^{-1}$. If the value is lower then zero, the global value is used.
+\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/temperature models/items/oneOf/1/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or substract the value to the previously define value (substract).
+\item {\bf enum}: [replace, add, substract]\end{itemize}\subsubsection{/features/items/oneOf/5/segments/items/temperature models/items/oneOf/2}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: Temperature model object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model, max distance slab top]\end{itemize}
+\paragraph{/features/items/oneOf/5/segments/items/temperature models/items/oneOf/2/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the temperature model.
+\item {\bf enum}: [linear]\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/temperature models/items/oneOf/2/min distance slab top}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: todo The depth in meters from which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/temperature models/items/oneOf/2/max distance slab top}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: todo The depth in meters to which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/temperature models/items/oneOf/2/top temperature}
+\begin{itemize}\item {\bf default value}: 293.15
+\item {\bf type}: number
+\item {\bf documentation}: The temperature at the top in degree Kelvin of this feature.If the value is below zero, the an adiabatic temperature is used.
+\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/temperature models/items/oneOf/2/bottom temperature}
+\begin{itemize}\item {\bf default value}: -1.0
+\item {\bf type}: number
+\item {\bf documentation}: The temperature at the top in degree Kelvin of this feature. If the value is below zero, an adiabatic temperature is used.
+\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/temperature models/items/oneOf/2/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value (add).
+\end{itemize}\subsubsection{/features/items/oneOf/5/segments/items/temperature models/items/oneOf/3}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: Temperature model object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model, plate velocity]\end{itemize}
+\paragraph{/features/items/oneOf/5/segments/items/temperature models/items/oneOf/3/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the temperature model.
+\item {\bf enum}: [plate model]\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/temperature models/items/oneOf/3/min distance slab top}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: todo The depth in meters from which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/temperature models/items/oneOf/3/max distance slab top}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: todo The depth in meters to which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/temperature models/items/oneOf/3/density}
+\begin{itemize}\item {\bf default value}: 3300.0
+\item {\bf type}: number
+\item {\bf documentation}: The reference density of the subducting plate in $kg/m^3$
+\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/temperature models/items/oneOf/3/plate velocity}
+\begin{itemize}\item {\bf default value}: NaN
+\item {\bf type}: number
+\item {\bf documentation}: The velocity in meters per year with which the plate subducts in meters per year.
+\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/temperature models/items/oneOf/3/thermal conductivity}
+\begin{itemize}\item {\bf default value}: 2.0
+\item {\bf type}: number
+\item {\bf documentation}: The thermal conductivity of the subducting plate material in $W m^{-1} K^{-1}$.
+\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/temperature models/items/oneOf/3/thermal expansion coefficient}
+\begin{itemize}\item {\bf default value}: 0.000035
+\item {\bf type}: number
+\item {\bf documentation}: The thermal expansivity of the subducting plate material in $K^{-1}$.
+\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/temperature models/items/oneOf/3/specific heat}
+\begin{itemize}\item {\bf default value}: 1250.0
+\item {\bf type}: number
+\item {\bf documentation}: The specific heat of the subducting plate material in $J kg^{-1} K^{-1}$.
+\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/temperature models/items/oneOf/3/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or substract the value to the previously define value (substract).
+\item {\bf enum}: [replace, add, substract]\end{itemize}\subsubsection{/features/items/oneOf/5/segments/items/temperature models/items/oneOf/4}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: Temperature model object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model, temperature]\end{itemize}
+\paragraph{/features/items/oneOf/5/segments/items/temperature models/items/oneOf/4/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the temperature model.
+\item {\bf enum}: [uniform]\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/temperature models/items/oneOf/4/min distance slab top}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: todo The depth in meters from which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/temperature models/items/oneOf/4/max distance slab top}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: todo The depth in meters to which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/temperature models/items/oneOf/4/temperature}
+\begin{itemize}\item {\bf default value}: 293.15
+\item {\bf type}: number
+\item {\bf documentation}: The temperature in degree Kelvin which this feature should have
+\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/temperature models/items/oneOf/4/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or substract the value to the previously define value (substract).
+\item {\bf enum}: [replace, add, substract]\end{itemize}\subsubsection{/features/items/oneOf/5/segments/items/composition models}
+\begin{itemize}\item {\bf documentation}: 
+\item {\bf default value}: 
+\item {\bf type}: array
+\end{itemize}\subsubsection{/features/items/oneOf/5/segments/items/composition models/items}
+
+\subsubsection{/features/items/oneOf/5/segments/items/composition models/items/oneOf/1}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: Uniform compositional model object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model, compositions]\end{itemize}
+\paragraph{/features/items/oneOf/5/segments/items/composition models/items/oneOf/1/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the composition model.
+\item {\bf enum}: [uniform]\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/composition models/items/oneOf/1/min distance slab top}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: todo The depth in meters from which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/composition models/items/oneOf/1/max distance slab top}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: todo The depth in meters to which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/composition models/items/oneOf/1/compositions}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list with the labels of the composition which are present there.
+\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/composition models/items/oneOf/1/compositions/items}
+\begin{itemize}\item {\bf default value}: 0
+\item {\bf type}: integer
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/composition models/items/oneOf/1/fractions}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 1
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: TA list of compositional fractions corresponding to the compositions list.
+\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/composition models/items/oneOf/1/fractions/items}
+\begin{itemize}\item {\bf default value}: 1.0
+\item {\bf type}: number
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/composition models/items/oneOf/1/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value (add, not implemented). Replacing implies that all values not explicitly defined are set to zero.
+\item {\bf enum}: [replace]\end{itemize}\subsection{/features/items/oneOf/5/temperature models}
+\begin{itemize}\item {\bf documentation}: A list of temperature models.
+\item {\bf default value}: 
+\item {\bf type}: array
+\end{itemize}\subsection{/features/items/oneOf/5/temperature models/items}
+
+\subsubsection{/features/items/oneOf/5/temperature models/items/oneOf/1}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: Temperature object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model]\end{itemize}
+\subsubsection{/features/items/oneOf/5/temperature models/items/oneOf/1/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the temperature model.
+\item {\bf enum}: [adiabatic]\end{itemize}\subsubsection{/features/items/oneOf/5/temperature models/items/oneOf/1/min distance slab top}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: todo The depth in meters from which the composition of this feature is present.
+\end{itemize}\subsubsection{/features/items/oneOf/5/temperature models/items/oneOf/1/max distance slab top}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: todo The depth in meters to which the composition of this feature is present.
+\end{itemize}\subsubsection{/features/items/oneOf/5/temperature models/items/oneOf/1/potential mantle temperature}
+\begin{itemize}\item {\bf default value}: -1.0
+\item {\bf type}: number
+\item {\bf documentation}: The potential temperature of the mantle at the surface in Kelvin. If the value is lower then zero, the global value is used.
+\end{itemize}\subsubsection{/features/items/oneOf/5/temperature models/items/oneOf/1/thermal expansion coefficient}
+\begin{itemize}\item {\bf default value}: -1.0
+\item {\bf type}: number
+\item {\bf documentation}: The thermal expansion coefficient in $K^{-1}$. If the value is lower then zero, the global value is used.
+\end{itemize}\subsubsection{/features/items/oneOf/5/temperature models/items/oneOf/1/specific heat}
+\begin{itemize}\item {\bf default value}: -1.0
+\item {\bf type}: number
+\item {\bf documentation}: The specific heat in $J kg^{-1} K^{-1}$. If the value is lower then zero, the global value is used.
+\end{itemize}\subsubsection{/features/items/oneOf/5/temperature models/items/oneOf/1/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or substract the value to the previously define value (substract).
+\item {\bf enum}: [replace, add, substract]\end{itemize}\subsubsection{/features/items/oneOf/5/temperature models/items/oneOf/2}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: Temperature model object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model, max distance slab top]\end{itemize}
+\subsubsection{/features/items/oneOf/5/temperature models/items/oneOf/2/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the temperature model.
+\item {\bf enum}: [linear]\end{itemize}\subsubsection{/features/items/oneOf/5/temperature models/items/oneOf/2/min distance slab top}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: todo The depth in meters from which the composition of this feature is present.
+\end{itemize}\subsubsection{/features/items/oneOf/5/temperature models/items/oneOf/2/max distance slab top}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: todo The depth in meters to which the composition of this feature is present.
+\end{itemize}\subsubsection{/features/items/oneOf/5/temperature models/items/oneOf/2/top temperature}
+\begin{itemize}\item {\bf default value}: 293.15
+\item {\bf type}: number
+\item {\bf documentation}: The temperature at the top in degree Kelvin of this feature.If the value is below zero, the an adiabatic temperature is used.
+\end{itemize}\subsubsection{/features/items/oneOf/5/temperature models/items/oneOf/2/bottom temperature}
+\begin{itemize}\item {\bf default value}: -1.0
+\item {\bf type}: number
+\item {\bf documentation}: The temperature at the top in degree Kelvin of this feature. If the value is below zero, an adiabatic temperature is used.
+\end{itemize}\subsubsection{/features/items/oneOf/5/temperature models/items/oneOf/2/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value (add).
+\end{itemize}\subsubsection{/features/items/oneOf/5/temperature models/items/oneOf/3}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: Temperature model object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model, plate velocity]\end{itemize}
+\subsubsection{/features/items/oneOf/5/temperature models/items/oneOf/3/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the temperature model.
+\item {\bf enum}: [plate model]\end{itemize}\subsubsection{/features/items/oneOf/5/temperature models/items/oneOf/3/min distance slab top}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: todo The depth in meters from which the composition of this feature is present.
+\end{itemize}\subsubsection{/features/items/oneOf/5/temperature models/items/oneOf/3/max distance slab top}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: todo The depth in meters to which the composition of this feature is present.
+\end{itemize}\subsubsection{/features/items/oneOf/5/temperature models/items/oneOf/3/density}
+\begin{itemize}\item {\bf default value}: 3300.0
+\item {\bf type}: number
+\item {\bf documentation}: The reference density of the subducting plate in $kg/m^3$
+\end{itemize}\subsubsection{/features/items/oneOf/5/temperature models/items/oneOf/3/plate velocity}
+\begin{itemize}\item {\bf default value}: NaN
+\item {\bf type}: number
+\item {\bf documentation}: The velocity in meters per year with which the plate subducts in meters per year.
+\end{itemize}\subsubsection{/features/items/oneOf/5/temperature models/items/oneOf/3/thermal conductivity}
+\begin{itemize}\item {\bf default value}: 2.0
+\item {\bf type}: number
+\item {\bf documentation}: The thermal conductivity of the subducting plate material in $W m^{-1} K^{-1}$.
+\end{itemize}\subsubsection{/features/items/oneOf/5/temperature models/items/oneOf/3/thermal expansion coefficient}
+\begin{itemize}\item {\bf default value}: 0.000035
+\item {\bf type}: number
+\item {\bf documentation}: The thermal expansivity of the subducting plate material in $K^{-1}$.
+\end{itemize}\subsubsection{/features/items/oneOf/5/temperature models/items/oneOf/3/specific heat}
+\begin{itemize}\item {\bf default value}: 1250.0
+\item {\bf type}: number
+\item {\bf documentation}: The specific heat of the subducting plate material in $J kg^{-1} K^{-1}$.
+\end{itemize}\subsubsection{/features/items/oneOf/5/temperature models/items/oneOf/3/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or substract the value to the previously define value (substract).
+\item {\bf enum}: [replace, add, substract]\end{itemize}\subsubsection{/features/items/oneOf/5/temperature models/items/oneOf/4}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: Temperature model object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model, temperature]\end{itemize}
+\subsubsection{/features/items/oneOf/5/temperature models/items/oneOf/4/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the temperature model.
+\item {\bf enum}: [uniform]\end{itemize}\subsubsection{/features/items/oneOf/5/temperature models/items/oneOf/4/min distance slab top}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: todo The depth in meters from which the composition of this feature is present.
+\end{itemize}\subsubsection{/features/items/oneOf/5/temperature models/items/oneOf/4/max distance slab top}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: todo The depth in meters to which the composition of this feature is present.
+\end{itemize}\subsubsection{/features/items/oneOf/5/temperature models/items/oneOf/4/temperature}
+\begin{itemize}\item {\bf default value}: 293.15
+\item {\bf type}: number
+\item {\bf documentation}: The temperature in degree Kelvin which this feature should have
+\end{itemize}\subsubsection{/features/items/oneOf/5/temperature models/items/oneOf/4/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or substract the value to the previously define value (substract).
+\item {\bf enum}: [replace, add, substract]\end{itemize}\subsection{/features/items/oneOf/5/composition models}
+\begin{itemize}\item {\bf documentation}: A list of composition models.
+\item {\bf default value}: 
+\item {\bf type}: array
+\end{itemize}\subsection{/features/items/oneOf/5/composition models/items}
+
+\subsubsection{/features/items/oneOf/5/composition models/items/oneOf/1}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: Uniform compositional model object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model, compositions]\end{itemize}
+\subsubsection{/features/items/oneOf/5/composition models/items/oneOf/1/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the composition model.
+\item {\bf enum}: [uniform]\end{itemize}\subsubsection{/features/items/oneOf/5/composition models/items/oneOf/1/min distance slab top}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: todo The depth in meters from which the composition of this feature is present.
+\end{itemize}\subsubsection{/features/items/oneOf/5/composition models/items/oneOf/1/max distance slab top}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: todo The depth in meters to which the composition of this feature is present.
+\end{itemize}\subsubsection{/features/items/oneOf/5/composition models/items/oneOf/1/compositions}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list with the labels of the composition which are present there.
+\end{itemize}\subsubsection{/features/items/oneOf/5/composition models/items/oneOf/1/compositions/items}
+\begin{itemize}\item {\bf default value}: 0
+\item {\bf type}: integer
+\item {\bf documentation}: 
+\end{itemize}\subsubsection{/features/items/oneOf/5/composition models/items/oneOf/1/fractions}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 1
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: TA list of compositional fractions corresponding to the compositions list.
+\end{itemize}\subsubsection{/features/items/oneOf/5/composition models/items/oneOf/1/fractions/items}
+\begin{itemize}\item {\bf default value}: 1.0
+\item {\bf type}: number
+\item {\bf documentation}: 
+\end{itemize}\subsubsection{/features/items/oneOf/5/composition models/items/oneOf/1/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value (add, not implemented). Replacing implies that all values not explicitly defined are set to zero.
+\item {\bf enum}: [replace]\end{itemize}\subsection{/features/items/oneOf/5/sections}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list of feature properties for a coordinate.
+\end{itemize}\subsection{/features/items/oneOf/5/sections/items}
+\begin{itemize}\item {\bf documentation}: 
+\item {\bf default value}: 
+\item {\bf type}: object
+\end{itemize}
+\subsubsection{/features/items/oneOf/5/sections/items/min depth}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: The depth to which this feature is present
+\end{itemize}\subsubsection{/features/items/oneOf/5/sections/items/max depth}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: The depth to which this feature is present
+\end{itemize}\subsubsection{/features/items/oneOf/5/sections/items/dip point}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 2
+\item {\bf maxItems}: 2
+\item {\bf documentation}: The depth to which this feature is present
+\end{itemize}\subsubsection{/features/items/oneOf/5/sections/items/dip point/items}
+\begin{itemize}\item {\bf type}: number
+\end{itemize}\subsubsection{/features/items/oneOf/5/sections/items/segments}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: The depth to which this feature is present
+\end{itemize}\subsubsection{/features/items/oneOf/5/sections/items/segments/items}
+\begin{itemize}\item {\bf type}: object
+\item {\bf additionalProperties}: false
+\item {\bf documentation}: 
+\item {\bf required}: [length, thickness, angle]\end{itemize}
+\subsubsection{/features/items/oneOf/5/sections/items/segments/items/length}
+\begin{itemize}\item {\bf type}: number
+\end{itemize}\subsubsection{/features/items/oneOf/5/sections/items/segments/items/thickness}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 1
+\item {\bf maxItems}: 2
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/thickness/items}
+\begin{itemize}\item {\bf type}: number
+\end{itemize}\subsubsection{/features/items/oneOf/5/sections/items/segments/items/top truncation}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 1
+\item {\bf maxItems}: 2
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/top truncation/items}
+\begin{itemize}\item {\bf type}: number
+\end{itemize}\subsubsection{/features/items/oneOf/5/sections/items/segments/items/angle}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 1
+\item {\bf maxItems}: 2
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/angle/items}
+\begin{itemize}\item {\bf type}: number
+\end{itemize}\subsubsection{/features/items/oneOf/5/sections/items/segments/items/temperature models}
+\begin{itemize}\item {\bf documentation}: 
+\item {\bf default value}: 
+\item {\bf type}: array
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/temperature models/items}
+
+\paragraph{/features/items/oneOf/5/sections/items/segments/items/temperature models/items/oneOf/1}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: Temperature object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model]\end{itemize}
+\paragraph{/features/items/oneOf/5/sections/items/segments/items/temperature models/items/oneOf/1/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the temperature model.
+\item {\bf enum}: [adiabatic]\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/temperature models/items/oneOf/1/min distance slab top}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: todo The depth in meters from which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/temperature models/items/oneOf/1/max distance slab top}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: todo The depth in meters to which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/temperature models/items/oneOf/1/potential mantle temperature}
+\begin{itemize}\item {\bf default value}: -1.0
+\item {\bf type}: number
+\item {\bf documentation}: The potential temperature of the mantle at the surface in Kelvin. If the value is lower then zero, the global value is used.
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/temperature models/items/oneOf/1/thermal expansion coefficient}
+\begin{itemize}\item {\bf default value}: -1.0
+\item {\bf type}: number
+\item {\bf documentation}: The thermal expansion coefficient in $K^{-1}$. If the value is lower then zero, the global value is used.
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/temperature models/items/oneOf/1/specific heat}
+\begin{itemize}\item {\bf default value}: -1.0
+\item {\bf type}: number
+\item {\bf documentation}: The specific heat in $J kg^{-1} K^{-1}$. If the value is lower then zero, the global value is used.
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/temperature models/items/oneOf/1/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or substract the value to the previously define value (substract).
+\item {\bf enum}: [replace, add, substract]\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/temperature models/items/oneOf/2}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: Temperature model object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model, max distance slab top]\end{itemize}
+\paragraph{/features/items/oneOf/5/sections/items/segments/items/temperature models/items/oneOf/2/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the temperature model.
+\item {\bf enum}: [linear]\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/temperature models/items/oneOf/2/min distance slab top}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: todo The depth in meters from which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/temperature models/items/oneOf/2/max distance slab top}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: todo The depth in meters to which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/temperature models/items/oneOf/2/top temperature}
+\begin{itemize}\item {\bf default value}: 293.15
+\item {\bf type}: number
+\item {\bf documentation}: The temperature at the top in degree Kelvin of this feature.If the value is below zero, the an adiabatic temperature is used.
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/temperature models/items/oneOf/2/bottom temperature}
+\begin{itemize}\item {\bf default value}: -1.0
+\item {\bf type}: number
+\item {\bf documentation}: The temperature at the top in degree Kelvin of this feature. If the value is below zero, an adiabatic temperature is used.
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/temperature models/items/oneOf/2/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value (add).
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/temperature models/items/oneOf/3}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: Temperature model object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model, plate velocity]\end{itemize}
+\paragraph{/features/items/oneOf/5/sections/items/segments/items/temperature models/items/oneOf/3/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the temperature model.
+\item {\bf enum}: [plate model]\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/temperature models/items/oneOf/3/min distance slab top}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: todo The depth in meters from which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/temperature models/items/oneOf/3/max distance slab top}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: todo The depth in meters to which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/temperature models/items/oneOf/3/density}
+\begin{itemize}\item {\bf default value}: 3300.0
+\item {\bf type}: number
+\item {\bf documentation}: The reference density of the subducting plate in $kg/m^3$
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/temperature models/items/oneOf/3/plate velocity}
+\begin{itemize}\item {\bf default value}: NaN
+\item {\bf type}: number
+\item {\bf documentation}: The velocity in meters per year with which the plate subducts in meters per year.
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/temperature models/items/oneOf/3/thermal conductivity}
+\begin{itemize}\item {\bf default value}: 2.0
+\item {\bf type}: number
+\item {\bf documentation}: The thermal conductivity of the subducting plate material in $W m^{-1} K^{-1}$.
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/temperature models/items/oneOf/3/thermal expansion coefficient}
+\begin{itemize}\item {\bf default value}: 0.000035
+\item {\bf type}: number
+\item {\bf documentation}: The thermal expansivity of the subducting plate material in $K^{-1}$.
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/temperature models/items/oneOf/3/specific heat}
+\begin{itemize}\item {\bf default value}: 1250.0
+\item {\bf type}: number
+\item {\bf documentation}: The specific heat of the subducting plate material in $J kg^{-1} K^{-1}$.
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/temperature models/items/oneOf/3/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or substract the value to the previously define value (substract).
+\item {\bf enum}: [replace, add, substract]\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/temperature models/items/oneOf/4}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: Temperature model object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model, temperature]\end{itemize}
+\paragraph{/features/items/oneOf/5/sections/items/segments/items/temperature models/items/oneOf/4/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the temperature model.
+\item {\bf enum}: [uniform]\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/temperature models/items/oneOf/4/min distance slab top}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: todo The depth in meters from which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/temperature models/items/oneOf/4/max distance slab top}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: todo The depth in meters to which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/temperature models/items/oneOf/4/temperature}
+\begin{itemize}\item {\bf default value}: 293.15
+\item {\bf type}: number
+\item {\bf documentation}: The temperature in degree Kelvin which this feature should have
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/temperature models/items/oneOf/4/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or substract the value to the previously define value (substract).
+\item {\bf enum}: [replace, add, substract]\end{itemize}\subsubsection{/features/items/oneOf/5/sections/items/segments/items/composition models}
+\begin{itemize}\item {\bf documentation}: 
+\item {\bf default value}: 
+\item {\bf type}: array
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/composition models/items}
+
+\paragraph{/features/items/oneOf/5/sections/items/segments/items/composition models/items/oneOf/1}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: Uniform compositional model object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model, compositions]\end{itemize}
+\paragraph{/features/items/oneOf/5/sections/items/segments/items/composition models/items/oneOf/1/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the composition model.
+\item {\bf enum}: [uniform]\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/composition models/items/oneOf/1/min distance slab top}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: todo The depth in meters from which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/composition models/items/oneOf/1/max distance slab top}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: todo The depth in meters to which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/composition models/items/oneOf/1/compositions}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list with the labels of the composition which are present there.
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/composition models/items/oneOf/1/compositions/items}
+\begin{itemize}\item {\bf default value}: 0
+\item {\bf type}: integer
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/composition models/items/oneOf/1/fractions}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 1
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: TA list of compositional fractions corresponding to the compositions list.
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/composition models/items/oneOf/1/fractions/items}
+\begin{itemize}\item {\bf default value}: 1.0
+\item {\bf type}: number
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/composition models/items/oneOf/1/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value (add, not implemented). Replacing implies that all values not explicitly defined are set to zero.
+\item {\bf enum}: [replace]\end{itemize}\subsubsection{/features/items/oneOf/5/sections/items/temperature models}
+\begin{itemize}\item {\bf documentation}: A list of temperature models.
+\item {\bf default value}: 
+\item {\bf type}: array
+\end{itemize}\subsubsection{/features/items/oneOf/5/sections/items/temperature models/items}
+
+\subsubsection{/features/items/oneOf/5/sections/items/temperature models/items/oneOf/1}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: Temperature object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model]\end{itemize}
+\paragraph{/features/items/oneOf/5/sections/items/temperature models/items/oneOf/1/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the temperature model.
+\item {\bf enum}: [adiabatic]\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/temperature models/items/oneOf/1/min distance slab top}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: todo The depth in meters from which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/temperature models/items/oneOf/1/max distance slab top}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: todo The depth in meters to which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/temperature models/items/oneOf/1/potential mantle temperature}
+\begin{itemize}\item {\bf default value}: -1.0
+\item {\bf type}: number
+\item {\bf documentation}: The potential temperature of the mantle at the surface in Kelvin. If the value is lower then zero, the global value is used.
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/temperature models/items/oneOf/1/thermal expansion coefficient}
+\begin{itemize}\item {\bf default value}: -1.0
+\item {\bf type}: number
+\item {\bf documentation}: The thermal expansion coefficient in $K^{-1}$. If the value is lower then zero, the global value is used.
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/temperature models/items/oneOf/1/specific heat}
+\begin{itemize}\item {\bf default value}: -1.0
+\item {\bf type}: number
+\item {\bf documentation}: The specific heat in $J kg^{-1} K^{-1}$. If the value is lower then zero, the global value is used.
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/temperature models/items/oneOf/1/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or substract the value to the previously define value (substract).
+\item {\bf enum}: [replace, add, substract]\end{itemize}\subsubsection{/features/items/oneOf/5/sections/items/temperature models/items/oneOf/2}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: Temperature model object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model, max distance slab top]\end{itemize}
+\paragraph{/features/items/oneOf/5/sections/items/temperature models/items/oneOf/2/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the temperature model.
+\item {\bf enum}: [linear]\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/temperature models/items/oneOf/2/min distance slab top}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: todo The depth in meters from which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/temperature models/items/oneOf/2/max distance slab top}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: todo The depth in meters to which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/temperature models/items/oneOf/2/top temperature}
+\begin{itemize}\item {\bf default value}: 293.15
+\item {\bf type}: number
+\item {\bf documentation}: The temperature at the top in degree Kelvin of this feature.If the value is below zero, the an adiabatic temperature is used.
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/temperature models/items/oneOf/2/bottom temperature}
+\begin{itemize}\item {\bf default value}: -1.0
+\item {\bf type}: number
+\item {\bf documentation}: The temperature at the top in degree Kelvin of this feature. If the value is below zero, an adiabatic temperature is used.
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/temperature models/items/oneOf/2/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value (add).
+\end{itemize}\subsubsection{/features/items/oneOf/5/sections/items/temperature models/items/oneOf/3}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: Temperature model object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model, plate velocity]\end{itemize}
+\paragraph{/features/items/oneOf/5/sections/items/temperature models/items/oneOf/3/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the temperature model.
+\item {\bf enum}: [plate model]\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/temperature models/items/oneOf/3/min distance slab top}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: todo The depth in meters from which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/temperature models/items/oneOf/3/max distance slab top}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: todo The depth in meters to which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/temperature models/items/oneOf/3/density}
+\begin{itemize}\item {\bf default value}: 3300.0
+\item {\bf type}: number
+\item {\bf documentation}: The reference density of the subducting plate in $kg/m^3$
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/temperature models/items/oneOf/3/plate velocity}
+\begin{itemize}\item {\bf default value}: NaN
+\item {\bf type}: number
+\item {\bf documentation}: The velocity in meters per year with which the plate subducts in meters per year.
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/temperature models/items/oneOf/3/thermal conductivity}
+\begin{itemize}\item {\bf default value}: 2.0
+\item {\bf type}: number
+\item {\bf documentation}: The thermal conductivity of the subducting plate material in $W m^{-1} K^{-1}$.
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/temperature models/items/oneOf/3/thermal expansion coefficient}
+\begin{itemize}\item {\bf default value}: 0.000035
+\item {\bf type}: number
+\item {\bf documentation}: The thermal expansivity of the subducting plate material in $K^{-1}$.
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/temperature models/items/oneOf/3/specific heat}
+\begin{itemize}\item {\bf default value}: 1250.0
+\item {\bf type}: number
+\item {\bf documentation}: The specific heat of the subducting plate material in $J kg^{-1} K^{-1}$.
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/temperature models/items/oneOf/3/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or substract the value to the previously define value (substract).
+\item {\bf enum}: [replace, add, substract]\end{itemize}\subsubsection{/features/items/oneOf/5/sections/items/temperature models/items/oneOf/4}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: Temperature model object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model, temperature]\end{itemize}
+\paragraph{/features/items/oneOf/5/sections/items/temperature models/items/oneOf/4/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the temperature model.
+\item {\bf enum}: [uniform]\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/temperature models/items/oneOf/4/min distance slab top}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: todo The depth in meters from which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/temperature models/items/oneOf/4/max distance slab top}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: todo The depth in meters to which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/temperature models/items/oneOf/4/temperature}
+\begin{itemize}\item {\bf default value}: 293.15
+\item {\bf type}: number
+\item {\bf documentation}: The temperature in degree Kelvin which this feature should have
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/temperature models/items/oneOf/4/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or substract the value to the previously define value (substract).
+\item {\bf enum}: [replace, add, substract]\end{itemize}\subsubsection{/features/items/oneOf/5/sections/items/composition models}
+\begin{itemize}\item {\bf documentation}: A list of composition models.
+\item {\bf default value}: 
+\item {\bf type}: array
+\end{itemize}\subsubsection{/features/items/oneOf/5/sections/items/composition models/items}
+
+\subsubsection{/features/items/oneOf/5/sections/items/composition models/items/oneOf/1}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: Uniform compositional model object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model, compositions]\end{itemize}
+\paragraph{/features/items/oneOf/5/sections/items/composition models/items/oneOf/1/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the composition model.
+\item {\bf enum}: [uniform]\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/composition models/items/oneOf/1/min distance slab top}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: todo The depth in meters from which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/composition models/items/oneOf/1/max distance slab top}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: todo The depth in meters to which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/composition models/items/oneOf/1/compositions}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list with the labels of the composition which are present there.
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/composition models/items/oneOf/1/compositions/items}
+\begin{itemize}\item {\bf default value}: 0
+\item {\bf type}: integer
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/composition models/items/oneOf/1/fractions}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 1
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: TA list of compositional fractions corresponding to the compositions list.
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/composition models/items/oneOf/1/fractions/items}
+\begin{itemize}\item {\bf default value}: 1.0
+\item {\bf type}: number
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/composition models/items/oneOf/1/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value (add, not implemented). Replacing implies that all values not explicitly defined are set to zero.
+\item {\bf enum}: [replace]\end{itemize}\subsubsection{/features/items/oneOf/5/sections/items/coordinate}
+\begin{itemize}\item {\bf default value}: 0
+\item {\bf type}: integer
+\item {\bf documentation}: The coordinate which should be overwritten
+\end{itemize}

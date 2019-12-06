@@ -1,0 +1,15 @@
+{
+"version":"0.2",
+"features":
+[
+     {"model":"continental plate", "name":"Carribean", "max depth":250e3, "coordinates":[[-1e3,500e3],[500e3,500e3],[500e3,1000e3],[-1e3,1000e3]],
+         "temperature models":[{"model":"uniform", "temperature":150}]},
+     
+     {"model":"continental plate", "name":"Rest", "max depth":250e3, "coordinates":[[2000e3,2000e3],[1000e3,2000e3],[1000e3,1000e3],[2000e3,1000e3]],
+         "temperature models":[{"model":"uniform", "temperature":20}],
+         "composition models":[{"model":"uniform", "compositions":[2]}]},
+
+     {"model":"continental plate", "name":"Carribean2", "max depth":250e3, "coordinates":[[-1e3,500e3],[500e3,500e3],[500e3,1000e3],[-1e3,1000e3]],
+         "composition models":[{"model":"uniform", "compositions":[3]}]}
+]
+}

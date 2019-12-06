@@ -1732,7 +1732,9 @@ namespace aspect
       InitialComposition::Manager<dim>                                        initial_composition_manager;
       InitialTemperature::Manager<dim>                                        initial_temperature_manager;
       const std::unique_ptr<AdiabaticConditions::Interface<dim> >             adiabatic_conditions;
+#ifdef ASPECT_WITH_WORLD_BUILDER
       const std::unique_ptr<WorldBuilder::World>                              world_builder;
+#endif
       BoundaryVelocity::Manager<dim>                                          boundary_velocity_manager;
       std::map<types::boundary_id,std::unique_ptr<BoundaryTraction::Interface<dim> > > boundary_traction;
       const std::unique_ptr<BoundaryHeatFlux::Interface<dim> >                boundary_heat_flux;

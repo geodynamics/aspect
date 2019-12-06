@@ -1,0 +1,45 @@
+version: '0.1.0.{build}'
+
+image: Visual Studio 2017
+
+platform:
+  - x64
+ 
+configuration:
+  - Release
+  - Debug
+
+environment:
+  CMAKE_GENERATOR: -G"MinGW Makefiles"
+  VCPKG_ARCH: x64-windows
+
+init:
+  - cmd: set PATH=%MINGW_DIR%;%PATH%
+  - cmd: ls C:\msys64\mingw64\bin
+  - cmd: ls C:\msys64\usr\bin
+
+before_build:
+
+build_script:
+  - set PATH=%PATH%;C:\msys64\mingw64\bin;C:\msys64\usr\bin\
+  - pacman --noconfirm -Syu
+  - pacman --noconfirm -S dos2unix
+  - which cmake
+  - which make
+  - mkdir install
+  - mkdir build
+  - cd build
+  - cmake %CMAKE_GENERATOR% -DCMAKE_BUILD_TYPE=%configuration% -DCMAKE_INSTALL_PREFIX=../install -DCMAKE_SH="CMAKE_SH-NOTFOUND" -DCMAKE_VERBOSE_MAKEFILE=ON .. 
+  - cmake --build . --config %configuration%
+  - cd bin
+  - WorldBuilderApp.exe
+  - cd ..  
+
+    # run_simple_fortran_example is excluded from the tester for now, because it doesn't work on appveyor.
+    # It does work on windows on travis, and the error code (8) seems to indicate that there is a lack of 
+    # memory: https://docs.microsoft.com/en-us/windows/desktop/Debug/system-error-codes--0-499-#error_not_enough_memory.
+    # So it is probably an appveyor problem, and since it now works on travis, getting it to work on appveyor
+    # is not critical anymore.
+test_script: 
+  - ctest -VV -E run_simple_fortran_example  
+after_test:

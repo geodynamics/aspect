@@ -1,0 +1,29 @@
+{
+  "version":"0.2",
+  "cross section":[[0,0],[100,0]],
+  "features":
+  [
+    {"model":"oceanic plate", "name":"oceanic plate", "coordinates":[[-1e3,-1e3],[1150e3,-1e3],[1150e3,1e3],[-1e3,1e3]],
+     "temperature models":[{"model":"plate model", "max depth":95e3, "spreading velocity":0.005, "ridge coordinates":[[100e3,-1e3],[100e3,1e3]]}],
+     "composition models":[{"model":"uniform", "compositions":[0], "max depth":10e3},
+                           {"model":"uniform", "compositions":[1], "min depth":10e3, "max depth":95e3}]},
+
+    {"model":"continental plate", "name":"continental plate", "coordinates":[[1150e3,-1e3],[2001e3,-1e3],[2001e3,1e3],[1150e3,1e3]],
+     "temperature models":[{"model":"linear", "max depth":95e3}],
+     "composition models":[{"model":"uniform", "compositions":[2], "max depth":30e3},
+                           {"model":"uniform", "compositions":[3], "min depth":30e3, "max depth":65e3}]},
+
+    {"model":"mantle layer", "name":"upper mantle", "min depth":95e3, "max depth":660e3, "coordinates":[[-1e3,-1e3],[2001e3,-1e3],[2001e3,1e3],[-1e3,1e3]],
+     "composition models":[{"model":"uniform", "compositions":[4]}]},
+
+    {"model":"mantle layer", "name":"lower mantle", "min depth":660e3, "max depth":1160e3, "coordinates":[[-1e3,-1e3],[2001e3,-1e3],[2001e3,1e3],[-1e3,1e3]],
+     "composition models":[{"model":"uniform", "compositions":[5]}]},
+
+    {"model":"subducting plate", "name":"Subducting plate", "coordinates":[[1150e3,-1e3],[1150e3,1e3]], "dip point":[2000e3,0],
+     "segments":[{"length":200e3, "thickness":[95e3], "angle":[0,45]}, {"length":200e3, "thickness":[95e3], "angle":[45]}, 
+                 {"length":200e3, "thickness":[95e3], "angle":[45,0]}, {"length":100e3, "thickness":[95e3], "angle":[0]}],
+     "temperature models":[{"model":"plate model", "density":3300, "plate velocity":0.01}],
+     "composition models":[{"model":"uniform", "compositions":[0], "max distance slab top":10e3},
+                           {"model":"uniform", "compositions":[1], "min distance slab top":10e3, "max distance slab top":95e3 }]}
+  ]
+}

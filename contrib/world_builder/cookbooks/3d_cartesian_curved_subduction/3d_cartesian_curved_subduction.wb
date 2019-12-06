@@ -1,0 +1,107 @@
+{
+  "version":"0.2",
+  "potential mantle temperature":1500,
+  "thermal expansion coefficient":2.0e-5,
+  "maximum distance between coordinates":100000,
+  "interpolation":"monotone spline",
+  "surface temperature":293.15,
+  "force surface temperature":true,
+  "coordinate system":{"model":"cartesian"},
+  "features":
+  [
+     // defining an oceanic plate for the North and South American plate
+     {"model":"oceanic plate", "name":"NS American plate",
+         "coordinates":[[1700e3,0],[1700e3,300e3],[1606e3,650e3],
+                        [1350e3,906e3],[1000e3,1000e3],[-1e3,1000e3],
+                        [-1e3,1501e3],[2501e3,1501e3],[2501e3,-501e3],
+                        [-1e3,-501e3],[-1e3,-50e3],[2000e3,-50e3],
+                        [2000e3,0e3]],
+         "temperature models":[{"model":"linear", "max depth":100e3}],
+         "composition models":[{"model":"uniform", "compositions":[0], 
+                                "max depth":30e3}]},
+
+     // Defining an oceanic plate for the Caribbean plate
+     {"model":"oceanic plate", "name":"Caribbean plate",
+         "coordinates":[[1700e3,300e3],[1689e3,422e3],[1658e3,539e3],
+                        [1606e3,650e3],[1536e3,749e3],[1450e3,836e3],
+                        [1350e3,906e3],[1239e3,958e3],[1122e3,989e3],
+                        [1000e3,1000e3],[650e3,1000e3],[-1e3,1000e3],
+                        [-1e3,0e3],[1700e3,0e3]],
+         "temperature models":[{"model":"linear", "max depth":100e3}],
+         "composition models":[{"model":"uniform", "compositions":[1], 
+                                "max depth":30e3}]},
+
+    // Defining a continental plate for the weak zone
+    {"model":"continental plate", "name":"Carribean weak zone",
+         "coordinates":[[-1e3,1000e3],[-1e3,750e3],[1536e3,749e3],
+                        [1450e3,836e3],[1350e3,906e3],[1239e3,958e3],
+                        [1122e3,989e3],[1000e3,1000e3],[650e3,1000e3]],
+         "temperature models":[{"model":"linear", "max depth":100e3}],
+         "composition models":[{"model":"uniform", "compositions":[2], 
+                                "max depth":30e3},
+                               {"model":"uniform", "compositions":[3], 
+                                "min depth":30e3}]},
+
+    // Defining a mantle layer for the lower mantle
+    {"model":"mantle layer", "name":"660", "min depth":660e3,
+         "coordinates":[[-1e3,-500e3],[-501e3,2500e3],[2501e3,2500e3],
+                        [2501e3,-501e3]],
+         "composition models":[{"model":"uniform", "compositions":[4]}]},
+
+    // Defining a subducting plate for the Lesser Antilles slab
+    {"model":"subducting plate", "name":"Lesser Antilles slab",
+         "coordinates":[[1700e3,0],[1700e3,300e3],[1606e3,650e3],
+                        [1350e3,906e3],[1000e3,1000e3],[650e3,1000e3]], 
+         "dip point":[-1,-1],
+         "min depth":0, "max depth":660e3,
+         "segments":
+          [
+            {"length":300e3, "thickness":[100e3], "angle":[0,50]},
+            {"length":371e3, "thickness":[100e3], "angle":[50]},
+            {"length":275e3, "thickness":[100e3], "angle":[50,0]},
+            {"length":0e3, "thickness":[100e3], "angle":[0]}
+          ],
+         "sections":
+         [
+           {"coorindate":"0",
+            "segments":
+            [
+              {"length":300e3, "thickness":[100e3], "angle":[0,25]},
+              {"length":371e3, "thickness":[100e3], "angle":[50]},
+              {"length":300e3, "thickness":[100e3], "angle":[50,0]},
+              {"length":50, "thickness":[100e3], "angle":[0]}
+            ]
+           },
+           {"coorindate":"5",
+            "segments":
+            [
+              {"length":300e3, "thickness":[100e3], "angle":[0,25]},
+              {"length":371e3, "thickness":[100e3], "angle":[50]},
+              {"length":50e3, "thickness":[100e3], "angle":[50,0]},
+              {"length":0, "thickness":[100e3], "angle":[0]}
+            ]
+           }
+         ],
+         "temperature models":
+         [
+           {"model":"plate model", "density":3300, "plate velocity":0.0144,
+            "thermal conductivity":2.5, "thermal expansion coefficient":2e-5 }
+         ],
+         "composition models":
+         [
+           {"model":"uniform","compositions":[0], "min distance slab top":30e3}
+         ]
+    },
+
+    // Defining a continental plate for the weakzone between the Caribbean and
+    // South America
+    {"model":"continental plate","name":"South Weakzone",
+         "coordinates":[[-1e3,0e3],[-1e3,-50e3],[2000e3,-50e3],[2000e3,0e3]],
+         "temperature models":[{"model":"linear", "max depth":100e3}],
+         "composition models":
+         [
+           {"model":"uniform","compositions":[2], "max depth":30e3},
+           {"model":"uniform", "compositions":[3], "min depth":30e3}]}
+
+  ]
+}

@@ -18,7 +18,7 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#ifdef ASPECT_USE_WORLD_BUILDER
+#ifdef ASPECT_WITH_WORLD_BUILDER
 #ifndef _aspect_initial_composition_world_builder_h
 #define _aspect_initial_composition_world_builder_h
 
