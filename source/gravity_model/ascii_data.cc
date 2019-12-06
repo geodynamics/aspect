@@ -19,12 +19,7 @@
 */
 
 #include <aspect/gravity_model/ascii_data.h>
-
-#include <aspect/geometry_model/box.h>
-#include <aspect/geometry_model/spherical_shell.h>
-#include <aspect/geometry_model/sphere.h>
-#include <aspect/geometry_model/chunk.h>
-#include <aspect/geometry_model/ellipsoidal_chunk.h>
+#include <aspect/geometry_model/interface.h>
 
 namespace aspect
 {
@@ -55,12 +50,10 @@ namespace aspect
       const double magnitude = this->get_data_component(Point<1>(depth),gravity_index);
 
       // in dependence of what the geometry model is, gravity points in a different direction
-      if (dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model())
-          || dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model())
-          || dynamic_cast<const GeometryModel::EllipsoidalChunk<dim>*> (&this->get_geometry_model())
-          || dynamic_cast<const GeometryModel::Sphere<dim>*> (&this->get_geometry_model()))
+      if (this->get_geometry_model().natural_coordinate_system() == Utilities::Coordinates::spherical ||
+          this->get_geometry_model().natural_coordinate_system() == Utilities::Coordinates::ellipsoidal)
         return - magnitude * position/position.norm();
-      else if (dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model()))
+      else if (this->get_geometry_model().natural_coordinate_system() == Utilities::Coordinates::cartesian)
         {
           Tensor<1,dim> g;
           g[dim-1] = -magnitude;

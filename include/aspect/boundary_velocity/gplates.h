@@ -24,7 +24,6 @@
 
 #include <aspect/boundary_velocity/interface.h>
 #include <aspect/simulator_access.h>
-#include <aspect/compat.h>
 
 #include <array>
 #include <deal.II/base/function_lib.h>

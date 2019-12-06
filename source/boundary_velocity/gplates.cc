@@ -31,9 +31,6 @@
 #include <boost/property_tree/xml_parser.hpp>
 #include <boost/property_tree/ptree.hpp>
 
-#include <aspect/geometry_model/spherical_shell.h>
-#include <aspect/geometry_model/chunk.h>
-
 
 namespace aspect
 {
@@ -568,15 +565,13 @@ namespace aspect
                 ExcMessage ("To define a plane for the 2D model the two assigned points "
                             "may not be equal."));
 
-      if (((dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model())) != nullptr)
-          || ((dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model())) != nullptr))
-        {
-          lookup = std_cxx14::make_unique<internal::GPlatesLookup<dim>>(pointone, pointtwo);
-          old_lookup = std_cxx14::make_unique<internal::GPlatesLookup<dim>>(pointone, pointtwo);
-        }
-      else
-        AssertThrow (false,ExcMessage ("This gplates plugin can only be used when using "
-                                       "a spherical shell or chunk geometry."));
+      AssertThrow (this->get_geometry_model().natural_coordinate_system() == Utilities::Coordinates::spherical,
+                   ExcMessage ("This gplates plugin can only be used when the "
+                               "preferred coordinate system of the geometry model is spherical "
+                               "(e.g. spherical shell, chunk, sphere)."));
+
+      lookup = std_cxx14::make_unique<internal::GPlatesLookup<dim>>(pointone, pointtwo);
+      old_lookup = std_cxx14::make_unique<internal::GPlatesLookup<dim>>(pointone, pointtwo);
 
       // display the GPlates module information at model start.
       this->get_pcout() << lookup->screen_output(pointone, pointtwo);
