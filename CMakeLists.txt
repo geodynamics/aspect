@@ -131,7 +131,7 @@ if(ASPECT_WITH_WORLD_BUILDER)
   MESSAGE(STATUS "Using World Builder version ${WORLD_BUILDER_VERSION} found at ${WORLD_BUILDER_SOURCE_DIR}.")
 
   # add source and include dirs:
-  FILE(GLOB_RECURSE wb_files "contrib/world_builder/source/*.cc")
+  FILE(GLOB_RECURSE wb_files "${WORLD_BUILDER_SOURCE_DIR}/source/*.cc")
   LIST(APPEND TARGET_SRC ${wb_files})
 
   # generate config.cc and include it:
