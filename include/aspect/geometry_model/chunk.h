@@ -66,7 +66,7 @@ namespace aspect
          * with a pointer to the initial topography model obtained
          * from SimulatorAccess.
          */
-        void initialize ();
+        void initialize () override;
 
         /**
          * This function calls the initialize function of the manifold
@@ -160,7 +160,6 @@ namespace aspect
          * be careful with using this function if the surface changes
          * over time.
          */
-        virtual
         double depth_wrt_topo(const Point<dim> &position) const;
 
         /**
@@ -351,7 +350,6 @@ namespace aspect
              * This function receives a point in cartesian coordinates x, y and z,
              * and returns radius, longitude, latitude.
              */
-            virtual
             Point<dim>
             pull_back_sphere(const Point<dim> &space_point) const;
 
@@ -360,7 +358,6 @@ namespace aspect
              * radius, longitude, latitude and returns cartesian
              * coordinates x, y and z.
              */
-            virtual
             Point<dim>
             push_forward_sphere(const Point<dim> &chart_point) const;
 
@@ -370,7 +367,6 @@ namespace aspect
              * (given in cartesian coordinates), i.e. the unperturbed
              * outer radius + the topography.
              */
-            virtual
             double
             get_radius(const Point<dim> &space_point) const;
 
@@ -393,22 +389,24 @@ namespace aspect
             /**
              * Set the minimal radius of the domain.
              */
-            virtual
             void
             set_min_radius(const double p1_rad);
 
             /**
              * Set the maximum depth of the domain.
              */
-            virtual
             void
             set_max_depth(const double p2_rad_minus_p1_rad);
 
           private:
-            // The minimum longitude of the domain.
+            /**
+             * The minimum longitude of the domain.
+             */
             double point1_lon;
 
-            // The inner radius of the domain.
+            /**
+             * The inner radius of the domain.
+             */
             double inner_radius;
 
             /**
