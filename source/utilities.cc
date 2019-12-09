@@ -37,6 +37,7 @@
 #include <aspect/geometry_model/spherical_shell.h>
 #include <aspect/geometry_model/sphere.h>
 #include <aspect/geometry_model/chunk.h>
+#include <aspect/geometry_model/initial_topography_model/ascii_data.h>
 
 #include <fstream>
 #include <string>
@@ -1819,6 +1820,14 @@ namespace aspect
       return data[component]->value(position);
     }
 
+    template <int dim>
+    Tensor<1,dim>
+    AsciiDataLookup<dim>::get_gradients(const Point<dim> &position,
+                                        const unsigned int component)
+    {
+      return data[component]->gradient(position,component);
+    }
+
 
     template <int dim>
     TableIndices<dim>
@@ -2230,6 +2239,7 @@ namespace aspect
                         << "   will continue unchanged from the last known state into the future)." << std::endl << std::endl;
     }
 
+
     template <int dim>
     double
     AsciiDataBoundary<dim>::
@@ -2237,7 +2247,12 @@ namespace aspect
                         const Point<dim>                    &position,
                         const unsigned int                   component) const
     {
-      if (this->get_time() - first_data_file_model_time >= 0.0)
+      // For initial ascii data topography, we need access to the data before get_time() is set,
+      // as this is when the grid including topography is constructed for the chunk geometry.
+      if ( (dynamic_cast<const GeometryModel::Chunk<dim>*>(&this->get_geometry_model()) != nullptr &&
+            dynamic_cast<const InitialTopographyModel::AsciiData<dim>*>(&this->get_initial_topography_model()) != nullptr &&
+            this->get_timestep_number() == numbers::invalid_unsigned_int) ||
+           this->get_time() - first_data_file_model_time >= 0.0)
         {
           const std::array<double,dim> natural_position = this->get_geometry_model().cartesian_to_natural_coordinates(position);
 
@@ -2269,6 +2284,52 @@ namespace aspect
         }
       else
         return 0.0;
+    }
+
+
+    template <int dim>
+    Tensor<1,dim-1>
+    AsciiDataBoundary<dim>::vector_gradient (const types::boundary_id             boundary_indicator,
+                                             const Point<dim>                    &position,
+                                             const unsigned int                   component) const
+    {
+      // For initial ascii data topography, we need access to the data before get_time() is set,
+      // as this is when the grid including topography is constructed for the chunk geometry.
+      if ((dynamic_cast<const GeometryModel::Chunk<dim>*>(&this->get_geometry_model()) != nullptr &&
+           dynamic_cast<const InitialTopographyModel::AsciiData<dim>*>(&this->get_initial_topography_model()) != nullptr &&
+           this->get_timestep_number() == numbers::invalid_unsigned_int) ||
+          this->get_time() - first_data_file_model_time >= 0.0 )
+        {
+          const std::array<double,dim> natural_position = this->get_geometry_model().cartesian_to_natural_coordinates(position);
+
+          Point<dim> internal_position;
+          for (unsigned int i = 0; i < dim; i++)
+            internal_position[i] = natural_position[i];
+
+          // The chunk model has latitude as natural coordinate. We need to convert this to colatitude
+          if (dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model()) != nullptr && dim == 3)
+            {
+              internal_position[2] = numbers::PI/2. - internal_position[2];
+            }
+
+          const std::array<unsigned int,dim-1> boundary_dimensions =
+            get_boundary_dimensions(boundary_indicator);
+
+          Point<dim-1> data_position;
+          for (unsigned int i = 0; i < dim-1; ++i)
+            data_position[i] = internal_position[boundary_dimensions[i]];
+
+          const Tensor<1,dim-1>  gradients = lookups.find(boundary_indicator)->second->get_gradients(data_position,component);
+
+          if (!time_dependent)
+            return gradients;
+
+          const Tensor<1,dim-1> old_gradients = old_lookups.find(boundary_indicator)->second->get_gradients(data_position,component);
+
+          return time_weight * gradients + (1 - time_weight) * old_gradients;
+        }
+      else
+        return Tensor<1,dim-1>();
     }
 
 

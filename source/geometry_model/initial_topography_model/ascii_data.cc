@@ -95,6 +95,12 @@ namespace aspect
       return topo;
     }
 
+    template <int dim>
+    Tensor<1,dim-1>
+    AsciiData<dim>::vector_gradient(const Point<dim> &point) const
+    {
+      return Utilities::AsciiDataBoundary<dim>::vector_gradient(surface_boundary_id, point,0);
+    }
 
     template <int dim>
     double
@@ -149,7 +155,7 @@ namespace aspect
                                              "Implementation of a model in which the surface "
                                              "topography is derived from a file containing data "
                                              "in ascii format. The following geometry models "
-                                             "are currently supported: box. "
+                                             "are currently supported: box, chunk. "
                                              "Note the required format of the "
                                              "input data: The first lines may contain any number of comments "
                                              "if they begin with `#', but one of these lines needs to "

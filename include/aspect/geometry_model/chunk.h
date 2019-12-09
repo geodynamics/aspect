@@ -49,11 +49,30 @@ namespace aspect
      * input file are the inner and outer radii of the shell, the minimum
      * and maximum longitude, minimum and maximum longitude, and the
      * number of cells initialised in each dimension.
+     *
+     * Initial topography can be added through a radial displacement of the
+     * mesh nodes.
      */
     template <int dim>
     class Chunk : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
+
+        /**
+         * Initialization function. This function is called once at the
+         * beginning of the program after parse_parameters is run and after
+         * the SimulatorAccess (if applicable) is initialized.
+         * This function calls the initialize function of the manifold
+         * with a pointer to the initial topography model obtained
+         * from SimulatorAccess.
+         */
+        void initialize () override;
+
+        /**
+         * This function calls the initialize function of the manifold
+         * with the given pointer to the initial topography model.
+         */
+        void set_topography_model (const InitialTopographyModel::Interface<dim> *topo_pointer);
 
         /**
          * Generate a coarse mesh for the geometry described by this class.
@@ -129,6 +148,21 @@ namespace aspect
         Point<dim> representative_point(const double depth) const override;
 
         /**
+         * Whereas the depth function returns the depth with respect
+         * to the unperturbed surface, this function
+         * returns the depth with respect to the surface
+         * including the initial topography. For models without
+         * initial topography, the result will be the same.
+         *
+         * Note that the perturbed surface only considers the
+         * initially prescribed topography, not any perturbations
+         * due to a displacement of the free surface. Therefore,
+         * be careful with using this function if the surface changes
+         * over time.
+         */
+        double depth_wrt_topo(const Point<dim> &position) const;
+
+        /**
          * Return the longitude at the western edge of the chunk measured in
          * radians.
          */
@@ -163,7 +197,7 @@ namespace aspect
         double north_latitude() const;
 
         /**
-         * Return the latitude range of the chunk Measured in radians
+         * Return the latitude range of the chunk measured in radians
          */
         virtual
         double latitude_range() const;
@@ -263,9 +297,8 @@ namespace aspect
          * The push_forward_gradient provides derivatives of the
          * reference coordinates to the real space coordinates,
          * which are used in computing normal vectors.
-         * In set_min_longitude the minimum longitude is set,
-         * which is used to test the quadrant of returned longitudes
-         * in the pull_back function.
+         * The transformations can include topography added
+         * to the initially radially symmetric mesh.
          */
 
         class ChunkGeometry : public ChartManifold<dim,dim>
@@ -281,15 +314,68 @@ namespace aspect
              */
             ChunkGeometry(const ChunkGeometry &other);
 
+            /*
+             * An initialization function to make sure that the
+             * manifold has access to the topography plugins.
+             */
+            void
+            initialize(const InitialTopographyModel::Interface<dim> *topography);
+
+            /**
+             * This function receives a point in cartesian coordinates x, y and z,
+             * including initial prescribed topography and returns
+             * radius, longitude, latitude without topography.
+             */
             Point<dim>
             pull_back(const Point<dim> &space_point) const override;
 
+            /**
+             * This function receives a point in spherical coordinates
+             * radius, longitude, latitude and returns cartesian
+             * coordinates x, y and z, including any initially prescribed
+             * topography.
+             */
             Point<dim>
             push_forward(const Point<dim> &chart_point) const override;
 
+            /**
+             * This function provides the derivatives of the push_forward
+             * function to the spherical coordinates, which are needed
+             * in the computation of vectors tangential to the domain boundaries.
+             */
             DerivativeForm<1, dim, dim>
             push_forward_gradient(const Point<dim> &chart_point) const override;
 
+            /**
+             * This function receives a point in cartesian coordinates x, y and z,
+             * and returns radius, longitude, latitude.
+             */
+            Point<dim>
+            pull_back_sphere(const Point<dim> &space_point) const;
+
+            /**
+             * This function receives a point in spherical coordinates
+             * radius, longitude, latitude and returns cartesian
+             * coordinates x, y and z.
+             */
+            Point<dim>
+            push_forward_sphere(const Point<dim> &chart_point) const;
+
+            /**
+             * This function computes the outer radius of the domain
+             * at the longitude (and latitude) of the given point
+             * (given in cartesian coordinates), i.e. the unperturbed
+             * outer radius + the topography.
+             */
+            double
+            get_radius(const Point<dim> &space_point) const;
+
+            /**
+             * Set the minimum longitude of the domain,
+             * which is used in pulling back cartesian coordinates
+             * to spherical to get the longitude in the correct
+             * quarter.
+             */
             virtual
             void
             set_min_longitude(const double p1_lon);
@@ -300,9 +386,57 @@ namespace aspect
             std::unique_ptr<Manifold<dim,dim> >
             clone() const override;
 
+            /**
+             * Set the minimal radius of the domain.
+             */
+            void
+            set_min_radius(const double p1_rad);
+
+            /**
+             * Set the maximum depth of the domain.
+             */
+            void
+            set_max_depth(const double p2_rad_minus_p1_rad);
+
           private:
-            // The minimum longitude of the domain
+            /**
+             * The minimum longitude of the domain.
+             */
             double point1_lon;
+
+            /**
+             * The inner radius of the domain.
+             */
+            double inner_radius;
+
+            /**
+             * The maximum depth not taking into account
+             * topography (outer radius minus inner radius).
+             */
+            double max_depth;
+
+            /**
+             * This function removes the initial topography from a
+             * given point in spherical coordinates R+topo, lon, lat.
+             * I.e. it returns R, lon, lat.
+             */
+            virtual
+            Point<dim>
+            pull_back_topo(const Point<dim> &space_point) const;
+
+            /**
+             * This function adds the initial topography to a
+             * given point in spherical coordinates R, lon, lat.
+             * I.e. it returns R+topo, lon, lat.
+             */
+            virtual
+            Point<dim>
+            push_forward_topo(const Point<dim> &chart_point) const;
+
+            /**
+             * A pointer to the topography model.
+             */
+            const InitialTopographyModel::Interface<dim> *topo;
         };
 
         /**
