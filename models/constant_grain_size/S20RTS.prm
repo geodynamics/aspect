@@ -1,0 +1,217 @@
+# A description of convection in a 3d spherical shell with 
+# a prescribed initial condition based on the shear wave
+# velocity model S20RTS.
+
+# Define the number of space dimensions we would like to 
+# work in:
+set Dimension                              = 3 
+
+# Specify the time you want to let the model run for in 
+# years and the output directory. Here we only calculate
+# the instantaneous solution.
+set End time                               = 0
+set Use years in output instead of seconds = true
+set Output directory                       = output
+
+# The following variables describe how the pressure should
+# be normalized. Here, we choose a zero average pressure
+# at the surface of the domain 
+set Adiabatic surface temperature          = 1600
+set Pressure normalization                 = surface
+set Surface pressure                       = 0
+
+# Here we specify the residual tolerance for the linear solver.
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-4
+  end
+end
+
+subsection Compositional fields
+  set Names of fields           = grain_size
+  set Number of fields          = 1
+end
+
+
+subsection Initial composition model 
+  set Model name = function
+
+  subsection Function
+    set Function constants  = pi=3.1415926,depth=6371000,inner=3481000
+    set Function expression = 1.0+1e-6*sin(x/6371000)
+    set Variable names      = x,y,z
+  end
+end
+
+
+# Here we specify the geometry of the domain, which is 
+# a spherical shell with inner radius of 3481km and 
+# outer radius of 6371km
+subsection Geometry model
+  set Model name = spherical shell
+  subsection Spherical shell
+    set Inner radius  = 3481000
+    set Outer radius  = 6371000
+  end
+end
+
+# This section specifies the temperature at the boundary of 
+# the domain. Here we set the temperature to be constant,
+# but different from the reference temperature to approximate
+# boundary layers.
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = top, bottom
+  set List of model names = spherical constant
+  subsection Spherical constant
+    set Inner temperature = 2700
+    set Outer temperature = 273
+  end
+end
+
+# This section describes the gravity field, which is pointing
+# towards the Earth's center with the same magnitude of 10 m/s^2
+# everywhere
+subsection Gravity model
+  set Model name = radial constant
+  subsection Radial constant
+    set Magnitude = 10
+  end
+end
+
+# This section prescribes the initial condition in the temperature
+# field, which is chosen as a scaled version of the S20RTS shear
+# wave velocity model (Ritsema et al., 2000). S20RTS is defined
+# by spherical harmonics up to degree 20 that are radially interpolated
+# with a cubic spline. 
+subsection Initial temperature model
+  set Model name = S40RTS perturbation
+    subsection S40RTS perturbation
+
+# The two input options here are S20RTS or the higher resolution
+# S40RTS (Ritsema et al., 2011). One can choose to remove the 
+# degree 0 from these files so that the depth average value
+# is zero. 
+    set Initial condition file name       = S20RTS.sph
+    set Remove degree 0 from perturbation = false
+
+# The following parameters determine the scaling from shear wave 
+# velocity perturbation to temperature differences. We chose the
+# scaling to density perturbation as 0.15
+    set Vs to density scaling             = 0.15
+    set Thermal expansion coefficient in initial temperature scaling = 3e-5
+
+# This specifies the background temperature to which we add the 
+# temperature difference.
+    set Reference temperature             = 1600
+  end
+end
+
+# The material model is based on the simple material model, which assumes
+# a constant density, and other parameters as stated below.
+subsection Material model
+  set Model name = grain size
+
+  subsection Grain size model
+    set Average specific grain boundary energy      = 1.0,1.0,1.0,1.0
+
+#    set Corresponding phase for transition          = olivine_grain_size,olivine_grain_size,olivine_grain_size
+
+    set Diffusion activation energy                 = 375000,231000,270000,299000
+    set Diffusion activation volume                 = 6e-6,6e-6,6e-6,1.5e-6
+    set Diffusion creep exponent                    = 1.0,1.0,1.0,1.0
+    set Diffusion creep grain size exponent         = 3,3,3,3
+    # set Diffusion creep prefactor            =1.5E-015,1.22480791716901E-022,5.87100567461803E-021,3.97160068960334E-024
+    # old prefactors after 1st scaling:
+    # set Diffusion creep prefactor                   = 1.5E-015,3E-021,3E-022,1.5E-026
+    # new prefactors with scaling after correcting dislocation strain rate
+    # set Diffusion creep prefactor                   = 1.5E-015,6.124E-022,2.9355E-022,3E-027
+    # modified parameters to generate plumes and prevent destruction of lithosphere
+    set Diffusion creep prefactor                   = 1.12E-07,1.12E-012,1.23E-011,2.91E-014
+
+    set Dislocation activation energy               = 530000,530000,530000,530000
+    set Dislocation activation volume               = 1.40E-005,1.70E-005,1.70E-005,0.0
+    set Dislocation creep exponent                  = 3.5,3.5,3.5,3.5
+    # set Dislocation creep prefactor                 = 1.57E-016,2.0535e-12,2.0535e-19,1.e-40
+    # Modified parameters to generate plumes and prevent destruction of lithosphere
+    set Dislocation creep prefactor                 = 8.33E-017,2.05e-12,2.05e-19,1.e-40
+
+    set Geometric constant                          = 3,3,3,3
+    set Grain growth activation energy              = 400000,662000,414000,321000
+    set Grain growth activation volume              = 0.0,0.0,0.0,0.0
+    set Grain growth exponent                       = 3,3,4.5,10.6
+    set Grain growth rate constant                  = 0.0,0.0,0.0,0.0
+
+    set Maximum temperature dependence of viscosity = 1e6
+    set Phase transition Clapeyron slopes           = 2.6e6,5.7e6,-1.1e6
+    set Phase transition depths                     = 417000,559000,656000
+    set Phase transition temperatures               = 1950,1950,1950
+    set Phase transition widths                     = 0,0,30000.0
+    set Reciprocal required strain                  = 10
+    set Recrystallized grain size                   = 0.0,0.0,0.0
+
+    set Reference compressibility                   = 4e-12
+    set Reference density                           = 3400
+    set Reference specific heat                     = 1250
+    set Reference temperature                       = 1600
+    set Thermal conductivity                        = 4
+    set Thermal expansion coefficient               = 2e-5
+
+    set Work fraction for boundary area change      = 0.0,0.0,0.0,0.0
+    set Advect logarithm of grain size       = false
+    set Minimum viscosity                    = 1e18
+    set Maximum viscosity                    = 1e24
+    set Minimum grain size                   = 2e-5
+    set Lower mantle grain size scaling      = 1.0
+
+    #set Data directory = /gfs1/work/bbpjdann/data/material-model/hefesto/pyrolite6/
+    #set Material file names = pyrolite6.formatted.interpolated
+    #set Derivatives file names = pyrolite6.hderiv.formatted.interpolated
+    #set Material file format = hefesto
+    set Use table properties = true
+    set Dislocation viscosity iteration threshold   = 1e-3
+    set Dislocation viscosity iteration number = 50
+    set Minimum specific heat = 500
+    set Maximum specific heat = 2500
+    set Minimum thermal expansivity = -1e-3
+    set Maximum thermal expansivity = 1e-3
+    set Maximum latent heat substeps = 3
+  end
+end
+
+# For this calculation we only do 2 global refinement steps. This resolution
+# is too low to fully resolve the mantle flow, however it does capture
+# the main features.
+subsection Mesh refinement
+  set Initial global refinement          = 0
+  set Initial adaptive refinement        = 0
+end
+
+# We assume free slip at the inner and outer boundary
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = top, bottom
+end
+
+
+# We output the density, velocity, dynamic topography, geoid and heat flux density
+# for plotting. 
+subsection Postprocess
+  set List of postprocessors = velocity statistics, heat flux map, heat flux statistics, dynamic topography, visualization
+
+  subsection Visualization
+    set Output format                 = vtu
+    set List of output variables      = geoid, dynamic topography, heat flux map, density,viscosity, gravity
+    set Time between graphical output = 0
+    set Number of grouped files       = 1 
+
+# We only have dirichlet boundaries with tangential velocities, so we can
+# increase the output resolution as described in the documentation of the 'heat
+# flux map' postprocessor.
+    subsection Heat flux map
+      set Output point wise heat flux = true
+    end
+  end
+
+  subsection Geoid
+    set Also output the gravity anomaly  = true
+  end
+end

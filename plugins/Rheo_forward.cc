@@ -522,7 +522,6 @@ double getJ1byJu(double freq, double P, double T, double gs, std::string model, 
 		}
 		else J1byJu = 1.0;
 	}
-//#	If model is extended Burgers from Jackson & Faul 2010
 	else if (model == "JF10_eBurg")
 	{
 		double alpha = Rheology_Constants::JF10_eBurg::alpha;
@@ -882,7 +881,7 @@ double gettau(double tau0, double m, double P, double T, double gs, std::string 
 	
 	double R = Rheology_Constants::Common::R;
 	
- // !!!! LEFT OFF HERE !!!
+	
 	if (model == "JF10_eBurg")
 	{
 		PR = Rheology_Constants::JF10_eBurg::PR;

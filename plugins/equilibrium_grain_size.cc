@@ -44,13 +44,13 @@ namespace aspect
       for (unsigned i = 0; i < n_material_data; i++)
         {
           if (material_file_format == perplex)
-            material_lookup.push_back(std::shared_ptr<Lookup::MaterialLookup>
-                                      (new Lookup::PerplexReader(datadirectory+material_file_names[i],
+            material_lookup.push_back(std::shared_ptr<MaterialUtilities::Lookup::MaterialLookup>
+                                      (new MaterialUtilities::Lookup::PerplexReader(datadirectory+material_file_names[i],
                                                                  use_bilinear_interpolation,
                                                                  this->get_mpi_communicator())));
           else if (material_file_format == hefesto)
-            material_lookup.push_back(std::shared_ptr<Lookup::MaterialLookup>
-                                      (new Lookup::HeFESToReader(datadirectory+material_file_names[i],
+            material_lookup.push_back(std::shared_ptr<MaterialUtilities::Lookup::MaterialLookup>
+                                      (new MaterialUtilities::Lookup::HeFESToReader(datadirectory+material_file_names[i],
                                                                  datadirectory+derivatives_file_names[i],
                                                                  use_bilinear_interpolation,
                                                                  this->get_mpi_communicator())));
@@ -1168,17 +1168,15 @@ namespace aspect
         {
           const unsigned int n_points = out.viscosities.size();
           out.additional_outputs.push_back(
-            std::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
-            (new MaterialModel::DislocationViscosityOutputs<dim> (n_points)));
+            std_cxx14::make_unique<MaterialModel::DislocationViscosityOutputs<dim>> (n_points));
         }
 
       // We need the prescribed field outputs to interpolate the grain size onto a compositional field.
-      if (out.template get_additional_output<PrescribedFieldOutputs<dim> >() == NULL)
+      if (out.template get_additional_output<PrescribedFieldOutputs<dim> >() == nullptr)
         {
           const unsigned int n_points = out.viscosities.size();
           out.additional_outputs.push_back(
-            std::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
-            (new MaterialModel::PrescribedFieldOutputs<dim> (n_points, this->n_compositional_fields())));
+            std_cxx14::make_unique<MaterialModel::PrescribedFieldOutputs<dim>> (n_points, this->n_compositional_fields()));
         }
 
       // These properties are only output properties. But we should only create them if they are filled.
@@ -1187,8 +1185,7 @@ namespace aspect
         {
           const unsigned int n_points = out.viscosities.size();
           out.additional_outputs.push_back(
-            std::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
-            (new MaterialModel::SeismicAdditionalOutputs<dim> (n_points)));
+        	std_cxx14::make_unique<MaterialModel::SeismicAdditionalOutputs<dim>> (n_points));
         }
     }
   }
