@@ -1,11 +1,11 @@
-set Additional shared libraries            = ../plugins/libequilibrium_grain_size.so
+set Additional shared libraries            = ../../plugins/libequilibrium_grain_size.so
 
 set Dimension                              = 3
 set Use years in output instead of seconds = true
 set Start time                             = 0
 set End time                               = 0
 set Nonlinear solver scheme                = iterated Advection and Stokes
-set Max nonlinear iterations               = 10
+set Max nonlinear iterations               = 5
 set Adiabatic surface temperature          = 1600.0
 
 subsection Prescribed Stokes solution
@@ -37,7 +37,7 @@ subsection Initial composition model
   end
 
   subsection Ascii data model
-    set Data directory = ../input_data/
+    set Data directory = ../../input_data/
     set Data file name = GyPSuM_midrad_lon_lat_density_vp_vs.txt
   end
 end
@@ -81,16 +81,16 @@ subsection Material model
     set Reciprocal required strain                  = 10
     set Recrystallized grain size                   = 0.0,0.0,1e-4
 
-    set Minimum viscosity                           = 1e23
-    set Maximum viscosity                           = 1e24
+    set Minimum viscosity                           = 1e21
+    set Maximum viscosity                           = 1e22
     set Reference compressibility                   = 4e-12
     set Reference density                           = 3400
     set Reference specific heat                     = 1250
     set Reference temperature                       = 1600
     set Thermal conductivity                        = 4
-    set Thermal expansion coefficient               = 2.5e-5
+    set Thermal expansion coefficient               = 2.0e-5
     set Use paleowattmeter                          = true
-    set Viscosity                                   = 1e26
+    set Viscosity                                   = 1e25
     set Use GyPSuM density                          = true
   end
 end
