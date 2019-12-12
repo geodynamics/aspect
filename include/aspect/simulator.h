@@ -1483,6 +1483,15 @@ namespace aspect
       double compute_time_step () const;
 
       /**
+       * Advance the current time by the given @p step_size and update the
+       * solution vectors as needed.
+       *
+       * This function is implemented in
+       * <code>source/simulator/helper_functions.cc</code>.
+       */
+      void advance_time (const double step_size);
+
+      /**
        * Compute the artificial diffusion coefficient value on a cell given
        * the values and gradients of the solution passed as arguments.
        *
