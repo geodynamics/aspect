@@ -620,7 +620,6 @@ namespace aspect
           strain_rheology.parse_parameters(prm);
 
           // Reference and minimum/maximum values
-          reference_T = prm.get_double("Reference temperature");
           min_strain_rate = prm.get_double("Minimum strain rate");
           ref_strain_rate = prm.get_double("Reference strain rate");
           min_visc = prm.get_double ("Minimum viscosity");
