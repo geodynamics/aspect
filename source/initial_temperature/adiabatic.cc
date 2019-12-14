@@ -118,11 +118,13 @@ namespace aspect
       Point<dim> mid_point;
       if (perturbation_position == "center")
         {
-          if (const GeometryModel::SphericalShell<dim> *
-              shell_geometry_model = dynamic_cast <const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()))
+          if (Plugins::plugin_type_matches<const GeometryModel::SphericalShell<dim>>(this->get_geometry_model()))
             {
-              const double inner_radius = shell_geometry_model->inner_radius();
-              const double half_opening_angle = numbers::PI/180.0 * 0.5 * shell_geometry_model->opening_angle();
+              const GeometryModel::SphericalShell<dim> &shell_geometry_model =
+                Plugins::get_plugin_as_type<const GeometryModel::SphericalShell<dim>> (this->get_geometry_model());
+
+              const double inner_radius = shell_geometry_model.inner_radius();
+              const double half_opening_angle = numbers::PI/180.0 * 0.5 * shell_geometry_model.opening_angle();
               if (dim==2)
                 {
                   // choose the center of the perturbation at half angle along the inner radius
@@ -134,7 +136,7 @@ namespace aspect
                   // if the opening angle is 90 degrees (an eighth of a full spherical
                   // shell, then choose the point on the inner surface along the first
                   // diagonal
-                  if (shell_geometry_model->opening_angle() == 90)
+                  if (shell_geometry_model.opening_angle() == 90)
                     {
                       mid_point(0) = inner_radius*std::sqrt(1./3),
                       mid_point(1) = inner_radius*std::sqrt(1./3),
@@ -149,13 +151,15 @@ namespace aspect
                     }
                 }
             }
-          else if (const GeometryModel::Chunk<dim> *
-                   chunk_geometry_model = dynamic_cast <const GeometryModel::Chunk<dim>*> (&this->get_geometry_model()))
+          else if (Plugins::plugin_type_matches<const GeometryModel::Chunk<dim>>(this->get_geometry_model()))
             {
-              const double inner_radius = chunk_geometry_model->inner_radius();
+              const GeometryModel::Chunk<dim> &chunk_geometry_model =
+                Plugins::get_plugin_as_type<const GeometryModel::Chunk<dim>> (this->get_geometry_model());
 
-              const double west_longitude = chunk_geometry_model->west_longitude(); // in radians
-              const double longitude_range = chunk_geometry_model->longitude_range(); // in radians
+              const double inner_radius = chunk_geometry_model.inner_radius();
+
+              const double west_longitude = chunk_geometry_model.west_longitude(); // in radians
+              const double longitude_range = chunk_geometry_model.longitude_range(); // in radians
               const double longitude_midpoint = west_longitude + 0.5 * longitude_range;
 
               if (dim==2)
@@ -167,23 +171,25 @@ namespace aspect
               else if (dim==3)
                 {
 
-                  const double south_latitude = chunk_geometry_model->south_latitude(); // in radians
-                  const double latitude_range = chunk_geometry_model->latitude_range(); // in radians
+                  const double south_latitude = chunk_geometry_model.south_latitude(); // in radians
+                  const double latitude_range = chunk_geometry_model.latitude_range(); // in radians
                   const double latitude_midpoint = south_latitude + 0.5 * latitude_range;
                   mid_point(0) = inner_radius * std::cos(latitude_midpoint) * std::cos(longitude_midpoint);
                   mid_point(1) = inner_radius * std::cos(latitude_midpoint) * std::sin(longitude_midpoint);
                   mid_point(2) = inner_radius * std::sin(latitude_midpoint);
                 }
             }
-          else if (const GeometryModel::Box<dim> *
-                   box_geometry_model = dynamic_cast <const GeometryModel::Box<dim>*> (&this->get_geometry_model()))
+          else if (Plugins::plugin_type_matches<const GeometryModel::Box<dim>>(this->get_geometry_model()))
             {
+              const GeometryModel::Box<dim> &box_geometry_model =
+                Plugins::get_plugin_as_type<const GeometryModel::Box<dim>> (this->get_geometry_model());
+
               // for the box geometry, choose a point at the center of the bottom face.
               // (note that the loop only runs over the first dim-1 coordinates, leaving
               // the depth variable at zero)
-              mid_point = box_geometry_model->get_origin();
+              mid_point = box_geometry_model.get_origin();
               for (unsigned int i=0; i<dim-1; ++i)
-                mid_point(i) += 0.5 * box_geometry_model->get_extents()[i];
+                mid_point(i) += 0.5 * box_geometry_model.get_extents()[i];
             }
           else
             AssertThrow (false,

@@ -146,23 +146,23 @@ namespace aspect
       // Get the value of the outer radius and inner radius:
       double model_outer_radius;
       double model_inner_radius;
-      if (dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()) != nullptr)
+      if (Plugins::plugin_type_matches<const GeometryModel::SphericalShell<dim>> (this->get_geometry_model()))
         {
-          model_outer_radius = dynamic_cast<const GeometryModel::SphericalShell<dim>&>
+          model_outer_radius = Plugins::get_plugin_as_type<const GeometryModel::SphericalShell<dim>>
                                (this->get_geometry_model()).outer_radius();
-          model_inner_radius = dynamic_cast<const GeometryModel::SphericalShell<dim>&>
+          model_inner_radius = Plugins::get_plugin_as_type<const GeometryModel::SphericalShell<dim>>
                                (this->get_geometry_model()).inner_radius();
         }
-      else if (dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model()) != nullptr)
+      else if (Plugins::plugin_type_matches<const GeometryModel::Chunk<dim>> (this->get_geometry_model()))
         {
-          model_outer_radius = dynamic_cast<const GeometryModel::Chunk<dim>&>
+          model_outer_radius = Plugins::get_plugin_as_type<const GeometryModel::Chunk<dim>>
                                (this->get_geometry_model()).outer_radius();
-          model_inner_radius = dynamic_cast<const GeometryModel::Chunk<dim>&>
+          model_inner_radius = Plugins::get_plugin_as_type<const GeometryModel::Chunk<dim>>
                                (this->get_geometry_model()).inner_radius();
         }
-      else if (dynamic_cast<const GeometryModel::Sphere<dim>*> (&this->get_geometry_model()) != nullptr)
+      else if (Plugins::plugin_type_matches<const GeometryModel::Sphere<dim>> (this->get_geometry_model()))
         {
-          model_outer_radius = dynamic_cast<const GeometryModel::Sphere<dim>&>
+          model_outer_radius = Plugins::get_plugin_as_type<const GeometryModel::Sphere<dim>>
                                (this->get_geometry_model()).radius();
           model_inner_radius = 0;
         }
@@ -561,9 +561,9 @@ namespace aspect
           latitude_list  = Utilities::string_to_double(Utilities::split_string_list(prm.get("List of latitude")));
           AssertThrow (longitude_list.size() == latitude_list.size(),
                        ExcMessage ("Make sure you have the same number of point coordinates in the list sampling scheme."));
-          AssertThrow (dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()) != nullptr ||
-                       dynamic_cast<const GeometryModel::Sphere<dim>*> (&this->get_geometry_model()) != nullptr ||
-                       dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model()) != nullptr,
+          AssertThrow (Plugins::plugin_type_matches<const GeometryModel::SphericalShell<dim>> (this->get_geometry_model()) ||
+                       Plugins::plugin_type_matches<const GeometryModel::Sphere<dim>> (this->get_geometry_model()) ||
+                       Plugins::plugin_type_matches<const GeometryModel::Chunk<dim>> (this->get_geometry_model()),
                        ExcMessage ("This postprocessor can only be used if the geometry is a sphere, spherical shell or spherical chunk."));
           AssertThrow (! this->get_material_model().is_compressible(),
                        ExcMessage("This postprocessor was only tested for incompressible models so far."));

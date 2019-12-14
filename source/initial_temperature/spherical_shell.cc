@@ -40,55 +40,6 @@ namespace aspect
     SphericalHexagonalPerturbation<dim>::
     initial_temperature (const Point<dim> &position) const
     {
-      // Check that a boundary temperature is prescribed
-      AssertThrow (this->has_boundary_temperature(),
-                   ExcMessage ("This initial condition can only be used if a boundary "
-                               "temperature is prescribed."));
-
-      // This initial condition only makes sense if the geometry is derived from
-      // a spherical model (i.e. a sphere, spherical shell or chunk)
-      const GeometryModel::Interface<dim> *geometry_model = &this->get_geometry_model();
-      double R1;
-
-      if (dynamic_cast<const GeometryModel::Sphere<dim>*>(geometry_model) != nullptr)
-        {
-          R1 = dynamic_cast<const GeometryModel::Sphere<dim>&>
-               (this->get_geometry_model()).radius();
-        }
-      else if (dynamic_cast<const GeometryModel::SphericalShell<dim>*>(geometry_model) != nullptr)
-        {
-          R1 = dynamic_cast<const GeometryModel::SphericalShell<dim>&>
-               (this->get_geometry_model()).outer_radius();
-        }
-      else if (dynamic_cast<const GeometryModel::Chunk<dim>*>(geometry_model) != nullptr)
-        {
-          R1 = dynamic_cast<const GeometryModel::Chunk<dim>&>
-               (this->get_geometry_model()).outer_radius();
-        }
-      else if (const GeometryModel::EllipsoidalChunk<dim> *gm = dynamic_cast<const GeometryModel::EllipsoidalChunk<dim>*> (&this->get_geometry_model()))
-        {
-
-          // TODO
-          // If the eccentricity of the EllipsoidalChunk is non-zero, the radius can vary along a boundary,
-          // but the maximal depth is the same everywhere and we could calculate a representative pressure
-          // profile. However, it requires some extra logic with ellipsoidal
-          // coordinates, so for now we only allow eccentricity zero.
-          // Using the EllipsoidalChunk with eccentricity zero can still be useful,
-          // because the domain can be non-coordinate parallel.
-
-          AssertThrow(gm->get_eccentricity() == 0.0,
-                      ExcNotImplemented("This plugin cannot be used with a non-zero eccentricity. "));
-
-          R1 = gm->get_semi_major_axis_a();
-        }
-      else
-        {
-          Assert (false, ExcMessage ("This initial condition can only be used if the geometry "
-                                     "is a sphere, a spherical shell, a chunk or an "
-                                     "ellipsoidal chunk."));
-          R1 = numbers::signaling_nan<double>();
-        }
-
       // s = fraction of the way from the inner to the outer boundary; 0<=s<=1
       const double s = this->get_geometry_model().depth(position)
                        / this->get_geometry_model().maximal_depth();
@@ -101,12 +52,10 @@ namespace aspect
          For a plot, see
          http://www.wolframalpha.com/input/?i=plot+%28%282*sqrt%28x^2%2By^2%29-1%29%2B0.2*%282*sqrt%28x^2%2By^2%29-1%29*%281-%282*sqrt%28x^2%2By^2%29-1%29%29*sin%286*atan2%28x%2Cy%29%29%29%2C+x%3D-1+to+1%2C+y%3D-1+to+1
       */
-
-
       const double scale = ((dim==3)
                             ?
                             std::max(0.0,
-                                     cos(3.14159 * fabs(position(2)/R1)))
+                                     cos(numbers::PI * fabs(position(2)/R1)))
                             :
                             1.0);
       const double phi   = std::atan2(position(0),position(1));
@@ -161,6 +110,53 @@ namespace aspect
         prm.leave_subsection ();
       }
       prm.leave_subsection ();
+
+      // Check that a boundary temperature is prescribed
+      AssertThrow (this->has_boundary_temperature(),
+                   ExcMessage ("This initial condition can only be used if a boundary "
+                               "temperature is prescribed."));
+
+      // This initial condition only makes sense if the geometry is derived from
+      // a spherical model (i.e. a sphere, spherical shell or chunk)
+      if (Plugins::plugin_type_matches<const GeometryModel::Sphere<dim>>(this->get_geometry_model()))
+        {
+          R1 = Plugins::get_plugin_as_type<const GeometryModel::Sphere<dim>>
+               (this->get_geometry_model()).radius();
+        }
+      else if (Plugins::plugin_type_matches<const GeometryModel::SphericalShell<dim>>(this->get_geometry_model()))
+        {
+          R1 = Plugins::get_plugin_as_type<const GeometryModel::SphericalShell<dim>>
+               (this->get_geometry_model()).outer_radius();
+        }
+      else if (Plugins::plugin_type_matches<const GeometryModel::Chunk<dim>>(this->get_geometry_model()))
+        {
+          R1 = Plugins::get_plugin_as_type<const GeometryModel::Chunk<dim>>
+               (this->get_geometry_model()).outer_radius();
+        }
+      else if (Plugins::plugin_type_matches<const GeometryModel::EllipsoidalChunk<dim>>(this->get_geometry_model()))
+        {
+          const auto &gm = Plugins::get_plugin_as_type<const GeometryModel::EllipsoidalChunk<dim>>
+                           (this->get_geometry_model());
+          // TODO
+          // If the eccentricity of the EllipsoidalChunk is non-zero, the radius can vary along a boundary,
+          // but the maximal depth is the same everywhere and we could calculate a representative pressure
+          // profile. However, it requires some extra logic with ellipsoidal
+          // coordinates, so for now we only allow eccentricity zero.
+          // Using the EllipsoidalChunk with eccentricity zero can still be useful,
+          // because the domain can be non-coordinate parallel.
+
+          AssertThrow(gm.get_eccentricity() == 0.0,
+                      ExcNotImplemented("This plugin cannot be used with a non-zero eccentricity. "));
+
+          R1 = gm.get_semi_major_axis_a();
+        }
+      else
+        {
+          Assert (false, ExcMessage ("This initial condition can only be used if the geometry "
+                                     "is a sphere, a spherical shell, a chunk or an "
+                                     "ellipsoidal chunk."));
+          R1 = numbers::signaling_nan<double>();
+        }
     }
 
 
@@ -190,65 +186,6 @@ namespace aspect
     SphericalGaussianPerturbation<dim>::
     initial_temperature (const Point<dim> &position) const
     {
-      // Check that a boundary temperature is prescribed
-      AssertThrow (this->has_boundary_temperature(),
-                   ExcMessage ("This initial condition can only be used if a boundary "
-                               "temperature is prescribed."));
-
-      // This initial condition only makes sense if the geometry is derived from
-      // a spherical model
-      // (i.e. a sphere, spherical shell, chunk or ellipsoidal chunk with zero ellipticity)
-      const GeometryModel::Interface<dim> *geometry_model = &this->get_geometry_model();
-      double R0, R1;
-
-      if (dynamic_cast<const GeometryModel::Sphere<dim>*>(geometry_model) != nullptr)
-        {
-          R0 = 0.;
-          R1 = dynamic_cast<const GeometryModel::Sphere<dim>&>
-               (this->get_geometry_model()).radius();
-        }
-      else if (dynamic_cast<const GeometryModel::SphericalShell<dim>*>(geometry_model) != nullptr)
-        {
-          R0 = dynamic_cast<const GeometryModel::SphericalShell<dim>&>
-               (this->get_geometry_model()).inner_radius();
-          R1 = dynamic_cast<const GeometryModel::SphericalShell<dim>&>
-               (this->get_geometry_model()).outer_radius();
-        }
-      else if (dynamic_cast<const GeometryModel::Chunk<dim>*>(geometry_model) != nullptr)
-        {
-          R0 = dynamic_cast<const GeometryModel::Chunk<dim>&>
-               (this->get_geometry_model()).inner_radius();
-          R1 = dynamic_cast<const GeometryModel::Chunk<dim>&>
-               (this->get_geometry_model()).outer_radius();
-        }
-
-      else if (const GeometryModel::EllipsoidalChunk<dim> *gm = dynamic_cast<const GeometryModel::EllipsoidalChunk<dim>*> (&this->get_geometry_model()))
-        {
-
-          // TODO
-          // If the eccentricity of the EllipsoidalChunk is non-zero, the radius can vary along a boundary,
-          // but the maximal depth is the same everywhere and we could calculate a representative pressure
-          // profile. However, it requires some extra logic with ellipsoidal
-          // coordinates, so for now we only allow eccentricity zero.
-          // Using the EllipsoidalChunk with eccentricity zero can still be useful,
-          // because the domain can be non-coordinate parallel.
-
-          AssertThrow(gm->get_eccentricity() == 0.0,
-                      ExcNotImplemented("This plugin cannot be used with a non-zero eccentricity. "));
-
-          R0 = gm->get_semi_major_axis_a() - gm->maximal_depth();
-          R1 = gm->get_semi_major_axis_a();
-        }
-      else
-        {
-          Assert (false, ExcMessage ("This initial condition can only be used if the geometry "
-                                     "is a sphere, a spherical shell, a chunk or an "
-                                     "ellipsoidal chunk."));
-
-          R0 = numbers::signaling_nan<double>();
-          R1 = numbers::signaling_nan<double>();
-        }
-
       const double dT = this->get_boundary_temperature_manager().maximal_temperature()
                         - this->get_boundary_temperature_manager().minimal_temperature();
       const double T0 = this->get_boundary_temperature_manager().maximal_temperature()/dT;
@@ -357,6 +294,65 @@ namespace aspect
         prm.leave_subsection ();
       }
       prm.leave_subsection ();
+
+      // Check that a boundary temperature is prescribed
+      AssertThrow (this->has_boundary_temperature(),
+                   ExcMessage ("This initial condition can only be used if a boundary "
+                               "temperature is prescribed."));
+
+      // This initial condition only makes sense if the geometry is derived from
+      // a spherical model
+      // (i.e. a sphere, spherical shell, chunk or ellipsoidal chunk with zero ellipticity)
+
+      if (Plugins::plugin_type_matches<const GeometryModel::Sphere<dim>>(this->get_geometry_model()))
+        {
+          R0 = 0.;
+          R1 = Plugins::get_plugin_as_type<const GeometryModel::Sphere<dim>>
+               (this->get_geometry_model()).radius();
+        }
+      else if (Plugins::plugin_type_matches<const GeometryModel::SphericalShell<dim>>(this->get_geometry_model()))
+        {
+          R0 = Plugins::get_plugin_as_type<const GeometryModel::SphericalShell<dim>>
+               (this->get_geometry_model()).inner_radius();
+          R1 = Plugins::get_plugin_as_type<const GeometryModel::SphericalShell<dim>>
+               (this->get_geometry_model()).outer_radius();
+        }
+      else if (Plugins::plugin_type_matches<const GeometryModel::Chunk<dim>>(this->get_geometry_model()))
+        {
+          R0 = Plugins::get_plugin_as_type<const GeometryModel::Chunk<dim>>
+               (this->get_geometry_model()).inner_radius();
+          R1 = Plugins::get_plugin_as_type<const GeometryModel::Chunk<dim>>
+               (this->get_geometry_model()).outer_radius();
+        }
+
+      else if (Plugins::plugin_type_matches<const GeometryModel::EllipsoidalChunk<dim>>(this->get_geometry_model()))
+        {
+
+          // TODO
+          // If the eccentricity of the EllipsoidalChunk is non-zero, the radius can vary along a boundary,
+          // but the maximal depth is the same everywhere and we could calculate a representative pressure
+          // profile. However, it requires some extra logic with ellipsoidal
+          // coordinates, so for now we only allow eccentricity zero.
+          // Using the EllipsoidalChunk with eccentricity zero can still be useful,
+          // because the domain can be non-coordinate parallel.
+
+          const auto &gm = Plugins::get_plugin_as_type<const GeometryModel::EllipsoidalChunk<dim>>(this->get_geometry_model());
+
+          AssertThrow(gm.get_eccentricity() == 0.0,
+                      ExcNotImplemented("This plugin cannot be used with a non-zero eccentricity. "));
+
+          R0 = gm.get_semi_major_axis_a() - gm.maximal_depth();
+          R1 = gm.get_semi_major_axis_a();
+        }
+      else
+        {
+          Assert (false, ExcMessage ("This initial condition can only be used if the geometry "
+                                     "is a sphere, a spherical shell, a chunk or an "
+                                     "ellipsoidal chunk."));
+
+          R0 = numbers::signaling_nan<double>();
+          R1 = numbers::signaling_nan<double>();
+        }
     }
   }
 }

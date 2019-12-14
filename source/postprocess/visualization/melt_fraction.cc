@@ -53,8 +53,7 @@ namespace aspect
         Assert (input_data.solution_values[0].size() == this->introspection().n_components,           ExcInternalError());
 
         // in case the material model computes the melt fraction iself, we use that output
-        if (const MaterialModel::MeltFractionModel<dim> *
-            melt_material_model = dynamic_cast <const MaterialModel::MeltFractionModel<dim>*> (&this->get_material_model()))
+        if (Plugins::plugin_type_matches<const MaterialModel::MeltFractionModel<dim>> (this->get_material_model()))
           {
             MaterialModel::MaterialModelInputs<dim> in(input_data,
                                                        this->introspection());
@@ -64,8 +63,11 @@ namespace aspect
             // Compute the melt fraction...
             this->get_material_model().evaluate(in, out);
 
+            const MaterialModel::MeltFractionModel<dim> &melt_material_model =
+              Plugins::get_plugin_as_type<const MaterialModel::MeltFractionModel<dim>> (this->get_material_model());
+
             std::vector<double> melt_fractions(n_quadrature_points);
-            melt_material_model->melt_fractions(in, melt_fractions);
+            melt_material_model.melt_fractions(in, melt_fractions);
 
             for (unsigned int q=0; q<n_quadrature_points; ++q)
               computed_quantities[q](0) = melt_fractions[q];

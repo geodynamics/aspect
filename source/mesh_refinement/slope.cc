@@ -60,8 +60,7 @@ namespace aspect
                   if ( (this->get_parameters().mesh_deformation_enabled &&
                         this->get_mesh_deformation_boundary_indicators().find(boundary_indicator) !=
                         this->get_mesh_deformation_boundary_indicators().end()) ||
-                       (dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(&this->get_initial_topography_model())
-                        == nullptr &&
+                       (Plugins::plugin_type_matches<const InitialTopographyModel::ZeroTopography<dim>>(this->get_initial_topography_model()) &&
                         this->get_geometry_model().translate_symbolic_boundary_name_to_id("top") == boundary_indicator)  )
                     {
                       fe_face_values.reinit(cell, face_no);

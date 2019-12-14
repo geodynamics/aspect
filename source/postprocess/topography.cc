@@ -44,13 +44,10 @@ namespace aspect
     Topography<dim>::execute (TableHandler &statistics)
     {
       //Disallow use of the plugin with sphere geometry model
-      if (GeometryModel::Sphere<dim> *gm = dynamic_cast<GeometryModel::Sphere<dim> *>
-                                           (const_cast<GeometryModel::Interface<dim> *>(&this->get_geometry_model())))
-        {
-          AssertThrow(false, ExcMessage("Topography postprocessor is not yet implemented "
-                                        "for the sphere geometry model. "
-                                        "Consider using a box, spherical shell, or chunk.") );
-        }
+      AssertThrow(!Plugins::plugin_type_matches<const GeometryModel::Sphere<dim>>(this->get_geometry_model()),
+                  ExcMessage("Topography postprocessor is not yet implemented "
+                             "for the sphere geometry model. "
+                             "Consider using a box, spherical shell, or chunk.") );
 
       const types::boundary_id relevant_boundary = this->get_geometry_model().translate_symbolic_boundary_name_to_id ("top");
 
