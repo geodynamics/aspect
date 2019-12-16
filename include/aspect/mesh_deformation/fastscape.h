@@ -122,6 +122,9 @@ namespace aspect
         mutable int restart_step;
         int resolution_difference;
         mutable double keep_time;
+        double dx;
+        double dy;
+        double end_time;
 
         //Boundary conditions
         unsigned int bottom;
@@ -133,6 +136,7 @@ namespace aspect
         double bottom_flux;
         double top_flux;
 
+        //Erosional parameters
         double m;
         double n;
         double p;
@@ -142,9 +146,6 @@ namespace aspect
         double kfsed;
         double kdd;
         double kdsed;
-        double dx;
-        double dy;
-        double end_time;
 
         //Marine parameters
         double sl;

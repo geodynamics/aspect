@@ -156,19 +156,19 @@ namespace aspect
                           {
                             for (int ys=0; ys<ny; ys++)
                               {
-                            	/*
-                            	 * Fastscape indexes from 1 to n, starting at X and Y = 0, and increases
-                            	 * across the X row. At the end of the row, it jumps back to X = 0
-                            	 * and up to the next X row in increasing Y direction. We track
-                            	 * this to correctly place the variables later on.
-                            	 */
+                                /*
+                                 * Fastscape indexes from 1 to n, starting at X and Y = 0, and increases
+                                 * across the X row. At the end of the row, it jumps back to X = 0
+                                 * and up to the next X row in increasing Y direction. We track
+                                 * this to correctly place the variables later on.
+                                 */
                                 double index = indx+nx*ys;
 
                                 temporary_variables[0].push_back(vertex(dim-1));
                                 temporary_variables[1].push_back(index-1);
 
                                 for (unsigned int i=0; i<dim; ++i)
-                                	temporary_variables[i+2].push_back(vel[corner][i]*year_in_seconds);
+                                  temporary_variables[i+2].push_back(vel[corner][i]*year_in_seconds);
                               }
                           }
 
@@ -247,7 +247,7 @@ namespace aspect
               for (unsigned int p=1; p<Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()); ++p)
                 {
 
-            	  //First, find out the size of the array a processor wants to send.
+                  //First, find out the size of the array a processor wants to send.
                   MPI_Status status;
                   MPI_Probe(p, 42, this->get_mpi_communicator(), &status);
                   int incoming_size = 0;
@@ -414,44 +414,44 @@ namespace aspect
                   vx[index_right-1] = vx[index_right-2];
                   vx[index_left-1] = vx[index_left];
 
-                  if(current_timestep == 1 || left_flux == 0)
-                  {
-                	//If its the first timestep add in initial slope. If we have no flux,
-                	//set the ghost node to the node next to it.
-                	slope = left_flux/kdd;
-                    h[index_left-1] = h[index_left] + slope*2*dx;
-                  }
+                  if (current_timestep == 1 || left_flux == 0)
+                    {
+                      //If its the first timestep add in initial slope. If we have no flux,
+                      //set the ghost node to the node next to it.
+                      slope = left_flux/kdd;
+                      h[index_left-1] = h[index_left] + slope*2*dx;
+                    }
                   else
-                  {
-                    //If we have flux through boundary, we need to update the height to keep the correct slope.
-                	//Because the corner nodes always show a slope of zero, this will update them according to
-                	//the nodes next to them.
-                	  if(j == 0)
-                		  slope = left_flux/kdd - std::tan(slopep[index_left+nx]*boost::math::double_constants::pi/180);
-                	  else if(j==(ny-1))
-                		  slope = left_flux/kdd - std::tan(slopep[index_left-nx]*boost::math::double_constants::pi/180);
-                	  else
-                		  slope = left_flux/kdd - std::tan(slopep[index_left]*boost::math::double_constants::pi/180);
+                    {
+                      //If we have flux through boundary, we need to update the height to keep the correct slope.
+                      //Because the corner nodes always show a slope of zero, this will update them according to
+                      //the nodes next to them.
+                      if (j == 0)
+                        slope = left_flux/kdd - std::tan(slopep[index_left+nx]*boost::math::double_constants::pi/180);
+                      else if (j==(ny-1))
+                        slope = left_flux/kdd - std::tan(slopep[index_left-nx]*boost::math::double_constants::pi/180);
+                      else
+                        slope = left_flux/kdd - std::tan(slopep[index_left]*boost::math::double_constants::pi/180);
 
-                  	  h[index_left-1] = h[index_left-1] + slope*2*dx;
-                  }
+                      h[index_left-1] = h[index_left-1] + slope*2*dx;
+                    }
 
-                  if(current_timestep == 1 || right_flux == 0)
-                  {
-                  	slope = right_flux/kdd;
-                    h[index_right-1] = h[index_right-2] + slope*2*dx;
-                  }
+                  if (current_timestep == 1 || right_flux == 0)
+                    {
+                      slope = right_flux/kdd;
+                      h[index_right-1] = h[index_right-2] + slope*2*dx;
+                    }
                   else
-                  {
-                	  if(j == 0)
-                		  slope = right_flux/kdd - std::tan(slopep[index_right+nx-2]*boost::math::double_constants::pi/180);
-                	  else if(j==(ny-1))
-                		  slope = right_flux/kdd - std::tan(slopep[index_right-nx-2]*boost::math::double_constants::pi/180);
-                	  else
-                		  slope = right_flux/kdd - std::tan(slopep[index_right-2]*boost::math::double_constants::pi/180);
+                    {
+                      if (j == 0)
+                        slope = right_flux/kdd - std::tan(slopep[index_right+nx-2]*boost::math::double_constants::pi/180);
+                      else if (j==(ny-1))
+                        slope = right_flux/kdd - std::tan(slopep[index_right-nx-2]*boost::math::double_constants::pi/180);
+                      else
+                        slope = right_flux/kdd - std::tan(slopep[index_right-2]*boost::math::double_constants::pi/180);
 
-                  	h[index_right-1] = h[index_right-1] + slope*2*dx;
-                  }
+                      h[index_right-1] = h[index_right-1] + slope*2*dx;
+                    }
 
                   //If we set the boundaries as periodic, then reset any values to the
                   //nodes on the opposite side.
@@ -493,7 +493,7 @@ namespace aspect
                 {
                   double index_bot = j+1;
                   double index_top = nx*(ny-1)+j+1;
-            	  double slope = 0;
+                  double slope = 0;
 
                   vz[index_bot-1] = vz[index_bot+nx-1];
                   vz[index_top-1] = vz[index_top-nx-1];
@@ -504,39 +504,39 @@ namespace aspect
                   vx[index_bot-1] = vx[index_bot+nx-1];
                   vx[index_top-1] =  vx[index_top-nx-1];
 
-                  if(current_timestep == 1 || top_flux == 0)
-                  {
-                    slope = top_flux/kdd;
-                    h[index_top-1] = h[index_top-nx-1] + slope*2*dx;
-                  }
+                  if (current_timestep == 1 || top_flux == 0)
+                    {
+                      slope = top_flux/kdd;
+                      h[index_top-1] = h[index_top-nx-1] + slope*2*dx;
+                    }
                   else
-                  {
-                	  if(j == 0)
-                		  slope = top_flux/kdd - std::tan(slopep[index_top-nx]*boost::math::double_constants::pi/180);
-                	  else if(j==(nx-1))
-                		  slope = top_flux/kdd - std::tan(slopep[index_top-nx-2]*boost::math::double_constants::pi/180);
-                	  else
-                		  slope = top_flux/kdd - std::tan(slopep[index_top-nx-1]*boost::math::double_constants::pi/180);
+                    {
+                      if (j == 0)
+                        slope = top_flux/kdd - std::tan(slopep[index_top-nx]*boost::math::double_constants::pi/180);
+                      else if (j==(nx-1))
+                        slope = top_flux/kdd - std::tan(slopep[index_top-nx-2]*boost::math::double_constants::pi/180);
+                      else
+                        slope = top_flux/kdd - std::tan(slopep[index_top-nx-1]*boost::math::double_constants::pi/180);
 
-                	  h[index_top-1] = h[index_top-1] + slope*2*dx;
-                   }
+                      h[index_top-1] = h[index_top-1] + slope*2*dx;
+                    }
 
-                  if(current_timestep == 1 || bottom_flux == 0)
-                  {
-                    slope = bottom_flux/kdd;
-                    h[index_bot-1] = h[index_bot+nx-1] + slope*2*dx;
-                  }
+                  if (current_timestep == 1 || bottom_flux == 0)
+                    {
+                      slope = bottom_flux/kdd;
+                      h[index_bot-1] = h[index_bot+nx-1] + slope*2*dx;
+                    }
                   else
-                  {
-                	  if(j == 0)
-                		  slope = bottom_flux/kdd - std::tan(slopep[index_bot+nx]*boost::math::double_constants::pi/180);
-                	  else if(j==(nx-1))
-                		  slope = bottom_flux/kdd - std::tan(slopep[index_bot+nx-2]*boost::math::double_constants::pi/180);
-                	  else
-                		  slope = bottom_flux/kdd - std::tan(slopep[index_bot+nx-1]*boost::math::double_constants::pi/180);
+                    {
+                      if (j == 0)
+                        slope = bottom_flux/kdd - std::tan(slopep[index_bot+nx]*boost::math::double_constants::pi/180);
+                      else if (j==(nx-1))
+                        slope = bottom_flux/kdd - std::tan(slopep[index_bot+nx-2]*boost::math::double_constants::pi/180);
+                      else
+                        slope = bottom_flux/kdd - std::tan(slopep[index_bot+nx-1]*boost::math::double_constants::pi/180);
 
-                  	h[index_bot-1] = h[index_bot-1] + slope*2*dx;
-                  }
+                      h[index_bot-1] = h[index_bot-1] + slope*2*dx;
+                    }
 
                   if (bottom == 0 && top == 0)
                     {
@@ -600,10 +600,10 @@ namespace aspect
                  * TODO: The frequency in this needs to be the same as the total timesteps fastscape will
                  * run for, need to figure out how to work this in better.
                  */
-                if(use_strat && current_timestep == 1)
-                	fastscape_strati_(&nstepp, &nreflectorp, &steps, &vexp);
-				else if(!use_strat)
-                    fastscape_named_vtk_(h.get(), &vexp, &visualization_step, c, &length);
+                if (use_strat && current_timestep == 1)
+                  fastscape_strati_(&nstepp, &nreflectorp, &steps, &vexp);
+                else if (!use_strat)
+                  fastscape_named_vtk_(h.get(), &vexp, &visualization_step, c, &length);
 
                 do
                   {
@@ -630,8 +630,8 @@ namespace aspect
 
                   visualization_step = visualization_step+1;
 
-                  if(!use_strat)
-                     fastscape_named_vtk_(h.get(), &vexp, &visualization_step, c, &length);
+                  if (!use_strat)
+                    fastscape_named_vtk_(h.get(), &vexp, &visualization_step, c, &length);
 
                   fastscape_destroy_();
                 }
@@ -826,7 +826,7 @@ namespace aspect
                              "Flag to use stratigraphy");
           prm.declare_entry("Total steps", "100000",
                             Patterns::Integer(),
-							"Total number of steps you expect in the FastScape model, only used if stratigraphy is turned on.");
+                            "Total number of steps you expect in the FastScape model, only used if stratigraphy is turned on.");
           prm.declare_entry("Number of horizons", "1",
                             Patterns::Integer(),
                             "Number of horizons to track and visualize in FastScape..");
@@ -977,9 +977,9 @@ namespace aspect
 
             bc = bottom*1000+right*100+top*10+left;
 
-            if((left_flux != 0 && top_flux != 0) || (left_flux != 0 && bottom_flux != 0) ||
-            		(right_flux != 0 && bottom_flux != 0) || (right_flux != 0 && top_flux != 0))
-		           AssertThrow(false,ExcMessage("Currently the plugin does not support mass flux through adjacent boundaries."));
+            if ((left_flux != 0 && top_flux != 0) || (left_flux != 0 && bottom_flux != 0) ||
+                (right_flux != 0 && bottom_flux != 0) || (right_flux != 0 && top_flux != 0))
+              AssertThrow(false,ExcMessage("Currently the plugin does not support mass flux through adjacent boundaries."));
           }
           prm.leave_subsection();
 
