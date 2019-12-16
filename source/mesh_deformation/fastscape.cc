@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 by the authors of the ASPECT code.
+  Copyright (C) 2019 by the authors of the ASPECT code.
   This file is part of ASPECT.
   ASPECT is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -66,7 +66,7 @@ namespace aspect
       if (dim == 2)
         {
           dy = dx;
-          y_extent = grid_extent[0].second*3+2*dy; //(ny-1)*dy;
+          y_extent = grid_extent[0].second*3+2*dy;
           ny = 1+y_extent/dy;
         }
 
@@ -105,10 +105,8 @@ namespace aspect
         {
 
           /*
-           * Initialize a vector of temporary variables to hold: z component, Vx, Vy, and Vz.
-           * For some reason I need to add one to the temporary array_size but not V.
+           * Initialize a vector of temporary variables to hold: z component, index, Vx, Vy, and Vz.
            */
-          //std::vector<std::vector<double>> temporary_variables(dim+2, std::vector<double>(1,0));
           std::vector<std::vector<double>> temporary_variables(dim+2, std::vector<double>());
           std::vector<double> V(array_size);
           double precision = 0.001;
@@ -150,19 +148,27 @@ namespace aspect
                         if (indx - floor(indx) >= precision)
                           continue;
 
+                        /*
+                         * If we're in 2D, we want to take the values and apply them to every row of X points.
+                         * TODO: I need to test that 2D still works after changing how we store these variables.
+                         */
                         if (dim == 2)
                           {
                             for (int ys=0; ys<ny; ys++)
                               {
+                            	/*
+                            	 * Fastscape indexes from 1 to n, starting at X and Y = 0, and increases
+                            	 * across the X row. At the end of the row, it jumps back to X = 0
+                            	 * and up to the next X row in increasing Y direction. We track
+                            	 * this to correctly place the variables later on.
+                            	 */
                                 double index = indx+nx*ys;
-                                if (current_timestep == 1)
-                                  {
-                                    temporary_variables[0][index-1] = vertex(dim-1);   //z component
-                                  }
 
+                                temporary_variables[0].push_back(vertex(dim-1));
+                                temporary_variables[1].push_back(index-1);
 
                                 for (unsigned int i=0; i<dim; ++i)
-                                  temporary_variables[i+2][index-1] = vel[corner][i]*year_in_seconds;
+                                	temporary_variables[i+2].push_back(vel[corner][i]*year_in_seconds);
                               }
                           }
 
@@ -176,7 +182,6 @@ namespace aspect
 
                             temporary_variables[1].push_back(index-1);
                             temporary_variables[0].push_back(vertex(dim-1));   //z component
-
 
                             for (unsigned int i=0; i<dim; ++i)
                               temporary_variables[i+2].push_back(vel[corner][i]*year_in_seconds);
@@ -224,7 +229,7 @@ namespace aspect
                   kd[i] = kdd;
                 }
 
-              //Get info for first processor.
+              //Get info from first processor.
               for (unsigned int i=0; i<temporary_variables[1].size(); i++)
                 {
                   h[temporary_variables[1][i]]= temporary_variables[0][i];
@@ -241,11 +246,14 @@ namespace aspect
 
               for (unsigned int p=1; p<Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()); ++p)
                 {
+
+            	  //First, find out the size of the array a processor wants to send.
                   MPI_Status status;
                   MPI_Probe(p, 42, this->get_mpi_communicator(), &status);
                   int incoming_size = 0;
                   MPI_Get_count(&status, MPI_DOUBLE, &incoming_size);
 
+                  //Resize the array so it fits whatever the processor sends.
                   for (unsigned int i=0; i<temporary_variables.size(); ++i)
                     {
                       temporary_variables[i].resize(incoming_size);
@@ -254,18 +262,19 @@ namespace aspect
                   for (unsigned int i=0; i<temporary_variables.size(); i++)
                     MPI_Recv(&temporary_variables[i][0], incoming_size, MPI_DOUBLE, p, 42, this->get_mpi_communicator(), &status);
 
-                  //Get info from other processors.
+
+                  //Now, place the numbers into the correct place based off the index.
                   for (unsigned int i=0; i<temporary_variables[1].size(); i++)
                     {
-                      h[temporary_variables[1][i]]= temporary_variables[0][i];
-                      vx[temporary_variables[1][i]]=temporary_variables[2][i];
-                      vz[temporary_variables[1][i]]= temporary_variables[dim+1][i];
+                      h[temporary_variables[1][i]] = temporary_variables[0][i];
+                      vx[temporary_variables[1][i]] = temporary_variables[2][i];
+                      vz[temporary_variables[1][i]] = temporary_variables[dim+1][i];
 
                       if (dim == 2 )
-                        vy[temporary_variables[1][i]]=0;
+                        vy[temporary_variables[1][i]] = 0;
 
                       if (dim == 3)
-                        vy[temporary_variables[1][i]]=temporary_variables[3][i];
+                        vy[temporary_variables[1][i]] = temporary_variables[3][i];
 
                     }
 
@@ -348,14 +357,14 @@ namespace aspect
               /*
                * Keep initial h values so we can calculate velocity later.
                * In the first timestep, h will be given from other processors.
-               * In other timesteps, we copy h from fastscape.
+               * In other timesteps, we copy h directly from fastscape.
                */
               for (int i=0; i<=array_size; i++)
                 {
                   //Initialize random topography noise first time fastscape is called.
                   if (current_timestep == 1)
                     {
-                      double h_seed = (std::rand()%2000)/100;
+                      double h_seed = 0; //(std::rand()%2000)/100;
                       h[i] = h[i] + h_seed;
                     }
                   h_old[i] = h[i];
@@ -365,6 +374,7 @@ namespace aspect
               fastscape_get_step_(&istep);
 
               //Write a file to store h & step in case of restart.
+              //TODO: there's probably a faster way to write these.
               if ((this->get_parameters().checkpoint_time_secs == 0) &&
                   (this->get_parameters().checkpoint_steps > 0) &&
                   (current_timestep % this->get_parameters().checkpoint_steps == 0))
@@ -379,25 +389,69 @@ namespace aspect
                 }
 
 
+              /*
+               * Copy the slopes at each point, this will be used to set an H
+               * at the ghost nodes if a boundary mass flux is given.
+               */
+              std::unique_ptr<double[]> slopep (new double[array_size]);
+              fastscape_copy_slope_(slopep.get());
+
               //Now we set the ghost nodes at the left and right boundaries.
               for (int j=0; j<ny; j++)
                 {
                   double index_left = nx*j+1;
                   double index_right = nx*(j+1);
+                  double slope = 0;
 
                   //Generally, they will always be set to the same values as the
                   //inner nodes next to them.
-                  vz[index_right-1] =   vz[index_right-2];
-                  vz[index_left-1] =    vz[index_left];
+                  vz[index_right-1] = vz[index_right-2];
+                  vz[index_left-1] =  vz[index_left];
 
                   vy[index_right-1] = vy[index_right-2];
-                  vy[index_left-1] =  vy[index_left];
+                  vy[index_left-1] = vy[index_left];
 
                   vx[index_right-1] = vx[index_right-2];
-                  vx[index_left-1] =  vx[index_left];
+                  vx[index_left-1] = vx[index_left];
 
-                  h[index_right-1] = h[index_right-2];
-                  h[index_left-1] = h[index_left];
+                  if(current_timestep == 1 || left_flux == 0)
+                  {
+                	//If its the first timestep add in initial slope. If we have no flux,
+                	//set the ghost node to the node next to it.
+                	slope = left_flux/kdd;
+                    h[index_left-1] = h[index_left] + slope*2*dx;
+                  }
+                  else
+                  {
+                    //If we have flux through boundary, we need to update the height to keep the correct slope.
+                	//Because the corner nodes always show a slope of zero, this will update them according to
+                	//the nodes next to them.
+                	  if(j == 0)
+                		  slope = left_flux/kdd - std::tan(slopep[index_left+nx]*boost::math::double_constants::pi/180);
+                	  else if(j==(ny-1))
+                		  slope = left_flux/kdd - std::tan(slopep[index_left-nx]*boost::math::double_constants::pi/180);
+                	  else
+                		  slope = left_flux/kdd - std::tan(slopep[index_left]*boost::math::double_constants::pi/180);
+
+                  	  h[index_left-1] = h[index_left-1] + slope*2*dx;
+                  }
+
+                  if(current_timestep == 1 || right_flux == 0)
+                  {
+                  	slope = right_flux/kdd;
+                    h[index_right-1] = h[index_right-2] + slope*2*dx;
+                  }
+                  else
+                  {
+                	  if(j == 0)
+                		  slope = right_flux/kdd - std::tan(slopep[index_right+nx-2]*boost::math::double_constants::pi/180);
+                	  else if(j==(ny-1))
+                		  slope = right_flux/kdd - std::tan(slopep[index_right-nx-2]*boost::math::double_constants::pi/180);
+                	  else
+                		  slope = right_flux/kdd - std::tan(slopep[index_right-2]*boost::math::double_constants::pi/180);
+
+                  	h[index_right-1] = h[index_right-1] + slope*2*dx;
+                  }
 
                   //If we set the boundaries as periodic, then reset any values to the
                   //nodes on the opposite side.
@@ -439,6 +493,7 @@ namespace aspect
                 {
                   double index_bot = j+1;
                   double index_top = nx*(ny-1)+j+1;
+            	  double slope = 0;
 
                   vz[index_bot-1] = vz[index_bot+nx-1];
                   vz[index_top-1] = vz[index_top-nx-1];
@@ -449,8 +504,39 @@ namespace aspect
                   vx[index_bot-1] = vx[index_bot+nx-1];
                   vx[index_top-1] =  vx[index_top-nx-1];
 
-                  h[index_bot-1] = h[index_bot+nx-1];
-                  h[index_top-1] = h[index_top-nx-1];
+                  if(current_timestep == 1 || top_flux == 0)
+                  {
+                    slope = top_flux/kdd;
+                    h[index_top-1] = h[index_top-nx-1] + slope*2*dx;
+                  }
+                  else
+                  {
+                	  if(j == 0)
+                		  slope = top_flux/kdd - std::tan(slopep[index_top-nx]*boost::math::double_constants::pi/180);
+                	  else if(j==(nx-1))
+                		  slope = top_flux/kdd - std::tan(slopep[index_top-nx-2]*boost::math::double_constants::pi/180);
+                	  else
+                		  slope = top_flux/kdd - std::tan(slopep[index_top-nx-1]*boost::math::double_constants::pi/180);
+
+                	  h[index_top-1] = h[index_top-1] + slope*2*dx;
+                   }
+
+                  if(current_timestep == 1 || bottom_flux == 0)
+                  {
+                    slope = bottom_flux/kdd;
+                    h[index_bot-1] = h[index_bot+nx-1] + slope*2*dx;
+                  }
+                  else
+                  {
+                	  if(j == 0)
+                		  slope = bottom_flux/kdd - std::tan(slopep[index_bot+nx]*boost::math::double_constants::pi/180);
+                	  else if(j==(nx-1))
+                		  slope = bottom_flux/kdd - std::tan(slopep[index_bot+nx-2]*boost::math::double_constants::pi/180);
+                	  else
+                		  slope = bottom_flux/kdd - std::tan(slopep[index_bot+nx-1]*boost::math::double_constants::pi/180);
+
+                  	h[index_bot-1] = h[index_bot-1] + slope*2*dx;
+                  }
 
                   if (bottom == 0 && top == 0)
                     {
@@ -496,7 +582,7 @@ namespace aspect
               //Set time step
               fastscape_set_dt_(&f_dt);
 
-              //Set velocity components
+              //Set velocity components and h.
               fastscape_set_u_(vz.get());
               fastscape_set_v_(vx.get(), vy.get());
               fastscape_set_h_(h.get());
@@ -505,15 +591,15 @@ namespace aspect
               int visualization_step = istep+restart_step;
               steps = istep+steps;
 
-              int nstepp = 200000;
-              int nreflectorp = 4;
-              int nfreqp = 1;
-
-              //I really need to figure out a better way to make visualization files output correctly.
               this->get_pcout() <<"   Calling FastScape... "<<(steps-istep)<<" timesteps of "<<f_dt<<" years."<<std::endl;
               {
                 auto t_start = std::chrono::high_resolution_clock::now();
 
+                /*
+                 * If we use stratigraphy it'll handle visualization and not the normal function.
+                 * TODO: The frequency in this needs to be the same as the total timesteps fastscape will
+                 * run for, need to figure out how to work this in better.
+                 */
                 if(use_strat && current_timestep == 1)
                 	fastscape_strati_(&nstepp, &nreflectorp, &steps, &vexp);
 				else if(!use_strat)
@@ -521,10 +607,6 @@ namespace aspect
 
                 do
                   {
-                    //Write fastscape visualization
-                    //visualization_step = istep+restart_step;
-                    //fastscape_named_vtk_(h.get(), &vexp, &visualization_step, c, &length);
-
                     //execute step, this increases timestep counter
                     fastscape_execute_step_();
 
@@ -545,6 +627,12 @@ namespace aspect
               if (this->get_time()+a_dt >= end_time)
                 {
                   this->get_pcout()<<"   Destroying FastScape..."<<std::endl;
+
+                  visualization_step = visualization_step+1;
+
+                  if(!use_strat)
+                     fastscape_named_vtk_(h.get(), &vexp, &visualization_step, c, &length);
+
                   fastscape_destroy_();
                 }
 
@@ -579,7 +667,6 @@ namespace aspect
 
           //this variable gives us how many slices near the boundaries to ignore,
           //this helps avoid boundary conditions effecting the topography.
-          //TODO: make sure 2d still works.
           int edge = (nx+1)/2;
           if (dim == 2)
             {
@@ -587,7 +674,6 @@ namespace aspect
 
               for (int i=1; i<(nx-1); i++)
                 {
-                  //Multiply edge by bottom and top, so it only takes them off if they're fixed.
                   if (slice)
                     {
                       int index = i+nx*((ny-1)/2);
@@ -644,10 +730,11 @@ namespace aspect
                         {
                           idx[0] = j;
 
+                          //We only care about the surface
                           if (k==1)
                             {
                               if (this->convert_output_to_years())
-                                data_table(idx) = V[(nx+1)+nx*i+j]/year_in_seconds;  //(nx+1)+nx*i+j  nx*i+j
+                                data_table(idx) = V[(nx+1)+nx*i+j]/year_in_seconds;
                               else
                                 data_table(idx) = V[(nx+1)+nx*i+j];
                             }
@@ -682,7 +769,7 @@ namespace aspect
         }
     }
 
-
+    //TODO: Give better explanations of variables and cite the fastscape documentation.
     template <int dim>
     void FastScape<dim>::declare_parameters(ParameterHandler &prm)
     {
@@ -726,16 +813,23 @@ namespace aspect
                             "Seed used for adding an initial 0-1 m noise to fastscape topography.");
           prm.declare_entry("Surface resolution", "1",
                             Patterns::Integer(),
-                            "This should be set to the expect ASPECT resolution level you expect at the surface.");
+                            "This should be set to the highest ASPECT resolution level you expect at the surface.");
           prm.declare_entry("Resolution difference", "0",
                             Patterns::Integer(),
-                            "This should be set to the expect ASPECT resolution level you expect at the surface.");
+                            "The difference between the lowest and highest resolution level at surface. So if three resolution "
+                            "levels are expected, this would be set to 2.");
           prm.declare_entry ("Use marine parameters", "false",
                              Patterns::Bool (),
                              "Flag to use marine parameters");
           prm.declare_entry ("Use stratigraphy", "false",
                              Patterns::Bool (),
-                             "Flag to use marine parameters");
+                             "Flag to use stratigraphy");
+          prm.declare_entry("Total steps", "100000",
+                            Patterns::Integer(),
+							"Total number of steps you expect in the FastScape model, only used if stratigraphy is turned on.");
+          prm.declare_entry("Number of horizons", "1",
+                            Patterns::Integer(),
+                            "Number of horizons to track and visualize in FastScape..");
 
           prm.enter_subsection ("Boundary conditions");
           {
@@ -751,47 +845,51 @@ namespace aspect
             prm.declare_entry ("Left", "1",
                                Patterns::Integer (0, 1),
                                "Left boundary condition, where 1 is fixed and 0 is reflective.");
+            prm.declare_entry("Left mass flux", "0",
+                              Patterns::Double(),
+                              "Flux per unit length through left boundary (m^2/yr)");
+            prm.declare_entry("Right mass flux", "0",
+                              Patterns::Double(),
+                              "Flux per unit length through right boundary (m^2/yr)");
+            prm.declare_entry("Top mass flux", "0",
+                              Patterns::Double(),
+                              "Flux per unit length through top boundary (m^2/yr)");
+            prm.declare_entry("Bottom mass flux", "0",
+                              Patterns::Double(),
+                              "Flux per unit length through bottom boundary (m^2/yr)");
           }
           prm.leave_subsection();
 
           prm.enter_subsection ("Erosional parameters");
           {
-            prm.declare_entry("Drainage area exponent", "0.4",
+            prm.declare_entry("Drainage area exponent (m)", "0.4",
                               Patterns::Double(),
-                              "Theta parameter described in \\cite{KMM2010}. "
-                              "An unstabilized free surface can overshoot its ");
+                              "Exponent for drainage area.");
             prm.declare_entry("Slope exponent", "1",
                               Patterns::Double(),
-                              "Theta parameter described in \\cite{KMM2010}. "
-                              "An unstabilized free surface can overshoot its ");
+                              "The  slope  exponent  for  SPL (n).  Generally  m/n  should  equal  approximately 0.4");
             prm.declare_entry("Multi-direction slope exponent", "1",
                               Patterns::Double(),
-                              "Theta parameter described in \\cite{KMM2010}. "
-                              "An unstabilized free surface can overshoot its ");
+                              "Exponent to determine the distribution from the SPL to neighbor nodes, with"
+                              "10 being steepest decent and 1 being more varied.");
             prm.declare_entry("Bedrock deposition coefficient", "-1",
                               Patterns::Double(),
-                              "Theta parameter described in \\cite{KMM2010}. "
-                              "An unstabilized free surface can overshoot its ");
+                              "Deposition coefficient for bedrock");
             prm.declare_entry("Sediment deposition coefficient", "-1",
                               Patterns::Double(),
-                              "Theta parameter described in \\cite{KMM2010}. "
-                              "An unstabilized free surface can overshoot its ");
+                              "Deposition coefficient for sediment");
             prm.declare_entry("Bedrock river incision rate", "-1",
                               Patterns::Double(),
-                              "Theta parameter described in \\cite{KMM2010}. "
-                              "An unstabilized free surface can overshoot its ");
+                              "River incision rate for bedrock");
             prm.declare_entry("Sediment river incision rate", "-1",
                               Patterns::Double(),
-                              "Theta parameter described in \\cite{KMM2010}. "
-                              "An unstabilized free surface can overshoot its ");
+                              "River incision rate for sediment ");
             prm.declare_entry("Bedrock diffusivity", "1",
                               Patterns::Double(),
-                              "Theta parameter described in \\cite{KMM2010}. "
-                              "An unstabilized free surface can overshoot its ");
+                              "Diffusivity of bedrock.");
             prm.declare_entry("Sediment diffusivity", "-1",
                               Patterns::Double(),
-                              "Theta parameter described in \\cite{KMM2010}. "
-                              "An unstabilized free surface can overshoot its ");
+                              "Diffusivity of sediment.");
           }
           prm.leave_subsection();
 
@@ -799,40 +897,31 @@ namespace aspect
           {
             prm.declare_entry("Sea level", "0",
                               Patterns::Double(),
-                              "Theta parameter described in \\cite{KMM2010}. "
-                              "An unstabilized free surface can overshoot its ");
+                              "Sea level in meters. ");
             prm.declare_entry("Sand porosity", "0.0",
                               Patterns::Double(),
-                              "Theta parameter described in \\cite{KMM2010}. "
-                              "An unstabilized free surface can overshoot its ");
+                              "Porosity of sand. ");
             prm.declare_entry("Shale porosity", "0.0",
                               Patterns::Double(),
-                              "Theta parameter described in \\cite{KMM2010}. "
-                              "An unstabilized free surface can overshoot its ");
+                              "Porosity of shale. ");
             prm.declare_entry("Sand e-folding depth", "1e3",
                               Patterns::Double(),
-                              "Theta parameter described in \\cite{KMM2010}. "
-                              "An unstabilized free surface can overshoot its ");
+                              "e-folding depth for the exponential of the sand porosity law.");
             prm.declare_entry("Shale e-folding depth", "1e3",
                               Patterns::Double(),
-                              "Theta parameter described in \\cite{KMM2010}. "
-                              "An unstabilized free surface can overshoot its ");
+                              "e-folding depth for the exponential of the shale porosity law.");
             prm.declare_entry("Sand-shale ratio", "0.5",
                               Patterns::Double(),
-                              "Theta parameter described in \\cite{KMM2010}. "
-                              "An unstabilized free surface can overshoot its ");
+                              "ratio of sand to shale for material leaving continent.");
             prm.declare_entry("Depth averaging thickness", "1e2",
                               Patterns::Double(),
-                              "Theta parameter described in \\cite{KMM2010}. "
-                              "An unstabilized free surface can overshoot its ");
+                              "Depth averaging for the sand-shale equation in meters.");
             prm.declare_entry("Sand transport coefficient", "5e2",
                               Patterns::Double(),
-                              "Theta parameter described in \\cite{KMM2010}. "
-                              "An unstabilized free surface can overshoot its ");
+                              "Transport coefficient for sand in m^2/yr ");
             prm.declare_entry("Shale transport coefficient", "2.5e2",
                               Patterns::Double(),
-                              "Theta parameter described in \\cite{KMM2010}. "
-                              "An unstabilized free surface can overshoot its ");
+                              "Transport coefficient for shale in m^/2yr");
           }
           prm.leave_subsection();
         }
@@ -872,6 +961,8 @@ namespace aspect
           resolution_difference = prm.get_integer("Resolution difference");
           use_marine = prm.get_bool("Use marine parameters");
           use_strat = prm.get_bool("Use stratigraphy");
+          nstepp = prm.get_integer("Total steps");
+          nreflectorp = prm.get_integer("Number of horizons");
 
           prm.enter_subsection("Boundary conditions");
           {
@@ -879,8 +970,16 @@ namespace aspect
             right = prm.get_integer("Right");
             top = prm.get_integer("Top");
             left = prm.get_integer("Left");
+            left_flux = prm.get_double("Left mass flux");
+            right_flux = prm.get_double("Right mass flux");
+            top_flux = prm.get_double("Top mass flux");
+            bottom_flux = prm.get_double("Bottom mass flux");
 
             bc = bottom*1000+right*100+top*10+left;
+
+            if((left_flux != 0 && top_flux != 0) || (left_flux != 0 && bottom_flux != 0) ||
+            		(right_flux != 0 && bottom_flux != 0) || (right_flux != 0 && top_flux != 0))
+		           AssertThrow(false,ExcMessage("Currently the plugin does not support mass flux through adjacent boundaries."));
           }
           prm.leave_subsection();
 

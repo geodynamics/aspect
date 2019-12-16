@@ -55,8 +55,9 @@ void fastscape_get_step_(int *sstep);
 void fastscape_execute_step_();
 void fastscape_named_vtk_(double *fp, const double *vexp, int *astep, const char *c, int *length);
 void fastscape_copy_h_(double *hp);
-void fastscape_strati_(int *nstepp, int *nreflectorp, int *nfreqp, const double *vexp);
+void fastscape_strati_(const int *nstepp, const int *nreflectorp, int *nfreqp, const double *vexp);
 void folder_output_(int *length, int *astep, const char *c);
+void fastscape_copy_slope_(double *slopep);
 
 //end run
 void fastscape_debug_();
@@ -112,10 +113,6 @@ namespace aspect
         int nz;
         unsigned int additional_refinement;
         unsigned int initial_global_refinement;
-        unsigned int bottom;
-        unsigned int right;
-        unsigned int top;
-        unsigned int left;
         double x_extent;
         double y_extent;
         bool slice;
@@ -125,6 +122,16 @@ namespace aspect
         mutable int restart_step;
         int resolution_difference;
         mutable double keep_time;
+
+        //Boundary conditions
+        unsigned int bottom;
+        unsigned int right;
+        unsigned int top;
+        unsigned int left;
+        double left_flux;
+        double right_flux;
+        double bottom_flux;
+        double top_flux;
 
         double m;
         double n;
@@ -153,6 +160,8 @@ namespace aspect
 
         //Stratigraphy parameters
         bool use_strat;
+        int nstepp;
+        int nreflectorp;
 
         std::array<std::pair<double,double>,dim> grid_extent;
         std::array< unsigned int, dim > table_intervals;
