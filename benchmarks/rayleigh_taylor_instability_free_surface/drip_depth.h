@@ -16,7 +16,7 @@
   You should have received a copy of the GNU General Public License
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
-*/  
+*/
 
 #ifndef __aspect__postprocess_drip_depth_h
 #define __aspect__postprocess_drip_depth_h
@@ -39,26 +39,26 @@ namespace aspect
     class DripDepth : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
-       /**
-        * Evaluate the solution for the deepest point of the drip on the left side of the domain.
-        */
+        /**
+         * Evaluate the solution for the deepest point of the drip on the left side of the domain.
+         */
         virtual
         std::pair<std::string,std::string>
         execute (TableHandler &statistics);
 
-      /**
-       * Declare the parameters this class takes through input files.
-       */
-       static
-       void
-       declare_parameters (ParameterHandler &prm);
+        /**
+         * Declare the parameters this class takes through input files.
+         */
+        static
+        void
+        declare_parameters (ParameterHandler &prm);
 
-      /**
-       * Read the parameters this class declares from the parameter file.
-       */
-       virtual
-       void
-       parse_parameters (ParameterHandler &prm);
+        /**
+         * Read the parameters this class declares from the parameter file.
+         */
+        virtual
+        void
+        parse_parameters (ParameterHandler &prm);
 
       private:
 

@@ -74,7 +74,7 @@ namespace aspect
             position_values = fe_values.get_quadrature_points();
             // Only look at the drip on the left side of the domain.
             if (position_values[0][0] > 250e3)
-               continue; 
+              continue;
 
             // Retrieve compositional values for the drip and trench
             fe_values[this->introspection().extractors.compositional_fields[0]].get_function_values
@@ -88,7 +88,7 @@ namespace aspect
 
                 // The compositional fields go from 0 to 1, so 0.5 is taken to represent their boundary
                 if (compositional_values_drip[q] >= 0.5 && depth > local_drip_depth)
-                    local_drip_depth = depth;
+                  local_drip_depth = depth;
               }
           }
 
@@ -98,14 +98,14 @@ namespace aspect
         Utilities::MPI::max (local_drip_depth, this->get_mpi_communicator());
 
       AssertThrow(global_drip_depth<=max_depth+1000.,ExcMessage("Computed drip depth bigger than domain depth."));
-   
+
       // Add output to the statistics file
       statistics.add_value ("Drip depth [km]", global_drip_depth/1000.0);
 
       // Also make sure that the other columns filled by the this object
       // all show up with sufficient accuracy and in scientific notation
       {
-        const char *columns[] = { "Drip depth [km]" 
+        const char *columns[] = { "Drip depth [km]"
                                 };
         for (unsigned int i=0; i<sizeof(columns)/sizeof(columns[0]); ++i)
           {
