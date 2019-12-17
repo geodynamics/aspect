@@ -171,8 +171,6 @@ namespace aspect
 
       private:
 
-        double reference_T;
-
         double min_strain_rate;
         double ref_strain_rate;
         double min_visc;
