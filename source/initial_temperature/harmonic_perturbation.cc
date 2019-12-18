@@ -120,7 +120,7 @@ namespace aspect
         }
       else
         AssertThrow (false,
-                     ExcMessage ("Not a valid geometry model for the initial conditions model"
+                     ExcMessage ("Not a valid geometry model for the initial conditions model "
                                  "harmonic perturbation."));
 
       return background_temperature + magnitude * depth_perturbation * lateral_perturbation;
