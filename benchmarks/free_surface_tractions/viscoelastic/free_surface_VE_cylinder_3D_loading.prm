@@ -36,7 +36,7 @@ subsection Mesh refinement
   set Initial adaptive refinement        = 1
   set Initial global refinement          = 1
   set Time steps between mesh refinement = 1
-  set Strategy				 = strain rate
+  set Strategy         = strain rate
 end
 
 # Element types
@@ -51,10 +51,13 @@ subsection Formulation
   set Enable elasticity = true
 end
 
-subsection Free surface
-  set Free surface boundary indicators = top
-  set Surface velocity projection      = normal
-  set Additional tangential mesh velocity boundary indicators = left,right,front,back
+subsection Mesh deformation
+  set Additional tangential mesh velocity boundary indicators = left, right, front, back
+  set Mesh deformation boundary indicators = top: free surface
+
+  subsection Free surface
+    set Surface velocity projection      = normal
+  end
 end
 
 # Velocity boundary conditions
@@ -73,8 +76,8 @@ subsection Boundary traction model
     #set Function expression = 0; 1.e9 + -20.e3*x
     set Function constants  = r0=100.e3, H0=1.e3, t1=1.e3, rhoi=900, g=9.8, t0=1.e3
         # r0 is load radius, H0 is load height, t1 is time load is fully removed,
-	# rhoi is density of ice/load
-	# option to linearly thin load beginning at time t0.
+  # rhoi is density of ice/load
+  # option to linearly thin load beginning at time t0.
     set Function expression = 0; 0; if ((x^2+y^2)<r0^2 ,if(t<t0,-g*H0*rhoi,if(t<t1,-g*H0*rhoi*(1-(t-t0)/t1),0)), 0)
   end
 end

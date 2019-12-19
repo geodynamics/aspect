@@ -5,7 +5,7 @@
 # axisymmetric cylindrical load over a viscous half-space.
 
 # This is done by using the viscoelastic model and 
-# setting a high shear modulus.
+# setting a high shear modulus, which produces viscous behavior. 
 
 include ../viscoelastic/free_surface_VE_cylinder_2D_loading.prm
 
@@ -22,4 +22,3 @@ subsection Material model
   end
 
 end
-

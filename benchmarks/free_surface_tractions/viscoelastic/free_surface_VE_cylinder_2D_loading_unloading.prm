@@ -19,8 +19,8 @@ subsection Boundary traction model
     set Variable names = x,y,t
     set Function constants  = r0=100.e3, H0=1.e3, t1=1.e3, rhoi=900, g=9.8, t0=5.e2
         # r0 is load radius, H0 is load height, t1 is time load is fully removed,
-	# rhoi is density of ice/load
-	# option to linearly thin load beginning at time t0.
+  # rhoi is density of ice/load
+  # option to linearly thin load beginning at time t0.
     set Function expression = 0; if (x<r0 ,if(t<t0,-g*H0*rhoi,if(t<t1,-g*H0*rhoi*(1-(t-t0)/t1),0)), 0)
   end
 end

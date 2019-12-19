@@ -1,6 +1,6 @@
-# Same as free_surface_VE_cylinder_2D_loading.prm, instead
-# setting fixed elastic timestep and allowing stress averaging,
-# to smooth out elastic response to instantaneous stress changes.
+# Same as free_surface_VE_cylinder_2D_loading.prm, but uses
+# a fixed elastic timestep in combination with stress averaging
+# to smooth out the elastic response to instantaneous stress changes.
 
 include free_surface_VE_cylinder_2D_loading.prm
 
@@ -21,4 +21,3 @@ subsection Material model
   end
 
 end
-
