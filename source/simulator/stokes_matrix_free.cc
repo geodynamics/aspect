@@ -1992,7 +1992,11 @@ namespace aspect
               MatrixFree<dim,double>::AdditionalData::none;
             additional_data.mapping_update_flags = (update_gradients | update_JxW_values |
                                                     update_quadrature_points);
+#if DEAL_II_VERSION_GTE(9,2,0)
+            additional_data.mg_level = level;
+#else
             additional_data.level_mg_handler = level;
+#endif
             std::shared_ptr<MatrixFree<dim,double> >
             mg_mf_storage_level(new MatrixFree<dim,double>());
             mg_mf_storage_level->reinit(*sim.mapping, dof_handler_v, level_constraints,
