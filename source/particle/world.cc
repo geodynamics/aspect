@@ -365,42 +365,50 @@ namespace aspect
       // If the geometry is not a box, we simply discard particles that have left the
       // model domain.
 
-      AssertThrow(Plugins::plugin_type_matches<const GeometryModel::Box<dim>> (this->get_geometry_model()),
-                  ExcMessage("Periodic boundaries combined with particles currently "
-                             "only work with box geometry models."));
-
-      const GeometryModel::Box<dim> &geometry
-        = Plugins::get_plugin_as_type<const GeometryModel::Box<dim>>(this->get_geometry_model());
-
-      const Point<dim> origin = geometry.get_origin();
-      const Point<dim> extent = geometry.get_extents();
-      const std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int> > periodic_boundaries =
-        geometry.get_periodic_boundary_pairs();
-
-      const std::map<types::subdomain_id, unsigned int> subdomain_to_neighbor_map(get_subdomain_id_to_neighbor_map());
-
-      std::vector<bool> periodic(dim,false);
-      std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int> >::const_iterator boundary =
-        periodic_boundaries.begin();
-      for (; boundary != periodic_boundaries.end(); ++boundary)
-        periodic[boundary->second] = true;
-
-      typename ParticleHandler<dim>::particle_iterator particle = particle_handler->begin();
-      for (; particle != particle_handler->end(); ++particle)
+      if (Plugins::plugin_type_matches<const GeometryModel::Box<dim>> (this->get_geometry_model()))
         {
-          // modify the particle position if it crossed a periodic boundary
-          Point<dim> particle_position = particle->get_location();
-          for (unsigned int i = 0; i < dim; ++i)
+          const GeometryModel::Box<dim> &geometry
+            = Plugins::get_plugin_as_type<const GeometryModel::Box<dim>>(this->get_geometry_model());
+
+          const Point<dim> origin = geometry.get_origin();
+          const Point<dim> extent = geometry.get_extents();
+          const std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int> > periodic_boundaries =
+            geometry.get_periodic_boundary_pairs();
+
+          if (periodic_boundaries.size() != 0)
             {
-              if (periodic[i])
+              const std::map<types::subdomain_id, unsigned int> subdomain_to_neighbor_map(get_subdomain_id_to_neighbor_map());
+
+              std::vector<bool> periodic(dim,false);
+              std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int> >::const_iterator boundary =
+                periodic_boundaries.begin();
+              for (; boundary != periodic_boundaries.end(); ++boundary)
+                periodic[boundary->second] = true;
+
+              typename ParticleHandler<dim>::particle_iterator particle = particle_handler->begin();
+              for (; particle != particle_handler->end(); ++particle)
                 {
-                  if (particle_position[i] < origin[i])
-                    particle_position[i] += extent[i];
-                  else if (particle_position[i] > origin[i] + extent[i])
-                    particle_position[i] -= extent[i];
+                  // modify the particle position if it crossed a periodic boundary
+                  Point<dim> particle_position = particle->get_location();
+                  for (unsigned int i = 0; i < dim; ++i)
+                    {
+                      if (periodic[i])
+                        {
+                          if (particle_position[i] < origin[i])
+                            particle_position[i] += extent[i];
+                          else if (particle_position[i] > origin[i] + extent[i])
+                            particle_position[i] -= extent[i];
+                        }
+                    }
+                  particle->set_location(particle_position);
                 }
             }
-          particle->set_location(particle_position);
+        }
+      else
+        {
+          AssertThrow(this->get_geometry_model().get_periodic_boundary_pairs().size() == 0,
+                      ExcMessage("Periodic boundaries combined with particles currently "
+                                 "only work with box geometry models."));
         }
     }
 

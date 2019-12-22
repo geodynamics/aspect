@@ -55,13 +55,18 @@ namespace aspect
       const double scale = ((dim==3)
                             ?
                             std::max(0.0,
-                                     cos(numbers::PI * fabs(position(2)/R1)))
+                                     std::cos(numbers::PI * std::fabs(position(2)/R1)))
                             :
                             1.0);
       const double phi   = std::atan2(position(0),position(1));
       const double s_mod = s
                            +
                            0.2 * s * (1-s) * std::sin(angular_mode*phi +(90 + 2*rotation_offset)*numbers::PI/180 ) * scale;
+
+      // Check that a boundary temperature is prescribed
+      AssertThrow (this->has_boundary_temperature(),
+                   ExcMessage ("This initial condition can only be used if a boundary "
+                               "temperature is prescribed."));
 
       return (this->get_boundary_temperature_manager().maximal_temperature()*(s_mod)
               +
@@ -110,11 +115,6 @@ namespace aspect
         prm.leave_subsection ();
       }
       prm.leave_subsection ();
-
-      // Check that a boundary temperature is prescribed
-      AssertThrow (this->has_boundary_temperature(),
-                   ExcMessage ("This initial condition can only be used if a boundary "
-                               "temperature is prescribed."));
 
       // This initial condition only makes sense if the geometry is derived from
       // a spherical model (i.e. a sphere, spherical shell or chunk)

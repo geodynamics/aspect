@@ -86,7 +86,7 @@ namespace aspect
               lateral_perturbation = sph_harm_vals.first / ( lateral_wave_number_2 == 0 ? 1.0 : std::sqrt(2.) );
             }
         }
-      if (Plugins::plugin_type_matches<const GeometryModel::Chunk<dim>> (this->get_geometry_model()))
+      else if (Plugins::plugin_type_matches<const GeometryModel::Chunk<dim>> (this->get_geometry_model()))
         {
           const GeometryModel::Chunk<dim> &chunk_geometry_model =
             Plugins::get_plugin_as_type<const GeometryModel::Chunk<dim>> (this->get_geometry_model());
@@ -104,7 +104,7 @@ namespace aspect
           lateral_perturbation = std::sin((lateral_wave_number_1*(scoord[1]-start_angle))*numbers::PI/opening_angle);
 
         }
-      if (Plugins::plugin_type_matches<const GeometryModel::Box<dim>> (this->get_geometry_model()))
+      else if (Plugins::plugin_type_matches<const GeometryModel::Box<dim>> (this->get_geometry_model()))
         {
           const GeometryModel::Box<dim> &box_geometry_model =
             Plugins::get_plugin_as_type<const GeometryModel::Box<dim>> (this->get_geometry_model());
@@ -126,7 +126,7 @@ namespace aspect
         }
       else
         AssertThrow (false,
-                     ExcMessage ("Not a valid geometry model for the initial conditions model"
+                     ExcMessage ("Not a valid geometry model for the initial conditions model "
                                  "harmonic perturbation."));
 
       return background_temperature + magnitude * depth_perturbation * lateral_perturbation;
