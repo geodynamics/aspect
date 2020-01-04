@@ -155,6 +155,7 @@ namespace aspect
             }
 
           const double current_residual = solve_advection(AdvectionField::temperature());
+
           current_linearization_point.block(introspection.block_indices.temperature)
             = solution.block(introspection.block_indices.temperature);
 
@@ -165,6 +166,8 @@ namespace aspect
         case Parameters<dim>::AdvectionFieldMethod::prescribed_field:
         {
           const AdvectionField adv_field (AdvectionField::temperature());
+
+          TimerOutput::Scope timer (computing_timer, "Interpolate prescribed temperature");
 
           interpolate_material_output_into_advection_field(adv_field);
 
@@ -211,6 +214,8 @@ namespace aspect
               // outputs into the prescribed field before we assemble and solve the equation
               if (method == Parameters<dim>::AdvectionFieldMethod::prescribed_field_with_diffusion)
                 {
+                  TimerOutput::Scope timer (computing_timer, "Interpolate prescribed composition");
+
                   interpolate_material_output_into_advection_field(adv_field);
 
                   // Also set the old_solution block to the prescribed field. The old
@@ -245,6 +250,8 @@ namespace aspect
 
             case Parameters<dim>::AdvectionFieldMethod::prescribed_field:
             {
+              TimerOutput::Scope timer (computing_timer, "Interpolate prescribed composition");
+
               interpolate_material_output_into_advection_field(adv_field);
 
               // Call the signal in case the user wants to do something with the variable:
