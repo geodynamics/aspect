@@ -1,0 +1,16 @@
+include gypsum_model.prm
+
+set Dimension = 3
+set Additional shared libraries = ../../plugins/libequilibrium_grain_size.so
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Stokes solver type = block GMG
+    set Number of cheap Stokes solver steps             = 200
+    set Maximum number of expensive Stokes solver steps = 0
+  end
+end
+
+subsection Material model
+  set Material averaging = harmonic average
+end

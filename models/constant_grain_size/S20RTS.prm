@@ -36,6 +36,9 @@ subsection Compositional fields
   set Number of fields          = 1
 end
 
+subsection Heating model
+  set List of model names = adiabatic heating, shear heating
+end
 
 subsection Initial composition model 
   set Model name = function
@@ -67,7 +70,7 @@ subsection Boundary temperature model
   set Fixed temperature boundary indicators = top, bottom
   set List of model names = spherical constant
   subsection Spherical constant
-    set Inner temperature = 2700
+    set Inner temperature = 3500
     set Outer temperature = 273
   end
 end
@@ -116,6 +119,7 @@ subsection Material model
   set Model name = grain size
 
   subsection Grain size model
+    set Viscosity = 1e22
     set Average specific grain boundary energy      = 1.0,1.0,1.0,1.0
 
 #    set Corresponding phase for transition          = olivine_grain_size,olivine_grain_size,olivine_grain_size
@@ -186,7 +190,7 @@ end
 # is too low to fully resolve the mantle flow, however it does capture
 # the main features.
 subsection Mesh refinement
-  set Initial global refinement          = 0
+  set Initial global refinement          = 2
   set Initial adaptive refinement        = 0
 end
 
@@ -203,7 +207,7 @@ subsection Postprocess
 
   subsection Visualization
     set Output format                 = vtu
-    set List of output variables      = geoid, dynamic topography, heat flux map, density,viscosity, gravity
+    set List of output variables      = geoid, dynamic topography, heat flux map, density,viscosity, gravity, nonadiabatic temperature
     set Time between graphical output = 0
     set Number of grouped files       = 1 
 
