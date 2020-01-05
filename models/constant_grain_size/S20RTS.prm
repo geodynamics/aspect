@@ -6,6 +6,10 @@
 # work in:
 set Dimension                              = 3 
 
+subsection Nullspace removal
+  set Remove nullspace = angular momentum
+end
+
 # Specify the time you want to let the model run for in 
 # years and the output directory. Here we only calculate
 # the instantaneous solution.
