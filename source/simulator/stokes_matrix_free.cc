@@ -2021,6 +2021,7 @@ namespace aspect
   template <int dim, int velocity_degree>
   void StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::build_preconditioner()
   {
+    TimerOutput::Scope timer (this->sim.computing_timer, "Build Stokes preconditioner");
     evaluate_material_model();
     correct_stokes_rhs();
     compute_A_block_diagonals();
