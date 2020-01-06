@@ -15,9 +15,12 @@ set Output directory                       = output-S20RTS
 
 # The following variables describe how the pressure should
 # be normalized. Here, we choose a zero average pressure
-# at the surface of the domain 
+# at the surface of the domain. The 'Surface pressure' and
+# 'Adiabatic surface temperature' are used to compute
+# the adiabatic reference profile.
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
+set Adiabatic surface temperature          = 1600
 
 # Here we specify the residual tolerance for the linear solver.
 subsection Solver parameters
