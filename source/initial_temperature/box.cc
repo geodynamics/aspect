@@ -34,15 +34,16 @@ namespace aspect
     {
       // this initial condition only makes sense if the geometry is a
       // Box. verify that it is indeed
-      const GeometryModel::Box<dim> *geometry
-        = dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model());
-      AssertThrow (geometry != nullptr,
+      AssertThrow (Plugins::plugin_type_matches<const GeometryModel::Box<dim>>(this->get_geometry_model()),
                    ExcMessage ("This initial condition can only be used if the geometry "
                                "is a box."));
 
+      const GeometryModel::Box<dim> &geometry
+        = Plugins::get_plugin_as_type<const GeometryModel::Box<dim>> (this->get_geometry_model());
+
       double perturbation = 1;
       for (unsigned int d=0; d<dim; ++d)
-        perturbation *= std::sin(numbers::PI*(position[d]-geometry->get_origin()[d])/geometry->get_extents()[d]);
+        perturbation *= std::sin(numbers::PI*(position[d]-geometry.get_origin()[d])/geometry.get_extents()[d]);
       return 1 + perturbation/10;
     }
 
@@ -53,17 +54,18 @@ namespace aspect
     {
       // this initial condition only makes sense if the geometry is a
       // Box. verify that it is indeed
-      const GeometryModel::Box<dim> *geometry
-        = dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model());
-      AssertThrow (geometry != nullptr,
+      AssertThrow (Plugins::plugin_type_matches<const GeometryModel::Box<dim>>(this->get_geometry_model()),
                    ExcMessage ("This initial condition can only be used if the geometry "
                                "is a box."));
+
+      const GeometryModel::Box<dim> &geometry
+        = Plugins::get_plugin_as_type<const GeometryModel::Box<dim>> (this->get_geometry_model());
 
       Point<dim> temporary1, temporary2;
       for (int d=0; d<dim; ++d)
         {
-          temporary1[d]=geometry->get_extents()[d]*0.625+geometry->get_origin()[d];
-          temporary2[d]=geometry->get_extents()[d]*0.375+geometry->get_origin()[d];
+          temporary1[d]=geometry.get_extents()[d]*0.625+geometry.get_origin()[d];
+          temporary2[d]=geometry.get_extents()[d]*0.375+geometry.get_origin()[d];
         }
 
       return 1+(1/exp(position.distance(temporary2)) - 1/exp(position.distance(temporary1)));
@@ -76,21 +78,22 @@ namespace aspect
     {
       // this initial condition only makes sense if the geometry is a
       // box. verify that it is indeed
-      const GeometryModel::Box<dim> *geometry
-        = dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model());
-      AssertThrow (geometry != nullptr,
+      AssertThrow (Plugins::plugin_type_matches<const GeometryModel::Box<dim>>(this->get_geometry_model()),
                    ExcMessage ("This initial condition can only be used if the geometry "
                                "is a box."));
 
+      const GeometryModel::Box<dim> &geometry
+        = Plugins::get_plugin_as_type<const GeometryModel::Box<dim>> (this->get_geometry_model());
+
       double perturbation, ratio;
       Point<dim> center;
-      ratio = center[0] = geometry->get_extents()[0]*0.66;
-      center[1] = geometry->get_extents()[1]*0.5;
+      ratio = center[0] = geometry.get_extents()[0]*0.66;
+      center[1] = geometry.get_extents()[1]*0.5;
       if (center[1] < ratio)
         ratio = center[1];
 
-      double zx = (position[0] - geometry->get_origin()[0] - center[0])/ratio;
-      double zy = (position[1] - geometry->get_origin()[1] - center[1])/ratio;
+      double zx = (position[0] - geometry.get_origin()[0] - center[0])/ratio;
+      double zy = (position[1] - geometry.get_origin()[1] - center[1])/ratio;
       double x = zx;
       double y = zy;
 
@@ -111,9 +114,7 @@ namespace aspect
     {
       // this initial condition only makes sense if the geometry is a
       // box. verify that it is indeed
-      const GeometryModel::Box<dim> *geometry
-        = dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model());
-      AssertThrow (geometry != nullptr,
+      AssertThrow (Plugins::plugin_type_matches<const GeometryModel::Box<dim>>(this->get_geometry_model()),
                    ExcMessage ("This initial condition can only be used if the geometry "
                                "is a box."));
 

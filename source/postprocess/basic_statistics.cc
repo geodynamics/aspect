@@ -36,7 +36,7 @@ namespace aspect
     std::pair<std::string,std::string>
     BasicStatistics<dim>::execute (TableHandler &)
     {
-      if (dynamic_cast<const MaterialModel::Simple<dim> *>(&this->get_material_model()) == nullptr)
+      if (!Plugins::plugin_type_matches<const MaterialModel::Simple<dim>>(this->get_material_model()))
         return std::make_pair (std::string(),std::string());
 
       if ((this->get_timestep_number() == 0) &&

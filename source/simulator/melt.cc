@@ -194,15 +194,16 @@ namespace aspect
       const unsigned int   n_q_points      = scratch.finite_element_values.n_quadrature_points;
       const double pressure_scaling = this->get_pressure_scaling();
 
-      const double p_c_scale = dynamic_cast<const MaterialModel::MeltInterface<dim>*>(&this->get_material_model())->p_c_scale(scratch.material_model_inputs,
-                               scratch.material_model_outputs,
-                               this->get_melt_handler(),
-                               true);
+      Assert(Plugins::plugin_type_matches<const MaterialModel::MeltInterface<dim>>(this->get_material_model()),
+             ExcMessage("Error: The current material model needs to be derived from MeltInterface to use melt transport."));
+
+      const double p_c_scale = Plugins::get_plugin_as_type<const MaterialModel::MeltInterface<dim>>(
+                                 this->get_material_model()).p_c_scale(scratch.material_model_inputs,
+                                                                       scratch.material_model_outputs,
+                                                                       this->get_melt_handler(),
+                                                                       true);
 
       MaterialModel::MeltOutputs<dim> *melt_outputs = scratch.material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
-
-      Assert(dynamic_cast<const MaterialModel::MeltInterface<dim>*>(&this->get_material_model()) !=
-             nullptr, ExcMessage("Error: The current material model needs to be derived from MeltInterface to use melt transport."));
 
       const FEValuesExtractors::Scalar ex_p_f = introspection.variable("fluid pressure").extractor_scalar();
       const FEValuesExtractors::Scalar ex_p_c = introspection.variable("compaction pressure").extractor_scalar();
@@ -383,13 +384,14 @@ namespace aspect
       const unsigned int stokes_dofs_per_cell = data.local_dof_indices.size();
       const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
 
-      Assert(dynamic_cast<const MaterialModel::MeltInterface<dim>*>(&this->get_material_model()) !=
-             nullptr, ExcMessage("Error: The current material model needs to be derived from MeltInterface to use melt transport."));
+      Assert(Plugins::plugin_type_matches<const MaterialModel::MeltInterface<dim>>(this->get_material_model()),
+             ExcMessage("Error: The current material model needs to be derived from MeltInterface to use melt transport."));
 
-      const double p_c_scale = dynamic_cast<const MaterialModel::MeltInterface<dim>*>(&this->get_material_model())->p_c_scale(scratch.material_model_inputs,
-                               scratch.material_model_outputs,
-                               this->get_melt_handler(),
-                               true);
+      const double p_c_scale = Plugins::get_plugin_as_type<const MaterialModel::MeltInterface<dim>>
+                               (this->get_material_model()).p_c_scale(scratch.material_model_inputs,
+                                                                      scratch.material_model_outputs,
+                                                                      this->get_melt_handler(),
+                                                                      true);
 
       const FEValuesExtractors::Scalar extractor_pressure = introspection.variable("fluid pressure").extractor_scalar();
       const FEValuesExtractors::Scalar ex_p_c = introspection.variable("compaction pressure").extractor_scalar();
@@ -1331,10 +1333,11 @@ namespace aspect
 
             this->get_material_model().evaluate(in, out);
 
-            const double p_c_scale = dynamic_cast<const MaterialModel::MeltInterface<dim>*>(&this->get_material_model())->p_c_scale(in,
-                                     out,
-                                     this->get_melt_handler(),
-                                     true);
+            const double p_c_scale = Plugins::get_plugin_as_type<const MaterialModel::MeltInterface<dim>>(
+                                       this->get_material_model()).p_c_scale(in,
+                                                                             out,
+                                                                             this->get_melt_handler(),
+                                                                             true);
 
             for (unsigned int j=0; j<this->get_fe().base_element(this->introspection().base_elements.pressure).dofs_per_cell; ++j)
               {
@@ -1520,7 +1523,7 @@ namespace aspect
       MaterialModel::MaterialModelOutputs<dim> material_model_outputs(quadrature_formula.size(), n_compositional_fields);
 
       MeltHandler<dim>::create_material_model_outputs(material_model_outputs);
-      Assert(dynamic_cast<const MaterialModel::MeltInterface<dim>*>(&this->get_material_model()) != nullptr,
+      Assert(Plugins::plugin_type_matches<const MaterialModel::MeltInterface<dim>>(this->get_material_model()),
              ExcMessage("Your material model does not derive from MaterialModel::MeltInterface, which is required."));
 
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
@@ -1537,10 +1540,11 @@ namespace aspect
             this->get_material_model().evaluate(material_model_inputs,
                                                 material_model_outputs);
 
-            const double p_c_scale = dynamic_cast<const MaterialModel::MeltInterface<dim>*>(&this->get_material_model())->p_c_scale(material_model_inputs,
-                                     material_model_outputs,
-                                     this->get_melt_handler(),
-                                     false /*=consider_is_melt_cell*/);
+            const double p_c_scale = Plugins::get_plugin_as_type<const MaterialModel::MeltInterface<dim>>(
+                                       this->get_material_model()).p_c_scale(material_model_inputs,
+                                                                             material_model_outputs,
+                                                                             this->get_melt_handler(),
+                                                                             false /*=consider_is_melt_cell*/);
             const bool is_melt_cell = (p_c_scale > 0.0);
             is_melt_cell_vector[cell->active_cell_index()] = is_melt_cell;
           }
@@ -1614,7 +1618,7 @@ namespace aspect
   limited_darcy_coefficient(const double K_D,
                             const bool is_melt_cell) const
   {
-    const double ref_K_D = dynamic_cast<const MaterialModel::MeltInterface<dim>*>(&this->get_material_model())->reference_darcy_coefficient();
+    const double ref_K_D = Plugins::get_plugin_as_type<const MaterialModel::MeltInterface<dim>>(this->get_material_model()).reference_darcy_coefficient();
     return is_melt_cell ? std::max(K_D, melt_parameters.melt_scaling_factor_threshold*ref_K_D) : 0;
   }
 

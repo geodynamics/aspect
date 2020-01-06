@@ -53,9 +53,11 @@ namespace aspect
 
       double lateral_perturbation = 0.0;
 
-      if (const GeometryModel::SphericalShell<dim> *
-          spherical_geometry_model = dynamic_cast <const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()))
+      if (Plugins::plugin_type_matches<const GeometryModel::SphericalShell<dim>> (this->get_geometry_model()))
         {
+          const GeometryModel::SphericalShell<dim> &spherical_geometry_model =
+            Plugins::get_plugin_as_type<const GeometryModel::SphericalShell<dim>> (this->get_geometry_model());
+
           // In case of spherical shell calculate spherical coordinates
           const std::array<double,dim> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(position);
 
@@ -63,7 +65,7 @@ namespace aspect
             {
               // Use a sine as lateral perturbation that is scaled to the opening angle of the geometry.
               // This way the perturbation is always 0 at the model boundaries.
-              const double opening_angle = spherical_geometry_model->opening_angle()*numbers::PI/180.0;
+              const double opening_angle = spherical_geometry_model.opening_angle()*numbers::PI/180.0;
               lateral_perturbation = std::sin(lateral_wave_number_1*scoord[1]*numbers::PI/opening_angle);
             }
 
@@ -84,29 +86,33 @@ namespace aspect
               lateral_perturbation = sph_harm_vals.first / ( lateral_wave_number_2 == 0 ? 1.0 : std::sqrt(2.) );
             }
         }
-      else if (const GeometryModel::Chunk<dim> *
-               chunk_geometry_model = dynamic_cast <const GeometryModel::Chunk<dim>*> (&this->get_geometry_model()))
+      else if (Plugins::plugin_type_matches<const GeometryModel::Chunk<dim>> (this->get_geometry_model()))
         {
-          AssertThrow ( dim == 2,
-                        ExcMessage ("Harmonic perturbation only implemented in 2D for chunk geometry"));
+          const GeometryModel::Chunk<dim> &chunk_geometry_model =
+            Plugins::get_plugin_as_type<const GeometryModel::Chunk<dim>> (this->get_geometry_model());
+
+          AssertThrow (dim == 2,
+                       ExcMessage ("Harmonic perturbation only implemented in 2D for chunk geometry"));
 
           // In case of chunk calculate spherical coordinates
           const std::array<double,dim> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(position);
 
           // Use a sine as lateral perturbation that is scaled to the opening angle of the geometry.
           // This way the perturbation is always 0 at the model boundaries.
-          const double opening_angle = chunk_geometry_model->longitude_range(); // in radians
-          const double start_angle = chunk_geometry_model->west_longitude(); // in radians
+          const double opening_angle = chunk_geometry_model.longitude_range(); // in radians
+          const double start_angle = chunk_geometry_model.west_longitude(); // in radians
           lateral_perturbation = std::sin((lateral_wave_number_1*(scoord[1]-start_angle))*numbers::PI/opening_angle);
 
         }
-      else if (const GeometryModel::Box<dim> *
-               box_geometry_model = dynamic_cast <const GeometryModel::Box<dim>*> (&this->get_geometry_model()))
+      else if (Plugins::plugin_type_matches<const GeometryModel::Box<dim>> (this->get_geometry_model()))
         {
+          const GeometryModel::Box<dim> &box_geometry_model =
+            Plugins::get_plugin_as_type<const GeometryModel::Box<dim>> (this->get_geometry_model());
+
           // In case of Box model use a sine as lateral perturbation
           // that is scaled to the extent of the geometry.
           // This way the perturbation is always 0 at the model borders.
-          const Point<dim> extent = box_geometry_model->get_extents();
+          const Point<dim> extent = box_geometry_model.get_extents();
 
           if (dim==2)
             {

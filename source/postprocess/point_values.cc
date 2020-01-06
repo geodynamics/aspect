@@ -255,8 +255,8 @@ namespace aspect
           use_natural_coordinates = prm.get_bool("Use natural coordinates");
 
           if (use_natural_coordinates)
-            AssertThrow (dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()) == nullptr &&
-                         dynamic_cast<const GeometryModel::Sphere<dim>*> (&this->get_geometry_model()) == nullptr,
+            AssertThrow (!Plugins::plugin_type_matches<const GeometryModel::Sphere<dim>>(this->get_geometry_model()) &&
+                         !Plugins::plugin_type_matches<const GeometryModel::SphericalShell<dim>>(this->get_geometry_model()),
                          ExcMessage ("This postprocessor can not be used if the geometry "
                                      "is a sphere or spherical shell, because these geometries have not implemented natural coordinates."));
 

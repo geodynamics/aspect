@@ -304,16 +304,17 @@ namespace aspect
     Geoid<dim>::execute (TableHandler &)
     {
       // Current geoid code only works for spherical shell geometry
-      const GeometryModel::SphericalShell<dim> *geometry_model = dynamic_cast<const GeometryModel::SphericalShell<dim> *>
-                                                                 (&this->get_geometry_model());
-      AssertThrow (geometry_model != nullptr && dim == 3,
+      AssertThrow (Plugins::plugin_type_matches<const GeometryModel::SphericalShell<dim>>(this->get_geometry_model())
+                   &&
+                   dim == 3,
                    ExcMessage("The geoid postprocessor is currently only implemented for the 3D spherical shell geometry model."));
 
+      const GeometryModel::SphericalShell<dim> &geometry_model =
+        Plugins::get_plugin_as_type<const GeometryModel::SphericalShell<dim>> (this->get_geometry_model());
+
       // Get the value of the outer radius and inner radius
-      const double outer_radius = dynamic_cast<const GeometryModel::SphericalShell<dim>&>
-                                  (this->get_geometry_model()).outer_radius();
-      const double inner_radius = dynamic_cast<const GeometryModel::SphericalShell<dim>&>
-                                  (this->get_geometry_model()).inner_radius();
+      const double outer_radius = geometry_model.outer_radius();
+      const double inner_radius = geometry_model.inner_radius();
 
       // Get the value of the surface gravity acceleration from the gravity model
       Point<dim> surface_point;

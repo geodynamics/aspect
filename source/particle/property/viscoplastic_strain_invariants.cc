@@ -38,7 +38,7 @@ namespace aspect
       void
       ViscoPlasticStrainInvariant<dim>::initialize ()
       {
-        AssertThrow(dynamic_cast<const MaterialModel::ViscoPlastic<dim> *>(&this->get_material_model()) != nullptr,
+        AssertThrow(Plugins::plugin_type_matches<const MaterialModel::ViscoPlastic<dim>>(this->get_material_model()),
                     ExcMessage("This initial condition only makes sense in combination with the visco_plastic material model."));
 
         n_components = 0;
@@ -103,14 +103,14 @@ namespace aspect
           }
 
         // Find out plastic yielding by calling function in material model.
-        const MaterialModel::ViscoPlastic<dim> *viscoplastic
-          = dynamic_cast<const MaterialModel::ViscoPlastic<dim> *>(&this->get_material_model());
+        const MaterialModel::ViscoPlastic<dim> &viscoplastic
+          = Plugins::get_plugin_as_type<const MaterialModel::ViscoPlastic<dim>>(this->get_material_model());
 
         bool plastic_yielding = false;
-        plastic_yielding = viscoplastic->is_yielding(solution[this->introspection().component_indices.pressure],
-                                                     solution[this->introspection().component_indices.temperature],
-                                                     composition,
-                                                     strain_rate);
+        plastic_yielding = viscoplastic.is_yielding(solution[this->introspection().component_indices.pressure],
+                                                    solution[this->introspection().component_indices.temperature],
+                                                    composition,
+                                                    strain_rate);
 
 
         /* Next take the integrated strain invariant from the prior time step. When

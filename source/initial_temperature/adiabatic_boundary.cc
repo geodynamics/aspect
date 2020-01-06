@@ -130,8 +130,8 @@ namespace aspect
       }
       prm.leave_subsection();
 
-      AssertThrow ((dynamic_cast<const GeometryModel::EllipsoidalChunk<dim>*>
-                    (&this->get_geometry_model()) != nullptr),
+      AssertThrow (Plugins::plugin_type_matches<const GeometryModel::EllipsoidalChunk<dim>>
+                   (this->get_geometry_model()),
                    ExcMessage ("This initial condition can only be used if the geometry "
                                "is an ellipsoidal chunk."));
 

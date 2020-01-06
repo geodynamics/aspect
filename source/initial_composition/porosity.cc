@@ -41,9 +41,8 @@ namespace aspect
                              "compositional field called `porosity' to initialize. Please add a "
                              "compositional field with this name."));
 
-      const MaterialModel::MeltFractionModel<dim> *material_model =
-        dynamic_cast<const MaterialModel::MeltFractionModel<dim>* > (&this->get_material_model());
-      AssertThrow(material_model != nullptr,
+      AssertThrow(Plugins::plugin_type_matches
+                  <const MaterialModel::MeltFractionModel<dim>>(this->get_material_model()),
                   ExcMessage("The used material model is not derived from the 'MeltFractionModel' class, "
                              "and therefore does not support computing equilibrium melt fractions. "
                              "This is incompatible with the `porosity' "
@@ -71,7 +70,9 @@ namespace aspect
           in.strain_rate[0] = SymmetricTensor<2,dim>();
 
           std::vector<double> melt_fraction(1);
-          material_model->melt_fractions(in,melt_fraction);
+
+          Plugins::get_plugin_as_type<const MaterialModel::MeltFractionModel<dim>>
+                                                                                (this->get_material_model()).melt_fractions(in,melt_fraction);
           return melt_fraction[0];
         }
       return 0.0;
