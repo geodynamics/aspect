@@ -181,6 +181,7 @@ namespace aspect
 
     const std::string allowed_solver_schemes = "single Advection, single Stokes|iterated Advection and Stokes|"
                                                "single Advection, iterated Stokes|no Advection, iterated Stokes|"
+                                               "no Advection, single Stokes|"
                                                "iterated Advection and Newton Stokes|single Advection, iterated Newton Stokes|"
                                                "single Advection, no Stokes|IMPES|iterated IMPES|"
                                                "iterated Stokes|Newton Stokes|Stokes only|Advection only|"
@@ -201,6 +202,8 @@ namespace aspect
                        "out the solution, and ignores compositions and the temperature equation (careful, "
                        "the material model must not depend on the temperature or composition; this is mostly "
                        "useful for Stokes benchmarks). "
+                       " The `no Advection, single Stokes' scheme only solves the Stokes system once per "
+                       "timestep. This is also mostly useful for Stokes benchmarks. "
                        "The `single Advection, no Stokes' scheme only solves the temperature and other advection "
                        "systems once, and instead of solving for the Stokes system, a prescribed velocity "
                        "and pressure is used. "
@@ -214,6 +217,7 @@ namespace aspect
                        "The `first timestep only, single Stokes' scheme solves the Stokes equations exactly "
                        "once, at the first time step. No nonlinear iterations are done, and the temperature and "
                        "composition systems are not solved. "
+                       "\n\n"
                        "The `IMPES' scheme is deprecated and only allowed for reasons of backwards "
                        "compatibility. It is the same as `single Advection, single Stokes' ."
                        "The `iterated IMPES' scheme is deprecated and only allowed for reasons of "
@@ -1278,6 +1282,8 @@ namespace aspect
         nonlinear_solver = NonlinearSolver::single_Advection_iterated_Stokes;
       else if (solver_scheme == "no Advection, iterated Stokes" || solver_scheme == "Stokes only")
         nonlinear_solver = NonlinearSolver::no_Advection_iterated_Stokes;
+      else if (solver_scheme == "no Advection, single Stokes")
+        nonlinear_solver = NonlinearSolver::no_Advection_single_Stokes;
       else if (solver_scheme == "iterated Advection and Newton Stokes" || solver_scheme == "Newton Stokes")
         nonlinear_solver = NonlinearSolver::iterated_Advection_and_Newton_Stokes;
       else if (solver_scheme == "single Advection, iterated Newton Stokes")
