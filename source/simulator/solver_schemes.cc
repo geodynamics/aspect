@@ -421,6 +421,14 @@ namespace aspect
   }
 
 
+  template <int dim>
+  void Simulator<dim>::solve_no_advection_single_stokes ()
+  {
+    assemble_and_solve_stokes();
+
+    if (parameters.run_postprocessors_on_nonlinear_iterations)
+      postprocess ();
+  }
 
   template <int dim>
   void Simulator<dim>::solve_first_timestep_only_single_stokes ()
@@ -1336,6 +1344,7 @@ namespace aspect
   template double Simulator<dim>::assemble_and_solve_stokes(const bool, double*); \
   template void Simulator<dim>::solve_single_advection_single_stokes(); \
   template void Simulator<dim>::solve_no_advection_iterated_stokes(); \
+  template void Simulator<dim>::solve_no_advection_single_stokes(); \
   template void Simulator<dim>::solve_iterated_advection_and_stokes(); \
   template void Simulator<dim>::solve_single_advection_iterated_stokes(); \
   template void Simulator<dim>::solve_iterated_advection_and_newton_stokes(); \

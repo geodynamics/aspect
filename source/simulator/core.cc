@@ -1719,6 +1719,12 @@ namespace aspect
           break;
         }
 
+        case NonlinearSolver::no_Advection_single_Stokes:
+        {
+          solve_no_advection_single_stokes();
+          break;
+        }
+
         case NonlinearSolver::iterated_Advection_and_Stokes:
         {
           solve_iterated_advection_and_stokes();

@@ -68,6 +68,7 @@ namespace aspect
         iterated_Advection_and_Stokes,
         single_Advection_iterated_Stokes,
         no_Advection_iterated_Stokes,
+        no_Advection_single_Stokes,
         iterated_Advection_and_Newton_Stokes,
         single_Advection_iterated_Newton_Stokes,
         single_Advection_no_Stokes,
