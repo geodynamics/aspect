@@ -1,0 +1,26 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 2.1.0-pre (Balto, 3f360d486)
+--     . using deal.II 9.0.0
+--     . using Trilinos 12.12.1
+--     . using p4est 2.0.0
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+-----------------------------------------------------------------------------
+
+
+   Setting up GPlates boundary velocity plugin.
+
+   Input point 1 spherical coordinates: 1.571 4.870
+   Input point 1 normalized cartesian coordinates: 0.157 -0.988 -0.000
+   Input point 1 rotated model coordinates: 0.157 -0.988 -0.000
+   Input point 2 spherical coordinates: 1.571 5.240
+   Input point 2 normalized cartesian coordinates: 0.503 -0.864 -0.000
+   Input point 2 rotated model coordinates: 0.503 -0.864 -0.000
+
+   Model will be rotated by -0.00 degrees around axis 0.00 0.00 1.00
+   The ParaView rotation angles are: 0.00 -0.00 0.00
+   The inverse ParaView rotation angles are: 0.00 -0.00 0.00
+
+   Loading GPlates data boundary file /Users/kodi/src/Aspect/aspect_opendap/data/boundary-velocity/gplates/current_day.gpml.
+
