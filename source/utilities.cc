@@ -955,6 +955,11 @@ namespace aspect
           // set file size to an invalid size (signaling an error if we can not read it)
           unsigned int filesize = numbers::invalid_unsigned_int;
 
+          /**
+           * Lookup and use data from the provided url
+           * Author: Kodi Neumiller
+           * Added: 10/9/18
+           **/
           //----Only run if the user wishes to use the libdap packages----//
 #ifdef HAVE_LIBDAP
           //Check to see if the prm file will be reading data from the disk or
