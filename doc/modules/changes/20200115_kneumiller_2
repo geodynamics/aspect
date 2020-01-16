@@ -1,5 +1,4 @@
-Changed: include/aspect/initial_temperature/adiabatic_boundary.h and
-source/initial_temperature/adiabatic_boundary.cc so that adiabatic boundary now
-reads files similar to other functions.
+Added: The edc_mada sub-directory in contrib/. The edc_mada adds the lithosphere
+and upper_mantle plugins.
 <br>
 (Kodi Neumiller, 2020/01/15)

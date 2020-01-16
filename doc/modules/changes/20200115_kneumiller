@@ -1,0 +1,5 @@
+Changed: include/aspect/initial_temperature/adiabatic_boundary.h and
+source/initial_temperature/adiabatic_boundary.cc so that adiabatic boundary now
+reads files similar to other functions.
+<br>
+(Kodi Neumiller, 2020/01/15)
