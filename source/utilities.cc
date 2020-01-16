@@ -1054,11 +1054,6 @@ namespace aspect
                   urlString << "\n";
                 }
 
-
-              //--May need a second dds
-              //url->request_data(dds, "");
-
-
               data_string = urlString.str();
               filesize = data_string.size();
             }
