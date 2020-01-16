@@ -1,5 +1,5 @@
 set Dimension                              = 3
-set Additional shared libraries =  $ASPECT_SOURCE_DIR/edc_mada/edc_plugins/libedc_plugin.so
+set Additional shared libraries =  $ASPECT_SOURCE_DIR/contrib/edc_mada/edc_plugins/libedc_plugin.so
 set Use years in output instead of seconds = true
 set CFL number = 0.25
 set End time                               = 0
