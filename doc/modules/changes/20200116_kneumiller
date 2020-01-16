@@ -1,0 +1,4 @@
+Added: A module in the cmake directory that looks for, and adds the path of, the libdap libraries.
+A lookup was also added in CMakeLists for the libdap, libxml, and curl libraries.
+<br>
+(Kodi Neumiller, 2020/01/16)
