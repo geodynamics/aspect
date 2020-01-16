@@ -193,15 +193,15 @@ namespace aspect
 
                   const double artificial_viscosity_cell = static_cast<double>(artificial_viscosity(cell->active_cell_index()));
 
-		  // The SUPG parameter tau does not have the physical dimensions of a diffusivity and as such should not be included in heat flux calculations
-		  // By default, ASPECT includes the artificial viscosity in the thermal conductivity when calculating boundary heat flux.
+                  // The SUPG parameter tau does not have the physical dimensions of a thermal conductivity and as such should not be included in heat flux calculations
+                  // By default, ASPECT includes the artificial viscosity in the thermal conductivity when calculating boundary heat flux.
                   const double diffusion_constant = (simulator_access.get_parameters().advection_stabilization_method ==
-						     Parameters<dim>::AdvectionStabilizationMethod::supg) ?
-		    out.thermal_conductivities[q]
-		    :
-		    std::max(out.thermal_conductivities[q],
-			     artificial_viscosity_cell);
-		  
+                                                     Parameters<dim>::AdvectionStabilizationMethod::supg) ?
+                                                    out.thermal_conductivities[q]
+                                                    :
+                                                    std::max(out.thermal_conductivities[q],
+                                                             artificial_viscosity_cell);
+
                   for (unsigned int i = 0; i<dofs_per_cell; ++i)
                     {
                       local_rhs(i) +=
