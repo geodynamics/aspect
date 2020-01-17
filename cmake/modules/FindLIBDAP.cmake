@@ -28,12 +28,12 @@ FIND_PATH(LIBDAP_INCLUDE_DIR
         )
 
 FIND_LIBRARY(LIBDAP_LIBRARY
-        NAMES libdap.so libdap.dylib libdap.la
+        NAMES libdap.so libdap.dylib
         HINTS ${LIBDAP_LIB} ${LIBDAP_DIR}/lib
         )
 
 FIND_LIBRARY(LIBDAP_CLIENT_LIBRARY
-        NAMES libdapclient.so libdapclient.dylib libdapclient.la
+        NAMES libdapclient.so libdapclient.dylib
         HINTS ${LIBDAP_LIB} ${LIBDAP_DIR}/lib
         )
 
