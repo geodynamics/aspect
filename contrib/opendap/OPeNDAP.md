@@ -120,7 +120,7 @@ LIBDAP\_ON options combined with the DEAL\_II\_DIR option as follows:
 >
 > cd build
 >
-> cmake .. -DLIBDAP_LIB=<libdap location>/build/lib/ -DLIBDAP_DIR=<libdap location>/build/ -DLIBDAP_ON=ON
+> cmake .. -DLIBDAP_LIB=<libdap location>/build/lib/ -DLIBDAP_DIR=<libdap location>/build/ -DASPECT_WITH_LIBDAP=ON
 
 LIBDAP_ON is used to determine if Aspect is running with the libdap packages installed. Using -DLIBDAP_ON=OFF will make the client go back to running without the libdap packaging (but not using libdap packages will make it impossible for Aspect to read data from a url)
 The default value for LIBDAP_ON is OFF, so make sure you set it to ON if you wish to run Aspect with libdap
