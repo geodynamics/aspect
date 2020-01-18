@@ -29,6 +29,10 @@
 
 #include <deal.II/dofs/dof_tools.h>
 
+#ifdef ASPECT_USE_PETSC
+#  include <deal.II/lac/sparsity_tools.h>
+#endif
+
 namespace aspect
 {
   namespace Assemblers
