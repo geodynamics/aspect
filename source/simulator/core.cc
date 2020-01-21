@@ -1934,13 +1934,12 @@ namespace aspect
             old_solution          = solution;
           }
 
-        // check whether to terminate the simulation. the
-        // first part of the pair indicates whether to terminate
-        // the execution; the second indicates whether to do one
-        // more checkpoint
+        // Check whether to terminate the simulation. The first part of the
+        // pair indicates whether to terminate the execution; the second
+        // indicates whether to do one more checkpoint:
         const std::pair<bool,bool> termination = termination_manager.execute();
 
-        const bool checkpoint_written = maybe_write_checkpoint(last_checkpoint_time,termination);
+        const bool checkpoint_written = maybe_write_checkpoint(last_checkpoint_time, termination);
         if (checkpoint_written)
           last_checkpoint_time = std::time(nullptr);
 
