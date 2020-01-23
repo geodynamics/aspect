@@ -1,0 +1,20 @@
+
+Number of active cells: 48 (on 2 levels)
+Number of degrees of freedom: 792 (480+72+240)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 21+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-initial_condition_S20RTS_2D/solution/solution-00000
+     Temperature min/avg/max:  1497 K, 1598 K, 1683 K
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+
