@@ -498,6 +498,32 @@ namespace aspect
 
 
   template <int dim>
+  void Simulator<dim>::advance_time (const double step_size)
+  {
+    old_time_step = time_step;
+    time_step = step_size;
+    time += time_step;
+    ++timestep_number;
+
+    // prepare for the next time step by shifting solution vectors
+    // by one time step. In timestep 0 (just increased in the
+    // line above) initialize both old_solution
+    // and old_old_solution with the currently computed solution.
+    if (timestep_number == 1)
+      {
+        old_old_solution      = solution;
+        old_solution          = solution;
+      }
+    else
+      {
+        old_old_solution      = old_solution;
+        old_solution          = solution;
+      }
+  }
+
+
+
+  template <int dim>
   double Simulator<dim>::compute_time_step () const
   {
     const QIterated<dim> quadrature_formula (QTrapez<1>(),
@@ -2373,6 +2399,7 @@ namespace aspect
   template bool Simulator<dim>::maybe_do_initial_refinement (const unsigned int max_refinement_level); \
   template void Simulator<dim>::maybe_refine_mesh (const double new_time_step, unsigned int &max_refinement_level); \
   template double Simulator<dim>::compute_time_step () const; \
+  template void Simulator<dim>::advance_time (const double step_size); \
   template void Simulator<dim>::make_pressure_rhs_compatible(LinearAlgebra::BlockVector &vector); \
   template void Simulator<dim>::output_statistics(); \
   template void Simulator<dim>::write_plugin_graph(std::ostream &) const; \
