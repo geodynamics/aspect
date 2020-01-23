@@ -351,7 +351,7 @@ namespace aspect
           const double p_l2 = VectorTools::compute_global_error(this->get_triangulation(), cellwise_errors_pl2, VectorTools::L2_norm);
 
           // Compute stokes unknowns, do not include temperature
-          unsigned int n_stokes_dofs = this->introspection().system_dofs_per_block[this->introspection().block_indices.velocities];
+          types::global_dof_index n_stokes_dofs = this->introspection().system_dofs_per_block[this->introspection().block_indices.velocities];
           if (this->introspection().block_indices.velocities != this->introspection().block_indices.pressure)
             n_stokes_dofs  += this->introspection().system_dofs_per_block[this->introspection().block_indices.pressure];
 
