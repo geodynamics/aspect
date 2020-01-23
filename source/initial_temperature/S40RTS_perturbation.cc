@@ -173,33 +173,12 @@ namespace aspect
         }
     }
 
-    template <>
+
+
+    template <int dim>
     double
-    S40RTSPerturbation<2>::
-    initial_temperature (const Point<2> &) const
-    {
-      // we shouldn't get here but instead should already have been
-      // kicked out by the assertion in the parse_parameters()
-      // function
-      Assert (false, ExcNotImplemented());
-      return 0;
-    }
-
-
-    template <>
-    double
-    S40RTSPerturbation<2>::
-    get_Vs (const Point<2> &/*position*/) const
-    {
-      Assert (false, ExcNotImplemented());
-      return 0;
-    }
-
-
-    template <>
-    double
-    S40RTSPerturbation<3>::
-    get_Vs (const Point<3> &position) const
+    S40RTSPerturbation<dim>::
+    get_Vs (const Point<dim> &position) const
     {
       // get the degree from the input file (20 or 40)
       unsigned int max_degree = spherical_harmonics_lookup->maxdegree();
@@ -228,7 +207,7 @@ namespace aspect
         depth_values[i] = rcmb+(rmoho-rcmb)*0.5*(r[i]+1);
 
       // convert coordinates from [x,y,z] to [r, phi, theta]
-      std::array<double,3> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(position);
+      std::array<double,dim> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(position);
 
       // Evaluate the spherical harmonics at this position. Since they are the
       // same for all depth splines, do it once to avoid multiple evaluations.
@@ -242,7 +221,11 @@ namespace aspect
         {
           for (unsigned int order_m = 0; order_m < degree_l+1; ++order_m)
             {
-              const std::pair<double,double> sph_harm_vals = Utilities::real_spherical_harmonic(degree_l, order_m, scoord[2], scoord[1]);
+              const double phi = scoord[1];
+              const double theta = (dim == 3) ? scoord[2] : numbers::PI_2;
+              const std::pair<double,double> sph_harm_vals =
+                Utilities::real_spherical_harmonic(degree_l, order_m, theta, phi);
+
               cosine_components[degree_l][order_m] = sph_harm_vals.first;
               sine_components[degree_l][order_m] = sph_harm_vals.second;
             }
@@ -296,10 +279,10 @@ namespace aspect
     }
 
 
-    template <>
+    template <int dim>
     double
-    S40RTSPerturbation<3>::
-    initial_temperature (const Point<3> &position) const
+    S40RTSPerturbation<dim>::
+    initial_temperature (const Point<dim> &position) const
     {
 
       // use either the user-input reference temperature as background temperature
@@ -337,12 +320,12 @@ namespace aspect
           // see if we need to ask material model for the thermal expansion coefficient
           if (use_material_model_thermal_alpha)
             {
-              MaterialModel::MaterialModelInputs<3> in(1, this->n_compositional_fields());
-              MaterialModel::MaterialModelOutputs<3> out(1, this->n_compositional_fields());
+              MaterialModel::MaterialModelInputs<dim> in(1, this->n_compositional_fields());
+              MaterialModel::MaterialModelOutputs<dim> out(1, this->n_compositional_fields());
               in.position[0] = position;
               in.temperature[0] = background_temperature;
               in.pressure[0] = this->get_adiabatic_conditions().pressure(position);
-              in.velocity[0] = Tensor<1,3> ();
+              in.velocity[0] = Tensor<1,dim> ();
               for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
                 in.composition[0][c] = this->get_initial_composition_manager().initial_composition(position, c);
               in.strain_rate.resize(0);
@@ -443,10 +426,6 @@ namespace aspect
     void
     S40RTSPerturbation<dim>::parse_parameters (ParameterHandler &prm)
     {
-      AssertThrow (dim == 3,
-                   ExcMessage ("The 'S40RTS perturbation' model for the initial "
-                               "temperature is only available for 3d computations."));
-
       prm.enter_subsection ("Initial temperature model");
       {
         prm.enter_subsection("S40RTS perturbation");
@@ -537,6 +516,9 @@ namespace aspect
                                               "depth range will be assigned the maximum or minimum depth values, "
                                               "respectively. Points do not need to be equidistant, "
                                               "but the computation of properties is optimized in speed "
-                                              "if they are.")
+                                              "if they are."
+                                              "\n"
+                                              "If the plugin is used in 2D it will use an equatorial "
+                                              "slice of the seismic tomography model.")
   }
 }
