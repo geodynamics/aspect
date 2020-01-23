@@ -1,0 +1,137 @@
+/*
+  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
+
+  This file is part of ASPECT.
+
+  ASPECT is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2, or (at your option)
+  any later version.
+
+  ASPECT is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with ASPECT; see the file LICENSE.  If not see
+  <http://www.gnu.org/licenses/>.
+*/
+
+
+#include <aspect/postprocess/visualization/spherical_velocity_components.h>
+#include <aspect/utilities.h>
+
+
+namespace aspect
+{
+  namespace Postprocess
+  {
+    namespace VisualizationPostprocessors
+    {
+      template <int dim>
+      SphericalVelocityComponents<dim>::
+      SphericalVelocityComponents ()
+        :
+        DataPostprocessorVector<dim> ("spherical_velocity_components",
+                                      update_quadrature_points)
+      {}
+
+
+
+      template <int dim>
+      void
+      SphericalVelocityComponents<dim>::
+      evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
+                            std::vector<Vector<double> > &computed_quantities) const
+      {
+        const unsigned int n_quadrature_points = input_data.evaluation_points.size();
+        Assert (computed_quantities.size() == n_quadrature_points,    ExcInternalError());
+        Assert (computed_quantities[0].size() == dim,    ExcInternalError());
+
+        std::vector<Tensor<1,dim> > velocity(n_quadrature_points);
+        for (unsigned int q=0; q<n_quadrature_points; ++q)
+          {
+          for (unsigned int d = 0; d < dim; ++d)
+            {
+            velocity[q][d] = input_data.solution_values[q][this->introspection().component_indices.velocities[d]];
+
+            std::array<double,dim> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(input_data.evaluation_points[q]);
+
+            if (dim==2)
+               {
+               computed_quantities[q](0) =  std::cos(scoord[1])*velocity[q][0]+std::sin(scoord[1])*velocity[q][1]; // v_r
+               computed_quantities[q](1) = -std::sin(scoord[1])*velocity[q][0]+std::cos(scoord[1])*velocity[q][1]; // v_scoord[1]
+               }
+
+            if (dim==3)
+               { 
+               computed_quantities[q](0) = velocity[q][0]*(sin(scoord[2])*cos(scoord[1]))
+                                         + velocity[q][1]*(sin(scoord[2])*sin(scoord[1]))
+                                         + velocity[q][2]*(cos(scoord[2]));                // v_r
+               computed_quantities[q](1) = velocity[q][0]*(-sin(scoord[1]))
+                                         + velocity[q][1]*(cos(scoord[1]));                // v_phi
+               computed_quantities[q](2) = velocity[q][0]*(cos(scoord[2])*cos(scoord[1]))
+                                         + velocity[q][1]*(cos(scoord[2])*sin(scoord[1]))
+                                         + velocity[q][2]*(-sin(scoord[2]));               // v_theta
+               }
+            }
+          }
+      }
+
+
+      template <int dim>
+      std::vector<std::string>
+      SphericalVelocityComponents<dim>::get_names () const
+      {
+        std::vector<std::string> names;
+        switch (dim)
+          {
+            case 2:
+              names.emplace_back("v_r");
+              names.emplace_back("v_phi");
+              break;
+
+            case 3:
+              names.emplace_back("v_r");
+              names.emplace_back("v_phi");
+              names.emplace_back("v_theta");
+              break;
+
+            default:
+              Assert (false, ExcNotImplemented());
+          }
+
+        return names;
+      }
+
+
+      template <int dim>
+      std::vector<DataComponentInterpretation::DataComponentInterpretation>
+      SphericalVelocityComponents<dim>::get_data_component_interpretation () const
+      {
+        return
+          std::vector<DataComponentInterpretation::DataComponentInterpretation>
+           (dim,DataComponentInterpretation::component_is_scalar);
+      }
+
+    }
+  }
+}
+
+
+// explicit instantiations
+namespace aspect
+{
+  namespace Postprocess
+  {
+    namespace VisualizationPostprocessors
+    {
+      ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(SphericalVelocityComponents,
+                                                  "spherical velocity components",
+                                                  "A visualization output object that outputs the polar coordinates components"
+                                                  "$v_r$ and $v_\phi$ of the velocity field in 2D and the spherical coordinates"
+                                                  "components $v_r$, $v_\phi$ and $v_\theta$ of the velocity field in 3D.")
+    }
+  }
+}
