@@ -860,8 +860,8 @@ namespace aspect
             try
               {
                 AssertThrow (parameters.n_expensive_stokes_solver_steps>0,
-                             ExcMessage ("The Stokes solver did not converge in the number of requested cheap iterations and you requested 0"
-                                         " for ``Maximum number of expensive Stokes solver steps``. Aborting."));
+                             ExcMessage ("The Stokes solver did not converge in the number of requested cheap iterations and "
+                                         "you requested 0 for ``Maximum number of expensive Stokes solver steps''. Aborting."));
 
                 solver.solve(stokes_block,
                              distributed_stokes_solution,
