@@ -52,30 +52,30 @@ namespace aspect
         std::vector<Tensor<1,dim> > velocity(n_quadrature_points);
         for (unsigned int q=0; q<n_quadrature_points; ++q)
           {
-          for (unsigned int d = 0; d < dim; ++d)
-            {
-            velocity[q][d] = input_data.solution_values[q][this->introspection().component_indices.velocities[d]];
+            for (unsigned int d = 0; d < dim; ++d)
+              {
+                velocity[q][d] = input_data.solution_values[q][this->introspection().component_indices.velocities[d]];
 
-            std::array<double,dim> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(input_data.evaluation_points[q]);
+                std::array<double,dim> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(input_data.evaluation_points[q]);
 
-            if (dim==2)
-               {
-               computed_quantities[q](0) =  std::cos(scoord[1])*velocity[q][0]+std::sin(scoord[1])*velocity[q][1]; // v_r
-               computed_quantities[q](1) = -std::sin(scoord[1])*velocity[q][0]+std::cos(scoord[1])*velocity[q][1]; // v_scoord[1]
-               }
+                if (dim==2)
+                  {
+                    computed_quantities[q](0) =  std::cos(scoord[1])*velocity[q][0]+std::sin(scoord[1])*velocity[q][1]; // v_r
+                    computed_quantities[q](1) = -std::sin(scoord[1])*velocity[q][0]+std::cos(scoord[1])*velocity[q][1]; // v_scoord[1]
+                  }
 
-            if (dim==3)
-               { 
-               computed_quantities[q](0) = velocity[q][0]*(sin(scoord[2])*cos(scoord[1]))
-                                         + velocity[q][1]*(sin(scoord[2])*sin(scoord[1]))
-                                         + velocity[q][2]*(cos(scoord[2]));                // v_r
-               computed_quantities[q](1) = velocity[q][0]*(-sin(scoord[1]))
-                                         + velocity[q][1]*(cos(scoord[1]));                // v_phi
-               computed_quantities[q](2) = velocity[q][0]*(cos(scoord[2])*cos(scoord[1]))
-                                         + velocity[q][1]*(cos(scoord[2])*sin(scoord[1]))
-                                         + velocity[q][2]*(-sin(scoord[2]));               // v_theta
-               }
-            }
+                if (dim==3)
+                  {
+                    computed_quantities[q](0) = velocity[q][0]*(std::sin(scoord[2])*std::cos(scoord[1]))
+                                                + velocity[q][1]*(std::sin(scoord[2])*std::sin(scoord[1]))
+                                                + velocity[q][2]*(std::cos(scoord[2]));                // v_r
+                    computed_quantities[q](1) = velocity[q][0]*(-std::sin(scoord[1]))
+                                                + velocity[q][1]*(std::cos(scoord[1]));                // v_phi
+                    computed_quantities[q](2) = velocity[q][0]*(std::cos(scoord[2])*std::cos(scoord[1]))
+                                                + velocity[q][1]*(std::cos(scoord[2])*std::sin(scoord[1]))
+                                                + velocity[q][2]*(-std::sin(scoord[2]));               // v_theta
+                  }
+              }
           }
       }
 
@@ -85,23 +85,10 @@ namespace aspect
       SphericalVelocityComponents<dim>::get_names () const
       {
         std::vector<std::string> names;
-        switch (dim)
-          {
-            case 2:
-              names.emplace_back("v_r");
-              names.emplace_back("v_phi");
-              break;
-
-            case 3:
-              names.emplace_back("v_r");
-              names.emplace_back("v_phi");
-              names.emplace_back("v_theta");
-              break;
-
-            default:
-              Assert (false, ExcNotImplemented());
-          }
-
+        names.emplace_back("v_r");
+        names.emplace_back("v_phi");
+        if (dim==3)
+          names.emplace_back("v_theta");
         return names;
       }
 
@@ -112,7 +99,7 @@ namespace aspect
       {
         return
           std::vector<DataComponentInterpretation::DataComponentInterpretation>
-           (dim,DataComponentInterpretation::component_is_scalar);
+          (dim,DataComponentInterpretation::component_is_scalar);
       }
 
     }
@@ -129,9 +116,10 @@ namespace aspect
     {
       ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(SphericalVelocityComponents,
                                                   "spherical velocity components",
-                                                  "A visualization output object that outputs the polar coordinates components"
-                                                  "$v_r$ and $v_\phi$ of the velocity field in 2D and the spherical coordinates"
-                                                  "components $v_r$, $v_\phi$ and $v_\theta$ of the velocity field in 3D.")
+                                                  "A visualization output object that outputs the polar coordinates "
+                                                  "components $v_r$ and $v_\\phi$ of the velocity field in 2D and the "
+                                                  "spherical coordinates components $v_r$, $v_{\\phi}$ and $v_{\\theta}$ "
+                                                  "of the velocity field in 3D.")
     }
   }
 }
