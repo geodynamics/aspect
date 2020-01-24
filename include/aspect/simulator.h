@@ -731,11 +731,11 @@ namespace aspect
                                         double *initial_nonlinear_residual = nullptr);
 
       /**
-       * Assemble and solve the defect correction for of the Stokes equation.
+       * Assemble and solve the defect correction form of the Stokes equation.
        * This function takes a structure of DefectCorrectionResiduals which
-       * contains information about different resuduals. The information in
+       * contains information about different residuals. The information in
        * this structure is updated by this function. The parameter use_picard
-       * forces the use of the defect correction Piccard iteration, so no
+       * forces the use of the defect correction Picard iteration, if set to 'true' no
        * Newton derivatives are added to the matrix.
        *
        * This function is implemented in
