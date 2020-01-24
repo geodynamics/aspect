@@ -28,6 +28,10 @@ set Surface pressure                       = 0
 subsection Solver parameters
   subsection Stokes solver parameters
     set Linear solver tolerance = 1e-4
+    set GMRES solver restart length = 100
+    set Number of cheap Stokes solver steps = 2000
+    set Maximum number of expensive Stokes solver steps = 100
+    set Use full A block as preconditioner = true
   end
 end
 
@@ -119,7 +123,7 @@ subsection Material model
   set Model name = grain size
 
   subsection Grain size model
-    set Viscosity = 1e22
+    set Viscosity = 1e18
     set Average specific grain boundary energy      = 1.0,1.0,1.0,1.0
 
 #    set Corresponding phase for transition          = olivine_grain_size,olivine_grain_size,olivine_grain_size
@@ -175,7 +179,7 @@ subsection Material model
     #set Material file names = pyrolite6.formatted.interpolated
     #set Derivatives file names = pyrolite6.hderiv.formatted.interpolated
     #set Material file format = hefesto
-    set Use table properties = true
+    set Use table properties = false
     set Dislocation viscosity iteration threshold   = 1e-3
     set Dislocation viscosity iteration number = 50
     set Minimum specific heat = 500
@@ -190,7 +194,7 @@ end
 # is too low to fully resolve the mantle flow, however it does capture
 # the main features.
 subsection Mesh refinement
-  set Initial global refinement          = 2
+  set Initial global refinement          = 3
   set Initial adaptive refinement        = 0
 end
 
@@ -203,11 +207,11 @@ end
 # We output the density, velocity, dynamic topography, geoid and heat flux density
 # for plotting. 
 subsection Postprocess
-  set List of postprocessors = velocity statistics, heat flux map, heat flux statistics, dynamic topography, visualization
+  set List of postprocessors = velocity statistics, visualization, Stokes residual, heat flux statistics
 
   subsection Visualization
     set Output format                 = vtu
-    set List of output variables      = geoid, dynamic topography, heat flux map, density,viscosity, gravity, nonadiabatic temperature
+    set List of output variables      = material properties, gravity, nonadiabatic temperature, nonadiabatic pressure, dynamic topography, geoid, heat flux map
     set Time between graphical output = 0
     set Number of grouped files       = 1 
 
