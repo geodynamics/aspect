@@ -4,20 +4,17 @@ set Dimension                              = 3
 set Use years in output instead of seconds = true
 set Start time                             = 0
 set End time                               = 0
-set Nonlinear solver scheme                = iterated Advection and Stokes
+set Nonlinear solver scheme                = no Advection, iterated Stokes
 set Max nonlinear iterations               = 5
 set Adiabatic surface temperature          = 1600.0
 
-subsection Prescribed Stokes solution
-#  set Model name = function
-end
-
 subsection Solver parameters
   subsection Stokes solver parameters
-    set Linear solver tolerance = 1e-5
-#    set Number of cheap Stokes solver steps = 0
+    set Linear solver tolerance = 1e-4
+    set Number of cheap Stokes solver steps = 2000
     set GMRES solver restart length = 200
     set Maximum number of expensive Stokes solver steps = 200
+    set Use full A block as preconditioner = true
   end
 end
 
@@ -31,10 +28,6 @@ end
 
 subsection Initial composition model
   set List of model names = ascii data
-
-  subsection Function
-    set Function expression = 1e-4;0.0;0.0;0.0
-  end
 
   subsection Ascii data model
     set Data directory = ../../input_data/
@@ -127,15 +120,12 @@ end
 
 
 subsection Initial temperature model
-  set List of model names = harmonic perturbation #ascii data
+  set List of model names = adiabatic
 
-  subsection Harmonic perturbation
-    set Magnitude = 150.0
-  end
-
-  subsection Ascii data model
-    set Data directory = ../input_data/
-    set Data file name = shell_3d_temperature.txt
+  subsection Adiabatic
+    subsection Function
+      set Function expression = 0;3300;0;0
+    end
   end
 end
 
@@ -146,21 +136,31 @@ end
 
 
 subsection Mesh refinement
-  set Initial global refinement          = 2
+  set Initial global refinement          = 3
   set Initial adaptive refinement        = 0
   set Strategy                           = temperature
   set Time steps between mesh refinement = 0
 end
 
-
 subsection Postprocess
-  set List of postprocessors = visualization, temperature statistics, velocity statistics, composition statistics, Stokes residual
-  set Run postprocessors on nonlinear iterations = true
+  set List of postprocessors = velocity statistics, visualization, Stokes residual, heat flux statistics, memory statistics
 
   subsection Visualization
     set Output format                 = vtu
+    set List of output variables      = material properties, gravity, nonadiabatic temperature, nonadiabatic pressure, dynamic topography, geoid, heat flux map
     set Time between graphical output = 0
-    set List of output variables = material properties, strain rate, named additional outputs
+    set Number of grouped files       = 1
+
+# We only have dirichlet boundaries with tangential velocities, so we can
+# increase the output resolution as described in the documentation of the 'heat
+# flux map' postprocessor.
+    subsection Heat flux map
+      set Output point wise heat flux = true
+    end
+  end
+
+  subsection Geoid
+    set Also output the gravity anomaly  = true
   end
 end
 
