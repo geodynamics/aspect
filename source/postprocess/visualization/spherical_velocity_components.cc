@@ -55,26 +55,26 @@ namespace aspect
             for (unsigned int d = 0; d < dim; ++d)
               {
                 velocity[d] = input_data.solution_values[q][this->introspection().component_indices.velocities[d]];
+              }
 
-                std::array<double,dim> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(input_data.evaluation_points[q]);
+            std::array<double,dim> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(input_data.evaluation_points[q]);
 
-                if (dim==2)
-                  {
-                    computed_quantities[q](0) =  std::cos(scoord[1])*velocity[0]+std::sin(scoord[1])*velocity[1]; // v_r
-                    computed_quantities[q](1) = -std::sin(scoord[1])*velocity[0]+std::cos(scoord[1])*velocity[1]; // v_scoord[1]
-                  }
+            if (dim==2)
+              {
+                computed_quantities[q](0) =  std::cos(scoord[1])*velocity[0]+std::sin(scoord[1])*velocity[1]; // v_r
+                computed_quantities[q](1) = -std::sin(scoord[1])*velocity[0]+std::cos(scoord[1])*velocity[1]; // v_scoord[1]
+              }
 
-                if (dim==3)
-                  {
-                    computed_quantities[q](0) = velocity[0]*(std::sin(scoord[2])*std::cos(scoord[1]))
-                                                + velocity[1]*(std::sin(scoord[2])*std::sin(scoord[1]))
-                                                + velocity[2]*(std::cos(scoord[2]));                // v_r
-                    computed_quantities[q](1) = velocity[0]*(-std::sin(scoord[1]))
-                                                + velocity[1]*(std::cos(scoord[1]));                // v_phi
-                    computed_quantities[q](2) = velocity[0]*(std::cos(scoord[2])*std::cos(scoord[1]))
-                                                + velocity[1]*(std::cos(scoord[2])*std::sin(scoord[1]))
-                                                + velocity[2]*(-std::sin(scoord[2]));               // v_theta
-                  }
+            if (dim==3)
+              {
+                computed_quantities[q](0) = velocity[0]*(std::sin(scoord[2])*std::cos(scoord[1]))
+                                            + velocity[1]*(std::sin(scoord[2])*std::sin(scoord[1]))
+                                            + velocity[2]*(std::cos(scoord[2]));                // v_r
+                computed_quantities[q](1) = velocity[0]*(-std::sin(scoord[1]))
+                                            + velocity[1]*(std::cos(scoord[1]));                // v_phi
+                computed_quantities[q](2) = velocity[0]*(std::cos(scoord[2])*std::cos(scoord[1]))
+                                            + velocity[1]*(std::cos(scoord[2])*std::sin(scoord[1]))
+                                            + velocity[2]*(-std::sin(scoord[2]));               // v_theta
               }
           }
       }
