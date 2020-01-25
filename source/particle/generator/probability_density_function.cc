@@ -239,7 +239,7 @@ namespace aspect
                                    "runs. Change to get a different distribution. In parallel "
                                    "computations the seed is further modified on each process "
                                    "to ensure different particle patterns on different "
-                                   "processes. Note that the amount of particles per processor "
+                                   "processes. Note that the number of particles per processor "
                                    "is not affected by the seed.");
               }
               prm.leave_subsection();
