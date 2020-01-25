@@ -1,0 +1,4 @@
+Fix: Fixed a bug in the particle generator probability density function when 
+using less particles then mpi processes.
+<br>
+(Menno Fraters and Rene Gassmoeller, 2020/01/24)
