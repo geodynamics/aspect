@@ -41,6 +41,7 @@ FIND_PROGRAM(LIBDAP_CONFIG_EXECUTABLE
         NAMES dap-config
         HINTS ${LIBDAP_DIR}/bin)
 
+#Lookup and add the CURL and libxml2 libraries
 IF(LIBDAP_CONFIG_EXECUTABLE)
     EXECUTE_PROCESS(COMMAND ${LIBDAP_CONFIG_EXECUTABLE} --libs
             OUTPUT_VARIABLE _libs
@@ -48,12 +49,9 @@ IF(LIBDAP_CONFIG_EXECUTABLE)
             OUTPUT_STRIP_TRAILING_WHITESPACE)
     STRING(REPLACE " " ";" _libs "${_libs}")
     SET(_path "")
-    MESSAGE(STATUS "parsing ${LIBDAP_CONFIG_EXECUTABLE} output...")
     FOREACH(_lib ${_libs})
-        MESSAGE(STATUS "lib: ${_lib}")
         IF (${_lib} MATCHES "^-L")
             STRING(SUBSTRING ${_lib} 2 -1 _path)
-            MESSAGE(STATUS "    path=${_path}")
         ENDIF()
         IF (${_lib} MATCHES "^-lcurl")
             SET(LIBCURL_PATH "${_path}")
@@ -71,10 +69,7 @@ IF(LIBDAP_CONFIG_EXECUTABLE)
             OUTPUT_STRIP_TRAILING_WHITESPACE)
     STRING(REPLACE " " ";" _flags "${_flags}")
     FOREACH(_flag ${_flags})
-        MESSAGE(STATUS "flag: ${_flag}")
         IF (${_flag} MATCHES "^-I")
-            STRING(SUBSTRING ${_flag} 2 -1 _path)
-            MESSAGE(STATUS "    path=${_path}")
             SET(LIBDAP_INCLUDE_DIR ${LIBDAP_INCLUDE_DIR} ${_path})
         ENDIF()
     ENDFOREACH()
@@ -91,7 +86,7 @@ FIND_LIBRARY(LIBXML2_LIBRARIES
 
 MESSAGE(STATUS "-- LIBXML2_LIBRARIES: ${LIBXML2_LIBRARIES}")
 MESSAGE(STATUS "-- LIBCURL_LIBRARIES: ${LIBCURL_LIBRARIES}")
-MESSAGE(STATUS "-- LIBDAP_INCLUDE_DIR: ${LIBDAP_INCLUDE_DIR}")
+#MESSAGE(STATUS "-- LIBDAP_INCLUDE_DIR: ${LIBDAP_INCLUDE_DIR}")
 
 
 IF(LIBDAP_LIBRARY AND LIBDAP_CLIENT_LIBRARY AND LIBDAP_CONFIG_EXECUTABLE)
