@@ -37,18 +37,67 @@ FIND_LIBRARY(LIBDAP_CLIENT_LIBRARY
         HINTS ${LIBDAP_LIB} ${LIBDAP_DIR}/lib
         )
 
-# Search for LibXml2 and CURL in here rather than CMakeLists because both are required for libdap to work
-FIND_PACKAGE(LibXml2)
-FIND_PACKAGE(CURL)
-IF(NOT ${LIBXML2_FOUND})
-    MESSAGE(STATUS "LIBXML2 was not found and is required to use LIBDAP")
-ENDIF()
-IF(NOT ${CURL_FOUND})
-    MESSAGE(STATUS "CURL was not found and is required to use LIBDAP")
+FIND_PROGRAM(LIBDAP_CONFIG_EXECUTABLE
+        NAMES dap-config
+        HINTS ${LIBDAP_DIR}/bin)
+
+IF(LIBDAP_CONFIG_EXECUTABLE)
+    EXECUTE_PROCESS(COMMAND ${LIBDAP_CONFIG_EXECUTABLE} --libs
+            OUTPUT_VARIABLE _libs
+            ERROR_QUIET
+            OUTPUT_STRIP_TRAILING_WHITESPACE)
+    STRING(REPLACE " " ";" _libs "${_libs}")
+    SET(_path "")
+    MESSAGE(STATUS "parsing ${LIBDAP_CONFIG_EXECUTABLE} output...")
+    FOREACH(_lib ${_libs})
+        MESSAGE(STATUS "lib: ${_lib}")
+        IF (${_lib} MATCHES "^-L")
+            STRING(SUBSTRING ${_lib} 2 -1 _path)
+            MESSAGE(STATUS "    path=${_path}")
+        ENDIF()
+        IF (${_lib} MATCHES "^-lcurl")
+            SET(LIBCURL_PATH "${_path}")
+            SET(LIBCURL_FOUND TRUE)
+        ENDIF()
+        IF (${_lib} MATCHES "^-lxml2")
+            SET(LIBXML2_PATH "${_path}")
+            SET(LIBXML2_FOUND TRUE)
+        ENDIF()
+    ENDFOREACH()
+
+    EXECUTE_PROCESS(COMMAND ${LIBDAP_CONFIG_EXECUTABLE} --cflags
+            OUTPUT_VARIABLE _flags
+            ERROR_QUIET
+            OUTPUT_STRIP_TRAILING_WHITESPACE)
+    STRING(REPLACE " " ";" _flags "${_flags}")
+    FOREACH(_flag ${_flags})
+        MESSAGE(STATUS "flag: ${_flag}")
+        IF (${_flag} MATCHES "^-I")
+            STRING(SUBSTRING ${_flag} 2 -1 _path)
+            MESSAGE(STATUS "    path=${_path}")
+            SET(LIBDAP_INCLUDE_DIR ${LIBDAP_INCLUDE_DIR} ${_path})
+        ENDIF()
+    ENDFOREACH()
 ENDIF()
 
-IF(LIBDAP_LIBRARY AND LIBDAP_CLIENT_LIBRARY AND ${LIBXML2_FOUND} AND ${CURL_FOUND})
+FIND_LIBRARY(LIBCURL_LIBRARIES
+        NAMES libcurl.so libcurl.dylib
+        HINTS ${LIBCURL_PATH}
+        )
+FIND_LIBRARY(LIBXML2_LIBRARIES
+        NAMES libxml2.so libxml2.dylib
+        HINTS ${LIBXML2_PATH}
+        )
+
+MESSAGE(STATUS "-- LIBXML2_LIBRARIES: ${LIBXML2_LIBRARIES}")
+MESSAGE(STATUS "-- LIBCURL_LIBRARIES: ${LIBCURL_LIBRARIES}")
+MESSAGE(STATUS "-- LIBDAP_INCLUDE_DIR: ${LIBDAP_INCLUDE_DIR}")
+
+
+IF(LIBDAP_LIBRARY AND LIBDAP_CLIENT_LIBRARY AND LIBDAP_CONFIG_EXECUTABLE)
     SET(LIBDAP_FOUND TRUE)
+    SET(LIBDAP_INCLUDE_DIRS ${LIBDAP_INCLUDE_DIR})
+    SET(LIBDAP_LIBRARIES ${LIBDAP_CLIENT_LIBRARY} ${LIBDAP_LIBRARY} ${LIBXML2_LIBRARIES} ${LIBCURL_LIBRARIES})
+ELSE()
+    SET(LIBDAP_FOUND FALSE)
 ENDIF()
-SET(LIBDAP_INCLUDE_DIRS ${LIBDAP_INCLUDE_DIR})
-SET(LIBDAP_LIBRARIES ${LIBDAP_CLIENT_LIBRARY} ${LIBDAP_LIBRARY})
