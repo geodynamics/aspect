@@ -1699,6 +1699,10 @@ namespace aspect
 
         try
           {
+            AssertThrow (sim.parameters.n_expensive_stokes_solver_steps>0,
+                         ExcMessage ("The Stokes solver did not converge in the number of requested cheap iterations and "
+                                     "you requested 0 for ``Maximum number of expensive Stokes solver steps''. Aborting."));
+
             solver.solve(stokes_matrix,
                          solution_copy,
                          rhs_copy,
