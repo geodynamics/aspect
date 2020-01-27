@@ -36,7 +36,7 @@ namespace aspect
 
     LinearAlgebra::BlockVector initial_solution;
 
-    sim.computing_timer.enter_section("Reconstruct VolumeOfFluid interfaces");
+    TimerOutput::Scope timer (sim.computing_timer, "Reconstruct VolumeOfFluid interfaces");
 
     initial_solution.reinit(sim.system_rhs, false);
 
@@ -415,8 +415,6 @@ namespace aspect
 
     solution.block(volume_of_fluidN_blockidx) = initial_solution.block(volume_of_fluidN_blockidx);
     solution.block(volume_of_fluidLS_blockidx) = initial_solution.block(volume_of_fluidLS_blockidx);
-
-    sim.computing_timer.exit_section();
   }
 
 
@@ -436,7 +434,7 @@ namespace aspect
 
     LinearAlgebra::BlockVector initial_solution;
 
-    sim.computing_timer.enter_section("Compute VolumeOfFluid compositions");
+    TimerOutput::Scope timer (sim.computing_timer, "Compute VolumeOfFluid compositions");
 
     initial_solution.reinit(sim.system_rhs, false);
 
@@ -507,7 +505,6 @@ namespace aspect
 
     const unsigned int blockidx = composition_field.block_index(this->introspection());
     solution.block(blockidx) = initial_solution.block(blockidx);
-    sim.computing_timer.exit_section();
   }
 
   template <>
