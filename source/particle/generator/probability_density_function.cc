@@ -68,11 +68,13 @@ namespace aspect
         // the weights of all processes with a lower rank
         double local_start_weight = 0.0;
         MPI_Scan(&local_weight_integral, &local_start_weight, 1, MPI_DOUBLE, MPI_SUM, this->get_mpi_communicator());
+        const double local_end_weight = local_start_weight;
         local_start_weight -= local_weight_integral;
 
         // Calculate start id and number of local particles
         const types::particle_index start_id = llround(static_cast<double> (n_particles)  * local_start_weight / global_weight_integral);
-        const types::particle_index n_local_particles = llround(static_cast<double> (n_particles) * local_weight_integral / global_weight_integral);
+        const types::particle_index end_id = llround(static_cast<double> (n_particles)  * local_end_weight / global_weight_integral);
+        const types::particle_index n_local_particles = end_id-start_id;
 
         std::vector<unsigned int> particles_per_cell(this->get_triangulation().n_locally_owned_active_cells(),0);
 
@@ -237,7 +239,8 @@ namespace aspect
                                    "runs. Change to get a different distribution. In parallel "
                                    "computations the seed is further modified on each process "
                                    "to ensure different particle patterns on different "
-                                   "processes.");
+                                   "processes. Note that the number of particles per processor "
+                                   "is not affected by the seed.");
               }
               prm.leave_subsection();
             }
