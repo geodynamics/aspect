@@ -67,14 +67,14 @@ namespace aspect
         // Determine the starting weight of this process, which is the sum of
         // the weights of all processes with a lower rank
         double local_start_weight = 0.0;
-        MPI_Scan(&local_weight_integral, &local_start_weight, 1, MPI_DOUBLE, MPI_SUM, this->get_mpi_communicator());
-        const double local_end_weight = local_start_weight;
-        local_start_weight -= local_weight_integral;
+        MPI_Exscan(&local_weight_integral, &local_start_weight, 1, MPI_DOUBLE, MPI_SUM, this->get_mpi_communicator());
 
-        // Calculate start id and number of local particles
-        const types::particle_index start_id = llround(static_cast<double> (n_particles)  * local_start_weight / global_weight_integral);
-        const types::particle_index end_id = llround(static_cast<double> (n_particles)  * local_end_weight / global_weight_integral);
-        const types::particle_index n_local_particles = end_id-start_id;
+        // Calculate start id
+        const types::particle_index start_particle_id = llround(static_cast<double> (n_particles)  * local_start_weight / global_weight_integral);
+
+        // Calcualate number of local particles
+        const types::particle_index end_particle_id = llround(static_cast<double> (n_particles)  * (local_start_weight + local_weight_integral) / global_weight_integral);
+        const types::particle_index n_local_particles = end_particle_id-start_particle_id;
 
         std::vector<unsigned int> particles_per_cell(this->get_triangulation().n_locally_owned_active_cells(),0);
 
@@ -117,7 +117,7 @@ namespace aspect
                 }
           }
 
-        generate_particles_in_subdomain(particles_per_cell,start_id,n_local_particles,particles);
+        generate_particles_in_subdomain(particles_per_cell,start_particle_id,n_local_particles,particles);
       }
 
       template <int dim>
