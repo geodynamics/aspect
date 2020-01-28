@@ -1,8 +1,20 @@
-## ---------------------------------------------------------------------
-##
-## Copyright (C) 2018 by Kodi Neumiller, James Gallagher
-##
-## ---------------------------------------------------------------------
+# Copyright (C) 2020 by the authors of the ASPECT code.
+#
+# This file is part of ASPECT.
+#
+# ASPECT is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+#
+# ASPECT is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with ASPECT; see the file LICENSE.  If not see
+# <http://www.gnu.org/licenses/>.
 
 # Try to find the Libdap library
 
@@ -43,6 +55,7 @@ FIND_PROGRAM(LIBDAP_CONFIG_EXECUTABLE
 
 #Lookup and add the CURL and libxml2 libraries
 IF(LIBDAP_CONFIG_EXECUTABLE)
+    MESSAGE(STATUS "probing ${LIBDAP_CONFIG_EXECUTABLE} for libdap configuration:")
     EXECUTE_PROCESS(COMMAND ${LIBDAP_CONFIG_EXECUTABLE} --libs
             OUTPUT_VARIABLE _libs
             ERROR_QUIET
@@ -70,7 +83,8 @@ IF(LIBDAP_CONFIG_EXECUTABLE)
     STRING(REPLACE " " ";" _flags "${_flags}")
     FOREACH(_flag ${_flags})
         IF (${_flag} MATCHES "^-I")
-            SET(LIBDAP_INCLUDE_DIR ${LIBDAP_INCLUDE_DIR} ${_path})
+        STRING(SUBSTRING ${_flag} 2 -1 _path)
+        SET(LIBDAP_INCLUDE_DIR ${LIBDAP_INCLUDE_DIR} ${_path})
         ENDIF()
     ENDFOREACH()
 ENDIF()
@@ -84,14 +98,14 @@ FIND_LIBRARY(LIBXML2_LIBRARIES
         HINTS ${LIBXML2_PATH}
         )
 
-MESSAGE(STATUS "-- LIBXML2_LIBRARIES: ${LIBXML2_LIBRARIES}")
-MESSAGE(STATUS "-- LIBCURL_LIBRARIES: ${LIBCURL_LIBRARIES}")
-#MESSAGE(STATUS "-- LIBDAP_INCLUDE_DIR: ${LIBDAP_INCLUDE_DIR}")
+MESSAGE(STATUS "  LIBXML2_LIBRARIES: ${LIBXML2_LIBRARIES}")
+MESSAGE(STATUS "  LIBCURL_LIBRARIES: ${LIBCURL_LIBRARIES}")
+MESSAGE(STATUS "  LIBDAP_INCLUDE_DIRS: ${LIBDAP_INCLUDE_DIR}")
 
-
-IF(LIBDAP_LIBRARY AND LIBDAP_CLIENT_LIBRARY AND LIBDAP_CONFIG_EXECUTABLE)
+IF(LIBDAP_LIBRARY AND LIBDAP_CLIENT_LIBRARY AND LIBDAP_CONFIG_EXECUTABLE AND LIBCURL_LIBRARIES AND LIBXML2_LIBRARIES)
     SET(LIBDAP_FOUND TRUE)
     SET(LIBDAP_INCLUDE_DIRS ${LIBDAP_INCLUDE_DIR})
+    SET(LIBDAP_LIBRARY ${LIBDAP_LIBRARY})
     SET(LIBDAP_LIBRARIES ${LIBDAP_CLIENT_LIBRARY} ${LIBDAP_LIBRARY} ${LIBXML2_LIBRARIES} ${LIBCURL_LIBRARIES})
 ELSE()
     SET(LIBDAP_FOUND FALSE)
