@@ -1,0 +1,4 @@
+Added: A module in the cmake directory that looks for, and adds the path of, the libdap libraries.
+<br>
+(Kodi Neumiller, 2020/01/16)
+<br>

@@ -482,6 +482,27 @@ ELSE()
 ENDIF()
 
 
+# Find the libdap package so that Aspect can connect to the OPeNDAP servers
+# Author: Kodi Neumiller
+# Added: 10/16/18
+SET(ASPECT_WITH_LIBDAP OFF CACHE BOOL "Check if the user wants to compile ASPECT with the libdap libraries.")
+MESSAGE("\nASPECT_WITH_LIBDAP = '${ASPECT_WITH_LIBDAP}'")
+IF(ASPECT_WITH_LIBDAP)
+  LIST(APPEND CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}/cmake/modules")
+  FIND_PACKAGE(LIBDAP)
+  IF(${LIBDAP_FOUND})
+    INCLUDE_DIRECTORIES(${LIBDAP_INCLUDE_DIRS})
+    TARGET_LINK_LIBRARIES(${TARGET} ${LIBDAP_LIBRARIES} ${LIBXML2_LIBRARIES} ${CURL_LIBRARIES})
+    FOREACH(_source_file ${TARGET_SRC})
+      SET_PROPERTY(SOURCE ${_source_file}
+              APPEND PROPERTY COMPILE_DEFINITIONS HAVE_LIBDAP=1)
+    ENDFOREACH()
+    MESSAGE(STATUS "-- LIBDAP found at ${LIBDAP_LIBRARIES}\n")
+  ELSE()
+    MESSAGE(FATAL_ERROR "LIBDAP not found. Disable ASPECT_WITH_LIBDAP or specify a hint to your installation directory with LIBDAP_DIR.")
+  ENDIF()
+ENDIF()
+
 
 IF (ASPECT_USE_SHARED_LIBS)
   # some systems need to explicitly link to some libraries to use dlopen
