@@ -1,4 +1,3 @@
-Added: A module in the cmake directory that looks for, and adds the path of, the libdap libraries.
+Added: Link to libdap if ASPECT_WITH_LIBDAP is specified at configure time.
 <br>
-(Kodi Neumiller, 2020/01/16)
-<br>
+(Kodi Neumiller and Timo Heister, 2020/01/16)
