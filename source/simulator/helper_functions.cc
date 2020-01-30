@@ -591,6 +591,22 @@ namespace aspect
 
               material_model->evaluate(in, out);
 
+              if (parameters.formulation_temperature_equation
+                  == Parameters<dim>::Formulation::TemperatureEquation::reference_density_profile)
+                {
+                  // Overwrite the density by the reference density coming from the
+                  // adiabatic conditions as required by the formulation
+                  for (unsigned int q=0; q<n_q_points; ++q)
+                    out.densities[q] = adiabatic_conditions->density(in.position[q]);
+                }
+              else if (parameters.formulation_temperature_equation
+                       == Parameters<dim>::Formulation::TemperatureEquation::real_density)
+                {
+                  // use real density
+                }
+              else
+                AssertThrow(false, ExcNotImplemented());
+
 
               // Evaluate thermal diffusivity at each quadrature point and
               // calculate the corresponding conduction timestep, if applicable
@@ -609,7 +625,7 @@ namespace aspect
                   if (thermal_diffusivity > 0)
                     {
                       min_local_conduction_timestep = std::min(min_local_conduction_timestep,
-                                                               parameters.CFL_number*pow(cell->minimum_vertex_distance(),2)
+                                                               parameters.CFL_number*pow(cell->minimum_vertex_distance(),2.)
                                                                / thermal_diffusivity);
                     }
                 }
