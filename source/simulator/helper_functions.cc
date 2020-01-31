@@ -647,24 +647,26 @@ namespace aspect
     double new_time_step = std::min(min_convection_timestep,
                                     min_conduction_timestep);
 
-    if (new_time_step == std::numeric_limits<double>::max())
-      {
-        // In some models the velocity is zero, either because that is the prescribed
-        // Stokes solution, or just because there is no buoyancy and nothing is moving.
-        // If this is the case, and if we either do not compute the conduction time
-        // step or do not have any conduction, it is somewhat arbitrary what time step
-        // we should choose. In that case, set the time step to the 'Maximum time step'.
-        new_time_step = parameters.maximum_time_step;
-      }
+    AssertThrow (new_time_step > 0,
+                 ExcMessage("The time step length for the each time step needs to be positive, "
+                            "but the computed step length was: " + std::to_string(new_time_step) + ". "
+                            "Please check for non-positive material properties."));
 
-    // make sure that the timestep doesn't increase too fast
+    // Make sure we do not exceed the maximum time step length. This can happen
+    // if velocities get too small or even zero in models that are stably stratified
+    // or use prescribed velocities.
+    new_time_step = std::min(new_time_step, parameters.maximum_time_step);
+
+    // Make sure that the time step doesn't increase too fast
     if (time_step != 0)
       new_time_step = std::min(new_time_step, time_step + time_step * parameters.maximum_relative_increase_time_step);
-    else
+
+    // Make sure we do not exceed the maximum length for the first time step
+    if (timestep_number == 0)
       new_time_step = std::min(new_time_step, parameters.maximum_first_time_step);
 
-    new_time_step = termination_manager.check_for_last_time_step(std::min(new_time_step,
-                                                                          parameters.maximum_time_step));
+    // Make sure we reduce the time step length appropriately if we terminate after this step
+    new_time_step = termination_manager.check_for_last_time_step(new_time_step);
 
     return new_time_step;
   }
