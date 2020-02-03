@@ -201,7 +201,10 @@ namespace aspect
       std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int> > periodic_boundaries;
       for ( unsigned int i=0; i<dim+dim-1; ++i)
         if (periodic[i])
-          periodic_boundaries.insert( std::make_pair( std::pair<types::boundary_id, types::boundary_id>(2*i, 2*i+1), i) );
+          {
+            const unsigned int direction = i>=dim ? i-dim : i;
+            periodic_boundaries.insert( std::make_pair( std::pair<types::boundary_id, types::boundary_id>(2*i, 2*i+1), direction) );
+          }
       return periodic_boundaries;
     }
 
