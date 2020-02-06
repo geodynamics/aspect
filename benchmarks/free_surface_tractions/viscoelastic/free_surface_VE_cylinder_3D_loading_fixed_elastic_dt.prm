@@ -1,0 +1,24 @@
+# Same as free_surface_VE_cylinder_3D_loading.prm, instead
+# setting fixed elastic timestep and allowing stress averaging,
+# to smooth out elastic response to instantaneous stress changes.
+
+include free_surface_VE_cylinder_3D_loading.prm
+
+#  Global parameters
+set Dimension                              = 3
+set Output directory                       = output_free_surface_VE_cylinder_3D_loading_fixed_elastic_dt
+
+# Material model
+subsection Material model
+
+  set Model name = viscoelastic
+
+  subsection Viscoelastic
+    set Use fixed elastic time step = true
+    set Fixed elastic time step     = 1e2
+    set Use stress averaging        = true
+    set Viscosity averaging scheme  = harmonic
+  end
+
+end
+

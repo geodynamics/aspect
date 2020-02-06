@@ -1,0 +1,56 @@
+Benchmark of infinite viscoelastic half-space loaded/unloaded by 
+ an axisymmetric cylinder, using the solution of: Nakiboglu, S.M. and
+ Lambeck, K., A study of the Earth's response to surface loading with
+ application to Lake Bonneville. Geophys. J. R. astr. Soc. (1982) 70,
+ 577-620.
+
+The benchmark compares their solution for the surface displacement
+ following the application of a prescribed loading function (Eq. 27)
+ with the deformation of the free surface in ASPECT after imposing
+ surface boundary tractions.
+
+A surface pressure of rho_l*g*H0 (where rho_l is the load density,
+ H0 is the load height) is applied on the surface for r<r0 (where
+ r0 is the load radius), for t>0. The load is either instantaneously
+ loaded/emplaced at times t0<t<t1, or thinned linearly over this
+ time interval ("linear unloading"). The load is fully removed by t=t1,
+ and the surface relaxes. This is done both in a 2-D and 3-D geometry
+ (by symmetry the load is centered on the left boundary or left/front
+ corner). The input files are:
+   'free_surface_VE_cylinder_2D_loading.prm' (instantaneous loading)
+   'free_surface_VE_cylinder_3D_loading.prm' (	"	"	"  )
+   'free_surface_VE_cylinder_2D_loading_unloading.prm' (linear unloading)
+   'free_surface_VE_cylinder_3D_loading_unloading.prm' (  "       "     )
+
+Changing the stress instantaneously as the load is applied/removed
+ leads to oscillations in the elastic response. This can be addressed
+ by setting a fixed elastic timestep equal to the numerical ("Maximum")
+ timestep and turning on stress averaging:
+   'free_surface_VE_cylinder_2D_loading_fixed_elastic_dt.prm'
+   'free_surface_VE_cylinder_3D_loading_fixed_elastic_dt.prm'
+
+The 'topography' output files may be compared against the analytical
+ solution by running the script 'compare_VE_soln.py', which outputs
+ the Nakiboglu and Lambeck (1982) solution for a cylindrical load on
+ an infinite half-space. These outputs ('soln...txt') may be compared
+ against the ASPECT 'topography' output files, using the provided
+ gnuplot script ('compare_viscous_def.gnuplot' for maximum surface
+ deflection through time, 'compare_viscous_def_profile.gnuplot' for
+ deflection  of profile through time). Equivalent scripts for the
+ unloading case are also provided.
+ 
+Note that while the analytical and numerical results for the deflection
+ of the surface agree well near the center of the load (left boundary),
+ the solutions do not match as well on the right (free-slip) boundary.
+ The numerical free surface rides up vertically against the right
+ boundary to conserve mass, while the analytical solution assumes an
+ infinite half-space, predicting near-zero displacement far from the
+ load center. This is also true for the viscous benchmark. This problem
+ is less pronounced in 3-D as the extra mass may be distributed over
+ a larger area. An open far (right/back) boundary resolves this problem
+ in 3-D.
+
+The solutions match well in 3-D. In 2-D, the geometries of the loading
+ function are different (Cartesian in ASPECT vs cylindrical analytically).
+ As such, the agreement in 2-D breaks down for small r0 (load width) or
+ if the right boundary is placed further away.
