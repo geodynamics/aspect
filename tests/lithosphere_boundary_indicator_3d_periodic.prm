@@ -1,0 +1,167 @@
+# With this geometry model we add 4 additional boundary
+# indicators to the lithospheric part of the left, right,
+# front and back boundaries (i.e. all vertical boundaries).
+# This prm tests the periodic boundary condition for
+# the front and back additional boundaries.
+
+set Dimension                              = 3
+set CFL number                             = 1.0
+set End time                               = 0
+set Start time                             = 0
+set Adiabatic surface temperature          = 0
+set Surface pressure                       = 0
+set Pressure normalization                 = surface
+set Use years in output instead of seconds = true
+set Nonlinear solver scheme                = single Advection, single Stokes
+
+# We use a boundary temperature model
+# with additional boundary indicators 
+# as prescribed by the geometry model.
+# Inflow occurs along the left top
+# boundary, so we prescribe temperature
+# there.
+subsection Boundary temperature model
+  set List of model names = box with lithosphere boundary indicators
+  subsection Box with lithosphere boundary indicators
+    set Left temperature lithosphere = 0
+    set Front temperature lithosphere = 0
+  end
+end
+
+
+# We use the initial composition as boundary 
+# condition.
+subsection Boundary composition model
+  set List of model names = initial composition 
+end
+
+
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 10
+  end
+end
+
+# We create a rectangular domain with additional
+# boundary indicators for the lithospheric part
+# of the vertical boundaries.
+# We use the repetitions to get the same resolution
+# in the lithosphere and mantle.
+# The lithospheric boundaries normal to the 
+# Y-direction are periodic.
+subsection Geometry model
+  set Model name = box with lithosphere boundary indicators
+
+  subsection Box with lithosphere boundary indicators
+    set X extent = 600000
+    set Y extent = 1200000
+    set Z extent = 600000
+    set Lithospheric thickness = 100000
+    set X repetitions = 6
+    set Y repetitions = 12
+    set Z repetitions = 5
+    set Y periodic lithosphere = true
+  end
+end
+
+
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+   set Function expression = 0
+  end 
+end
+
+
+# We prescribe one compositional field
+# to represent the lithosphere as a
+# less dense, more viscous material.
+subsection Material model
+  set Model name = multicomponent
+
+  subsection Multicomponent
+    set Densities                  = 3300,3250
+    set Reference temperature      = 293
+    set Specific heats             = 1250
+    set Thermal conductivities     = 0.
+    set Thermal expansivities      = 0.
+    set Viscosities                = 1e20,1e21
+    set Viscosity averaging scheme = harmonic
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 0
+end
+
+
+# In 3D the additional boundary indicators have value 6 (left lithosphere), 
+# 7 (right lithosphere), 8 (front lithosphere) and 9 (back lithosphere). 
+# We prescribe a velocity field oblique to all vertical boundaries
+# (so in the X- and Y-direction) to the left and right lithosphere
+# and the top boundary.
+# Boundaries with inflow that are not periodic get a prescribed
+# temperature and composition.
+# The mantle velocity is restricted to tangential only.
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = 6
+end
+
+subsection Boundary composition model
+  set Fixed composition boundary indicators   = 6 
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = 0, 1, 2, 3, 4
+end
+
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = 5: function, 6:function, 7:function
+end
+
+
+subsection Boundary velocity model
+  # On the lithospheric part of the boundary,
+  # prescribe a velocity in the X- and Y-direction [m/yr].
+  subsection Function
+    set Variable names = x,y,z
+    set Function constants = lith_depth=100e3, model_height=600e3
+    set Function expression = if(z>(model_height-lith_depth),0.005,0); \
+                              if(z>(model_height-lith_depth),0.005,0); \
+                              0
+  end
+end
+
+
+# The lithosphere is represented by a lower density,
+# higher viscosity compositional field.
+subsection Compositional fields
+  set Number of fields = 1
+end
+
+
+# The lithosphere is 100 km thick.
+subsection Initial composition model
+  set Model name = function
+  subsection Function
+   set Variable names = x,y,z
+   set Function constants = lith_depth=100e3, model_height=600e3
+   set Function expression = if((model_height-z)<lith_depth,1,0)
+  end
+end
+
+
+# We look at the velocity statistics. Max velocity will be
+# the prescribed velocity of 0.71 cm/year. The boundary indicator
+# visualization shows us the indicators we set at the boundaries.
+subsection Postprocess
+  set List of postprocessors = velocity statistics, visualization
+  subsection Visualization
+    set Interpolate output = false
+    set Output format            = gnuplot
+    set List of output variables = boundary indicators
+  end
+end
