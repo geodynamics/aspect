@@ -247,6 +247,11 @@ namespace aspect
         void
         execute (internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base,
                  internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const override;
+
+        /**
+         * Create AdditionalMaterialOutputsStokesRHS if we need to do so.
+         */
+        void create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const override;
     };
 
     /**
