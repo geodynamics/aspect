@@ -49,9 +49,6 @@ namespace aspect
                     ExcMessage("Internal error: the particle property interpolator was "
                                "called without a specified component to interpolate."));
 
-        AssertThrow(dim == 2,
-                    ExcMessage("Currently, the particle interpolator `bilinear' is only supported for 2D models."));
-
         AssertThrow(selected_properties.n_selected_components(n_particle_properties) == 1,
                     ExcNotImplemented("Interpolation of multiple components is not supported."));
 
@@ -97,7 +94,7 @@ namespace aspect
         // Noticed that the size of matrix A is n_particles x matrix_dimension
         // which usually is not a square matrix. Therefore, we solve Ax=r by
         // solving A^TAx= A^Tr.
-        const unsigned int matrix_dimension = 4;
+        const unsigned int matrix_dimension = (dim == 2) ? 4: 8;
         dealii::LAPACKFullMatrix<double> A(n_particles, matrix_dimension);
         Vector<double> r(n_particles);
         r = 0;
@@ -110,11 +107,22 @@ namespace aspect
             const double particle_property_value = particle->get_properties()[property_index];
             r[index] = particle_property_value;
 
-            const Point<dim> particle_position = particle->get_location();
+            const Tensor<1, dim, double> relative_particle_position = (particle->get_location() - approximated_cell_midpoint) / cell_diameter;
             A(index,0) = 1;
-            A(index,1) = (particle_position[0] - approximated_cell_midpoint[0])/cell_diameter;
-            A(index,2) = (particle_position[1] - approximated_cell_midpoint[1])/cell_diameter;
-            A(index,3) = (particle_position[0] - approximated_cell_midpoint[0]) * (particle_position[1] - approximated_cell_midpoint[1])/std::pow(cell_diameter,2);
+            A(index, 1) = relative_particle_position[0];
+            A(index, 2) = relative_particle_position[1];
+            if (dim == 2)
+              {
+                A(index, 3) = relative_particle_position[0] * relative_particle_position[1];
+              }
+            else
+              {
+                A(index, 3) = relative_particle_position[2];
+                A(index, 4) = relative_particle_position[0] * relative_particle_position[1];
+                A(index, 5) = relative_particle_position[0] * relative_particle_position[2];
+                A(index, 6) = relative_particle_position[1] * relative_particle_position[2];
+                A(index, 7) = relative_particle_position[0] * relative_particle_position[1] * relative_particle_position[2];
+              }
           }
 
         dealii::LAPACKFullMatrix<double> B(matrix_dimension, matrix_dimension);
@@ -135,13 +143,24 @@ namespace aspect
         B_inverse.compute_inverse_svd(threshold);
         B_inverse.vmult(c, c_ATr);
 
-        for (typename std::vector<Point<dim> >::const_iterator itr = positions.begin(); itr != positions.end(); ++itr, ++index_positions)
+        for (typename std::vector<Point<dim>>::const_iterator itr = positions.begin(); itr != positions.end(); ++itr, ++index_positions)
           {
-            const Point<dim> support_point = *itr;
+            const Tensor<1, dim, double> relative_support_point_location = (*itr - approximated_cell_midpoint) / cell_diameter;
             double interpolated_value = c[0] +
-                                        c[1]*(support_point[0] - approximated_cell_midpoint[0])/cell_diameter +
-                                        c[2]*(support_point[1] - approximated_cell_midpoint[1])/cell_diameter +
-                                        c[3]*(support_point[0] - approximated_cell_midpoint[0])*(support_point[1] - approximated_cell_midpoint[1])/std::pow(cell_diameter,2);
+                                        c[1] * relative_support_point_location[0] +
+                                        c[2] * relative_support_point_location[1];
+            if (dim == 2)
+              {
+                interpolated_value += c[3] * relative_support_point_location[0] * relative_support_point_location[1];
+              }
+            else
+              {
+                interpolated_value += c[3] * relative_support_point_location[2] +
+                                      c[4] * relative_support_point_location[0] * relative_support_point_location[1] +
+                                      c[5] * relative_support_point_location[0] * relative_support_point_location[2] +
+                                      c[6] * relative_support_point_location[1] * relative_support_point_location[2] +
+                                      c[7] * relative_support_point_location[0] * relative_support_point_location[1] * relative_support_point_location[2];
+              }
 
             // Overshoot and undershoot correction of interpolated particle property.
             if (use_global_valued_limiter)
