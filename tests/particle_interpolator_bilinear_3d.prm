@@ -34,7 +34,7 @@ end
 
 
 subsection Boundary velocity model
-  set Tangential velocity boundary indicators = left, right, bottom, top, front, back # edited addeed front and back
+  set Tangential velocity boundary indicators = left, right, bottom, top, front, back
 end
 
 
@@ -62,7 +62,7 @@ subsection Material model
     set Viscosity                                      = 1
     set Reference density                              = 1
     set Reference temperature                          = 0
-    set Density differential for compositional field 1 = 100
+    set Density differential for compositional field 1 = 1
   end
 end
 
