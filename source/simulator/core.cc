@@ -143,7 +143,10 @@ namespace aspect
                   std_cxx14::make_unique<MeltHandler<dim>>(prm) :
                   nullptr),
     newton_handler ((parameters.nonlinear_solver == NonlinearSolver::iterated_Advection_and_Newton_Stokes ||
-                     parameters.nonlinear_solver == NonlinearSolver::single_Advection_iterated_Newton_Stokes) ?
+                     parameters.nonlinear_solver == NonlinearSolver::single_Advection_iterated_Newton_Stokes ||
+                     parameters.nonlinear_solver == NonlinearSolver::no_Advection_iterated_defect_correction_Stokes ||
+                     parameters.nonlinear_solver == NonlinearSolver::single_Advection_iterated_defect_correction_Stokes ||
+                     parameters.nonlinear_solver == NonlinearSolver::iterated_Advection_iterated_defect_correction_Stokes) ?
                     std_cxx14::make_unique<NewtonHandler<dim>>() :
                     nullptr),
     post_signal_creation(
@@ -231,7 +234,14 @@ namespace aspect
     rebuild_stokes_matrix (true),
     assemble_newton_stokes_matrix (true),
     assemble_newton_stokes_system ((parameters.nonlinear_solver == NonlinearSolver::iterated_Advection_and_Newton_Stokes ||
-                                    parameters.nonlinear_solver == NonlinearSolver::single_Advection_iterated_Newton_Stokes) ? true : false),
+                                    parameters.nonlinear_solver == NonlinearSolver::single_Advection_iterated_Newton_Stokes ||
+                                    parameters.nonlinear_solver == NonlinearSolver::no_Advection_iterated_defect_correction_Stokes ||
+                                    parameters.nonlinear_solver == NonlinearSolver::single_Advection_iterated_defect_correction_Stokes ||
+                                    parameters.nonlinear_solver == NonlinearSolver::iterated_Advection_iterated_defect_correction_Stokes)
+                                   ?
+                                   true
+                                   :
+                                   false),
     rebuild_stokes_preconditioner (true)
   {
     if (Utilities::MPI::this_mpi_process(mpi_communicator) == 0)
@@ -376,10 +386,13 @@ namespace aspect
         melt_handler->initialize();
       }
 
-    // If the solver type is a Newton type of solver, we need to set make sure
+    // If the solver type is a Newton or defect correction type of solver, we need to set make sure
     // assemble_newton_stokes_system set to true.
     if (parameters.nonlinear_solver == NonlinearSolver::iterated_Advection_and_Newton_Stokes ||
-        parameters.nonlinear_solver == NonlinearSolver::single_Advection_iterated_Newton_Stokes)
+        parameters.nonlinear_solver == NonlinearSolver::single_Advection_iterated_Newton_Stokes ||
+        parameters.nonlinear_solver == NonlinearSolver::no_Advection_iterated_defect_correction_Stokes ||
+        parameters.nonlinear_solver == NonlinearSolver::single_Advection_iterated_defect_correction_Stokes ||
+        parameters.nonlinear_solver == NonlinearSolver::iterated_Advection_iterated_defect_correction_Stokes)
       {
         assemble_newton_stokes_system = true;
         newton_handler->initialize_simulator(*this);
@@ -1794,9 +1807,21 @@ namespace aspect
           break;
         }
 
-        case NonlinearSolver::single_Advection_DC_iterated_Stokes:
+        case NonlinearSolver::no_Advection_iterated_defect_correction_Stokes:
+        {
+          solve_no_advection_defect_correction_iterated_stokes();
+          break;
+        }
+
+        case NonlinearSolver::single_Advection_iterated_defect_correction_Stokes:
         {
           solve_single_advection_defect_correction_iterated_stokes();
+          break;
+        }
+
+        case NonlinearSolver::iterated_Advection_iterated_defect_correction_Stokes:
+        {
+          solve_iterated_advection_defect_correction_iterated_stokes();
           break;
         }
 
