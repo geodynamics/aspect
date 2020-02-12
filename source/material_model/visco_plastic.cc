@@ -24,6 +24,7 @@
 #include <deal.II/base/signaling_nan.h>
 #include <aspect/newton.h>
 #include <aspect/adiabatic_conditions/interface.h>
+#include <aspect/gravity_model/interface.h>
 
 namespace aspect
 {
@@ -402,7 +403,17 @@ namespace aspect
           // First compute the equation of state variables and thermodynamic properties
           equation_of_state.evaluate(in, i, eos_outputs_all_phases);
 
-          MaterialUtilities::PhaseFunctionInputs<dim> phase_inputs(*this,in,i,eos_outputs_all_phases.densities[0],0);
+          const double gravity_norm = this->get_gravity_model().gravity_vector(in.position[i]).norm();
+          const double reference_density = (this->get_adiabatic_conditions().is_initialized())
+                                           ?
+                                           this->get_adiabatic_conditions().density(in.position[i])
+                                           :
+                                           eos_outputs_all_phases.densities[0];
+          MaterialUtilities::PhaseFunctionInputs<dim> phase_inputs(in.temperature[i],
+                                                                   in.pressure[i],
+                                                                   this->get_geometry_model().depth(in.position[i]),
+                                                                   gravity_norm*reference_density,
+                                                                   0);
 
           phase_average_equation_of_state_outputs(eos_outputs_all_phases,
                                                   phase_function,
@@ -630,6 +641,7 @@ namespace aspect
             std::make_shared<std::vector<unsigned int>>(phase_function.n_phase_transitions_for_each_composition());
 
           // We require one more entries for density, etc as there are phase transitions
+          // (for the low-pressure phase before any transition).
           for (auto &n_phases: *n_phase_transitions_for_each_composition)
             n_phases += 1;
 

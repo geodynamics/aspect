@@ -717,27 +717,6 @@ namespace aspect
 
 
       template <int dim>
-      PhaseFunctionInputs<dim>::PhaseFunctionInputs(const SimulatorAccess<dim> &simulator_access,
-                                                    const MaterialModelInputs<dim> &in,
-                                                    const unsigned int input_index,
-                                                    const double reference_density,
-                                                    const unsigned int phase_index_)
-      {
-        temperature = in.temperature[input_index];
-        pressure = in.pressure[input_index];
-        depth = simulator_access.get_geometry_model().depth(in.position[input_index]);
-        pressure_depth_derivative = (depth > 0)
-                                    ?
-                                    in.pressure[input_index] / depth
-                                    :
-                                    simulator_access.get_gravity_model().gravity_vector(in.position[input_index]).norm() *
-                                    reference_density;
-        phase_index = phase_index_;
-      }
-
-
-
-      template <int dim>
       double
       PhaseFunction<dim>::compute_value (const PhaseFunctionInputs<dim> &in) const
       {

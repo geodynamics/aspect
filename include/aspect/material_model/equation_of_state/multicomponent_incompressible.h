@@ -39,11 +39,11 @@ namespace aspect
        * fields and potentially phases. For each material property, the user supplies a comma
        * delimited list of length N+P+1, where N is the number of compositional fields used in
        * the computation, P is the total number of phase transitions.
-       * The first entry corresponds to the "background" (which is also why there are N+1 entries).
+       * The first entry corresponds to the "background" (which is also why there are N+P+1 entries).
        *
        * If a single value is given, then all the compositional fields and phases are given
        * that value. Other lengths of lists are not allowed. For a given
-       * compositional field the material parameters are treated as constant,
+       * compositional field and phase the material parameters are treated as constant,
        * except density, which varies linearly with temperature according to the equation:
        *
        * $\rho(p,T,\mathfrak c) = \left(1-\alpha_i (T-T_0)\right) \rho_0(\mathfrak c_i).$
@@ -98,25 +98,26 @@ namespace aspect
 
         private:
           /**
-           * Vector of reference densities $\rho_0$ with one entry per composition,
-           * used in the computation of the density.
+           * Vector of reference densities $\rho_0$ with one entry per composition and phase plus one
+           * for the background field.
            */
           std::vector<double> densities;
 
           /**
            * The reference temperature $T_0$ used in the computation of the density.
-           * All component use the same reference temperature.
+           * All components use the same reference temperature.
            */
           double reference_T;
 
           /**
-           * Vector of constant thermal expansivities $\alpha$ with one entry per composition,
-           * used in the computation of the density.
+           * Vector of thermal expansivities with one entry per composition and phase plus one
+           * for the background field.
            */
           std::vector<double> thermal_expansivities;
 
           /**
-           * Vector of specific heat capacities with one entry per composition.
+           * Vector of specific heat capacities with one entry per composition and phase plus one
+           * for the background field.
            */
           std::vector<double> specific_heats;
 

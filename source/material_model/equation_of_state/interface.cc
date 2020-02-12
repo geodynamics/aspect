@@ -38,6 +38,8 @@ namespace aspect
       entropy_derivative_temperature(n_individual_compositions_and_phases, numbers::signaling_nan<double>())
     {}
 
+
+
     template <int dim>
     void
     phase_average_equation_of_state_outputs(const EquationOfStateOutputs<dim> &eos_outputs_all_phases,

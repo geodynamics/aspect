@@ -47,11 +47,16 @@ namespace aspect
     {
       /**
        * Constructor. Initialize the various arrays of this structure with the
-       * given number of compositions and phases
+       * given number of compositions and phases.
        *
-       * @param n_compositions The number of vector quantities (in the order in which
-       * the Introspection class reports them) for which input will be
-       * provided, and outputs should be filled.
+       * @param n_individual_compositions_and_phases The number of vector quantities
+       * for which input will be provided, and outputs should be filled. Note that this
+       * number does not have to be the number of compositions, it can be smaller (if
+       * some compositional fields do not represent volumetric compositions, but tracked
+       * quantities like strain) or larger (if there is a background field, or some
+       * compositions have several high-pressure phases). It is the responsibility
+       * of the material model and equation of state object to interpret the
+       * entries consistently.
        */
       EquationOfStateOutputs (const unsigned int n_individual_compositions_and_phases);
 
@@ -93,6 +98,17 @@ namespace aspect
       std::vector<double> entropy_derivative_temperature;
     };
 
+    /**
+     * This function takes the output of an equation of state @p eos_outputs_all_phases,
+     * which contains the data for all compositions and all of their phases at the
+     * current conditions and uses a PhaseFunction object @phase_function to compute
+     * the effective value of equation of state properties. Essentially it computes which phase
+     * is stable at the current conditions (according to the phase function) and adds
+     * the properties of the stable phases into the equation of state output @eos_outputs.
+     * @p eos_outputs now only contains as many entries as compositional fields (potentially
+     * plus one for the background field, if the input @p eos_outputs_all_phases contained
+     * one and the phase function contained one as well).
+     */
     template <int dim>
     void
     phase_average_equation_of_state_outputs(const EquationOfStateOutputs<dim> &eos_outputs_all_phases,
