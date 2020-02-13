@@ -485,6 +485,11 @@ namespace aspect
              ||
              outputs.template get_additional_output<MaterialModel::ElasticOutputs<dim> >()->elastic_force.size()
              == n_points, ExcInternalError());
+
+      if (this->get_newton_handler().parameters.newton_derivative_scaling_factor == 0)
+        return;
+
+      NewtonHandler<dim>::create_material_model_outputs(outputs);
     }
 
 
