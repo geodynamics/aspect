@@ -59,45 +59,52 @@ namespace aspect
             {
               const Point<dim> &pos = in.position[i];
               if (method==0)
-                if ( std::abs(pos[0]-256e3)<64e3 && std::abs(pos[1]-384e3)<64e3)
-                  {
-                    out.viscosities[i] = eta2;
-                    out.densities[i] = rho2;
-                  }
-                else
-                  {
-                    out.viscosities[i] = eta1;
-                    out.densities[i] = rho1;
-                  }
-              else if (method==1)
-                if ( std::abs(pos[0]-256e3)<64e3 && std::abs(pos[1]-384e3)<64e3)
-                  {
-                    out.viscosities[i] = eta2;
-                    out.densities[i] = rho2-rho1;
-                  }
-                else
-                  {
-                    out.viscosities[i] = eta1;
-                    out.densities[i] = 0;
-                  }
-              else if (method==2)
-                if ( std::abs(pos[1]-384e3)<64e3)
-                  if ( std::abs(pos[0]-256e3)<64e3) // in block
+                {
+                  if ( std::abs(pos[0]-256e3)<64e3 && std::abs(pos[1]-384e3)<64e3)
                     {
                       out.viscosities[i] = eta2;
-                      out.densities[i] = 0.75*(rho2-rho1);
+                      out.densities[i] = rho2;
                     }
-                  else // left and right of block
+                  else
                     {
                       out.viscosities[i] = eta1;
-                      out.densities[i] = -0.25*(rho2-rho1);
+                      out.densities[i] = rho1;
                     }
-                else
-                  {
-                    out.viscosities[i] = eta1;
-                    out.densities[i] = 0;
-                  }
-
+                }
+              else if (method==1)
+                {
+                  if ( std::abs(pos[0]-256e3)<64e3 && std::abs(pos[1]-384e3)<64e3)
+                    {
+                      out.viscosities[i] = eta2;
+                      out.densities[i] = rho2-rho1;
+                    }
+                  else
+                    {
+                      out.viscosities[i] = eta1;
+                      out.densities[i] = 0;
+                    }
+                }
+              else if (method==2)
+                {
+                  if ( std::abs(pos[1]-384e3)<64e3)
+                    {
+                      if ( std::abs(pos[0]-256e3)<64e3) // in block
+                        {
+                          out.viscosities[i] = eta2;
+                          out.densities[i] = 0.75*(rho2-rho1);
+                        }
+                      else // left and right of block
+                        {
+                          out.viscosities[i] = eta1;
+                          out.densities[i] = -0.25*(rho2-rho1);
+                        }
+                    }
+                  else
+                    {
+                      out.viscosities[i] = eta1;
+                      out.densities[i] = 0;
+                    }
+                }
               out.compressibilities[i] = 0;
               out.specific_heat[i] = 0;
               out.thermal_expansion_coefficients[i] = 0;
