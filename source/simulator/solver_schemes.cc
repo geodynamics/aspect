@@ -860,12 +860,13 @@ namespace aspect
   }
 
   template <int dim>
-  void Simulator<dim>::solve_iterated_advection_defect_correction_iterated_stokes ()
+  void Simulator<dim>::solve_iterated_advection_and_defect_correction_stokes ()
   {
     // Now store the linear_tolerance we started out with, because we might change
     // it within this timestep.
     double begin_linear_tolerance = parameters.linear_stokes_solver_tolerance;
 
+    double initial_temperature_residual = 0;
     std::vector<double> initial_composition_residual (parameters.n_compositional_fields,0);
 
     DefectCorrectionResiduals dcr;
@@ -894,11 +895,20 @@ namespace aspect
 
     for (nonlinear_iteration = 0; nonlinear_iteration < max_nonlinear_iterations; ++nonlinear_iteration)
       {
+        const double relative_temperature_residual =
+          assemble_and_solve_temperature(nonlinear_iteration == 0, &initial_temperature_residual);
 
-        assemble_and_solve_temperature();
-        assemble_and_solve_composition();
+        const std::vector<double>  relative_composition_residual =
+          assemble_and_solve_composition(nonlinear_iteration == 0, &initial_composition_residual);
+
+        // write the residual output in the same order as the solutions
+        pcout << "      Relative nonlinear residuals (temperature, compositional fields): " << relative_temperature_residual;
+        for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
+          pcout << ", " << relative_composition_residual[c];
+        pcout << std::endl;
 
         assemble_and_solve_defect_correction_Stokes(dcr, true);
+
 
         if (parameters.run_postprocessors_on_nonlinear_iterations)
           postprocess ();
@@ -1354,7 +1364,7 @@ namespace aspect
   template void Simulator<dim>::solve_single_advection_iterated_stokes(); \
   template void Simulator<dim>::solve_no_advection_defect_correction_iterated_stokes(); \
   template void Simulator<dim>::solve_single_advection_defect_correction_iterated_stokes(); \
-  template void Simulator<dim>::solve_iterated_advection_defect_correction_iterated_stokes(); \
+  template void Simulator<dim>::solve_iterated_advection_and_defect_correction_stokes(); \
   template void Simulator<dim>::solve_iterated_advection_and_newton_stokes(); \
   template void Simulator<dim>::solve_single_advection_iterated_newton_stokes(); \
   template void Simulator<dim>::solve_single_advection_no_stokes(); \

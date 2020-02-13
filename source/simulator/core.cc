@@ -146,7 +146,7 @@ namespace aspect
                      parameters.nonlinear_solver == NonlinearSolver::single_Advection_iterated_Newton_Stokes ||
                      parameters.nonlinear_solver == NonlinearSolver::no_Advection_iterated_defect_correction_Stokes ||
                      parameters.nonlinear_solver == NonlinearSolver::single_Advection_iterated_defect_correction_Stokes ||
-                     parameters.nonlinear_solver == NonlinearSolver::iterated_Advection_iterated_defect_correction_Stokes) ?
+                     parameters.nonlinear_solver == NonlinearSolver::iterated_Advection_and_defect_correction_Stokes) ?
                     std_cxx14::make_unique<NewtonHandler<dim>>() :
                     nullptr),
     post_signal_creation(
@@ -237,7 +237,7 @@ namespace aspect
                                     parameters.nonlinear_solver == NonlinearSolver::single_Advection_iterated_Newton_Stokes ||
                                     parameters.nonlinear_solver == NonlinearSolver::no_Advection_iterated_defect_correction_Stokes ||
                                     parameters.nonlinear_solver == NonlinearSolver::single_Advection_iterated_defect_correction_Stokes ||
-                                    parameters.nonlinear_solver == NonlinearSolver::iterated_Advection_iterated_defect_correction_Stokes)
+                                    parameters.nonlinear_solver == NonlinearSolver::iterated_Advection_and_defect_correction_Stokes)
                                    ?
                                    true
                                    :
@@ -392,7 +392,7 @@ namespace aspect
         parameters.nonlinear_solver == NonlinearSolver::single_Advection_iterated_Newton_Stokes ||
         parameters.nonlinear_solver == NonlinearSolver::no_Advection_iterated_defect_correction_Stokes ||
         parameters.nonlinear_solver == NonlinearSolver::single_Advection_iterated_defect_correction_Stokes ||
-        parameters.nonlinear_solver == NonlinearSolver::iterated_Advection_iterated_defect_correction_Stokes)
+        parameters.nonlinear_solver == NonlinearSolver::iterated_Advection_and_defect_correction_Stokes)
       {
         assemble_newton_stokes_system = true;
         newton_handler->initialize_simulator(*this);
@@ -1819,9 +1819,9 @@ namespace aspect
           break;
         }
 
-        case NonlinearSolver::iterated_Advection_iterated_defect_correction_Stokes:
+        case NonlinearSolver::iterated_Advection_and_defect_correction_Stokes:
         {
-          solve_iterated_advection_defect_correction_iterated_stokes();
+          solve_iterated_advection_and_defect_correction_stokes();
           break;
         }
 
