@@ -12,10 +12,10 @@
 
 # We use here a dimensionless formulation.
 
-set Additional shared libraries            = ./libmelt_SRB2007.so 
+set Additional shared libraries            = ./libmelt_column_differentiation.so
 
 set Dimension                              = 2
-set Output directory                       = output-SramekRicardBercovici2007
+set Output directory                       = output-melt_column_differentiation
 set Use years in output instead of seconds = false  #because dimensionless (so 1 second means 1 unit of time) 
 set End time                               = 100.
 

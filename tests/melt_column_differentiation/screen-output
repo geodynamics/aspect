@@ -1,0 +1,125 @@
+
+Loading shared library <./libmelt_column_differentiation.so>
+
+Number of active cells: 10 (on 1 levels)
+Number of degrees of freedom: 452 (126+52+126+22+63+63)
+
+*** Timestep 0:  t=0 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 5+0 iterations.
+   Solving for u_f in 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 2.84469e-16, 1
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1
+
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+   Solving for u_f in 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 2.84469e-16, 4.66664e-09
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 4.66664e-09
+
+
+   Postprocessing:
+     Writing graphical output:  output-melt_column_differentiation/solution/solution-00000
+     Compositions min/max/mass: 0/1/0.03067
+     RMS, max velocity:         0.0169 m/s, 0.022 m/s
+     Temperature min/avg/max:   0 K, 0 K, 0 K
+     Writing depth average:     output-melt_column_differentiation/depth_average.gnuplot
+
+*** Timestep 1:  t=0.964703 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 9 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 5+0 iterations.
+   Solving for u_f in 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0.173887, 0.0352463
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.173887
+
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 8 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 5+0 iterations.
+   Solving for u_f in 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0.026393, 0.00530554
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.026393
+
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 8 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 4+0 iterations.
+   Solving for u_f in 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0.00442701, 0.000927111
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.00442701
+
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 7 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 4+0 iterations.
+   Solving for u_f in 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0.000762349, 0.000157573
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 0.000762349
+
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 7 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 3+0 iterations.
+   Solving for u_f in 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0.000129424, 2.7181e-05
+      Relative nonlinear residual (total system) after nonlinear iteration 5: 0.000129424
+
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 6 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 3+0 iterations.
+   Solving for u_f in 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 2.22204e-05, 4.62713e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 6: 2.22204e-05
+
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 6 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 2+0 iterations.
+   Solving for u_f in 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 3.78429e-06, 7.96109e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 7: 3.78429e-06
+
+
+   Postprocessing:
+     Compositions min/max/mass: 0/1/0.03104
+     RMS, max velocity:         0.0178 m/s, 0.0232 m/s
+     Temperature min/avg/max:   0 K, 0 K, 0 K
+
+*** Timestep 2:  t=1 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 6 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 4+0 iterations.
+   Solving for u_f in 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0.000114444, 0.000146071
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.000146071
+
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 5 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 3+0 iterations.
+   Solving for u_f in 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.77607e-06, 1.82319e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 6.77607e-06
+
+
+   Postprocessing:
+     Writing graphical output:  output-melt_column_differentiation/solution/solution-00001
+     Compositions min/max/mass: 0/1/0.03105
+     RMS, max velocity:         0.0179 m/s, 0.0233 m/s
+     Temperature min/avg/max:   0 K, 0 K, 0 K
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

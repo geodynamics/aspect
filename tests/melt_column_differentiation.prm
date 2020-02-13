@@ -1,6 +1,6 @@
 set Dimension = 2
 
-include $ASPECT_SOURCE_DIR/benchmarks/melt_column_differentiation/diff_adim.prm
+include $ASPECT_SOURCE_DIR/benchmarks/melt_column_differentiation/melt_column_differentiation.prm
 
 set End time = 1
 

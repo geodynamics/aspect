@@ -1,5 +1,6 @@
-New: Additional benchmark "melt_column_differentiation" to test the 2-phase flow equations 
-in a simple case of pure compaction (no melting/crystallization)
-in a mush column.  
+New: Added a benchmark "melt_column_differentiation" to test the 2-phase flow
+equations in a simple case of pure compaction (no melting/crystallization) in a
+mush column. The benchmark follows Sramek, Ricard, Bercovici 2007,
+"Simultaneous melting and compaction in deformable two-phase media".
 <br>
 (Marine Lasbleis, 2019/07/05)

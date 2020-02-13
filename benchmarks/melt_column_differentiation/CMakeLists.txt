@@ -32,9 +32,9 @@ ENDIF ()
 
 DEAL_II_INITIALIZE_CACHED_VARIABLES()
 
-SET(TARGET "melt_SRB2007")
+SET(TARGET "melt_column_differentiation")
 PROJECT(${TARGET})
 
-ADD_LIBRARY(${TARGET} SHARED melt_SramekRicardBercovici2007.cc)
+ADD_LIBRARY(${TARGET} SHARED melt_column_differentiation.cc)
 ASPECT_SETUP_PLUGIN(${TARGET})
 
