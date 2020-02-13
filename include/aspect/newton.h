@@ -249,7 +249,9 @@ namespace aspect
                  internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const override;
 
         /**
-         * Create AdditionalMaterialOutputsStokesRHS if we need to do so.
+         * Create additional material models outputs for assembly of derivatives or adding additional 
+         * terms to the right hand side of the Stokes equations. The latter could include viscoelastic 
+         * forces or other user-defined values calculated within the material model.
          */
         void create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const override;
     };
