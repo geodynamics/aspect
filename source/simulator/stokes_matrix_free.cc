@@ -1322,7 +1322,6 @@ namespace aspect
                                sim.pressure_scaling,
                                sim.triangulation,
                                dof_handler_projection);
-    mass_matrix.compute_diagonal();
 
 
     // Project to MG
@@ -2021,21 +2020,15 @@ namespace aspect
   }
 
 
-
   template <int dim, int velocity_degree>
   void StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::build_preconditioner()
   {
     TimerOutput::Scope timer (this->sim.computing_timer, "Build Stokes preconditioner");
-    evaluate_material_model();
-    correct_stokes_rhs();
-    compute_A_block_diagonals();
-  }
 
+    // Mass matrix diagonal
+    mass_matrix.compute_diagonal();
 
-
-  template <int dim, int velocity_degree>
-  void StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::compute_A_block_diagonals()
-  {
+    // A block diagonals
     for (unsigned int level=0; level < sim.triangulation.n_global_levels(); ++level)
       {
         // If we have a tangential boundary we must compute the diagonal

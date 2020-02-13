@@ -469,7 +469,10 @@ namespace aspect
           }
       }
 
-    build_stokes_preconditioner();
+    if (stokes_matrix_free)
+      stokes_matrix_free->build_preconditioner();
+    else
+      build_stokes_preconditioner();
 
     if (newton_handler->parameters.use_Newton_failsafe == false)
       {
@@ -514,7 +517,11 @@ namespace aspect
                   }
               }
 
-            build_stokes_preconditioner();
+            if (stokes_matrix_free)
+              stokes_matrix_free->build_preconditioner();
+            else
+              build_stokes_preconditioner();
+
             dcr.stokes_residuals = solve_stokes();
           }
       }
@@ -895,6 +902,10 @@ namespace aspect
           = (std::max(0.0,
                       (1.0-(dcr.newton_residual_for_derivative_scaling_factor/dcr.switch_initial_residual))));
 
+        if (stokes_matrix_free)
+          AssertThrow(newton_handler->parameters.newton_derivative_scaling_factor==0,
+                      ExcNotImplemented());
+
         assemble_and_solve_defect_correction_Stokes(dcr, use_picard);
 
         if (parameters.run_postprocessors_on_nonlinear_iterations)
@@ -978,6 +989,10 @@ namespace aspect
         newton_handler->parameters.newton_derivative_scaling_factor
           = (std::max(0.0,
                       (1.0-(dcr.newton_residual_for_derivative_scaling_factor/dcr.switch_initial_residual))));
+
+        if (stokes_matrix_free)
+          AssertThrow(newton_handler->parameters.newton_derivative_scaling_factor==0,
+                      ExcNotImplemented());
 
         assemble_and_solve_defect_correction_Stokes(dcr, use_picard);
 

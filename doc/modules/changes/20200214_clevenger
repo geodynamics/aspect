@@ -1,0 +1,3 @@
+New: Geometric Multigrid now supports computations with Picard iteration.
+<br>
+(Thomas C. Clevenger, 2020/02/14)
