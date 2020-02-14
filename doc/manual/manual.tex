@@ -11064,14 +11064,13 @@ It presents a modification of the global melt material model to use different pa
 We model the compaction of a mixture of liquid and fluid, without additional melting and freezing.  
 This set-up has been used in the PhD thesis of Ondrej Sramek (\cite{SRPHD07}) as an analog for the differentiation of an initially undifferentiated planet where the solid matrix is the silicates and the liquid the molten iron. 
 We test here using the same set of equations than in \cite{SRB07} (SRB07), but without melting and freezing and in the limit of $\omega=0$
-and the liquid viscosity negligible compared to the solid one. 
-Both phases are considered to be viscously deformed by the compaction, and the liquid is lighter than the solid. 
+and the liquid viscosity negligible compared to the solid one.
+Both phases are considered to be viscously deformed by the compaction, and the liquid is lighter than the solid.
 
-The plugin and parameter files can be found at \url{benchmarks/melt_column_differentiation/melt_SramekRicardBercovici2007.cc} and \url{benchmarks/melt_column_differentiation/diff_adim.prm}. 
-A jupyter notebook (Python 3) for recreating the different figures shown here is provided in \url{benchmarks/melt_column_differentiation/python}. 
+The plugin and parameter files can be found at \url{benchmarks/melt_column_differentiation/melt_column_differentiation.cc} and \url{benchmarks/melt_column_differentiation/melt_column_differentiation.prm}.
+A jupyter notebook (Python 3) for recreating the different figures shown here is provided in \url{benchmarks/melt_column_differentiation/python}.
 
 \paragraph{Modification of the MeltGlobal material model}
-
 
 To solve the SRB07 equations with the melt model implemented in \aspect{}, 
 we need to modify the formulations for the shear and bulk viscosity ($\eta$ and $\xi$) 
@@ -11098,8 +11097,8 @@ We are also neglecting the effects of temperature on the parameters and setting 
 The viscosities tends to 0 or infinity around $\phi=0$ and $\phi=1$, which is not possible to implement in numerical models. 
 We therefore set a maximum viscosity variation due to porosity of $10^6$.
 
-We defined a new material model which incorporate all of these modifications, based on the material model global melt. 
-The plugin \url{benchmarks/melt_column_differentiation/melt_srb.cc} is used as an additional library and needs to be compiled before running the parameter file. 
+We defined a new material model which incorporate all of these modifications, based on the material model global melt.
+The plugin \url{benchmarks/melt_column_differentiation/melt_column_differentiation.cc} is used as an additional library and needs to be compiled before running the parameter file.
 
 \paragraph{Model Setup}
 
@@ -11111,7 +11110,7 @@ The top boundary is set at a porosity of 1, and no flows are permitted (the grad
 We use a compaction length of 1 and 0.2 for this benchmark (ones need to set the fluid viscosity to 25 to change this value from 1 to 0.2), 
 and we start with a constant porosity profile of 30\%.
 
-The parameter file is available at \url{benchmarks/melt_column_differentiation/diff_adim.prm}. 
+The parameter file is available at \url{benchmarks/melt_column_differentiation/melt_column_differentiation.prm}.
 
 \paragraph{First time step}
 
