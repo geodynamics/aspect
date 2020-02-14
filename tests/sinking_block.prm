@@ -1,0 +1,9 @@
+# This is a test for the sinking block benchmark.
+
+set Dimension = 2
+
+include $ASPECT_SOURCE_DIR/benchmarks/sinking_block/sinking_block.prm
+
+subsection Mesh refinement
+  set Initial global refinement          = 3
+end
