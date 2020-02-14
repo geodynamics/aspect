@@ -193,8 +193,8 @@ namespace aspect
                                         fe_face_values[this->introspection().extractors.velocities].value(i,q) *
                                         fe_face_values.JxW(q);
 
-            cell->distribute_local_to_global( local_vector, rhs_vector );
-            cell->distribute_local_to_global( local_mass_matrix, mass_matrix );
+            cell->distribute_local_to_global(local_vector, rhs_vector);
+            cell->distribute_local_to_global(local_mass_matrix, mass_matrix);
           }
 
       rhs_vector.compress(VectorOperation::add);
@@ -205,7 +205,7 @@ namespace aspect
       for (unsigned int k=0; k<local_elements.n_elements(); ++k)
         {
           const unsigned int global_index = local_elements.nth_index_in_set(k);
-          if ( mass_matrix[global_index] > 1.e-15)
+          if (mass_matrix[global_index] > 1.e-15)
             distributed_topo_vector[global_index] = rhs_vector[global_index]/mass_matrix[global_index];
         }
       distributed_topo_vector.compress(VectorOperation::insert);
@@ -214,7 +214,7 @@ namespace aspect
       // Now loop over the cells again and solve for the dynamic topography.
       // We solve for it on the support points of the system, since it can be
       // directly put into a system vector of the right size.
-      std::vector< Point<dim-1> > face_support_points = this->get_fe().base_element( this->introspection().base_elements.temperature ).get_unit_face_support_points();
+      std::vector<Point<dim-1>> face_support_points = this->get_fe().base_element(this->introspection().base_elements.temperature).get_unit_face_support_points();
       Quadrature<dim-1> support_quadrature(face_support_points);
       FEFaceValues<dim> fe_support_values (this->get_mapping(),
                                            this->get_fe(),
@@ -285,9 +285,9 @@ namespace aspect
             MaterialModel::MaterialModelOutputs<dim> out_support(fe_support_values.n_quadrature_points, this->n_compositional_fields());
             this->get_material_model().evaluate(in_support, out_support);
 
-            fe_support_values[this->introspection().extractors.velocities].get_function_values( topo_vector, stress_support_values );
+            fe_support_values[this->introspection().extractors.velocities].get_function_values(topo_vector, stress_support_values);
             cell->face(face_idx)->get_dof_indices (face_dof_indices);
-            for ( unsigned int i = 0; i < face_dof_indices.size(); ++i)
+            for (unsigned int i = 0; i < face_dof_indices.size(); ++i)
               {
                 // Given the face dof, we get the component and overall cell dof index.
                 const std::pair<unsigned int, unsigned int> component_index = this->get_fe().face_system_to_component_index(i);
@@ -316,7 +316,7 @@ namespace aspect
                         dynamic_topography = (-stress_support_values[support_index]*normal - bottom_pressure)
                                              / delta_rho / gravity_norm;
                       }
-                    distributed_topo_vector[ face_dof_indices[i] ] = dynamic_topography * (backward_advection ? -1. : 1.);
+                    distributed_topo_vector[face_dof_indices[i]] = dynamic_topography * (backward_advection ? -1. : 1.);
                   }
               }
 
@@ -329,7 +329,7 @@ namespace aspect
             MaterialModel::MaterialModelOutputs<dim> out_output(fe_output_values.n_quadrature_points, this->n_compositional_fields());
             this->get_material_model().evaluate(in_output, out_output);
 
-            fe_output_values[this->introspection().extractors.velocities].get_function_values( topo_vector, stress_output_values );
+            fe_output_values[this->introspection().extractors.velocities].get_function_values(topo_vector, stress_output_values);
 
             // Compute the average dynamic topography at the cell face.
             double face_area = 0.;
@@ -359,11 +359,12 @@ namespace aspect
             dynamic_topography = dynamic_topography * (backward_advection ? -1. : 1.) / face_area;
 
             // Maybe keep track of surface output vector.
+            const bool respect_manifold = true;
             if (output_surface && at_upper_surface)
-              stored_values_surface.push_back(std::make_pair(cell->face(face_idx)->center(), dynamic_topography));
+              stored_values_surface.push_back(std::make_pair(cell->face(face_idx)->center(respect_manifold), dynamic_topography));
             // Maybe keep track of bottom output vector.
             if (output_bottom && !at_upper_surface)
-              stored_values_bottom.push_back(std::make_pair(cell->face(face_idx)->center(), dynamic_topography));
+              stored_values_bottom.push_back(std::make_pair(cell->face(face_idx)->center(respect_manifold), dynamic_topography));
 
             // Add the value to the vector for the visualization postprocessor.
             visualization_values(cell->active_cell_index()) = dynamic_topography;
