@@ -1,0 +1,48 @@
+# This test checks the viscoelastic_plastic simple shear benchmark,
+# but reduces the resolution and end time for the purpose of runtime.
+
+include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_plastic_simple_shear/viscoelastic_plastic_simple_shear.prm
+
+set Dimension                              = 2
+set End time                               = 0.05
+
+subsection Geometry model
+  set Model name = box
+  subsection Box
+    set X repetitions = 2
+    set Y repetitions = 2
+  end
+end
+
+# Material model
+subsection Material model
+
+  set Model name = viscoelastic plastic
+
+  subsection Viscoelastic Plastic
+    set Densities                   =  1
+    set Linear viscosities          = 1.e2
+    set Elastic shear moduli        = 1.e2
+    set Fixed elastic time step     = 0.01
+    set Use fixed elastic time step = true
+    set Use stress averaging        = true
+    set Viscosity averaging scheme  = maximum composition
+    set Cohesions                   = 3.5
+    set Minimum viscosity           = 1e-3
+    set Maximum viscosity           = 1e3
+    set Reference viscosity         = 10
+
+  end
+
+end
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, depth average
+  subsection Depth average
+    set Time between graphical output = 0
+    set Number of zones = 4
+    set List of output variables = composition
+    set Output format = txt
+  end
+end
+

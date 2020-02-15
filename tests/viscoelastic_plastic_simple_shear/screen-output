@@ -1,0 +1,60 @@
+
+Number of active cells: 64 (on 3 levels)
+Number of degrees of freedom: 2,104 (578+81+289+289+289+289+289)
+
+*** Timestep 0:  t=0 seconds
+   Skipping temperature solve because RHS is zero.
+   Skipping stress_xx composition solve because RHS is zero.
+   Skipping stress_yy composition solve because RHS is zero.
+   Skipping stress_xy composition solve because RHS is zero.
+   Solving goo system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 1+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 1.90662e-12
+
+
+   Postprocessing:
+     RMS, max velocity:     0.0289 m/s, 0.0493 m/s
+     Writing depth average: output-viscoelastic_plastic_simple_shear/depth_average
+
+*** Timestep 1:  t=0.025 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving stress_xx system ... 11 iterations.
+   Solving stress_yy system ... 11 iterations.
+   Solving stress_xy system ... 11 iterations.
+   Solving goo system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 5.40765e-12
+
+
+   Postprocessing:
+     RMS, max velocity:     0.0289 m/s, 0.0493 m/s
+     Writing depth average: output-viscoelastic_plastic_simple_shear/depth_average
+
+*** Timestep 2:  t=0.05 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving stress_xx system ... 11 iterations.
+   Solving stress_yy system ... 11 iterations.
+   Solving stress_xy system ... 10 iterations.
+   Solving goo system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 9.12852e-12
+
+
+   Postprocessing:
+     RMS, max velocity:     0.0289 m/s, 0.0493 m/s
+     Writing depth average: output-viscoelastic_plastic_simple_shear/depth_average
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+
