@@ -47,7 +47,7 @@ subsection Material model
     set Maximum viscosity           = 1.e25
     set Minimum viscosity           = 1.e20
     set Linear viscosities          = 1.e25,1.e25,1.e25,1.e25,1.e20
-    set Elastic shear moduli        = 5.e10
+    set Elastic shear moduli        = 5.e10,5.e10,5.e10,5.e10,1.e50
     set Use fixed elastic time step = false
     set Fixed elastic time step     = 1e3
     set Use stress averaging        = false

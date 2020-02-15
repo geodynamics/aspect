@@ -16,7 +16,7 @@ Number of mesh deformation degrees of freedom: 252
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 7.20217e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 6.04966e-08
 
 
    Postprocessing:
@@ -37,15 +37,15 @@ Number of mesh deformation degrees of freedom: 252
    Solving inclusion system ... 8 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+12 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.0559576
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.0514541
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 6.62221e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 5.57228e-08
 
 
    Postprocessing:
-     RMS, max velocity: 0.000843 m/year, 0.00137 m/year
+     RMS, max velocity: 0.000846 m/year, 0.00137 m/year
 
 
 
@@ -62,15 +62,15 @@ Number of mesh deformation degrees of freedom: 252
    Solving inclusion system ... 7 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+11 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.00796669
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.00674878
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 5.56012e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 4.04555e-08
 
 
    Postprocessing:
-     RMS, max velocity: 0.000844 m/year, 0.00137 m/year
+     RMS, max velocity: 0.000846 m/year, 0.00137 m/year
 
 
 
@@ -84,18 +84,18 @@ Number of mesh deformation degrees of freedom: 252
    Solving stress_xx system ... 10 iterations.
    Solving stress_yy system ... 10 iterations.
    Solving stress_xy system ... 10 iterations.
-   Solving inclusion system ... 10 iterations.
+   Solving inclusion system ... 7 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+11 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.0101385
+   Solving Stokes system... 0+10 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.00257958
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 4.92649e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 4.64182e-08
 
 
    Postprocessing:
-     RMS, max velocity: 0.000844 m/year, 0.00137 m/year
+     RMS, max velocity: 0.000848 m/year, 0.00137 m/year
 
 
 
@@ -109,18 +109,18 @@ Number of mesh deformation degrees of freedom: 252
    Solving stress_xx system ... 9 iterations.
    Solving stress_yy system ... 9 iterations.
    Solving stress_xy system ... 10 iterations.
-   Solving inclusion system ... 10 iterations.
+   Solving inclusion system ... 7 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+12 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.00880779
+   Solving Stokes system... 0+10 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.00318365
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+10 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.000805848
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.00115308
 
 
    Postprocessing:
-     RMS, max velocity: 0.000845 m/year, 0.00137 m/year
+     RMS, max velocity: 0.000848 m/year, 0.00137 m/year
 
 
 
@@ -134,18 +134,18 @@ Number of mesh deformation degrees of freedom: 252
    Solving stress_xx system ... 10 iterations.
    Solving stress_yy system ... 10 iterations.
    Solving stress_xy system ... 10 iterations.
-   Solving inclusion system ... 7 iterations.
+   Solving inclusion system ... 6 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+11 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.0438277
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.0436673
 
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+11 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.0102758
+   Solving Stokes system... 0+12 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.0107972
 
 
    Postprocessing:
-     RMS, max velocity: 0.000853 m/year, 0.00136 m/year
+     RMS, max velocity: 0.000857 m/year, 0.00136 m/year
 
 
 
