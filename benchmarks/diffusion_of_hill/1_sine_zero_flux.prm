@@ -1,0 +1,147 @@
+set Dimension                              = 2
+set Use years in output instead of seconds = false
+set End time                               = 0.05
+set Maximum time step                      = 0.0005
+set Output directory                       = 1_sine_zero_flux
+set Nonlinear solver scheme = no Advection, single Stokes
+
+set Pressure normalization                 = surface
+set Surface pressure                       = 0
+
+
+# 1x1 box with or without an initial hill topography
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1
+    set Y extent = 1
+  end
+  subsection Initial topography model
+    set Model name = function
+    subsection Function
+      set Function constants = A=0.075, L=1.
+      set Function expression = \
+                                A * sin(x*pi)
+    end
+  end
+end
+
+
+# Temperature effects are ignored
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 0 
+  end
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = bottom, top
+  set List of model names = initial temperature 
+end
+
+
+# Free slip on all boundaries
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = left, right, bottom, top
+end
+
+# We either prescribe an initial topography at t0, or
+# we use a mesh deformation function to prescribe the initial hill topography
+# at time t1. For the latter, to get the correct initial maximal topography,
+# we have to scale the amplitude (because we provide a boundary
+# velocity here, and not a boundary displacement).
+# Afterwards, the hill is diffused away. The diffusivity is 0.5 m2/s.
+subsection Mesh deformation
+  set Mesh deformation boundary indicators = top : diffusion #, top: boundary function
+  set Additional tangential mesh velocity boundary indicators = left, right
+
+  subsection Diffusion
+    set Hillslope transport coefficient = 0.5
+  end
+  subsection Free surface
+    set Surface velocity projection = vertical
+  end
+  subsection Boundary function
+    set Variable names = x,y,t
+    set Function constants = L=1, A=150 
+    set Function expression = \
+                              0; \
+                              if(t>0&t<0.00052,A * sin(x*pi/L),0)
+  end
+end
+
+
+# Vertical gravity
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 1 #1e-9
+  end
+end
+
+
+# One material with unity properties
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Reference density             = 1
+    set Reference specific heat       = 1
+    set Reference temperature         = 0
+    set Thermal conductivity          = 1
+    set Thermal expansion coefficient = 1
+    set Viscosity                     = 1
+  end
+end
+
+
+# We also have to specify that we want to use the Boussinesq
+# approximation (assuming the density in the temperature
+# equation to be constant, and incompressibility).
+subsection Formulation
+  set Formulation = Boussinesq approximation
+end
+
+
+# We here use a globally refined mesh without
+# adaptive mesh refinement.
+subsection Mesh refinement
+  set Initial global refinement                = 2
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 0
+  set Strategy = minimum refinement function
+  subsection Minimum refinement function
+    set Function expression = if (y>0.4,5,4)
+  end
+end
+
+
+# We output the computed topography and the analytical topography
+# value to file.
+subsection Postprocess
+  set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, visualization, analytical topography
+  subsection Topography
+    set Output to file = true
+    # Paraemeters for the analytical solution of topography
+    set Diffusivity = 0.5
+    set Time to t1 = 0.0005
+    set Initial sinusoidal topography amplitude = 0.075
+  end
+  # Output every time step
+  subsection Visualization
+    set Time between graphical output = 0
+    set Output mesh velocity = true
+  end
+end
+
+# With a stricter tolerance, the diffusion solve crashes
+# after a few time steps
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance                         = 1e-5
+  end
+end

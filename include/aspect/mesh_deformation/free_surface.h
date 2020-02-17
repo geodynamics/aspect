@@ -130,7 +130,7 @@ namespace aspect
          */
         struct SurfaceAdvection
         {
-          enum Direction { normal, vertical };
+          enum Direction { normal, vertical, geometric_normal };
         };
 
         /**
