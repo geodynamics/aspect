@@ -346,14 +346,17 @@ namespace aspect
           surface_point[1] = 0.5*numbers::PI - surface_point[1];
         const double topography = topo->value(surface_point);
 
-        // adjust the radius based on the radius of the point
-        // through a linear interpolation between 0 at max depth and
-        // "topography" at the surface
-        const double topo_radius = std::max(inner_radius,radius + (radius-inner_radius)/max_depth*topography);
+        // Adjust the radius through a linear interpolation
+        // between 0 at max depth and "topography" at the surface.
+        // Do not adjust below max depth.
+        const double radius_adjustment = topography * (radius-inner_radius)/max_depth;
+        const double adjustment_upper_bound = std::max(0.0,topography);
+        const double adjustment_lower_bound = std::min(0.0,topography);
+        const double bounded_radius_adjustment = std::max(adjustment_lower_bound,std::min(adjustment_upper_bound,radius_adjustment));
 
         // return the point with adjusted radius
-        Point<dim> topor_phi_theta = r_phi_theta;
-        topor_phi_theta[0] = topo_radius;
+        Point<dim> topor_phi_theta(r_phi_theta);
+        topor_phi_theta[0] += bounded_radius_adjustment;
 
         return topor_phi_theta;
       }
@@ -378,11 +381,14 @@ namespace aspect
         const double topography = topo->value(surface_point);
 
         // remove the topography (which scales with radius)
-        const double radius = std::max(inner_radius,(topo_radius*max_depth+inner_radius*topography)/(max_depth+topography));
+        const double radius_adjustment = ((topo_radius-inner_radius) / (max_depth+topography)) * topography;
+        const double adjustment_upper_bound = std::max(0.0,topography);
+        const double adjustment_lower_bound = std::min(0.0,topography);
+        const double bounded_radius_adjustment = std::max(adjustment_lower_bound,std::min(adjustment_upper_bound,radius_adjustment));
 
         // return the point without topography
         Point<dim> r_phi_theta = topor_phi_theta;
-        r_phi_theta[0] = radius;
+        r_phi_theta[0] -= bounded_radius_adjustment;
         return r_phi_theta;
       }
 
