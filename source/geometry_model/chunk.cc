@@ -40,6 +40,8 @@ namespace aspect
       template <int dim>
       ChunkGeometry<dim>::ChunkGeometry()
         :
+        ChartManifold<dim,dim>(
+          ChunkGeometry<dim>::get_periodicity()),
         point1_lon(0.0),
         inner_radius(3471e3),
         max_depth(2900e3)
@@ -56,6 +58,17 @@ namespace aspect
         max_depth(other.max_depth)
       {
         this->initialize(other.topo);
+      }
+
+
+
+      template <int dim>
+      Tensor<1, dim>
+      ChunkGeometry<dim>::get_periodicity()
+      {
+        Tensor<1, dim> periodicity;
+        periodicity[1] = 2.0 * numbers::PI;
+        return periodicity;
       }
 
 

@@ -150,6 +150,13 @@ namespace aspect
 
         private:
           /**
+           * Helper function which returns the periodicity associated with this
+           * coordinate system.
+           */
+          static Tensor<1, dim>
+          get_periodicity();
+
+          /**
            * The minimum longitude of the domain.
            */
           double point1_lon;
