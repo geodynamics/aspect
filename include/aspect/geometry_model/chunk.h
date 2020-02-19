@@ -36,6 +36,160 @@ namespace aspect
   {
     using namespace dealii;
 
+    namespace internal
+    {
+      /**
+       * ChunkGeometry is a class that implements the interface of
+       * ChartManifold. The function push_forward takes a point
+       * in the reference (radius,lon,lat) domain and transforms
+       * it into real space (cartesian). The inverse function
+       * pull_back reverses this operation.
+       * The push_forward_gradient provides derivatives of the
+       * reference coordinates to the real space coordinates,
+       * which are used in computing normal vectors.
+       * The transformations can include topography added
+       * to the initially radially symmetric mesh.
+       */
+      template <int dim>
+      class ChunkGeometry : public ChartManifold<dim,dim>
+      {
+        public:
+          /**
+           * Constructor
+           */
+          ChunkGeometry();
+
+          /**
+           * Copy constructor
+           */
+          ChunkGeometry(const ChunkGeometry &other);
+
+          /*
+           * An initialization function to make sure that the
+           * manifold has access to the topography plugins.
+           */
+          void
+          initialize(const InitialTopographyModel::Interface<dim> *topography);
+
+          /**
+           * This function receives a point in cartesian coordinates x, y and z,
+           * including initial prescribed topography and returns
+           * radius, longitude, latitude without topography.
+           */
+          Point<dim>
+          pull_back(const Point<dim> &space_point) const override;
+
+          /**
+           * This function receives a point in spherical coordinates
+           * radius, longitude, latitude and returns cartesian
+           * coordinates x, y and z, including any initially prescribed
+           * topography.
+           */
+          Point<dim>
+          push_forward(const Point<dim> &chart_point) const override;
+
+          /**
+           * This function provides the derivatives of the push_forward
+           * function to the spherical coordinates, which are needed
+           * in the computation of vectors tangential to the domain boundaries.
+           */
+          DerivativeForm<1, dim, dim>
+          push_forward_gradient(const Point<dim> &chart_point) const override;
+
+          /**
+           * This function receives a point in cartesian coordinates x, y and z,
+           * and returns radius, longitude, latitude.
+           */
+          Point<dim>
+          pull_back_sphere(const Point<dim> &space_point) const;
+
+          /**
+           * This function receives a point in spherical coordinates
+           * radius, longitude, latitude and returns cartesian
+           * coordinates x, y and z.
+           */
+          Point<dim>
+          push_forward_sphere(const Point<dim> &chart_point) const;
+
+          /**
+           * This function computes the outer radius of the domain
+           * at the longitude (and latitude) of the given point
+           * (given in cartesian coordinates), i.e. the unperturbed
+           * outer radius + the topography.
+           */
+          double
+          get_radius(const Point<dim> &space_point) const;
+
+          /**
+           * Set the minimum longitude of the domain,
+           * which is used in pulling back cartesian coordinates
+           * to spherical to get the longitude in the correct
+           * quarter.
+           */
+          virtual
+          void
+          set_min_longitude(const double p1_lon);
+
+          /**
+           * Return a copy of this manifold.
+           */
+          std::unique_ptr<Manifold<dim,dim> >
+          clone() const override;
+
+          /**
+           * Set the minimal radius of the domain.
+           */
+          void
+          set_min_radius(const double p1_rad);
+
+          /**
+           * Set the maximum depth of the domain.
+           */
+          void
+          set_max_depth(const double p2_rad_minus_p1_rad);
+
+        private:
+          /**
+           * The minimum longitude of the domain.
+           */
+          double point1_lon;
+
+          /**
+           * The inner radius of the domain.
+           */
+          double inner_radius;
+
+          /**
+           * The maximum depth not taking into account
+           * topography (outer radius minus inner radius).
+           */
+          double max_depth;
+
+          /**
+           * This function removes the initial topography from a
+           * given point in spherical coordinates R+topo, lon, lat.
+           * I.e. it returns R, lon, lat.
+           */
+          virtual
+          Point<dim>
+          pull_back_topo(const Point<dim> &space_point) const;
+
+          /**
+           * This function adds the initial topography to a
+           * given point in spherical coordinates R, lon, lat.
+           * I.e. it returns R+topo, lon, lat.
+           */
+          virtual
+          Point<dim>
+          push_forward_topo(const Point<dim> &chart_point) const;
+
+          /**
+           * A pointer to the topography model.
+           */
+          const InitialTopographyModel::Interface<dim> *topo;
+      };
+    }
+
     /**
      * A geometry model class that describes a chunk of a spherical shell.
      * In 2D, this class simulates a sector with inner and outer radius, and
@@ -289,160 +443,9 @@ namespace aspect
         unsigned int repetitions[dim];
 
         /**
-         * ChunkGeometry is a class that implements the interface of
-         * ChartManifold. The function push_forward takes a point
-         * in the reference (radius,lon,lat) domain and transforms
-         * it into real space (cartesian). The inverse function
-         * pull_back reverses this operation.
-         * The push_forward_gradient provides derivatives of the
-         * reference coordinates to the real space coordinates,
-         * which are used in computing normal vectors.
-         * The transformations can include topography added
-         * to the initially radially symmetric mesh.
-         */
-
-        class ChunkGeometry : public ChartManifold<dim,dim>
-        {
-          public:
-            /**
-             * Constructor
-             */
-            ChunkGeometry();
-
-            /**
-             * Copy constructor
-             */
-            ChunkGeometry(const ChunkGeometry &other);
-
-            /*
-             * An initialization function to make sure that the
-             * manifold has access to the topography plugins.
-             */
-            void
-            initialize(const InitialTopographyModel::Interface<dim> *topography);
-
-            /**
-             * This function receives a point in cartesian coordinates x, y and z,
-             * including initial prescribed topography and returns
-             * radius, longitude, latitude without topography.
-             */
-            Point<dim>
-            pull_back(const Point<dim> &space_point) const override;
-
-            /**
-             * This function receives a point in spherical coordinates
-             * radius, longitude, latitude and returns cartesian
-             * coordinates x, y and z, including any initially prescribed
-             * topography.
-             */
-            Point<dim>
-            push_forward(const Point<dim> &chart_point) const override;
-
-            /**
-             * This function provides the derivatives of the push_forward
-             * function to the spherical coordinates, which are needed
-             * in the computation of vectors tangential to the domain boundaries.
-             */
-            DerivativeForm<1, dim, dim>
-            push_forward_gradient(const Point<dim> &chart_point) const override;
-
-            /**
-             * This function receives a point in cartesian coordinates x, y and z,
-             * and returns radius, longitude, latitude.
-             */
-            Point<dim>
-            pull_back_sphere(const Point<dim> &space_point) const;
-
-            /**
-             * This function receives a point in spherical coordinates
-             * radius, longitude, latitude and returns cartesian
-             * coordinates x, y and z.
-             */
-            Point<dim>
-            push_forward_sphere(const Point<dim> &chart_point) const;
-
-            /**
-             * This function computes the outer radius of the domain
-             * at the longitude (and latitude) of the given point
-             * (given in cartesian coordinates), i.e. the unperturbed
-             * outer radius + the topography.
-             */
-            double
-            get_radius(const Point<dim> &space_point) const;
-
-            /**
-             * Set the minimum longitude of the domain,
-             * which is used in pulling back cartesian coordinates
-             * to spherical to get the longitude in the correct
-             * quarter.
-             */
-            virtual
-            void
-            set_min_longitude(const double p1_lon);
-
-            /**
-             * Return a copy of this manifold.
-             */
-            std::unique_ptr<Manifold<dim,dim> >
-            clone() const override;
-
-            /**
-             * Set the minimal radius of the domain.
-             */
-            void
-            set_min_radius(const double p1_rad);
-
-            /**
-             * Set the maximum depth of the domain.
-             */
-            void
-            set_max_depth(const double p2_rad_minus_p1_rad);
-
-          private:
-            /**
-             * The minimum longitude of the domain.
-             */
-            double point1_lon;
-
-            /**
-             * The inner radius of the domain.
-             */
-            double inner_radius;
-
-            /**
-             * The maximum depth not taking into account
-             * topography (outer radius minus inner radius).
-             */
-            double max_depth;
-
-            /**
-             * This function removes the initial topography from a
-             * given point in spherical coordinates R+topo, lon, lat.
-             * I.e. it returns R, lon, lat.
-             */
-            virtual
-            Point<dim>
-            pull_back_topo(const Point<dim> &space_point) const;
-
-            /**
-             * This function adds the initial topography to a
-             * given point in spherical coordinates R, lon, lat.
-             * I.e. it returns R+topo, lon, lat.
-             */
-            virtual
-            Point<dim>
-            push_forward_topo(const Point<dim> &chart_point) const;
-
-            /**
-             * A pointer to the topography model.
-             */
-            const InitialTopographyModel::Interface<dim> *topo;
-        };
-
-        /**
          * An object that describes the geometry.
          */
-        ChunkGeometry manifold;
+        internal::ChunkGeometry<dim> manifold;
     };
   }
 }
