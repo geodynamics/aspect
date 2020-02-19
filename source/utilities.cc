@@ -913,14 +913,11 @@ namespace aspect
       return return_value;
     }
 
-    //Evaluate the cosine and sine terms of a real spherical harmonic.
-    //This is a fully normalized harmonic, that is to say, inner products
-    //of these functions should integrate to a kronecker delta over
-    //the surface of a sphere.
-    std::pair<double,double> real_spherical_harmonic( const unsigned int l, // degree
-                                                      const unsigned int m, // order
-                                                      const double theta,   // colatitude (radians)
-                                                      const double phi)     // longitude (radians)
+
+    std::pair<double,double> real_spherical_harmonic( const unsigned int l,
+                                                      const unsigned int m,
+                                                      const double theta,
+                                                      const double phi)
     {
       const double sqrt_2 = numbers::SQRT2;
       const std::complex<double> sph_harm_val = boost::math::spherical_harmonic( l, m, theta, phi );
@@ -948,26 +945,19 @@ namespace aspect
                                      const MPI_Comm &comm)
     {
       std::string data_string;
-      std::stringstream urlString;
 
       if (Utilities::MPI::this_mpi_process(comm) == 0)
         {
           // set file size to an invalid size (signaling an error if we can not read it)
           unsigned int filesize = numbers::invalid_unsigned_int;
 
-          /**
-           * Lookup and use data from the provided url
-           * Author: Kodi Neumiller
-           * Added: 10/9/18
-           **/
           //----Only run if the user wishes to use the libdap packages----//
 #ifdef HAVE_LIBDAP
           //Check to see if the prm file will be reading data from the disk or
           // from a provided URL
           if (filename.find("http://") == 0 || filename.find("https://") == 0 || filename.find("file://") == 0)
             {
-              libdap::Connect *url = 0;
-              url = new libdap::Connect(filename);
+              libdap::Connect url(filename);
               libdap::BaseTypeFactory factory;
               libdap::DataDDS dds(&factory);
               libdap::DAS das;
@@ -976,24 +966,22 @@ namespace aspect
               url->request_das(das);
 
 
-              //Array to store the url data
-              libdap::Array *urlArray;
-
-              //Temporary vector that will hold the different arrays stored in urlArray
-              std::vector<std::string> tmp;
-              //Vector that will hold the arrays (columns) and the values within those arrays
-              std::vector<std::vector<std::string>> columns;
-
-
               //Check dds values to make sure the arrays are of the same length and of type string
               for (libdap::DDS::Vars_iter i = dds.var_begin(); i != dds.var_end(); i++)
                 {
                   libdap::BaseType *btp = *i;
                   if ((*i)->type() == libdap::dods_array_c)
                     {
+                      //Array to store the url data
+                      libdap::Array *urlArray;
                       urlArray = static_cast <libdap::Array *>(btp);
                       if (urlArray->var() != NULL && urlArray->var()->type() == libdap::dods_str_c)
                         {
+                          //Temporary vector that will hold the different arrays stored in urlArray
+                          std::vector<std::string> tmp;
+                          //Vector that will hold the arrays (columns) and the values within those arrays
+                          std::vector<std::vector<std::string>> columns;
+
                           //The url Array contains a separate array for each column of data.
                           // This will put each of these individual arrays into its own vector.
                           urlArray->value(tmp);
@@ -1016,20 +1004,20 @@ namespace aspect
                     }
                 }
 
-
               //Add the POINTS data that is required and found at the top of the data file.
               // The POINTS values are set as attributes inside a table.
               // Loop through the Attribute table to locate the points values within
-              std::vector<std::string> points;
-              libdap::AttrTable *table;
               for (libdap::AttrTable::Attr_iter i = das.var_begin(); i != das.var_end(); i++)
                 {
+                  std::vector<std::string> points;
+                  libdap::AttrTable *table;
+
                   table = das.get_table(i);
                   if (table->get_attr("points") != "")
                     points.push_back(table->get_attr("points"));
-                  else
-                    break;
                 }
+
+              std::stringstream urlString;
 
               //Append the gathered POINTS in the proper format:
               // "# POINTS: <val1> <val2> <val3>"
