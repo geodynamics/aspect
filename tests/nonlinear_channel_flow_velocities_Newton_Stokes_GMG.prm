@@ -1,0 +1,22 @@
+include $ASPECT_SOURCE_DIR/tests/nonlinear_channel_flow_velocities_Newton_Stokes.prm 
+
+subsection Solver parameters
+  subsection Newton solver parameters
+    set Max pre-Newton nonlinear iterations = 31 #one more than max iterations
+    set Nonlinear Newton solver switch tolerance =  0 
+  end
+end
+
+subsection Material model
+  set Material averaging = harmonic average
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Stokes solver type = block GMG
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, pressure statistics, mass flux statistics
+end

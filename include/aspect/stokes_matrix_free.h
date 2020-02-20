@@ -306,8 +306,21 @@ namespace aspect
       virtual void setup_dofs()=0;
 
       /**
-       * Evaluate the material model and update internal data structures before the
-       * actual solve().
+       * Evalute the MaterialModel to query for the viscosity on the active cells,
+       * project this viscosity to the multigrid hierarchy, and cache the information
+       * for later usage. Also sets pressure scaling and information regarding the
+       * compressiblity of the flow.
+       */
+      virtual void evaluate_material_model()=0;
+
+      /**
+       * Add correction to system RHS for non-zero boundary condition.
+       */
+      virtual void correct_stokes_rhs()=0;
+
+      /**
+       * Computes and sets the diagonal for both the mass matrix operator and the A-block
+       * operators on each level for the purpose of smoothing inside the multigrid v-cycle.
        */
       virtual void build_preconditioner()=0;
 
@@ -358,8 +371,21 @@ namespace aspect
       void setup_dofs() override;
 
       /**
-       * Evaluate the material model and update internal data structures before the
-       * actual solve().
+       * Evalute the MaterialModel to query for the viscosity on the active cells,
+       * project this viscosity to the multigrid hierarchy, and cache the information
+       * for later usage. Also sets pressure scaling and information regarding the
+       * compressiblity of the flow.
+       */
+      void evaluate_material_model() override;
+
+      /**
+       * Add correction to system RHS for non-zero boundary condition.
+       */
+      void correct_stokes_rhs() override;
+
+      /**
+       * Computes and sets the diagonal for both the mass matrix operator and the A-block
+       * operators on each level for the purpose of smoothing inside the multigrid v-cycle.
        */
       void build_preconditioner() override;
 
@@ -376,25 +402,6 @@ namespace aspect
       void declare_parameters (ParameterHandler &prm);
 
     private:
-      /**
-       * Evalute the MaterialModel to query for the viscosity on the active cells,
-       * project this viscosity to the multigrid hierarchy, and cache the information
-       * for later usage. Also sets pressure scaling and information regarding the
-       * compressiblity of the flow.
-       */
-      void evaluate_material_model();
-
-      /**
-       * Add correction to system RHS for non-zero boundary condition.
-       */
-      void correct_stokes_rhs();
-
-      /**
-       * Computes and sets the diagonal for the A-block operators on each level for
-       * the purpose of smoothing inside the multigrid v-cycle.
-       */
-      void compute_A_block_diagonals();
-
       /**
        * Parse parameters. (No actual parameters at the moment).
        */

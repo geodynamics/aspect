@@ -377,6 +377,11 @@ namespace aspect
   void Simulator<dim>::assemble_and_solve_defect_correction_Stokes(DefectCorrectionResiduals &dcr,
                                                                    bool use_picard)
   {
+    // The matrix-free GMG Stokes preconditioner is currently not implemented for the Newton solver.
+    if (stokes_matrix_free)
+      AssertThrow(newton_handler->parameters.newton_derivative_scaling_factor==0,
+                  ExcNotImplemented());
+
     /**
      * copied from solver.cc
      */
@@ -469,7 +474,10 @@ namespace aspect
           }
       }
 
-    build_stokes_preconditioner();
+    if (stokes_matrix_free)
+      stokes_matrix_free->build_preconditioner();
+    else
+      build_stokes_preconditioner();
 
     if (newton_handler->parameters.use_Newton_failsafe == false)
       {
@@ -514,7 +522,11 @@ namespace aspect
                   }
               }
 
-            build_stokes_preconditioner();
+            if (stokes_matrix_free)
+              stokes_matrix_free->build_preconditioner();
+            else
+              build_stokes_preconditioner();
+
             dcr.stokes_residuals = solve_stokes();
           }
       }
