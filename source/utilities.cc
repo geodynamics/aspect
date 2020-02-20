@@ -951,13 +951,12 @@ namespace aspect
           // set file size to an invalid size (signaling an error if we can not read it)
           unsigned int filesize = numbers::invalid_unsigned_int;
 
-          //----Only run if the user wishes to use the libdap packages----//
-#ifdef HAVE_LIBDAP
           //Check to see if the prm file will be reading data from the disk or
           // from a provided URL
           if (filename.find("http://") == 0 || filename.find("https://") == 0 || filename.find("file://") == 0)
             {
-              libdap::Connect url(filename);
+#ifdef HAVE_LIBDAP
+              libdap::Connect *url = new libdap::Connect(filename);
               libdap::BaseTypeFactory factory;
               libdap::DataDDS dds(&factory);
               libdap::DAS das;
@@ -965,6 +964,11 @@ namespace aspect
               url->request_data(dds, "");
               url->request_das(das);
 
+
+              //Temporary vector that will hold the different arrays stored in urlArray
+              std::vector<std::string> tmp;
+              //Vector that will hold the arrays (columns) and the values within those arrays
+              std::vector<std::vector<std::string>> columns;
 
               //Check dds values to make sure the arrays are of the same length and of type string
               for (libdap::DDS::Vars_iter i = dds.var_begin(); i != dds.var_end(); i++)
@@ -977,11 +981,6 @@ namespace aspect
                       urlArray = static_cast <libdap::Array *>(btp);
                       if (urlArray->var() != NULL && urlArray->var()->type() == libdap::dods_str_c)
                         {
-                          //Temporary vector that will hold the different arrays stored in urlArray
-                          std::vector<std::string> tmp;
-                          //Vector that will hold the arrays (columns) and the values within those arrays
-                          std::vector<std::vector<std::string>> columns;
-
                           //The url Array contains a separate array for each column of data.
                           // This will put each of these individual arrays into its own vector.
                           urlArray->value(tmp);
@@ -1007,9 +1006,9 @@ namespace aspect
               //Add the POINTS data that is required and found at the top of the data file.
               // The POINTS values are set as attributes inside a table.
               // Loop through the Attribute table to locate the points values within
+              std::vector<std::string> points;
               for (libdap::AttrTable::Attr_iter i = das.var_begin(); i != das.var_end(); i++)
                 {
-                  std::vector<std::string> points;
                   libdap::AttrTable *table;
 
                   table = das.get_table(i);
@@ -1044,91 +1043,66 @@ namespace aspect
 
               data_string = urlString.str();
               filesize = data_string.size();
-            }
 
-          else
-            {
+              delete url;
+#else // HAVE_LIBDAP
+
+              // broadcast failure state, then throw
+              MPI_Bcast(&filesize, 1, MPI_UNSIGNED, 0, comm);
+              AssertThrow(false,
+                          ExcMessage(std::string("Reading of file ") + filename + " failed. " +
+                                     "Make sure you have the dependencies for reading a url " +
+                                     "(when running cmake make sure -DLIBDAP_ON=ON)"));
+
               std::ifstream filestream(filename.c_str());
 
-              if (!filestream)
-                {
+              if (!filestream) {
                   // broadcast failure state, then throw
-                  MPI_Bcast(&filesize,1,MPI_UNSIGNED,0,comm);
-                  AssertThrow (false,
-                               ExcMessage (std::string("Could not open file <") + filename + ">."));
+                  MPI_Bcast(&filesize, 1, MPI_UNSIGNED, 0, comm);
+                  AssertThrow(false,
+                              ExcMessage(std::string("Could not open file <") + filename + ">."));
                   return data_string; // never reached
-                }
-
-
-              // Read data from disk
-              std::stringstream datastream;
-              filestream >> datastream.rdbuf();
-
-              if (!filestream.eof())
-                {
-                  // broadcast failure state, then throw
-                  MPI_Bcast(&filesize,1,MPI_UNSIGNED,0,comm);
-                  AssertThrow (false,
-                               ExcMessage (std::string("Reading of file ") + filename + " finished " +
-                                           "before the end of file was reached. Is the file corrupted or"
-                                           "too large for the input buffer?"));
-                  return data_string; // never reached
-                }
-
-
-
-              data_string = datastream.str();
-              filesize = data_string.size();
-            }
-
-          // Distribute data_size and data across processes
-          MPI_Bcast(&filesize,1,MPI_UNSIGNED,0,comm);
-          MPI_Bcast(&data_string[0],filesize,MPI_CHAR,0,comm);
-#else // HAVE_LIBDAP
-          if (filename.find("http://") == 0 || filename.find("https://") == 0 || filename.find("file://") == 0)
-            {
-              // broadcast failure state, then throw
-              MPI_Bcast(&filesize,1,MPI_UNSIGNED,0,comm);
-              AssertThrow (false,
-                           ExcMessage (std::string("Reading of file ") + filename + " failed. " +
-                                       "Make sure you have the dependencies for reading a url " +
-                                       "(when running cmake make sure -DLIBDAP_ON=ON)"));
-              return data_string; // never reached
-            }
-
-          std::ifstream filestream(filename.c_str());
-
-          if (!filestream)
-            {
-              // broadcast failure state, then throw
-              MPI_Bcast(&filesize,1,MPI_UNSIGNED,0,comm);
-              AssertThrow (false,
-                           ExcMessage (std::string("Could not open file <") + filename + ">."));
-              return data_string; // never reached
-            }
-
-          // Read data from disk
-          std::stringstream datastream;
-          filestream >> datastream.rdbuf();
-
-          if (!filestream.eof())
-            {
-              // broadcast failure state, then throw
-              MPI_Bcast(&filesize,1,MPI_UNSIGNED,0,comm);
-              AssertThrow (false,
-                           ExcMessage (std::string("Reading of file ") + filename + " finished " +
-                                       "before the end of file was reached. Is the file corrupted or"
-                                       "too large for the input buffer?"));
-              return data_string; // never reached
-            }
-
-          data_string = datastream.str();
-          filesize = data_string.size();
-
-          // Distribute data_size and data across processes
-          MPI_Bcast(&filesize,1,MPI_UNSIGNED,0,comm);
-          MPI_Bcast(&data_string[0],filesize,MPI_CHAR,0,comm);
+              }
 #endif // HAVE_LIBDAP
+          }
+              else
+              {
+                  std::ifstream filestream(filename.c_str());
+
+                  if (!filestream)
+                  {
+                      // broadcast failure state, then throw
+                      MPI_Bcast(&filesize,1,MPI_UNSIGNED,0,comm);
+                      AssertThrow (false,
+                                   ExcMessage (std::string("Could not open file <") + filename + ">."));
+                      return data_string; // never reached
+                  }
+
+
+                  // Read data from disk
+                  std::stringstream datastream;
+                  filestream >> datastream.rdbuf();
+
+                  if (!filestream.eof())
+                  {
+                      // broadcast failure state, then throw
+                      MPI_Bcast(&filesize,1,MPI_UNSIGNED,0,comm);
+                      AssertThrow (false,
+                                   ExcMessage (std::string("Reading of file ") + filename + " finished " +
+                                               "before the end of file was reached. Is the file corrupted or"
+                                               "too large for the input buffer?"));
+                      return data_string; // never reached
+                  }
+
+
+
+                  data_string = datastream.str();
+                  filesize = data_string.size();
+              }
+
+              // Distribute data_size and data across processes
+              MPI_Bcast(&filesize,1,MPI_UNSIGNED,0,comm);
+              MPI_Bcast(&data_string[0],filesize,MPI_CHAR,0,comm);
         }
       else
         {
