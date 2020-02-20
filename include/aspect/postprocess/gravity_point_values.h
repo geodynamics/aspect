@@ -235,7 +235,8 @@ namespace aspect
         enum SamplingScheme
         {
           map,
-          list
+          list,
+          profile
         } sampling_scheme;
 
         /**

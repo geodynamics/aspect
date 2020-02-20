@@ -93,12 +93,19 @@ namespace aspect
       // Now write all data to the file of choice. Start with a pre-amble that
       // explains the meaning of the various fields
       std::string file_prefix = "gravity-" + Utilities::int_to_string (output_file_number, 5);
+      std::string file_prefix1= "domain_volume_and_mass";
       const std::string filename = (this->get_output_directory()
                                     + "output_gravity/"
                                     + file_prefix);
       std::ofstream output (filename.c_str());
+      const std::string filename1 = (this->get_output_directory()
+                                    + "output_gravity/"
+                                    + file_prefix1);
+      std::ofstream domain_volume_and_mass (filename1.c_str());
       AssertThrow(output,
                   ExcMessage("Unable to open file for writing: " + filename +"."));
+      AssertThrow(domain_volume_and_mass,
+                  ExcMessage("Unable to open file for writing: " + filename1 +"."));
       output << "# 1: position_satellite_r" << '\n'
              << "# 2: position_satellite_phi" << '\n'
              << "# 3: position_satellite_theta" << '\n'
@@ -188,6 +195,7 @@ namespace aspect
       // only appear together):
       std::vector<double> density_JxW (n_locally_owned_cells * n_quadrature_points_per_cell);
       std::vector<double> density_anomalies_JxW (n_locally_owned_cells * n_quadrature_points_per_cell);
+      std::vector<double> density (n_locally_owned_cells * n_quadrature_points_per_cell);
 
       // Declare the vector 'position_point' to store the position of quadrature points:
       std::vector<Point<dim> > position_point (n_locally_owned_cells * n_quadrature_points_per_cell);
@@ -197,6 +205,8 @@ namespace aspect
       MaterialModel::MaterialModelInputs<dim> in(quadrature_formula.size(),this->n_compositional_fields());
       MaterialModel::MaterialModelOutputs<dim> out(quadrature_formula.size(),this->n_compositional_fields());
       unsigned int local_cell_number = 0;
+      double local_mass = 0;
+      double local_volume = 0;
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
           {
@@ -206,12 +216,22 @@ namespace aspect
             this->get_material_model().evaluate(in, out);
             for (unsigned int q = 0; q < n_quadrature_points_per_cell; ++q)
               {
+                density[local_cell_number * n_quadrature_points_per_cell + q] = out.densities[q];
                 density_JxW[local_cell_number * n_quadrature_points_per_cell + q] = out.densities[q] * fe_values.JxW(q);
                 density_anomalies_JxW[local_cell_number * n_quadrature_points_per_cell + q] = (out.densities[q]-reference_density) * fe_values.JxW(q);
-                position_point[local_cell_number * n_quadrature_points_per_cell + q] = position_point_cell[q];
+                local_volume += fe_values.JxW(q);
+                local_mass += density_JxW[local_cell_number * n_quadrature_points_per_cell + q];
               }
             ++local_cell_number;
           }
+
+      const double volume = Utilities::MPI::sum (local_volume, this->get_mpi_communicator());
+      const double mass = Utilities::MPI::sum (local_mass, this->get_mpi_communicator());
+      if (dealii::Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
+        {
+          domain_volume_and_mass << "numerical volume    " << std::setprecision(9) << volume << '\n'
+                                 << "numerical mass      " << std::setprecision(9) << mass   << '\n';
+        }
 
       // Pre-Assign the coordinates of all satellites in a vector point:
       // *** First calculate the number of satellites according to the sampling scheme:
@@ -220,6 +240,8 @@ namespace aspect
         n_satellites = n_points_radius * n_points_longitude * n_points_latitude;
       else if (sampling_scheme == list)
         n_satellites = longitude_list.size();
+      else if (sampling_scheme == profile)
+        n_satellites = n_points_radius;
       else n_satellites = 1;
 
       // *** Second assign the coordinates of all satellites:
@@ -263,6 +285,18 @@ namespace aspect
               else
                 satellites_coordinate[p][1] = (longitude_list[p]) * numbers::PI / 180.;
               satellites_coordinate[p][2] = (90 - latitude_list[p]) * numbers::PI / 180. ;
+            }
+        }
+      if (sampling_scheme == profile)
+        {
+          for (unsigned int p=0; p < n_satellites; ++p)
+            {
+              satellites_coordinate[p][0] = minimum_radius + ((maximum_radius - minimum_radius) / (n_points_radius - 1)) * p;
+              if (longitude_list[p] < 0)
+                satellites_coordinate[p][1] = (360 + longitude_list[0]) * numbers::PI / 180.;
+              else
+                satellites_coordinate[p][1] = (longitude_list[0]) * numbers::PI / 180.;
+              satellites_coordinate[p][2] = (90 - latitude_list[0]) * numbers::PI / 180. ;
             }
         }
 
@@ -351,19 +385,19 @@ namespace aspect
             {
               g_theory = G * numbers::PI * 4/3 * reference_density * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
                          /  std::pow(satellites_coordinate[p][0],2);
-              g_beneath = G * numbers::PI * 4/3 * beneath_density * std::pow(model_inner_radius,3) / std::pow(satellites_coordinate[p][0],2);
-              g_potential_beneath = G * numbers::PI * 4/3 * beneath_density * std::pow(model_inner_radius,3) / satellites_coordinate[p][0];
+              g_beneath = G * numbers::PI * 4/3 * density_beneath * std::pow(model_inner_radius,3) / std::pow(satellites_coordinate[p][0],2);
+              g_potential_beneath = G * numbers::PI * 4/3 * density_beneath * std::pow(model_inner_radius,3) / satellites_coordinate[p][0];
               g_gradient_theory[0][0] = -G * numbers::PI * 4/3 * reference_density
                                         * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
-                                        * (std::pow(satellites_coordinate[p][0], 2) - 3.0 * pow(position_satellite[0],2))
+                                        * (std::pow(satellites_coordinate[p][0], 2) - 3.0 * std::pow(position_satellite[0],2))
                                         /  std::pow(satellites_coordinate[p][0],5);
               g_gradient_theory[1][1] = -G * numbers::PI * 4/3 * reference_density
                                         * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
-                                        * (std::pow(satellites_coordinate[p][0], 2) - 3.0 * pow(position_satellite[1],2))
+                                        * (std::pow(satellites_coordinate[p][0], 2) - 3.0 * std::pow(position_satellite[1],2))
                                         /  std::pow(satellites_coordinate[p][0],5);
               g_gradient_theory[2][2] = -G * numbers::PI * 4/3 * reference_density
                                         * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
-                                        * (std::pow(satellites_coordinate[p][0], 2) - 3.0 * pow(position_satellite[2],2))
+                                        * (std::pow(satellites_coordinate[p][0], 2) - 3.0 * std::pow(position_satellite[2],2))
                                         /  std::pow(satellites_coordinate[p][0],5);
               g_gradient_theory[0][1] = -G * numbers::PI * 4/3 * reference_density
                                         * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
@@ -430,7 +464,7 @@ namespace aspect
         prm.enter_subsection ("Gravity calculation");
         {
           prm.declare_entry ("Sampling scheme", "map",
-                             Patterns::Selection ("map|list"),
+                             Patterns::Selection ("map|list|profile"),
                              "Choose the sampling scheme. A map will produce a grid of "
                              "equally spaced points between "
                              "a minimum and maximum radius, longitude, and latitude. A "
@@ -555,6 +589,8 @@ namespace aspect
             sampling_scheme = map;
           else if (prm.get ("Sampling scheme") == "list")
             sampling_scheme = list;
+          else if (prm.get ("Sampling scheme") == "profile")
+            sampling_scheme = profile;
           else
             AssertThrow (false, ExcMessage ("Not a valid sampling scheme."));
           quadrature_degree_increase = prm.get_double ("Quadrature degree increase");
@@ -572,6 +608,8 @@ namespace aspect
           radius_list    = Utilities::string_to_double(Utilities::split_string_list(prm.get("List of radius")));
           longitude_list = Utilities::string_to_double(Utilities::split_string_list(prm.get("List of longitude")));
           latitude_list  = Utilities::string_to_double(Utilities::split_string_list(prm.get("List of latitude")));
+          AssertThrow (sampling_scheme == profile && (longitude_list.size() == 1 || latitude_list.size() == 1),
+                       ExcMessage ("The profile sampling scheme only works for 1 specified point."));
           AssertThrow (longitude_list.size() == latitude_list.size(),
                        ExcMessage ("Make sure you have the same number of point coordinates in the list sampling scheme."));
           AssertThrow (Plugins::plugin_type_matches<const GeometryModel::SphericalShell<dim>> (this->get_geometry_model()) ||
