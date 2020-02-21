@@ -250,6 +250,47 @@ namespace aspect
 
 
       template <int dim>
+      Tensor<1, dim>
+      ChunkGeometry<dim>::
+      normal_vector(const typename Triangulation<dim>::face_iterator &face,
+                    const Point<dim> &p) const
+      {
+        // if the maximum deviation for the distance from the vertices to the center
+        // is less than 1.e-5 of the minimum distance to the first vertex, assume we
+        // can simply return p-center. otherwise, we compute the normal using
+        // get_normal_vector
+        constexpr unsigned int n_vertices = GeometryInfo<dim>::vertices_per_face;
+        std::array<double, n_vertices>     distances_to_center;
+        std::array<double, n_vertices - 1> distances_to_first_vertex;
+        distances_to_center[0] = face->vertex(0).norm_square();
+        for (unsigned int i = 1; i < n_vertices; ++i)
+          {
+            distances_to_center[i] = face->vertex(i).norm_square();
+            distances_to_first_vertex[i - 1] =
+              (face->vertex(i) - face->vertex(0)).norm_square();
+          }
+        const auto minmax_distance =
+          std::minmax_element(distances_to_center.begin(), distances_to_center.end());
+        const auto min_distance_to_first_vertex =
+          std::min_element(distances_to_first_vertex.begin(),
+                           distances_to_first_vertex.end());
+
+        if (*minmax_distance.second - *minmax_distance.first <
+            1.e-10 * *min_distance_to_first_vertex)
+          {
+            const Tensor<1, dim> unnormalized_spherical_normal = p;
+            const Tensor<1, dim> normalized_spherical_normal =
+              unnormalized_spherical_normal / unnormalized_spherical_normal.norm();
+            return normalized_spherical_normal;
+          }
+
+
+        return Manifold<dim>::normal_vector(face, p);
+      }
+
+
+
+      template <int dim>
       Point<dim>
       ChunkGeometry<dim>::
       pull_back_sphere(const Point<dim> &v) const
