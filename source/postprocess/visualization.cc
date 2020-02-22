@@ -1161,6 +1161,11 @@ namespace aspect
       {
         this->mesh_changed_signal();
       });
+      this->get_triangulation().signals.post_distributed_load.connect(
+	[&]()
+      {
+        this->mesh_changed_signal();
+      });							      
     }
 
 
