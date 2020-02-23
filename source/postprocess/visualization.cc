@@ -1161,8 +1161,8 @@ namespace aspect
       {
         this->mesh_changed_signal();
       });
-      this->get_triangulation().signals.post_distributed_load.connect(
-	[&]()
+      this->get_signals().post_resume_load_user_data.connect(
+	[&](typename parallel::distributed::Triangulation<dim> &)
       {
         this->mesh_changed_signal();
       });							      
