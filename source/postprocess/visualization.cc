@@ -1162,10 +1162,10 @@ namespace aspect
         this->mesh_changed_signal();
       });
       this->get_signals().post_resume_load_user_data.connect(
-	[&](typename parallel::distributed::Triangulation<dim> &)
+        [&](typename parallel::distributed::Triangulation<dim> &)
       {
         this->mesh_changed_signal();
-      });							      
+      });
     }
 
 
