@@ -394,6 +394,25 @@ namespace aspect
       }
 
       template <int dim>
+      bool
+      Manager<dim>::pluginname_exists(const std::string &name) const
+      {
+        return (std::find(plugin_names.begin(),plugin_names.end(),name) != plugin_names.end());
+      }
+
+      template <int dim>
+      bool
+      Manager<dim>::check_plugin_order(const std::string &first, const std::string &second) const
+      {
+        AssertThrow(pluginname_exists(first),
+                    ExcMessage("Could not find a plugin with the name " + first + "."));
+        AssertThrow(pluginname_exists(second),
+                    ExcMessage("Could not find a plugin with the name " + second + "."));
+
+        return (std::find(plugin_names.begin(),plugin_names.end(),first) < std::find(plugin_names.begin(),plugin_names.end(),second));
+      }
+
+      template <int dim>
       unsigned int
       Manager<dim>::get_n_property_components () const
       {
@@ -516,6 +535,7 @@ namespace aspect
 
             property_list.back()->parse_parameters (prm);
           }
+        plugin_names = prop_names;
       }
 
       template <int dim>

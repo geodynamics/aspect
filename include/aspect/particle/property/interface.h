@@ -537,6 +537,24 @@ namespace aspect
           get_needed_update_flags () const;
 
           /**
+           * Checks if the particle plugin specified by @p name exists
+           * in this model.
+           */
+          bool
+          pluginname_exists(const std::string &name) const;
+
+          /**
+           * Checks if the particle plugin specified by @p name acts
+           * before an other particle plugin in this model.
+           *
+           * Throws an assert when one of the plugin names does not
+           * exist. You can use the function pluginname_exists() to
+           * check in advance wheter a plugin exists
+           */
+          bool
+          check_plugin_order(const std::string &first, const std::string &second) const;
+
+          /**
            * Get the number of components required to represent this particle's
            * properties.
            *
@@ -631,6 +649,11 @@ namespace aspect
           write_plugin_graph (std::ostream &output_stream);
 
         private:
+          /**
+           * Stores the names of the plugins which are present
+           * in the order they are executed.
+           */
+          std::vector<std::string> plugin_names;
 
           /**
            * A list of property objects that have been requested in the
