@@ -1,0 +1,50 @@
+/*
+  Copyright (C) 2018 by the authors of the ASPECT code.
+
+  This file is part of ASPECT.
+
+  ASPECT is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2, or (at your option)
+  any later version.
+
+  ASPECT is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with ASPECT; see the file LICENSE.  If not see
+  <http://www.gnu.org/licenses/>.
+*/
+
+#include "common.h"
+#include <aspect/particle/property/interface.h>
+#include <deal.II/base/parameter_handler.h>
+
+TEST_CASE("Particle Manager plugin names")
+{
+  aspect::Particle::Property::Manager<2> manager;
+  dealii::ParameterHandler prm;
+  manager.declare_parameters(prm);
+  prm.enter_subsection("Postprocess");
+  prm.enter_subsection("Particles");
+  prm.set("List of particle properties","composition, position");
+  prm.leave_subsection();
+  prm.leave_subsection();
+  manager.parse_parameters(prm);
+
+  // existing and listed pluring
+  REQUIRE(manager.pluginname_exists("composition") == true);
+  REQUIRE(manager.pluginname_exists("position") == true);
+
+  // existing but not listed plugin
+  REQUIRE(manager.pluginname_exists("pT path") == false);
+
+  // non-existed plugin
+  REQUIRE(manager.pluginname_exists("non-existend plugin name") == false);
+
+  // check that one is before the other
+  REQUIRE(manager.check_plugin_order("composition", "position") == true);
+  REQUIRE(manager.check_plugin_order("position", "composition") == false);
+}
