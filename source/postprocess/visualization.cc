@@ -235,12 +235,18 @@ namespace aspect
     template <class Archive>
     void Visualization<dim>::OutputHistory::serialize (Archive &ar, const unsigned int)
     {
-      ar &mesh_changed
+      ar
       & last_mesh_file_name
       & times_and_pvtu_names
       & output_file_names_by_timestep
       & xdmf_entries
       ;
+
+      // We do not serialize mesh_changed but use the default (true) from our
+      // constructor. This will result in a new mesh file the first time we
+      // create visualization output after resuming from a snapshot. Otherwise
+      // we might get corrupted graphical output, because the ordering of
+      // vertices can be different after resuming.
     }
 
 
@@ -1174,12 +1180,6 @@ namespace aspect
       & output_file_number
       & cell_output_history
       ;
-
-      // We do not serialize mesh_changed but use the default (true) from our
-      // constructor. This will result in a new mesh file the first time we
-      // create visualization output after resuming from a snapshot. Otherwise
-      // we might get corrupted graphical output, because the ordering of
-      // vertices can be different after resuming.
     }
 
 
