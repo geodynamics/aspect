@@ -255,10 +255,17 @@ namespace aspect
       normal_vector(const typename Triangulation<dim>::face_iterator &face,
                     const Point<dim> &p) const
       {
-        // if the maximum deviation for the distance from the vertices to the center
-        // is less than 1.e-5 of the minimum distance to the first vertex, assume we
-        // can simply return p-center. otherwise, we compute the normal using
-        // get_normal_vector
+        // Let us first test whether we are on a "horizontal" face.
+        // In that case, the normal vector is easy to compute
+        // since it is proportional to the vector from the center to the
+        // point 'p'.
+        //
+        // We test whether that is the case by checking that the vertices
+        // all have roughly the same distance from the center: If the
+        // maximum deviation for the distances from the vertices to the
+        // center is less than 1.e-5 of the distance between vertices (as
+        // measured by the minimum distance from any of the other vertices
+        // to the first vertex), then we call this a horizontal face.
         constexpr unsigned int n_vertices = GeometryInfo<dim>::vertices_per_face;
         std::array<double, n_vertices>     distances_to_center;
         std::array<double, n_vertices - 1> distances_to_first_vertex;
@@ -275,6 +282,9 @@ namespace aspect
           std::min_element(distances_to_first_vertex.begin(),
                            distances_to_first_vertex.end());
 
+        // So, if this is a horizontal face, then just compute the normal
+        // vector as the one from the center to the point 'p', adequately
+        // scaled.
         if (*minmax_distance.second - *minmax_distance.first <
             1.e-10 * *min_distance_to_first_vertex)
           {
@@ -284,7 +294,8 @@ namespace aspect
             return normalized_spherical_normal;
           }
 
-
+        // If it is not a horizontal face, just use the machinery of the
+        // base class.
         return Manifold<dim>::normal_vector(face, p);
       }
 
