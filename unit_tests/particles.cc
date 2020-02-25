@@ -47,4 +47,8 @@ TEST_CASE("Particle Manager plugin names")
   // check that one is before the other
   REQUIRE(manager.check_plugin_order("composition", "position") == true);
   REQUIRE(manager.check_plugin_order("position", "composition") == false);
+
+  // Check the plugin indices
+  REQUIRE(manager.get_plugin_index_by_name("composition") == 0);
+  REQUIRE(manager.get_plugin_index_by_name("position") == 1);
 }
