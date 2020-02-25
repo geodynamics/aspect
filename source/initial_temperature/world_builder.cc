@@ -48,7 +48,7 @@ namespace aspect
     initial_temperature (const Point<dim> &position) const
     {
       return this->get_world_builder().temperature(Utilities::convert_point_to_array(position),
-                                                   this->get_geometry_model().depth(position),
+                                                   -this->get_geometry_model().height_above_reference_surface(position),
                                                    this->get_gravity_model().gravity_vector(position).norm());
     }
 

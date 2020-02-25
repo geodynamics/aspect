@@ -43,7 +43,7 @@ namespace aspect
     initial_composition (const Point<dim> &position, const unsigned int n_comp) const
     {
       return this->get_world_builder().composition(Utilities::convert_point_to_array(position),
-                                                   this->get_geometry_model().depth(position),
+                                                   -this->get_geometry_model().height_above_reference_surface(position),
                                                    n_comp);
     }
 
