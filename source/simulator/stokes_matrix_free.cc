@@ -1816,9 +1816,15 @@ namespace aspect
       DoFRenumbering::hierarchical(dof_handler_v);
 
       constraints_v.clear();
+#if DEAL_II_VERSION_GTE(9,2,0)
+      const IndexSet locally_relevant_dofs =
+        DoFTools::extract_locally_relevant_dofs (dof_handler_v);
+
+#else
       IndexSet locally_relevant_dofs;
       DoFTools::extract_locally_relevant_dofs (dof_handler_v,
                                                locally_relevant_dofs);
+#endif
       constraints_v.reinit(locally_relevant_dofs);
       DoFTools::make_hanging_node_constraints (dof_handler_v, constraints_v);
       sim.compute_initial_velocity_boundary_constraints(constraints_v);
@@ -1842,9 +1848,15 @@ namespace aspect
       DoFRenumbering::hierarchical(dof_handler_p);
 
       constraints_p.clear();
+#if DEAL_II_VERSION_GTE(9,2,0)
+      const IndexSet locally_relevant_dofs =
+        DoFTools::extract_locally_relevant_dofs (dof_handler_p);
+
+#else
       IndexSet locally_relevant_dofs;
       DoFTools::extract_locally_relevant_dofs (dof_handler_p,
                                                locally_relevant_dofs);
+#endif
       constraints_p.reinit(locally_relevant_dofs);
       DoFTools::make_hanging_node_constraints (dof_handler_p, constraints_p);
       constraints_p.close();
