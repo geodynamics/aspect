@@ -370,10 +370,18 @@ namespace aspect
 
       if ((!face->at_boundary() && !face->has_children())
           ||
+#if DEAL_II_VERSION_GTE(9,2,0)
+          (face->at_boundary() && neighbor->is_active()))
+#else
           (face->at_boundary() && neighbor->active()))
+#endif
         {
           if (neighbor->level () == cell->level () &&
+#if DEAL_II_VERSION_GTE(9,2,0)
+              neighbor->is_active() &&
+#else
               neighbor->active() &&
+#endif
               (((neighbor->is_locally_owned()) && (cell->index() < neighbor->index()))
                ||
                ((!neighbor->is_locally_owned()) && (cell->subdomain_id() < neighbor->subdomain_id()))))
