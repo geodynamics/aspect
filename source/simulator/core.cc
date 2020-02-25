@@ -1516,7 +1516,8 @@ namespace aspect
       }
 
     // finally, write the entire set of current results to disk
-    output_statistics();
+    if (timestep_number == 0 || (timestep_number % 1000 == 0))
+      output_statistics();
   }
 
 
@@ -1922,9 +1923,10 @@ namespace aspect
         const std::pair<bool,bool> termination = termination_manager.execute();
 
         const bool checkpoint_written = maybe_write_checkpoint(last_checkpoint_time, termination);
-        if (checkpoint_written)
+        if (checkpoint_written){
           last_checkpoint_time = std::time(nullptr);
-
+	  write_statistics();
+	}
         // see if we want to terminate
         if (termination.first)
           break;
