@@ -35,14 +35,14 @@ TEST_CASE("Particle Manager plugin names")
   manager.parse_parameters(prm);
 
   // existing and listed pluring
-  REQUIRE(manager.pluginname_exists("composition") == true);
-  REQUIRE(manager.pluginname_exists("position") == true);
+  REQUIRE(manager.plugin_name_exists("composition") == true);
+  REQUIRE(manager.plugin_name_exists("position") == true);
 
   // existing but not listed plugin
-  REQUIRE(manager.pluginname_exists("pT path") == false);
+  REQUIRE(manager.plugin_name_exists("pT path") == false);
 
   // non-existed plugin
-  REQUIRE(manager.pluginname_exists("non-existend plugin name") == false);
+  REQUIRE(manager.plugin_name_exists("non-existend plugin name") == false);
 
   // check that one is before the other
   REQUIRE(manager.check_plugin_order("composition", "position") == true);

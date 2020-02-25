@@ -541,14 +541,15 @@ namespace aspect
            * in this model.
            */
           bool
-          pluginname_exists(const std::string &name) const;
+          plugin_name_exists(const std::string &name) const;
 
           /**
-           * Checks if the particle plugin specified by @p name acts
-           * before an other particle plugin in this model.
+           * Checks if the particle property plugin specified by @p first
+           * is executed before another particle property plugin specified
+           * by @p second.
            *
            * Throws an assert when one of the plugin names does not
-           * exist. You can use the function pluginname_exists() to
+           * exist. You can use the function plugin_name_exists() to
            * check in advance wheter a plugin exists
            */
           bool

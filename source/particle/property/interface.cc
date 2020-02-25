@@ -395,7 +395,7 @@ namespace aspect
 
       template <int dim>
       bool
-      Manager<dim>::pluginname_exists(const std::string &name) const
+      Manager<dim>::plugin_name_exists(const std::string &name) const
       {
         return (std::find(plugin_names.begin(),plugin_names.end(),name) != plugin_names.end());
       }
@@ -404,9 +404,9 @@ namespace aspect
       bool
       Manager<dim>::check_plugin_order(const std::string &first, const std::string &second) const
       {
-        AssertThrow(pluginname_exists(first),
+        AssertThrow(plugin_name_exists(first),
                     ExcMessage("Could not find a plugin with the name " + first + "."));
-        AssertThrow(pluginname_exists(second),
+        AssertThrow(plugin_name_exists(second),
                     ExcMessage("Could not find a plugin with the name " + second + "."));
 
         return (std::find(plugin_names.begin(),plugin_names.end(),first) < std::find(plugin_names.begin(),plugin_names.end(),second));
@@ -503,30 +503,29 @@ namespace aspect
       {
         Assert (std::get<dim>(registered_plugins).plugins != nullptr,
                 ExcMessage ("No postprocessors registered!?"));
-        std::vector<std::string> prop_names;
 
         prm.enter_subsection("Postprocess");
         {
           prm.enter_subsection("Particles");
           {
             // now also see which derived quantities we are to compute
-            prop_names = Utilities::split_string_list(prm.get("List of particle properties"));
-            AssertThrow(Utilities::has_unique_entries(prop_names),
+            plugin_names = Utilities::split_string_list(prm.get("List of particle properties"));
+            AssertThrow(Utilities::has_unique_entries(plugin_names),
                         ExcMessage("The list of strings for the parameter "
                                    "'Postprocess/Particles/List of particle properties' contains entries more than once. "
                                    "This is not allowed. Please check your parameter file."));
 
             // see if 'all' was selected (or is part of the list). if so
             // simply replace the list with one that contains all names
-            if (std::find (prop_names.begin(),
-                           prop_names.end(),
-                           "all") != prop_names.end())
+            if (std::find (plugin_names.begin(),
+                           plugin_names.end(),
+                           "all") != plugin_names.end())
               {
-                prop_names.clear();
+                plugin_names.clear();
                 for (typename std::list<typename aspect::internal::Plugins::PluginList<aspect::Particle::Property::Interface<dim> >::PluginInfo>::const_iterator
                      p = std::get<dim>(registered_plugins).plugins->begin();
                      p != std::get<dim>(registered_plugins).plugins->end(); ++p)
-                  prop_names.push_back (std::get<0>(*p));
+                  plugin_names.push_back (std::get<0>(*p));
               }
           }
           prm.leave_subsection();
@@ -535,11 +534,11 @@ namespace aspect
 
         // then go through the list, create objects and let them parse
         // their own parameters
-        for (unsigned int name=0; name<prop_names.size(); ++name)
+        for (unsigned int name=0; name<plugin_names.size(); ++name)
           {
             aspect::Particle::Property::Interface<dim> *
             particle_property = std::get<dim>(registered_plugins)
-                                .create_plugin (prop_names[name],
+                                .create_plugin (plugin_names[name],
                                                 "Particle property plugins");
 
             property_list.push_back (std::unique_ptr<Property::Interface<dim> >
@@ -550,7 +549,6 @@ namespace aspect
 
             property_list.back()->parse_parameters (prm);
           }
-        plugin_names = prop_names;
       }
 
       template <int dim>
