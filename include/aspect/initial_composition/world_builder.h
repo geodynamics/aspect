@@ -50,7 +50,7 @@ namespace aspect
          */
         virtual
         void
-        initialize ();
+        initialize () override;
 
         /**
          * Return the initial composition as a function of position and number
