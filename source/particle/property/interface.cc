@@ -414,6 +414,21 @@ namespace aspect
 
       template <int dim>
       unsigned int
+      Manager<dim>::get_plugin_index_by_name(const std::string &name) const
+      {
+        const std::vector<std::string>::const_iterator plugin = std::find(plugin_names.begin(),
+                                                                          plugin_names.end(),
+                                                                          name);
+
+        AssertThrow(plugin != plugin_names.end(),
+                    ExcMessage("The particle property manager was asked for a plugin "
+                               "with the name <" + name + ">, but no such plugin could "
+                               "be found."));
+        return std::distance(plugin_names.begin(),plugin);
+      }
+
+      template <int dim>
+      unsigned int
       Manager<dim>::get_n_property_components () const
       {
         return property_information.n_components();

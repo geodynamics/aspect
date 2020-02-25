@@ -555,6 +555,11 @@ namespace aspect
           check_plugin_order(const std::string &first, const std::string &second) const;
 
           /**
+           * Get the plugin index of the particle plugin specified by @p name.
+           */
+          unsigned int get_plugin_index_by_name(const std::string &name) const;
+
+          /**
            * Get the number of components required to represent this particle's
            * properties.
            *
