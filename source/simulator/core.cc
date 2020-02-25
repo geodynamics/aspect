@@ -1925,7 +1925,7 @@ namespace aspect
         const bool checkpoint_written = maybe_write_checkpoint(last_checkpoint_time, termination);
         if (checkpoint_written){
           last_checkpoint_time = std::time(nullptr);
-	  write_statistics();
+	  output_statistics();
 	}
         // see if we want to terminate
         if (termination.first)
