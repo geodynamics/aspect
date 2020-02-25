@@ -413,12 +413,6 @@ namespace aspect
         }
 
 
-        template <int dim>
-        StokesPreconditioner<dim>::
-        ~StokesPreconditioner ()
-        {}
-
-
 
         template <int dim>
         StokesSystem<dim>::

@@ -732,7 +732,11 @@ namespace aspect
       if (!neighbor->has_children())
         {
           if (neighbor->level () == cell->level () &&
+#if DEAL_II_VERSION_GTE(9,2,0)
+              neighbor->is_active() &&
+#else
               neighbor->active() &&
+#endif
               (((neighbor->is_locally_owned()) && (cell->index() < neighbor->index()))
                ||
                ((!neighbor->is_locally_owned()) && (cell->subdomain_id() < neighbor->subdomain_id()))))

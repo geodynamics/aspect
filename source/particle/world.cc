@@ -318,7 +318,11 @@ namespace aspect
     World<dim>::cell_weight(const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell,
                             const typename parallel::distributed::Triangulation<dim>::CellStatus status)
     {
+#if DEAL_II_VERSION_GTE(9,2,0)
+      if (cell->is_active() && !cell->is_locally_owned())
+#else
       if (cell->active() && !cell->is_locally_owned())
+#endif
         return 0;
 
       if (status == parallel::distributed::Triangulation<dim>::CELL_PERSIST
