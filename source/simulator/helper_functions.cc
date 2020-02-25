@@ -289,19 +289,66 @@ namespace aspect
     auto write_statistics
       = [statistics_copy_ptr,this]()
     {
-      // Write into a temporary file for now so that we don't
-      // interrupt anyone who might want to look at the real
-      // statistics file while the program is still running
-      const std::string stat_file_name = parameters.output_directory + "statistics";
-      const std::string tmp_file_name = stat_file_name + ".tmp";
-
-      std::ofstream stat_file (tmp_file_name.c_str());
-      statistics_copy_ptr->write_text (stat_file,
+      // First write everything into a string in memory
+      std::ostringstream stream;
+      statistics_copy_ptr->write_text (stream,
                                        TableHandler::table_with_separate_column_description);
-      stat_file.close();
+      stream.flush();
 
-      // Now move the temporary file into place
-      std::rename(tmp_file_name.c_str(), stat_file_name.c_str());
+      const std::string statistics_contents = stream.str();
+
+      // Next find out whether we need to write everything into
+      // the statistics file, or whether it is enough to just write
+      // the last few bytes that were added since we wrote to that
+      // file again. The way we do that is by checking whether the
+      // first few bytes of the string we just created match what we
+      // had previously written. One might think that they never should,
+      // but the statistics object automatically sizes the column widths
+      // of its output to match what is being written, and so if a later
+      // entry requires more width, then even the first columns are
+      // changed -- in that case, we will have to write everything,
+      // not just append one line.
+      const bool write_everything
+        = ( // We may have never written anything
+            (statistics_last_write_size == 0)
+            ||
+            // Or the size of the statistics file may have
+            // shrunk mysteriously -- this shouldn't happen
+            // but if it did we'd get into trouble with the
+            // .substr() call in the next check.
+            (statistics_last_write_size > statistics_contents.size())
+            ||
+            // Or the hash of what we wrote last time doesn't match
+            // the hash of the first part of what we want to write
+            (statistics_last_hash
+             !=
+             std::hash<std::string>()(statistics_contents.substr(0, statistics_last_write_size))) );
+
+      const std::string stat_file_name = parameters.output_directory + "statistics";
+      if (write_everything)
+        {
+          // Write what we have into a tmp file, then move that into
+          // place
+          const std::string tmp_file_name = stat_file_name + ".tmp";
+          {
+            std::ofstream tmp_file (tmp_file_name);
+            tmp_file << statistics_contents;
+          }
+          std::rename(tmp_file_name.c_str(), stat_file_name.c_str());
+        }
+      else
+        {
+          // If we don't have to write everything, then the first part of what
+          // we want to write matches what's already on disk. In that case,
+          // we just have to append what's new.
+          std::ofstream stat_file (stat_file_name, std::ios::app);
+          stat_file << statistics_contents.substr(statistics_last_write_size, std::string::npos);
+        }
+
+      // Now update the size and hash of what we just wrote so that
+      // we can compare against it next time we get here
+      statistics_last_write_size = statistics_contents.size();
+      statistics_last_hash       = std::hash<std::string>()(statistics_contents);
     };
     output_statistics_thread = Threads::new_thread (write_statistics);
   }

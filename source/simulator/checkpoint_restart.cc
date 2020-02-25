@@ -582,8 +582,11 @@ namespace aspect
     ar &pre_refinement_step;
     ar &last_pressure_normalization_adjustment;
 
-    ar &postprocess_manager &statistics;
+    ar &postprocess_manager;
 
+    ar &statistics;
+    ar &statistics_last_write_size;
+    ar &statistics_last_hash;
   }
 }
 
