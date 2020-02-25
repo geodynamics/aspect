@@ -189,43 +189,6 @@ namespace aspect
   }
 
 
-  namespace
-  {
-    /**
-     * A function that writes the statistics object into a file.
-     *
-     * @param stat_file_name The name of the file into which the result
-     * should go
-     * @param copy_of_table A copy of the table that we're to write. Since
-     * this function is called in the background on a separate thread,
-     * the actual table might be modified while we are about to write
-     * it, so we need to work on a copy. This copy is deleted at the end
-     * of this function.
-     */
-    // We need to pass the arguments by value, as this function can be called on a separate thread:
-    void do_output_statistics (const std::string stat_file_name, //NOLINT(performance-unnecessary-value-param)
-                               const TableHandler *copy_of_table)
-    {
-      // write into a temporary file for now so that we don't
-      // interrupt anyone who might want to look at the real
-      // statistics file while the program is still running
-      const std::string tmp_file_name = stat_file_name + " tmp";
-
-      std::ofstream stat_file (tmp_file_name.c_str());
-      copy_of_table->write_text (stat_file,
-                                 TableHandler::table_with_separate_column_description);
-      stat_file.close();
-
-      // now move the temporary file into place
-      std::rename(tmp_file_name.c_str(), stat_file_name.c_str());
-
-      // delete the copy now:
-      delete copy_of_table;
-    }
-  }
-
-
-
   template <int dim>
   void Simulator<dim>::write_plugin_graph (std::ostream &out) const
   {
@@ -297,18 +260,50 @@ namespace aspect
     if (Utilities::MPI::this_mpi_process(mpi_communicator)!=0)
       return;
 
-    // formatting the table we're about to output and writing the
+    // Formatting the table we're about to output and writing the
     // actual file may take some time, so do it on a separate
-    // thread. we pass a pointer to a copy of the statistics
-    // object which the called function then has to destroy
+    // thread. We do this using a lambda function that takes
+    // a copy of the statistics object to make sure that whatever
+    // we do to the 'real' statistics object at the time of
+    // writing data doesn't affect what we write.
     //
-    // before we can start working on a new thread, we need to
+    // Before we can start working on a new thread, we need to
     // make sure that the previous thread is done or they'll
-    // stomp on each other's feet
+    // step on each other's feet.
     output_statistics_thread.join();
-    output_statistics_thread = Threads::new_thread (&do_output_statistics,
-                                                    parameters.output_directory+"statistics",
-                                                    new TableHandler(statistics));
+
+    // TODO[C++14]: The following code could be made significantly simpler
+    // if we could just copy the statistics table as part of the capture
+    // list of the lambda function. In C++14, this would then simply be
+    // written as
+    //   [statistics_copy = this->statistics, this] () {...}
+    // (It would also be nice if we could use a std::unique_ptr, but since
+    // these can not be copied and since lambda captures don't allow move
+    // syntax for captured values, this also doesn't work. This can be done
+    // in C++14 by writing
+    //   [statistics_copy_ptr = std::move(statistics_copy_ptr), this] () {...}
+    // but, as mentioned above, if we could use C++14, we wouldn't have to
+    // use a pointer in the first place.)
+    std::shared_ptr<TableHandler> statistics_copy_ptr
+      = std_cxx14::make_unique<TableHandler>(statistics);
+    auto write_statistics
+      = [statistics_copy_ptr,this]()
+    {
+      // Write into a temporary file for now so that we don't
+      // interrupt anyone who might want to look at the real
+      // statistics file while the program is still running
+      const std::string stat_file_name = parameters.output_directory + "statistics";
+      const std::string tmp_file_name = stat_file_name + ".tmp";
+
+      std::ofstream stat_file (tmp_file_name.c_str());
+      statistics_copy_ptr->write_text (stat_file,
+                                       TableHandler::table_with_separate_column_description);
+      stat_file.close();
+
+      // Now move the temporary file into place
+      std::rename(tmp_file_name.c_str(), stat_file_name.c_str());
+    };
+    output_statistics_thread = Threads::new_thread (write_statistics);
   }
 
 
