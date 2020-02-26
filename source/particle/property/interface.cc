@@ -393,6 +393,8 @@ namespace aspect
         return (update & (update_default | update_values | update_gradients));
       }
 
+
+
       template <int dim>
       bool
       Manager<dim>::plugin_name_exists(const std::string &name) const
@@ -406,13 +408,16 @@ namespace aspect
       bool
       Manager<dim>::check_plugin_order(const std::string &first, const std::string &second) const
       {
+
+        AssertThrow(first != second,
+                    ExcMessage("The first and second string are the same, so can not check the order."));
         AssertThrow(plugin_name_exists(first),
                     ExcMessage("Could not find a plugin with the name <" + first + ">."));
         AssertThrow(plugin_name_exists(second),
                     ExcMessage("Could not find a plugin with the name <" + second + ">."));
 
-        return (std::find(plugin_names.begin(),plugin_names.end(),first) 
-                   < std::find(plugin_names.begin(),plugin_names.end(),second));
+        return (std::find(plugin_names.begin(),plugin_names.end(),first)
+                < std::find(plugin_names.begin(),plugin_names.end(),second));
       }
 
 
