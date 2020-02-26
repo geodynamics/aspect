@@ -88,7 +88,12 @@ namespace aspect
                            "but is there to make sure that the original parameters for specifying the "
                            "strain weakening mechanism (``Use plastic/viscous strain weakening'') are still allowed, "
                            "but to guarantee that one uses either the old parameter names or the new ones, "
-                           "never both.");
+                           "never both."
+                           "\n\n"
+                           "If a compositional field named 'noninitial\\_plastic\\_strain' is "
+                           "included in the parameter file, this field will automatically be excluded from "
+                           "from volume fraction calculation and track the cumulative plastic strain with "
+                           "the initial plastic strain values removed.");
 
         prm.declare_entry ("Start plasticity strain weakening intervals", "0.",
                            Patterns::List(Patterns::Double(0)),
@@ -278,7 +283,6 @@ namespace aspect
         friction_strain_weakening_factors = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Friction strain weakening factors"))),
                                                                                     n_fields,
                                                                                     "Friction strain weakening factors");
-
       }
 
 
@@ -425,6 +429,8 @@ namespace aspect
                 else
                   out.reaction_terms[i][this->introspection().compositional_index_for_name("viscous_strain")] = e_ii;
               }
+            if (this->introspection().compositional_name_exists("noninitial_plastic_strain") && plastic_yielding == true)
+              out.reaction_terms[i][this->introspection().compositional_index_for_name("noninitial_plastic_strain")] = e_ii;
           }
       }
 
@@ -513,6 +519,9 @@ namespace aspect
                   strain_mask.set(i,false);
               }
           }
+
+        if (this->introspection().compositional_name_exists("noninitial_plastic_strain"))
+          strain_mask.set(this->introspection().compositional_index_for_name("noninitial_plastic_strain"),false);
 
         return strain_mask;
       }
