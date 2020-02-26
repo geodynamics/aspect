@@ -400,17 +400,22 @@ namespace aspect
         return (std::find(plugin_names.begin(),plugin_names.end(),name) != plugin_names.end());
       }
 
+
+
       template <int dim>
       bool
       Manager<dim>::check_plugin_order(const std::string &first, const std::string &second) const
       {
         AssertThrow(plugin_name_exists(first),
-                    ExcMessage("Could not find a plugin with the name " + first + "."));
+                    ExcMessage("Could not find a plugin with the name <" + first + ">."));
         AssertThrow(plugin_name_exists(second),
-                    ExcMessage("Could not find a plugin with the name " + second + "."));
+                    ExcMessage("Could not find a plugin with the name <" + second + ">."));
 
-        return (std::find(plugin_names.begin(),plugin_names.end(),first) < std::find(plugin_names.begin(),plugin_names.end(),second));
+        return (std::find(plugin_names.begin(),plugin_names.end(),first) 
+                   < std::find(plugin_names.begin(),plugin_names.end(),second));
       }
+
+
 
       template <int dim>
       unsigned int
@@ -426,6 +431,8 @@ namespace aspect
                                "be found."));
         return std::distance(plugin_names.begin(),plugin);
       }
+
+
 
       template <int dim>
       unsigned int

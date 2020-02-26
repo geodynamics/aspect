@@ -550,7 +550,7 @@ namespace aspect
            *
            * Throws an assert when one of the plugin names does not
            * exist. You can use the function plugin_name_exists() to
-           * check in advance wheter a plugin exists
+           * check in advance whether a plugin exists
            */
           bool
           check_plugin_order(const std::string &first, const std::string &second) const;
@@ -699,4 +699,3 @@ namespace aspect
 }
 
 #endif
-
