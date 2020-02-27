@@ -911,6 +911,7 @@ namespace aspect
       sim->initialize_simulator (this->get_simulator());
       property_manager->parse_parameters(prm);
       property_manager->initialize();
+      property_manager->post_initialize();
 
       // Create an interpolator object depending on the specified parameter
       interpolator.reset(Interpolator::create_particle_interpolator<dim> (prm));
