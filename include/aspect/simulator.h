@@ -1756,7 +1756,7 @@ namespace aspect
        * class has no way to keep track what it has already written, and so
        * we can not just append the last row of the table to the output
        * file. Rather, we keep track how many bytes we already wrote,
-       * and a has of what they contained, and if these so-many bytes have
+       * and a hash of what they contained, and if these so-many bytes have
        * not changed between the previous and current write operation, then
        * we only open the file in 'append' mode to add the new bytes from the
        * last row. If what we would write now has changed from what we wrote

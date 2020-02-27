@@ -309,7 +309,26 @@ namespace aspect
       // changed -- in that case, we will have to write everything,
       // not just append one line.
       const bool write_everything
-        = ( // We may have never written anything
+        = ( // We may have never written anything. More precisely, this
+            // case happens if the statistics_last_write_size is at the
+            // value initialized by the Simulator::Simulator()
+            // constructor, and this can happen in two situations:
+            // (i) At the end of the first time step; and (ii) at the
+            // end of the first time step after restart since the
+            // variable we query here is not serialized. It is clear that
+            // at the end of the first time step, we want to write the
+            // entire contents of the statistics object. For the second
+            // case, this is also appropriate since someone may have
+            // previously restarted from a checkpoint, run a couple of
+            // time steps that have added to the statistics file, but then
+            // aborted the run again; a later restart from the same
+            // checkpoint then requires overwriting the statistics file
+            // on disk with what we have when this function is called for
+            // the first time after the restart. The same situation
+            // happens if the simulation kept running for some time after
+            // a checkpoint, but is resumed from that checkpoint (i.e.,
+            // at an earlier time step than when the statistics file was
+            // written to last).
             (statistics_last_write_size == 0)
             ||
             // Or the size of the statistics file may have
@@ -346,7 +365,12 @@ namespace aspect
         }
 
       // Now update the size and hash of what we just wrote so that
-      // we can compare against it next time we get here
+      // we can compare against it next time we get here. Note that we do
+      // not need to guard access to these variables with a mutex because
+      // this is the only function that touches the variables, and
+      // this function runs only once at a time (on a different
+      // thread, but it's not started a second time while the previous
+      // run hasn't finished).
       statistics_last_write_size = statistics_contents.size();
       statistics_last_hash       = std::hash<std::string>()(statistics_contents);
     };
