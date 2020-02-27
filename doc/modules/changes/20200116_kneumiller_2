@@ -1,4 +1,4 @@
-New: The 'read_and_distribute_file_content' now checks if the requested file lookup is a url.
+New: The 'read_and_distribute_file_content' function now checks if the requested file lookup is a URL.
 If the user has the libdap libraries installed and is requesting data from a libdap server then the
 data is pulled from the server, converted to the proper format, and passed in.
 <br>

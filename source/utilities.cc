@@ -939,6 +939,16 @@ namespace aspect
     }
 
 
+    bool
+    filename_is_url(const std::string &filename)
+    {
+        // return whether or not the requested file is from a url
+        if (filename.find("http://") == 0 || filename.find("https://") == 0 || filename.find("file://") == 0)
+            return true;
+        else
+            return false;
+    }
+
 
     std::string
     read_and_distribute_file_content(const std::string &filename,
@@ -951,9 +961,9 @@ namespace aspect
           // set file size to an invalid size (signaling an error if we can not read it)
           unsigned int filesize = numbers::invalid_unsigned_int;
 
-          //Check to see if the prm file will be reading data from the disk or
+          // Check to see if the prm file will be reading data from disk or
           // from a provided URL
-          if (filename.find("http://") == 0 || filename.find("https://") == 0 || filename.find("file://") == 0)
+          if (filename_is_url(filename))
             {
 #ifdef HAVE_LIBDAP
               libdap::Connect *url = new libdap::Connect(filename);
@@ -971,7 +981,7 @@ namespace aspect
               std::vector<std::vector<std::string>> columns;
 
               //Check dds values to make sure the arrays are of the same length and of type string
-              for (libdap::DDS::Vars_iter i = dds.var_begin(); i != dds.var_end(); i++)
+              for (libdap::DDS::Vars_iter i = dds.var_begin(); i != dds.var_end(); ++i)
                 {
                   libdap::BaseType *btp = *i;
                   if ((*i)->type() == libdap::dods_array_c)
@@ -979,7 +989,7 @@ namespace aspect
                       //Array to store the url data
                       libdap::Array *urlArray;
                       urlArray = static_cast <libdap::Array *>(btp);
-                      if (urlArray->var() != NULL && urlArray->var()->type() == libdap::dods_str_c)
+                      if (urlArray->var() != nullptr && urlArray->var()->type() == libdap::dods_str_c)
                         {
                           //The url Array contains a separate array for each column of data.
                           // This will put each of these individual arrays into its own vector.
@@ -991,7 +1001,8 @@ namespace aspect
                         {
                           AssertThrow (false,
                                        ExcMessage (std::string("Error when reading from url: ") + filename +
-                                                   " Maybe it was not of the correct type?"));
+                                                   " Check your connection to the server and make sure the server "
+                                                   "delivers correct data."));
                         }
 
                     }
@@ -999,11 +1010,12 @@ namespace aspect
                     {
                       AssertThrow (false,
                                    ExcMessage (std::string("Error when reading from url: ") + filename +
-                                               " Maybe it was not of the correct type?"));
+                                               " Check your connection to the server and make sure the server "
+                                               "delivers correct data."));
                     }
                 }
 
-              //Add the POINTS data that is required and found at the top of the data file.
+              // Add the POINTS data that is required and found at the top of the data file.
               // The POINTS values are set as attributes inside a table.
               // Loop through the Attribute table to locate the points values within
               std::vector<std::string> points;
@@ -1018,7 +1030,7 @@ namespace aspect
 
               std::stringstream urlString;
 
-              //Append the gathered POINTS in the proper format:
+              // Append the gathered POINTS in the proper format:
               // "# POINTS: <val1> <val2> <val3>"
               urlString << "# POINTS:";
               for (unsigned int i = 0; i < points.size(); i++)
@@ -2093,8 +2105,7 @@ namespace aspect
                             << filename << "." << std::endl << std::endl;
 
 
-          AssertThrow(Utilities::fexists(filename) || filename.find("http://") == 0 || filename.find("https://") == 0
-                      || filename.find("file://") == 0,
+          AssertThrow(Utilities::fexists(filename) || filename_is_url(filename),
                       ExcMessage (std::string("Ascii data file <")
                                   +
                                   filename
@@ -2562,8 +2573,7 @@ namespace aspect
       for (unsigned int i=0; i<number_of_layer_boundaries; ++i)
         {
           const std::string filename = data_directory + data_file_names[i];
-          AssertThrow(Utilities::fexists(filename) || filename.find("http://") == 0 || filename.find("https://") == 0
-                      || filename.find("file://") == 0,
+          AssertThrow(Utilities::fexists(filename) || filename_is_url(filename),
                       ExcMessage (std::string("Ascii data file <")
                                   +
                                   filename
@@ -2736,8 +2746,7 @@ namespace aspect
                         << filename << "." << std::endl << std::endl;
 
 
-      AssertThrow(Utilities::fexists(filename) || filename.find("http://") == 0 || filename.find("https://") == 0
-                  || filename.find("file://") == 0,
+      AssertThrow(Utilities::fexists(filename) || filename_is_url(filename),
                   ExcMessage (std::string("Ascii data file <")
                               +
                               filename
@@ -2784,8 +2793,7 @@ namespace aspect
 
       const std::string filename = this->data_directory + this->data_file_name;
 
-      AssertThrow(Utilities::fexists(filename) || filename.find("http://") == 0 || filename.find("https://") == 0
-                  || filename.find("file://") == 0,
+      AssertThrow(Utilities::fexists(filename) || filename_is_url(filename),
                   ExcMessage (std::string("Ascii data file <")
                               +
                               filename

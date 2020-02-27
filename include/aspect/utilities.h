@@ -394,6 +394,13 @@ namespace aspect
     bool fexists(const std::string &filename);
 
     /**
+     * Checks to see if the user is trying to use data from a url.
+     *
+     * @param filename File to check
+     */
+    bool filename_is_url(const std::string &filename);
+
+    /**
      * Reads the content of the ascii file @p filename on process 0 and
      * distributes the content by MPI_Bcast to all processes. The function
      * returns the content of the file on all processes.
