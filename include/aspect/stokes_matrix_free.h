@@ -147,12 +147,15 @@ namespace aspect
         void clear () override;
 
         /**
-         * Fills in the viscosity table and sets the value for the pressure scaling constant.
+         * Fills in the viscosity table and sets the value for the pressure scaling constant. The input
+         * @p is_mg_level_data describes whether the viscosity values are defined for a multigrid level
+         * matrix or for the active level matrix.
          */
         void fill_cell_data (const dealii::LinearAlgebra::distributed::Vector<number> &viscosity_values,
-                             const double pressure_scaling,
                              const Triangulation<dim> &tria,
-                             const DoFHandler<dim> &dof_handler_for_projection);
+                             const DoFHandler<dim> &dof_handler_for_projection,
+                             const bool is_mg_level_data,
+                             const double pressure_scaling);
 
 
         /**
@@ -220,11 +223,14 @@ namespace aspect
         void clear () override;
 
         /**
-         * Fills in the viscosity table and gives information regarding compressibility.
+         * Fills in the viscosity table and gives information regarding compressibility. The input
+         * @p is_mg_level_data describes whether the viscosity values are defined for a multigrid level
+         * matrix or for the active level matrix.
          */
         void fill_cell_data(const dealii::LinearAlgebra::distributed::Vector<number> &viscosity_values,
                             const Triangulation<dim> &tria,
                             const DoFHandler<dim> &dof_handler_for_projection,
+                            const bool is_mg_level_data,
                             const bool is_compressible);
 
         /**

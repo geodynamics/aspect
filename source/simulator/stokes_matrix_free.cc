@@ -805,9 +805,10 @@ namespace aspect
   void
   MatrixFreeStokesOperators::MassMatrixOperator<dim,degree_p,number>::
   fill_cell_data (const dealii::LinearAlgebra::distributed::Vector<number> &viscosity_values,
-                  const double pressure_scaling,
                   const Triangulation<dim> &tria,
-                  const DoFHandler<dim> &dof_handler_for_projection)
+                  const DoFHandler<dim> &dof_handler_for_projection,
+                  const bool is_mg_level_data,
+                  const double pressure_scaling)
   {
     const unsigned int n_cells = this->data->n_macro_cells();
     one_over_viscosity.reinit(TableIndices<1>(n_cells));
@@ -816,22 +817,22 @@ namespace aspect
     for (unsigned int cell=0; cell<n_cells; ++cell)
       for (unsigned int i=0; i<this->get_matrix_free()->n_components_filled(cell); ++i)
         {
-          if (this->data->get_mg_level() == numbers::invalid_unsigned_int)
-            {
-              typename DoFHandler<dim>::active_cell_iterator FEQ_cell = this->get_matrix_free()->get_cell_iterator(cell,i);
-              typename DoFHandler<dim>::active_cell_iterator DG_cell(&tria,
-                                                                     FEQ_cell->level(),
-                                                                     FEQ_cell->index(),
-                                                                     &dof_handler_for_projection);
-              DG_cell->get_active_or_mg_dof_indices(local_dof_indices);
-            }
-          else
+          if (is_mg_level_data)
             {
               typename DoFHandler<dim>::level_cell_iterator FEQ_cell = this->get_matrix_free()->get_cell_iterator(cell,i);
               typename DoFHandler<dim>::level_cell_iterator DG_cell(&tria,
                                                                     FEQ_cell->level(),
                                                                     FEQ_cell->index(),
                                                                     &dof_handler_for_projection);
+              DG_cell->get_active_or_mg_dof_indices(local_dof_indices);
+            }
+          else
+            {
+              typename DoFHandler<dim>::active_cell_iterator FEQ_cell = this->get_matrix_free()->get_cell_iterator(cell,i);
+              typename DoFHandler<dim>::active_cell_iterator DG_cell(&tria,
+                                                                     FEQ_cell->level(),
+                                                                     FEQ_cell->index(),
+                                                                     &dof_handler_for_projection);
               DG_cell->get_active_or_mg_dof_indices(local_dof_indices);
             }
 
@@ -972,6 +973,7 @@ namespace aspect
   fill_cell_data (const dealii::LinearAlgebra::distributed::Vector<number> &viscosity_values,
                   const Triangulation<dim> &tria,
                   const DoFHandler<dim> &dof_handler_for_projection,
+                  const bool is_mg_level_data,
                   const bool is_compressible)
   {
     const unsigned int n_cells = this->data->n_macro_cells();
@@ -981,22 +983,22 @@ namespace aspect
     for (unsigned int cell=0; cell<n_cells; ++cell)
       for (unsigned int i=0; i<this->get_matrix_free()->n_components_filled(cell); ++i)
         {
-          if (this->data->get_mg_level() == numbers::invalid_unsigned_int)
-            {
-              typename DoFHandler<dim>::active_cell_iterator FEQ_cell = this->get_matrix_free()->get_cell_iterator(cell,i);
-              typename DoFHandler<dim>::active_cell_iterator DG_cell(&tria,
-                                                                     FEQ_cell->level(),
-                                                                     FEQ_cell->index(),
-                                                                     &dof_handler_for_projection);
-              DG_cell->get_active_or_mg_dof_indices(local_dof_indices);
-            }
-          else
+          if (is_mg_level_data)
             {
               typename DoFHandler<dim>::level_cell_iterator FEQ_cell = this->get_matrix_free()->get_cell_iterator(cell,i);
               typename DoFHandler<dim>::level_cell_iterator DG_cell(&tria,
                                                                     FEQ_cell->level(),
                                                                     FEQ_cell->index(),
                                                                     &dof_handler_for_projection);
+              DG_cell->get_active_or_mg_dof_indices(local_dof_indices);
+            }
+          else
+            {
+              typename DoFHandler<dim>::active_cell_iterator FEQ_cell = this->get_matrix_free()->get_cell_iterator(cell,i);
+              typename DoFHandler<dim>::active_cell_iterator DG_cell(&tria,
+                                                                     FEQ_cell->level(),
+                                                                     FEQ_cell->index(),
+                                                                     &dof_handler_for_projection);
               DG_cell->get_active_or_mg_dof_indices(local_dof_indices);
             }
 
@@ -1356,12 +1358,14 @@ namespace aspect
         A_block_matrix.fill_cell_data(active_coef_dof_vec,
                                       sim.triangulation,
                                       dof_handler_projection,
+                                      /*is_mg_level_data*/false,
                                       is_compressible);
 
         Schur_complement_block_matrix.fill_cell_data(active_coef_dof_vec,
-                                                     sim.pressure_scaling,
                                                      sim.triangulation,
-                                                     dof_handler_projection);
+                                                     dof_handler_projection,
+                                                     /*is_mg_level_data*/false,
+                                                     sim.pressure_scaling);
       }
 
 
@@ -1381,12 +1385,14 @@ namespace aspect
         mg_matrices_A_block[level].fill_cell_data(level_coef_dof_vec[level],
                                                   sim.triangulation,
                                                   dof_handler_projection,
+                                                  /*is_mg_level_data*/true
                                                   is_compressible);
 
         mg_matrices_Schur_complement[level].fill_cell_data(level_coef_dof_vec[level],
-                                                           sim.pressure_scaling,
                                                            sim.triangulation,
-                                                           dof_handler_projection);
+                                                           dof_handler_projection,
+                                                           /*is_mg_level_data*/true,
+                                                           sim.pressure_scaling);
       }
   }
 
