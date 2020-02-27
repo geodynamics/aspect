@@ -255,12 +255,12 @@ namespace aspect
       normal_vector(const typename Triangulation<dim>::face_iterator &face,
                     const Point<dim> &p) const
       {
-        // Let us first test whether we are on a "horizontal" face.
-        // In that case, the normal vector is easy to compute
-        // since it is proportional to the vector from the center to the
-        // point 'p'.
+        // Let us first test whether we are on a "horizontal" face
+        // (tangential to the sphere).  In this case, the normal vector is
+        // easy to compute since it is proportional to the vector from the
+        // center to the point 'p'.
         //
-        // We test whether that is the case by checking that the vertices
+        // We test whether a face is horizontal by checking that the vertices
         // all have roughly the same distance from the center: If the
         // maximum deviation for the distances from the vertices to the
         // center is less than 1.e-5 of the distance between vertices (as
@@ -282,7 +282,7 @@ namespace aspect
           std::min_element(distances_to_first_vertex.begin(),
                            distances_to_first_vertex.end());
 
-        // So, if this is a horizontal face, then just compute the normal
+        // So, if this is a "horizontal" face, then just compute the normal
         // vector as the one from the center to the point 'p', adequately
         // scaled.
         if (*minmax_distance.second - *minmax_distance.first <
