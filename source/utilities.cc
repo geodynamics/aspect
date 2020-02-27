@@ -314,7 +314,7 @@ namespace aspect
     }
 
 
-
+#if !DEAL_II_VERSION_GTE(9,2,0)
     /**
      * Split the set of DoFs (typically locally owned or relevant) in @p whole_set into blocks
      * given by the @p dofs_per_block structure.
@@ -334,6 +334,7 @@ namespace aspect
           start += dofs_per_block[i];
         }
     }
+#endif
 
     template <int dim>
     std::vector<std::string>
