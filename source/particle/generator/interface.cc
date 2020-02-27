@@ -35,9 +35,13 @@ namespace aspect
       Interface<dim>::Interface()
       {}
 
+
+
       template <int dim>
       Interface<dim>::~Interface ()
       {}
+
+
 
       template <int dim>
       void
@@ -46,6 +50,8 @@ namespace aspect
         const unsigned int my_rank = Utilities::MPI::this_mpi_process(this->get_mpi_communicator());
         random_number_generator.seed(5432+my_rank);
       }
+
+
 
       template <int dim>
       std::pair<Particles::internal::LevelInd,Particle<dim> >
@@ -78,6 +84,8 @@ namespace aspect
         // Avoid warnings about missing return
         return std::pair<Particles::internal::LevelInd,Particle<dim> >();
       }
+
+
 
       template <int dim>
       std::pair<Particles::internal::LevelInd,Particle<dim> >
@@ -143,10 +151,14 @@ namespace aspect
         return std::make_pair(Particles::internal::LevelInd(),Particle<dim>());
       }
 
+
+
       template <int dim>
       void
       Interface<dim>::declare_parameters (ParameterHandler &)
       {}
+
+
 
       template <int dim>
       void
@@ -180,6 +192,7 @@ namespace aspect
                                                            declare_parameters_function,
                                                            factory_function);
       }
+
 
 
       template <int dim>
