@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2015 - 2019 by the authors of the ASPECT code.
+ Copyright (C) 2015 - 2020 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -537,6 +537,30 @@ namespace aspect
           get_needed_update_flags () const;
 
           /**
+           * Checks if the particle plugin specified by @p name exists
+           * in this model.
+           */
+          bool
+          plugin_name_exists(const std::string &name) const;
+
+          /**
+           * Checks if the particle property plugin specified by @p first
+           * is executed before another particle property plugin specified
+           * by @p second.
+           *
+           * Throws an assert when one of the plugin names does not
+           * exist. You can use the function plugin_name_exists() to
+           * check in advance whether a plugin exists
+           */
+          bool
+          check_plugin_order(const std::string &first, const std::string &second) const;
+
+          /**
+           * Get the plugin index of the particle plugin specified by @p name.
+           */
+          unsigned int get_plugin_index_by_name(const std::string &name) const;
+
+          /**
            * Get the number of components required to represent this particle's
            * properties.
            *
@@ -631,6 +655,11 @@ namespace aspect
           write_plugin_graph (std::ostream &output_stream);
 
         private:
+          /**
+           * Stores the names of the plugins which are present
+           * in the order they are executed.
+           */
+          std::vector<std::string> plugin_names;
 
           /**
            * A list of property objects that have been requested in the
@@ -670,4 +699,3 @@ namespace aspect
 }
 
 #endif
-
