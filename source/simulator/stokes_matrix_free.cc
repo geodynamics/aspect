@@ -556,7 +556,7 @@ namespace aspect
           ptmp.reinit(src);
         }
 
-      // either solve with the Schur complement matrix (if do_solve_M==true)
+      // either solve with the Schur complement matrix (if do_solve_Schur_complement==true)
       // or just apply one preconditioner sweep (for the first few
       // iterations of our two-stage outer GMRES iteration)
       if (do_solve_Schur_complement)
@@ -1354,14 +1354,14 @@ namespace aspect
     if (sim.parameters.n_expensive_stokes_solver_steps > 0)
       {
         A_block_matrix.fill_cell_data(active_coef_dof_vec,
-                                       sim.triangulation,
-                                       dof_handler_projection,
-                                       is_compressible);
+                                      sim.triangulation,
+                                      dof_handler_projection,
+                                      is_compressible);
 
         Schur_complement_block_matrix.fill_cell_data(active_coef_dof_vec,
-                                   sim.pressure_scaling,
-                                   sim.triangulation,
-                                   dof_handler_projection);
+                                                     sim.pressure_scaling,
+                                                     sim.triangulation,
+                                                     dof_handler_projection);
       }
 
 
@@ -1379,14 +1379,14 @@ namespace aspect
     for (unsigned int level=0; level<n_levels; ++level)
       {
         mg_matrices_A_block[level].fill_cell_data(level_coef_dof_vec[level],
-                                            sim.triangulation,
-                                            dof_handler_projection,
-                                            is_compressible);
+                                                  sim.triangulation,
+                                                  dof_handler_projection,
+                                                  is_compressible);
 
         mg_matrices_Schur_complement[level].fill_cell_data(level_coef_dof_vec[level],
-                                            sim.pressure_scaling,
-                                            sim.triangulation,
-                                            dof_handler_projection);
+                                                           sim.pressure_scaling,
+                                                           sim.triangulation,
+                                                           dof_handler_projection);
       }
   }
 
@@ -1557,19 +1557,16 @@ namespace aspect
 
     // Schur complement matrix GMG
     Multigrid<vector_t > mg_Schur(mg_matrix_Schur,
-                              mg_coarse_Schur,
-                              mg_transfer_Schur_complement,
-                              mg_smoother_Schur,
-                              mg_smoother_Schur);
+                                  mg_coarse_Schur,
+                                  mg_transfer_Schur_complement,
+                                  mg_smoother_Schur,
+                                  mg_smoother_Schur);
     mg_Schur.set_edge_matrices(mg_interface_Schur, mg_interface_Schur);
 
-    // GMG Preconditioner
-    typedef PreconditionMG<dim, vector_t, MGTransferMatrixFree<dim,double> > APreconditioner;
-    APreconditioner prec_A(dof_handler_v, mg_A, mg_transfer_A_block);
-
-    // Schur complement matrix GMG
-    typedef PreconditionMG<dim, vector_t, MGTransferMatrixFree<dim,double> > SchurPreconditioner;
-    APreconditioner prec_Schur(dof_handler_p, mg_Schur, mg_transfer_Schur_complement);
+    // GMG Preconditioner for ABlock and Schur complement
+    typedef PreconditionMG<dim, vector_t, MGTransferMatrixFree<dim,double> > GMGPreconditioner;
+    GMGPreconditioner prec_A(dof_handler_v, mg_A, mg_transfer_A_block);
+    GMGPreconditioner prec_Schur(dof_handler_p, mg_Schur, mg_transfer_Schur_complement);
 
 
     // Many parts of the solver depend on the block layout (velocity = 0,
@@ -1728,7 +1725,7 @@ namespace aspect
     solver_control_expensive.enable_history_data();
 
     // create a cheap preconditioner that consists of only a single V-cycle
-    const internal::BlockSchurGMGPreconditioner<StokesMatrixType, ABlockMatrixType, SchurComplementMatrixType, APreconditioner, SchurPreconditioner>
+    const internal::BlockSchurGMGPreconditioner<StokesMatrixType, ABlockMatrixType, SchurComplementMatrixType, GMGPreconditioner, GMGPreconditioner>
     preconditioner_cheap (stokes_matrix, A_block_matrix, Schur_complement_block_matrix,
                           prec_A, prec_Schur,
                           /*do_solve_A*/false,
@@ -1737,7 +1734,7 @@ namespace aspect
                           sim.parameters.linear_solver_S_block_tolerance);
 
     // create an expensive preconditioner that solves for the A block with CG
-    const internal::BlockSchurGMGPreconditioner<StokesMatrixType, ABlockMatrixType, SchurComplementMatrixType, APreconditioner, SchurPreconditioner>
+    const internal::BlockSchurGMGPreconditioner<StokesMatrixType, ABlockMatrixType, SchurComplementMatrixType, GMGPreconditioner, GMGPreconditioner>
     preconditioner_expensive (stokes_matrix, A_block_matrix, Schur_complement_block_matrix,
                               prec_A, prec_Schur,
                               /*do_solve_A*/true,
@@ -1961,7 +1958,7 @@ namespace aspect
       std::set<types::boundary_id> dirichlet_boundary = sim.boundary_velocity_manager.get_zero_boundary_velocity_indicators();
       for (auto it: sim.boundary_velocity_manager.get_active_boundary_velocity_names())
         {
-          int bdryid = it.first;
+          types::boundary_id bdryid = it.first;
           std::string component=it.second.first;
           Assert(component=="", ExcNotImplemented());
           dirichlet_boundary.insert(bdryid);
@@ -2040,7 +2037,7 @@ namespace aspect
       std::shared_ptr<MatrixFree<dim,double> >
       Schur_mf_storage(new MatrixFree<dim,double>());
       Schur_mf_storage->reinit(*sim.mapping,dof_handler_p, constraints_p,
-                              QGauss<1>(sim.parameters.stokes_velocity_degree+1), additional_data);
+                               QGauss<1>(sim.parameters.stokes_velocity_degree+1), additional_data);
 
       Schur_complement_block_matrix.clear();
       Schur_complement_block_matrix.initialize(Schur_mf_storage);
