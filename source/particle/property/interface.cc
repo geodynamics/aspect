@@ -182,13 +182,6 @@ namespace aspect
 
       template <int dim>
       void
-      Interface<dim>::post_initialize ()
-      {}
-
-
-
-      template <int dim>
-      void
       Interface<dim>::initialize_one_particle_property (const Point<dim> &,
                                                         std::vector<double> &) const
       {}
@@ -257,25 +250,15 @@ namespace aspect
         for (typename std::list<std::unique_ptr<Interface<dim> > >::const_iterator
              p = property_list.begin(); p!=property_list.end(); ++p)
           {
-            (*p)->initialize();
-
             info.push_back((*p)->get_property_information());
           }
 
         // Initialize our property information
         property_information = ParticlePropertyInformation(info);
-      }
-
-
-
-      template <int dim>
-      void
-      Manager<dim>::post_initialize ()
-      {
         for (typename std::list<std::unique_ptr<Interface<dim> > >::const_iterator
              p = property_list.begin(); p!=property_list.end(); ++p)
           {
-            (*p)->post_initialize();;
+            (*p)->initialize();
           }
       }
 

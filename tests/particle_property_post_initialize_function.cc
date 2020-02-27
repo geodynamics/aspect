@@ -24,12 +24,6 @@ namespace aspect
           initialize ()
           {
             std::cout << "initialize" << std::endl;
-          }
-
-          virtual
-          void
-          post_initialize ()
-          {
             const Particle::Property::Manager<dim> &manager = this->get_particle_world().get_property_manager();
             post_initialized_info = manager.get_data_info().get_field_index_by_name("initial position");
             std::cout << "initial position: post_initialized_info = " << post_initialized_info << std::endl;
