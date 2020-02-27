@@ -1385,7 +1385,7 @@ namespace aspect
         mg_matrices_A_block[level].fill_cell_data(level_coef_dof_vec[level],
                                                   sim.triangulation,
                                                   dof_handler_projection,
-                                                  /*is_mg_level_data*/true
+                                                  /*is_mg_level_data*/true,
                                                   is_compressible);
 
         mg_matrices_Schur_complement[level].fill_cell_data(level_coef_dof_vec[level],
