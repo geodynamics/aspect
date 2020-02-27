@@ -1759,6 +1759,11 @@ namespace aspect
         if (sim.parameters.n_cheap_stokes_solver_steps == 0)
           throw SolverControl::NoConvergence(0,0);
 
+        // Unlike with the expensive preconditioner which uses CG solves on both the
+        // velocity and pressure space, the cheap preonditioner only contains matrix-vector
+        // products and GMG v-cycle where the smoothers, transfer operators, and coarse
+        // solvers are all defined to be linear operators which do not change from iteration
+        // to iterations. Therefore we can use GMRES, instead of FGMRES, as the Krylov subspace solver.
         SolverGMRES<dealii::LinearAlgebra::distributed::BlockVector<double> >
         solver(solver_control_cheap, mem,
                SolverGMRES<dealii::LinearAlgebra::distributed::BlockVector<double> >::
