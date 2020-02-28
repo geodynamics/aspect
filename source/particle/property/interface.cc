@@ -38,6 +38,8 @@ namespace aspect
         number_of_plugins(numbers::invalid_unsigned_int)
       {}
 
+
+
       ParticlePropertyInformation::ParticlePropertyInformation(const std::vector<
                                                                std::vector<
                                                                std::pair<std::string,unsigned int> > > &properties)
@@ -74,6 +76,8 @@ namespace aspect
         number_of_plugins = properties.size();
       }
 
+
+
       bool
       ParticlePropertyInformation::fieldname_exists(const std::string &name) const
       {
@@ -105,12 +109,16 @@ namespace aspect
         return field_names[field_index];
       }
 
+
+
       unsigned int
       ParticlePropertyInformation::get_position_by_field_name(const std::string &name) const
       {
         const unsigned int field_index = get_field_index_by_name(name);
         return position_per_field[field_index];
       }
+
+
 
       unsigned int
       ParticlePropertyInformation::get_components_by_field_name(const std::string &name) const
@@ -119,11 +127,15 @@ namespace aspect
         return components_per_field[field_index];
       }
 
+
+
       unsigned int
       ParticlePropertyInformation::get_position_by_field_index(const unsigned int field_index) const
       {
         return position_per_field[field_index];
       }
+
+
 
       unsigned int
       ParticlePropertyInformation::get_components_by_field_index(const unsigned int field_index) const
@@ -131,11 +143,15 @@ namespace aspect
         return components_per_field[field_index];
       }
 
+
+
       unsigned int
       ParticlePropertyInformation::get_position_by_plugin_index(const unsigned int plugin_index) const
       {
         return position_per_plugin[plugin_index];
       }
+
+
 
       unsigned int
       ParticlePropertyInformation::get_components_by_plugin_index(const unsigned int plugin_index) const
@@ -143,11 +159,15 @@ namespace aspect
         return components_per_plugin[plugin_index];
       }
 
+
+
       unsigned int
       ParticlePropertyInformation::get_fields_by_plugin_index(const unsigned int plugin_index) const
       {
         return fields_per_plugin[plugin_index];
       }
+
+
 
       unsigned int
       ParticlePropertyInformation::n_plugins() const
@@ -155,11 +175,15 @@ namespace aspect
         return number_of_plugins;
       }
 
+
+
       unsigned int
       ParticlePropertyInformation::n_fields() const
       {
         return number_of_fields;
       }
+
+
 
       unsigned int
       ParticlePropertyInformation::n_components() const
@@ -173,16 +197,22 @@ namespace aspect
       Interface<dim>::~Interface ()
       {}
 
+
+
       template <int dim>
       void
       Interface<dim>::initialize ()
       {}
+
+
 
       template <int dim>
       void
       Interface<dim>::initialize_one_particle_property (const Point<dim> &,
                                                         std::vector<double> &) const
       {}
+
+
 
       template <int dim>
       void
@@ -193,12 +223,16 @@ namespace aspect
                                                     const ArrayView<double> &) const
       {}
 
+
+
       template <int dim>
       UpdateTimeFlags
       Interface<dim>::need_update () const
       {
         return update_never;
       }
+
+
 
       template <int dim>
       UpdateFlags
@@ -207,12 +241,16 @@ namespace aspect
         return update_default;
       }
 
+
+
       template <int dim>
       InitializationModeForLateParticles
       Interface<dim>::late_initialization_mode () const
       {
         return interpolate;
       }
+
+
 
       template <int dim>
       void
@@ -226,17 +264,21 @@ namespace aspect
       Interface<dim>::parse_parameters (ParameterHandler &)
       {}
 
+
+
       template <int dim>
       inline
       Manager<dim>::Manager ()
-      {
-      }
+      {}
+
+
 
       template <int dim>
       inline
       Manager<dim>::~Manager ()
-      {
-      }
+      {}
+
+
 
       template <int dim>
       void
@@ -256,6 +298,8 @@ namespace aspect
         // Initialize our property information
         property_information = ParticlePropertyInformation(info);
       }
+
+
 
       template <int dim>
       void
@@ -282,6 +326,8 @@ namespace aspect
 
         particle->set_properties(particle_properties);
       }
+
+
 
       template <int dim>
       std::vector<double>
@@ -348,6 +394,8 @@ namespace aspect
         return particle_properties;
       }
 
+
+
       template <int dim>
       void
       Manager<dim>::update_one_particle (typename ParticleHandler<dim>::particle_iterator &particle,
@@ -365,6 +413,8 @@ namespace aspect
                                                particle->get_properties());
           }
       }
+
+
 
       template <int dim>
       UpdateTimeFlags
@@ -446,12 +496,16 @@ namespace aspect
         return property_information.n_components();
       }
 
+
+
       template <int dim>
       std::size_t
       Manager<dim>::get_particle_size () const
       {
         return (property_information.n_components()+2*dim) * sizeof(double) + sizeof(types::particle_index);
       }
+
+
 
       template <int dim>
       const ParticlePropertyInformation &
@@ -460,12 +514,16 @@ namespace aspect
         return property_information;
       }
 
+
+
       template <int dim>
       unsigned int
       Manager<dim>::get_property_component_by_name(const std::string &name) const
       {
         return property_information.get_position_by_field_name(name);
       }
+
+
 
       namespace
       {
@@ -475,6 +533,7 @@ namespace aspect
         aspect::internal::Plugins::PluginList<Property::Interface<2> >,
         aspect::internal::Plugins::PluginList<Property::Interface<3> > > registered_plugins;
       }
+
 
 
       template <int dim>
@@ -507,6 +566,7 @@ namespace aspect
         // particle properties in turn
         std::get<dim>(registered_plugins).declare_parameters (prm);
       }
+
 
 
       template <int dim>
@@ -562,6 +622,8 @@ namespace aspect
             property_list.back()->parse_parameters (prm);
           }
       }
+
+
 
       template <int dim>
       void

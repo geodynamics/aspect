@@ -86,6 +86,7 @@ namespace aspect
       }
 
 
+
       template <int dim>
       Interface<dim> *
       create_particle_interpolator (ParameterHandler &prm)
@@ -104,6 +105,8 @@ namespace aspect
         return std::get<dim>(registered_plugins).create_plugin (name,
                                                                 "Particle::Interpolator name");
       }
+
+
 
       template <int dim>
       void
