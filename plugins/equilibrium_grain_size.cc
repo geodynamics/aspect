@@ -100,8 +100,8 @@ namespace aspect
 		  grain_size = std::max(min_grain_size, grain_size);
 
 		  double diff_viscosity;
-		  double disl_viscosity;
 		  double effective_viscosity = diffusion_viscosity(in.temperature[i], pressure, composition, in.strain_rate[i], in.position[i]);
+		  double disl_viscosity = effective_viscosity;
 
 		  // If we do not have the strain rate, there is no equilibrium grain size
 		  if(second_strain_rate_invariant > 1e-30)
@@ -128,7 +128,7 @@ namespace aspect
 				  const double stress_term = 4.0 * effective_viscosity * second_strain_rate_invariant * dislocation_strain_rate_invariant;
 
 				  old_grain_size = grain_size;
-				  grain_size = std::max(min_grain_size, pow(prefactor/stress_term * exponential,1./(1+grain_growth_exponent[phase_index])));
+				  grain_size = 0.9 * old_grain_size + 0.1 * pow(prefactor/stress_term * exponential,1./(1+grain_growth_exponent[phase_index]));
 
 				  ++j;
 				}
@@ -138,7 +138,7 @@ namespace aspect
         	for (unsigned int c=0; c<composition.size(); ++c)
               {
         		if(c == grain_size_index)
-        	      grain_size_out->prescribed_field_outputs[i][c] = std::min(std::max(min_grain_size,grain_size), min_grain_size * 1.e5);
+        	      grain_size_out->prescribed_field_outputs[i][c] = std::max(min_grain_size, grain_size);
         		else
         		  grain_size_out->prescribed_field_outputs[i][c] = 0.0;
               }
@@ -650,6 +650,20 @@ namespace aspect
               {
                 seismic_out->vp[i] = seismic_Vp(in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
                 seismic_out->vs[i] = seismic_Vs(in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
+              }
+
+          // set up variable to interpolate prescribed field outputs onto temperature field
+          PrescribedTemperatureOutputs<dim> *prescribed_temperature_out = out.template get_additional_output<PrescribedTemperatureOutputs<dim> >();
+
+          if (prescribed_temperature_out != NULL)
+              {
+                const double reference_density = this->get_adiabatic_conditions().density(in.position[i]);
+                const double density_anomaly = (out.densities[i] - reference_density) / reference_density;
+
+                const double reference_temperature = this->get_adiabatic_conditions().temperature(in.position[i]);
+                const double temperature_anomaly = -density_anomaly / out.thermal_expansion_coefficients[i];
+                const double new_temperature = std::max(std::min(reference_temperature + temperature_anomaly,1600.), 1600.);
+                prescribed_temperature_out->prescribed_temperature_outputs[i] = new_temperature;
               }
         }
     }
@@ -1186,6 +1200,14 @@ namespace aspect
           const unsigned int n_points = out.viscosities.size();
           out.additional_outputs.push_back(
         	std_cxx14::make_unique<MaterialModel::SeismicAdditionalOutputs<dim>> (n_points));
+        }
+
+      if (this->get_parameters().temperature_method == Parameters<dim>::AdvectionFieldMethod::prescribed_field &&
+          out.template get_additional_output<PrescribedTemperatureOutputs<dim> >() == NULL)
+        {
+          const unsigned int n_points = out.viscosities.size();
+          out.additional_outputs.push_back(
+            std_cxx14::make_unique<MaterialModel::PrescribedTemperatureOutputs<dim>> (n_points));
         }
     }
   }

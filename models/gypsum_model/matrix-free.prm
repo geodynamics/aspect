@@ -1,7 +1,7 @@
 include gypsum_model.prm
 
 set Dimension = 3
-set Additional shared libraries = ../../plugins/libequilibrium_grain_size.so
+set Additional shared libraries            = ../../plugins/libequilibrium_grain_size.so, ../../plugins/libreference_profile.so
 
 subsection Solver parameters
   subsection Stokes solver parameters

@@ -13,10 +13,17 @@
 using namespace std;
 
 
+/*
+ * ------------------------------------------------------------------
+ * TODO:
+ * ------------------------------------------------------------------
+ */
+
+
 namespace UniversalConst
 {
 	const double PI = 3.141592653589793;
-	//const long double PI = 3.14159265358979323846264338328L;
+    //const long double PI = 3.14159265358979323846264338328L;
 	
 	// Conversion from degree to radians
 	const double DEG2RAD = PI/180.0;
@@ -66,6 +73,71 @@ namespace EarthConst
 
 }
 
+
+
+namespace VectorUtilities
+{
+
+
+	/**
+	 * Function to create and return a linearly
+	 * increasing, evenly spaced vector.
+	 * 
+	 * Inputs:
+	 * 			a = "start point" of type T
+	 * 			b = "end point" of type T
+	 * 			N = "number of increments" of type int
+	 * 
+	 * Output:	std::vector of type T
+	 *
+	 * Modified from https://gist.github.com/lorenzoriano/5414671
+	 *	20181005
+	 */
+	template <typename T>
+	std::vector<T> linspace(T a, T b, size_t N)
+	{
+		T h = (b - a) / static_cast<T>(N-1);
+		std::vector<T> xs(N);
+		typename std::vector<T>::iterator x;
+		T val;
+		for (x = xs.begin(), val = a; x != xs.end(); ++x, val += h) *x = val;
+		
+		
+		return xs;
+	}
+	
+	
+	
+	/**
+	 * Function to create and return a linearly
+	 * increasing, evenly spaced vector on log scale.
+	 * 
+	 * Inputs:
+	 * 			a = "start point" of type T
+	 * 			b = "end point" of type T
+	 * 			N = "number of increments" of type int
+	 * 			base = "the log base value" of type T
+	 * 					the default value is 10.0
+	 * 
+	 * Output:	std::vector of type T
+	 *
+	 * Modified from https://gist.github.com/lorenzoriano/5414671
+	 *	20181005
+	 */
+	template <typename T>
+	std::vector<T> logspace(T a, T b, size_t N, T base=10)
+	{
+		T h = (b - a) / static_cast<T>(N-1);
+		std::vector<T> xs(N);
+		typename std::vector<T>::iterator x;
+		T val;
+		for (x = xs.begin(), val = a; x != xs.end(); ++x, val += h) *x = pow(base,val);
+		
+		
+		return xs;
+	}
+	
+}
 
 
 
