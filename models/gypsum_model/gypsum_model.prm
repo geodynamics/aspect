@@ -1,12 +1,23 @@
-set Additional shared libraries            = ../../plugins/libequilibrium_grain_size.so
+set Additional shared libraries            = ../../plugins/libequilibrium_grain_size.so, ../../plugins/libreference_profile.so
 
 set Dimension                              = 3
 set Use years in output instead of seconds = true
 set Start time                             = 0
 set End time                               = 0
-set Nonlinear solver scheme                = no Advection, iterated Stokes
-set Max nonlinear iterations               = 5
+set Nonlinear solver scheme                = single Advection, single Stokes #iterated Advection and Stokes
+set Max nonlinear iterations               = 2
 set Adiabatic surface temperature          = 1600.0
+
+subsection Adiabatic conditions model
+  set Model name = reference profile
+
+  subsection Reference profile
+    subsection Ascii data model
+      set Data directory = ../../input_data/1D_reference_profiles/
+      set Data file name = prem.txt
+    end
+  end
+end
 
 subsection Solver parameters
   subsection Stokes solver parameters
@@ -33,6 +44,11 @@ subsection Initial composition model
     set Data directory = ../../input_data/
     set Data file name = GyPSuM_midrad_lon_lat_density_vp_vs.txt
   end
+end
+
+
+subsection Temperature field
+  set Temperature method = prescribed field
 end
 
 
@@ -136,7 +152,7 @@ end
 
 
 subsection Mesh refinement
-  set Initial global refinement          = 3
+  set Initial global refinement          = 2
   set Initial adaptive refinement        = 0
   set Strategy                           = temperature
   set Time steps between mesh refinement = 0
@@ -147,7 +163,7 @@ subsection Postprocess
 
   subsection Visualization
     set Output format                 = vtu
-    set List of output variables      = material properties, gravity, nonadiabatic temperature, nonadiabatic pressure, dynamic topography, geoid, heat flux map
+    set List of output variables      = adiabat, material properties, gravity, nonadiabatic temperature, nonadiabatic pressure, dynamic topography, geoid, heat flux map
     set Time between graphical output = 0
     set Number of grouped files       = 1
 

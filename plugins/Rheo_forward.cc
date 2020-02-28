@@ -27,13 +27,29 @@ from ConfigParser import SafeConfigParser
 #include <random>
 #include <assert.h>
 
-#include <gsl/gsl_integration.h>
+#include <gsl/gsl_integration.h>  // installed through OS package manager
 
-#include "refvalues_and_utilities.h"
+#include "tmp_integration_routines.h"  // this is temporary until switch to gsl complete
+#include "seismic_utilities.h"
 
 using namespace std;
 
-
+/*
+ * ------------------------------------------------------------------
+ * TODO:
+ *      - Replace refvalues_and_utilities with seismic_utilities header
+ *              - MyUtilities namespace
+ *                  + Replaced with VectorUtilities in seismic_utilities.h. PMB 20200327
+ *              - IntegrationRoutines namespace (uses the qromb integration, but may be replaced by gsl)
+ *                  + Progress. Separated IntegrationRoutines into tmp_integration_routines.h and
+ *                    use that instead of refvalues_and_utilities.h. Will still need to replace with
+ *                    gsl. PMB 20200327
+ *      - Check the values in the constants section
+ *      - Check the value of PI -> compare value in the seismic_utilities and value used in original python script
+ *         + The same. PMB 20200327
+ *      - Write output from each function to file -> both here and original python script
+ * ------------------------------------------------------------------
+ */
 
 /*
  * ------------------------------------------------------------------
@@ -661,7 +677,7 @@ double getJ2byJu(double freq, double P, double T, double gs, std::string model, 
 		double j2b = omega*(alpha*Delta)/(std::pow(tauH,alpha) - std::pow(tauL,alpha));
 		double j2p = omega*DeltaP/(sigma*sqrt(2*UniversalConst::PI));
 		
-		std::vector<double> tau_arr = MyUtilities::linspace(tauL,tauH,100); //tau_arr=np.MyUtilities::linspace(tauL,tauH,100);
+		std::vector<double> tau_arr = VectorUtilities::linspace(tauL,tauH,100); //tau_arr=np.VectorUtilities::linspace(tauL,tauH,100);
 		double i2b = intgrate_j2b(tauL, tauH, alpha, omega, 1000);
                 double i2p;
 
@@ -1003,7 +1019,7 @@ struct Function_J1B
 };
 double intgrate_j1b(double limL, double limH, double alpha, double omega, int N) //*
 {
-	std::vector<double> xx = MyUtilities::logspace(log10(limL), log10(limH), N, 10.0);
+	std::vector<double> xx = VectorUtilities::logspace(log10(limL), log10(limH), N, 10.0);
 	std::vector<double> yy(xx.size(),0.0);
 	//for (unsigned int ii=0; ii<xx.size(); ++ii)
 	//{
@@ -1065,7 +1081,7 @@ struct Function_J2B
 };
 double intgrate_j2b(double limL, double limH, double alpha, double omega, int N) //*
 {
-	std::vector<double> xx = MyUtilities::logspace(log10(limL), log10(limH), N, 10.0);
+	std::vector<double> xx = VectorUtilities::logspace(log10(limL), log10(limH), N, 10.0);
 	std::vector<double> yy(xx.size(),0.0);
 	/*
 	for (unsigned int ii=0; ii<xx.size(); ++ii)
@@ -1125,7 +1141,7 @@ struct Function_J1P
 };
 double intgrate_j1p(double limL, double limH, double omega, double tauP, double sigma, int N=1000) //*
 {
-	std::vector<double> xx = MyUtilities::logspace(log10(limL), log10(limH), N, 10.0);
+	std::vector<double> xx = VectorUtilities::logspace(log10(limL), log10(limH), N, 10.0);
 	std::vector<double> yy(xx.size(),0.0);
 	/*
 	for (unsigned int ii=0; ii<xx.size(); ++ii)
