@@ -1,0 +1,6 @@
+New: The geometric multigrid preconditioner for the Stokes system now uses
+a non-flexible version of the  preconditioner for the cheap iterations,
+alowing for the use of GMRES, which requires roughly half of the memory of
+FGMRES.
+<br>
+(Thomas C. Clevenger, 2020/02/28)
