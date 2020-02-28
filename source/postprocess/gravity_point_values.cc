@@ -93,50 +93,41 @@ namespace aspect
       // Now write all data to the file of choice. Start with a pre-amble that
       // explains the meaning of the various fields
       std::string file_prefix = "gravity-" + Utilities::int_to_string (output_file_number, 5);
-      std::string file_prefix1= "domain_volume_and_mass";
       const std::string filename = (this->get_output_directory()
                                     + "output_gravity/"
                                     + file_prefix);
-      std::ofstream output (filename.c_str());
-      const std::string filename1 = (this->get_output_directory()
-                                    + "output_gravity/"
-                                    + file_prefix1);
-      std::ofstream domain_volume_and_mass (filename1.c_str());
-      AssertThrow(output,
+      std::ofstream output_gravity (filename.c_str());
+      AssertThrow(output_gravity,
                   ExcMessage("Unable to open file for writing: " + filename +"."));
-      AssertThrow(domain_volume_and_mass,
-                  ExcMessage("Unable to open file for writing: " + filename1 +"."));
-      output << "# 1: position_satellite_r" << '\n'
-             << "# 2: position_satellite_phi" << '\n'
-             << "# 3: position_satellite_theta" << '\n'
-             << "# 4: position_satellite_x" << '\n'
-             << "# 5: position_satellite_y" << '\n'
-             << "# 6: position_satellite_z" << '\n'
-             << "# 7: gravity_x" << '\n'
-             << "# 8: gravity_y" << '\n'
-             << "# 9: gravity_z" << '\n'
-             << "# 10: gravity_norm" << '\n'
-             << "# 11: gravity_theory" << '\n'
-             << "# 12: gravity potential" << '\n'
-             << "# 13: gravity_full_norm" << '\n'
-             << "# 14: gravity full_potential" << '\n'
-             << "# 15: gravity_anomaly_x" << '\n'
-             << "# 16: gravity_anomaly_y" << '\n'
-             << "# 17: gravity_anomaly_z" << '\n'
-             << "# 18: gravity_anomaly_norm" << '\n'
-             << "# 19: gravity_gradient_xx" << '\n'
-             << "# 20: gravity_gradient_yy" << '\n'
-             << "# 21: gravity_gradient_zz" << '\n'
-             << "# 22: gravity_gradient_xy" << '\n'
-             << "# 23: gravity_gradient_xz" << '\n'
-             << "# 24: gravity_gradient_yz" << '\n'
-             << "# 25: gravity_gradient_theory_xx" << '\n'
-             << "# 26: gravity_gradient_theory_yy" << '\n'
-             << "# 27: gravity_gradient_theory_zz" << '\n'
-             << "# 28: gravity_gradient_theory_xy" << '\n'
-             << "# 29: gravity_gradient_theory_xz" << '\n'
-             << "# 30: gravity_gradient_theory_yz" << '\n'
-             << '\n';
+      output_gravity << "# 1: position_satellite_r" << '\n'
+                     << "# 2: position_satellite_phi" << '\n'
+                     << "# 3: position_satellite_theta" << '\n'
+                     << "# 4: position_satellite_x" << '\n'
+                     << "# 5: position_satellite_y" << '\n'
+                     << "# 6: position_satellite_z" << '\n'
+                     << "# 7: gravity_x" << '\n'
+                     << "# 8: gravity_y" << '\n'
+                     << "# 9: gravity_z" << '\n'
+                     << "# 10: gravity_norm" << '\n'
+                     << "# 11: gravity_theory" << '\n'
+                     << "# 12: gravity potential" << '\n'
+                     << "# 13: gravity_anomaly_x" << '\n'
+                     << "# 14: gravity_anomaly_y" << '\n'
+                     << "# 15: gravity_anomaly_z" << '\n'
+                     << "# 16: gravity_anomaly_norm" << '\n'
+                     << "# 17: gravity_gradient_xx" << '\n'
+                     << "# 18: gravity_gradient_yy" << '\n'
+                     << "# 19: gravity_gradient_zz" << '\n'
+                     << "# 20: gravity_gradient_xy" << '\n'
+                     << "# 21: gravity_gradient_xz" << '\n'
+                     << "# 22: gravity_gradient_yz" << '\n'
+                     << "# 23: gravity_gradient_theory_xx" << '\n'
+                     << "# 24: gravity_gradient_theory_yy" << '\n'
+                     << "# 25: gravity_gradient_theory_zz" << '\n'
+                     << "# 26: gravity_gradient_theory_xy" << '\n'
+                     << "# 27: gravity_gradient_theory_xz" << '\n'
+                     << "# 28: gravity_gradient_theory_yz" << '\n'
+                     << '\n';
 
       // Get quadrature formula and increase the degree of quadrature over the velocity
       // element degree.
@@ -216,6 +207,34 @@ namespace aspect
             this->get_material_model().evaluate(in, out);
             for (unsigned int q = 0; q < n_quadrature_points_per_cell; ++q)
               {
+                position_point[local_cell_number * n_quadrature_points_per_cell + q] = position_point_cell[q];
+                const std::array<double,dim> position_point_sph = Utilities::Coordinates::cartesian_to_spherical_coordinates<dim>(position_point[local_cell_number * n_quadrature_points_per_cell + q]);
+                if (replace_density_at_quadrature_points_by_PREM == true)
+                  {
+                    const double x = position_point_sph[0] / model_outer_radius;
+                    if (position_point_sph[0] > model_outer_radius)
+                      out.densities[q]=0;
+                    else if (position_point_sph[0] <= 1221.5e3)
+                      out.densities[q]=(13.0885-8.8381*std::pow(x,2))*1e3;
+                    else if ((position_point_sph[0] > 1221.5e3) && (position_point_sph[0] < 3480.e3))
+                      out.densities[q]=(12.5815-1.2638*x-3.6426*std::pow(x,2)-5.5281*std::pow(x,3))*1e3;
+                    else if ((position_point_sph[0] >= 3480.e3) && (position_point_sph[0] <= 5701.e3))
+                      out.densities[q]=(7.9565-6.4761*x+5.5283*std::pow(x,2)-3.0807*std::pow(x,3))*1e3;
+                    else if ((position_point_sph[0] > 5701.e3) && (position_point_sph[0] <= 5771.e3))
+                      out.densities[q]=(5.3197-1.4836*x)*1e3;
+                    else if ((position_point_sph[0] > 5771.e3) && (position_point_sph[0] <= 5971.e3))
+                      out.densities[q]=(11.2494-8.0298*x)*1e3;
+                    else if ((position_point_sph[0] > 5971.e3) && (position_point_sph[0] <= 6151.e3))
+                      out.densities[q]=(7.1089-3.8045*x)*1e3;
+                    else if ((position_point_sph[0] > 6151.e3) && (position_point_sph[0] <= 6346.e3))
+                      out.densities[q]=(2.6910+0.6924*x)*1e3;
+                    else if ((position_point_sph[0] > 6346.e3) && (position_point_sph[0] <= 6356.e3))
+                      out.densities[q]=2.900*1e3;
+                    else if ((position_point_sph[0] > 6356.e3) && (position_point_sph[0] <= 6368.e3))
+                      out.densities[q]=2.600*1e3;
+                    else
+                      out.densities[q]=1.020*1e3;
+                  }
                 density[local_cell_number * n_quadrature_points_per_cell + q] = out.densities[q];
                 density_JxW[local_cell_number * n_quadrature_points_per_cell + q] = out.densities[q] * fe_values.JxW(q);
                 density_anomalies_JxW[local_cell_number * n_quadrature_points_per_cell + q] = (out.densities[q]-reference_density) * fe_values.JxW(q);
@@ -225,14 +244,6 @@ namespace aspect
             ++local_cell_number;
           }
 
-      const double volume = Utilities::MPI::sum (local_volume, this->get_mpi_communicator());
-      const double mass = Utilities::MPI::sum (local_mass, this->get_mpi_communicator());
-      if (dealii::Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
-        {
-          domain_volume_and_mass << "numerical volume    " << std::setprecision(9) << volume << '\n'
-                                 << "numerical mass      " << std::setprecision(9) << mass   << '\n';
-        }
-
       // Pre-Assign the coordinates of all satellites in a vector point:
       // *** First calculate the number of satellites according to the sampling scheme:
       unsigned int n_satellites;
@@ -241,7 +252,7 @@ namespace aspect
       else if (sampling_scheme == list)
         n_satellites = longitude_list.size();
       else if (sampling_scheme == profile)
-        n_satellites = n_points_radius;
+        n_satellites = n_points_radius * longitude_list.size();
       else n_satellites = 1;
 
       // *** Second assign the coordinates of all satellites:
@@ -303,6 +314,9 @@ namespace aspect
       // This is the main loop which computes gravity acceleration, potential and
       // gradients at a point located at the spherical coordinate [r, phi, theta].
       // This loop corresponds to the 3 integrals of Newton law:
+      Tensor<1,dim> sum_g;
+      Tensor<2,dim> sum_g_gradient;
+      double sum_g_potential = 0;
       for (unsigned int p=0; p < n_satellites; ++p)
         {
 
@@ -365,12 +379,15 @@ namespace aspect
           const Tensor<1,dim> g_anomaly  = Utilities::MPI::sum (local_g_anomaly, this->get_mpi_communicator());
           const Tensor<2,dim> g_gradient = Utilities::MPI::sum (local_g_gradient, this->get_mpi_communicator());
           const double g_potential       = Utilities::MPI::sum (local_g_potential, this->get_mpi_communicator());
+     
+          // sum gravity components for all n_satellites: 
+          sum_g += g;
+          sum_g_gradient += g_gradient;
+          sum_g_potential += g_potential;
 
           // analytical solution to calculate the theoretical gravity and gravity gradient
           // from a uniform density model. Can only be used if concentric density profile.
           double g_theory = 0;
-          double g_beneath = 0;
-          double g_potential_beneath = 0;
           Tensor<2,dim> g_gradient_theory;
           if (satellites_coordinate[p][0] <= model_inner_radius)
             {
@@ -385,8 +402,6 @@ namespace aspect
             {
               g_theory = G * numbers::PI * 4/3 * reference_density * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
                          /  std::pow(satellites_coordinate[p][0],2);
-              g_beneath = G * numbers::PI * 4/3 * density_beneath * std::pow(model_inner_radius,3) / std::pow(satellites_coordinate[p][0],2);
-              g_potential_beneath = G * numbers::PI * 4/3 * density_beneath * std::pow(model_inner_radius,3) / satellites_coordinate[p][0];
               g_gradient_theory[0][0] = -G * numbers::PI * 4/3 * reference_density
                                         * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
                                         * (std::pow(satellites_coordinate[p][0], 2) - 3.0 * std::pow(position_satellite[0],2))
@@ -413,38 +428,79 @@ namespace aspect
                                         /  std::pow(satellites_coordinate[p][0],5);
             }
 
-          // write output.
+          // write output_gravity:
           // g_gradient is here given in eotvos E (1E = 1e-9 per square seconds):
           if (dealii::Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
             {
-              output << satellites_coordinate[p][0] << ' '
-                     << satellites_coordinate[p][1] *180. / numbers::PI << ' '
-                     << satellites_coordinate[p][2] *180. / numbers::PI << ' '
-                     << position_satellite[0] << ' '
-                     << position_satellite[1] << ' '
-                     << position_satellite[2] << ' '
-                     << std::setprecision(18) << g << ' '
-                     << std::setprecision(18) << g.norm() << ' '
-                     << std::setprecision(18) << g_theory << ' '
-                     << std::setprecision(9)  << g_potential << ' '
-                     << std::setprecision(18) << g.norm() + g_beneath << ' '
-                     << std::setprecision(9)  << g_potential + g_potential_beneath << ' '
-                     << std::setprecision(9)  << g_anomaly << ' '
-                     << std::setprecision(9)  << g_anomaly.norm() << ' '
-                     << g_gradient[0][0] *1e9 << ' '
-                     << g_gradient[1][1] *1e9 << ' '
-                     << g_gradient[2][2] *1e9 << ' '
-                     << g_gradient[0][1] *1e9 << ' '
-                     << g_gradient[0][2] *1e9 << ' '
-                     << g_gradient[1][2] *1e9 << ' '
-                     << g_gradient_theory[0][0] *1e9 << ' '
-                     << g_gradient_theory[1][1] *1e9 << ' '
-                     << g_gradient_theory[2][2] *1e9 << ' '
-                     << g_gradient_theory[0][1] *1e9 << ' '
-                     << g_gradient_theory[0][2] *1e9 << ' '
-                     << g_gradient_theory[1][2] *1e9 << ' '
-                     << '\n';
+              output_gravity << satellites_coordinate[p][0] << ' '
+                             << satellites_coordinate[p][1] *180. / numbers::PI << ' '
+                             << satellites_coordinate[p][2] *180. / numbers::PI << ' '
+                             << position_satellite[0] << ' '
+                             << position_satellite[1] << ' '
+                             << position_satellite[2] << ' '
+                             << std::setprecision(18) << g << ' '
+                             << std::setprecision(18) << g.norm() << ' '
+                             << std::setprecision(18) << g_theory << ' '
+                             << std::setprecision(9)  << g_potential << ' '
+                             << std::setprecision(9)  << g_anomaly << ' '
+                             << std::setprecision(9)  << g_anomaly.norm() << ' '
+                             << g_gradient[0][0] *1e9 << ' '
+                             << g_gradient[1][1] *1e9 << ' '
+                             << g_gradient[2][2] *1e9 << ' '
+                             << g_gradient[0][1] *1e9 << ' '
+                             << g_gradient[0][2] *1e9 << ' '
+                             << g_gradient[1][2] *1e9 << ' '
+                             << g_gradient_theory[0][0] *1e9 << ' '
+                             << g_gradient_theory[1][1] *1e9 << ' '
+                             << g_gradient_theory[2][2] *1e9 << ' '
+                             << g_gradient_theory[0][1] *1e9 << ' '
+                             << g_gradient_theory[0][2] *1e9 << ' '
+                             << g_gradient_theory[1][2] *1e9 << ' '
+                             << '\n';
             }
+        }
+
+      // write statistics:
+      if (also_output_gravity_statistics == true)
+        {
+          std::string file_prefix2= "statistics";
+          const std::string filename2 = (this->get_output_directory()
+                                        + "output_gravity/"
+                                        + file_prefix2);
+          std::ofstream statistics (filename2.c_str());
+          AssertThrow(statistics,
+                      ExcMessage("Unable to open file for writing: " + filename2 +"."));
+          statistics << "# 1: number of cells in the domain" << '\n'
+                     << "# 2: quadrature point increase" << '\n'
+                     << "# 3: polynomial degree" << '\n'
+                     << "# 4: total mass of the domain" << '\n'
+                     << "# 5: total volume of the domain" << '\n'
+                     << "# 6: average gravity_x " << '\n'
+                     << "# 7: average gravity_y " << '\n'
+                     << "# 8: average gravity_z " << '\n'
+                     << "# 9: average gravity_potential" << '\n'
+                     << "# 10: average gravity_gradient_xx" << '\n'
+                     << "# 11: average gravity_gradient_yy" << '\n'
+                     << "# 12: average gravity_gradient_zz" << '\n'
+                     << "# 13: average gravity_gradient_xy" << '\n'
+                     << "# 14: average gravity_gradient_xz" << '\n'
+                     << "# 15: average gravity_gradient_yz" << '\n'
+                     << '\n';
+          const double number_of_cells = Utilities::MPI::sum (n_locally_owned_cells, this->get_mpi_communicator());
+          const double volume = Utilities::MPI::sum (local_volume, this->get_mpi_communicator());
+          const double mass = Utilities::MPI::sum (local_mass, this->get_mpi_communicator());
+          if (dealii::Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
+            {
+              statistics << number_of_cells << ' ' 
+                         << quadrature_degree_increase << ' '
+                         << degree-quadrature_degree_increase << ' '
+                         << std::setprecision(9) << mass << ' '
+                         << std::setprecision(9) << volume << ' '
+                         << sum_g/n_satellites << ' '
+                         << sum_g_potential/n_satellites << ' '
+                         << sum_g_gradient/n_satellites *1e9;
+            }
+
         }
 
       // up the next time we need output:
@@ -528,10 +584,6 @@ namespace aspect
                              Patterns::Double (0.0),
                              "Gravity anomalies may be computed using density "
                              "anomalies relative to a reference density.");
-          prm.declare_entry ("Density beneath", "0",
-                             Patterns::Double (0.0),
-                             "The density beneath the inner radius is prescribed "
-                             "as a constant.");
           prm.declare_entry ("List of radius", "",
                              Patterns::List (Patterns::Double(0)),
                              "Parameter for the list sampling scheme: "
@@ -559,7 +611,16 @@ namespace aspect
                              Patterns::Integer(0,std::numeric_limits<int>::max()),
                              "The maximum number of time steps between each generation of "
                              "gravity output files.");
-
+          prm.declare_entry ("Also output gravity statistics", "false",
+                             Patterns::Bool(),
+                             "Option to output the numerical mass and volume of the domain, "
+                             "as well as the average gravity, potential and gradients. "
+                             "The default is false.");
+          prm.declare_entry ("Replace density at quadrature points by PREM", "false",
+                             Patterns::Bool(),
+                             "Option to replace density at quadrature points by PREM densities. "
+                             "PREM densities are assigned directly at the quadrature points. "
+                             "The default is false.");
         }
         prm.leave_subsection();
       }
@@ -593,6 +654,8 @@ namespace aspect
             sampling_scheme = profile;
           else
             AssertThrow (false, ExcMessage ("Not a valid sampling scheme."));
+          also_output_gravity_statistics = prm.get_bool ("Also output gravity statistics");
+          replace_density_at_quadrature_points_by_PREM = prm.get_bool ("Replace density at quadrature points by PREM");
           quadrature_degree_increase = prm.get_double ("Quadrature degree increase");
           n_points_radius     = prm.get_integer("Number points radius");
           n_points_longitude  = prm.get_integer("Number points longitude");
@@ -604,12 +667,11 @@ namespace aspect
           minimum_colatitude  = prm.get_double ("Minimum latitude") + 90;
           maximum_colatitude  = prm.get_double ("Maximum latitude") + 90;
           reference_density   = prm.get_double ("Reference density");
-          density_beneath     = prm.get_double ("Density beneath");
           radius_list    = Utilities::string_to_double(Utilities::split_string_list(prm.get("List of radius")));
           longitude_list = Utilities::string_to_double(Utilities::split_string_list(prm.get("List of longitude")));
           latitude_list  = Utilities::string_to_double(Utilities::split_string_list(prm.get("List of latitude")));
-          AssertThrow (sampling_scheme == profile && (longitude_list.size() == 1 || latitude_list.size() == 1),
-                       ExcMessage ("The profile sampling scheme only works for 1 specified point."));
+          //AssertThrow (sampling_scheme == profile && longitude_list.size() == 1,
+          //             ExcMessage ("The profile sampling scheme only works for 1 point specified."));
           AssertThrow (longitude_list.size() == latitude_list.size(),
                        ExcMessage ("Make sure you have the same number of point coordinates in the list sampling scheme."));
           AssertThrow (Plugins::plugin_type_matches<const GeometryModel::SphericalShell<dim>> (this->get_geometry_model()) ||

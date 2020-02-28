@@ -224,11 +224,6 @@ namespace aspect
         double reference_density;
 
         /**
-         * Specify a density constant beneath the inner radius
-         */
-        double density_beneath;
-
-        /**
          * Specify the sampling scheme determining if gravity calculation is performed
          * for a map of points or a list of points.
          */
@@ -259,6 +254,17 @@ namespace aspect
          * with the lists of radius and longitude.
          */
         std::vector<double> latitude_list;
+
+        /**
+         * A parameter to control whether to output gravity statistics and the mass
+         * and volume of the domain.
+         */
+        bool also_output_gravity_statistics;
+
+        /**
+         * Replace the density at quadrature points by PREM: for benchmark purposes only.
+         */
+        bool replace_density_at_quadrature_points_by_PREM;
 
     };
   }
