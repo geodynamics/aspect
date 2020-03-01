@@ -11540,6 +11540,8 @@ Whether to apply strain weakening to viscosity, cohesion and internal angleof fr
 \item ``viscous weakening with viscous strain only&apos;&apos;: The finite strain is approximated as the product of the second invariant of the strain rate in each time step and the time step size in regions where material is not plastically yielding. This quantity is integrated and tracked over time, and used to weaken the the pre-yield viscosity. The cohesion and friction angle are not weakened.
 
 \item ``default&apos;&apos;: The default option has the same behavior as ``none&apos;&apos;, but is there to make sure that the original parameters for specifying the strain weakening mechanism (``Use plastic/viscous strain weakening&apos;&apos;) are still allowed, but to guarantee that one uses either the old parameter names or the new ones, never both.
+
+If a compositional field named &apos;noninitial\_plastic\_strain&apos; is included in the parameter file, this field will automatically be excluded from from volume fraction calculation and track the cumulative plastic strain with the initial plastic strain values removed.
 </documentation>
 <pattern>
 657

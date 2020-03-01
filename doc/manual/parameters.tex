@@ -14845,6 +14845,8 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 
 \item ``default'': The default option has the same behavior as ``none'', but is there to make sure that the original parameters for specifying the strain weakening mechanism (``Use plastic/viscous strain weakening'') are still allowed, but to guarantee that one uses either the old parameter names or the new ones, never both.
 
+If a compositional field named 'noninitial\_plastic\_strain' is included in the parameter file, this field will automatically be excluded from from volume fraction calculation and track the cumulative plastic strain with the initial plastic strain values removed.
+
 
 {\it Possible values:} Any one of none, finite strain tensor, total strain, plastic weakening with plastic strain only, plastic weakening with total strain only, plastic weakening with plastic strain and viscous weakening with viscous strain, viscous weakening with viscous strain only, default
 \item {\it Parameter name:} {\tt Stress exponents for dislocation creep}
