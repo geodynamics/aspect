@@ -27,7 +27,7 @@ Number of degrees of freedom: 1,985 (486+202+486+82+243+243+243)
      Writing graphical output: output-mass_reaction_term/solution/solution-00000
 
 *** Timestep 1:  t=6.25e+14 seconds
-   Solving composition reactions in 1 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 18 iterations.
    Solving peridotite system ... 19 iterations.
@@ -61,7 +61,7 @@ Number of degrees of freedom: 1,985 (486+202+486+82+243+243+243)
      Writing graphical output: output-mass_reaction_term/solution/solution-00001
 
 *** Timestep 2:  t=1.09488e+15 seconds
-   Solving composition reactions in 1 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 17 iterations.
    Solving peridotite system ... 16 iterations.
@@ -95,7 +95,7 @@ Number of degrees of freedom: 1,985 (486+202+486+82+243+243+243)
      Writing graphical output: output-mass_reaction_term/solution/solution-00002
 
 *** Timestep 3:  t=1.57708e+15 seconds
-   Solving composition reactions in 1 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 15 iterations.
    Solving peridotite system ... 15 iterations.
@@ -129,7 +129,7 @@ Number of degrees of freedom: 1,985 (486+202+486+82+243+243+243)
      Writing graphical output: output-mass_reaction_term/solution/solution-00003
 
 *** Timestep 4:  t=2.06639e+15 seconds
-   Solving composition reactions in 1 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 15 iterations.
    Solving peridotite system ... 15 iterations.
@@ -163,7 +163,7 @@ Number of degrees of freedom: 1,985 (486+202+486+82+243+243+243)
      Writing graphical output: output-mass_reaction_term/solution/solution-00004
 
 *** Timestep 5:  t=2.56172e+15 seconds
-   Solving composition reactions in 1 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 15 iterations.
    Solving peridotite system ... 14 iterations.
@@ -197,7 +197,7 @@ Number of degrees of freedom: 1,985 (486+202+486+82+243+243+243)
      Writing graphical output: output-mass_reaction_term/solution/solution-00005
 
 *** Timestep 6:  t=3.06203e+15 seconds
-   Solving composition reactions in 1 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 14 iterations.
    Solving peridotite system ... 15 iterations.
@@ -231,7 +231,7 @@ Number of degrees of freedom: 1,985 (486+202+486+82+243+243+243)
      Writing graphical output: output-mass_reaction_term/solution/solution-00006
 
 *** Timestep 7:  t=3.56643e+15 seconds
-   Solving composition reactions in 1 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 14 iterations.
    Solving peridotite system ... 15 iterations.
@@ -265,7 +265,7 @@ Number of degrees of freedom: 1,985 (486+202+486+82+243+243+243)
      Writing graphical output: output-mass_reaction_term/solution/solution-00007
 
 *** Timestep 8:  t=4.07415e+15 seconds
-   Solving composition reactions in 1 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 14 iterations.
    Solving peridotite system ... 14 iterations.
@@ -299,7 +299,7 @@ Number of degrees of freedom: 1,985 (486+202+486+82+243+243+243)
      Writing graphical output: output-mass_reaction_term/solution/solution-00008
 
 *** Timestep 9:  t=4.58454e+15 seconds
-   Solving composition reactions in 1 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 14 iterations.
    Solving peridotite system ... 15 iterations.
@@ -333,7 +333,7 @@ Number of degrees of freedom: 1,985 (486+202+486+82+243+243+243)
      Writing graphical output: output-mass_reaction_term/solution/solution-00009
 
 *** Timestep 10:  t=5.09709e+15 seconds
-   Solving composition reactions in 1 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 14 iterations.
    Solving peridotite system ... 15 iterations.
@@ -367,7 +367,7 @@ Number of degrees of freedom: 1,985 (486+202+486+82+243+243+243)
      Writing graphical output: output-mass_reaction_term/solution/solution-00010
 
 *** Timestep 11:  t=5.61135e+15 seconds
-   Solving composition reactions in 1 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 14 iterations.
    Solving peridotite system ... 14 iterations.
@@ -401,7 +401,7 @@ Number of degrees of freedom: 1,985 (486+202+486+82+243+243+243)
      Writing graphical output: output-mass_reaction_term/solution/solution-00011
 
 *** Timestep 12:  t=6.12697e+15 seconds
-   Solving composition reactions in 1 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 14 iterations.
    Solving peridotite system ... 14 iterations.
@@ -435,7 +435,7 @@ Number of degrees of freedom: 1,985 (486+202+486+82+243+243+243)
      Writing graphical output: output-mass_reaction_term/solution/solution-00012
 
 *** Timestep 13:  t=6.64368e+15 seconds
-   Solving composition reactions in 1 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 13 iterations.
    Solving peridotite system ... 14 iterations.
@@ -469,7 +469,7 @@ Number of degrees of freedom: 1,985 (486+202+486+82+243+243+243)
      Writing graphical output: output-mass_reaction_term/solution/solution-00013
 
 *** Timestep 14:  t=7.16125e+15 seconds
-   Solving composition reactions in 1 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 13 iterations.
    Solving peridotite system ... 14 iterations.
@@ -503,7 +503,7 @@ Number of degrees of freedom: 1,985 (486+202+486+82+243+243+243)
      Writing graphical output: output-mass_reaction_term/solution/solution-00014
 
 *** Timestep 15:  t=7.67948e+15 seconds
-   Solving composition reactions in 1 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 13 iterations.
    Solving peridotite system ... 15 iterations.
@@ -537,7 +537,7 @@ Number of degrees of freedom: 1,985 (486+202+486+82+243+243+243)
      Writing graphical output: output-mass_reaction_term/solution/solution-00015
 
 *** Timestep 16:  t=8.19826e+15 seconds
-   Solving composition reactions in 1 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 13 iterations.
    Solving peridotite system ... 14 iterations.
@@ -571,7 +571,7 @@ Number of degrees of freedom: 1,985 (486+202+486+82+243+243+243)
      Writing graphical output: output-mass_reaction_term/solution/solution-00016
 
 *** Timestep 17:  t=8.71745e+15 seconds
-   Solving composition reactions in 1 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 13 iterations.
    Solving peridotite system ... 14 iterations.
@@ -605,7 +605,7 @@ Number of degrees of freedom: 1,985 (486+202+486+82+243+243+243)
      Writing graphical output: output-mass_reaction_term/solution/solution-00017
 
 *** Timestep 18:  t=9.23697e+15 seconds
-   Solving composition reactions in 1 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 12 iterations.
    Solving peridotite system ... 14 iterations.
@@ -639,7 +639,7 @@ Number of degrees of freedom: 1,985 (486+202+486+82+243+243+243)
      Writing graphical output: output-mass_reaction_term/solution/solution-00018
 
 *** Timestep 19:  t=9.75675e+15 seconds
-   Solving composition reactions in 1 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 12 iterations.
    Solving peridotite system ... 14 iterations.
@@ -673,7 +673,7 @@ Number of degrees of freedom: 1,985 (486+202+486+82+243+243+243)
      Writing graphical output: output-mass_reaction_term/solution/solution-00019
 
 *** Timestep 20:  t=1.02767e+16 seconds
-   Solving composition reactions in 1 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 12 iterations.
    Solving peridotite system ... 14 iterations.
@@ -707,7 +707,7 @@ Number of degrees of freedom: 1,985 (486+202+486+82+243+243+243)
      Writing graphical output: output-mass_reaction_term/solution/solution-00020
 
 *** Timestep 21:  t=1.07969e+16 seconds
-   Solving composition reactions in 1 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 12 iterations.
    Solving peridotite system ... 14 iterations.
@@ -741,7 +741,7 @@ Number of degrees of freedom: 1,985 (486+202+486+82+243+243+243)
      Writing graphical output: output-mass_reaction_term/solution/solution-00021
 
 *** Timestep 22:  t=1.13171e+16 seconds
-   Solving composition reactions in 1 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 11 iterations.
    Solving peridotite system ... 14 iterations.
@@ -775,7 +775,7 @@ Number of degrees of freedom: 1,985 (486+202+486+82+243+243+243)
      Writing graphical output: output-mass_reaction_term/solution/solution-00022
 
 *** Timestep 23:  t=1.18375e+16 seconds
-   Solving composition reactions in 1 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 12 iterations.
    Solving peridotite system ... 14 iterations.
@@ -809,7 +809,7 @@ Number of degrees of freedom: 1,985 (486+202+486+82+243+243+243)
      Writing graphical output: output-mass_reaction_term/solution/solution-00023
 
 *** Timestep 24:  t=1.23579e+16 seconds
-   Solving composition reactions in 1 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 11 iterations.
    Solving peridotite system ... 14 iterations.
@@ -843,7 +843,7 @@ Number of degrees of freedom: 1,985 (486+202+486+82+243+243+243)
      Writing graphical output: output-mass_reaction_term/solution/solution-00024
 
 *** Timestep 25:  t=1.28784e+16 seconds
-   Solving composition reactions in 1 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 11 iterations.
    Solving peridotite system ... 14 iterations.
@@ -877,7 +877,7 @@ Number of degrees of freedom: 1,985 (486+202+486+82+243+243+243)
      Writing graphical output: output-mass_reaction_term/solution/solution-00025
 
 *** Timestep 26:  t=1.3399e+16 seconds
-   Solving composition reactions in 1 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 11 iterations.
    Solving peridotite system ... 14 iterations.
@@ -911,7 +911,7 @@ Number of degrees of freedom: 1,985 (486+202+486+82+243+243+243)
      Writing graphical output: output-mass_reaction_term/solution/solution-00026
 
 *** Timestep 27:  t=1.39196e+16 seconds
-   Solving composition reactions in 1 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 11 iterations.
    Solving peridotite system ... 14 iterations.
@@ -945,7 +945,7 @@ Number of degrees of freedom: 1,985 (486+202+486+82+243+243+243)
      Writing graphical output: output-mass_reaction_term/solution/solution-00027
 
 *** Timestep 28:  t=1.44402e+16 seconds
-   Solving composition reactions in 1 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 11 iterations.
    Solving peridotite system ... 14 iterations.
@@ -979,7 +979,7 @@ Number of degrees of freedom: 1,985 (486+202+486+82+243+243+243)
      Writing graphical output: output-mass_reaction_term/solution/solution-00028
 
 *** Timestep 29:  t=1.49608e+16 seconds
-   Solving composition reactions in 1 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 11 iterations.
    Solving peridotite system ... 14 iterations.
@@ -1013,7 +1013,7 @@ Number of degrees of freedom: 1,985 (486+202+486+82+243+243+243)
      Writing graphical output: output-mass_reaction_term/solution/solution-00029
 
 *** Timestep 30:  t=1.54815e+16 seconds
-   Solving composition reactions in 1 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 11 iterations.
    Solving peridotite system ... 15 iterations.
@@ -1038,7 +1038,7 @@ Number of degrees of freedom: 1,985 (486+202+486+82+243+243+243)
      Writing graphical output: output-mass_reaction_term/solution/solution-00030
 
 *** Timestep 31:  t=1.60021e+16 seconds
-   Solving composition reactions in 1 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 10 iterations.
    Solving peridotite system ... 15 iterations.
@@ -1063,7 +1063,7 @@ Number of degrees of freedom: 1,985 (486+202+486+82+243+243+243)
      Writing graphical output: output-mass_reaction_term/solution/solution-00031
 
 *** Timestep 32:  t=1.65228e+16 seconds
-   Solving composition reactions in 1 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 10 iterations.
    Solving peridotite system ... 15 iterations.
@@ -1088,7 +1088,7 @@ Number of degrees of freedom: 1,985 (486+202+486+82+243+243+243)
      Writing graphical output: output-mass_reaction_term/solution/solution-00032
 
 *** Timestep 33:  t=1.70435e+16 seconds
-   Solving composition reactions in 1 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 10 iterations.
    Solving peridotite system ... 15 iterations.
@@ -1113,7 +1113,7 @@ Number of degrees of freedom: 1,985 (486+202+486+82+243+243+243)
      Writing graphical output: output-mass_reaction_term/solution/solution-00033
 
 *** Timestep 34:  t=1.75642e+16 seconds
-   Solving composition reactions in 1 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 10 iterations.
    Solving peridotite system ... 15 iterations.
@@ -1138,7 +1138,7 @@ Number of degrees of freedom: 1,985 (486+202+486+82+243+243+243)
      Writing graphical output: output-mass_reaction_term/solution/solution-00034
 
 *** Timestep 35:  t=1.80849e+16 seconds
-   Solving composition reactions in 1 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 10 iterations.
    Solving peridotite system ... 15 iterations.
@@ -1163,7 +1163,7 @@ Number of degrees of freedom: 1,985 (486+202+486+82+243+243+243)
      Writing graphical output: output-mass_reaction_term/solution/solution-00035
 
 *** Timestep 36:  t=1.86056e+16 seconds
-   Solving composition reactions in 1 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 10 iterations.
    Solving peridotite system ... 15 iterations.
@@ -1188,7 +1188,7 @@ Number of degrees of freedom: 1,985 (486+202+486+82+243+243+243)
      Writing graphical output: output-mass_reaction_term/solution/solution-00036
 
 *** Timestep 37:  t=1.91263e+16 seconds
-   Solving composition reactions in 1 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 10 iterations.
    Solving peridotite system ... 15 iterations.
@@ -1213,7 +1213,7 @@ Number of degrees of freedom: 1,985 (486+202+486+82+243+243+243)
      Writing graphical output: output-mass_reaction_term/solution/solution-00037
 
 *** Timestep 38:  t=1.9647e+16 seconds
-   Solving composition reactions in 1 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 10 iterations.
    Solving peridotite system ... 15 iterations.
@@ -1238,7 +1238,7 @@ Number of degrees of freedom: 1,985 (486+202+486+82+243+243+243)
      Writing graphical output: output-mass_reaction_term/solution/solution-00038
 
 *** Timestep 39:  t=2.01677e+16 seconds
-   Solving composition reactions in 1 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 10 iterations.
    Solving peridotite system ... 15 iterations.
@@ -1263,7 +1263,7 @@ Number of degrees of freedom: 1,985 (486+202+486+82+243+243+243)
      Writing graphical output: output-mass_reaction_term/solution/solution-00039
 
 *** Timestep 40:  t=2.06885e+16 seconds
-   Solving composition reactions in 1 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 10 iterations.
    Solving peridotite system ... 15 iterations.
@@ -1288,7 +1288,7 @@ Number of degrees of freedom: 1,985 (486+202+486+82+243+243+243)
      Writing graphical output: output-mass_reaction_term/solution/solution-00040
 
 *** Timestep 41:  t=2.12092e+16 seconds
-   Solving composition reactions in 1 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 10 iterations.
    Solving peridotite system ... 15 iterations.
@@ -1313,7 +1313,7 @@ Number of degrees of freedom: 1,985 (486+202+486+82+243+243+243)
      Writing graphical output: output-mass_reaction_term/solution/solution-00041
 
 *** Timestep 42:  t=2.17299e+16 seconds
-   Solving composition reactions in 1 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 10 iterations.
    Solving peridotite system ... 15 iterations.
@@ -1338,7 +1338,7 @@ Number of degrees of freedom: 1,985 (486+202+486+82+243+243+243)
      Writing graphical output: output-mass_reaction_term/solution/solution-00042
 
 *** Timestep 43:  t=2.22506e+16 seconds
-   Solving composition reactions in 1 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 9 iterations.
    Solving peridotite system ... 15 iterations.
@@ -1363,7 +1363,7 @@ Number of degrees of freedom: 1,985 (486+202+486+82+243+243+243)
      Writing graphical output: output-mass_reaction_term/solution/solution-00043
 
 *** Timestep 44:  t=2.27713e+16 seconds
-   Solving composition reactions in 1 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 9 iterations.
    Solving peridotite system ... 15 iterations.
@@ -1388,7 +1388,7 @@ Number of degrees of freedom: 1,985 (486+202+486+82+243+243+243)
      Writing graphical output: output-mass_reaction_term/solution/solution-00044
 
 *** Timestep 45:  t=2.3292e+16 seconds
-   Solving composition reactions in 1 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 9 iterations.
    Solving peridotite system ... 15 iterations.
@@ -1413,7 +1413,7 @@ Number of degrees of freedom: 1,985 (486+202+486+82+243+243+243)
      Writing graphical output: output-mass_reaction_term/solution/solution-00045
 
 *** Timestep 46:  t=2.38127e+16 seconds
-   Solving composition reactions in 1 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 9 iterations.
    Solving peridotite system ... 15 iterations.
@@ -1438,7 +1438,7 @@ Number of degrees of freedom: 1,985 (486+202+486+82+243+243+243)
      Writing graphical output: output-mass_reaction_term/solution/solution-00046
 
 *** Timestep 47:  t=2.43335e+16 seconds
-   Solving composition reactions in 1 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 8 iterations.
    Solving peridotite system ... 15 iterations.
@@ -1463,7 +1463,7 @@ Number of degrees of freedom: 1,985 (486+202+486+82+243+243+243)
      Writing graphical output: output-mass_reaction_term/solution/solution-00047
 
 *** Timestep 48:  t=2.48542e+16 seconds
-   Solving composition reactions in 1 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 8 iterations.
    Solving peridotite system ... 14 iterations.
@@ -1488,7 +1488,7 @@ Number of degrees of freedom: 1,985 (486+202+486+82+243+243+243)
      Writing graphical output: output-mass_reaction_term/solution/solution-00048
 
 *** Timestep 49:  t=2.53749e+16 seconds
-   Solving composition reactions in 1 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 8 iterations.
    Solving peridotite system ... 14 iterations.
@@ -1513,7 +1513,7 @@ Number of degrees of freedom: 1,985 (486+202+486+82+243+243+243)
      Writing graphical output: output-mass_reaction_term/solution/solution-00049
 
 *** Timestep 50:  t=2.58956e+16 seconds
-   Solving composition reactions in 1 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 8 iterations.
    Solving peridotite system ... 14 iterations.
@@ -1538,7 +1538,7 @@ Number of degrees of freedom: 1,985 (486+202+486+82+243+243+243)
      Writing graphical output: output-mass_reaction_term/solution/solution-00050
 
 *** Timestep 51:  t=2.6e+16 seconds
-   Solving composition reactions in 1 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 9 iterations.
    Solving peridotite system ... 9 iterations.

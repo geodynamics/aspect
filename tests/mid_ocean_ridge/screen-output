@@ -28,7 +28,7 @@ Number of degrees of freedom: 13,321 (3,234+1,577+3,234+425+1,617+1,617+1,617)
      RMS, max velocity:         0.0169 m/year, 0.0298 m/year
 
 *** Timestep 1:  t=10000 years
-   Solving composition reactions in 50 substep(s).
+   Solving composition reactions... in 50 substep(s).
    Solving temperature system... 6 iterations.
    Skipping porosity composition solve because RHS is zero.
    Skipping peridotite composition solve because RHS is zero.

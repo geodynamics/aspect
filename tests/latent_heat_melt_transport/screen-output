@@ -27,7 +27,7 @@ Number of degrees of freedom: 2,377 (578+273+578+81+289+289+289)
      Writing graphical output: output-latent_heat_melt_transport/solution/solution-00000
 
 *** Timestep 1:  t=2.91535e+15 seconds
-   Solving composition reactions in 7 substep(s).
+   Solving composition reactions... in 7 substep(s).
    Solving temperature system... 12 iterations.
    Solving porosity system ... 13 iterations.
    Solving peridotite system ... 13 iterations.
@@ -70,7 +70,7 @@ Number of degrees of freedom: 2,377 (578+273+578+81+289+289+289)
      Writing graphical output: output-latent_heat_melt_transport/solution/solution-00001
 
 *** Timestep 2:  t=5.56346e+15 seconds
-   Solving composition reactions in 6 substep(s).
+   Solving composition reactions... in 6 substep(s).
    Solving temperature system... 10 iterations.
    Solving porosity system ... 13 iterations.
    Solving peridotite system ... 12 iterations.
@@ -113,7 +113,7 @@ Number of degrees of freedom: 2,377 (578+273+578+81+289+289+289)
      Writing graphical output: output-latent_heat_melt_transport/solution/solution-00002
 
 *** Timestep 3:  t=8.20131e+15 seconds
-   Solving composition reactions in 6 substep(s).
+   Solving composition reactions... in 6 substep(s).
    Solving temperature system... 10 iterations.
    Solving porosity system ... 13 iterations.
    Solving peridotite system ... 11 iterations.
@@ -147,7 +147,7 @@ Number of degrees of freedom: 2,377 (578+273+578+81+289+289+289)
      Writing graphical output: output-latent_heat_melt_transport/solution/solution-00003
 
 *** Timestep 4:  t=1.08807e+16 seconds
-   Solving composition reactions in 6 substep(s).
+   Solving composition reactions... in 6 substep(s).
    Solving temperature system... 10 iterations.
    Solving porosity system ... 12 iterations.
    Solving peridotite system ... 11 iterations.
@@ -181,7 +181,7 @@ Number of degrees of freedom: 2,377 (578+273+578+81+289+289+289)
      Writing graphical output: output-latent_heat_melt_transport/solution/solution-00004
 
 *** Timestep 5:  t=1.35847e+16 seconds
-   Solving composition reactions in 6 substep(s).
+   Solving composition reactions... in 6 substep(s).
    Solving temperature system... 10 iterations.
    Solving porosity system ... 13 iterations.
    Solving peridotite system ... 11 iterations.
@@ -215,7 +215,7 @@ Number of degrees of freedom: 2,377 (578+273+578+81+289+289+289)
      Writing graphical output: output-latent_heat_melt_transport/solution/solution-00005
 
 *** Timestep 6:  t=1.62237e+16 seconds
-   Solving composition reactions in 6 substep(s).
+   Solving composition reactions... in 6 substep(s).
    Solving temperature system... 11 iterations.
    Solving porosity system ... 12 iterations.
    Solving peridotite system ... 11 iterations.
@@ -249,7 +249,7 @@ Number of degrees of freedom: 2,377 (578+273+578+81+289+289+289)
      Writing graphical output: output-latent_heat_melt_transport/solution/solution-00006
 
 *** Timestep 7:  t=1.8827e+16 seconds
-   Solving composition reactions in 6 substep(s).
+   Solving composition reactions... in 6 substep(s).
    Solving temperature system... 11 iterations.
    Solving porosity system ... 11 iterations.
    Solving peridotite system ... 11 iterations.
@@ -283,7 +283,7 @@ Number of degrees of freedom: 2,377 (578+273+578+81+289+289+289)
      Writing graphical output: output-latent_heat_melt_transport/solution/solution-00007
 
 *** Timestep 8:  t=2.14094e+16 seconds
-   Solving composition reactions in 6 substep(s).
+   Solving composition reactions... in 6 substep(s).
    Solving temperature system... 10 iterations.
    Solving porosity system ... 11 iterations.
    Solving peridotite system ... 11 iterations.
@@ -317,7 +317,7 @@ Number of degrees of freedom: 2,377 (578+273+578+81+289+289+289)
      Writing graphical output: output-latent_heat_melt_transport/solution/solution-00008
 
 *** Timestep 9:  t=2.39802e+16 seconds
-   Solving composition reactions in 6 substep(s).
+   Solving composition reactions... in 6 substep(s).
    Solving temperature system... 10 iterations.
    Solving porosity system ... 11 iterations.
    Solving peridotite system ... 11 iterations.
@@ -351,7 +351,7 @@ Number of degrees of freedom: 2,377 (578+273+578+81+289+289+289)
      Writing graphical output: output-latent_heat_melt_transport/solution/solution-00009
 
 *** Timestep 10:  t=2.6546e+16 seconds
-   Solving composition reactions in 6 substep(s).
+   Solving composition reactions... in 6 substep(s).
    Solving temperature system... 10 iterations.
    Solving porosity system ... 10 iterations.
    Solving peridotite system ... 11 iterations.
@@ -385,7 +385,7 @@ Number of degrees of freedom: 2,377 (578+273+578+81+289+289+289)
      Writing graphical output: output-latent_heat_melt_transport/solution/solution-00010
 
 *** Timestep 11:  t=2.91104e+16 seconds
-   Solving composition reactions in 6 substep(s).
+   Solving composition reactions... in 6 substep(s).
    Solving temperature system... 10 iterations.
    Solving porosity system ... 11 iterations.
    Solving peridotite system ... 11 iterations.
@@ -419,7 +419,7 @@ Number of degrees of freedom: 2,377 (578+273+578+81+289+289+289)
      Writing graphical output: output-latent_heat_melt_transport/solution/solution-00011
 
 *** Timestep 12:  t=3.16739e+16 seconds
-   Solving composition reactions in 6 substep(s).
+   Solving composition reactions... in 6 substep(s).
    Solving temperature system... 11 iterations.
    Solving porosity system ... 12 iterations.
    Solving peridotite system ... 11 iterations.
@@ -453,7 +453,7 @@ Number of degrees of freedom: 2,377 (578+273+578+81+289+289+289)
      Writing graphical output: output-latent_heat_melt_transport/solution/solution-00012
 
 *** Timestep 13:  t=3.42406e+16 seconds
-   Solving composition reactions in 6 substep(s).
+   Solving composition reactions... in 6 substep(s).
    Solving temperature system... 11 iterations.
    Solving porosity system ... 12 iterations.
    Solving peridotite system ... 11 iterations.
@@ -487,7 +487,7 @@ Number of degrees of freedom: 2,377 (578+273+578+81+289+289+289)
      Writing graphical output: output-latent_heat_melt_transport/solution/solution-00013
 
 *** Timestep 14:  t=3.68107e+16 seconds
-   Solving composition reactions in 6 substep(s).
+   Solving composition reactions... in 6 substep(s).
    Solving temperature system... 11 iterations.
    Solving porosity system ... 10 iterations.
    Solving peridotite system ... 11 iterations.
@@ -521,7 +521,7 @@ Number of degrees of freedom: 2,377 (578+273+578+81+289+289+289)
      Writing graphical output: output-latent_heat_melt_transport/solution/solution-00014
 
 *** Timestep 15:  t=3.93841e+16 seconds
-   Solving composition reactions in 6 substep(s).
+   Solving composition reactions... in 6 substep(s).
    Solving temperature system... 11 iterations.
    Solving porosity system ... 11 iterations.
    Solving peridotite system ... 11 iterations.
@@ -555,7 +555,7 @@ Number of degrees of freedom: 2,377 (578+273+578+81+289+289+289)
      Writing graphical output: output-latent_heat_melt_transport/solution/solution-00015
 
 *** Timestep 16:  t=4e+16 seconds
-   Solving composition reactions in 1 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 9 iterations.
    Solving porosity system ... 9 iterations.
    Solving peridotite system ... 9 iterations.

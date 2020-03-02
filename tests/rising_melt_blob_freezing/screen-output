@@ -27,7 +27,7 @@ Number of degrees of freedom: 34,825 (8,450+4,161+8,450+1,089+4,225+4,225+4,225)
      Writing graphical output:  output-rising_melt_blob_freezing/solution/solution-00000
 
 *** Timestep 1:  t=1 years
-   Solving composition reactions in 200 substep(s).
+   Solving composition reactions... in 200 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 6 iterations.
    Solving peridotite system ... 5 iterations.
@@ -484,7 +484,7 @@ Number of degrees of freedom: 34,825 (8,450+4,161+8,450+1,089+4,225+4,225+4,225)
      Writing graphical output:  output-rising_melt_blob_freezing/solution/solution-00001
 
 *** Timestep 2:  t=2 years
-   Solving composition reactions in 200 substep(s).
+   Solving composition reactions... in 200 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 12 iterations.
    Solving peridotite system ... 10 iterations.

@@ -1538,12 +1538,18 @@ namespace aspect
 
     // we have to update the old solution with our reaction update too
     // so that the advection scheme will have the correct time stepping in the next step
-    LinearAlgebra::BlockVector tmp(distributed_vector);
+    LinearAlgebra::BlockVector tmp;
+    tmp.reinit(distributed_vector, false);
 
+    // What we really want to do is
+    //     old_solution.block(block_index) += distributed_reaction_vector.block(block_index);
+    // but because 'old_solution' is a ghosted vector, we can't write into it directly. Rather,
+    // we have to go around with a completely distributed vector.
     tmp.block(block_index) = old_solution.block(block_index);
     tmp.block(block_index) +=  distributed_reaction_vector.block(block_index);
     old_solution.block(block_index) = tmp.block(block_index);
 
+    // Same here with going through a distributed vector.
     tmp.block(block_index) = old_old_solution.block(block_index);
     tmp.block(block_index) +=  distributed_reaction_vector.block(block_index);
     old_old_solution.block(block_index) = tmp.block(block_index);
@@ -1580,7 +1586,7 @@ namespace aspect
     Assert (reaction_time_step_size > 0,
             ExcMessage("Reaction time step must be greater than 0."));
 
-    pcout << "   Solving composition reactions ";
+    pcout << "   Solving composition reactions... " << std::flush;
 
     // make one fevalues for the composition, and one for the temperature (they might use different finite elements)
     const Quadrature<dim> quadrature_C(dof_handler.get_fe().base_element(introspection.base_elements.compositional_fields).get_unit_support_points());
@@ -1652,12 +1658,10 @@ namespace aspect
     for (const auto &cell : dof_handler.active_cell_iterators())
       if (cell->is_locally_owned())
         {
-          cell->get_dof_indices (local_dof_indices);
-
           fe_values_C.reinit (cell);
           in_C.reinit(fe_values_C, cell, introspection, solution);
 
-          if (!temperature_and_composition_use_same_fe)
+          if (temperature_and_composition_use_same_fe == false)
             {
               fe_values_T.reinit (cell);
               in_T.reinit(fe_values_T, cell, introspection, solution);
@@ -1718,6 +1722,8 @@ namespace aspect
                 }
             }
 
+          cell->get_dof_indices (local_dof_indices);
+
           // copy reaction rates and new values for the compositional fields
           for (unsigned int j=0; j<dof_handler.get_fe().base_element(introspection.base_elements.compositional_fields).dofs_per_cell; ++j)
             for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
@@ -1759,13 +1765,13 @@ namespace aspect
 
     // put the final values into the solution vector
     for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
-      {
-        const unsigned int block_c = introspection.block_indices.compositional_fields[c];
-        update_solution_vectors_with_reaction_results(block_c,distributed_vector,distributed_reaction_vector);
-      }
+      update_solution_vectors_with_reaction_results(introspection.block_indices.compositional_fields[c],
+                                                    distributed_vector,
+                                                    distributed_reaction_vector);
 
-    const unsigned int block_T = introspection.block_indices.temperature;
-    update_solution_vectors_with_reaction_results(block_T,distributed_vector,distributed_reaction_vector);
+    update_solution_vectors_with_reaction_results(introspection.block_indices.temperature,
+                                                  distributed_vector,
+                                                  distributed_reaction_vector);
 
     initialize_current_linearization_point();
 
