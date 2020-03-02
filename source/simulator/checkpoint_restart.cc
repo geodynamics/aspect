@@ -555,6 +555,14 @@ namespace aspect
                                  ">"));
       }
 
+    // Overwrite the existing statistics file with the one that would have
+    // been current at the time of the snapshot we just read back in. We
+    // do this because the simulation that created the snapshot may have
+    // continued for a few more time steps. The operation here then
+    // effectively truncates the 'statistics' file to the position from
+    // which the current simulation is going to continue.
+    output_statistics();
+
     // We have to compute the constraints here because the vector that tells
     // us if a cell is a melt cell is not saved between restarts.
     if (parameters.include_melt_transport)
