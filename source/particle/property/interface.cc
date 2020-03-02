@@ -290,13 +290,16 @@ namespace aspect
         for (typename std::list<std::unique_ptr<Interface<dim> > >::const_iterator
              p = property_list.begin(); p!=property_list.end(); ++p)
           {
-            (*p)->initialize();
-
             info.push_back((*p)->get_property_information());
           }
 
         // Initialize our property information
         property_information = ParticlePropertyInformation(info);
+        for (typename std::list<std::unique_ptr<Interface<dim> > >::const_iterator
+             p = property_list.begin(); p!=property_list.end(); ++p)
+          {
+            (*p)->initialize();
+          }
       }
 
 
