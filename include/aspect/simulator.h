@@ -1750,6 +1750,23 @@ namespace aspect
        */
       TableHandler                        statistics;
 
+      /**
+       * The following two variables keep track which parts of the statistics
+       * object have already been written. This is because the TableHandler
+       * class has no way to keep track what it has already written, and so
+       * we can not just append the last row of the table to the output
+       * file. Rather, we keep track how many bytes we already wrote,
+       * and a hash of what they contained, and if these so-many bytes have
+       * not changed between the previous and current write operation, then
+       * we only open the file in 'append' mode to add the new bytes from the
+       * last row. If what we would write now has changed from what we wrote
+       * back then in the first so-many bytes (e.g., because column widths of
+       * the table have changed), then we just replace the previous file by
+       * the current table contents in their entirety.
+       */
+      std::size_t                         statistics_last_write_size;
+      std::size_t                         statistics_last_hash;
+
       mutable TimerOutput                 computing_timer;
 
       /**

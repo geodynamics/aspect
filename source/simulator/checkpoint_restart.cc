@@ -582,8 +582,18 @@ namespace aspect
     ar &pre_refinement_step;
     ar &last_pressure_normalization_adjustment;
 
-    ar &postprocess_manager &statistics;
+    ar &postprocess_manager;
 
+    ar &statistics;
+
+    // We do not serialize the statistics_last_write_size and
+    // statistics_last_hash variables on purpose. This way, upon
+    // restart, they are left at the values initialized by the
+    // Simulator::Simulator() constructor, and this causes the
+    // Simulator::output_statistics() function to write the
+    // whole statistics file anew at the end of the first time
+    // step after restart. See there why this is the
+    // correct behavior after restart.
   }
 }
 

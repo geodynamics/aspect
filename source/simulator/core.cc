@@ -161,6 +161,9 @@ namespace aspect
             this_mpi_process(mpi_communicator)
             == 0)),
 
+    statistics_last_write_size (0),
+    statistics_last_hash (0),
+
     computing_timer (mpi_communicator,
                      pcout,
                      TimerOutput::never,
