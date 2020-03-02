@@ -256,7 +256,7 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::output_statistics()
   {
-    // only write the statistics file from processor zero
+    // Only write the statistics file from processor zero
     if (Utilities::MPI::this_mpi_process(mpi_communicator)!=0)
       return;
 
@@ -302,7 +302,7 @@ namespace aspect
       // the last few bytes that were added since we wrote to that
       // file again. The way we do that is by checking whether the
       // first few bytes of the string we just created match what we
-      // had previously written. One might think that they never should,
+      // had previously written. One might think that they always should,
       // but the statistics object automatically sizes the column widths
       // of its output to match what is being written, and so if a later
       // entry requires more width, then even the first columns are
@@ -313,10 +313,9 @@ namespace aspect
             // case happens if the statistics_last_write_size is at the
             // value initialized by the Simulator::Simulator()
             // constructor, and this can happen in two situations:
-            // (i) At the end of the first time step; and (ii) at the
-            // end of the first time step after restart since the
-            // variable we query here is not serialized. It is clear that
-            // at the end of the first time step, we want to write the
+            // (i) At the end of the first time step; and (ii) upon restart
+            // since the variable we query here is not serialized. It is clear
+            // that in both situations, we want to write the
             // entire contents of the statistics object. For the second
             // case, this is also appropriate since someone may have
             // previously restarted from a checkpoint, run a couple of
@@ -328,7 +327,9 @@ namespace aspect
             // happens if the simulation kept running for some time after
             // a checkpoint, but is resumed from that checkpoint (i.e.,
             // at an earlier time step than when the statistics file was
-            // written to last).
+            // written to last). In these situations, we effectively want
+            // to "truncate" the file to the state stored in the checkpoint,
+            // and we do that by just overwriting the entire file.
             (statistics_last_write_size == 0)
             ||
             // Or the size of the statistics file may have
