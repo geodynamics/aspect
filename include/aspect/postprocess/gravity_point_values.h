@@ -149,7 +149,7 @@ namespace aspect
         double quadrature_degree_increase;
 
         /**
-         * Parameter for the map sampling scheme:
+         * Parameter for the map and profile sampling scheme:
          * Gravity may be calculated for a sets of points along the radius (e.g. depth
          * profile) between a minimum and maximum radius. Number of points along the radius
          * is specified with n_points_radius.
@@ -173,7 +173,7 @@ namespace aspect
         unsigned int n_points_latitude;
 
         /**
-         * Parameter for the map sampling scheme:
+         * Parameter for the map and profile sampling scheme:
          * Minimum radius for the depth range in case of the map sampling scheme. Presribe
          * a minimum radius for a sampling coverage at a specific height. May be defined
          * in or outside the model.
@@ -181,7 +181,7 @@ namespace aspect
         double minimum_radius;
 
         /**
-         * Parameter for the map sampling scheme:
+         * Parameter for the map and profile sampling scheme:
          * Maximum radius for depth-profile in case of the map sampling scheme. May be
          * defined in or outside the model. No need to specify maximum_radius if
          * n_points_radius is 1.
@@ -225,7 +225,7 @@ namespace aspect
 
         /**
          * Specify the sampling scheme determining if gravity calculation is performed
-         * for a map of points or a list of points.
+         * for a map of points, a list of points or a profile along the radius..
          */
         enum SamplingScheme
         {
@@ -242,16 +242,18 @@ namespace aspect
         std::vector<double> radius_list;
 
         /**
-         * Parameter for the list sampling scheme:
-         * List of longitude coordinates for the list sampling scheme. Must be in order
-         * with the lists of radius and latitude.
+         * Parameter for the list and profile sampling scheme:
+         * List of longitude coordinates for the list or profile sampling scheme.
+         * If list: longitudes must be in order with the list of radius and latitude.
+         * If profile: Only one longitude coordinate is allowed. 
          */
         std::vector<double> longitude_list;
 
         /**
          * Parameter for the list sampling scheme:
          * List of latitude coordinates for the list sampling scheme. Must be in order
-         * with the lists of radius and longitude.
+         * If list: latitudes must be in order with the list of radius and longitude.
+         * If profile: Only one latitude coordinate is allowed. 
          */
         std::vector<double> latitude_list;
 

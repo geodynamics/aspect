@@ -546,13 +546,13 @@ namespace aspect
                              "maximum latitude.");
           prm.declare_entry ("Minimum radius", "0",
                              Patterns::Double (0.0),
-                             "Parameter for the map sampling scheme: "
+                             "Parameter for the map and profile sampling scheme: "
                              "Minimum radius may be defined in or outside the model. "
                              "Prescribe a minimum radius for a sampling coverage at a "
                              "specific height.");
           prm.declare_entry ("Maximum radius", "0",
                              Patterns::Double (0.0),
-                             "Parameter for the map sampling scheme: "
+                             "Parameter for the map and profile sampling scheme: "
                              "Maximum radius can be defined in or outside the model.");
           prm.declare_entry ("Minimum longitude", "-180",
                              Patterns::Double (-180.0,180.0),
@@ -587,12 +587,14 @@ namespace aspect
                              "and latitude");
           prm.declare_entry ("List of longitude", "",
                              Patterns::List (Patterns::Double(-180.0,180.0)),
-                             "Parameter for the list sampling scheme: "
-                             "List of satellite longitude coordinates.");
+                             "Parameter for the list and profile sampling scheme: "
+                             "List of satellite longitude coordinates. If profile: "
+                             "only 1 longitude coordinate is allowed ");
           prm.declare_entry ("List of latitude", "",
                              Patterns::List (Patterns::Double(-90.0,90.0)),
-                             "Parameter for the list sampling scheme: "
-                             "List of satellite latitude coordinates.");
+                             "Parameter for the list and profile sampling scheme: "
+                             "List of satellite latitude coordinates. If profile: "
+                             "only 1 latitude coordinate is allowed");
           prm.declare_entry ("Time between gravity output", "1e8",
                              Patterns::Double(0.0),
                              "The time interval between each generation of "
