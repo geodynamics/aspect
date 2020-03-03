@@ -377,8 +377,8 @@ namespace aspect
           const Tensor<1,dim> g_anomaly  = Utilities::MPI::sum (local_g_anomaly, this->get_mpi_communicator());
           const Tensor<2,dim> g_gradient = Utilities::MPI::sum (local_g_gradient, this->get_mpi_communicator());
           const double g_potential       = Utilities::MPI::sum (local_g_potential, this->get_mpi_communicator());
-     
-          // sum gravity components for all n_satellites: 
+
+          // sum gravity components for all n_satellites:
           sum_g += g;
           sum_g_gradient += g_gradient;
           sum_g_potential += g_potential;
@@ -461,8 +461,8 @@ namespace aspect
       // write statistics:
       std::string file_prefix2 = "statistics-" + Utilities::int_to_string (output_file_number, 5);
       const std::string filename2 = (this->get_output_directory()
-                                    + "output_gravity/"
-                                    + file_prefix2);
+                                     + "output_gravity/"
+                                     + file_prefix2);
       std::ofstream statistics (filename2.c_str());
       AssertThrow(statistics,
                   ExcMessage("Unable to open file for writing: " + filename2 +"."));
@@ -487,7 +487,7 @@ namespace aspect
       const double mass = Utilities::MPI::sum (local_mass, this->get_mpi_communicator());
       if (dealii::Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
         {
-          statistics << number_of_cells << ' ' 
+          statistics << number_of_cells << ' '
                      << quadrature_degree_increase << ' '
                      << degree-quadrature_degree_increase << ' '
                      << std::setprecision(9) << mass << ' '

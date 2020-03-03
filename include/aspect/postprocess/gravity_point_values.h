@@ -245,7 +245,7 @@ namespace aspect
          * Parameter for the list and profile sampling scheme:
          * List of longitude coordinates for the list or profile sampling scheme.
          * If list: longitudes must be in order with the list of radius and latitude.
-         * If profile: Only one longitude coordinate is allowed. 
+         * If profile: Only one longitude coordinate is allowed.
          */
         std::vector<double> longitude_list;
 
@@ -253,7 +253,7 @@ namespace aspect
          * Parameter for the list sampling scheme:
          * List of latitude coordinates for the list sampling scheme. Must be in order
          * If list: latitudes must be in order with the list of radius and longitude.
-         * If profile: Only one latitude coordinate is allowed. 
+         * If profile: Only one latitude coordinate is allowed.
          */
         std::vector<double> latitude_list;
 
