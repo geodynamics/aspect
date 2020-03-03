@@ -1,0 +1,17 @@
+# 1: number of cells in the domain
+# 2: quadrature point increase
+# 3: polynomial degree
+# 4: total mass of the domain
+# 5: total volume of the domain
+# 6: average gravity_x 
+# 7: average gravity_y 
+# 8: average gravity_z 
+# 9: average gravity_potential
+# 10: average gravity_gradient_xx
+# 11: average gravity_gradient_yy
+# 12: average gravity_gradient_zz
+# 13: average gravity_gradient_xy
+# 14: average gravity_gradient_xz
+# 15: average gravity_gradient_yz
+
+12 0 2 29332467.7 29.3207394 1.18137479e-05 -3.80211914e-21 -1.08420217e-20 -0.000489566705 -8687.12691 -9.36500802e-13 2.87991202e-13 0 -16042.779 -1.1646703e-12 0 0 24729.906
