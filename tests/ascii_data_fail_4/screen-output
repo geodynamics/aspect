@@ -15,7 +15,7 @@ Exception 'ExcMessage (std::string("Ascii data file <") + filename + "> not foun
 An error occurred in file <utilities.cc> in function
 (line in output replaced by default.sh script)
 The violated condition was: 
-    Utilities::fexists(filename)
+    Utilities::fexists(filename) || filename_is_url(filename)
 Additional information: 
     Ascii data file <ASPECT_DIR/data/boundary-velocity/ascii-data/test/fail_4.txt> not found!
 

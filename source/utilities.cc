@@ -942,11 +942,11 @@ namespace aspect
     bool
     filename_is_url(const std::string &filename)
     {
-        // return whether or not the requested file is from a url
-        if (filename.find("http://") == 0 || filename.find("https://") == 0 || filename.find("file://") == 0)
-            return true;
-        else
-            return false;
+      // return whether or not the requested file is from a url
+      if (filename.find("http://") == 0 || filename.find("https://") == 0 || filename.find("file://") == 0)
+        return true;
+      else
+        return false;
     }
 
 
@@ -1064,57 +1064,48 @@ namespace aspect
               AssertThrow(false,
                           ExcMessage(std::string("Reading of file ") + filename + " failed. " +
                                      "Make sure you have the dependencies for reading a url " +
-                                     "(when running cmake make sure -DLIBDAP_ON=ON)"));
+                                     "(run cmake with -DLIBDAP_ON=ON)"));
 
+#endif // HAVE_LIBDAP
+            }
+          else
+            {
               std::ifstream filestream(filename.c_str());
 
-              if (!filestream) {
+              if (!filestream)
+                {
                   // broadcast failure state, then throw
-                  MPI_Bcast(&filesize, 1, MPI_UNSIGNED, 0, comm);
-                  AssertThrow(false,
-                              ExcMessage(std::string("Could not open file <") + filename + ">."));
+                  MPI_Bcast(&filesize,1,MPI_UNSIGNED,0,comm);
+                  AssertThrow (false,
+                               ExcMessage (std::string("Could not open file <") + filename + ">."));
                   return data_string; // never reached
-              }
-#endif // HAVE_LIBDAP
-          }
-              else
-              {
-                  std::ifstream filestream(filename.c_str());
-
-                  if (!filestream)
-                  {
-                      // broadcast failure state, then throw
-                      MPI_Bcast(&filesize,1,MPI_UNSIGNED,0,comm);
-                      AssertThrow (false,
-                                   ExcMessage (std::string("Could not open file <") + filename + ">."));
-                      return data_string; // never reached
-                  }
+                }
 
 
-                  // Read data from disk
-                  std::stringstream datastream;
-                  filestream >> datastream.rdbuf();
+              // Read data from disk
+              std::stringstream datastream;
+              filestream >> datastream.rdbuf();
 
-                  if (!filestream.eof())
-                  {
-                      // broadcast failure state, then throw
-                      MPI_Bcast(&filesize,1,MPI_UNSIGNED,0,comm);
-                      AssertThrow (false,
-                                   ExcMessage (std::string("Reading of file ") + filename + " finished " +
-                                               "before the end of file was reached. Is the file corrupted or"
-                                               "too large for the input buffer?"));
-                      return data_string; // never reached
-                  }
+              if (!filestream.eof())
+                {
+                  // broadcast failure state, then throw
+                  MPI_Bcast(&filesize,1,MPI_UNSIGNED,0,comm);
+                  AssertThrow (false,
+                               ExcMessage (std::string("Reading of file ") + filename + " finished " +
+                                           "before the end of file was reached. Is the file corrupted or"
+                                           "too large for the input buffer?"));
+                  return data_string; // never reached
+                }
 
 
 
-                  data_string = datastream.str();
-                  filesize = data_string.size();
-              }
+              data_string = datastream.str();
+              filesize = data_string.size();
+            }
 
-              // Distribute data_size and data across processes
-              MPI_Bcast(&filesize,1,MPI_UNSIGNED,0,comm);
-              MPI_Bcast(&data_string[0],filesize,MPI_CHAR,0,comm);
+          // Distribute data_size and data across processes
+          MPI_Bcast(&filesize,1,MPI_UNSIGNED,0,comm);
+          MPI_Bcast(&data_string[0],filesize,MPI_CHAR,0,comm);
         }
       else
         {
