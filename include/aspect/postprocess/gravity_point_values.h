@@ -256,12 +256,6 @@ namespace aspect
         std::vector<double> latitude_list;
 
         /**
-         * A parameter to control whether to output gravity statistics and the mass
-         * and volume of the domain.
-         */
-        bool also_output_gravity_statistics;
-
-        /**
          * Replace the density at quadrature points by PREM: for benchmark purposes only.
          */
         bool replace_density_at_quadrature_points_by_PREM;

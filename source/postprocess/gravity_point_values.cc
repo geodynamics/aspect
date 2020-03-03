@@ -186,7 +186,6 @@ namespace aspect
       // only appear together):
       std::vector<double> density_JxW (n_locally_owned_cells * n_quadrature_points_per_cell);
       std::vector<double> density_anomalies_JxW (n_locally_owned_cells * n_quadrature_points_per_cell);
-      std::vector<double> density (n_locally_owned_cells * n_quadrature_points_per_cell);
 
       // Declare the vector 'position_point' to store the position of quadrature points:
       std::vector<Point<dim> > position_point (n_locally_owned_cells * n_quadrature_points_per_cell);
@@ -235,7 +234,6 @@ namespace aspect
                     else
                       out.densities[q]=1.020*1e3;
                   }
-                density[local_cell_number * n_quadrature_points_per_cell + q] = out.densities[q];
                 density_JxW[local_cell_number * n_quadrature_points_per_cell + q] = out.densities[q] * fe_values.JxW(q);
                 density_anomalies_JxW[local_cell_number * n_quadrature_points_per_cell + q] = (out.densities[q]-reference_density) * fe_values.JxW(q);
                 local_volume += fe_values.JxW(q);
@@ -461,46 +459,42 @@ namespace aspect
         }
 
       // write statistics:
-      if (also_output_gravity_statistics == true)
+      std::string file_prefix2 = "statistics-" + Utilities::int_to_string (output_file_number, 5);
+      const std::string filename2 = (this->get_output_directory()
+                                    + "output_gravity/"
+                                    + file_prefix2);
+      std::ofstream statistics (filename2.c_str());
+      AssertThrow(statistics,
+                  ExcMessage("Unable to open file for writing: " + filename2 +"."));
+      statistics << "# 1: number of cells in the domain" << '\n'
+                 << "# 2: quadrature point increase" << '\n'
+                 << "# 3: polynomial degree" << '\n'
+                 << "# 4: total mass of the domain" << '\n'
+                 << "# 5: total volume of the domain" << '\n'
+                 << "# 6: average gravity_x " << '\n'
+                 << "# 7: average gravity_y " << '\n'
+                 << "# 8: average gravity_z " << '\n'
+                 << "# 9: average gravity_potential" << '\n'
+                 << "# 10: average gravity_gradient_xx" << '\n'
+                 << "# 11: average gravity_gradient_yy" << '\n'
+                 << "# 12: average gravity_gradient_zz" << '\n'
+                 << "# 13: average gravity_gradient_xy" << '\n'
+                 << "# 14: average gravity_gradient_xz" << '\n'
+                 << "# 15: average gravity_gradient_yz" << '\n'
+                 << '\n';
+      const double number_of_cells = Utilities::MPI::sum (n_locally_owned_cells, this->get_mpi_communicator());
+      const double volume = Utilities::MPI::sum (local_volume, this->get_mpi_communicator());
+      const double mass = Utilities::MPI::sum (local_mass, this->get_mpi_communicator());
+      if (dealii::Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
         {
-          std::string file_prefix2= "statistics";
-          const std::string filename2 = (this->get_output_directory()
-                                        + "output_gravity/"
-                                        + file_prefix2);
-          std::ofstream statistics (filename2.c_str());
-          AssertThrow(statistics,
-                      ExcMessage("Unable to open file for writing: " + filename2 +"."));
-          statistics << "# 1: number of cells in the domain" << '\n'
-                     << "# 2: quadrature point increase" << '\n'
-                     << "# 3: polynomial degree" << '\n'
-                     << "# 4: total mass of the domain" << '\n'
-                     << "# 5: total volume of the domain" << '\n'
-                     << "# 6: average gravity_x " << '\n'
-                     << "# 7: average gravity_y " << '\n'
-                     << "# 8: average gravity_z " << '\n'
-                     << "# 9: average gravity_potential" << '\n'
-                     << "# 10: average gravity_gradient_xx" << '\n'
-                     << "# 11: average gravity_gradient_yy" << '\n'
-                     << "# 12: average gravity_gradient_zz" << '\n'
-                     << "# 13: average gravity_gradient_xy" << '\n'
-                     << "# 14: average gravity_gradient_xz" << '\n'
-                     << "# 15: average gravity_gradient_yz" << '\n'
-                     << '\n';
-          const double number_of_cells = Utilities::MPI::sum (n_locally_owned_cells, this->get_mpi_communicator());
-          const double volume = Utilities::MPI::sum (local_volume, this->get_mpi_communicator());
-          const double mass = Utilities::MPI::sum (local_mass, this->get_mpi_communicator());
-          if (dealii::Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
-            {
-              statistics << number_of_cells << ' ' 
-                         << quadrature_degree_increase << ' '
-                         << degree-quadrature_degree_increase << ' '
-                         << std::setprecision(9) << mass << ' '
-                         << std::setprecision(9) << volume << ' '
-                         << sum_g/n_satellites << ' '
-                         << sum_g_potential/n_satellites << ' '
-                         << sum_g_gradient/n_satellites *1e9;
-            }
-
+          statistics << number_of_cells << ' ' 
+                     << quadrature_degree_increase << ' '
+                     << degree-quadrature_degree_increase << ' '
+                     << std::setprecision(9) << mass << ' '
+                     << std::setprecision(9) << volume << ' '
+                     << sum_g/n_satellites << ' '
+                     << sum_g_potential/n_satellites << ' '
+                     << sum_g_gradient/n_satellites *1e9;
         }
 
       // up the next time we need output:
@@ -611,11 +605,6 @@ namespace aspect
                              Patterns::Integer(0,std::numeric_limits<int>::max()),
                              "The maximum number of time steps between each generation of "
                              "gravity output files.");
-          prm.declare_entry ("Also output gravity statistics", "false",
-                             Patterns::Bool(),
-                             "Option to output the numerical mass and volume of the domain, "
-                             "as well as the average gravity, potential and gradients. "
-                             "The default is false.");
           prm.declare_entry ("Replace density at quadrature points by PREM", "false",
                              Patterns::Bool(),
                              "Option to replace density at quadrature points by PREM densities. "
@@ -654,7 +643,6 @@ namespace aspect
             sampling_scheme = profile;
           else
             AssertThrow (false, ExcMessage ("Not a valid sampling scheme."));
-          also_output_gravity_statistics = prm.get_bool ("Also output gravity statistics");
           replace_density_at_quadrature_points_by_PREM = prm.get_bool ("Replace density at quadrature points by PREM");
           quadrature_degree_increase = prm.get_double ("Quadrature degree increase");
           n_points_radius     = prm.get_integer("Number points radius");
@@ -767,7 +755,8 @@ namespace aspect
                                   "A postprocessor that computes gravity, gravity anomalies, gravity "
                                   "potential and gravity gradients for a set of points (e.g. satellites) "
                                   "in or above the model surface for either a user-defined range of "
-                                  "latitudes, longitudes and radius or a list of point coordinates."
+                                  "latitudes, longitudes and radius or a list of point coordinates or "
+                                  "a radial profile at a specific longitude and latitude. "
                                   "Spherical coordinates in the output file are radius, colatitude "
                                   "and colongitude. Gravity is here based on the density distribution "
                                   "from the material model (and non adiabatic). This means that the "
@@ -778,7 +767,7 @@ namespace aspect
                                   "determine density anomalies for computing gravity anomalies. Thus "
                                   "one must carefully evaluate the meaning of the gravity anomaly output, "
                                   "because the solution may not reflect the actual gravity anomaly (due to "
-                                  "differences in the assumed reference density). On way to guarantee correct "
+                                  "differences in the assumed reference density). One way to guarantee correct "
                                   "gravity anomalies is to subtract gravity of a certain point from the average "
                                   "gravity on the map. Another way is to directly use density anomalies for this "
                                   "postprocessor.")
