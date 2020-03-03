@@ -1,0 +1,8 @@
+New: The profile sampling scheme in the gravity_point_values postprocessor 
+permits to calculate gravity and its components on a profile along the radius. 
+New: Replace density at quadrature points by PREM. This is mainly for a 
+benchmark. 
+New: Output file with some statistics such as the average gravity, average 
+potential and gradients.
+<br>
+(Ludovic Jeanniot, 2020/03/03)
