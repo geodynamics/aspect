@@ -28,6 +28,7 @@
 #include <aspect/material_model/rheology/dislocation_creep.h>
 #include <aspect/material_model/rheology/drucker_prager.h>
 #include <aspect/material_model/equation_of_state/multicomponent_incompressible.h>
+#include <aspect/material_model/rheology/elasticity.h>
 
 #include<deal.II/fe/component_mask.h>
 
@@ -72,7 +73,8 @@ namespace aspect
     };
 
     /**
-     * A material model combining viscous and plastic deformation.
+     * A material model combining viscous and plastic deformation, with
+     * the option to also include viscoelastic deformation.
      *
      * Viscous deformation is defined by a viscous flow law describing
      * dislocation and diffusion creep:
@@ -102,6 +104,94 @@ namespace aspect
      * If the viscous stress ($2v{\varepsilon}_{ii})$) exceeds the yield
      * stress ($\sigma_{y}$), the viscosity is rescaled back to the yield
      * surface: $v_{y}=\sigma_{y}/(2{\varepsilon}_{ii})$
+     *
+     * When included, the viscoelastic rheology takes into account the elastic shear
+     * strength (e.g., shear modulus), while the tensile and volumetric
+     * strength (e.g., Young's and bulk modulus) are not considered. The model
+     * is incompressible and allows specifying an arbitrary number of
+     * compositional fields, where each field represents a different rock type
+     * or component of the viscoelastic stress tensor. The symmetric stress tensor in
+     * 2D and 3D, respectively, contains 3 or 6 components. The compositional fields
+     * representing these components must be named and listed in a very specific
+     * format, which is designed to minimize mislabeling stress tensor components
+     * as distinct 'compositional rock types' (or vice versa). For 2D models,
+     * the first three compositional fields must be labeled stress_xx, stress_yy
+     * and stress_xy. In 3D, the first six compositional fields must be labeled
+     * stress_xx, stress_yy, stress_zz, stress_xy, stress_xz, stress_yz.
+     *
+     * Combining this viscoelasticity implementation with non-linear viscous flow
+     * and plasticity produces a constitutive relationship commonly referred to
+     * as partial elastoviscoplastic (e.g., pEVP) in the geodynamics community.
+     * While extensively discussed and applied within the geodynamics literature,
+     * notable references include:
+     * Moresi et al. (2003), J. Comp. Phys., v. 184, p. 476-497.
+     * Gerya and Yuen (2007), Phys. Earth. Planet. Inter., v. 163, p. 83-105.
+     * Gerya (2010), Introduction to Numerical Geodynamic Modeling.
+     * Kaus (2010), Tectonophysics, v. 484, p. 36-47.
+     * Choi et al. (2013), J. Geophys. Res., v. 118, p. 2429-2444.
+     * Keller et al. (2013), Geophys. J. Int., v. 195, p. 1406-1442.
+     *
+     * The overview below directly follows Moresi et al. (2003) eqns. 23-32.
+     * However, an important distinction between this material model and
+     * the studies above is the use of compositional fields, rather than
+     * tracers, to track individual components of the viscoelastic stress
+     * tensor. The material model will be updated when an option to track
+     * and calculate viscoelastic stresses with tracers is implemented.
+     * Moresi et al. (2003) begins (eqn. 23) by writing the deviatoric
+     * rate of deformation ($\hat{D}$) as the sum of elastic
+     * ($\hat{D_{e}}$) and viscous ($\hat{D_{v}}$) components:
+     * $\hat{D} = \hat{D_{e}} + \hat{D_{v}}$.
+     * These terms further decompose into
+     * $\hat{D_{v}} = \frac{\tau}{2\eta}$ and
+     * $\hat{D_{e}} = \frac{\overset{\triangledown}{\tau}}{2\mu}$, where
+     * $\tau$ is the viscous deviatoric stress, $\eta$ is the shear viscosity,
+     * $\mu$ is the shear modulus and $\overset{\triangledown}{\tau}$ is the
+     * Jaumann corotational stress rate. If plasticity is included the
+     * deviatoric rate of deformation may be writted as:
+     * $\hat{D} = \hat{D_{e}} + \hat{D_{v}} + \hat{D_{p}}$, where $\hat{D_{p}}$
+     * is the plastic component. As defined in the second paragraph, $\hat{D_{p}}$
+     * decomposes to $\frac{\tau_{y}}{2\eta_{y}}$, where $\tau_{y}$ is the yield
+     * stress and $\eta_{y}$ is the viscosity rescaled to the yield surface.
+     *
+     * Above, the Jaumann corotational stress rate (eqn. 24) from the elastic
+     * component contains the time derivative of the deviatoric stress ($\dot{\tau}$)
+     * and terms that  account for material spin (e.g., rotation) due to advection:
+     * $\overset{\triangledown}{\tau} = \dot{\tau} + {\tau}W -W\tau$.
+     * Above, $W$ is the material spin tensor (eqn. 25):
+     * $W_{ij} = \frac{1}{2} \left (\frac{\partial V_{i}}{\partial x_{j}} -
+     * \frac{\partial V_{j}}{\partial x_{i}} \right )$.
+     *
+     * The Jaumann stress-rate can also be approximated using terms from the time
+     * at the previous time step ($t$) and current time step ($t + \Delta t^{e}$):
+     * $\smash[t]{\overset{\triangledown}{\tau}}^{t + \Delta t^{e}} \approx
+     * \frac{\tau^{t + \Delta t^{e} - \tau^{t}}}{\Delta t^{e}} -
+     * W^{t}\tau^{t} + \tau^{t}W^{t}$.
+     * In this material model, the size of the time step above ($\\Delta t^{e}$)
+     * can be specified as the numerical time step size or an independent fixed time
+     * step. If the latter case is selected, the user has an option to apply a
+     * stress averaging scheme to account for the differences between the numerical
+     * and fixed elastic time step (eqn. 32). If one selects to use a fixed elastic time
+     * step throughout the model run, an equal numerical and elastic time step can be
+     * achieved by using CFL and maximum time step values that restrict the numerical
+     * time step to the fixed elastic time step.
+     *
+     * The formulation above allows rewriting the total rate of deformation (eqn. 29) as
+     * $\tau^{t + \Delta t^{e}} = \eta_{eff} \left (
+     * 2\\hat{D}^{t + \\triangle t^{e}} + \\frac{\\tau^{t}}{\\mu \\Delta t^{e}} +
+     * \\frac{W^{t}\\tau^{t} - \\tau^{t}W^{t}}{\\mu}  \\right )$.
+     *
+     * The effective viscosity (eqn. 28) is a function of the viscosity ($\eta$),
+     * elastic time step size ($\Delta t^{e}$) and shear relaxation time
+     * ($ \alpha = \frac{\eta}{\mu} $):
+     * $\eta_{eff} = \eta \frac{\Delta t^{e}}{\Delta t^{e} + \alpha}$
+     * The magnitude of the shear modulus thus controls how much the effective
+     * viscosity is reduced relative to the initial viscosity.
+     *
+     * Elastic effects are introduced into the governing Stokes equations through
+     * an elastic force term (eqn. 30) using stresses from the previous time step:
+     * $F^{e,t} = -\frac{\eta_{eff}}{\mu \Delta t^{e}} \tau^{t}$.
+     * This force term is added onto the right-hand side force vector in the
+     * system of equations.
      *
      * Several model parameters (reference densities, thermal expansivities
      * thermal diffusivities, heat capacities and rheology parameters) can
@@ -277,6 +367,16 @@ namespace aspect
          * Object that handles phase transitions.
          */
         MaterialUtilities::PhaseFunction<dim> phase_function;
+
+        /**
+         * Object for computing viscoelastic viscosities and stresses.
+         */
+        Rheology::Elasticity<dim> elastic_rheology;
+
+        /**
+         * Whether to include viscoelasticity in the constitutive formulation.
+         */
+        bool use_elasticity;
     };
 
   }
