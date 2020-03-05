@@ -147,12 +147,15 @@ namespace aspect
         void clear () override;
 
         /**
-         * Fills in the viscosity table and sets the value for the pressure scaling constant.
+         * Fills in the viscosity table and sets the value for the pressure scaling constant. The input
+         * @p is_mg_level_data describes whether the viscosity values are defined for a multigrid level
+         * matrix or for the active level matrix.
          */
         void fill_cell_data (const dealii::LinearAlgebra::distributed::Vector<number> &viscosity_values,
-                             const double pressure_scaling,
                              const Triangulation<dim> &tria,
-                             const DoFHandler<dim> &dof_handler_for_projection);
+                             const DoFHandler<dim> &dof_handler_for_projection,
+                             const bool is_mg_level_data,
+                             const double pressure_scaling);
 
 
         /**
@@ -220,12 +223,14 @@ namespace aspect
         void clear () override;
 
         /**
-         * Fills in the viscosity table and gives information regarding compressibility.
+         * Fills in the viscosity table and gives information regarding compressibility. The input
+         * @p is_mg_level_data describes whether the viscosity values are defined for a multigrid level
+         * matrix or for the active level matrix.
          */
         void fill_cell_data(const dealii::LinearAlgebra::distributed::Vector<number> &viscosity_values,
                             const Triangulation<dim> &tria,
                             const DoFHandler<dim> &dof_handler_for_projection,
-                            const bool for_mg,
+                            const bool is_mg_level_data,
                             const bool is_compressible);
 
         /**
@@ -420,25 +425,29 @@ namespace aspect
       FESystem<dim> fe_projection;
 
       typedef MatrixFreeStokesOperators::StokesOperator<dim,velocity_degree,double> StokesMatrixType;
-      typedef MatrixFreeStokesOperators::MassMatrixOperator<dim,velocity_degree-1,double> MassMatrixType;
+      typedef MatrixFreeStokesOperators::MassMatrixOperator<dim,velocity_degree-1,double> SchurComplementMatrixType;
       typedef MatrixFreeStokesOperators::ABlockOperator<dim,velocity_degree,double> ABlockMatrixType;
 
       StokesMatrixType stokes_matrix;
-      ABlockMatrixType velocity_matrix;
-      MassMatrixType mass_matrix;
+      ABlockMatrixType A_block_matrix;
+      SchurComplementMatrixType Schur_complement_block_matrix;
 
       ConstraintMatrix constraints_v;
       ConstraintMatrix constraints_p;
       ConstraintMatrix constraints_projection;
 
-      MGLevelObject<ABlockMatrixType> mg_matrices;
-      MGConstrainedDoFs mg_constrained_dofs;
+      MGLevelObject<ABlockMatrixType> mg_matrices_A_block;
+      MGLevelObject<SchurComplementMatrixType> mg_matrices_Schur_complement;
+
+      MGConstrainedDoFs mg_constrained_dofs_A_block;
+      MGConstrainedDoFs mg_constrained_dofs_Schur_complement;
       MGConstrainedDoFs mg_constrained_dofs_projection;
 
       dealii::LinearAlgebra::distributed::Vector<double> active_coef_dof_vec;
       MGLevelObject<dealii::LinearAlgebra::distributed::Vector<double> > level_coef_dof_vec;
 
-      MGTransferMatrixFree<dim,double> mg_transfer;
+      MGTransferMatrixFree<dim,double> mg_transfer_A_block;
+      MGTransferMatrixFree<dim,double> mg_transfer_Schur_complement;
   };
 }
 
