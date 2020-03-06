@@ -37,7 +37,7 @@ Number of degrees of freedom: 14,505 (4,290+2,097+4,290+561+2,145+561+561)
 
 
 *** Timestep 1:  t=100000 years
-   Solving composition reactions in 50 substep(s).
+   Solving composition reactions... in 50 substep(s).
    Solving temperature system... 6 iterations.
    Solving porosity system ... 4 iterations.
    Skipping peridotite composition solve because RHS is zero.

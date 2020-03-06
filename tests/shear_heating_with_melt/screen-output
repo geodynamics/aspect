@@ -90,7 +90,7 @@ Number of degrees of freedom: 1,663 (486+202+486+82+243+82+82)
      Writing graphical output:           output-shear_heating_with_melt/solution/solution-00000
 
 *** Timestep 1:  t=2399.9 years
-   Solving composition reactions in 11 substep(s).
+   Solving composition reactions... in 11 substep(s).
    Solving temperature system... 19 iterations.
    Solving porosity system ... 1 iterations.
    Solving peridotite system ... 1 iterations.
@@ -136,7 +136,7 @@ Number of degrees of freedom: 1,663 (486+202+486+82+243+82+82)
      Temperature min/avg/max:            282.7 K, 636 K, 2200 K
 
 *** Timestep 2:  t=4799.9 years
-   Solving composition reactions in 12 substep(s).
+   Solving composition reactions... in 12 substep(s).
    Solving temperature system... 16 iterations.
    Solving porosity system ... 1 iterations.
    Solving peridotite system ... 1 iterations.
@@ -183,7 +183,7 @@ Number of degrees of freedom: 1,663 (486+202+486+82+243+82+82)
      Writing graphical output:           output-shear_heating_with_melt/solution/solution-00001
 
 *** Timestep 3:  t=7199.9 years
-   Solving composition reactions in 12 substep(s).
+   Solving composition reactions... in 12 substep(s).
    Solving temperature system... 16 iterations.
    Solving porosity system ... 1 iterations.
    Solving peridotite system ... 1 iterations.
@@ -221,7 +221,7 @@ Number of degrees of freedom: 1,663 (486+202+486+82+243+82+82)
      Writing graphical output:           output-shear_heating_with_melt/solution/solution-00002
 
 *** Timestep 4:  t=9599.9 years
-   Solving composition reactions in 12 substep(s).
+   Solving composition reactions... in 12 substep(s).
    Solving temperature system... 15 iterations.
    Solving porosity system ... 1 iterations.
    Solving peridotite system ... 1 iterations.
@@ -259,7 +259,7 @@ Number of degrees of freedom: 1,663 (486+202+486+82+243+82+82)
      Writing graphical output:           output-shear_heating_with_melt/solution/solution-00003
 
 *** Timestep 5:  t=10000 years
-   Solving composition reactions in 10 substep(s).
+   Solving composition reactions... in 10 substep(s).
    Solving temperature system... 7 iterations.
    Solving porosity system ... 1 iterations.
    Solving peridotite system ... 1 iterations.

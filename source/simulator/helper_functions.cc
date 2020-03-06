@@ -1597,11 +1597,43 @@ namespace aspect
 
 
   template <int dim>
+  void Simulator<dim>::update_solution_vectors_with_reaction_results (const unsigned int block_index,
+                                                                      const LinearAlgebra::BlockVector &distributed_vector,
+                                                                      const LinearAlgebra::BlockVector &distributed_reaction_vector)
+  {
+    solution.block(block_index) = distributed_vector.block(block_index);
+
+    // we have to update the old solution with our reaction update too
+    // so that the advection scheme will have the correct time stepping in the next step
+    LinearAlgebra::BlockVector tmp;
+    tmp.reinit(distributed_vector, false);
+
+    // What we really want to do is
+    //     old_solution.block(block_index) += distributed_reaction_vector.block(block_index);
+    // but because 'old_solution' is a ghosted vector, we can't write into it directly. Rather,
+    // we have to go around with a completely distributed vector.
+    tmp.block(block_index) = old_solution.block(block_index);
+    tmp.block(block_index) +=  distributed_reaction_vector.block(block_index);
+    old_solution.block(block_index) = tmp.block(block_index);
+
+    // Same here with going through a distributed vector.
+    tmp.block(block_index) = old_old_solution.block(block_index);
+    tmp.block(block_index) +=  distributed_reaction_vector.block(block_index);
+    old_old_solution.block(block_index) = tmp.block(block_index);
+
+    operator_split_reaction_vector.block(block_index) = distributed_reaction_vector.block(block_index);
+  }
+
+
+
+  template <int dim>
   void Simulator<dim>::compute_reactions ()
   {
     // if the time step has a length of zero, there are no reactions
     if (time_step == 0)
       return;
+
+    TimerOutput::Scope timer (computing_timer, "Solve composition reactions");
 
     // we need some temporary vectors to store our updates to composition and temperature in
     // while we do the time stepping, before we copy them over to the solution vector in the end
@@ -1621,10 +1653,7 @@ namespace aspect
     Assert (reaction_time_step_size > 0,
             ExcMessage("Reaction time step must be greater than 0."));
 
-    pcout << "   Solving composition reactions in "
-          << number_of_reaction_steps
-          << " substep(s)."
-          << std::endl;
+    pcout << "   Solving composition reactions... " << std::flush;
 
     // make one fevalues for the composition, and one for the temperature (they might use different finite elements)
     const Quadrature<dim> quadrature_C(dof_handler.get_fe().base_element(introspection.base_elements.compositional_fields).get_unit_support_points());
@@ -1638,6 +1667,11 @@ namespace aspect
     MaterialModel::MaterialModelInputs<dim> in_C(quadrature_C.size(), introspection.n_compositional_fields);
     MaterialModel::MaterialModelOutputs<dim> out_C(quadrature_C.size(), introspection.n_compositional_fields);
     HeatingModel::HeatingModelOutputs heating_model_outputs_C(quadrature_C.size(), introspection.n_compositional_fields);
+
+    const bool temperature_and_composition_use_same_fe =
+      (parameters.use_discontinuous_composition_discretization == parameters.use_discontinuous_temperature_discretization)
+      &&
+      (parameters.temperature_degree == parameters.composition_degree);
 
     // temperature element
     const Quadrature<dim> quadrature_T(dof_handler.get_fe().base_element(introspection.base_elements.temperature).get_unit_support_points());
@@ -1692,11 +1726,13 @@ namespace aspect
       if (cell->is_locally_owned())
         {
           fe_values_C.reinit (cell);
-          cell->get_dof_indices (local_dof_indices);
           in_C.reinit(fe_values_C, cell, introspection, solution);
 
-          fe_values_T.reinit (cell);
-          in_T.reinit(fe_values_T, cell, introspection, solution);
+          if (temperature_and_composition_use_same_fe == false)
+            {
+              fe_values_T.reinit (cell);
+              in_T.reinit(fe_values_T, cell, introspection, solution);
+            }
 
           std::vector<std::vector<double> > accumulated_reactions_C (quadrature_C.size(),std::vector<double> (introspection.n_compositional_fields));
           std::vector<double> accumulated_reactions_T (quadrature_T.size());
@@ -1726,26 +1762,34 @@ namespace aspect
                     }
                   in_C.temperature[j] = in_C.temperature[j]
                                         + reaction_time_step_size * heating_model_outputs_C.rates_of_temperature_change[j];
+
+                  if (temperature_and_composition_use_same_fe)
+                    accumulated_reactions_T[j] += reaction_time_step_size * heating_model_outputs_C.rates_of_temperature_change[j];
                 }
 
-              // loop over temperature element
-              material_model->fill_additional_material_model_inputs(in_T, solution, fe_values_T, introspection);
-
-              material_model->evaluate(in_T, out_T);
-              heating_model_manager.evaluate(in_T, out_T, heating_model_outputs_T);
-
-              for (unsigned int j=0; j<dof_handler.get_fe().base_element(introspection.base_elements.temperature).dofs_per_cell; ++j)
+              if (!temperature_and_composition_use_same_fe)
                 {
-                  // simple forward euler
-                  in_T.temperature[j] = in_T.temperature[j]
-                                        + reaction_time_step_size * heating_model_outputs_T.rates_of_temperature_change[j];
-                  accumulated_reactions_T[j] += reaction_time_step_size * heating_model_outputs_T.rates_of_temperature_change[j];
+                  // loop over temperature element
+                  material_model->fill_additional_material_model_inputs(in_T, solution, fe_values_T, introspection);
 
-                  for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
-                    in_T.composition[j][c] = in_T.composition[j][c]
-                                             + reaction_time_step_size * reaction_rate_outputs_T->reaction_rates[j][c];
+                  material_model->evaluate(in_T, out_T);
+                  heating_model_manager.evaluate(in_T, out_T, heating_model_outputs_T);
+
+                  for (unsigned int j=0; j<dof_handler.get_fe().base_element(introspection.base_elements.temperature).dofs_per_cell; ++j)
+                    {
+                      // simple forward euler
+                      in_T.temperature[j] = in_T.temperature[j]
+                                            + reaction_time_step_size * heating_model_outputs_T.rates_of_temperature_change[j];
+                      accumulated_reactions_T[j] += reaction_time_step_size * heating_model_outputs_T.rates_of_temperature_change[j];
+
+                      for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
+                        in_T.composition[j][c] = in_T.composition[j][c]
+                                                 + reaction_time_step_size * reaction_rate_outputs_T->reaction_rates[j][c];
+                    }
                 }
             }
+
+          cell->get_dof_indices (local_dof_indices);
 
           // copy reaction rates and new values for the compositional fields
           for (unsigned int j=0; j<dof_handler.get_fe().base_element(introspection.base_elements.compositional_fields).dofs_per_cell; ++j)
@@ -1765,64 +1809,43 @@ namespace aspect
 
           // copy reaction rates and new values for the temperature field
           for (unsigned int j=0; j<dof_handler.get_fe().base_element(introspection.base_elements.temperature).dofs_per_cell; ++j)
-            for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
-              {
-                const unsigned int temperature_idx
-                  = dof_handler.get_fe().component_to_system_index(introspection.component_indices.temperature,
-                                                                   /*dof index within component=*/ j);
+            {
+              const unsigned int temperature_idx
+                = dof_handler.get_fe().component_to_system_index(introspection.component_indices.temperature,
+                                                                 /*dof index within component=*/ j);
 
-                // skip entries that are not locally owned:
-                if (dof_handler.locally_owned_dofs().is_element(local_dof_indices[temperature_idx]))
-                  {
+              // skip entries that are not locally owned:
+              if (dof_handler.locally_owned_dofs().is_element(local_dof_indices[temperature_idx]))
+                {
+                  if (temperature_and_composition_use_same_fe)
+                    distributed_vector(local_dof_indices[temperature_idx]) = in_C.temperature[j];
+                  else
                     distributed_vector(local_dof_indices[temperature_idx]) = in_T.temperature[j];
-                    distributed_reaction_vector(local_dof_indices[temperature_idx]) = accumulated_reactions_T[j];
-                  }
-              }
+
+                  distributed_reaction_vector(local_dof_indices[temperature_idx]) = accumulated_reactions_T[j];
+                }
+            }
         }
+
+    distributed_vector.compress(VectorOperation::insert);
+    distributed_reaction_vector.compress(VectorOperation::insert);
 
     // put the final values into the solution vector
     for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
-      {
-        const unsigned int block_c = introspection.block_indices.compositional_fields[c];
-        distributed_vector.block(block_c).compress(VectorOperation::insert);
-        solution.block(block_c) = distributed_vector.block(block_c);
+      update_solution_vectors_with_reaction_results(introspection.block_indices.compositional_fields[c],
+                                                    distributed_vector,
+                                                    distributed_reaction_vector);
 
-        // we have to update the old solution with our reaction update too
-        // so that the advection scheme will have the correct time stepping in the next step
-        distributed_reaction_vector.block(block_c).compress(VectorOperation::insert);
-
-        // we do not need distributed_vector any more, use it to temporarily store the update
-        distributed_vector.block(block_c) = old_solution.block(block_c);
-        distributed_vector.block(block_c) +=  distributed_reaction_vector.block(block_c);
-        old_solution.block(block_c) = distributed_vector.block(block_c);
-
-        distributed_vector.block(block_c) = old_old_solution.block(block_c);
-        distributed_vector.block(block_c) +=  distributed_reaction_vector.block(block_c);
-        old_old_solution.block(block_c) = distributed_vector.block(block_c);
-
-        operator_split_reaction_vector.block(block_c) = distributed_reaction_vector.block(block_c);
-      }
-
-    const unsigned int block_T = introspection.block_indices.temperature;
-    distributed_vector.block(block_T).compress(VectorOperation::insert);
-    solution.block(block_T) = distributed_vector.block(block_T);
-
-    // we have to update the old solution with our reaction update too
-    // so that the advection scheme will have the correct time stepping in the next step
-    distributed_reaction_vector.block(block_T).compress(VectorOperation::insert);
-
-    // we do not need distributed_vector any more, use it to temporarily store the update
-    distributed_vector.block(block_T) = old_solution.block(block_T);
-    distributed_vector.block(block_T) +=  distributed_reaction_vector.block(block_T);
-    old_solution.block(block_T) = distributed_vector.block(block_T);
-
-    distributed_vector.block(block_T) = old_old_solution.block(block_T);
-    distributed_vector.block(block_T) +=  distributed_reaction_vector.block(block_T);
-    old_old_solution.block(block_T) = distributed_vector.block(block_T);
-
-    operator_split_reaction_vector.block(block_T) = distributed_reaction_vector.block(block_T);
+    update_solution_vectors_with_reaction_results(introspection.block_indices.temperature,
+                                                  distributed_vector,
+                                                  distributed_reaction_vector);
 
     initialize_current_linearization_point();
+
+    pcout << "in "
+          << number_of_reaction_steps
+          << " substep(s)."
+          << std::endl;
   }
 
 

@@ -30,7 +30,7 @@ Number of degrees of freedom: 7,369 (2,178+1,057+2,178+289+1,089+289+289)
      Writing graphical output:      output-heat_advection_by_melt_operator_splitting/solution/solution-00000
 
 *** Timestep 1:  t=0.03125 seconds
-   Solving composition reactions in 1 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 6 iterations.
    Solving porosity system ... 0 iterations.
    Skipping peridotite composition solve because RHS is zero.
@@ -56,7 +56,7 @@ Number of degrees of freedom: 7,369 (2,178+1,057+2,178+289+1,089+289+289)
      Writing graphical output:      output-heat_advection_by_melt_operator_splitting/solution/solution-00001
 
 *** Timestep 2:  t=0.0625 seconds
-   Solving composition reactions in 1 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 9 iterations.
    Solving porosity system ... 0 iterations.
    Skipping peridotite composition solve because RHS is zero.
@@ -82,7 +82,7 @@ Number of degrees of freedom: 7,369 (2,178+1,057+2,178+289+1,089+289+289)
      Writing graphical output:      output-heat_advection_by_melt_operator_splitting/solution/solution-00002
 
 *** Timestep 3:  t=0.09375 seconds
-   Solving composition reactions in 1 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 8 iterations.
    Solving porosity system ... 0 iterations.
    Skipping peridotite composition solve because RHS is zero.
@@ -108,7 +108,7 @@ Number of degrees of freedom: 7,369 (2,178+1,057+2,178+289+1,089+289+289)
      Writing graphical output:      output-heat_advection_by_melt_operator_splitting/solution/solution-00003
 
 *** Timestep 4:  t=0.1 seconds
-   Solving composition reactions in 1 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 7 iterations.
    Solving porosity system ... 0 iterations.
    Skipping peridotite composition solve because RHS is zero.
