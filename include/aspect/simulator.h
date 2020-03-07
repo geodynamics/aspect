@@ -32,6 +32,7 @@ DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
 #include <deal.II/distributed/tria.h>
 
 #include <deal.II/dofs/dof_handler.h>
+#include <deal.II/dofs/dof_tools.h>
 
 #include <deal.II/fe/fe_system.h>
 #include <deal.II/fe/mapping.h>
@@ -933,6 +934,17 @@ namespace aspect
        * @name Functions used in setting up linear systems
        * @{
        */
+      /**
+       * Determine which of the components of our finite-element
+       * system couple to each other. Depending on which equations
+       * are solved and which solver is used this varies widely.
+       *
+       * This function is implemented in
+       * <code>source/simulator/core.cc</code>.
+       */
+      Table<2,DoFTools::Coupling>
+      setup_system_matrix_coupling () const;
+
       /**
        * Set up the size and structure of the matrix used to store the
        * elements of the linear system.
