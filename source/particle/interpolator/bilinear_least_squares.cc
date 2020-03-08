@@ -49,10 +49,6 @@ namespace aspect
                     ExcMessage("Internal error: the particle property interpolator was "
                                "called without a specified component to interpolate."));
 
-        AssertThrow(selected_properties.n_selected_components(n_particle_properties) == 1,
-                    ExcNotImplemented("Interpolation of multiple components is not supported."));
-
-
         const Point<dim> approximated_cell_midpoint = std::accumulate (positions.begin(), positions.end(), Point<dim>())
                                                       / static_cast<double> (positions.size());
 
@@ -84,91 +80,106 @@ namespace aspect
                                                           std::vector<double>(n_particle_properties,
                                                                               numbers::signaling_nan<double>()));
 
-        const unsigned int n_particles = std::distance(particle_range.begin(),particle_range.end());
+        const unsigned int n_particles = std::distance(particle_range.begin(), particle_range.end());
 
         AssertThrow(n_particles != 0,
-                    ExcMessage("At least one cell contained no particles. The `bilinear'"
+                    ExcMessage("At least one cell contained no particles. The 'bilinear'"
                                "interpolation scheme does not support this case. "));
 
 
         // Noticed that the size of matrix A is n_particles x matrix_dimension
         // which usually is not a square matrix. Therefore, we find the
         // least squares solution of Ax=r by solving the "normal" equations
-        // (A^TA) x = A^Tr.
-        const unsigned int matrix_dimension = (dim == 2) ? 4: 8;
+        // (A^TA) x = A^Tr, with a specific x and r for each particle property.
+        const unsigned int matrix_dimension = (dim == 2) ? 4 : 8;
         dealii::LAPACKFullMatrix<double> A(n_particles, matrix_dimension);
-        Vector<double> r(n_particles);
-        r = 0;
+        std::vector<Vector<double>> r(n_particle_properties, Vector<double>(n_particles));
+        for (unsigned int property_index = 0; property_index < n_particle_properties; ++property_index)
+          if (selected_properties[property_index])
+            r[property_index] = 0;
 
-        unsigned int index = 0;
+        unsigned int positions_index = 0;
         const double cell_diameter = found_cell->diameter();
         for (typename ParticleHandler<dim>::particle_iterator particle = particle_range.begin();
-             particle != particle_range.end(); ++particle, ++index)
+             particle != particle_range.end(); ++particle, ++positions_index)
           {
-            const double particle_property_value = particle->get_properties()[property_index];
-            r[index] = particle_property_value;
+            const auto particle_property_value = particle->get_properties();
+            for (unsigned int property_index = 0; property_index < n_particle_properties; ++property_index)
+              if (selected_properties[property_index])
+                r[property_index][positions_index] = particle_property_value[property_index];
 
             const Tensor<1, dim, double> relative_particle_position = (particle->get_location() - approximated_cell_midpoint) / cell_diameter;
-            A(index,0) = 1;
-            A(index, 1) = relative_particle_position[0];
-            A(index, 2) = relative_particle_position[1];
+            A(property_index, 0) = 1;
+            A(property_index, 1) = relative_particle_position[0];
+            A(property_index, 2) = relative_particle_position[1];
             if (dim == 2)
               {
-                A(index, 3) = relative_particle_position[0] * relative_particle_position[1];
+                A(property_index, 3) = relative_particle_position[0] * relative_particle_position[1];
               }
             else
               {
-                A(index, 3) = relative_particle_position[2];
-                A(index, 4) = relative_particle_position[0] * relative_particle_position[1];
-                A(index, 5) = relative_particle_position[0] * relative_particle_position[2];
-                A(index, 6) = relative_particle_position[1] * relative_particle_position[2];
-                A(index, 7) = relative_particle_position[0] * relative_particle_position[1] * relative_particle_position[2];
+                A(positions_index, 3) = relative_particle_position[2];
+                A(positions_index, 4) = relative_particle_position[0] * relative_particle_position[1];
+                A(positions_index, 5) = relative_particle_position[0] * relative_particle_position[2];
+                A(positions_index, 6) = relative_particle_position[1] * relative_particle_position[2];
+                A(positions_index, 7) = relative_particle_position[0] * relative_particle_position[1] * relative_particle_position[2];
               }
           }
 
         dealii::LAPACKFullMatrix<double> B(matrix_dimension, matrix_dimension);
 
-        Vector<double> c_ATr(matrix_dimension);
-        Vector<double> c(matrix_dimension);
+        std::vector<Vector<double>> c_ATr(n_particle_properties, Vector<double>(matrix_dimension));
+        std::vector<Vector<double>> c(n_particle_properties, Vector<double>(matrix_dimension));
 
-        const double threshold = 1e-15;
+        constexpr double threshold = 1e-15;
         unsigned int index_positions = 0;
 
-        // Form the matrix B=A^TA and right hand side A^Tr of the normal equation.
-        A.Tmmult(B, A, false);
-        A.Tvmult(c_ATr,r);
+        // Matrix A can be rank deficient if it does not have full rank, therefore singular.
+        // To circumvent this issue, we solve A^TAx=A^Tr by using singular value
+        // decomposition (SVD).
 
+        A.Tmmult(B, A, false);
         dealii::LAPACKFullMatrix<double> B_inverse(B);
         B_inverse.compute_inverse_svd(threshold);
-        B_inverse.vmult(c, c_ATr);
 
+        for (unsigned int property_index = 0; property_index < n_particle_properties; ++property_index)
+          {
+            if (selected_properties[property_index])
+              {
+                A.Tvmult(c_ATr[property_index],r[property_index]);
+                B_inverse.vmult(c[property_index], c_ATr[property_index]);
+              }
+          }
         for (typename std::vector<Point<dim>>::const_iterator itr = positions.begin(); itr != positions.end(); ++itr, ++index_positions)
           {
             const Tensor<1, dim, double> relative_support_point_location = (*itr - approximated_cell_midpoint) / cell_diameter;
-            double interpolated_value = c[0] +
-                                        c[1] * relative_support_point_location[0] +
-                                        c[2] * relative_support_point_location[1];
-            if (dim == 2)
+            for (unsigned int property_index = 0; property_index < n_particle_properties; ++property_index)
               {
-                interpolated_value += c[3] * relative_support_point_location[0] * relative_support_point_location[1];
-              }
-            else
-              {
-                interpolated_value += c[3] * relative_support_point_location[2] +
-                                      c[4] * relative_support_point_location[0] * relative_support_point_location[1] +
-                                      c[5] * relative_support_point_location[0] * relative_support_point_location[2] +
-                                      c[6] * relative_support_point_location[1] * relative_support_point_location[2] +
-                                      c[7] * relative_support_point_location[0] * relative_support_point_location[1] * relative_support_point_location[2];
-              }
+                double interpolated_value = c[property_index][0] +
+                                            c[property_index][1] * relative_support_point_location[0] +
+                                            c[property_index][2] * relative_support_point_location[1];
+                if (dim == 2)
+                  {
+                    interpolated_value += c[property_index][3] * relative_support_point_location[0] * relative_support_point_location[1];
+                  }
+                else
+                  {
+                    interpolated_value += c[property_index][3] * relative_support_point_location[2] +
+                                          c[property_index][4] * relative_support_point_location[0] * relative_support_point_location[1] +
+                                          c[property_index][5] * relative_support_point_location[0] * relative_support_point_location[2] +
+                                          c[property_index][6] * relative_support_point_location[1] * relative_support_point_location[2] +
+                                          c[property_index][7] * relative_support_point_location[0] * relative_support_point_location[1] * relative_support_point_location[2];
+                  }
 
-            // Overshoot and undershoot correction of interpolated particle property.
-            if (use_global_valued_limiter)
-              {
-                interpolated_value = std::min(interpolated_value, global_maximum_particle_properties[property_index]);
-                interpolated_value = std::max(interpolated_value, global_minimum_particle_properties[property_index]);
-              }
+                // Overshoot and undershoot correction of interpolated particle property.
+                if (use_global_valued_limiter)
+                  {
+                    interpolated_value = std::min(interpolated_value, global_maximum_particle_properties[property_index]);
+                    interpolated_value = std::max(interpolated_value, global_minimum_particle_properties[property_index]);
+                  }
 
-            cell_properties[index_positions][property_index] = interpolated_value;
+                cell_properties[index_positions][property_index] = interpolated_value;
+              }
           }
         return cell_properties;
       }
