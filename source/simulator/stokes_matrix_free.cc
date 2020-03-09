@@ -1488,9 +1488,9 @@ namespace aspect
             }
           else
             {
-              smoother_data_A[0].smoothing_range = 1e-3;
-              smoother_data_A[0].degree = numbers::invalid_unsigned_int;
-              smoother_data_A[0].eig_cg_n_iterations = 100;
+              smoother_data_A[0].smoothing_range = 15.;
+              smoother_data_A[0].degree = 8;
+              smoother_data_A[0].eig_cg_n_iterations = 10;
             }
           smoother_data_A[level].preconditioner = mg_matrices_A_block[level].get_matrix_diagonal_inverse();
         }
@@ -1514,9 +1514,9 @@ namespace aspect
             }
           else
             {
-              smoother_data_Schur[0].smoothing_range = 1e-3;
-              smoother_data_Schur[0].degree = numbers::invalid_unsigned_int;
-              smoother_data_Schur[0].eig_cg_n_iterations = 100; /*mg_matrices_M[0].m();*/
+              smoother_data_Schur[0].smoothing_range = 15.;
+              smoother_data_Schur[0].degree = 8;
+              smoother_data_Schur[0].eig_cg_n_iterations = 10;
             }
           smoother_data_Schur[level].preconditioner = mg_matrices_Schur_complement[level].get_matrix_diagonal_inverse();
         }
