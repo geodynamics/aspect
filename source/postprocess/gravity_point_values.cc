@@ -315,6 +315,8 @@ namespace aspect
       Tensor<1,dim> sum_g;
       Tensor<2,dim> sum_g_gradient;
       double sum_g_potential = 0;
+      double g_min = 1e50;
+      double g_max = -1e50;
       for (unsigned int p=0; p < n_satellites; ++p)
         {
 
@@ -382,6 +384,10 @@ namespace aspect
           sum_g += g;
           sum_g_gradient += g_gradient;
           sum_g_potential += g_potential;
+          if (g.norm() > g_max)
+            g_max = g.norm();
+          if (g.norm() < g_min)
+            g_min = g.norm();
 
           // analytical solution to calculate the theoretical gravity and gravity gradient
           // from a uniform density model. Can only be used if concentric density profile.
@@ -474,13 +480,16 @@ namespace aspect
                  << "# 6: average gravity_x " << '\n'
                  << "# 7: average gravity_y " << '\n'
                  << "# 8: average gravity_z " << '\n'
-                 << "# 9: average gravity_potential" << '\n'
-                 << "# 10: average gravity_gradient_xx" << '\n'
-                 << "# 11: average gravity_gradient_yy" << '\n'
-                 << "# 12: average gravity_gradient_zz" << '\n'
-                 << "# 13: average gravity_gradient_xy" << '\n'
-                 << "# 14: average gravity_gradient_xz" << '\n'
-                 << "# 15: average gravity_gradient_yz" << '\n'
+                 << "# 9: average gravity " << '\n'
+                 << "# 10: gravity min" << '\n'
+                 << "# 11: gravity max" << '\n'
+                 << "# 12: average gravity_potential" << '\n'
+                 << "# 13: average gravity_gradient_xx" << '\n'
+                 << "# 14: average gravity_gradient_yy" << '\n'
+                 << "# 15: average gravity_gradient_zz" << '\n'
+                 << "# 16: average gravity_gradient_xy" << '\n'
+                 << "# 17: average gravity_gradient_xz" << '\n'
+                 << "# 18: average gravity_gradient_yz" << '\n'
                  << '\n';
       const double number_of_cells = Utilities::MPI::sum (n_locally_owned_cells, this->get_mpi_communicator());
       const double volume = Utilities::MPI::sum (local_volume, this->get_mpi_communicator());
@@ -490,11 +499,20 @@ namespace aspect
           statistics << number_of_cells << ' '
                      << quadrature_degree_increase << ' '
                      << degree-quadrature_degree_increase << ' '
-                     << std::setprecision(9) << mass << ' '
-                     << std::setprecision(9) << volume << ' '
-                     << sum_g/n_satellites << ' '
-                     << sum_g_potential/n_satellites << ' '
-                     << sum_g_gradient/n_satellites *1e9;
+                     << std::setprecision(9)  << mass << ' '
+                     << std::setprecision(9)  << volume << ' '
+                     << std::setprecision(18) << sum_g/n_satellites << ' '
+                     << std::setprecision(18) << (sum_g/n_satellites).norm() << ' '
+                     << std::setprecision(18) << g_min << ' '
+                     << std::setprecision(18) << g_max << ' '
+                     << std::setprecision(9)  << sum_g_potential/n_satellites << ' '
+                     << sum_g_gradient[0][0]/n_satellites *1e9 << ' '
+                     << sum_g_gradient[1][1]/n_satellites *1e9 << ' '
+                     << sum_g_gradient[2][2]/n_satellites *1e9 << ' '
+                     << sum_g_gradient[0][1]/n_satellites *1e9 << ' '
+                     << sum_g_gradient[0][2]/n_satellites *1e9 << ' '
+                     << sum_g_gradient[1][2]/n_satellites *1e9 << ' '
+                     << '\n';
         }
 
       // up the next time we need output:
