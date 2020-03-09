@@ -110,23 +110,24 @@ namespace aspect
                      << "# 9: gravity_z" << '\n'
                      << "# 10: gravity_norm" << '\n'
                      << "# 11: gravity_theory" << '\n'
-                     << "# 12: gravity potential" << '\n'
-                     << "# 13: gravity_anomaly_x" << '\n'
-                     << "# 14: gravity_anomaly_y" << '\n'
-                     << "# 15: gravity_anomaly_z" << '\n'
-                     << "# 16: gravity_anomaly_norm" << '\n'
-                     << "# 17: gravity_gradient_xx" << '\n'
-                     << "# 18: gravity_gradient_yy" << '\n'
-                     << "# 19: gravity_gradient_zz" << '\n'
-                     << "# 20: gravity_gradient_xy" << '\n'
-                     << "# 21: gravity_gradient_xz" << '\n'
-                     << "# 22: gravity_gradient_yz" << '\n'
-                     << "# 23: gravity_gradient_theory_xx" << '\n'
-                     << "# 24: gravity_gradient_theory_yy" << '\n'
-                     << "# 25: gravity_gradient_theory_zz" << '\n'
-                     << "# 26: gravity_gradient_theory_xy" << '\n'
-                     << "# 27: gravity_gradient_theory_xz" << '\n'
-                     << "# 28: gravity_gradient_theory_yz" << '\n'
+                     << "# 12: gravity_potential" << '\n'
+                     << "# 13: gravity_potential theory" << '\n'
+                     << "# 14: gravity_anomaly_x" << '\n'
+                     << "# 15: gravity_anomaly_y" << '\n'
+                     << "# 16: gravity_anomaly_z" << '\n'
+                     << "# 17: gravity_anomaly_norm" << '\n'
+                     << "# 18: gravity_gradient_xx" << '\n'
+                     << "# 19: gravity_gradient_yy" << '\n'
+                     << "# 20: gravity_gradient_zz" << '\n'
+                     << "# 21: gravity_gradient_xy" << '\n'
+                     << "# 22: gravity_gradient_xz" << '\n'
+                     << "# 23: gravity_gradient_yz" << '\n'
+                     << "# 24: gravity_gradient_theory_xx" << '\n'
+                     << "# 25: gravity_gradient_theory_yy" << '\n'
+                     << "# 26: gravity_gradient_theory_zz" << '\n'
+                     << "# 27: gravity_gradient_theory_xy" << '\n'
+                     << "# 28: gravity_gradient_theory_xz" << '\n'
+                     << "# 29: gravity_gradient_theory_yz" << '\n'
                      << '\n';
 
       // Get quadrature formula and increase the degree of quadrature over the velocity
@@ -253,11 +254,19 @@ namespace aspect
         n_satellites = n_points_radius * longitude_list.size();
       else n_satellites = 1;
 
+      // Uniform distribution on the interval [0,1]. This
+      // will be used to generate random particle locations.
+      boost::uniform_01<double> uniform_distribution_01;
+
       // *** Second assign the coordinates of all satellites:
       std::vector<Point<dim> > satellites_coordinate(n_satellites);
       if (sampling_scheme == map)
         {
           unsigned int p = 0;
+          double random_lon = 0;
+          double random_lat = 0;
+          double longitude_interval = 0;
+          double latitude_interval = 0;
           for (unsigned int h=0; h < n_points_radius; ++h)
             {
               for (unsigned int i=0; i < n_points_longitude; ++i)
@@ -269,11 +278,35 @@ namespace aspect
                       else
                         satellites_coordinate[p][0] = minimum_radius;
                       if (n_points_longitude > 1)
-                        satellites_coordinate[p][1] = (minimum_colongitude + ((maximum_colongitude - minimum_colongitude) / (n_points_longitude - 1)) * i) * numbers::PI / 180.;
+                        {
+                          longitude_interval = (maximum_colongitude - minimum_colongitude) / (n_points_longitude - 1);
+                          satellites_coordinate[p][1] = minimum_colongitude + longitude_interval * i;
+                          if (add_random == true)
+                            random_lon = (uniform_distribution_01(random_number_generator)-0.5) * longitude_interval;
+                          if (satellites_coordinate[p][1] == 0)
+                            satellites_coordinate[p][1] = satellites_coordinate[p][1] + std::abs(random_lon);
+                          else if (satellites_coordinate[p][1] == 360)
+                            satellites_coordinate[p][1] = satellites_coordinate[p][1] - std::abs(random_lon);
+                          else
+                            satellites_coordinate[p][1] = satellites_coordinate[p][1] + random_lon;
+                          satellites_coordinate[p][1] = satellites_coordinate[p][1] * numbers::PI / 180.;
+                        }
                       else
                         satellites_coordinate[p][1] = minimum_colongitude * numbers::PI / 180.;
                       if (n_points_latitude > 1)
-                        satellites_coordinate[p][2] = (minimum_colatitude + ((maximum_colatitude - minimum_colatitude) / (n_points_latitude - 1)) * j) * numbers::PI / 180.;
+                        {
+                          latitude_interval = (maximum_colatitude - minimum_colatitude) / (n_points_latitude - 1);
+                          satellites_coordinate[p][2] = minimum_colatitude + latitude_interval * j;
+                          if (add_random == true)
+                            random_lat = (uniform_distribution_01(random_number_generator)-0.5) * latitude_interval;
+                          if (satellites_coordinate[p][2] == 0)
+                            satellites_coordinate[p][2] = satellites_coordinate[p][2] + std::abs(random_lat);
+                          else if (satellites_coordinate[p][2] == 180)
+                            satellites_coordinate[p][2] = satellites_coordinate[p][2] - std::abs(random_lat);
+                          else
+                            satellites_coordinate[p][2] = satellites_coordinate[p][2] + random_lat;
+                          satellites_coordinate[p][2] = satellites_coordinate[p][2] * numbers::PI / 180.;
+                        }
                       else
                         satellites_coordinate[p][2] = minimum_colatitude * numbers::PI / 180.;
                       ++p;
@@ -392,20 +425,26 @@ namespace aspect
           // analytical solution to calculate the theoretical gravity and gravity gradient
           // from a uniform density model. Can only be used if concentric density profile.
           double g_theory = 0;
+          double g_potential_theory = 0;
           Tensor<2,dim> g_gradient_theory;
           if (satellites_coordinate[p][0] <= model_inner_radius)
             {
               g_theory = 0;
+              g_potential_theory = 0;
             }
           else if ((satellites_coordinate[p][0] > model_inner_radius) && (satellites_coordinate[p][0] < model_outer_radius))
             {
               g_theory = G * numbers::PI * 4/3 * reference_density * (satellites_coordinate[p][0] - (std::pow(model_inner_radius,3)
                                                                       /  std::pow(satellites_coordinate[p][0],2)));
+              g_potential_theory = G * numbers::PI * 4/3 * reference_density * (satellites_coordinate[p][0] - (std::pow(model_inner_radius,3)
+                                                                                /  satellites_coordinate[p][0]));
             }
           else
             {
               g_theory = G * numbers::PI * 4/3 * reference_density * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
                          /  std::pow(satellites_coordinate[p][0],2);
+              g_potential_theory = G * numbers::PI * 4/3 * reference_density * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
+                                   /  satellites_coordinate[p][0];
               g_gradient_theory[0][0] = -G * numbers::PI * 4/3 * reference_density
                                         * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
                                         * (std::pow(satellites_coordinate[p][0], 2) - 3.0 * std::pow(position_satellite[0],2))
@@ -446,6 +485,7 @@ namespace aspect
                              << std::setprecision(18) << g.norm() << ' '
                              << std::setprecision(18) << g_theory << ' '
                              << std::setprecision(9)  << g_potential << ' '
+                             << std::setprecision(9)  << g_potential_theory << ' '
                              << std::setprecision(9)  << g_anomaly << ' '
                              << std::setprecision(9)  << g_anomaly.norm() << ' '
                              << g_gradient[0][0] *1e9 << ' '
@@ -630,6 +670,11 @@ namespace aspect
                              "Option to replace density at quadrature points by PREM densities. "
                              "PREM densities are assigned directly at the quadrature points. "
                              "The default is false.");
+          prm.declare_entry ("Random addition to map coordinates", "false",
+                             Patterns::Bool(),
+                             "Option to add a controlled random component within 1 degree to "
+                             "longitude and latitude coordinates. "
+                             "The default is false.");
         }
         prm.leave_subsection();
       }
@@ -664,6 +709,7 @@ namespace aspect
           else
             AssertThrow (false, ExcMessage ("Not a valid sampling scheme."));
           replace_density_at_quadrature_points_by_PREM = prm.get_bool ("Replace density at quadrature points by PREM");
+          add_random = prm.get_bool ("Random addition to map coordinates");
           quadrature_degree_increase = prm.get_double ("Quadrature degree increase");
           n_points_radius     = prm.get_integer("Number points radius");
           n_points_longitude  = prm.get_integer("Number points longitude");

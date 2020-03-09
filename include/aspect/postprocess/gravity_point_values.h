@@ -262,6 +262,17 @@ namespace aspect
          */
         bool replace_density_at_quadrature_points_by_PREM;
 
+        /**
+         * Replace the density at quadrature points by PREM: for benchmark purposes only.
+         */
+        bool add_random;
+
+        /**
+         * Random number generator. For reproducibility of tests it is
+         * initialized in the constructor with a constant.
+         */
+        boost::mt19937            random_number_generator;
+
     };
   }
 }
