@@ -90,7 +90,7 @@ namespace aspect
         // Noticed that the size of matrix A is n_particles x matrix_dimension
         // which usually is not a square matrix. Therefore, we find the
         // least squares solution of Ax=r by solving the "normal" equations
-        // (A^TA) x = A^Tr, with a specific x and r for each particle property.
+        // (A^TA) x = A^Tr.
         const unsigned int matrix_dimension = (dim == 2) ? 4 : 8;
         dealii::LAPACKFullMatrix<double> A(n_particles, matrix_dimension);
         std::vector<Vector<double>> r(n_particle_properties, Vector<double>(n_particles));
@@ -134,10 +134,7 @@ namespace aspect
         constexpr double threshold = 1e-15;
         unsigned int index_positions = 0;
 
-        // Matrix A can be rank deficient if it does not have full rank, therefore singular.
-        // To circumvent this issue, we solve A^TAx=A^Tr by using singular value
-        // decomposition (SVD).
-
+        // Form the matrix B=A^TA and right hand side A^Tr of the normal equation.
         A.Tmmult(B, A, false);
         dealii::LAPACKFullMatrix<double> B_inverse(B);
         B_inverse.compute_inverse_svd(threshold);

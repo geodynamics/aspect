@@ -1,6 +1,6 @@
-# A test based on the SolKz benchmark that performs bilinear
-# least squares interpolation from particle properties to
-# compositional fields that are flagged as 'particle' advected fields.
+# A test based on the SolKz benchmark that ensures that additional particles
+# are added to the model during the computation with multiple properties on 
+# the particles. 
 
 set Additional shared libraries            = ./libsolkz_compositional_fields.so
 
