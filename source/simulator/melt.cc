@@ -232,8 +232,6 @@ namespace aspect
 
               if (is_velocity_or_pressures(introspection,p_c_component_index,p_f_component_index,component_index_i))
                 {
-                  scratch.grads_phi_u[i_stokes] = scratch.finite_element_values[introspection.extractors.velocities].symmetric_gradient(i,q);
-                  scratch.div_phi_u[i_stokes]   = scratch.finite_element_values[introspection.extractors.velocities].divergence (i, q);
                   scratch.phi_p[i_stokes]       = scratch.finite_element_values[ex_p_f].value (i, q);
                   scratch.phi_p_c[i_stokes]     = scratch.finite_element_values[ex_p_c].value (i, q);
                   scratch.grad_phi_p[i_stokes]  = scratch.finite_element_values[ex_p_f].gradient (i, q);
@@ -244,7 +242,6 @@ namespace aspect
 
           const double eta = scratch.material_model_outputs.viscosities[q];
           const double one_over_eta = 1. / eta;
-          const double eta_two_thirds = scratch.material_model_outputs.viscosities[q] * 2.0 / 3.0;
           const double K_D = this->get_melt_handler().limited_darcy_coefficient(melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q],
                                                                                 p_c_scale > 0);
 
@@ -259,11 +256,7 @@ namespace aspect
             for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
               {
                 if (scratch.dof_component_indices[i] == scratch.dof_component_indices[j])
-                  data.local_matrix(i,j) += (2.0 * eta * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j])
-                                             -
-                                             eta_two_thirds * (scratch.div_phi_u[i] * scratch.div_phi_u[j])
-                                             +
-                                             (one_over_eta *
+                  data.local_matrix(i,j) += ((one_over_eta *
                                               pressure_scaling *
                                               pressure_scaling)
                                              * scratch.phi_p[i] * scratch.phi_p[j]
