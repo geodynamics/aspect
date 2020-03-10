@@ -109,12 +109,12 @@ namespace aspect
                 r[property_index][positions_index] = particle_property_value[property_index];
 
             const Tensor<1, dim, double> relative_particle_position = (particle->get_location() - approximated_cell_midpoint) / cell_diameter;
-            A(property_index, 0) = 1;
-            A(property_index, 1) = relative_particle_position[0];
-            A(property_index, 2) = relative_particle_position[1];
+            A(positions_index, 0) = 1;
+            A(positions_index, 1) = relative_particle_position[0];
+            A(positions_index, 2) = relative_particle_position[1];
             if (dim == 2)
               {
-                A(property_index, 3) = relative_particle_position[0] * relative_particle_position[1];
+                A(positions_index, 3) = relative_particle_position[0] * relative_particle_position[1];
               }
             else
               {
