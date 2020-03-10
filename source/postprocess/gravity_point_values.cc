@@ -346,7 +346,7 @@ namespace aspect
               g_theory = G * numbers::PI * 4/3 * reference_density * (satellites_coordinate[p][0] - (std::pow(model_inner_radius,3)
                                                                       /  std::pow(satellites_coordinate[p][0],2)));
               g_potential_theory = - G * numbers::PI * 4/3 * reference_density * (satellites_coordinate[p][0] - (std::pow(model_inner_radius,3)
-                                                                                /  satellites_coordinate[p][0]));
+                                                                                  /  satellites_coordinate[p][0]));
             }
           else
             {

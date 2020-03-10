@@ -234,7 +234,7 @@ namespace aspect
 
         /**
          * Parameter for the list sampling scheme:
-         * List of radius coordinates for the list of points sampling scheme. 
+         * List of radius coordinates for the list of points sampling scheme.
          * Must be in order with the lists of longitude and latitude.
          */
         std::vector<double> radius_list;
