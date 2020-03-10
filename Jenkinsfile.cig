@@ -178,8 +178,10 @@ pipeline {
           // used to update the test results
           sh 'git diff tests > changes-test-results.diff'
           archiveArtifacts artifacts: 'changes-test-results.diff'
+        }
 
-          // post the coverage results to coveralls
+        success {
+          // post the coverage results to coveralls if the build and testing succeeded
           sh '''
           cd build-gcc-fast
           coveralls -r ../ -b . -i source --gcov-options '\\-lp'
