@@ -218,25 +218,25 @@ namespace aspect
       const int num_spline_knots = 28; // The tomography models are parameterized by 28 layers
 
       // get the spherical harmonics coefficients
-      const std::vector<double> a_lm = spherical_harmonics_lookup->cos_coeffs();
-      const std::vector<double> b_lm = spherical_harmonics_lookup->sin_coeffs();
+      const std::vector<double> &a_lm = spherical_harmonics_lookup->cos_coeffs();
+      const std::vector<double> &b_lm = spherical_harmonics_lookup->sin_coeffs();
 
       // get spline knots and rescale them from [-1 1], i.e., CMB to Moho.
-      const std::vector<double> r = spline_depths_lookup->spline_depths();
+      const std::vector<double> &r = spline_depths_lookup->spline_depths();
       const double rmoho = 6346e3;
       const double rcmb = 3480e3;
-      std::vector<double> depth_values(num_spline_knots,0);
+      std::vector<double> depth_values(num_spline_knots, 0.);
 
       for (unsigned int i = 0; i<num_spline_knots; ++i)
-        depth_values[i] = rcmb+(rmoho-rcmb)*0.5*(r[i]+1);
+        depth_values[i] = rcmb+(rmoho-rcmb)*0.5*(r[i]+1.);
 
       // convert coordinates from [x,y,z] to [r, phi, theta]
       std::array<double,dim> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(position);
 
       // Evaluate the spherical harmonics at this position. Since they are the
       // same for all depth splines, do it once to avoid multiple evaluations.
-      std::vector<std::vector<double> > cosine_components(max_degree+1,std::vector<double>(max_degree+1,0.0));
-      std::vector<std::vector<double> > sine_components(max_degree+1,std::vector<double>(max_degree+1,0.0));
+      std::vector<std::vector<double> > cosine_components(max_degree+1, std::vector<double>(max_degree+1, 0.0));
+      std::vector<std::vector<double> > sine_components(max_degree+1, std::vector<double>(max_degree+1, 0.0));
 
       for (unsigned int degree_l = 0; degree_l < max_degree+1; ++degree_l)
         {
@@ -249,7 +249,7 @@ namespace aspect
         }
 
       // iterate over all degrees and orders at each depth and sum them all up.
-      std::vector<double> spline_values(num_spline_knots,0);
+      std::vector<double> spline_values(num_spline_knots, 0.);
       double prefact;
       unsigned int ind = 0;
 
@@ -282,7 +282,7 @@ namespace aspect
       // at the boundary (i.e. Moho and CMB). Values outside the range are linearly
       // extrapolated.
       aspect::Utilities::tk::spline s;
-      s.set_points(depth_values,spline_values);
+      s.set_points(depth_values, spline_values);
 
       // Get value at specific depth
       return s(scoord[0]);
