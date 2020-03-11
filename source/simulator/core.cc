@@ -986,13 +986,19 @@ namespace aspect
           }
         else if (parameters.include_melt_transport)
           {
-            // For the melt transport solver velocities and pressures couple with themselves.
-            // Additionally velocities couple with all pressures, and all pressures
-            // couple with velocities.
+            // For the melt transport solver all velocities and pressures couple with themselves.
+            // Additionally solid velocities couple with all pressures, and all pressures
+            // couple with solid velocities.
+
+            const unsigned int first_fluid_c_i = introspection.variable("fluid velocity").first_component_index;
+
             for (unsigned int d=0; d<dim; ++d)
               {
                 for (unsigned int c=0; c<dim; ++c)
-                  coupling[x.velocities[c]][x.velocities[d]] = DoFTools::always;
+                  {
+                    coupling[x.velocities[c]][x.velocities[d]] = DoFTools::always;
+                    coupling[first_fluid_c_i+c][first_fluid_c_i+d] = DoFTools::always;
+                  }
 
                 coupling[x.velocities[d]][
                   introspection.variable("compaction pressure").first_component_index] = DoFTools::always;

@@ -1895,7 +1895,7 @@ namespace aspect
     // TODO: We assert in the StokesMatrixFreeHandler constructor that we
     //       are not including melt transport.
     if (sim.parameters.include_melt_transport)
-      sim.melt_handler->compute_melt_variables(sim.solution);
+      sim.melt_handler->compute_melt_variables(sim.system_matrix,sim.solution,sim.system_rhs);
 
     return std::pair<double,double>(initial_nonlinear_residual,
                                     final_linear_residual);
