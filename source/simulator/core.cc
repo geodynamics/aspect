@@ -885,13 +885,24 @@ namespace aspect
     bool solver_scheme_solves_advection_equations(const Parameters<dim> &parameters)
     {
       // Check if we use a solver scheme that solves the advection equations
-      return (parameters.nonlinear_solver != Parameters<dim>::NonlinearSolver::Kind::no_Advection_no_Stokes
-              &&
-              parameters.nonlinear_solver != Parameters<dim>::NonlinearSolver::Kind::no_Advection_single_Stokes
-              &&
-              parameters.nonlinear_solver != Parameters<dim>::NonlinearSolver::Kind::no_Advection_iterated_Stokes
-              &&
-              parameters.nonlinear_solver != Parameters<dim>::NonlinearSolver::Kind::first_timestep_only_single_Stokes);
+      switch (parameters.nonlinear_solver)
+        {
+          case Parameters<dim>::NonlinearSolver::Kind::single_Advection_single_Stokes:
+          case Parameters<dim>::NonlinearSolver::Kind::iterated_Advection_and_Stokes:
+          case Parameters<dim>::NonlinearSolver::Kind::single_Advection_iterated_Stokes:
+          case Parameters<dim>::NonlinearSolver::Kind::iterated_Advection_and_Newton_Stokes:
+          case Parameters<dim>::NonlinearSolver::Kind::single_Advection_iterated_Newton_Stokes:
+          case Parameters<dim>::NonlinearSolver::Kind::single_Advection_no_Stokes:
+            return true;
+
+          case Parameters<dim>::NonlinearSolver::Kind::no_Advection_iterated_Stokes:
+          case Parameters<dim>::NonlinearSolver::Kind::no_Advection_single_Stokes:
+          case Parameters<dim>::NonlinearSolver::Kind::first_timestep_only_single_Stokes:
+          case Parameters<dim>::NonlinearSolver::Kind::no_Advection_no_Stokes:
+            return false;
+        }
+      AssertThrow(false, ExcNotImplemented());
+      return false;
     }
 
 
@@ -900,9 +911,24 @@ namespace aspect
     bool solver_scheme_solves_stokes_equations(const Parameters<dim> &parameters)
     {
       // Check if we use a solver scheme that solves the advection equations
-      return (parameters.nonlinear_solver != Parameters<dim>::NonlinearSolver::Kind::no_Advection_no_Stokes
-              &&
-              parameters.nonlinear_solver != Parameters<dim>::NonlinearSolver::Kind::single_Advection_no_Stokes);
+      switch (parameters.nonlinear_solver)
+        {
+          case Parameters<dim>::NonlinearSolver::Kind::single_Advection_single_Stokes:
+          case Parameters<dim>::NonlinearSolver::Kind::iterated_Advection_and_Stokes:
+          case Parameters<dim>::NonlinearSolver::Kind::single_Advection_iterated_Stokes:
+          case Parameters<dim>::NonlinearSolver::Kind::no_Advection_iterated_Stokes:
+          case Parameters<dim>::NonlinearSolver::Kind::no_Advection_single_Stokes:
+          case Parameters<dim>::NonlinearSolver::Kind::iterated_Advection_and_Newton_Stokes:
+          case Parameters<dim>::NonlinearSolver::Kind::single_Advection_iterated_Newton_Stokes:
+          case Parameters<dim>::NonlinearSolver::Kind::first_timestep_only_single_Stokes:
+            return true;
+
+          case Parameters<dim>::NonlinearSolver::Kind::single_Advection_no_Stokes:
+          case Parameters<dim>::NonlinearSolver::Kind::no_Advection_no_Stokes:
+            return false;
+        }
+      AssertThrow(false, ExcNotImplemented());
+      return false;
     }
 
 
