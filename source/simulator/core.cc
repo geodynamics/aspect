@@ -351,6 +351,10 @@ namespace aspect
     // Initialize the mesh deformation handler
     if (parameters.mesh_deformation_enabled)
       {
+        // Models with deformed boundaries require
+        // the full A block to converge consistently
+        parameters.use_full_A_block_preconditioner = true;
+
         // Allocate the MeshDeformationHandler object
         mesh_deformation = std_cxx14::make_unique<MeshDeformation::MeshDeformationHandler<dim>>(*this);
         mesh_deformation->initialize_simulator(*this);
@@ -360,6 +364,10 @@ namespace aspect
     // Initialize the melt handler
     if (parameters.include_melt_transport)
       {
+        // Models with melt transport require
+        // the full A block to converge consistently
+        parameters.use_full_A_block_preconditioner = true;
+
         melt_handler->initialize_simulator (*this);
         melt_handler->initialize();
       }
@@ -889,6 +897,17 @@ namespace aspect
 
 
     template <int dim>
+    bool solver_scheme_solves_stokes_equations(const Parameters<dim> &parameters)
+    {
+      // Check if we use a solver scheme that solves the advection equations
+      return (parameters.nonlinear_solver != Parameters<dim>::NonlinearSolver::Kind::no_Advection_no_Stokes
+              &&
+              parameters.nonlinear_solver != Parameters<dim>::NonlinearSolver::Kind::single_Advection_no_Stokes);
+    }
+
+
+
+    template <int dim>
     bool compositional_fields_need_matrix_block(const Introspection<dim> &introspection)
     {
       // Check if any compositional field method actually requires a matrix block
@@ -925,68 +944,71 @@ namespace aspect
     const typename Introspection<dim>::ComponentIndices &x
       = introspection.component_indices;
 
-    // The matrix-free solver does not work with melt transport
-    Assert(!(parameters.include_melt_transport && stokes_matrix_free),
-           ExcNotImplemented());
-
     // Determine which blocks in the Stokes blocks
     // of the matrix are in use. At the moment this distinguishes
     // 3 solvers: melt transport, matrix-free multigrid, and the default
     // matrix based algebraic multigrid.
-    if (stokes_matrix_free)
+    if (solver_scheme_solves_stokes_equations(parameters))
       {
-        // nothing couples in the matrix free solver
-      }
-    else if (parameters.include_melt_transport)
-      {
-        // For the melt transport solver velocities and pressures couple with themselves.
-        // Additionally velocities couple with all pressures, and all pressures
-        // couple with velocities.
-        for (unsigned int d=0; d<dim; ++d)
-          {
-            for (unsigned int c=0; c<dim; ++c)
-              coupling[x.velocities[c]][x.velocities[d]] = DoFTools::always;
+        // The matrix-free solver does not work with melt transport
+        Assert(!(parameters.include_melt_transport && stokes_matrix_free),
+               ExcNotImplemented());
 
-            coupling[x.velocities[d]][
-              introspection.variable("compaction pressure").first_component_index] = DoFTools::always;
-            coupling[introspection.variable("compaction pressure").first_component_index]
-            [x.velocities[d]]
-              = DoFTools::always;
-            coupling[x.velocities[d]]
+        if (stokes_matrix_free)
+          {
+            // nothing couples in the matrix free solver
+          }
+        else if (parameters.include_melt_transport)
+          {
+            // For the melt transport solver velocities and pressures couple with themselves.
+            // Additionally velocities couple with all pressures, and all pressures
+            // couple with velocities.
+            for (unsigned int d=0; d<dim; ++d)
+              {
+                for (unsigned int c=0; c<dim; ++c)
+                  coupling[x.velocities[c]][x.velocities[d]] = DoFTools::always;
+
+                coupling[x.velocities[d]][
+                  introspection.variable("compaction pressure").first_component_index] = DoFTools::always;
+                coupling[introspection.variable("compaction pressure").first_component_index]
+                [x.velocities[d]]
+                  = DoFTools::always;
+                coupling[x.velocities[d]]
+                [introspection.variable("fluid pressure").first_component_index]
+                  = DoFTools::always;
+                coupling[introspection.variable("fluid pressure").first_component_index]
+                [x.velocities[d]]
+                  = DoFTools::always;
+              }
+
+            coupling[introspection.variable("fluid pressure").first_component_index]
             [introspection.variable("fluid pressure").first_component_index]
               = DoFTools::always;
-            coupling[introspection.variable("fluid pressure").first_component_index]
-            [x.velocities[d]]
+            coupling[introspection.variable("compaction pressure").first_component_index]
+            [introspection.variable("compaction pressure").first_component_index]
               = DoFTools::always;
           }
-
-        coupling[introspection.variable("fluid pressure").first_component_index]
-        [introspection.variable("fluid pressure").first_component_index]
-          = DoFTools::always;
-        coupling[introspection.variable("compaction pressure").first_component_index]
-        [introspection.variable("compaction pressure").first_component_index]
-          = DoFTools::always;
-      }
-    else
-      {
-        // The AMG matrix based solver: all velocities couple with all velocities,
-        // pressure couples with all velocities and the other way around,
-        // and pressures only couple with themselves for equal order elements
-        for (unsigned int c=0; c<dim; ++c)
-          for (unsigned int d=0; d<dim; ++d)
-            coupling[x.velocities[c]][x.velocities[d]] = DoFTools::always;
-
-        for (unsigned int d=0; d<dim; ++d)
+        else
           {
-            coupling[x.velocities[d]][x.pressure] = DoFTools::always;
-            coupling[x.pressure][x.velocities[d]] = DoFTools::always;
-          }
+            // The AMG matrix based solver: all velocities couple with all velocities,
+            // pressure couples with all velocities and the other way around,
+            // and pressures only couple with themselves for equal order elements
+            for (unsigned int c=0; c<dim; ++c)
+              for (unsigned int d=0; d<dim; ++d)
+                coupling[x.velocities[c]][x.velocities[d]] = DoFTools::always;
 
-        // For equal-order interpolation, we need a stabilization term
-        // in the bottom right of Stokes matrix. Make sure we have the
-        // necessary entries.
-        if (parameters.use_equal_order_interpolation_for_stokes == true)
-          coupling[x.pressure][x.pressure] = DoFTools::always;
+            for (unsigned int d=0; d<dim; ++d)
+              {
+                coupling[x.velocities[d]][x.pressure] = DoFTools::always;
+                coupling[x.pressure][x.velocities[d]] = DoFTools::always;
+              }
+
+            // For equal-order interpolation, we need a stabilization term
+            // in the bottom right of Stokes matrix. Make sure we have the
+            // necessary entries.
+            if (parameters.use_equal_order_interpolation_for_stokes == true)
+              coupling[x.pressure][x.pressure] = DoFTools::always;
+          }
       }
 
     // Only enable temperature coupling if temperature block is needed
@@ -1131,8 +1153,11 @@ namespace aspect
     Mp_preconditioner.reset ();
     system_preconditioner_matrix.clear ();
 
-    // The preconditioner matrix is only used for the Stokes block (velocity and Schur complement) and only needed if we actually solve iteratively and matrix-based
-    if (parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::block_gmg)
+    // The preconditioner matrix is only used for the Stokes block (velocity and Schur complement)
+    // and only needed if we actually solve iteratively and matrix-based
+    if (solver_scheme_solves_stokes_equations(parameters) == false)
+      return;
+    else if (parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::block_gmg)
       return;
     else if (parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::block_amg)
       {
@@ -1150,9 +1175,17 @@ namespace aspect
     const typename Introspection<dim>::ComponentIndices &x
       = introspection.component_indices;
 
-    // velocity-velocity block (only block diagonal):
-    for (unsigned int d=0; d<dim; ++d)
-      coupling[x.velocities[d]][x.velocities[d]] = DoFTools::always;
+    // velocity-velocity block (only block diagonal) is only
+    // needed if we use the simplified A block preconditioner
+    if (parameters.use_full_A_block_preconditioner == false)
+      for (unsigned int d=0; d<dim; ++d)
+        coupling[x.velocities[d]][x.velocities[d]] = DoFTools::always;
+
+    // TODO: The newton handler always assembles the preconditioner matrix
+    // even if it is not used. Fix that by modifying the newton assemblers.
+    if (newton_handler.get() != nullptr)
+      for (unsigned int d=0; d<dim; ++d)
+        coupling[x.velocities[d]][x.velocities[d]] = DoFTools::always;
 
     // Schur complement block (pressure - pressure):
     if (parameters.include_melt_transport)
@@ -1215,7 +1248,8 @@ namespace aspect
       const unsigned int block_idx = introspection.block_indices.temperature;
       // TODO: using clear() would be nice here but clear() also resets the
       // size, so just reinit():
-      sp.block(block_idx, block_idx).reinit(sp.block(block_idx, block_idx).locally_owned_range_indices(),sp.block(block_idx, block_idx).locally_owned_domain_indices());
+      sp.block(block_idx, block_idx).reinit(sp.block(block_idx, block_idx).locally_owned_range_indices(),
+                                            sp.block(block_idx, block_idx).locally_owned_domain_indices());
       sp.block(block_idx, block_idx).compress();
     }
     // compositions:
@@ -1224,7 +1258,8 @@ namespace aspect
         const unsigned int block_idx = introspection.block_indices.compositional_fields[c];
         // TODO: using clear() would be nice here but clear() also resets the
         // size, so just reinit():
-        sp.block(block_idx, block_idx).reinit(sp.block(block_idx, block_idx).locally_owned_range_indices(),sp.block(block_idx, block_idx).locally_owned_domain_indices());
+        sp.block(block_idx, block_idx).reinit(sp.block(block_idx, block_idx).locally_owned_range_indices(),
+                                              sp.block(block_idx, block_idx).locally_owned_domain_indices());
         sp.block(block_idx, block_idx).compress();
       }
 
