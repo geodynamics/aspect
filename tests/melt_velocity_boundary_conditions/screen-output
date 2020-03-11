@@ -9,7 +9,7 @@ Number of degrees of freedom: 19,352 (5,346+2,617+5,346+697+2,673+2,673)
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+10 iterations.
-   Solving for u_f in 12 iterations.
+   Solving fluid velocity system... 12 iterations.
 
    Postprocessing:
      Topography min/max:        0 m, 0 m

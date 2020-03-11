@@ -9,7 +9,7 @@ Number of degrees of freedom: 34,825 (12,611+8,450+1,089+4,225+4,225+4,225)
    Solving peridotite system ... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving Stokes system... done.
-   Solving for u_f in 11 iterations.
+   Solving fluid velocity system... 11 iterations.
 
    Postprocessing:
      Compositions min/max/mass: 0/0.3/3.749e+10 // 0/0.3/3.008e+10
@@ -19,7 +19,7 @@ Number of degrees of freedom: 34,825 (12,611+8,450+1,089+4,225+4,225+4,225)
    Solving peridotite system ... 14 iterations.
    Solving porosity system ... 16 iterations.
    Solving Stokes system... done.
-   Solving for u_f in 11 iterations.
+   Solving fluid velocity system... 11 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -0.01951/0.3202/3.749e+10 // -0.01226/0.3131/3.008e+10
@@ -29,7 +29,7 @@ Number of degrees of freedom: 34,825 (12,611+8,450+1,089+4,225+4,225+4,225)
    Solving peridotite system ... 18 iterations.
    Solving porosity system ... 18 iterations.
    Solving Stokes system... done.
-   Solving for u_f in 11 iterations.
+   Solving fluid velocity system... 11 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -0.01595/0.3168/3.749e+10 // -0.01207/0.3149/3.008e+10
@@ -39,7 +39,7 @@ Number of degrees of freedom: 34,825 (12,611+8,450+1,089+4,225+4,225+4,225)
    Solving peridotite system ... 18 iterations.
    Solving porosity system ... 18 iterations.
    Solving Stokes system... done.
-   Solving for u_f in 11 iterations.
+   Solving fluid velocity system... 11 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -0.0118/0.3185/3.749e+10 // -0.007651/0.3185/3.008e+10
@@ -49,7 +49,7 @@ Number of degrees of freedom: 34,825 (12,611+8,450+1,089+4,225+4,225+4,225)
    Solving peridotite system ... 18 iterations.
    Solving porosity system ... 18 iterations.
    Solving Stokes system... done.
-   Solving for u_f in 11 iterations.
+   Solving fluid velocity system... 11 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -0.01282/0.3167/3.749e+10 // -0.005148/0.3196/3.008e+10
@@ -59,7 +59,7 @@ Number of degrees of freedom: 34,825 (12,611+8,450+1,089+4,225+4,225+4,225)
    Solving peridotite system ... 8 iterations.
    Solving porosity system ... 8 iterations.
    Solving Stokes system... done.
-   Solving for u_f in 11 iterations.
+   Solving fluid velocity system... 11 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -0.01272/0.3166/3.749e+10 // -0.005091/0.3194/3.008e+10

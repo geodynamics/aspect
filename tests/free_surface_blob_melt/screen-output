@@ -11,7 +11,7 @@ Number of mesh deformation degrees of freedom: 1394
    Skipping porosity composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+18 iterations.
-   Solving for u_f in 11 iterations.
+   Solving fluid velocity system... 11 iterations.
 
 Number of active cells: 664 (on 5 levels)
 Number of degrees of freedom: 20,360 (5,634+2,725+5,634+733+2,817+2,817)
@@ -23,7 +23,7 @@ Number of mesh deformation degrees of freedom: 1466
    Skipping porosity composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+18 iterations.
-   Solving for u_f in 12 iterations.
+   Solving fluid velocity system... 12 iterations.
 
    Postprocessing:
      Topography min/max: 0 m, 0 m
@@ -35,7 +35,7 @@ Number of mesh deformation degrees of freedom: 1466
    Skipping porosity composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+16 iterations.
-   Solving for u_f in 12 iterations.
+   Solving fluid velocity system... 12 iterations.
 
    Postprocessing:
      Topography min/max: -393.7 m, 876.7 m
@@ -47,7 +47,7 @@ Number of mesh deformation degrees of freedom: 1466
    Skipping porosity composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+15 iterations.
-   Solving for u_f in 11 iterations.
+   Solving fluid velocity system... 11 iterations.
 
    Postprocessing:
      Topography min/max: -2260 m, 1102 m
@@ -59,7 +59,7 @@ Number of mesh deformation degrees of freedom: 1466
    Skipping porosity composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+15 iterations.
-   Solving for u_f in 12 iterations.
+   Solving fluid velocity system... 12 iterations.
 
    Postprocessing:
      Topography min/max: -474.1 m, 223.3 m
@@ -71,7 +71,7 @@ Number of mesh deformation degrees of freedom: 1466
    Skipping porosity composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+15 iterations.
-   Solving for u_f in 12 iterations.
+   Solving fluid velocity system... 12 iterations.
 
    Postprocessing:
      Topography min/max: -338.3 m, 713.2 m
@@ -83,7 +83,7 @@ Number of mesh deformation degrees of freedom: 1466
    Skipping porosity composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+15 iterations.
-   Solving for u_f in 11 iterations.
+   Solving fluid velocity system... 11 iterations.
 
    Postprocessing:
      Topography min/max: -2422 m, 1241 m
@@ -101,7 +101,7 @@ Number of mesh deformation degrees of freedom: 1466
    Skipping porosity composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+15 iterations.
-   Solving for u_f in 11 iterations.
+   Solving fluid velocity system... 11 iterations.
 
    Postprocessing:
      Topography min/max: -582.3 m, 293.6 m
@@ -113,7 +113,7 @@ Number of mesh deformation degrees of freedom: 1466
    Skipping porosity composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+15 iterations.
-   Solving for u_f in 12 iterations.
+   Solving fluid velocity system... 12 iterations.
 
    Postprocessing:
      Topography min/max: -376.4 m, 744.4 m
@@ -125,7 +125,7 @@ Number of mesh deformation degrees of freedom: 1466
    Skipping porosity composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+15 iterations.
-   Solving for u_f in 11 iterations.
+   Solving fluid velocity system... 11 iterations.
 
    Postprocessing:
      Topography min/max: -2390 m, 1289 m
@@ -137,7 +137,7 @@ Number of mesh deformation degrees of freedom: 1466
    Skipping porosity composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+15 iterations.
-   Solving for u_f in 11 iterations.
+   Solving fluid velocity system... 11 iterations.
 
    Postprocessing:
      Topography min/max: -440.8 m, 233.4 m
@@ -149,7 +149,7 @@ Number of mesh deformation degrees of freedom: 1466
    Skipping porosity composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+15 iterations.
-   Solving for u_f in 12 iterations.
+   Solving fluid velocity system... 12 iterations.
 
    Postprocessing:
      Topography min/max: -385.6 m, 737.1 m
