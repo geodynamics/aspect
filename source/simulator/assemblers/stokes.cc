@@ -42,8 +42,6 @@ namespace aspect
       const unsigned int stokes_dofs_per_cell = data.local_dof_indices.size();
       const unsigned int n_q_points           = scratch.finite_element_values.n_quadrature_points;
       const double pressure_scaling = this->get_pressure_scaling();
-      const bool assemble_A_approximation = this->get_parameters().use_full_A_block_preconditioner == false &&
-                                            this->get_parameters().mesh_deformation_enabled == false;
 
       // First loop over all dofs and find those that are in the Stokes system
       // save the component (pressure and dim velocities) each belongs to.
@@ -111,7 +109,7 @@ namespace aspect
             {
               if (introspection.is_stokes_component(fe.system_to_component_index(i).first))
                 {
-                  if (assemble_A_approximation)
+                  if (this->get_parameters().use_full_A_block_preconditioner == false)
                     scratch.grads_phi_u[i_stokes] =
                       scratch.finite_element_values[introspection.extractors
                                                     .velocities].symmetric_gradient(i, q);
@@ -127,7 +125,7 @@ namespace aspect
 
           const double JxW = scratch.finite_element_values.JxW(q);
 
-          if (assemble_A_approximation)
+          if (this->get_parameters().use_full_A_block_preconditioner == false)
             {
               for (unsigned int i = 0; i < stokes_dofs_per_cell; ++i)
                 for (unsigned int j = 0; j < stokes_dofs_per_cell; ++j)
@@ -197,11 +195,9 @@ namespace aspect
       Assert (this->get_parameters().use_equal_order_interpolation_for_stokes == false,
               ExcNotImplemented());
 
-      const bool assemble_A_approximation = this->get_parameters().use_full_A_block_preconditioner == false &&
-                                            this->get_parameters().mesh_deformation_enabled == false;
-
-      if (assemble_A_approximation == false)
-        return;
+      Assert (this->get_parameters().use_full_A_block_preconditioner == false,
+              ExcMessage("This assembler should only be called if the simplified A block "
+                         "preconditioner is used."));
 
       internal::Assembly::Scratch::StokesPreconditioner<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesPreconditioner<dim>& > (scratch_base);
       internal::Assembly::CopyData::StokesPreconditioner<dim> &data = dynamic_cast<internal::Assembly::CopyData::StokesPreconditioner<dim>& > (data_base);

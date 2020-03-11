@@ -351,6 +351,10 @@ namespace aspect
     // Initialize the mesh deformation handler
     if (parameters.mesh_deformation_enabled)
       {
+        // Models with deformed boundaries require
+        // the full A block to converge consistently
+        parameters.use_full_A_block_preconditioner = true;
+
         // Allocate the MeshDeformationHandler object
         mesh_deformation = std_cxx14::make_unique<MeshDeformation::MeshDeformationHandler<dim>>(*this);
         mesh_deformation->initialize_simulator(*this);
@@ -360,6 +364,10 @@ namespace aspect
     // Initialize the melt handler
     if (parameters.include_melt_transport)
       {
+        // Models with melt transport require
+        // the full A block to converge consistently
+        parameters.use_full_A_block_preconditioner = true;
+
         melt_handler->initialize_simulator (*this);
         melt_handler->initialize();
       }
@@ -1169,9 +1177,7 @@ namespace aspect
 
     // velocity-velocity block (only block diagonal) is only
     // needed if we use the simplified A block preconditioner
-    if (parameters.mesh_deformation_enabled == false &&
-        parameters.include_melt_transport == false &&
-        parameters.use_full_A_block_preconditioner == false)
+    if (parameters.use_full_A_block_preconditioner == false)
       for (unsigned int d=0; d<dim; ++d)
         coupling[x.velocities[d]][x.velocities[d]] = DoFTools::always;
 

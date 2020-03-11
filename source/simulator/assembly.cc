@@ -133,8 +133,10 @@ namespace aspect
 
     if (material_model->is_compressible())
       {
-        assemblers->stokes_preconditioner.push_back(
-          std_cxx14::make_unique<aspect::Assemblers::StokesCompressiblePreconditioner<dim> >());
+        // The compressible part of the preconditioner is only necessary if we use the simplified A block
+        if (parameters.use_full_A_block_preconditioner == false)
+          assemblers->stokes_preconditioner.push_back(
+            std_cxx14::make_unique<aspect::Assemblers::StokesCompressiblePreconditioner<dim> >());
 
         assemblers->stokes_system.push_back(
           std_cxx14::make_unique<aspect::Assemblers::StokesCompressibleStrainRateViscosityTerm<dim> >());
@@ -521,7 +523,7 @@ namespace aspect
         Mp_preconditioner_AMG->initialize (system_preconditioner_matrix.block(1,1), Amg_data);
       }
 
-    if (parameters.mesh_deformation_enabled || parameters.include_melt_transport || parameters.use_full_A_block_preconditioner)
+    if (parameters.use_full_A_block_preconditioner)
       Amg_preconditioner->initialize (system_matrix.block(0,0),
                                       Amg_data);
     else
