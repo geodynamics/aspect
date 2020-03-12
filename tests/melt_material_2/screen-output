@@ -8,11 +8,11 @@ Number of degrees of freedom: 30,600 (12,611+8,450+1,089+4,225+4,225)
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving Stokes system... done.
-   Solving for u_f in 10 iterations.
+   Solving fluid velocity system... 10 iterations.
 
    Postprocessing:
      RMS, max velocity:                               0.224 m/s, 0.496 m/s
-     Pressure min/avg/max:                            -2 Pa, -1 Pa, -5.291e-13 Pa
+     Pressure min/avg/max:                            -2 Pa, -1 Pa, -4.913e-13 Pa
      Max, min, and rms velocity along boundary parts: 0.4965 m/s, 6.202e-06 m/s, 0.2236 m/s, 0.4965 m/s, 6.202e-06 m/s, 0.2236 m/s, 0 m/s, 0 m/s, 0 m/s, 0.5 m/s, 0.5 m/s, 0.5 m/s
 
 Termination requested by criterion: end time

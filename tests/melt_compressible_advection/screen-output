@@ -8,28 +8,28 @@ Number of degrees of freedom: 30,600 (12,611+8,450+1,089+4,225+4,225)
    Skipping temperature solve because RHS is zero.
    Solving porosity system ... 0 iterations.
    Solving Stokes system... done.
-   Solving for u_f in 13 iterations.
+   Solving fluid velocity system... 13 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.69836e-16, 1
       Relative nonlinear residual (total system) after nonlinear iteration 1: 1
 
    Skipping temperature solve because RHS is zero.
    Solving porosity system ... 0 iterations.
    Solving Stokes system... done.
-   Solving for u_f in 12 iterations.
+   Solving fluid velocity system... 12 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.69836e-16, 0.387919
       Relative nonlinear residual (total system) after nonlinear iteration 2: 0.387919
 
    Skipping temperature solve because RHS is zero.
    Solving porosity system ... 0 iterations.
    Solving Stokes system... done.
-   Solving for u_f in 12 iterations.
+   Solving fluid velocity system... 12 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.69836e-16, 0.000266113
       Relative nonlinear residual (total system) after nonlinear iteration 3: 0.000266113
 
    Skipping temperature solve because RHS is zero.
    Solving porosity system ... 0 iterations.
    Solving Stokes system... done.
-   Solving for u_f in 12 iterations.
+   Solving fluid velocity system... 12 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.69836e-16, 4.02116e-05
       Relative nonlinear residual (total system) after nonlinear iteration 4: 4.02116e-05
 
@@ -44,7 +44,7 @@ Number of degrees of freedom: 30,600 (12,611+8,450+1,089+4,225+4,225)
    Skipping temperature solve because RHS is zero.
    Solving porosity system ... 11 iterations.
    Solving Stokes system... done.
-   Solving for u_f in 12 iterations.
+   Solving fluid velocity system... 12 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 2.43573e-05, 4.22066e-05
       Relative nonlinear residual (total system) after nonlinear iteration 1: 4.22066e-05
 
@@ -59,7 +59,7 @@ Number of degrees of freedom: 30,600 (12,611+8,450+1,089+4,225+4,225)
    Skipping temperature solve because RHS is zero.
    Solving porosity system ... 7 iterations.
    Solving Stokes system... done.
-   Solving for u_f in 12 iterations.
+   Solving fluid velocity system... 12 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.26864e-06, 4.65234e-05
       Relative nonlinear residual (total system) after nonlinear iteration 1: 4.65234e-05
 

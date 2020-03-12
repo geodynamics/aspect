@@ -1277,8 +1277,14 @@ namespace aspect
       SolverControl solver_control(5*rhs.size(), 1e-8*rhs.block(block_idx).l2_norm());
       SolverCG<LinearAlgebra::Vector> cg(solver_control);
 
-      cg.solve (matrix.block(block_idx, block_idx), distributed_solution.block(block_idx), rhs.block(block_idx), preconditioner);
-      this->get_pcout() << "   Solving for u_f in " << solver_control.last_step() <<" iterations."<< std::endl;
+      this->get_pcout() << "   Solving fluid velocity system... " << std::flush;
+
+      cg.solve (matrix.block(block_idx, block_idx),
+                distributed_solution.block(block_idx),
+                rhs.block(block_idx),
+                preconditioner);
+
+      this->get_pcout() << solver_control.last_step() <<" iterations."<< std::endl;
 
       this->get_current_constraints().distribute (distributed_solution);
       solution.block(block_idx) = distributed_solution.block(block_idx);
