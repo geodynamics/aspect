@@ -901,7 +901,7 @@ namespace aspect
           case Parameters<dim>::NonlinearSolver::Kind::no_Advection_no_Stokes:
             return false;
         }
-      AssertThrow(false, ExcNotImplemented());
+      Assert(false, ExcNotImplemented());
       return false;
     }
 
@@ -927,7 +927,7 @@ namespace aspect
           case Parameters<dim>::NonlinearSolver::Kind::no_Advection_no_Stokes:
             return false;
         }
-      AssertThrow(false, ExcNotImplemented());
+      Assert(false, ExcNotImplemented());
       return false;
     }
 
@@ -941,13 +941,19 @@ namespace aspect
       for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
         {
           const typename Simulator<dim>::AdvectionField adv_field (Simulator<dim>::AdvectionField::composition(c));
-          if (adv_field.advection_method(introspection) == Parameters<dim>::AdvectionFieldMethod::fem_field
-              ||
-              adv_field.advection_method(introspection) == Parameters<dim>::AdvectionFieldMethod::fem_melt_field
-              ||
-              adv_field.advection_method(introspection) == Parameters<dim>::AdvectionFieldMethod::prescribed_field_with_diffusion)
+          switch (adv_field.advection_method(introspection))
             {
-              return true;
+              case Parameters<dim>::AdvectionFieldMethod::fem_field:
+              case Parameters<dim>::AdvectionFieldMethod::fem_melt_field:
+              case Parameters<dim>::AdvectionFieldMethod::prescribed_field_with_diffusion:
+                return true;
+              case Parameters<dim>::AdvectionFieldMethod::particles:
+              case Parameters<dim>::AdvectionFieldMethod::volume_of_fluid:
+              case Parameters<dim>::AdvectionFieldMethod::static_field:
+              case Parameters<dim>::AdvectionFieldMethod::prescribed_field:
+                break;
+              default:
+                Assert (false, ExcNotImplemented());
             }
         }
       return false;
