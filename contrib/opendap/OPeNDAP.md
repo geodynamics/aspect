@@ -1,10 +1,21 @@
 
 # The OPeNDAP extension to ASPECT
 
+Provided here is the OPeNDAP client extension for ASPECT. 
+OPeNDAP is both the name of a non-profit organization and the 
+commonly-used name of a protocol which the OPeNDAP organization has 
+developed. The OPeNDAP protocol provides a discipline-neutral means of 
+requesting and providing data across the World Wide Web. OPeNDAP has
+been working with the NSF/EarthCube funded BALTO (Brokered Alignment of 
+Long-Tail Observations and Big Data) project to create a brokering 
+cyberinfrastructure that facilitates access to unique data sources.
+Using the BALTO/OPeNDAP extension of ASPECT will allow the user to query 
+data from remote servers to be read in and used in local computations.
+
 The OPeNDAP client extension to ASPECT has been tested on OSX (10.13,
 10.14) and CentOS 7. It is currently available in source form only. In
 this document you will find a description of the prerequisites for the
-software, how to run the tests we have included and how to make data
+software, how to run the tests we have included, and how to make data
 available from OPeNDAP servers so that ASPECT can use it.
 
 While OPeNDAP makes its own open-source data server (called _Hyrax_),
