@@ -584,6 +584,11 @@ namespace aspect
                          Patterns::Bool (),
                          "Whether to include the additional elastic terms on the right-hand side of "
                          "the Stokes equation.");
+      prm.declare_entry ("Enable prescribed dilation", "false",
+                         Patterns::Bool (),
+                         "Whether to include additional terms on the right-hand side of "
+                         "the Stokes equation to set a given compression term specified in the "
+                         "MaterialModel output PrescribedPlasticDilation.");
     }
     prm.leave_subsection();
 
@@ -1479,6 +1484,7 @@ namespace aspect
 
       enable_additional_stokes_rhs = prm.get_bool ("Enable additional Stokes RHS");
       enable_elasticity = prm.get_bool("Enable elasticity");
+      enable_prescribed_dilation = prm.get_bool("Enable prescribed dilation");
     }
     prm.leave_subsection ();
 

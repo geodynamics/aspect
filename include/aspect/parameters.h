@@ -500,6 +500,7 @@ namespace aspect
      */
     bool                           include_melt_transport;
     bool                           enable_additional_stokes_rhs;
+    bool                           enable_prescribed_dilation;
 
     /**
      * Map from boundary id to a pair "components", "traction boundary type",

@@ -564,10 +564,12 @@ namespace aspect
       data.local_pressure_shape_function_integrals = 0;
 
     // initialize the material model data on the cell
+    const bool update_strain_rate =
+      assemble_newton_stokes_system || this->parameters.enable_prescribed_dilation || rebuild_stokes_matrix;
     compute_material_model_input_values (current_linearization_point,
                                          scratch.finite_element_values,
                                          cell,
-                                         assemble_newton_stokes_system ? true : rebuild_stokes_matrix,
+                                         update_strain_rate,
                                          scratch.material_model_inputs);
 
     for (unsigned int i=0; i<assemblers->stokes_system.size(); ++i)

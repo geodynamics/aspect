@@ -970,6 +970,46 @@ namespace aspect
         std::vector<double> rhs_melt_pc;
     };
 
+
+
+    /**
+     * An AdditionalOutput that allows prescribing a dilation applied to the
+     * Stokes solution.
+     *
+     * This is typically used in a MaterialModel to add dilation when plastic
+     * failure occurs as motivated by ChoiPeterson2015. If this output
+     * (denoted by R below) is present and enable_prescribed_dilation==true
+     * the following terms will be assembled:
+     *
+     * 1) \int - (R,q) to the conservation of mass equation, creating
+     *    -(div u,q) = -(R,q).
+     * 2) \int - 2.0 / 3.0 * eta * (R, div v) to the RHS of the momentum
+     *    equation (if the model is incompressible), otherwise this term is
+     *    already present on the left side.
+     */
+    template <int dim>
+    class PrescribedPlasticDilation : public NamedAdditionalMaterialOutputs<dim>
+    {
+      public:
+        /**
+         * Constructor
+         */
+        explicit PrescribedPlasticDilation (const unsigned int n_points);
+
+        /**
+         * Function for NamedAdditionalMaterialOutputs interface
+         */
+        virtual std::vector<double> get_nth_output(const unsigned int idx) const;
+
+        /**
+         * A scalar value per evaluation point that specifies the prescribed dilation
+         * in that point.
+         */
+        std::vector<double> dilation;
+    };
+
+
+
     /**
      * A class for an elastic force term to be added to the RHS of the
      * Stokes system, which can be attached to the
