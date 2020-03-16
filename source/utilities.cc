@@ -943,7 +943,6 @@ namespace aspect
     bool
     filename_is_url(const std::string &filename)
     {
-      // return whether or not the requested file is from a url
       if (filename.find("http://") == 0 || filename.find("https://") == 0 || filename.find("file://") == 0)
         return true;
       else
@@ -976,27 +975,26 @@ namespace aspect
               url->request_das(das);
 
 
-              //Temporary vector that will hold the different arrays stored in urlArray
+              // Temporary vector that will hold the different arrays stored in urlArray
               std::vector<std::string> tmp;
-              //Vector that will hold the arrays (columns) and the values within those arrays
+              // Vector that will hold the arrays (columns) and the values within those arrays
               std::vector<std::vector<std::string>> columns;
 
-              //Check dds values to make sure the arrays are of the same length and of type string
+              // Check dds values to make sure the arrays are of the same length and of type string
               for (libdap::DDS::Vars_iter i = dds.var_begin(); i != dds.var_end(); ++i)
                 {
                   libdap::BaseType *btp = *i;
                   if ((*i)->type() == libdap::dods_array_c)
                     {
-                      //Array to store the url data
+                      // Array to store the url data
                       libdap::Array *urlArray;
                       urlArray = static_cast <libdap::Array *>(btp);
                       if (urlArray->var() != nullptr && urlArray->var()->type() == libdap::dods_str_c)
                         {
-                          //The url Array contains a separate array for each column of data.
+                          // The url Array contains a separate array for each column of data.
                           // This will put each of these individual arrays into its own vector.
                           urlArray->value(tmp);
                           columns.push_back(tmp);
-
                         }
                       else
                         {
@@ -1040,7 +1038,7 @@ namespace aspect
                 }
               urlString << "\n";
 
-              //Add the values from the arrays into the stringstream. The values are passed in
+              // Add the values from the arrays into the stringstream. The values are passed in
               // per row with a character return added at the end of each row.
               // TODO: Add a check to make sure that each column is the same size before writing
               //     to the stringstream
@@ -1065,7 +1063,7 @@ namespace aspect
               AssertThrow(false,
                           ExcMessage(std::string("Reading of file ") + filename + " failed. " +
                                      "Make sure you have the dependencies for reading a url " +
-                                     "(run cmake with -DLIBDAP_ON=ON)"));
+                                     "(run cmake with -DASPECT_WITH_LIBDAP=ON)"));
 
 #endif // HAVE_LIBDAP
             }
@@ -1097,8 +1095,6 @@ namespace aspect
                                            "too large for the input buffer?"));
                   return data_string; // never reached
                 }
-
-
 
               data_string = datastream.str();
               filesize = data_string.size();
