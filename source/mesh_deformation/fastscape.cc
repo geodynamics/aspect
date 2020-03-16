@@ -345,7 +345,8 @@ namespace aspect
                   if (use_marine)
                     fastscape_set_marine_parameters_(&sl, &p1, &p2, &z1, &z2, &r, &l, &kds1, &kds2);
 
-                  folder_output_(&length, &restart_step, c);
+                  if (use_strat)
+                    folder_output_(&length, &restart_step, c);
 
                 }
               else
@@ -862,7 +863,7 @@ namespace aspect
 
           prm.enter_subsection ("Erosional parameters");
           {
-            prm.declare_entry("Drainage area exponent (m)", "0.4",
+            prm.declare_entry("Drainage area exponent", "0.4",
                               Patterns::Double(),
                               "Exponent for drainage area.");
             prm.declare_entry("Slope exponent", "1",
