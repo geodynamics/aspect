@@ -339,42 +339,46 @@ namespace aspect
           if (satellites_coordinate[p][0] <= model_inner_radius)
             {
               g_theory = 0;
-              g_potential_theory = 0;
+              g_potential_theory = 2.0 * G * numbers::PI * reference_density * (std::pow(model_inner_radius,2) - std::pow(model_outer_radius,2));
             }
           else if ((satellites_coordinate[p][0] > model_inner_radius) && (satellites_coordinate[p][0] < model_outer_radius))
             {
-              g_theory = G * numbers::PI * 4/3 * reference_density * (satellites_coordinate[p][0] - (std::pow(model_inner_radius,3)
+              g_theory = G * numbers::PI * 4./3. * reference_density * (satellites_coordinate[p][0] - (std::pow(model_inner_radius,3)
                                                                       /  std::pow(satellites_coordinate[p][0],2)));
-              g_potential_theory = - G * numbers::PI * 4/3 * reference_density * (satellites_coordinate[p][0] - (std::pow(model_inner_radius,3)
-                                                                                  /  satellites_coordinate[p][0]));
+              //g_potential_theory = 2 * G * numbers::PI * reference_density
+              //                       * (2/3 * ((std::pow(satellites_coordinate[p][0],2)/2) + (std::pow(model_inner_radius,3)/satellites_coordinate[p][0]))
+              //                              -  std::pow(model_outer_radius,2));
+              g_potential_theory = G * numbers::PI * 4./3. * reference_density
+                                         * ((std::pow(satellites_coordinate[p][0],2)/2.0) + (std::pow(model_inner_radius,3)/satellites_coordinate[p][0]))
+                                 - G * numbers::PI * 2.0 * reference_density * std::pow(model_outer_radius,2);
             }
           else
             {
-              g_theory = G * numbers::PI * 4/3 * reference_density * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
+              g_theory = G * numbers::PI * 4./3. * reference_density * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
                          /  std::pow(satellites_coordinate[p][0],2);
-              g_potential_theory = - G * numbers::PI * 4/3 * reference_density * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
+              g_potential_theory = - G * numbers::PI * 4./3. * reference_density * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
                                    /  satellites_coordinate[p][0];
-              g_gradient_theory[0][0] = -G * numbers::PI * 4/3 * reference_density
+              g_gradient_theory[0][0] = -G * numbers::PI * 4./3. * reference_density
                                         * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
                                         * (std::pow(satellites_coordinate[p][0], 2) - 3.0 * std::pow(position_satellite[0],2))
                                         /  std::pow(satellites_coordinate[p][0],5);
-              g_gradient_theory[1][1] = -G * numbers::PI * 4/3 * reference_density
+              g_gradient_theory[1][1] = -G * numbers::PI * 4./3. * reference_density
                                         * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
                                         * (std::pow(satellites_coordinate[p][0], 2) - 3.0 * std::pow(position_satellite[1],2))
                                         /  std::pow(satellites_coordinate[p][0],5);
-              g_gradient_theory[2][2] = -G * numbers::PI * 4/3 * reference_density
+              g_gradient_theory[2][2] = -G * numbers::PI * 4./3. * reference_density
                                         * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
                                         * (std::pow(satellites_coordinate[p][0], 2) - 3.0 * std::pow(position_satellite[2],2))
                                         /  std::pow(satellites_coordinate[p][0],5);
-              g_gradient_theory[0][1] = -G * numbers::PI * 4/3 * reference_density
+              g_gradient_theory[0][1] = -G * numbers::PI * 4./3. * reference_density
                                         * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
                                         * (- 3.0 * position_satellite[0] * position_satellite[1])
                                         /  std::pow(satellites_coordinate[p][0],5);
-              g_gradient_theory[0][2] = -G * numbers::PI * 4/3 * reference_density
+              g_gradient_theory[0][2] = -G * numbers::PI * 4./3. * reference_density
                                         * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
                                         * (- 3.0 * position_satellite[0] * position_satellite[2])
                                         /  std::pow(satellites_coordinate[p][0],5);
-              g_gradient_theory[1][2] = -G * numbers::PI * 4/3 * reference_density
+              g_gradient_theory[1][2] = -G * numbers::PI * 4./3. * reference_density
                                         * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
                                         * (- 3.0 * position_satellite[1] * position_satellite[2])
                                         /  std::pow(satellites_coordinate[p][0],5);
@@ -430,7 +434,7 @@ namespace aspect
         prm.enter_subsection ("Gravity calculation");
         {
           prm.declare_entry ("Sampling scheme", "uniform distribution",
-                             Patterns::Selection ("uniform distribution|list of points"),
+                             Patterns::Selection ("uniform distribution|list of points|map|list"),
                              "Choose the sampling scheme. A uniform distribution will "
                              "produce a grid of equally spaced points between a "
                              "minimum and maximum radius, longitude, and latitude. A "
