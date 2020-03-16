@@ -430,14 +430,15 @@ namespace aspect
           if (satellites_coordinate[p][0] <= model_inner_radius)
             {
               g_theory = 0;
-              g_potential_theory = 0;
+              g_potential_theory = 2.0 * G * numbers::PI * reference_density * (std::pow(model_inner_radius,2) - std::pow(model_outer_radius,2));
             }
           else if ((satellites_coordinate[p][0] > model_inner_radius) && (satellites_coordinate[p][0] < model_outer_radius))
             {
               g_theory = G * numbers::PI * 4/3 * reference_density * (satellites_coordinate[p][0] - (std::pow(model_inner_radius,3)
                                                                       /  std::pow(satellites_coordinate[p][0],2)));
-              g_potential_theory = G * numbers::PI * 4/3 * reference_density * (satellites_coordinate[p][0] - (std::pow(model_inner_radius,3)
-                                                                                /  satellites_coordinate[p][0]));
+              g_potential_theory = G * numbers::PI * 4./3. * reference_density
+                                         * ((std::pow(satellites_coordinate[p][0],2)/2.0) + (std::pow(model_inner_radius,3)/satellites_coordinate[p][0]))
+                                 - G * numbers::PI * 2.0 * reference_density * std::pow(model_outer_radius,2);
             }
           else
             {
@@ -484,10 +485,10 @@ namespace aspect
                              << std::setprecision(18) << g << ' '
                              << std::setprecision(18) << g.norm() << ' '
                              << std::setprecision(18) << g_theory << ' '
-                             << std::setprecision(9)  << g_potential << ' '
-                             << std::setprecision(9)  << g_potential_theory << ' '
-                             << std::setprecision(9)  << g_anomaly << ' '
-                             << std::setprecision(9)  << g_anomaly.norm() << ' '
+                             << std::setprecision(18) << g_potential << ' '
+                             << std::setprecision(18) << g_potential_theory << ' '
+                             << std::setprecision(18) << g_anomaly << ' '
+                             << std::setprecision(18) << g_anomaly.norm() << ' '
                              << g_gradient[0][0] *1e9 << ' '
                              << g_gradient[1][1] *1e9 << ' '
                              << g_gradient[2][2] *1e9 << ' '
@@ -539,13 +540,13 @@ namespace aspect
           statistics << number_of_cells << ' '
                      << quadrature_degree_increase << ' '
                      << degree-quadrature_degree_increase << ' '
-                     << std::setprecision(9)  << mass << ' '
-                     << std::setprecision(9)  << volume << ' '
+                     << std::setprecision(18)  << mass << ' '
+                     << std::setprecision(18)  << volume << ' '
                      << std::setprecision(18) << sum_g/n_satellites << ' '
                      << std::setprecision(18) << (sum_g/n_satellites).norm() << ' '
                      << std::setprecision(18) << g_min << ' '
                      << std::setprecision(18) << g_max << ' '
-                     << std::setprecision(9)  << sum_g_potential/n_satellites << ' '
+                     << std::setprecision(18)  << sum_g_potential/n_satellites << ' '
                      << sum_g_gradient[0][0]/n_satellites *1e9 << ' '
                      << sum_g_gradient[1][1]/n_satellites *1e9 << ' '
                      << sum_g_gradient[2][2]/n_satellites *1e9 << ' '
