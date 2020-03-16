@@ -204,6 +204,7 @@ namespace aspect
               std::unique_ptr<double[]> vz (new double[array_size]);
               std::unique_ptr<double[]> kf (new double[array_size]);
               std::unique_ptr<double[]> kd (new double[array_size]);
+              std::unique_ptr<double[]> slopep (new double[array_size]);
               int istep = 0;
               int steps = nstep;
               std::srand(fs_seed);
@@ -224,6 +225,7 @@ namespace aspect
                   vx[i] = 0;
                   vz[i] = 0;
                   vy[i] = 0;
+                  slopep[i] = 0;
 
                   kf[i] = kff;
                   kd[i] = kdd;
@@ -394,7 +396,6 @@ namespace aspect
                * Copy the slopes at each point, this will be used to set an H
                * at the ghost nodes if a boundary mass flux is given.
                */
-              std::unique_ptr<double[]> slopep (new double[array_size]);
               fastscape_copy_slope_(slopep.get());
 
               //Now we set the ghost nodes at the left and right boundaries.
