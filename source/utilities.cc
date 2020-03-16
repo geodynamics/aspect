@@ -21,6 +21,13 @@
 #include <aspect/utilities.h>
 #include <aspect/simulator_access.h>
 
+#ifdef HAVE_LIBDAP
+#include <D4Connect.h>
+#include <Connect.h>
+#include <Response.h>
+#include <Array.h>
+#endif
+
 #include <array>
 #include <deal.II/base/point.h>
 
@@ -933,6 +940,16 @@ namespace aspect
     }
 
 
+    bool
+    filename_is_url(const std::string &filename)
+    {
+      // return whether or not the requested file is from a url
+      if (filename.find("http://") == 0 || filename.find("https://") == 0 || filename.find("file://") == 0)
+        return true;
+      else
+        return false;
+    }
+
 
     std::string
     read_and_distribute_file_content(const std::string &filename,
@@ -945,34 +962,147 @@ namespace aspect
           // set file size to an invalid size (signaling an error if we can not read it)
           unsigned int filesize = numbers::invalid_unsigned_int;
 
-          std::ifstream filestream(filename.c_str());
-
-          if (!filestream)
+          // Check to see if the prm file will be reading data from disk or
+          // from a provided URL
+          if (filename_is_url(filename))
             {
+#ifdef HAVE_LIBDAP
+              libdap::Connect *url = new libdap::Connect(filename);
+              libdap::BaseTypeFactory factory;
+              libdap::DataDDS dds(&factory);
+              libdap::DAS das;
+
+              url->request_data(dds, "");
+              url->request_das(das);
+
+
+              //Temporary vector that will hold the different arrays stored in urlArray
+              std::vector<std::string> tmp;
+              //Vector that will hold the arrays (columns) and the values within those arrays
+              std::vector<std::vector<std::string>> columns;
+
+              //Check dds values to make sure the arrays are of the same length and of type string
+              for (libdap::DDS::Vars_iter i = dds.var_begin(); i != dds.var_end(); ++i)
+                {
+                  libdap::BaseType *btp = *i;
+                  if ((*i)->type() == libdap::dods_array_c)
+                    {
+                      //Array to store the url data
+                      libdap::Array *urlArray;
+                      urlArray = static_cast <libdap::Array *>(btp);
+                      if (urlArray->var() != nullptr && urlArray->var()->type() == libdap::dods_str_c)
+                        {
+                          //The url Array contains a separate array for each column of data.
+                          // This will put each of these individual arrays into its own vector.
+                          urlArray->value(tmp);
+                          columns.push_back(tmp);
+
+                        }
+                      else
+                        {
+                          AssertThrow (false,
+                                       ExcMessage (std::string("Error when reading from url: ") + filename +
+                                                   " Check your connection to the server and make sure the server "
+                                                   "delivers correct data."));
+                        }
+
+                    }
+                  else
+                    {
+                      AssertThrow (false,
+                                   ExcMessage (std::string("Error when reading from url: ") + filename +
+                                               " Check your connection to the server and make sure the server "
+                                               "delivers correct data."));
+                    }
+                }
+
+              // Add the POINTS data that is required and found at the top of the data file.
+              // The POINTS values are set as attributes inside a table.
+              // Loop through the Attribute table to locate the points values within
+              std::vector<std::string> points;
+              for (libdap::AttrTable::Attr_iter i = das.var_begin(); i != das.var_end(); i++)
+                {
+                  libdap::AttrTable *table;
+
+                  table = das.get_table(i);
+                  if (table->get_attr("points") != "")
+                    points.push_back(table->get_attr("points"));
+                }
+
+              std::stringstream urlString;
+
+              // Append the gathered POINTS in the proper format:
+              // "# POINTS: <val1> <val2> <val3>"
+              urlString << "# POINTS:";
+              for (unsigned int i = 0; i < points.size(); i++)
+                {
+                  urlString << " " << points[i];
+                }
+              urlString << "\n";
+
+              //Add the values from the arrays into the stringstream. The values are passed in
+              // per row with a character return added at the end of each row.
+              // TODO: Add a check to make sure that each column is the same size before writing
+              //     to the stringstream
+              for (unsigned int i = 0; i < tmp.size(); i++)
+                {
+                  for (unsigned int j = 0; j < columns.size(); j++)
+                    {
+                      urlString << columns[j][i];
+                      urlString << " ";
+                    }
+                  urlString << "\n";
+                }
+
+              data_string = urlString.str();
+              filesize = data_string.size();
+
+              delete url;
+#else // HAVE_LIBDAP
+
               // broadcast failure state, then throw
-              MPI_Bcast(&filesize,1,MPI_UNSIGNED,0,comm);
-              AssertThrow (false,
-                           ExcMessage (std::string("Could not open file <") + filename + ">."));
-              return data_string; // never reached
+              MPI_Bcast(&filesize, 1, MPI_UNSIGNED, 0, comm);
+              AssertThrow(false,
+                          ExcMessage(std::string("Reading of file ") + filename + " failed. " +
+                                     "Make sure you have the dependencies for reading a url " +
+                                     "(run cmake with -DLIBDAP_ON=ON)"));
+
+#endif // HAVE_LIBDAP
             }
-
-          // Read data from disk
-          std::stringstream datastream;
-          filestream >> datastream.rdbuf();
-
-          if (!filestream.eof())
+          else
             {
-              // broadcast failure state, then throw
-              MPI_Bcast(&filesize,1,MPI_UNSIGNED,0,comm);
-              AssertThrow (false,
-                           ExcMessage (std::string("Reading of file ") + filename + " finished " +
-                                       "before the end of file was reached. Is the file corrupted or"
-                                       "too large for the input buffer?"));
-              return data_string; // never reached
-            }
+              std::ifstream filestream(filename.c_str());
 
-          data_string = datastream.str();
-          filesize = data_string.size();
+              if (!filestream)
+                {
+                  // broadcast failure state, then throw
+                  MPI_Bcast(&filesize,1,MPI_UNSIGNED,0,comm);
+                  AssertThrow (false,
+                               ExcMessage (std::string("Could not open file <") + filename + ">."));
+                  return data_string; // never reached
+                }
+
+
+              // Read data from disk
+              std::stringstream datastream;
+              filestream >> datastream.rdbuf();
+
+              if (!filestream.eof())
+                {
+                  // broadcast failure state, then throw
+                  MPI_Bcast(&filesize,1,MPI_UNSIGNED,0,comm);
+                  AssertThrow (false,
+                               ExcMessage (std::string("Reading of file ") + filename + " finished " +
+                                           "before the end of file was reached. Is the file corrupted or"
+                                           "too large for the input buffer?"));
+                  return data_string; // never reached
+                }
+
+
+
+              data_string = datastream.str();
+              filesize = data_string.size();
+            }
 
           // Distribute data_size and data across processes
           MPI_Bcast(&filesize,1,MPI_UNSIGNED,0,comm);
@@ -1967,7 +2097,7 @@ namespace aspect
                             << filename << "." << std::endl << std::endl;
 
 
-          AssertThrow(Utilities::fexists(filename),
+          AssertThrow(Utilities::fexists(filename) || filename_is_url(filename),
                       ExcMessage (std::string("Ascii data file <")
                                   +
                                   filename
@@ -2435,7 +2565,7 @@ namespace aspect
       for (unsigned int i=0; i<number_of_layer_boundaries; ++i)
         {
           const std::string filename = data_directory + data_file_names[i];
-          AssertThrow(Utilities::fexists(filename),
+          AssertThrow(Utilities::fexists(filename) || filename_is_url(filename),
                       ExcMessage (std::string("Ascii data file <")
                                   +
                                   filename
@@ -2608,7 +2738,7 @@ namespace aspect
                         << filename << "." << std::endl << std::endl;
 
 
-      AssertThrow(Utilities::fexists(filename),
+      AssertThrow(Utilities::fexists(filename) || filename_is_url(filename),
                   ExcMessage (std::string("Ascii data file <")
                               +
                               filename
@@ -2655,7 +2785,7 @@ namespace aspect
 
       const std::string filename = this->data_directory + this->data_file_name;
 
-      AssertThrow(Utilities::fexists(filename),
+      AssertThrow(Utilities::fexists(filename) || filename_is_url(filename),
                   ExcMessage (std::string("Ascii data file <")
                               +
                               filename
