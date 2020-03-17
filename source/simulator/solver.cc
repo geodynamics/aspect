@@ -936,7 +936,7 @@ namespace aspect
 
     // convert melt pressures:
     if (parameters.include_melt_transport)
-      melt_handler->compute_melt_variables(solution);
+      melt_handler->compute_melt_variables(system_matrix,solution,system_rhs);
 
     return std::pair<double,double>(initial_nonlinear_residual,
                                     final_linear_residual);

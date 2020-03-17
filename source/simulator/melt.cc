@@ -1053,7 +1053,9 @@ namespace aspect
   template <int dim>
   void
   MeltHandler<dim>::
-  compute_melt_variables(LinearAlgebra::BlockVector &solution)
+  compute_melt_variables(LinearAlgebra::BlockSparseMatrix &system_matrix,
+                         LinearAlgebra::BlockVector &solution,
+                         LinearAlgebra::BlockVector &system_rhs)
   {
     if (!this->include_melt_transport())
       return;
@@ -1061,8 +1063,8 @@ namespace aspect
     Assert (this->include_melt_transport(), ExcMessage ("'Include melt transport' has to be on to "
                                                         "compute melt variables"));
 
-    LinearAlgebra::BlockVector distributed_vector (this->introspection().index_sets.system_partitioning,
-                                                   this->get_mpi_communicator());
+    LinearAlgebra::BlockVector distributed_solution (this->introspection().index_sets.system_partitioning,
+                                                     this->get_mpi_communicator());
 
     const unsigned int por_idx = this->introspection().compositional_index_for_name("porosity");
 
@@ -1071,52 +1073,9 @@ namespace aspect
       // u_f =  u_s - K_D (nabla p_f - rho_f g) / phi  or = 0
       // by solving a mass matrix problem
 
-      // TODO: lots of cleanup/optimization opportunities here:
-      // - store matrix between timesteps
-      // - can we maybe reuse system matrix/sparsity pattern?
-      // - only construct matrix for the u_f block instead of a block matrix?
-
-      LinearAlgebra::BlockSparseMatrix matrix;
-      LinearAlgebra::BlockDynamicSparsityPattern sp;
-#ifdef ASPECT_USE_PETSC
-      sp.reinit (this->introspection().index_sets.system_relevant_partitioning);
-#else
-      sp.reinit (this->introspection().index_sets.system_partitioning,
-                 this->introspection().index_sets.system_partitioning,
-                 this->introspection().index_sets.system_relevant_partitioning,
-                 this->get_mpi_communicator());
-#endif
-
-      Table<2,DoFTools::Coupling> coupling (this->introspection().n_components,
-                                            this->introspection().n_components);
-      const unsigned int first_fluid_c_i = this->introspection().variable("fluid velocity").first_component_index;
-      for (unsigned int c=0; c<dim; ++c)
-        for (unsigned int d=0; d<dim; ++d)
-          coupling[first_fluid_c_i+c][first_fluid_c_i+d] = DoFTools::always;
-
-      DoFTools::make_sparsity_pattern (this->get_dof_handler(),
-                                       coupling, sp,
-                                       this->get_current_constraints(), false,
-                                       Utilities::MPI::
-                                       this_mpi_process(this->get_mpi_communicator()));
-
-#ifdef ASPECT_USE_PETSC
-      SparsityTools::distribute_sparsity_pattern(sp,
-                                                 this->get_dof_handler().locally_owned_dofs_per_processor(),
-                                                 this->get_mpi_communicator(), this->introspection().index_sets.system_relevant_set);
-
-      sp.compress();
-      matrix.reinit (this->introspection().index_sets.system_partitioning,
-                     this->introspection().index_sets.system_partitioning,
-                     sp, this->get_mpi_communicator());
-#else
-      sp.compress();
-      matrix.reinit (sp);
-#endif
-
-      LinearAlgebra::BlockVector rhs, distributed_solution;
-      rhs.reinit(this->introspection().index_sets.system_partitioning, this->get_mpi_communicator());
-      distributed_solution.reinit(this->introspection().index_sets.system_partitioning, this->get_mpi_communicator());
+      const unsigned int block_idx = this->introspection().variable("fluid velocity").block_index;
+      system_matrix.block(block_idx, block_idx) = 0;
+      system_rhs.block(block_idx) = 0;
 
       const QGauss<dim> quadrature(this->get_parameters().stokes_velocity_degree+1);
       const FiniteElement<dim> &fe = this->get_fe();
@@ -1252,13 +1211,12 @@ namespace aspect
               }
 
             this->get_current_constraints().distribute_local_to_global (cell_matrix, cell_vector,
-                                                                        cell_u_f_dof_indices, matrix, rhs, false);
+                                                                        cell_u_f_dof_indices, system_matrix,
+                                                                        system_rhs, false);
           }
 
-      rhs.compress (VectorOperation::add);
-      matrix.compress (VectorOperation::add);
-
-
+      system_rhs.compress (VectorOperation::add);
+      system_matrix.compress (VectorOperation::add);
 
       LinearAlgebra::PreconditionAMG preconditioner;
       LinearAlgebra::PreconditionAMG::AdditionalData Amg_data;
@@ -1271,17 +1229,17 @@ namespace aspect
       Amg_data.smoother_sweeps = 2;
       Amg_data.aggregation_threshold = 0.02;
 #endif
-      const unsigned int block_idx = this->introspection().variable("fluid velocity").block_index;
-      preconditioner.initialize(matrix.block(block_idx, block_idx));
+      preconditioner.initialize(system_matrix.block(block_idx, block_idx));
 
-      SolverControl solver_control(5*rhs.size(), 1e-8*rhs.block(block_idx).l2_norm());
+      SolverControl solver_control(system_rhs.block(block_idx).size(),
+                                   1e-8*system_rhs.block(block_idx).l2_norm());
       SolverCG<LinearAlgebra::Vector> cg(solver_control);
 
       this->get_pcout() << "   Solving fluid velocity system... " << std::flush;
 
-      cg.solve (matrix.block(block_idx, block_idx),
+      cg.solve (system_matrix.block(block_idx, block_idx),
                 distributed_solution.block(block_idx),
-                rhs.block(block_idx),
+                system_rhs.block(block_idx),
                 preconditioner);
 
       this->get_pcout() << solver_control.last_step() <<" iterations."<< std::endl;
@@ -1298,6 +1256,7 @@ namespace aspect
 
       // Think what we need to do if the pressure is not an FE_Q...
       Assert(this->get_parameters().use_locally_conservative_discretization == false, ExcNotImplemented());
+
       const Quadrature<dim> quadrature(this->get_fe().base_element(this->introspection().base_elements.pressure).get_unit_support_points());
       std::vector<double> porosity_values(quadrature.size());
       std::vector<double> p_c_values(quadrature.size());
@@ -1354,11 +1313,12 @@ namespace aspect
                 if (p_c_scale > 0 && (1.0-phi) > std::numeric_limits<double>::min())
                   p = (p_c_scale*p_c_values[j] - (phi-1.0) * p_f_values[j]) / (1.0-phi);
 
-                distributed_vector(local_dof_indices[pressure_idx]) = p;
+                distributed_solution(local_dof_indices[pressure_idx]) = p;
               }
           }
-      distributed_vector.block(block_p).compress(VectorOperation::insert);
-      solution.block(block_p) = distributed_vector.block(block_p);
+
+      distributed_solution.block(block_p).compress(VectorOperation::insert);
+      solution.block(block_p) = distributed_solution.block(block_p);
     }
   }
 

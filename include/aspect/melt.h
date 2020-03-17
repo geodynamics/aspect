@@ -420,12 +420,18 @@ namespace aspect
        * The fluid velocity is computed by solving a mass matrix problem, and the
        * solid pressure is computed algebraically.
        *
+       * @param system_matrix The system matrix with an already set up sparsity
+       * pattern that will be used by this function to compute the melt variables.
        * @param solution The existing solution vector that contains the values
        * for porosity, compaction pressure, fluid pressure and solid velocity
        * obtained by solving the Stokes and advection system, and that will be
        * updated with the computed values for fluid velocity and solid pressure.
+       * @param system_rhs The right-hand side vector that will be used by
+       * this function to compute the melt variables.
        */
-      void compute_melt_variables(LinearAlgebra::BlockVector &solution);
+      void compute_melt_variables(LinearAlgebra::BlockSparseMatrix &system_matrix,
+                                  LinearAlgebra::BlockVector &solution,
+                                  LinearAlgebra::BlockVector &system_rhs);
 
       /**
        * Return whether this object refers to the porosity field.
