@@ -1,0 +1,7 @@
+Changed: The sampling scheme names 'map' and 'list' of the 'gravity point values'
+postprocessor were renamed more appropriately 'uniform distribution' 
+and 'list of points'. The previous names still work for backward compatibility.
+Additionally, this postprocessor now computes the theoretical gravity potential 
+in addition to the existing outputs.
+<br>
+(Ludovic Jeanniot, 2020/03/10)

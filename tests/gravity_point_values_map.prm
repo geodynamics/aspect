@@ -64,7 +64,7 @@ end
 subsection Postprocess
   set List of postprocessors = gravity calculation
   subsection Gravity calculation
-    set Sampling scheme               = map
+    set Sampling scheme               = uniform distribution
     set Minimum radius                = 4 
     set Number points longitude       = 5
     set Number points latitude        = 5
