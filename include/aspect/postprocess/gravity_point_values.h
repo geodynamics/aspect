@@ -174,16 +174,16 @@ namespace aspect
 
         /**
          * Parameter for the uniform distribution sampling scheme:
-         * Presribe a minimum radius for a sampling coverage at a specific height.
-         * May be defined in or outside the model.
+         * Prescribe a minimum radius for a sampling coverage at a specific height.
+         * May be set in- or outside the model domain.
          */
         double minimum_radius;
 
         /**
          * Parameter for the uniform distribution sampling scheme:
-         * Maximum radius may be used for instance for depth-profile. May be
-         * defined in or outside the model. No need to specify maximum_radius if
-         * n_points_radius is 1.
+         * Maximum radius for the radius range.
+         * May be set in- or outside the model domain.
+         * No need to specify maximum_radius if n_points_radius is 1.
          */
         double maximum_radius;
 
@@ -228,28 +228,30 @@ namespace aspect
          */
         enum SamplingScheme
         {
+          map,
+          list,
           uniform_distribution,
           list_of_points
         } sampling_scheme;
 
         /**
-         * Parameter for the list sampling scheme:
+         * Parameter for the list of points sampling scheme:
          * List of radius coordinates for the list of points sampling scheme.
-         * Must be in order with the lists of longitude and latitude.
+         * Must follow the same order as the lists of longitude and latitude.
          */
         std::vector<double> radius_list;
 
         /**
-         * Parameter for the list sampling scheme:
+         * Parameter for the list of points sampling scheme:
          * List of longitude coordinates for the list of points sampling scheme.
-         * Must be in order with the lists of radius and latitude.
+         * Must follow the same order as the lists of radius and latitude.
          */
         std::vector<double> longitude_list;
 
         /**
-         * Parameter for the list sampling scheme:
+         * Parameter for the list of points sampling scheme:
          * List of latitude coordinates for the list of points sampling scheme.
-         * Must be in order with the lists of radius and longitude.
+         * Must follow the same order as the lists of longitude and longitude.
          */
         std::vector<double> latitude_list;
 

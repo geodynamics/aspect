@@ -331,7 +331,7 @@ namespace aspect
           const Tensor<2,dim> g_gradient = Utilities::MPI::sum (local_g_gradient, this->get_mpi_communicator());
           const double g_potential       = Utilities::MPI::sum (local_g_potential, this->get_mpi_communicator());
 
-          // analytical solution to calculate the theoretical gravity and gravity gradient
+          // analytical solution to calculate the theoretical gravity and its derivatives
           // from a uniform density model. Can only be used if concentric density profile.
           double g_theory = 0;
           double g_potential_theory = 0;
@@ -344,18 +344,15 @@ namespace aspect
           else if ((satellites_coordinate[p][0] > model_inner_radius) && (satellites_coordinate[p][0] < model_outer_radius))
             {
               g_theory = G * numbers::PI * 4./3. * reference_density * (satellites_coordinate[p][0] - (std::pow(model_inner_radius,3)
-                                                                      /  std::pow(satellites_coordinate[p][0],2)));
-              //g_potential_theory = 2 * G * numbers::PI * reference_density
-              //                       * (2/3 * ((std::pow(satellites_coordinate[p][0],2)/2) + (std::pow(model_inner_radius,3)/satellites_coordinate[p][0]))
-              //                              -  std::pow(model_outer_radius,2));
+                                                                        /  std::pow(satellites_coordinate[p][0],2)));
               g_potential_theory = G * numbers::PI * 4./3. * reference_density
-                                         * ((std::pow(satellites_coordinate[p][0],2)/2.0) + (std::pow(model_inner_radius,3)/satellites_coordinate[p][0]))
-                                 - G * numbers::PI * 2.0 * reference_density * std::pow(model_outer_radius,2);
+                                   * ((std::pow(satellites_coordinate[p][0],2)/2.0) + (std::pow(model_inner_radius,3)/satellites_coordinate[p][0]))
+                                   - G * numbers::PI * 2.0 * reference_density * std::pow(model_outer_radius,2);
             }
           else
             {
-              g_theory = G * numbers::PI * 4./3. * reference_density * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
-                         /  std::pow(satellites_coordinate[p][0],2);
+              g_theory = - G * numbers::PI * 4./3. * reference_density * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
+                         / std::pow(satellites_coordinate[p][0],2);
               g_potential_theory = - G * numbers::PI * 4./3. * reference_density * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
                                    /  satellites_coordinate[p][0];
               g_gradient_theory[0][0] = -G * numbers::PI * 4./3. * reference_density
@@ -552,9 +549,9 @@ namespace aspect
       {
         prm.enter_subsection ("Gravity calculation");
         {
-          if (prm.get ("Sampling scheme") == "uniform distribution")
+          if ( (prm.get ("Sampling scheme") == "uniform distribution") || (prm.get ("Sampling scheme") == "map") )
             sampling_scheme = uniform_distribution;
-          else if (prm.get ("Sampling scheme") == "list of points")
+          else if ( (prm.get ("Sampling scheme") == "list of points") | (prm.get ("Sampling scheme") == "list") )
             sampling_scheme = list_of_points;
           else
             AssertThrow (false, ExcMessage ("Not a valid sampling scheme."));
