@@ -41,7 +41,11 @@ On OSX, the easy way is to use homebrew:
 
 > brew install libdap
 
-Skip down to the section on installing DEAL.II
+The library is also available in Spack, see
+https://spack.readthedocs.io/en/latest/package_list.html#libdap4
+
+If you installed libdap using Spack or homebrew, skip down to
+the next section.
 
 #### Building libdap
 
@@ -78,32 +82,29 @@ need to do this if you've installed a binary version of the library).
 > make
 > sudo make install
 
-### DEAL.II
+### deal.II
 
-To build ASPECT you will also need the DEAL.II library and it's
+To build ASPECT you will also need the deal.II library and it's
 dependencies. as described in the ASPECT manual 
-http://www.math.clemson.edu/~heister/manual.pdf) and the wiki (https://github.com/geodynamics/aspect/wiki/)
+http://www.math.clemson.edu/~heister/manual.pdf) and the wiki (https://github.com/geodynamics/aspect/wiki/).
 
 ### Compiling ASPECT
 
 The only thing done differently to build the 'OPeNDAP enabled' version
 of ASPECT is to provide information about _libdap_ to cmake when it
-configures the ASPECT build using the LIBDAP\_DIR and
-LIBDAP\_ON options combined with the DEAL\_II\_DIR option as follows:
+configures the ASPECT build using the ASPECT_WITH_LIBDAP option
+(and optionally specify LIBDAP_DIR and LIBDAP_LIB) as follows:
 
 > mkdir build
 >
 > cd build
 >
-> cmake .. -DLIBDAP_LIB=<libdap location>/build/lib/ -DLIBDAP_DIR=<libdap location>/build/ -DASPECT_WITH_LIBDAP=ON
+> cmake -DLIBDAP_LIB=<libdap location>/build/lib/ -DLIBDAP_DIR=<libdap location>/build/ -DASPECT_WITH_LIBDAP=ON ..
 
-LIBDAP_ON is used to determine if Aspect is running with the libdap packages installed. Using -DLIBDAP_ON=OFF will make the client go back to running without the libdap packaging (but not using libdap packages will make it impossible for Aspect to read data from a url)
-The default value for LIBDAP_ON is OFF, so make sure you set it to ON if you wish to run Aspect with libdap
-
-For any platform where you built the dependencies using candi, the 
-DEAL_II_DIR will be the place where candi build the library. Also,
-since CentOS, et c., don't come with MPI, you'll need to follow the 
-directions to get those from yum, rpm, apt-get or build from source.
+Using -DASPECT_WITH_LIBDAP=OFF will make the client go back to running without
+the libdap packaging (but not using libdap packages will make it impossible
+for ASPECT to read data from a url). This option defaults to OFF meaning
+libdap is optional.
 
 ## Running the tests
 
