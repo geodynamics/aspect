@@ -1,7 +1,7 @@
 /**
  * @page changes_between_1.4.0_and_1.5.0 Changes between version 1.4.0 and version 1.5.0
  *
- * <p> This is the list of changes made after the release of Aspect version
+ * <p> This is the list of changes made after the release of ASPECT version
  * 1.4.0 for version 1.5.0. All entries are signed with the names of the author.
  * </p>
  *

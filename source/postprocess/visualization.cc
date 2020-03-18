@@ -946,7 +946,7 @@ namespace aspect
 
           prm.declare_entry ("Output mesh velocity", "false",
                              Patterns::Bool(),
-                             "For computations with deforming meshes, Aspect uses an Arbitrary-Lagrangian-"
+                             "For computations with deforming meshes, ASPECT uses an Arbitrary-Lagrangian-"
                              "Eulerian formulation to handle deforming the domain, so the mesh "
                              "has its own velocity field.  This may be written as an output field "
                              "by setting this parameter to true.");

@@ -59,7 +59,7 @@ end
 
 # we apply the phase speed of the wave here, so that it always stays in the same place in our model
 # the phase speed is c = 5.25e-11 m/s, but we have to convert it to m/years using the same conversion
-# that is used internally in Aspect: year_in_seconds = 60*60*24*365.2425
+# that is used internally in ASPECT: year_in_seconds = 60*60*24*365.2425
 subsection Boundary velocity model
   subsection Function
 #    set Function expression = 0;-8.2836999e-5
