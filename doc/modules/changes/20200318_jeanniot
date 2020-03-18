@@ -1,0 +1,5 @@
+Added: The Stokes velocity polynomial degree, quadrature degree increase, 
+average- minimum- and maximum gravity acceleration and potential are written 
+in the statistic file. 
+<br>
+(Ludovic Jeanniot, 2020/03/18)

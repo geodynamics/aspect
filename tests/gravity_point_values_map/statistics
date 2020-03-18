@@ -5,4 +5,12 @@
 # 5: Number of Stokes degrees of freedom
 # 6: Number of temperature degrees of freedom
 # 7: Number of nonlinear iterations
-0 0.000000000000e+00 0.000000000000e+00 12 478 150 0 
+# 8: Stokes velocity polynomial degree
+# 9: Quadrature degree increase for gravity calculation
+# 10: Average gravity (m/s^2)
+# 11: Minimum gravity (m/s^2)
+# 12: Maximum gravity (m/s^2)
+# 13: Average potential (m^2/s^2)
+# 14: Minimum potential (m^2/s^2)
+# 15: Maximum potential (m^2/s^2)
+0 0.000000000000e+00 0.000000000000e+00 12 478 150 0 2 0 1.225604980156280775e-04 1.218334266400188700e-04 1.230452122660341617e-04 -4.895667052961261709e-04 -4.898910456962554845e-04 -4.890801946959327969e-04 
