@@ -728,7 +728,7 @@ namespace aspect
                                   "and colongitude. Gravity is here based on the density distribution "
                                   "from the material model (and non adiabatic). This means that the "
                                   "density may come directly from an ascii file. This postprocessor also "
-                                  "computes theoretical gravity (and gradients), which corresponds to "
+                                  "computes theoretical gravity and its derivatives, which corresponds to "
                                   "the analytical solution of gravity in the same geometry but filled "
                                   "with a reference density. The reference density is also used to "
                                   "determine density anomalies for computing gravity anomalies. Thus "
@@ -737,6 +737,8 @@ namespace aspect
                                   "differences in the assumed reference density). On way to guarantee correct "
                                   "gravity anomalies is to subtract gravity of a certain point from the average "
                                   "gravity on the map. Another way is to directly use density anomalies for this "
-                                  "postprocessor.")
+                                  "postprocessor."
+                                  "The average- minimum- and maximum gravity acceleration and potential are "
+                                  "written in the statistics file.")
   }
 }

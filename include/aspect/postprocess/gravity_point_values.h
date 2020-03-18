@@ -39,7 +39,7 @@ namespace aspect
      * colattitude and colongitude. Gravity is here based on the density distribution
      * from the material model (and non adiabatic). This means that the density may
      * come directly from an ascii file. This postprocessor also computes theoretical
-     * gravity (and gradients), which corresponds to the analytical solution of gravity
+     * gravity and its derivatives, which corresponds to the analytical solution of gravity
      * in the same geometry but filled with a reference density. The reference density
      * is also used to determine the density difference for computing gravity anomalies.
      * Thus one must carefully evaluate the meaning of the gravity anomaly output,
@@ -48,6 +48,8 @@ namespace aspect
      * gravity anomalies is to subtract the gravity of a certain point from the average
      * gravity on the map. Another way is to directly use density anomalies for this
      * postprocessor.
+     * The average- minimum- and maximum gravity acceleration and potiental and wriiten
+     * in the statistics file.
 
      * @ingroup Postprocessing
      */
