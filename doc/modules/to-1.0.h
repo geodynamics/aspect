@@ -96,7 +96,7 @@
  * <br>
  * (Wolfgang Bangerth, Jacqueline Austermann 2014/03/20)
  *
- * <li>New: ASPECT now installs a file <code>ASPECTConfig.cmake</code> into
+ * <li>New: ASPECT now installs a file <code>AspectConfig.cmake</code> into
  * the same directory as the executable that can be used by plugins to set up
  * compiler flags, include paths, etc, to compile a set of source files into a
  * shared library that can then be loaded at run time from the input file. See
