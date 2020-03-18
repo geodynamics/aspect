@@ -1,7 +1,7 @@
 /**
  * @page changes_between_1.0_and_1.1 Changes between version 1.0 and version 1.1
  *
- * <p> This is the list of changes made after the release of Aspect version
+ * <p> This is the list of changes made after the release of ASPECT version
  * 1.0 for version 1.1. All entries are signed with the names of the author.
  * </p>
  *
@@ -69,7 +69,7 @@
  * (Timo Heister, 2014/05/27)
  *
  * <li> Fixed: The GPlates plugin now correctly handles meshes created by
- * GPlates 1.4 and later. Previous Aspect versions may only read in files
+ * GPlates 1.4 and later. Previous ASPECT versions may only read in files
  * created by GPlates 1.3.
  * <br>
  * (Rene Gassmoeller, 2014/05/23)
@@ -183,7 +183,7 @@
  * <br>
  * (Jacqueline Austermann, 2014/05/19)
  *
- * <li>Fixed: The GPlates cookbook in Aspect-1.0 contained a bug that
+ * <li>Fixed: The GPlates cookbook in ASPECT-1.0 contained a bug that
  * prevented it from using the GPlates plugin. This is fixed now.
  * <br>
  * (Rene Gassmoeller, 2014/05/18)

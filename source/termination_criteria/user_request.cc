@@ -54,7 +54,7 @@ namespace aspect
                              "directory (whose name is also specified in the input file) "
                              "will lead to termination of the simulation. "
                              "The file's location is chosen to be in the output directory, "
-                             "rather than in a generic location such as the Aspect directory, "
+                             "rather than in a generic location such as the ASPECT directory, "
                              "so that one can run multiple simulations at the same time (which "
                              "presumably write to different output directories) and can "
                              "selectively terminate a particular one.");
@@ -94,7 +94,7 @@ namespace aspect
                                           "gracefully exit the simulation at any time by simply creating "
                                           "such a file using, for example, \\texttt{touch output/terminate}. "
                                           "The file's location is chosen to be in the output directory, "
-                                          "rather than in a generic location such as the Aspect directory, "
+                                          "rather than in a generic location such as the ASPECT directory, "
                                           "so that one can run multiple simulations at the same time (which "
                                           "presumably write to different output directories) and can "
                                           "selectively terminate a particular one.")

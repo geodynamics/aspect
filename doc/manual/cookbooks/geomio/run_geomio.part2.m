@@ -1,5 +1,5 @@
 % define the bounding box for the output mesh
-% (this should be the X extent and Y extent in your Aspect model)
+% (this should be the X extent and Y extent in your ASPECT model)
 xmin = 0; xmax = opt.svg.width;
 ymin = 0; ymax = opt.svg.height;
 

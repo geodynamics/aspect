@@ -1120,7 +1120,7 @@ namespace aspect
        * $h_i \int g / |\Omega|$.
        *
        * The purpose of this function is described in the second paper on the
-       * numerical methods in Aspect.
+       * numerical methods in ASPECT.
        *
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.

@@ -53,12 +53,12 @@ namespace aspect
       if (use_spherical_unit_vectors)
         velocity = Utilities::Coordinates::spherical_to_cartesian_vector(velocity, position);
 
-      // Aspect always wants things in MKS system. however, as described
+      // ASPECT always wants things in MKS system. however, as described
       // in the documentation of this class, we interpret the formulas
       // given to this plugin as meters per year if the global flag
       // for using years instead of seconds is given. so if someone
       // write "5" in their parameter file and sets the flag, then this
-      // means "5 meters/year" and we need to convert it to the Aspect
+      // means "5 meters/year" and we need to convert it to the ASPECT
       // time system by dividing by the number of seconds per year
       // to get MKS units
       if (this->convert_output_to_years())

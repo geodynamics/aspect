@@ -79,7 +79,7 @@ end
 # We apply the phase speed of the wave here, so that it always stays in the 
 # same place in our model. The phase speed is c = 5.25e-11 m/s, but we have 
 # to convert it to m/years using the same conversion that is used internally 
-# in Aspect: year_in_seconds = 60*60*24*365.2425.
+# in ASPECT: year_in_seconds = 60*60*24*365.2425.
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = 0,1
   set Prescribed velocity boundary indicators = 2:function, 3:function

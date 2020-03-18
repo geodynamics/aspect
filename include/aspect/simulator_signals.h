@@ -108,7 +108,7 @@ namespace aspect
     /**
      * A signal that is called at the start of setup_dofs(). This allows for
      * editing of the parameters struct on the fly (such as changing boundary
-     * conditions) to give Aspect different behavior in mid-run than it
+     * conditions) to give ASPECT different behavior in mid-run than it
      * otherwise would have.
      *
      * The functions that connect to this signal must take two arguments, a

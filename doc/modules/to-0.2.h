@@ -1,7 +1,7 @@
 /**
  * @page changes_between_0.1_and_0.2 Changes between version 0.1 and version 0.2
  *
- * <p> This is the list of changes made after the release of Aspect version
+ * <p> This is the list of changes made after the release of ASPECT version
  * 0.1 and before 0.2. All entries are signed with the names of the author.
  * </p>
  *
@@ -27,7 +27,7 @@
  * <li> Fixed: There were many places where we indiscriminately used
  * MPI_COMM_WORLD, rather than the communicator used for the actual
  * simulation. This is not a problem almost all the time, except for cases
- * where Aspect is run as part of a bigger simulation.
+ * where ASPECT is run as part of a bigger simulation.
  * <br>
  * (Wolfgang Bangerth, 2013/04/28)
  *
@@ -128,7 +128,7 @@
  * <br>
  * (Eric Heien, 2012/11/06)
  *
- * <li> New: Aspect now catches if the output directory specified in the
+ * <li> New: ASPECT now catches if the output directory specified in the
  * parameter file does not exist, rather than providing a cryptic error
  * message upon first attempt to write to this directory.
  * <br>
@@ -202,7 +202,7 @@
  * <br>
  * (Eric Heien, 2012/06/01)
  *
- * <li> New: Aspect now writes a <code>solution.pvd</code> for Paraview that
+ * <li> New: ASPECT now writes a <code>solution.pvd</code> for Paraview that
  * contains a list of the files that jointly make up the entire simulation
  * (and not just a single time step) together with the simulation time each of
  * the files that describe a time step correspond to.
@@ -220,7 +220,7 @@
  * <li> New: The variables we output in graphical format files are now user
  * selectable from the input parameter file. Functions that compute something
  * from velocity, pressure and temperature (e.g., the viscosity, strain rate,
- * etc) are now implemented as plugins like many of the other parts of Aspect.
+ * etc) are now implemented as plugins like many of the other parts of ASPECT.
  * now implemented
  * <br>
  * (Wolfgang Bangerth, 2012/05/08)
