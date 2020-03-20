@@ -1523,6 +1523,7 @@ namespace aspect
       mg_smoother_Schur.initialize(mg_matrices_Schur_complement, smoother_data_Schur);
     }
 
+#if DEAL_II_VERSION_GTE(9,2,0)
     // Estimate the eigenvalues for the Chebyshev smoothers.
     for (unsigned int level = 0; level<sim.triangulation.n_global_levels(); ++level)
       {
@@ -1534,6 +1535,7 @@ namespace aspect
         mg_smoother_A[level].estimate_eigenvalues(temp_velocity);
         mg_smoother_Schur[level].estimate_eigenvalues(temp_pressure);
       }
+#endif
 
     // Coarse Solver is just an application of the Chebyshev smoother setup
     // in such a way to be a solver
