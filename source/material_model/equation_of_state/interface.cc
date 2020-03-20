@@ -70,7 +70,11 @@ namespace aspect
               Assert(j<eos_outputs_all_phases.densities.size(),
                      ExcInternalError());
 
-              phase_in.phase_index = j-c-1;
+              // Compute which phase index the current phase of the current composition has
+              // in the list of all phase functions. This is the number of times we visited
+              // this line j minus one per composition c (the original state of each composition
+              // does not have a phase function).
+              phase_in.phase_index = j-(c+1);
               const double gamma = phase_function.compute_value(phase_in);
 
               eos_outputs.densities[c] += gamma * (eos_outputs_all_phases.densities[j]-eos_outputs_all_phases.densities[j-1]);

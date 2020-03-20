@@ -102,10 +102,11 @@ namespace aspect
      * This function takes the output of an equation of state @p eos_outputs_all_phases,
      * which contains the data for all compositions and all of their phases at the
      * current conditions and uses a PhaseFunction object @phase_function to compute
-     * the effective value of equation of state properties. Essentially it computes which phase
-     * is stable at the current conditions (according to the phase function) and adds
-     * the properties of the stable phases into the equation of state output @eos_outputs.
-     * @p eos_outputs now only contains as many entries as compositional fields (potentially
+     * the effective value of equation of state properties for each individual composition.
+     * Essentially it computes which phase is stable at the current conditions
+     * (described in @p phase_in) and fills the equation of state output @eos_outputs with
+     * the properties of these stable phases.
+     * @p eos_outputs now only contains as many entries as volumetric compositions (potentially
      * plus one for the background field, if the input @p eos_outputs_all_phases contained
      * one and the phase function contained one as well).
      */

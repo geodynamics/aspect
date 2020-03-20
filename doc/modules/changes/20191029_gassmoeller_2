@@ -1,4 +1,4 @@
-New: The 'multicomponent incompressible' equation of state now allow multiple
+New: The 'multicomponent incompressible' equation of state now allows multiple
 different phases per compositional field. So far the 'visco plastic' material
 model is the only material model that makes use of this new functionality.
 <br>

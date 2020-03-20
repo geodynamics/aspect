@@ -409,11 +409,14 @@ namespace aspect
                                            this->get_adiabatic_conditions().density(in.position[i])
                                            :
                                            eos_outputs_all_phases.densities[0];
+
+          // The phase index is set to invalid_unsigned_int, because it is only used internally
+          // in phase_average_equation_of_state_outputs to loop over all existing phases
           MaterialUtilities::PhaseFunctionInputs<dim> phase_inputs(in.temperature[i],
                                                                    in.pressure[i],
                                                                    this->get_geometry_model().depth(in.position[i]),
                                                                    gravity_norm*reference_density,
-                                                                   0);
+                                                                   numbers::invalid_unsigned_int);
 
           phase_average_equation_of_state_outputs(eos_outputs_all_phases,
                                                   phase_function,
@@ -637,18 +640,18 @@ namespace aspect
           phase_function.initialize_simulator (this->get_simulator());
           phase_function.parse_parameters (prm);
 
-          auto n_phase_transitions_for_each_composition =
-            std::make_shared<std::vector<unsigned int>>(phase_function.n_phase_transitions_for_each_composition());
+          std::vector<unsigned int> n_phase_transitions_for_each_composition
+          (phase_function.n_phase_transitions_for_each_composition());
 
-          // We require one more entries for density, etc as there are phase transitions
+          // We require one more entry for density, etc as there are phase transitions
           // (for the low-pressure phase before any transition).
-          for (auto &n_phases: *n_phase_transitions_for_each_composition)
-            n_phases += 1;
+          for (unsigned int i=0; i<n_phase_transitions_for_each_composition.size(); ++i)
+            n_phase_transitions_for_each_composition[i] += 1;
 
           // Equation of state parameters
           equation_of_state.initialize_simulator (this->get_simulator());
           equation_of_state.parse_parameters (prm,
-                                              n_phase_transitions_for_each_composition);
+                                              std::make_shared<std::vector<unsigned int>>(n_phase_transitions_for_each_composition));
 
           strain_rheology.initialize_simulator (this->get_simulator());
           strain_rheology.parse_parameters(prm);
