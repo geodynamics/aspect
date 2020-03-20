@@ -1523,6 +1523,18 @@ namespace aspect
       mg_smoother_Schur.initialize(mg_matrices_Schur_complement, smoother_data_Schur);
     }
 
+    // Estimate the eigenvalues for the Chebyshev smoothers.
+    for (unsigned int level = 0; level<sim.triangulation.n_global_levels(); ++level)
+      {
+        vector_t temp_velocity;
+        vector_t temp_pressure;
+        mg_matrices_A_block[level].initialize_dof_vector(temp_velocity);
+        mg_matrices_Schur_complement[level].initialize_dof_vector(temp_pressure);
+
+        mg_smoother_A[level].estimate_eigenvalues(temp_velocity);
+        mg_smoother_Schur[level].estimate_eigenvalues(temp_pressure);
+      }
+
     // Coarse Solver is just an application of the Chebyshev smoother setup
     // in such a way to be a solver
     //ABlock GMG
