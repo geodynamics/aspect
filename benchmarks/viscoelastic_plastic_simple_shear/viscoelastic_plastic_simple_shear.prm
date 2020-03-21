@@ -4,7 +4,7 @@
 # The material model is viscoelastic plastic, with a cohesion value of 3.5. This value is slightly
 # higher than the visco-elastic stress at time=1, meaning that yielding does not occur, and the
 # analytic (visco-elastic) solution should be reasonably well approximated. If the cohesion value is reduced
-# reduced to below the shear stress value at time t=1 (~3.1411), the shear stress will reach and remain 
+# to below the shear stress value at time t=1 (~3.1411), the shear stress will reach and remain 
 # at this value until after time t=1 when stresses begin to relax.
 # This setup demonstrates an important difference between viscoelastic plastic, and visco-plastic rheology.
 # In a comparable setup, the visco-plastic rheology will exhibit yielding in the first velocity iteration,
@@ -15,7 +15,7 @@
 # (stress_xx, stress_yy, stress_xy). The choice of elastic timestip (Fixed elastic time step) and
 # numerical timestep (Maximum time step) determine the degree of convergence with the analytic
 # solution. The values set in the parameter file (0.1) produce a close fit to the analytical solution.
-# The stress values are tracked through time in the log file using the composition stasticis postprocessor,
+# The stress values are tracked through time in the log file using the composition statistics postprocessor,
 # which reports the min, max, and average value of each compositional field after each time step. Given
 # that there is no discrepancy between the numerical and elastic time steps and stress averaging is not invoked,
 # the min, max, and average stress values remain equal over time.

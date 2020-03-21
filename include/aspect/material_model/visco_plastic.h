@@ -297,6 +297,10 @@ namespace aspect
           drucker_prager
         } yield_mechanism;
 
+        /**
+         * This function calculates viscosities assuming that all the compositional fields
+         * experience the same strain rate (isostrain).
+         */
         std::pair<std::vector<double>, std::vector<bool> >
         calculate_isostrain_viscosities ( const std::vector<double> &volume_fractions,
                                           const double &pressure,

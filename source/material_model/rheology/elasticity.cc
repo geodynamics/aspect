@@ -338,7 +338,7 @@ namespace aspect
 
 
       template <int dim>
-      std::vector<double>
+      const std::vector<double> &
       Elasticity<dim>::get_elastic_shear_moduli () const
       {
         return elastic_shear_moduli;

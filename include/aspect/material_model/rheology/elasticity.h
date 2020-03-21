@@ -107,7 +107,7 @@ namespace aspect
            * Return the values of the elastic shear moduli for each composition used in the
            * rheology model.
            */
-          std::vector<double>
+          const std::vector<double> &
           get_elastic_shear_moduli () const;
 
           /**

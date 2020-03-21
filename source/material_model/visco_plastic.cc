@@ -112,83 +112,54 @@ namespace aspect
                                      const ViscosityScheme &viscous_type,
                                      const YieldScheme &yield_type) const
     {
-      // This function calculates viscosities assuming that all the compositional fields
-      // experience the same strain rate (isostrain).
-
-      // Calculate the square root of the second moment invariant for the deviatoric strain rate tensor.
-      // The first time this function is called (first iteration of first time step)
-      // a specified "reference" strain rate is used as the returned value would
-      // otherwise be zero.
-      const double edot_ii = ( (this->get_timestep_number() == 0 && strain_rate.norm() <= std::numeric_limits<double>::min())
-                               ?
-                               ref_strain_rate
-                               :
-                               std::max(std::sqrt(std::fabs(second_invariant(deviator(strain_rate)))),
-                                        min_strain_rate) );
-
-      // Choice of activation volume depends on whether there is an adiabatic temperature
-      // gradient used when calculating the viscosity. This allows the same activation volume
-      // to be used in incompressible and compressible models.
-      const double temperature_for_viscosity = temperature + adiabatic_temperature_gradient_for_viscosity*pressure;
-      Assert(temperature_for_viscosity != 0, ExcMessage(
-               "The temperature used in the calculation of the visco-plastic rheology is zero. "
-               "This is not allowed, because this value is used to divide through. It is probably "
-               "being caused by the temperature being zero somewhere in the model. The relevant "
-               "values for debugging are: temperature (" + Utilities::to_string(temperature) +
-               "), adiabatic_temperature_gradient_for_viscosity ("
-               + Utilities::to_string(adiabatic_temperature_gradient_for_viscosity) + ") and pressure ("
-               + Utilities::to_string(pressure) + ")."));
-
-
       // Initialize or fill variables used to calculate viscosities
-      std::vector<bool> composition_yielding(volume_fractions.size());
-
+      std::vector<bool> composition_yielding(volume_fractions.size(), false);
       std::vector<double> composition_viscosities(volume_fractions.size(), numbers::signaling_nan<double>());
 
-      std::vector<double> viscosities_ve(volume_fractions.size(), numbers::signaling_nan<double>());
-      std::vector<double> viscosities_vep(volume_fractions.size(), numbers::signaling_nan<double>());
-
-      std::vector<double> elastic_shear_moduli(volume_fractions.size(), numbers::signaling_nan<double>());
-
-      std::vector<double> stresses_ve(volume_fractions.size(), numbers::signaling_nan<double>());
-
-      SymmetricTensor<2,dim> stress_old;
+      // Assemble stress tensor if elastic behavior is enabled
+      SymmetricTensor<2,dim> stress_old = numbers::signaling_nan<SymmetricTensor<2,dim>>();
       if (use_elasticity == true)
         {
           for (unsigned int j=0; j < SymmetricTensor<2,dim>::n_independent_components; ++j)
             stress_old[SymmetricTensor<2,dim>::unrolled_to_component_indices(j)] = composition[j];
         }
 
-      double dte = 0.;
-      if (use_elasticity == true)
-        {
-          dte = elastic_rheology.elastic_timestep();
-          elastic_shear_moduli = elastic_rheology.get_elastic_shear_moduli();
-        }
+      // The first time this function is called (first iteration of first time step)
+      // a specified "reference" strain rate is used as the returned value would
+      // otherwise be zero.
+      const bool use_reference_strainrate = (this->get_timestep_number() == 0) &&
+                                            (strain_rate.norm() <= std::numeric_limits<double>::min());
+
+      double edot_ii;
+      if (use_reference_strainrate)
+        edot_ii = ref_strain_rate;
+      else
+        // Calculate the square root of the second moment invariant for the deviatoric strain rate tensor.
+        edot_ii = std::max(std::sqrt(std::fabs(second_invariant(deviator(strain_rate)))),
+                           min_strain_rate);
 
       // Calculate viscosities for each of the individual compositional phases
       for (unsigned int j=0; j < volume_fractions.size(); ++j)
         {
-
-          // Calculate the square root of the second moment invariant for the deviatoric
-          // strain rate tensor, including visocelastic stresses.
-          double edot_ii_ve = 0.;
-          if (use_elasticity == true)
-            {
-              const SymmetricTensor<2,dim> edot = 2. * (deviator(strain_rate)) + stress_old / (elastic_shear_moduli[j] * dte);
-              edot_ii_ve = ( (this->get_timestep_number() == 0 && strain_rate.norm() <= std::numeric_limits<double>::min() )
-                             ?
-                             ref_strain_rate
-                             :
-                             std::max(std::sqrt(std::fabs(second_invariant(edot))), min_strain_rate) );
-            }
-
           // Step 1: viscous behavior
+
+          // Choice of activation volume depends on whether there is an adiabatic temperature
+          // gradient used when calculating the viscosity. This allows the same activation volume
+          // to be used in incompressible and compressible models.
+          const double temperature_for_viscosity = temperature + adiabatic_temperature_gradient_for_viscosity*pressure;
+          Assert(temperature_for_viscosity != 0, ExcMessage(
+                   "The temperature used in the calculation of the visco-plastic rheology is zero. "
+                   "This is not allowed, because this value is used to divide through. It is probably "
+                   "being caused by the temperature being zero somewhere in the model. The relevant "
+                   "values for debugging are: temperature (" + Utilities::to_string(temperature) +
+                   "), adiabatic_temperature_gradient_for_viscosity ("
+                   + Utilities::to_string(adiabatic_temperature_gradient_for_viscosity) + ") and pressure ("
+                   + Utilities::to_string(pressure) + ")."));
 
           // Step 1a: compute viscosity from diffusion creep law
           const double viscosity_diffusion = diffusion_creep.compute_viscosity(pressure, temperature_for_viscosity, j);
 
-          // Step 1b: compute visocisty from dislocation creep law
+          // Step 1b: compute viscosity from dislocation creep law
           const double viscosity_dislocation = dislocation_creep.compute_viscosity(edot_ii, pressure, temperature_for_viscosity, j);
 
           // Step 1c: select what form of viscosity to use (diffusion, dislocation or composite)
@@ -207,7 +178,8 @@ namespace aspect
               }
               case composite:
               {
-                viscosity_pre_yield = (viscosity_diffusion * viscosity_dislocation)/(viscosity_diffusion + viscosity_dislocation);
+                viscosity_pre_yield = (viscosity_diffusion * viscosity_dislocation)/
+                                      (viscosity_diffusion + viscosity_dislocation);
                 break;
               }
               default:
@@ -217,21 +189,46 @@ namespace aspect
               }
             }
 
-          // Step 1d: calculate the viscous stress magntiude
-          const double viscous_stress = 2. * viscosity_pre_yield * edot_ii;
+          // Step 2: calculate the viscous stress magnitude
+          // and strain rate. If requested compute visco-elastic contributions.
+          double current_edot_ii = numbers::signaling_nan<double>();
+          double current_stress = numbers::signaling_nan<double>();
 
-          // Step 2: viscoelastic behavior
-          if (use_elasticity == true)
+          if (use_elasticity == false)
             {
-              elastic_shear_moduli = elastic_rheology.get_elastic_shear_moduli();
+              current_edot_ii = edot_ii;
+              current_stress = 2. * viscosity_pre_yield * current_edot_ii;
+            }
+          else
+            {
+              const std::vector<double> &elastic_shear_moduli = elastic_rheology.get_elastic_shear_moduli();
+              const double elastic_timestep = elastic_rheology.elastic_timestep();
+
+              if (use_reference_strainrate == true)
+                current_edot_ii = ref_strain_rate;
+              else
+                {
+                  // Calculate the square root of the second moment invariant for the deviatoric
+                  // strain rate tensor, including viscoelastic stresses.
+                  const SymmetricTensor<2,dim> edot = 2. * (deviator(strain_rate)) + stress_old /
+                                                      (elastic_shear_moduli[j] * elastic_timestep);
+
+                  current_edot_ii = std::max(std::sqrt(std::fabs(second_invariant(edot))),
+                                             min_strain_rate);
+                }
+
+              // The viscoelastic strain rate is divided by 2 here as the Drucker Prager
+              // viscosity calculation assumes stress = 2 * viscosity * strain_rate_invariant,
+              // whereas the combined viscoelastic + viscous stresses do not include the
+              // 2x factor.
+              current_edot_ii /= 2.;
 
               // Step 2a: calculate viscoelastic (effective) viscosity (eqn 28 in Moresi et al., 2003, J. Comp. Phys.)
-              viscosities_ve[j] = viscosity_pre_yield * dte / (dte + (viscosity_pre_yield/elastic_shear_moduli[j]));
-
-              viscosity_pre_yield = viscosities_ve[j];
+              viscosity_pre_yield = viscosity_pre_yield * elastic_timestep /
+                                    (elastic_timestep + (viscosity_pre_yield/elastic_shear_moduli[j]));
 
               // Step 2b: calculate current (viscous + elastic) stress magnitude
-              stresses_ve[j] = viscosities_ve[j] * edot_ii_ve;
+              current_stress = viscosity_pre_yield * current_edot_ii;
             }
 
           // Step 3: strain weakening
@@ -253,34 +250,22 @@ namespace aspect
                                                                                      std::max(pressure,0.0),
                                                                                      drucker_prager_parameters.max_yield_stress);
 
-          // Step 4b: Select the strain rate and stress invariants value to use for rescaling viscosity the plastic yield stress
-          double current_edot_ii = edot_ii;
-          double current_stress = viscous_stress;
-          if (use_elasticity)
-            {
-              // The viscoelastic strain rate is divided by 2 here as the Drucker Prager
-              // viscosity calculation assumes stress = 2 * viscosity * strain_rate_invariant,
-              // whereas the combined the viscoelastic + viscous stresses do not include the
-              // 2x factor.
-              current_edot_ii = edot_ii_ve / 2.;
-              current_stress = stresses_ve[j];
-            }
-
-          // Step 4c: select if yield viscosity is based on Drucker Prager or stress limiter rheology
+          // Step 4b: select if yield viscosity is based on Drucker Prager or stress limiter rheology
           double viscosity_yield = viscosity_pre_yield;
           switch (yield_type)
             {
               case stress_limiter:
               {
-                //Step 4c-1: always rescale the viscosity back to the yield surface
+                //Step 4b-1: always rescale the viscosity back to the yield surface
                 const double viscosity_limiter = yield_stress / (2.0 * ref_strain_rate)
-                                                 * std::pow((edot_ii/ref_strain_rate), 1./exponents_stress_limiter[j] - 1.0);
+                                                 * std::pow((edot_ii/ref_strain_rate),
+                                                            1./exponents_stress_limiter[j] - 1.0);
                 viscosity_yield = 1. / ( 1./viscosity_limiter + 1./viscosity_pre_yield);
                 break;
               }
               case drucker_prager:
               {
-                // Step 4c-2: if the current stress is greater than the yield stress,
+                // Step 4b-2: if the current stress is greater than the yield stress,
                 // rescale the viscosity back to yield surface
                 if (current_stress >= yield_stress)
                   {
@@ -302,7 +287,6 @@ namespace aspect
 
           // Step 5: limit the viscosity with specified minimum and maximum bounds
           composition_viscosities[j] = std::min(std::max(viscosity_yield, min_visc), max_visc);
-
         }
       return std::make_pair (composition_viscosities, composition_yielding);
     }
@@ -474,7 +458,6 @@ namespace aspect
       EquationOfStateOutputs<dim> eos_outputs_all_phases (this->n_compositional_fields()+1+phase_function.n_phase_transitions());
 
       std::vector<double> average_elastic_shear_moduli (in.temperature.size());
-      std::vector<double> elastic_shear_moduli(elastic_rheology.get_elastic_shear_moduli());
 
       // Loop through all requested points
       for (unsigned int i=0; i < in.temperature.size(); ++i)
@@ -573,7 +556,9 @@ namespace aspect
           if (use_elasticity)
             {
               // Compute average elastic shear modulus
-              average_elastic_shear_moduli[i] = MaterialUtilities::average_value(volume_fractions, elastic_shear_moduli, viscosity_averaging);
+              average_elastic_shear_moduli[i] = MaterialUtilities::average_value(volume_fractions,
+                                                                                 elastic_rheology.get_elastic_shear_moduli(),
+                                                                                 viscosity_averaging);
 
               // Fill the material properties that are part of the elastic additional outputs
               if (ElasticAdditionalOutputs<dim> *elastic_out = out.template get_additional_output<ElasticAdditionalOutputs<dim> >())
@@ -719,7 +704,7 @@ namespace aspect
 
           prm.declare_entry ("Include viscoelasticity", "false",
                              Patterns::Bool (),
-                             "Whether to include viscoelasticity in the rheological formulation.");
+                             "Whether to include elastic effects in the rheological formulation.");
         }
         prm.leave_subsection();
       }
