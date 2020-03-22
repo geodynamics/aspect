@@ -24,7 +24,7 @@
 
 #include <deal.II/grid/grid_tools.h>
 #include <deal.II/base/signaling_nan.h>
-#include <deal.II/lac/lapack_full_matrix.h>
+#include <deal.II/lac/qr.h>
 
 #include <boost/lexical_cast.hpp>
 
@@ -89,14 +89,17 @@ namespace aspect
 
         // Noticed that the size of matrix A is n_particles x matrix_dimension
         // which usually is not a square matrix. Therefore, we find the
-        // least squares solution of Ax=r by solving the "normal" equations
-        // (A^TA) x = A^Tr.
+        // least squares solution of Ax=r by solving reduced QR factorization
+        // Ax = QRc = b -> Q^TQRc = Rc =Q^Tb
+        dealii::ImplicitQR<dealii::Vector<double>> qr;
         const unsigned int matrix_dimension = (dim == 2) ? 4 : 8;
-        dealii::LAPACKFullMatrix<double> A(n_particles, matrix_dimension);
-        std::vector<Vector<double>> r(n_particle_properties, Vector<double>(n_particles));
+        std::vector<dealii::Vector<double>> A(matrix_dimension, dealii::Vector<double>(n_particles));
+        std::vector<Vector<double>> b(n_particle_properties, Vector<double>(n_particles));
+        std::vector<Vector<double>> QTb(n_particle_properties, Vector<double>(matrix_dimension));
+        std::vector<Vector<double>> c(n_particle_properties, Vector<double>(matrix_dimension));
         for (unsigned int property_index = 0; property_index < n_particle_properties; ++property_index)
           if (selected_properties[property_index])
-            r[property_index] = 0;
+            b[property_index] = 0;
 
         unsigned int positions_index = 0;
         const double cell_diameter = found_cell->diameter();
@@ -106,45 +109,37 @@ namespace aspect
             const auto particle_property_value = particle->get_properties();
             for (unsigned int property_index = 0; property_index < n_particle_properties; ++property_index)
               if (selected_properties[property_index])
-                r[property_index][positions_index] = particle_property_value[property_index];
-
+                b[property_index][positions_index] = particle_property_value[property_index];
             const Tensor<1, dim, double> relative_particle_position = (particle->get_location() - approximated_cell_midpoint) / cell_diameter;
-            A(positions_index, 0) = 1;
-            A(positions_index, 1) = relative_particle_position[0];
-            A(positions_index, 2) = relative_particle_position[1];
+            A[0][positions_index] = 1;
+            A[1][positions_index] = relative_particle_position[0];
+            A[2][positions_index] = relative_particle_position[1];
             if (dim == 2)
               {
-                A(positions_index, 3) = relative_particle_position[0] * relative_particle_position[1];
+                A[3][positions_index] = relative_particle_position[0] * relative_particle_position[1];
               }
             else
               {
-                A(positions_index, 3) = relative_particle_position[2];
-                A(positions_index, 4) = relative_particle_position[0] * relative_particle_position[1];
-                A(positions_index, 5) = relative_particle_position[0] * relative_particle_position[2];
-                A(positions_index, 6) = relative_particle_position[1] * relative_particle_position[2];
-                A(positions_index, 7) = relative_particle_position[0] * relative_particle_position[1] * relative_particle_position[2];
+                A[3][positions_index] = relative_particle_position[2];
+                A[4][positions_index] = relative_particle_position[0] * relative_particle_position[1];
+                A[5][positions_index] = relative_particle_position[0] * relative_particle_position[2];
+                A[6][positions_index] = relative_particle_position[1] * relative_particle_position[2];
+                A[7][positions_index] = relative_particle_position[0] * relative_particle_position[1] * relative_particle_position[2];
               }
           }
 
-        dealii::LAPACKFullMatrix<double> B(matrix_dimension, matrix_dimension);
+        for (unsigned int column_index = 0; column_index < matrix_dimension; ++column_index)
+          if (!qr.append_column(A[column_index]))
+            std::cout << "Houston we have at least one problem.\n";
 
-        std::vector<Vector<double>> c_ATr(n_particle_properties, Vector<double>(matrix_dimension));
-        std::vector<Vector<double>> c(n_particle_properties, Vector<double>(matrix_dimension));
-
-        constexpr double threshold = 1e-15;
         unsigned int index_positions = 0;
-
-        // Form the matrix B=A^TA and right hand side A^Tr of the normal equation.
-        A.Tmmult(B, A, false);
-        dealii::LAPACKFullMatrix<double> B_inverse(B);
-        B_inverse.compute_inverse_svd(threshold);
 
         for (unsigned int property_index = 0; property_index < n_particle_properties; ++property_index)
           {
             if (selected_properties[property_index])
               {
-                A.Tvmult(c_ATr[property_index],r[property_index]);
-                B_inverse.vmult(c[property_index], c_ATr[property_index]);
+                qr.multiply_with_QT(QTb[property_index], b[property_index]);
+                qr.solve(c[property_index], QTb[property_index]);
               }
           }
         for (typename std::vector<Point<dim>>::const_iterator itr = positions.begin(); itr != positions.end(); ++itr, ++index_positions)
@@ -279,9 +274,8 @@ namespace aspect
       ASPECT_REGISTER_PARTICLE_INTERPOLATOR(BilinearLeastSquares,
                                             "bilinear least squares",
                                             "Interpolates particle properties onto a vector of points using a "
-                                            "bilinear least squares method. "
-                                            "Note that deal.II must be configured with BLAS and LAPACK to "
-                                            "support this operation.")
+                                            "bilinear least squares method. Note that deal.II must be configured "
+                                            "with BLAS/LAPACK.")
     }
   }
 }
