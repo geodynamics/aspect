@@ -1524,7 +1524,13 @@ namespace aspect
     }
 
 #if DEAL_II_VERSION_GTE(9,2,0)
-    // Estimate the eigenvalues for the Chebyshev smoothers.
+    // Estimate the eigenvalues for the Chebyshev smoothers. If not running with
+    // deal.II 9.2.0, the eigenvalue estimate will be performed during the first
+    // application of the Chebyshev smoother during the solve.
+
+    //TODO: The setup for the smoother (as well as the entire GMG setup) should
+    //       be moved to an assembly timing block instead of the Stokes solve
+    //       timing block (as is currently the case).
     for (unsigned int level = 0; level<sim.triangulation.n_global_levels(); ++level)
       {
         vector_t temp_velocity;
