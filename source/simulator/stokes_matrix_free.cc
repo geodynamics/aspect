@@ -1489,7 +1489,7 @@ namespace aspect
           else
             {
               smoother_data_A[0].smoothing_range = 1e-3;
-              smoother_data_A[0].degree = numbers::invalid_unsigned_int;
+              smoother_data_A[0].degree = 8;
               smoother_data_A[0].eig_cg_n_iterations = 100;
             }
           smoother_data_A[level].preconditioner = mg_matrices_A_block[level].get_matrix_diagonal_inverse();
@@ -1515,13 +1515,33 @@ namespace aspect
           else
             {
               smoother_data_Schur[0].smoothing_range = 1e-3;
-              smoother_data_Schur[0].degree = numbers::invalid_unsigned_int;
-              smoother_data_Schur[0].eig_cg_n_iterations = 100; /*mg_matrices_M[0].m();*/
+              smoother_data_Schur[0].degree = 8;
+              smoother_data_Schur[0].eig_cg_n_iterations = 100;
             }
           smoother_data_Schur[level].preconditioner = mg_matrices_Schur_complement[level].get_matrix_diagonal_inverse();
         }
       mg_smoother_Schur.initialize(mg_matrices_Schur_complement, smoother_data_Schur);
     }
+
+#if DEAL_II_VERSION_GTE(9,2,0)
+    // Estimate the eigenvalues for the Chebyshev smoothers. If not running with
+    // deal.II 9.2.0, the eigenvalue estimate will be performed during the first
+    // application of the Chebyshev smoother during the solve.
+
+    //TODO: The setup for the smoother (as well as the entire GMG setup) should
+    //       be moved to an assembly timing block instead of the Stokes solve
+    //       timing block (as is currently the case).
+    for (unsigned int level = 0; level<sim.triangulation.n_global_levels(); ++level)
+      {
+        vector_t temp_velocity;
+        vector_t temp_pressure;
+        mg_matrices_A_block[level].initialize_dof_vector(temp_velocity);
+        mg_matrices_Schur_complement[level].initialize_dof_vector(temp_pressure);
+
+        mg_smoother_A[level].estimate_eigenvalues(temp_velocity);
+        mg_smoother_Schur[level].estimate_eigenvalues(temp_pressure);
+      }
+#endif
 
     // Coarse Solver is just an application of the Chebyshev smoother setup
     // in such a way to be a solver
