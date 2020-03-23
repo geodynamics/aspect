@@ -48,8 +48,8 @@ namespace aspect
      * gravity anomalies is to subtract the gravity of a certain point from the average
      * gravity on the map. Another way is to directly use density anomalies for this
      * postprocessor.
-     * The average- minimum- and maximum gravity acceleration and potiental and wriiten
-     * in the statistics file.
+     * The average- minimum- and maximum gravity acceleration and potiental are written
+     * into the statistics file.
 
      * @ingroup Postprocessing
      */

@@ -269,11 +269,11 @@ namespace aspect
       // gradients at a point located at the spherical coordinate [r, phi, theta].
       // This loop corresponds to the 3 integrals of Newton law:
       double sum_g = 0;
-      double min_g = 1e50;
-      double max_g = -1e50;
+      double min_g = std::numeric_limits<double>::max();
+      double max_g = -std::numeric_limits<double>::max();
       double sum_g_potential = 0;
-      double min_g_potential = 1e50;
-      double max_g_potential = -1e50;
+      double min_g_potential = std::numeric_limits<double>::max();
+      double max_g_potential = -std::numeric_limits<double>::max();
       for (unsigned int p=0; p < n_satellites; ++p)
         {
 
@@ -409,9 +409,9 @@ namespace aspect
                      << position_satellite[0] << ' '
                      << position_satellite[1] << ' '
                      << position_satellite[2] << ' '
-                     << std::setprecision(18) << g << ' '
-                     << std::setprecision(18) << g.norm() << ' '
-                     << std::setprecision(18) << g_theory << ' '
+                     << std::setprecision(12) << g << ' '
+                     << std::setprecision(12) << g.norm() << ' '
+                     << std::setprecision(12) << g_theory << ' '
                      << std::setprecision(9) << g_potential << ' '
                      << std::setprecision(9) << g_potential_theory << ' '
                      << std::setprecision(9) << g_anomaly << ' '
@@ -433,44 +433,34 @@ namespace aspect
         }
 
       // write quantities in the statistic file
-      const std::string name0("Stokes velocity polynomial degree");
-      statistics.add_value (name0, degree-quadrature_degree_increase);
-      statistics.set_precision (name0, 0);
-      statistics.set_scientific (name0, false);
-
-      const std::string name1("Quadrature degree increase for gravity calculation");
-      statistics.add_value (name1, quadrature_degree_increase);
-      statistics.set_precision (name1, 0);
-      statistics.set_scientific (name1, false);
-
-      const std::string name2("Average gravity (m/s^2)");
+      const std::string name2("Average gravity acceleration (m/s^2)");
       statistics.add_value (name2, sum_g/n_satellites);
-      statistics.set_precision (name2, 18);
+      statistics.set_precision (name2, 12);
       statistics.set_scientific (name2, true);
 
-      const std::string name3("Minimum gravity (m/s^2)");
+      const std::string name3("Minimum gravity acceleration (m/s^2)");
       statistics.add_value (name3, min_g);
-      statistics.set_precision (name3, 18);
+      statistics.set_precision (name3, 12);
       statistics.set_scientific (name3, true);
 
-      const std::string name4("Maximum gravity (m/s^2)");
+      const std::string name4("Maximum gravity acceleration (m/s^2)");
       statistics.add_value (name4, max_g);
-      statistics.set_precision (name4, 18);
+      statistics.set_precision (name4, 12);
       statistics.set_scientific (name4, true);
 
-      const std::string name5("Average potential (m^2/s^2)");
+      const std::string name5("Average gravity potential (m^2/s^2)");
       statistics.add_value (name5, sum_g_potential/n_satellites);
-      statistics.set_precision (name5, 18);
+      statistics.set_precision (name5, 12);
       statistics.set_scientific (name5, true);
 
-      const std::string name6("Minimum potential (m^2/s^2)");
+      const std::string name6("Minimum gravity potential (m^2/s^2)");
       statistics.add_value (name6, min_g_potential);
-      statistics.set_precision (name6, 18);
+      statistics.set_precision (name6, 12);
       statistics.set_scientific (name6, true);
 
-      const std::string name7("Maximum potential (m^2/s^2)");
+      const std::string name7("Maximum gravity potential (m^2/s^2)");
       statistics.add_value (name7, max_g_potential);
-      statistics.set_precision (name7, 18);
+      statistics.set_precision (name7, 12);
       statistics.set_scientific (name7, true);
 
       // up the next time we need output:
@@ -610,7 +600,7 @@ namespace aspect
         {
           if ( (prm.get ("Sampling scheme") == "uniform distribution") || (prm.get ("Sampling scheme") == "map") )
             sampling_scheme = uniform_distribution;
-          else if ( (prm.get ("Sampling scheme") == "list of points") | (prm.get ("Sampling scheme") == "list") )
+          else if ( (prm.get ("Sampling scheme") == "list of points") || (prm.get ("Sampling scheme") == "list") )
             sampling_scheme = list_of_points;
           else
             AssertThrow (false, ExcMessage ("Not a valid sampling scheme."));
@@ -739,6 +729,6 @@ namespace aspect
                                   "gravity on the map. Another way is to directly use density anomalies for this "
                                   "postprocessor."
                                   "The average- minimum- and maximum gravity acceleration and potential are "
-                                  "written in the statistics file.")
+                                  "written into the statistics file.")
   }
 }
