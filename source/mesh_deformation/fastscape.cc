@@ -367,7 +367,7 @@ namespace aspect
                   //Initialize random topography noise first time fastscape is called.
                   if (current_timestep == 1)
                     {
-                      double h_seed = 0; //(std::rand()%2000)/100;
+                      double h_seed = (std::rand()%2000)/100;
                       h[i] = h[i] + h_seed;
                     }
                   h_old[i] = h[i];
