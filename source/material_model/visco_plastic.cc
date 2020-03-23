@@ -24,6 +24,7 @@
 #include <deal.II/base/signaling_nan.h>
 #include <aspect/newton.h>
 #include <aspect/adiabatic_conditions/interface.h>
+#include <aspect/gravity_model/interface.h>
 
 namespace aspect
 {
@@ -395,13 +396,34 @@ namespace aspect
       const ComponentMask volumetric_compositions = get_volumetric_composition_mask();
 
       EquationOfStateOutputs<dim> eos_outputs (this->n_compositional_fields()+1);
+      EquationOfStateOutputs<dim> eos_outputs_all_phases (this->n_compositional_fields()+1+phase_function.n_phase_transitions());
 
       // Loop through all requested points
       for (unsigned int i=0; i < in.temperature.size(); ++i)
         {
-          equation_of_state.evaluate(in, i, eos_outputs);
-
           // First compute the equation of state variables and thermodynamic properties
+          equation_of_state.evaluate(in, i, eos_outputs_all_phases);
+
+          const double gravity_norm = this->get_gravity_model().gravity_vector(in.position[i]).norm();
+          const double reference_density = (this->get_adiabatic_conditions().is_initialized())
+                                           ?
+                                           this->get_adiabatic_conditions().density(in.position[i])
+                                           :
+                                           eos_outputs_all_phases.densities[0];
+
+          // The phase index is set to invalid_unsigned_int, because it is only used internally
+          // in phase_average_equation_of_state_outputs to loop over all existing phases
+          MaterialUtilities::PhaseFunctionInputs<dim> phase_inputs(in.temperature[i],
+                                                                   in.pressure[i],
+                                                                   this->get_geometry_model().depth(in.position[i]),
+                                                                   gravity_norm*reference_density,
+                                                                   numbers::invalid_unsigned_int);
+
+          phase_average_equation_of_state_outputs(eos_outputs_all_phases,
+                                                  phase_function,
+                                                  phase_inputs,
+                                                  eos_outputs);
+
           const std::vector<double> volume_fractions = MaterialUtilities::compute_volume_fractions(in.composition[i], volumetric_compositions);
 
           // not strictly correct if thermal expansivities are different, since we are interpreting
@@ -506,6 +528,8 @@ namespace aspect
       {
         prm.enter_subsection ("Visco Plastic");
         {
+          MaterialUtilities::PhaseFunction<dim>::declare_parameters(prm);
+
           EquationOfState::MulticomponentIncompressible<dim>::declare_parameters (prm);
 
           Rheology::StrainDependent<dim>::declare_parameters (prm);
@@ -613,9 +637,22 @@ namespace aspect
       {
         prm.enter_subsection ("Visco Plastic");
         {
+          // Phase transition parameters
+          phase_function.initialize_simulator (this->get_simulator());
+          phase_function.parse_parameters (prm);
+
+          std::vector<unsigned int> n_phase_transitions_for_each_composition
+          (phase_function.n_phase_transitions_for_each_composition());
+
+          // We require one more entry for density, etc as there are phase transitions
+          // (for the low-pressure phase before any transition).
+          for (unsigned int i=0; i<n_phase_transitions_for_each_composition.size(); ++i)
+            n_phase_transitions_for_each_composition[i] += 1;
+
           // Equation of state parameters
           equation_of_state.initialize_simulator (this->get_simulator());
-          equation_of_state.parse_parameters (prm);
+          equation_of_state.parse_parameters (prm,
+                                              std::make_shared<std::vector<unsigned int>>(n_phase_transitions_for_each_composition));
 
           strain_rheology.initialize_simulator (this->get_simulator());
           strain_rheology.parse_parameters(prm);

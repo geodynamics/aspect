@@ -1,0 +1,25 @@
+
+Number of active cells: 1,600 (on 3 levels)
+Number of degrees of freedom: 34,486 (13,122+1,681+6,561+6,561+6,561)
+
+*** Timestep 0:  t=0 years
+
+   Postprocessing:
+     RMS, max velocity:                                 0 m/year, 0 m/year
+     Mass fluxes through boundary parts:                0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
+     Writing graphical output:                          output-visco_plastic_phases_compositions/solution/solution-00000
+     Average density / Average viscosity / Total mass:  3095 kg/m^3, 1e+22 Pa s, 3.095e+13 kg
+
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

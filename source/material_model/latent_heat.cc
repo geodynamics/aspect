@@ -105,8 +105,8 @@ namespace aspect
             // Loop through phase transitions
             for (unsigned int phase=0; phase<phase_function.n_phase_transitions(); ++phase)
               {
-                const double depth = this->get_geometry_model().depth(in.position[i]);
-                const double pressure_depth_derivative = (depth > 0)
+                const double depth = this->get_geometry_model().depth(position);
+                const double pressure_depth_derivative = (depth > 0.0)
                                                          ?
                                                          pressure / depth
                                                          :

@@ -291,6 +291,18 @@ namespace aspect
         double pressure;
         double depth;
         double pressure_depth_derivative;
+
+        /**
+         * This parameter determines which phase function of all the stored
+         * functions to compute. Phase functions are numbered consecutively,
+         * starting at 0 and the interpretation of their output is up to the
+         * calling side. For example the first phase function could be used to
+         * indicate a viscosity jump in the first compositional field,
+         * while the second function indicates a density jump in all
+         * compositions. None of this is known to the PhaseFunction object,
+         * which only has information that there are two phase functions
+         * and what their properties are.
+         */
         unsigned int phase_index;
       };
 
@@ -328,6 +340,12 @@ namespace aspect
            * phase transition number @p phase_index.
            */
           double get_transition_slope (const unsigned int phase_index) const;
+
+          /**
+           * Return how many phase transitions there are for each composition.
+           */
+          const std::vector<unsigned int> &
+          n_phase_transitions_for_each_composition () const;
 
           /**
            * Declare the parameters this class takes through input files.
