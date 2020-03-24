@@ -217,18 +217,18 @@ namespace aspect
                                              min_strain_rate);
                 }
 
-              // The viscoelastic strain rate is divided by 2 here as the Drucker Prager
-              // viscosity calculation assumes stress = 2 * viscosity * strain_rate_invariant,
-              // whereas the combined viscoelastic + viscous stresses do not include the
-              // 2x factor.
-              current_edot_ii /= 2.;
-
               // Step 2a: calculate viscoelastic (effective) viscosity (eqn 28 in Moresi et al., 2003, J. Comp. Phys.)
               viscosity_pre_yield = viscosity_pre_yield * elastic_timestep /
                                     (elastic_timestep + (viscosity_pre_yield/elastic_shear_moduli[j]));
 
               // Step 2b: calculate current (viscous + elastic) stress magnitude
               current_stress = viscosity_pre_yield * current_edot_ii;
+
+              // The viscoelastic strain rate is divided by 2 here as the Drucker Prager
+              // viscosity calculation below assumes stress = 2 * viscosity * strain_rate_invariant,
+              // whereas the combined viscoelastic + viscous stresses already include the
+              // 2x factor (see computation of edot above).
+              current_edot_ii /= 2.;
             }
 
           // Step 3: strain weakening
@@ -784,6 +784,10 @@ namespace aspect
             yield_mechanism = stress_limiter;
           else
             AssertThrow(false, ExcMessage("Not a valid yield mechanism."));
+
+          AssertThrow(use_elasticity == false || yield_mechanism == drucker_prager,
+                      ExcMessage("Elastic behavior is only tested with the "
+                                 "'drucker prager' plasticity option."));
 
           // Rheological parameters
           // Diffusion creep parameters
