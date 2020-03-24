@@ -3271,7 +3271,7 @@ commit.}.  With this information we strive to make
 The following output depends on the model, and in this case was produced by
 a parameter file that, among other settings, contained the following values
 (we will discuss many such input files in Section~\ref{sec:cookbooks}:
-\lstinputlisting[language=prmfile]{cookbooks/overview/simple.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/overview/doc/simple.prm.out}
 
 In other words, these run-time parameters specify that we should start with a
 geometry that represents a spherical shell (see
@@ -3505,7 +3505,7 @@ You select which one you want by putting a line like the following into
 \index[prmindex]{Dimension}
 \index[prmindexfull]{Dimension}
 the parameter file (see Section~\ref{sec:parameters}):
-\lstinputlisting[language=prmfile]{cookbooks/overview/dim.part.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/overview/doc/dim.part.prm.out}
 
 Internally, dealing with the dimension builds on a feature in
 \dealii{}, upon which \aspect{} is based, that is called
@@ -4302,7 +4302,7 @@ page~\pageref{sec:runtime-parameter-index}.
 
 Most of the run-time behavior of \aspect{} is driven by a parameter file that
 looks in essence like this:
-\lstinputlisting[language=prmfile]{cookbooks/overview/structure.part.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/overview/doc/structure.part.prm.out}
 
 Some parameters live at the top level, but most parameters are grouped into
 subsections. An input parameter file is therefore much like a file system: a
@@ -4420,7 +4420,7 @@ plugin that allows you to describe this formula in a symbolic way in the input f
 case is this snippet of code discussed in
 Section~\ref{sec:cookbooks-simple-box-3d}:
 %
-\lstinputlisting[language=prmfile]{cookbooks/convection-box-3d/initial.part.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/convection-box-3d/doc/initial.part.prm.out}
 %
 The formulas you can enter here need to use a syntax that is understood by the
 functions and classes that interpret what you write. Internally, this is done
@@ -4627,7 +4627,7 @@ For each of these questions, there are one or more input parameters (sometimes
 grouped into sections) that allow you to specify what you want. For example, to
 choose a geometry, you will typically have a block like this in your input file:
 %
-\lstinputlisting[language=prmfile]{cookbooks/overview/geometry.part.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/overview/doc/geometry.part.prm.out}
 %
 This indicates that you want to do a computation in 2d, using a rectangular
 geometry (a ``box'') with edge length equal to one in both the $x$- and
@@ -4637,7 +4637,7 @@ specify the details of these geometries.
 
 Similarly, you describe boundary conditions using parameters such as this:
 %
-\lstinputlisting[language=prmfile]{cookbooks/overview/boundary-conditions.part.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/overview/doc/boundary-conditions.part.prm.out}
 %
 This snippet describes which of the four boundaries of the two-dimensional box
 we have selected above should have a prescribed temperature or an insulating
@@ -4762,7 +4762,7 @@ and the indices at the end of this manual if you want to find a particular
 parameter; you can find the input file to run this cookbook example in
 \url{cookbooks/convection-box.prm}):
 
-\lstinputlisting[language=prmfile]{cookbooks/convection-box/box.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/convection-box/doc/box.prm.out}
 
 
 \paragraph{Running the program.}
@@ -4868,9 +4868,9 @@ simulation.
 \begin{figure}
 \phantom.
 \hfill
-\includegraphics[width=0.4\textwidth]{cookbooks/convection-box/visit0000.png}
+\includegraphics[width=0.4\textwidth]{cookbooks/convection-box/doc/visit0000.png}
 \hfill
-\includegraphics[width=0.4\textwidth]{cookbooks/convection-box/visit0001.png}
+\includegraphics[width=0.4\textwidth]{cookbooks/convection-box/doc/visit0001.png}
 \hfill
 \phantom.
 \caption{\it Convection in a box: Initial temperature and velocity field (left)
@@ -4943,9 +4943,9 @@ through these two boundaries disappears as we refine the mesh further.
 \begin{figure}
 \phantom.
 \hfill
-\includegraphics[width=0.4\textwidth]{cookbooks/convection-box/velocity.png}
+\includegraphics[width=0.4\textwidth]{cookbooks/convection-box/doc/velocity.png}
 \hfill
-\includegraphics[width=0.4\textwidth]{cookbooks/convection-box/heatflux.png}
+\includegraphics[width=0.4\textwidth]{cookbooks/convection-box/doc/heatflux.png}
 \hfill
 \phantom.
 \caption{\it Convection in a box: Root mean square and maximal velocity as a
@@ -4970,7 +4970,7 @@ more iterations to solve these equations.
 \begin{figure}
 \phantom.
 \hfill
-\includegraphics[width=0.4\textwidth]{cookbooks/convection-box/iterations.png}
+\includegraphics[width=0.4\textwidth]{cookbooks/convection-box/doc/iterations.png}
 \hfill
 \phantom.
 \caption{\it Convection in a box: Number of linear iterations required to solve
@@ -5003,9 +5003,9 @@ The structures of the flow pattern also become smaller and smaller.
 \begin{figure}
 \phantom.
 \hfill
-\includegraphics[width=0.4\textwidth]{cookbooks/convection-box/ra_1e2_visit0000.png}
+\includegraphics[width=0.4\textwidth]{cookbooks/convection-box/doc/ra_1e2_visit0000.png}
 \hfill
-\includegraphics[width=0.4\textwidth]{cookbooks/convection-box/ra_1e6_visit0001.png}
+\includegraphics[width=0.4\textwidth]{cookbooks/convection-box/doc/ra_1e6_visit0001.png}
 \hfill
 \phantom.
 \caption{\it Convection in a box: Temperature fields at the end of a
@@ -5018,9 +5018,9 @@ The mesh on the right is clearly too coarse to resolve the structure of the solu
 \begin{figure}
 \phantom.
 \hfill
-\includegraphics[width=0.4\textwidth]{cookbooks/convection-box/ra_1e6_velocity.png}
+\includegraphics[width=0.4\textwidth]{cookbooks/convection-box/doc/ra_1e6_velocity.png}
 \hfill
-\includegraphics[width=0.4\textwidth]{cookbooks/convection-box/ra_1e6_heatflux.png}
+\includegraphics[width=0.4\textwidth]{cookbooks/convection-box/doc/ra_1e6_heatflux.png}
 \hfill
 \phantom.
 \caption{\it Convection in a box: Velocities (left) and heat flux across the
@@ -5043,7 +5043,7 @@ To generate these results, remember that we have chosen
 $g=Ra$ in our input file. In other words, changing the input file to
 contain the parameter setting
 %
-\lstinputlisting[language=prmfile]{cookbooks/convection-box/gravity.part.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/convection-box/doc/gravity.part.prm.out}
 %
 will achieve the desired effect of computing with $Ra=10^6$.
 
@@ -5056,7 +5056,7 @@ interesting to think about computing even more accurately. This is easily done
 by using a finer mesh, for example. In the parameter file above, we have chosen
 the mesh setting as follows:
 %
-\lstinputlisting[language=prmfile]{cookbooks/convection-box/refine.part.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/convection-box/doc/refine.part.prm.out}
 %
 We start out with a box geometry consisting of a single cell that is refined
 four times. Each time we split each cell into its 4 children, obtaining the
@@ -5082,7 +5082,7 @@ a particular time at least 8 times as expensive, assuming that all solvers in
 parameter in the \aspect{} input file that let's us increase the mesh resolution
 at later times. To this end, let us use the following snippet for the input
 file:
-\lstinputlisting[language=prmfile]{cookbooks/convection-box/refine2.part.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/convection-box/doc/refine2.part.prm.out}
 
 What this does is the following: We start with an $8\times 8$ mesh (3 times
 globally refined) but then at times $t=0.2,0.3$ and $0.4$ we refine the mesh
@@ -5096,9 +5096,9 @@ do another global refinement, bringing us to refinement levels 4, 5 and finally
 \begin{figure}
 \phantom.
 \hfill
-\includegraphics[width=0.4\textwidth]{cookbooks/convection-box/steps_unknowns.png}
+\includegraphics[width=0.4\textwidth]{cookbooks/convection-box/doc/steps_unknowns.png}
 \hfill
-\includegraphics[width=0.4\textwidth]{cookbooks/convection-box/steps_heatflux.png}
+\includegraphics[width=0.4\textwidth]{cookbooks/convection-box/doc/steps_heatflux.png}
 \hfill
 \phantom.
 \caption{\it Convection in a box: Refinement in stages. Total number
@@ -5165,7 +5165,7 @@ cheaper of the two options.
 
 Following these considerations, let us add the following section to the
 parameter file:
-\lstinputlisting[language=prmfile]{cookbooks/convection-box/disc.part.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/convection-box/doc/disc.part.prm.out}
 
 This leaves the velocity and pressure shape functions at quadratic and linear
 polynomial degree but increases the polynomial degree of the temperature from
@@ -5249,32 +5249,32 @@ numbered as follows: ``\textit{in 3d, boundary indicators 0 through 5 indicate
 left, right, front, back, bottom and top boundaries}.'' Recalling that we want
 tangential flow all around and want to fix the temperature to known values at
 the bottom and top, the following will make sense:
-\lstinputlisting[language=prmfile]{cookbooks/convection-box-3d/start.part.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/convection-box-3d/doc/start.part.prm.out}
 
 
 The next step is to describe the initial conditions. As before, we will use an
 unstably layered medium but the perturbation now needs to be both in $x$- and
 $y$-direction
-\lstinputlisting[language=prmfile]{cookbooks/convection-box-3d/initial.part.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/convection-box-3d/doc/initial.part.prm.out}
 
 The third issue we need to address is that we can likely not afford a mesh as
 fine as in 2d. We choose a mesh that is refined 3 times globally at the
 beginning, then 3 times adaptively, and is then adapted every 15 time steps. We
 also allow one additional mesh refinement in the first time step following
 $t=0.003$ once the initial instability has given way to a more stable pattern:
-\lstinputlisting[language=prmfile]{cookbooks/convection-box-3d/amr.part.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/convection-box-3d/doc/amr.part.prm.out}
 
 Finally, as we have seen in the previous section, a computation with $Ra=10^4$
 does not lead to a simulation that is exactly exciting. Let us choose $Ra=10^6$
 instead (the mesh chosen above with up to 7 refinement levels after some time
 is fine enough to resolve this). We can achieve this in the same way as in the
 previous section by choosing $\alpha=10^{-10}$ and setting
-\lstinputlisting[language=prmfile]{cookbooks/convection-box-3d/gravity.part.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/convection-box-3d/doc/gravity.part.prm.out}
 This has some interesting implications. First, a higher Rayleigh number makes
 time scales correspondingly smaller; where we generated graphical output only
 once every 0.01 time units before, we now need to choose the corresponding
 increment smaller by a factor of 100:
-\lstinputlisting[language=prmfile]{cookbooks/convection-box-3d/postprocess.part.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/convection-box-3d/doc/postprocess.part.prm.out}
 Secondly, a simulation like this -- in 3d, with a significant number of cells,
 and for a significant number of time steps -- will likely take a good amount of
 time. The computations for which we show results below was run using 64
@@ -5283,7 +5283,7 @@ processors by running it using the command
 during such a run, a significant amount of compute time would be lost if we had
 to run everything from the start. However, we can avoid this by periodically
 checkpointing the state of the computation:
-\lstinputlisting[language=prmfile]{cookbooks/convection-box-3d/checkpoint.part.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/convection-box-3d/doc/checkpoint.part.prm.out}
 If the computation does crash (or if a computation runs out of the time limit
 imposed by a scheduling system), then it can be restarted from such
 checkpointing files (see the parameter {\tt Resume computation}
@@ -5355,17 +5355,17 @@ the simulation is also clearly non-stationary.
 
 \begin{figure}
   \centering
-  \includegraphics[width=0.3\textwidth]{cookbooks/convection-box-3d/movie0010.png}
+  \includegraphics[width=0.3\textwidth]{cookbooks/convection-box-3d/doc/movie0010.png}
   \hfill
-  \includegraphics[width=0.3\textwidth]{cookbooks/convection-box-3d/movie0040.png}
+  \includegraphics[width=0.3\textwidth]{cookbooks/convection-box-3d/doc/movie0040.png}
   \hfill
-  \includegraphics[width=0.3\textwidth]{cookbooks/convection-box-3d/movie0060.png}
+  \includegraphics[width=0.3\textwidth]{cookbooks/convection-box-3d/doc/movie0060.png}
   \\
-  \includegraphics[width=0.3\textwidth]{cookbooks/convection-box-3d/movie0100.png}
+  \includegraphics[width=0.3\textwidth]{cookbooks/convection-box-3d/doc/movie0100.png}
   \hfill
-  \includegraphics[width=0.3\textwidth]{cookbooks/convection-box-3d/movie0130.png}
+  \includegraphics[width=0.3\textwidth]{cookbooks/convection-box-3d/doc/movie0130.png}
   \hfill
-  \includegraphics[width=0.3\textwidth]{cookbooks/convection-box-3d/movie0180.png}
+  \includegraphics[width=0.3\textwidth]{cookbooks/convection-box-3d/doc/movie0180.png}
   \caption{\it Convection in a 3d box: Temperature isocontours and some
   velocity vectors at the first time step after times $t=0.001, 0.004, 0.006$
   (top row, left to right) an $t=0.01, 0.013, 0.018$ (bottom row).}
@@ -5375,11 +5375,11 @@ the simulation is also clearly non-stationary.
 
 \begin{figure}
   \centering
-  \includegraphics[width=0.3\textwidth]{cookbooks/convection-box-3d/mesh0060.png}
+  \includegraphics[width=0.3\textwidth]{cookbooks/convection-box-3d/doc/mesh0060.png}
   \hfill
-  \includegraphics[width=0.3\textwidth]{cookbooks/convection-box-3d/mesh0100.png}
+  \includegraphics[width=0.3\textwidth]{cookbooks/convection-box-3d/doc/mesh0100.png}
   \hfill
-  \includegraphics[width=0.3\textwidth]{cookbooks/convection-box-3d/mesh0180.png}
+  \includegraphics[width=0.3\textwidth]{cookbooks/convection-box-3d/doc/mesh0180.png}
   \caption{\it Convection in a 3d box: Meshes and large-scale velocity field
   for the third, fourth and sixth of the snapshots shown in
   Fig.~\ref{fig:box-3d-solution}.}
@@ -5414,7 +5414,7 @@ postprocessors.
 
 \begin{figure}
   \centering
-  \includegraphics[width=0.6\textwidth]{cookbooks/convection-box-3d/heat-flux.png}
+  \includegraphics[width=0.6\textwidth]{cookbooks/convection-box-3d/doc/heat-flux.png}
   \caption{\it Convection in a 3d box: Upward heat flux through the bottom and
   top boundaries as a function of time.}
   \label{fig:box-3d-heat-flux}
@@ -5446,7 +5446,7 @@ input file. It essentially extends the input file considered in the previous exa
 The part of this file that we are particularly interested in in the current
 context is the selection of the kind of velocity boundary conditions on the four
 sides of the box geometry, which we do using a section like this:
-\lstinputlisting[language=prmfile]{cookbooks/platelike-boundary/boundary.part.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/platelike-boundary/doc/boundary.part.prm.out}
 
 We use tangential flow at boundaries named left, right and bottom.
 Additionally, we specify a comma separated list (here with only a single
@@ -5507,7 +5507,7 @@ boundary without corresponding inflow anywhere else.}
 
 
 The remainder of the setup is described in the following, complete input file:
-\lstinputlisting[language=prmfile]{cookbooks/platelike-boundary/platelike.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/platelike-boundary/doc/platelike.prm.out}
 
 
 This model description yields a setup with a Rayleigh number of 200 (taking
@@ -5522,17 +5522,17 @@ yields images like the ones shown in Fig.~\ref{fig:platelike}.
 
 \begin{figure}
   \centering
-  \includegraphics[width=0.3\textwidth]{cookbooks/platelike-boundary/visit0000.png}
+  \includegraphics[width=0.3\textwidth]{cookbooks/platelike-boundary/doc/visit0000.png}
   \hfill
-  \includegraphics[width=0.3\textwidth]{cookbooks/platelike-boundary/visit0001.png}
+  \includegraphics[width=0.3\textwidth]{cookbooks/platelike-boundary/doc/visit0001.png}
   \hfill
-  \includegraphics[width=0.3\textwidth]{cookbooks/platelike-boundary/visit0003.png}
+  \includegraphics[width=0.3\textwidth]{cookbooks/platelike-boundary/doc/visit0003.png}
   \\
-  \includegraphics[width=0.3\textwidth]{cookbooks/platelike-boundary/visit0004.png}
+  \includegraphics[width=0.3\textwidth]{cookbooks/platelike-boundary/doc/visit0004.png}
   \hfill
-  \includegraphics[width=0.3\textwidth]{cookbooks/platelike-boundary/visit0005.png}
+  \includegraphics[width=0.3\textwidth]{cookbooks/platelike-boundary/doc/visit0005.png}
   \hfill
-  \includegraphics[width=0.3\textwidth]{cookbooks/platelike-boundary/visit0006.png}
+  \includegraphics[width=0.3\textwidth]{cookbooks/platelike-boundary/doc/visit0006.png}
   \caption{\it Variable velocity boundary conditions: Temperature and velocity
   fields at the initial time (top left) and at various other points in time during the
   simulation.}
@@ -5574,7 +5574,7 @@ top, and the middle. The way to describe this situation is to simply add the
 following block of definitions to the parameter file (you can find the full
 parameter file in \url{cookbooks/composition-passive.prm}:
 
-\lstinputlisting[language=prmfile]{cookbooks/composition-passive/passive.part.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/composition-passive/doc/passive.part.prm.out}
 
 Running this simulation yields results such as the ones shown in
 Fig.~\ref{fig:compositional-passive} where we show the values of the functions
@@ -5590,17 +5590,17 @@ the domain we are interested in.}
 
 \begin{figure}
   \centering
-  \includegraphics[width=0.3\textwidth]{cookbooks/composition-passive/visit0007.png}
+  \includegraphics[width=0.3\textwidth]{cookbooks/composition-passive/doc/visit0007.png}
   \hfill
-  \includegraphics[width=0.3\textwidth]{cookbooks/composition-passive/visit0008.png}
+  \includegraphics[width=0.3\textwidth]{cookbooks/composition-passive/doc/visit0008.png}
   \hfill
-  \includegraphics[width=0.3\textwidth]{cookbooks/composition-passive/visit0009.png}
+  \includegraphics[width=0.3\textwidth]{cookbooks/composition-passive/doc/visit0009.png}
   \\
-  \includegraphics[width=0.3\textwidth]{cookbooks/composition-passive/visit0010.png}
+  \includegraphics[width=0.3\textwidth]{cookbooks/composition-passive/doc/visit0010.png}
   \hfill
-  \includegraphics[width=0.3\textwidth]{cookbooks/composition-passive/visit0012.png}
+  \includegraphics[width=0.3\textwidth]{cookbooks/composition-passive/doc/visit0012.png}
   \hfill
-  \includegraphics[width=0.3\textwidth]{cookbooks/composition-passive/visit0014.png}
+  \includegraphics[width=0.3\textwidth]{cookbooks/composition-passive/doc/visit0014.png}
   \caption{\it Passive compositional fields: The figures show, at
     different times in the simulation, the velocity field along with
     those locations where the first compositional field is larger than
@@ -5615,9 +5615,9 @@ the domain we are interested in.}
 
 \begin{figure}
   \centering
-  \includegraphics[height=0.3\textwidth]{cookbooks/composition-passive/visit0015.png}
+  \includegraphics[height=0.3\textwidth]{cookbooks/composition-passive/doc/visit0015.png}
   \hfill
-  \includegraphics[height=0.3\textwidth]{cookbooks/composition-passive/visit0017.png}
+  \includegraphics[height=0.3\textwidth]{cookbooks/composition-passive/doc/visit0017.png}
   \caption{\it Passive compositional fields: A later image of the simulation
     corresponding to the sequence shown in
     Fig.~\ref{fig:compositional-passive} (left) and zoom-in on the
@@ -5653,7 +5653,7 @@ This is an area in which \aspect{} may see improvements in the future.
 
 \begin{figure}
   \centering
-  \includegraphics[width=0.4\textwidth]{cookbooks/composition-passive/mass-composition-1.png}
+  \includegraphics[width=0.4\textwidth]{cookbooks/composition-passive/doc/mass-composition-1.png}
   \caption{\it Passive compositional fields: Minimum and maximum of the first
   compositional variable over time, as well as the mass $m_1(t)=\int_\Omega c_1(\mathbf x,t)$ stored in this variable.}
   \label{fig:compositional-passive-mass}
@@ -5665,7 +5665,7 @@ mass contained in the $i$th compositional field is $m_i(t)=\int_\Omega c_i(\math
 This can easily be achieve in the following way, by adding the \texttt{composition statistics}
 postprocessor:
 
-\lstinputlisting[language=prmfile]{cookbooks/composition-passive/postprocess.part.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/composition-passive/doc/postprocess.part.prm.out}
 
 While the scheme we use to advect the compositional fields is not strictly
 conservative, it is almost perfectly so in practice. For example, in
@@ -5725,22 +5725,22 @@ the following section (the complete input file can be found in
 \url{cookbooks/composition-active.prm}:
 
 
-\lstinputlisting[language=prmfile]{cookbooks/composition-active/active.part.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/composition-active/doc/active.part.prm.out}
 
 To debug the model, we will also want to visualize the density in our
 graphical output files. This is done using the following addition to the
 postprocessing section, using the \texttt{density} visualization plugin:
 
-\lstinputlisting[language=prmfile]{cookbooks/composition-active/postprocess.part.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/composition-active/doc/postprocess.part.prm.out}
 
 \begin{figure}
   \centering
   \centering
-  \includegraphics[width=0.3\textwidth]{cookbooks/composition-active/visit0007.png}
+  \includegraphics[width=0.3\textwidth]{cookbooks/composition-active/doc/visit0007.png}
   \hfill
-  \includegraphics[width=0.3\textwidth]{cookbooks/composition-active/visit0009.png}
+  \includegraphics[width=0.3\textwidth]{cookbooks/composition-active/doc/visit0009.png}
   \hfill
-  \includegraphics[width=0.3\textwidth]{cookbooks/composition-active/visit0008.png}
+  \includegraphics[width=0.3\textwidth]{cookbooks/composition-active/doc/visit0008.png}
   \caption{\it Active compositional fields: Compositional field 1 at the time
     $t=0, 10, 20$. Compared to the results shown in
     Fig.~\ref{fig:compositional-passive} it is clear that the heavy material
@@ -5754,17 +5754,17 @@ postprocessing section, using the \texttt{density} visualization plugin:
 
 \begin{figure}
   \centering
-  \includegraphics[width=0.3\textwidth]{cookbooks/composition-active/visit0000.png}
+  \includegraphics[width=0.3\textwidth]{cookbooks/composition-active/doc/visit0000.png}
   \hfill
-  \includegraphics[width=0.3\textwidth]{cookbooks/composition-active/visit0001.png}
+  \includegraphics[width=0.3\textwidth]{cookbooks/composition-active/doc/visit0001.png}
   \hfill
-  \includegraphics[width=0.3\textwidth]{cookbooks/composition-active/visit0002.png}
+  \includegraphics[width=0.3\textwidth]{cookbooks/composition-active/doc/visit0002.png}
   \\[6pt]
-  \includegraphics[width=0.3\textwidth]{cookbooks/composition-active/visit0003.png}
+  \includegraphics[width=0.3\textwidth]{cookbooks/composition-active/doc/visit0003.png}
   \hfill
-  \includegraphics[width=0.3\textwidth]{cookbooks/composition-active/visit0004.png}
+  \includegraphics[width=0.3\textwidth]{cookbooks/composition-active/doc/visit0004.png}
   \hfill
-  \includegraphics[width=0.3\textwidth]{cookbooks/composition-active/visit0006.png}
+  \includegraphics[width=0.3\textwidth]{cookbooks/composition-active/doc/visit0006.png}
   \caption{\it Active compositional fields: Temperature fields at $t=0, 2, 4, 8,
   12, 20$. The black line is the isocontour line $c_1(\mathbf x,t)=0.5$
     delineating the position of the dense material at the bottom.}
@@ -5810,26 +5810,26 @@ In addition, there are setups where one wants the compositional fields to intera
 
 We will consider the exact same setup as in the previous paragraphs, except for the initial conditions and properties of the two compositional fields. There is one material that initially fills the bottom half of the domain and is less dense than the material above. In addition, there is another material that only gets created when the first material reaches the uppermost 20\% of the domain, and that has a higher density. This should cause the first material to move upwards, get partially converted to the second material, which then sinks down again. This means we want to change the initial conditions for the compositional fields: 
 
-\lstinputlisting[language=prmfile]{cookbooks/composition-reaction/initial.part.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/composition-reaction/doc/initial.part.prm.out}
 
 
 Moreover, instead of the \texttt{simple} material model, we will use the \texttt{composition reaction} material model, which basically behaves in the same way, but can handle two active compositional field and a reaction between those two fields. In the input file, the user defines a depth and above this \texttt{reaction depth} the first compositional fields is converted to the second field. This can be done by changing the following section (the complete input file can be found in \url{cookbooks/composition-reaction.prm}). 
 
-\lstinputlisting[language=prmfile]{cookbooks/composition-reaction/material.part.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/composition-reaction/doc/material.part.prm.out}
 
 \begin{figure}
   \centering
-  \includegraphics[width=0.3\textwidth]{cookbooks/composition-reaction/0.png}
+  \includegraphics[width=0.3\textwidth]{cookbooks/composition-reaction/doc/0.png}
   \hfill
-  \includegraphics[width=0.3\textwidth]{cookbooks/composition-reaction/2.png}
+  \includegraphics[width=0.3\textwidth]{cookbooks/composition-reaction/doc/2.png}
   \hfill
-  \includegraphics[width=0.3\textwidth]{cookbooks/composition-reaction/4.png}
+  \includegraphics[width=0.3\textwidth]{cookbooks/composition-reaction/doc/4.png}
   \\[6pt]
-  \includegraphics[width=0.3\textwidth]{cookbooks/composition-reaction/8.png}
+  \includegraphics[width=0.3\textwidth]{cookbooks/composition-reaction/doc/8.png}
   \hfill
-  \includegraphics[width=0.3\textwidth]{cookbooks/composition-reaction/12.png}
+  \includegraphics[width=0.3\textwidth]{cookbooks/composition-reaction/doc/12.png}
   \hfill
-  \includegraphics[width=0.3\textwidth]{cookbooks/composition-reaction/20.png}
+  \includegraphics[width=0.3\textwidth]{cookbooks/composition-reaction/doc/20.png}
   \caption{\it Reaction between compositional fields: Temperature fields at $t=0, 2, 4, 8,
   12, 20$. The black line is the isocontour line $c_1(\mathbf x,t)=0.5$
     delineating the position of the material starting at the bottom and the white line is the    isocontour line $c_2(\mathbf x,t)=0.5$
@@ -5876,7 +5876,7 @@ particular, the postprocess section now looks like this:
 \index[prmindex]{Number of particles}
 \index[prmindexfull]{Postprocess!Particles!Number of particles}
 
-\lstinputlisting[language=prmfile]{cookbooks/composition-passive-particles/particles.part.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/composition-passive-particles/doc/particles.part.prm.out}
 
 The 1000 particles we are asking here are initially uniformly distributed
 throughout the domain and are, at the end of each time step, advected along with
@@ -5924,7 +5924,7 @@ Fig.~\ref{fig:composition-passive-particles}.
 
 \begin{figure}
   \centering
-  \includegraphics[width=0.5\textwidth]{cookbooks/composition-passive-particles/solution-00072.png}
+  \includegraphics[width=0.5\textwidth]{cookbooks/composition-passive-particles/doc/solution-00072.png}
   \caption{\it Passively advected quantities visualized through both a
   compositional field and a set of 1,000 particles, at $t=7.2$.}
   \label{fig:composition-passive-particles}
@@ -5970,7 +5970,7 @@ following lines to the \texttt{Particles} subsection (we also increase the numbe
 of particles compared to the previous section to make the visualizations below
 more obvious):
 
-\lstinputlisting[language=prmfile]{cookbooks/composition-passive-particles/particle-properties.part.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/composition-passive-particles/doc/particle-properties.part.prm.out}
 
 These commands make sure that every particle will carry four different
 properties (\texttt{function}, \texttt{pT path}, \texttt{initial
@@ -6041,16 +6041,16 @@ Section~\ref{sec:write-plugin}.) The properties selected above do the following:
   \centering
   \phantom{.}
   \hfill
-  \includegraphics[width=0.45\textwidth]{cookbooks/composition-passive-particles-properties/composition-C1.png}
+  \includegraphics[width=0.45\textwidth]{cookbooks/composition-passive-particles-properties/doc/composition-C1.png}
   \hfill
-  \includegraphics[width=0.45\textwidth]{cookbooks/composition-passive-particles-properties/particles-C1.png}
+  \includegraphics[width=0.45\textwidth]{cookbooks/composition-passive-particles-properties/doc/particles-C1.png}
   \phantom{.}
   \\
   \phantom{.}
   \hfill
-  \includegraphics[width=0.45\textwidth]{cookbooks/composition-passive-particles-properties/initial-position-00000.png}
+  \includegraphics[width=0.45\textwidth]{cookbooks/composition-passive-particles-properties/doc/initial-position-00000.png}
   \hfill
-  \includegraphics[width=0.45\textwidth]{cookbooks/composition-passive-particles-properties/initial-position-00199.png}
+  \includegraphics[width=0.45\textwidth]{cookbooks/composition-passive-particles-properties/doc/initial-position-00199.png}
   \phantom{.}
   \caption{\it Passively advected particle properties visualized. Top row:
   Composition $C_1$ and particle property ``initial $C_1$''. The blue line in both
@@ -6091,11 +6091,11 @@ A slightly modified version of the active-composition cookbook (\url{cookbooks/c
 
 This cookbook, \url{cookbooks/composition-active-particles.prm}, modifies two sections of the input file.  First, particles are added under the \texttt{Postprocess} section: 
 
-\lstinputlisting[language=prmfile]{cookbooks/composition-active-particles/particles.part.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/composition-active-particles/doc/particles.part.prm.out}
 Here, each particle will carry the \texttt{velocity} and
 \texttt{initial composition} properties.  In order to use the particle initial composition value to modify the flow through the material model, we now modify the \texttt{Composition} section:
 
-\lstinputlisting[language=prmfile]{cookbooks/composition-active-particles/composition.part.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/composition-active-particles/doc/composition.part.prm.out}
  
 What this does is the following: It says that there will be two
 compositional fields, called \texttt{lower} and \texttt{upper}
@@ -6173,7 +6173,7 @@ as well as the desired accuracy.
 Following are the sections in the input file specific to this testcase.  The full parameter
 file may be found at \url{cookbooks/free-surface.prm}.
 
-\lstinputlisting[language=prmfile]{cookbooks/free_surface/freesurface.part.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/free_surface/doc/freesurface.part.prm.out}
 
 Running this input file will produce results like those in Figure~\ref{fig:freesurface}.
 The model starts with a single hot blob of rock which rises in the domain.  As it 
@@ -6192,9 +6192,9 @@ After running the cookbook, you may modify it in a number of ways:
 
 \begin{figure}
   \centering
-  \includegraphics[height=0.25\textwidth]{cookbooks/free_surface/free_surface_blob.png}
+  \includegraphics[height=0.25\textwidth]{cookbooks/free_surface/doc/free_surface_blob.png}
   \hfill
-  \includegraphics[height=0.25\textwidth]{cookbooks/free_surface/free_surface_topography.png}
+  \includegraphics[height=0.25\textwidth]{cookbooks/free_surface/doc/free_surface_topography.png}
   \caption{\it Evolution of surface topography due to a rising blob.  On the left is a 
            snapshot of the model setup.  The right shows the value of the highest 
            topography in the domain over 18 Myr of model time.  The topography peaks
@@ -6263,10 +6263,10 @@ The following changes are necessary compared to the input file from the
 cookbook shown in Section~\ref{sec:cookbooks-freesurface} to include a crust:
 \begin{itemize}
   \item Load the plugin implementing the new material model:
-  \lstinputlisting[language=prmfile]{cookbooks/free_surface_with_crust/free-surface-wc.part1.prm.out}
+  \lstinputlisting[language=prmfile]{cookbooks/free_surface_with_crust/doc/free-surface-wc.part1.prm.out}
   
   \item Declare values for the new parameters:
-  \lstinputlisting[language=prmfile]{cookbooks/free_surface_with_crust/free-surface-wc.part2.prm.out}
+  \lstinputlisting[language=prmfile]{cookbooks/free_surface_with_crust/doc/free-surface-wc.part2.prm.out}
   Note that the height of the interface at 170km is interpreted in the
   coordinate system in which the box geometry of this cookbook lives. The box
   has dimensions $500\si{km}\times 200\si{km}$, so an interface height of
@@ -6289,9 +6289,9 @@ topography returns to zero after some time.
 
 \begin{figure}
   \centering
-  \includegraphics[height=0.25\textwidth]{cookbooks/free_surface_with_crust/free-surfaceWC.png}
+  \includegraphics[height=0.25\textwidth]{cookbooks/free_surface_with_crust/doc/free-surfaceWC.png}
   \hfill
-  \includegraphics[height=0.25\textwidth]{cookbooks/free_surface_with_crust/Topography.png}
+  \includegraphics[height=0.25\textwidth]{cookbooks/free_surface_with_crust/doc/Topography.png}
   \caption{\it Adding a viscous crust to a model with surface topography. The
   thermal anomaly spreads horizontally as it collides with the highly viscous crust (left). The addition of a crustal layer both dampens and delays the appearance of the topographic maximum and minimum (right). }
   \label{fig:freesurfaceWC}
@@ -6371,10 +6371,10 @@ one inside and zero outside the sphere, and assigning a compositional dependence
 to the viscosity and density. We run only a single time step for this benchmark.
 This is all modeled in the following input file that can also be found in
 \url{cookbooks/sinker-with-averaging/sinker-with-averaging.prm}:
-\lstinputlisting[language=prmfile]{cookbooks/sinker-with-averaging/full.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/sinker-with-averaging/doc/full.prm.out}
 
 The type of averaging on each cell is chosen using this part of the input file:
-\lstinputlisting[language=prmfile]{cookbooks/sinker-with-averaging/harmonic.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/sinker-with-averaging/doc/harmonic.prm.out}
 For the various different averaging options, and for different levels of mesh
 refinement, Fig.~\ref{fig:sinker-with-averaging-pressure} shows
 pressure plots that illustrate the problem with oscillations of the discrete
@@ -6517,7 +6517,7 @@ actually allowed for discontinuous pressures. This is in fact possible: We can
 use a finite element in which the pressure space contains piecewise constants
 (see Section~\ref{parameters:Discretization}). To do so, one simply needs to add
 the following piece to the input file:
-\lstinputlisting[language=prmfile]{cookbooks/sinker-with-averaging/conservative.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/sinker-with-averaging/doc/conservative.prm.out}
 Disappointingly, however, this makes no real difference: the pressure
 oscillations are no better (maybe even worse) than for the standard Stokes
 element we use, as shown in
@@ -6641,15 +6641,15 @@ The above plugin can be compiled with \texttt{cmake . \&\& make} in the
 as an ``Additional shared library.'' By setting parameters like those shown below,
 it is possible to produce many interesting flow fields such as the ones visualized in
 (Figure~\ref{fig:prescribed-velocity}).
-\lstinputlisting[language=prmfile]{cookbooks/prescribed_velocity/minimal.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/prescribed_velocity/doc/minimal.prm.out}
 
 \begin{figure}
     \centering
   \subfigure[]{
-    \includegraphics[width=.48\textwidth]{cookbooks/prescribed_velocity/corner_flow.png}}
+    \includegraphics[width=.48\textwidth]{cookbooks/prescribed_velocity/doc/corner_flow.png}}
   ~
   \subfigure[]{
-    \includegraphics[width=.48\textwidth]{cookbooks/prescribed_velocity/circle.png}}
+    \includegraphics[width=.48\textwidth]{cookbooks/prescribed_velocity/doc/circle.png}}
     \caption{Examples of flows with prescribed internal velocities, as described in Section \ref{sec:prescribed-velocities}.}
     \label{fig:prescribed-velocity}
 \end{figure}
@@ -6671,17 +6671,17 @@ This feature can be turned on by setting the \hyperref[parameters:Discretization
 To show how this can be used in practice, let us consider the simple convection in a quarter of a 2d annulus cookbook in Section \ref{sec:shell-simple-2d}, a radial compositional field was added to help show the advantages of using the artificial viscosity smoothing feature.
   
 By applying the following changes shown below to the parameters of the already existing file \begin{verbatim}cookbooks/shell_simple_2d.prm, \end{verbatim} 
-\lstinputlisting[language=prmfile]{cookbooks/shell_simple_2d_smoothing/shell_simple_2d_smoothing.part.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/shell_simple_2d_smoothing/doc/shell_simple_2d_smoothing.part.prm.out}
 it is possible to produce pictures of the simple convection in a quarter of a 2d annulus such as the ones visualized in
 Figure~\ref{fig:smoothing}.
 
 \begin{figure}
     \centering
   \subfigure[]{
-    \includegraphics[width=.48\textwidth]{cookbooks/shell_simple_2d_smoothing/with_smoothing.png}}
+    \includegraphics[width=.48\textwidth]{cookbooks/shell_simple_2d_smoothing/doc/with_smoothing.png}}
   ~
   \subfigure[]{
-    \includegraphics[width=.48\textwidth]{cookbooks/shell_simple_2d_smoothing/without_smoothing.png}}
+    \includegraphics[width=.48\textwidth]{cookbooks/shell_simple_2d_smoothing/doc/without_smoothing.png}}
     \caption{Artificial viscosity smoothing: Example of the output of two similar runs.  The run on the left has the artificial viscosity smoothing turned on and the run on the right does not, as described in Section \ref{sec:artificial-viscosity-smoothing}.}
     \label{fig:smoothing}
 \end{figure}
@@ -6721,11 +6721,11 @@ with \texttt{cmake . \&\& make} in the \url{cookbooks/finite_strain} directory.
 It can be loaded in a parameter file as an ``Additional shared library'', and selected as material
 model. As it is derived from the ``simple'' material model, all input parameters for the material
 properties are read in from the subsection \texttt{Simple model}. 
-\lstinputlisting[language=prmfile]{cookbooks/finite_strain/finite_strain_part.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/finite_strain/doc/finite_strain.part.prm.out}
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.75\textwidth]{cookbooks/finite_strain/finite_strain.pdf}
+    \includegraphics[width=0.75\textwidth]{cookbooks/finite_strain/doc/finite_strain.pdf}
     \caption{Accumulated finite strain in an example convection model, as described in Section 
              \ref{sec:finite-strain} at a time of 67.6~Ma. Top panel: Temperature distribution. Bottom panel:
              Natural strain distribution. Additional black crosses are the scaled eigenvectors of the
@@ -6801,7 +6801,7 @@ We will here use a drawing of a jellyfish located in \url{cookbooks/geomio/jelly
 have already been assigned to each path (Figure~\ref{fig:jelly-picture}). 
 \begin{figure}[tb]
     \centering
-    \includegraphics[width=0.2\textwidth]{cookbooks/geomio/jellyfish.pdf}
+    \includegraphics[width=0.2\textwidth]{cookbooks/geomio/doc/jellyfish.pdf}
     \caption{Vector drawing of a jellyfish.}
     \label{fig:jelly-picture}
 \end{figure}
@@ -6810,35 +6810,35 @@ have already been assigned to each path (Figure~\ref{fig:jelly-picture}).
 After geomIO is initialized in MATLAB, we \href{http://geomio-doc.bitbucket.org/tuto2D.html#assigning-phase-to-markers}
 {run geomIO as described in the documentation}, loading the default options and then specifying all the option we want to 
 change, such as the path to the input file, or the resolution: 
-\lstinputlisting[language=matlab]{cookbooks/geomio/run_geomio.part1.m}
+\lstinputlisting[language=matlab]{cookbooks/geomio/doc/run_geomio.part1.m}
 You can view all of the options available by typing \texttt{opt} in MATLAB. 
 
 In the next step we create the grid that is used for the coordinates in the \texttt{ascii data} initial conditions file 
 and assign a phase to each grid point: 
-\lstinputlisting[language=matlab]{cookbooks/geomio/run_geomio.part2.m}
+\lstinputlisting[language=matlab]{cookbooks/geomio/doc/run_geomio.part2.m}
 You can plot the \texttt{Phase} variable in MATLAB to see if the drawing was read in and all phases are assigned correctly 
 (Figure~\ref{fig:jelly-plot}). 
 \begin{figure}[tb]
     \centering
-    \includegraphics[width=0.45\textwidth]{cookbooks/geomio/jelly.png}
+    \includegraphics[width=0.45\textwidth]{cookbooks/geomio/doc/jelly.png}
     \caption{Plot of the \texttt{Phase} variable in MATLAB.}
     \label{fig:jelly-plot}
 \end{figure}
 Finally, we want to write output in a format that can be read in by \aspect{}'s \texttt{ascii data} compositional
 initial conditions plugin. We write the data into the file \texttt{jelly.txt}:
-\lstinputlisting[language=matlab]{cookbooks/geomio/save_file_as_txt.m}
+\lstinputlisting[language=matlab]{cookbooks/geomio/doc/save_file_as_txt.m}
 
 To read in the file we just created (a copy is located in \aspect{}'s data directory), 
 we set up a model with a box geometry with the same extents we specified for the drawing in px 
 and one compositional field. We choose the \texttt{ascii data} compositional initial conditions and specify that we 
 want to read in our jellyfish. The relevant parts of the input file are listed below:
-\lstinputlisting[language=prmfile]{cookbooks/geomio/geomIO.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/geomio/doc/geomIO.prm.out}
 
 If we look at the output in \texttt{ParaView}, we can see our jellyfish, with the mesh refined at the 
 boundaries between the different phases (Figure~\ref{fig:jelly-paraview}). 
 \begin{figure}[tb]
     \centering
-    \includegraphics[width=0.55\textwidth]{cookbooks/geomio/jelly-paraview.pdf}
+    \includegraphics[width=0.55\textwidth]{cookbooks/geomio/doc/jelly-paraview.pdf}
     \caption{\aspect{} model output of the jellyfish and corresponding mesh in ParaView.}
     \label{fig:jelly-paraview}
 \end{figure}
@@ -6868,28 +6868,28 @@ In the first syntax, both the true and false expression are evaluated (even thou
 \texttt{if ((x>0.0) \&\& (x<=xtr))  then T-sub else (if (x>xtr) then T-ov else Tm)}\\
 where T-sub is the function for the temperature of the subducting plate and T-ov is the function for the temperature of the
 overriding plate.
-\lstinputlisting[language=prmfile]{cookbooks/muparser-temperature-example/temperature.part.prm}
+\lstinputlisting[language=prmfile]{cookbooks/muparser-temperature-example/doc/temperature.part.prm.out}
 Notice also that the boundary conditions for the temperature are defined in a separate subsection and depend on the geometry.
 The boundary conditions are insulating (zero flux) side-walls and fixed temperature at the top and bottom. Figure \ref{lazy-expression-tempic} shows the initial temperature on the full domain.
 \begin{figure}
 \centering
-\includegraphics[width=0.8\textwidth]{cookbooks/muparser-temperature-example/initial_temperature.png}
+\includegraphics[width=0.8\textwidth]{cookbooks/muparser-temperature-example/doc/initial_temperature.png}
 \caption{\it Initial temperature condition for the lazy-expression syntax cookbook. \label{lazy-expression-tempic}}
 \end{figure}
 
 The structure and refinement of the mesh are determined in two subsections of the parameter file. First, because the model domain is not a square, it is necessary to subdivide the domain into sections that are equidimensional (or as close as possible): this is done using the \texttt{repetitions} parameters in the \texttt{Geometry} section. In this case because the model domain has an aspect ratio of 5:1, we use 5 repetitions in the x direction, dividing the domain into 5 equidimensional elements each 1000 by 1000 km.
-\lstinputlisting[language=prmfile]{cookbooks/muparser-temperature-example/repetitions.part.prm}
+\lstinputlisting[language=prmfile]{cookbooks/muparser-temperature-example/doc/repetitions.part.prm.out}
 Further refinements will divide each sub-region multiple times keeping the aspect ratio of the sub-region. In this case, we refine the elements in each subregion 3 more times. We then use the \texttt{minimum refinement function} strategy and use the if-then-else statement in the function expression to refine 4 more times to a refinement level of 7, but only where the depth is less than 150 km. Appropriate values of the minimum refinement level in this function expression could be the sum of initial global refinement level (3) and initial adaptive refinement level (4) in the 'then' statement (i.e., 7 here) and the value of initial global refinement in the 'else' statement.
-\lstinputlisting[language=prmfile]{cookbooks/muparser-temperature-example/mesh-refinement.part.prm}
+\lstinputlisting[language=prmfile]{cookbooks/muparser-temperature-example/doc/mesh-refinement.part.prm.out}
 Figure \ref{lazy-expression-tempic-zoom} zooms in on the region where the two plates meet and shows the temperature on a wireframe highlighting the element size refinement. Notice that the mesh refinement algorithm automatically adjusts the element size between the region that is specific to be a level 7 and the region at level 3 to create a smooth transition in element size.
 \begin{figure}
 \centering
-\includegraphics[width=0.5\textwidth]{cookbooks/muparser-temperature-example/initial_temperature_on_mesh_zoom.png}
+\includegraphics[width=0.5\textwidth]{cookbooks/muparser-temperature-example/doc/initial_temperature_on_mesh_zoom.png}
 \caption{\it Initial temperature condition for the lazy-expression syntax cookbook within the region where the two plates meet. The wireframe shows the element size refinement. \label{lazy-expression-tempic-zoom}}
 \end{figure}
 
 Finally, in order to just test whether the initial temperature structure has been properly defined, it is helpful to run the model for a single time-step and without actually waiting for the solvers to converge. In order to do this, the \texttt{End time} can be set to zero. If the model is very large (lots of refinement) or there are large viscosity jumps that take longer to converge in the Stokes solver, it can also be useful to set the solver tolerance parameters to large values as noted below. However, remember that in that case the solution will not be converged -- it is only useful for checking that the initial condition is set correctly.
-\lstinputlisting[language=prmfile]{cookbooks/muparser-temperature-example/check-initial-condition.part.prm}
+\lstinputlisting[language=prmfile]{cookbooks/muparser-temperature-example/doc/check-initial-condition.part.prm.out}
 
 \subsection{Geophysical setups}
 \label{sec:cookbooks-geophysical}
@@ -7000,11 +7000,11 @@ player window to select the highest resolution to see all the details of this
 video.}
 
 \begin{figure}[tb]
-\includegraphics[width=0.32\textwidth]{cookbooks/shell_simple_2d/x-movie0000.png}
+\includegraphics[width=0.32\textwidth]{cookbooks/shell_simple_2d/doc/x-movie0000.png}
 \hfill
-\includegraphics[width=0.32\textwidth]{cookbooks/shell_simple_2d/x-movie0008.png}
+\includegraphics[width=0.32\textwidth]{cookbooks/shell_simple_2d/doc/x-movie0008.png}
 \hfill
-\includegraphics[width=0.32\textwidth]{cookbooks/shell_simple_2d/x-movie1000.png}
+\includegraphics[width=0.32\textwidth]{cookbooks/shell_simple_2d/doc/x-movie1000.png}
 \caption{\it Simple convection in a quarter of an annulus: Snapshots of the
 temperature field at times $t=0$, $t=\num{1.2e7}$ years (time step 2135), and
 $t=10^9$ years (time step 25,662). The bottom right part of each figure shows an
@@ -7015,7 +7015,7 @@ overlay of the mesh used during that time step.}
 Let us just start by showing the input file (which you can find in
 \url{cookbooks/shell_simple_2d.prm}):
 
-\lstinputlisting[language=prmfile]{cookbooks/shell_simple_2d/shell.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/shell_simple_2d/doc/shell.prm.out}
 
 In the following, let us pick apart this input file:
 \begin{enumerate}
@@ -7164,9 +7164,9 @@ overturning has been mixed sufficiently to allow plumes to rise or sink through
 the entire depth of the mantle.
 
 \begin{figure}[tb]
-\includegraphics[width=0.48\textwidth]{cookbooks/shell_simple_2d/rms.png}
+\includegraphics[width=0.48\textwidth]{cookbooks/shell_simple_2d/doc/rms.png}
 \hfill
-\includegraphics[width=0.48\textwidth]{cookbooks/shell_simple_2d/depth_average_temperature.png}
+\includegraphics[width=0.48\textwidth]{cookbooks/shell_simple_2d/doc/depth_average_temperature.png}
 \caption{\it Simple convection in a quarter of an annulus. Left: Root mean
 square values of the velocity field. The initial spike (off the scale) is due to
 the overturning of the unstable layering of the temperature. Convection is suppressed for the
@@ -7248,9 +7248,9 @@ other.
 
 
 \begin{figure}[tb]
-  \includegraphics[width=.48\textwidth]{cookbooks/shell_simple_2d/heat-flux.png}
+  \includegraphics[width=.48\textwidth]{cookbooks/shell_simple_2d/doc/heat-flux.png}
   \hfill
-  \includegraphics[width=0.48\textwidth]{cookbooks/shell_simple_2d/heat-flux-noshear.png}
+  \includegraphics[width=0.48\textwidth]{cookbooks/shell_simple_2d/doc/heat-flux-noshear.png}
   \caption{\it Simple convection in a quarter of an annulus. Left: Heat flux
   through the core-mantle and mantle-air boundaries of the domain for the
   model with shear heating. Right: Same for a model without shear heating.}
@@ -7259,9 +7259,9 @@ other.
 
 
 \begin{figure}[tb]
-  \includegraphics[width=.48\textwidth]{cookbooks/shell_simple_2d/avg-temperature.png}
+  \includegraphics[width=.48\textwidth]{cookbooks/shell_simple_2d/doc/avg-temperature.png}
   \hfill
-  \includegraphics[width=0.48\textwidth]{cookbooks/shell_simple_2d/avg-temperature-noshear.png}
+  \includegraphics[width=0.48\textwidth]{cookbooks/shell_simple_2d/doc/avg-temperature-noshear.png}
   \caption{\it Simple convection in a quarter of an annulus. Left: Average
   temperature throughout the model for the
   model with shear heating. Right: Same for a model without shear heating.}
@@ -7295,7 +7295,7 @@ of Figs.~\ref{fig:simple-shell-2d-heatflux}
 and \ref{fig:simple-shell-2d-temperature} show heat fluxes and average
 temperatures for a model where we have switched off the shear heating by setting
 
-\lstinputlisting[language=prmfile]{cookbooks/shell_simple_2d/shearheat.part.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/shell_simple_2d/doc/shearheat.part.prm.out}
 
 Indeed, doing so leads to a model where the heat flux from core to mantle is
 always positive, and where the average temperature strictly drops!
@@ -7322,7 +7322,7 @@ corresponding movie can be found at \url{http://youtu.be/j63MkEc0RRw}.
 
 \begin{figure}[tb]
 \centering
-\includegraphics[width=0.7\textwidth]{cookbooks/shell_simple_3d/x-movie0700.png}
+\includegraphics[width=0.7\textwidth]{cookbooks/shell_simple_3d/doc/x-movie0700.png}
 \caption{\it Convection in a spherical shell: Snapshot of
 isosurfaces of the temperature field at time $t\approx \num{1.06e9}$ years
 with a quarter of the geometry cut away. The surface shows
@@ -7339,7 +7339,7 @@ with comments (the full input file can also be found in
 \url{cookbooks/shell_simple_3d.prm}). Let us start from the top where everything
 looks the same except that we set the dimension to 3:
 
-\lstinputlisting[language=prmfile]{cookbooks/shell_simple_3d/part1.part.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/shell_simple_3d/doc/part1.part.prm.out}
 
 The next section concerns the geometry. The geometry model remains unchanged at
 ``spherical shell'' but we omit the opening angle of 90 degrees as we would like
@@ -7348,7 +7348,7 @@ boundaries (the inner one has indicator zero, the outer one indicator one) and
 consequently these are the only ones we need to list in the ``Boundary velocity model''
 section:
 
-\lstinputlisting[language=prmfile]{cookbooks/shell_simple_3d/part2.part.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/shell_simple_3d/doc/part2.part.prm.out}
 
 Next, since we convinced ourselves that the temperature range from 973 to 4273
 was too large given that we do not take into account adiabatic effects in this
@@ -7362,7 +7362,7 @@ core mantle boundary than at the surface). What the real value for this
 temperature difference is, is unclear from current research, but it is thought
 to be around 1000 Kelvin, so let us choose these values.
 
-\lstinputlisting[language=prmfile]{cookbooks/shell_simple_3d/part3.part.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/shell_simple_3d/doc/part3.part.prm.out}
 
 The second component to this is that we found that without adiabatic effects, an
 initial temperature profile that decreases the temperature from the inner to the
@@ -7373,14 +7373,14 @@ we opt to just assume a constant temperature in the middle between the inner and
 outer temperature boundary values and let the simulation find the exact shape of
 the boundary layers itself:
 
-\lstinputlisting[language=prmfile]{cookbooks/shell_simple_3d/part4.part.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/shell_simple_3d/doc/part4.part.prm.out}
 
 As before, we need to determine how many mesh refinement steps we want. In 3d,
 it is simply not possible to have as much mesh refinement as in 2d, so we choose
 the following values that lead to meshes that have, after an initial transitory
 phase, between 1.5 and 2.2 million cells and 50--75 million unknowns:
 
-\lstinputlisting[language=prmfile]{cookbooks/shell_simple_3d/amr.part.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/shell_simple_3d/doc/amr.part.prm.out}
 
 Second to last, we specify what we want \aspect{} to do with the solutions it
 computes. Here, we compute the same statistics as before, and we again generate
@@ -7391,7 +7391,7 @@ all of these into a single file to keep file systems reasonably happy. Likewise,
 to accommodate the large amount of data, we output depth averaged fields in VTU
 format since it is easier to visualize:
 
-\lstinputlisting[language=prmfile]{cookbooks/shell_simple_3d/postprocess.part.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/shell_simple_3d/doc/postprocess.part.prm.out}
 
 Finally, we realize that when we run very large parallel computations, nodes go
 down or the scheduler aborts programs because they ran out of time. With
@@ -7399,7 +7399,7 @@ computations this big, we cannot afford to just lose the results, so we
 checkpoint the computations every 50 time steps and can then resume it at the
 last saved state if necessary (see Section~\ref{sec:checkpoint-restart}):
 
-\lstinputlisting[language=prmfile]{cookbooks/shell_simple_3d/checkpoint.part.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/shell_simple_3d/doc/checkpoint.part.prm.out}
 
 
 
@@ -7445,9 +7445,9 @@ TW for the core-mantle boundary, and an estimated heat loss due to cooling of
 the mantle of 7--15 TW (values again taken from Wikipedia).
 
 \begin{figure}
-  \includegraphics[width=0.48\textwidth]{cookbooks/shell_simple_3d/heatflux.png}
+  \includegraphics[width=0.48\textwidth]{cookbooks/shell_simple_3d/doc/heatflux.png}
   \hfill
-  \includegraphics[width=0.48\textwidth]{cookbooks/shell_simple_3d/velocities.png}
+  \includegraphics[width=0.48\textwidth]{cookbooks/shell_simple_3d/doc/velocities.png}
   \caption{\it Evaluating the 3d spherical shell model. Left: Outward heat
   fluxes through the inner and outer boundaries of the shell. Right: Average
   and maximal velocities in the mantle.}
@@ -7480,7 +7480,7 @@ shell geometry model and a simple material model.
 The relevant section in the input file that determines the postprocessed
 output is as follows:
 
-\lstinputlisting[language=prmfile]{cookbooks/shell_3d_postprocess/shell_3d_postprocess.part.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/shell_3d_postprocess/doc/shell_3d_postprocess.part.prm.out}
 
 This initial condition results in distinct flow cells that cause local up- and
 downwellings (Figure~\ref{fig:pp}). This flow deflects the top and bottom boundaries
@@ -7526,7 +7526,7 @@ expansion and can therefore only be used with the 3D spherical shell geometry mo
  
 
 \begin{figure}
-  \includegraphics[width=\textwidth]{cookbooks/shell_3d_postprocess/postprocess_cookbook-01.png}
+  \includegraphics[width=\textwidth]{cookbooks/shell_3d_postprocess/doc/postprocess_cookbook-01.png}
   \hfill
   \caption{\it Panel (a) shows an equatorial cross section of the temperature distribution and 
   resulting flow from a harmonic perturbation. Panel (b) shows the resulting geoid, and panels
@@ -7559,7 +7559,7 @@ interpolation. The input files \texttt{S20RTS.sph} and \texttt{S40RTS.sph} were
 downloaded from \url{http://www.earth.lsa.umich.edu/~jritsema/Research.html} 
 and have the following format (this example is S20RTS): 
 
-\lstinputlisting[language=prmfile]{cookbooks/initial-condition-S20RTS/S20RTS.input.sph}
+\lstinputlisting[language=prmfile]{cookbooks/initial-condition-S20RTS/doc/S20RTS.input.sph}
 
 The first number in the first line denotes the maximum degree. This is followed in 
 the next line by the spherical harmonic coefficients from the surface down to the 
@@ -7598,7 +7598,7 @@ for a 3D spherical shell with Earth-like dimensions.
 
 The relevant section in the input file is as follows:
 
-\lstinputlisting[language=prmfile]{cookbooks/initial-condition-S20RTS/S20RTS.part.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/initial-condition-S20RTS/doc/S20RTS.part.prm.out}
 
 For this initial condition model we need to first specify the data directory in which 
 the input files are located as well as the initial condition file (S20RTS.sph or 
@@ -7691,7 +7691,7 @@ and gravity anomalies from ASPECT and a spectral based code shows good agreement
 (see \texttt{benchmarks/spectral-comparison/} for figure and details).
 
 \begin{figure}
-  \includegraphics[width=\textwidth]{cookbooks/initial-condition-S20RTS/Fig_cookbook_V4-01.png}
+  \includegraphics[width=\textwidth]{cookbooks/initial-condition-S20RTS/doc/Fig_cookbook_V4-01.png}
   \hfill
   \caption{\it Panels (a) and (b) show the density distribution as prescribed from the shear
   wave velocity model S20RTS and the resulting flow for a global refinement of 4. This
@@ -7704,7 +7704,7 @@ and gravity anomalies from ASPECT and a spectral based code shows good agreement
 \end{figure}
 
 \begin{figure}
-  \includegraphics[width=\textwidth]{cookbooks/initial-condition-S20RTS/Fig_cookbook_V4-02.png}
+  \includegraphics[width=\textwidth]{cookbooks/initial-condition-S20RTS/doc/Fig_cookbook_V4-02.png}
   \hfill
   \caption{\it The first row of this figure shows the surface dynamic topography resulting 
   from the flow shown in Figure~\ref{fig:ic-1} for a global 
@@ -7829,7 +7829,7 @@ through the Earth with realistic boundary conditions.
 
 The relevant section of the input file is then as follows:
 
-\lstinputlisting[language=prmfile]{cookbooks/gplates/gplates.part.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/gplates/doc/gplates.part.prm.out}
 
 In the ``Boundary velocity model'' subsection the user prescribes the boundary that is supposed to
 use the GPlates plugin. Although currently nothing forbids the user to use GPlates plugin for other
@@ -7852,9 +7852,9 @@ The top right plot of Fig.~\ref{fig:gv-1} shows an example of three independent
 two-dimensional computations of the same reduced resolution. The models were prescribed 
 to be orthogonal slices by setting:
 
-\lstinputlisting[language=prmfile]{cookbooks/gplates/slice1.part.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/gplates/doc/slice1.part.prm.out}
 and
-\lstinputlisting[language=prmfile]{cookbooks/gplates/slice2.part.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/gplates/doc/slice2.part.prm.out}
 
 
 The results of these models are plotted simultaneously in a single three-dimensional figure
@@ -7884,7 +7884,7 @@ as a proof-of-concept what is possible with the dimension independent approach o
 \aspect{} and its plugins.
 
 \begin{figure}
-  \includegraphics[width=\textwidth]{cookbooks/gplates/gplates-comparison.png}
+  \includegraphics[width=\textwidth]{cookbooks/gplates/doc/gplates-comparison.png}
   \hfill
   \caption{\it Using GPlates for velocity boundary conditions: The top left figure shows
   the results of a three-dimensional model using the present day plate velocities
@@ -7942,7 +7942,7 @@ gravity, thermal expansivity, specific heat capacity and compressibility. Using 
 to generate the reference profile has the advantage that all the material property data 
 are consistent, for example, the gravity profile is computed using the reference density.
 \begin{figure}
-  \includegraphics[width=\textwidth]{cookbooks/burnman/reference_profile.pdf}
+  \includegraphics[width=\textwidth]{cookbooks/burnman/doc/reference_profile.pdf}
   \caption{\it Reference profile generated using BurnMan.}
   \label{fig:burnman-reference-profile}
 \end{figure}
@@ -7979,20 +7979,20 @@ and between transition zone and lower mantle). The prefactors used here lead to 
 asthenosphere, and high viscosities in the lower mantle. To make sure that these viscosity jumps 
 do not lead to numerical problems in our computation (see Section~\ref{sec:sinker-with-averaging}), 
 we also use harmonic averaging of the material properties.
-\lstinputlisting[language=prmfile]{cookbooks/burnman/material_model.part.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/burnman/doc/material_model.part.prm.out}
 As the reference profile has a depth dependent density and also contains data for the compressibility, 
 this material model supports compressible convection models. 
 
 For the adiabatic conditions and the gravity model, we also specify that we want to use the respective
 \texttt{ascii data} plugin, and provide the data directory in the same way as for the material 
 model. The gravity model automatically uses the same file as the adiabatic conditions model.
-\lstinputlisting[language=prmfile]{cookbooks/burnman/adiabatic_conditions.part.prm.out}
-\lstinputlisting[language=prmfile]{cookbooks/burnman/gravity_model.part.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/burnman/doc/adiabatic_conditions.part.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/burnman/doc/gravity_model.part.prm.out}
 
 To make use of the reference state we just imported from BurnMan, we choose a formulation of the 
 equations that employs a reference state and compressible convection, in this case the anelastic 
 liquid approximation (see Section~\ref{sec:ala}). 
-\lstinputlisting[language=prmfile]{cookbooks/burnman/formulation.part.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/burnman/doc/formulation.part.prm.out}
 This means that the reference profiles are used for all material properties in the model, except for
 the density in the buoyancy term (on the right-hand side of the force balance equation~\eqref{eq:stokes-1}, 
 which in the limit of the anelastic liquid approximation becomes Equation~\eqref{eq:stokes-ALA-1}). 
@@ -8013,9 +8013,9 @@ the data we provided in the \url{data/adiabatic-conditions/ascii-data/isentrope_
 is used in our model. 
 
 \begin{figure}
-  \includegraphics[width=0.48\textwidth]{cookbooks/burnman/temperature.png}
+  \includegraphics[width=0.48\textwidth]{cookbooks/burnman/doc/temperature.png}
   \hfill
-  \includegraphics[width=0.48\textwidth]{cookbooks/burnman/viscosity.png}
+  \includegraphics[width=0.48\textwidth]{cookbooks/burnman/doc/viscosity.png}
   \caption{\it Compressible convection in a 2d spherical shell, using a reference profile exported 
                form BurnMan, which is based on the Birch-Murnaghan equation of state. The figure shows the
                state at the end of the model evolution over 260\,Ma.}
@@ -8032,7 +8032,7 @@ instead of the reference density is used. For the TALA, this density only depend
 (and not on the dynamic pressure, as in the ALA). Hence, we have to make this change in the appropriate 
 place in the material model (while keeping the formulation of the equations set to 
 \texttt{anelastic liquid approximation}):
-\lstinputlisting[language=prmfile]{cookbooks/burnman/tala.part.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/burnman/doc/tala.part.prm.out}
 
 We now want to compare these commonly used approximations to the ``isothermal compression approximation''
 (see Section~\ref{sec:ica}) that is unique to \aspect{}. It does not require a reference state and uses 
@@ -8043,7 +8043,7 @@ dependence of material properties on temperature and pressure in addition to tha
 deviations from the reference profile in both temperature and pressure. As this requires a modification 
 of the equations outside of the material model, we have to specify this change in the 
 \texttt{Formulation} (and remove the lines for the use of TALA discussed above). 
-\lstinputlisting[language=prmfile]{cookbooks/burnman/formulation_ica.part.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/burnman/doc/formulation_ica.part.prm.out}
 As the ``isothermal compression approximation'' is also \aspect{}'s default for compressible models, 
 the same model setup can also be achieved by just removing the lines that specify which \texttt{Formulation}
 should be used. 
@@ -8055,7 +8055,7 @@ the state of the model -- such as the root mean square velocity -- are similar b
 
 \begin{figure}
 \centering
-  \includegraphics[width=0.95\textwidth]{cookbooks/burnman/comparison.pdf}
+  \includegraphics[width=0.95\textwidth]{cookbooks/burnman/doc/comparison.pdf}
   \caption{\it Comparison between the anelastic liquid approximation, 
                the truncated anelastic liquid approximation 
                and the isothermal compression approximation, 
@@ -8066,7 +8066,7 @@ the state of the model -- such as the root mean square velocity -- are similar b
 
 \begin{figure}
 \centering
-  \includegraphics[width=0.5\textwidth]{cookbooks/burnman/vrms.pdf}
+  \includegraphics[width=0.5\textwidth]{cookbooks/burnman/doc/vrms.pdf}
   \caption{\it Comparison between the anelastic liquid approximation, 
                the truncated anelastic liquid approximation 
                and the isothermal compression approximation,
@@ -8120,10 +8120,10 @@ In particular, the following sections of the input file are important to reprodu
     get very close. See Figure~\ref{fig:md-1} for an approximate reproduction of the
     original figure.}
 
-\lstinputlisting[language=prmfile]{cookbooks/morency_doin/morency_doin.part.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/morency_doin/doc/morency_doin.part.prm.out}
 
 \begin{figure}[h!]
-  \includegraphics[width=\textwidth]{cookbooks/morency_doin/morency_doin_2004_fig1.pdf}
+  \includegraphics[width=\textwidth]{cookbooks/morency_doin/doc/morency_doin_2004_fig1.pdf}
   \caption{\it Approximate reproduction of figure 1 from \cite{MD04} using the `morency doin'
   material model with almost all default parameters. Note the low-viscosity Moho, enabled by
   the low activation energy of the crustal component.}
@@ -8151,7 +8151,7 @@ material model (see Section \ref{parameters:Material_20model}) in the
 The layer is assumed to have dimensions of 80km $\times$ 16km and to have a density  $\rho=2800$ kg/m$^3$. 
 The plasticity parameters are specified as follows:
 
-\lstinputlisting[language=prmfile]{cookbooks/crustal_deformation/crustal_model_2D_part1.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/crustal_deformation/doc/crustal_model_2D_part1.prm.out}
 
 The yield strength $\sigma_y$ is a function of pressure, cohesion and angle of friction 
 (see Drucker-Prager material model in Section \ref{parameters:Material_20model}),
@@ -8170,7 +8170,7 @@ we avoid dividing by zero by setting the strain rate to {\tt Reference strain ra
 The top boundary is a free surface while the left, right and bottom boundaries are subjected 
 to the following boundary conditions:
 
-\lstinputlisting[language=prmfile]{cookbooks/crustal_deformation/crustal_model_2D_part2.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/crustal_deformation/doc/crustal_model_2D_part2.prm.out}
 
 Note that compressive boundary conditions are simply achieved by reversing  
 the sign of the imposed velocity.
@@ -8182,11 +8182,11 @@ For small deformations, these directions are almost the same, but in this exampl
 are quite large. We have found that when the deformation is large, advecting the surface vertically 
 results in a better behaved mesh, so we set the following in the free surface subsection:
 
-\lstinputlisting[language=prmfile]{cookbooks/crustal_deformation/crustal_model_2D_part3.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/crustal_deformation/doc/crustal_model_2D_part3.prm.out}
 
 We also make use of the strain rate-based mesh refinement plugin:
 
-\lstinputlisting[language=prmfile]{cookbooks/crustal_deformation/crustal_model_2D_part4.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/crustal_deformation/doc/crustal_model_2D_part4.prm.out}
 
 Setting 
 {\tt   set Initial adaptive refinement        = 4}
@@ -8203,7 +8203,7 @@ shown in Fig. (\ref{fig:extcompr}).
 
 \begin{figure}
    \centering
-   \includegraphics[width=0.7\textwidth]{cookbooks/crustal_deformation/grids.png}
+   \includegraphics[width=0.7\textwidth]{cookbooks/crustal_deformation/doc/grids.png}
    \caption{\it Mesh evolution during the first timestep (refinement is based on strain rate).}
    \label{fig:meshes}
 \end{figure}
@@ -8216,7 +8216,7 @@ $35\degree$ in compression, both of which correspond to the reported Arthur angl
 
 \begin{figure}
   \centering
-  \includegraphics[width=\textwidth]{cookbooks/crustal_deformation/both.png}
+  \includegraphics[width=\textwidth]{cookbooks/crustal_deformation/doc/both.png}
   \caption{\it Finite element mesh, velocity, viscosity and strain rate fields
   in the case of extensional boundary conditions (top) and compressive boundary conditions (bottom) at t=500kyr.}
   \label{fig:extcompr}
@@ -8233,7 +8233,7 @@ The domain is now
 $128\times96\times16$km and the boundary conditions are implemented as
 follows:
 
-\lstinputlisting[language=prmfile]{cookbooks/crustal_deformation/crustal_model_3D_part1.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/crustal_deformation/doc/crustal_model_3D_part1.prm.out}
 
 The presence of 
 an offset between the two velocity discontinuity zones leads to a transform 
@@ -8241,7 +8241,7 @@ fault which connects them.
 
 \begin{figure}
   \centering
-  \includegraphics[width=\textwidth]{cookbooks/crustal_deformation/bottombc2.png}
+  \includegraphics[width=\textwidth]{cookbooks/crustal_deformation/doc/bottombc2.png}
   \caption{\it Basal velocity boundary conditions and corresponding 
   strain rate field for the 3D model.} 
   \label{fig:bottombc}
@@ -8254,7 +8254,7 @@ of their initial offset \cite{alht11,alht12,alhf13}.
 
 \begin{figure}
 \centering
-\includegraphics[width=\textwidth]{cookbooks/crustal_deformation/all3D.png}
+\includegraphics[width=\textwidth]{cookbooks/crustal_deformation/doc/all3D.png}
 \caption{\it Finite element mesh, velocity, viscosity and strain rate fields at
 the end of the first time step after one level of strain rate-based adaptive mesh refinement.} 
 \label{fig:ext3D}
@@ -8266,23 +8266,23 @@ the end of the first time step after one level of strain rate-based adaptive mes
 
 In the crustal deformation examples above, the viscosity depends solely on the Drucker Prager yield criterion defined by the cohesion and internal friction angle. While this approximation works reasonably well for the uppermost crust, deeper portions of the lithosphere may undergo either brittle or viscous deformation, with the latter depending on a combination of composition, temperature, pressure and strain-rate. In effect, a combination of the Drucker-Prager and Diffusion dislocation material models is required. The visco-plastic material model is designed to take into account both brittle (plastic) and non-linear viscous deformation, thus providing a template for modeling complex lithospheric processes. Such a material model can be used in \aspect{} using the following set of input parameters: 
 
-\lstinputlisting[language=prmfile]{cookbooks/continental_extension/continental_extension_material_model.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/continental_extension/doc/continental_extension_material_model.prm.out}
 
 This cookbook provides one such example where the continental lithosphere undergoes extension. Notably, the model design follows that of numerous previously published continental extension studies~\cite[and references therein]{Hui11,Bru14,Nal15}.
 
 \paragraph{Continental Extension}
 The 2D Cartesian model spans 400 (x) by 100 (y) km and has a finite element grid with uniform 2 km spacing. Unlike the crustal deformation cookbook (see Section~\ref{sec:cookbooks-crustal-deformation}, the mesh is not refined with time.
 
-\lstinputlisting[language=prmfile]{cookbooks/continental_extension/continental_extension_geometry_mesh.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/continental_extension/doc/continental_extension_geometry_mesh.prm.out}
 
 
 Similar to the crustal deformation examples above, this model contains a free surface. Deformation is driven by constant horizontal ($x$-component) velocities (0.25 cm/yr) on the side boundaries ($y$-velocity component unconstrained), while the bottom boundary has vertical inflow to balance the lateral outflow. The top, and bottom boundaries have fixed temperatures, while the sides are insulating. The bottom boundary is also assigned a fixed composition, while the top and sides are unconstrained.
 
-\lstinputlisting[language=prmfile]{cookbooks/continental_extension/continental_extension_boundary_conditions.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/continental_extension/doc/continental_extension_boundary_conditions.prm.out}
 
 Sections of the lithosphere with distinct properties are represented by compositional fields for the upper crust (20 km thick), lower crust (10 km thick) and mantle lithosphere (70 km thick). A mechanically weak seed within the mantle lithosphere helps localize deformation. Material (viscous flow law parameters, cohesion, internal friction angle) and thermodynamic properties for each compositional field are based largely on previous numerical studies.   Dislocation creep viscous flow parameters are taken from published deformation experiments for wet quartzite \cite{RB04}, wet anorthite \cite{RGWD06} and dry olivine \cite{HK04}. 
 
-\lstinputlisting[language=prmfile]{cookbooks/continental_extension/continental_extension_composition.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/continental_extension/doc/continental_extension_composition.prm.out}
 
 The initial thermal structure, radiogenic heating model and associated thermal properties are consistent with the prescribed thermal boundary conditions and produce a geotherm characteristic of the continental lithosphere. The equations defining the initial geotherm \cite{Cha86} follow the form
 \begin{align}
@@ -8311,17 +8311,17 @@ as temperature variations associated with lithospheric thinning exert a first-or
  
 \begin{figure}
 \centering
-\includegraphics[width=\textwidth]{cookbooks/continental_extension/continental_extension_cookbook_strainrate_5e6yr.png}
+\includegraphics[width=\textwidth]{cookbooks/continental_extension/doc/continental_extension_cookbook_strainrate_5e6yr.png}
 \caption{\it Strain rate (in units of $s^{-1}$) after \num{5e6} years of extension. The black line marks the 550 $\degree C$ isotherm.} 
 \label{fig:continental_extension_cookbook_strainrate_5e6yr}
 \end{figure}
 \begin{figure}
-\includegraphics[width=\textwidth]{cookbooks/continental_extension/continental_extension_cookbook_composition_5e6yr.png}
+\includegraphics[width=\textwidth]{cookbooks/continental_extension/doc/continental_extension_cookbook_composition_5e6yr.png}
 \caption{\it Compositional field after \num{5e6} years of extension. The black line marks the 550 $\degree C$ isotherm.} 
 \label{fig:continental_extension_cookbook_composition_5e6yr}
 \end{figure}
 \begin{figure}
-\includegraphics[width=\textwidth]{cookbooks/continental_extension/continental_extension_cookbook_strainrate_highres_10e6yr.png}
+\includegraphics[width=\textwidth]{cookbooks/continental_extension/doc/continental_extension_cookbook_strainrate_highres_10e6yr.png}
 \caption{\it Strain rate (in units of $s^{-1}$) after \num{10e6} years of extension. The black line marks the 550 $\degree C$ isotherm. The numerical resolution ($1 \si{km}$) is double that of the previous model.} 
 \label{fig:continental_extension_cookbook_strainrate_highres_10e6yr}
 \end{figure}
@@ -8406,7 +8406,7 @@ Three main areas can be distinguished: the stable area, the plume convection are
 
 \begin{figure}[h]
 \begin{center}
-\includegraphics[height=0.57\textwidth]{cookbooks/inner_core_convection/Diagstab.pdf}
+\includegraphics[height=0.57\textwidth]{cookbooks/inner_core_convection/doc/Diagstab.pdf}
 	\caption{Stability diagram for convection in a sphere with phase change at its outer boundary. The stability curves for the first unstable mode (l=1) and the translation are obtained from \cite{Deguen2013}. Each dot (no convection) and triangle (blue: translation, yellow: plume convection) is one model run done with ASPECT. The highest the Ra and P are, the more refinement is required (see text).}
     \label{fig:diagramme-regime}
 \end{center}
@@ -8415,27 +8415,27 @@ Three main areas can be distinguished: the stable area, the plume convection are
 
 Changing the values of $Ra$ and $\mathcal{P}$ in the input file allows switching between the different regimes.
 The Rayleigh number can be changed by adjusting the magnitude of the gravity:
-\lstinputlisting[language=prmfile]{cookbooks/inner_core_convection/inner_core_traction.part.2.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/inner_core_convection/doc/inner_core_traction.part.2.prm.out}
 The phase change number is implemented as part of the material model, and as a function that can depend on the 
 spatial coordinates and/or on time: 
-\lstinputlisting[language=prmfile]{cookbooks/inner_core_convection/inner_core_traction.part.1.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/inner_core_convection/doc/inner_core_traction.part.1.prm.out}
 
 Figure~\ref{fig:inner-core-regimes} shows examples of the three regimes with $Ra=3000, \mathcal{P}=1000$ (plume convection), 
 $Ra=10^5, \mathcal{P}=0.01$ (translation), $Ra=10, \mathcal{P}=30$ (no convection).
 
 \begin{figure}[h]
     \begin{center}
-    \includegraphics[width=0.25\linewidth]{cookbooks/inner_core_convection/Ra1e0P0modif.png}
-    \includegraphics[width=0.25\linewidth]{cookbooks/inner_core_convection/Ra1e2P-1modif.png}
-    \includegraphics[width=0.25\linewidth]{cookbooks/inner_core_convection/Ra1e5P4modif.png}
+    \includegraphics[width=0.25\linewidth]{cookbooks/inner_core_convection/doc/Ra1e0P0modif.png}
+    \includegraphics[width=0.25\linewidth]{cookbooks/inner_core_convection/doc/Ra1e2P-1modif.png}
+    \includegraphics[width=0.25\linewidth]{cookbooks/inner_core_convection/doc/Ra1e5P4modif.png}
    \vspace{1cm}
-    \includegraphics[width=0.25\linewidth]{cookbooks/inner_core_convection/Ra1e0P0modif.png}
-    \includegraphics[width=0.25\linewidth]{cookbooks/inner_core_convection/Ra1e2P-1rescalemodif.png}
-    \includegraphics[width=0.25\linewidth]{cookbooks/inner_core_convection/Ra1e5P4rescalemodif.png}
+    \includegraphics[width=0.25\linewidth]{cookbooks/inner_core_convection/doc/Ra1e0P0modif.png}
+    \includegraphics[width=0.25\linewidth]{cookbooks/inner_core_convection/doc/Ra1e2P-1rescalemodif.png}
+    \includegraphics[width=0.25\linewidth]{cookbooks/inner_core_convection/doc/Ra1e5P4rescalemodif.png}
    \vspace{1cm}
-    \includegraphics[width=0.25\linewidth]{cookbooks/inner_core_convection/no_convection.png}
-    \includegraphics[width=0.25\linewidth]{cookbooks/inner_core_convection/translation.png}
-    \includegraphics[width=0.25\linewidth]{cookbooks/inner_core_convection/convection.png}
+    \includegraphics[width=0.25\linewidth]{cookbooks/inner_core_convection/doc/no_convection.png}
+    \includegraphics[width=0.25\linewidth]{cookbooks/inner_core_convection/doc/translation.png}
+    \includegraphics[width=0.25\linewidth]{cookbooks/inner_core_convection/doc/convection.png}
     \caption{Convection regimes in the inner core for different values of $Ra$ and $\mathcal{P}$. From left to right: no convection, translation, plume convection; the 2D slices at the top are with the default temperature scale for all panels, while in the second row an adaptive scale is used. The bottom row features slightly different model parameters (that are still in the same regime as the models in the respective panels above) and also shows the velocity as arrows.}
     \label{fig:inner-core-regimes}
        \end{center}
@@ -8446,7 +8446,7 @@ $Ra=10^5, \mathcal{P}=0.01$ (translation), $Ra=10, \mathcal{P}=30$ (no convectio
 The temperature is set to 0 at the outer boundary and a large temperature gradient can develop at the boundary layer, especially for the translation regime. The adaptive mesh refinement allows it to resolve this layer at the inner core boundary. Another solution is to apply a specific initial refinement, based on the boundary layer thickness scaling law $\delta \propto Ra^{-0.236}$, and to refine specifically the uppermost part of the inner core. 
 
 In order to have a mesh that is much finer at the outer boundary than in the center of the domain, this expression for the mesh refinement subsection can be used in the input file:
-\lstinputlisting[language=prmfile]{cookbooks/inner_core_convection/inner_core_traction.part.3.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/inner_core_convection/doc/inner_core_traction.part.3.prm.out}
 
 \vspace{0.3cm}
 \textbf{Scaling laws.} 
@@ -8461,9 +8461,9 @@ Both trends are shown in Figure~\ref{fig:inner-core-trends} and can be compared 
  
 \begin{figure}
     \centering
-    \includegraphics[width=0.49\textwidth]{cookbooks/inner_core_convection/translation_over_Ra_P.pdf}
+    \includegraphics[width=0.49\textwidth]{cookbooks/inner_core_convection/doc/translation_over_Ra_P.pdf}
     \hfill
-    \includegraphics[width=0.49\textwidth]{cookbooks/inner_core_convection/translation_over_P.pdf}
+    \includegraphics[width=0.49\textwidth]{cookbooks/inner_core_convection/doc/translation_over_P.pdf}
     \caption{Translation rate (approximated by the average of the velocity component in the direction of translation), 
     normalized to the low $\mathcal{P}$ 
     limit estimate given in \cite{Deguen2013}, as a function of $\frac{Ra}{\mathcal{P}}$ for $\mathcal{P}=10^{-2}$ 
@@ -8497,20 +8497,20 @@ In the first model we will look at, melting and freezing is only included passiv
 The following input file (which can be found in \url{cookbooks/global_no_melt.prm}) contains a detailed description of the 
 different options required to set up such a model:
 
-\lstinputlisting[language=prmfile]{cookbooks/global_melt/global_no_melt.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/global_melt/doc/global_no_melt.prm.out}
 
 When we look at visualization output of this model, we can see that over time, first upwellings, and then downwellings start to form. Both are more or less stable over time, and only change their positions slowly. As melt does not move relative to the solid, broad stable zones of melting with melt fraction of 10\% or more form in areas where material is upwelling. 
 
 In the second model, melt is an active component of the model. Temperature, pressure and composition control how much of the rock melts, and as soon as that happens, melt can migrate relative to the solid rock. As material only melts partially, that means that the composition of the rock changes when it melts and melt is extracted, and we track this change in composition using a compositional field with the name \texttt{peridotite}. Positive values mark depletion (the composition of the residual host rock as more and more melt is extracted), and negative values mark enrichment (the composition of generated melt, or regions where melt freezes again). Both the fraction of melt (tracked by the compositional field with the name \texttt{porosity}) and the changes in composition influence the material properties such as density and viscosity. Moreover, there are additional material properties that describe how easily melt can move through the host rock, such as the \texttt{permeability}, or properties of the melt itself, such as the \texttt{fluid viscosity}. 
 The following input file (a complete version of which can be found in \url{cookbooks/global_melt.prm}) details the changes we have to make from the first model to set up a model with melt migration:
 
-\lstinputlisting[language=prmfile]{cookbooks/global_melt/global_melt.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/global_melt/doc/global_melt.prm.out}
 
 In the first few tens of millions of years, this models evolves similarly to the model without melt migration. Upwellings rise in the same locations, and regions where material starts to melt are similar. However, once melt is formed, the model evolutions start to deviate. In the model with melt migration, melt moves upwards from the region where it is generated much faster than the flow of solid material, so that it reaches cold regions -- where it freezes again -- in a shorter amount of time. Because of that, the overall amount of melt is smaller in this model at any given point in time. In addition, enriched material, present in places where melt has crystallized, has a higher density than average or depleted mantle material. This means that in regions above stable upwellings, instabilities of dense, enriched material start to form, which leads to small-scale downwellings. Hence, both areas where material is partially molten and the location of the upwellings themselves have a much shorter wavelength and change much faster over time in comparison to the model without melt migration.
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.9\textwidth]{cookbooks/global_melt/model_evolution.pdf}
+    \includegraphics[width=0.9\textwidth]{cookbooks/global_melt/doc/model_evolution.pdf}
     \caption{Evolution of the model without (left) and with (right) melt migration.}
     \label{fig:global-melt}
 \end{figure}
@@ -8552,7 +8552,7 @@ the reaction time scale.
 The melting model we use here is the anhydrous mantle melting model of \cite{KSL2003} for a peridotitic 
 rock composition, as implemented in the ``melt simple'' material model. 
 
-\lstinputlisting[language=prmfile]{cookbooks/mid_ocean_ridge/melting_and_freezing.part.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/mid_ocean_ridge/doc/melting_and_freezing.part.prm.out}
 
 To make sure we reproduce the characteristic triangular melting region of a mid-ocean ridge, we have to  
 set up the boundary conditions in a way so that they will lead to corner flow. At the top boundary, we can 
@@ -8563,7 +8563,7 @@ pressure as a boundary condition for the stress. We accomplish this by using the
 ``initial lithostatic pressure'' model. This plugin will automatically compute a 1d lithostatic pressure 
 profile at a given point at the time of the model start and apply it as a boundary traction.
 
-\lstinputlisting[language=prmfile]{cookbooks/mid_ocean_ridge/boundary_conditions.part.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/mid_ocean_ridge/doc/boundary_conditions.part.prm.out}
 
 Finally, we have to make sure that the resolution is high enough to model melt migration. 
 This is particularly important in regions where the porosity is low, but still high enough that 
@@ -8583,7 +8583,7 @@ As the length scale of melt migration is usually smaller than for mantle convect
 sure that regions where melt is present have a high resolution, and that this high resolution extends 
 to all cells where the two-phase flow equations are solved. 
 
-\lstinputlisting[language=prmfile]{cookbooks/mid_ocean_ridge/mesh_refinement.part.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/mid_ocean_ridge/doc/mesh_refinement.part.prm.out}
 
 \aspect{} also supports an alternative method to make sure that regions with melt are sufficiently 
 well resolved, relying directly on the compaction length, and we will discuss this method as a possible 
@@ -8595,7 +8595,7 @@ The complete input file is located at \url{cookbooks/mid_ocean_ridge.prm}.
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.5\textwidth]{cookbooks/mid_ocean_ridge/mid_ocean_ridge.pdf}
+    \includegraphics[width=0.5\textwidth]{cookbooks/mid_ocean_ridge/doc/mid_ocean_ridge.pdf}
     \caption{Mid-ocean ridge model after 8 million years. The top panel shows the depletion 
              and porosity fields (with the characteristic triangular melting region), 
              the bottom panel shows the temperature distribution and the melt velocity, indicated 
@@ -8620,7 +8620,7 @@ A vertical profile at a distance of 80 km from the ridge axis showing this compo
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.35\textwidth]{cookbooks/mid_ocean_ridge/depletion_profile.pdf}
+    \includegraphics[width=0.35\textwidth]{cookbooks/mid_ocean_ridge/doc/depletion_profile.pdf}
     \caption{Vertical profile through the model domain at a distance of 80 km from the ridge axis
              at the end of the model run, showing the distribution of depletion and enrichment as
              indicated by the peridotite field.}
@@ -8632,7 +8632,7 @@ Another option for making sure that melt migration is resolved properly in the m
 refinement criterion that directly relates to the compaction length. This can be done in the mesh 
 refinement section of the input file:
 
-\lstinputlisting[language=prmfile]{cookbooks/mid_ocean_ridge/compaction_length.part.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/mid_ocean_ridge/doc/compaction_length.part.prm.out}
 
 This will lead to a higher resolution particularly in regions with low (but not zero) porosity, 
 and can be useful to resolve the strong gradients in the melt velocity and compaction pressure that 
@@ -8641,7 +8641,7 @@ Of course it is also possible to combine both methods for refining the mesh.
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.6\textwidth]{cookbooks/mid_ocean_ridge/refinement.pdf}
+    \includegraphics[width=0.6\textwidth]{cookbooks/mid_ocean_ridge/doc/refinement.pdf}
     \caption{Mesh after a time of 3.6 million years for a model using the composition threshold 
              refinement strategy (left) and the compaction length refinement strategy (right)
              Background colors indicate the melt velocity. Its sharp gradients at the interface 
@@ -8792,9 +8792,9 @@ and
 We use bisection to determine $Ra_c$ for specific choices of the domain geometry, keeping the depth $b$ constant and varying the domain width $\lambda$. If the vertical velocity increases from the first to the second timestep, the system is unstable to convection. Otherwise, it is stable and convection will not occur. Each calculation is terminated after the second timestep. Fig.~\ref{fig:onset-1} shows the numerically-determined threshold for the onset of convection, which can be compared directly with the theoretical prediction (green curve) and Fig.~6.39 of \cite{TS14}. The relative error between the numerically-determined value of $Ra_c$ and the analytic solution are shown in the right panel of Fig.~\ref{fig:onset-1}.
 
 \begin{figure}
- \includegraphics[width=0.49\textwidth]{cookbooks/benchmarks/onset-of-convection/racr.png}
+ \includegraphics[width=0.49\textwidth]{cookbooks/benchmarks/onset-of-convection/doc/racr.png}
  \hfill
- \includegraphics[width=0.49\textwidth]{cookbooks/benchmarks/onset-of-convection/racr_error.png}
+ \includegraphics[width=0.49\textwidth]{cookbooks/benchmarks/onset-of-convection/doc/racr_error.png}
  \caption{Left: Comparison of numerically-determined and theoretical values for $Ra_c$. Red circles indicate numerical simulations unstable to convection, black circles indicate simulations that are stable. The green dashed curve indicates the theoretical prediction. Right: Relative error in determination of $Ra_c$. The dashed red line indicates the error tolerance used in bisection procedure.}
  \label{fig:onset-1}
 \end{figure}
@@ -8815,13 +8815,13 @@ interface is highest. Fig.~\ref{fig:vk-1} shows a time series of images to
 illustrate this.
 
 \begin{figure}
-  \includegraphics[width=0.23\textwidth]{cookbooks/benchmarks/van-keken/movie0000.png}
+  \includegraphics[width=0.23\textwidth]{cookbooks/benchmarks/van-keken/doc/movie0000.png}
   \hfill
-  \includegraphics[width=0.23\textwidth]{cookbooks/benchmarks/van-keken/movie0003.png}
+  \includegraphics[width=0.23\textwidth]{cookbooks/benchmarks/van-keken/doc/movie0003.png}
   \hfill
-  \includegraphics[width=0.23\textwidth]{cookbooks/benchmarks/van-keken/movie0009.png}
+  \includegraphics[width=0.23\textwidth]{cookbooks/benchmarks/van-keken/doc/movie0009.png}
   \hfill
-  \includegraphics[width=0.23\textwidth]{cookbooks/benchmarks/van-keken/movie0018.png}
+  \includegraphics[width=0.23\textwidth]{cookbooks/benchmarks/van-keken/doc/movie0018.png}
   \caption{\it Van Keken benchmark (using a smoothed out interface, see the main
   text):
   Compositional field at times $t=0, 300, 900, 1800$.}
@@ -8838,7 +8838,7 @@ input file in \url{cookbooks/van-keken-discontinuous.prm} as input, the central
 piece of which is as follows (go to the actual input file
 to see the remainder of the input parameters):
 
-\lstinputlisting[language=prmfile]{cookbooks/benchmarks/van-keken/main.part.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/benchmarks/van-keken/doc/main.part.prm.out}
 
 The first part of this selects the \texttt{simple} material model and sets the
 thermal expansion to zero (resulting in a density that does not depend on the
@@ -8855,7 +8855,7 @@ different methods is the root mean square of the velocity, which we can get
 using the following block in the input file (the actual input file also enables
 other postprocessors):
 
-\lstinputlisting[language=prmfile]{cookbooks/benchmarks/van-keken/postprocess.part.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/benchmarks/van-keken/doc/postprocess.part.prm.out}
 
 Using this, we can plot the evolution of the fluid's average velocity over time,
 as shown in the left panel of Fig.~\ref{fig:vk-2}. Looking at this graph, we
@@ -8865,9 +8865,9 @@ $32\times 32$ mesh (5 global refinements) and is very consistent (to better
 than 1\% accuracy) with the results in the van Keken paper.
 
 \begin{figure}
-  \includegraphics[width=0.48\textwidth]{cookbooks/benchmarks/van-keken/velocity-discontinuous.png}
+  \includegraphics[width=0.48\textwidth]{cookbooks/benchmarks/van-keken/doc/velocity-discontinuous.png}
   \hfill
-  \includegraphics[width=0.48\textwidth]{cookbooks/benchmarks/van-keken/velocity-smooth.png}
+  \includegraphics[width=0.48\textwidth]{cookbooks/benchmarks/van-keken/doc/velocity-smooth.png}
   \caption{\it Van Keken benchmark with discontinuous (left) and smoothed,
   continuous (right) initial conditions for the compositional field:
   Evolution of the root mean square velocity $\left(\frac 1{|\Omega|}\int_\Omega |\mathbf u(\mathbf x,t)|^2 \;
@@ -8912,7 +8912,7 @@ square velocity plot is in a different location and with different height!
 
 \begin{figure}
   \centering
-  \includegraphics[width=0.7\textwidth]{cookbooks/benchmarks/van-keken/mesh-comparison-initial-conditions.png}
+  \includegraphics[width=0.7\textwidth]{cookbooks/benchmarks/van-keken/doc/mesh-comparison-initial-conditions.png}
   \caption{\it Van Keken benchmark with discontinuous initial conditions for the
   compositional field:
   Initial compositional field interpolated onto a $32\times 32$ (left) and
@@ -8922,7 +8922,7 @@ square velocity plot is in a different location and with different height!
 
 \begin{figure}
   \centering
-  \includegraphics[height=0.8\textheight]{cookbooks/benchmarks/van-keken/mesh-comparison.png}
+  \includegraphics[height=0.8\textheight]{cookbooks/benchmarks/van-keken/doc/mesh-comparison.png}
   \caption{\it Van Keken benchmark with discontinuous initial conditions for the
   compositional field:
   Evolution of the compositional field over time on a $32\times 32$ (first and
@@ -8945,7 +8945,7 @@ still not represent it exactly on any given mesh, but we can at least get closer
 to it than for discontinuous variables. Consequently, let us use the following
 initial conditions instead (see also the file
 \url{cookbooks/van-keken-smooth.prm}):
-\lstinputlisting[language=prmfile]{cookbooks/benchmarks/van-keken/smooth.part.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/benchmarks/van-keken/doc/smooth.part.prm.out}
 
 This replaces the discontinuous initial conditions with a smoothed out version
 with a half width of around 0.01. Using this, the root mean square plot now
@@ -8990,7 +8990,7 @@ This convergence is due to changing the smoothing parameter, which controls how 
 
 \begin{figure}
         \centering
-        \includegraphics[width=0.6\textwidth]{cookbooks/benchmarks/van-keken/smoothing-parameter.png}
+        \includegraphics[width=0.6\textwidth]{cookbooks/benchmarks/van-keken/doc/smoothing-parameter.png}
         \caption{\it Van Keken Benchmark using smoothed out interface at 7 global refinements: compositional field at time $t=0$ using smoothing parameter size: a) 0.0039, b) 0.0078, c) 0.0156, d) 0.0234, e) 0.0312, f) 0.0390, g) 0.0468, h) 0.0546, i) 0.0624.}
         \label{fig:vk-5}
 \end{figure}
@@ -8999,7 +8999,7 @@ The evolution in time of the resulting compositional fields (Fig.~\ref{fig:vk-6}
 
 \begin{figure}
         \centering
-        \includegraphics[width=0.4\textwidth]{cookbooks/benchmarks/van-keken/smoothing-parameter-velocity.png}
+        \includegraphics[width=0.4\textwidth]{cookbooks/benchmarks/van-keken/doc/smoothing-parameter-velocity.png}
         \caption{\it Van Keken benchmark with smoothed initial conditions for the compositional field using 7 global refinements for different smoothing parameters.  Number of the time step is shown on the $x$-axis, while root mean square velocity is shown on the $y$-axis.}
         \label{fig:vk-6}
 \end{figure}
@@ -9008,7 +9008,7 @@ Now let us further add a two-layer viscosity model to the domain. This is done t
 
 \begin{figure}
         \centering
-        \includegraphics[width=0.7\textwidth]{cookbooks/benchmarks/van-keken/contrast_viscosity.png}
+        \includegraphics[width=0.7\textwidth]{cookbooks/benchmarks/van-keken/doc/contrast_viscosity.png}
         \caption{\it Van Keken benchmark using different-viscosity layers. The left image is the discontinuous case, while right is the smooth.  Both are shown at $t=0$.}
         \label{fig:vk-7}
 \end{figure}
@@ -9017,7 +9017,7 @@ For both cases, discontinuous and smooth, and both viscosity proportions, 0.1 an
 
 \begin{figure}
         \centering
-        \includegraphics[width=0.5\textwidth]{cookbooks/benchmarks/van-keken/2viscosities-final.png}
+        \includegraphics[width=0.5\textwidth]{cookbooks/benchmarks/van-keken/doc/2viscosities-final.png}
         \caption{\it Van Keken benchmark two-layer viscosity model at final time step number, $t=2000$. These images show layers of different compositions and viscosities. Discontinuous cases are the left images, smooth cases are the right. The upper images are $\frac{\eta_{t}}{\eta_{b}}=0.1$, and the lower are $\frac{\eta_{t}}{\eta_{b}}=0.01$.}
         \label{fig:vk-8}
 \end{figure}
@@ -9026,7 +9026,7 @@ Compared to the results of the models using constant viscosity throughout the do
 
 \begin{figure}
         \centering
-        \includegraphics[width=0.4\textwidth]{cookbooks/benchmarks/van-keken/2viscosities-velocity.png}
+        \includegraphics[width=0.4\textwidth]{cookbooks/benchmarks/van-keken/doc/2viscosities-velocity.png}
         \caption{\it Van Keken benchmark: Evolution of the root mean square velocity as a function of time for different viscosity contrast proportions (0.1/0.01) for both discontinuous and smooth models.}
         \label{fig:vk-9}
 \end{figure}
@@ -9051,7 +9051,7 @@ wavelength $\lambda=L_x/2$ as shown in Figure~\ref{fig:RTi_setup}.
 
 \begin{figure}
   \centering
-  \includegraphics[width=0.4\textwidth]{cookbooks/benchmarks/rayleigh-taylor-instability/setup}
+  \includegraphics[width=0.4\textwidth]{cookbooks/benchmarks/rayleigh-taylor-instability/doc/setup}
   \caption{\it Setup of the Rayleigh-Taylor instability benchmark (taken from \cite{thie11})} 
   \label{fig:RTi_setup}
 \end{figure}
@@ -9093,8 +9093,8 @@ end
 
 \begin{figure}
   \centering
-  \includegraphics[width=0.44\textwidth]{cookbooks/benchmarks/rayleigh-taylor-instability/grid}
-  \includegraphics[width=0.52\textwidth]{cookbooks/benchmarks/rayleigh-taylor-instability/grid2}
+  \includegraphics[width=0.44\textwidth]{cookbooks/benchmarks/rayleigh-taylor-instability/doc/grid}
+  \includegraphics[width=0.52\textwidth]{cookbooks/benchmarks/rayleigh-taylor-instability/doc/grid2}
   \caption{\it Left: grid with initial global refinement 4 and adaptive refinement 6; Right: density field with detail of the mesh.} 
   \label{fig:RTi_grids}
 \end{figure}
@@ -9103,7 +9103,7 @@ The maximum vertical velocity is plotted against $\phi_1$ in Figure~\ref{fig:RTi
 
 \begin{figure}
   \centering
-  \includegraphics[width=0.75\textwidth]{cookbooks/benchmarks/rayleigh-taylor-instability/plot}
+  \includegraphics[width=0.75\textwidth]{cookbooks/benchmarks/rayleigh-taylor-instability/doc/plot}
   \caption{\it Maximum velocity for three values of the $\phi_1$ parameter.} 
   \label{fig:RTi_vels}
 \end{figure}
@@ -9138,17 +9138,17 @@ as explained by linear stability analysis \cite{wesc92,ramb81}.
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.48\textwidth]{cookbooks/polydiapirism/diapirs0000}
-    \includegraphics[width=0.48\textwidth]{cookbooks/polydiapirism/diapirs0005}
-    \includegraphics[width=0.48\textwidth]{cookbooks/polydiapirism/diapirs0010}
-    \includegraphics[width=0.48\textwidth]{cookbooks/polydiapirism/diapirs0015}
+    \includegraphics[width=0.48\textwidth]{cookbooks/polydiapirism/doc/diapirs0000.png}
+    \includegraphics[width=0.48\textwidth]{cookbooks/polydiapirism/doc/diapirs0005.png}
+    \includegraphics[width=0.48\textwidth]{cookbooks/polydiapirism/doc/diapirs0010.png}
+    \includegraphics[width=0.48\textwidth]{cookbooks/polydiapirism/doc/diapirs0015.png}
     \caption{Polydiapirism benchmark: Density field at $t=0,25,50,75\si{s}$.}
     \label{fig:polydiapirs_density}
 \end{figure}
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.75\textwidth]{cookbooks/polydiapirism/vrms}
+    \includegraphics[width=0.75\textwidth]{cookbooks/polydiapirism/doc/vrms.pdf}
     \caption{Polydiapirism benchmark: Root mean square velocity as a function of time}
     \label{fig:polydiapirs_vrms}
 \end{figure}
@@ -9182,14 +9182,14 @@ all data points forming a single smooth line.
 
 \begin{figure}
   \centering
-  \includegraphics[width=0.6\textwidth]{cookbooks/benchmarks/sinking_block/dens_vel}
+  \includegraphics[width=0.6\textwidth]{cookbooks/benchmarks/sinking_block/doc/dens_vel.png}
   \caption{\it Density field with velocity arrows for $\eta_2=10^{27}\text{Pa s}$ and $\delta\rho=32\text{kg/m}^{3}$} 
   \label{fig:sinking_block1}
 \end{figure}
 
 \begin{figure}
   \centering
-  \includegraphics[width=0.8\textwidth]{cookbooks/benchmarks/sinking_block/plot.pdf}
+  \includegraphics[width=0.8\textwidth]{cookbooks/benchmarks/sinking_block/doc/plot.pdf}
   \caption{\it Scaled velocity measurements as a function of the viscosity contrast between surrounding medium and block for all experiments.}
   \label{fig:sinking_block2}
 \end{figure}
@@ -9234,9 +9234,9 @@ in sign between the implementation and the description in \cite{DMGT11}).
 
 \begin{figure}
   \begin{center}
-    \includegraphics[width=0.45\textwidth]{cookbooks/benchmarks/solcx-solution.png}
+    \includegraphics[width=0.45\textwidth]{cookbooks/benchmarks/solcx/doc/solcx-solution.png}
     \hfill
-    \includegraphics[width=0.45\textwidth]{cookbooks/benchmarks/solcx-solution-pressure.png}
+    \includegraphics[width=0.45\textwidth]{cookbooks/benchmarks/solcx/doc/solcx-solution-pressure.png}
     \caption{\it SolCx Stokes benchmark. Left: The density perturbation field
     and overlaid to it some velocity vectors. The viscosity is very large in the
       right hand, leading to a stagnant flow in this region. Right: The
@@ -9247,7 +9247,7 @@ in sign between the implementation and the description in \cite{DMGT11}).
 \end{figure}
 
 To run this benchmark, the following input file will do (see the files in \url{benchmarks/solcx/} to rerun the benchmark):
-\lstinputlisting[language=prmfile]{cookbooks/benchmarks/solcx.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/benchmarks/solcx/doc/solcx.prm.out}
 
 Since this is the first cookbook in the benchmarking section, let us go
 through the different parts of this file in more detail:
@@ -9364,7 +9364,7 @@ variable density variation. For details, refer again to \cite{DMGT11}.
 The following input file, only a small variation of the one in the previous
 section, solves the benchmark (see \url{benchmarks/solkz/}):
 
-\lstinputlisting[language=prmfile]{cookbooks/benchmarks/solkz.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/benchmarks/solkz/doc/solkz.prm.out}
 
 The output when running \aspect{} on this parameter file looks similar to the
 one shown for the SolCx case. The solution when computed with one more level
@@ -9374,9 +9374,9 @@ field is shown in Fig.~\ref{fig:solkz2}.
 
 \begin{figure}
   \begin{center}
-    \includegraphics[width=0.45\textwidth]{cookbooks/benchmarks/solkz-solution.png}
+    \includegraphics[width=0.45\textwidth]{cookbooks/benchmarks/solkz/doc/solkz-solution.png}
     \hfill
-    \includegraphics[width=0.45\textwidth]{cookbooks/benchmarks/solkz-solution-pressure.png}
+    \includegraphics[width=0.45\textwidth]{cookbooks/benchmarks/solkz/doc/solkz-solution-pressure.png}
     \caption{\it SolKz Stokes benchmark. Left: The density perturbation field
     overlaid with velocity vectors. The viscosity grows exponentially
       in the vertical direction, leading to small velocities at the top
@@ -9387,7 +9387,7 @@ field is shown in Fig.~\ref{fig:solkz2}.
 
 \begin{figure}
   \begin{center}
-    \includegraphics[width=0.7\textwidth]{cookbooks/benchmarks/solkz-solution-viscosity.png}
+    \includegraphics[width=0.7\textwidth]{cookbooks/benchmarks/solkz/doc/solkz-solution-viscosity.png}
     \caption{\it SolKz Stokes benchmark. Another view of the velocity vectors, this time plotted over the viscosity field.}
     \label{fig:solkz2}
   \end{center}
@@ -9412,9 +9412,9 @@ Fig.~\ref{fig:inclusion}. As before, for details we refer to
 
 \begin{figure}
   \begin{center}
-    \includegraphics[width=0.45\textwidth]{cookbooks/benchmarks/inclusion-solution.png}
+    \includegraphics[width=0.45\textwidth]{cookbooks/benchmarks/inclusion/doc/inclusion-solution.png}
     \hfill
-    \includegraphics[width=0.45\textwidth]{cookbooks/benchmarks/inclusion-solution-pressure.png}
+    \includegraphics[width=0.45\textwidth]{cookbooks/benchmarks/inclusion/doc/inclusion-solution-pressure.png}
     \caption{\it Inclusion Stokes benchmark. Left: The viscosity field
       when interpolated onto the mesh (internally, the ``exact'' viscosity
       field -- large inside a circle, small outside -- is used),
@@ -9434,7 +9434,7 @@ The benchmark can be run using the parameter files in \url{benchmarks/inclusion/
 
 \marginpar{The following prm file isn't annotated yet. How to annotate if we have a .lib?}
 
-\lstinputlisting[language=prmfile]{cookbooks/benchmarks/inclusion.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/benchmarks/inclusion/doc/inclusion.prm.out}
 
 
 \subsubsection{The Burstedde variable viscosity benchmark}
@@ -9541,7 +9541,7 @@ input, which is very similar to the input file
 Section~\ref{sec:benchmark-inclusion}. The major changes for the 3D polynomial
 Stokes benchmark are listed below: 
 
-\lstinputlisting[language=prmfile]{cookbooks/benchmarks/burstedde/burstedde.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/benchmarks/burstedde/doc/burstedde.prm.out}
 
 The boundary conditions that are used are simply the velocities from equation
 \eqref{eq:burstedde-velocity} prescribed on each boundary. The viscosity parameter in the input
@@ -9570,16 +9570,16 @@ $|\mathbf{u}|$ & $0$ &  $14.177$ \\
 \begin{figure}[t!]
   \centering
   \subfigure[]{
-    \includegraphics[width=0.48\textwidth]{cookbooks/benchmarks/burstedde/viscosity.png}}%
+    \includegraphics[width=0.48\textwidth]{cookbooks/benchmarks/burstedde/doc/viscosity.png}}%
   ~ 
   \subfigure[]{
-    \includegraphics[width=0.48\textwidth]{cookbooks/benchmarks/burstedde/pressure.png}}%
+    \includegraphics[width=0.48\textwidth]{cookbooks/benchmarks/burstedde/doc/pressure.png}}%
   \\
   \subfigure[]{
-    \includegraphics[width=0.48\textwidth]{cookbooks/benchmarks/burstedde/velocity_x.png}}
+    \includegraphics[width=0.48\textwidth]{cookbooks/benchmarks/burstedde/doc/velocity_x.png}}
   ~
   \subfigure[]{
-    \includegraphics[width=0.48\textwidth]{cookbooks/benchmarks/burstedde/velocity_z.png}}
+    \includegraphics[width=0.48\textwidth]{cookbooks/benchmarks/burstedde/doc/velocity_z.png}}
   \caption{Burstedde benchmark: Results for the 3D polynomial Stokes benchmark, obtained with a resolution of $16\times 16$ elements, with $\beta = 10$.}\label{fig:burstedde-benchmark}
 \end{figure}
 
@@ -9592,7 +9592,7 @@ $Q_1$ elements for the pressure.
 
 \begin{figure}[tbp]
   \centering
-  \includegraphics[width=\textwidth]{cookbooks/benchmarks/burstedde/errors.pdf}
+  \includegraphics[width=\textwidth]{cookbooks/benchmarks/burstedde/doc/errors.pdf}
   \caption{Burstedde benchmark: Error convergence for the 3D polynomial Stokes
     benchmark.
     \label{errors}}
@@ -9618,7 +9618,7 @@ boundary conditions are imposed at the top and bottom.
 
 \begin{figure}
 \centering
-\includegraphics[width=0.6\linewidth]{cookbooks/benchmarks/slab_detachment/drawing.png}
+\includegraphics[width=0.6\linewidth]{cookbooks/benchmarks/slab_detachment/doc/drawing.png}
 \caption{Slab detachment benchmark: Initial geometry 
 \label{fig:slab_detachment_setup}}
 \end{figure}
@@ -9644,7 +9644,7 @@ and the effect of viscosity and material averaging was explored in \cite{gltf18}
 
 \begin{figure}
 \centering
-\includegraphics[width=0.85\textwidth]{cookbooks/benchmarks/slab_detachment/results}
+\includegraphics[width=0.85\textwidth]{cookbooks/benchmarks/slab_detachment/doc/results.png}
 \caption{Slab detachment benchmark: a,b) velocity and strain rate fields at $t=0$. 
 c,d,e) and f,g,h) time evolution of the viscosity and slab composition fields at $t=0, 6, 12\text{Myr}$.
 \label{fig:slab_detachment_evolution}}
@@ -9693,16 +9693,16 @@ and a second-order convergence rate for the pressure.
 
 \begin{figure}
 \centering
-\includegraphics[width=.3\textwidth]{cookbooks/benchmarks/hollow_sphere/vel.png}
-\includegraphics[width=.3\textwidth]{cookbooks/benchmarks/hollow_sphere/vel2.png}
-\includegraphics[width=.3\textwidth]{cookbooks/benchmarks/hollow_sphere/pressure.png}
+\includegraphics[width=.3\textwidth]{cookbooks/benchmarks/hollow_sphere/doc/vel.png}
+\includegraphics[width=.3\textwidth]{cookbooks/benchmarks/hollow_sphere/doc/vel2.png}
+\includegraphics[width=.3\textwidth]{cookbooks/benchmarks/hollow_sphere/doc/pressure.png}
 \caption{Velocity and pressure fields for the hollow sphere benchmark.}
 \label{fig:hollow-sphere-vp}
 \end{figure}
 
 \begin{figure}
 \centering
-\includegraphics[width=.7\textwidth]{cookbooks/benchmarks/hollow_sphere/errors_hollowsphere.pdf}
+\includegraphics[width=.7\textwidth]{cookbooks/benchmarks/hollow_sphere/doc/errors_hollowsphere.pdf}
 \caption{Velocity and pressure errors in the $L_2$-norm as a function of the mesh size.}
 \label{fig:hollow-sphere-errors}
 \end{figure}
@@ -9740,9 +9740,9 @@ as shown in Fig.~\ref{fig:annulus-vp}.
 
 \begin{figure}
 \centering
-\includegraphics[width=.9\textwidth]{cookbooks/benchmarks/annulus/pressures.png}
-\includegraphics[width=.9\textwidth]{cookbooks/benchmarks/annulus/density.png}
-\includegraphics[width=.9\textwidth]{cookbooks/benchmarks/annulus/velocities2.png}
+\includegraphics[width=.9\textwidth]{cookbooks/benchmarks/annulus/doc/pressures.png}
+\includegraphics[width=.9\textwidth]{cookbooks/benchmarks/annulus/doc/density.png}
+\includegraphics[width=.9\textwidth]{cookbooks/benchmarks/annulus/doc/velocities2.png}
 \caption{Pressure, density and velocity fields for $k=0,1,2,3$ for the 2D annulus benchmark.}
 \label{fig:annulus-vp}
 \end{figure}
@@ -9754,7 +9754,7 @@ and a second-order convergence rate for the pressure.
 
 \begin{figure}
 \centering
-\includegraphics[width=.7\textwidth]{cookbooks/benchmarks/annulus/errors_annulus.pdf}
+\includegraphics[width=.7\textwidth]{cookbooks/benchmarks/annulus/doc/errors_annulus.pdf}
 \caption{Velocity and pressure errors in the $L_2$-norm as a function of the mesh size for the 2D annulus benchmark.}
 \label{fig:annulus-errors}
 \end{figure}
@@ -9822,7 +9822,7 @@ All of this setup is then described by the following input file.
 \url{cookbooks/stokes.prm}. For your first runs you will probably want to
 reduce the number of mesh refinement steps to make things run more quickly.)
 
-\lstinputlisting[language=prmfile]{cookbooks/benchmarks/stokes/stokeslaw.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/benchmarks/stokes/doc/stokeslaw.prm.out}
 
 Using this input file, let us try to evaluate the results of the current
 computations for the settling velocity of the sphere. You can visualize the output in different
@@ -9858,9 +9858,9 @@ than 2\% is a good indication that \aspect{} implements the equations correctly.
 
 \begin{figure}
   \begin{center}
-    \includegraphics[width=0.55\textwidth]{cookbooks/benchmarks/stokes/stokes-velocity.png}
+    \includegraphics[width=0.55\textwidth]{cookbooks/benchmarks/stokes/doc/stokes-velocity.png}
     \hfill
-    \includegraphics[width=0.44\textwidth]{cookbooks/benchmarks/stokes/stokes-density.png}
+    \includegraphics[width=0.44\textwidth]{cookbooks/benchmarks/stokes/doc/stokes-density.png}
   \end{center}
   \caption{\it Stokes benchmark. Both figures show only a 2D slice of the
       three-dimensional model.
@@ -9876,11 +9876,11 @@ than 2\% is a good indication that \aspect{} implements the equations correctly.
 
 \begin{figure}
   \begin{center}
-    \includegraphics[width=0.3\textwidth]{cookbooks/benchmarks/stokes/composition.png}
+    \includegraphics[width=0.3\textwidth]{cookbooks/benchmarks/stokes/doc/composition.png}
     \hfill
-    \includegraphics[width=0.3\textwidth]{cookbooks/benchmarks/stokes/mesh.png}
+    \includegraphics[width=0.3\textwidth]{cookbooks/benchmarks/stokes/doc/mesh.png}
     \hfill
-    \includegraphics[width=0.3\textwidth]{cookbooks/benchmarks/stokes/velocity.png}
+    \includegraphics[width=0.3\textwidth]{cookbooks/benchmarks/stokes/doc/velocity.png}
   \end{center}
   \caption{\it Stokes benchmark. Three-dimensional views of the compositional
   field (left), the adaptively refined mesh (center) and the resulting velocity field
@@ -9929,9 +9929,9 @@ p_0 =-  \frac{1}{L^2}  \int_0^L\int_0^L (x^2y^2+xy+5) dx dy
 
 \begin{figure}
 \centering
-\includegraphics[width=0.31\textwidth]{cookbooks/benchmarks/viscosity_grooves/vel3x3}
-\includegraphics[width=0.31\textwidth]{cookbooks/benchmarks/viscosity_grooves/press3x3}
-\includegraphics[width=0.31\textwidth]{cookbooks/benchmarks/viscosity_grooves/rhs3x3}
+\includegraphics[width=0.31\textwidth]{cookbooks/benchmarks/viscosity_grooves/doc/vel3x3.png}
+\includegraphics[width=0.31\textwidth]{cookbooks/benchmarks/viscosity_grooves/doc/press3x3.png}
+\includegraphics[width=0.31\textwidth]{cookbooks/benchmarks/viscosity_grooves/doc/rhs3x3.png}
 \hfill
 \caption{\it Viscosity grooves benchmark: From left to right, velocity field, pressure field, and 
 norm of the right hand side of the momentum equation, for a $3\times 3$ domain 
@@ -9950,7 +9950,7 @@ between them decreases.
 
 \begin{figure}
 \centering
-\includegraphics[width=0.9\textwidth]{cookbooks/benchmarks/viscosity_grooves/viscs}
+\includegraphics[width=0.9\textwidth]{cookbooks/benchmarks/viscosity_grooves/doc/viscs.png}
 \caption{\it Viscosity grooves benchmark: Viscosity field for three domain sizes: $1\times 1$, $2\times 2$ and $3\times 3$.} 
 \label{fig:benchmark-grooves-domains}
 \end{figure}
@@ -9963,7 +9963,7 @@ the multitude of low viscosity bands in the upper right corner of the $3\times 3
 
 \begin{figure}
 \centering
-\includegraphics[width=0.9\textwidth]{cookbooks/benchmarks/viscosity_grooves/conv_0p1.pdf} 
+\includegraphics[width=0.9\textwidth]{cookbooks/benchmarks/viscosity_grooves/doc/conv_0p1.pdf} 
 \caption{\it Viscosity grooves benchmark: Velocity and pressure error convergence as a function of the mesh size $h$ for 3 domain sizes.} 
 \label{fig:benchmark-grooves-errors}
 \end{figure}
@@ -9981,9 +9981,9 @@ the multitude of low viscosity bands in the upper right corner of the $3\times 3
 The setup of this benchmark is taken from Schubert, Turcotte and Olson \cite{STO01} (part 1, p. 194) and is illustrated in Fig.~\ref{fig:latent-heat-benchmark}.
 \begin{figure}
   \begin{center}
-    \includegraphics[width=0.52\textwidth]{cookbooks/benchmarks/latent-heat/latent-heat-setup.png}
+    \includegraphics[width=0.52\textwidth]{cookbooks/benchmarks/latent-heat/doc/latent-heat-setup.png}
     \hfill
-    \includegraphics[width=0.47\textwidth]{cookbooks/benchmarks/latent-heat/latent-heat-temperature.png}
+    \includegraphics[width=0.47\textwidth]{cookbooks/benchmarks/latent-heat/doc/latent-heat-temperature.png}
   \end{center}
   \caption{\it Latent heat benchmark. Both figures show the 2D box model domain.
       Left: Setup of the benchmark together with a sketch of the expected
@@ -10086,7 +10086,7 @@ All of this setup is then described by the input file
 height and width, and a fixed downward velocity. The following section shows the
 central part of this file:
 
-\lstinputlisting[language=prmfile]{cookbooks/benchmarks/latent-heat/material.part.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/benchmarks/latent-heat/doc/material.part.prm.out}
 
 The complete input file referenced above also sets the number of mesh refinement
 steps. For your first runs you will probably want to reduce the number of mesh
@@ -10095,9 +10095,9 @@ to change the phase transition width to look how this influences the result.
 
 \begin{figure}
   \begin{center}
-    \includegraphics[width=0.49\textwidth]{cookbooks/benchmarks/latent-heat/latent-heat-results-1.png}
+    \includegraphics[width=0.49\textwidth]{cookbooks/benchmarks/latent-heat/doc/latent-heat-results-1.png}
     \hfill
-    \includegraphics[width=0.49\textwidth]{cookbooks/benchmarks/latent-heat/latent-heat-results-2.png}
+    \includegraphics[width=0.49\textwidth]{cookbooks/benchmarks/latent-heat/doc/latent-heat-results-2.png}
   \end{center}
   \caption{\it Results of the latent heat benchmark. Both figures show the modelled temperature $T_2$ at the bottom of the model domain.
       Left: $T_2$ in dependence of resolution using a constant phase transition width of 20\,km. With an increasing number of global refinements of the mesh, the bottom temperature converges against a value of $T_2 = 1105.27 \, \si{K}$.
@@ -10222,7 +10222,7 @@ that discussed in Section~\ref{sec:shell-simple-2d}. The full input file can
 be found at \url{benchmarks/davies_et_al/case-1.1.prm}, with the interesting
 parts excerpted as follows:
 
-\lstinputlisting[language=prmfile]{cookbooks/benchmarks/davies_et_al/case-1.1.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/benchmarks/davies_et_al/doc/case-1.1.prm.out}
 
 We use the same trick here as in Section~\ref{sec:cookbooks-simple-box} to
 produce a model in which the density $\rho(T)$ in the temperature equation
@@ -10257,7 +10257,7 @@ that is relevant is then as follows (the full input file resides at
 \index[prmindex]{Remove nullspace}
 \index[prmindexfull]{Nullspace removal!Remove nullspace}
 
-\lstinputlisting[language=prmfile]{cookbooks/benchmarks/davies_et_al/case-2.1.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/benchmarks/davies_et_al/doc/case-2.1.prm.out}
 
 Again, results are shown below.
 
@@ -10281,7 +10281,7 @@ Section~\ref{sec:checkpoint-restart}). If case 2.2 uses the same
 output directory, we can then resume the computations from this checkpoint with
 an input file that prescribes a different Rayleigh number and a later input time:
 
-\lstinputlisting[language=prmfile]{cookbooks/benchmarks/davies_et_al/case-2.2.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/benchmarks/davies_et_al/doc/case-2.2.prm.out}
 
 We increase the Rayleigh number to $10^5$ by increasing the magnitude of
 gravity in the input file.  The full script for case 2.2 is located in
@@ -10338,7 +10338,7 @@ The complete input file for case 2.3 is located in
 \url{benchmarks/davies_et_al/case-2.3.prm} and contains among others the
 following parts:
 
-\lstinputlisting[language=prmfile]{cookbooks/benchmarks/davies_et_al/case-2.3.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/benchmarks/davies_et_al/doc/case-2.3.prm.out}
 
 
 \paragraph{Results.}
@@ -10356,13 +10356,13 @@ Rayleigh numbers (corresponding to lower viscosities) then lead to thinner
 plumes. This is nicely reflected in the visualizations.
 
 \begin{figure}[h]
-  \subfigure[Case 1.1]{\includegraphics[width=0.23\textwidth]{cookbooks/benchmarks/davies_et_al/case11_final.png}}
+  \subfigure[Case 1.1]{\includegraphics[width=0.23\textwidth]{cookbooks/benchmarks/davies_et_al/doc/case11_final.png}}
   \hfill
-  \subfigure[Case 2.1]{\includegraphics[width=0.23\textwidth]{cookbooks/benchmarks/davies_et_al/case21_final.png}}
+  \subfigure[Case 2.1]{\includegraphics[width=0.23\textwidth]{cookbooks/benchmarks/davies_et_al/doc/case21_final.png}}
   \hfill
-  \subfigure[Case 2.2]{\includegraphics[width=0.23\textwidth]{cookbooks/benchmarks/davies_et_al/case22_final.png}}
+  \subfigure[Case 2.2]{\includegraphics[width=0.23\textwidth]{cookbooks/benchmarks/davies_et_al/doc/case22_final.png}}
   \hfill
-  \subfigure[Case 2.3]{\includegraphics[width=0.23\textwidth]{cookbooks/benchmarks/davies_et_al/case23_final.png}}
+  \subfigure[Case 2.3]{\includegraphics[width=0.23\textwidth]{cookbooks/benchmarks/davies_et_al/doc/case23_final.png}}
   \hfill
   \caption{Davies et al.~benchmarks: Final steady state temperature fields for
     the 2D cylindrical benchmark cases.}
@@ -10377,13 +10377,13 @@ we switch from the model used to compute up to time $t=2$ to the
 different models used after that.
 
 \begin{figure}[h]
-  \subfigure[Case 1.1]{\includegraphics[width=0.48\textwidth]{cookbooks/benchmarks/davies_et_al/Case11Vrms.png}}
+  \subfigure[Case 1.1]{\includegraphics[width=0.48\textwidth]{cookbooks/benchmarks/davies_et_al/doc/Case11Vrms.png}}
   \hfill
-  \subfigure[Case 2.1]{\includegraphics[width=0.48\textwidth]{cookbooks/benchmarks/davies_et_al/Case21Vrms.png}}
+  \subfigure[Case 2.1]{\includegraphics[width=0.48\textwidth]{cookbooks/benchmarks/davies_et_al/doc/Case21Vrms.png}}
   \\
-  \subfigure[Case 2.2]{\includegraphics[width=0.48\textwidth]{cookbooks/benchmarks/davies_et_al/Case22Vrms.png}}
+  \subfigure[Case 2.2]{\includegraphics[width=0.48\textwidth]{cookbooks/benchmarks/davies_et_al/doc/Case22Vrms.png}}
   \hfill
-  \subfigure[Case 2.3]{\includegraphics[width=0.48\textwidth]{cookbooks/benchmarks/davies_et_al/Case23Vrms.png}}
+  \subfigure[Case 2.3]{\includegraphics[width=0.48\textwidth]{cookbooks/benchmarks/davies_et_al/doc/Case23Vrms.png}}
   \hfill
   \caption{Davies et al.~benchmarks: $V_{\text{rms}}$ for 2D Cylindrical Cases. Large jumps occur when transitioning from case 2.1 to cases 2.2 and 2.3 due to the instantaneous change of parameter settings.}
   \label{fig:davies-2DcylinderVrms}
@@ -10441,7 +10441,7 @@ topography). Details for the benchmark setup are in Figure~\ref{fig:crameri-benc
 
 \begin{figure}
   \begin{center}
-    \includegraphics[width=0.95\textwidth]{cookbooks/benchmarks/crameri/initial_topography.png}
+    \includegraphics[width=0.95\textwidth]{cookbooks/benchmarks/crameri/doc/initial_topography.png}
   \end{center}
   \caption{\it Setup for the topography relaxation benchmark. The box is $2800$ km wide and $700$ km high, with 
     a $100$ km lid on top. The lid has a viscosity of $10^{23} \, {Pa\,s}$, while the mantle has a viscosity of $10^{21} \, {Pa\,s}$.  The sides are 
@@ -10454,7 +10454,7 @@ topography). Details for the benchmark setup are in Figure~\ref{fig:crameri-benc
 The complete parameter file for this benchmark can be found in 
 \url{benchmarks/crameri_et_al/case_1/crameri_benchmark_1.prm}, 
 the  most relevant parts of which are excerpted here: 
-\lstinputlisting[language=prmfile]{cookbooks/benchmarks/crameri/crameri_benchmark_1.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/benchmarks/crameri/doc/crameri_benchmark_1.prm.out}
 In particular, this benchmark uses a custom geometry model to set the initial geometry. 
 This geometry model, called ``\texttt{ReboundBox}'', is based on the \texttt{Box} geometry model. 
 It generates a domain in using the same parameters as \texttt{Box}, but then displaces all 
@@ -10472,7 +10472,7 @@ codes which are included in this comparison are basically indistinguishable.
 
 \begin{figure}
   \begin{center}
-    \includegraphics[width=0.95\textwidth]{cookbooks/benchmarks/crameri/crameri_1_comparison.pdf}
+    \includegraphics[width=0.95\textwidth]{cookbooks/benchmarks/crameri/doc/crameri_1_comparison.pdf}
   \end{center}
   \caption{\it Results for the topography relaxation benchmark, showing maximum topography 
    versus time. Over about $100$ ka the topography completely disappears. The results of four 
@@ -10491,7 +10491,7 @@ are in the caption of Figure~\ref{fig:crameri-benchmark-rising-blob}.
 
 \begin{figure}
   \begin{center}
-    \includegraphics[width=0.95\textwidth]{cookbooks/benchmarks/crameri/rising_blob.png}
+    \includegraphics[width=0.95\textwidth]{cookbooks/benchmarks/crameri/doc/rising_blob.png}
   \end{center}
   \caption{\it Setup for the dynamic topography benchmark. Again, the domain is $2800$ km 
   wide and $700$ km high.  A $100$ km thick lid with viscosity $10^{23}$ overlies a mantle
@@ -10506,7 +10506,7 @@ is over 20 million years and builds dynamic topography of $\sim 800$ meters.
 
 \begin{figure}
   \begin{center}
-    \includegraphics[width=0.95\textwidth]{cookbooks/benchmarks/crameri/crameri_2_comparison.pdf}
+    \includegraphics[width=0.95\textwidth]{cookbooks/benchmarks/crameri/doc/crameri_2_comparison.pdf}
   \end{center}
   \caption{\it Evolution of topography for the dynamic topography benchmark. The maximum topography
    is shown as a function of time, for \aspect{} as well as for several other codes participating in
@@ -10526,7 +10526,7 @@ Furthermore, the results of this benchmark are sensitive to the mesh refinement 
 parameters. Here we have nine refinement levels, and refine according to density and the 
 compositional fields.
 
-\lstinputlisting[language=prmfile]{cookbooks/benchmarks/crameri/crameri_benchmark_2.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/benchmarks/crameri/doc/crameri_benchmark_2.prm.out}
 
 Unlike the first benchmark, for case two there is no (semi) analytical solution to compare against.
 Furthermore, the time integration for this benchmark is much longer, allowing for errors to 
@@ -10541,7 +10541,7 @@ figure~\ref{fig:crameri-benchmark-convergence}.
 
 \begin{figure}
   \begin{center}
-    \includegraphics[width=1.0\textwidth]{cookbooks/benchmarks/crameri/crameri_2_convergence.pdf}
+    \includegraphics[width=1.0\textwidth]{cookbooks/benchmarks/crameri/doc/crameri_2_convergence.pdf}
   \end{center}
   \caption{\it Convergence for case two.  Left: Logarithm of the error with decreasing CFL number. 
 As the CFL number decreases, the error gets smaller. However, once it reaches a value of $\sim0.1$, there
@@ -10600,7 +10600,7 @@ This is only valid in the limit of small porosity $\phi_0 \ll 1$. Figure~\ref{fi
 
 \begin{figure}
   \begin{center}
-    \includegraphics[width=0.65\textwidth]{cookbooks/benchmarks/solitary_wave/setup.pdf}
+    \includegraphics[width=0.65\textwidth]{cookbooks/benchmarks/solitary_wave/doc/setup.pdf}
   \end{center}
   \caption{\it Setup of the solitary wave benchmark. The domain is $400$ m high and includes a low porosity
   ($\phi = 0.001$) background with an initial perturbation ($\phi = 0.1$). The solid density is $3300\,kg/m^3$
@@ -10612,7 +10612,7 @@ This is only valid in the limit of small porosity $\phi_0 \ll 1$. Figure~\ref{fi
 
 The parameter file and material model for this setup can be found in \url{benchmarks/solitary_wave/solitary_wave.prm} and \url{benchmarks/solitary_wave/solitary_wave.cc}. The most relevant sections are shown in the following paragraph. 
 
-\lstinputlisting[language=prmfile]{cookbooks/benchmarks/solitary_wave/solitary_wave.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/benchmarks/solitary_wave/doc/solitary_wave.prm.out}
 
 The benchmark uses a custom model to generate the initial condition for the porosity field as specified by the analytical solution, and its own material model, which includes the additional material properties needed by models with melt migration, such as the permeability, melt density and compaction viscosity. The solitary wave postprocessor compares the porosity and pressure in the model to the analytical solution, and computes the errors for the shape of the porosity, shape of the compaction pressure and the phase speed. 
 We apply the negative phase speed of the solitary wave as a boundary condition for the solid velocity. This changes the reference frame, so that the solitary wave stays in the center of the domain, while the solid moves downwards. The temperature evolution does not play a role in this benchmark, so all temperature and heating-related parameters are disabled or set to zero. 
@@ -10678,18 +10678,18 @@ where $\mathfrak{c}_0$ is the initial composition and $t_{1/2}$ is the half life
 As we split the time-stepping of advection and reactions, there are now two different time steps in the model:
 We control the advection time step using the `Maximum time step' parameter (as the velocity is essentially 0, 
 we can not use the CFL number), and we set the reaction time step using the `Reaction time step' parameter. 
-\lstinputlisting[language=prmfile]{cookbooks/benchmarks/operator_splitting/exponential_decay.part.1.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/benchmarks/operator_splitting/doc/exponential_decay.part.1.prm.out}
 To illustrate convergence, we will vary both parameters in different model runs. 
 
 In our example, we choose $\mathfrak{c}_0=1$, and specify this as initial condition using the \texttt{function} plugin for both composition and temperature. We also set $t_{1/2}=10$, which is implemented as a parameter in the \texttt{exponential decay} material model and the \texttt{exponential decay heating} model. 
-\lstinputlisting[language=prmfile]{cookbooks/benchmarks/operator_splitting/exponential_decay.part.2.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/benchmarks/operator_splitting/doc/exponential_decay.part.2.prm.out}
 The complete parameter file for this setup can be found in \url{benchmarks/operator_splitting/exponential_decay/exponential_decay.base.prm}.
 
 Figure~\ref{fig:exponential-decay} shows the convergence behavior of these models: As there is no advection, the advection time step does not influence the error (blue data points). As we use a first-order operator split, the error is expected to converge linearly with the reaction time step $\Delta t_R$, which is indeed the case (red data points).
 Errors are the same for both composition and temperature, as both fields have identical initial conditions and reactions, and we use the same methods to solve for these variables. 
 \begin{figure}
   \begin{center}
-    \includegraphics[width=0.65\textwidth]{cookbooks/benchmarks/operator_splitting/error_exponential_decay.pdf}
+    \includegraphics[width=0.65\textwidth]{cookbooks/benchmarks/operator_splitting/doc/error_exponential_decay.pdf}
   \end{center}
   \caption{\it Error for both compositional field and temperature compared to the analytical solution, varying the time steps of advection (blue data points and and top/blue x axis) and reactions (red data points and and bottom/red x axis), while keeping the other one constant, respectively.}
   \label{fig:exponential-decay}
@@ -10706,8 +10706,8 @@ $v_0$ is the constant velocity, which we set to 0.01 m/s.
 The parameter file for this setup can be found in \url{benchmarks/operator_splitting/advection_reaction/advection_reaction.base.prm}. 
 \begin{figure}
   \begin{center}
-    \includegraphics[width=0.48\textwidth]{cookbooks/benchmarks/operator_splitting/error_advection_reaction.pdf}
-    \includegraphics[width=0.48\textwidth]{cookbooks/benchmarks/operator_splitting/error_advection_reaction2.pdf}
+    \includegraphics[width=0.48\textwidth]{cookbooks/benchmarks/operator_splitting/doc/error_advection_reaction.pdf}
+    \includegraphics[width=0.48\textwidth]{cookbooks/benchmarks/operator_splitting/doc/error_advection_reaction2.pdf}
   \end{center}
   \caption{\it Error for both compositional field and temperature compared to the analytical solution, varying the time steps of advection (blue data points and and top/blue x axis) and reactions (red data points and and bottom/red x axis), while keeping the other one constant, respectively.}
   \label{fig:advection-reaction}
@@ -10748,7 +10748,7 @@ Case 2 includes a strain rate-dependent component in the viscosity, which is har
   \label{eq:tosi-benchmark-ave-visc}
 \end{equation}
 
-\lstinputlisting[language=prmfile]{cookbooks/benchmarks/tosi/tosi_benchmark_2.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/benchmarks/tosi/doc/tosi_benchmark_2.prm.out}
 
 This rheology leads to mobile-lid convection, with the descending cold lid cooling the cell's interior (Fig. 2 of \cite{T15}).
 
@@ -10758,9 +10758,9 @@ The input files referenced above implement these specific cases. As mentioned be
 
 \begin{figure}
   \begin{center}
-    \includegraphics[width=0.31\textwidth]{cookbooks/benchmarks/tosi/Case1_6_T.png}
-    \includegraphics[width=0.31\textwidth]{cookbooks/benchmarks/tosi/Case1_6_visc.png}
-    \includegraphics[width=0.31\textwidth]{cookbooks/benchmarks/tosi/Case1_6_vel.png}
+    \includegraphics[width=0.31\textwidth]{cookbooks/benchmarks/tosi/doc/Case1_6_T.png}
+    \includegraphics[width=0.31\textwidth]{cookbooks/benchmarks/tosi/doc/Case1_6_visc.png}
+    \includegraphics[width=0.31\textwidth]{cookbooks/benchmarks/tosi/doc/Case1_6_vel.png}
   \end{center}
   \caption{\it Temperature and viscosity field in steady-state for case 1 of \cite{T15}.}
   \label{fig:tosi-benchmark-results}
@@ -10788,8 +10788,8 @@ viscosity (if $\epsilon$ is small).
 \begin{figure}
 \begin{center}
   \centering
-  \includegraphics[width=0.48\textwidth]{cookbooks/benchmarks/layeredflow/viscosityA}
-  \includegraphics[width=0.48\textwidth]{cookbooks/benchmarks/layeredflow/viscosityD}
+  \includegraphics[width=0.48\textwidth]{cookbooks/benchmarks/layeredflow/doc/viscosityA.pdf}
+  \includegraphics[width=0.48\textwidth]{cookbooks/benchmarks/layeredflow/doc/viscosityD.pdf}
   \caption{\it Layered flow benchmark: Viscosity profiles for various
     $\beta$ values and two $\epsilon$ values, using $y_0=1/3$.} 
   \label{fig:layeredflow1}
@@ -10821,8 +10821,8 @@ The viscosity and velocity fields are shown in Fig.~\ref{fig:layeredflow2} for $
 \begin{figure}
 \begin{center}
   \centering
-  \includegraphics[height=0.48\textwidth]{cookbooks/benchmarks/layeredflow/vel}
-  \includegraphics[height=0.48\textwidth]{cookbooks/benchmarks/layeredflow/viscosity}
+  \includegraphics[height=0.48\textwidth]{cookbooks/benchmarks/layeredflow/doc/vel.png}
+  \includegraphics[height=0.48\textwidth]{cookbooks/benchmarks/layeredflow/doc/viscosity.png}
   \caption{\it Velocity and viscosity fields for $\beta=0.01$ and
     $\epsilon=0.05$ at uniform level 8 resolution, using $y_0=1/3$.}  
   \label{fig:layeredflow2}
@@ -10870,13 +10870,13 @@ $L_2$ norm, as expected when using the $Q_2\times Q_1$ element.
 \begin{figure}[t!]
   \centering
   \subfigure[]{
-    \includegraphics[width=0.31\textwidth]{cookbooks/benchmarks/doneahuerta/grav.png}}%
+    \includegraphics[width=0.31\textwidth]{cookbooks/benchmarks/doneahuerta/doc/grav.png}}%
   ~ 
   \subfigure[]{
-    \includegraphics[width=0.31\textwidth]{cookbooks/benchmarks/doneahuerta/press.png}}%
+    \includegraphics[width=0.31\textwidth]{cookbooks/benchmarks/doneahuerta/doc/press.png}}%
   ~
   \subfigure[]{
-    \includegraphics[width=0.31\textwidth]{cookbooks/benchmarks/doneahuerta/vel.png}}
+    \includegraphics[width=0.31\textwidth]{cookbooks/benchmarks/doneahuerta/doc/vel.png}}
   \caption{Donea \& Huerta benchmark: Results for the 2D polynomial Stokes benchmark, 
 obtained with a resolution of $32\times 32$ elements. (a) Gravity field, (b) pressure field,
 (c) velocity field. }\label{fig:doneahuerta-benchmark}
@@ -10900,13 +10900,13 @@ Both benchmarks have the identical setup in the temperature and a compositional 
 
 \begin{figure}[t!]
   \centering
-    \includegraphics[width=\textwidth]{cookbooks/benchmarks/advection/drop.png}%
+    \includegraphics[width=\textwidth]{cookbooks/benchmarks/advection/doc/drop.png}%
   \caption{Dropping box benchmark at final time. Left: entropy viscosity. Right: SUPG.}\label{fig:benchmark-drop}
 \end{figure}
 
 \begin{figure}[t!]
   \centering
-    \includegraphics[width=\textwidth]{cookbooks/benchmarks/advection/rotate_shape.png}%
+    \includegraphics[width=\textwidth]{cookbooks/benchmarks/advection/doc/rotate_shape.png}%
   \caption{Rotating shapes benchmark at final time: Left: reference. Middle: Entropy viscosity. Right: SUPG.}\label{fig:benchmark-rotate-shape}
 \end{figure}
 
@@ -10921,7 +10921,7 @@ This benchmark tests the implementation of the anelastic shear wave velocity-to-
 \begin{figure}
 \begin{center}
   \centering
-  \includegraphics[width=\textwidth]{cookbooks/benchmarks/anelasticity/YT16_benchmark.png}
+  \includegraphics[width=\textwidth]{cookbooks/benchmarks/anelasticity/doc/YT16_benchmark.png}
   \caption{\it $V_S$ as a function of temperature in the oceanic lithosphere. Dotted lines: digitized results from Fig. 20 of Yamauchi \& Takei~\cite{YT16}; solid lines: \aspect{} results; red = 50 km; blue = 75 km. Temperatures are taken from the plate model of McKenzie et al.~\cite{McK05} and $V_{S}$ from the surface wave tomography model of Priestley et al.~\cite{P12}.}  
   \label{fig:anelasticity}
 \end{center}
@@ -11009,9 +11009,9 @@ Fig.~\ref{fig:sandbox-images}.
 
 \begin{figure}
   \centering
-  \includegraphics[width=0.45\textwidth]{cookbooks/benchmarks/brittle_thrust_wedges/real-sandbox-1.jpg}
+  \includegraphics[width=0.45\textwidth]{cookbooks/benchmarks/brittle_thrust_wedges/doc/real-sandbox-1.jpg}
   \hfill
-  \includegraphics[width=0.45\textwidth]{cookbooks/benchmarks/brittle_thrust_wedges/real-sandbox-2.jpg}
+  \includegraphics[width=0.45\textwidth]{cookbooks/benchmarks/brittle_thrust_wedges/doc/real-sandbox-2.jpg}
   \caption{\it Examples of deformation patterns of ``sand box'' experiments in
     which alternating layers of differently-colored sand undergo deformation.
     Pictures courtesy of the lab of Dennis Harry at Colorado State University.}
@@ -11043,7 +11043,7 @@ that approximates a mobile wall with a constant velocity of 2.5 cm/hour on the
 right-hand side boundary to drive the deformation in the sand layers. The following 
 listing shows key portions of the parameter file that describes this kind of setup:
 
-\lstinputlisting[language=prmfile]{cookbooks/benchmarks/brittle_thrust_wedges/velocity_bc_part.prm}
+\lstinputlisting[language=prmfile]{cookbooks/benchmarks/brittle_thrust_wedges/doc/velocity_bc.part.prm}
 
 Accurate solver convergence is always challenging to achieve in numerical thrust 
 wedge models with a high spatial resolution (ca. 1 mm node spacing) and a large 
@@ -11056,7 +11056,7 @@ between compositional layers. Lastly, we use the harmonic averaging scheme for
 material and viscosity is required to achieve reasonable convergence behavior. The 
 relevant parameters are shown here:
 
-\lstinputlisting[language=prmfile]{cookbooks/benchmarks/brittle_thrust_wedges/convergence_part.prm}
+\lstinputlisting[language=prmfile]{cookbooks/benchmarks/brittle_thrust_wedges/doc/convergence.part.prm}
 
 \textit{Experiment 1} tests whether model wedges in the stable domain of critical 
 taper theory remain stable when translated horizontally. A quartz sand wedge with 
@@ -11070,7 +11070,7 @@ plastic material should not undergo any deformation during translation.
 \begin{figure}
 \begin{center}
   \centering
-  \includegraphics[width=\textwidth]{cookbooks/benchmarks/brittle_thrust_wedges/exp1.png}
+  \includegraphics[width=\textwidth]{cookbooks/benchmarks/brittle_thrust_wedges/doc/exp1.png}
   \caption{\it Numerical model of a stable sand wedge. a) Initial model setup. b) Material field after 4 cm of translation. c) Strain rate field and d) pressure field.}
   \label{fig:btwexp1}
 \end{center}
@@ -11088,7 +11088,7 @@ remains more or less lithostatic, with lower pressure values in (incipient) shea
 \begin{figure}
 \begin{center}
   \centering
-  \includegraphics[width=\textwidth]{cookbooks/benchmarks/brittle_thrust_wedges/exp2.png}
+  \includegraphics[width=\textwidth]{cookbooks/benchmarks/brittle_thrust_wedges/doc/exp2.png}
   \caption{\it Numerical model of an unstable subcritical wedge. a) Initial model setup. b) Material field of sands after 10 cm shortening. c) Strain field and d) pressure field.}
   \label{fig:btwexp2}
 \end{center}
@@ -11716,7 +11716,7 @@ To give you some guidelines on how to write the section in the manual, you can f
   \href{doc/manual/cookbooks/.}{doc/manual/cookbooks}
   directory and include them in the \texttt{manual.tex} file using a command like
   \begin{verbatim}
-  \lstinputlisting[language=prmfile]{cookbooks/subfolder_name/input_snippet.prm.out}
+  \lstinputlisting[language=prmfile]{cookbooks/subfolder_name/doc/input_snippet.prm.out}
   \end{verbatim}
 \item Show the model results in form of figures and/or plots, accompanied by an explanation
   of what happens in the model. This can also include a link to an animation of the model

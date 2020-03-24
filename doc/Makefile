@@ -6,15 +6,28 @@ aspect-files      = $(shell echo ../include/aspect/*.h \
                             ../include/aspect/*/*.h     \
                             ../include/aspect/*/*/*.h   \
                             modules/*.h)
-aspect-manual-pix = $(shell find manual/cookbooks/ -name \*.png 2>/dev/null)
+aspect-manual-pix = $(shell find -L manual/cookbooks/ -name \*.png 2>/dev/null)
 
 # List all changelog files including the relative path and make sure to ignore
 # the .gitkeep file. Use find instead of ls because the directory might have
 # no changes in it:
 change-files = $(shell find modules/changes/ -type f -not -name '.*')
 
-aspect-prms = $(shell find manual/cookbooks/ -name \*.prm 2>/dev/null)
-aspect-prms-out = $(aspect-prms:=.out)
+# Find all parameter files to be included in the manual and generate their
+# output targets (.prm.out). There are two types of targets: Every file inside
+# the /doc/ folders generates the output inside the same folder. Every file
+# outside the /doc/ folder generates a target inside the the doc folder. For
+# that we separate file and directory strings, attach 'doc/' to the directory
+# and '.out' to the file name and join them afterwards.
+aspect-doc-prms = $(shell find -L manual/cookbooks/ -path \*/doc/\* -name \*.prm 2>/dev/null)
+aspect-doc-prms-out = $(aspect-doc-prms:=.out)
+
+aspect-cookbook-prms = $(shell find -L manual/cookbooks/ -not -path \*/doc/\* -name \*.prm 2>/dev/null)
+aspect-cookbook-file-names = $(notdir $(aspect-cookbook-prms))
+aspect-cookbook-dir-names = $(dir $(aspect-cookbook-prms))
+aspect-cookbook-file-names-out = $(addsuffix .out, $(aspect-cookbook-file-names))
+aspect-cookbook-dir-names-out = $(addsuffix doc/, $(aspect-cookbook-dir-names))
+aspect-cookbook-prms-out = $(join $(aspect-cookbook-dir-names-out), $(aspect-cookbook-file-names-out))
 
 default:
 	@echo "make targets:"
@@ -29,7 +42,22 @@ all: aspect.tag manual.pdf
 # separator marker ! by /). This is repeated 10 times because only one nesting
 # level is removed in each call to sed. The replacement is necessary as
 # makeindex only allows for three levels of nesting.
+#
+# There are two rules for .prm.out files, the first one is executed if the
+# corresponding .prm file is found in the same folder as the .prm.out target.
+# This is the case for all *.part.prm files that are already in the doc/
+# subfolder of cookbooks and benchmarks. The second rule is triggered if the
+# corresponding .prm file is found in the parent folder of the .prm.out file
+# (in this case the first rule does not trigger, because the dependency is
+# not found). The second case applies to the full .prm files of the cookbook or
+# benchmark, for which the .prm file lies in the parent folder of the
+# doc/*.prm.out target folder.
 %.prm.out: %.prm Makefile
+	@echo "generating '$@' from '$<'..."
+	@perl manual/cookbooks/annotate.pl $< >$@
+	@for i in `seq 1 10`; do sed -i.bak 's/{\([^!]*\)!\([^!]*\)!\([^!]*\)!\([^}]*\)}/{\1!\2!\3\/\4}/' $@; rm $@.bak; done
+
+%.prm.out: $(dir %.prm)../$(notdir %.prm) Makefile
 	@echo "generating '$@' from '$<'..."
 	@perl manual/cookbooks/annotate.pl $< >$@
 	@for i in `seq 1 10`; do sed -i.bak 's/{\([^!]*\)!\([^!]*\)!\([^!]*\)!\([^}]*\)}/{\1!\2!\3\/\4}/' $@; rm $@.bak; done
@@ -69,7 +97,7 @@ aspect.tag: $(aspect-files) $(change-files) modules/changes.h options.dox Makefi
 # need to ignore them the first time we run pdflatex, because of missing label
 # definitions, etc..
 manual.pdf: manual/manual.tex manual/manual.bib manual/parameters.tex \
-            $(aspect-manual-pix) $(aspect-prms-out)
+            $(aspect-manual-pix) $(aspect-doc-prms-out) $(aspect-cookbook-prms-out)
 	@if test -x "`which pdflatex`" \
                  -a -x "`which bibtex`" \
                  -a -x "`which makeindex`" ; then \
