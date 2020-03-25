@@ -386,7 +386,7 @@ namespace aspect
            p != x_no_flux_boundary_indicators.end(); ++p)
         if (mesh_deformation_boundary_indicators_set.find(*p) != mesh_deformation_boundary_indicators_set.end())
           {
-            x_no_flux_boundary_indicators.erase(*p);
+            p = x_no_flux_boundary_indicators.erase(p);
           }
 
       sim.signals.pre_compute_no_normal_flux_constraints(sim.triangulation);
