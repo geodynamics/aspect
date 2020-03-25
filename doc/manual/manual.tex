@@ -3191,7 +3191,7 @@ directory. A full description of all parameters one can specify in these files
 is given in Section~\ref{sec:parameters}.
 
 Running \aspect{} with an input file
-\footnote{For example by running \texttt{./aspect ../cookbooks/convection-box.prm} in
+\footnote{For example by running \texttt{./aspect ../cookbooks/convection-box/convection-box.prm} in
 your build directory.}
 will produce output that will look
 something like this (numbers will all be different, of course):
@@ -3640,7 +3640,7 @@ region (see the ``cookbooks'' section, Section~\ref{sec:cookbooks}, and in
 particular Section~\ref{sec:cookbooks-simple-box} for
 the input file for this particular model). We can run the program with 4 processors using
 \begin{verbatim}
-  mpirun -np 4 ./aspect cookbooks/convection-box.prm
+  mpirun -np 4 ./aspect cookbooks/convection-box/convection-box.prm
 \end{verbatim}
 Letting the program run for a while will result in several output files as
 discussed in Section~\ref{sec:running-overview} above.
