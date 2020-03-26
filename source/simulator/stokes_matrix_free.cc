@@ -1249,7 +1249,11 @@ namespace aspect
 
     {
       const unsigned int n_vect_doubles =
+#if DEAL_II_VERSION_GTE(9,2,0)
+        VectorizedArray<double>::size();
+#else
         VectorizedArray<double>::n_array_elements;
+#endif
       const unsigned int n_vect_bits = 8 * sizeof(double) * n_vect_doubles;
 
       sim.pcout << "Vectorization over " << n_vect_doubles
