@@ -457,6 +457,8 @@ namespace aspect
 
       std::vector<double> average_elastic_shear_moduli (in.temperature.size());
       // Store value of gamma functions, and number of gamma function for each compostion
+      // Construct a gamma_inputs structure for passing that information into functions
+      // While number of gamma function is set from the start, value of gamma functions keep updating on every point
       std::vector<double> gamma_values(phase_function.n_phase_transitions(), 0.0);
       std::pair<std::vector<double>, const std::vector<unsigned int>> gamma_inputs =
                                                                      std::make_pair(gamma_values, phase_function.n_phase_transitions_for_each_composition());
@@ -482,7 +484,7 @@ namespace aspect
                                                                    gravity_norm*reference_density,
                                                                    numbers::invalid_unsigned_int);
 
-          // Compute value of gamma functions, thus values in gamma_inputs change
+          // Compute value of gamma functions and assign values in gamma_inputs
           for (unsigned int j=0; j < phase_function.n_phase_transitions(); j++)
             {
               phase_inputs.phase_index = j;
@@ -528,9 +530,10 @@ namespace aspect
             {
               // Currently, the viscosities for each of the compositional fields are calculated assuming
               // isostrain amongst all compositions, allowing calculation of the viscosity ratio.
-              // TODO: This is only consistent with viscosity averaging if the arithmetic averaging
               // scheme is chosen. It would be useful to have a function to calculate isostress viscosities.
               // Morover, pass gamma_inputs inside in order to updata flow law parameters by phases.
+              // Note that the average scheme across phases inside this function is different from above
+              // in order to change values of viscosity by magnitude with gamma values.
               const std::pair<std::vector<double>, std::vector<bool> > calculate_viscosities =
                 calculate_isostrain_viscosities(volume_fractions, in.pressure[i], in.temperature[i], in.composition[i], in.strain_rate[i], \
                                                 viscous_flow_law, yield_mechanism, gamma_inputs);
@@ -802,12 +805,15 @@ namespace aspect
 
           // Rheological parameters
           // Diffusion creep parameters
+          // n_phase_transitions_for_each_composition is passed inside to inform the function of the format of entry for this parameter
           diffusion_creep.initialize_simulator (this->get_simulator());
-          diffusion_creep.parse_parameters(prm);
+          diffusion_creep.parse_parameters(prm,
+                                           std::make_shared<std::vector<unsigned int>>(n_phase_transitions_for_each_composition));
 
           // Dislocation creep parameters
           dislocation_creep.initialize_simulator (this->get_simulator());
-          dislocation_creep.parse_parameters(prm);
+          dislocation_creep.parse_parameters(prm,
+                                             std::make_shared<std::vector<unsigned int>>(n_phase_transitions_for_each_composition));
 
           // Plasticity parameters
           drucker_prager_parameters = drucker_prager_plasticity.parse_parameters(this->n_compositional_fields()+1,

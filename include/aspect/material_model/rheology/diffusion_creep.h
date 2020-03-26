@@ -92,7 +92,7 @@ namespace aspect
           /**
            * Diffusion creep grain size d.
            */
-          double grain_size;
+          std::vector<double> grain_size;
       };
     }
   }

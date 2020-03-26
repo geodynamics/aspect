@@ -724,7 +724,11 @@ namespace aspect
           {
             Assert(base+i+1<parameter_values.size(), ExcInternalError());
             if (by_log)
-              average_value += gamma_values[base-composition+i] * log(parameter_values[base+i+1] / parameter_values[base+i]);
+              {
+                // First average by log values and then take the exponential.
+                // This is used for averaging prefactors in flow laws.
+                average_value += gamma_values[base-composition+i] * log(parameter_values[base+i+1] / parameter_values[base+i]);
+              }
             else
               average_value += gamma_values[base-composition+i] * (parameter_values[base+i+1] - parameter_values[base+i]);
           }

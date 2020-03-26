@@ -51,12 +51,16 @@ namespace aspect
         double activation_energies_diffusion_c;
         double activation_volumes_diffusion_c;
         double grain_size_exponents_diffusion_c;
+        double grain_size_c;
         if (gamma_inputs != std::pair<std::vector<double>, const std::vector<unsigned int>>())
           {
+            // Log values of prefactors are weighted by gamma values and then converted to a value by taking the exponetial
+            // in order to change values of viscosity by magnitude with gamma values.
             prefactors_diffusion_c = MaterialModel::MaterialUtilities::phase_average_value(gamma_inputs, prefactors_diffusion, composition, true);
             activation_energies_diffusion_c = MaterialModel::MaterialUtilities::phase_average_value(gamma_inputs, activation_energies_diffusion, composition);
             activation_volumes_diffusion_c = MaterialModel::MaterialUtilities::phase_average_value(gamma_inputs, activation_volumes_diffusion , composition);
             grain_size_exponents_diffusion_c = MaterialModel::MaterialUtilities::phase_average_value(gamma_inputs, grain_size_exponents_diffusion, composition);
+            grain_size_c = MaterialModel::MaterialUtilities::phase_average_value(gamma_inputs, grain_size, composition);
           }
         else
           {
@@ -64,10 +68,8 @@ namespace aspect
             activation_energies_diffusion_c = activation_energies_diffusion[composition];
             activation_volumes_diffusion_c = activation_volumes_diffusion[composition];
             grain_size_exponents_diffusion_c = grain_size_exponents_diffusion[composition];
+            grain_size_c = grain_size[composition];
           }
-        // TODO: Add other parameters and use them below
-
-
         // Power law creep equation
         //    viscosity = 0.5 * A^(-1/n) * d^(m/n) * exp((E + P*V)/(nRT))
         // A: prefactor,
@@ -77,7 +79,7 @@ namespace aspect
                                            std::exp((activation_energies_diffusion_c +
                                                      pressure*activation_volumes_diffusion_c)/
                                                     (constants::gas_constant*temperature)) *
-                                           std::pow(grain_size, grain_size_exponents_diffusion_c);
+                                           std::pow(grain_size_c, grain_size_exponents_diffusion_c);
 
         return viscosity_diffusion;
       }
@@ -88,29 +90,33 @@ namespace aspect
       void
       DiffusionCreep<dim>::declare_parameters (ParameterHandler &prm)
       {
-        // TODO: same modifications as for EquationsOfState::MulticomponentIncompressible
+        // Here, a default value is assigned to every phase and composition if no entry is given
         prm.declare_entry ("Prefactors for diffusion creep", "1.5e-15",
                            Patterns::Anything(),
                            "List of viscosity prefactors, $A$, for background material and compositional fields, "
-                           "for a total of N+1 values, where N is the number of compositional fields. "
+                           "for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. "
                            "If only one value is given, then all use the same value. "
                            "Units: $Pa^{-1} m^{m_{\\text{diffusion}}} s^{-1}$");
         prm.declare_entry ("Grain size exponents for diffusion creep", "3",
                            Patterns::Anything(),
                            "List of grain size exponents, $m_{\\text{diffusion}}$, for background material and compositional fields, "
-                           "for a total of N+1 values, where N is the number of compositional fields. "
+                           "for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. "
                            "If only one value is given, then all use the same value. Units: None");
         prm.declare_entry ("Activation energies for diffusion creep", "375e3",
                            Patterns::Anything(),
                            "List of activation energies, $E_a$, for background material and compositional fields, "
-                           "for a total of N+1 values, where N is the number of compositional fields. "
+                           "for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. "
                            "If only one value is given, then all use the same value.  Units: $J / mol$");
         prm.declare_entry ("Activation volumes for diffusion creep", "6e-6",
                            Patterns::Anything(),
                            "List of activation volumes, $V_a$, for background material and compositional fields, "
-                           "for a total of N+1 values, where N is the number of compositional fields. "
+                           "for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. "
                            "If only one value is given, then all use the same value.  Units: $m^3 / mol$");
-        prm.declare_entry ("Grain size", "1e-3", Patterns::Double(0), "Units: $m$");
+        prm.declare_entry ("Grain size", "1e-3",
+                           Patterns::Anything(),
+                           "List of grain sizes, $V_a$, for background material and compositional fields, "
+                           "for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. "
+                           "If only one value is given, then all use the same value.  Units: $m$");
       }
 
 
@@ -153,7 +159,12 @@ namespace aspect
                                                                             "Activation volumes for diffusion creep",
                                                                             true,
                                                                             expected_n_phases_per_composition);
-        grain_size = prm.get_double("Grain size");
+        grain_size = Utilities::parse_map_to_double_array(prm.get("Grain size"),
+                                                          list_of_composition_names,
+                                                          has_background_field,
+                                                          "Grain_size",
+                                                          true,
+                                                          expected_n_phases_per_composition);
       }
     }
   }

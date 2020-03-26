@@ -55,6 +55,8 @@ namespace aspect
         double stress_exponents_dislocation_c;
         if (gamma_inputs != std::pair<std::vector<double>, const std::vector<unsigned int>>())
           {
+            // Log values of prefactors are weighted by gamma values and then converted to a value by taking the exponetial
+            // in order to change values of viscosity by magnitude with gamma values.
             prefactors_dislocation_c = MaterialModel::MaterialUtilities::phase_average_value(gamma_inputs, prefactors_dislocation, composition, true);
             activation_energies_dislocation_c = MaterialModel::MaterialUtilities::phase_average_value(gamma_inputs, activation_energies_dislocation, composition);
             activation_volumes_dislocation_c = MaterialModel::MaterialUtilities::phase_average_value(gamma_inputs, activation_volumes_dislocation , composition);
@@ -89,23 +91,23 @@ namespace aspect
         prm.declare_entry ("Prefactors for dislocation creep", "1.1e-16",
                            Patterns::Anything(),
                            "List of viscosity prefactors, $A$, for background material and compositional fields, "
-                           "for a total of N+1 values, where N is the number of compositional fields. "
+                           "for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. "
                            "If only one value is given, then all use the same value. "
                            "Units: $Pa^{-n_{\\text{dislocation}}} s^{-1}$");
         prm.declare_entry ("Stress exponents for dislocation creep", "3.5",
                            Patterns::Anything(),
                            "List of stress exponents, $n_{\\text{dislocation}}$, for background material and compositional fields, "
-                           "for a total of N+1 values, where N is the number of compositional fields. "
+                           "for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. "
                            "If only one value is given, then all use the same value.  Units: None");
         prm.declare_entry ("Activation energies for dislocation creep", "530e3",
                            Patterns::Anything(),
                            "List of activation energies, $E_a$, for background material and compositional fields, "
-                           "for a total of N+1 values, where N is the number of compositional fields. "
+                           "for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. "
                            "If only one value is given, then all use the same value.  Units: $J / mol$");
         prm.declare_entry ("Activation volumes for dislocation creep", "1.4e-5",
                            Patterns::Anything(),
                            "List of activation volumes, $V_a$, for background material and compositional fields, "
-                           "for a total of N+1 values, where N is the number of compositional fields. "
+                           "for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. "
                            "If only one value is given, then all use the same value.  Units: $m^3 / mol$");
       }
 

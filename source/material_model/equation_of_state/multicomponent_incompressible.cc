@@ -70,17 +70,17 @@ namespace aspect
         prm.declare_entry ("Densities", "3300.",
                            Patterns::Anything(),
                            "List of densities for background mantle and compositional fields,"
-                           "for a total of N+1 values, where N is the number of compositional fields."
+                           "for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. "
                            "If only one value is given, then all use the same value.  Units: $kg / m^3$");
         prm.declare_entry ("Thermal expansivities", std::to_string(default_thermal_expansion),
                            Patterns::Anything(),
                            "List of thermal expansivities for background mantle and compositional fields,"
-                           "for a total of N+1 values, where N is the number of compositional fields."
+                           "for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. "
                            "If only one value is given, then all use the same value. Units: $1/K$");
         prm.declare_entry ("Heat capacities", "1250.",
                            Patterns::Anything(),
                            "List of specific heats $C_p$ for background mantle and compositional fields,"
-                           "for a total of N+1 values, where N is the number of compositional fields."
+                           "for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. "
                            "If only one value is given, then all use the same value. Units: $J /kg /K$");
         prm.declare_alias ("Heat capacities", "Specific heats");
       }
