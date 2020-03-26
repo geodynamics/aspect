@@ -1,11 +1,7 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
 Loading shared library <./libsol_cx_4_gmg.so>
 
 Vectorization over 2 doubles = 128 bits (SSE2), VECTORIZATION_LEVEL=1
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 Number of active cells: 256 (on 5 levels)
 Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
@@ -14,11 +10,11 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 4.20197e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 3.66718e-08
 
 
    Postprocessing:
-     Errors u_L1, p_L1, u_L2, p_L2: 1.211886e-05, 1.081996e-01, 1.694600e-05, 1.086264e-01
+     Errors u_L1, p_L1, u_L2, p_L2: 1.125999e-06, 1.101883e-01, 1.670011e-06, 1.106214e-01
 
 Termination requested by criterion: end time
 
@@ -27,5 +23,3 @@ Termination requested by criterion: end time
 +---------------------------------+-----------+------------+------------+
 +---------------------------------+-----------+------------+------------+
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------

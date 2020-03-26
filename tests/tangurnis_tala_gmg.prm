@@ -2,10 +2,6 @@
 
 include $ASPECT_SOURCE_DIR/benchmarks/tangurnis/tala/tan.prm 
 
-subsection Material model
-  set Material averaging = harmonic average
-end
-
 subsection Solver parameters
   subsection Stokes solver parameters
     set Stokes solver type = block GMG

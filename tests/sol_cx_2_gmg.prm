@@ -83,7 +83,6 @@ end
 
 subsection Material model
   set Model name = SolCxMaterial
-  set Material averaging = harmonic average
 end
 
 
