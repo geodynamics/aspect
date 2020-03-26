@@ -1,0 +1,12 @@
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics
+  subsection Visualization
+    set List of output variables      = volume of fluid values
+    set Output format                 = vtu
+    set Time between graphical output = 100
+    subsection Volume of Fluid
+      set Output interface reconstruction contour = true
+    end
+  end
+end
+end
