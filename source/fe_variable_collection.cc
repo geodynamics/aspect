@@ -52,14 +52,6 @@ namespace aspect
   {}
 
   template <int dim>
-  VariableDeclaration<dim>::VariableDeclaration(const VariableDeclaration &other)
-    : name (other.name),
-      fe (other.fe),
-      multiplicity (other.multiplicity),
-      n_blocks (other.n_blocks)
-  {}
-
-  template <int dim>
   unsigned int
   VariableDeclaration<dim>::n_components() const
   {
