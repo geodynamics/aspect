@@ -88,18 +88,6 @@ namespace aspect
 
         // Noticed that the size of matrix A is n_particles x n_matrix_columns
         // which usually is not a square matrix. Therefore, we find the
-<<<<<<< HEAD
-        // least squares solution of Ac=r by solving the reduced QR factorization
-        // Ac = QRc = b -> Q^TQRc = Rc =Q^Tb
-        dealii::ImplicitQR<dealii::Vector<double>> qr;
-        const unsigned int n_matrix_columns = (dim == 2) ? 4 : 8;
-        // A is a std::vector of Vectors(which are it's columns) so that we create what the ImplicitQR
-        // class needs.
-        std::vector<dealii::Vector<double>> A(n_matrix_columns, dealii::Vector<double>(n_particles));
-        std::vector<Vector<double>> b(n_particle_properties, Vector<double>(n_particles));
-        std::vector<Vector<double>> QTb(n_particle_properties, Vector<double>(n_matrix_columns));
-        std::vector<Vector<double>> c(n_particle_properties, Vector<double>(n_matrix_columns));
-=======
         // least squares solution of Ax=r by solving reduced QR factorization
         // Ax = QRc = b -> Q^TQRc = Rc =Q^Tb
         dealii::ImplicitQR<dealii::Vector<double>> qr;
@@ -108,7 +96,6 @@ namespace aspect
         std::vector<Vector<double>> b(n_particle_properties, Vector<double>(n_particles));
         std::vector<Vector<double>> QTb(n_particle_properties, Vector<double>(matrix_dimension));
         std::vector<Vector<double>> c(n_particle_properties, Vector<double>(matrix_dimension));
->>>>>>> Replaced the normal equations with QR
         for (unsigned int property_index = 0; property_index < n_particle_properties; ++property_index)
           if (selected_properties[property_index])
             b[property_index] = 0;
@@ -123,11 +110,8 @@ namespace aspect
               if (selected_properties[property_index])
                 b[property_index][positions_index] = particle_property_value[property_index];
             const Tensor<1, dim, double> relative_particle_position = (particle->get_location() - approximated_cell_midpoint) / cell_diameter;
-<<<<<<< HEAD
             // A is accessed by A[column][row] here since we need to append
             // columns into the qr matrix.
-=======
->>>>>>> Replaced the normal equations with QR
             A[0][positions_index] = 1;
             A[1][positions_index] = relative_particle_position[0];
             A[2][positions_index] = relative_particle_position[1];
@@ -145,11 +129,12 @@ namespace aspect
               }
           }
 
-        for (unsigned int column_index = 0; column_index < n_matrix_columns; ++column_index)
+        // If A is rank deficent, qr.append_column would return false for that
+        // iteration, but we also would notice that qr.size() should be smaller
+        // than the expected matrix_dimension
+        for (unsigned int column_index = 0; column_index < matrix_dimension; ++column_index)
           qr.append_column(A[column_index]);
-        // If A is rank deficent, qr.append_column will not append the column.
-        // We check that all columns were added through this assertion
-        AssertThrow(qr.size() == n_matrix_columns,
+        AssertThrow(qr.size() == matrix_dimension,
                     ExcMessage("The matrix A was rank deficent during bilinear least squares interpolation."));
 
         for (unsigned int property_index = 0; property_index < n_particle_properties; ++property_index)
@@ -293,13 +278,8 @@ namespace aspect
       ASPECT_REGISTER_PARTICLE_INTERPOLATOR(BilinearLeastSquares,
                                             "bilinear least squares",
                                             "Interpolates particle properties onto a vector of points using a "
-<<<<<<< HEAD
                                             "bilinear least squares method. Note that deal.II must be configured "
                                             "with BLAS/LAPACK.")
-=======
-                                            "bilinear least squares method. Note that deal.II must be configured"
-                                            " with BLAS/LAPACK.")
->>>>>>> Replaced the normal equations with QR
     }
   }
 }
