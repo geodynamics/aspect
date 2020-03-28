@@ -111,6 +111,8 @@ namespace aspect
               if (selected_properties[property_index])
                 b[property_index][positions_index] = particle_property_value[property_index];
             const Tensor<1, dim, double> relative_particle_position = (particle->get_location() - approximated_cell_midpoint) / cell_diameter;
+            // A is accessed by A[column][row] here since we need to append
+            // columns into the qr matrix.
             A[0][positions_index] = 1;
             A[1][positions_index] = relative_particle_position[0];
             A[2][positions_index] = relative_particle_position[1];
@@ -128,11 +130,13 @@ namespace aspect
               }
           }
 
+        // If A is rank deficent, qr.append_column would return false for that
+        // iteration, but we also would notice that qr.size() should be smaller
+        // than the expected matrix_dimension
         for (unsigned int column_index = 0; column_index < matrix_dimension; ++column_index)
-          if (!qr.append_column(A[column_index]))
-            std::cout << "Houston we have at least one problem.\n";
-
-        unsigned int index_positions = 0;
+          qr.append_column(A[column_index]);
+        AssertThrow(qr.size() == matrix_dimension,
+                    ExcMessage("The matrix A was rank deficent during bilinear least squares interpolation."));
 
         for (unsigned int property_index = 0; property_index < n_particle_properties; ++property_index)
           {
@@ -142,6 +146,7 @@ namespace aspect
                 qr.solve(c[property_index], QTb[property_index]);
               }
           }
+        unsigned int index_positions = 0;
         for (typename std::vector<Point<dim>>::const_iterator itr = positions.begin(); itr != positions.end(); ++itr, ++index_positions)
           {
             const Tensor<1, dim, double> relative_support_point_location = (*itr - approximated_cell_midpoint) / cell_diameter;
