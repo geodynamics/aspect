@@ -66,7 +66,7 @@ namespace aspect
 
     template <>
     std::pair<std::string,std::string>
-    GravityPointValues<3>::execute (TableHandler &)
+    GravityPointValues<3>::execute (TableHandler &statistics)
     {
       const int dim = 3;
 
@@ -268,6 +268,12 @@ namespace aspect
       // This is the main loop which computes gravity acceleration, potential and
       // gradients at a point located at the spherical coordinate [r, phi, theta].
       // This loop corresponds to the 3 integrals of Newton law:
+      double sum_g = 0;
+      double min_g = std::numeric_limits<double>::max();
+      double max_g = -std::numeric_limits<double>::max();
+      double sum_g_potential = 0;
+      double min_g_potential = std::numeric_limits<double>::max();
+      double max_g_potential = -std::numeric_limits<double>::max();
       for (unsigned int p=0; p < n_satellites; ++p)
         {
 
@@ -330,6 +336,18 @@ namespace aspect
           const Tensor<1,dim> g_anomaly  = Utilities::MPI::sum (local_g_anomaly, this->get_mpi_communicator());
           const Tensor<2,dim> g_gradient = Utilities::MPI::sum (local_g_gradient, this->get_mpi_communicator());
           const double g_potential       = Utilities::MPI::sum (local_g_potential, this->get_mpi_communicator());
+
+          // sum gravity components for all n_satellites:
+          sum_g += g.norm();
+          sum_g_potential += g_potential;
+          if (g.norm() > max_g)
+            max_g = g.norm();
+          if (g.norm() < min_g)
+            min_g = g.norm();
+          if (g_potential > max_g_potential)
+            max_g_potential = g_potential;
+          if (g_potential < min_g_potential)
+            min_g_potential = g_potential;
 
           // analytical solution to calculate the theoretical gravity and its derivatives
           // from a uniform density model. Can only be used if concentric density profile.
@@ -413,6 +431,37 @@ namespace aspect
                      << '\n';
             }
         }
+
+      // write quantities in the statistic file
+      const std::string name2("Average gravity acceleration (m/s^2)");
+      statistics.add_value (name2, sum_g/n_satellites);
+      statistics.set_precision (name2, 12);
+      statistics.set_scientific (name2, true);
+
+      const std::string name3("Minimum gravity acceleration (m/s^2)");
+      statistics.add_value (name3, min_g);
+      statistics.set_precision (name3, 12);
+      statistics.set_scientific (name3, true);
+
+      const std::string name4("Maximum gravity acceleration (m/s^2)");
+      statistics.add_value (name4, max_g);
+      statistics.set_precision (name4, 12);
+      statistics.set_scientific (name4, true);
+
+      const std::string name5("Average gravity potential (m^2/s^2)");
+      statistics.add_value (name5, sum_g_potential/n_satellites);
+      statistics.set_precision (name5, 12);
+      statistics.set_scientific (name5, true);
+
+      const std::string name6("Minimum gravity potential (m^2/s^2)");
+      statistics.add_value (name6, min_g_potential);
+      statistics.set_precision (name6, 12);
+      statistics.set_scientific (name6, true);
+
+      const std::string name7("Maximum gravity potential (m^2/s^2)");
+      statistics.add_value (name7, max_g_potential);
+      statistics.set_precision (name7, 12);
+      statistics.set_scientific (name7, true);
 
       // up the next time we need output:
       set_last_output_time (this->get_time());
@@ -551,7 +600,7 @@ namespace aspect
         {
           if ( (prm.get ("Sampling scheme") == "uniform distribution") || (prm.get ("Sampling scheme") == "map") )
             sampling_scheme = uniform_distribution;
-          else if ( (prm.get ("Sampling scheme") == "list of points") | (prm.get ("Sampling scheme") == "list") )
+          else if ( (prm.get ("Sampling scheme") == "list of points") || (prm.get ("Sampling scheme") == "list") )
             sampling_scheme = list_of_points;
           else
             AssertThrow (false, ExcMessage ("Not a valid sampling scheme."));
@@ -669,7 +718,7 @@ namespace aspect
                                   "and colongitude. Gravity is here based on the density distribution "
                                   "from the material model (and non adiabatic). This means that the "
                                   "density may come directly from an ascii file. This postprocessor also "
-                                  "computes theoretical gravity (and gradients), which corresponds to "
+                                  "computes theoretical gravity and its derivatives, which corresponds to "
                                   "the analytical solution of gravity in the same geometry but filled "
                                   "with a reference density. The reference density is also used to "
                                   "determine density anomalies for computing gravity anomalies. Thus "
@@ -678,6 +727,8 @@ namespace aspect
                                   "differences in the assumed reference density). On way to guarantee correct "
                                   "gravity anomalies is to subtract gravity of a certain point from the average "
                                   "gravity on the map. Another way is to directly use density anomalies for this "
-                                  "postprocessor.")
+                                  "postprocessor."
+                                  "The average- minimum- and maximum gravity acceleration and potential are "
+                                  "written into the statistics file.")
   }
 }
