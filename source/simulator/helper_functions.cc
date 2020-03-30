@@ -1175,8 +1175,10 @@ namespace aspect
         // Easy Case. We have an FE_Q in a separate block, so we can use
         // mean_value() and vector.block(p) += correction:
         const double mean = vector.block(introspection.block_indices.pressure).mean_value();
+        Assert(std::isfinite(mean), ExcInternalError());
         const double int_rhs = mean * vector.block(introspection.block_indices.pressure).size();
         const double correction = -int_rhs / global_volume;
+        Assert(global_volume > 0.0, ExcInternalError());
 
         vector.block(introspection.block_indices.pressure).add(correction, pressure_shape_function_integrals.block(introspection.block_indices.pressure));
       }

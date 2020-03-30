@@ -801,6 +801,24 @@ namespace aspect
 
 
 
+    template <int dim>
+    PrescribedPlasticDilation<dim>::PrescribedPlasticDilation (const unsigned int n_points)
+      : NamedAdditionalMaterialOutputs<dim>(std::vector<std::string>(1, "prescribed_dilation")),
+        dilation(n_points, numbers::signaling_nan<double>())
+    {}
+
+
+
+    template <int dim>
+    std::vector<double> PrescribedPlasticDilation<dim>::get_nth_output(const unsigned int idx) const
+    {
+      (void)idx;
+      Assert(idx==0, ExcInternalError());
+      return dilation;
+    }
+
+
+
     namespace
     {
       std::vector<std::string> make_seismic_additional_outputs_names()
@@ -1003,6 +1021,8 @@ namespace aspect
   template class SeismicAdditionalOutputs<dim>; \
   \
   template class ReactionRateOutputs<dim>; \
+  \
+  template class PrescribedPlasticDilation<dim>; \
   \
   template class PrescribedFieldOutputs<dim>; \
   \
