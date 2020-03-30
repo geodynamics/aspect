@@ -39,11 +39,9 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
 Termination requested by criterion: end step
 
 
-+---------------------------------------------+------------+------------+
 | Total wallclock time elapsed since start    |     0.224s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
-+---------------------------------+-----------+------------+------------+
 | Assemble Stokes system          |         3 |    0.0287s |        13% |
 | Assemble composition system     |         3 |    0.0324s |        14% |
 | Assemble temperature system     |         3 |    0.0374s |        17% |
@@ -57,5 +55,4 @@ Termination requested by criterion: end step
 | Postprocessing                  |         1 |  0.000126s |         0% |
 | Setup dof systems               |         1 |   0.00803s |       3.6% |
 | Setup initial conditions        |         1 |    0.0108s |       4.8% |
-+---------------------------------+-----------+------------+------------+
 
