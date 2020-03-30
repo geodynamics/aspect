@@ -235,7 +235,7 @@ namespace aspect
                                  + "The current structure vector has " + std::to_string(n_values_per_key->size()) + " entries, but there are "
                                  + std::to_string(n_fields) + " field names." ));
 
-        for (const std::pair<std::string, double> &key_and_value: parsed_map)
+        for (const std::pair<const std::string, double> &key_and_value: parsed_map)
           {
             const std::vector<std::string>::iterator field_name =
               std::find(field_names.begin(),field_names.end(),key_and_value.first);
