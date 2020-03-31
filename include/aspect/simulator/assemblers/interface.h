@@ -414,11 +414,6 @@ namespace aspect
                            const bool                field_is_discontinuous);
 
           /**
-           * Copy constructor.
-           */
-          AdvectionSystem (const AdvectionSystem &data);
-
-          /**
            * Local contributions to the global matrix
            * that correspond only to the variables listed in local_dof_indices
            */

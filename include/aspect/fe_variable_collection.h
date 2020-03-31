@@ -76,11 +76,6 @@ namespace aspect
     VariableDeclaration();
 
     /**
-     * Copy constructor.
-     */
-    VariableDeclaration(const VariableDeclaration &other);
-
-    /**
      * Return the total number of components of this variable.
      */
     unsigned int n_components() const;
