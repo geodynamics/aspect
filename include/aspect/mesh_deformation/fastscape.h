@@ -56,7 +56,7 @@ void fastscape_execute_step_();
 void fastscape_named_vtk_(double *fp, const double *vexp, int *astep, const char *c, int *length);
 void fastscape_copy_h_(double *hp);
 void fastscape_strati_(const int *nstepp, const int *nreflectorp, int *nfreqp, const double *vexp);
-void folder_output_(int *length, int *astep, const char *c);
+//void folder_output_(int *length, int *astep, const char *c);
 void fastscape_copy_slope_(double *slopep);
 
 //end run
