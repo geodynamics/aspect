@@ -347,8 +347,8 @@ namespace aspect
                   if (use_marine)
                     fastscape_set_marine_parameters_(&sl, &p1, &p2, &z1, &z2, &r, &l, &kds1, &kds2);
 
-                  if (use_strat)
-                    folder_output_(&length, &restart_step, c);
+                  //if (use_strat)
+                  //  folder_output_(&length, &restart_step, c);
 
                 }
               else
