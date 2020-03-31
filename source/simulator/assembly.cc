@@ -811,6 +811,13 @@ namespace aspect
     system_matrix.compress(VectorOperation::add);
     system_rhs.compress(VectorOperation::add);
 
+    // If we change the system_rhs, matrix-free Stokes must update
+    if (stokes_matrix_free)
+      {
+        stokes_matrix_free->evaluate_material_model();
+        stokes_matrix_free->correct_stokes_rhs();
+      }
+
     // if the model is compressible then we need to adjust the right hand
     // side of the equation to make it compatible with the matrix on the
     // left
@@ -818,14 +825,6 @@ namespace aspect
       {
         pressure_shape_function_integrals.compress(VectorOperation::add);
         make_pressure_rhs_compatible(system_rhs);
-      }
-
-
-    // If we change the system_rhs, matrix-free Stokes must update
-    if (stokes_matrix_free)
-      {
-        stokes_matrix_free->evaluate_material_model();
-        stokes_matrix_free->correct_stokes_rhs();
       }
 
     // record that we have just rebuilt the matrix
