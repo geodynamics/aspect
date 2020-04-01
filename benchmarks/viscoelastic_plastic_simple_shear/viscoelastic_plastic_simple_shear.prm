@@ -1,7 +1,7 @@
 # This parameter file constructs a simple shear benchmark, which is adapted from Farrington et al. 2014,
 # (Geophysics, Geochemsitry, Geosystems). A uniform material undergoes simple shear at a constant rate
 # up until time=1.  At this point the shearing velocity is reduced to zero, and elastic stresses relax.
-# The material model is viscoelastic plastic, with a cohesion value of 3.5. This value is slightly
+# The rheology is viscoelastic plastic, with a cohesion value of 3.5. This value is slightly
 # higher than the visco-elastic stress at time=1, meaning that yielding does not occur, and the
 # analytic (visco-elastic) solution should be reasonably well approximated. If the cohesion value is reduced
 # to below the shear stress value at time t=1 (~3.1411), the shear stress will reach and remain 
