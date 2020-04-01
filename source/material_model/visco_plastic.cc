@@ -202,24 +202,22 @@ namespace aspect
           else
             {
               const std::vector<double> &elastic_shear_moduli = elastic_rheology.get_elastic_shear_moduli();
-              const double elastic_timestep = elastic_rheology.elastic_timestep();
 
               if (use_reference_strainrate == true)
                 current_edot_ii = ref_strain_rate;
               else
                 {
-                  // Calculate the square root of the second moment invariant for the deviatoric
-                  // strain rate tensor, including viscoelastic stresses.
-                  const SymmetricTensor<2,dim> edot = 2. * (deviator(strain_rate)) + stress_old /
-                                                      (elastic_shear_moduli[j] * elastic_timestep);
+                  const double viscoelastic_strain_rate_invariant = elastic_rheology.calculate_viscoelastic_strain_rate(strain_rate,
+                                                                    stress_old,
+                                                                    elastic_shear_moduli[j]);
 
-                  current_edot_ii = std::max(std::sqrt(std::fabs(second_invariant(edot))),
+                  current_edot_ii = std::max(viscoelastic_strain_rate_invariant,
                                              min_strain_rate);
                 }
 
-              // Step 2a: calculate viscoelastic (effective) viscosity (eqn 28 in Moresi et al., 2003, J. Comp. Phys.)
-              viscosity_pre_yield = viscosity_pre_yield * elastic_timestep /
-                                    (elastic_timestep + (viscosity_pre_yield/elastic_shear_moduli[j]));
+              // Step 2a: calculate viscoelastic (effective) viscosity
+              viscosity_pre_yield = elastic_rheology.calculate_viscoelastic_viscosity(viscosity_pre_yield,
+                                                                                      elastic_shear_moduli[j]);
 
               // Step 2b: calculate current (viscous + elastic) stress magnitude
               current_stress = viscosity_pre_yield * current_edot_ii;
@@ -227,7 +225,7 @@ namespace aspect
               // The viscoelastic strain rate is divided by 2 here as the Drucker Prager
               // viscosity calculation below assumes stress = 2 * viscosity * strain_rate_invariant,
               // whereas the combined viscoelastic + viscous stresses already include the
-              // 2x factor (see computation of edot above).
+              // 2x factor (see computation of edot inside elastic_rheology).
               current_edot_ii /= 2.;
             }
 
