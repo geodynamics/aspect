@@ -4025,6 +4025,23 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 
 
 {\it Possible values:} A boolean value (true or false)
+\item {\it Parameter name:} {\tt Enable prescribed dilation}
+\phantomsection\label{parameters:Formulation/Enable prescribed dilation}
+\label{parameters:Formulation/Enable_20prescribed_20dilation}
+
+
+\index[prmindex]{Enable prescribed dilation}
+\index[prmindexfull]{Formulation!Enable prescribed dilation}
+{\it Value:} false
+
+
+{\it Default:} false
+
+
+{\it Description:} Whether to include additional terms on the right-hand side of the Stokes equation to set a given compression term specified in the MaterialModel output PrescribedPlasticDilation.
+
+
+{\it Possible values:} A boolean value (true or false)
 \item {\it Parameter name:} {\tt Formulation}
 \phantomsection\label{parameters:Formulation/Formulation}
 
@@ -6133,10 +6150,10 @@ When ``composition is specified, the initial model is treated as a standard comp
 
 \index[prmindex]{Data file name}
 \index[prmindexfull]{Initial composition model!Ascii data model!Data file name}
-{\it Value:} initial\_composition\_top\_mantle\_box\_3d.txt
+{\it Value:} box\_2d.txt
 
 
-{\it Default:} initial\_composition\_top\_mantle\_box\_3d.txt
+{\it Default:} box\_2d.txt
 
 
 {\it Description:} The file name of the model data. Provide file in format: (Velocity file name).\%s\%d where \%s is a string specifying the boundary of the model according to the names of the boundary indicators (of the chosen geometry model).\%d is any sprintf integer qualifier, specifying the format of the current file number. 
@@ -6719,10 +6736,10 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Data file name}
 \index[prmindexfull]{Initial temperature model!Ascii data model!Data file name}
-{\it Value:} initial\_isotherm\_500K\_box\_3d.txt
+{\it Value:} box\_2d.txt
 
 
-{\it Default:} initial\_isotherm\_500K\_box\_3d.txt
+{\it Default:} box\_2d.txt
 
 
 {\it Description:} The file name of the model data. Provide file in format: (Velocity file name).\%s\%d where \%s is a string specifying the boundary of the model according to the names of the boundary indicators (of the chosen geometry model).\%d is any sprintf integer qualifier, specifying the format of the current file number. 
@@ -8263,7 +8280,7 @@ This model uses the following equations for the density: \begin{align}  \rho(p,T
 
 \note{This material model fills the role the ``simple'' material model was originally intended to fill, before the latter acquired all sorts of complicated temperature and compositional dependencies.}
 
-`visco plastic': An implementation of a visco-plastic rheology with options for selecting dislocation creep, diffusion creep or composite viscous flow laws.  Plasticity limits viscous stresses through a Drucker Prager yield criterion. The model is incompressible. Note that this material model is based heavily on the DiffusionDislocation (Bob Myhill) and DruckerPrager (Anne Glerum) material models. 
+`visco plastic': An implementation of an incompressible visco(elastic)-plastic rheology with options for selecting dislocation creep, diffusion creep or composite viscous flow laws. Prior to yielding, one may select to modify the viscosity to account for viscoelastic effects. Plasticity limits viscous stresses through a Drucker Prager yield criterion. Note that this material model is based heavily on the DiffusionDislocation (Bob Myhill), DruckerPrager (Anne Glerum), and Viscoelastic (John Naliboff) material models. 
 
  The viscosity for dislocation or diffusion creep is defined as \[v = \frac 12 A^{-\frac{1}{n}} d^{\frac{m}{n}} \dot{\varepsilon}_{ii}^{\frac{1-n}{n}} \exp\left(\frac{E + PV}{nRT}\right)\] where $A$ is the prefactor, $n$ is the stress exponent, $\dot{\varepsilon}_{ii}$ is the square root of the deviatoric strain rate tensor second invariant, $d$ is grain size, $m$ is the grain size exponent, $E$ is activation energy, $V$ is activation volume, $P$ is pressure, $R$ is the gas exponent and $T$ is temperature. This form of the viscosity equation is commonly used in geodynamic simulations. See, for example, Billen and Hirth (2007), G3, 8, Q08012. Significantly, other studies may use slightly different forms of the viscosity equation leading to variations in how specific terms are defined or combined. For example, the grain size exponent should always be positive in the diffusion viscosity equation used here, while other studies place the grain size term in the denominator and invert the sign of the grain size exponent. When examining previous work, one should carefully check how the viscous prefactor and grain size terms are defined. 
 
@@ -8273,11 +8290,33 @@ This model uses the following equations for the density: \begin{align}  \rho(p,T
 
  Viscosity is limited through one of two different `yielding' mechanisms. 
 
-Plasticity limits viscous stress through a Drucker Prager yield criterion, where the yield stress in 3D is  $\sigma_y = \frac{6C\cos(\phi) + 2P\sin(\phi)} {\sqrt(3)(3+\sin(\phi))}$ and $\sigma_y = C\cos(\phi) + P\sin(\phi)$ in 2D. Above, $C$ is cohesion and $\phi$  is the angle of internal friction.  Note that the 2D form is equivalent to the Mohr Coulomb yield surface.  If $\phi$ is 0, the yield stress is fixed and equal to the cohesion (Von Mises yield criterion). When the viscous stress ($2v{\varepsilon}_{ii}$) exceeds the yield stress, the viscosity is rescaled back to the yield surface: $v_{y}=\sigma_{y}/(2{\varepsilon}_{ii})$. This form of plasticity is commonly used in geodynamic models. See, for example, Thieulot, C. (2011), PEPI 188, pp. 47-68. 
+The first plasticity mechanism limits viscous stress through a Drucker Prager yield criterion, where the yield stress in 3D is  $\sigma_y = \frac{6C\cos(\phi) + 2P\sin(\phi)} {\sqrt(3)(3+\sin(\phi))}$ and $\sigma_y = C\cos(\phi) + P\sin(\phi)$ in 2D. Above, $C$ is cohesion and $\phi$  is the angle of internal friction.  Note that the 2D form is equivalent to the Mohr Coulomb yield surface.  If $\phi$ is 0, the yield stress is fixed and equal to the cohesion (Von Mises yield criterion). When the viscous stress ($2v{\varepsilon}_{ii}$) exceeds the yield stress, the viscosity is rescaled back to the yield surface: $v_{y}=\sigma_{y}/(2{\varepsilon}_{ii})$. This form of plasticity is commonly used in geodynamic models. See, for example, Thieulot, C. (2011), PEPI 188, pp. 47-68. 
 
 The user has the option to linearly reduce the cohesion and internal friction angle as a function of the finite strain magnitude. The finite strain invariant or full strain tensor is calculated through compositional fields within the material model. This implementation is identical to the compositional field finite strain plugin and cookbook described in the manual (author: Gassmoeller, Dannberg). If the user selects to track the finite strain invariant ($e_{ii}$), a single compositional field tracks the value derived from $e_{ii}^t = (e_{ii})^{(t-1)} + \dot{e}_{ii}\; dt$, where $t$ and $t-1$ are the current and prior time steps, $\dot{e}_{ii}$ is the second invariant of the strain rate tensor and $dt$ is the time step size. In the case of the full strain tensor $F$, the finite strain magnitude is derived from the second invariant of the symmetric stretching tensor $L$, where $L = F [F]^T$. The user must specify a single compositional field for the finite strain invariant or multiple fields (4 in 2D, 9 in 3D) for the finite strain tensor. These field(s) must be the first listed compositional fields in the parameter file. Note that one or more of the finite strain tensor components must be assigned a non-zero value initially. This value can be be quite small (e.g., 1.e-8), but still non-zero. While the option to track and use the full finite strain tensor exists, tracking the associated compositional fields is computationally expensive in 3D. Similarly, the finite strain magnitudes may in fact decrease if the orientation of the deformation field switches through time. Consequently, the ideal solution is track the finite strain invariant (single compositional) field within the material and track the full finite strain tensor through particles.When only the second invariant of the strain is tracked, one has the option to track the full strain or only the plastic strain. In the latter case, strain is only tracked in case the material is plastically yielding, i.e. the viscous stess > yield stress. 
 
 Viscous stress may also be limited by a non-linear stress limiter that has a form similar to the Peierls creep mechanism. This stress limiter assigns an effective viscosity $\sigma_{\text{eff}} = \frac{\tau_y}{2\varepsilon_y} {\frac{\varepsilon_{ii}}{\varepsilon_y}}^{\frac{1}{n_y}-1}$ Above $\tau_y$ is a yield stress, $\varepsilon_y$ is the reference strain rate, $\varepsilon_{ii}$ is the strain rate and $n_y$ is the stress limiter exponent.  The yield stress, $\tau_y$, is defined through the Drucker Prager yield criterion formulation. This method of limiting viscous stress has been used in various forms within the geodynamic literature \cite{chri92,vavv02,cibi13,cibi15}.When $n_y$ is 1, it essentially becomes a linear viscosity model, and in the limit $n_y\rightarrow \infty$ it converges to the standard viscosity rescaling method (concretely, values $n_y>20$ are large enough).
+
+ The visco-plastic rheology described above may also be modified to include viscoelastic deformation, thus producing a viscoelastic plastic constitutive relationship. 
+
+ The viscoelastic rheology behavior takes into account the elastic shear strength (e.g., shear modulus), while the tensile and volumetric strength (e.g., Young's and bulk modulus) are not considered. The model is incompressible and allows specifying an arbitrary number of compositional fields, where each field represents a different rock type or component of the viscoelastic stress tensor. The stress tensor in 2D and 3D, respectively, contains 3 or 6 components. The compositional fields representing these components must be named and listed in a very specific format, which is designed to minimize mislabeling stress tensor components as distinct 'compositional rock types' (or vice versa). For 2D models, the first three compositional fields must be labeled 'stress\_xx', 'stress\_yy' and 'stress\_xy'. In 3D, the first six compositional fields must be labeled 'stress\_xx', 'stress\_yy', 'stress\_zz', 'stress\_xy', 'stress\_xz', 'stress\_yz'. 
+
+ Combining this viscoelasticity implementation with non-linear viscous flow and plasticity produces a constitutive relationship commonly referred to as partial elastoviscoplastic (e.g., pEVP) in the geodynamics community. While extensively discussed and applied within the geodynamics literature, notable references include: Moresi et al. (2003), J. Comp. Phys., v. 184, p. 476-497. Gerya and Yuen (2007), Phys. Earth. Planet. Inter., v. 163, p. 83-105. Gerya (2010), Introduction to Numerical Geodynamic Modeling. Kaus (2010), Tectonophysics, v. 484, p. 36-47. Choi et al. (2013), J. Geophys. Res., v. 118, p. 2429-2444. Keller et al. (2013), Geophys. J. Int., v. 195, p. 1406-1442. 
+
+ The overview below directly follows Moresi et al. (2003) eqns. 23-38. However, an important distinction between this material model and the studies above is the use of compositional fields, rather than tracers, to track individual components of the viscoelastic stress tensor. The material model will be updated when an option to track and calculate viscoelastic stresses with tracers is implemented. 
+
+ Moresi et al. (2003) begins (eqn. 23) by writing the deviatoric rate of deformation ($\hat{D}$) as the sum of elastic ($\hat{D_{e}}$) and viscous ($\hat{D_{v}}$) components: $\hat{D} = \hat{D_{e}} + \hat{D_{v}}$.  These terms further decompose into $\hat{D_{v}} = \frac{\tau}{2\eta}$ and $\hat{D_{e}} = \frac{\overset{\triangledown}{\tau}}{2\mu}$, where $\tau$ is the viscous deviatoric stress, $\eta$ is the shear viscosity, $\mu$ is the shear modulus and $\overset{\triangledown}{\tau}$ is the Jaumann corotational stress rate. If plasticity is included the deviatoric rate of deformation may be written as: $\hat{D} = \hat{D_{e}} + \hat{D_{v}} + \hat{D_{p}}$, where $\hat{D_{p}}$ is the plastic component. As defined in the second paragraph, $\hat{D_{p}}$ decomposes to $\frac{\tau_{y}}{2\eta_{y}}$, where $\tau_{y}$ is the yield stress and $\eta_{y}$ is the viscosity rescaled to the yield surface. 
+
+ Above, the Jaimann corotational stress rate (eqn. 24) from the elastic component contains the time derivative of the deviatoric stress ($\dot{\tau}$) and terms that account for material spin (e.g., rotation) due to advection: $\overset{\triangledown}{\tau} = \dot{\tau} + {\tau}W -W\tau$. Above, $W$ is the material spin tensor (eqn. 25): $W_{ij} = \frac{1}{2} \left (\frac{\partial V_{i}}{\partial x_{j}} - \frac{\partial V_{j}}{\partial x_{i}} \right )$. 
+
+ The Jaumann stress-rate can also be approximated using terms from the time at the previous time step ($t$) and current time step ($t + \Delta t^{e}$): $\smash[t]{\overset{\triangledown}{\tau}}^{t + \Delta t^{e}} \approx \frac{\tau^{t + \Delta t^{e} - \tau^{t}}}{\Delta t^{e}} - W^{t}\tau^{t} + \tau^{t}W^{t}$. In this material model, the size of the time step above ($\Delta t^{e}$) can be specified as the numerical time step size or an independent fixed time step. If the latter case is a selected, the user has an option to apply a stress averaging scheme to account for the differences between the numerical and fixed elastic time step (eqn. 32). If one selects to use a fixed elastic time step throughout the model run, this can still be achieved by using CFL and maximum time step values that restrict the numerical time step to a specific time. 
+
+ The formulation above allows rewriting the total rate of deformation (eqn. 29) as $\tau^{t + \Delta t^{e}} = \eta_{eff} \left ( 2\hat{D}^{t + \triangle t^{e}} + \frac{\tau^{t}}{\mu \Delta t^{e}} + \frac{W^{t}\tau^{t} - \tau^{t}W^{t}}{\mu}  \right )$. 
+
+ The effective viscosity (eqn. 28) is a function of the viscosity ($\eta$), elastic time step size ($\Delta t^{e}$) and shear relaxation time ($ \alpha = \frac{\eta}{\mu} $): $\eta_{eff} = \eta \frac{\Delta t^{e}}{\Delta t^{e} + \alpha}$ The magnitude of the shear modulus thus controls how much the effective viscosity is reduced relative to the initial viscosity. 
+
+ Elastic effects are introduced into the governing Stokes equations through an elastic force term (eqn. 30) using stresses from the previous time step: $F^{e,t} = -\frac{\eta_{eff}}{\mu \Delta t^{e}} \tau^{t}$. This force term is added onto the right-hand side force vector in the system of equations. 
+
+ When plastic yielding occurs, the effective viscosity in equation 29 and 30 is the plastic viscosity (equation 35). If the current stress is below the plastic yield stress, the effective viscosity is still as defined in equation 28. During non-linear iterations, we define the current stress prior to yielding (e.g., value compared to yield stress) as $\tau^{t + \Delta t^{e}} = \eta_{eff} \left ( 2\hat{D}^{t + \triangle t^{e}} + \frac{\tau^{t}}{\mu \Delta t^{e}} \right ) $
 
  Compositional fields can each be assigned individual values of thermal diffusivity, heat capacity, density, thermal expansivity and rheological parameters. 
 
@@ -14477,6 +14516,23 @@ Units: $Pa \, s$
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
+\item {\it Parameter name:} {\tt Define transition by depth instead of pressure}
+\phantomsection\label{parameters:Material model/Visco Plastic/Define transition by depth instead of pressure}
+\label{parameters:Material_20model/Visco_20Plastic/Define_20transition_20by_20depth_20instead_20of_20pressure}
+
+
+\index[prmindex]{Define transition by depth instead of pressure}
+\index[prmindexfull]{Material model!Visco Plastic!Define transition by depth instead of pressure}
+{\it Value:} true
+
+
+{\it Default:} true
+
+
+{\it Description:} Whether to list phase transitions by depth or pressure. If this parameter is true, then the input file will use Phase transitions depths and Phase transition widths to define the phase transition. If it is false, the parameter file will read in phase transition data from Phase transition pressures and Phase transition pressure widths.
+
+
+{\it Possible values:} A boolean value (true or false)
 \item {\it Parameter name:} {\tt Densities}
 \phantomsection\label{parameters:Material model/Visco Plastic/Densities}
 \label{parameters:Material_20model/Visco_20Plastic/Densities}
@@ -14494,6 +14550,23 @@ Units: $Pa \, s$
 
 
 {\it Possible values:} Any string
+\item {\it Parameter name:} {\tt Elastic shear moduli}
+\phantomsection\label{parameters:Material model/Visco Plastic/Elastic shear moduli}
+\label{parameters:Material_20model/Visco_20Plastic/Elastic_20shear_20moduli}
+
+
+\index[prmindex]{Elastic shear moduli}
+\index[prmindexfull]{Material model!Visco Plastic!Elastic shear moduli}
+{\it Value:} 75.0e9
+
+
+{\it Default:} 75.0e9
+
+
+{\it Description:} List of elastic shear moduli, $G$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. The default value of 75 GPa is representative of mantle rocks. Units: Pa.
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
 \item {\it Parameter name:} {\tt End plasticity strain weakening intervals}
 \phantomsection\label{parameters:Material model/Visco Plastic/End plasticity strain weakening intervals}
 \label{parameters:Material_20model/Visco_20Plastic/End_20plasticity_20strain_20weakening_20intervals}
@@ -14528,6 +14601,23 @@ Units: $Pa \, s$
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
+\item {\it Parameter name:} {\tt Fixed elastic time step}
+\phantomsection\label{parameters:Material model/Visco Plastic/Fixed elastic time step}
+\label{parameters:Material_20model/Visco_20Plastic/Fixed_20elastic_20time_20step}
+
+
+\index[prmindex]{Fixed elastic time step}
+\index[prmindexfull]{Material model!Visco Plastic!Fixed elastic time step}
+{\it Value:} 1.e3
+
+
+{\it Default:} 1.e3
+
+
+{\it Description:} The fixed elastic time step $dte$. Units: years if the 'Use years in output instead of seconds' parameter is set; seconds otherwise.
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
 \item {\it Parameter name:} {\tt Friction strain weakening factors}
 \phantomsection\label{parameters:Material model/Visco Plastic/Friction strain weakening factors}
 \label{parameters:Material_20model/Visco_20Plastic/Friction_20strain_20weakening_20factors}
@@ -14596,6 +14686,23 @@ Units: $Pa \, s$
 
 
 {\it Possible values:} Any string
+\item {\it Parameter name:} {\tt Include viscoelasticity}
+\phantomsection\label{parameters:Material model/Visco Plastic/Include viscoelasticity}
+\label{parameters:Material_20model/Visco_20Plastic/Include_20viscoelasticity}
+
+
+\index[prmindex]{Include viscoelasticity}
+\index[prmindexfull]{Material model!Visco Plastic!Include viscoelasticity}
+{\it Value:} false
+
+
+{\it Default:} false
+
+
+{\it Description:} Whether to include elastic effects in the rheological formulation.
+
+
+{\it Possible values:} A boolean value (true or false)
 \item {\it Parameter name:} {\tt Maximum viscosity}
 \phantomsection\label{parameters:Material model/Visco Plastic/Maximum viscosity}
 \label{parameters:Material_20model/Visco_20Plastic/Maximum_20viscosity}
@@ -14664,6 +14771,108 @@ Units: $Pa \, s$
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Phase transition Clapeyron slopes}
+\phantomsection\label{parameters:Material model/Visco Plastic/Phase transition Clapeyron slopes}
+\label{parameters:Material_20model/Visco_20Plastic/Phase_20transition_20Clapeyron_20slopes}
+
+
+\index[prmindex]{Phase transition Clapeyron slopes}
+\index[prmindexfull]{Material model!Visco Plastic!Phase transition Clapeyron slopes}
+{\it Value:} 
+
+
+{\it Default:} 
+
+
+{\it Description:} A list of Clapeyron slopes for each phase transition. A positive Clapeyron slope indicates that the phase transition will occur in a greater depth, if the temperature is higher than the one given in Phase transition temperatures and in a smaller depth, if the temperature is smaller than the one given in Phase transition temperatures. For negative slopes the other way round. List must have the same number of entries as Phase transition depths. Units: $Pa/K$.
+
+
+{\it Possible values:} Any string
+\item {\it Parameter name:} {\tt Phase transition depths}
+\phantomsection\label{parameters:Material model/Visco Plastic/Phase transition depths}
+\label{parameters:Material_20model/Visco_20Plastic/Phase_20transition_20depths}
+
+
+\index[prmindex]{Phase transition depths}
+\index[prmindexfull]{Material model!Visco Plastic!Phase transition depths}
+{\it Value:} 
+
+
+{\it Default:} 
+
+
+{\it Description:} A list of depths where phase transitions occur. Values must monotonically increase. Units: $m$.
+
+
+{\it Possible values:} Any string
+\item {\it Parameter name:} {\tt Phase transition pressure widths}
+\phantomsection\label{parameters:Material model/Visco Plastic/Phase transition pressure widths}
+\label{parameters:Material_20model/Visco_20Plastic/Phase_20transition_20pressure_20widths}
+
+
+\index[prmindex]{Phase transition pressure widths}
+\index[prmindexfull]{Material model!Visco Plastic!Phase transition pressure widths}
+{\it Value:} 
+
+
+{\it Default:} 
+
+
+{\it Description:} A list of widths for each phase transition, in terms of pressure. The phase functions are scaled with these values, leading to a jump between phases for a value of zero and a gradual transition for larger values. List must have the same number of entries as Phase transition pressures. Define transition by depth instead of pressure must be set to false to use this parameter. Units: $Pa$.
+
+
+{\it Possible values:} Any string
+\item {\it Parameter name:} {\tt Phase transition pressures}
+\phantomsection\label{parameters:Material model/Visco Plastic/Phase transition pressures}
+\label{parameters:Material_20model/Visco_20Plastic/Phase_20transition_20pressures}
+
+
+\index[prmindex]{Phase transition pressures}
+\index[prmindexfull]{Material model!Visco Plastic!Phase transition pressures}
+{\it Value:} 
+
+
+{\it Default:} 
+
+
+{\it Description:} A list of pressures where phase transitions occur. Values must monotonically increase. Define transition by depth instead of pressure must be set to false to use this parameter. Units: $Pa$.
+
+
+{\it Possible values:} Any string
+\item {\it Parameter name:} {\tt Phase transition temperatures}
+\phantomsection\label{parameters:Material model/Visco Plastic/Phase transition temperatures}
+\label{parameters:Material_20model/Visco_20Plastic/Phase_20transition_20temperatures}
+
+
+\index[prmindex]{Phase transition temperatures}
+\index[prmindexfull]{Material model!Visco Plastic!Phase transition temperatures}
+{\it Value:} 
+
+
+{\it Default:} 
+
+
+{\it Description:} A list of temperatures where phase transitions occur. Higher or lower temperatures lead to phase transition occurring in smaller or greater depths than given in Phase transition depths, depending on the Clapeyron slope given in Phase transition Clapeyron slopes. List must have the same number of entries as Phase transition depths. Units: $\si{K}$.
+
+
+{\it Possible values:} Any string
+\item {\it Parameter name:} {\tt Phase transition widths}
+\phantomsection\label{parameters:Material model/Visco Plastic/Phase transition widths}
+\label{parameters:Material_20model/Visco_20Plastic/Phase_20transition_20widths}
+
+
+\index[prmindex]{Phase transition widths}
+\index[prmindexfull]{Material model!Visco Plastic!Phase transition widths}
+{\it Value:} 
+
+
+{\it Default:} 
+
+
+{\it Description:} A list of widths for each phase transition, in terms of depth. The phase functions are scaled with these values, leading to a jump between phases for a value of zero and a gradual transition for larger values. List must have the same number of entries as Phase transition depths. Units: $m$.
+
+
+{\it Possible values:} Any string
 \item {\it Parameter name:} {\tt Prefactor strain weakening factors}
 \phantomsection\label{parameters:Material model/Visco Plastic/Prefactor strain weakening factors}
 \label{parameters:Material_20model/Visco_20Plastic/Prefactor_20strain_20weakening_20factors}
@@ -14917,6 +15126,40 @@ If a compositional field named 'noninitial\_plastic\_strain' is included in the 
 
 
 {\it Possible values:} Any string
+\item {\it Parameter name:} {\tt Use fixed elastic time step}
+\phantomsection\label{parameters:Material model/Visco Plastic/Use fixed elastic time step}
+\label{parameters:Material_20model/Visco_20Plastic/Use_20fixed_20elastic_20time_20step}
+
+
+\index[prmindex]{Use fixed elastic time step}
+\index[prmindexfull]{Material model!Visco Plastic!Use fixed elastic time step}
+{\it Value:} unspecified
+
+
+{\it Default:} unspecified
+
+
+{\it Description:} Select whether the material time scale in the viscoelastic constitutive relationship uses the regular numerical time step or a separate fixed elastic time step throughout the model run. The fixed elastic time step is always used during the initial time step. If a fixed elastic time step is used throughout the model run, a stress averaging scheme can be applied to account for differences with the numerical time step. An alternative approach is to limit the maximum time step size so that it is equal to the elastic time step. The default value of this parameter is 'unspecified', which throws an exception during runtime. In order for the model to run the user must select 'true' or 'false'.
+
+
+{\it Possible values:} Any one of true, false, unspecified
+\item {\it Parameter name:} {\tt Use stress averaging}
+\phantomsection\label{parameters:Material model/Visco Plastic/Use stress averaging}
+\label{parameters:Material_20model/Visco_20Plastic/Use_20stress_20averaging}
+
+
+\index[prmindex]{Use stress averaging}
+\index[prmindexfull]{Material model!Visco Plastic!Use stress averaging}
+{\it Value:} false
+
+
+{\it Default:} false
+
+
+{\it Description:} Whether to apply a stress averaging scheme to account for differences between the fixed elastic time step and numerical time step. 
+
+
+{\it Possible values:} A boolean value (true or false)
 \item {\it Parameter name:} {\tt Viscosity averaging scheme}
 \phantomsection\label{parameters:Material model/Visco Plastic/Viscosity averaging scheme}
 \label{parameters:Material_20model/Visco_20Plastic/Viscosity_20averaging_20scheme}
@@ -16536,7 +16779,7 @@ The file format then consists of lines with Euclidean coordinates followed by th
 
 `global statistics': A postprocessor that outputs all the global statistics information, e.g. the time of the simulation, the timestep number, number of degrees of freedom and solver iterations for each timestep. The postprocessor can output different formats, the first printing one line in the statistics file per nonlinear solver iteration (if a nonlinear solver scheme is selected). The second prints one line per timestep, summing the information about all nonlinear iterations in this line. Note that this postprocessor is always active independent on whether or not it is selected in the parameter file.
 
-`gravity calculation': A postprocessor that computes gravity, gravity anomalies, gravity potential and gravity gradients for a set of points (e.g. satellites) in or above the model surface for either a user-defined range of latitudes, longitudes and radius or a list of point coordinates.Spherical coordinates in the output file are radius, colatitude and colongitude. Gravity is here based on the density distribution from the material model (and non adiabatic). This means that the density may come directly from an ascii file. This postprocessor also computes theoretical gravity (and gradients), which corresponds to the analytical solution of gravity in the same geometry but filled with a reference density. The reference density is also used to determine density anomalies for computing gravity anomalies. Thus one must carefully evaluate the meaning of the gravity anomaly output, because the solution may not reflect the actual gravity anomaly (due to differences in the assumed reference density). On way to guarantee correct gravity anomalies is to subtract gravity of a certain point from the average gravity on the map. Another way is to directly use density anomalies for this postprocessor.
+`gravity calculation': A postprocessor that computes gravity, gravity anomalies, gravity potential and gravity gradients for a set of points (e.g. satellites) in or above the model surface for either a user-defined range of latitudes, longitudes and radius or a list of point coordinates.Spherical coordinates in the output file are radius, colatitude and colongitude. Gravity is here based on the density distribution from the material model (and non adiabatic). This means that the density may come directly from an ascii file. This postprocessor also computes theoretical gravity and its derivatives, which corresponds to the analytical solution of gravity in the same geometry but filled with a reference density. The reference density is also used to determine density anomalies for computing gravity anomalies. Thus one must carefully evaluate the meaning of the gravity anomaly output, because the solution may not reflect the actual gravity anomaly (due to differences in the assumed reference density). On way to guarantee correct gravity anomalies is to subtract gravity of a certain point from the average gravity on the map. Another way is to directly use density anomalies for this postprocessor.The average- minimum- and maximum gravity acceleration and potential are written into the statistics file.
 
 `heat flux densities': A postprocessor that computes some statistics about the heat flux density for each boundary id. The heat flux density across each boundary is computed in outward direction, i.e., from the domain to the outside. The heat flux is computed as sum of advective heat flux and conductive heat flux through Neumann boundaries, both computed as integral over the boundary area, and conductive heat flux through Dirichlet boundaries, which is computed using the consistent boundary flux method as described in ``Gresho, Lee, Sani, Maslanik, Eaton (1987). The consistent Galerkin FEM for computing derived boundary quantities in thermal and or fluids problems. International Journal for Numerical Methods in Fluids, 7(4), 371-394.''
 
@@ -17085,7 +17328,7 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 {\it Default:} 
 
 
-{\it Description:} Parameter for the list sampling scheme: List of satellite latitude coordinates.
+{\it Description:} Parameter for the list of points sampling scheme: List of satellite latitude coordinates.
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $-90 \leq v \leq 90$]
@@ -17102,7 +17345,7 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 {\it Default:} 
 
 
-{\it Description:} Parameter for the list sampling scheme: List of satellite longitude coordinates.
+{\it Description:} Parameter for the list of points sampling scheme: List of satellite longitude coordinates.
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $-180 \leq v \leq 180$]
@@ -17119,7 +17362,7 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 {\it Default:} 
 
 
-{\it Description:} Parameter for the list sampling scheme: List of satellite radius coordinates. Just specify one radius if all points values have the same radius. If not, make sure there are as many radius as longitude and latitude
+{\it Description:} Parameter for the list of points sampling scheme: List of satellite radius coordinates. Just specify one radius if all points values have the same radius. If not, make sure there are as many radius as longitude and latitude
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -17136,7 +17379,7 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 {\it Default:} 90
 
 
-{\it Description:} Parameter for the map sampling scheme: Gravity may be calculated for a sets of points along the latitude between a minimum and maximum latitude.
+{\it Description:} Parameter for the uniform distribution sampling scheme: Gravity may be calculated for a sets of points along the latitude between a minimum and maximum latitude.
 
 
 {\it Possible values:} A floating point number $v$ such that $-90 \leq v \leq 90$
@@ -17153,7 +17396,7 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 {\it Default:} 180
 
 
-{\it Description:} Parameter for the map sampling scheme: Gravity may be calculated for a sets of points along the longitude between a minimum and maximum longitude.
+{\it Description:} Parameter for the uniform distribution sampling scheme: Gravity may be calculated for a sets of points along the longitude between a minimum and maximum longitude.
 
 
 {\it Possible values:} A floating point number $v$ such that $-180 \leq v \leq 180$
@@ -17170,7 +17413,7 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 {\it Default:} 0
 
 
-{\it Description:} Parameter for the map sampling scheme: Maximum radius can be defined in or outside the model.
+{\it Description:} Parameter for the uniform distribution sampling scheme: Maximum radius can be defined in or outside the model.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -17187,7 +17430,7 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 {\it Default:} -90
 
 
-{\it Description:} Parameter for the map sampling scheme: Gravity may be calculated for a sets of points along the latitude between a minimum and maximum latitude.
+{\it Description:} Parameter for the uniform distribution sampling scheme: Gravity may be calculated for a sets of points along the latitude between a minimum and maximum latitude.
 
 
 {\it Possible values:} A floating point number $v$ such that $-90 \leq v \leq 90$
@@ -17204,7 +17447,7 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 {\it Default:} -180
 
 
-{\it Description:} Parameter for the map sampling scheme: Gravity may be calculated for a sets of points along the longitude between a minimum and maximum longitude.
+{\it Description:} Parameter for the uniform distribution sampling scheme: Gravity may be calculated for a sets of points along the longitude between a minimum and maximum longitude.
 
 
 {\it Possible values:} A floating point number $v$ such that $-180 \leq v \leq 180$
@@ -17221,7 +17464,7 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 {\it Default:} 0
 
 
-{\it Description:} Parameter for the map sampling scheme: Minimum radius may be defined in or outside the model. Prescribe a minimum radius for a sampling coverage at a specific height.
+{\it Description:} Parameter for the uniform distribution sampling scheme: Minimum radius may be defined in or outside the model. Prescribe a minimum radius for a sampling coverage at a specific height.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -17238,7 +17481,7 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 {\it Default:} 1
 
 
-{\it Description:} Parameter for the map sampling scheme: This specifies the number of points along the latitude (e.g. gravity map) between a minimum and maximum latitude.
+{\it Description:} Parameter for the uniform distribution sampling scheme: This specifies the number of points along the latitude (e.g. gravity map) between a minimum and maximum latitude.
 
 
 {\it Possible values:} An integer $n$ such that $0\leq n \leq 2147483647$
@@ -17255,7 +17498,7 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 {\it Default:} 1
 
 
-{\it Description:} Parameter for the map sampling scheme: This specifies the number of points along the longitude (e.g. gravity map) between a minimum and maximum longitude.
+{\it Description:} Parameter for the uniform distribution sampling scheme: This specifies the number of points along the longitude (e.g. gravity map) between a minimum and maximum longitude.
 
 
 {\it Possible values:} An integer $n$ such that $0\leq n \leq 2147483647$
@@ -17272,7 +17515,7 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 {\it Default:} 1
 
 
-{\it Description:} Parameter for the map sampling scheme: This specifies the number of points along the radius (e.g. depth profile) between a minimum and maximum radius.
+{\it Description:} Parameter for the uniform distribution sampling scheme: This specifies the number of points along the radius (e.g. depth profile) between a minimum and maximum radius.
 
 
 {\it Possible values:} An integer $n$ such that $0\leq n \leq 2147483647$
@@ -17317,16 +17560,16 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 
 \index[prmindex]{Sampling scheme}
 \index[prmindexfull]{Postprocess!Gravity calculation!Sampling scheme}
-{\it Value:} map
+{\it Value:} uniform distribution
 
 
-{\it Default:} map
+{\it Default:} uniform distribution
 
 
-{\it Description:} Choose the sampling scheme. A map will produce a grid of equally spaced points between a minimum and maximum radius, longitude, and latitude. A list contains specific coordinates of the satellites.
+{\it Description:} Choose the sampling scheme. A uniform distribution will produce a grid of equally spaced points between a minimum and maximum radius, longitude, and latitude. A list of points contains specific coordinates of the satellites.
 
 
-{\it Possible values:} Any one of map, list
+{\it Possible values:} Any one of uniform distribution, list of points, map, list
 \item {\it Parameter name:} {\tt Time between gravity output}
 \phantomsection\label{parameters:Postprocess/Gravity calculation/Time between gravity output}
 \label{parameters:Postprocess/Gravity_20calculation/Time_20between_20gravity_20output}
@@ -18690,7 +18933,7 @@ The variable that is outputted this way is computed by taking the pressure at ea
 {\it Default:} false
 
 
-{\it Description:} For computations with deforming meshes, Aspect uses an Arbitrary-Lagrangian-Eulerian formulation to handle deforming the domain, so the mesh has its own velocity field.  This may be written as an output field by setting this parameter to true.
+{\it Description:} For computations with deforming meshes, ASPECT uses an Arbitrary-Lagrangian-Eulerian formulation to handle deforming the domain, so the mesh has its own velocity field.  This may be written as an output field by setting this parameter to true.
 
 
 {\it Possible values:} A boolean value (true or false)
@@ -20437,7 +20680,7 @@ These choices correspond to the following methods by which the temperature field
 
 `steady state velocity': A criterion that terminates the simulation when the RMS of the velocity field stays within a certain range for a specified period of time.
 
-`user request': Terminate the simulation gracefully when a file with a specified name appears in the output directory. This allows the user to gracefully exit the simulation at any time by simply creating such a file using, for example, \texttt{touch output/terminate}. The file's location is chosen to be in the output directory, rather than in a generic location such as the Aspect directory, so that one can run multiple simulations at the same time (which presumably write to different output directories) and can selectively terminate a particular one.
+`user request': Terminate the simulation gracefully when a file with a specified name appears in the output directory. This allows the user to gracefully exit the simulation at any time by simply creating such a file using, for example, \texttt{touch output/terminate}. The file's location is chosen to be in the output directory, rather than in a generic location such as the ASPECT directory, so that one can run multiple simulations at the same time (which presumably write to different output directories) and can selectively terminate a particular one.
 
 `wall time': Terminate the simulation once the wall time limit has reached.
 
@@ -20561,7 +20804,7 @@ These choices correspond to the following methods by which the temperature field
 {\it Default:} terminate-aspect
 
 
-{\it Description:} The name of a file that, if it exists in the output directory (whose name is also specified in the input file) will lead to termination of the simulation. The file's location is chosen to be in the output directory, rather than in a generic location such as the Aspect directory, so that one can run multiple simulations at the same time (which presumably write to different output directories) and can selectively terminate a particular one.
+{\it Description:} The name of a file that, if it exists in the output directory (whose name is also specified in the input file) will lead to termination of the simulation. The file's location is chosen to be in the output directory, rather than in a generic location such as the ASPECT directory, so that one can run multiple simulations at the same time (which presumably write to different output directories) and can selectively terminate a particular one.
 
 
 {\it Possible values:} an input filename

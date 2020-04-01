@@ -981,9 +981,9 @@ namespace aspect
      * (denoted by R below) is present and enable_prescribed_dilation==true
      * the following terms will be assembled:
      *
-     * 1) \int - (R,q) to the conservation of mass equation, creating
-     *    -(div u,q) = -(R,q).
-     * 2) \int - 2.0 / 3.0 * eta * (R, div v) to the RHS of the momentum
+     * 1) $\int - (R,q)$ to the conservation of mass equation, creating
+     *    $-(div u,q) = -(R,q)$.
+     * 2) $\int - 2.0 / 3.0 * eta * (R, div v)$ to the RHS of the momentum
      *    equation (if the model is incompressible), otherwise this term is
      *    already present on the left side.
      */
