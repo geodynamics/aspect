@@ -24,11 +24,9 @@ Number of degrees of freedom: 1,444 (882+121+441)
 
 
 
-+---------------------------------------------+------------+------------+
 | Total wallclock time elapsed since start    |     0.144s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
-+---------------------------------+-----------+------------+------------+
 | Assemble Stokes system          |         1 |    0.0191s |        13% |
 | Assemble temperature system     |         1 |    0.0182s |        13% |
 | Build Stokes preconditioner     |         1 |    0.0186s |        13% |
@@ -39,16 +37,13 @@ Number of degrees of freedom: 1,444 (882+121+441)
 | Postprocessing                  |         1 |   0.00236s |       1.6% |
 | Setup dof systems               |         1 |    0.0116s |         8% |
 | Setup initial conditions        |         1 |    0.0178s |        12% |
-+---------------------------------+-----------+------------+------------+
 
 Termination requested by criterion: end time
 
 
-+---------------------------------------------+------------+------------+
 | Total wallclock time elapsed since start    |     0.144s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
-+---------------------------------+-----------+------------+------------+
 | Assemble Stokes system          |         1 |    0.0191s |        13% |
 | Assemble temperature system     |         1 |    0.0182s |        13% |
 | Build Stokes preconditioner     |         1 |    0.0186s |        13% |
@@ -59,5 +54,4 @@ Termination requested by criterion: end time
 | Postprocessing                  |         1 |   0.00236s |       1.6% |
 | Setup dof systems               |         1 |    0.0116s |         8% |
 | Setup initial conditions        |         1 |    0.0178s |        12% |
-+---------------------------------+-----------+------------+------------+
 
