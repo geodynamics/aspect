@@ -112,6 +112,14 @@ namespace aspect
           push_forward_sphere(const Point<dim> &chart_point) const;
 
           /**
+           * Return the (normalized) normal vector at the point @p p.
+           */
+          virtual Tensor<1, dim>
+          normal_vector(
+            const typename Triangulation<dim>::face_iterator &face,
+            const Point<dim> &p) const override;
+
+          /**
            * This function computes the outer radius of the domain
            * at the longitude (and latitude) of the given point
            * (given in cartesian coordinates), i.e. the unperturbed
