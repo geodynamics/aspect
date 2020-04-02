@@ -1,5 +1,5 @@
 # This parameter file modifies the benchmark viscoelastic_stress_build-up.prm
-# to use the Viscoelastic Plastic material model and include a constant
+# to use the Visco Plastic material model and include a constant
 # yield stress of 100 MPa. Without the imposed yield stress, the viscoelastic
 # stress will build up to ~ 200 MPa. However, the imposed yield stress will
 # truncate the viscoelastic stresses at the yield stress magnitude. 

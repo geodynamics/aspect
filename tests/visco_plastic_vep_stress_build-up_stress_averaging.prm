@@ -1,12 +1,14 @@
 # This test checks viscoelastic stress buildup with a
 # constant strain rate and an elastic time step equal
 # to a user-specified constant elastic time step. This
-# fixed elastic time step is double the numerical time step. 
-# Viscoelastic stresses (sigma_xx, sigma_yy, sigma_xy) 
-# are tracked with compositional fields. The parameter
-# file is derived from the 2D viscoelastic_stress_build-up 
-# benchmark with modifications to the resolution, end time,
-# material properties and postprocessors.
+# fixed elastic time step is double the numerical time step.
+# Stress averaging is used to account for the difference
+# between the numerical and elastic time step. Viscoelastic
+# stresses (sigma_xx, sigma_yy, sigma_xy) are tracked 
+# with compositional fields. The parameter file is derived 
+# from the 2D viscoelastic_stress_build-up benchmark with 
+# modifications to the resolution, end time, material 
+# properties and postprocessors.
 
 include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_stress_build-up/viscoelastic_stress_build-up.prm
 
@@ -29,16 +31,25 @@ end
 # Material model
 subsection Material model
 
-  set Model name = viscoelastic plastic
+  set Model name = visco plastic
 
-  subsection Viscoelastic Plastic
-    set Densities                   = 2800
-    set Linear viscosities          = 1.e21
+  subsection Visco Plastic
+    set Viscous flow law                          = dislocation
+    set Prefactors for dislocation creep          = 5e-22
+    set Stress exponents for dislocation creep    = 1.0
+    set Activation energies for dislocation creep = 0.
+    set Activation volumes for dislocation creep  = 0.
+
+    set Include viscoelasticity     = true
+
     set Elastic shear moduli        = 1.e10
     set Use fixed elastic time step = true
     set Fixed elastic time step     = 2e3
-    set Use stress averaging        = false
+    set Use stress averaging        = true
     set Viscosity averaging scheme  = harmonic
+
+    set Densities                   = 2800.
+
   end
 
 end
