@@ -409,13 +409,14 @@ namespace aspect
                      << position_satellite[0] << ' '
                      << position_satellite[1] << ' '
                      << position_satellite[2] << ' '
-                     << std::setprecision(18) << g << ' '
-                     << std::setprecision(18) << g.norm() << ' '
-                     << std::setprecision(18) << g_theory << ' '
-                     << std::setprecision(9) << g_potential << ' '
-                     << std::setprecision(9) << g_potential_theory << ' '
-                     << std::setprecision(9) << g_anomaly << ' '
-                     << std::setprecision(9) << g_anomaly.norm() << ' '
+                     << std::setprecision(precision)
+                     << g << ' '
+                     << g.norm() << ' '
+                     << g_theory << ' '
+                     << g_potential << ' '
+                     << g_potential_theory << ' '
+                     << g_anomaly << ' '
+                     << g_anomaly.norm() << ' '
                      << g_gradient[0][0] *1e9 << ' '
                      << g_gradient[1][1] *1e9 << ' '
                      << g_gradient[2][2] *1e9 << ' '
@@ -435,32 +436,32 @@ namespace aspect
       // write quantities in the statistic file
       const std::string name2("Average gravity acceleration (m/s^2)");
       statistics.add_value (name2, sum_g/n_satellites);
-      statistics.set_precision (name2, 12);
+      statistics.set_precision (name2, precision);
       statistics.set_scientific (name2, true);
 
       const std::string name3("Minimum gravity acceleration (m/s^2)");
       statistics.add_value (name3, min_g);
-      statistics.set_precision (name3, 12);
+      statistics.set_precision (name3, precision);
       statistics.set_scientific (name3, true);
 
       const std::string name4("Maximum gravity acceleration (m/s^2)");
       statistics.add_value (name4, max_g);
-      statistics.set_precision (name4, 12);
+      statistics.set_precision (name4, precision);
       statistics.set_scientific (name4, true);
 
       const std::string name5("Average gravity potential (m^2/s^2)");
       statistics.add_value (name5, sum_g_potential/n_satellites);
-      statistics.set_precision (name5, 12);
+      statistics.set_precision (name5, precision);
       statistics.set_scientific (name5, true);
 
       const std::string name6("Minimum gravity potential (m^2/s^2)");
       statistics.add_value (name6, min_g_potential);
-      statistics.set_precision (name6, 12);
+      statistics.set_precision (name6, precision);
       statistics.set_scientific (name6, true);
 
       const std::string name7("Maximum gravity potential (m^2/s^2)");
       statistics.add_value (name7, max_g_potential);
-      statistics.set_precision (name7, 12);
+      statistics.set_precision (name7, precision);
       statistics.set_scientific (name7, true);
 
       // up the next time we need output:
@@ -545,6 +546,10 @@ namespace aspect
                              Patterns::Double (0.0),
                              "Gravity anomalies may be computed using density "
                              "anomalies relative to a reference density.");
+          prm.declare_entry ("Precision in gravity output", "12",
+                             Patterns::Integer (0.0),
+                             "Set the precision of gravity acceleration, potential "
+                             "and gradients in the gravity output and statistics file.");
           prm.declare_entry ("List of radius", "",
                              Patterns::List (Patterns::Double(0)),
                              "Parameter for the list of points sampling scheme: "
@@ -615,6 +620,7 @@ namespace aspect
           minimum_colatitude  = prm.get_double ("Minimum latitude") + 90;
           maximum_colatitude  = prm.get_double ("Maximum latitude") + 90;
           reference_density   = prm.get_double ("Reference density");
+          precision = prm.get_integer ("Precision in gravity output");
           radius_list    = Utilities::string_to_double(Utilities::split_string_list(prm.get("List of radius")));
           longitude_list = Utilities::string_to_double(Utilities::split_string_list(prm.get("List of longitude")));
           latitude_list  = Utilities::string_to_double(Utilities::split_string_list(prm.get("List of latitude")));
