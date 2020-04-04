@@ -596,6 +596,9 @@ namespace aspect
        * - Log average: Set the values of each output quantity at every
        * quadrature point to \f[ \bar x = {10}^{\frac 1Q \sum_{q=1}^Q \log_{10} x_q} \f]
        * where $x_q$ are the values at the $Q$ quadrature points.
+       *
+       * - Harmonic average viscosity only: Like harmonic averaging, but only
+       * applied to the viscosity.
        */
       enum AveragingOperation
       {
@@ -605,7 +608,8 @@ namespace aspect
         geometric_average,
         pick_largest,
         project_to_Q1,
-        log_average
+        log_average,
+        harmonic_average_only_viscosity
       };
 
 

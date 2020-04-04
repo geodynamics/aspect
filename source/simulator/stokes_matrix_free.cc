@@ -1234,6 +1234,13 @@ namespace aspect
     // testing.
     AssertThrow(sim.geometry_model->get_periodic_boundary_pairs().size()==0, ExcNotImplemented());
 
+    // We currently only support averaging that gives a constant value:
+    using avg = MaterialModel::MaterialAveraging::AveragingOperation;
+    AssertThrow((sim.parameters.material_averaging &
+                 (avg::arithmetic_average | avg::harmonic_average | avg::geometric_average
+                  | avg::pick_largest | avg::log_average | avg::harmonic_average_only_viscosity)) != 0
+                , ExcMessage("The matrix-free Stokes solver currently only works if material model averaging is enabled"));
+
     // Currently cannot solve compressible flow with implicit reference density
     if (sim.material_model->is_compressible() == true)
       AssertThrow(sim.parameters.formulation_mass_conservation !=
@@ -1318,10 +1325,11 @@ namespace aspect
             sim.material_model->fill_additional_material_model_inputs(in, sim.current_linearization_point, fe_values, sim.introspection);
             sim.material_model->evaluate(in, out);
 
-            MaterialModel::MaterialAveraging::average_property (MaterialModel::MaterialAveraging::harmonic_average,
-                                                                FullMatrix<double>(),
-                                                                FullMatrix<double>(),
-                                                                out.viscosities);
+            MaterialModel::MaterialAveraging::average (sim.parameters.material_averaging,
+                                                       cell,
+                                                       quadrature_formula,
+                                                       *sim.mapping,
+                                                       out);
 
             // we grab the first value, but all of them should be averaged to the same value:
             const double viscosity = out.viscosities[0];

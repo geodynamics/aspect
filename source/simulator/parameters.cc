@@ -347,9 +347,8 @@ namespace aspect
                            "This is the type of solver used on the Stokes system. The block geometric "
                            "multigrid solver currently has a limited implementation and therefore "
                            "may trigger Asserts in the code when used. If this is the case, "
-                           "please switch to 'block AMG'. Additionally, the block GMG solver always "
-                           "averages the viscosity per cell using harmonic averaging indepedent of "
-                           "the selected material properties averaging scheme.");
+                           "please switch to 'block AMG'. Additionally, the block GMG solver requires "
+                           "using material model averaging.");
 
         prm.declare_entry ("Use direct solver for Stokes system", "false",
                            Patterns::Bool(),
