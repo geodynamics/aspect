@@ -189,6 +189,9 @@ namespace aspect
               }
             }
 
+          // Step 1d: multiply the viscosity by a constant (default value is 1)
+          viscosity_pre_yield = constant_viscosity_prefactors.compute_viscosity(viscosity_pre_yield, j);
+
           // Step 2: calculate the viscous stress magnitude
           // and strain rate. If requested compute visco-elastic contributions.
           double current_edot_ii = numbers::signaling_nan<double>();
@@ -678,6 +681,9 @@ namespace aspect
           // Dislocation creep parameters
           Rheology::DislocationCreep<dim>::declare_parameters(prm);
 
+          // Constant viscosity prefactor parameters
+          Rheology::ConstantViscosityPrefactors<dim>::declare_parameters(prm);
+
           // Drucker Prager plasticity parameters
           Rheology::DruckerPrager<dim>::declare_parameters(prm);
 
@@ -795,6 +801,10 @@ namespace aspect
           // Dislocation creep parameters
           dislocation_creep.initialize_simulator (this->get_simulator());
           dislocation_creep.parse_parameters(prm);
+
+          // Constant viscosity prefactor parameters
+          constant_viscosity_prefactors.initialize_simulator (this->get_simulator());
+          constant_viscosity_prefactors.parse_parameters(prm);
 
           // Plasticity parameters
           drucker_prager_parameters = drucker_prager_plasticity.parse_parameters(this->n_compositional_fields()+1,
