@@ -437,7 +437,7 @@ namespace aspect
     {
       std::string get_averaging_operation_names ()
       {
-        return "none|arithmetic average|harmonic average|geometric average|pick largest|project to Q1|log average";
+        return "none|arithmetic average|harmonic average|geometric average|pick largest|project to Q1|log average|harmonic average only viscosity";
       }
 
 
@@ -457,6 +457,8 @@ namespace aspect
           return project_to_Q1;
         else if (s == "log average")
           return log_average;
+        else if (s == "harmonic average only viscosity")
+          return harmonic_average_only_viscosity;
         else
           AssertThrow (false,
                        ExcMessage ("The value <" + s + "> for a material "
@@ -748,7 +750,15 @@ namespace aspect
                                        expansion_matrix);
           }
 
-        average_property (operation, projection_matrix, expansion_matrix, values_out.viscosities);
+        if (operation == harmonic_average_only_viscosity)
+          {
+            average_property (harmonic_average, projection_matrix, expansion_matrix,
+                              values_out.viscosities);
+            return;
+          }
+
+        average_property (operation, projection_matrix, expansion_matrix,
+                          values_out.viscosities);
         average_property (operation, projection_matrix, expansion_matrix,
                           values_out.densities);
         average_property (operation, projection_matrix, expansion_matrix,
