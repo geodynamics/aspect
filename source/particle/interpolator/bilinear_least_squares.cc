@@ -20,7 +20,6 @@
 
 #include <aspect/particle/interpolator/bilinear_least_squares.h>
 #include <aspect/postprocess/particles.h>
-#include <aspect/simulator.h>
 
 #include <deal.II/grid/grid_tools.h>
 #include <deal.II/base/signaling_nan.h>
@@ -87,16 +86,18 @@ namespace aspect
                                "interpolation scheme does not support this case. "));
 
 
-        // Noticed that the size of matrix A is n_particles x matrix_dimension
+        // Noticed that the size of matrix A is n_particles x n_matrix_columns
         // which usually is not a square matrix. Therefore, we find the
-        // least squares solution of Ax=r by solving reduced QR factorization
-        // Ax = QRc = b -> Q^TQRc = Rc =Q^Tb
+        // least squares solution of Ac=r by solving the reduced QR factorization
+        // Ac = QRc = b -> Q^TQRc = Rc =Q^Tb
         dealii::ImplicitQR<dealii::Vector<double>> qr;
-        const unsigned int matrix_dimension = (dim == 2) ? 4 : 8;
-        std::vector<dealii::Vector<double>> A(matrix_dimension, dealii::Vector<double>(n_particles));
+        const unsigned int n_matrix_columns = (dim == 2) ? 4 : 8;
+        // A is a std::vector of Vectors(which are it's columns) so that we create what the ImplicitQR
+        // class needs.
+        std::vector<dealii::Vector<double>> A(n_matrix_columns, dealii::Vector<double>(n_particles));
         std::vector<Vector<double>> b(n_particle_properties, Vector<double>(n_particles));
-        std::vector<Vector<double>> QTb(n_particle_properties, Vector<double>(matrix_dimension));
-        std::vector<Vector<double>> c(n_particle_properties, Vector<double>(matrix_dimension));
+        std::vector<Vector<double>> QTb(n_particle_properties, Vector<double>(n_matrix_columns));
+        std::vector<Vector<double>> c(n_particle_properties, Vector<double>(n_matrix_columns));
         for (unsigned int property_index = 0; property_index < n_particle_properties; ++property_index)
           if (selected_properties[property_index])
             b[property_index] = 0;
@@ -130,13 +131,12 @@ namespace aspect
               }
           }
 
-        // If A is rank deficent, qr.append_column would return false for that
-        // iteration, but we also would notice that qr.size() should be smaller
-        // than the expected matrix_dimension
-        for (unsigned int column_index = 0; column_index < matrix_dimension; ++column_index)
+        for (unsigned int column_index = 0; column_index < n_matrix_columns; ++column_index)
           qr.append_column(A[column_index]);
-        AssertThrow(qr.size() == matrix_dimension,
+        AssertThrow(qr.size() == n_matrix_columns,
                     ExcMessage("The matrix A was rank deficent during bilinear least squares interpolation."));
+        // If A is rank deficent, qr.append_column will not append the column.
+        // We check that all columns were added through this assertion
 
         for (unsigned int property_index = 0; property_index < n_particle_properties; ++property_index)
           {
