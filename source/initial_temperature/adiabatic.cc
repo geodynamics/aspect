@@ -233,24 +233,24 @@ namespace aspect
       {
         prm.enter_subsection("Adiabatic");
         {
-          prm.declare_entry ("Age top boundary layer", "0e0",
-                             Patterns::Double (0),
+          prm.declare_entry ("Age top boundary layer", "0.",
+                             Patterns::Double (0.),
                              "The age of the upper thermal boundary layer, used for the calculation "
                              "of the half-space cooling model temperature. Units: years if the "
                              "'Use years in output instead of seconds' parameter is set; "
                              "seconds otherwise.");
-          prm.declare_entry ("Age bottom boundary layer", "0e0",
-                             Patterns::Double (0),
+          prm.declare_entry ("Age bottom boundary layer", "0.",
+                             Patterns::Double (0.),
                              "The age of the lower thermal boundary layer, used for the calculation "
                              "of the half-space cooling model temperature. Units: years if the "
                              "'Use years in output instead of seconds' parameter is set; "
                              "seconds otherwise.");
-          prm.declare_entry ("Radius", "0e0",
-                             Patterns::Double (0),
+          prm.declare_entry ("Radius", "0.",
+                             Patterns::Double (0.),
                              "The Radius (in m) of the initial spherical temperature perturbation "
                              "at the bottom of the model domain.");
-          prm.declare_entry ("Amplitude", "0e0",
-                             Patterns::Double (0),
+          prm.declare_entry ("Amplitude", "0.",
+                             Patterns::Double (0.),
                              "The amplitude (in K) of the initial spherical temperature perturbation "
                              "at the bottom of the model domain. This perturbation will be added to "
                              "the adiabatic temperature profile, but not to the bottom thermal "
@@ -264,8 +264,8 @@ namespace aspect
                              "this is the center of the bottom face; in the case of a spherical shell "
                              "geometry, it is along the inner surface halfway between the bounding "
                              "radial lines.");
-          prm.declare_entry ("Subadiabaticity", "0e0",
-                             Patterns::Double (0),
+          prm.declare_entry ("Subadiabaticity", "0.",
+                             Patterns::Double (0.),
                              "If this value is larger than 0, the initial temperature profile will "
                              "not be adiabatic, but subadiabatic. This value gives the maximal "
                              "deviation from adiabaticity. Set to 0 for an adiabatic temperature "

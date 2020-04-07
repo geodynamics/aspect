@@ -188,8 +188,8 @@ namespace aspect
       {
         prm.enter_subsection("Point values");
         {
-          prm.declare_entry ("Time between point values output", "0",
-                             Patterns::Double (0),
+          prm.declare_entry ("Time between point values output", "0.",
+                             Patterns::Double (0.),
                              "The time interval between each generation of "
                              "point values output. A value of zero indicates "
                              "that output should be generated in each time step. "

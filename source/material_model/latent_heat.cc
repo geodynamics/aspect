@@ -235,38 +235,38 @@ namespace aspect
       {
         prm.enter_subsection("Latent heat");
         {
-          prm.declare_entry ("Reference density", "3300",
-                             Patterns::Double (0),
+          prm.declare_entry ("Reference density", "3300.",
+                             Patterns::Double (0.),
                              "Reference density $\\rho_0$. Units: $kg/m^3$.");
-          prm.declare_entry ("Reference temperature", "293",
-                             Patterns::Double (0),
+          prm.declare_entry ("Reference temperature", "293.",
+                             Patterns::Double (0.),
                              "The reference temperature $T_0$. Units: $\\si{K}$.");
           prm.declare_entry ("Viscosity", "5e24",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The value of the constant viscosity. Units: $kg/m/s$.");
           prm.declare_entry ("Composition viscosity prefactor", "1.0",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "A linear dependency of viscosity on composition. Dimensionless prefactor.");
           prm.declare_entry ("Thermal viscosity exponent", "0.0",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The temperature dependence of viscosity. Dimensionless exponent.");
           prm.declare_entry ("Thermal conductivity", "2.38",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The value of the thermal conductivity $k$. "
                              "Units: $W/m/K$.");
-          prm.declare_entry ("Reference specific heat", "1250",
-                             Patterns::Double (0),
+          prm.declare_entry ("Reference specific heat", "1250.",
+                             Patterns::Double (0.),
                              "The value of the specific heat $C_p$. "
                              "Units: $J/kg/K$.");
           prm.declare_entry ("Thermal expansion coefficient", "4e-5",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The value of the thermal expansion coefficient $\\beta$. "
                              "Units: $1/K$.");
           prm.declare_entry ("Compressibility", "5.124e-12",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The value of the compressibility $\\kappa$. "
                              "Units: $1/Pa$.");
-          prm.declare_entry ("Density differential for compositional field 1", "0",
+          prm.declare_entry ("Density differential for compositional field 1", "0.",
                              Patterns::Double(),
                              "If compositional fields are used, then one would frequently want "
                              "to make the density depend on these fields. In this simple material "
@@ -278,7 +278,7 @@ namespace aspect
                              "This parameter describes the value of $\\Delta \\rho$. Units: $kg/m^3/\\textrm{unit "
                              "change in composition}$.");
           prm.declare_entry ("Phase transition density jumps", "",
-                             Patterns::List (Patterns::Double(0)),
+                             Patterns::List (Patterns::Double (0.)),
                              "A list of density jumps at each phase transition. A positive value means "
                              "that the density increases with depth. The corresponding entry in "
                              "Corresponding phase for density jump determines if the density jump occurs "
@@ -294,18 +294,18 @@ namespace aspect
                              "List must have the same number of entries as Phase transition depths. "
                              "Units: $Pa/K$.");
           prm.declare_entry ("Viscosity prefactors", "",
-                             Patterns::List (Patterns::Double(0)),
+                             Patterns::List (Patterns::Double (0.)),
                              "A list of prefactors for the viscosity for each phase. The reference "
                              "viscosity will be multiplied by this factor to get the corresponding "
                              "viscosity for each phase. "
                              "List must have one more entry than Phase transition depths. "
                              "Units: non-dimensional.");
           prm.declare_entry ("Minimum viscosity", "1e19",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "Limit for the minimum viscosity in the model. "
                              "Units: Pa \\, s.");
           prm.declare_entry ("Maximum viscosity", "1e24",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "Limit for the maximum viscosity in the model. "
                              "Units: Pa \\, s.");
 

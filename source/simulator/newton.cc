@@ -178,7 +178,7 @@ namespace aspect
         prm.enter_subsection ("Newton solver parameters");
         {
           prm.declare_entry ("Nonlinear Newton solver switch tolerance", "1e-5",
-                             Patterns::Double(0,1),
+                             Patterns::Double(0., 1.),
                              "A relative tolerance with respect to the residual of the first "
                              "iteration, up to which the nonlinear Picard solver will iterate, "
                              "before changing to the Newton solver.");
@@ -206,7 +206,7 @@ namespace aspect
                              "residual at the time when the Newton solver is switched on.");
 
           prm.declare_entry ("Maximum linear Stokes solver tolerance", "0.9",
-                             Patterns::Double (0,1),
+                             Patterns::Double (0., 1.),
                              "The linear Stokes solver tolerance is dynamically chosen for the Newton solver, based "
                              "on the Eisenstat walker 1994 paper (https://doi.org/10.1137/0917003), equation 2.2. "
                              "Because this value can become larger then one, we limit this value by this parameter.");
@@ -237,7 +237,7 @@ namespace aspect
 
 
           prm.declare_entry ("SPD safety factor", "0.9",
-                             Patterns::Double (0,1),
+                             Patterns::Double (0., 1.),
                              "When stabilizing the Newton matrix, we can encounter situations where the coefficient inside the elliptic (top-left) "
                              "block becomes negative or zero. This coefficient has the form $1+x$ where $x$ can sometimes be smaller than $-1$. In "
                              "this case, the top-left block of the matrix is no longer positive definite, and both preconditioners and iterative "

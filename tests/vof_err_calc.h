@@ -178,7 +178,7 @@ namespace aspect
         prm.enter_subsection("VoF MMS");
         {
           prm.declare_entry ("Time between error estimates", "1e8",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "Time interval between error estimates.");
 
           prm.declare_entry ("Number error samples", "3",

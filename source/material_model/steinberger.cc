@@ -601,7 +601,7 @@ namespace aspect
                              "calculation of thermal expansivity and specific heat. "
                              "Following the approach of Nakagawa et al. 2009. ");
           prm.declare_entry ("Reference viscosity", "1e23",
-                             Patterns::Double(0),
+                             Patterns::Double (0.),
                              "The reference viscosity that is used for pressure scaling. "
                              "To understand how pressure scaling works, take a look at "
                              "\\cite{KHB12}. In particular, the value of this parameter "
@@ -623,20 +623,20 @@ namespace aspect
                              "\n\n"
                              "Units: $Pa \\, s$");
           prm.declare_entry ("Minimum viscosity", "1e19",
-                             Patterns::Double(0),
+                             Patterns::Double (0.),
                              "The minimum viscosity that is allowed in the viscosity "
                              "calculation. Smaller values will be cut off.");
           prm.declare_entry ("Maximum viscosity", "1e23",
-                             Patterns::Double(0),
+                             Patterns::Double (0.),
                              "The maximum viscosity that is allowed in the viscosity "
                              "calculation. Larger values will be cut off.");
           prm.declare_entry ("Maximum lateral viscosity variation", "1e2",
-                             Patterns::Double(0),
+                             Patterns::Double (0.),
                              "The relative cutoff value for lateral viscosity variations "
                              "caused by temperature deviations. The viscosity may vary "
                              "laterally by this factor squared.");
           prm.declare_entry ("Thermal conductivity", "4.7",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The value of the thermal conductivity $k$. "
                              "Units: $W/m/K$.");
           prm.leave_subsection();

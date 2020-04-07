@@ -101,7 +101,7 @@ namespace aspect
         prm.enter_subsection("Compaction length");
         {
           prm.declare_entry("Mesh cells per compaction length", "1.0",
-                            Patterns::Double (0),
+                            Patterns::Double (0.),
                             "The desired ratio between compaction length and size of the "
                             "mesh cells, or, in other words, how many cells the mesh should "
                             "(at least) have per compaction length. Every cell where this "

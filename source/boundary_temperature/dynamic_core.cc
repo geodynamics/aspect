@@ -86,20 +86,20 @@ namespace aspect
       {
         prm.enter_subsection("Dynamic core");
         {
-          prm.declare_entry ("Outer temperature", "0",
+          prm.declare_entry ("Outer temperature", "0.",
                              Patterns::Double (),
                              "Temperature at the outer boundary (lithosphere water/air). Units: $\\si{K}$.");
-          prm.declare_entry ("Inner temperature", "6000",
+          prm.declare_entry ("Inner temperature", "6000.",
                              Patterns::Double (),
                              "Temperature at the inner boundary (core mantle boundary) at the "
                              "beginning. Units: $\\si{K}$.");
-          prm.declare_entry ("dT over dt", "0",
+          prm.declare_entry ("dT over dt", "0.",
                              Patterns::Double (),
                              "Initial CMB temperature changing rate. Units: $K/year$.");
-          prm.declare_entry ("dR over dt", "0",
+          prm.declare_entry ("dR over dt", "0.",
                              Patterns::Double (),
                              "Initial inner core radius changing rate. Units: $km/year$.");
-          prm.declare_entry ("dX over dt", "0",
+          prm.declare_entry ("dX over dt", "0.",
                              Patterns::Double (),
                              "Initial light composition changing rate. Units: $1/year$.");
           prm.declare_entry ("Core density", "12.5e3",
@@ -112,46 +112,46 @@ namespace aspect
                              Patterns::Double (),
                              "Pressure at CMB. Units: $Pa$.");
           prm.declare_entry ("Initial light composition", "0.01",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "Initial light composition (eg. S,O) concentration "
                              "in weight fraction.");
           prm.declare_entry ("Max iteration", "30000",
                              Patterns::Integer (0),
                              "The max iterations for nonliner core energy solver.");
-          prm.declare_entry ("Core heat capacity", "840",
-                             Patterns::Double (0),
+          prm.declare_entry ("Core heat capacity", "840.",
+                             Patterns::Double (0.),
                              "Heat capacity of the core. Units: $J/kg/K$.");
           prm.declare_entry ("K0", "4.111e11",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "Core compressibility at zero pressure. "
                              "See \\cite{NPB+04} for more details.");
           prm.declare_entry ("Rho0", "7.019e3",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "Core density at zero pressure. Units: $kg/m^3$. "
                              "See \\cite{NPB+04} for more details.");
           prm.declare_entry ("Alpha", "1.35e-5",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "Core thermal expansivity. Units: $1/K$.");
           prm.declare_entry ("Lh", "750e3",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The latent heat of core freeze. Units: $J/kg$.");
           prm.declare_entry ("Rh","-27.7e6",
                              Patterns::Double (),
                              "The heat of reaction. Units: $J/kg$.");
           prm.declare_entry ("Beta composition", "1.1",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "Compositional expansion coefficient $Beta_c$. "
                              "See \\cite{NPB+04} for more details.");
           prm.declare_entry ("Delta","0.5",
-                             Patterns::Double (0,1),
+                             Patterns::Double (0., 1.),
                              "Partition coefficient of the light element.");
-          prm.declare_entry ("Core conductivity", "60",
-                             Patterns::Double (0),
+          prm.declare_entry ("Core conductivity", "60.",
+                             Patterns::Double (0.),
                              "Core heat conductivity $k_c$. Units: $W/m/K$.");
           prm.enter_subsection("Geotherm parameters");
           {
-            prm.declare_entry ("Tm0","1695",
-                               Patterns::Double (0),
+            prm.declare_entry ("Tm0","1695.",
+                               Patterns::Double (0.),
                                "Melting curve (\\cite{NPB+04} eq. (40)) parameter Tm0. Units: $\\si{K}$.");
             prm.declare_entry ("Tm1","10.9",
                                Patterns::Double (),

@@ -214,7 +214,7 @@ namespace aspect
                              "'topography.NNNNN' in the output directory");
 
           prm.declare_entry ("Time between text output", "0.",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The time interval between each generation of "
                              "text output files. A value of zero indicates "
                              "that output should be generated in each time step. "

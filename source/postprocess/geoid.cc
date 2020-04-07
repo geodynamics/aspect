@@ -918,11 +918,11 @@ namespace aspect
                             Patterns::Bool(),
                             "Option to output the geoid anomaly in geographical coordinates (latitude and longitude). "
                             "The default is false, so postprocess will output the data in geocentric coordinates (x,y,z) as normally.");
-          prm.declare_entry("Density above","0",
-                            Patterns::Double (0),
+          prm.declare_entry("Density above","0.",
+                            Patterns::Double (0.),
                             "The density value above the surface boundary.");
-          prm.declare_entry("Density below","9900",
-                            Patterns::Double (0),
+          prm.declare_entry("Density below","9900.",
+                            Patterns::Double (0.),
                             "The density value below the CMB boundary.");
           prm.declare_entry("Also output the spherical harmonic coefficients of geoid anomaly", "false",
                             Patterns::Bool(),

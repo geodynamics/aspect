@@ -142,7 +142,7 @@ namespace aspect
           prm.enter_subsection("Particles");
           {
             prm.declare_entry ("Number of particles", "1000",
-                               Patterns::Double (0),
+                               Patterns::Double (0.),
                                "Total number of particles to create (not per processor or per element). "
                                "The number is parsed as a floating point number (so that one can "
                                "specify, for example, '1e4' particles) but it is interpreted as "
@@ -152,41 +152,41 @@ namespace aspect
             {
               prm.enter_subsection("Uniform radial");
               {
-                prm.declare_entry ("Center x", "0",
+                prm.declare_entry ("Center x", "0.",
                                    Patterns::Double (),
                                    "x coordinate for the center of the spherical region, "
                                    "where particles are generated.");
-                prm.declare_entry ("Center y", "0",
+                prm.declare_entry ("Center y", "0.",
                                    Patterns::Double (),
                                    "y coordinate for the center of the spherical region, "
                                    "where particles are generated.");
-                prm.declare_entry ("Center z", "0",
+                prm.declare_entry ("Center z", "0.",
                                    Patterns::Double (),
                                    "z coordinate for the center of the spherical region, "
                                    "where particles are generated.");
-                prm.declare_entry ("Minimum radius", "0",
-                                   Patterns::Double (0),
+                prm.declare_entry ("Minimum radius", "0.",
+                                   Patterns::Double (0.),
                                    "Minimum radial coordinate for the region of particles. "
                                    "Measured from the center position.");
-                prm.declare_entry ("Maximum radius", "1",
+                prm.declare_entry ("Maximum radius", "1.",
                                    Patterns::Double (),
                                    "Maximum radial coordinate for the region of particles. "
                                    "Measured from the center position.");
-                prm.declare_entry ("Minimum longitude", "0",
-                                   Patterns::Double (-180,360),
+                prm.declare_entry ("Minimum longitude", "0.",
+                                   Patterns::Double (-180., 360.),
                                    "Minimum longitude coordinate for the region of particles "
                                    "in degrees. Measured from the center position.");
-                prm.declare_entry ("Maximum longitude", "360",
-                                   Patterns::Double (-180,360),
+                prm.declare_entry ("Maximum longitude", "360.",
+                                   Patterns::Double (-180., 360.),
                                    "Maximum longitude coordinate for the region of particles "
                                    "in degrees. Measured from the center position.");
-                prm.declare_entry ("Minimum latitude", "0",
-                                   Patterns::Double (0,180),
+                prm.declare_entry ("Minimum latitude", "0.",
+                                   Patterns::Double (0., 180.),
                                    "Minimum latitude coordinate for the region of particles "
                                    "in degrees. Measured from the center position, and from "
                                    "the north pole.");
-                prm.declare_entry ("Maximum latitude", "180",
-                                   Patterns::Double (0,180),
+                prm.declare_entry ("Maximum latitude", "180.",
+                                   Patterns::Double (0., 180.),
                                    "Maximum latitude coordinate for the region of particles "
                                    "in degrees. Measured from the center position, and from "
                                    "the north pole.");

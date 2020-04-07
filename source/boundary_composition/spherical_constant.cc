@@ -93,12 +93,12 @@ namespace aspect
       {
         prm.enter_subsection("Spherical constant");
         {
-          prm.declare_entry ("Outer composition", "0",
+          prm.declare_entry ("Outer composition", "0.",
                              Patterns::Double (),
                              "Composition at the outer boundary (lithosphere water/air). "
                              "For a spherical geometry model, this is the only boundary. "
                              "Units: none.");
-          prm.declare_entry ("Inner composition", "1",
+          prm.declare_entry ("Inner composition", "1.",
                              Patterns::Double (),
                              "Composition at the inner boundary (core mantle boundary). Units: none.");
         }

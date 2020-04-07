@@ -123,27 +123,27 @@ namespace aspect
         prm.enter_subsection("Nondimensional model");
         {
           prm.declare_entry ("Reference density", "1.0",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "Reference density $\\rho_0$. Units: $kg/m^3$.");
           prm.declare_entry ("Ra", "1e4",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "Rayleigh number Ra");
           prm.declare_entry ("Di", "0.0",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "Dissipation number. Pick 0.0 for incompressible "
                              "computations.");
           prm.declare_entry ("gamma", "1.0",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "Grueneisen parameter");
           prm.declare_entry ("Reference specific heat", "1.0",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The value of the specific heat $C_p$. "
                              "Units: $J/kg/K$.");
           prm.declare_entry ("Viscosity temperature prefactor", "0.0",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "Exponential temperature prefactor for viscosity.");
           prm.declare_entry ("Viscosity depth prefactor", "0.0",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "Exponential depth prefactor for viscosity.");
           prm.declare_entry ("Use TALA", "false",
                              Patterns::Bool (),

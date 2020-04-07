@@ -543,24 +543,24 @@ namespace aspect
                              "radially. This parameter allows the user more control "
                              "over the ratio between radial and lateral refinement of "
                              "the mesh.");
-          prm.declare_entry ("Inner radius", "3481000",  // 6371-2890 in km
-                             Patterns::Double (0),
+          prm.declare_entry ("Inner radius", "3481000.",  // 6371-2890 in km
+                             Patterns::Double (0.),
                              "Inner radius of the spherical shell. Units: $\\si{m}$. "
                              "\n\n"
                              "\\note{The default value of 3,481,000 m equals the "
                              "radius of a sphere with equal volume as Earth (i.e., "
                              "6371 km) minus the average depth of the core-mantle "
                              "boundary (i.e., 2890 km).}");
-          prm.declare_entry ("Outer radius", "6336000",  // 6371-35 in km
-                             Patterns::Double (0),
+          prm.declare_entry ("Outer radius", "6336000.",  // 6371-35 in km
+                             Patterns::Double (0.),
                              "Outer radius of the spherical shell. Units: $\\si{m}$. "
                              "\n\n"
                              "\\note{The default value of 6,336,000 m equals the "
                              "radius of a sphere with equal volume as Earth (i.e., "
                              "6371 km) minus the average depth of the mantle-crust "
                              "interface (i.e., 35 km).}");
-          prm.declare_entry ("Opening angle", "360",
-                             Patterns::Double (0, 360),
+          prm.declare_entry ("Opening angle", "360.",
+                             Patterns::Double (0., 360.),
                              "Opening angle in degrees of the section of the shell "
                              "that we want to build. "
                              "The only opening angles that are allowed for "

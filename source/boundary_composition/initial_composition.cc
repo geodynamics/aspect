@@ -68,10 +68,10 @@ namespace aspect
       {
         prm.enter_subsection("Initial composition");
         {
-          prm.declare_entry ("Minimal composition", "0",
+          prm.declare_entry ("Minimal composition", "0.",
                              Patterns::Double (),
                              "Minimal composition. Units: none.");
-          prm.declare_entry ("Maximal composition", "1",
+          prm.declare_entry ("Maximal composition", "1.",
                              Patterns::Double (),
                              "Maximal composition. Units: none.");
         }

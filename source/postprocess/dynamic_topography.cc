@@ -504,8 +504,8 @@ namespace aspect
       {
         prm.enter_subsection("Dynamic topography");
         {
-          prm.declare_entry ("Density above","0",
-                             Patterns::Double (0),
+          prm.declare_entry ("Density above","0.",
+                             Patterns::Double (0.),
                              "Dynamic topography is calculated as the excess or lack of mass that is supported by mantle flow. "
                              "This value depends on the density of material that is moved up or down, i.e. crustal rock, and the "
                              "density of the material that is displaced (generally water or air). While the density of crustal rock "
@@ -513,8 +513,8 @@ namespace aspect
                              "value of material that is displaced above the solid surface. By default this material is assumed to "
                              "be air, with a density of 0. "
                              "Units: $kg/m^3$.");
-          prm.declare_entry ("Density below","9900",
-                             Patterns::Double (0),
+          prm.declare_entry ("Density below","9900.",
+                             Patterns::Double (0.),
                              "Dynamic topography is calculated as the excess or lack of mass that is supported by mantle flow. "
                              "This value depends on the density of material that is moved up or down, i.e. mantle above CMB, and the "
                              "density of the material that is displaced (generally outer core material). While the density of mantle rock "

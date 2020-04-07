@@ -76,34 +76,34 @@ namespace aspect
       MulticomponentCompressible<dim>::declare_parameters (ParameterHandler &prm)
       {
         prm.declare_entry ("Reference temperatures", "298.15",
-                           Patterns::List(Patterns::Double(0)),
+                           Patterns::List(Patterns::Double (0.)),
                            "List of reference temperatures $T_0$ for background mantle and compositional fields,"
                            "for a total of N+1 values, where N is the number of compositional fields."
                            "If only one value is given, then all use the same value. Units: $K$.");
         prm.declare_entry ("Reference densities", "3300.",
-                           Patterns::List(Patterns::Double(0)),
+                           Patterns::List(Patterns::Double (0.)),
                            "List of densities for background mantle and compositional fields,"
                            "for a total of N+1 values, where N is the number of compositional fields."
                            "If only one value is given, then all use the same value.  Units: $kg / m^3$");
         prm.declare_entry ("Reference isothermal compressibilities", "4e-12",
-                           Patterns::List(Patterns::Double(0)),
+                           Patterns::List(Patterns::Double (0.)),
                            "List of isothermal compressibilities for background mantle and compositional fields,"
                            "for a total of N+1 values, where N is the number of compositional fields."
                            "If only one value is given, then all use the same value. "
                            "Units: $1/Pa$.");
         prm.declare_entry ("Isothermal bulk modulus pressure derivatives", "4.",
-                           Patterns::List(Patterns::Double(0)),
+                           Patterns::List(Patterns::Double (0.)),
                            "List of isothermal pressure derivatives of the bulk moduli for background mantle and compositional fields,"
                            "for a total of N+1 values, where N is the number of compositional fields."
                            "If only one value is given, then all use the same value. "
                            "Units: [].");
         prm.declare_entry ("Reference thermal expansivities", "4.e-5",
-                           Patterns::List(Patterns::Double(0)),
+                           Patterns::List(Patterns::Double (0.)),
                            "List of thermal expansivities for background mantle and compositional fields,"
                            "for a total of N+1 values, where N is the number of compositional fields."
                            "If only one value is given, then all use the same value. Units: $1/K$");
         prm.declare_entry ("Isochoric specific heats", "1250.",
-                           Patterns::List(Patterns::Double(0)),
+                           Patterns::List(Patterns::Double (0.)),
                            "List of isochoric specific heats $C_v$ for background mantle and compositional fields,"
                            "for a total of N+1 values, where N is the number of compositional fields."
                            "If only one value is given, then all use the same value. Units: $J /kg /K$");

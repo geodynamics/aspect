@@ -3017,10 +3017,10 @@ namespace aspect
             prm.enter_subsection("SolCx");
             {
               prm.declare_entry ("Viscosity jump", "1e6",
-                                 Patterns::Double (0),
+                                 Patterns::Double (0.),
                                  "Viscosity in the right half of the domain.");
-              prm.declare_entry ("Background density", "0",
-                                 Patterns::Double (0),
+              prm.declare_entry ("Background density", "0.",
+                                 Patterns::Double (0.),
                                  "Density value upon which the variation of this testcase "
                                  "is overlaid. Since this background density is constant "
                                  "it does not affect the flow pattern but it adds to the "

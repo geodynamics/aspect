@@ -145,37 +145,37 @@ namespace aspect
         prm.enter_subsection("Modified Tait model");
         {
           prm.declare_entry ("Reference pressure", "1e5",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "Reference pressure $P_0$. Units: $\\text{Pa}$.");
           prm.declare_entry ("Reference temperature", "298.15",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "Reference temperature $T_0$. Units: $\\text{K}$.");
-          prm.declare_entry ("Reference density", "3300",
-                             Patterns::Double (0),
+          prm.declare_entry ("Reference density", "3300.",
+                             Patterns::Double (0.),
                              "The density at the reference pressure and temperature. "
                              "Units: $\\text{kg}/\\text{m}^3$.");
           prm.declare_entry ("Reference isothermal bulk modulus", "125e9",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The isothermal bulk modulus at the reference pressure and temperature. "
                              "Units: $\\text{Pa}$.");
-          prm.declare_entry ("Reference bulk modulus derivative", "4",
-                             Patterns::Double (0),
+          prm.declare_entry ("Reference bulk modulus derivative", "4.",
+                             Patterns::Double (0.),
                              "The value of the first pressure derivative of the isothermal bulk modulus "
                              "at the reference pressure and temperature. "
                              "Units: [].");
           prm.declare_entry ("Reference thermal expansivity", "2e-5",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The thermal expansion coefficient at the reference pressure and temperature. "
                              "Units: $1/\\text{K}$.");
-          prm.declare_entry ("Einstein temperature", "600",
-                             Patterns::Double (0),
+          prm.declare_entry ("Einstein temperature", "600.",
+                             Patterns::Double (0.),
                              "The Einstein temperature at the reference pressure and temperature. "
                              "Units: $\\text{K}$.");
           prm.declare_entry ("Viscosity", "1e21",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The value of the constant viscosity $\\eta_0$. Units: $\\text{Pas}$.");
           prm.declare_entry ("Thermal conductivity", "4.7",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The value of the constant thermal conductivity $k$. "
                              "Units: $\\text{W}/\\text{m}/\\text{K}$.");
 

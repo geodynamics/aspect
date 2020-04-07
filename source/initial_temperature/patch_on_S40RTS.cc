@@ -116,15 +116,16 @@ namespace aspect
         prm.enter_subsection ("Patch on S40RTS");
         {
           prm.declare_entry ("Maximum grid depth", "700000.0",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The maximum depth of the Vs ascii grid. The model will read in  "
                              "Vs from S40RTS below this depth.");
           prm.declare_entry ("Smoothing length scale", "200000.0",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The depth range (above maximum grid depth) over which to smooth. "
                              "The boundary is smoothed using a depth weighted combination of Vs "
                              "values from the ascii grid and S40RTS at each point in the region of smoothing.");
-          prm.declare_entry ("Remove temperature heterogeneity down to specified depth", boost::lexical_cast<std::string>(-std::numeric_limits<double>::max()),
+          prm.declare_entry ("Remove temperature heterogeneity down to specified depth",
+                             boost::lexical_cast<std::string>(-std::numeric_limits<double>::max()),
                              Patterns::Double (),
                              "This will set the heterogeneity prescribed by the Vs ascii grid and S40RTS to zero "
                              "down to the specified depth (in meters). Note that your resolution has "

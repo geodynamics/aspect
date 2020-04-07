@@ -817,7 +817,7 @@ namespace aspect
         prm.enter_subsection("Visualization");
         {
           prm.declare_entry ("Time between graphical output", "1e8",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The time interval between each generation of "
                              "graphical output files. A value of zero indicates "
                              "that output should be generated in each time step. "
@@ -826,7 +826,7 @@ namespace aspect
                              "seconds otherwise.");
 
           prm.declare_entry ("Time steps between graphical output", boost::lexical_cast<std::string>(std::numeric_limits<int>::max()),
-                             Patterns::Integer(0,std::numeric_limits<int>::max()),
+                             Patterns::Integer(0),
                              "The maximum number of time steps between each generation of "
                              "graphical output files.");
 

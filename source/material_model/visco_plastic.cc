@@ -616,17 +616,17 @@ namespace aspect
           Rheology::Elasticity<dim>::declare_parameters (prm);
 
           // Reference and minimum/maximum values
-          prm.declare_entry ("Reference temperature", "293", Patterns::Double(0),
+          prm.declare_entry ("Reference temperature", "293.", Patterns::Double (0.),
                              "For calculating density by thermal expansivity. Units: $\\si{K}$");
-          prm.declare_entry ("Minimum strain rate", "1.0e-20", Patterns::Double(0),
+          prm.declare_entry ("Minimum strain rate", "1.0e-20", Patterns::Double (0.),
                              "Stabilizes strain dependent viscosity. Units: $1 / s$");
-          prm.declare_entry ("Reference strain rate","1.0e-15",Patterns::Double(0),
+          prm.declare_entry ("Reference strain rate","1.0e-15",Patterns::Double (0.),
                              "Reference strain rate for first time step. Units: $1 / s$");
-          prm.declare_entry ("Minimum viscosity", "1e17", Patterns::Double(0),
+          prm.declare_entry ("Minimum viscosity", "1e17", Patterns::Double (0.),
                              "Lower cutoff for effective viscosity. Units: $Pa \\, s$");
-          prm.declare_entry ("Maximum viscosity", "1e28", Patterns::Double(0),
+          prm.declare_entry ("Maximum viscosity", "1e28", Patterns::Double (0.),
                              "Upper cutoff for effective viscosity. Units: $Pa \\, s$");
-          prm.declare_entry ("Reference viscosity", "1e22", Patterns::Double(0),
+          prm.declare_entry ("Reference viscosity", "1e22", Patterns::Double (0.),
                              "Reference viscosity for nondimensionalization. "
                              "To understand how pressure scaling works, take a look at "
                              "\\cite{KHB12}. In particular, the value of this parameter "
@@ -650,7 +650,7 @@ namespace aspect
 
           // Equation of state parameters
           prm.declare_entry ("Thermal diffusivities", "0.8e-6",
-                             Patterns::List(Patterns::Double(0)),
+                             Patterns::List(Patterns::Double (0.)),
                              "List of thermal diffusivities, for background material and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
                              "If only one value is given, then all use the same value.  Units: $m^2/s$");
@@ -683,14 +683,14 @@ namespace aspect
 
           // Stress limiter parameters
           prm.declare_entry ("Stress limiter exponents", "1.0",
-                             Patterns::List(Patterns::Double(0)),
+                             Patterns::List(Patterns::Double (0.)),
                              "List of stress limiter exponents, $n_{\\text{lim}}$, "
                              "for background material and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
                              "Units: none.");
 
           // Temperature in viscosity laws to include an adiabat (note units of K/Pa)
-          prm.declare_entry ("Adiabat temperature gradient for viscosity", "0.0", Patterns::Double(0),
+          prm.declare_entry ("Adiabat temperature gradient for viscosity", "0.0", Patterns::Double (0.),
                              "Add an adiabatic temperature gradient to the temperature used in the flow law "
                              "so that the activation volume is consistent with what one would use in a "
                              "earth-like (compressible) model. Default is set so this is off. "

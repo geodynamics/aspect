@@ -162,10 +162,10 @@ namespace aspect
                              "the model domain. This allows for single up-/downswings. "
                              "Negative numbers reverse the sign of the perturbation.");
           prm.declare_entry ("Magnitude", "1.0",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The magnitude of the Harmonic perturbation.");
           prm.declare_entry ("Reference temperature", "1600.0",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The reference temperature that is perturbed by the "
                              "harmonic function. Only used in incompressible models.");
         }

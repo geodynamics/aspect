@@ -105,16 +105,16 @@ namespace aspect
         prm.enter_subsection("Continental geotherm");
         {
           prm.declare_entry ("Layer thicknesses", "30000.",
-                             Patterns::List(Patterns::Double(0)),
+                             Patterns::List(Patterns::Double(0.)),
                              "List of the 3 thicknesses of the lithospheric layers "
                              "'upper\\_crust', 'lower\\_crust' and 'mantle\\_lithosphere'. "
                              "If only one thickness is given, then the same thickness is used "
                              "for all layers. Units: $m$");
           prm.declare_entry ("Surface temperature", "273.15",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The value of the surface temperature. Units: $\\si{K}$.");
           prm.declare_entry ("Lithosphere-Asthenosphere boundary isotherm", "1673.15",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The value of the isotherm that is assumed at the Lithosphere-"
                              "Asthenosphere boundary. Units: $\\si{K}$.");
         }

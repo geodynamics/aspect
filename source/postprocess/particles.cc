@@ -595,7 +595,7 @@ namespace aspect
         prm.enter_subsection("Particles");
         {
           prm.declare_entry ("Time between data output", "1e8",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The time interval between each generation of "
                              "output files. A value of zero indicates that "
                              "output should be generated every time step.\n\n"
