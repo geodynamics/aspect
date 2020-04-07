@@ -266,8 +266,8 @@ namespace aspect
                     satellites_coordinate[p][0] = minimum_radius + ((maximum_radius - minimum_radius) / (n_points_radius - 1)) * h;
                   else
                     satellites_coordinate[p][0] = minimum_radius;
-                  satellites_coordinate[p][2] = std::acos(1. - 2. * p / (n_satellites - 1.));
-                  satellites_coordinate[p][1] = std::fmod((p*golden_angle), 2.*numbers::PI);
+                  satellites_coordinate[p][2] = std::acos(1. - 2. * s / (n_points_spiral - 1.));
+                  satellites_coordinate[p][1] = std::fmod((s*golden_angle), 2.*numbers::PI);
                   ++p;
                 }
             }
