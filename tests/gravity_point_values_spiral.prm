@@ -5,7 +5,7 @@
 # General parameters
 set Dimension                              = 3
 set End time                               = 0
-set Output directory                       = output-gravity_point_values_map
+set Output directory                       = output-gravity_point_values_spiral
 set Nonlinear solver scheme                = no Advection, no Stokes
 
 # Model geometry
@@ -64,9 +64,9 @@ end
 subsection Postprocess
   set List of postprocessors = gravity calculation
   subsection Gravity calculation
-    set Sampling scheme               = domain of points 
-    set Minimum radius                = 4 
-    set Number points longitude       = 5
-    set Number points latitude        = 5
+    set Sampling scheme                      = domain of points 
+    set Domain of points sampling method     = spiral
+    set Number points spiral sampling method = 10
+    set Minimum radius                       = 4 
   end
 end

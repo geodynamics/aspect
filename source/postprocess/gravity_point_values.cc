@@ -214,15 +214,20 @@ namespace aspect
       // Pre-Assign the coordinates of all satellites in a vector point:
       // *** First calculate the number of satellites according to the sampling scheme:
       unsigned int n_satellites;
-      if (sampling_scheme == uniform_distribution)
-        n_satellites = n_points_radius * n_points_longitude * n_points_latitude;
-      else if (sampling_scheme == list_of_points)
-        n_satellites = longitude_list.size();
-      else n_satellites = 1;
+      if (sampling_method == spiral)
+        n_satellites = n_points_spiral * n_points_radius;
+      else
+        {
+          if (sampling_scheme == domain_of_points)
+            n_satellites = n_points_radius * n_points_longitude * n_points_latitude;
+          else if (sampling_scheme == list_of_points)
+            n_satellites = longitude_list.size();
+          else n_satellites = 1;
+        }
 
       // *** Second assign the coordinates of all satellites:
       std::vector<Point<dim> > satellites_coordinate(n_satellites);
-      if (sampling_scheme == uniform_distribution)
+      if ( (sampling_scheme == domain_of_points) && (sampling_method == equiangular) )
         {
           unsigned int p = 0;
           for (unsigned int h=0; h < n_points_radius; ++h)
@@ -245,6 +250,25 @@ namespace aspect
                         satellites_coordinate[p][2] = minimum_colatitude * numbers::PI / 180.;
                       ++p;
                     }
+                }
+            }
+        }
+      else if ( (sampling_scheme == domain_of_points) && (sampling_method == spiral) )
+        {
+          double golden_ratio = (1. + std::sqrt(5.))/2.;
+          double golden_angle = 2. * numbers::PI * (1. - 1./golden_ratio);
+          unsigned int p = 0;
+          for (unsigned int h=0; h < n_points_radius; ++h)
+            {
+              for (unsigned int s=0; s < n_points_spiral; ++s)
+                {
+                  if (n_points_radius > 1)
+                    satellites_coordinate[p][0] = minimum_radius + ((maximum_radius - minimum_radius) / (n_points_radius - 1)) * h;
+                  else
+                    satellites_coordinate[p][0] = minimum_radius;
+                  satellites_coordinate[p][2] = std::acos(1. - 2. * p / (n_satellites - 1.));
+                  satellites_coordinate[p][1] = std::fmod((p*golden_angle), 2.*numbers::PI);
+                  ++p;
                 }
             }
         }
@@ -479,13 +503,29 @@ namespace aspect
       {
         prm.enter_subsection ("Gravity calculation");
         {
-          prm.declare_entry ("Sampling scheme", "uniform distribution",
-                             Patterns::Selection ("uniform distribution|list of points|map|list"),
-                             "Choose the sampling scheme. A uniform distribution will "
-                             "produce a grid of equally spaced points between a "
+          prm.declare_entry ("Sampling scheme", "domain of points",
+                             Patterns::Selection ("domain of points|list of points|map|list"),
+                             "Choose the sampling scheme. By default, a domain of points "
+                             "will produce a grid of equally angled points between a "
                              "minimum and maximum radius, longitude, and latitude. A "
-                             "list of points contains specific coordinates of the "
+                             "list of points contains the specific coordinates of the "
                              "satellites.");
+          prm.declare_entry ("Domain of points sampling method", "equiangular",
+                             Patterns::Selection ("equiangular|spiral"),
+                             "Choose the sampling method for the domain of points "
+                             "sampling scheme. By default, the domain of points produces a "
+                             "grid of equally angled points defined by the specified "
+                             "longitudes, latitudes or radius bounds and their respective "
+                             "number of points. "
+                             "The spiral domain of points sampling method allows an "
+                             "equidistant sampling based on the Fibonacci suit.");
+          prm.declare_entry ("Number points spiral sampling method", "200",
+                             Patterns::Integer (0),
+                             "Parameter for the spiral domain of points sampling method: "
+                             "This specifies the desired number of satellites per number "
+                             "points radius. The default value is 200. Note that sampling "
+                             "becomes more uniformly equidistant with increasing number "
+                             "of satellites");
           prm.declare_entry ("Quadrature degree increase", "0",
                              Patterns::Integer (0),
                              "Quadrature degree increase over the velocity element "
@@ -495,31 +535,31 @@ namespace aspect
                              "solution from noise due to the model grid.");
           prm.declare_entry ("Number points radius", "1",
                              Patterns::Integer (0),
-                             "Parameter for the uniform distribution sampling scheme: "
+                             "Parameter for the domain of points sampling scheme: "
                              "This specifies the number of points along "
                              "the radius (e.g. depth profile) between a minimum and "
                              "maximum radius.");
           prm.declare_entry ("Number points longitude", "1",
                              Patterns::Integer (0),
-                             "Parameter for the uniform distribution sampling scheme: "
+                             "Parameter for the domain of points sampling scheme: "
                              "This specifies the number of points along "
                              "the longitude (e.g. gravity map) between a minimum and "
                              "maximum longitude.");
           prm.declare_entry ("Number points latitude", "1",
                              Patterns::Integer (0),
-                             "Parameter for the uniform distribution sampling scheme: "
+                             "Parameter for the domain of points sampling scheme: "
                              "This specifies the number of points along "
                              "the latitude (e.g. gravity map) between a minimum and "
                              "maximum latitude.");
           prm.declare_entry ("Minimum radius", "0.",
                              Patterns::Double (0.0),
-                             "Parameter for the uniform distribution sampling scheme: "
+                             "Parameter for the domain of points sampling scheme: "
                              "Minimum radius may be defined in or outside the model. "
                              "Prescribe a minimum radius for a sampling coverage at a "
                              "specific height.");
           prm.declare_entry ("Maximum radius", "0.",
                              Patterns::Double (0.0),
-                             "Parameter for the uniform distribution sampling scheme: "
+                             "Parameter for the domain of points sampling scheme: "
                              "Maximum radius can be defined in or outside the model.");
           prm.declare_entry ("Minimum longitude", "-180.",
                              Patterns::Double (-180.0, 180.0),
@@ -602,13 +642,14 @@ namespace aspect
       {
         prm.enter_subsection ("Gravity calculation");
         {
-          if ( (prm.get ("Sampling scheme") == "uniform distribution") || (prm.get ("Sampling scheme") == "map") )
-            sampling_scheme = uniform_distribution;
+          if ( (prm.get ("Sampling scheme") == "domain of points") || (prm.get ("Sampling scheme") == "map") )
+            sampling_scheme = domain_of_points;
           else if ( (prm.get ("Sampling scheme") == "list of points") || (prm.get ("Sampling scheme") == "list") )
             sampling_scheme = list_of_points;
           else
             AssertThrow (false, ExcMessage ("Not a valid sampling scheme."));
           quadrature_degree_increase = prm.get_integer ("Quadrature degree increase");
+          n_points_spiral     = prm.get_integer("Number points spiral sampling method");
           n_points_radius     = prm.get_integer("Number points radius");
           n_points_longitude  = prm.get_integer("Number points longitude");
           n_points_latitude   = prm.get_integer("Number points latitude");
