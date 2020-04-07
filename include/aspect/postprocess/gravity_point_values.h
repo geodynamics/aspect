@@ -143,6 +143,12 @@ namespace aspect
         void set_last_output_time (const double current_time);
 
         /**
+         * Set the precision of the gravity acceleration, potential and gradients
+         * in the gravity output and statistics file.
+         */
+        unsigned int precision;
+
+        /**
          * Quadrature degree increase over the velocity element degree may be required when
          * gravity is calculated near the surface or inside the model. An increase in the
          * quadrature element adds accuracy to the gravity solution from noise due to the
