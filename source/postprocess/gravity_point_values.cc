@@ -244,15 +244,20 @@ namespace aspect
           }
 
       // Pre-Assign the coordinates of all satellites in a vector point:
-      // *** First calculate the number of satellites according to the sampling scheme:
+      // *** First calculate the number of satellites according to the sampling method:
       unsigned int n_satellites;
-      if (sampling_scheme == map)
-        n_satellites = n_points_radius * n_points_longitude * n_points_latitude;
-      else if (sampling_scheme == list)
-        n_satellites = longitude_list.size();
-      else if (sampling_scheme == profile)
-        n_satellites = n_points_radius * longitude_list.size();
-      else n_satellites = 1;
+      if (sampling_method == spiral)
+        n_satellites = n_points_spiral;  
+      else
+        { 
+          if (sampling_scheme == map)
+            n_satellites = n_points_radius * n_points_longitude * n_points_latitude;
+          else if (sampling_scheme == list)
+            n_satellites = longitude_list.size();
+          else if (sampling_scheme == profile)
+            n_satellites = n_points_radius * longitude_list.size();
+          else n_satellites = 1;
+        } 
 
       // Uniform distribution on the interval [0,1]. This
       // will be used to generate random particle locations.
@@ -260,7 +265,7 @@ namespace aspect
 
       // *** Second assign the coordinates of all satellites:
       std::vector<Point<dim> > satellites_coordinate(n_satellites);
-      if (sampling_scheme == map)
+      if ( (sampling_scheme == map) && (sampling_method == equiangular) )
         {
           unsigned int p = 0;
           double random_lon = 0;
@@ -281,7 +286,7 @@ namespace aspect
                         {
                           longitude_interval = (maximum_colongitude - minimum_colongitude) / (n_points_longitude - 1);
                           satellites_coordinate[p][1] = minimum_colongitude + longitude_interval * i;
-                          if (add_random == true)
+                          if (sampling_method == random)
                             random_lon = (uniform_distribution_01(random_number_generator)-0.5) * longitude_interval;
                           if (satellites_coordinate[p][1] == 0)
                             satellites_coordinate[p][1] = satellites_coordinate[p][1] + std::abs(random_lon);
@@ -297,7 +302,7 @@ namespace aspect
                         {
                           latitude_interval = (maximum_colatitude - minimum_colatitude) / (n_points_latitude - 1);
                           satellites_coordinate[p][2] = minimum_colatitude + latitude_interval * j;
-                          if (add_random == true)
+                          if (sampling_method == random)
                             random_lat = (uniform_distribution_01(random_number_generator)-0.5) * latitude_interval;
                           if (satellites_coordinate[p][2] == 0)
                             satellites_coordinate[p][2] = satellites_coordinate[p][2] + std::abs(random_lat);
@@ -311,6 +316,24 @@ namespace aspect
                         satellites_coordinate[p][2] = minimum_colatitude * numbers::PI / 180.;
                       ++p;
                     }
+                }
+            }
+        }
+      else if ( (sampling_scheme == map) && (sampling_method == spiral) )
+        {
+          double golden_ratio = (1. + std::sqrt(5.))/2.;
+          double golden_angle = 2. * numbers::PI * (1. - 1./golden_ratio);
+          for (unsigned int p=0; p < n_satellites; ++p)
+            {
+              satellites_coordinate[p][0] = 
+              satellites_coordinate[p][2] = std::acos(1. - 2. * p / (n_satellites - 1.));
+              satellites_coordinate[p][1] = std::fmod((p*golden_angle), 2.*numbers::PI);
+              for (unsigned int h=0; h < n_points_radius; ++h)
+                {
+                  if (n_points_radius > 1)
+                    satellites_coordinate[p][0] = minimum_radius + ((maximum_radius - minimum_radius) / (n_points_radius - 1)) * h;
+                  else
+                    satellites_coordinate[p][0] = minimum_radius;
                 }
             }
         }
@@ -570,6 +593,22 @@ namespace aspect
                              "equally spaced points between "
                              "a minimum and maximum radius, longitude, and latitude. A "
                              "list contains specific coordinates of the satellites.");
+          prm.declare_entry ("Uniform distribution sampling method", "equiangular",
+                             Patterns::Selection ("equiangular|random equiangular|spiral"),
+                             "Choose the sampling method for the uniform distribution "
+                             "sampling scheme. By default, the sampling is set at equal "
+                             "angles defined by the longitudes, latitudes or radius bounds "
+                             "and their respective number of points. A random equiangular "
+                             "sampling method adds a random component within the angle "
+                             "spacing predefined with the equiangular sampling method. "
+                             "The spiral uniform distribution sampling method allows an "
+                             "equidistant sampling based on the Fibonacci suit.");
+          prm.declare_entry ("Number points spiral sampling method", "200",
+                             Patterns::Integer (0),
+                             "Parameter for the spiral uniforma distribution sampling method: "
+                             "This specifies the desired number of satellites. The default "
+                             "value is 200. Note that sampling becomes more uniformly "
+                             "equidistant with increasing number of satellites");
           prm.declare_entry ("Quadrature degree increase", "0",
                              Patterns::Double (0.0),
                              "Quadrature degree increase over the velocity element "
@@ -663,11 +702,6 @@ namespace aspect
                              "Option to replace density at quadrature points by PREM densities. "
                              "PREM densities are assigned directly at the quadrature points. "
                              "The default is false.");
-          prm.declare_entry ("Random addition to map coordinates", "false",
-                             Patterns::Bool(),
-                             "Option to add a controlled random component within 1 degree to "
-                             "longitude and latitude coordinates. "
-                             "The default is false.");
         }
         prm.leave_subsection();
       }
@@ -701,9 +735,17 @@ namespace aspect
             sampling_scheme = profile;
           else
             AssertThrow (false, ExcMessage ("Not a valid sampling scheme."));
+          if (prm.get ("Uniform distribution sampling method") == "equiangular")
+            sampling_method = equiangular;
+          else if (prm.get ("Uniform distribution sampling method") == "equiangular random")
+            sampling_method = random;
+          else if (prm.get ("Uniform distribution sampling method") == "spiral")
+            sampling_method = spiral;
+          else
+            AssertThrow (false, ExcMessage ("Not a valid uniform sampling sampling method."));
           replace_density_at_quadrature_points_by_PREM = prm.get_bool ("Replace density at quadrature points by PREM");
-          add_random = prm.get_bool ("Random addition to map coordinates");
           quadrature_degree_increase = prm.get_double ("Quadrature degree increase");
+          n_points_spiral     = prm.get_integer("Number points spiral sampling method");
           n_points_radius     = prm.get_integer("Number points radius");
           n_points_longitude  = prm.get_integer("Number points longitude");
           n_points_latitude   = prm.get_integer("Number points latitude");

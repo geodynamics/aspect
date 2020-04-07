@@ -155,6 +155,7 @@ namespace aspect
          * is specified with n_points_radius.
          */
         unsigned int n_points_radius;
+        unsigned int n_points_spiral;
 
         /**
          * Parameter for the map sampling scheme:
@@ -235,6 +236,17 @@ namespace aspect
         } sampling_scheme;
 
         /**
+         * Specify the unform distribution sampling method determining how gravity calculation 
+         * is performed: equiangular, equiangular random or spiral.
+         */
+        enum SamplingMethod
+        {
+          equiangular,
+          random,
+          spiral
+        } sampling_method;
+
+        /**
          * Parameter for the list sampling scheme:
          * List of radius coordinates for the list sampling scheme. Must be in order
          * with the lists of longitude and latitude.
@@ -261,11 +273,6 @@ namespace aspect
          * Replace the density at quadrature points by PREM: for benchmark purposes only.
          */
         bool replace_density_at_quadrature_points_by_PREM;
-
-        /**
-         * Replace the density at quadrature points by PREM: for benchmark purposes only.
-         */
-        bool add_random;
 
         /**
          * Random number generator. For reproducibility of tests it is
