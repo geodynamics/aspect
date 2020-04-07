@@ -33,12 +33,17 @@ namespace aspect
 
     namespace Rheology
     {
+      /**
+       * A class that handles multiplication of viscosity for a given compositional
+       * field. The multiplication factors for each composition (constant viscosity
+       * prefactors) are also declared and parsed in this class.
+       */
       template <int dim>
       class ConstantViscosityPrefactors : public ::aspect::SimulatorAccess<dim>
       {
         public:
           /**
-           * Constructor. Initializes viscosity to NaN.
+           * Constructor.
            */
           ConstantViscosityPrefactors();
 
@@ -65,12 +70,12 @@ namespace aspect
         private:
           /**
            * The constant viscosity prefactors, which are read in
-          * from the input file by the parse_parameters() function.
-          * The total number of prefactors will be equal to one
-          * plus the number of compositional fields. The prefactor
-          * for a given compositional field is multiplied with a
-          * viscosity value provided by the material model, which
-          * is then returned to the material model.
+           * from the input file by the parse_parameters() function.
+           * The total number of prefactors will be equal to one
+           * plus the number of compositional fields. The prefactor
+           * for a given compositional field is multiplied with a
+           * viscosity value provided by the material model, which
+           * is then returned to the material model.
            */
           std::vector<double> constant_viscosity_prefactors;
       };
