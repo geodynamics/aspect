@@ -132,9 +132,8 @@ namespace aspect
 
       // Get quadrature formula and increase the degree of quadrature over the velocity
       // element degree.
-      const unsigned int degree = static_cast<unsigned int>(
-                                    this->get_fe().base_element(this->introspection().base_elements.velocities).degree
-                                    + quadrature_degree_increase);
+      const unsigned int degree = this->get_fe().base_element(this->introspection().base_elements.velocities).degree
+                                  + quadrature_degree_increase;
       const QGauss<dim> quadrature_formula (degree);
       FEValues<dim> fe_values (this->get_mapping(),
                                this->get_fe(),
@@ -488,7 +487,7 @@ namespace aspect
                              "list of points contains specific coordinates of the "
                              "satellites.");
           prm.declare_entry ("Quadrature degree increase", "0",
-                             Patterns::Double (0.0),
+                             Patterns::Integer (0),
                              "Quadrature degree increase over the velocity element "
                              "degree may be required when gravity is calculated near "
                              "the surface or inside the model. An increase in the "
@@ -609,16 +608,16 @@ namespace aspect
             sampling_scheme = list_of_points;
           else
             AssertThrow (false, ExcMessage ("Not a valid sampling scheme."));
-          quadrature_degree_increase = prm.get_double ("Quadrature degree increase");
+          quadrature_degree_increase = prm.get_integer ("Quadrature degree increase");
           n_points_radius     = prm.get_integer("Number points radius");
           n_points_longitude  = prm.get_integer("Number points longitude");
           n_points_latitude   = prm.get_integer("Number points latitude");
           minimum_radius      = prm.get_double ("Minimum radius");
           maximum_radius      = prm.get_double ("Maximum radius");
-          minimum_colongitude = prm.get_double ("Minimum longitude") + 180;
-          maximum_colongitude = prm.get_double ("Maximum longitude") + 180;
-          minimum_colatitude  = prm.get_double ("Minimum latitude") + 90;
-          maximum_colatitude  = prm.get_double ("Maximum latitude") + 90;
+          minimum_colongitude = prm.get_double ("Minimum longitude") + 180.;
+          maximum_colongitude = prm.get_double ("Maximum longitude") + 180.;
+          minimum_colatitude  = prm.get_double ("Minimum latitude") + 90.;
+          maximum_colatitude  = prm.get_double ("Maximum latitude") + 90.;
           reference_density   = prm.get_double ("Reference density");
           precision = prm.get_integer ("Precision in gravity output");
           radius_list    = Utilities::string_to_double(Utilities::split_string_list(prm.get("List of radius")));

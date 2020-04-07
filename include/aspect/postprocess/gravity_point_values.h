@@ -154,7 +154,7 @@ namespace aspect
          * quadrature element adds accuracy to the gravity solution from noise due to the
          * model grid.
          */
-        double quadrature_degree_increase;
+        unsigned int quadrature_degree_increase;
 
         /**
          * Parameter for the uniform distribution sampling scheme:
