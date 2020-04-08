@@ -26,6 +26,7 @@
 #include <aspect/simulator_access.h>
 #include <aspect/material_model/rheology/diffusion_creep.h>
 #include <aspect/material_model/rheology/dislocation_creep.h>
+#include <aspect/material_model/rheology/constant_viscosity_prefactors.h>
 #include <aspect/material_model/rheology/drucker_prager.h>
 #include <aspect/material_model/equation_of_state/multicomponent_incompressible.h>
 #include <aspect/material_model/rheology/elasticity.h>
@@ -356,6 +357,13 @@ namespace aspect
          */
         Rheology::DiffusionCreep<dim> diffusion_creep;
         Rheology::DislocationCreep<dim> dislocation_creep;
+
+        /**
+         * Object for computing the viscosity multiplied by a constant prefactor.
+         * This multiplication step is done just prior to calculating the effective
+         * viscoelastic viscosity or plastic viscosity.
+         */
+        Rheology::ConstantViscosityPrefactors<dim> constant_viscosity_prefactors;
 
         /*
          * Objects for computing plastic stresses, viscosities, and additional outputs

@@ -1,0 +1,6 @@
+New: There is a new module in the MaterialModel::Rheology namespace 
+(ConstantViscosityPrefactors) for multiplying the viscosity of each 
+compositional field by a specific factor. 
+<br>
+(John Naliboff, 2020/04/04)
+
