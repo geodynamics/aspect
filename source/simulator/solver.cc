@@ -33,8 +33,6 @@
 #include <deal.II/lac/trilinos_solver.h>
 #endif
 
-#include <deal.II/lac/pointer_matrix.h>
-
 #include <deal.II/fe/fe_values.h>
 
 namespace aspect
