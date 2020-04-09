@@ -270,6 +270,13 @@ namespace aspect
 
         std::vector<double> thermal_diffusivities;
 
+        /**
+         * Whether to use user-defined thermal conductivites instead of thermal diffusivities.
+         */
+        bool define_conductivities;
+
+        std::vector<double> thermal_conductivities;
+
         EquationOfState::MulticomponentIncompressible<dim> equation_of_state;
 
         /**
