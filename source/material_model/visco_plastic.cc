@@ -124,11 +124,11 @@ namespace aspect
             stress_old[SymmetricTensor<2,dim>::unrolled_to_component_indices(j)] = composition[j];
         }
 
-      // The first time this function is called (first iteration of first time step)
-      // a specified "reference" strain rate is used as the returned value would
-      // otherwise be zero.
-      const bool use_reference_strainrate = (this->get_timestep_number() == 0) &&
-                                            (strain_rate.norm() <= std::numeric_limits<double>::min());
+      // During the first iteration of the first time step (e.g., time step 0) or before the simulator
+      // is intialized a reference strain rate is used.
+      const bool use_reference_strainrate = ( this->simulator_is_past_initialization() == false ||
+                                              ( this->get_timestep_number() == 0 &&
+                                                strain_rate.norm() <= std::numeric_limits<double>::min() ) );
 
       double edot_ii;
       if (use_reference_strainrate)
