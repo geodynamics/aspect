@@ -2206,7 +2206,8 @@ namespace aspect
 
     const bool is_compressible = sim.material_model->is_compressible();
 
-    // GMG diagonals
+    // Assemble and store the diagonal of the GMG level matrices derived from:
+    // 2*eta*(symgrad u, symgrad v) - (if compressible) 2*eta/3*(div u, div v)
     for (unsigned int level=0; level < sim.triangulation.n_global_levels(); ++level)
       {
         mg_matrices_Schur_complement[level].compute_diagonal();
@@ -2276,7 +2277,9 @@ namespace aspect
                       for (unsigned int k=0; k<dofs_per_cell; ++k)
                         {
                           symgrad_phi_u[k] = fe_values[velocities].symmetric_gradient (k, q);
-                          div_phi_u[k] = fe_values[velocities].divergence (k, q);
+
+                          if (is_compressible)
+                            div_phi_u[k] = fe_values[velocities].divergence (k, q);
                         }
 
                       const double JxW = fe_values.JxW(q);
