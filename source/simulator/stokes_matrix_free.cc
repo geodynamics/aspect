@@ -1405,6 +1405,8 @@ namespace aspect
   template <int dim, int velocity_degree>
   void StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::correct_stokes_rhs()
   {
+    const bool is_compressible = sim.material_model->is_compressible();
+
     dealii::LinearAlgebra::distributed::BlockVector<double> rhs_correction(2);
     dealii::LinearAlgebra::distributed::BlockVector<double> u0(2);
 
@@ -1440,13 +1442,17 @@ namespace aspect
             SymmetricTensor<2,dim,VectorizedArray<double>> sym_grad_u =
                                                           velocity.get_symmetric_gradient (q);
             VectorizedArray<double> pres = pressure.get_value(q);
-            VectorizedArray<double> div = -trace(sym_grad_u);
-            pressure.submit_value   (-1.0*sim.pressure_scaling*div, q);
+            VectorizedArray<double> div = trace(sym_grad_u);
+            pressure.submit_value   (sim.pressure_scaling*div, q);
 
             sym_grad_u *= cell_viscosity_x_2;
 
             for (unsigned int d=0; d<dim; ++d)
               sym_grad_u[d][d] -= sim.pressure_scaling*pres;
+
+            if (is_compressible)
+              for (unsigned int d=0; d<dim; ++d)
+                sym_grad_u[d][d] -= cell_viscosity_x_2/3.0*div;
 
             velocity.submit_symmetric_gradient(-1.0*sym_grad_u, q);
           }
@@ -1460,6 +1466,7 @@ namespace aspect
 
     LinearAlgebra::BlockVector stokes_rhs_correction (sim.introspection.index_sets.stokes_partitioning, sim.mpi_communicator);
     internal::ChangeVectorTypes::copy(stokes_rhs_correction,rhs_correction);
+
     sim.system_rhs.block(0) += stokes_rhs_correction.block(0);
     sim.system_rhs.block(1) += stokes_rhs_correction.block(1);
   }
@@ -2197,7 +2204,10 @@ namespace aspect
   {
     TimerOutput::Scope timer (this->sim.computing_timer, "Build Stokes preconditioner");
 
-    // GMG diagonals
+    const bool is_compressible = sim.material_model->is_compressible();
+
+    // Assemble and store the diagonal of the GMG level matrices derived from:
+    // 2*eta*(symgrad u, symgrad v) - (if compressible) 2*eta/3*(div u, div v)
     for (unsigned int level=0; level < sim.triangulation.n_global_levels(); ++level)
       {
         mg_matrices_Schur_complement[level].compute_diagonal();
@@ -2233,6 +2243,7 @@ namespace aspect
             const FEValuesExtractors::Vector velocities (0);
 
             std::vector<SymmetricTensor<2,dim> > symgrad_phi_u (dofs_per_cell);
+            std::vector<double> div_phi_u (dofs_per_cell);
 
             ConstraintMatrix boundary_constraints;
             boundary_constraints.reinit(locally_relevant_dofs);
@@ -2264,13 +2275,24 @@ namespace aspect
                   for (unsigned int q=0; q<n_q_points; ++q)
                     {
                       for (unsigned int k=0; k<dofs_per_cell; ++k)
-                        symgrad_phi_u[k] = fe_values[velocities].symmetric_gradient (k, q);
+                        {
+                          symgrad_phi_u[k] = fe_values[velocities].symmetric_gradient (k, q);
+
+                          if (is_compressible)
+                            div_phi_u[k] = fe_values[velocities].divergence (k, q);
+                        }
 
                       const double JxW = fe_values.JxW(q);
                       for (unsigned int i=0; i<dofs_per_cell; ++i)
                         for (unsigned int j=0; j<dofs_per_cell; ++j)
-                          cell_matrix(i,j) += 2. * viscosity * (symgrad_phi_u[i]*symgrad_phi_u[j])
-                                              * JxW;
+                          {
+                            cell_matrix(i,j) += 2. * viscosity * (symgrad_phi_u[i]*symgrad_phi_u[j])
+                                                * JxW;
+
+                            if (is_compressible)
+                              cell_matrix(i,j) +=  (-2./3.) * viscosity * (div_phi_u[i]*div_phi_u[j])
+                                                   * JxW;
+                          }
                     }
 
                   cell->get_mg_dof_indices (local_dof_indices);
