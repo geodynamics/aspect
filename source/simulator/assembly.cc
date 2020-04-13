@@ -836,14 +836,20 @@ namespace aspect
   template <int dim>
   void
   Simulator<dim>::build_advection_preconditioner(const AdvectionField &advection_field,
-                                                 LinearAlgebra::PreconditionILU &preconditioner)
+                                                 LinearAlgebra::PreconditionILU &preconditioner,
+                                                 const double diagonal_strengthening)
   {
     TimerOutput::Scope timer (computing_timer, (advection_field.is_temperature() ?
                                                 "Build temperature preconditioner" :
                                                 "Build composition preconditioner"));
 
     const unsigned int block_idx = advection_field.block_index(introspection);
-    preconditioner.initialize (system_matrix.block(block_idx, block_idx));
+
+
+    LinearAlgebra::PreconditionILU::AdditionalData data;
+    data.ilu_atol = diagonal_strengthening;
+
+    preconditioner.initialize (system_matrix.block(block_idx, block_idx), data);
   }
 
 
@@ -1257,7 +1263,8 @@ namespace aspect
                                                                      const internal::Assembly::CopyData::StokesSystem<dim> &data); \
   template void Simulator<dim>::assemble_stokes_system (); \
   template void Simulator<dim>::build_advection_preconditioner (const AdvectionField &, \
-                                                                aspect::LinearAlgebra::PreconditionILU &preconditioner); \
+                                                                aspect::LinearAlgebra::PreconditionILU &preconditioner, \
+                                                                const double diagonal_strengthening); \
   template void Simulator<dim>::local_assemble_advection_system ( \
                                                                   const AdvectionField          &advection_field, \
                                                                   const Vector<double>           &viscosity_per_cell, \
