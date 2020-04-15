@@ -51,6 +51,11 @@ namespace aspect
          * Limit maximum yield stress from drucker prager yield criterion.
          */
         double max_yield_stress;
+
+        /**
+         * Viscosity of a damper used to stabilize plasticity
+         */
+        double damper_viscosity;
       };
 
       template <int dim>
@@ -96,7 +101,9 @@ namespace aspect
                              const double angle_internal_friction,
                              const double pressure,
                              const double effective_strain_rate,
-                             const double max_yield_stress) const;
+                             const double max_yield_stress,
+                             const double damper_viscosity,
+                             const double pre_yield_viscosity) const;
 
           /**
            * Compute the derivative of the plastic viscosity with respect to pressure.

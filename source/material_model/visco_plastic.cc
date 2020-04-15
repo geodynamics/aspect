@@ -330,10 +330,19 @@ namespace aspect
 
           // Step 4: plastic yielding
 
+          // Determine if the pressure used in Drucker Prager plasticity will be capped at 0 (default).
+          // This may be necessary in models without gravity and the dynamic stresses are much higher
+          // than the lithostatic prssure.
+
+          double pressure_for_plasticity = in.pressure[i];
+          if (allow_negative_pressures_in_plasticity == false)
+            pressure_for_plasticity = std::max(in.pressure[i],0.0);
+
+
           // Step 4a: calculate Drucker-Prager yield stress
           const double yield_stress = drucker_prager_plasticity.compute_yield_stress(current_cohesion,
                                                                                      current_friction,
-                                                                                     std::max(in.pressure[i], 0.0),
+                                                                                     pressure_for_plasticity,
                                                                                      drucker_prager_parameters.max_yield_stress);
 
           // Step 4b: select if yield viscosity is based on Drucker Prager or stress limiter rheology
@@ -357,9 +366,11 @@ namespace aspect
                   {
                     viscosity_yield = drucker_prager_plasticity.compute_viscosity(current_cohesion,
                                                                                   current_friction,
-                                                                                  std::max(in.pressure[i], 0.0),
+                                                                                  pressure_for_plasticity,
                                                                                   current_edot_ii,
-                                                                                  drucker_prager_parameters.max_yield_stress);
+                                                                                  drucker_prager_parameters.max_yield_stress,
+                                                                                  drucker_prager_parameters.damper_viscosity,
+                                                                                  viscosity_pre_yield);
                     composition_yielding[j] = true;
                   }
                 break;
@@ -806,6 +817,14 @@ namespace aspect
                              Patterns::Selection("drucker|limiter"),
                              "Select what type of yield mechanism to use between Drucker Prager "
                              "and stress limiter options.");
+          prm.declare_entry ("Allow negative pressures in plasticity", "false",
+                             Patterns::Bool (),
+                             "Whether to allow negative pressures to be used in the computation "
+                             "of plastic yield stresses and viscosities. Setting this parameter "
+                             "to true may be advantageous in models without gravity where the "
+                             "dynamic stresses are much higher than the lithostatic pressure. "
+                             "If false, the minimum pressure in the plasticity formulation will "
+                             "be set to zero.");
 
           // Diffusion creep parameters
           Rheology::DiffusionCreep<dim>::declare_parameters(prm);
@@ -942,6 +961,8 @@ namespace aspect
           AssertThrow(use_elasticity == false || yield_mechanism == drucker_prager,
                       ExcMessage("Elastic behavior is only tested with the "
                                  "'drucker prager' plasticity option."));
+
+          allow_negative_pressures_in_plasticity = prm.get_bool ("Allow negative pressures in plasticity");
 
           // Rheological parameters
           // Diffusion creep parameters

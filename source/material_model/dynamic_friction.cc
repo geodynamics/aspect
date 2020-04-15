@@ -62,7 +62,9 @@ namespace aspect
                                                                                        phi,
                                                                                        std::max(pressure,0.0),
                                                                                        std::sqrt(strain_rate_dev_inv2),
-                                                                                       std::numeric_limits<double>::infinity());
+                                                                                       std::numeric_limits<double>::infinity(),
+                                                                                       0.0,
+                                                                                       1.0);
 
           // Cut off the viscosity between a minimum and maximum value to avoid
           // a numerically unfavourable large viscosity range.

@@ -321,6 +321,13 @@ namespace aspect
         } yield_mechanism;
 
         /**
+         * Whether to allow negative pressures to be used in the computation
+         * of plastic yield stresses and viscosities. If false, the minimum
+         * pressure in the plasticity formulation will be set to zero.
+         */
+        bool allow_negative_pressures_in_plasticity;
+
+        /**
          * This function calculates viscosities assuming that all the compositional fields
          * experience the same strain rate (isostrain).
          */
