@@ -122,7 +122,7 @@ namespace aspect
         virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
                               MaterialModel::MaterialModelOutputs<dim> &out) const
         {
-          for (unsigned int i=0; i < in.position.size(); ++i)
+          for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
             {
               out.viscosities[i] = 1.;
               out.densities[i] = 1;

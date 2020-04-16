@@ -35,7 +35,7 @@ namespace aspect
     {
       const double R = 8.32; // J mol-1 K-1
       const double g = 9.8; // m s-2
-      for (unsigned int i=0; i < in.temperature.size(); ++i)
+      for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
         {
           const Point<dim> position = in.position[i];
           const double temperature = in.temperature[i];

@@ -84,7 +84,7 @@ namespace aspect
         MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>
         *force = out.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >();
 
-        for (unsigned int i=0; i<in.position.size(); ++i)
+        for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
           {
             const double porosity = in.composition[i][porosity_idx];
             const double x = in.position[i](0);
@@ -113,7 +113,7 @@ namespace aspect
         aspect::MaterialModel::MeltOutputs<dim> *melt_out = out.template get_additional_output<aspect::MaterialModel::MeltOutputs<dim> >();
 
         if (melt_out != nullptr)
-          for (unsigned int i=0; i<in.position.size(); ++i)
+          for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
             {
               double porosity = in.composition[i][porosity_idx];
               // porosity = 0.1000000000e-1 + 0.2000000000e0 * exp(-0.200e2 * pow(x + 0.2e1 * z, 0.2e1));

@@ -39,7 +39,7 @@ namespace aspect
       virtual void evaluate(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
                             typename MaterialModel::Interface<dim>::MaterialModelOutputs &out) const
       {
-        for (unsigned int i=0; i<in.position.size(); ++i)
+        for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
           {
             const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
             const unsigned int peridotite_idx = this->introspection().compositional_index_for_name("peridotite");
@@ -81,7 +81,7 @@ namespace aspect
         if (melt_out != nullptr)
           {
             const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
-            for (unsigned int i=0; i<in.position.size(); ++i)
+            for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
               {
                 const double porosity = in.composition[i][porosity_idx];
 

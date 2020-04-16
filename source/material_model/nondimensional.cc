@@ -62,7 +62,7 @@ namespace aspect
     evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
              MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      for (unsigned int i=0; i < in.temperature.size(); ++i)
+      for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
         {
           const Point<dim> position = in.position[i];
           const double temperature_deviation = in.temperature[i] - this->get_adiabatic_conditions().temperature(position);

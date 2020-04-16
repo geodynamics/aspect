@@ -40,7 +40,7 @@ namespace aspect
       PrescribedTemperatureOutputs<dim> *prescribed_temperature_out = out.template get_additional_output<PrescribedTemperatureOutputs<dim> >();
 
       if (prescribed_temperature_out != NULL)
-        for (unsigned int i=0; i < in.position.size(); ++i)
+        for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
           prescribed_temperature_out->prescribed_temperature_outputs[i] = in.pressure[i];
     }
 

@@ -446,8 +446,8 @@ namespace aspect
           {
             // We need the velocity gradient for the finite strain (they are not
             // in material model inputs), so we get them from the finite element.
-            std::vector<Point<dim> > quadrature_positions(in.position.size());
-            for (unsigned int i=0; i < in.position.size(); ++i)
+            std::vector<Point<dim> > quadrature_positions(in.n_evaluation_points());
+            for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
               quadrature_positions[i] = this->get_mapping().transform_real_to_unit_cell(in.current_cell, in.position[i]);
 
             FEValues<dim> fe_values (this->get_mapping(),
@@ -465,7 +465,7 @@ namespace aspect
             // If there are too many fields, we simply fill only the first fields with the
             // existing strain tensor components.
 
-            for (unsigned int q=0; q < in.position.size(); ++q)
+            for (unsigned int q=0; q < in.n_evaluation_points(); ++q)
               {
                 if (in.current_cell.state() == IteratorState::valid && weakening_mechanism == finite_strain_tensor
                     && this->get_timestep_number() > 0 && in.strain_rate.size())

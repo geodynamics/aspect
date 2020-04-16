@@ -458,10 +458,10 @@ namespace aspect
       EquationOfStateOutputs<dim> eos_outputs (this->n_compositional_fields()+1);
       EquationOfStateOutputs<dim> eos_outputs_all_phases (this->n_compositional_fields()+1+phase_function.n_phase_transitions());
 
-      std::vector<double> average_elastic_shear_moduli (in.temperature.size());
+      std::vector<double> average_elastic_shear_moduli (in.n_evaluation_points());
 
       // Loop through all requested points
-      for (unsigned int i=0; i < in.temperature.size(); ++i)
+      for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
         {
           // First compute the equation of state variables and thermodynamic properties
           equation_of_state.evaluate(in, i, eos_outputs_all_phases);

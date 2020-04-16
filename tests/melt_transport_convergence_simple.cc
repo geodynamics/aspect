@@ -45,7 +45,7 @@ namespace aspect
                             typename MaterialModel::Interface<dim>::MaterialModelOutputs &out) const
       {
         const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
-        for (unsigned int i=0; i<in.position.size(); ++i)
+        for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
           {
             const double porosity = in.composition[i][porosity_idx];
             const double x = in.position[i](0);
@@ -70,7 +70,7 @@ namespace aspect
           {
             const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
 
-            for (unsigned int i=0; i<in.position.size(); ++i)
+            for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
               {
                 double porosity = in.composition[i][porosity_idx];
                 melt_out->compaction_viscosities[i] = std::exp(c * porosity);

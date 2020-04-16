@@ -181,7 +181,7 @@ namespace aspect
     melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
                     std::vector<double> &melt_fractions) const
     {
-      for (unsigned int q=0; q<in.temperature.size(); ++q)
+      for (unsigned int q=0; q<in.n_evaluation_points(); ++q)
         melt_fractions[q] = this->melt_fraction(in.temperature[q],
                                                 this->get_adiabatic_conditions().pressure(in.position[q]));
     }
@@ -212,7 +212,7 @@ namespace aspect
     {
       ReactionRateOutputs<dim> *reaction_rate_out = out.template get_additional_output<ReactionRateOutputs<dim> >();
 
-      for (unsigned int i=0; i<in.position.size(); ++i)
+      for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
         {
           // calculate density first, we need it for the reaction term
           // first, calculate temperature dependence of density
@@ -376,7 +376,7 @@ namespace aspect
         {
           const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
 
-          for (unsigned int i=0; i<in.position.size(); ++i)
+          for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
             {
               double porosity = std::max(in.composition[i][porosity_idx],0.0);
 

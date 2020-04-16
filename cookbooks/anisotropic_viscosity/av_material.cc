@@ -583,11 +583,11 @@ namespace aspect
 
       // Get the grad_u tensor, at the center of this cell, if possible.
 
-      std::vector<Tensor<2,dim> > velocity_gradients (in.position.size());
+      std::vector<Tensor<2,dim> > velocity_gradients (in.n_evaluation_points());
       if (in.current_cell.state() == IteratorState::valid)
         {
-          std::vector<Point<dim> > quadrature_positions(in.position.size());
-          for (unsigned int i=0; i < in.position.size(); ++i)
+          std::vector<Point<dim> > quadrature_positions(in.n_evaluation_points());
+          for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
             quadrature_positions[i] = this->get_mapping().transform_real_to_unit_cell(in.current_cell, in.position[i]);
 
           // FEValues requires a quadrature and we provide the default quadrature
@@ -601,7 +601,7 @@ namespace aspect
           .get_function_gradients(this->get_solution(), velocity_gradients);
         }
 
-      for (unsigned int q=0; q<in.position.size(); ++q)
+      for (unsigned int q=0; q<in.n_evaluation_points(); ++q)
         {
           out.densities[q] = (in.composition[q][c_idx_gamma] > 0.8 ? 1 : 0);
           out.viscosities[q] = eta_N;

@@ -87,7 +87,7 @@ namespace aspect
     {
       double depletion = 0.0;
 
-      for (unsigned int q=0; q<in.temperature.size(); ++q)
+      for (unsigned int q=0; q<in.n_evaluation_points(); ++q)
         {
           if (this->include_melt_transport())
             {
@@ -107,7 +107,7 @@ namespace aspect
     MeltGlobal<dim>::
     evaluate(const typename Interface<dim>::MaterialModelInputs &in, typename Interface<dim>::MaterialModelOutputs &out) const
     {
-      std::vector<double> old_porosity(in.position.size());
+      std::vector<double> old_porosity(in.n_evaluation_points());
 
       ReactionRateOutputs<dim> *reaction_rate_out = out.template get_additional_output<ReactionRateOutputs<dim> >();
 
@@ -128,13 +128,13 @@ namespace aspect
                               this->introspection().component_indices.compositional_fields[porosity_idx]);
         }
       else if (this->get_parameters().use_operator_splitting)
-        for (unsigned int i=0; i<in.position.size(); ++i)
+        for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
           {
             const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
             old_porosity[i] = in.composition[i][porosity_idx];
           }
 
-      for (unsigned int i=0; i<in.position.size(); ++i)
+      for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
         {
           // calculate density first, we need it for the reaction term
           // temperature dependence of density is 1 - alpha * (T - T(adiabatic))
@@ -255,7 +255,7 @@ namespace aspect
         {
           const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
 
-          for (unsigned int i=0; i<in.position.size(); ++i)
+          for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
             {
               double porosity = std::max(in.composition[i][porosity_idx],0.0);
 

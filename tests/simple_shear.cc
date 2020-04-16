@@ -57,7 +57,7 @@ namespace aspect
           // Assign the strain components to the compositional fields reaction terms.
           // If there are too many fields, we simply fill only the first fields with the
           // existing strain rate tensor components.
-          for (unsigned int q=0; q < in.position.size(); ++q)
+          for (unsigned int q=0; q < in.n_evaluation_points(); ++q)
             {
               // Convert the compositional fields into the tensor quantity they represent.
               Tensor<2,dim> strain;

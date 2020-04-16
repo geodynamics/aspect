@@ -223,7 +223,7 @@ namespace aspect
           {
             const double dte = elastic_timestep();
 
-            for (unsigned int i=0; i < in.position.size(); ++i)
+            for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
               {
                 // Get old stresses from compositional fields
                 SymmetricTensor<2,dim> stress_old;
@@ -253,8 +253,8 @@ namespace aspect
         if (in.current_cell.state() == IteratorState::valid && this->get_timestep_number() > 0 && in.strain_rate.size() > 0)
           {
             // Get old (previous time step) velocity gradients
-            std::vector<Point<dim> > quadrature_positions(in.position.size());
-            for (unsigned int i=0; i < in.position.size(); ++i)
+            std::vector<Point<dim> > quadrature_positions(in.n_evaluation_points());
+            for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
               quadrature_positions[i] = this->get_mapping().transform_real_to_unit_cell(in.current_cell, in.position[i]);
 
             // FEValues requires a quadrature and we provide the default quadrature
@@ -272,7 +272,7 @@ namespace aspect
             const double dte = elastic_timestep();
             const double dt = this->get_timestep();
 
-            for (unsigned int i=0; i < in.position.size(); ++i)
+            for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
               {
                 // Get old stresses from compositional fields
                 SymmetricTensor<2,dim> stress_old;

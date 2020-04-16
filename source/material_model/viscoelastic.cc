@@ -43,10 +43,10 @@ namespace aspect
       for (unsigned int i=0; i < SymmetricTensor<2,dim>::n_independent_components; ++i)
         composition_mask.set(i,false);
 
-      std::vector<double> average_elastic_shear_moduli (in.temperature.size());
+      std::vector<double> average_elastic_shear_moduli (in.n_evaluation_points());
       std::vector<double> elastic_shear_moduli(elastic_rheology.get_elastic_shear_moduli());
 
-      for (unsigned int i=0; i < in.temperature.size(); ++i)
+      for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
         {
           const std::vector<double> composition = in.composition[i];
           const std::vector<double> volume_fractions = MaterialUtilities::compute_volume_fractions(composition, composition_mask);

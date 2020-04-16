@@ -470,7 +470,7 @@ namespace aspect
     Steinberger<dim>::evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
                                MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      for (unsigned int i=0; i < in.temperature.size(); ++i)
+      for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
         {
           // We are only asked to give viscosities if strain_rate.size() > 0.
           if (in.strain_rate.size() > 0)
@@ -505,19 +505,19 @@ namespace aspect
            */
           double average_temperature(0.0);
           double average_density(0.0);
-          for (unsigned int i = 0; i < in.position.size(); ++i)
+          for (unsigned int i = 0; i < in.n_evaluation_points(); ++i)
             {
               average_temperature += in.temperature[i];
               average_density += out.densities[i];
             }
-          average_temperature /= in.position.size();
-          average_density /= in.position.size();
+          average_temperature /= in.n_evaluation_points();
+          average_density /= in.n_evaluation_points();
 
           std::array<std::pair<double, unsigned int>,2> dH;
           if (in.current_cell.state() == IteratorState::valid)
             dH = enthalpy_derivative(in);
 
-          for (unsigned int i = 0; i < in.position.size(); ++i)
+          for (unsigned int i = 0; i < in.n_evaluation_points(); ++i)
             {
               // Use the adiabatic pressure instead of the real one,
               // to stabilize against pressure oscillations in phase transitions

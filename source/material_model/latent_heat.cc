@@ -34,7 +34,7 @@ namespace aspect
     evaluate(const MaterialModelInputs<dim> &in,
              MaterialModelOutputs<dim> &out) const
     {
-      for (unsigned int i=0; i < in.position.size(); ++i)
+      for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
         {
           const double temperature = in.temperature[i];
           const double pressure = in.pressure[i];

@@ -670,7 +670,7 @@ namespace aspect
       center[1] = 0.5;
       if (dim == 3)
         center[2] = 0.5;
-      for (unsigned int i=0; i < in.position.size(); ++i)
+      for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
         {
           const double pressure = in.pressure[i];
           out.densities[i] = 1.0 + pressure;

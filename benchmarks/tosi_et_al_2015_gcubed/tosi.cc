@@ -62,7 +62,7 @@ namespace aspect
            * $\eta_{plast}(\dot\epsilon) = \text{eta\_asterisk} + \frac{\text{sigma\_yield}}{\sqrt(\dot\epsilon:\dot\epsilon)}$
            */
 
-          for (unsigned int i=0; i < in.position.size(); ++i)
+          for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
             {
               if (in.strain_rate.size())
                 {

@@ -749,7 +749,7 @@ namespace aspect
     GrainSize<dim>::
     evaluate(const typename Interface<dim>::MaterialModelInputs &in, typename Interface<dim>::MaterialModelOutputs &out) const
     {
-      for (unsigned int i=0; i<in.position.size(); ++i)
+      for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
         {
           // Use the adiabatic pressure instead of the real one, because of oscillations
           const double pressure = (this->get_adiabatic_conditions().is_initialized())
@@ -806,7 +806,7 @@ namespace aspect
                   crossed_transition = phase;
               }
           else
-            for (unsigned int j=0; j<in.position.size(); ++j)
+            for (unsigned int j=0; j<in.n_evaluation_points(); ++j)
               for (unsigned int k=0; k<transition_depths.size(); ++k)
                 if ((phase_function(in.position[i], in.temperature[i], pressure, k)
                      != phase_function(in.position[j], in.temperature[j], in.pressure[j], k))
@@ -877,20 +877,20 @@ namespace aspect
        */
       double average_temperature(0.0);
       double average_density(0.0);
-      for (unsigned int i = 0; i < in.position.size(); ++i)
+      for (unsigned int i = 0; i < in.n_evaluation_points(); ++i)
         {
           average_temperature += in.temperature[i];
           average_density += out.densities[i];
         }
-      average_temperature /= in.position.size();
-      average_density /= in.position.size();
+      average_temperature /= in.n_evaluation_points();
+      average_density /= in.n_evaluation_points();
 
       std::array<std::pair<double, unsigned int>,2> dH;
 
       if (use_table_properties && use_enthalpy)
         dH = enthalpy_derivative(in);
 
-      for (unsigned int i = 0; i < in.position.size(); ++i)
+      for (unsigned int i = 0; i < in.n_evaluation_points(); ++i)
         {
           //Use the adiabatic pressure instead of the real one, because of oscillations
           const double pressure = (this->get_adiabatic_conditions().is_initialized())

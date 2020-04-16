@@ -147,7 +147,7 @@ namespace aspect
 
       const unsigned int density_field_index = this->introspection().compositional_index_for_name("density_field");
 
-      for (unsigned int i=0; i < in.temperature.size(); ++i)
+      for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
         {
           double pressure_for_density = in.pressure[i];
 
@@ -182,7 +182,7 @@ namespace aspect
       // only happens inside Simulator<dim>::interpolate_material_output_into_compositional_field,
       // this just sets the correct term the field will be set to.
       if (PrescribedFieldOutputs<dim> *prescribed_field_out = out.template get_additional_output<PrescribedFieldOutputs<dim> >())
-        for (unsigned int i=0; i < in.position.size(); ++i)
+        for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
           prescribed_field_out->prescribed_field_outputs[i][density_field_index] = out.densities[i];
     }
 

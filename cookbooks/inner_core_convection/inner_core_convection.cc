@@ -199,7 +199,7 @@ namespace aspect
 
       // We want the right-hand side of the momentum equation to be (- Ra T gravity) and
       // density * cp to be 1
-      for (unsigned int q=0; q < in.position.size(); ++q)
+      for (unsigned int q=0; q < in.n_evaluation_points(); ++q)
         {
           out.densities[q] = - out.thermal_expansion_coefficients[q] * in.temperature[q]
                              + phase_function (in.position[q], in.temperature[q]) * transition_density_change;
