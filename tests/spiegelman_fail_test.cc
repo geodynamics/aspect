@@ -282,7 +282,7 @@ namespace aspect
             thermal_conductivities += volume_fractions[c] * thermal_diffusivity[c] * heat_capacity[c] * densities[c];
 
           // calculate effective viscosity
-          if (in.strain_rate.size())
+          if (in.requests_property(MaterialProperties::viscosity))
             {
               // This function calculates viscosities assuming that all the compositional fields
               // experience the same strain rate (isostrain). Since there is only one process in

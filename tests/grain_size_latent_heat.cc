@@ -172,7 +172,7 @@ namespace aspect
                          * ((in.position[i] - in.position[j]) * this->get_gravity_model().gravity_vector(in.position[i])) > 0))
                       crossed_transition = k;
 
-              if (in.strain_rate.size() > 0)
+              if (in.requests_property(MaterialProperties::viscosity))
                 out.viscosities[i] = std::min(std::max(this->min_eta,this->viscosity(in.temperature[i],
                                                                                      in.pressure[i],
                                                                                      composition,
@@ -206,7 +206,7 @@ namespace aspect
               out.compressibilities[i] = this->compressibility(in.temperature[i], in.pressure[i], composition, in.position[i]);
 
               // TODO: make this more general for not just olivine grains
-              if (in.strain_rate.size() > 0)
+              if (in.requests_property(MaterialProperties::reaction_terms))
                 for (unsigned int c=0; c<composition.size(); ++c)
                   {
                     if (this->introspection().name_for_compositional_index(c) == "olivine_grain_size")

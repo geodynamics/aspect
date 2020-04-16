@@ -412,7 +412,7 @@ namespace aspect
         // when plastically yielding.
         // If viscous strain is also tracked, overwrite the second reaction term as well.
         // Calculate changes in strain and update the reaction terms
-        if  (this->simulator_is_past_initialization() && this->get_timestep_number() > 0 && in.strain_rate.size())
+        if  (this->simulator_is_past_initialization() && this->get_timestep_number() > 0 && in.requests_property(MaterialProperties::reaction_terms))
           {
             const double edot_ii = std::max(sqrt(std::fabs(second_invariant(deviator(in.strain_rate[i])))),min_strain_rate);
             const double e_ii = edot_ii*this->get_timestep();
@@ -442,7 +442,7 @@ namespace aspect
                                            MaterialModel::MaterialModelOutputs<dim> &out) const
       {
 
-        if (in.current_cell.state() == IteratorState::valid && this->get_timestep_number() > 0 && in.strain_rate.size())
+        if (in.current_cell.state() == IteratorState::valid && this->get_timestep_number() > 0 && in.requests_property(MaterialProperties::reaction_terms))
           {
             // We need the velocity gradient for the finite strain (they are not
             // in material model inputs), so we get them from the finite element.
@@ -468,7 +468,7 @@ namespace aspect
             for (unsigned int q=0; q < in.n_evaluation_points(); ++q)
               {
                 if (in.current_cell.state() == IteratorState::valid && weakening_mechanism == finite_strain_tensor
-                    && this->get_timestep_number() > 0 && in.strain_rate.size())
+                    && this->get_timestep_number() > 0 && in.requests_property(MaterialProperties::reaction_terms))
 
                   {
                     // Convert the compositional fields into the tensor quantity they represent.

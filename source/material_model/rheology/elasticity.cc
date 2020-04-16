@@ -219,7 +219,7 @@ namespace aspect
         if (force_out == nullptr)
           return;
 
-        if (in.current_cell.state() == IteratorState::valid && this->get_timestep_number() > 0 && in.strain_rate.size() > 0)
+        if (in.current_cell.state() == IteratorState::valid && this->get_timestep_number() > 0 && in.requests_property(MaterialProperties::reaction_terms))
           {
             const double dte = elastic_timestep();
 
@@ -250,7 +250,7 @@ namespace aspect
                                               const std::vector<double> &average_elastic_shear_moduli,
                                               MaterialModel::MaterialModelOutputs<dim> &out) const
       {
-        if (in.current_cell.state() == IteratorState::valid && this->get_timestep_number() > 0 && in.strain_rate.size() > 0)
+        if (in.current_cell.state() == IteratorState::valid && this->get_timestep_number() > 0 && in.requests_property(MaterialProperties::reaction_terms))
           {
             // Get old (previous time step) velocity gradients
             std::vector<Point<dim> > quadrature_positions(in.n_evaluation_points());

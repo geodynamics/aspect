@@ -124,7 +124,7 @@ namespace aspect
             {
               double porosity = std::max(in.composition[i][porosity_idx],1e-4);
               out.viscosities[i] = eta_0 * std::exp(alpha*(porosity - background_porosity));
-              if (in.strain_rate.size())
+              if (in.requests_property(MaterialProperties::viscosity))
                 {
                   const SymmetricTensor<2,dim> shear_strain_rate = in.strain_rate[i]
                                                                    - 1./dim * trace(in.strain_rate[i]) * unit_symmetric_tensor<dim>();

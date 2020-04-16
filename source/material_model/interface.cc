@@ -271,7 +271,8 @@ namespace aspect
       composition(n_points, std::vector<double>(n_comp, numbers::signaling_nan<double>())),
       strain_rate(n_points, numbers::signaling_nan<SymmetricTensor<2,dim> >()),
       cell (nullptr),
-      current_cell()
+      current_cell(),
+      requested_properties(MaterialProperties::all_properties)
     {}
 
     template <int dim>
@@ -287,7 +288,8 @@ namespace aspect
       composition(input_data.solution_values.size(), std::vector<double>(introspection.n_compositional_fields, numbers::signaling_nan<double>())),
       strain_rate(input_data.solution_values.size(), numbers::signaling_nan<SymmetricTensor<2,dim> >()),
       cell(&current_cell),
-      current_cell(input_data.template get_cell<DoFHandler<dim> >())
+      current_cell(input_data.template get_cell<DoFHandler<dim> >()),
+      requested_properties(MaterialProperties::all_properties)
     {
       for (unsigned int q=0; q<input_data.solution_values.size(); ++q)
         {
@@ -327,7 +329,8 @@ namespace aspect
       composition(fe_values.n_quadrature_points, std::vector<double>(introspection.n_compositional_fields, numbers::signaling_nan<double>())),
       strain_rate(fe_values.n_quadrature_points, numbers::signaling_nan<SymmetricTensor<2,dim> >()),
       cell(cell_x.state() == IteratorState::valid ? &current_cell : nullptr),
-      current_cell (cell_x)
+      current_cell (cell_x),
+      requested_properties(MaterialProperties::all_properties)
     {
       // Call the function reinit to populate the new arrays.
       this->reinit(fe_values, current_cell, introspection, solution_vector, use_strain_rate);
@@ -346,7 +349,8 @@ namespace aspect
       composition(source.composition),
       strain_rate(source.strain_rate),
       cell(source.cell),
-      current_cell(source.current_cell)
+      current_cell(source.current_cell),
+      requested_properties(source.requested_properties)
     {
       Assert (source.additional_inputs.size() == 0,
               ExcMessage ("You can not copy MaterialModelInputs objects that have "
@@ -403,6 +407,23 @@ namespace aspect
     MaterialModelInputs<dim>::n_evaluation_points() const
     {
       return position.size();
+    }
+
+
+
+    template <int dim>
+    bool
+    MaterialModelInputs<dim>::requests_property(const MaterialProperties::Property &property) const
+    {
+      //TODO: Remove this once all callers set requested_properties correctly
+      if (property & MaterialProperties::viscosity != MaterialProperties::none)
+        return (strain_rate.size() != 0) && (requested_properties & property != MaterialProperties::none);
+
+      //TODO: Remove this once all callers set requested_properties correctly
+      if (property & MaterialProperties::reaction_terms != MaterialProperties::none)
+        return (strain_rate.size() != 0) && (requested_properties & property != MaterialProperties::none);
+
+      return requested_properties & property != MaterialProperties::none;
     }
 
 

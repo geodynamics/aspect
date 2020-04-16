@@ -86,7 +86,7 @@ namespace aspect
         {
           const std::vector<double> volume_fractions = MaterialUtilities::compute_volume_fractions(in.composition[i]);
 
-          if (in.strain_rate.size() > 0)
+          if (in.requests_property(MaterialProperties::viscosity))
             {
               const std::vector<double> viscosities = compute_viscosities(in.pressure[i], in.strain_rate[i]);
               out.viscosities[i] = MaterialUtilities::average_value (volume_fractions, viscosities, viscosity_averaging);

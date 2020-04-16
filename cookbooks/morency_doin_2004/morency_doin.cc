@@ -43,7 +43,7 @@ namespace aspect
           const std::vector<double> volume_fractions = MaterialUtilities::compute_volume_fractions(composition);
 
           SymmetricTensor<2,dim> strain_rate;
-          if (in.strain_rate.size())
+          if (in.requests_property(MaterialProperties::viscosity))
             strain_rate = in.strain_rate[i];
 
           const double depth = this->get_geometry_model().depth(position); // units: m

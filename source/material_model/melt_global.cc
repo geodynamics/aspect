@@ -172,7 +172,7 @@ namespace aspect
               // calculate viscosity based on local melt
               out.viscosities[i] *= exp(- alpha_phi * porosity);
 
-              if (include_melting_and_freezing && in.strain_rate.size())
+              if (include_melting_and_freezing && in.requests_property(MaterialProperties::reaction_terms))
                 {
                   const unsigned int peridotite_idx = this->introspection().compositional_index_for_name("peridotite");
 

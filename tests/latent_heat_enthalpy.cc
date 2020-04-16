@@ -143,7 +143,7 @@ namespace aspect
 
           for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
             {
-              if (in.strain_rate.size() > 0)
+              if (in.requests_property(MaterialProperties::viscosity))
                 out.viscosities[i] = eta;
 
               out.densities[i] = material_lookup->density(in.temperature[i],in.pressure[i]);
