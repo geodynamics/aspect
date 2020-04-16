@@ -179,21 +179,23 @@ namespace aspect
        *
        * Because the values of the enum are chosen so that they represent
        * single bits in an integer, the result here is a number that can be
-       * represented in base-2 as 101 (the number 100=4 for the strain rate and
-       * 001=1 for the temperature).
+       * represented in base-2 as 110 (the number 100=4 for the density and
+       * 010=2 for the viscosity).
        */
       enum Property
       {
-        none                 = 0,
-        viscosity            = 1,
-        density              = 2,
-        thermal_expansion_coefficient = 4,
-        specific_heat        = 8,
-        thermal_conductivity = 16,
-        compressibility      = 32,
-        entropy_derivative_pressure = 64,
-        entropy_derivative_temperature = 128,
-        reaction_terms       = 256,
+        uninitialized        = 0,
+
+        none                 = 1,
+        viscosity            = 2,
+        density              = 4,
+        thermal_expansion_coefficient = 8,
+        specific_heat        = 16,
+        thermal_conductivity = 32,
+        compressibility      = 64,
+        entropy_derivative_pressure = 128,
+        entropy_derivative_temperature = 256,
+        reaction_terms       = 512,
 
         equation_of_state_properties = density |
                                        thermal_expansion_coefficient |

@@ -848,7 +848,7 @@ namespace aspect
             disl_viscosities_out->boundary_area_change_work_fractions[i] =
               boundary_area_change_work_fraction[get_phase_index(in.position[i],in.temperature[i],pressure)];
 
-          if (in.requests_property(MaterialProperties::reaction_terms) > 0)
+          if (in.requests_property(MaterialProperties::reaction_terms))
             for (unsigned int c=0; c<composition.size(); ++c)
               {
                 if (this->introspection().name_for_compositional_index(c) == "grain_size")

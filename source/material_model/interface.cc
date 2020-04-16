@@ -416,14 +416,16 @@ namespace aspect
     MaterialModelInputs<dim>::requests_property(const MaterialProperties::Property &property) const
     {
       //TODO: Remove this once all callers set requested_properties correctly
-      if (property & MaterialProperties::viscosity != MaterialProperties::none)
-        return (strain_rate.size() != 0) && (requested_properties & property != MaterialProperties::none);
+      if ((property & MaterialProperties::Property::viscosity) != 0)
+        return (strain_rate.size() != 0);
 
       //TODO: Remove this once all callers set requested_properties correctly
-      if (property & MaterialProperties::reaction_terms != MaterialProperties::none)
-        return (strain_rate.size() != 0) && (requested_properties & property != MaterialProperties::none);
+      if ((property & MaterialProperties::Property::reaction_terms) != 0)
+        return (strain_rate.size() != 0);
 
-      return requested_properties & property != MaterialProperties::none;
+      // Note that this means requested_properties can have other properties than
+      // property, but at least property.
+      return (requested_properties & property) == property;
     }
 
 
