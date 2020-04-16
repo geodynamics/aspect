@@ -7,5 +7,6 @@ while (<>)
 {
   s/in.position.size/in.n_evaluation_points/g;
   s/in.temperature.size/in.n_evaluation_points/g;
+  s/out.viscosities.size/out.n_evaluation_points/g;
   print;
 }

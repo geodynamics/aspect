@@ -237,7 +237,7 @@ namespace aspect
           && seismic_vp_index != numbers::invalid_unsigned_int
           && seismic_vs_index != numbers::invalid_unsigned_int)
         {
-          const unsigned int n_points = out.viscosities.size();
+          const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
             std_cxx14::make_unique<MaterialModel::SeismicAdditionalOutputs<dim>> (n_points));
         }

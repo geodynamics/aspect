@@ -1447,7 +1447,7 @@ namespace aspect
       // reduce grain size.
       if (out.template get_additional_output<DislocationViscosityOutputs<dim> >() == nullptr)
         {
-          const unsigned int n_points = out.viscosities.size();
+          const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
             std_cxx14::make_unique<MaterialModel::DislocationViscosityOutputs<dim>> (n_points));
         }
@@ -1455,7 +1455,7 @@ namespace aspect
       // These properties are only output properties.
       if (out.template get_additional_output<SeismicAdditionalOutputs<dim> >() == nullptr)
         {
-          const unsigned int n_points = out.viscosities.size();
+          const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
             std_cxx14::make_unique<MaterialModel::SeismicAdditionalOutputs<dim>> (n_points));
         }

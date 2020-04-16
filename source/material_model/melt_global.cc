@@ -522,7 +522,7 @@ namespace aspect
       if (this->get_parameters().use_operator_splitting
           && out.template get_additional_output<ReactionRateOutputs<dim> >() == nullptr)
         {
-          const unsigned int n_points = out.viscosities.size();
+          const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
             std_cxx14::make_unique<MaterialModel::ReactionRateOutputs<dim>> (n_points, this->n_compositional_fields()));
         }

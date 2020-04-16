@@ -799,7 +799,7 @@ namespace aspect
     {
       if (out.template get_additional_output<AnisotropicViscosity<dim> >() == nullptr)
         {
-          const unsigned int n_points = out.viscosities.size();
+          const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
             std_cxx14::make_unique<MaterialModel::AnisotropicViscosity<dim>> (n_points));
         }

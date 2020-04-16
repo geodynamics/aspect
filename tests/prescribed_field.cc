@@ -51,7 +51,7 @@ namespace aspect
     {
       if (out.template get_additional_output<PrescribedFieldOutputs<dim> >() == NULL)
         {
-          const unsigned int n_points = out.viscosities.size();
+          const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
             std_cxx14::make_unique<MaterialModel::PrescribedFieldOutputs<dim>> (n_points, this->n_compositional_fields()));
         }
