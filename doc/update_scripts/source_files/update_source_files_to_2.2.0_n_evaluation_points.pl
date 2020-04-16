@@ -1,7 +1,7 @@
 #!/bin/perl
 #
-# This script removes uses the new n_evaluation_points functions
-# of the material model inputs object
+# This script uses the new n_evaluation_points functions
+# of the material model inputs and outputs objects
 
 while (<>)
 {
