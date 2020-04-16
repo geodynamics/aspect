@@ -41,7 +41,7 @@ namespace aspect
 
       EquationOfStateOutputs<dim> eos_outputs (1);
 
-      for (unsigned int i=0; i < in.temperature.size(); ++i)
+      for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
         {
           // To avoid negative yield strengths and eventually viscosities,
           // we make sure the pressure is not negative

@@ -42,7 +42,7 @@ namespace aspect
       const unsigned int n_compositions_for_eos = std::min(this->n_compositional_fields()+1, 3u);
       EquationOfStateOutputs<dim> eos_outputs (n_compositions_for_eos);
 
-      for (unsigned int i=0; i < in.position.size(); ++i)
+      for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
         {
           const double temperature = in.temperature[i];
           const std::vector<double> &composition = in.composition[i];
@@ -233,7 +233,7 @@ namespace aspect
       if (this->get_parameters().use_operator_splitting
           && out.template get_additional_output<ReactionRateOutputs<dim> >() == nullptr)
         {
-          const unsigned int n_points = out.viscosities.size();
+          const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
             std_cxx14::make_unique<MaterialModel::ReactionRateOutputs<dim>> (n_points,
                                                                              this->n_compositional_fields()));

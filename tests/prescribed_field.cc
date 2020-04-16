@@ -40,7 +40,7 @@ namespace aspect
       PrescribedFieldOutputs<dim> *prescribed_field_out = out.template get_additional_output<PrescribedFieldOutputs<dim> >();
 
       if (prescribed_field_out != NULL)
-        for (unsigned int i=0; i < in.position.size(); ++i)
+        for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
           prescribed_field_out->prescribed_field_outputs[i][1] = out.densities[i];
     }
 
@@ -51,7 +51,7 @@ namespace aspect
     {
       if (out.template get_additional_output<PrescribedFieldOutputs<dim> >() == NULL)
         {
-          const unsigned int n_points = out.viscosities.size();
+          const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
             std_cxx14::make_unique<MaterialModel::PrescribedFieldOutputs<dim>> (n_points, this->n_compositional_fields()));
         }

@@ -51,7 +51,7 @@ namespace aspect
     {
       base_model->evaluate(in,out);
 
-      for (unsigned int i=0; i < in.position.size(); ++i)
+      for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
         {
           const double depth = this->SimulatorAccess<dim>::get_geometry_model().depth(in.position[i]);
           const double lab_depth = lab_depth_lookup.get_lab_depth(in.position[i]);

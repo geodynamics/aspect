@@ -141,7 +141,7 @@ namespace aspect
                 }
             }
 
-          for (unsigned int i=0; i<in.position.size(); ++i)
+          for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
             {
               if (in.strain_rate.size() > 0)
                 out.viscosities[i] = eta;

@@ -265,6 +265,11 @@ namespace aspect
                   const LinearAlgebra::BlockVector &solution_vector,
                   const bool use_strain_rates = true);
 
+      /**
+       * Function that returns the number of points at which
+       * the material model is to be evaluated.
+       */
+      unsigned int n_evaluation_points() const;
 
       /**
        * Vector with global positions where the material has to be evaluated
@@ -429,6 +434,11 @@ namespace aspect
        */
       MaterialModelOutputs &operator= (MaterialModelOutputs &&) = default;
 
+      /**
+      * Function that returns the number of points at which
+      * the material model is to be evaluated.
+      */
+      unsigned int n_evaluation_points() const;
 
       /**
        * Viscosity $\eta$ values at the given positions.

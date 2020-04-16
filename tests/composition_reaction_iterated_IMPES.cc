@@ -22,7 +22,7 @@ namespace aspect
                               MaterialModelOutputs<dim> &out) const
         {
           this->CompositionReaction<dim>::evaluate(in, out);
-          for (unsigned int i=0; i < in.position.size(); ++i)
+          for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
             {
               const double depth = this->get_geometry_model().depth(in.position[i]);
               for (unsigned int c=0; c<this->n_compositional_fields(); ++c)

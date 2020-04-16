@@ -458,10 +458,10 @@ namespace aspect
       EquationOfStateOutputs<dim> eos_outputs (this->n_compositional_fields()+1);
       EquationOfStateOutputs<dim> eos_outputs_all_phases (this->n_compositional_fields()+1+phase_function.n_phase_transitions());
 
-      std::vector<double> average_elastic_shear_moduli (in.temperature.size());
+      std::vector<double> average_elastic_shear_moduli (in.n_evaluation_points());
 
       // Loop through all requested points
-      for (unsigned int i=0; i < in.temperature.size(); ++i)
+      for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
         {
           // First compute the equation of state variables and thermodynamic properties
           equation_of_state.evaluate(in, i, eos_outputs_all_phases);
@@ -869,7 +869,7 @@ namespace aspect
     {
       if (out.template get_additional_output<PlasticAdditionalOutputs<dim> >() == nullptr)
         {
-          const unsigned int n_points = out.viscosities.size();
+          const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
             std_cxx14::make_unique<MaterialModel::PlasticAdditionalOutputs<dim>> (n_points));
         }

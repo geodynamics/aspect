@@ -38,7 +38,7 @@ namespace aspect
       const unsigned int n_compositions_for_eos = std::min(this->n_compositional_fields()+1, 2u);
       EquationOfStateOutputs<dim> eos_outputs (n_compositions_for_eos);
 
-      for (unsigned int i=0; i < in.position.size(); ++i)
+      for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
         {
           const double delta_temp = in.temperature[i]-reference_T;
           const double temperature_dependence

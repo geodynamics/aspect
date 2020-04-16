@@ -338,7 +338,7 @@ namespace aspect
        * and the normalized weighted distance averaging schemes need the distance between
        * the points and can not handle a distance of zero.
        */
-      if (out.densities.size() > 1)
+      if (out.n_evaluation_points() > 1)
         {
           /* Average the base model values based on the chosen average */
           average (averaging_operation,in.position,out.viscosities);

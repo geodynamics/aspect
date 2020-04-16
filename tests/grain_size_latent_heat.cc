@@ -127,7 +127,7 @@ namespace aspect
                 }
             }
 
-          for (unsigned int i=0; i<in.position.size(); ++i)
+          for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
             {
               // convert the grain size from log to normal
               std::vector<double> composition (in.composition[i]);
@@ -163,7 +163,7 @@ namespace aspect
                       crossed_transition = phase;
                   }
               else
-                for (unsigned int j=0; j<in.position.size(); ++j)
+                for (unsigned int j=0; j<in.n_evaluation_points(); ++j)
                   for (unsigned int k=0; k<this->transition_depths.size(); ++k)
                     if ((this->phase_function(in.position[i], in.temperature[i], in.pressure[i], k)
                          != this->phase_function(in.position[j], in.temperature[j], in.pressure[j], k))

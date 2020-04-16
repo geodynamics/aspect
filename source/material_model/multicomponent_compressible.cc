@@ -37,7 +37,7 @@ namespace aspect
     {
       EquationOfStateOutputs<dim> eos_outputs (this->n_compositional_fields()+1);
 
-      for (unsigned int i=0; i < in.temperature.size(); ++i)
+      for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
         {
           const std::vector<double> reference_volume_fractions = MaterialUtilities::compute_volume_fractions(in.composition[i]); // these are the reference (uncompressed) volume fractions - ASPECT does not currently compute the changes in volume fraction with pressure and temperature
 

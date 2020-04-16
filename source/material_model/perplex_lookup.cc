@@ -83,7 +83,7 @@ namespace aspect
 
       int phaseq_dbg = 0;
 
-      unsigned int n_quad = in.position.size(); // number of quadrature points in cell
+      unsigned int n_quad = in.n_evaluation_points(); // number of quadrature points in cell
       unsigned int n_comp = in.composition[0].size(); // number of components in rock
 
       const double average_temperature = std::min(max_temperature,

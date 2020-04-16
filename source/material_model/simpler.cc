@@ -52,7 +52,7 @@ namespace aspect
       // The Simpler model does not depend on composition
       EquationOfStateOutputs<dim> eos_outputs (1);
 
-      for (unsigned int i=0; i<in.position.size(); ++i)
+      for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
         {
           equation_of_state.evaluate(in, i, eos_outputs);
 

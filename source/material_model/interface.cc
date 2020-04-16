@@ -394,8 +394,18 @@ namespace aspect
       DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
 
       this->current_cell = cell_x;
-
     }
+
+
+
+    template <int dim>
+    unsigned int
+    MaterialModelInputs<dim>::n_evaluation_points() const
+    {
+      return position.size();
+    }
+
+
 
     template <int dim>
     MaterialModelOutputs<dim>::MaterialModelOutputs(const unsigned int n_points,
@@ -431,6 +441,16 @@ namespace aspect
               ExcMessage ("You can not copy MaterialModelOutputs objects that have "
                           "additional output objects attached"));
     }
+
+
+
+    template <int dim>
+    unsigned int
+    MaterialModelOutputs<dim>::n_evaluation_points() const
+    {
+      return densities.size();
+    }
+
 
 
     namespace MaterialAveraging
