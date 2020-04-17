@@ -95,7 +95,7 @@ end
 
 subsection Boundary composition model
   set Allow fixed composition on outflow boundaries = false
-  set Model name = initial composition
+  set List of model names = initial composition
 end
 
 

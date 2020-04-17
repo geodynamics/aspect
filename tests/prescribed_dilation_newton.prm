@@ -4,7 +4,7 @@ set Dimension                              = 2
 
 include $ASPECT_SOURCE_DIR/tests/prescribed_dilation.prm
 
-set Nonlinear solver scheme = Newton Stokes
+set Nonlinear solver scheme = iterated Advection and Newton Stokes
 
 subsection Solver parameters
   subsection Stokes solver parameters

@@ -107,13 +107,13 @@ end
 # Composition boundary conditions
 subsection Boundary composition model
   set Fixed composition boundary indicators  =
-  set Model name = initial composition
+  set List of model names = initial composition
 end
 
 # Temperature boundary and initial conditions
 subsection Boundary temperature model
   set Fixed temperature boundary indicators = bottom, top, left, right
-  set Model name = initial temperature
+  set List of model names = initial temperature
 end
 
 # Initial temperature is constant

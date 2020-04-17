@@ -70,7 +70,7 @@ subsection Prescribed Stokes solution
   end
 end
 
-set Nonlinear solver scheme                   = Advection only
+set Nonlinear solver scheme                   = single Advection, no Stokes
 
 subsection Postprocess
   set List of postprocessors = volume of fluid statistics, volume of fluid mms
