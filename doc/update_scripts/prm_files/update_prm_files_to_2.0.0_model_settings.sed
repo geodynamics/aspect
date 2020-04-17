@@ -200,12 +200,14 @@ x
 
 # if the hold space is not empty, print comment
 /..*/ {
-i # The parameters below this comment were created by the update script\
+i\
+# The parameters below this comment were created by the update script\
 # as replacement for the old 'Model settings' subsection. They can be\
 # safely merged with any existing subsections with the same name.
 
 # remove the empty line at the end of the hold space
-s/\n *$//
+s/\
+ *$//
 }
 
 # If the hold space was empty, remove the single newline it would produce
