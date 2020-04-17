@@ -36,19 +36,6 @@ subsection Geometry model
   end
 end
 
-# This section specifies the temperature at the boundary of 
-# the domain. Here we set the temperature to be constant,
-# but different from the reference temperature to approximate
-# boundary layers.
-#subsection Boundary temperature model
-#  set Fixed temperature boundary indicators = top, bottom
-#  set List of model names = spherical constant
-#  subsection Spherical constant
-#    set Inner temperature = 1600
-#    set Outer temperature = 1600
-#  end
-#end
-
 # This section describes the gravity field, which is pointing
 # towards the Earth's center with the same magnitude of 10 m/s^2
 # everywhere

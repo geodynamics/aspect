@@ -7,7 +7,7 @@ set End time                               = 0
 set Use years in output instead of seconds = true
 set CFL number                             = .5
 set Output directory                       = output-punch_box_3D
-set Nonlinear solver scheme                = Stokes only
+set Nonlinear solver scheme                = no Advection, iterated Stokes
 set Pressure normalization                 = no
 set Timing output frequency                = 1
 

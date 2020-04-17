@@ -9,26 +9,28 @@ set Dimension                              = 2
 
 # We run the model from time = 0 to time = 1 and to handle
 # the nonlinearity of the viscosity correctly, we use
-# the iterated IMPES nonlinear solver and skip the cheap
+# the iterated Advection and Stokes nonlinear solver and skip the cheap
 # Stokes solves. 
 set Use years in output instead of seconds = false
 set End time                               = 0.01
 set Output directory                       = Case4_3_T15_NS_analytical_9e-1_release
-set Nonlinear solver scheme                = Newton Stokes #iterated Stokes #IMPES
+set Nonlinear solver scheme                = iterated Advection and Newton Stokes
 set Max nonlinear iterations               = 30
 set Nonlinear solver tolerance             = 1e-7
-set Number of cheap Stokes solver steps    = 200
-set Linear solver tolerance                = 1e-6
-#set Temperature solver tolerance           = #1e-10
 
 subsection Solver parameters
+  subsection Stokes solver parameters
+    set Number of cheap Stokes solver steps = 200
+    set Linear solver tolerance = 1e-6
+  end
+
   subsection Newton solver parameters
-        set Max pre-Newton nonlinear iterations = 5
+    set Max pre-Newton nonlinear iterations = 5
     set SPD safety factor = 0.9
-    set Nonlinear Newton solver switch tolerance = 1e-20 #  
-        set Max Newton line search iterations = 0
+    set Nonlinear Newton solver switch tolerance = 1e-20
+    set Max Newton line search iterations = 0
     set Maximum linear Stokes solver tolerance = 9e-1
-        set Use Newton residual scaling method = false
+    set Use Newton residual scaling method = false
     set Use Newton failsafe = false
     set Stabilization preconditioner = SPD
     set Stabilization velocity block = SPD
@@ -68,10 +70,14 @@ subsection Initial temperature model
 end
 
 
-# The temperature at the bottom is set to 1; at the top to 0.
+# The top and bottom boundary carry a prescribed boundary temperature, whereas
+# all other parts of the boundary are insulated (i.e., no heat flux through
+# these boundaries; this is also often used to specify symmetry boundaries).
 subsection Boundary temperature model
-  set Model name = box
+  set Fixed temperature boundary indicators   = bottom, top
+  set List of model names = box
 
+# The temperature at the bottom is set to 1; at the top to 0.
   subsection Box
     set Bottom temperature = 1
     set Left temperature   = 0
@@ -81,20 +87,10 @@ subsection Boundary temperature model
 end
 
 
-# The top and bottom boundary carry a prescribed boundary temperature, whereas
-# all other parts of the boundary are insulated (i.e., no heat flux through
-# these boundaries; this is also often used to specify symmetry boundaries).
-subsection Model settings
-  set Fixed temperature boundary indicators   = bottom, top
-
+subsection Boundary velocity model
   # Here, all four sides of the box allow tangential
   # unrestricted flow but with a zero normal component:
   set Tangential velocity boundary indicators = left, right, bottom, top
-
-  # We do not want to include adiabatic heating (from a small
-  # compressibility of the medium) or heating from shear friction
-  set Include adiabatic heating               = false
-  set Include shear heating                   = false
 end
 
 
@@ -177,9 +173,7 @@ subsection Postprocess
   end
 
   subsection Visualization
-    set List of output variables = material properties, strain rate, gravity #, friction heating 
+    set List of output variables = material properties, strain rate, gravity 
     set Time between graphical output = 0.05
   end
 end
-
-
