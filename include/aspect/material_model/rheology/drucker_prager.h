@@ -38,9 +38,14 @@ namespace aspect
       struct DruckerPragerParameters
       {
         /**
-         * List of internal friction angles (phi).
+         * List of static internal friction angles (phi).
          */
         std::vector<double> angles_internal_friction;
+
+        /**
+         * List of dynamic internal friction angles (phi_d).
+         */
+        std::vector<double> angles_internal_friction_dynamic;
 
         /**
          * List of the cohesions.
@@ -78,6 +83,17 @@ namespace aspect
           DruckerPragerParameters
           parse_parameters (const unsigned int n_fields,
                             ParameterHandler &prm);
+
+          /**
+           * Compute the steady-state angle of internal friction using the standard (static)
+           * angle of internal friction, dynamic angle of internal friction, effective strain
+           * rate, and reference strain rate.
+           */
+          double
+          compute_steady_state_friction (const double angle_internal_friction,
+                                         const double angle_internal_friction_dynamic,
+                                         const double effective_strain_rate,
+                                         const double reference_strain_rate) const;
 
           /**
            * Compute the plastic yield stress based on the Drucker Prager yield criterion.

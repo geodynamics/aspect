@@ -240,8 +240,17 @@ namespace aspect
 
           // Step 3b: calculate weakened friction, cohesion, and pre-yield viscosity
           const double current_cohesion = drucker_prager_parameters.cohesions[j] * weakening_factors[0];
-          const double current_friction = drucker_prager_parameters.angles_internal_friction[j] * weakening_factors[1];
+          double current_friction = drucker_prager_parameters.angles_internal_friction[j] * weakening_factors[1];
           viscosity_pre_yield *= weakening_factors[2];
+
+          // Step 3d: calculate steady-state coefficient of internal friction
+          if (use_steady_state_friction_angle == true)
+            {
+              current_friction = drucker_prager_plasticity.compute_steady_state_friction(current_friction,
+                                                                                         drucker_prager_parameters.angles_internal_friction_dynamic[j],
+                                                                                         current_edot_ii,
+                                                                                         ref_strain_rate);
+            }
 
           // Step 4: plastic yielding
 
@@ -707,6 +716,12 @@ namespace aspect
           // Drucker Prager plasticity parameters
           Rheology::DruckerPrager<dim>::declare_parameters(prm);
 
+          //
+          prm.declare_entry ("Use steady-state angle of internal friction", "false",
+                             Patterns::Bool (),
+                             "Whether to calculate and use the steady-state angle of internal friction "
+                             "for plastic yielding. ");
+
           // Stress limiter parameters
           prm.declare_entry ("Stress limiter exponents", "1.0",
                              Patterns::List(Patterns::Double(0)),
@@ -835,6 +850,8 @@ namespace aspect
           // Plasticity parameters
           drucker_prager_parameters = drucker_prager_plasticity.parse_parameters(this->n_compositional_fields()+1,
                                                                                  prm);
+
+          use_steady_state_friction_angle = prm.get_bool ("Use steady-state angle of internal friction");
 
           // Stress limiter parameter
           exponents_stress_limiter  = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Stress limiter exponents"))),

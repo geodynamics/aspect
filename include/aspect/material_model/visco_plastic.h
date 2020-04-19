@@ -382,6 +382,13 @@ namespace aspect
          */
         Rheology::DruckerPragerParameters drucker_prager_parameters;
 
+        /*
+         * Whether to calculate and use the steady-state angle of internal friction
+         * in the plastic (brittle constitutive equation). This value replaces
+         * the static angle of internal friction.
+         */
+        bool use_steady_state_friction_angle;
+
         /**
          * Object that handles phase transitions.
          */

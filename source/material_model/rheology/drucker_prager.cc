@@ -31,6 +31,29 @@ namespace aspect
     {
       template <int dim>
       double
+      DruckerPrager<dim>::compute_steady_state_friction (const double angle_internal_friction,
+                                                         const double angle_internal_friction_dynamic,
+                                                         const double effective_strain_rate,
+                                                         const double reference_strain_rate) const
+      {
+
+        // Calculate effective steady-state friction coefficient (mu). The formula below is equivalent to the
+        // equation 13 in van Dinther et al., (2013, JGR). Although here the dynamic friction coefficient
+        // is directly specified. In addition, we also use a reference strain rate in place of a characteristic
+        // velocity divided by local element size. The coefficient of friction is the tangent of the
+        // internal angle of friction.
+        const double mu  = std::tan(angle_internal_friction_dynamic)
+                           + ( std::tan(angle_internal_friction) - std::tan(angle_internal_friction_dynamic) )
+                           / ( ( 1 + ( effective_strain_rate / reference_strain_rate ) ) );
+
+        // Convert effective steady-state friction coefficient to internal angle of friction.
+        return std::atan (mu);
+      }
+
+
+
+      template <int dim>
+      double
       DruckerPrager<dim>::compute_yield_stress (const double cohesion,
                                                 const double angle_internal_friction,
                                                 const double pressure,
@@ -101,6 +124,11 @@ namespace aspect
                            "for a total of N+1 values, where N is the number of compositional fields. "
                            "For a value of zero, in 2D the von Mises criterion is retrieved. "
                            "Angles higher than 30 degrees are harder to solve numerically. Units: degrees.");
+        prm.declare_entry ("Dynamic angles of internal friction", "0",
+                           Patterns::List(Patterns::Double(0)),
+                           "List of dynamic angles of internal friction, $\\phi$, for background material and compositional "
+                           "fields, for a total of N+1 values, where N is the number of compositional fields. "
+                           "For a value of zero, in 2D the von Mises criterion is retrieved. Units: degrees.");
         prm.declare_entry ("Cohesions", "1e20",
                            Patterns::List(Patterns::Double(0)),
                            "List of cohesions, $C$, for background material and compositional fields, "
@@ -126,9 +154,16 @@ namespace aspect
         parameters.angles_internal_friction = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Angles of internal friction"))),
                                                                                       n_fields,
                                                                                       "Angles of internal friction");
+
+        parameters.angles_internal_friction_dynamic = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Dynamic angles of internal friction"))),
+                                                      n_fields,
+                                                      "Dynamic angles of internal friction");
         // Convert angles from degrees to radians
         for (unsigned int i = 0; i<parameters.angles_internal_friction.size(); ++i)
-          parameters.angles_internal_friction[i] *= numbers::PI/180.0;
+          {
+            parameters.angles_internal_friction[i] *= numbers::PI/180.0;
+            parameters.angles_internal_friction_dynamic[i] *= numbers::PI/180.0;
+          }
 
         parameters.cohesions = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Cohesions"))),
                                                                        n_fields,
