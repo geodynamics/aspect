@@ -740,7 +740,7 @@ namespace aspect
       time_dependent = false;
       // Give warning if first processor
       this->get_pcout() << std::endl
-                        << "   Loading new velocity file did not succeed." << std::endl
+                        << "   Loading new gplates velocity file did not succeed." << std::endl
                         << "   Assuming constant boundary conditions for rest of model run."
                         << std::endl << std::endl;
     }
