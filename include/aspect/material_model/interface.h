@@ -184,32 +184,33 @@ namespace aspect
        */
       enum Property
       {
-        uninitialized        = 0,
+        uninitialized                  = 0,
 
-        none                 = 1,
-        viscosity            = 2,
-        density              = 4,
-        thermal_expansion_coefficient = 8,
-        specific_heat        = 16,
-        thermal_conductivity = 32,
-        compressibility      = 64,
-        entropy_derivative_pressure = 128,
+        none                           = 1,
+        viscosity                      = 2,
+        density                        = 4,
+        thermal_expansion_coefficient  = 8,
+        specific_heat                  = 16,
+        thermal_conductivity           = 32,
+        compressibility                = 64,
+        entropy_derivative_pressure    = 128,
         entropy_derivative_temperature = 256,
-        reaction_terms       = 512,
+        reaction_terms                 = 512,
 
-        equation_of_state_properties = density |
-                                       thermal_expansion_coefficient |
-                                       specific_heat |
-                                       compressibility |
-                                       entropy_derivative_pressure |
-                                       entropy_derivative_temperature,
-        all_properties         = equation_of_state_properties |
-                                 viscosity |
-                                 reaction_terms
+        equation_of_state_properties   = density |
+                                         thermal_expansion_coefficient |
+                                         specific_heat |
+                                         compressibility |
+                                         entropy_derivative_pressure |
+                                         entropy_derivative_temperature,
+        all_properties                 = equation_of_state_properties |
+                                         viscosity |
+                                         reaction_terms
       };
 
       /**
-       * Provide an operator that or's two Property variables.
+       * Provide an operator that or's two Property variables. This allows to
+       * combine more than one property in a single variable.
        */
       inline Property operator | (const Property d1,
                                   const Property d2)

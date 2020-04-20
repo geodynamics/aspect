@@ -423,8 +423,8 @@ namespace aspect
       if ((property & MaterialProperties::Property::reaction_terms) != 0)
         return (strain_rate.size() != 0);
 
-      // Note that this means requested_properties can have other properties than
-      // property, but at least property.
+      // Note that this means 'requested_properties' can include other properties than
+      // just 'property', but in any case it at least requests 'property'.
       return (requested_properties & property) == property;
     }
 
