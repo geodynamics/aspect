@@ -100,6 +100,8 @@ namespace aspect
           }
       }
 
+
+
       template <int dim>
       std::string
       GPlatesLookup<dim>::screen_output(const Tensor<1,2> &surface_point_one,
@@ -138,6 +140,8 @@ namespace aspect
 
         return output.str();
       }
+
+
 
       template <int dim>
       void
@@ -241,6 +245,8 @@ namespace aspect
                     ExcMessage (std::string("Number of read in points does not match number of points in file. File corrupted?")));
       }
 
+
+
       template <int dim>
       Tensor<1,dim>
       GPlatesLookup<dim>::surface_velocity(const Point<dim> &position) const
@@ -299,6 +305,8 @@ namespace aspect
         return output_boundary_velocity;
       }
 
+
+
       template <int dim>
       Tensor<1,dim>
       GPlatesLookup<dim>::cartesian_velocity_at_surface_point(const std::array<double,3> &spherical_point) const
@@ -326,6 +334,8 @@ namespace aspect
         return output_boundary_velocity;
       }
 
+
+
       template <int dim>
       Tensor<1,3>
       GPlatesLookup<dim>::cartesian_surface_coordinates(const Tensor<1,3> &sposition) const
@@ -337,6 +347,8 @@ namespace aspect
         ccoord[2] = std::cos(sposition[0]); // Z
         return ccoord;
       }
+
+
 
       template <int dim>
       Tensor<1,3>
@@ -352,6 +364,8 @@ namespace aspect
 
         return velocity;
       }
+
+
 
       template <int dim>
       Tensor<2,3>
@@ -370,6 +384,8 @@ namespace aspect
         rotation_matrix[2][2] = (1-std::cos(rotation_angle)) * rotation_axis[2]*rotation_axis[2] + std::cos(rotation_angle);
         return rotation_matrix;
       }
+
+
 
       template <int dim>
       double
@@ -393,6 +409,8 @@ namespace aspect
 
         return rotation_angle;
       }
+
+
 
       template <int dim>
       std::array<double,3>
@@ -494,6 +512,8 @@ namespace aspect
         return orientation;
       }
 
+
+
       template <int dim>
       template <int in, int out>
       Tensor<1,out>
@@ -506,6 +526,7 @@ namespace aspect
 
         return new_tensor;
       }
+
 
 
       template <int dim>
@@ -530,6 +551,8 @@ namespace aspect
       }
     }
 
+
+
     template <int dim>
     GPlates<dim>::GPlates ()
       :
@@ -546,6 +569,7 @@ namespace aspect
       lookup(),
       old_lookup()
     {}
+
 
 
     template <int dim>
@@ -624,6 +648,7 @@ namespace aspect
     }
 
 
+
     template <int dim>
     std::string
     GPlates<dim>::create_filename (const int timestep) const
@@ -635,6 +660,7 @@ namespace aspect
       std::string str_filename (buffer.data());
       return str_filename;
     }
+
 
 
     template <int dim>
@@ -687,6 +713,8 @@ namespace aspect
         }
     }
 
+
+
     template <int dim>
     void
     GPlates<dim>::update_data (const bool load_both_files)
@@ -731,6 +759,8 @@ namespace aspect
         end_time_dependence ();
     }
 
+
+
     template <int dim>
     void
     GPlates<dim>::end_time_dependence ()
@@ -744,6 +774,8 @@ namespace aspect
                         << "   Assuming constant boundary conditions for rest of model run."
                         << std::endl << std::endl;
     }
+
+
 
     template <int dim>
     Tensor<1,dim>
@@ -776,6 +808,7 @@ namespace aspect
       else
         return Tensor<1,dim>();
     }
+
 
 
     template <int dim>
@@ -846,6 +879,7 @@ namespace aspect
       }
       prm.leave_subsection();
     }
+
 
 
     template <int dim>
