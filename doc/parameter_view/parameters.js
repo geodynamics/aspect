@@ -28,6 +28,7 @@ function filter_text()
 {
     var needle = document.getElementById("search").value.toUpperCase();
     var list = document.getElementById("ParameterList");
+    var scroll = true;
     collapseAllSubsections();
 
     var items = document.getElementsByClassName("parameter");
@@ -45,6 +46,11 @@ function filter_text()
 		    expand(temp);
 		}
 	    }
+
+	    if (scroll) {
+		items[i].scrollIntoView(false);
+		scroll = false;
+	    }
 	} else {
 	    items[i].style.display = "none";
 	}
@@ -54,6 +60,8 @@ function filter_text()
 	// If the user typed nothing, collapse all
 	collapseAllSubsections();
     }
+
+    document.getElementById("link").href="parameters.xml?s=" + encodeURIComponent(document.getElementById("search").value);
 }
 
 // Trigger a filter when the user presses return:
@@ -114,6 +122,17 @@ function collapseAllSubsections() {
   collapse(coll)
 }
 
+function getParameterByName(name, url) {
+    if (!url) url = window.location.href;
+    name = name.replace(/[\[\]]/g, "\\$&");
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
+
+function autorun() {
 var coll = document.getElementsByClassName("collapsible");
 var i;
 
@@ -127,6 +146,15 @@ for (i = 0; i < coll.length; i++) {
       content.style.display = "block";
     }
   });
+}
+
+    // if we get started with parameters.xml?s=bla, perform search
+    var search = getParameterByName("s");
+    if (search) {
+	console.log(search)
+	document.getElementById("search").value=search;
+	filter_text();
+    }
 }
 
 function sortTopNodes(ClassType) {
@@ -183,3 +211,10 @@ function reorderList() {
   sortTopNodes("parameter");
   sortTopNodes("subsection");
 }
+
+if (document.addEventListener)
+    document.addEventListener("DOMContentLoaded", autorun, false);
+else if (document.attachEvent)
+    document.attachEvent("onreadystatechange", autorun);
+else
+    window.onload = autorun;
