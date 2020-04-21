@@ -26,48 +26,48 @@ reorderList();
 // Grab text from the search input field and only show parameters that contain the text:
 function filter_text()
 {
-    var needle = document.getElementById("search").value.toUpperCase();
-    var list = document.getElementById("ParameterList");
-    var scroll = true;
-    collapseAllSubsections();
+  var needle = document.getElementById("search").value.toUpperCase();
+  var list = document.getElementById("ParameterList");
+  var scroll = true;
+  collapseAllSubsections();
 
-    var items = document.getElementsByClassName("parameter");
-    for (var i=0;i<items.length; ++i) {
-	var haystack = items[i].innerText.toUpperCase();
-	if (haystack.includes(needle)) {
-	    items[i].style.display = "block";
+  var items = document.getElementsByClassName("parameter");
+  for (var i=0;i<items.length; ++i) {
+    var haystack = items[i].innerText.toUpperCase();
+    if (haystack.includes(needle)) {
+      items[i].style.display = "block";
 
-	    p = items[i];
-	    while (p.parentNode) {
-		p=p.parentNode;
-		if (p.className=="content") {
-		    var temp = [];
-		    temp[0]=p.parentNode.children[0];
-		    expand(temp);
-		}
-	    }
-
-	    if (scroll) {
-		items[i].scrollIntoView(false);
-		scroll = false;
-	    }
-	} else {
-	    items[i].style.display = "none";
+      p = items[i];
+      while (p.parentNode) {
+	p=p.parentNode;
+	if (p.className=="content") {
+	  var temp = [];
+	  temp[0]=p.parentNode.children[0];
+	  expand(temp);
 	}
-    }
+      }
 
-    if (needle.length==0) {
-	// If the user typed nothing, collapse all
-	collapseAllSubsections();
+      if (scroll) {
+	items[i].scrollIntoView(false);
+	scroll = false;
+      }
+    } else {
+      items[i].style.display = "none";
     }
+  }
 
-    document.getElementById("link").href="parameters.xml?s=" + encodeURIComponent(document.getElementById("search").value);
+  if (needle.length==0) {
+    // If the user typed nothing, collapse all
+    collapseAllSubsections();
+  }
+
+  document.getElementById("link").href="parameters.xml?s=" + encodeURIComponent(document.getElementById("search").value);
 }
 
 // Trigger a filter when the user presses return:
 function search_input(event) {
-    if (event.keyCode == 13)
-	filter_text();
+  if (event.keyCode == 13)
+    filter_text();
 }
 
 document.getElementById("search").addEventListener('change', filter_text);
@@ -123,38 +123,38 @@ function collapseAllSubsections() {
 }
 
 function getParameterByName(name, url) {
-    if (!url) url = window.location.href;
-    name = name.replace(/[\[\]]/g, "\\$&");
-    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-        results = regex.exec(url);
-    if (!results) return null;
-    if (!results[2]) return '';
-    return decodeURIComponent(results[2].replace(/\+/g, " "));
+  if (!url) url = window.location.href;
+  name = name.replace(/[\[\]]/g, "\\$&");
+  var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+      results = regex.exec(url);
+  if (!results) return null;
+  if (!results[2]) return '';
+  return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
 
 function autorun() {
-var coll = document.getElementsByClassName("collapsible");
-var i;
+  var coll = document.getElementsByClassName("collapsible");
+  var i;
 
-for (i = 0; i < coll.length; i++) {
-  coll[i].addEventListener("click", function() {
-    this.classList.toggle("active");
-    var content = this.nextElementSibling;
-    if (content.style.display === "block") {
-      content.style.display = "none";
-    } else {
-      content.style.display = "block";
-    }
-  });
-}
+  for (i = 0; i < coll.length; i++) {
+    coll[i].addEventListener("click", function() {
+      this.classList.toggle("active");
+      var content = this.nextElementSibling;
+      if (content.style.display === "block") {
+	content.style.display = "none";
+      } else {
+	content.style.display = "block";
+      }
+    });
+  }
 
-    // if we get started with parameters.xml?s=bla, perform search
-    var search = getParameterByName("s");
-    if (search) {
-	console.log(search)
-	document.getElementById("search").value=search;
-	filter_text();
-    }
+  // if we get started with parameters.xml?s=bla, perform search
+  var search = getParameterByName("s");
+  if (search) {
+    console.log(search)
+    document.getElementById("search").value=search;
+    filter_text();
+  }
 }
 
 function sortTopNodes(ClassType) {
@@ -163,7 +163,7 @@ function sortTopNodes(ClassType) {
   switching = true;
 
   /* Make a loop that will continue until
-  no switching has been done: */
+     no switching has been done: */
   while (switching) {
     // Start by saying: no switching is done:
     switching = false;
@@ -173,22 +173,22 @@ function sortTopNodes(ClassType) {
     // Loop through all list items:
     for (i = 0; i < (children.length - 1); i++) {
       if (children[i].children[0].classList.contains(ClassType) && children[i+1].children[0].classList.contains(ClassType)) {
-        // Start by saying there should be no switching:
-        shouldSwitch = false;
-        /* Check if the next item should
-        switch place with the current item: */
-        if (children[i].children[0].innerHTML.toLowerCase() > children[i + 1].children[0].innerHTML.toLowerCase()) {
-          /* If next item is alphabetically lower than current item,
-          mark as a switch and break the loop: */
-          shouldSwitch = true;
-          break;
-        }
+	// Start by saying there should be no switching:
+	shouldSwitch = false;
+	/* Check if the next item should
+	   switch place with the current item: */
+	if (children[i].children[0].innerHTML.toLowerCase() > children[i + 1].children[0].innerHTML.toLowerCase()) {
+	  /* If next item is alphabetically lower than current item,
+	     mark as a switch and break the loop: */
+	  shouldSwitch = true;
+	  break;
+	}
       }
     }
 
     if (shouldSwitch) {
       /* If a switch has been marked, make the switch
-      and mark the switch as done: */
+	 and mark the switch as done: */
       children[i].parentNode.insertBefore(children[i + 1], children[i]);
       switching = true;
     }
@@ -204,7 +204,7 @@ function reorderList() {
 
   for (i = 0; i < children.length; i++) {
     if (children[i].children[0].classList.contains("parameter")) {
-	  children[i].parentNode.insertBefore(children[i], children[0]);
+      children[i].parentNode.insertBefore(children[i], children[0]);
     }
   }
 
@@ -213,8 +213,8 @@ function reorderList() {
 }
 
 if (document.addEventListener)
-    document.addEventListener("DOMContentLoaded", autorun, false);
+  document.addEventListener("DOMContentLoaded", autorun, false);
 else if (document.attachEvent)
-    document.attachEvent("onreadystatechange", autorun);
+  document.attachEvent("onreadystatechange", autorun);
 else
-    window.onload = autorun;
+  window.onload = autorun;
