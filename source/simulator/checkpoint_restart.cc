@@ -421,30 +421,21 @@ namespace aspect
   void Simulator<dim>::resume_from_snapshot()
   {
     // first check existence of the two restart files
-    {
-      const std::string filename = parameters.output_directory + "restart.mesh";
-      std::ifstream in (filename.c_str());
-      if (!in)
-        AssertThrow (false,
-                     ExcMessage (std::string("You are trying to restart a previous computation, "
-                                             "but the restart file <")
-                                 +
-                                 filename
-                                 +
-                                 "> does not appear to exist!"));
-    }
-    {
-      const std::string filename = parameters.output_directory + "restart.resume.z";
-      std::ifstream in (filename.c_str());
-      if (!in)
-        AssertThrow (false,
-                     ExcMessage (std::string("You are trying to restart a previous computation, "
-                                             "but the restart file <")
-                                 +
-                                 filename
-                                 +
-                                 "> does not appear to exist!"));
-    }
+    AssertThrow (Utilities::fexists(parameters.output_directory + "restart.mesh"),
+                 ExcMessage ("You are trying to restart a previous computation, "
+                             "but the restart file <"
+                             +
+                             parameters.output_directory + "restart.mesh"
+                             +
+                             "> does not appear to exist!"));
+
+    AssertThrow (Utilities::fexists(parameters.output_directory + "restart.resume.z"),
+                 ExcMessage ("You are trying to restart a previous computation, "
+                             "but the restart file <"
+                             +
+                             parameters.output_directory + "restart.resume.z"
+                             +
+                             "> does not appear to exist!"));
 
     pcout << "*** Resuming from snapshot!" << std::endl << std::endl;
 
