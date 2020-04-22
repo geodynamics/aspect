@@ -1382,9 +1382,7 @@ namespace aspect
       resume_computation = false;
     else if (prm.get ("Resume computation") == "auto")
       {
-        std::fstream check_file((output_directory+"restart.mesh").c_str());
-        resume_computation = check_file.is_open();
-        check_file.close();
+        resume_computation = Utilities::fexists(output_directory+"restart.mesh");
       }
     else
       AssertThrow (false, ExcMessage ("Resume computation parameter must be either `true', `false', or `auto'."));

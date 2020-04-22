@@ -20,6 +20,7 @@
 
 
 #include <aspect/termination_criteria/user_request.h>
+#include <aspect/utilities.h>
 
 namespace aspect
 {
@@ -34,8 +35,7 @@ namespace aspect
       // processors
       if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
         {
-          std::fstream check_file((this->get_output_directory()+filename_to_test).c_str());
-          return check_file.is_open();
+          return Utilities::fexists(this->get_output_directory()+filename_to_test);
         }
       return false;
     }
