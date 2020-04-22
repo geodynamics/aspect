@@ -67,7 +67,8 @@ namespace aspect
         // Determine the starting weight of this process, which is the sum of
         // the weights of all processes with a lower rank
         double local_start_weight = 0.0;
-        MPI_Exscan(&local_weight_integral, &local_start_weight, 1, MPI_DOUBLE, MPI_SUM, this->get_mpi_communicator());
+        const int ierr = MPI_Exscan(&local_weight_integral, &local_start_weight, 1, MPI_DOUBLE, MPI_SUM, this->get_mpi_communicator());
+        AssertThrowMPI(ierr);
 
         // Calculate start id
         const types::particle_index start_particle_id = llround(static_cast<double> (n_particles)  * local_start_weight / global_weight_integral);

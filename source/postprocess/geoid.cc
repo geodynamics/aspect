@@ -724,8 +724,9 @@ namespace aspect
               // determined the maximal message length, we use this feature here
               // rather than trying to find out the exact message length with
               // a call to MPI_Probe.
-              MPI_Recv (&tmp[0], max_data_length, MPI_CHAR, p, mpi_tag,
-                        this->get_mpi_communicator(), &status);
+              const int ierr = MPI_Recv (&tmp[0], max_data_length, MPI_CHAR, p, mpi_tag,
+                                         this->get_mpi_communicator(), &status);
+              AssertThrowMPI(ierr);
 
               // output the string. note that 'tmp' has length max_data_length,
               // but we only wrote a certain piece of it in the MPI_Recv, ended
@@ -738,8 +739,9 @@ namespace aspect
         // on other processors, send the data to processor zero. include the \0
         // character at the end of the string
         {
-          MPI_Send (&output.str()[0], output.str().size()+1, MPI_CHAR, 0, mpi_tag,
-                    this->get_mpi_communicator());
+          const int ierr = MPI_Send (&output.str()[0], output.str().size()+1, MPI_CHAR, 0, mpi_tag,
+                                     this->get_mpi_communicator());
+          AssertThrowMPI(ierr);
         }
 
       // Prepare the free-air gravity anomaly output
@@ -838,8 +840,9 @@ namespace aspect
                   // determined the maximal message length, we use this feature here
                   // rather than trying to find out the exact message length with
                   // a call to MPI_Probe.
-                  MPI_Recv (&tmp[0], max_data_length, MPI_CHAR, p, mpi_tag,
-                            this->get_mpi_communicator(), &status);
+                  const int ierr = MPI_Recv (&tmp[0], max_data_length, MPI_CHAR, p, mpi_tag,
+                                             this->get_mpi_communicator(), &status);
+                  AssertThrowMPI(ierr);
                   // output the string. note that 'tmp' has length max_data_length,
                   // but we only wrote a certain piece of it in the MPI_Recv, ended
                   // by a \0 character. write only this part by outputting it as a
@@ -851,8 +854,9 @@ namespace aspect
             // on other processors, send the data to processor zero. include the \0
             // character at the end of the string
             {
-              MPI_Send (&output_gravity_anomaly.str()[0], output_gravity_anomaly.str().size()+1, MPI_CHAR, 0, mpi_tag,
-                        this->get_mpi_communicator());
+              const int ierr = MPI_Send (&output_gravity_anomaly.str()[0], output_gravity_anomaly.str().size()+1, MPI_CHAR, 0, mpi_tag,
+                                         this->get_mpi_communicator());
+              AssertThrowMPI(ierr);
             }
         }
 

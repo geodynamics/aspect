@@ -395,14 +395,16 @@ read_parameter_file(const std::string &parameter_file_name)
         {
           input_as_string = read_until_end (std::cin);
           int size = input_as_string.size()+1;
-          MPI_Bcast (&size,
-                     1,
-                     MPI_INT,
-                     /*root=*/0, MPI_COMM_WORLD);
-          MPI_Bcast (const_cast<char *>(input_as_string.c_str()),
-                     size,
-                     MPI_CHAR,
-                     /*root=*/0, MPI_COMM_WORLD);
+          int ierr = MPI_Bcast (&size,
+                                1,
+                                MPI_INT,
+                                /*root=*/0, MPI_COMM_WORLD);
+          AssertThrowMPI(ierr);
+          ierr = MPI_Bcast (const_cast<char *>(input_as_string.c_str()),
+                            size,
+                            MPI_CHAR,
+                            /*root=*/0, MPI_COMM_WORLD);
+          AssertThrowMPI(ierr);
         }
       else
         {
@@ -411,14 +413,16 @@ read_parameter_file(const std::string &parameter_file_name)
           // text in, get it from processor 0, and copy it to
           // input_as_string
           int size;
-          MPI_Bcast (&size, 1,
-                     MPI_INT,
-                     /*root=*/0, MPI_COMM_WORLD);
+          int ierr = MPI_Bcast (&size, 1,
+                                MPI_INT,
+                                /*root=*/0, MPI_COMM_WORLD);
+          AssertThrowMPI(ierr);
 
           std::vector<char> p (size);
-          MPI_Bcast (p.data(), size,
-                     MPI_CHAR,
-                     /*root=*/0, MPI_COMM_WORLD);
+          ierr = MPI_Bcast (p.data(), size,
+                            MPI_CHAR,
+                            /*root=*/0, MPI_COMM_WORLD);
+          AssertThrowMPI(ierr);
           input_as_string = p.data();
         }
     }
@@ -466,7 +470,8 @@ parse_parameters (const std::string &input_as_string,
   // so, do the broadcast in integers
   {
     int isuccess = (success ? 1 : 0);
-    MPI_Bcast (&isuccess, 1, MPI_INT, 0, MPI_COMM_WORLD);
+    const int ierr = MPI_Bcast (&isuccess, 1, MPI_INT, 0, MPI_COMM_WORLD);
+    AssertThrowMPI(ierr);
     success = (isuccess == 1);
   }
 

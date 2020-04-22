@@ -476,10 +476,12 @@ namespace aspect
                   int color = my_id % group_files;
 
                   MPI_Comm comm;
-                  MPI_Comm_split(this->get_mpi_communicator(), color, my_id, &comm);
+                  int ierr = MPI_Comm_split(this->get_mpi_communicator(), color, my_id, &comm);
+                  AssertThrowMPI(ierr);
 
                   data_out.write_vtu_in_parallel(filename.c_str(), comm);
-                  MPI_Comm_free(&comm);
+                  ierr = MPI_Comm_free(&comm);
+                  AssertThrowMPI(ierr);
                 }
             }
           // Write in a different format than hdf5 or vtu. This case is supported, but is not

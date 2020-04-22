@@ -530,7 +530,8 @@ namespace aspect
       {
         int global_do_checkpoint = ((std::time(nullptr)-last_checkpoint_time) >=
                                     parameters.checkpoint_time_secs);
-        MPI_Bcast(&global_do_checkpoint, 1, MPI_INT, 0, mpi_communicator);
+        const int ierr = MPI_Bcast(&global_do_checkpoint, 1, MPI_INT, 0, mpi_communicator);
+        AssertThrowMPI(ierr);
 
         if (global_do_checkpoint == 1)
           write_checkpoint = true;
