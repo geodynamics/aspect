@@ -28,6 +28,7 @@
 #include <deal.II/dofs/dof_tools.h>
 
 #include <deal.II/fe/fe_values.h>
+#include <deal.II/fe/fe_q.h>
 #include <deal.II/fe/mapping_q1_eulerian.h>
 
 #include <deal.II/lac/sparsity_tools.h>
