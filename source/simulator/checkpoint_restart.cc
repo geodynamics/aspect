@@ -392,6 +392,12 @@ namespace aspect
 #if DEAL_II_VERSION_GTE(9,1,0)
             move_file (parameters.output_directory + "restart.mesh_fixed.data",
                        parameters.output_directory + "restart.mesh_fixed.data.old");
+
+            if (Utilities::fexists(parameters.output_directory + "restart.mesh_variable.data"))
+              {
+                move_file (parameters.output_directory + "restart.mesh_variable.data",
+                           parameters.output_directory + "restart.mesh_variable.data.old");
+              }
 #endif
           }
 
@@ -404,6 +410,12 @@ namespace aspect
 #if DEAL_II_VERSION_GTE(9,1,0)
         move_file (parameters.output_directory + "restart.mesh.new_fixed.data",
                    parameters.output_directory + "restart.mesh_fixed.data");
+
+        if (Utilities::fexists(parameters.output_directory + "restart.mesh.new_variable.data"))
+          {
+            move_file (parameters.output_directory + "restart.mesh.new_variable.data",
+                       parameters.output_directory + "restart.mesh_variable.data");
+          }
 #endif
 
         // from now on, we know that if we get into this
