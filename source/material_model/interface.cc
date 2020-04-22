@@ -425,7 +425,7 @@ namespace aspect
 
       // Note that this means 'requested_properties' can include other properties than
       // just 'property', but in any case it at least requests 'property'.
-      return (requested_properties & property) == property;
+      return (requested_properties & property) != 0;
     }
 
 
