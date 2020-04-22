@@ -367,7 +367,8 @@ namespace aspect
     }
 
     // Wait for everyone to finish writing
-    MPI_Barrier(mpi_communicator);
+    const int ierr = MPI_Barrier(mpi_communicator);
+    AssertThrowMPI(ierr);
 
     // Now rename the snapshots to put the new one in place of the old one.
     // Do this after writing the new one, because writing large checkpoints

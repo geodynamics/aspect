@@ -38,10 +38,11 @@ namespace aspect
         types::particle_index prefix_sum = 0;
 
 #if DEAL_II_VERSION_GTE(9,1,0)
-        MPI_Scan(&n_particles_to_generate, &prefix_sum, 1, DEAL_II_PARTICLE_INDEX_MPI_TYPE, MPI_SUM, this->get_mpi_communicator());
+        const int ierr = MPI_Scan(&n_particles_to_generate, &prefix_sum, 1, DEAL_II_PARTICLE_INDEX_MPI_TYPE, MPI_SUM, this->get_mpi_communicator());
 #else
-        MPI_Scan(&n_particles_to_generate, &prefix_sum, 1, PARTICLE_INDEX_MPI_TYPE, MPI_SUM, this->get_mpi_communicator());
+        const int ierr = MPI_Scan(&n_particles_to_generate, &prefix_sum, 1, PARTICLE_INDEX_MPI_TYPE, MPI_SUM, this->get_mpi_communicator());
 #endif
+        AssertThrowMPI(ierr);
 
         types::particle_index particle_index = prefix_sum - n_particles_to_generate;
 
