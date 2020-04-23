@@ -816,7 +816,7 @@ namespace aspect
                   crossed_transition = k;
 
 
-          if (in.strain_rate.size() > 0)
+          if (in.requests_property(MaterialProperties::viscosity))
             {
               double effective_viscosity;
               double disl_viscosity = std::numeric_limits<double>::max();
@@ -848,7 +848,7 @@ namespace aspect
             disl_viscosities_out->boundary_area_change_work_fractions[i] =
               boundary_area_change_work_fraction[get_phase_index(in.position[i],in.temperature[i],pressure)];
 
-          if (in.strain_rate.size() > 0)
+          if (in.requests_property(MaterialProperties::reaction_terms))
             for (unsigned int c=0; c<composition.size(); ++c)
               {
                 if (this->introspection().name_for_compositional_index(c) == "grain_size")

@@ -32,7 +32,7 @@ namespace aspect
             out.densities[i] = 3000;
             for (unsigned int c=0; c<in.composition[i].size(); ++c)
               {
-                if (in.strain_rate.size())
+                if (in.requests_property(MaterialModel::MaterialProperties::reaction_terms))
                   out.reaction_terms[i][c] = trace(in.strain_rate[i]) * this->get_timestep();
                 else
                   out.reaction_terms[i][c] = 0.0;

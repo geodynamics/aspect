@@ -48,7 +48,7 @@ namespace aspect
           const double pressure=std::max(in.pressure[i],0.0);
 
           // calculate effective viscosity
-          if (in.strain_rate.size() > 0)
+          if (in.requests_property(MaterialProperties::viscosity))
             {
               const SymmetricTensor<2,dim> strain_rate_deviator = deviator(in.strain_rate[i]);
 

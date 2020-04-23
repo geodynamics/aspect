@@ -202,7 +202,7 @@ namespace aspect
             thermal_expansivity += volume_fractions[j] * thermal_expansivities[j];
 
           // calculate effective viscosity
-          if (in.strain_rate.size())
+          if (in.requests_property(MaterialProperties::viscosity))
             {
               // Currently, the viscosities for each of the compositional fields are calculated assuming
               // isostrain amongst all compositions, allowing calculation of the viscosity ratio.
