@@ -2,7 +2,7 @@
 # described in Tosi et al. (2015).
 
 # We add the necessary plugins through a shared library
-set Additional shared libraries            = $ASPECT_SOURCE_DIR/benchmarks/tosi_et_al_2015_gcubed/libtosi_benchmark.so
+set Additional shared libraries            = $ASPECT_SOURCE_DIR/benchmarks/newton_solver_benchmark_set/tosi_et_al_2015/libnewton_tosi_benchmark.so
 
 # This is a 2D benchmark.
 set Dimension                              = 2
@@ -106,9 +106,9 @@ end
 
 
 subsection Material model
-  set Model name = TosiMaterial
+  set Model name = Newton Tosi material
 
-  subsection Tosi benchmark
+  subsection Newton Tosi model
     set Reference density             = 1
     set Reference specific heat       = 1
     set Reference temperature         = 0
