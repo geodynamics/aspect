@@ -20,6 +20,7 @@
 					<button onclick="expandAllSubsections()">Expand subsections</button> 
 					<button onclick="collapseAllSubsections()">Collapse subsections</button>
 					<input type="text" id="search" value=""/>
+					<a href="parameters.xml" id="link">link</a>
 				</div>
 				<ul id="ParameterList">
 					<xsl:apply-templates
