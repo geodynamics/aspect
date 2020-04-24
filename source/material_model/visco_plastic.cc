@@ -147,14 +147,14 @@ namespace aspect
           // gradient used when calculating the viscosity. This allows the same activation volume
           // to be used in incompressible and compressible models.
           const double temperature_for_viscosity = temperature + adiabatic_temperature_gradient_for_viscosity*pressure;
-          Assert(temperature_for_viscosity != 0, ExcMessage(
-                   "The temperature used in the calculation of the visco-plastic rheology is zero. "
-                   "This is not allowed, because this value is used to divide through. It is probably "
-                   "being caused by the temperature being zero somewhere in the model. The relevant "
-                   "values for debugging are: temperature (" + Utilities::to_string(temperature) +
-                   "), adiabatic_temperature_gradient_for_viscosity ("
-                   + Utilities::to_string(adiabatic_temperature_gradient_for_viscosity) + ") and pressure ("
-                   + Utilities::to_string(pressure) + ")."));
+          AssertThrow(temperature_for_viscosity != 0, ExcMessage(
+                        "The temperature used in the calculation of the visco-plastic rheology is zero. "
+                        "This is not allowed, because this value is used to divide through. It is probably "
+                        "being caused by the temperature being zero somewhere in the model. The relevant "
+                        "values for debugging are: temperature (" + Utilities::to_string(temperature) +
+                        "), adiabatic_temperature_gradient_for_viscosity ("
+                        + Utilities::to_string(adiabatic_temperature_gradient_for_viscosity) + ") and pressure ("
+                        + Utilities::to_string(pressure) + ")."));
 
           // Step 1a: compute viscosity from diffusion creep law
           const double viscosity_diffusion = diffusion_creep.compute_viscosity(pressure, temperature_for_viscosity, j);
