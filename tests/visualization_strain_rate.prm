@@ -98,6 +98,7 @@ subsection Postprocess
 
   subsection Visualization
     set Interpolate output = false
+    set Point-wise stress and strain = false
     set Output format = gnuplot
     set List of output variables = strain rate
   end
