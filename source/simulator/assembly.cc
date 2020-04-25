@@ -23,6 +23,7 @@
 #include <aspect/utilities.h>
 #include <aspect/compat.h>
 #include <aspect/simulator_access.h>
+#include <aspect/citation_info.h>
 
 #include <aspect/simulator/assemblers/interface.h>
 #include <aspect/melt.h>
@@ -174,6 +175,7 @@ namespace aspect
     else if (parameters.formulation_mass_conservation ==
              Parameters<dim>::Formulation::MassConservation::projected_density_field)
       {
+        CitationInfo::add("pda");
         assemblers->stokes_system.push_back(
           std_cxx14::make_unique<aspect::Assemblers::StokesProjectedDensityFieldTerm<dim> >());
       }

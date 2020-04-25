@@ -64,6 +64,7 @@ want_groups = {"KHB12": "main",
                "gassmoeller_particles" : "particles",
                "He_2017_DG" : "dg",
                "clevenger_stokes19" : "mf",
+               "gassmoller2020formulations" : "pda",
 }
 
 want = []
