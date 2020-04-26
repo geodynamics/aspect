@@ -83,12 +83,14 @@ bibformated = {
         "aspect-doi-v2.0.1" : "Wolfgang Bangerth, Juliane Dannberg, Rene Gassmoeller, and Timo Heister. 2018, June 24. ASPECT v2.0.1. Zenodo. https://doi.org/10.5281/zenodo.1297145",
         "aspect-doi-v2.1.0" : "Wolfgang Bangerth, Juliane Dannberg, Rene Gassmoeller, and Timo Heister. 2019, April 29. ASPECT v2.1.0. Zenodo. https://doi.org/10.5281/zenodo.2653531",
         "aspectmanual" : "Wolfgang Bangerth, Juliane Dannberg, Rene Gassmoeller, Timo Heister, and others. 2019. ASPECT: Advanced Solver for Problems in Earth's ConvecTion, User Manual. <i>Figshare</i>. https://doi.org/10.6084/m9.figshare.4865333",
+        "clevenger_stokes19" : "Thomas C. Clevenger, and Timo Heister. 2019. “Comparison Between Algebraic and Matrix-free Geometric Multigrid for a Stokes Problem on Adaptive Meshes with Variable Viscosity.“ arXiv:1907.06696.",
         "dannberg_melt" : "Juliane Dannberg, and Timo Heister. 2016. “Compressible Magma/mantle Dynamics: 3-D, Adaptive Simulations in ASPECT.” Geophysical Journal International 207 (3) (September 4): 1343–1366. doi:10.1093/gji/ggw329. http://dx.doi.org/10.1093/gji/ggw329.",
         "gassmoeller_particles" : "Rene Gassmoeller, Eric Heien, Elbridge Gerry Puckett, and Wolfgang Bangerth. 2017. “Flexible and scalable particle-in-cell methods for massively parallel computations.” arXiv:1612.03369",
+        "gassmoller2020formulations" : "Gassmöller, Rene, Juliane Dannberg, Wolfgang Bangerth, Timo Heister, and Robert Myhill. 2020. “On Formulations of Compressible Mantle Convection.” Geophysical Journal International 221 (2) (February 13): 1264–1280. doi:10.1093/gji/ggaa078. http://dx.doi.org/10.1093/gji/ggaa078.",
         "heister_aspect_methods2" : "Timo Heister, Juliane Dannberg, Rene Gassmöller, and Wolfgang Bangerth. 2017. “High Accuracy Mantle Convection Simulation through Modern Numerical Methods – II: Realistic Models and Problems.” Geophysical Journal International 210 (2) (May 9): 833–851. doi:10.1093/gji/ggx195. http://dx.doi.org/10.1093/gji/ggx195.",
-        "rose_freesurface" : "Ian Rose, Bruce Buffett, and Timo Heister. 2017. “Stability and Accuracy of Free Surface Time Integration in Viscous Flows.” Physics of the Earth and Planetary Interiors 262 (January): 90–100. doi:10.1016/j.pepi.2016.11.007. http://dx.doi.org/10.1016/j.pepi.2016.11.007.",
-        "clevenger_stokes19" : "Thomas C. Clevenger, and Timo Heister. 2019. “Comparison Between Algebraic and Matrix-free Geometric Multigrid for a Stokes Problem on Adaptive Meshes with Variable Viscosity.“ arXiv:1907.06696.",
+        "rose_freesurface" : "Ian Rose, Bruce Buffett, and Timo Heister. 2017. “Stability and Accuracy of Free Surface Time Integration in Viscous Flows.” Physics of the Earth and Planetary Interiors 262 (January): 90–100. doi:10.1016/j.pepi.2016.11.007. http://dx.doi.org/10.1016/j.pepi.2016.11.007."
 }
+
 
 downloaded = False
 for w in want:
