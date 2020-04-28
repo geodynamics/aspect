@@ -1,0 +1,8 @@
+# This is a test for the benchmark described in
+# $ASPECT_SOURCE_DIR/benchmarks/newton_solver_benchmark_set/tosi_et_al_2015
+
+include $ASPECT_SOURCE_DIR/benchmarks/newton_solver_benchmark_set/tosi_et_al_2015/input.prm
+
+set Additional shared libraries            = ./libnewton_solver_tosi.so
+set End time                               = 0.0021
+set Max nonlinear iterations               = 15
