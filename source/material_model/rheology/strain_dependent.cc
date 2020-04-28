@@ -96,7 +96,7 @@ namespace aspect
                            "the initial plastic strain values removed.");
 
         prm.declare_entry ("Start plasticity strain weakening intervals", "0.",
-                           Patterns::List(Patterns::Double(0)),
+                           Patterns::List(Patterns::Double (0.)),
                            "List of strain weakening interval initial strains "
                            "for the cohesion and friction angle parameters of the "
                            "background material and compositional fields, "
@@ -104,7 +104,7 @@ namespace aspect
                            "If only one value is given, then all use the same value. Units: None");
 
         prm.declare_entry ("End plasticity strain weakening intervals", "1.",
-                           Patterns::List(Patterns::Double(0)),
+                           Patterns::List(Patterns::Double (0.)),
                            "List of strain weakening interval final strains "
                            "for the cohesion and friction angle parameters of the "
                            "background material and compositional fields, "
@@ -112,21 +112,21 @@ namespace aspect
                            "If only one value is given, then all use the same value.  Units: None");
 
         prm.declare_entry ("Cohesion strain weakening factors", "1.",
-                           Patterns::List(Patterns::Double(0)),
+                           Patterns::List(Patterns::Double (0.)),
                            "List of cohesion strain weakening factors "
                            "for background material and compositional fields, "
                            "for a total of N+1 values, where N is the number of compositional fields. "
                            "If only one value is given, then all use the same value.  Units: None");
 
         prm.declare_entry ("Friction strain weakening factors", "1.",
-                           Patterns::List(Patterns::Double(0)),
+                           Patterns::List(Patterns::Double (0.)),
                            "List of friction strain weakening factors "
                            "for background material and compositional fields, "
                            "for a total of N+1 values, where N is the number of compositional fields. "
                            "If only one value is given, then all use the same value.  Units: None");
 
         prm.declare_entry ("Start prefactor strain weakening intervals", "0.",
-                           Patterns::List(Patterns::Double(0)),
+                           Patterns::List(Patterns::Double (0.)),
                            "List of strain weakening interval initial strains "
                            "for the diffusion and dislocation prefactor parameters of the "
                            "background material and compositional fields, "
@@ -134,7 +134,7 @@ namespace aspect
                            "If only one value is given, then all use the same value.  Units: None");
 
         prm.declare_entry ("End prefactor strain weakening intervals", "1.",
-                           Patterns::List(Patterns::Double(0)),
+                           Patterns::List(Patterns::Double (0.)),
                            "List of strain weakening interval final strains "
                            "for the diffusion and dislocation prefactor parameters of the "
                            "background material and compositional fields, "
@@ -142,7 +142,7 @@ namespace aspect
                            "If only one value is given, then all use the same value.  Units: None");
 
         prm.declare_entry ("Prefactor strain weakening factors", "1.",
-                           Patterns::List(Patterns::Double(0,1)),
+                           Patterns::List(Patterns::Double(0., 1.)),
                            "List of viscous strain weakening factors "
                            "for background material and compositional fields, "
                            "for a total of N+1 values, where N is the number of compositional fields. "

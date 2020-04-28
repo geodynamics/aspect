@@ -89,7 +89,7 @@ namespace aspect
             prm.enter_subsection("Melt particle");
             {
               prm.declare_entry ("Threshold for melt presence", "1e-3",
-                                 Patterns::Double (0,1),
+                                 Patterns::Double (0., 1.),
                                  "The minimum porosity that has to be present at the position of a particle "
                                  "for it to be considered a melt particle (in the sense that the melt presence "
                                  "property is set to 1).");

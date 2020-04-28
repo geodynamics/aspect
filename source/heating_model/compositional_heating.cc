@@ -61,8 +61,8 @@ namespace aspect
       {
         prm.enter_subsection("Compositional heating");
         {
-          prm.declare_entry("Compositional heating values","0",
-                            Patterns::List (Patterns::Double(0)),
+          prm.declare_entry("Compositional heating values","0.",
+                            Patterns::List (Patterns::Double(0.)),
                             "List of heat production per unit volume values for "
                             "background and compositional fields, for a total of "
                             "N+1 values, where the first value correponds to the "

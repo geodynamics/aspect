@@ -403,15 +403,15 @@ namespace aspect
                             "the missing corner value will be calculated so all faces are parallel.");
           prm.declare_entry("Depth",
                             "500000.0",
-                            Patterns::Double(0),
+                            Patterns::Double(0.),
                             "Bottom depth of model region.");
           prm.declare_entry("Semi-major axis",
                             "6378137.0",
-                            Patterns::Double(0),
+                            Patterns::Double(0.),
                             "The semi-major axis (a) of an ellipsoid. This is the radius for a sphere (eccentricity=0). Default WGS84 semi-major axis.");
           prm.declare_entry("Eccentricity",
                             "8.1819190842622e-2",
-                            Patterns::Double(0),
+                            Patterns::Double(0.),
                             "Eccentricity of the ellipsoid. Zero is a perfect sphere, default (8.1819190842622e-2) is WGS84.");
           prm.declare_entry("East-West subdivisions",
                             "1",

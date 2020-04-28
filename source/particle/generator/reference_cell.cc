@@ -117,7 +117,7 @@ namespace aspect
               prm.enter_subsection("Reference cell");
               {
                 prm.declare_entry ("Number of particles per cell per direction", "2",
-                                   Patterns::List(Patterns::Double(0)),
+                                   Patterns::List(Patterns::Double (0.)),
                                    "List of number of particles to create per cell and spatial dimension. "
                                    "The size of the list is the number of spatial dimensions. If only "
                                    "one value is given, then each spatial dimension is set to the same value. "

@@ -511,57 +511,57 @@ namespace aspect
                              "This specifies the number of points along "
                              "the latitude (e.g. gravity map) between a minimum and "
                              "maximum latitude.");
-          prm.declare_entry ("Minimum radius", "0",
+          prm.declare_entry ("Minimum radius", "0.",
                              Patterns::Double (0.0),
                              "Parameter for the uniform distribution sampling scheme: "
                              "Minimum radius may be defined in or outside the model. "
                              "Prescribe a minimum radius for a sampling coverage at a "
                              "specific height.");
-          prm.declare_entry ("Maximum radius", "0",
+          prm.declare_entry ("Maximum radius", "0.",
                              Patterns::Double (0.0),
                              "Parameter for the uniform distribution sampling scheme: "
                              "Maximum radius can be defined in or outside the model.");
-          prm.declare_entry ("Minimum longitude", "-180",
-                             Patterns::Double (-180.0,180.0),
+          prm.declare_entry ("Minimum longitude", "-180.",
+                             Patterns::Double (-180.0, 180.0),
                              "Parameter for the uniform distribution sampling scheme: "
                              "Gravity may be calculated for a sets of points along "
                              "the longitude between a minimum and maximum longitude.");
-          prm.declare_entry ("Minimum latitude", "-90",
-                             Patterns::Double (-90.0,90.0),
+          prm.declare_entry ("Minimum latitude", "-90.",
+                             Patterns::Double (-90.0, 90.0),
                              "Parameter for the uniform distribution sampling scheme: "
                              "Gravity may be calculated for a sets of points along "
                              "the latitude between a minimum and maximum latitude.");
-          prm.declare_entry ("Maximum longitude", "180",
-                             Patterns::Double (-180.0,180.0),
+          prm.declare_entry ("Maximum longitude", "180.",
+                             Patterns::Double (-180.0, 180.0),
                              "Parameter for the uniform distribution sampling scheme: "
                              "Gravity may be calculated for a sets of points along "
                              "the longitude between a minimum and maximum longitude.");
           prm.declare_entry ("Maximum latitude", "90",
-                             Patterns::Double (-90.0,90.0),
+                             Patterns::Double (-90.0, 90.0),
                              "Parameter for the uniform distribution sampling scheme: "
                              "Gravity may be calculated for a sets of points along "
                              "the latitude between a minimum and maximum latitude.");
-          prm.declare_entry ("Reference density", "3300",
+          prm.declare_entry ("Reference density", "3300.",
                              Patterns::Double (0.0),
                              "Gravity anomalies may be computed using density "
                              "anomalies relative to a reference density.");
           prm.declare_entry ("Precision in gravity output", "12",
-                             Patterns::Integer (0.0),
+                             Patterns::Integer (1),
                              "Set the precision of gravity acceleration, potential "
                              "and gradients in the gravity output and statistics file.");
           prm.declare_entry ("List of radius", "",
-                             Patterns::List (Patterns::Double(0)),
+                             Patterns::List (Patterns::Double (0.)),
                              "Parameter for the list of points sampling scheme: "
                              "List of satellite radius coordinates. Just specify one "
                              "radius if all points values have the same radius. If "
                              "not, make sure there are as many radius as longitude "
                              "and latitude");
           prm.declare_entry ("List of longitude", "",
-                             Patterns::List (Patterns::Double(-180.0,180.0)),
+                             Patterns::List (Patterns::Double(-180.0, 180.0)),
                              "Parameter for the list of points sampling scheme: "
                              "List of satellite longitude coordinates.");
           prm.declare_entry ("List of latitude", "",
-                             Patterns::List (Patterns::Double(-90.0,90.0)),
+                             Patterns::List (Patterns::Double(-90.0, 90.0)),
                              "Parameter for the list of points sampling scheme: "
                              "List of satellite latitude coordinates.");
           prm.declare_entry ("Time between gravity output", "1e8",

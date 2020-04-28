@@ -379,12 +379,12 @@ namespace aspect
                              "Method that is used to specify how the vs-to-density scaling varies "
                              "with depth.");
           prm.declare_entry ("Vs to density scaling", "0.25",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "This parameter specifies how the perturbation in shear wave velocity "
                              "as prescribed by SAVANI is scaled into a density perturbation. "
                              "See the general description of this model for more detailed information.");
           prm.declare_entry ("Thermal expansion coefficient in initial temperature scaling", "2e-5",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The value of the thermal expansion coefficient $\\beta$. "
                              "Units: $1/K$.");
           prm.declare_entry ("Use thermal expansion coefficient from material model", "false",
@@ -398,10 +398,11 @@ namespace aspect
                              "which will ensure that the laterally averaged temperature for a fixed "
                              "depth is equal to the background temperature.");
           prm.declare_entry ("Reference temperature", "1600.0",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The reference temperature that is perturbed by the spherical "
                              "harmonic functions. Only used in incompressible models.");
-          prm.declare_entry ("Remove temperature heterogeneity down to specified depth", boost::lexical_cast<std::string>(-std::numeric_limits<double>::max()),
+          prm.declare_entry ("Remove temperature heterogeneity down to specified depth",
+                             boost::lexical_cast<std::string>(-std::numeric_limits<double>::max()),
                              Patterns::Double (),
                              "This will set the heterogeneity prescribed by SAVANI to zero "
                              "down to the specified depth (in meters). Note that your resolution has "

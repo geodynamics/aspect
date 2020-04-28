@@ -101,10 +101,10 @@ namespace aspect
 
           Functions::ParsedFunction<dim>::declare_parameters (prm, 1);
 
-          prm.declare_entry ("Minimal temperature", "273",
+          prm.declare_entry ("Minimal temperature", "273.",
                              Patterns::Double (),
                              "Minimal temperature. Units: $\\si{K}$.");
-          prm.declare_entry ("Maximal temperature", "3773",
+          prm.declare_entry ("Maximal temperature", "3773.",
                              Patterns::Double (),
                              "Maximal temperature. Units: $\\si{K}$.");
         }

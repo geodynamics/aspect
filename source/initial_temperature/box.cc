@@ -190,7 +190,7 @@ namespace aspect
                             Patterns::Selection("gaussian|linear|constant"),
                             "The gradient of the inclusion to be generated.");
           prm.declare_entry("Shape radius", "1.0",
-                            Patterns::Double (0),
+                            Patterns::Double (0.),
                             "The radius of the inclusion to be generated. For "
                             "shapes with no radius (e.g. square), this will "
                             "be the width, and for shapes with no width, this "

@@ -2014,7 +2014,7 @@ namespace aspect
                            "the boundary of the model according to the names of the boundary "
                            "indicators (of the chosen geometry model).\\%d is any sprintf integer "
                            "qualifier, specifying the format of the current file number. ");
-        prm.declare_entry ("Scale factor", "1",
+        prm.declare_entry ("Scale factor", "1.",
                            Patterns::Double (),
                            "Scalar factor, which is applied to the model data. "
                            "You might want to use this to scale the input to a "
@@ -2494,13 +2494,13 @@ namespace aspect
       prm.enter_subsection (subsection_name);
       {
         prm.declare_entry ("Data file time step", "1e6",
-                           Patterns::Double (0),
+                           Patterns::Double (0.),
                            "Time step between following data files. "
                            "Depending on the setting of the global `Use years in output instead of seconds' flag "
                            "in the input file, this number is either interpreted as seconds or as years. "
                            "The default is one million, i.e., either one million seconds or one million years.");
         prm.declare_entry ("First data file model time", "0",
-                           Patterns::Double (0),
+                           Patterns::Double (0.),
                            "Time from which on the data file with number `First data "
                            "file number' is used as boundary condition. Until this "
                            "time, a boundary condition equal to zero everywhere is assumed. "

@@ -834,8 +834,8 @@ namespace aspect
                              "The file name of the material data. Provide file in format: "
                              "(Velocity file name).\\%d.gpml where \\%d is any sprintf integer "
                              "qualifier, specifying the format of the current file number.");
-          prm.declare_entry ("First data file model time", "0",
-                             Patterns::Double (0),
+          prm.declare_entry ("First data file model time", "0.",
+                             Patterns::Double (0.),
                              "Time from which on the velocity file with number 'First velocity "
                              "file number' is used as boundary condition. Previous to this "
                              "time, a no-slip boundary condition is assumed. Depending on the setting "
@@ -853,12 +853,12 @@ namespace aspect
                              "'First velocity file number' and decrease the file number during "
                              "the model run.");
           prm.declare_entry ("Data file time step", "1e6",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "Time step between following velocity files. "
                              "Depending on the setting of the global 'Use years in output instead of seconds' flag "
                              "in the input file, this number is either interpreted as seconds or as years. "
                              "The default is one million, i.e., either one million seconds or one million years.");
-          prm.declare_entry ("Scale factor", "1",
+          prm.declare_entry ("Scale factor", "1.",
                              Patterns::Double (),
                              "Scalar factor, which is applied to the boundary velocity. "
                              "You might want to use this to scale the velocities to a "
@@ -870,8 +870,8 @@ namespace aspect
           prm.declare_entry ("Point two", "1.570796,1.570796",
                              Patterns::Anything (),
                              "Point that determines the plane in which a 2D model lies in. Has to be in the format `a,b' where a and b are theta (polar angle)  and phi in radians.");
-          prm.declare_entry ("Lithosphere thickness", "100000",
-                             Patterns::Double (0),
+          prm.declare_entry ("Lithosphere thickness", "100000.",
+                             Patterns::Double (0.),
                              "Determines the depth of the lithosphere, so that the GPlates velocities can be applied at the sides of the model "
                              "as well as at the surface.");
         }

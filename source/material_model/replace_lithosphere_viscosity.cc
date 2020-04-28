@@ -79,7 +79,7 @@ namespace aspect
                             "``Material models/Model name'' parameter. See the documentation for "
                             "more information.");
           prm.declare_entry ("Lithosphere viscosity", "1e23",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The viscosity within lithosphere, applied above"
                              "the maximum lithosphere depth.");
 

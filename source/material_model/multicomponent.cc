@@ -91,8 +91,8 @@ namespace aspect
         {
           EquationOfState::MulticomponentIncompressible<dim>::declare_parameters (prm, 4.e-5);
 
-          prm.declare_entry ("Reference temperature", "293",
-                             Patterns::Double (0),
+          prm.declare_entry ("Reference temperature", "293.",
+                             Patterns::Double (0.),
                              "The reference temperature $T_0$. Units: $\\si{K}$.");
           prm.declare_entry ("Viscosities", "1.e21",
                              Patterns::Anything(),

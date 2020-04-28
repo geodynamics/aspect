@@ -95,19 +95,19 @@ namespace aspect
                             Patterns::List (Patterns::Double ()),
                             "Heating rates of different elements (W/kg)");
           prm.declare_entry("Half decay times","",
-                            Patterns::List (Patterns::Double (0)),
+                            Patterns::List (Patterns::Double (0.)),
                             "Half decay times. Units: (Seconds), or "
                             "(Years) if set `use years instead of seconds'.");
           prm.declare_entry("Initial concentrations crust","",
-                            Patterns::List (Patterns::Double (0)),
+                            Patterns::List (Patterns::Double (0.)),
                             "Initial concentrations of different elements (ppm)");
           prm.declare_entry("Initial concentrations mantle","",
-                            Patterns::List (Patterns::Double (0)),
+                            Patterns::List (Patterns::Double (0.)),
                             "Initial concentrations of different elements (ppm)");
           prm.declare_entry("Crust defined by composition","false",
                             Patterns::Bool(),
                             "Whether crust defined by composition or depth");
-          prm.declare_entry("Crust depth","0",
+          prm.declare_entry("Crust depth","0.",
                             Patterns::Double(),
                             "Depth of the crust when crust if defined by depth. "
                             "Units: $\\si{m}$");

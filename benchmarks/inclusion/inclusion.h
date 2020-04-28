@@ -211,7 +211,7 @@ namespace aspect
             prm.enter_subsection("Inclusion");
             {
               prm.declare_entry ("Viscosity jump", "1e3",
-                                 Patterns::Double (0),
+                                 Patterns::Double (0.),
                                  "Viscosity in the Inclusion.");
             }
             prm.leave_subsection();

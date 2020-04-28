@@ -70,7 +70,7 @@ namespace aspect
       Elasticity<dim>::declare_parameters (ParameterHandler &prm)
       {
         prm.declare_entry ("Elastic shear moduli", "75.0e9",
-                           Patterns::List(Patterns::Double(0)),
+                           Patterns::List(Patterns::Double (0.)),
                            "List of elastic shear moduli, $G$, "
                            "for background material and compositional fields, "
                            "for a total of N+1 values, where N is the number of compositional fields. "
@@ -88,7 +88,7 @@ namespace aspect
                            "'unspecified', which throws an exception during runtime. In order for "
                            "the model to run the user must select 'true' or 'false'.");
         prm.declare_entry ("Fixed elastic time step", "1.e3",
-                           Patterns::Double (0),
+                           Patterns::Double (0.),
                            "The fixed elastic time step $dte$. Units: years if the "
                            "'Use years in output instead of seconds' parameter is set; "
                            "seconds otherwise.");

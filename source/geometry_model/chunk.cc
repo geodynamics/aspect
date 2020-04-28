@@ -827,26 +827,26 @@ namespace aspect
       {
         prm.enter_subsection("Chunk");
         {
-          prm.declare_entry ("Chunk inner radius", "0",
-                             Patterns::Double (0),
+          prm.declare_entry ("Chunk inner radius", "0.",
+                             Patterns::Double (0.),
                              "Radius at the bottom surface of the chunk. Units: $\\si{m}$.");
-          prm.declare_entry ("Chunk outer radius", "1",
-                             Patterns::Double (0),
+          prm.declare_entry ("Chunk outer radius", "1.",
+                             Patterns::Double (0.),
                              "Radius at the top surface of the chunk. Units: $\\si{m}$.");
 
-          prm.declare_entry ("Chunk minimum longitude", "0",
-                             Patterns::Double (-180, 360), // enables crossing of either hemisphere
+          prm.declare_entry ("Chunk minimum longitude", "0.",
+                             Patterns::Double (-180., 360.), // enables crossing of either hemisphere
                              "Minimum longitude of the chunk. Units: degrees.");
-          prm.declare_entry ("Chunk maximum longitude", "1",
-                             Patterns::Double (-180, 360), // enables crossing of either hemisphere
+          prm.declare_entry ("Chunk maximum longitude", "1.",
+                             Patterns::Double (-180., 360.), // enables crossing of either hemisphere
                              "Maximum longitude of the chunk. Units: degrees.");
 
-          prm.declare_entry ("Chunk minimum latitude", "0",
-                             Patterns::Double (-90, 90),
+          prm.declare_entry ("Chunk minimum latitude", "0.",
+                             Patterns::Double (-90., 90.),
                              "Minimum latitude of the chunk. This value is ignored "
                              "if the simulation is in 2d. Units: degrees.");
-          prm.declare_entry ("Chunk maximum latitude", "1",
-                             Patterns::Double (-90, 90),
+          prm.declare_entry ("Chunk maximum latitude", "1.",
+                             Patterns::Double (-90., 90.),
                              "Maximum latitude of the chunk. This value is ignored "
                              "if the simulation is in 2d. Units: degrees.");
 

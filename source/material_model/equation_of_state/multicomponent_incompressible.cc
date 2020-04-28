@@ -64,8 +64,8 @@ namespace aspect
       MulticomponentIncompressible<dim>::declare_parameters (ParameterHandler &prm,
                                                              const double default_thermal_expansion)
       {
-        prm.declare_entry ("Reference temperature", "293",
-                           Patterns::Double (0),
+        prm.declare_entry ("Reference temperature", "293.",
+                           Patterns::Double (0.),
                            "The reference temperature $T_0$. Units: $\\si{K}$.");
         prm.declare_entry ("Densities", "3300.",
                            Patterns::Anything(),

@@ -105,7 +105,7 @@ namespace aspect
           prm.enter_subsection("Particles");
           {
             prm.declare_entry ("Number of particles", "1000",
-                               Patterns::Double (0),
+                               Patterns::Double (0.),
                                "Total number of particles to create (not per processor or per element). "
                                "The number is parsed as a floating point number (so that one can "
                                "specify, for example, '1e4' particles) but it is interpreted as "
@@ -115,22 +115,22 @@ namespace aspect
             {
               prm.enter_subsection("Uniform box");
               {
-                prm.declare_entry ("Minimum x", "0",
+                prm.declare_entry ("Minimum x", "0.",
                                    Patterns::Double (),
                                    "Minimum x coordinate for the region of particles.");
-                prm.declare_entry ("Maximum x", "1",
+                prm.declare_entry ("Maximum x", "1.",
                                    Patterns::Double (),
                                    "Maximum x coordinate for the region of particles.");
-                prm.declare_entry ("Minimum y", "0",
+                prm.declare_entry ("Minimum y", "0.",
                                    Patterns::Double (),
                                    "Minimum y coordinate for the region of particles.");
-                prm.declare_entry ("Maximum y", "1",
+                prm.declare_entry ("Maximum y", "1.",
                                    Patterns::Double (),
                                    "Maximum y coordinate for the region of particles.");
-                prm.declare_entry ("Minimum z", "0",
+                prm.declare_entry ("Minimum z", "0.",
                                    Patterns::Double (),
                                    "Minimum z coordinate for the region of particles.");
-                prm.declare_entry ("Maximum z", "1",
+                prm.declare_entry ("Maximum z", "1.",
                                    Patterns::Double (),
                                    "Maximum z coordinate for the region of particles.");
               }

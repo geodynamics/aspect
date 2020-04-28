@@ -76,22 +76,22 @@ namespace aspect
                                                          const unsigned int n_compositions)
       {
         prm.declare_entry ("Reference density", "3300",
-                           Patterns::Double (0),
+                           Patterns::Double (0.),
                            "Reference density $\\rho_0$. Units: $kg/m^3$.");
         prm.declare_entry ("Reference temperature", "293",
-                           Patterns::Double (0),
+                           Patterns::Double (0.),
                            "The reference temperature $T_0$. The reference temperature is used "
                            "in both the density and viscosity formulas. Units: $K$.");
         prm.declare_entry ("Reference specific heat", "1250",
-                           Patterns::Double (0),
+                           Patterns::Double (0.),
                            "The value of the specific heat $C_p$. "
                            "Units: $J/kg/K$.");
         prm.declare_entry ("Thermal expansion coefficient", "2e-5",
-                           Patterns::Double (0),
+                           Patterns::Double (0.),
                            "The value of the thermal expansion coefficient $\\alpha$. "
                            "Units: $1/K$.");
         if (n_compositions > 0)
-          prm.declare_entry ("Density differential for compositional field 1", "0",
+          prm.declare_entry ("Density differential for compositional field 1", "0.",
                              Patterns::Double(),
                              "If compositional fields are used, then one would frequently want "
                              "to make the density depend on these fields. In this simple material "
@@ -103,7 +103,7 @@ namespace aspect
                              "This parameter describes the value of $\\Delta \\rho$. Units: $kg/m^3/\\textrm{unit "
                              "change in composition}$.");
         if (n_compositions > 1)
-          prm.declare_entry ("Density differential for compositional field 2", "0",
+          prm.declare_entry ("Density differential for compositional field 2", "0.",
                              Patterns::Double(),
                              "If compositional fields are used, then one would frequently want "
                              "to make the density depend on these fields. In this simple material "

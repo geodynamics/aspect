@@ -150,25 +150,25 @@ namespace aspect
         prm.enter_subsection("Ascii reference profile");
         {
           prm.declare_entry ("Thermal conductivity", "4.0",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "Reference conductivity");
           prm.declare_entry ("Viscosity", "1e21",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "Viscosity");
           prm.declare_entry ("Use TALA", "false",
                              Patterns::Bool (),
                              "Whether to use the TALA instead of the ALA "
                              "approximation.");
-          prm.declare_entry ("Thermal viscosity exponent", "0.0",
-                             Patterns::Double (0),
+          prm.declare_entry ("Thermal viscosity exponent", "0.",
+                             Patterns::Double (0.),
                              "The temperature dependence of viscosity. Dimensionless exponent.");
           prm.declare_entry ("Transition depths", "1.5e5, 4.1e5, 6.6e5",
-                             Patterns::List (Patterns::Double(0)),
+                             Patterns::List (Patterns::Double(0.)),
                              "A list of depths where the viscosity changes. Values must "
                              "monotonically increase. "
                              "Units: $m$.");
-          prm.declare_entry ("Viscosity prefactors", "10, 0.1, 1, 10",
-                             Patterns::List (Patterns::Double(0)),
+          prm.declare_entry ("Viscosity prefactors", "10., 0.1, 1., 10.",
+                             Patterns::List (Patterns::Double(0.)),
                              "A list of prefactors for the viscosity that determine the viscosity "
                              "profile. Each prefactor is applied in a depth range specified by the "
                              "list of `Transition depths', i.e. the first prefactor is applied above "

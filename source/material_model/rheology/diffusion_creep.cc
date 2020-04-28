@@ -65,27 +65,27 @@ namespace aspect
       DiffusionCreep<dim>::declare_parameters (ParameterHandler &prm)
       {
         prm.declare_entry ("Prefactors for diffusion creep", "1.5e-15",
-                           Patterns::List(Patterns::Double(0)),
+                           Patterns::List(Patterns::Double (0.)),
                            "List of viscosity prefactors, $A$, for background material and compositional fields, "
                            "for a total of N+1 values, where N is the number of compositional fields. "
                            "If only one value is given, then all use the same value. "
                            "Units: $Pa^{-1} m^{m_{\\text{diffusion}}} s^{-1}$");
-        prm.declare_entry ("Grain size exponents for diffusion creep", "3",
-                           Patterns::List(Patterns::Double(0)),
+        prm.declare_entry ("Grain size exponents for diffusion creep", "3.",
+                           Patterns::List(Patterns::Double (0.)),
                            "List of grain size exponents, $m_{\\text{diffusion}}$, for background material and compositional fields, "
                            "for a total of N+1 values, where N is the number of compositional fields. "
                            "If only one value is given, then all use the same value. Units: None");
         prm.declare_entry ("Activation energies for diffusion creep", "375e3",
-                           Patterns::List(Patterns::Double(0)),
+                           Patterns::List(Patterns::Double (0.)),
                            "List of activation energies, $E_a$, for background material and compositional fields, "
                            "for a total of N+1 values, where N is the number of compositional fields. "
                            "If only one value is given, then all use the same value.  Units: $J / mol$");
         prm.declare_entry ("Activation volumes for diffusion creep", "6e-6",
-                           Patterns::List(Patterns::Double(0)),
+                           Patterns::List(Patterns::Double (0.)),
                            "List of activation volumes, $V_a$, for background material and compositional fields, "
                            "for a total of N+1 values, where N is the number of compositional fields. "
                            "If only one value is given, then all use the same value.  Units: $m^3 / mol$");
-        prm.declare_entry ("Grain size", "1e-3", Patterns::Double(0), "Units: $m$");
+        prm.declare_entry ("Grain size", "1e-3", Patterns::Double (0.), "Units: $m$");
       }
 
 

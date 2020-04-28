@@ -118,13 +118,13 @@ namespace aspect
         prm.enter_subsection("Steady state velocity");
         {
           prm.declare_entry ("Maximum relative deviation", "0.05",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The maximum relative deviation of the RMS in recent "
                              "simulation time for the system to be considered in "
                              "steady state. If the actual deviation is smaller "
                              "than this number, then the simulation will be terminated.");
           prm.declare_entry ("Time in steady state", "1e7",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The minimum length of simulation time that the system "
                              "should be in steady state before termination."
                              "Units: years if the "
