@@ -674,7 +674,8 @@ namespace aspect
        * <code>source/simulator/assembly.cc</code>.
        */
       void build_advection_preconditioner (const AdvectionField &advection_field,
-                                           aspect::LinearAlgebra::PreconditionILU &preconditioner);
+                                           aspect::LinearAlgebra::PreconditionILU &preconditioner,
+                                           const double diagonal_strengthening);
 
       /**
        * Initiate the assembly of the Stokes matrix and right hand side.
