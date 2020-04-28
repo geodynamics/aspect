@@ -12,17 +12,17 @@ bibtexkey: "KHB12",
 bibtex: '@Article{KHB12,\n  Title   = {High Accuracy Mantle Convection Simulation through Modern Numerical Methods},\n  Author  = {M. Kronbichler and T. Heister and W. Bangerth},\n  Journal = {Geophysical Journal International},\n  Year    = {2012},\n  Pages   = {12-29},\n  Volume  = {191},\n  doi     = {10.1111/j.1365-246X.2012.05609.x},\n  url     = {http://dx.doi.org/10.1111/j.1365-246X.2012.05609.x}\n}',
 group: 'main'},
 entry3:{
-text: "Wolfgang Bangerth, Juliane Dannberg, Rene Gassmoeller, Timo Heister, and others. 2017, March 1. Aspect V1.5.0. Zenodo. https://doi.org/10.5281/zenodo.344623",
+text: "Wolfgang Bangerth, Juliane Dannberg, Rene Gassmoeller, Timo Heister, and others. 2017, March 1. ASPECT v1.5.0. Zenodo. https://doi.org/10.5281/zenodo.344623",
 bibtexkey: "aspect-doi-v1.5.0",
 bibtex: '@misc{aspect-doi-v1.5.0,\n  title        = {{ASPECT} v1.5.0 [software]},\n  author       = {Wolfgang Bangerth and\n                  Juliane Dannberg and\n                  Rene Gassmoeller and\n                  Timo Heister and\n                  others},\n  month        = {mar},\n  year         = {2017},\n  doi          = {10.5281/zenodo.344623},\n  note         = {doi:10.5281/zenodo.344623},\n  url          = {https://doi.org/10.5281/zenodo.344623},\n  organization = {Computational Infrastructure for Geodynamics},\n  address      = {Davis, CA},\n}',
 group: '1.5.0'},
 entry4:{
-text: "Wolfgang Bangerth, Juliane Dannberg, Rene Gassmoeller, and Timo Heister. 2018, May 10. Aspect V2.0.0. Zenodo. https://doi.org/10.5281/zenodo.1244587",
+text: "Wolfgang Bangerth, Juliane Dannberg, Rene Gassmoeller, and Timo Heister. 2018, May 10. ASPECT v2.0.0. Zenodo. https://doi.org/10.5281/zenodo.1244587",
 bibtexkey: "aspect-doi-v2.0.0",
 bibtex: '@misc{aspect-doi-v2.0.0,\n  title        = {{ASPECT} v2.0.0 [software]},\n  author       = {Wolfgang Bangerth and\n                  Juliane Dannberg and\n                  Rene Gassmoeller and\n                  Timo Heister and\n                  others},\n  month        = may,\n  year         = 2018,\n  DOI          = {10.5281/zenodo.1244587},\n  URL          = {https://doi.org/10.5281/zenodo.1244587},\n  organization = {Computational Infrastructure for Geodynamics},\n  address      = {Davis, CA},\n}',
 group: '2.0.0'},
 entry5:{
-text: "Wolfgang Bangerth, Juliane Dannberg, Rene Gassmoeller, and Timo Heister. 2018, June 24. Aspect V2.0.1. Zenodo. https://doi.org/10.5281/zenodo.1297145",
+text: "Wolfgang Bangerth, Juliane Dannberg, Rene Gassmoeller, and Timo Heister. 2018, June 24. ASPECT v2.0.1. Zenodo. https://doi.org/10.5281/zenodo.1297145",
 bibtexkey: "aspect-doi-v2.0.1",
 bibtex: '@misc{aspect-doi-v2.0.1,\n  title        = {{ASPECT} v2.0.1 [software]},\n  author       = {Wolfgang Bangerth and\n                  Juliane Dannberg and\n                  Rene Gassmoeller and\n                  Timo Heister and\n                  others},\n  month        = jun,\n  year         = 2018,\n  DOI          = {10.5281/zenodo.1297145},\n  URL          = {https://doi.org/10.5281/zenodo.1297145},\n  organization = {Computational Infrastructure for Geodynamics},\n  address      = {Davis, CA},\n}',
 group: '2.0.1'},
@@ -49,14 +49,19 @@ group: 'melt'},
 entry10:{
 text: "Rene Gassmoeller, Eric Heien, Elbridge Gerry Puckett, and Wolfgang Bangerth. 2017. “Flexible and scalable particle-in-cell methods for massively parallel computations.” arXiv:1612.03369",
 bibtexkey: "gassmoeller_particles",
-bibtex: '@article{gassmoeller_particles,\n  title={Flexible and scalable particle-in-cell methods for massively parallel computations},\n  author={Gassmoeller, Rene and Heien, Eric and Puckett, Elbridge Gerry and Bangerth, Wolfgang},\n  journal={arXiv preprint arXiv:1612.03369},\n  year={2016},\n  URL={https://arxiv.org/abs/1612.03369}\n}',
+bibtex: '@article{gassmoeller_particles,\n  title={Flexible and Scalable Particle-in-Cell Methods With Adaptive Mesh Refinement for Geodynamic Computations},\n  author={Gassm{\\"o}ller, Rene and Lokavarapu, Harsha and Heien, Eric and Puckett, Elbridge Gerry and Bangerth, Wolfgang},\n  journal={Geochemistry, Geophysics, Geosystems},\n  volume={19},\n  number={9},\n  pages={3596--3604},\n  year={2018},\n  url={https://doi.org/10.1029/2018GC007508},\n  doi={10.1029/2018GC007508}\n}',
 group: 'particles'},
 entry11:{
+text: "Gassmöller, Rene, Juliane Dannberg, Wolfgang Bangerth, Timo Heister, and Robert Myhill. 2020. “On Formulations of Compressible Mantle Convection.” Geophysical Journal International 221 (2) (February 13): 1264–1280. doi:10.1093/gji/ggaa078. http://dx.doi.org/10.1093/gji/ggaa078.",
+bibtexkey: "gassmoller2020formulations",
+bibtex: '@article{gassmoller2020formulations,\n  title={On formulations of compressible mantle convection},\n  author={Gassm{\\"o}ller, Rene and Dannberg, Juliane and Bangerth, Wolfgang and Heister, Timo and Myhill, Robert},\n  journal={Geophysical Journal International},\n  volume={221},\n  number={2},\n  pages={1264--1280},\n  year={2020},\n  publisher={Oxford University Press},\n  doi={10.1093/gji/ggaa078},\n  url={https://doi.org/10.1093/gji/ggaa078}\n}',
+group: 'pda'},
+entry12:{
 text: "Timo Heister, Juliane Dannberg, Rene Gassmöller, and Wolfgang Bangerth. 2017. “High Accuracy Mantle Convection Simulation through Modern Numerical Methods – II: Realistic Models and Problems.” Geophysical Journal International 210 (2) (May 9): 833–851. doi:10.1093/gji/ggx195. http://dx.doi.org/10.1093/gji/ggx195.",
 bibtexkey: "heister_aspect_methods2",
 bibtex: '@article{heister_aspect_methods2,\n  title                    = {High Accuracy Mantle Convection Simulation through Modern Numerical Methods.\n                              {II}: {R}ealistic Models and Problems},\n  author                   = {Heister, Timo and Dannberg, Juliane and\n                              Gassm{\\"o}ller, Rene and Bangerth, Wolfgang},\n  journal                  = {Geophysical Journal International},\n  year                     = {2017},\n  number                   = {2},\n  pages                    = {833-851},\n  volume                   = {210},\n  DOI                      = {10.1093/gji/ggx195},\n  URL                      = {https://doi.org/10.1093/gji/ggx195}\n}',
 group: 'main'},
-entry12:{
+entry13:{
 text: "Ian Rose, Bruce Buffett, and Timo Heister. 2017. “Stability and Accuracy of Free Surface Time Integration in Viscous Flows.” Physics of the Earth and Planetary Interiors 262 (January): 90–100. doi:10.1016/j.pepi.2016.11.007. http://dx.doi.org/10.1016/j.pepi.2016.11.007.",
 bibtexkey: "rose_freesurface",
 bibtex: '@Article{rose_freesurface,\n  Title                    = {Stability and accuracy of free surface time integration in viscous flows},\n  Author                   = {Ian Rose and Bruce Buffett and Timo Heister},\n  Journal                  = {Physics of the Earth and Planetary Interiors},\n  Year                     = {2017},\n  Pages                    = {90 - 100},\n  Volume                   = {262},\n  Doi                      = {10.1016/j.pepi.2016.11.007},\n  ISSN                     = {0031-9201},\n  Url                      = {http://dx.doi.org/10.1016/j.pepi.2016.11.007}\n}',
