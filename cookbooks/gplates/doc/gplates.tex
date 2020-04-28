@@ -15,7 +15,7 @@ condition.
 \paragraph{Acquiring a plate reconstruction.}
 
 The plate reconstruction that is used in this cookbook is included in
-the \texttt{data/velocity-boundary-conditions/gplates/} directory of
+the \texttt{data/boundary-velocity/gplates/} directory of
 your \aspect{} installation.
 For a new model setup however, a user eventually needs to create her own data
 files, and so we will briefly discuss the process of acquiring a usable plate
@@ -196,7 +196,7 @@ the plugin will update the interpolation accordingly and if necessary read in
 new velocity files. In case it can not read the next velocity file, it assumes
 the last velocity file to be the constant boundary condition until the end of
 the model run. One can test this behavior with the provided data files
-\texttt{data/velocity\_boundary\_conditions/gplates/time\_dependent.\%d.gpml}
+\texttt{data/boundary-velocity/gplates/time\_dependent.\%d.gpml}
 with the index \texttt{d} ranging from 0 to 3 and representing the plate movements of
 the last 3 million years corresponding to the same plate reconstruction as used
 above. Additionally, the parameter \texttt{Velocity file start time} allows for
