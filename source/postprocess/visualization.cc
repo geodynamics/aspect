@@ -904,6 +904,11 @@ namespace aspect
                              "and a factor of 8 in 3d, when using quadratic elements for the velocity, "
                              "and correspondingly more for even higher order elements.");
 
+          prm.declare_entry ("Point-wise stress and strain", "false",
+                             Patterns::Bool(),
+                             "If set to true, quantities related to stress and strain are computed "
+                             "in each vertex. Otherwise, an average per cell is computed.");
+
           prm.declare_entry ("Write higher order output", "false",
                              Patterns::Bool(),
                              "deal.II offers the possibility to write vtu files with higher order "
@@ -1042,6 +1047,7 @@ namespace aspect
 
           interpolate_output = prm.get_bool("Interpolate output");
           filter_output = prm.get_bool("Filter output");
+          pointwise_stress_and_strain = prm.get_bool("Point-wise stress and strain");
           write_higher_order_output = prm.get_bool("Write higher order output");
 
 #if DEAL_II_VERSION_GTE(9,1,0)
@@ -1276,6 +1282,15 @@ namespace aspect
         }
 
       return requirements;
+    }
+
+
+
+    template <int dim>
+    bool
+    Visualization<dim>::output_pointwise_stress_and_strain () const
+    {
+      return pointwise_stress_and_strain;
     }
 
 

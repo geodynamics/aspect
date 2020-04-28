@@ -104,6 +104,7 @@ subsection Postprocess
 
   subsection Visualization
     set Interpolate output = false
+    set Point-wise stress and strain = true
 
     set List of output variables      = density, volumetric strain rate
     set Number of grouped files       = 0
