@@ -188,6 +188,7 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
         {
           in_dviscositydstrainrate.strain_rate[i] = in_base.strain_rate[i]
                                                     + std::fabs(in_base.strain_rate[i][strain_rate_indices])
+                                                    * (component > dim-1 ? 0.5 : 1 )
                                                     * finite_difference_accuracy
                                                     * aspect::Utilities::nth_basis_for_symmetric_tensors<dim>(component);
         }

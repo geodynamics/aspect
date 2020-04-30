@@ -1,3 +1,5 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 
 Loading shared library <./libvisco_plastic_derivatives_3d.so>
 
@@ -24,21 +26,21 @@ strain-rate: point = 1, component = 2, Finite difference = -1.24397e+26, Analyti
 strain-rate: point = 2, component = 2, Finite difference = 2.34886e+26, Analytical derivative = 2.34885e+26
 strain-rate: point = 3, component = 2, Finite difference = 0, Analytical derivative = 0
 strain-rate: point = 4, component = 2, Finite difference = 1.72133e+32, Analytical derivative = 1.72133e+32
-strain-rate: point = 0, component = 3, Finite difference = -1.52145e+33, Analytical derivative = -1.52145e+33
-strain-rate: point = 1, component = 3, Finite difference = 1.01879e+28, Analytical derivative = 1.01879e+28
-strain-rate: point = 2, component = 3, Finite difference = -6.40595e+27, Analytical derivative = -6.40595e+27
+strain-rate: point = 0, component = 3, Finite difference = -7.60726e+32, Analytical derivative = -7.60726e+32
+strain-rate: point = 1, component = 3, Finite difference = 5.09393e+27, Analytical derivative = 5.09393e+27
+strain-rate: point = 2, component = 3, Finite difference = -3.20297e+27, Analytical derivative = -3.20297e+27
 strain-rate: point = 3, component = 3, Finite difference = 0, Analytical derivative = 0
-strain-rate: point = 4, component = 3, Finite difference = -3.44265e+32, Analytical derivative = -3.44265e+32
-strain-rate: point = 0, component = 4, Finite difference = -1.52145e+33, Analytical derivative = -1.52145e+33
-strain-rate: point = 1, component = 4, Finite difference = 9.48845e+27, Analytical derivative = 9.48845e+27
-strain-rate: point = 2, component = 4, Finite difference = -6.40595e+27, Analytical derivative = -6.40595e+27
+strain-rate: point = 4, component = 3, Finite difference = -1.72133e+32, Analytical derivative = -1.72133e+32
+strain-rate: point = 0, component = 4, Finite difference = -7.60726e+32, Analytical derivative = -7.60726e+32
+strain-rate: point = 1, component = 4, Finite difference = 4.74422e+27, Analytical derivative = 4.74422e+27
+strain-rate: point = 2, component = 4, Finite difference = -3.20297e+27, Analytical derivative = -3.20297e+27
 strain-rate: point = 3, component = 4, Finite difference = 0, Analytical derivative = 0
-strain-rate: point = 4, component = 4, Finite difference = -3.44265e+32, Analytical derivative = -3.44265e+32
-strain-rate: point = 0, component = 5, Finite difference = -1.52145e+33, Analytical derivative = -1.52145e+33
-strain-rate: point = 1, component = 5, Finite difference = 9.13874e+27, Analytical derivative = 9.13874e+27
-strain-rate: point = 2, component = 5, Finite difference = -6.40595e+27, Analytical derivative = -6.40595e+27
+strain-rate: point = 4, component = 4, Finite difference = -1.72133e+32, Analytical derivative = -1.72133e+32
+strain-rate: point = 0, component = 5, Finite difference = -7.60726e+32, Analytical derivative = -7.60726e+32
+strain-rate: point = 1, component = 5, Finite difference = 4.56937e+27, Analytical derivative = 4.56937e+27
+strain-rate: point = 2, component = 5, Finite difference = -3.20297e+27, Analytical derivative = -3.20297e+27
 strain-rate: point = 3, component = 5, Finite difference = 0, Analytical derivative = 0
-strain-rate: point = 4, component = 5, Finite difference = -3.44265e+32, Analytical derivative = -3.44265e+32
+strain-rate: point = 4, component = 5, Finite difference = -1.72133e+32, Analytical derivative = -1.72133e+32
 OK
 
 Testing ViscoPlastic derivatives against analytical derivatives for averaging parameter geometric
@@ -65,21 +67,21 @@ strain-rate: point = 1, component = 2, Finite difference = -1.24701e+26, Analyti
 strain-rate: point = 2, component = 2, Finite difference = 2.3492e+26, Analytical derivative = 2.34885e+26
 strain-rate: point = 3, component = 2, Finite difference = 0, Analytical derivative = 0
 strain-rate: point = 4, component = 2, Finite difference = 1.72133e+32, Analytical derivative = 1.72133e+32
-strain-rate: point = 0, component = 3, Finite difference = -1.52145e+33, Analytical derivative = -1.52145e+33
-strain-rate: point = 1, component = 3, Finite difference = 1.01879e+28, Analytical derivative = 1.01879e+28
-strain-rate: point = 2, component = 3, Finite difference = -6.40594e+27, Analytical derivative = -6.40595e+27
+strain-rate: point = 0, component = 3, Finite difference = -7.60731e+32, Analytical derivative = -7.60726e+32
+strain-rate: point = 1, component = 3, Finite difference = 5.09393e+27, Analytical derivative = 5.09393e+27
+strain-rate: point = 2, component = 3, Finite difference = -3.20297e+27, Analytical derivative = -3.20297e+27
 strain-rate: point = 3, component = 3, Finite difference = 0, Analytical derivative = 0
-strain-rate: point = 4, component = 3, Finite difference = -3.44265e+32, Analytical derivative = -3.44265e+32
-strain-rate: point = 0, component = 4, Finite difference = -1.52145e+33, Analytical derivative = -1.52145e+33
-strain-rate: point = 1, component = 4, Finite difference = 9.48844e+27, Analytical derivative = 9.48845e+27
-strain-rate: point = 2, component = 4, Finite difference = -6.40594e+27, Analytical derivative = -6.40595e+27
+strain-rate: point = 4, component = 3, Finite difference = -1.72133e+32, Analytical derivative = -1.72133e+32
+strain-rate: point = 0, component = 4, Finite difference = -7.60731e+32, Analytical derivative = -7.60726e+32
+strain-rate: point = 1, component = 4, Finite difference = 4.74422e+27, Analytical derivative = 4.74422e+27
+strain-rate: point = 2, component = 4, Finite difference = -3.20297e+27, Analytical derivative = -3.20297e+27
 strain-rate: point = 3, component = 4, Finite difference = 0, Analytical derivative = 0
-strain-rate: point = 4, component = 4, Finite difference = -3.44265e+32, Analytical derivative = -3.44265e+32
-strain-rate: point = 0, component = 5, Finite difference = -1.52145e+33, Analytical derivative = -1.52145e+33
-strain-rate: point = 1, component = 5, Finite difference = 9.13873e+27, Analytical derivative = 9.13874e+27
-strain-rate: point = 2, component = 5, Finite difference = -6.40594e+27, Analytical derivative = -6.40595e+27
+strain-rate: point = 4, component = 4, Finite difference = -1.72133e+32, Analytical derivative = -1.72133e+32
+strain-rate: point = 0, component = 5, Finite difference = -7.60731e+32, Analytical derivative = -7.60726e+32
+strain-rate: point = 1, component = 5, Finite difference = 4.56937e+27, Analytical derivative = 4.56937e+27
+strain-rate: point = 2, component = 5, Finite difference = -3.20297e+27, Analytical derivative = -3.20297e+27
 strain-rate: point = 3, component = 5, Finite difference = 0, Analytical derivative = 0
-strain-rate: point = 4, component = 5, Finite difference = -3.44265e+32, Analytical derivative = -3.44265e+32
+strain-rate: point = 4, component = 5, Finite difference = -1.72133e+32, Analytical derivative = -1.72133e+32
 Some parts of the test where not successful.
 
 Testing ViscoPlastic derivatives against analytical derivatives for averaging parameter arithmetic
@@ -103,21 +105,21 @@ strain-rate: point = 1, component = 2, Finite difference = -1.24382e+26, Analyti
 strain-rate: point = 2, component = 2, Finite difference = 2.34884e+26, Analytical derivative = 2.34885e+26
 strain-rate: point = 3, component = 2, Finite difference = 0, Analytical derivative = 0
 strain-rate: point = 4, component = 2, Finite difference = 1.72133e+32, Analytical derivative = 1.72133e+32
-strain-rate: point = 0, component = 3, Finite difference = -1.52145e+33, Analytical derivative = -1.52145e+33
-strain-rate: point = 1, component = 3, Finite difference = 1.01879e+28, Analytical derivative = 1.01879e+28
-strain-rate: point = 2, component = 3, Finite difference = -6.40595e+27, Analytical derivative = -6.40595e+27
+strain-rate: point = 0, component = 3, Finite difference = -7.60726e+32, Analytical derivative = -7.60726e+32
+strain-rate: point = 1, component = 3, Finite difference = 5.09393e+27, Analytical derivative = 5.09393e+27
+strain-rate: point = 2, component = 3, Finite difference = -3.20298e+27, Analytical derivative = -3.20297e+27
 strain-rate: point = 3, component = 3, Finite difference = 0, Analytical derivative = 0
-strain-rate: point = 4, component = 3, Finite difference = -3.44265e+32, Analytical derivative = -3.44265e+32
-strain-rate: point = 0, component = 4, Finite difference = -1.52145e+33, Analytical derivative = -1.52145e+33
-strain-rate: point = 1, component = 4, Finite difference = 9.48845e+27, Analytical derivative = 9.48845e+27
-strain-rate: point = 2, component = 4, Finite difference = -6.40595e+27, Analytical derivative = -6.40595e+27
+strain-rate: point = 4, component = 3, Finite difference = -1.72133e+32, Analytical derivative = -1.72133e+32
+strain-rate: point = 0, component = 4, Finite difference = -7.60726e+32, Analytical derivative = -7.60726e+32
+strain-rate: point = 1, component = 4, Finite difference = 4.74422e+27, Analytical derivative = 4.74422e+27
+strain-rate: point = 2, component = 4, Finite difference = -3.20298e+27, Analytical derivative = -3.20297e+27
 strain-rate: point = 3, component = 4, Finite difference = 0, Analytical derivative = 0
-strain-rate: point = 4, component = 4, Finite difference = -3.44265e+32, Analytical derivative = -3.44265e+32
-strain-rate: point = 0, component = 5, Finite difference = -1.52145e+33, Analytical derivative = -1.52145e+33
-strain-rate: point = 1, component = 5, Finite difference = 9.13874e+27, Analytical derivative = 9.13874e+27
-strain-rate: point = 2, component = 5, Finite difference = -6.40595e+27, Analytical derivative = -6.40595e+27
+strain-rate: point = 4, component = 4, Finite difference = -1.72133e+32, Analytical derivative = -1.72133e+32
+strain-rate: point = 0, component = 5, Finite difference = -7.60726e+32, Analytical derivative = -7.60726e+32
+strain-rate: point = 1, component = 5, Finite difference = 4.56937e+27, Analytical derivative = 4.56937e+27
+strain-rate: point = 2, component = 5, Finite difference = -3.20298e+27, Analytical derivative = -3.20297e+27
 strain-rate: point = 3, component = 5, Finite difference = 0, Analytical derivative = 0
-strain-rate: point = 4, component = 5, Finite difference = -3.44265e+32, Analytical derivative = -3.44265e+32
+strain-rate: point = 4, component = 5, Finite difference = -1.72133e+32, Analytical derivative = -1.72133e+32
 OK
 
 Testing ViscoPlastic derivatives against analytical derivatives for averaging parameter maximum composition
@@ -141,22 +143,24 @@ strain-rate: point = 1, component = 2, Finite difference = -1.24382e+26, Analyti
 strain-rate: point = 2, component = 2, Finite difference = 2.34885e+26, Analytical derivative = 2.34885e+26
 strain-rate: point = 3, component = 2, Finite difference = 0, Analytical derivative = 0
 strain-rate: point = 4, component = 2, Finite difference = 1.72133e+32, Analytical derivative = 1.72133e+32
-strain-rate: point = 0, component = 3, Finite difference = -1.52145e+33, Analytical derivative = -1.52145e+33
-strain-rate: point = 1, component = 3, Finite difference = 1.01879e+28, Analytical derivative = 1.01879e+28
-strain-rate: point = 2, component = 3, Finite difference = -6.40595e+27, Analytical derivative = -6.40595e+27
+strain-rate: point = 0, component = 3, Finite difference = -7.60726e+32, Analytical derivative = -7.60726e+32
+strain-rate: point = 1, component = 3, Finite difference = 5.09393e+27, Analytical derivative = 5.09393e+27
+strain-rate: point = 2, component = 3, Finite difference = -3.20297e+27, Analytical derivative = -3.20297e+27
 strain-rate: point = 3, component = 3, Finite difference = 0, Analytical derivative = 0
-strain-rate: point = 4, component = 3, Finite difference = -3.44265e+32, Analytical derivative = -3.44265e+32
-strain-rate: point = 0, component = 4, Finite difference = -1.52145e+33, Analytical derivative = -1.52145e+33
-strain-rate: point = 1, component = 4, Finite difference = 9.48845e+27, Analytical derivative = 9.48845e+27
-strain-rate: point = 2, component = 4, Finite difference = -6.40595e+27, Analytical derivative = -6.40595e+27
+strain-rate: point = 4, component = 3, Finite difference = -1.72133e+32, Analytical derivative = -1.72133e+32
+strain-rate: point = 0, component = 4, Finite difference = -7.60726e+32, Analytical derivative = -7.60726e+32
+strain-rate: point = 1, component = 4, Finite difference = 4.74422e+27, Analytical derivative = 4.74422e+27
+strain-rate: point = 2, component = 4, Finite difference = -3.20297e+27, Analytical derivative = -3.20297e+27
 strain-rate: point = 3, component = 4, Finite difference = 0, Analytical derivative = 0
-strain-rate: point = 4, component = 4, Finite difference = -3.44265e+32, Analytical derivative = -3.44265e+32
-strain-rate: point = 0, component = 5, Finite difference = -1.52145e+33, Analytical derivative = -1.52145e+33
-strain-rate: point = 1, component = 5, Finite difference = 9.13874e+27, Analytical derivative = 9.13874e+27
-strain-rate: point = 2, component = 5, Finite difference = -6.40595e+27, Analytical derivative = -6.40595e+27
+strain-rate: point = 4, component = 4, Finite difference = -1.72133e+32, Analytical derivative = -1.72133e+32
+strain-rate: point = 0, component = 5, Finite difference = -7.60726e+32, Analytical derivative = -7.60726e+32
+strain-rate: point = 1, component = 5, Finite difference = 4.56937e+27, Analytical derivative = 4.56937e+27
+strain-rate: point = 2, component = 5, Finite difference = -3.20297e+27, Analytical derivative = -3.20297e+27
 strain-rate: point = 3, component = 5, Finite difference = 0, Analytical derivative = 0
-strain-rate: point = 4, component = 5, Finite difference = -3.44265e+32, Analytical derivative = -3.44265e+32
+strain-rate: point = 4, component = 5, Finite difference = -1.72133e+32, Analytical derivative = -1.72133e+32
 OK
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 Number of active cells: 100 (on 1 levels)
 Number of degrees of freedom: 9,503 (3,969+242+1,323+1,323+1,323+1,323)
 
@@ -170,4 +174,9 @@ Number of degrees of freedom: 9,503 (3,969+242+1,323+1,323+1,323+1,323)
 Termination requested by criterion: end time
 
 
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
 
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
