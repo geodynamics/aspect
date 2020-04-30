@@ -351,6 +351,7 @@ namespace aspect
 
               const SymmetricTensor<2,dim> strain_rate_difference = in.strain_rate[i]
                                                                     + std::max(std::fabs(in.strain_rate[i][strain_rate_indices]), min_strain_rate)
+                                                                    * (component > dim-1 ? 0.5 : 1 )
                                                                     * finite_difference_accuracy
                                                                     * Utilities::nth_basis_for_symmetric_tensors<dim>(component);
               std::vector<double> eta_component =
