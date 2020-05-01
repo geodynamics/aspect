@@ -75,17 +75,9 @@ namespace aspect
          * Fills in the viscosity table, sets the value for the pressure scaling constant,
          * and gives information regarding compressibility.
          */
-        void fill_cell_data(const dealii::LinearAlgebra::distributed::Vector<number> &viscosity_values,
-                            const double pressure_scaling,
-                            const Triangulation<dim> &tria,
-                            const DoFHandler<dim> &dof_handler_for_projection,
-                            const bool is_compressible);
-
-        /**
-         * Returns the viscosity table.
-         */
-        const Table<1, VectorizedArray<number> > &
-        get_viscosity_x_2_table();
+        void fill_cell_data (const Table<1, VectorizedArray<number>> &viscosity_table,
+                             const double pressure_scaling,
+                             const bool is_compressible);
 
         /**
          * Computes the diagonal of the matrix. Since matrix-free operators have not access
@@ -114,7 +106,7 @@ namespace aspect
         /**
          * Table which stores a viscosity value for each cell.
          */
-        Table<1, VectorizedArray<number> > viscosity_x_2;
+        const Table<1, VectorizedArray<number>> *viscosity;
 
         /**
          * Pressure scaling constant.
@@ -151,10 +143,7 @@ namespace aspect
          * @p is_mg_level_data describes whether the viscosity values are defined for a multigrid level
          * matrix or for the active level matrix.
          */
-        void fill_cell_data (const dealii::LinearAlgebra::distributed::Vector<number> &viscosity_values,
-                             const Triangulation<dim> &tria,
-                             const DoFHandler<dim> &dof_handler_for_projection,
-                             const bool is_mg_level_data,
+        void fill_cell_data (const Table<1, VectorizedArray<number>> &viscosity_table,
                              const double pressure_scaling);
 
 
@@ -194,7 +183,7 @@ namespace aspect
         /**
          * Table which stores a viscosity value for each cell.
          */
-        Table<1, VectorizedArray<number> > one_over_viscosity;
+        const Table<1, VectorizedArray<number>> *viscosity;
 
         /**
          * Pressure scaling constant.
@@ -227,11 +216,8 @@ namespace aspect
          * @p is_mg_level_data describes whether the viscosity values are defined for a multigrid level
          * matrix or for the active level matrix.
          */
-        void fill_cell_data(const dealii::LinearAlgebra::distributed::Vector<number> &viscosity_values,
-                            const Triangulation<dim> &tria,
-                            const DoFHandler<dim> &dof_handler_for_projection,
-                            const bool is_mg_level_data,
-                            const bool is_compressible);
+        void fill_cell_data (const Table<1, VectorizedArray<number>> &viscosity_table,
+                             const bool is_compressible);
 
         /**
          * Computes the diagonal of the matrix. Since matrix-free operators have not access
@@ -275,7 +261,7 @@ namespace aspect
         /**
          * Table which stores a viscosity value for each cell.
          */
-        Table<1, VectorizedArray<number> > viscosity_x_2;
+        const Table<1, VectorizedArray<number>> *viscosity;
 
         /**
           * Information on the compressibility of the flow.
@@ -419,10 +405,16 @@ namespace aspect
       DoFHandler<dim> dof_handler_p;
       DoFHandler<dim> dof_handler_projection;
 
-      FESystem<dim> stokes_fe;
       FESystem<dim> fe_v;
       FESystem<dim> fe_p;
       FESystem<dim> fe_projection;
+
+      Table<1, VectorizedArray<double>> active_viscosity_table;
+      MGLevelObject<Table<1, VectorizedArray<double>>> level_viscosity_tables;
+
+      // This variable is needed only in the setup in both evaluate_material_model()
+      // and build_preconditioner(). It will be deleted after the last use.
+      MGLevelObject<dealii::LinearAlgebra::distributed::Vector<double> > level_viscosity_vector;
 
       typedef MatrixFreeStokesOperators::StokesOperator<dim,velocity_degree,double> StokesMatrixType;
       typedef MatrixFreeStokesOperators::MassMatrixOperator<dim,velocity_degree-1,double> SchurComplementMatrixType;
@@ -434,7 +426,6 @@ namespace aspect
 
       ConstraintMatrix constraints_v;
       ConstraintMatrix constraints_p;
-      ConstraintMatrix constraints_projection;
 
       MGLevelObject<ABlockMatrixType> mg_matrices_A_block;
       MGLevelObject<SchurComplementMatrixType> mg_matrices_Schur_complement;
@@ -442,9 +433,6 @@ namespace aspect
       MGConstrainedDoFs mg_constrained_dofs_A_block;
       MGConstrainedDoFs mg_constrained_dofs_Schur_complement;
       MGConstrainedDoFs mg_constrained_dofs_projection;
-
-      dealii::LinearAlgebra::distributed::Vector<double> active_coef_dof_vec;
-      MGLevelObject<dealii::LinearAlgebra::distributed::Vector<double> > level_coef_dof_vec;
 
       MGTransferMatrixFree<dim,double> mg_transfer_A_block;
       MGTransferMatrixFree<dim,double> mg_transfer_Schur_complement;
