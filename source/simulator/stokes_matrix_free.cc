@@ -797,11 +797,13 @@ namespace aspect
 
     for (unsigned int cell=cell_range.first; cell<cell_range.second; ++cell)
       {
+        VectorizedArray<number> one_over_cell_viscosity = (*viscosity)(cell);
+
         // The /= operator for VectorizedArray results in a foating point operation
         // (divide by 0) since the (*viscosity)(cell) array is not completely filled.
         // Therefore, we need to divide each entry manually.
-        VectorizedArray<number> one_over_cell_viscosity = (*viscosity)(cell);
-        for (unsigned int c=0; c<this->get_matrix_free()->n_components_filled(cell); ++c)
+        const unsigned int n_components_filled = this->get_matrix_free()->n_components_filled(cell);
+        for (unsigned int c=0; c<n_components_filled; ++c)
           one_over_cell_viscosity[c] = pressure_scaling*pressure_scaling/one_over_cell_viscosity[c];
 
         pressure.reinit (cell);
@@ -871,11 +873,13 @@ namespace aspect
     FEEvaluation<dim,degree_p,degree_p+2,1,number> pressure (data, 0);
     for (unsigned int cell=cell_range.first; cell<cell_range.second; ++cell)
       {
+        VectorizedArray<number> one_over_cell_viscosity = (*viscosity)(cell);
+
         // The /= operator for VectorizedArray results in a foating point operation
         // (divide by 0) since the (*viscosity)(cell) array is not completely filled.
         // Therefore, we need to divide each entry manually.
-        VectorizedArray<number> one_over_cell_viscosity = (*viscosity)(cell);
-        for (unsigned int c=0; c<this->get_matrix_free()->n_components_filled(cell); ++c)
+        const unsigned int n_components_filled = this->get_matrix_free()->n_components_filled(cell);
+        for (unsigned int c=0; c<n_components_filled; ++c)
           one_over_cell_viscosity[c] = pressure_scaling*pressure_scaling/one_over_cell_viscosity[c];
 
         pressure.reinit (cell);
@@ -1274,19 +1278,22 @@ namespace aspect
 
       std::vector<types::global_dof_index> local_dof_indices(dof_handler_projection.get_fe().dofs_per_cell);
       for (unsigned int cell=0; cell<n_cells; ++cell)
-        for (unsigned int i=0; i<stokes_matrix.get_matrix_free()->n_components_filled(cell); ++i)
-          {
-            typename DoFHandler<dim>::active_cell_iterator FEQ_cell =
-              stokes_matrix.get_matrix_free()->get_cell_iterator(cell,i);
-            typename DoFHandler<dim>::active_cell_iterator DG_cell(&(sim.triangulation),
-                                                                   FEQ_cell->level(),
-                                                                   FEQ_cell->index(),
-                                                                   &dof_handler_projection);
-            DG_cell->get_active_or_mg_dof_indices(local_dof_indices);
+        {
+          const unsigned int n_components_filled = stokes_matrix.get_matrix_free()->n_components_filled(cell);
+          for (unsigned int i=0; i<n_components_filled; ++i)
+            {
+              typename DoFHandler<dim>::active_cell_iterator FEQ_cell =
+                stokes_matrix.get_matrix_free()->get_cell_iterator(cell,i);
+              typename DoFHandler<dim>::active_cell_iterator DG_cell(&(sim.triangulation),
+                                                                     FEQ_cell->level(),
+                                                                     FEQ_cell->index(),
+                                                                     &dof_handler_projection);
+              DG_cell->get_active_or_mg_dof_indices(local_dof_indices);
 
-            Assert(local_dof_indices.size() == 1, ExcNotImplemented());
-            active_viscosity_table(cell)[i] = active_viscosity_vector(local_dof_indices[0]);
-          }
+              Assert(local_dof_indices.size() == 1, ExcNotImplemented());
+              active_viscosity_table(cell)[i] = active_viscosity_vector(local_dof_indices[0]);
+            }
+        }
     }
 
     const bool is_compressible = sim.material_model->is_compressible();
@@ -1325,19 +1332,22 @@ namespace aspect
 
           std::vector<types::global_dof_index> local_dof_indices(dof_handler_projection.get_fe().dofs_per_cell);
           for (unsigned int cell=0; cell<n_cells; ++cell)
-            for (unsigned int i=0; i<mg_matrices_A_block[level].get_matrix_free()->n_components_filled(cell); ++i)
-              {
-                typename DoFHandler<dim>::level_cell_iterator FEQ_cell =
-                  mg_matrices_A_block[level].get_matrix_free()->get_cell_iterator(cell,i);
-                typename DoFHandler<dim>::level_cell_iterator DG_cell(&(sim.triangulation),
-                                                                      FEQ_cell->level(),
-                                                                      FEQ_cell->index(),
-                                                                      &dof_handler_projection);
-                DG_cell->get_active_or_mg_dof_indices(local_dof_indices);
+            {
+              const unsigned int n_components_filled = mg_matrices_A_block[level].get_matrix_free()->n_components_filled(cell);
+              for (unsigned int i=0; i<n_components_filled; ++i)
+                {
+                  typename DoFHandler<dim>::level_cell_iterator FEQ_cell =
+                    mg_matrices_A_block[level].get_matrix_free()->get_cell_iterator(cell,i);
+                  typename DoFHandler<dim>::level_cell_iterator DG_cell(&(sim.triangulation),
+                                                                        FEQ_cell->level(),
+                                                                        FEQ_cell->index(),
+                                                                        &dof_handler_projection);
+                  DG_cell->get_active_or_mg_dof_indices(local_dof_indices);
 
-                Assert(local_dof_indices.size() == 1, ExcNotImplemented());
-                level_viscosity_tables[level](cell)[i] = level_viscosity_vector[level](local_dof_indices[0]);
-              }
+                  Assert(local_dof_indices.size() == 1, ExcNotImplemented());
+                  level_viscosity_tables[level](cell)[i] = level_viscosity_vector[level](local_dof_indices[0]);
+                }
+            }
         }
 
         mg_matrices_A_block[level].fill_cell_data (level_viscosity_tables[level],
