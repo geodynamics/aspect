@@ -732,6 +732,23 @@ namespace aspect
             ExcMessage("You can not call this function if there is no particle world."));
     return *simulator->particle_world.get();
   }
+
+
+
+  template <int dim>
+  bool SimulatorAccess<dim>::is_stokes_matrix_free()
+  {
+    return (simulator->stokes_matrix_free ? true : false);
+  }
+
+  template <int dim>
+  const StokesMatrixFreeHandler<dim> &
+  SimulatorAccess<dim>::get_stokes_matrix_free () const
+  {
+    Assert (simulator->stokes_matrix_free.get() != nullptr,
+            ExcMessage("You can not call this function if the matrix-free Stokes solver is not used."));
+    return *(simulator->stokes_matrix_free);
+  }
 }
 
 

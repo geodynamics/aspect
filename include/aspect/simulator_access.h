@@ -140,6 +140,7 @@ namespace aspect
 
   template <int dim> class NewtonHandler;
 
+  template <int dim> class StokesMatrixFreeHandler;
 
   namespace Particle
   {
@@ -900,6 +901,18 @@ namespace aspect
        */
       Particle::World<dim> &
       get_particle_world();
+
+      /**
+       *  Return true if using the block GMG Stokes solver.
+       */
+      bool is_stokes_matrix_free();
+
+      /**
+       * Return a reference to the StokesMatrixFreeHandler that controls the
+       * matrix-free Stokes solver.
+       */
+      const StokesMatrixFreeHandler<dim> &
+      get_stokes_matrix_free () const;
 
       /** @} */
 

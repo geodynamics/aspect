@@ -2272,6 +2272,79 @@ namespace aspect
 
 
 
+  template <int dim, int velocity_degree>
+  const DoFHandler<dim> &
+  StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::get_dof_handler_v () const
+  {
+    return dof_handler_v;
+  }
+
+
+  template <int dim, int velocity_degree>
+  const DoFHandler<dim> &
+  StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::get_dof_handler_p () const
+  {
+    return dof_handler_p;
+  }
+
+
+  template <int dim, int velocity_degree>
+  const DoFHandler<dim> &
+  StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::get_dof_handler_projection () const
+  {
+    return dof_handler_projection;
+  }
+
+
+  template <int dim, int velocity_degree>
+  const ConstraintMatrix &
+  StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::get_constraints_v() const
+  {
+    return constraints_v;
+  }
+
+
+  template <int dim, int velocity_degree>
+  const ConstraintMatrix &
+  StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::get_constraints_p() const
+  {
+    return constraints_p;
+  }
+
+
+  template <int dim, int velocity_degree>
+  const MGTransferMatrixFree<dim,double> &
+  StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::get_mg_transfer_A() const
+  {
+    return mg_transfer_A_block;
+  }
+
+
+  template <int dim, int velocity_degree>
+  const MGTransferMatrixFree<dim,double> &
+  StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::get_mg_transfer_S() const
+  {
+    return mg_transfer_Schur_complement;
+  }
+
+
+  template <int dim, int velocity_degree>
+  const Table<1, VectorizedArray<double>> &
+                                       StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::get_active_viscosity_table() const
+  {
+    return active_viscosity_table;
+  }
+
+
+  template <int dim, int velocity_degree>
+  const MGLevelObject<Table<1, VectorizedArray<double>>> &
+  StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::get_level_viscosity_tables() const
+  {
+    return level_viscosity_tables;
+  }
+
+
+
 
 // explicit instantiation of the functions we implement in this file
 #define INSTANTIATE(dim) \
