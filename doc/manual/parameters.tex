@@ -29,10 +29,10 @@ The typical use of this parameter is so that you can implement additional plugin
 
 \index[prmindex]{Adiabatic surface temperature}
 \index[prmindexfull]{Adiabatic surface temperature}
-{\it Value:} 0
+{\it Value:} 0.
 
 
-{\it Default:} 0
+{\it Default:} 0.
 
 
 {\it Description:} In order to make the problem in the first time step easier to solve, we need a reasonable guess for the temperature and pressure. To obtain it, we use an adiabatic pressure and temperature field. This parameter describes what the `adiabatic' temperature would be at the surface of the domain (i.e. at depth zero). Note that this value need not coincide with the boundary condition posed at this point. Rather, the boundary condition may differ significantly from the adiabatic value, and then typically induce a thermal boundary layer.
@@ -270,10 +270,10 @@ The `IMPES' scheme is deprecated and only allowed for reasons of backwards compa
 
 \index[prmindex]{Start time}
 \index[prmindexfull]{Start time}
-{\it Value:} 0
+{\it Value:} 0.
 
 
-{\it Default:} 0
+{\it Default:} 0.
 
 
 {\it Description:} The start time of the simulation. Units: Years if the 'Use years in output instead of seconds' parameter is set; seconds otherwise.
@@ -287,10 +287,10 @@ The `IMPES' scheme is deprecated and only allowed for reasons of backwards compa
 
 \index[prmindex]{Surface pressure}
 \index[prmindexfull]{Surface pressure}
-{\it Value:} 0
+{\it Value:} 0.
 
 
-{\it Default:} 0
+{\it Default:} 0.
 
 
 {\it Description:} The value the pressure is normalized to in each time step when `Pressure normalization' is set to `surface' with default value 0. This setting is ignored in all other cases.
@@ -466,10 +466,10 @@ For more information, see the section in the manual that discusses the general m
 
 \index[prmindex]{Scale factor}
 \index[prmindexfull]{Adiabatic conditions model!Ascii data model!Scale factor}
-{\it Value:} 1
+{\it Value:} 1.
 
 
-{\it Default:} 1
+{\it Default:} 1.
 
 
 {\it Description:} Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model. Another way to use this factor is to convert units of the input files. For instance, if you provide velocities in cm/yr set this factor to 0.01.
@@ -963,10 +963,10 @@ Because this class simply takes what the initial composition had described, this
 
 \index[prmindex]{Scale factor}
 \index[prmindexfull]{Boundary composition model!Ascii data model!Scale factor}
-{\it Value:} 1
+{\it Value:} 1.
 
 
-{\it Default:} 1
+{\it Default:} 1.
 
 
 {\it Description:} Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model. Another way to use this factor is to convert units of the input files. For instance, if you provide velocities in cm/yr set this factor to 0.01.
@@ -1246,10 +1246,10 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Maximal composition}
 \index[prmindexfull]{Boundary composition model!Initial composition!Maximal composition}
-{\it Value:} 1
+{\it Value:} 1.
 
 
-{\it Default:} 1
+{\it Default:} 1.
 
 
 {\it Description:} Maximal composition. Units: none.
@@ -1263,10 +1263,10 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Minimal composition}
 \index[prmindexfull]{Boundary composition model!Initial composition!Minimal composition}
-{\it Value:} 0
+{\it Value:} 0.
 
 
-{\it Default:} 0
+{\it Default:} 0.
 
 
 {\it Description:} Minimal composition. Units: none.
@@ -1286,10 +1286,10 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Inner composition}
 \index[prmindexfull]{Boundary composition model!Spherical constant!Inner composition}
-{\it Value:} 1
+{\it Value:} 1.
 
 
-{\it Default:} 1
+{\it Default:} 1.
 
 
 {\it Description:} Composition at the inner boundary (core mantle boundary). Units: none.
@@ -1303,10 +1303,10 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Outer composition}
 \index[prmindexfull]{Boundary composition model!Spherical constant!Outer composition}
-{\it Value:} 0
+{\it Value:} 0.
 
 
-{\it Default:} 0
+{\it Default:} 0.
 
 
 {\it Description:} Composition at the outer boundary (lithosphere water/air). For a spherical geometry model, this is the only boundary. Units: none.
@@ -1765,10 +1765,10 @@ Because this class simply takes what the initial temperature had described, this
 
 \index[prmindex]{Scale factor}
 \index[prmindexfull]{Boundary temperature model!Ascii data model!Scale factor}
-{\it Value:} 1
+{\it Value:} 1.
 
 
-{\it Default:} 1
+{\it Default:} 1.
 
 
 {\it Description:} Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model. Another way to use this factor is to convert units of the input files. For instance, if you provide velocities in cm/yr set this factor to 0.01.
@@ -1788,10 +1788,10 @@ Because this class simply takes what the initial temperature had described, this
 
 \index[prmindex]{Bottom temperature}
 \index[prmindexfull]{Boundary temperature model!Box!Bottom temperature}
-{\it Value:} 0
+{\it Value:} 0.
 
 
-{\it Default:} 0
+{\it Default:} 0.
 
 
 {\it Description:} Temperature at the bottom boundary (at minimal $z$-value). Units: $\si{K}$.
@@ -1805,10 +1805,10 @@ Because this class simply takes what the initial temperature had described, this
 
 \index[prmindex]{Left temperature}
 \index[prmindexfull]{Boundary temperature model!Box!Left temperature}
-{\it Value:} 1
+{\it Value:} 1.
 
 
-{\it Default:} 1
+{\it Default:} 1.
 
 
 {\it Description:} Temperature at the left boundary (at minimal $x$-value). Units: $\si{K}$.
@@ -1822,10 +1822,10 @@ Because this class simply takes what the initial temperature had described, this
 
 \index[prmindex]{Right temperature}
 \index[prmindexfull]{Boundary temperature model!Box!Right temperature}
-{\it Value:} 0
+{\it Value:} 0.
 
 
-{\it Default:} 0
+{\it Default:} 0.
 
 
 {\it Description:} Temperature at the right boundary (at maximal $x$-value). Units: $\si{K}$.
@@ -1839,10 +1839,10 @@ Because this class simply takes what the initial temperature had described, this
 
 \index[prmindex]{Top temperature}
 \index[prmindexfull]{Boundary temperature model!Box!Top temperature}
-{\it Value:} 0
+{\it Value:} 0.
 
 
-{\it Default:} 0
+{\it Default:} 0.
 
 
 {\it Description:} Temperature at the top boundary (at maximal $x$-value). Units: $\si{K}$.
@@ -1862,10 +1862,10 @@ Because this class simply takes what the initial temperature had described, this
 
 \index[prmindex]{Bottom temperature}
 \index[prmindexfull]{Boundary temperature model!Box with lithosphere boundary indicators!Bottom temperature}
-{\it Value:} 0
+{\it Value:} 0.
 
 
-{\it Default:} 0
+{\it Default:} 0.
 
 
 {\it Description:} Temperature at the bottom boundary (at minimal $z$-value). Units: $\si{K}$.
@@ -1879,10 +1879,10 @@ Because this class simply takes what the initial temperature had described, this
 
 \index[prmindex]{Left temperature}
 \index[prmindexfull]{Boundary temperature model!Box with lithosphere boundary indicators!Left temperature}
-{\it Value:} 1
+{\it Value:} 1.
 
 
-{\it Default:} 1
+{\it Default:} 1.
 
 
 {\it Description:} Temperature at the left boundary (at minimal $x$-value). Units: $\si{K}$.
@@ -1896,10 +1896,10 @@ Because this class simply takes what the initial temperature had described, this
 
 \index[prmindex]{Left temperature lithosphere}
 \index[prmindexfull]{Boundary temperature model!Box with lithosphere boundary indicators!Left temperature lithosphere}
-{\it Value:} 0
+{\it Value:} 0.
 
 
-{\it Default:} 0
+{\it Default:} 0.
 
 
 {\it Description:} Temperature at the additional left lithosphere boundary (specified by user in Geometry Model). Units: $\si{K}$.
@@ -1913,10 +1913,10 @@ Because this class simply takes what the initial temperature had described, this
 
 \index[prmindex]{Right temperature}
 \index[prmindexfull]{Boundary temperature model!Box with lithosphere boundary indicators!Right temperature}
-{\it Value:} 0
+{\it Value:} 0.
 
 
-{\it Default:} 0
+{\it Default:} 0.
 
 
 {\it Description:} Temperature at the right boundary (at maximal $x$-value). Units: $\si{K}$.
@@ -1930,10 +1930,10 @@ Because this class simply takes what the initial temperature had described, this
 
 \index[prmindex]{Right temperature lithosphere}
 \index[prmindexfull]{Boundary temperature model!Box with lithosphere boundary indicators!Right temperature lithosphere}
-{\it Value:} 0
+{\it Value:} 0.
 
 
-{\it Default:} 0
+{\it Default:} 0.
 
 
 {\it Description:} Temperature at the additional right lithosphere boundary (specified by user in Geometry Model). Units: $\si{K}$.
@@ -1947,10 +1947,10 @@ Because this class simply takes what the initial temperature had described, this
 
 \index[prmindex]{Top temperature}
 \index[prmindexfull]{Boundary temperature model!Box with lithosphere boundary indicators!Top temperature}
-{\it Value:} 0
+{\it Value:} 0.
 
 
-{\it Default:} 0
+{\it Default:} 0.
 
 
 {\it Description:} Temperature at the top boundary (at maximal $x$-value). Units: $\si{K}$.
@@ -2044,10 +2044,10 @@ Because this class simply takes what the initial temperature had described, this
 
 \index[prmindex]{Core conductivity}
 \index[prmindexfull]{Boundary temperature model!Dynamic core!Core conductivity}
-{\it Value:} 60
+{\it Value:} 60.
 
 
-{\it Default:} 60
+{\it Default:} 60.
 
 
 {\it Description:} Core heat conductivity $k_c$. Units: $W/m/K$.
@@ -2078,10 +2078,10 @@ Because this class simply takes what the initial temperature had described, this
 
 \index[prmindex]{Core heat capacity}
 \index[prmindexfull]{Boundary temperature model!Dynamic core!Core heat capacity}
-{\it Value:} 840
+{\it Value:} 840.
 
 
-{\it Default:} 840
+{\it Default:} 840.
 
 
 {\it Description:} Heat capacity of the core. Units: $J/kg/K$.
@@ -2146,10 +2146,10 @@ Because this class simply takes what the initial temperature had described, this
 
 \index[prmindex]{Inner temperature}
 \index[prmindexfull]{Boundary temperature model!Dynamic core!Inner temperature}
-{\it Value:} 6000
+{\it Value:} 6000.
 
 
-{\it Default:} 6000
+{\it Default:} 6000.
 
 
 {\it Description:} Temperature at the inner boundary (core mantle boundary) at the beginning. Units: $\si{K}$.
@@ -2214,10 +2214,10 @@ Because this class simply takes what the initial temperature had described, this
 
 \index[prmindex]{Outer temperature}
 \index[prmindexfull]{Boundary temperature model!Dynamic core!Outer temperature}
-{\it Value:} 0
+{\it Value:} 0.
 
 
-{\it Default:} 0
+{\it Default:} 0.
 
 
 {\it Description:} Temperature at the outer boundary (lithosphere water/air). Units: $\si{K}$.
@@ -2265,10 +2265,10 @@ Because this class simply takes what the initial temperature had described, this
 
 \index[prmindex]{dR over dt}
 \index[prmindexfull]{Boundary temperature model!Dynamic core!dR over dt}
-{\it Value:} 0
+{\it Value:} 0.
 
 
-{\it Default:} 0
+{\it Default:} 0.
 
 
 {\it Description:} Initial inner core radius changing rate. Units: $km/year$.
@@ -2282,10 +2282,10 @@ Because this class simply takes what the initial temperature had described, this
 
 \index[prmindex]{dT over dt}
 \index[prmindexfull]{Boundary temperature model!Dynamic core!dT over dt}
-{\it Value:} 0
+{\it Value:} 0.
 
 
-{\it Default:} 0
+{\it Default:} 0.
 
 
 {\it Description:} Initial CMB temperature changing rate. Units: $K/year$.
@@ -2299,10 +2299,10 @@ Because this class simply takes what the initial temperature had described, this
 
 \index[prmindex]{dX over dt}
 \index[prmindexfull]{Boundary temperature model!Dynamic core!dX over dt}
-{\it Value:} 0
+{\it Value:} 0.
 
 
-{\it Default:} 0
+{\it Default:} 0.
 
 
 {\it Description:} Initial light composition changing rate. Units: $1/year$.
@@ -2358,10 +2358,10 @@ Because this class simply takes what the initial temperature had described, this
 
 \index[prmindex]{Tm0}
 \index[prmindexfull]{Boundary temperature model!Dynamic core!Geotherm parameters/Tm0}
-{\it Value:} 1695
+{\it Value:} 1695.
 
 
-{\it Default:} 1695
+{\it Default:} 1695.
 
 
 {\it Description:} Melting curve (\cite{NPB+04} eq. (40)) parameter Tm0. Units: $\si{K}$.
@@ -2584,10 +2584,10 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Maximal temperature}
 \index[prmindexfull]{Boundary temperature model!Function!Maximal temperature}
-{\it Value:} 3773
+{\it Value:} 3773.
 
 
-{\it Default:} 3773
+{\it Default:} 3773.
 
 
 {\it Description:} Maximal temperature. Units: $\si{K}$.
@@ -2601,10 +2601,10 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Minimal temperature}
 \index[prmindexfull]{Boundary temperature model!Function!Minimal temperature}
-{\it Value:} 273
+{\it Value:} 273.
 
 
-{\it Default:} 273
+{\it Default:} 273.
 
 
 {\it Description:} Minimal temperature. Units: $\si{K}$.
@@ -2641,10 +2641,10 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Maximal temperature}
 \index[prmindexfull]{Boundary temperature model!Initial temperature!Maximal temperature}
-{\it Value:} 3773
+{\it Value:} 3773.
 
 
-{\it Default:} 3773
+{\it Default:} 3773.
 
 
 {\it Description:} Maximal temperature. Units: $\si{K}$.
@@ -2658,10 +2658,10 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Minimal temperature}
 \index[prmindexfull]{Boundary temperature model!Initial temperature!Minimal temperature}
-{\it Value:} 0
+{\it Value:} 0.
 
 
-{\it Default:} 0
+{\it Default:} 0.
 
 
 {\it Description:} Minimal temperature. Units: $\si{K}$.
@@ -2681,10 +2681,10 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Inner temperature}
 \index[prmindexfull]{Boundary temperature model!Spherical constant!Inner temperature}
-{\it Value:} 6000
+{\it Value:} 6000.
 
 
-{\it Default:} 6000
+{\it Default:} 6000.
 
 
 {\it Description:} Temperature at the inner boundary (core mantle boundary). Units: $\si{K}$.
@@ -2698,10 +2698,10 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Outer temperature}
 \index[prmindexfull]{Boundary temperature model!Spherical constant!Outer temperature}
-{\it Value:} 0
+{\it Value:} 0.
 
 
-{\it Default:} 0
+{\it Default:} 0.
 
 
 {\it Description:} Temperature at the outer boundary (lithosphere water/air). Units: $\si{K}$.
@@ -2850,10 +2850,10 @@ The format of valid entries for this parameter is that of a map given as ``key1 
 
 \index[prmindex]{Scale factor}
 \index[prmindexfull]{Boundary traction model!Ascii data model!Scale factor}
-{\it Value:} 1
+{\it Value:} 1.
 
 
-{\it Default:} 1
+{\it Default:} 1.
 
 
 {\it Description:} Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model. Another way to use this factor is to convert units of the input files. For instance, if you provide velocities in cm/yr set this factor to 0.01.
@@ -3174,10 +3174,10 @@ The names of the boundaries listed here can either by numbers (in which case the
 
 \index[prmindex]{Scale factor}
 \index[prmindexfull]{Boundary velocity model!Ascii data model!Scale factor}
-{\it Value:} 1
+{\it Value:} 1.
 
 
-{\it Default:} 1
+{\it Default:} 1.
 
 
 {\it Description:} Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model. Another way to use this factor is to convert units of the input files. For instance, if you provide velocities in cm/yr set this factor to 0.01.
@@ -3360,10 +3360,10 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{First data file model time}
 \index[prmindexfull]{Boundary velocity model!GPlates model!First data file model time}
-{\it Value:} 0
+{\it Value:} 0.
 
 
-{\it Default:} 0
+{\it Default:} 0.
 
 
 {\it Description:} Time from which on the velocity file with number 'First velocity file number' is used as boundary condition. Previous to this time, a no-slip boundary condition is assumed. Depending on the setting of the global 'Use years in output instead of seconds' flag in the input file, this number is either interpreted as seconds or as years.
@@ -3394,10 +3394,10 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Lithosphere thickness}
 \index[prmindexfull]{Boundary velocity model!GPlates model!Lithosphere thickness}
-{\it Value:} 100000
+{\it Value:} 100000.
 
 
-{\it Default:} 100000
+{\it Default:} 100000.
 
 
 {\it Description:} Determines the depth of the lithosphere, so that the GPlates velocities can be applied at the sides of the model as well as at the surface.
@@ -3445,10 +3445,10 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Scale factor}
 \index[prmindexfull]{Boundary velocity model!GPlates model!Scale factor}
-{\it Value:} 1
+{\it Value:} 1.
 
 
-{\it Default:} 1
+{\it Default:} 1.
 
 
 {\it Description:} Scalar factor, which is applied to the boundary velocity. You might want to use this to scale the velocities to a reference model (e.g. with free-slip boundary) or another plate reconstruction.
@@ -3771,10 +3771,10 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 
 \index[prmindex]{Discontinuous penalty}
 \index[prmindexfull]{Discretization!Stabilization parameters!Discontinuous penalty}
-{\it Value:} 10
+{\it Value:} 10.
 
 
-{\it Default:} 10
+{\it Default:} 10.
 
 
 {\it Description:} The value used to penalize discontinuities in the discontinuous Galerkin method. This is used only for the temperature field, and not for the composition field, as pure advection does not use the interior penalty method. This is largely empirically decided -- it must be large enough to ensure the bilinear form is coercive, but not so large as to penalize discontinuity at all costs.
@@ -4170,10 +4170,10 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 
 \index[prmindex]{Box origin X coordinate}
 \index[prmindexfull]{Geometry model!Box!Box origin X coordinate}
-{\it Value:} 0
+{\it Value:} 0.
 
 
-{\it Default:} 0
+{\it Default:} 0.
 
 
 {\it Description:} X coordinate of box origin. Units: $\si{m}$.
@@ -4187,10 +4187,10 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 
 \index[prmindex]{Box origin Y coordinate}
 \index[prmindexfull]{Geometry model!Box!Box origin Y coordinate}
-{\it Value:} 0
+{\it Value:} 0.
 
 
-{\it Default:} 0
+{\it Default:} 0.
 
 
 {\it Description:} Y coordinate of box origin. Units: $\si{m}$.
@@ -4204,10 +4204,10 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 
 \index[prmindex]{Box origin Z coordinate}
 \index[prmindexfull]{Geometry model!Box!Box origin Z coordinate}
-{\it Value:} 0
+{\it Value:} 0.
 
 
-{\it Default:} 0
+{\it Default:} 0.
 
 
 {\it Description:} Z coordinate of box origin. This value is ignored if the simulation is in 2d. Units: $\si{m}$.
@@ -4221,10 +4221,10 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 
 \index[prmindex]{X extent}
 \index[prmindexfull]{Geometry model!Box!X extent}
-{\it Value:} 1
+{\it Value:} 1.
 
 
-{\it Default:} 1
+{\it Default:} 1.
 
 
 {\it Description:} Extent of the box in x-direction. Units: $\si{m}$.
@@ -4272,10 +4272,10 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 
 \index[prmindex]{Y extent}
 \index[prmindexfull]{Geometry model!Box!Y extent}
-{\it Value:} 1
+{\it Value:} 1.
 
 
-{\it Default:} 1
+{\it Default:} 1.
 
 
 {\it Description:} Extent of the box in y-direction. Units: $\si{m}$.
@@ -4323,10 +4323,10 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 
 \index[prmindex]{Z extent}
 \index[prmindexfull]{Geometry model!Box!Z extent}
-{\it Value:} 1
+{\it Value:} 1.
 
 
-{\it Default:} 1
+{\it Default:} 1.
 
 
 {\it Description:} Extent of the box in z-direction. This value is ignored if the simulation is in 2d. Units: $\si{m}$.
@@ -4380,10 +4380,10 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 
 \index[prmindex]{Box origin X coordinate}
 \index[prmindexfull]{Geometry model!Box with lithosphere boundary indicators!Box origin X coordinate}
-{\it Value:} 0
+{\it Value:} 0.
 
 
-{\it Default:} 0
+{\it Default:} 0.
 
 
 {\it Description:} X coordinate of box origin. Units: $\si{m}$.
@@ -4397,10 +4397,10 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 
 \index[prmindex]{Box origin Y coordinate}
 \index[prmindexfull]{Geometry model!Box with lithosphere boundary indicators!Box origin Y coordinate}
-{\it Value:} 0
+{\it Value:} 0.
 
 
-{\it Default:} 0
+{\it Default:} 0.
 
 
 {\it Description:} Y coordinate of box origin. Units: $\si{m}$.
@@ -4414,10 +4414,10 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 
 \index[prmindex]{Box origin Z coordinate}
 \index[prmindexfull]{Geometry model!Box with lithosphere boundary indicators!Box origin Z coordinate}
-{\it Value:} 0
+{\it Value:} 0.
 
 
-{\it Default:} 0
+{\it Default:} 0.
 
 
 {\it Description:} Z coordinate of box origin. This value is ignored if the simulation is in 2d. Units: $\si{m}$.
@@ -4448,10 +4448,10 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 
 \index[prmindex]{X extent}
 \index[prmindexfull]{Geometry model!Box with lithosphere boundary indicators!X extent}
-{\it Value:} 1
+{\it Value:} 1.
 
 
-{\it Default:} 1
+{\it Default:} 1.
 
 
 {\it Description:} Extent of the box in x-direction. Units: $\si{m}$.
@@ -4516,10 +4516,10 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 
 \index[prmindex]{Y extent}
 \index[prmindexfull]{Geometry model!Box with lithosphere boundary indicators!Y extent}
-{\it Value:} 1
+{\it Value:} 1.
 
 
-{\it Default:} 1
+{\it Default:} 1.
 
 
 {\it Description:} Extent of the box in y-direction. Units: $\si{m}$.
@@ -4601,10 +4601,10 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 
 \index[prmindex]{Z extent}
 \index[prmindexfull]{Geometry model!Box with lithosphere boundary indicators!Z extent}
-{\it Value:} 1
+{\it Value:} 1.
 
 
-{\it Default:} 1
+{\it Default:} 1.
 
 
 {\it Description:} Extent of the box in z-direction. This value is ignored if the simulation is in 2d. Units: $\si{m}$.
@@ -4675,10 +4675,10 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 
 \index[prmindex]{Chunk inner radius}
 \index[prmindexfull]{Geometry model!Chunk!Chunk inner radius}
-{\it Value:} 0
+{\it Value:} 0.
 
 
-{\it Default:} 0
+{\it Default:} 0.
 
 
 {\it Description:} Radius at the bottom surface of the chunk. Units: $\si{m}$.
@@ -4692,10 +4692,10 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 
 \index[prmindex]{Chunk maximum latitude}
 \index[prmindexfull]{Geometry model!Chunk!Chunk maximum latitude}
-{\it Value:} 1
+{\it Value:} 1.
 
 
-{\it Default:} 1
+{\it Default:} 1.
 
 
 {\it Description:} Maximum latitude of the chunk. This value is ignored if the simulation is in 2d. Units: degrees.
@@ -4709,10 +4709,10 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 
 \index[prmindex]{Chunk maximum longitude}
 \index[prmindexfull]{Geometry model!Chunk!Chunk maximum longitude}
-{\it Value:} 1
+{\it Value:} 1.
 
 
-{\it Default:} 1
+{\it Default:} 1.
 
 
 {\it Description:} Maximum longitude of the chunk. Units: degrees.
@@ -4726,10 +4726,10 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 
 \index[prmindex]{Chunk minimum latitude}
 \index[prmindexfull]{Geometry model!Chunk!Chunk minimum latitude}
-{\it Value:} 0
+{\it Value:} 0.
 
 
-{\it Default:} 0
+{\it Default:} 0.
 
 
 {\it Description:} Minimum latitude of the chunk. This value is ignored if the simulation is in 2d. Units: degrees.
@@ -4743,10 +4743,10 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 
 \index[prmindex]{Chunk minimum longitude}
 \index[prmindexfull]{Geometry model!Chunk!Chunk minimum longitude}
-{\it Value:} 0
+{\it Value:} 0.
 
 
-{\it Default:} 0
+{\it Default:} 0.
 
 
 {\it Description:} Minimum longitude of the chunk. Units: degrees.
@@ -4760,10 +4760,10 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 
 \index[prmindex]{Chunk outer radius}
 \index[prmindexfull]{Geometry model!Chunk!Chunk outer radius}
-{\it Value:} 1
+{\it Value:} 1.
 
 
-{\it Default:} 1
+{\it Default:} 1.
 
 
 {\it Description:} Radius at the top surface of the chunk. Units: $\si{m}$.
@@ -5077,10 +5077,10 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 
 \index[prmindex]{Scale factor}
 \index[prmindexfull]{Geometry model!Initial topography model!Ascii data model/Scale factor}
-{\it Value:} 1
+{\it Value:} 1.
 
 
-{\it Default:} 1
+{\it Default:} 1.
 
 
 {\it Description:} Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model. Another way to use this factor is to convert units of the input files. For instance, if you provide velocities in cm/yr set this factor to 0.01.
@@ -5155,10 +5155,10 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Maximum topography value}
 \index[prmindexfull]{Geometry model!Initial topography model!Function/Maximum topography value}
-{\it Value:} 2000
+{\it Value:} 2000.
 
 
-{\it Default:} 2000
+{\it Default:} 2000.
 
 
 {\it Description:} The maximum value the topography given by the function can take. 
@@ -5218,10 +5218,10 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Radius}
 \index[prmindexfull]{Geometry model!Sphere!Radius}
-{\it Value:} 6371000
+{\it Value:} 6371000.
 
 
-{\it Default:} 6371000
+{\it Default:} 6371000.
 
 
 {\it Description:} Radius of the sphere. Units: $\si{m}$.
@@ -5296,10 +5296,10 @@ In either case, this parameter is ignored unless the opening angle of the domain
 
 \index[prmindex]{Inner radius}
 \index[prmindexfull]{Geometry model!Spherical shell!Inner radius}
-{\it Value:} 3481000
+{\it Value:} 3481000.
 
 
-{\it Default:} 3481000
+{\it Default:} 3481000.
 
 
 {\it Description:} Inner radius of the spherical shell. Units: $\si{m}$. 
@@ -5349,10 +5349,10 @@ In either case, this parameter is ignored unless the opening angle of the domain
 
 \index[prmindex]{Opening angle}
 \index[prmindexfull]{Geometry model!Spherical shell!Opening angle}
-{\it Value:} 360
+{\it Value:} 360.
 
 
-{\it Default:} 360
+{\it Default:} 360.
 
 
 {\it Description:} Opening angle in degrees of the section of the shell that we want to build. The only opening angles that are allowed for this geometry are 90, 180, and 360 in 2d; and 90 and 360 in 3d. Units: degrees.
@@ -5366,10 +5366,10 @@ In either case, this parameter is ignored unless the opening angle of the domain
 
 \index[prmindex]{Outer radius}
 \index[prmindexfull]{Geometry model!Spherical shell!Outer radius}
-{\it Value:} 6336000
+{\it Value:} 6336000.
 
 
-{\it Default:} 6336000
+{\it Default:} 6336000.
 
 
 {\it Description:} Outer radius of the spherical shell. Units: $\si{m}$. 
@@ -5462,10 +5462,10 @@ In either case, this parameter is ignored unless the opening angle of the domain
 
 \index[prmindex]{Scale factor}
 \index[prmindexfull]{Gravity model!Ascii data model!Scale factor}
-{\it Value:} 1
+{\it Value:} 1.
 
 
-{\it Default:} 1
+{\it Default:} 1.
 
 
 {\it Description:} Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model. Another way to use this factor is to convert units of the input files. For instance, if you provide velocities in cm/yr set this factor to 0.01.
@@ -5609,10 +5609,10 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Magnitude}
 \index[prmindexfull]{Gravity model!Vertical!Magnitude}
-{\it Value:} 1
+{\it Value:} 1.
 
 
-{\it Default:} 1
+{\it Default:} 1.
 
 
 {\it Description:} Value of the gravity vector in $m/s^2$ directed along negative y (2D) or z (3D) axis (if the magnitude is positive.
@@ -5736,10 +5736,10 @@ The formula is interpreted as having units W/kg.
 
 \index[prmindex]{Compositional heating values}
 \index[prmindexfull]{Heating model!Compositional heating!Compositional heating values}
-{\it Value:} 0
+{\it Value:} 0.
 
 
-{\it Default:} 0
+{\it Default:} 0.
 
 
 {\it Description:} List of heat production per unit volume values for background and compositional fields, for a total of N+1 values, where the first value correponds to the background material, and N is the number of compositional fields. Units: $W/m^3$.
@@ -5776,10 +5776,10 @@ The formula is interpreted as having units W/kg.
 
 \index[prmindex]{Radiogenic heating rate}
 \index[prmindexfull]{Heating model!Constant heating!Radiogenic heating rate}
-{\it Value:} 0e0
+{\it Value:} 0.
 
 
-{\it Default:} 0e0
+{\it Default:} 0.
 
 
 {\it Description:} The specific rate of heating due to radioactive decay (or other bulk sources you may want to describe). This parameter corresponds to the variable $H$ in the temperature equation stated in the manual, and the heating term is $ho H$. Units: W/kg.
@@ -5860,10 +5860,10 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Melting entropy change}
 \index[prmindexfull]{Heating model!Latent heat melt!Melting entropy change}
-{\it Value:} -300
+{\it Value:} -300.
 
 
-{\it Default:} -300
+{\it Default:} -300.
 
 
 {\it Description:} The entropy change for the phase transition from solid to melt. Units: $J/(kg K)$.
@@ -5917,10 +5917,10 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Crust depth}
 \index[prmindexfull]{Heating model!Radioactive decay!Crust depth}
-{\it Value:} 0
+{\it Value:} 0.
 
 
-{\it Default:} 0
+{\it Default:} 0.
 
 
 {\it Description:} Depth of the crust when crust if defined by depth. Units: $\si{m}$
@@ -6150,10 +6150,10 @@ When ``composition is specified, the initial model is treated as a standard comp
 
 \index[prmindex]{Data file name}
 \index[prmindexfull]{Initial composition model!Ascii data model!Data file name}
-{\it Value:} box\_2d.txt
+{\it Value:} initial\_composition\_top\_mantle\_box\_3d.txt
 
 
-{\it Default:} box\_2d.txt
+{\it Default:} initial\_composition\_top\_mantle\_box\_3d.txt
 
 
 {\it Description:} The file name of the model data. Provide file in format: (Velocity file name).\%s\%d where \%s is a string specifying the boundary of the model according to the names of the boundary indicators (of the chosen geometry model).\%d is any sprintf integer qualifier, specifying the format of the current file number. 
@@ -6201,10 +6201,10 @@ When ``composition is specified, the initial model is treated as a standard comp
 
 \index[prmindex]{Scale factor}
 \index[prmindexfull]{Initial composition model!Ascii data model!Scale factor}
-{\it Value:} 1
+{\it Value:} 1.
 
 
-{\it Default:} 1
+{\it Default:} 1.
 
 
 {\it Description:} Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model. Another way to use this factor is to convert units of the input files. For instance, if you provide velocities in cm/yr set this factor to 0.01.
@@ -6455,10 +6455,10 @@ Make sure the top and bottom temperatures of the lithosphere agree with temperat
 
 \index[prmindex]{Age bottom boundary layer}
 \index[prmindexfull]{Initial temperature model!Adiabatic!Age bottom boundary layer}
-{\it Value:} 0e0
+{\it Value:} 0.
 
 
-{\it Default:} 0e0
+{\it Default:} 0.
 
 
 {\it Description:} The age of the lower thermal boundary layer, used for the calculation of the half-space cooling model temperature. Units: years if the 'Use years in output instead of seconds' parameter is set; seconds otherwise.
@@ -6472,10 +6472,10 @@ Make sure the top and bottom temperatures of the lithosphere agree with temperat
 
 \index[prmindex]{Age top boundary layer}
 \index[prmindexfull]{Initial temperature model!Adiabatic!Age top boundary layer}
-{\it Value:} 0e0
+{\it Value:} 0.
 
 
-{\it Default:} 0e0
+{\it Default:} 0.
 
 
 {\it Description:} The age of the upper thermal boundary layer, used for the calculation of the half-space cooling model temperature. Units: years if the 'Use years in output instead of seconds' parameter is set; seconds otherwise.
@@ -6489,10 +6489,10 @@ Make sure the top and bottom temperatures of the lithosphere agree with temperat
 
 \index[prmindex]{Amplitude}
 \index[prmindexfull]{Initial temperature model!Adiabatic!Amplitude}
-{\it Value:} 0e0
+{\it Value:} 0.
 
 
-{\it Default:} 0e0
+{\it Default:} 0.
 
 
 {\it Description:} The amplitude (in K) of the initial spherical temperature perturbation at the bottom of the model domain. This perturbation will be added to the adiabatic temperature profile, but not to the bottom thermal boundary layer. Instead, the maximum of the perturbation and the bottom boundary layer temperature will be used.
@@ -6523,10 +6523,10 @@ Make sure the top and bottom temperatures of the lithosphere agree with temperat
 
 \index[prmindex]{Radius}
 \index[prmindexfull]{Initial temperature model!Adiabatic!Radius}
-{\it Value:} 0e0
+{\it Value:} 0.
 
 
-{\it Default:} 0e0
+{\it Default:} 0.
 
 
 {\it Description:} The Radius (in m) of the initial spherical temperature perturbation at the bottom of the model domain.
@@ -6540,10 +6540,10 @@ Make sure the top and bottom temperatures of the lithosphere agree with temperat
 
 \index[prmindex]{Subadiabaticity}
 \index[prmindexfull]{Initial temperature model!Adiabatic!Subadiabaticity}
-{\it Value:} 0e0
+{\it Value:} 0.
 
 
-{\it Default:} 0e0
+{\it Default:} 0.
 
 
 {\it Description:} If this value is larger than 0, the initial temperature profile will not be adiabatic, but subadiabatic. This value gives the maximal deviation from adiabaticity. Set to 0 for an adiabatic temperature profile. Units: $\si{K}$.
@@ -6736,10 +6736,10 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Data file name}
 \index[prmindexfull]{Initial temperature model!Ascii data model!Data file name}
-{\it Value:} box\_2d.txt
+{\it Value:} initial\_isotherm\_500K\_box\_3d.txt
 
 
-{\it Default:} box\_2d.txt
+{\it Default:} initial\_isotherm\_500K\_box\_3d.txt
 
 
 {\it Description:} The file name of the model data. Provide file in format: (Velocity file name).\%s\%d where \%s is a string specifying the boundary of the model according to the names of the boundary indicators (of the chosen geometry model).\%d is any sprintf integer qualifier, specifying the format of the current file number. 
@@ -6787,10 +6787,10 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Scale factor}
 \index[prmindexfull]{Initial temperature model!Ascii data model!Scale factor}
-{\it Value:} 1
+{\it Value:} 1.
 
 
-{\it Default:} 1
+{\it Default:} 1.
 
 
 {\it Description:} Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model. Another way to use this factor is to convert units of the input files. For instance, if you provide velocities in cm/yr set this factor to 0.01.
@@ -6844,10 +6844,10 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Scale factor}
 \index[prmindexfull]{Initial temperature model!Ascii profile!Scale factor}
-{\it Value:} 1
+{\it Value:} 1.
 
 
-{\it Default:} 1
+{\it Default:} 1.
 
 
 {\it Description:} Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model. Another way to use this factor is to convert units of the input files. For instance, if you provide velocities in cm/yr set this factor to 0.01.
@@ -7286,10 +7286,10 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Lithosphere temperature}
 \index[prmindexfull]{Initial temperature model!Lithosphere Mask!Lithosphere temperature}
-{\it Value:} 1600
+{\it Value:} 1600.
 
 
-{\it Default:} 1600
+{\it Default:} 1600.
 
 
 {\it Description:} The initial temperature within lithosphere, applied abovethe maximum lithosphere depth.
@@ -7419,10 +7419,10 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Scale factor}
 \index[prmindexfull]{Initial temperature model!Patch on S40RTS!Ascii data model/Scale factor}
-{\it Value:} 1
+{\it Value:} 1.
 
 
-{\it Default:} 1
+{\it Default:} 1.
 
 
 {\it Description:} Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model. Another way to use this factor is to convert units of the input files. For instance, if you provide velocities in cm/yr set this factor to 0.01.
@@ -7688,10 +7688,10 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Scale factor}
 \index[prmindexfull]{Initial temperature model!S40RTS perturbation!Ascii data vs to density model/Scale factor}
-{\it Value:} 1
+{\it Value:} 1.
 
 
-{\it Default:} 1
+{\it Default:} 1.
 
 
 {\it Description:} Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model. Another way to use this factor is to convert units of the input files. For instance, if you provide velocities in cm/yr set this factor to 0.01.
@@ -7957,10 +7957,10 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Scale factor}
 \index[prmindexfull]{Initial temperature model!SAVANI perturbation!Ascii data vs to density model/Scale factor}
-{\it Value:} 1
+{\it Value:} 1.
 
 
-{\it Default:} 1
+{\it Default:} 1.
 
 
 {\it Description:} Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model. Another way to use this factor is to convert units of the input files. For instance, if you provide velocities in cm/yr set this factor to 0.01.
@@ -7997,10 +7997,10 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Angle}
 \index[prmindexfull]{Initial temperature model!Spherical gaussian perturbation!Angle}
-{\it Value:} 0e0
+{\it Value:} 0.
 
 
-{\it Default:} 0e0
+{\it Default:} 0.
 
 
 {\it Description:} The angle where the center of the perturbation is placed.
@@ -8065,10 +8065,10 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Sign}
 \index[prmindexfull]{Initial temperature model!Spherical gaussian perturbation!Sign}
-{\it Value:} 1
+{\it Value:} 1.
 
 
-{\it Default:} 1
+{\it Default:} 1.
 
 
 {\it Description:} The sign of the perturbation.
@@ -8105,10 +8105,10 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Rotation offset}
 \index[prmindexfull]{Initial temperature model!Spherical hexagonal perturbation!Rotation offset}
-{\it Value:} -45
+{\it Value:} -45.
 
 
-{\it Default:} -45
+{\it Default:} -45.
 
 
 {\it Description:} Amount of clockwise rotation in degrees to apply to the perturbations. Default is set to -45 in order to provide backwards compatibility.
@@ -8136,14 +8136,14 @@ If the function you are describing represents a vector-valued function with mult
 
 {\it Description:} Whether or not (and in the first case, how) to do any averaging of material model output data when constructing the linear systems for velocity/pressure, temperature, and compositions in each time step, as well as their corresponding preconditioners.
 
-Possible choices: none|arithmetic average|harmonic average|geometric average|pick largest|project to Q1|log average
+Possible choices: none|arithmetic average|harmonic average|geometric average|pick largest|project to Q1|log average|harmonic average only viscosity
 
 The process of averaging, and where it may be used, is discussed in more detail in Section~\ref{sec:sinker-with-averaging}.
 
 More averaging schemes are available in the averaging material model. This material model is a ``compositing material model'' which can be used in combination with other material models.
 
 
-{\it Possible values:} Any one of none, arithmetic average, harmonic average, geometric average, pick largest, project to Q1, log average
+{\it Possible values:} Any one of none, arithmetic average, harmonic average, geometric average, pick largest, project to Q1, log average, harmonic average only viscosity
 \item {\it Parameter name:} {\tt Model name}
 \phantomsection\label{parameters:Material model/Model name}
 \label{parameters:Material_20model/Model_20name}
@@ -8346,38 +8346,8 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 
  When more than one compositional field is present at a point, they are averaged arithmetically. An exception is viscosity, which may be averaged arithmetically, harmonically, geometrically, or by selecting the viscosity of the composition field with the greatest volume fraction.
 
-`viscoelastic plastic': A material model that combines non-linear plasticity with a simple linear viscoelastic material behavior. The model is incompressible. Note that this material model is based heavily on and combines functionality from the following material models: DiffusionDislocation, DruckerPrager, ViscoPlastic and Viscoelastic. 
 
-Plasticity limits viscous stress through a Drucker Prager yield criterion, where the yield stress in 3D is  $\sigma_y = \frac{6*C*\cos(\phi) + 2*P*\sin(\phi)} {\sqrt(3)*(3+\sin(\phi))}$ and $\sigma_y = C\cos(\phi) + P\sin(\phi)$ in 2D. Above, $C$ is cohesion and $\phi$  is the angle of internal friction.  Note that the 2D form is equivalent to the Mohr Coulomb yield surface.  If $\phi$ is 0, the yield stress is fixed and equal to the cohesion (Von Mises yield criterion). When the viscous stress ($2v{\varepsilon}_{ii}$) exceeds the yield stress, the viscosity is rescaled back to the yield surface: $v_{y}=\sigma_{y}/(2{\varepsilon}_{ii})$. This form of plasticity is commonly used in geodynamic models. See, for example, Thieulot, C. (2011), PEPI 188, pp. 47-68. 
-
-The viscoelastic rheology behavior takes into account the elastic shear strength (e.g., shear modulus), while the tensile and volumetric strength (e.g., Young's and bulk modulus) are not considered. The model is incompressible and allows specifying an arbitrary number of compositional fields, where each field represents a different rock type or component of the viscoelastic stress tensor. The stress tensor in 2D and 3D, respectively, contains 3 or 6 components. The compositional fields representing these components must be named and listed in a very specific format, which is designed to minimize mislabeling stress tensor components as distinct 'compositional rock types' (or vice versa). For 2D models, the first three compositional fields must be labeled 'stress\_xx', 'stress\_yy' and 'stress\_xy'. In 3D, the first six compositional fields must be labeled 'stress\_xx', 'stress\_yy', 'stress\_zz', 'stress\_xy', 'stress\_xz', 'stress\_yz'. 
-
- Combining this viscoelasticity implementation with non-linear viscous flow and plasticity produces a constitutive relationship commonly referred to as partial elastoviscoplastic (e.g., pEVP) in the geodynamics community. While extensively discussed and applied within the geodynamics literature, notable references include: Moresi et al. (2003), J. Comp. Phys., v. 184, p. 476-497. Gerya and Yuen (2007), Phys. Earth. Planet. Inter., v. 163, p. 83-105. Gerya (2010), Introduction to Numerical Geodynamic Modeling. Kaus (2010), Tectonophysics, v. 484, p. 36-47. Choi et al. (2013), J. Geophys. Res., v. 118, p. 2429-2444. Keller et al. (2013), Geophys. J. Int., v. 195, p. 1406-1442. 
-
- The overview below directly follows Moresi et al. (2003) eqns. 23-38. However, an important distinction between this material model and the studies above is the use of compositional fields, rather than tracers, to track individual components of the viscoelastic stress tensor. The material model will be updated when an option to track and calculate viscoelastic stresses with tracers is implemented. 
-
- Moresi et al. (2003) begins (eqn. 23) by writing the deviatoric rate of deformation ($\hat{D}$) as the sum of elastic ($\hat{D_{e}}$) and viscous ($\hat{D_{v}}$) components: $\hat{D} = \hat{D_{e}} + \hat{D_{v}}$.  These terms further decompose into $\hat{D_{v}} = \frac{\tau}{2\eta}$ and $\hat{D_{e}} = \frac{\overset{\triangledown}{\tau}}{2\mu}$, where $\tau$ is the viscous deviatoric stress, $\eta$ is the shear viscosity, $\mu$ is the shear modulus and $\overset{\triangledown}{\tau}$ is the Jaumann corotational stress rate. If plasticity is included the deviatoric rate of deformation may be written as: $\hat{D} = \hat{D_{e}} + \hat{D_{v}} + \hat{D_{p}}$, where $\hat{D_{p}}$ is the plastic component. As defined in the second paragraph, $\hat{D_{p}}$ decomposes to $\frac{\tau_{y}}{2\eta_{y}}$, where $\tau_{y}$ is the yield stress and $\eta_{y}$ is the viscosity rescaled to the yield surface. 
-
- Above, the Jaimann corotational stress rate (eqn. 24) from the elastic component contains the time derivative of the deviatoric stress ($\dot{\tau}$) and terms that account for material spin (e.g., rotation) due to advection: $\overset{\triangledown}{\tau} = \dot{\tau} + {\tau}W -W\tau$. Above, $W$ is the material spin tensor (eqn. 25): $W_{ij} = \frac{1}{2} \left (\frac{\partial V_{i}}{\partial x_{j}} - \frac{\partial V_{j}}{\partial x_{i}} \right )$. 
-
- The Jaumann stress-rate can also be approximated using terms from the time at the previous time step ($t$) and current time step ($t + \Delta t^{e}$): $\smash[t]{\overset{\triangledown}{\tau}}^{t + \Delta t^{e}} \approx \frac{\tau^{t + \Delta t^{e} - \tau^{t}}}{\Delta t^{e}} - W^{t}\tau^{t} + \tau^{t}W^{t}$. In this material model, the size of the time step above ($\Delta t^{e}$) can be specified as the numerical time step size or an independent fixed time step. If the latter case is a selected, the user has an option to apply a stress averaging scheme to account for the differences between the numerical and fixed elastic time step (eqn. 32). If one selects to use a fixed elastic time step throughout the model run, this can still be achieved by using CFL and maximum time step values that restrict the numerical time step to a specific time. 
-
- The formulation above allows rewriting the total rate of deformation (eqn. 29) as $\tau^{t + \Delta t^{e}} = \eta_{eff} \left ( 2\hat{D}^{t + \triangle t^{e}} + \frac{\tau^{t}}{\mu \Delta t^{e}} + \frac{W^{t}\tau^{t} - \tau^{t}W^{t}}{\mu}  \right )$. 
-
- The effective viscosity (eqn. 28) is a function of the viscosity ($\eta$), elastic time step size ($\Delta t^{e}$) and shear relaxation time ($ \alpha = \frac{\eta}{\mu} $): $\eta_{eff} = \eta \frac{\Delta t^{e}}{\Delta t^{e} + \alpha}$ The magnitude of the shear modulus thus controls how much the effective viscosity is reduced relative to the initial viscosity. 
-
- Elastic effects are introduced into the governing Stokes equations through an elastic force term (eqn. 30) using stresses from the previous time step: $F^{e,t} = -\frac{\eta_{eff}}{\mu \Delta t^{e}} \tau^{t}$. This force term is added onto the right-hand side force vector in the system of equations. 
-
- When plastic yielding occurs, the effective viscosity in equation 29 and 30 is the plastic viscosity (equation 35). If the current stress is below the plastic yield stress, the effective viscosity is still as defined in equation 28. During non-linear iterations, we define the current stress prior to yielding (e.g., value compared to yield stress) as $\tau^{t + \Delta t^{e}} = \eta_{eff} \left ( 2\hat{D}^{t + \triangle t^{e}} + \frac{\tau^{t}}{\mu \Delta t^{e}} \right ) $
-
- The value of each compositional field representing distinct rock types at a point is interpreted to be a volume fraction of that rock type. If the sum of the compositional field volume fractions is less than one, then the remainder of the volume is assumed to be 'background material'.
-
- Several model parameters (densities, elastic shear moduli, thermal expansivities, plasticity parameters, viscosity terms, etc) can be defined per-compositional field. For each material parameter the user supplies a comma delimited list of length N+1, where N is the number of compositional fields. The additional field corresponds to the value for background material. They should be ordered ''background, composition1, composition2...''. However, the first 3 (2D) or 6 (3D) composition fields correspond to components of the elastic stress tensor and their material values will not contribute to the volume fractions. If a single value is given, then all the compositional fields are given that value. Other lengths of lists are not allowed. For a given compositional field the material parameters are treated as constant, except density, which varies linearly with temperature according to the thermal expansivity. 
-
- When more than one compositional field is present at a point, they are averaged arithmetically. An exception is viscosity, which may be averaged arithmetically, harmonically, geometrically, or by selecting the viscosity of the composition field with the greatest volume fraction.
-
-
-{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, grain size, latent heat, latent heat melt, melt global, melt simple, modified tait, multicomponent, multicomponent compressible, nondimensional, perplex lookup, replace lithosphere viscosity, simple, simple compressible, simpler, visco plastic, viscoelastic, viscoelastic plastic, unspecified
+{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, grain size, latent heat, latent heat melt, melt global, melt simple, modified tait, multicomponent, multicomponent compressible, nondimensional, perplex lookup, replace lithosphere viscosity, simple, simple compressible, simpler, visco plastic, viscoelastic, unspecified
 \end{itemize}
 
 
@@ -8410,10 +8380,10 @@ The viscoelastic rheology behavior takes into account the elastic shear strength
 
 \index[prmindex]{Thermal viscosity exponent}
 \index[prmindexfull]{Material model!Ascii reference profile!Thermal viscosity exponent}
-{\it Value:} 0.0
+{\it Value:} 0.
 
 
-{\it Default:} 0.0
+{\it Default:} 0.
 
 
 {\it Description:} The temperature dependence of viscosity. Dimensionless exponent.
@@ -8478,10 +8448,10 @@ The viscoelastic rheology behavior takes into account the elastic shear strength
 
 \index[prmindex]{Viscosity prefactors}
 \index[prmindexfull]{Material model!Ascii reference profile!Viscosity prefactors}
-{\it Value:} 10, 0.1, 1, 10
+{\it Value:} 10., 0.1, 1., 10.
 
 
-{\it Default:} 10, 0.1, 1, 10
+{\it Default:} 10., 0.1, 1., 10.
 
 
 {\it Description:} A list of prefactors for the viscosity that determine the viscosity profile. Each prefactor is applied in a depth range specified by the list of `Transition depths', i.e. the first prefactor is applied above the first transition depth, the second one between the first and second transition depth, and so on. To compute the viscosity profile, this prefactor is multiplied by the reference viscosity specified through the parameter `Viscosity'. List must have one more entry than Transition depths. Units: non-dimensional.
@@ -8537,10 +8507,10 @@ The viscoelastic rheology behavior takes into account the elastic shear strength
 
 \index[prmindex]{Scale factor}
 \index[prmindexfull]{Material model!Ascii reference profile!Ascii data model/Scale factor}
-{\it Value:} 1
+{\it Value:} 1.
 
 
-{\it Default:} 1
+{\it Default:} 1.
 
 
 {\it Description:} Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model. Another way to use this factor is to convert units of the input files. For instance, if you provide velocities in cm/yr set this factor to 0.01.
@@ -8586,7 +8556,7 @@ The viscoelastic rheology behavior takes into account the elastic shear strength
 {\it Description:} The name of a material model that will be modified by an averaging operation. Valid values for this parameter are the names of models that are also valid for the ``Material models/Model name'' parameter. See the documentation for that for more information.
 
 
-{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, grain size, latent heat, latent heat melt, melt global, melt simple, modified tait, multicomponent, multicomponent compressible, nondimensional, perplex lookup, replace lithosphere viscosity, simple, simple compressible, simpler, visco plastic, viscoelastic, viscoelastic plastic
+{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, grain size, latent heat, latent heat melt, melt global, melt simple, modified tait, multicomponent, multicomponent compressible, nondimensional, perplex lookup, replace lithosphere viscosity, simple, simple compressible, simpler, visco plastic, viscoelastic
 \item {\it Parameter name:} {\tt Bell shape limit}
 \phantomsection\label{parameters:Material model/Averaging/Bell shape limit}
 \label{parameters:Material_20model/Averaging/Bell_20shape_20limit}
@@ -8594,10 +8564,10 @@ The viscoelastic rheology behavior takes into account the elastic shear strength
 
 \index[prmindex]{Bell shape limit}
 \index[prmindexfull]{Material model!Averaging!Bell shape limit}
-{\it Value:} 1
+{\it Value:} 1.
 
 
-{\it Default:} 1
+{\it Default:} 1.
 
 
 {\it Description:} The limit normalized distance between 0 and 1 where the bell shape becomes zero. See the manual for a more information.
@@ -8626,7 +8596,7 @@ The viscoelastic rheology behavior takes into account the elastic shear strength
 {\it Description:} Material model to use for Compressibility. Valid values for this parameter are the names of models that are also valid for the ``Material models/Model name'' parameter. See the documentation for that for more information.
 
 
-{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, grain size, latent heat, latent heat melt, melt global, melt simple, modified tait, multicomponent, multicomponent compressible, nondimensional, perplex lookup, replace lithosphere viscosity, simple, simple compressible, simpler, visco plastic, viscoelastic, viscoelastic plastic, unspecified
+{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, grain size, latent heat, latent heat melt, melt global, melt simple, modified tait, multicomponent, multicomponent compressible, nondimensional, perplex lookup, replace lithosphere viscosity, simple, simple compressible, simpler, visco plastic, viscoelastic, unspecified
 \item {\it Parameter name:} {\tt Density}
 \phantomsection\label{parameters:Material model/Compositing/Density}
 \label{parameters:Material_20model/Compositing/Density}
@@ -8643,7 +8613,7 @@ The viscoelastic rheology behavior takes into account the elastic shear strength
 {\it Description:} Material model to use for Density. Valid values for this parameter are the names of models that are also valid for the ``Material models/Model name'' parameter. See the documentation for that for more information.
 
 
-{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, grain size, latent heat, latent heat melt, melt global, melt simple, modified tait, multicomponent, multicomponent compressible, nondimensional, perplex lookup, replace lithosphere viscosity, simple, simple compressible, simpler, visco plastic, viscoelastic, viscoelastic plastic, unspecified
+{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, grain size, latent heat, latent heat melt, melt global, melt simple, modified tait, multicomponent, multicomponent compressible, nondimensional, perplex lookup, replace lithosphere viscosity, simple, simple compressible, simpler, visco plastic, viscoelastic, unspecified
 \item {\it Parameter name:} {\tt Entropy derivative pressure}
 \phantomsection\label{parameters:Material model/Compositing/Entropy derivative pressure}
 \label{parameters:Material_20model/Compositing/Entropy_20derivative_20pressure}
@@ -8660,7 +8630,7 @@ The viscoelastic rheology behavior takes into account the elastic shear strength
 {\it Description:} Material model to use for Entropy derivative pressure. Valid values for this parameter are the names of models that are also valid for the ``Material models/Model name'' parameter. See the documentation for that for more information.
 
 
-{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, grain size, latent heat, latent heat melt, melt global, melt simple, modified tait, multicomponent, multicomponent compressible, nondimensional, perplex lookup, replace lithosphere viscosity, simple, simple compressible, simpler, visco plastic, viscoelastic, viscoelastic plastic, unspecified
+{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, grain size, latent heat, latent heat melt, melt global, melt simple, modified tait, multicomponent, multicomponent compressible, nondimensional, perplex lookup, replace lithosphere viscosity, simple, simple compressible, simpler, visco plastic, viscoelastic, unspecified
 \item {\it Parameter name:} {\tt Entropy derivative temperature}
 \phantomsection\label{parameters:Material model/Compositing/Entropy derivative temperature}
 \label{parameters:Material_20model/Compositing/Entropy_20derivative_20temperature}
@@ -8677,7 +8647,7 @@ The viscoelastic rheology behavior takes into account the elastic shear strength
 {\it Description:} Material model to use for Entropy derivative temperature. Valid values for this parameter are the names of models that are also valid for the ``Material models/Model name'' parameter. See the documentation for that for more information.
 
 
-{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, grain size, latent heat, latent heat melt, melt global, melt simple, modified tait, multicomponent, multicomponent compressible, nondimensional, perplex lookup, replace lithosphere viscosity, simple, simple compressible, simpler, visco plastic, viscoelastic, viscoelastic plastic, unspecified
+{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, grain size, latent heat, latent heat melt, melt global, melt simple, modified tait, multicomponent, multicomponent compressible, nondimensional, perplex lookup, replace lithosphere viscosity, simple, simple compressible, simpler, visco plastic, viscoelastic, unspecified
 \item {\it Parameter name:} {\tt Reaction terms}
 \phantomsection\label{parameters:Material model/Compositing/Reaction terms}
 \label{parameters:Material_20model/Compositing/Reaction_20terms}
@@ -8694,7 +8664,7 @@ The viscoelastic rheology behavior takes into account the elastic shear strength
 {\it Description:} Material model to use for Reaction terms. Valid values for this parameter are the names of models that are also valid for the ``Material models/Model name'' parameter. See the documentation for that for more information.
 
 
-{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, grain size, latent heat, latent heat melt, melt global, melt simple, modified tait, multicomponent, multicomponent compressible, nondimensional, perplex lookup, replace lithosphere viscosity, simple, simple compressible, simpler, visco plastic, viscoelastic, viscoelastic plastic, unspecified
+{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, grain size, latent heat, latent heat melt, melt global, melt simple, modified tait, multicomponent, multicomponent compressible, nondimensional, perplex lookup, replace lithosphere viscosity, simple, simple compressible, simpler, visco plastic, viscoelastic, unspecified
 \item {\it Parameter name:} {\tt Specific heat}
 \phantomsection\label{parameters:Material model/Compositing/Specific heat}
 \label{parameters:Material_20model/Compositing/Specific_20heat}
@@ -8711,7 +8681,7 @@ The viscoelastic rheology behavior takes into account the elastic shear strength
 {\it Description:} Material model to use for Specific heat. Valid values for this parameter are the names of models that are also valid for the ``Material models/Model name'' parameter. See the documentation for that for more information.
 
 
-{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, grain size, latent heat, latent heat melt, melt global, melt simple, modified tait, multicomponent, multicomponent compressible, nondimensional, perplex lookup, replace lithosphere viscosity, simple, simple compressible, simpler, visco plastic, viscoelastic, viscoelastic plastic, unspecified
+{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, grain size, latent heat, latent heat melt, melt global, melt simple, modified tait, multicomponent, multicomponent compressible, nondimensional, perplex lookup, replace lithosphere viscosity, simple, simple compressible, simpler, visco plastic, viscoelastic, unspecified
 \item {\it Parameter name:} {\tt Thermal conductivity}
 \phantomsection\label{parameters:Material model/Compositing/Thermal conductivity}
 \label{parameters:Material_20model/Compositing/Thermal_20conductivity}
@@ -8728,7 +8698,7 @@ The viscoelastic rheology behavior takes into account the elastic shear strength
 {\it Description:} Material model to use for Thermal conductivity. Valid values for this parameter are the names of models that are also valid for the ``Material models/Model name'' parameter. See the documentation for that for more information.
 
 
-{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, grain size, latent heat, latent heat melt, melt global, melt simple, modified tait, multicomponent, multicomponent compressible, nondimensional, perplex lookup, replace lithosphere viscosity, simple, simple compressible, simpler, visco plastic, viscoelastic, viscoelastic plastic, unspecified
+{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, grain size, latent heat, latent heat melt, melt global, melt simple, modified tait, multicomponent, multicomponent compressible, nondimensional, perplex lookup, replace lithosphere viscosity, simple, simple compressible, simpler, visco plastic, viscoelastic, unspecified
 \item {\it Parameter name:} {\tt Thermal expansion coefficient}
 \phantomsection\label{parameters:Material model/Compositing/Thermal expansion coefficient}
 \label{parameters:Material_20model/Compositing/Thermal_20expansion_20coefficient}
@@ -8745,7 +8715,7 @@ The viscoelastic rheology behavior takes into account the elastic shear strength
 {\it Description:} Material model to use for Thermal expansion coefficient. Valid values for this parameter are the names of models that are also valid for the ``Material models/Model name'' parameter. See the documentation for that for more information.
 
 
-{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, grain size, latent heat, latent heat melt, melt global, melt simple, modified tait, multicomponent, multicomponent compressible, nondimensional, perplex lookup, replace lithosphere viscosity, simple, simple compressible, simpler, visco plastic, viscoelastic, viscoelastic plastic, unspecified
+{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, grain size, latent heat, latent heat melt, melt global, melt simple, modified tait, multicomponent, multicomponent compressible, nondimensional, perplex lookup, replace lithosphere viscosity, simple, simple compressible, simpler, visco plastic, viscoelastic, unspecified
 \item {\it Parameter name:} {\tt Viscosity}
 \phantomsection\label{parameters:Material model/Compositing/Viscosity}
 \label{parameters:Material_20model/Compositing/Viscosity}
@@ -8762,7 +8732,7 @@ The viscoelastic rheology behavior takes into account the elastic shear strength
 {\it Description:} Material model to use for Viscosity. Valid values for this parameter are the names of models that are also valid for the ``Material models/Model name'' parameter. See the documentation for that for more information.
 
 
-{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, grain size, latent heat, latent heat melt, melt global, melt simple, modified tait, multicomponent, multicomponent compressible, nondimensional, perplex lookup, replace lithosphere viscosity, simple, simple compressible, simpler, visco plastic, viscoelastic, viscoelastic plastic, unspecified
+{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, grain size, latent heat, latent heat melt, melt global, melt simple, modified tait, multicomponent, multicomponent compressible, nondimensional, perplex lookup, replace lithosphere viscosity, simple, simple compressible, simpler, visco plastic, viscoelastic, unspecified
 \end{itemize}
 
 \subsection{Parameters in section \tt Material model/Composition reaction model}
@@ -8810,10 +8780,10 @@ The viscoelastic rheology behavior takes into account the elastic shear strength
 
 \index[prmindex]{Density differential for compositional field 1}
 \index[prmindexfull]{Material model!Composition reaction model!Density differential for compositional field 1}
-{\it Value:} 0
+{\it Value:} 0.
 
 
-{\it Default:} 0
+{\it Default:} 0.
 
 
 {\it Description:} If compositional fields are used, then one would frequently want to make the density depend on these fields. In this simple material model, we make the following assumptions: if no compositional fields are used in the current simulation, then the density is simply the usual one with its linear dependence on the temperature. If there are compositional fields, then the material model determines how many of them influence the density. The composition-dependence adds a term of the kind $+\Delta \rho \; c_1(\mathbf x)$. This parameter describes the value of $\Delta \rho$. Units: $kg/m^3/\textrm{unit change in composition}$.
@@ -8827,10 +8797,10 @@ The viscoelastic rheology behavior takes into account the elastic shear strength
 
 \index[prmindex]{Density differential for compositional field 2}
 \index[prmindexfull]{Material model!Composition reaction model!Density differential for compositional field 2}
-{\it Value:} 0
+{\it Value:} 0.
 
 
-{\it Default:} 0
+{\it Default:} 0.
 
 
 {\it Description:} If compositional fields are used, then one would frequently want to make the density depend on these fields. In this simple material model, we make the following assumptions: if no compositional fields are used in the current simulation, then the density is simply the usual one with its linear dependence on the temperature. If there are compositional fields, then the material model determines how many of them influence the density. The composition-dependence adds a term of the kind $+\Delta \rho \; c_2(\mathbf x)$. This parameter describes the value of $\Delta \rho$. Units: $kg/m^3/\textrm{unit change in composition}$.
@@ -8844,10 +8814,10 @@ The viscoelastic rheology behavior takes into account the elastic shear strength
 
 \index[prmindex]{Reaction depth}
 \index[prmindexfull]{Material model!Composition reaction model!Reaction depth}
-{\it Value:} 0
+{\it Value:} 0.
 
 
-{\it Default:} 0
+{\it Default:} 0.
 
 
 {\it Description:} Above this depth the compositional fields react: The first field gets converted to the second field. Units: $m$.
@@ -8895,10 +8865,10 @@ The viscoelastic rheology behavior takes into account the elastic shear strength
 
 \index[prmindex]{Reference temperature}
 \index[prmindexfull]{Material model!Composition reaction model!Reference temperature}
-{\it Value:} 293
+{\it Value:} 293.
 
 
-{\it Default:} 293
+{\it Default:} 293.
 
 
 {\it Description:} The reference temperature $T_0$. Units: $\si{K}$.
@@ -8995,7 +8965,7 @@ The viscoelastic rheology behavior takes into account the elastic shear strength
 {\it Description:} The name of a material model that will be modified by a depth dependent viscosity. Valid values for this parameter are the names of models that are also valid for the ``Material models/Model name'' parameter. See the documentation for that for more information.
 
 
-{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, grain size, latent heat, latent heat melt, melt global, melt simple, modified tait, multicomponent, multicomponent compressible, nondimensional, perplex lookup, replace lithosphere viscosity, simple, simple compressible, simpler, visco plastic, viscoelastic, viscoelastic plastic
+{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, grain size, latent heat, latent heat melt, melt global, melt simple, modified tait, multicomponent, multicomponent compressible, nondimensional, perplex lookup, replace lithosphere viscosity, simple, simple compressible, simpler, visco plastic, viscoelastic
 \item {\it Parameter name:} {\tt Data directory}
 \phantomsection\label{parameters:Material model/Depth dependent model/Data directory}
 \label{parameters:Material_20model/Depth_20dependent_20model/Data_20directory}
@@ -9271,10 +9241,10 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 
 \index[prmindex]{Grain size exponents for diffusion creep}
 \index[prmindexfull]{Material model!Diffusion dislocation!Grain size exponents for diffusion creep}
-{\it Value:} 3
+{\it Value:} 3.
 
 
-{\it Default:} 3
+{\it Default:} 3.
 
 
 {\it Description:} List of grain size exponents, $m_{\text{diffusion}}$, for background mantle and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value.  Units: None
@@ -9407,10 +9377,10 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 
 \index[prmindex]{Reference temperature}
 \index[prmindexfull]{Material model!Diffusion dislocation!Reference temperature}
-{\it Value:} 293
+{\it Value:} 293.
 
 
-{\it Default:} 293
+{\it Default:} 293.
 
 
 {\it Description:} For calculating density by thermal expansivity. Units: $\si{K}$
@@ -9462,10 +9432,10 @@ Units: $Pa \, s$
 
 \index[prmindex]{Stress exponents for diffusion creep}
 \index[prmindexfull]{Material model!Diffusion dislocation!Stress exponents for diffusion creep}
-{\it Value:} 1
+{\it Value:} 1.
 
 
-{\it Default:} 1
+{\it Default:} 1.
 
 
 {\it Description:} List of stress exponents, $n_{\text{diffusion}}$, for background mantle and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value.  Units: None
@@ -9587,10 +9557,10 @@ Units: $Pa \, s$
 
 \index[prmindex]{Reference temperature}
 \index[prmindexfull]{Material model!Drucker Prager!Reference temperature}
-{\it Value:} 293
+{\it Value:} 293.
 
 
-{\it Default:} 293
+{\it Default:} 293.
 
 
 {\it Description:} The reference temperature $T_0$. The reference temperature is used in the density calculation. Units: $\si{K}$.
@@ -9667,10 +9637,10 @@ Units: $Pa \, s$
 
 \index[prmindex]{Angle of internal friction}
 \index[prmindexfull]{Material model!Drucker Prager!Viscosity/Angle of internal friction}
-{\it Value:} 0
+{\it Value:} 0.
 
 
-{\it Default:} 0
+{\it Default:} 0.
 
 
 {\it Description:} The value of the angle of internal friction $\phi$. For a value of zero, in 2D the von Mises criterion is retrieved. Angles higher than 30 degrees are harder to solve numerically. Units: degrees.
@@ -9792,10 +9762,10 @@ Units: $Pa \, s$
 
 \index[prmindex]{Reference temperature}
 \index[prmindexfull]{Material model!Dynamic Friction!Reference temperature}
-{\it Value:} 293
+{\it Value:} 293.
 
 
-{\it Default:} 293
+{\it Default:} 293.
 
 
 {\it Description:} The reference temperature $T_0$. Units: $\si{K}$.
@@ -10122,10 +10092,10 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 
 \index[prmindex]{Diffusion creep exponent}
 \index[prmindexfull]{Material model!Grain size model!Diffusion creep exponent}
-{\it Value:} 1
+{\it Value:} 1.
 
 
-{\it Default:} 1
+{\it Default:} 1.
 
 
 {\it Description:} The power-law exponent $n_{diff}$ for diffusion creep. Units: none.
@@ -10139,10 +10109,10 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 
 \index[prmindex]{Diffusion creep grain size exponent}
 \index[prmindexfull]{Material model!Grain size model!Diffusion creep grain size exponent}
-{\it Value:} 3
+{\it Value:} 3.
 
 
-{\it Default:} 3
+{\it Default:} 3.
 
 
 {\it Description:} The diffusion creep grain size exponent $p_{diff}$ that determines the dependence of vescosity on grain size. Units: none.
@@ -10275,10 +10245,10 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 
 \index[prmindex]{Geometric constant}
 \index[prmindexfull]{Material model!Grain size model!Geometric constant}
-{\it Value:} 3
+{\it Value:} 3.
 
 
-{\it Default:} 3
+{\it Default:} 3.
 
 
 {\it Description:} The geometric constant $c$ used in the paleowattmeter grain size reduction law. Units: none.
@@ -10326,10 +10296,10 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 
 \index[prmindex]{Grain growth exponent}
 \index[prmindexfull]{Material model!Grain size model!Grain growth exponent}
-{\it Value:} 3
+{\it Value:} 3.
 
 
-{\it Default:} 3
+{\it Default:} 3.
 
 
 {\it Description:} The exponent of the grain growth law $p_g$. This is an experimentally determined grain growth constant. Units: none.
@@ -10428,10 +10398,10 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 
 \index[prmindex]{Maximum specific heat}
 \index[prmindexfull]{Material model!Grain size model!Maximum specific heat}
-{\it Value:} 6000
+{\it Value:} 6000.
 
 
-{\it Default:} 6000
+{\it Default:} 6000.
 
 
 {\it Description:} The maximum specific heat that is allowed in the whole model domain. Units: J/kg/K.
@@ -10445,10 +10415,10 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 
 \index[prmindex]{Maximum temperature dependence of viscosity}
 \index[prmindexfull]{Material model!Grain size model!Maximum temperature dependence of viscosity}
-{\it Value:} 100
+{\it Value:} 100.
 
 
-{\it Default:} 100
+{\it Default:} 100.
 
 
 {\it Description:} The factor by which viscosity at adiabatic temperature and ambient temperature are allowed to differ (a value of x means that the viscosity can be x times higher or x times lower compared to the value at adiabatic temperature. This parameter is introduced to limit local viscosity contrasts, but still allow for a widely varying viscosity over the whole mantle range. Units: none.
@@ -10513,10 +10483,10 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 
 \index[prmindex]{Minimum specific heat}
 \index[prmindexfull]{Material model!Grain size model!Minimum specific heat}
-{\it Value:} 500
+{\it Value:} 500.
 
 
-{\it Default:} 500
+{\it Default:} 500.
 
 
 {\it Description:} The minimum specific heat that is allowed in the whole model domain. Units: J/kg/K.
@@ -10632,10 +10602,10 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 
 \index[prmindex]{Reciprocal required strain}
 \index[prmindexfull]{Material model!Grain size model!Reciprocal required strain}
-{\it Value:} 10
+{\it Value:} 10.
 
 
-{\it Default:} 10
+{\it Default:} 10.
 
 
 {\it Description:} This parameter ($\lambda$) gives an estimate of the strain necessary to achieve a new grain size. 
@@ -10700,10 +10670,10 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 
 \index[prmindex]{Reference specific heat}
 \index[prmindexfull]{Material model!Grain size model!Reference specific heat}
-{\it Value:} 1250
+{\it Value:} 1250.
 
 
-{\it Default:} 1250
+{\it Default:} 1250.
 
 
 {\it Description:} The value of the specific heat $cp$. Units: $J/kg/K$.
@@ -10717,10 +10687,10 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 
 \index[prmindex]{Reference temperature}
 \index[prmindexfull]{Material model!Grain size model!Reference temperature}
-{\it Value:} 293
+{\it Value:} 293.
 
 
-{\it Default:} 293
+{\it Default:} 293.
 
 
 {\it Description:} The reference temperature $T_0$. Units: $\si{K}$.
@@ -10927,10 +10897,10 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 
 \index[prmindex]{Density differential for compositional field 1}
 \index[prmindexfull]{Material model!Latent heat!Density differential for compositional field 1}
-{\it Value:} 0
+{\it Value:} 0.
 
 
-{\it Default:} 0
+{\it Default:} 0.
 
 
 {\it Description:} If compositional fields are used, then one would frequently want to make the density depend on these fields. In this simple material model, we make the following assumptions: if no compositional fields are used in the current simulation, then the density is simply the usual one with its linear dependence on the temperature. If there are compositional fields, then the density only depends on the first one in such a way that the density has an additional term of the kind $+\Delta \rho \; c_1(\mathbf x)$. This parameter describes the value of $\Delta \rho$. Units: $kg/m^3/\textrm{unit change in composition}$.
@@ -11097,10 +11067,10 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 
 \index[prmindex]{Reference density}
 \index[prmindexfull]{Material model!Latent heat!Reference density}
-{\it Value:} 3300
+{\it Value:} 3300.
 
 
-{\it Default:} 3300
+{\it Default:} 3300.
 
 
 {\it Description:} Reference density $\rho_0$. Units: $kg/m^3$.
@@ -11114,10 +11084,10 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 
 \index[prmindex]{Reference specific heat}
 \index[prmindexfull]{Material model!Latent heat!Reference specific heat}
-{\it Value:} 1250
+{\it Value:} 1250.
 
 
-{\it Default:} 1250
+{\it Default:} 1250.
 
 
 {\it Description:} The value of the specific heat $C_p$. Units: $J/kg/K$.
@@ -11131,10 +11101,10 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 
 \index[prmindex]{Reference temperature}
 \index[prmindexfull]{Material model!Latent heat!Reference temperature}
-{\it Value:} 293
+{\it Value:} 293.
 
 
-{\it Default:} 293
+{\it Default:} 293.
 
 
 {\it Description:} The reference temperature $T_0$. Units: $\si{K}$.
@@ -11477,10 +11447,10 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 
 \index[prmindex]{Density differential for compositional field 1}
 \index[prmindexfull]{Material model!Latent heat melt!Density differential for compositional field 1}
-{\it Value:} 0
+{\it Value:} 0.
 
 
-{\it Default:} 0
+{\it Default:} 0.
 
 
 {\it Description:} If compositional fields are used, then one would frequently want to make the density depend on these fields. In this simple material model, we make the following assumptions: if no compositional fields are used in the current simulation, then the density is simply the usual one with its linear dependence on the temperature. If there are compositional fields, then the density only depends on the first one in such a way that the density has an additional term of the kind $+\Delta \rho \; c_1(\mathbf x)$. This parameter describes the value of $\Delta \rho$. Units: $kg/m^3/\textrm{unit change in composition}$.
@@ -11562,10 +11532,10 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 
 \index[prmindex]{Peridotite melting entropy change}
 \index[prmindexfull]{Material model!Latent heat melt!Peridotite melting entropy change}
-{\it Value:} -300
+{\it Value:} -300.
 
 
-{\it Default:} -300
+{\it Default:} -300.
 
 
 {\it Description:} The entropy change for the phase transition from solid to melt of peridotite. Units: $J/(kg K)$.
@@ -11579,10 +11549,10 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 
 \index[prmindex]{Pyroxenite melting entropy change}
 \index[prmindexfull]{Material model!Latent heat melt!Pyroxenite melting entropy change}
-{\it Value:} -400
+{\it Value:} -400.
 
 
-{\it Default:} -400
+{\it Default:} -400.
 
 
 {\it Description:} The entropy change for the phase transition from solid to melt of pyroxenite. Units: $J/(kg K)$.
@@ -11596,10 +11566,10 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 
 \index[prmindex]{Reference density}
 \index[prmindexfull]{Material model!Latent heat melt!Reference density}
-{\it Value:} 3300
+{\it Value:} 3300.
 
 
-{\it Default:} 3300
+{\it Default:} 3300.
 
 
 {\it Description:} Reference density $\rho_0$. Units: $kg/m^3$.
@@ -11613,10 +11583,10 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 
 \index[prmindex]{Reference specific heat}
 \index[prmindexfull]{Material model!Latent heat melt!Reference specific heat}
-{\it Value:} 1250
+{\it Value:} 1250.
 
 
-{\it Default:} 1250
+{\it Default:} 1250.
 
 
 {\it Description:} The value of the specific heat $C_p$. Units: $J/kg/K$.
@@ -11630,10 +11600,10 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 
 \index[prmindex]{Reference temperature}
 \index[prmindexfull]{Material model!Latent heat melt!Reference temperature}
-{\it Value:} 293
+{\it Value:} 293.
 
 
-{\it Default:} 293
+{\it Default:} 293.
 
 
 {\it Description:} The reference temperature $T_0$. Units: $\si{K}$.
@@ -11857,10 +11827,10 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 
 \index[prmindex]{Exponential melt weakening factor}
 \index[prmindexfull]{Material model!Melt global!Exponential melt weakening factor}
-{\it Value:} 27
+{\it Value:} 27.
 
 
-{\it Default:} 27
+{\it Default:} 27.
 
 
 {\it Description:} The porosity dependence of the viscosity. Units: dimensionless.
@@ -11995,10 +11965,10 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 \index[prmindex]{Reference melt density}
 \index[prmindexfull]{Material model!Melt global!Reference melt density}
-{\it Value:} 2500
+{\it Value:} 2500.
 
 
-{\it Default:} 2500
+{\it Default:} 2500.
 
 
 {\it Description:} Reference density of the melt/fluid$\rho_{f,0}$. Units: $kg/m^3$.
@@ -12012,10 +11982,10 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 \index[prmindex]{Reference melt viscosity}
 \index[prmindexfull]{Material model!Melt global!Reference melt viscosity}
-{\it Value:} 10
+{\it Value:} 10.
 
 
-{\it Default:} 10
+{\it Default:} 10.
 
 
 {\it Description:} The value of the constant melt viscosity $\eta_f$. Units: $Pa \, s$.
@@ -12063,10 +12033,10 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 \index[prmindex]{Reference solid density}
 \index[prmindexfull]{Material model!Melt global!Reference solid density}
-{\it Value:} 3000
+{\it Value:} 3000.
 
 
-{\it Default:} 3000
+{\it Default:} 3000.
 
 
 {\it Description:} Reference density of the solid $\rho_{s,0}$. Units: $kg/m^3$.
@@ -12080,10 +12050,10 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 \index[prmindex]{Reference specific heat}
 \index[prmindexfull]{Material model!Melt global!Reference specific heat}
-{\it Value:} 1250
+{\it Value:} 1250.
 
 
-{\it Default:} 1250
+{\it Default:} 1250.
 
 
 {\it Description:} The value of the specific heat $C_p$. Units: $J/kg/K$.
@@ -12097,10 +12067,10 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 \index[prmindex]{Reference temperature}
 \index[prmindexfull]{Material model!Melt global!Reference temperature}
-{\it Value:} 293
+{\it Value:} 293.
 
 
-{\it Default:} 293
+{\it Default:} 293.
 
 
 {\it Description:} The reference temperature $T_0$. The reference temperature is used in both the density and viscosity formulas. Units: $\si{K}$.
@@ -12131,10 +12101,10 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 \index[prmindex]{Surface solidus}
 \index[prmindexfull]{Material model!Melt global!Surface solidus}
-{\it Value:} 1300
+{\it Value:} 1300.
 
 
-{\it Default:} 1300
+{\it Default:} 1300.
 
 
 {\it Description:} Solidus for a pressure of zero. Units: $\si{K}$.
@@ -12409,10 +12379,10 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 \index[prmindex]{Exponential melt weakening factor}
 \index[prmindexfull]{Material model!Melt simple!Exponential melt weakening factor}
-{\it Value:} 27
+{\it Value:} 27.
 
 
-{\it Default:} 27
+{\it Default:} 27.
 
 
 {\it Description:} The porosity dependence of the viscosity. Units: dimensionless.
@@ -12530,10 +12500,10 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 \index[prmindex]{Peridotite melting entropy change}
 \index[prmindexfull]{Material model!Melt simple!Peridotite melting entropy change}
-{\it Value:} -300
+{\it Value:} -300.
 
 
-{\it Default:} -300
+{\it Default:} -300.
 
 
 {\it Description:} The entropy change for the phase transition from solid to melt of peridotite. Units: $J/(kg K)$.
@@ -12564,10 +12534,10 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 \index[prmindex]{Reference melt density}
 \index[prmindexfull]{Material model!Melt simple!Reference melt density}
-{\it Value:} 2500
+{\it Value:} 2500.
 
 
-{\it Default:} 2500
+{\it Default:} 2500.
 
 
 {\it Description:} Reference density of the melt/fluid$\rho_{f,0}$. Units: $kg/m^3$.
@@ -12581,10 +12551,10 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 \index[prmindex]{Reference melt viscosity}
 \index[prmindexfull]{Material model!Melt simple!Reference melt viscosity}
-{\it Value:} 10
+{\it Value:} 10.
 
 
-{\it Default:} 10
+{\it Default:} 10.
 
 
 {\it Description:} The value of the constant melt viscosity $\eta_f$. Units: $Pa \, s$.
@@ -12632,10 +12602,10 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 \index[prmindex]{Reference solid density}
 \index[prmindexfull]{Material model!Melt simple!Reference solid density}
-{\it Value:} 3000
+{\it Value:} 3000.
 
 
-{\it Default:} 3000
+{\it Default:} 3000.
 
 
 {\it Description:} Reference density of the solid $\rho_{s,0}$. Units: $kg/m^3$.
@@ -12649,10 +12619,10 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 \index[prmindex]{Reference specific heat}
 \index[prmindexfull]{Material model!Melt simple!Reference specific heat}
-{\it Value:} 1250
+{\it Value:} 1250.
 
 
-{\it Default:} 1250
+{\it Default:} 1250.
 
 
 {\it Description:} The value of the specific heat $C_p$. Units: $J/kg/K$.
@@ -12666,10 +12636,10 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 \index[prmindex]{Reference temperature}
 \index[prmindexfull]{Material model!Melt simple!Reference temperature}
-{\it Value:} 293
+{\it Value:} 293.
 
 
-{\it Default:} 293
+{\it Default:} 293.
 
 
 {\it Description:} The reference temperature $T_0$. The reference temperature is used in both the density and viscosity formulas. Units: $\si{K}$.
@@ -12861,10 +12831,10 @@ Note that melt does not freeze unless the 'Freezing rate' parameter is set to a 
 
 \index[prmindex]{Einstein temperature}
 \index[prmindexfull]{Material model!Modified Tait model!Einstein temperature}
-{\it Value:} 600
+{\it Value:} 600.
 
 
-{\it Default:} 600
+{\it Default:} 600.
 
 
 {\it Description:} The Einstein temperature at the reference pressure and temperature. Units: $\text{K}$.
@@ -12878,10 +12848,10 @@ Note that melt does not freeze unless the 'Freezing rate' parameter is set to a 
 
 \index[prmindex]{Reference bulk modulus derivative}
 \index[prmindexfull]{Material model!Modified Tait model!Reference bulk modulus derivative}
-{\it Value:} 4
+{\it Value:} 4.
 
 
-{\it Default:} 4
+{\it Default:} 4.
 
 
 {\it Description:} The value of the first pressure derivative of the isothermal bulk modulus at the reference pressure and temperature. Units: [].
@@ -12895,10 +12865,10 @@ Note that melt does not freeze unless the 'Freezing rate' parameter is set to a 
 
 \index[prmindex]{Reference density}
 \index[prmindexfull]{Material model!Modified Tait model!Reference density}
-{\it Value:} 3300
+{\it Value:} 3300.
 
 
-{\it Default:} 3300
+{\it Default:} 3300.
 
 
 {\it Description:} The density at the reference pressure and temperature. Units: $\text{kg}/\text{m}^3$.
@@ -13112,10 +13082,10 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 
 \index[prmindex]{Reference temperature}
 \index[prmindexfull]{Material model!Multicomponent!Reference temperature}
-{\it Value:} 293
+{\it Value:} 293.
 
 
-{\it Default:} 293
+{\it Default:} 293.
 
 
 {\it Description:} The reference temperature $T_0$. Units: $\si{K}$.
@@ -13648,7 +13618,7 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 {\it Description:} The name of a material model that will be modified by a replacingthe viscosity in the lithosphere by a constant value. Valid values for this parameter are the names of models that are also valid for the ``Material models/Model name'' parameter. See the documentation for more information.
 
 
-{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, grain size, latent heat, latent heat melt, melt global, melt simple, modified tait, multicomponent, multicomponent compressible, nondimensional, perplex lookup, replace lithosphere viscosity, simple, simple compressible, simpler, visco plastic, viscoelastic, viscoelastic plastic
+{\it Possible values:} Any one of Steinberger, ascii reference profile, averaging, compositing, composition reaction, depth dependent, diffusion dislocation, drucker prager, dynamic friction, grain size, latent heat, latent heat melt, melt global, melt simple, modified tait, multicomponent, multicomponent compressible, nondimensional, perplex lookup, replace lithosphere viscosity, simple, simple compressible, simpler, visco plastic, viscoelastic
 \item {\it Parameter name:} {\tt Data directory}
 \phantomsection\label{parameters:Material model/Replace lithosphere viscosity/Data directory}
 \label{parameters:Material_20model/Replace_20lithosphere_20viscosity/Data_20directory}
@@ -13764,10 +13734,10 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 
 \index[prmindex]{Reference density}
 \index[prmindexfull]{Material model!Simple compressible model!Reference density}
-{\it Value:} 3300
+{\it Value:} 3300.
 
 
-{\it Default:} 3300
+{\it Default:} 3300.
 
 
 {\it Description:} Reference density $\rho_0$. Units: $kg/m^3$.
@@ -13781,10 +13751,10 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 
 \index[prmindex]{Reference specific heat}
 \index[prmindexfull]{Material model!Simple compressible model!Reference specific heat}
-{\it Value:} 1250
+{\it Value:} 1250.
 
 
-{\it Default:} 1250
+{\it Default:} 1250.
 
 
 {\it Description:} The value of the specific heat $C_p$. Units: $J/kg/K$.
@@ -13872,10 +13842,10 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 
 \index[prmindex]{Density differential for compositional field 1}
 \index[prmindexfull]{Material model!Simple model!Density differential for compositional field 1}
-{\it Value:} 0
+{\it Value:} 0.
 
 
-{\it Default:} 0
+{\it Default:} 0.
 
 
 {\it Description:} If compositional fields are used, then one would frequently want to make the density depend on these fields. In this simple material model, we make the following assumptions: if no compositional fields are used in the current simulation, then the density is simply the usual one with its linear dependence on the temperature. If there are compositional fields, then the material model determines how many of them influence the density. The composition-dependence adds a term of the kind $+\Delta \rho \; c_1(\mathbf x)$. This parameter describes the value of $\Delta \rho$. Units: $kg/m^3/\textrm{unit change in composition}$.
@@ -13957,10 +13927,10 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 
 \index[prmindex]{Reference temperature}
 \index[prmindexfull]{Material model!Simple model!Reference temperature}
-{\it Value:} 293
+{\it Value:} 293.
 
 
-{\it Default:} 293
+{\it Default:} 293.
 
 
 {\it Description:} The reference temperature $T_0$. The reference temperature is used in both the density and viscosity formulas. Units: $\si{K}$.
@@ -14082,10 +14052,10 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 
 \index[prmindex]{Reference temperature}
 \index[prmindexfull]{Material model!Simpler model!Reference temperature}
-{\it Value:} 293
+{\it Value:} 293.
 
 
-{\it Default:} 293
+{\it Default:} 293.
 
 
 {\it Description:} The reference temperature $T_0$. The reference temperature is used in the density formula. Units: $\si{K}$.
@@ -14472,10 +14442,10 @@ Units: $Pa \, s$
 
 \index[prmindex]{Angles of internal friction}
 \index[prmindexfull]{Material model!Visco Plastic!Angles of internal friction}
-{\it Value:} 0
+{\it Value:} 0.
 
 
-{\it Default:} 0
+{\it Default:} 0.
 
 
 {\it Description:} List of angles of internal friction, $\phi$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. For a value of zero, in 2D the von Mises criterion is retrieved. Angles higher than 30 degrees are harder to solve numerically. Units: degrees.
@@ -14516,6 +14486,40 @@ Units: $Pa \, s$
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
+\item {\it Parameter name:} {\tt Constant viscosity prefactors}
+\phantomsection\label{parameters:Material model/Visco Plastic/Constant viscosity prefactors}
+\label{parameters:Material_20model/Visco_20Plastic/Constant_20viscosity_20prefactors}
+
+
+\index[prmindex]{Constant viscosity prefactors}
+\index[prmindexfull]{Material model!Visco Plastic!Constant viscosity prefactors}
+{\it Value:} 1.0
+
+
+{\it Default:} 1.0
+
+
+{\it Description:} List of constant viscosity prefactors (i.e., multiplicative factors) for background material and compositional fields, for a total of N+1 where N is the number of compositional fields. Units: none
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
+\item {\it Parameter name:} {\tt Define thermal conductivities}
+\phantomsection\label{parameters:Material model/Visco Plastic/Define thermal conductivities}
+\label{parameters:Material_20model/Visco_20Plastic/Define_20thermal_20conductivities}
+
+
+\index[prmindex]{Define thermal conductivities}
+\index[prmindexfull]{Material model!Visco Plastic!Define thermal conductivities}
+{\it Value:} false
+
+
+{\it Default:} false
+
+
+{\it Description:} Whether to directly define thermal conductivities for each compositional field instead of calculating the values through the specified thermal diffusivities, densities, and heat capacities. 
+
+
+{\it Possible values:} A boolean value (true or false)
 \item {\it Parameter name:} {\tt Define transition by depth instead of pressure}
 \phantomsection\label{parameters:Material model/Visco Plastic/Define transition by depth instead of pressure}
 \label{parameters:Material_20model/Visco_20Plastic/Define_20transition_20by_20depth_20instead_20of_20pressure}
@@ -14659,10 +14663,10 @@ Units: $Pa \, s$
 
 \index[prmindex]{Grain size exponents for diffusion creep}
 \index[prmindexfull]{Material model!Visco Plastic!Grain size exponents for diffusion creep}
-{\it Value:} 3
+{\it Value:} 3.
 
 
-{\it Default:} 3
+{\it Default:} 3.
 
 
 {\it Description:} List of grain size exponents, $m_{\text{diffusion}}$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value. Units: None
@@ -14948,10 +14952,10 @@ Units: $Pa \, s$
 
 \index[prmindex]{Reference temperature}
 \index[prmindexfull]{Material model!Visco Plastic!Reference temperature}
-{\it Value:} 293
+{\it Value:} 293.
 
 
-{\it Default:} 293
+{\it Default:} 293.
 
 
 {\it Description:} For calculating density by thermal expansivity. Units: $\si{K}$
@@ -15089,6 +15093,23 @@ If a compositional field named 'noninitial\_plastic\_strain' is included in the 
 
 
 {\it Description:} List of stress limiter exponents, $n_{\text{lim}}$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. Units: none.
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
+\item {\it Parameter name:} {\tt Thermal conductivities}
+\phantomsection\label{parameters:Material model/Visco Plastic/Thermal conductivities}
+\label{parameters:Material_20model/Visco_20Plastic/Thermal_20conductivities}
+
+
+\index[prmindex]{Thermal conductivities}
+\index[prmindexfull]{Material model!Visco Plastic!Thermal conductivities}
+{\it Value:} 3.0
+
+
+{\it Default:} 3.0
+
+
+{\it Description:} List of thermal conductivities, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value.  Units: $W/(m K)$
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -15292,10 +15313,10 @@ If a compositional field named 'noninitial\_plastic\_strain' is included in the 
 
 \index[prmindex]{Reference temperature}
 \index[prmindexfull]{Material model!Viscoelastic!Reference temperature}
-{\it Value:} 293
+{\it Value:} 293.
 
 
-{\it Default:} 293
+{\it Default:} 293.
 
 
 {\it Description:} The reference temperature $T_0$. Units: $\si{K}$.
@@ -15404,332 +15425,6 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 
 \index[prmindex]{Viscosity averaging scheme}
 \index[prmindexfull]{Material model!Viscoelastic!Viscosity averaging scheme}
-{\it Value:} harmonic
-
-
-{\it Default:} harmonic
-
-
-{\it Description:} When more than one compositional field is present at a point with different viscosities, we need to come up with an average viscosity at that point.  Select a weighted harmonic, arithmetic, geometric, or maximum composition.
-
-
-{\it Possible values:} Any one of arithmetic, harmonic, geometric, maximum composition 
-\end{itemize}
-
-\subsection{Parameters in section \tt Material model/Viscoelastic Plastic}
-\label{parameters:Material_20model/Viscoelastic_20Plastic}
-
-\begin{itemize}
-\item {\it Parameter name:} {\tt Angles of internal friction}
-\phantomsection\label{parameters:Material model/Viscoelastic Plastic/Angles of internal friction}
-\label{parameters:Material_20model/Viscoelastic_20Plastic/Angles_20of_20internal_20friction}
-
-
-\index[prmindex]{Angles of internal friction}
-\index[prmindexfull]{Material model!Viscoelastic Plastic!Angles of internal friction}
-{\it Value:} 0
-
-
-{\it Default:} 0
-
-
-{\it Description:} List of angles of internal friction, $\phi$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. For a value of zero, in 2D the von Mises criterion is retrieved. Angles higher than 30 degrees are harder to solve numerically. Units: degrees.
-
-
-{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
-\item {\it Parameter name:} {\tt Cohesions}
-\phantomsection\label{parameters:Material model/Viscoelastic Plastic/Cohesions}
-\label{parameters:Material_20model/Viscoelastic_20Plastic/Cohesions}
-
-
-\index[prmindex]{Cohesions}
-\index[prmindexfull]{Material model!Viscoelastic Plastic!Cohesions}
-{\it Value:} 1e20
-
-
-{\it Default:} 1e20
-
-
-{\it Description:} List of cohesions, $C$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. The extremely large default cohesion value (1e20 Pa) prevents the viscous stress from exceeding the yield stress. Units: $Pa$.
-
-
-{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
-\item {\it Parameter name:} {\tt Densities}
-\phantomsection\label{parameters:Material model/Viscoelastic Plastic/Densities}
-\label{parameters:Material_20model/Viscoelastic_20Plastic/Densities}
-
-
-\index[prmindex]{Densities}
-\index[prmindexfull]{Material model!Viscoelastic Plastic!Densities}
-{\it Value:} 3300.
-
-
-{\it Default:} 3300.
-
-
-{\it Description:} List of densities for background mantle and compositional fields,for a total of N+1 values, where N is the number of compositional fields.If only one value is given, then all use the same value.  Units: $kg / m^3$
-
-
-{\it Possible values:} Any string
-\item {\it Parameter name:} {\tt Elastic shear moduli}
-\phantomsection\label{parameters:Material model/Viscoelastic Plastic/Elastic shear moduli}
-\label{parameters:Material_20model/Viscoelastic_20Plastic/Elastic_20shear_20moduli}
-
-
-\index[prmindex]{Elastic shear moduli}
-\index[prmindexfull]{Material model!Viscoelastic Plastic!Elastic shear moduli}
-{\it Value:} 75.0e9
-
-
-{\it Default:} 75.0e9
-
-
-{\it Description:} List of elastic shear moduli, $G$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. The default value of 75 GPa is representative of mantle rocks. Units: Pa.
-
-
-{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
-\item {\it Parameter name:} {\tt Fixed elastic time step}
-\phantomsection\label{parameters:Material model/Viscoelastic Plastic/Fixed elastic time step}
-\label{parameters:Material_20model/Viscoelastic_20Plastic/Fixed_20elastic_20time_20step}
-
-
-\index[prmindex]{Fixed elastic time step}
-\index[prmindexfull]{Material model!Viscoelastic Plastic!Fixed elastic time step}
-{\it Value:} 1.e3
-
-
-{\it Default:} 1.e3
-
-
-{\it Description:} The fixed elastic time step $dte$. Units: years if the 'Use years in output instead of seconds' parameter is set; seconds otherwise.
-
-
-{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
-\item {\it Parameter name:} {\tt Heat capacities}
-\phantomsection\label{parameters:Material model/Viscoelastic Plastic/Heat capacities}
-\label{parameters:Material_20model/Viscoelastic_20Plastic/Heat_20capacities}
-
-
-\index[prmindex]{Heat capacities}
-\index[prmindexfull]{Material model!Viscoelastic Plastic!Heat capacities}
-{\it Value:} 1250.
-
-
-{\it Default:} 1250.
-
-
-{\it Description:} List of specific heats $C_p$ for background mantle and compositional fields,for a total of N+1 values, where N is the number of compositional fields.If only one value is given, then all use the same value. Units: $J /kg /K$
-
-
-{\it Possible values:} Any string
-\item {\it Parameter name:} {\tt Linear viscosities}
-\phantomsection\label{parameters:Material model/Viscoelastic Plastic/Linear viscosities}
-\label{parameters:Material_20model/Viscoelastic_20Plastic/Linear_20viscosities}
-
-
-\index[prmindex]{Linear viscosities}
-\index[prmindexfull]{Material model!Viscoelastic Plastic!Linear viscosities}
-{\it Value:} 1.e21
-
-
-{\it Default:} 1.e21
-
-
-{\it Description:} List of linear (fixed) viscosities for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value. Units: $Pa s$
-
-
-{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
-\item {\it Parameter name:} {\tt Maximum viscosity}
-\phantomsection\label{parameters:Material model/Viscoelastic Plastic/Maximum viscosity}
-\label{parameters:Material_20model/Viscoelastic_20Plastic/Maximum_20viscosity}
-
-
-\index[prmindex]{Maximum viscosity}
-\index[prmindexfull]{Material model!Viscoelastic Plastic!Maximum viscosity}
-{\it Value:} 1e28
-
-
-{\it Default:} 1e28
-
-
-{\it Description:} Upper cutoff for effective viscosity. Units: $Pa \, s$
-
-
-{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
-\item {\it Parameter name:} {\tt Minimum strain rate}
-\phantomsection\label{parameters:Material model/Viscoelastic Plastic/Minimum strain rate}
-\label{parameters:Material_20model/Viscoelastic_20Plastic/Minimum_20strain_20rate}
-
-
-\index[prmindex]{Minimum strain rate}
-\index[prmindexfull]{Material model!Viscoelastic Plastic!Minimum strain rate}
-{\it Value:} 1.0e-20
-
-
-{\it Default:} 1.0e-20
-
-
-{\it Description:} Stabilizes strain dependent viscosity. Units: $1 / s$
-
-
-{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
-\item {\it Parameter name:} {\tt Minimum viscosity}
-\phantomsection\label{parameters:Material model/Viscoelastic Plastic/Minimum viscosity}
-\label{parameters:Material_20model/Viscoelastic_20Plastic/Minimum_20viscosity}
-
-
-\index[prmindex]{Minimum viscosity}
-\index[prmindexfull]{Material model!Viscoelastic Plastic!Minimum viscosity}
-{\it Value:} 1e17
-
-
-{\it Default:} 1e17
-
-
-{\it Description:} Lower cutoff for effective viscosity. Units: $Pa \, s$
-
-
-{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
-\item {\it Parameter name:} {\tt Reference strain rate}
-\phantomsection\label{parameters:Material model/Viscoelastic Plastic/Reference strain rate}
-\label{parameters:Material_20model/Viscoelastic_20Plastic/Reference_20strain_20rate}
-
-
-\index[prmindex]{Reference strain rate}
-\index[prmindexfull]{Material model!Viscoelastic Plastic!Reference strain rate}
-{\it Value:} 1.0e-15
-
-
-{\it Default:} 1.0e-15
-
-
-{\it Description:} Reference strain rate for first time step. Units: $1 / s$
-
-
-{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
-\item {\it Parameter name:} {\tt Reference temperature}
-\phantomsection\label{parameters:Material model/Viscoelastic Plastic/Reference temperature}
-\label{parameters:Material_20model/Viscoelastic_20Plastic/Reference_20temperature}
-
-
-\index[prmindex]{Reference temperature}
-\index[prmindexfull]{Material model!Viscoelastic Plastic!Reference temperature}
-{\it Value:} 293
-
-
-{\it Default:} 293
-
-
-{\it Description:} The reference temperature $T_0$. Units: $\si{K}$.
-
-
-{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
-\item {\it Parameter name:} {\tt Reference viscosity}
-\phantomsection\label{parameters:Material model/Viscoelastic Plastic/Reference viscosity}
-\label{parameters:Material_20model/Viscoelastic_20Plastic/Reference_20viscosity}
-
-
-\index[prmindex]{Reference viscosity}
-\index[prmindexfull]{Material model!Viscoelastic Plastic!Reference viscosity}
-{\it Value:} 1e22
-
-
-{\it Default:} 1e22
-
-
-{\it Description:} Reference viscosity for nondimensionalization. To understand how pressure scaling works, take a look at \cite{KHB12}. In particular, the value of this parameter would not affect the solution computed by \aspect{} if we could do arithmetic exactly; however, computers do arithmetic in finite precision, and consequently we need to scale quantities in ways so that their magnitudes are roughly the same. As explained in \cite{KHB12}, we scale the pressure during some computations (never visible by users) by a factor that involves a reference viscosity. This parameter describes this reference viscosity.
-
-For problems with a constant viscosity, you will generally want to choose the reference viscosity equal to the actual viscosity. For problems with a variable viscosity, the reference viscosity should be a value that adequately represents the order of magnitude of the viscosities that appear, such as an average value or the value one would use to compute a Rayleigh number.
-
-Units: $Pa \, s$
-
-
-{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
-\item {\it Parameter name:} {\tt Specific heats}
-\phantomsection\label{parameters:Material model/Viscoelastic Plastic/Specific heats}
-\label{parameters:Material_20model/Viscoelastic_20Plastic/Specific_20heats}
-
-
-\index[prmindex]{Specific heats}
-\index[prmindexfull]{Material model!Viscoelastic Plastic!Specific heats}
-This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
-
-
-\item {\it Parameter name:} {\tt Thermal conductivities}
-\phantomsection\label{parameters:Material model/Viscoelastic Plastic/Thermal conductivities}
-\label{parameters:Material_20model/Viscoelastic_20Plastic/Thermal_20conductivities}
-
-
-\index[prmindex]{Thermal conductivities}
-\index[prmindexfull]{Material model!Viscoelastic Plastic!Thermal conductivities}
-{\it Value:} 4.7
-
-
-{\it Default:} 4.7
-
-
-{\it Description:} List of thermal conductivities for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value. Units: $W/m/K$ 
-
-
-{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
-\item {\it Parameter name:} {\tt Thermal expansivities}
-\phantomsection\label{parameters:Material model/Viscoelastic Plastic/Thermal expansivities}
-\label{parameters:Material_20model/Viscoelastic_20Plastic/Thermal_20expansivities}
-
-
-\index[prmindex]{Thermal expansivities}
-\index[prmindexfull]{Material model!Viscoelastic Plastic!Thermal expansivities}
-{\it Value:} 0.000035
-
-
-{\it Default:} 0.000035
-
-
-{\it Description:} List of thermal expansivities for background mantle and compositional fields,for a total of N+1 values, where N is the number of compositional fields.If only one value is given, then all use the same value. Units: $1/K$
-
-
-{\it Possible values:} Any string
-\item {\it Parameter name:} {\tt Use fixed elastic time step}
-\phantomsection\label{parameters:Material model/Viscoelastic Plastic/Use fixed elastic time step}
-\label{parameters:Material_20model/Viscoelastic_20Plastic/Use_20fixed_20elastic_20time_20step}
-
-
-\index[prmindex]{Use fixed elastic time step}
-\index[prmindexfull]{Material model!Viscoelastic Plastic!Use fixed elastic time step}
-{\it Value:} unspecified
-
-
-{\it Default:} unspecified
-
-
-{\it Description:} Select whether the material time scale in the viscoelastic constitutive relationship uses the regular numerical time step or a separate fixed elastic time step throughout the model run. The fixed elastic time step is always used during the initial time step. If a fixed elastic time step is used throughout the model run, a stress averaging scheme can be applied to account for differences with the numerical time step. An alternative approach is to limit the maximum time step size so that it is equal to the elastic time step. The default value of this parameter is 'unspecified', which throws an exception during runtime. In order for the model to run the user must select 'true' or 'false'.
-
-
-{\it Possible values:} Any one of true, false, unspecified
-\item {\it Parameter name:} {\tt Use stress averaging}
-\phantomsection\label{parameters:Material model/Viscoelastic Plastic/Use stress averaging}
-\label{parameters:Material_20model/Viscoelastic_20Plastic/Use_20stress_20averaging}
-
-
-\index[prmindex]{Use stress averaging}
-\index[prmindexfull]{Material model!Viscoelastic Plastic!Use stress averaging}
-{\it Value:} false
-
-
-{\it Default:} false
-
-
-{\it Description:} Whether to apply a stress averaging scheme to account for differences between the fixed elastic time step and numerical time step. 
-
-
-{\it Possible values:} A boolean value (true or false)
-\item {\it Parameter name:} {\tt Viscosity averaging scheme}
-\phantomsection\label{parameters:Material model/Viscoelastic Plastic/Viscosity averaging scheme}
-\label{parameters:Material_20model/Viscoelastic_20Plastic/Viscosity_20averaging_20scheme}
-
-
-\index[prmindex]{Viscosity averaging scheme}
-\index[prmindexfull]{Material model!Viscoelastic Plastic!Viscosity averaging scheme}
 {\it Value:} harmonic
 
 
@@ -17032,10 +16727,10 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 
 \index[prmindex]{Density above}
 \index[prmindexfull]{Postprocess!Dynamic topography!Density above}
-{\it Value:} 0
+{\it Value:} 0.
 
 
-{\it Default:} 0
+{\it Default:} 0.
 
 
 {\it Description:} Dynamic topography is calculated as the excess or lack of mass that is supported by mantle flow. This value depends on the density of material that is moved up or down, i.e. crustal rock, and the density of the material that is displaced (generally water or air). While the density of crustal rock is part of the material model, this parameter `Density above' allows the user to specify the density value of material that is displaced above the solid surface. By default this material is assumed to be air, with a density of 0. Units: $kg/m^3$.
@@ -17049,10 +16744,10 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 
 \index[prmindex]{Density below}
 \index[prmindexfull]{Postprocess!Dynamic topography!Density below}
-{\it Value:} 9900
+{\it Value:} 9900.
 
 
-{\it Default:} 9900
+{\it Default:} 9900.
 
 
 {\it Description:} Dynamic topography is calculated as the excess or lack of mass that is supported by mantle flow. This value depends on the density of material that is moved up or down, i.e. mantle above CMB, and the density of the material that is displaced (generally outer core material). While the density of mantle rock is part of the material model, this parameter `Density below' allows the user to specify the density value of material that is displaced below the solid surface. By default this material is assumed to be outer core material with a density of 9900. Units: $kg/m^3$.
@@ -17191,10 +16886,10 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 
 \index[prmindex]{Density above}
 \index[prmindexfull]{Postprocess!Geoid!Density above}
-{\it Value:} 0
+{\it Value:} 0.
 
 
-{\it Default:} 0
+{\it Default:} 0.
 
 
 {\it Description:} The density value above the surface boundary.
@@ -17208,10 +16903,10 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 
 \index[prmindex]{Density below}
 \index[prmindexfull]{Postprocess!Geoid!Density below}
-{\it Value:} 9900
+{\it Value:} 9900.
 
 
-{\it Default:} 9900
+{\it Default:} 9900.
 
 
 {\it Description:} The density value below the CMB boundary.
@@ -17390,10 +17085,10 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 
 \index[prmindex]{Maximum longitude}
 \index[prmindexfull]{Postprocess!Gravity calculation!Maximum longitude}
-{\it Value:} 180
+{\it Value:} 180.
 
 
-{\it Default:} 180
+{\it Default:} 180.
 
 
 {\it Description:} Parameter for the uniform distribution sampling scheme: Gravity may be calculated for a sets of points along the longitude between a minimum and maximum longitude.
@@ -17407,10 +17102,10 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 
 \index[prmindex]{Maximum radius}
 \index[prmindexfull]{Postprocess!Gravity calculation!Maximum radius}
-{\it Value:} 0
+{\it Value:} 0.
 
 
-{\it Default:} 0
+{\it Default:} 0.
 
 
 {\it Description:} Parameter for the uniform distribution sampling scheme: Maximum radius can be defined in or outside the model.
@@ -17424,10 +17119,10 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 
 \index[prmindex]{Minimum latitude}
 \index[prmindexfull]{Postprocess!Gravity calculation!Minimum latitude}
-{\it Value:} -90
+{\it Value:} -90.
 
 
-{\it Default:} -90
+{\it Default:} -90.
 
 
 {\it Description:} Parameter for the uniform distribution sampling scheme: Gravity may be calculated for a sets of points along the latitude between a minimum and maximum latitude.
@@ -17441,10 +17136,10 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 
 \index[prmindex]{Minimum longitude}
 \index[prmindexfull]{Postprocess!Gravity calculation!Minimum longitude}
-{\it Value:} -180
+{\it Value:} -180.
 
 
-{\it Default:} -180
+{\it Default:} -180.
 
 
 {\it Description:} Parameter for the uniform distribution sampling scheme: Gravity may be calculated for a sets of points along the longitude between a minimum and maximum longitude.
@@ -17458,10 +17153,10 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 
 \index[prmindex]{Minimum radius}
 \index[prmindexfull]{Postprocess!Gravity calculation!Minimum radius}
-{\it Value:} 0
+{\it Value:} 0.
 
 
-{\it Default:} 0
+{\it Default:} 0.
 
 
 {\it Description:} Parameter for the uniform distribution sampling scheme: Minimum radius may be defined in or outside the model. Prescribe a minimum radius for a sampling coverage at a specific height.
@@ -17519,6 +17214,23 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 
 
 {\it Possible values:} An integer $n$ such that $0\leq n \leq 2147483647$
+\item {\it Parameter name:} {\tt Precision in gravity output}
+\phantomsection\label{parameters:Postprocess/Gravity calculation/Precision in gravity output}
+\label{parameters:Postprocess/Gravity_20calculation/Precision_20in_20gravity_20output}
+
+
+\index[prmindex]{Precision in gravity output}
+\index[prmindexfull]{Postprocess!Gravity calculation!Precision in gravity output}
+{\it Value:} 12
+
+
+{\it Default:} 12
+
+
+{\it Description:} Set the precision of gravity acceleration, potential and gradients in the gravity output and statistics file.
+
+
+{\it Possible values:} An integer $n$ such that $1\leq n \leq 2147483647$
 \item {\it Parameter name:} {\tt Quadrature degree increase}
 \phantomsection\label{parameters:Postprocess/Gravity calculation/Quadrature degree increase}
 \label{parameters:Postprocess/Gravity_20calculation/Quadrature_20degree_20increase}
@@ -17535,7 +17247,7 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 {\it Description:} Quadrature degree increase over the velocity element degree may be required when gravity is calculated near the surface or inside the model. An increase in the quadrature element adds accuracy to the gravity solution from noise due to the model grid.
 
 
-{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+{\it Possible values:} An integer $n$ such that $0\leq n \leq 2147483647$
 \item {\it Parameter name:} {\tt Reference density}
 \phantomsection\label{parameters:Postprocess/Gravity calculation/Reference density}
 \label{parameters:Postprocess/Gravity_20calculation/Reference_20density}
@@ -17543,10 +17255,10 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 
 \index[prmindex]{Reference density}
 \index[prmindexfull]{Postprocess!Gravity calculation!Reference density}
-{\it Value:} 3300
+{\it Value:} 3300.
 
 
-{\it Default:} 3300
+{\it Default:} 3300.
 
 
 {\it Description:} Gravity anomalies may be computed using density anomalies relative to a reference density.
@@ -18237,10 +17949,10 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Maximum x}
 \index[prmindexfull]{Postprocess!Particles!Generator/Uniform box/Maximum x}
-{\it Value:} 1
+{\it Value:} 1.
 
 
-{\it Default:} 1
+{\it Default:} 1.
 
 
 {\it Description:} Maximum x coordinate for the region of particles.
@@ -18254,10 +17966,10 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Maximum y}
 \index[prmindexfull]{Postprocess!Particles!Generator/Uniform box/Maximum y}
-{\it Value:} 1
+{\it Value:} 1.
 
 
-{\it Default:} 1
+{\it Default:} 1.
 
 
 {\it Description:} Maximum y coordinate for the region of particles.
@@ -18271,10 +17983,10 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Maximum z}
 \index[prmindexfull]{Postprocess!Particles!Generator/Uniform box/Maximum z}
-{\it Value:} 1
+{\it Value:} 1.
 
 
-{\it Default:} 1
+{\it Default:} 1.
 
 
 {\it Description:} Maximum z coordinate for the region of particles.
@@ -18288,10 +18000,10 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Minimum x}
 \index[prmindexfull]{Postprocess!Particles!Generator/Uniform box/Minimum x}
-{\it Value:} 0
+{\it Value:} 0.
 
 
-{\it Default:} 0
+{\it Default:} 0.
 
 
 {\it Description:} Minimum x coordinate for the region of particles.
@@ -18305,10 +18017,10 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Minimum y}
 \index[prmindexfull]{Postprocess!Particles!Generator/Uniform box/Minimum y}
-{\it Value:} 0
+{\it Value:} 0.
 
 
-{\it Default:} 0
+{\it Default:} 0.
 
 
 {\it Description:} Minimum y coordinate for the region of particles.
@@ -18322,10 +18034,10 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Minimum z}
 \index[prmindexfull]{Postprocess!Particles!Generator/Uniform box/Minimum z}
-{\it Value:} 0
+{\it Value:} 0.
 
 
-{\it Default:} 0
+{\it Default:} 0.
 
 
 {\it Description:} Minimum z coordinate for the region of particles.
@@ -18345,10 +18057,10 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Center x}
 \index[prmindexfull]{Postprocess!Particles!Generator/Uniform radial/Center x}
-{\it Value:} 0
+{\it Value:} 0.
 
 
-{\it Default:} 0
+{\it Default:} 0.
 
 
 {\it Description:} x coordinate for the center of the spherical region, where particles are generated.
@@ -18362,10 +18074,10 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Center y}
 \index[prmindexfull]{Postprocess!Particles!Generator/Uniform radial/Center y}
-{\it Value:} 0
+{\it Value:} 0.
 
 
-{\it Default:} 0
+{\it Default:} 0.
 
 
 {\it Description:} y coordinate for the center of the spherical region, where particles are generated.
@@ -18379,10 +18091,10 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Center z}
 \index[prmindexfull]{Postprocess!Particles!Generator/Uniform radial/Center z}
-{\it Value:} 0
+{\it Value:} 0.
 
 
-{\it Default:} 0
+{\it Default:} 0.
 
 
 {\it Description:} z coordinate for the center of the spherical region, where particles are generated.
@@ -18396,10 +18108,10 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Maximum latitude}
 \index[prmindexfull]{Postprocess!Particles!Generator/Uniform radial/Maximum latitude}
-{\it Value:} 180
+{\it Value:} 180.
 
 
-{\it Default:} 180
+{\it Default:} 180.
 
 
 {\it Description:} Maximum latitude coordinate for the region of particles in degrees. Measured from the center position, and from the north pole.
@@ -18413,10 +18125,10 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Maximum longitude}
 \index[prmindexfull]{Postprocess!Particles!Generator/Uniform radial/Maximum longitude}
-{\it Value:} 360
+{\it Value:} 360.
 
 
-{\it Default:} 360
+{\it Default:} 360.
 
 
 {\it Description:} Maximum longitude coordinate for the region of particles in degrees. Measured from the center position.
@@ -18430,10 +18142,10 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Maximum radius}
 \index[prmindexfull]{Postprocess!Particles!Generator/Uniform radial/Maximum radius}
-{\it Value:} 1
+{\it Value:} 1.
 
 
-{\it Default:} 1
+{\it Default:} 1.
 
 
 {\it Description:} Maximum radial coordinate for the region of particles. Measured from the center position.
@@ -18447,10 +18159,10 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Minimum latitude}
 \index[prmindexfull]{Postprocess!Particles!Generator/Uniform radial/Minimum latitude}
-{\it Value:} 0
+{\it Value:} 0.
 
 
-{\it Default:} 0
+{\it Default:} 0.
 
 
 {\it Description:} Minimum latitude coordinate for the region of particles in degrees. Measured from the center position, and from the north pole.
@@ -18464,10 +18176,10 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Minimum longitude}
 \index[prmindexfull]{Postprocess!Particles!Generator/Uniform radial/Minimum longitude}
-{\it Value:} 0
+{\it Value:} 0.
 
 
-{\it Default:} 0
+{\it Default:} 0.
 
 
 {\it Description:} Minimum longitude coordinate for the region of particles in degrees. Measured from the center position.
@@ -18481,10 +18193,10 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Minimum radius}
 \index[prmindexfull]{Postprocess!Particles!Generator/Uniform radial/Minimum radius}
-{\it Value:} 0
+{\it Value:} 0.
 
 
-{\it Default:} 0
+{\it Default:} 0.
 
 
 {\it Description:} Minimum radial coordinate for the region of particles. Measured from the center position.
@@ -18622,10 +18334,10 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Time between point values output}
 \index[prmindexfull]{Postprocess!Point values!Time between point values output}
-{\it Value:} 0
+{\it Value:} 0.
 
 
-{\it Default:} 0
+{\it Default:} 0.
 
 
 {\it Description:} The time interval between each generation of point values output. A value of zero indicates that output should be generated in each time step. Units: years if the 'Use years in output instead of seconds' parameter is set; seconds otherwise.
@@ -18934,6 +18646,23 @@ The variable that is outputted this way is computed by taking the pressure at ea
 
 
 {\it Description:} For computations with deforming meshes, ASPECT uses an Arbitrary-Lagrangian-Eulerian formulation to handle deforming the domain, so the mesh has its own velocity field.  This may be written as an output field by setting this parameter to true.
+
+
+{\it Possible values:} A boolean value (true or false)
+\item {\it Parameter name:} {\tt Point-wise stress and strain}
+\phantomsection\label{parameters:Postprocess/Visualization/Point_2dwise stress and strain}
+\label{parameters:Postprocess/Visualization/Point_2dwise_20stress_20and_20strain}
+
+
+\index[prmindex]{Point-wise stress and strain}
+\index[prmindexfull]{Postprocess!Visualization!Point-wise stress and strain}
+{\it Value:} false
+
+
+{\it Default:} false
+
+
+{\it Description:} If set to true, quantities related to stress and strain are computed in each vertex. Otherwise, an average per cell is computed.
 
 
 {\it Possible values:} A boolean value (true or false)
@@ -19730,10 +19459,10 @@ compaction viscosity|fluid viscosity|permeability|fluid density|fluid density gr
 
 \index[prmindex]{Scale factor}
 \index[prmindexfull]{Prescribed Stokes solution!Ascii data model!Scale factor}
-{\it Value:} 1
+{\it Value:} 1.
 
 
-{\it Default:} 1
+{\it Default:} 1.
 
 
 {\it Description:} Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model. Another way to use this factor is to convert units of the input files. For instance, if you provide velocities in cm/yr set this factor to 0.01.
@@ -20548,7 +20277,7 @@ In practice, you should choose the value of this parameter to be so that if you 
 {\it Default:} block AMG
 
 
-{\it Description:} This is the type of solver used on the Stokes system. The block geometric multigrid solver currently has a limited implementation and therefore the user may trigger Asserts in the code when using this solver. If this is the case, the user should switch to block AMG.
+{\it Description:} This is the type of solver used on the Stokes system. The block geometric multigrid solver currently has a limited implementation and therefore may trigger Asserts in the code when used. If this is the case, please switch to 'block AMG'. Additionally, the block GMG solver requires using material model averaging.
 
 
 {\it Possible values:} Any one of block AMG, direct solver, block GMG
@@ -20693,10 +20422,10 @@ These choices correspond to the following methods by which the temperature field
 
 \index[prmindex]{Wall time}
 \index[prmindexfull]{Termination criteria!Wall time}
-{\it Value:} 24
+{\it Value:} 24.
 
 
-{\it Default:} 24
+{\it Default:} 24.
 
 
 {\it Description:} The wall time of the simulation. Unit: hours.
