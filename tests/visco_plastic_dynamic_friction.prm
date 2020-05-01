@@ -47,20 +47,30 @@ subsection Mesh deformation
 end
 
 subsection Material model
+  set Model name = visco plastic
+  subsection Visco Plastic
 
-  set Model name = dynamic friction
-  subsection Dynamic Friction
-    set Densities         = 2800
-    set Viscosity averaging scheme = harmonic
-    subsection Viscosities    
-       set Minimum viscosity = 1e19
-       set Maximum viscosity = 1e25
-       set Reference strain rate = 1e-15
-       set Background Viscosities = 1.e25, 1.e20
-       set Coefficients of static friction = 0.5547 , 0.5
-       set Coefficients of dynamic friction = 0.6 , 0.5
-       set Cohesions = 20e6 
-    end
+    set Minimum viscosity     = 1e19
+    set Maximum viscosity     = 1e25
+    set Reference strain rate = 1e-15
+    set Minimum strain rate   = 1.e-20
+
+    set Define thermal conductivities = true
+    set Thermal conductivities        = 4.7
+    set Densities                     = 2800
+
+    set Viscous flow law                          = dislocation
+    set Prefactors for dislocation creep          = 5.00e-26, 5.00e-21
+    set Stress exponents for dislocation creep    =      1.0,      1.0
+    set Activation energies for dislocation creep =      0.0,      0.0
+    set Activation volumes for dislocation creep  =      0.0,      0.0
+
+    set Use steady-state angle of internal friction = true
+
+    set Angles of internal friction               = 29.017132, 26.565051
+    set Dynamic angles of internal friction       = 30.963756, 26.565051
+    set Cohesions                                 = 20.e6
+
   end
 end
 
@@ -107,7 +117,7 @@ subsection Initial temperature model
   set Model name = function
 
   subsection Function
-    set Function expression = 0
+    set Function expression = 293
   end
 end
 
