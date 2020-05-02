@@ -713,7 +713,7 @@ namespace aspect
     // we will update the right-hand side with boundary information in
     // StokesMatrixFreeHandler::correct_stokes_rhs().
     if (!stokes_matrix_free)
-      Assert(rebuild_stokes_matrix || boundary_velocity_manager.get_active_boundary_velocity_conditions().size()==0,
+      Assert(rebuild_stokes_matrix  || !assemble_newton_stokes_matrix || boundary_velocity_manager.get_active_boundary_velocity_conditions().size()==0,
              ExcInternalError("If we have inhomogeneous constraints, we must re-assemble the system matrix."));
 
     system_rhs = 0;
