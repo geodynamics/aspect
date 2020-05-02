@@ -1326,9 +1326,9 @@ namespace aspect
         nonlinear_solver = NonlinearSolver::no_Advection_iterated_Stokes;
       else if (solver_scheme == "no Advection, single Stokes")
         nonlinear_solver = NonlinearSolver::no_Advection_single_Stokes;
-      else if (solver_scheme == "no Advection, defect correction iterated Stokes")
+      else if (solver_scheme == "no Advection, iterated defect correction Stokes")
         nonlinear_solver = NonlinearSolver::no_Advection_iterated_defect_correction_Stokes;
-      else if (solver_scheme == "single Advection, defect correction iterated Stokes")
+      else if (solver_scheme == "single Advection, iterated defect correction Stokes")
         nonlinear_solver = NonlinearSolver::single_Advection_iterated_defect_correction_Stokes;
       else if (solver_scheme == "iterated Advection and defect correction Stokes")
         nonlinear_solver = NonlinearSolver::iterated_Advection_and_defect_correction_Stokes;
