@@ -19,7 +19,7 @@ subsection Solver parameters
   subsection Newton solver parameters
     set Max pre-Newton nonlinear iterations = 100
     set Nonlinear Newton solver switch tolerance = 1e-20 
-    set Max Newton line search iterations = 5
+    set Max Newton line search iterations = 0
     set Maximum linear Stokes solver tolerance = 1e-1
     set Use Eisenstat Walker method for Picard iterations = false
   end
