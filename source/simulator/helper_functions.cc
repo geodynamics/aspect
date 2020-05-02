@@ -2419,8 +2419,10 @@ namespace aspect
                           current_linearization_point);
 
     // rebuild the whole system to compute the rhs.
-    rebuild_stokes_matrix = assemble_newton_stokes_system = assemble_newton_stokes_matrix = true;
+    assemble_newton_stokes_system = true;
     rebuild_stokes_preconditioner = false;
+    rebuild_stokes_matrix = boundary_velocity_manager.get_active_boundary_velocity_conditions().size()!=0;
+    assemble_newton_stokes_matrix = boundary_velocity_manager.get_active_boundary_velocity_conditions().size()!=0;
 
     compute_current_constraints ();
 
