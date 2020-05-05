@@ -88,7 +88,7 @@ namespace aspect
                              Patterns::Integer (),
                              "The number of convection cells with which to perturb the system.");
 
-          prm.declare_entry  ("Rotation offset", "-45",
+          prm.declare_entry  ("Rotation offset", "-45.",
                               Patterns::Double (),
                               "Amount of clockwise rotation in degrees to apply to "
                               "the perturbations. Default is set to -45 in order "
@@ -249,20 +249,20 @@ namespace aspect
       {
         prm.enter_subsection("Spherical gaussian perturbation");
         {
-          prm.declare_entry ("Angle", "0e0",
-                             Patterns::Double (0),
+          prm.declare_entry ("Angle", "0.",
+                             Patterns::Double (0.),
                              "The angle where the center of the perturbation is placed.");
           prm.declare_entry ("Non-dimensional depth", "0.7",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The non-dimensional radial distance where the center of the "
                              "perturbation is placed.");
           prm.declare_entry ("Amplitude", "0.01",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The amplitude of the perturbation.");
           prm.declare_entry ("Sigma", "0.2",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The standard deviation of the Gaussian perturbation.");
-          prm.declare_entry ("Sign", "1",
+          prm.declare_entry ("Sign", "1.",
                              Patterns::Double (),
                              "The sign of the perturbation.");
           prm.declare_entry ("Filename for initial geotherm table", "initial-geotherm-table",

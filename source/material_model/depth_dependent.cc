@@ -166,10 +166,10 @@ namespace aspect
                                   typename Interface<dim>::MaterialModelOutputs &out) const
     {
       base_model->evaluate(in,out);
-      if (in.strain_rate.size())
+      if (in.requests_property(MaterialProperties::viscosity))
         {
           // Scale the base model viscosity value by the depth dependent prefactor
-          for (unsigned int i=0; i < out.viscosities.size(); ++i)
+          for (unsigned int i=0; i < out.n_evaluation_points(); ++i)
             {
               const double depth = this->get_geometry_model().depth(in.position[i]);
               out.viscosities[i] *= calculate_depth_dependent_prefactor( depth );

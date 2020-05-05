@@ -54,6 +54,12 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
   in_base.pressure[3] = 2e11;
   in_base.pressure[4] = 5e8;
 
+  in_base.position[0] = Point<dim>();
+  in_base.position[1] = Point<dim>();
+  in_base.position[2] = Point<dim>();
+  in_base.position[3] = Point<dim>();
+  in_base.position[4] = Point<dim>();
+
   /**
    * We can't take too small strain-rates, because then the difference in the
    * viscosity will be too small for the double accuracy which stores

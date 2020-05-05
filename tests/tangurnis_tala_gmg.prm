@@ -3,7 +3,7 @@
 include $ASPECT_SOURCE_DIR/benchmarks/tangurnis/tala/tan.prm 
 
 subsection Material model
-  set Material averaging = harmonic average
+  set Material averaging = harmonic average only viscosity
 end
 
 subsection Solver parameters

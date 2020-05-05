@@ -94,11 +94,11 @@ namespace aspect
     prm.enter_subsection ("Volume of Fluid");
     {
       prm.declare_entry ("Volume fraction threshold", "1e-6",
-                         Patterns::Double (0, 1),
+                         Patterns::Double (0., 1.),
                          "Minimum significant volume. Fluid fractions below this value are considered to be zero.");
 
       prm.declare_entry ("Volume of Fluid solver tolerance", "1e-12",
-                         Patterns::Double(0,1),
+                         Patterns::Double(0., 1.),
                          "The relative tolerance up to which the linear system "
                          "for the Volume of Fluid system gets solved. See "
                          "'Solver parameters/Composition solver tolerance' "

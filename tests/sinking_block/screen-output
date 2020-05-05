@@ -1,0 +1,19 @@
+
+Loading shared library <./libsinking_block.so>
+
+Number of active cells: 64 (on 4 levels)
+Number of degrees of freedom: 948 (578+81+289)
+
+*** Timestep 0:  t=0 years
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 20+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-sinking_block/solution/solution-00000
+     RMS, max velocity:        0.000923 m/year, 0.00191 m/year
+
+Termination requested by criterion: end time
+
+
+

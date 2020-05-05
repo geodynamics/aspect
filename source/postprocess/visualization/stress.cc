@@ -68,6 +68,12 @@ namespace aspect
             for (unsigned int i=0; i<SymmetricTensor<2,dim>::n_independent_components; ++i)
               computed_quantities[q](i) = stress[stress.unrolled_to_component_indices(i)];
           }
+
+        // average the values if requested
+        const auto &viz = this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::Visualization<dim> >();
+        if (!viz.output_pointwise_stress_and_strain())
+          average_quantities(computed_quantities);
+
       }
 
 

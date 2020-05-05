@@ -1,0 +1,69 @@
+# This is the standalone prm file for the sinking block benchmark.
+
+set Additional shared libraries  = ./libsinking_block.so 
+set Dimension                    = 2
+set Start time                   = 0
+set End time                     = 0
+set Output directory             = output-block
+set Pressure normalization       = volume
+
+subsection Geometry model
+  set Model name = box
+  subsection Box
+    set X extent  = 512e3
+    set Y extent  = 512e3
+  end
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = left, right, bottom, top
+end
+
+subsection Material model
+  set Model name  = SinkingBlockMaterial
+  subsection SinkingBlock
+     set eta1 = 1e21
+     set eta2 = 1e22
+     set rho1 = 3200
+     set rho2 = 3208
+     set method = 0
+  end 
+end
+
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 10
+  end
+end
+
+############### Parameters describing the temperature field
+# Note: The temperature plays no role in this model
+
+subsection Boundary temperature model
+  set List of model names = box
+end
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Function expression = 0
+  end
+end
+
+############### Parameters describing the discretization
+
+subsection Mesh refinement
+  set Initial global refinement          = 5 
+  set Initial adaptive refinement        = 0
+end
+
+############### Parameters describing what to do with the solution
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics
+  subsection Visualization
+    set Output format                 = vtu
+    set Time between graphical output = 0
+    set List of output variables = density, viscosity
+  end
+end

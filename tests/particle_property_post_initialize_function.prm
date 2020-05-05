@@ -1,0 +1,106 @@
+#########################################################
+# This is a variation of the particle_exclude_three_properties_vtu.prm
+# parameter file.
+
+
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 0 
+set Use years in output instead of seconds = false
+
+
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 2
+    set Y extent = 1
+  end
+end
+
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = bottom, top
+  set List of model names = box
+
+  subsection Box
+    set Bottom temperature = 1
+    set Top temperature    = 0
+  end
+end
+
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = left, right, bottom
+  set Prescribed velocity boundary indicators = top: function
+
+  subsection Function
+    set Variable names      = x,z,t
+    set Function constants  = pi=3.1415926
+    set Function expression = if(x>1+sin(0.5*pi*t), 1, -1); 0
+  end
+end
+
+
+subsection Gravity model
+  set Model name = vertical
+end
+
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,z
+    set Function expression = (1-z)
+  end
+end
+
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Thermal conductivity          = 1e-6
+    set Thermal expansion coefficient = 1e-4
+    set Viscosity                     = 1
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 5
+  set Time steps between mesh refinement = 0
+end
+
+
+subsection Postprocess
+  set List of postprocessors = visualization, particles
+
+  subsection Visualization
+    set Time between graphical output = 0.1
+  end
+
+  subsection Particles
+    set Number of particles        = 100
+    set Time between data output = 0.1
+    set Data output format       = vtu
+    set List of particle properties = initial position, initial composition, PostInitializeParticleProperty, velocity
+    set Exclude output properties = initial C_2, initial C_9
+  end
+end
+
+subsection Compositional fields
+  set Number of fields = 10
+end
+
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,y
+    set Function expression = 0.1; 0.2; 0.3 ; 0.4; 0.5;0.6;0.7;0.8;0.9;0.95
+  end
+end

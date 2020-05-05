@@ -749,7 +749,7 @@ namespace aspect
     GrainSize<dim>::
     evaluate(const typename Interface<dim>::MaterialModelInputs &in, typename Interface<dim>::MaterialModelOutputs &out) const
     {
-      for (unsigned int i=0; i<in.position.size(); ++i)
+      for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
         {
           // Use the adiabatic pressure instead of the real one, because of oscillations
           const double pressure = (this->get_adiabatic_conditions().is_initialized())
@@ -806,7 +806,7 @@ namespace aspect
                   crossed_transition = phase;
               }
           else
-            for (unsigned int j=0; j<in.position.size(); ++j)
+            for (unsigned int j=0; j<in.n_evaluation_points(); ++j)
               for (unsigned int k=0; k<transition_depths.size(); ++k)
                 if ((phase_function(in.position[i], in.temperature[i], pressure, k)
                      != phase_function(in.position[j], in.temperature[j], in.pressure[j], k))
@@ -816,7 +816,7 @@ namespace aspect
                   crossed_transition = k;
 
 
-          if (in.strain_rate.size() > 0)
+          if (in.requests_property(MaterialProperties::viscosity))
             {
               double effective_viscosity;
               double disl_viscosity = std::numeric_limits<double>::max();
@@ -848,7 +848,7 @@ namespace aspect
             disl_viscosities_out->boundary_area_change_work_fractions[i] =
               boundary_area_change_work_fraction[get_phase_index(in.position[i],in.temperature[i],pressure)];
 
-          if (in.strain_rate.size() > 0)
+          if (in.requests_property(MaterialProperties::reaction_terms))
             for (unsigned int c=0; c<composition.size(); ++c)
               {
                 if (this->introspection().name_for_compositional_index(c) == "grain_size")
@@ -877,20 +877,20 @@ namespace aspect
        */
       double average_temperature(0.0);
       double average_density(0.0);
-      for (unsigned int i = 0; i < in.position.size(); ++i)
+      for (unsigned int i = 0; i < in.n_evaluation_points(); ++i)
         {
           average_temperature += in.temperature[i];
           average_density += out.densities[i];
         }
-      average_temperature /= in.position.size();
-      average_density /= in.position.size();
+      average_temperature /= in.n_evaluation_points();
+      average_density /= in.n_evaluation_points();
 
       std::array<std::pair<double, unsigned int>,2> dH;
 
       if (use_table_properties && use_enthalpy)
         dH = enthalpy_derivative(in);
 
-      for (unsigned int i = 0; i < in.position.size(); ++i)
+      for (unsigned int i = 0; i < in.n_evaluation_points(); ++i)
         {
           //Use the adiabatic pressure instead of the real one, because of oscillations
           const double pressure = (this->get_adiabatic_conditions().is_initialized())
@@ -949,37 +949,37 @@ namespace aspect
         prm.enter_subsection("Grain size model");
         {
           prm.declare_entry ("Reference density", "3300",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The reference density $\\rho_0$. Units: $kg/m^3$.");
-          prm.declare_entry ("Reference temperature", "293",
-                             Patterns::Double (0),
+          prm.declare_entry ("Reference temperature", "293.",
+                             Patterns::Double (0.),
                              "The reference temperature $T_0$. Units: $\\si{K}$.");
           prm.declare_entry ("Viscosity", "5e24",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The value of the constant viscosity. Units: $kg/m/s$.");
           prm.declare_entry ("Thermal conductivity", "4.7",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The value of the thermal conductivity $k$. "
                              "Units: $W/m/K$.");
-          prm.declare_entry ("Reference specific heat", "1250",
-                             Patterns::Double (0),
+          prm.declare_entry ("Reference specific heat", "1250.",
+                             Patterns::Double (0.),
                              "The value of the specific heat $cp$. "
                              "Units: $J/kg/K$.");
           prm.declare_entry ("Thermal expansion coefficient", "2e-5",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The value of the thermal expansion coefficient $\\alpha$. "
                              "Units: $1/K$.");
           prm.declare_entry ("Reference compressibility", "4e-12",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The value of the reference compressibility. "
                              "Units: $1/Pa$.");
           prm.declare_entry ("Phase transition depths", "",
-                             Patterns::List (Patterns::Double(0)),
+                             Patterns::List (Patterns::Double (0.)),
                              "A list of depths where phase transitions occur. Values must "
                              "monotonically increase. "
                              "Units: $m$.");
           prm.declare_entry ("Phase transition temperatures", "",
-                             Patterns::List (Patterns::Double(0)),
+                             Patterns::List (Patterns::Double (0.)),
                              "A list of temperatures where phase transitions occur. Higher or lower "
                              "temperatures lead to phase transition ocurring in smaller or greater "
                              "depths than given in Phase transition depths, depending on the "
@@ -987,7 +987,7 @@ namespace aspect
                              "List must have the same number of entries as Phase transition depths. "
                              "Units: $\\si{K}$.");
           prm.declare_entry ("Phase transition widths", "",
-                             Patterns::List (Patterns::Double(0)),
+                             Patterns::List (Patterns::Double (0.)),
                              "A list of widths for each phase transition. This is only use to specify "
                              "the region where the recrystallized grain size is assigned after material "
                              "has crossed a phase transition and should accordingly be chosen similar "
@@ -1005,36 +1005,36 @@ namespace aspect
                              "List must have the same number of entries as Phase transition depths. "
                              "Units: $Pa/K$.");
           prm.declare_entry ("Grain growth activation energy", "3.5e5",
-                             Patterns::List (Patterns::Double(0)),
+                             Patterns::List (Patterns::Double (0.)),
                              "The activation energy for grain growth $E_g$. "
                              "Units: $J/mol$.");
           prm.declare_entry ("Grain growth activation volume", "8e-6",
-                             Patterns::List (Patterns::Double(0)),
+                             Patterns::List (Patterns::Double (0.)),
                              "The activation volume for grain growth $V_g$. "
                              "Units: $m^3/mol$.");
-          prm.declare_entry ("Grain growth exponent", "3",
-                             Patterns::List (Patterns::Double(0)),
+          prm.declare_entry ("Grain growth exponent", "3.",
+                             Patterns::List (Patterns::Double (0.)),
                              "The exponent of the grain growth law $p_g$. This is an experimentally determined "
                              "grain growth constant. "
                              "Units: none.");
           prm.declare_entry ("Grain growth rate constant", "1.5e-5",
-                             Patterns::List (Patterns::Double(0)),
+                             Patterns::List (Patterns::Double (0.)),
                              "The prefactor for the Ostwald ripening grain growth law $G_0$. "
                              "This is dependent on water content, which is assumed to be "
                              "50 H/$10^6$ Si for the default value. "
                              "Units: $m^{p_g}/s$.");
           prm.declare_entry ("Minimum grain size", "5e-6",
-                             Patterns::Double(0),
+                             Patterns::Double (0.),
                              "The minimum allowable grain size. The grain size will be limited to be "
                              "larger than this value. This can be used to damp out oscillations, or "
                              "to limit the viscosity variation due to grain size. "
                              "Units: $m$.");
-          prm.declare_entry ("Reciprocal required strain", "10",
-                             Patterns::List (Patterns::Double(0)),
+          prm.declare_entry ("Reciprocal required strain", "10.",
+                             Patterns::List (Patterns::Double (0.)),
                              "This parameter ($\\lambda$) gives an estimate of the strain necessary "
                              "to achieve a new grain size. ");
           prm.declare_entry ("Recrystallized grain size", "",
-                             Patterns::List (Patterns::Double(0)),
+                             Patterns::List (Patterns::Double (0.)),
                              "The grain size $d_{ph}$ to that a phase will be reduced to when crossing a phase transition. "
                              "When set to zero, grain size will not be reduced. "
                              "Units: $\\si{m}$.");
@@ -1045,19 +1045,19 @@ namespace aspect
                              "in the dislocation creep regime (if true) or the paleopiezometer approach "
                              "from Hall and Parmetier (2003) (if false).");
           prm.declare_entry ("Average specific grain boundary energy", "1.0",
-                             Patterns::List (Patterns::Double(0)),
+                             Patterns::List (Patterns::Double (0.)),
                              "The average specific grain boundary energy $\\gamma$. "
                              "Units: $J/m^2$.");
           prm.declare_entry ("Work fraction for boundary area change", "0.1",
-                             Patterns::List (Patterns::Double(0)),
+                             Patterns::List (Patterns::Double (0.)),
                              "The fraction $\\chi$ of work done by dislocation creep to change the grain boundary area. "
                              "Units: $J/m^2$.");
-          prm.declare_entry ("Geometric constant", "3",
-                             Patterns::List (Patterns::Double(0)),
+          prm.declare_entry ("Geometric constant", "3.",
+                             Patterns::List (Patterns::Double (0.)),
                              "The geometric constant $c$ used in the paleowattmeter grain size reduction law. "
                              "Units: none.");
           prm.declare_entry ("Dislocation viscosity iteration threshold", "1e-3",
-                             Patterns::Double(0),
+                             Patterns::Double (0.),
                              "We need to perform an iteration inside the computation "
                              "of the dislocation viscosity, because it depends on the "
                              "dislocation strain rate, which depends on the dislocation "
@@ -1072,44 +1072,44 @@ namespace aspect
                              "viscosity itself. This number determines the maximum "
                              "number of iterations that are performed. ");
           prm.declare_entry ("Dislocation creep exponent", "3.5",
-                             Patterns::List (Patterns::Double(0)),
+                             Patterns::List (Patterns::Double (0.)),
                              "The power-law exponent $n_{dis}$ for dislocation creep. "
                              "Units: none.");
           prm.declare_entry ("Dislocation activation energy", "4.8e5",
-                             Patterns::List (Patterns::Double(0)),
+                             Patterns::List (Patterns::Double (0.)),
                              "The activation energy for dislocation creep $E_{dis}$. "
                              "Units: $J/mol$.");
           prm.declare_entry ("Dislocation activation volume", "1.1e-5",
-                             Patterns::List (Patterns::Double(0)),
+                             Patterns::List (Patterns::Double (0.)),
                              "The activation volume for dislocation creep $V_{dis}$. "
                              "Units: $m^3/mol$.");
           prm.declare_entry ("Dislocation creep prefactor", "4.5e-15",
-                             Patterns::List (Patterns::Double(0)),
+                             Patterns::List (Patterns::Double (0.)),
                              "The prefactor for the dislocation creep law $A_{dis}$. "
                              "Units: $Pa^{-n_{dis}}/s$.");
-          prm.declare_entry ("Diffusion creep exponent", "1",
-                             Patterns::List (Patterns::Double(0)),
+          prm.declare_entry ("Diffusion creep exponent", "1.",
+                             Patterns::List (Patterns::Double (0.)),
                              "The power-law exponent $n_{diff}$ for diffusion creep. "
                              "Units: none.");
           prm.declare_entry ("Diffusion activation energy", "3.35e5",
-                             Patterns::List (Patterns::Double(0)),
+                             Patterns::List (Patterns::Double (0.)),
                              "The activation energy for diffusion creep $E_{diff}$. "
                              "Units: $J/mol$.");
           prm.declare_entry ("Diffusion activation volume", "4e-6",
-                             Patterns::List (Patterns::Double(0)),
+                             Patterns::List (Patterns::Double (0.)),
                              "The activation volume for diffusion creep $V_{diff}$. "
                              "Units: $m^3/mol$.");
           prm.declare_entry ("Diffusion creep prefactor", "7.4e-15",
-                             Patterns::List (Patterns::Double(0)),
+                             Patterns::List (Patterns::Double (0.)),
                              "The prefactor for the diffusion creep law $A_{diff}$. "
                              "Units: $m^{p_{diff}} Pa^{-n_{diff}}/s$.");
-          prm.declare_entry ("Diffusion creep grain size exponent", "3",
-                             Patterns::List (Patterns::Double(0)),
+          prm.declare_entry ("Diffusion creep grain size exponent", "3.",
+                             Patterns::List (Patterns::Double (0.)),
                              "The diffusion creep grain size exponent $p_{diff}$ that determines the "
                              "dependence of vescosity on grain size. "
                              "Units: none.");
-          prm.declare_entry ("Maximum temperature dependence of viscosity", "100",
-                             Patterns::Double (0),
+          prm.declare_entry ("Maximum temperature dependence of viscosity", "100.",
+                             Patterns::Double (0.),
                              "The factor by which viscosity at adiabatic temperature and ambient temperature "
                              "are allowed to differ (a value of x means that the viscosity can be x times higher "
                              "or x times lower compared to the value at adiabatic temperature. This parameter "
@@ -1117,19 +1117,19 @@ namespace aspect
                              "varying viscosity over the whole mantle range. "
                              "Units: none.");
           prm.declare_entry ("Minimum viscosity", "1e18",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The minimum viscosity that is allowed in the whole model domain. "
                              "Units: Pa \\, s.");
           prm.declare_entry ("Maximum viscosity", "1e26",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The maximum viscosity that is allowed in the whole model domain. "
                              "Units: Pa \\, s.");
-          prm.declare_entry ("Minimum specific heat", "500",
-                             Patterns::Double (0),
+          prm.declare_entry ("Minimum specific heat", "500.",
+                             Patterns::Double (0.),
                              "The minimum specific heat that is allowed in the whole model domain. "
                              "Units: J/kg/K.");
-          prm.declare_entry ("Maximum specific heat", "6000",
-                             Patterns::Double (0),
+          prm.declare_entry ("Maximum specific heat", "6000.",
+                             Patterns::Double (0.),
                              "The maximum specific heat that is allowed in the whole model domain. "
                              "Units: J/kg/K.");
           prm.declare_entry ("Minimum thermal expansivity", "1e-5",
@@ -1145,13 +1145,13 @@ namespace aspect
                              "The maximum number of substeps over the temperature pressure range "
                              "to calculate the averaged enthalpy gradient over a cell.");
           prm.declare_entry ("Minimum grain size", "1e-5",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The minimum grain size that is used for the material model. This parameter "
                              "is introduced to limit local viscosity contrasts, but still allows for a widely "
                              "varying viscosity over the whole mantle range. "
                              "Units: $\\si{m}$.");
           prm.declare_entry ("Lower mantle grain size scaling", "1.0",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "A scaling factor for the grain size in the lower mantle. In models where the "
                              "high grain size contrast between the upper and lower mantle causes numerical "
                              "problems, the grain size in the lower mantle can be scaled to a larger value, "
@@ -1447,7 +1447,7 @@ namespace aspect
       // reduce grain size.
       if (out.template get_additional_output<DislocationViscosityOutputs<dim> >() == nullptr)
         {
-          const unsigned int n_points = out.viscosities.size();
+          const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
             std_cxx14::make_unique<MaterialModel::DislocationViscosityOutputs<dim>> (n_points));
         }
@@ -1455,7 +1455,7 @@ namespace aspect
       // These properties are only output properties.
       if (out.template get_additional_output<SeismicAdditionalOutputs<dim> >() == nullptr)
         {
-          const unsigned int n_points = out.viscosities.size();
+          const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
             std_cxx14::make_unique<MaterialModel::SeismicAdditionalOutputs<dim>> (n_points));
         }

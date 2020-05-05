@@ -715,6 +715,7 @@ namespace aspect
       {}
 
 
+
       template <int dim>
       double
       PhaseFunction<dim>::compute_value (const PhaseFunctionInputs<dim> &in) const
@@ -812,6 +813,14 @@ namespace aspect
           return transition_depths.size();
         else
           return transition_pressures.size();
+      }
+
+
+      template <int dim>
+      const std::vector<unsigned int> &
+      PhaseFunction<dim>::n_phase_transitions_for_each_composition () const
+      {
+        return *n_phase_transitions_per_composition;
       }
 
 

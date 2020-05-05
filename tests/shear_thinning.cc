@@ -34,8 +34,8 @@ namespace aspect
              MaterialModel::MaterialModelOutputs<dim> &out) const
     {
       Simple<dim>::evaluate(in, out);
-      if (in.strain_rate.size())
-        for (unsigned int i=0; i < in.position.size(); ++i)
+      if (in.requests_property(MaterialProperties::viscosity))
+        for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
           out.viscosities[i] = 1./(1+in.strain_rate[i].norm());
     }
 

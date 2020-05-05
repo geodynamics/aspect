@@ -1,7 +1,7 @@
 /**
  * @page changes_between_1.1_and_1.2 Changes between version 1.1 and version 1.2
  *
- * <p> This is the list of changes made after the release of Aspect version
+ * <p> This is the list of changes made after the release of ASPECT version
  * 1.1 for version 1.2. All entries are signed with the names of the author.
  * </p>
  *
@@ -118,7 +118,7 @@
  * spherical shell. However, remembering these numerical indicators when
  * writing or reading input files is a hassle and error prone.
  * <br>
- * Given this problem, there is now functionality in Aspect so that geometry
+ * Given this problem, there is now functionality in ASPECT so that geometry
  * models can (and, for the existing models, do) provide symbolic names for
  * each of the boundary parts. These symbolic names can then be used in the
  * input files wherever it was previously necessary to use numbers.

@@ -8,7 +8,7 @@ Number of degrees of freedom: 2,088 (851+578+81+289+289)
    Skipping temperature solve because RHS is zero.
    Solving porosity system ... 0 iterations.
    Solving Stokes system... done.
-   Solving for u_f in 1 iterations.
+   Solving fluid velocity system... 1 iterations.
 
    Postprocessing:
      Writing graphical output:                        output-melt_force_vector/solution/solution-00000
@@ -24,7 +24,7 @@ Number of degrees of freedom: 7,880 (3,235+2,178+289+1,089+1,089)
    Skipping temperature solve because RHS is zero.
    Solving porosity system ... 0 iterations.
    Solving Stokes system... done.
-   Solving for u_f in 12 iterations.
+   Solving fluid velocity system... 12 iterations.
 
    Postprocessing:
      Writing graphical output:                        output-melt_force_vector/solution/solution-00001
@@ -36,7 +36,4 @@ Number of degrees of freedom: 7,880 (3,235+2,178+289+1,089+1,089)
 Termination requested by criterion: end time
 
 
-+---------------------------------------------+------------+------------+
-+---------------------------------+-----------+------------+------------+
-+---------------------------------+-----------+------------+------------+
 

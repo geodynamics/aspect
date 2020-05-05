@@ -1,7 +1,7 @@
 /**
  * @page changes_between_1.3_and_1.4.0 Changes between version 1.3 and version 1.4.0
  *
- * <p> This is the list of changes made after the release of Aspect version
+ * <p> This is the list of changes made after the release of ASPECT version
  * 1.3 for version 1.4.0. All entries are signed with the names of the author.
  * </p>
  *
@@ -468,7 +468,7 @@
  * (Ian Rose, 2015/05/21)
  *
  * <li> Changed: The documentation for nullspace removal is now more
- * descriptive of what Aspect is actually doing.
+ * descriptive of what ASPECT is actually doing.
  * <br>
  * (Ian Rose, 2015/05/21)
  *

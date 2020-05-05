@@ -39,7 +39,7 @@ namespace aspect
      * colattitude and colongitude. Gravity is here based on the density distribution
      * from the material model (and non adiabatic). This means that the density may
      * come directly from an ascii file. This postprocessor also computes theoretical
-     * gravity (and gradients), which corresponds to the analytical solution of gravity
+     * gravity and its derivatives, which corresponds to the analytical solution of gravity
      * in the same geometry but filled with a reference density. The reference density
      * is also used to determine the density difference for computing gravity anomalies.
      * Thus one must carefully evaluate the meaning of the gravity anomaly output,
@@ -48,6 +48,8 @@ namespace aspect
      * gravity anomalies is to subtract the gravity of a certain point from the average
      * gravity on the map. Another way is to directly use density anomalies for this
      * postprocessor.
+     * The average- minimum- and maximum gravity acceleration and potiental are written
+     * into the statistics file.
 
      * @ingroup Postprocessing
      */
@@ -141,15 +143,21 @@ namespace aspect
         void set_last_output_time (const double current_time);
 
         /**
+         * Set the precision of the gravity acceleration, potential and gradients
+         * in the gravity output and statistics file.
+         */
+        unsigned int precision;
+
+        /**
          * Quadrature degree increase over the velocity element degree may be required when
          * gravity is calculated near the surface or inside the model. An increase in the
          * quadrature element adds accuracy to the gravity solution from noise due to the
          * model grid.
          */
-        double quadrature_degree_increase;
+        unsigned int quadrature_degree_increase;
 
         /**
-         * Parameter for the map sampling scheme:
+         * Parameter for the uniform distribution sampling scheme:
          * Gravity may be calculated for a sets of points along the radius (e.g. depth
          * profile) between a minimum and maximum radius. Number of points along the radius
          * is specified with n_points_radius.
@@ -157,7 +165,7 @@ namespace aspect
         unsigned int n_points_radius;
 
         /**
-         * Parameter for the map sampling scheme:
+         * Parameter for the uniform distribution sampling scheme:
          * Gravity may be calculated for a sets of points along the longitude (e.g. satellite
          * mapping) between a minimum and maximum longitude. Number of points along the
          * longitude is specified with n_points_longitude.
@@ -165,7 +173,7 @@ namespace aspect
         unsigned int n_points_longitude;
 
         /**
-         * Parameter for the map sampling scheme:
+         * Parameter for the uniform distribution sampling scheme:
          * Gravity may be calculated for a sets of points along the latitude (e.g. satellite
          * mapping) between a minimum and maximum latitude. Number of points along the
          * latitude is specified with n_points_latitude.
@@ -173,43 +181,42 @@ namespace aspect
         unsigned int n_points_latitude;
 
         /**
-         * Parameter for the map sampling scheme:
-         * Minimum radius for the depth range in case of the map sampling scheme. Presribe
-         * a minimum radius for a sampling coverage at a specific height. May be defined
-         * in or outside the model.
+         * Parameter for the uniform distribution sampling scheme:
+         * Prescribe a minimum radius for a sampling coverage at a specific height.
+         * May be set in- or outside the model domain.
          */
         double minimum_radius;
 
         /**
-         * Parameter for the map sampling scheme:
-         * Maximum radius for depth-profile in case of the map sampling scheme. May be
-         * defined in or outside the model. No need to specify maximum_radius if
-         * n_points_radius is 1.
+         * Parameter for the uniform distribution sampling scheme:
+         * Maximum radius for the radius range.
+         * May be set in- or outside the model domain.
+         * No need to specify maximum_radius if n_points_radius is 1.
          */
         double maximum_radius;
 
         /**
-         * Parameter for the map sampling scheme:
-         * Minimum longitude for longitude range in case of the map sampling scheme.
+         * Parameter for the uniform distribution sampling scheme:
+         * Minimum longitude for longitude range.
          */
         double minimum_colongitude;
 
         /**
-         * Parameter for the map sampling scheme:
-         * Maximum longitude for the longitude range in case of the map sampling scheme.
+         * Parameter for the uniform distribution sampling scheme:
+         * Maximum longitude for the longitude range.
          * No need to specify maximum_longitude if n_points_longitude is 1.
          */
         double maximum_colongitude;
 
         /**
-         * Parameter for the map sampling scheme:
-         * Minimum latitude for the latitude range in case of the map sampling scheme.
+         * Parameter for the uniform distribution sampling scheme:
+         * Minimum latitude for the latitude range.
          */
         double minimum_colatitude;
 
         /**
-         * Parameter for the map sampling scheme:
-         * Maximum latitude for the latitude range in case of the map sampling scheme.
+         * Parameter for the uniform distribution sampling scheme:
+         * Maximum latitude for the latitude range.
          * No need to specify maximum_latitude if n_points_latitude is 1.
          */
         double maximum_colatitude;
@@ -225,32 +232,34 @@ namespace aspect
 
         /**
          * Specify the sampling scheme determining if gravity calculation is performed
-         * for a map of points or a list of points.
+         * for a uniform distribution of points or a list of points.
          */
         enum SamplingScheme
         {
           map,
-          list
+          list,
+          uniform_distribution,
+          list_of_points
         } sampling_scheme;
 
         /**
-         * Parameter for the list sampling scheme:
-         * List of radius coordinates for the list sampling scheme. Must be in order
-         * with the lists of longitude and latitude.
+         * Parameter for the list of points sampling scheme:
+         * List of radius coordinates for the list of points sampling scheme.
+         * Must follow the same order as the lists of longitude and latitude.
          */
         std::vector<double> radius_list;
 
         /**
-         * Parameter for the list sampling scheme:
-         * List of longitude coordinates for the list sampling scheme. Must be in order
-         * with the lists of radius and latitude.
+         * Parameter for the list of points sampling scheme:
+         * List of longitude coordinates for the list of points sampling scheme.
+         * Must follow the same order as the lists of radius and latitude.
          */
         std::vector<double> longitude_list;
 
         /**
-         * Parameter for the list sampling scheme:
-         * List of latitude coordinates for the list sampling scheme. Must be in order
-         * with the lists of radius and longitude.
+         * Parameter for the list of points sampling scheme:
+         * List of latitude coordinates for the list of points sampling scheme.
+         * Must follow the same order as the lists of longitude and longitude.
          */
         std::vector<double> latitude_list;
 

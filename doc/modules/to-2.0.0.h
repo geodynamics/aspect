@@ -1,7 +1,7 @@
 /**
  * @page changes_between_1.5.0_and_2.0.0 Changes between version 1.5.0 and version 2.0.0
  *
- * <p> This is the list of changes made after the release of Aspect version
+ * <p> This is the list of changes made after the release of ASPECT version
  * 1.5.0 for version 2.0.0. All entries are signed with the names of the author.
  * </p>
  *
@@ -210,7 +210,7 @@
  * <br>
  * (Juliane Dannberg, 2018/02/12)
  *
- * <li> New: Aspect now supports using the free surface in models with 
+ * <li> New: ASPECT now supports using the free surface in models with 
  * melt migration, and with all nonlinear solver schemes.
  * <br>
  * (Juliane Dannberg, 2018/01/30)
@@ -434,7 +434,7 @@
  * <br>
  * (Juliane Dannberg, 2017/07/12)
  *
- * <li> New: Aspect now supports operator splitting as a new solver scheme. 
+ * <li> New: ASPECT now supports operator splitting as a new solver scheme. 
  * This allows it to decouple advection and reactions between 
  * compositional fields, and can also be used for temperature changes
  * related to these reactions. As part of this scheme, material models 
@@ -490,7 +490,7 @@
  * <br>
  * (Timo Heister, 2017/05/17)
  *
- * <li> New: Aspect can now initialize the compositional field by supplying
+ * <li> New: ASPECT can now initialize the compositional field by supplying
  * a list of plugins and operators determining how each plugin modifies the
  * field. The operators are specified as a new input file parameter
  * 'List of model operators', which takes a comma-separated list 
@@ -502,7 +502,7 @@
  * <br>
  * (Bob Myhill, 2017/05/16)
  *
- * <li> New: Aspect can now create initial temperature conditions by supplying 
+ * <li> New: ASPECT can now create initial temperature conditions by supplying 
  * a list of plugins and operators determining how each plugin modifies the 
  * temperature field. The operators are specified as a new input file 
  * parameter 'List of model operators', which takes a comma-separated list 
@@ -794,7 +794,7 @@
  * <br>
  * (Juliane Dannberg, 2017/04/13)
  *
- * <li> New: Aspect now supports postprocessing of nonlinear iterations,
+ * <li> New: ASPECT now supports postprocessing of nonlinear iterations,
  * in particular generating graphical output for each iteration.
  * <br>
  * (Juliane Dannberg, 2017/04/12)

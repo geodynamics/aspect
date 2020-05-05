@@ -33,8 +33,6 @@
 #include <deal.II/lac/trilinos_solver.h>
 #endif
 
-#include <deal.II/lac/pointer_matrix.h>
-
 #include <deal.II/fe/fe_values.h>
 
 namespace aspect
@@ -458,7 +456,8 @@ namespace aspect
                             "but the right-hand side is nonzero."));
 
     LinearAlgebra::PreconditionILU preconditioner;
-    build_advection_preconditioner(advection_field, preconditioner);
+    // first build without diagonal strengthening:
+    build_advection_preconditioner(advection_field, preconditioner, 0.);
 
     TimerOutput::Scope timer (computing_timer, (advection_field.is_temperature() ?
                                                 "Solve temperature system" :
@@ -500,10 +499,26 @@ namespace aspect
     // solve the linear system:
     try
       {
-        solver.solve (system_matrix.block(block_idx,block_idx),
-                      distributed_solution.block(block_idx),
-                      system_rhs.block(block_idx),
-                      preconditioner);
+        try
+          {
+            solver.solve (system_matrix.block(block_idx,block_idx),
+                          distributed_solution.block(block_idx),
+                          system_rhs.block(block_idx),
+                          preconditioner);
+          }
+        catch (const std::exception &exc)
+          {
+            // Try rebuilding the preconditioner with diagonal strengthening. In general,
+            // this increases the number of iterations needed, but helps in rare situations,
+            // especially when SUPG is used.
+            pcout << "retrying linear solve with different preconditioner..." << std::endl;
+            build_advection_preconditioner(advection_field, preconditioner, 1e-5);
+            solver.solve (system_matrix.block(block_idx,block_idx),
+                          distributed_solution.block(block_idx),
+                          system_rhs.block(block_idx),
+                          preconditioner);
+          }
+
       }
     // if the solver fails, report the error from processor 0 with some additional
     // information about its location, and throw a quiet exception on all other
@@ -936,7 +951,7 @@ namespace aspect
 
     // convert melt pressures:
     if (parameters.include_melt_transport)
-      melt_handler->compute_melt_variables(solution);
+      melt_handler->compute_melt_variables(system_matrix,solution,system_rhs);
 
     return std::pair<double,double>(initial_nonlinear_residual,
                                     final_linear_residual);

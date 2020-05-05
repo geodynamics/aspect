@@ -1,7 +1,7 @@
 /**
  * @page changes_between_2.0.0_and_2.1.0 Changes between version 2.0.0 and version 2.1.0
  *
- * <p> This is the list of changes made after the release of Aspect version
+ * <p> This is the list of changes made after the release of ASPECT version
  * 2.0.0 for version 2.1.0. All entries are signed with the names of the author.
  * </p>
  *

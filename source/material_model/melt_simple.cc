@@ -181,7 +181,7 @@ namespace aspect
     melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
                     std::vector<double> &melt_fractions) const
     {
-      for (unsigned int q=0; q<in.temperature.size(); ++q)
+      for (unsigned int q=0; q<in.n_evaluation_points(); ++q)
         melt_fractions[q] = this->melt_fraction(in.temperature[q],
                                                 this->get_adiabatic_conditions().pressure(in.position[q]));
     }
@@ -212,7 +212,7 @@ namespace aspect
     {
       ReactionRateOutputs<dim> *reaction_rate_out = out.template get_additional_output<ReactionRateOutputs<dim> >();
 
-      for (unsigned int i=0; i<in.position.size(); ++i)
+      for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
         {
           // calculate density first, we need it for the reaction term
           // first, calculate temperature dependence of density
@@ -235,7 +235,7 @@ namespace aspect
           out.densities[i] = (reference_rho_s + delta_rho)
                              * temperature_dependence * std::exp(compressibility * (in.pressure[i] - this->get_surface_pressure()));
 
-          if (this->include_melt_transport() && in.strain_rate.size() > 0)
+          if (this->include_melt_transport() && in.requests_property(MaterialProperties::reaction_terms))
             {
               const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
               const unsigned int peridotite_idx = this->introspection().compositional_index_for_name("peridotite");
@@ -376,7 +376,7 @@ namespace aspect
         {
           const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
 
-          for (unsigned int i=0; i<in.position.size(); ++i)
+          for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
             {
               double porosity = std::max(in.composition[i][porosity_idx],0.0);
 
@@ -439,54 +439,54 @@ namespace aspect
       {
         prm.enter_subsection("Melt simple");
         {
-          prm.declare_entry ("Reference solid density", "3000",
-                             Patterns::Double (0),
+          prm.declare_entry ("Reference solid density", "3000.",
+                             Patterns::Double (0.),
                              "Reference density of the solid $\\rho_{s,0}$. Units: $kg/m^3$.");
-          prm.declare_entry ("Reference melt density", "2500",
-                             Patterns::Double (0),
+          prm.declare_entry ("Reference melt density", "2500.",
+                             Patterns::Double (0.),
                              "Reference density of the melt/fluid$\\rho_{f,0}$. Units: $kg/m^3$.");
-          prm.declare_entry ("Reference temperature", "293",
-                             Patterns::Double (0),
+          prm.declare_entry ("Reference temperature", "293.",
+                             Patterns::Double (0.),
                              "The reference temperature $T_0$. The reference temperature is used "
                              "in both the density and viscosity formulas. Units: $\\si{K}$.");
           prm.declare_entry ("Reference shear viscosity", "5e20",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The value of the constant viscosity $\\eta_0$ of the solid matrix. "
                              "This viscosity may be modified by both temperature and porosity "
                              "dependencies. Units: $Pa \\, s$.");
           prm.declare_entry ("Reference bulk viscosity", "1e22",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The value of the constant bulk viscosity $\\xi_0$ of the solid matrix. "
                              "This viscosity may be modified by both temperature and porosity "
                              "dependencies. Units: $Pa \\, s$.");
-          prm.declare_entry ("Reference melt viscosity", "10",
-                             Patterns::Double (0),
+          prm.declare_entry ("Reference melt viscosity", "10.",
+                             Patterns::Double (0.),
                              "The value of the constant melt viscosity $\\eta_f$. Units: $Pa \\, s$.");
-          prm.declare_entry ("Exponential melt weakening factor", "27",
-                             Patterns::Double (0),
+          prm.declare_entry ("Exponential melt weakening factor", "27.",
+                             Patterns::Double (0.),
                              "The porosity dependence of the viscosity. Units: dimensionless.");
           prm.declare_entry ("Thermal viscosity exponent", "0.0",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The temperature dependence of the shear viscosity. Dimensionless exponent. "
                              "See the general documentation "
                              "of this model for a formula that states the dependence of the "
                              "viscosity on this factor, which is called $\\beta$ there.");
           prm.declare_entry ("Thermal bulk viscosity exponent", "0.0",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The temperature dependence of the bulk viscosity. Dimensionless exponent. "
                              "See the general documentation "
                              "of this model for a formula that states the dependence of the "
                              "viscosity on this factor, which is called $\\beta$ there.");
           prm.declare_entry ("Thermal conductivity", "4.7",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The value of the thermal conductivity $k$. "
                              "Units: $W/m/K$.");
-          prm.declare_entry ("Reference specific heat", "1250",
-                             Patterns::Double (0),
+          prm.declare_entry ("Reference specific heat", "1250.",
+                             Patterns::Double (0.),
                              "The value of the specific heat $C_p$. "
                              "Units: $J/kg/K$.");
           prm.declare_entry ("Thermal expansion coefficient", "2e-5",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The value of the thermal expansion coefficient $\\beta$. "
                              "Units: $1/K$.");
           prm.declare_entry ("Reference permeability", "1e-8",
@@ -494,21 +494,21 @@ namespace aspect
                              "Reference permeability of the solid host rock."
                              "Units: $m^2$.");
           prm.declare_entry ("Melt extraction depth", "1000.0",
-                             Patterns::Double(0),
+                             Patterns::Double (0.),
                              "Depth above that melt will be extracted from the model, "
                              "which is done by a negative reaction term proportional to the "
                              "porosity field. "
                              "Units: $m$.");
           prm.declare_entry ("Solid compressibility", "0.0",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The value of the compressibility of the solid matrix. "
                              "Units: $1/Pa$.");
           prm.declare_entry ("Melt compressibility", "0.0",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The value of the compressibility of the melt. "
                              "Units: $1/Pa$.");
           prm.declare_entry ("Melt bulk modulus derivative", "0.0",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The value of the pressure derivative of the melt bulk "
                              "modulus. "
                              "Units: None.");
@@ -532,7 +532,7 @@ namespace aspect
                              "Note that melt does not freeze unless the 'Freezing rate' parameter is set "
                              "to a value larger than 0.");
           prm.declare_entry ("Freezing rate", "0.0",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "Freezing rate of melt when in subsolidus regions. "
                              "If this parameter is set to a number larger than 0.0, it specifies the "
                              "fraction of melt that will freeze per year (or per second, depending on the "
@@ -557,7 +557,7 @@ namespace aspect
                              "Units: 1/yr or 1/s, depending on the ``Use years "
                              "in output instead of seconds'' parameter.");
           prm.declare_entry ("Melting time scale for operator splitting", "1e3",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "Because the operator splitting scheme is used, the porosity field can not "
                              "be set to a new equilibrium melt fraction instantly, but the model has to "
                              "provide a melting time scale instead. This time scale defines how fast melting "
@@ -582,7 +582,7 @@ namespace aspect
                              "exist in the model. "
                              "Units: $kg/m^3$.");
           prm.declare_entry ("Depletion solidus change", "200.0",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The solidus temperature change for a depletion of 100\\%. For positive "
                              "values, the solidus gets increased for a positive peridotite field "
                              "(depletion) and lowered for a negative peridotite field (enrichment). "
@@ -665,7 +665,7 @@ namespace aspect
                              "Exponent of the melting temperature in "
                              "the melt fraction calculation. "
                              "Units: non-dimensional.");
-          prm.declare_entry ("Peridotite melting entropy change", "-300",
+          prm.declare_entry ("Peridotite melting entropy change", "-300.",
                              Patterns::Double (),
                              "The entropy change for the phase transition "
                              "from solid to melt of peridotite. "
@@ -767,7 +767,7 @@ namespace aspect
     {
       if (this->get_parameters().use_operator_splitting && out.template get_additional_output<ReactionRateOutputs<dim> >() == nullptr)
         {
-          const unsigned int n_points = out.viscosities.size();
+          const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
             std_cxx14::make_unique<MaterialModel::ReactionRateOutputs<dim>> (n_points, this->n_compositional_fields()));
         }

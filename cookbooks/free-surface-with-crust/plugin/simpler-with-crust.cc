@@ -108,7 +108,7 @@ namespace aspect
     SimplerWithCrust<dim>::
     evaluate(const typename Interface<dim>::MaterialModelInputs &in, typename Interface<dim>::MaterialModelOutputs &out ) const
     {
-      for (unsigned int i=0; i<in.position.size(); ++i)
+      for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
         {
           const double z = in.position[i][1];
           if (z>jump_height)

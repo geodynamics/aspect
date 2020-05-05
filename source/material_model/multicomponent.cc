@@ -37,7 +37,7 @@ namespace aspect
     {
       EquationOfStateOutputs<dim> eos_outputs (this->n_compositional_fields()+1);
 
-      for (unsigned int i=0; i < in.temperature.size(); ++i)
+      for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
         {
           const std::vector<double> volume_fractions = MaterialUtilities::compute_volume_fractions(in.composition[i]);
 
@@ -91,8 +91,8 @@ namespace aspect
         {
           EquationOfState::MulticomponentIncompressible<dim>::declare_parameters (prm, 4.e-5);
 
-          prm.declare_entry ("Reference temperature", "293",
-                             Patterns::Double (0),
+          prm.declare_entry ("Reference temperature", "293.",
+                             Patterns::Double (0.),
                              "The reference temperature $T_0$. Units: $\\si{K}$.");
           prm.declare_entry ("Viscosities", "1.e21",
                              Patterns::Anything(),

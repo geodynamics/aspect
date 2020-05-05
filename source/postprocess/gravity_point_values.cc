@@ -66,7 +66,7 @@ namespace aspect
 
     template <>
     std::pair<std::string,std::string>
-    GravityPointValues<3>::execute (TableHandler &)
+    GravityPointValues<3>::execute (TableHandler &statistics)
     {
       const int dim = 3;
 
@@ -110,30 +110,30 @@ namespace aspect
              << "# 9: gravity_z" << '\n'
              << "# 10: gravity_norm" << '\n'
              << "# 11: gravity_theory" << '\n'
-             << "# 12: gravity potential" << '\n'
-             << "# 13: gravity_anomaly_x" << '\n'
-             << "# 14: gravity_anomaly_y" << '\n'
-             << "# 15: gravity_anomaly_z" << '\n'
-             << "# 16: gravity_anomaly_norm" << '\n'
-             << "# 17: gravity_gradient_xx" << '\n'
-             << "# 18: gravity_gradient_yy" << '\n'
-             << "# 19: gravity_gradient_zz" << '\n'
-             << "# 20: gravity_gradient_xy" << '\n'
-             << "# 21: gravity_gradient_xz" << '\n'
-             << "# 22: gravity_gradient_yz" << '\n'
-             << "# 23: gravity_gradient_theory_xx" << '\n'
-             << "# 24: gravity_gradient_theory_yy" << '\n'
-             << "# 25: gravity_gradient_theory_zz" << '\n'
-             << "# 26: gravity_gradient_theory_xy" << '\n'
-             << "# 27: gravity_gradient_theory_xz" << '\n'
-             << "# 28: gravity_gradient_theory_yz" << '\n'
+             << "# 12: gravity_potential" << '\n'
+             << "# 13: gravity_potential_theory" << '\n'
+             << "# 14: gravity_anomaly_x" << '\n'
+             << "# 15: gravity_anomaly_y" << '\n'
+             << "# 16: gravity_anomaly_z" << '\n'
+             << "# 17: gravity_anomaly_norm" << '\n'
+             << "# 18: gravity_gradient_xx" << '\n'
+             << "# 19: gravity_gradient_yy" << '\n'
+             << "# 20: gravity_gradient_zz" << '\n'
+             << "# 21: gravity_gradient_xy" << '\n'
+             << "# 22: gravity_gradient_xz" << '\n'
+             << "# 23: gravity_gradient_yz" << '\n'
+             << "# 24: gravity_gradient_theory_xx" << '\n'
+             << "# 25: gravity_gradient_theory_yy" << '\n'
+             << "# 26: gravity_gradient_theory_zz" << '\n'
+             << "# 27: gravity_gradient_theory_xy" << '\n'
+             << "# 28: gravity_gradient_theory_xz" << '\n'
+             << "# 29: gravity_gradient_theory_yz" << '\n'
              << '\n';
 
       // Get quadrature formula and increase the degree of quadrature over the velocity
       // element degree.
-      const unsigned int degree = static_cast<unsigned int>(
-                                    this->get_fe().base_element(this->introspection().base_elements.velocities).degree
-                                    + quadrature_degree_increase);
+      const unsigned int degree = this->get_fe().base_element(this->introspection().base_elements.velocities).degree
+                                  + quadrature_degree_increase;
       const QGauss<dim> quadrature_formula (degree);
       FEValues<dim> fe_values (this->get_mapping(),
                                this->get_fe(),
@@ -214,15 +214,15 @@ namespace aspect
       // Pre-Assign the coordinates of all satellites in a vector point:
       // *** First calculate the number of satellites according to the sampling scheme:
       unsigned int n_satellites;
-      if (sampling_scheme == map)
+      if (sampling_scheme == uniform_distribution)
         n_satellites = n_points_radius * n_points_longitude * n_points_latitude;
-      else if (sampling_scheme == list)
+      else if (sampling_scheme == list_of_points)
         n_satellites = longitude_list.size();
       else n_satellites = 1;
 
       // *** Second assign the coordinates of all satellites:
       std::vector<Point<dim> > satellites_coordinate(n_satellites);
-      if (sampling_scheme == map)
+      if (sampling_scheme == uniform_distribution)
         {
           unsigned int p = 0;
           for (unsigned int h=0; h < n_points_radius; ++h)
@@ -248,7 +248,7 @@ namespace aspect
                 }
             }
         }
-      if (sampling_scheme == list)
+      if (sampling_scheme == list_of_points)
         {
           for (unsigned int p=0; p < n_satellites; ++p)
             {
@@ -267,6 +267,12 @@ namespace aspect
       // This is the main loop which computes gravity acceleration, potential and
       // gradients at a point located at the spherical coordinate [r, phi, theta].
       // This loop corresponds to the 3 integrals of Newton law:
+      double sum_g = 0;
+      double min_g = std::numeric_limits<double>::max();
+      double max_g = -std::numeric_limits<double>::max();
+      double sum_g_potential = 0;
+      double min_g_potential = std::numeric_limits<double>::max();
+      double max_g_potential = -std::numeric_limits<double>::max();
       for (unsigned int p=0; p < n_satellites; ++p)
         {
 
@@ -330,44 +336,63 @@ namespace aspect
           const Tensor<2,dim> g_gradient = Utilities::MPI::sum (local_g_gradient, this->get_mpi_communicator());
           const double g_potential       = Utilities::MPI::sum (local_g_potential, this->get_mpi_communicator());
 
-          // analytical solution to calculate the theoretical gravity and gravity gradient
+          // sum gravity components for all n_satellites:
+          sum_g += g.norm();
+          sum_g_potential += g_potential;
+          if (g.norm() > max_g)
+            max_g = g.norm();
+          if (g.norm() < min_g)
+            min_g = g.norm();
+          if (g_potential > max_g_potential)
+            max_g_potential = g_potential;
+          if (g_potential < min_g_potential)
+            min_g_potential = g_potential;
+
+          // analytical solution to calculate the theoretical gravity and its derivatives
           // from a uniform density model. Can only be used if concentric density profile.
           double g_theory = 0;
+          double g_potential_theory = 0;
           Tensor<2,dim> g_gradient_theory;
           if (satellites_coordinate[p][0] <= model_inner_radius)
             {
               g_theory = 0;
+              g_potential_theory = 2.0 * G * numbers::PI * reference_density * (std::pow(model_inner_radius,2) - std::pow(model_outer_radius,2));
             }
           else if ((satellites_coordinate[p][0] > model_inner_radius) && (satellites_coordinate[p][0] < model_outer_radius))
             {
-              g_theory = G * numbers::PI * 4/3 * reference_density * (satellites_coordinate[p][0] - (std::pow(model_inner_radius,3)
-                                                                      /  std::pow(satellites_coordinate[p][0],2)));
+              g_theory = G * numbers::PI * 4./3. * reference_density * (satellites_coordinate[p][0] - (std::pow(model_inner_radius,3)
+                                                                        /  std::pow(satellites_coordinate[p][0],2)));
+              g_potential_theory = G * numbers::PI * 4./3. * reference_density
+                                   * ((std::pow(satellites_coordinate[p][0],2)/2.0) + (std::pow(model_inner_radius,3)/satellites_coordinate[p][0]))
+                                   - G * numbers::PI * 2.0 * reference_density * std::pow(model_outer_radius,2);
             }
           else
             {
-              g_theory = G * numbers::PI * 4/3 * reference_density * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
-                         /  std::pow(satellites_coordinate[p][0],2);
-              g_gradient_theory[0][0] = -G * numbers::PI * 4/3 * reference_density
+              g_theory = - G * numbers::PI * 4./3. * reference_density * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
+                         / std::pow(satellites_coordinate[p][0],2);
+              g_potential_theory = - G * numbers::PI * 4./3. * reference_density * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
+                                   /  satellites_coordinate[p][0];
+              g_gradient_theory[0][0] = -G * numbers::PI * 4./3. * reference_density
                                         * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
-                                        * (std::pow(satellites_coordinate[p][0], 2) - 3.0 * pow(position_satellite[0],2))
+                                        * (std::pow(satellites_coordinate[p][0], 2) - 3.0 * std::pow(position_satellite[0],2))
                                         /  std::pow(satellites_coordinate[p][0],5);
-              g_gradient_theory[1][1] = -G * numbers::PI * 4/3 * reference_density
+              g_gradient_theory[1][1] = -G * numbers::PI * 4./3. * reference_density
                                         * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
-                                        * (std::pow(satellites_coordinate[p][0], 2) - 3.0 * pow(position_satellite[1],2))
+                                        * (std::pow(satellites_coordinate[p][0], 2) - 3.0 * std::pow(position_satellite[1],2))
                                         /  std::pow(satellites_coordinate[p][0],5);
-              g_gradient_theory[2][2] = -G * numbers::PI * 4/3 * reference_density
+              g_gradient_theory[2][2] = -G * numbers::PI * 4./3. * reference_density
                                         * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
-                                        * (std::pow(satellites_coordinate[p][0], 2) - 3.0 * pow(position_satellite[2],2))
+                                        * (std::pow(satellites_coordinate[p][0], 2) - 3.0 * std::pow(position_satellite[2],2))
                                         /  std::pow(satellites_coordinate[p][0],5);
-              g_gradient_theory[0][1] = -G * numbers::PI * 4/3 * reference_density
+              g_gradient_theory[0][1] = -G * numbers::PI * 4./3. * reference_density
                                         * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
                                         * (- 3.0 * position_satellite[0] * position_satellite[1])
                                         /  std::pow(satellites_coordinate[p][0],5);
-              g_gradient_theory[0][2] = -G * numbers::PI * 4/3 * reference_density
+              g_gradient_theory[0][2] = -G * numbers::PI * 4./3. * reference_density
                                         * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
                                         * (- 3.0 * position_satellite[0] * position_satellite[2])
                                         /  std::pow(satellites_coordinate[p][0],5);
-              g_gradient_theory[1][2] = -G * numbers::PI * 4/3 * reference_density
+              g_gradient_theory[1][2] = -G * numbers::PI * 4./3. * reference_density
                                         * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
                                         * (- 3.0 * position_satellite[1] * position_satellite[2])
                                         /  std::pow(satellites_coordinate[p][0],5);
@@ -383,12 +408,14 @@ namespace aspect
                      << position_satellite[0] << ' '
                      << position_satellite[1] << ' '
                      << position_satellite[2] << ' '
-                     << std::setprecision(18) << g << ' '
-                     << std::setprecision(18) << g.norm() << ' '
-                     << std::setprecision(18) << g_theory << ' '
-                     << std::setprecision(9) << g_potential << ' '
-                     << std::setprecision(9) << g_anomaly << ' '
-                     << std::setprecision(9) << g_anomaly.norm() << ' '
+                     << std::setprecision(precision)
+                     << g << ' '
+                     << g.norm() << ' '
+                     << g_theory << ' '
+                     << g_potential << ' '
+                     << g_potential_theory << ' '
+                     << g_anomaly << ' '
+                     << g_anomaly.norm() << ' '
                      << g_gradient[0][0] *1e9 << ' '
                      << g_gradient[1][1] *1e9 << ' '
                      << g_gradient[2][2] *1e9 << ' '
@@ -404,6 +431,37 @@ namespace aspect
                      << '\n';
             }
         }
+
+      // write quantities in the statistic file
+      const std::string name2("Average gravity acceleration (m/s^2)");
+      statistics.add_value (name2, sum_g/n_satellites);
+      statistics.set_precision (name2, precision);
+      statistics.set_scientific (name2, true);
+
+      const std::string name3("Minimum gravity acceleration (m/s^2)");
+      statistics.add_value (name3, min_g);
+      statistics.set_precision (name3, precision);
+      statistics.set_scientific (name3, true);
+
+      const std::string name4("Maximum gravity acceleration (m/s^2)");
+      statistics.add_value (name4, max_g);
+      statistics.set_precision (name4, precision);
+      statistics.set_scientific (name4, true);
+
+      const std::string name5("Average gravity potential (m^2/s^2)");
+      statistics.add_value (name5, sum_g_potential/n_satellites);
+      statistics.set_precision (name5, precision);
+      statistics.set_scientific (name5, true);
+
+      const std::string name6("Minimum gravity potential (m^2/s^2)");
+      statistics.add_value (name6, min_g_potential);
+      statistics.set_precision (name6, precision);
+      statistics.set_scientific (name6, true);
+
+      const std::string name7("Maximum gravity potential (m^2/s^2)");
+      statistics.add_value (name7, max_g_potential);
+      statistics.set_precision (name7, precision);
+      statistics.set_scientific (name7, true);
 
       // up the next time we need output:
       set_last_output_time (this->get_time());
@@ -421,14 +479,15 @@ namespace aspect
       {
         prm.enter_subsection ("Gravity calculation");
         {
-          prm.declare_entry ("Sampling scheme", "map",
-                             Patterns::Selection ("map|list"),
-                             "Choose the sampling scheme. A map will produce a grid of "
-                             "equally spaced points between "
-                             "a minimum and maximum radius, longitude, and latitude. A "
-                             "list contains specific coordinates of the satellites.");
+          prm.declare_entry ("Sampling scheme", "uniform distribution",
+                             Patterns::Selection ("uniform distribution|list of points|map|list"),
+                             "Choose the sampling scheme. A uniform distribution will "
+                             "produce a grid of equally spaced points between a "
+                             "minimum and maximum radius, longitude, and latitude. A "
+                             "list of points contains specific coordinates of the "
+                             "satellites.");
           prm.declare_entry ("Quadrature degree increase", "0",
-                             Patterns::Double (0.0),
+                             Patterns::Integer (0),
                              "Quadrature degree increase over the velocity element "
                              "degree may be required when gravity is calculated near "
                              "the surface or inside the model. An increase in the "
@@ -436,70 +495,74 @@ namespace aspect
                              "solution from noise due to the model grid.");
           prm.declare_entry ("Number points radius", "1",
                              Patterns::Integer (0),
-                             "Parameter for the map sampling scheme: "
+                             "Parameter for the uniform distribution sampling scheme: "
                              "This specifies the number of points along "
                              "the radius (e.g. depth profile) between a minimum and "
                              "maximum radius.");
           prm.declare_entry ("Number points longitude", "1",
                              Patterns::Integer (0),
-                             "Parameter for the map sampling scheme: "
+                             "Parameter for the uniform distribution sampling scheme: "
                              "This specifies the number of points along "
                              "the longitude (e.g. gravity map) between a minimum and "
                              "maximum longitude.");
           prm.declare_entry ("Number points latitude", "1",
                              Patterns::Integer (0),
-                             "Parameter for the map sampling scheme: "
+                             "Parameter for the uniform distribution sampling scheme: "
                              "This specifies the number of points along "
                              "the latitude (e.g. gravity map) between a minimum and "
                              "maximum latitude.");
-          prm.declare_entry ("Minimum radius", "0",
+          prm.declare_entry ("Minimum radius", "0.",
                              Patterns::Double (0.0),
-                             "Parameter for the map sampling scheme: "
+                             "Parameter for the uniform distribution sampling scheme: "
                              "Minimum radius may be defined in or outside the model. "
                              "Prescribe a minimum radius for a sampling coverage at a "
                              "specific height.");
-          prm.declare_entry ("Maximum radius", "0",
+          prm.declare_entry ("Maximum radius", "0.",
                              Patterns::Double (0.0),
-                             "Parameter for the map sampling scheme: "
+                             "Parameter for the uniform distribution sampling scheme: "
                              "Maximum radius can be defined in or outside the model.");
-          prm.declare_entry ("Minimum longitude", "-180",
-                             Patterns::Double (-180.0,180.0),
-                             "Parameter for the map sampling scheme: "
+          prm.declare_entry ("Minimum longitude", "-180.",
+                             Patterns::Double (-180.0, 180.0),
+                             "Parameter for the uniform distribution sampling scheme: "
                              "Gravity may be calculated for a sets of points along "
                              "the longitude between a minimum and maximum longitude.");
-          prm.declare_entry ("Minimum latitude", "-90",
-                             Patterns::Double (-90.0,90.0),
-                             "Parameter for the map sampling scheme: "
+          prm.declare_entry ("Minimum latitude", "-90.",
+                             Patterns::Double (-90.0, 90.0),
+                             "Parameter for the uniform distribution sampling scheme: "
                              "Gravity may be calculated for a sets of points along "
                              "the latitude between a minimum and maximum latitude.");
-          prm.declare_entry ("Maximum longitude", "180",
-                             Patterns::Double (-180.0,180.0),
-                             "Parameter for the map sampling scheme: "
+          prm.declare_entry ("Maximum longitude", "180.",
+                             Patterns::Double (-180.0, 180.0),
+                             "Parameter for the uniform distribution sampling scheme: "
                              "Gravity may be calculated for a sets of points along "
                              "the longitude between a minimum and maximum longitude.");
           prm.declare_entry ("Maximum latitude", "90",
-                             Patterns::Double (-90.0,90.0),
-                             "Parameter for the map sampling scheme: "
+                             Patterns::Double (-90.0, 90.0),
+                             "Parameter for the uniform distribution sampling scheme: "
                              "Gravity may be calculated for a sets of points along "
                              "the latitude between a minimum and maximum latitude.");
-          prm.declare_entry ("Reference density", "3300",
+          prm.declare_entry ("Reference density", "3300.",
                              Patterns::Double (0.0),
                              "Gravity anomalies may be computed using density "
                              "anomalies relative to a reference density.");
+          prm.declare_entry ("Precision in gravity output", "12",
+                             Patterns::Integer (1),
+                             "Set the precision of gravity acceleration, potential "
+                             "and gradients in the gravity output and statistics file.");
           prm.declare_entry ("List of radius", "",
-                             Patterns::List (Patterns::Double(0)),
-                             "Parameter for the list sampling scheme: "
+                             Patterns::List (Patterns::Double (0.)),
+                             "Parameter for the list of points sampling scheme: "
                              "List of satellite radius coordinates. Just specify one "
                              "radius if all points values have the same radius. If "
                              "not, make sure there are as many radius as longitude "
                              "and latitude");
           prm.declare_entry ("List of longitude", "",
-                             Patterns::List (Patterns::Double(-180.0,180.0)),
-                             "Parameter for the list sampling scheme: "
+                             Patterns::List (Patterns::Double(-180.0, 180.0)),
+                             "Parameter for the list of points sampling scheme: "
                              "List of satellite longitude coordinates.");
           prm.declare_entry ("List of latitude", "",
-                             Patterns::List (Patterns::Double(-90.0,90.0)),
-                             "Parameter for the list sampling scheme: "
+                             Patterns::List (Patterns::Double(-90.0, 90.0)),
+                             "Parameter for the list of points sampling scheme: "
                              "List of satellite latitude coordinates.");
           prm.declare_entry ("Time between gravity output", "1e8",
                              Patterns::Double(0.0),
@@ -539,23 +602,24 @@ namespace aspect
       {
         prm.enter_subsection ("Gravity calculation");
         {
-          if (prm.get ("Sampling scheme") == "map")
-            sampling_scheme = map;
-          else if (prm.get ("Sampling scheme") == "list")
-            sampling_scheme = list;
+          if ( (prm.get ("Sampling scheme") == "uniform distribution") || (prm.get ("Sampling scheme") == "map") )
+            sampling_scheme = uniform_distribution;
+          else if ( (prm.get ("Sampling scheme") == "list of points") || (prm.get ("Sampling scheme") == "list") )
+            sampling_scheme = list_of_points;
           else
             AssertThrow (false, ExcMessage ("Not a valid sampling scheme."));
-          quadrature_degree_increase = prm.get_double ("Quadrature degree increase");
+          quadrature_degree_increase = prm.get_integer ("Quadrature degree increase");
           n_points_radius     = prm.get_integer("Number points radius");
           n_points_longitude  = prm.get_integer("Number points longitude");
           n_points_latitude   = prm.get_integer("Number points latitude");
           minimum_radius      = prm.get_double ("Minimum radius");
           maximum_radius      = prm.get_double ("Maximum radius");
-          minimum_colongitude = prm.get_double ("Minimum longitude") + 180;
-          maximum_colongitude = prm.get_double ("Maximum longitude") + 180;
-          minimum_colatitude  = prm.get_double ("Minimum latitude") + 90;
-          maximum_colatitude  = prm.get_double ("Maximum latitude") + 90;
+          minimum_colongitude = prm.get_double ("Minimum longitude") + 180.;
+          maximum_colongitude = prm.get_double ("Maximum longitude") + 180.;
+          minimum_colatitude  = prm.get_double ("Minimum latitude") + 90.;
+          maximum_colatitude  = prm.get_double ("Maximum latitude") + 90.;
           reference_density   = prm.get_double ("Reference density");
+          precision = prm.get_integer ("Precision in gravity output");
           radius_list    = Utilities::string_to_double(Utilities::split_string_list(prm.get("List of radius")));
           longitude_list = Utilities::string_to_double(Utilities::split_string_list(prm.get("List of longitude")));
           latitude_list  = Utilities::string_to_double(Utilities::split_string_list(prm.get("List of latitude")));
@@ -659,7 +723,7 @@ namespace aspect
                                   "and colongitude. Gravity is here based on the density distribution "
                                   "from the material model (and non adiabatic). This means that the "
                                   "density may come directly from an ascii file. This postprocessor also "
-                                  "computes theoretical gravity (and gradients), which corresponds to "
+                                  "computes theoretical gravity and its derivatives, which corresponds to "
                                   "the analytical solution of gravity in the same geometry but filled "
                                   "with a reference density. The reference density is also used to "
                                   "determine density anomalies for computing gravity anomalies. Thus "
@@ -668,6 +732,8 @@ namespace aspect
                                   "differences in the assumed reference density). On way to guarantee correct "
                                   "gravity anomalies is to subtract gravity of a certain point from the average "
                                   "gravity on the map. Another way is to directly use density anomalies for this "
-                                  "postprocessor.")
+                                  "postprocessor."
+                                  "The average- minimum- and maximum gravity acceleration and potential are "
+                                  "written into the statistics file.")
   }
 }

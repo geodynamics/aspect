@@ -11,7 +11,7 @@ Number of mesh deformation degrees of freedom: 1394
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+20 iterations.
-   Solving for u_f in 11 iterations.
+   Solving fluid velocity system... 11 iterations.
 
 Number of active cells: 760 (on 5 levels)
 Number of degrees of freedom: 23,646 (6,550+3,138+6,550+858+3,275+3,275)
@@ -23,7 +23,7 @@ Number of mesh deformation degrees of freedom: 1716
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+19 iterations.
-   Solving for u_f in 11 iterations.
+   Solving fluid velocity system... 11 iterations.
 
 Number of active cells: 1,360 (on 6 levels)
 Number of degrees of freedom: 42,688 (11,842+5,621+11,842+1,541+5,921+5,921)
@@ -35,7 +35,7 @@ Number of mesh deformation degrees of freedom: 3082
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+19 iterations.
-   Solving for u_f in 12 iterations.
+   Solving fluid velocity system... 12 iterations.
 
    Postprocessing:
      Topography min/max:        0 m, 0 m
@@ -49,7 +49,7 @@ Number of mesh deformation degrees of freedom: 3082
    Solving porosity system ... 9 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+16 iterations.
-   Solving for u_f in 12 iterations.
+   Solving fluid velocity system... 12 iterations.
 
    Postprocessing:
      Topography min/max:        -124.8 m, 135 m
@@ -63,7 +63,7 @@ Number of mesh deformation degrees of freedom: 3082
    Solving porosity system ... 9 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+15 iterations.
-   Solving for u_f in 12 iterations.
+   Solving fluid velocity system... 12 iterations.
 
    Postprocessing:
      Topography min/max:        -186.8 m, 203.6 m
@@ -74,7 +74,4 @@ Number of mesh deformation degrees of freedom: 3082
 Termination requested by criterion: end time
 
 
-+---------------------------------------------+------------+------------+
-+---------------------------------+-----------+------------+------------+
-+---------------------------------+-----------+------------+------------+
 

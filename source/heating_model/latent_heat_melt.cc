@@ -108,7 +108,7 @@ namespace aspect
       {
         prm.enter_subsection("Latent heat melt");
         {
-          prm.declare_entry ("Melting entropy change", "-300",
+          prm.declare_entry ("Melting entropy change", "-300.",
                              Patterns::Double (),
                              "The entropy change for the phase transition "
                              "from solid to melt. "

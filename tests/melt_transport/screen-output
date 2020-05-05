@@ -7,43 +7,43 @@ Number of degrees of freedom: 28,553 (12,611+8,450+1,089+4,225+1,089+1,089)
    Solving peridotite system ... 0 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... done.
-   Solving for u_f in 11 iterations.
+   Solving fluid velocity system... 11 iterations.
 
    Postprocessing:
      Compositions min/max/mass: 0/0.3/3.739e+10 // 0/0/0
      RMS, max velocity:         0.000554 m/year, 0.00162 m/year
 
 *** Timestep 1:  t=4.8263e+06 years
-   Solving composition reactions in 1 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 23 iterations.
    Solving peridotite system ... 5 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... done.
-   Solving for u_f in 11 iterations.
+   Solving fluid velocity system... 11 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -0.01666/0.3185/3.739e+10 // 0/0/0
      RMS, max velocity:         0.000529 m/year, 0.00146 m/year
 
 *** Timestep 2:  t=1.01594e+07 years
-   Solving composition reactions in 1 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 18 iterations.
    Solving peridotite system ... 4 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... done.
-   Solving for u_f in 11 iterations.
+   Solving fluid velocity system... 11 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -0.0243/0.3287/3.739e+10 // 0/0/0
      RMS, max velocity:         0.000504 m/year, 0.00133 m/year
 
 *** Timestep 3:  t=1.5e+07 years
-   Solving composition reactions in 1 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 17 iterations.
    Solving peridotite system ... 4 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... done.
-   Solving for u_f in 11 iterations.
+   Solving fluid velocity system... 11 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -0.02113/0.3305/3.739e+10 // 0/0/0
@@ -52,7 +52,4 @@ Number of degrees of freedom: 28,553 (12,611+8,450+1,089+4,225+1,089+1,089)
 Termination requested by criterion: end time
 
 
-+---------------------------------------------+------------+------------+
-+---------------------------------+-----------+------------+------------+
-+---------------------------------+-----------+------------+------------+
 

@@ -94,8 +94,8 @@ namespace aspect
         {
           prm.enter_subsection("Function");
           {
-            prm.declare_entry ("Maximum topography value", "2000",
-                               Patterns::Double (0),
+            prm.declare_entry ("Maximum topography value", "2000.",
+                               Patterns::Double (0.),
                                "The maximum value the topography given by "
                                "the function can take. ");
             prm.declare_entry ("Coordinate system", "cartesian",

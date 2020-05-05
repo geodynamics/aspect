@@ -8,9 +8,9 @@ Number of degrees of freedom: 34,825 (8,450+4,161+8,450+1,089+4,225+4,225+4,225)
    Skipping peridotite composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-   Solving for u_f in 12 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.07834e-16, 1.65108e-16, 0, 3.72351e-14
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 3.72351e-14
+   Solving fluid velocity system... 12 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.03229e-16, 1.44912e-16, 0, 3.62353e-14
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 3.62353e-14
 
 
 Number of active cells: 1,117 (on 7 levels)
@@ -22,9 +22,9 @@ Number of degrees of freedom: 39,086 (9,510+4,576+9,510+1,225+4,755+4,755+4,755)
    Skipping peridotite composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-   Solving for u_f in 13 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.26524e-16, 1.78403e-16, 0, 3.0894e-14
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 3.0894e-14
+   Solving fluid velocity system... 13 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.87132e-16, 1.54953e-16, 0, 2.96248e-14
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 2.96248e-14
 
 
 Number of active cells: 1,696 (on 8 levels)
@@ -36,9 +36,9 @@ Number of degrees of freedom: 59,307 (14,434+6,938+14,434+1,850+7,217+7,217+7,21
    Skipping peridotite composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-   Solving for u_f in 13 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.30335e-16, 1.19317e-16, 0, 2.70908e-14
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 2.70908e-14
+   Solving fluid velocity system... 13 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.87134e-16, 1.28759e-16, 0, 2.72556e-14
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 2.72556e-14
 
 
 Number of active cells: 2,023 (on 9 levels)
@@ -50,9 +50,9 @@ Number of degrees of freedom: 70,864 (17,250+8,279+17,250+2,210+8,625+8,625+8,62
    Skipping peridotite composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-   Solving for u_f in 12 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.32399e-16, 1.18962e-16, 0, 2.71343e-14
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 2.71343e-14
+   Solving fluid velocity system... 12 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.87863e-16, 1.28421e-16, 0, 2.73022e-14
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 2.73022e-14
 
 
 Number of active cells: 2,026 (on 9 levels)
@@ -64,9 +64,9 @@ Number of degrees of freedom: 70,956 (17,272+8,291+17,272+2,213+8,636+8,636+8,63
    Skipping peridotite composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-   Solving for u_f in 13 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.30336e-16, 1.19316e-16, 0, 2.70908e-14
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 2.70908e-14
+   Solving fluid velocity system... 13 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.87125e-16, 1.28759e-16, 0, 2.72557e-14
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 2.72557e-14
 
 
 Number of active cells: 2,023 (on 9 levels)
@@ -78,9 +78,9 @@ Number of degrees of freedom: 70,864 (17,250+8,279+17,250+2,210+8,625+8,625+8,62
    Skipping peridotite composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-   Solving for u_f in 12 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.32399e-16, 1.18962e-16, 0, 2.71343e-14
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 2.71343e-14
+   Solving fluid velocity system... 12 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.87863e-16, 1.28421e-16, 0, 2.73022e-14
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 2.73022e-14
 
 
    Postprocessing:
@@ -92,7 +92,4 @@ Number of degrees of freedom: 70,864 (17,250+8,279+17,250+2,210+8,625+8,625+8,62
 Termination requested by criterion: end time
 
 
-+---------------------------------------------+------------+------------+
-+---------------------------------+-----------+------------+------------+
-+---------------------------------+-----------+------------+------------+
 

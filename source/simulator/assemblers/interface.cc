@@ -413,12 +413,6 @@ namespace aspect
         }
 
 
-        template <int dim>
-        StokesPreconditioner<dim>::
-        ~StokesPreconditioner ()
-        {}
-
-
 
         template <int dim>
         StokesSystem<dim>::
@@ -490,24 +484,6 @@ namespace aspect
                                  :
                                  0),
                                 std::vector<types::global_dof_index>(finite_element.dofs_per_cell))
-        {}
-
-
-
-        template <int dim>
-        AdvectionSystem<dim>::
-        AdvectionSystem (const AdvectionSystem &data)
-          :
-          local_matrix (data.local_matrix),
-          local_matrices_int_ext (data.local_matrices_int_ext),
-          local_matrices_ext_int (data.local_matrices_ext_int),
-          local_matrices_ext_ext (data.local_matrices_ext_ext),
-          local_rhs (data.local_rhs),
-
-          assembled_matrices (data.assembled_matrices),
-
-          local_dof_indices (data.local_dof_indices),
-          neighbor_dof_indices (data.neighbor_dof_indices)
         {}
 
       }

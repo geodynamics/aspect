@@ -21,7 +21,7 @@ namespace aspect
         {
           SolKzMaterial<dim>::evaluate(in, out);
 
-          for (unsigned int i=0; i < in.position.size(); ++i)
+          for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
             {
               out.densities[i] = in.composition[i][0];
               out.viscosities[i] = in.composition[i][1];

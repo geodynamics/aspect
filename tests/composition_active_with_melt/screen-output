@@ -10,7 +10,7 @@ Number of degrees of freedom: 1,850 (578+162+578+81+289+81+81)
    Skipping porosity composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 7+0 iterations.
-   Solving for u_f in 1 iterations.
+   Solving fluid velocity system... 1 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5 K, 1 K
@@ -22,7 +22,7 @@ Number of degrees of freedom: 1,850 (578+162+578+81+289+81+81)
    Skipping porosity composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 6+0 iterations.
-   Solving for u_f in 1 iterations.
+   Solving fluid velocity system... 1 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5019 K, 1 K
@@ -34,7 +34,7 @@ Number of degrees of freedom: 1,850 (578+162+578+81+289+81+81)
    Skipping porosity composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 8+0 iterations.
-   Solving for u_f in 1 iterations.
+   Solving fluid velocity system... 1 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5034 K, 1 K
@@ -46,7 +46,7 @@ Number of degrees of freedom: 1,850 (578+162+578+81+289+81+81)
    Skipping porosity composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 8+0 iterations.
-   Solving for u_f in 1 iterations.
+   Solving fluid velocity system... 1 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5046 K, 1 K
@@ -58,7 +58,7 @@ Number of degrees of freedom: 1,850 (578+162+578+81+289+81+81)
    Skipping porosity composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 8+0 iterations.
-   Solving for u_f in 1 iterations.
+   Solving fluid velocity system... 1 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5055 K, 1 K
@@ -70,7 +70,7 @@ Number of degrees of freedom: 1,850 (578+162+578+81+289+81+81)
    Skipping porosity composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 8+0 iterations.
-   Solving for u_f in 1 iterations.
+   Solving fluid velocity system... 1 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5064 K, 1 K
@@ -82,7 +82,7 @@ Number of degrees of freedom: 1,850 (578+162+578+81+289+81+81)
    Skipping porosity composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 7+0 iterations.
-   Solving for u_f in 1 iterations.
+   Solving fluid velocity system... 1 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5072 K, 1 K
@@ -94,7 +94,7 @@ Number of degrees of freedom: 1,850 (578+162+578+81+289+81+81)
    Skipping porosity composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 8+0 iterations.
-   Solving for u_f in 1 iterations.
+   Solving fluid velocity system... 1 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5079 K, 1 K
@@ -106,7 +106,7 @@ Number of degrees of freedom: 1,850 (578+162+578+81+289+81+81)
    Skipping porosity composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 8+0 iterations.
-   Solving for u_f in 1 iterations.
+   Solving fluid velocity system... 1 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5089 K, 1 K
@@ -118,7 +118,7 @@ Number of degrees of freedom: 1,850 (578+162+578+81+289+81+81)
    Skipping porosity composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 7+0 iterations.
-   Solving for u_f in 1 iterations.
+   Solving fluid velocity system... 1 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5096 K, 1 K
@@ -130,7 +130,7 @@ Number of degrees of freedom: 1,850 (578+162+578+81+289+81+81)
    Skipping porosity composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 7+0 iterations.
-   Solving for u_f in 1 iterations.
+   Solving fluid velocity system... 1 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5103 K, 1 K
@@ -142,7 +142,7 @@ Number of degrees of freedom: 1,850 (578+162+578+81+289+81+81)
    Skipping porosity composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 8+0 iterations.
-   Solving for u_f in 1 iterations.
+   Solving fluid velocity system... 1 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5108 K, 1 K
@@ -154,7 +154,7 @@ Number of degrees of freedom: 1,850 (578+162+578+81+289+81+81)
    Skipping porosity composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 8+0 iterations.
-   Solving for u_f in 1 iterations.
+   Solving fluid velocity system... 1 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5117 K, 1 K
@@ -166,7 +166,7 @@ Number of degrees of freedom: 1,850 (578+162+578+81+289+81+81)
    Skipping porosity composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 6+0 iterations.
-   Solving for u_f in 1 iterations.
+   Solving fluid velocity system... 1 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5123 K, 1 K
@@ -178,7 +178,7 @@ Number of degrees of freedom: 1,850 (578+162+578+81+289+81+81)
    Skipping porosity composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 5+0 iterations.
-   Solving for u_f in 1 iterations.
+   Solving fluid velocity system... 1 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.513 K, 1 K
@@ -190,7 +190,7 @@ Number of degrees of freedom: 1,850 (578+162+578+81+289+81+81)
    Skipping porosity composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 5+0 iterations.
-   Solving for u_f in 1 iterations.
+   Solving fluid velocity system... 1 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5136 K, 1 K
@@ -202,7 +202,7 @@ Number of degrees of freedom: 1,850 (578+162+578+81+289+81+81)
    Skipping porosity composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 5+0 iterations.
-   Solving for u_f in 1 iterations.
+   Solving fluid velocity system... 1 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5143 K, 1 K
@@ -214,7 +214,7 @@ Number of degrees of freedom: 1,850 (578+162+578+81+289+81+81)
    Skipping porosity composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-   Solving for u_f in 1 iterations.
+   Solving fluid velocity system... 1 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5143 K, 1 K
@@ -223,7 +223,4 @@ Number of degrees of freedom: 1,850 (578+162+578+81+289+81+81)
 Termination requested by criterion: end time
 
 
-+---------------------------------------------+------------+------------+
-+---------------------------------+-----------+------------+------------+
-+---------------------------------+-----------+------------+------------+
 

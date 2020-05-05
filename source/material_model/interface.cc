@@ -271,7 +271,8 @@ namespace aspect
       composition(n_points, std::vector<double>(n_comp, numbers::signaling_nan<double>())),
       strain_rate(n_points, numbers::signaling_nan<SymmetricTensor<2,dim> >()),
       cell (nullptr),
-      current_cell()
+      current_cell(),
+      requested_properties(MaterialProperties::all_properties)
     {}
 
     template <int dim>
@@ -287,7 +288,8 @@ namespace aspect
       composition(input_data.solution_values.size(), std::vector<double>(introspection.n_compositional_fields, numbers::signaling_nan<double>())),
       strain_rate(input_data.solution_values.size(), numbers::signaling_nan<SymmetricTensor<2,dim> >()),
       cell(&current_cell),
-      current_cell(input_data.template get_cell<DoFHandler<dim> >())
+      current_cell(input_data.template get_cell<DoFHandler<dim> >()),
+      requested_properties(MaterialProperties::all_properties)
     {
       for (unsigned int q=0; q<input_data.solution_values.size(); ++q)
         {
@@ -327,7 +329,8 @@ namespace aspect
       composition(fe_values.n_quadrature_points, std::vector<double>(introspection.n_compositional_fields, numbers::signaling_nan<double>())),
       strain_rate(fe_values.n_quadrature_points, numbers::signaling_nan<SymmetricTensor<2,dim> >()),
       cell(cell_x.state() == IteratorState::valid ? &current_cell : nullptr),
-      current_cell (cell_x)
+      current_cell (cell_x),
+      requested_properties(MaterialProperties::all_properties)
     {
       // Call the function reinit to populate the new arrays.
       this->reinit(fe_values, current_cell, introspection, solution_vector, use_strain_rate);
@@ -346,7 +349,8 @@ namespace aspect
       composition(source.composition),
       strain_rate(source.strain_rate),
       cell(source.cell),
-      current_cell(source.current_cell)
+      current_cell(source.current_cell),
+      requested_properties(source.requested_properties)
     {
       Assert (source.additional_inputs.size() == 0,
               ExcMessage ("You can not copy MaterialModelInputs objects that have "
@@ -394,8 +398,37 @@ namespace aspect
       DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
 
       this->current_cell = cell_x;
-
     }
+
+
+
+    template <int dim>
+    unsigned int
+    MaterialModelInputs<dim>::n_evaluation_points() const
+    {
+      return position.size();
+    }
+
+
+
+    template <int dim>
+    bool
+    MaterialModelInputs<dim>::requests_property(const MaterialProperties::Property &property) const
+    {
+      //TODO: Remove this once all callers set requested_properties correctly
+      if ((property & MaterialProperties::Property::viscosity) != 0)
+        return (strain_rate.size() != 0);
+
+      //TODO: Remove this once all callers set requested_properties correctly
+      if ((property & MaterialProperties::Property::reaction_terms) != 0)
+        return (strain_rate.size() != 0);
+
+      // Note that this means 'requested_properties' can include other properties than
+      // just 'property', but in any case it at least requests 'property'.
+      return (requested_properties & property) != 0;
+    }
+
+
 
     template <int dim>
     MaterialModelOutputs<dim>::MaterialModelOutputs(const unsigned int n_points,
@@ -433,11 +466,21 @@ namespace aspect
     }
 
 
+
+    template <int dim>
+    unsigned int
+    MaterialModelOutputs<dim>::n_evaluation_points() const
+    {
+      return densities.size();
+    }
+
+
+
     namespace MaterialAveraging
     {
       std::string get_averaging_operation_names ()
       {
-        return "none|arithmetic average|harmonic average|geometric average|pick largest|project to Q1|log average";
+        return "none|arithmetic average|harmonic average|geometric average|pick largest|project to Q1|log average|harmonic average only viscosity";
       }
 
 
@@ -457,6 +500,8 @@ namespace aspect
           return project_to_Q1;
         else if (s == "log average")
           return log_average;
+        else if (s == "harmonic average only viscosity")
+          return harmonic_average_only_viscosity;
         else
           AssertThrow (false,
                        ExcMessage ("The value <" + s + "> for a material "
@@ -748,7 +793,15 @@ namespace aspect
                                        expansion_matrix);
           }
 
-        average_property (operation, projection_matrix, expansion_matrix, values_out.viscosities);
+        if (operation == harmonic_average_only_viscosity)
+          {
+            average_property (harmonic_average, projection_matrix, expansion_matrix,
+                              values_out.viscosities);
+            return;
+          }
+
+        average_property (operation, projection_matrix, expansion_matrix,
+                          values_out.viscosities);
         average_property (operation, projection_matrix, expansion_matrix,
                           values_out.densities);
         average_property (operation, projection_matrix, expansion_matrix,
@@ -797,6 +850,24 @@ namespace aspect
     NamedAdditionalMaterialOutputs<dim>::get_names() const
     {
       return names;
+    }
+
+
+
+    template <int dim>
+    PrescribedPlasticDilation<dim>::PrescribedPlasticDilation (const unsigned int n_points)
+      : NamedAdditionalMaterialOutputs<dim>(std::vector<std::string>(1, "prescribed_dilation")),
+        dilation(n_points, numbers::signaling_nan<double>())
+    {}
+
+
+
+    template <int dim>
+    std::vector<double> PrescribedPlasticDilation<dim>::get_nth_output(const unsigned int idx) const
+    {
+      (void)idx;
+      Assert(idx==0, ExcInternalError());
+      return dilation;
     }
 
 
@@ -1003,6 +1074,8 @@ namespace aspect
   template class SeismicAdditionalOutputs<dim>; \
   \
   template class ReactionRateOutputs<dim>; \
+  \
+  template class PrescribedPlasticDilation<dim>; \
   \
   template class PrescribedFieldOutputs<dim>; \
   \

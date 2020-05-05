@@ -136,7 +136,11 @@ void print_aspect_header(Stream &stream)
 #endif
          << " bit indices and vectorization level ";
   const unsigned int n_vect_bits =
+#if DEAL_II_VERSION_GTE(9,2,0)
+    dealii::VectorizedArray<double>::size() * 8 * sizeof(double);
+#else
     dealii::VectorizedArray<double>::n_array_elements * 8 * sizeof(double);
+#endif
 
   stream << DEAL_II_COMPILER_VECTORIZATION_LEVEL
          << " (" << n_vect_bits << " bits)\n";

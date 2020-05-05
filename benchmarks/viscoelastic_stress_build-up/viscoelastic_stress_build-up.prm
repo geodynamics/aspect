@@ -28,13 +28,9 @@
 #
 # This result can be observed by viewing the compositional field values
 # representing the horizontal (stress_xx) or vertical (stress_yy) components
-# of the viscoselastic stress tensor. Significantly, the stress near the 
-# model boundaries is incorrect due to the compositional field boundary
-# conditions, which are based on the initial compositional values (e.g., zero).
-# This leads to oscillations in the stress field near the boundaries, which
-# decay towards a constant value in the model interior. This phenomen highlights
-# one advantage to tracking viscoelastic stress with particles, which do not require
-# defining compositional boundary conditions. 
+# of the viscoselastic stress tensor. Significantly, the composition is not
+# fixed on any boundary in order to prevent the formation of boundary artifacts
+# in the compositional fields tracking viscoelastic stresses.
 
 #  Global parameters
 set Dimension                              = 2
@@ -119,9 +115,11 @@ subsection Initial composition model
 end
 
 # Composition boundary conditions
+# We specify that no boundaries have a fixed composition
+# in order to prevent boundary effects from developing
+# in the compositional fields tracking viscoelastic stresses.
 subsection Boundary composition model
-  set Allow fixed composition on outflow boundaries = true
-  set Fixed composition boundary indicators   = bottom, top, left, right
+  set Fixed composition boundary indicators = 
   set List of model names = initial composition
 end
 

@@ -45,7 +45,7 @@ namespace aspect
       {
         prm.enter_subsection("Vertical");
         {
-          prm.declare_entry ("Magnitude", "1",
+          prm.declare_entry ("Magnitude", "1.",
                              Patterns::Double (),
                              "Value of the gravity vector in $m/s^2$ directed "
                              "along negative y (2D) or z (3D) axis (if the magnitude "

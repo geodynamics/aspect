@@ -9,7 +9,7 @@ Number of degrees of freedom: 30,600 (8,450+4,161+8,450+1,089+4,225+4,225)
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 61+0 iterations.
-   Solving for u_f in 11 iterations.
+   Solving fluid velocity system... 11 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.57339e-16, 0.185585
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.185585
 
@@ -17,7 +17,7 @@ Number of degrees of freedom: 30,600 (8,450+4,161+8,450+1,089+4,225+4,225)
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 53+0 iterations.
-   Solving for u_f in 11 iterations.
+   Solving fluid velocity system... 11 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.57339e-16, 0.0177292
       Relative nonlinear residual (total system) after nonlinear iteration 2: 0.0177292
 
@@ -25,7 +25,7 @@ Number of degrees of freedom: 30,600 (8,450+4,161+8,450+1,089+4,225+4,225)
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 48+0 iterations.
-   Solving for u_f in 11 iterations.
+   Solving fluid velocity system... 11 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.57339e-16, 0.00582084
       Relative nonlinear residual (total system) after nonlinear iteration 3: 0.00582084
 
@@ -33,7 +33,7 @@ Number of degrees of freedom: 30,600 (8,450+4,161+8,450+1,089+4,225+4,225)
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 1+0 iterations.
-   Solving for u_f in 11 iterations.
+   Solving fluid velocity system... 11 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.57339e-16, 6.74483e-05
       Relative nonlinear residual (total system) after nonlinear iteration 4: 6.74483e-05
 
@@ -41,7 +41,7 @@ Number of degrees of freedom: 30,600 (8,450+4,161+8,450+1,089+4,225+4,225)
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-   Solving for u_f in 11 iterations.
+   Solving fluid velocity system... 11 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.57339e-16, 4.64638e-06
       Relative nonlinear residual (total system) after nonlinear iteration 5: 4.64638e-06
 
@@ -55,7 +55,4 @@ Number of degrees of freedom: 30,600 (8,450+4,161+8,450+1,089+4,225+4,225)
 Termination requested by criterion: end time
 
 
-+---------------------------------------------+------------+------------+
-+---------------------------------+-----------+------------+------------+
-+---------------------------------+-----------+------------+------------+
 

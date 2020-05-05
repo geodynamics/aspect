@@ -42,7 +42,7 @@ namespace aspect
       const unsigned int n_compositions_for_eos = std::min(this->n_compositional_fields()+1, 3u);
       EquationOfStateOutputs<dim> eos_outputs (n_compositions_for_eos);
 
-      for (unsigned int i=0; i < in.position.size(); ++i)
+      for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
         {
           const double temperature = in.temperature[i];
           const std::vector<double> &composition = in.composition[i];
@@ -150,31 +150,31 @@ namespace aspect
         {
           EquationOfState::LinearizedIncompressible<dim>::declare_parameters (prm, 2);
 
-          prm.declare_entry ("Reference temperature", "293",
-                             Patterns::Double (0),
+          prm.declare_entry ("Reference temperature", "293.",
+                             Patterns::Double (0.),
                              "The reference temperature $T_0$. Units: $\\si{K}$.");
           prm.declare_entry ("Viscosity", "5e24",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The value of the constant viscosity. Units: $kg/m/s$.");
           prm.declare_entry ("Composition viscosity prefactor 1", "1.0",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "A linear dependency of viscosity on the first compositional field. "
                              "Dimensionless prefactor. With a value of 1.0 (the default) the "
                              "viscosity does not depend on the composition.");
           prm.declare_entry ("Composition viscosity prefactor 2", "1.0",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "A linear dependency of viscosity on the second compositional field. "
                              "Dimensionless prefactor. With a value of 1.0 (the default) the "
                              "viscosity does not depend on the composition.");
           prm.declare_entry ("Thermal viscosity exponent", "0.0",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The temperature dependence of viscosity. Dimensionless exponent.");
           prm.declare_entry ("Thermal conductivity", "4.7",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The value of the thermal conductivity $k$. "
                              "Units: $W/m/K$.");
-          prm.declare_entry ("Reaction depth", "0",
-                             Patterns::Double (0),
+          prm.declare_entry ("Reaction depth", "0.",
+                             Patterns::Double (0.),
                              "Above this depth the compositional fields react: "
                              "The first field gets converted to the second field. "
                              "Units: $m$.");
@@ -233,7 +233,7 @@ namespace aspect
       if (this->get_parameters().use_operator_splitting
           && out.template get_additional_output<ReactionRateOutputs<dim> >() == nullptr)
         {
-          const unsigned int n_points = out.viscosities.size();
+          const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
             std_cxx14::make_unique<MaterialModel::ReactionRateOutputs<dim>> (n_points,
                                                                              this->n_compositional_fields()));

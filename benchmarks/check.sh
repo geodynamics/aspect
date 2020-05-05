@@ -121,9 +121,6 @@ wait # newton_solver_benchmark_set/nonlinear_channel_flow depends on nonlinear_c
 
 ( (cd newton_solver_benchmark_set/nonlinear_channel_flow/ && run_prm "input_v.prm" ) || { echo "FAILED"; exit 1; } ) &
 
-# TODO: broken
-#( (cd newton_solver_benchmark_set/tosi_et_al_2015/ && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
-
 ( (cd nsinker && make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
 
 # TODO: prm doesn't run without replacing values:
@@ -150,6 +147,9 @@ wait # newton_solver_benchmark_set/nonlinear_channel_flow depends on nonlinear_c
 ( (cd time_dependent_annulus/plugin && make_lib && cd .. && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
 
 ( (cd tosi_et_al_2015_gcubed/ && make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
+
+# depends on tosi_et_al_2015_gcubed/ model above
+( (cd newton_solver_benchmark_set/tosi_et_al_2015/ && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
 
 ( (cd viscoelastic_bending_beam && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
 

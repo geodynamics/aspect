@@ -1,0 +1,170 @@
+# This model applies a surface load (using the traction
+# boundary condition) on a free surface overlying 
+# a viscoelastic box. It approximates the analytical solution
+# of Nakiboglu and Lambeck (1982) for an applied/removed
+# axisymmetric cylindrical load over a viscoelastic half-space.
+
+
+#  Global parameters
+set Dimension                              = 3
+set Start time                             = 0
+set End time                               = 1500
+set Use years in output instead of seconds = true
+set Nonlinear solver scheme                = single Advection, single Stokes
+set CFL number                             = 0.5
+set Maximum time step                      = 10
+set Output directory                       = output_free_surface_VE_cylinder_3D_loading
+set Timing output frequency                = 1
+set Pressure normalization                 = no
+
+# Model geometry (500x500x500 km, 50 km spacing)
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X repetitions = 10
+    set Y repetitions = 10
+    set Z repetitions = 10
+    set X extent      = 500e3
+    set Y extent      = 500e3
+    set Z extent      = 500e3
+  end
+end
+
+# Mesh refinement specifications 
+subsection Mesh refinement
+  set Initial adaptive refinement        = 1
+  set Initial global refinement          = 1
+  set Time steps between mesh refinement = 1
+  set Strategy         = strain rate
+end
+
+# Element types
+subsection Discretization
+  set Composition polynomial degree     = 2
+  set Stokes velocity polynomial degree = 2
+  set Temperature polynomial degree     = 1
+end
+
+# Formulation classification
+subsection Formulation
+  set Enable elasticity = true
+end
+
+subsection Mesh deformation
+  set Additional tangential mesh velocity boundary indicators = left, right, front, back
+  set Mesh deformation boundary indicators = top: free surface
+
+  subsection Free surface
+    set Surface velocity projection      = normal
+  end
+end
+
+# Velocity boundary conditions
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = bottom, left, right, front, back
+end
+
+# Prescribe a fixed vertical traction on the top boundary
+subsection Boundary traction model
+  set Prescribed traction boundary indicators = top z: function
+end
+
+subsection Boundary traction model
+  subsection Function
+    set Variable names = x,y,z,t
+    #set Function expression = 0; 1.e9 + -20.e3*x
+    set Function constants  = r0=100.e3, H0=1.e3, t1=1.e3, rhoi=900, g=9.8, t0=1.e3
+        # r0 is load radius, H0 is load height, t1 is time load is fully removed,
+  # rhoi is density of ice/load
+  # option to linearly thin load beginning at time t0.
+    set Function expression = 0; 0; if ((x^2+y^2)<r0^2 ,if(t<t0,-g*H0*rhoi,if(t<t1,-g*H0*rhoi*(1-(t-t0)/t1),0)), 0)
+  end
+end
+
+# Number and name of compositional fields
+subsection Compositional fields
+  set Number of fields = 6
+  set Names of fields  = stress_xx, stress_yy, stress_zz, stress_xy, stress_xz, stress_yz
+end
+
+# Spatial domain of different compositional fields
+subsection Initial composition model
+  set Model name = function
+  subsection Function
+    set Variable names      = x,y,z
+    set Function constants  = 
+    set Function expression = 0; 0; 0; 0; 0; 0;
+  end
+end
+
+# Composition boundary conditions
+subsection Boundary composition model
+  set Allow fixed composition on outflow boundaries = true
+  set List of model names = initial composition
+end
+
+# Temperature boundary conditions
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = bottom, top, left, right, front, back
+  set List of model names = initial temperature
+end
+
+# Temperature initial conditions
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Function expression = 293
+  end
+end
+
+# Material model
+subsection Material model
+
+  set Model name = viscoelastic
+
+  subsection Viscoelastic
+    set Densities                   = 3300
+    set Viscosities                 = 3.e20
+    set Elastic shear moduli        = 1.e10
+    set Use fixed elastic time step = false
+    set Fixed elastic time step     = 1e2
+    set Use stress averaging        = false
+    set Viscosity averaging scheme  = harmonic
+  end
+
+end
+
+# Gravity model
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 9.8
+  end
+end
+
+# Post processing
+subsection Postprocess
+  set List of postprocessors = basic statistics, composition statistics, temperature statistics, topography, velocity statistics, visualization
+
+  subsection Visualization
+    set List of output variables = material properties, strain rate 
+
+    subsection Material properties
+      set List of material properties = density, viscosity
+    end
+
+    set Time between graphical output = 1e2
+    set Interpolate output = true
+  end
+
+  subsection Topography
+     set Output to file = true
+     set Time between text output = 100
+  end
+end
+
+# Termination criteria
+subsection Termination criteria
+ set Termination criteria = end time
+end

@@ -188,6 +188,7 @@ namespace aspect
     expand_dimensional_variable_names (const std::vector<std::string> &var_declarations);
 
 
+#if !DEAL_II_VERSION_GTE(9,2,0)
     /**
      * Split the set of DoFs (typically locally owned or relevant) in @p whole_set into blocks
      * given by the @p dofs_per_block structure.
@@ -198,7 +199,7 @@ namespace aspect
     void split_by_block (const std::vector<types::global_dof_index> &dofs_per_block,
                          const IndexSet &whole_set,
                          std::vector<IndexSet> &partitioned);
-
+#endif
 
     /**
      * Returns an IndexSet that contains all locally active DoFs that belong to
@@ -392,6 +393,13 @@ namespace aspect
      * @param filename File to check existence
      */
     bool fexists(const std::string &filename);
+
+    /**
+     * Checks to see if the user is trying to use data from a url.
+     *
+     * @param filename File to check
+     */
+    bool filename_is_url(const std::string &filename);
 
     /**
      * Reads the content of the ascii file @p filename on process 0 and

@@ -127,7 +127,7 @@ namespace aspect
                 }
             }
 
-          for (unsigned int i=0; i<in.position.size(); ++i)
+          for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
             {
               // convert the grain size from log to normal
               std::vector<double> composition (in.composition[i]);
@@ -163,7 +163,7 @@ namespace aspect
                       crossed_transition = phase;
                   }
               else
-                for (unsigned int j=0; j<in.position.size(); ++j)
+                for (unsigned int j=0; j<in.n_evaluation_points(); ++j)
                   for (unsigned int k=0; k<this->transition_depths.size(); ++k)
                     if ((this->phase_function(in.position[i], in.temperature[i], in.pressure[i], k)
                          != this->phase_function(in.position[j], in.temperature[j], in.pressure[j], k))
@@ -172,7 +172,7 @@ namespace aspect
                          * ((in.position[i] - in.position[j]) * this->get_gravity_model().gravity_vector(in.position[i])) > 0))
                       crossed_transition = k;
 
-              if (in.strain_rate.size() > 0)
+              if (in.requests_property(MaterialProperties::viscosity))
                 out.viscosities[i] = std::min(std::max(this->min_eta,this->viscosity(in.temperature[i],
                                                                                      in.pressure[i],
                                                                                      composition,
@@ -206,7 +206,7 @@ namespace aspect
               out.compressibilities[i] = this->compressibility(in.temperature[i], in.pressure[i], composition, in.position[i]);
 
               // TODO: make this more general for not just olivine grains
-              if (in.strain_rate.size() > 0)
+              if (in.requests_property(MaterialProperties::reaction_terms))
                 for (unsigned int c=0; c<composition.size(); ++c)
                   {
                     if (this->introspection().name_for_compositional_index(c) == "olivine_grain_size")

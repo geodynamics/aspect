@@ -235,12 +235,23 @@ namespace aspect
     template <class Archive>
     void Visualization<dim>::OutputHistory::serialize (Archive &ar, const unsigned int)
     {
-      ar &mesh_changed
+      ar
       & last_mesh_file_name
       & times_and_pvtu_names
       & output_file_names_by_timestep
       & xdmf_entries
       ;
+
+      // We do not serialize mesh_changed but use the default (true) from our
+      // constructor. This will result in a new mesh file the first time we
+      // create visualization output after resuming from a snapshot. Otherwise
+      // we might get corrupted graphical output, because the ordering of
+      // vertices can be different after resuming. (This is because when
+      // deal.II builds a triangulation, it tears down and re-creates its mesh every time
+      // p4est changes the partitioning; this process introduces a history where
+      // cells and vertices may be numbered differently if the triangulation
+      // had previous content than when -- as is done after a restart -- the
+      // triangulation is empty.)
     }
 
 
@@ -493,9 +504,11 @@ namespace aspect
               {
                 int color = my_id % group_files;
                 MPI_Comm comm;
-                MPI_Comm_split(this->get_mpi_communicator(), color, my_id, &comm);
+                int ierr = MPI_Comm_split(this->get_mpi_communicator(), color, my_id, &comm);
+                AssertThrowMPI(ierr);
                 data_out.write_vtu_in_parallel(filename.c_str(), comm);
-                MPI_Comm_free(&comm);
+                ierr = MPI_Comm_free(&comm);
+                AssertThrowMPI(ierr);
               }
         }
       else   // Write in a different format than hdf5 or vtu. This case is supported, but is not
@@ -806,7 +819,7 @@ namespace aspect
         prm.enter_subsection("Visualization");
         {
           prm.declare_entry ("Time between graphical output", "1e8",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The time interval between each generation of "
                              "graphical output files. A value of zero indicates "
                              "that output should be generated in each time step. "
@@ -815,7 +828,7 @@ namespace aspect
                              "seconds otherwise.");
 
           prm.declare_entry ("Time steps between graphical output", boost::lexical_cast<std::string>(std::numeric_limits<int>::max()),
-                             Patterns::Integer(0,std::numeric_limits<int>::max()),
+                             Patterns::Integer(0),
                              "The maximum number of time steps between each generation of "
                              "graphical output files.");
 
@@ -891,6 +904,11 @@ namespace aspect
                              "and a factor of 8 in 3d, when using quadratic elements for the velocity, "
                              "and correspondingly more for even higher order elements.");
 
+          prm.declare_entry ("Point-wise stress and strain", "false",
+                             Patterns::Bool(),
+                             "If set to true, quantities related to stress and strain are computed "
+                             "in each vertex. Otherwise, an average per cell is computed.");
+
           prm.declare_entry ("Write higher order output", "false",
                              Patterns::Bool(),
                              "deal.II offers the possibility to write vtu files with higher order "
@@ -935,7 +953,7 @@ namespace aspect
 
           prm.declare_entry ("Output mesh velocity", "false",
                              Patterns::Bool(),
-                             "For computations with deforming meshes, Aspect uses an Arbitrary-Lagrangian-"
+                             "For computations with deforming meshes, ASPECT uses an Arbitrary-Lagrangian-"
                              "Eulerian formulation to handle deforming the domain, so the mesh "
                              "has its own velocity field.  This may be written as an output field "
                              "by setting this parameter to true.");
@@ -1029,6 +1047,7 @@ namespace aspect
 
           interpolate_output = prm.get_bool("Interpolate output");
           filter_output = prm.get_bool("Filter output");
+          pointwise_stress_and_strain = prm.get_bool("Point-wise stress and strain");
           write_higher_order_output = prm.get_bool("Write higher order output");
 
 #if DEAL_II_VERSION_GTE(9,1,0)
@@ -1174,12 +1193,6 @@ namespace aspect
       & output_file_number
       & cell_output_history
       ;
-
-      // We do not serialize mesh_changed but use the default (true) from our
-      // constructor. This will result in a new mesh file the first time we
-      // create visualization output after resuming from a snapshot. Otherwise
-      // we might get corrupted graphical output, because the ordering of
-      // vertices can be different after resuming.
     }
 
 
@@ -1269,6 +1282,15 @@ namespace aspect
         }
 
       return requirements;
+    }
+
+
+
+    template <int dim>
+    bool
+    Visualization<dim>::output_pointwise_stress_and_strain () const
+    {
+      return pointwise_stress_and_strain;
     }
 
 

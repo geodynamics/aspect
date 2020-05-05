@@ -23,16 +23,13 @@ Number of degrees of freedom: 628 (450+28+150)
 Termination requested by criterion: end time
 
 
-+---------------------------------------------+------------+------------+
 | Total wallclock time elapsed since start    |     0.117s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
-+---------------------------------+-----------+------------+------------+
 | Initialization                  |         1 |    0.0285s |        24% |
 | Postprocessing                  |         1 |   0.00349s |         3% |
 | Setup dof systems               |         1 |    0.0399s |        34% |
 | Setup initial conditions        |         1 |    0.0214s |        18% |
-+---------------------------------+-----------+------------+------------+
 
 -----------------------------------------------------------------------------
 -- For information on how to cite ASPECT, see:

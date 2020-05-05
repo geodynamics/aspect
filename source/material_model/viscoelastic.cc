@@ -43,10 +43,10 @@ namespace aspect
       for (unsigned int i=0; i < SymmetricTensor<2,dim>::n_independent_components; ++i)
         composition_mask.set(i,false);
 
-      std::vector<double> average_elastic_shear_moduli (in.temperature.size());
+      std::vector<double> average_elastic_shear_moduli (in.n_evaluation_points());
       std::vector<double> elastic_shear_moduli(elastic_rheology.get_elastic_shear_moduli());
 
-      for (unsigned int i=0; i < in.temperature.size(); ++i)
+      for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
         {
           const std::vector<double> composition = in.composition[i];
           const std::vector<double> volume_fractions = MaterialUtilities::compute_volume_fractions(composition, composition_mask);
@@ -119,12 +119,12 @@ namespace aspect
           Rheology::Elasticity<dim>::declare_parameters (prm);
 
           prm.declare_entry ("Viscosities", "1.e21",
-                             Patterns::List(Patterns::Double(0)),
+                             Patterns::List(Patterns::Double (0.)),
                              "List of viscosities for background mantle and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
                              "If only one value is given, then all use the same value. Units: $Pa s$");
           prm.declare_entry ("Thermal conductivities", "4.7",
-                             Patterns::List(Patterns::Double(0)),
+                             Patterns::List(Patterns::Double (0.)),
                              "List of thermal conductivities for background mantle and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
                              "If only one value is given, then all use the same value. Units: $W/m/K$ ");

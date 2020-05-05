@@ -45,7 +45,7 @@ namespace aspect
         {
           const double sqrt_dynamic_viscosity_ratio = std::sqrt(dynamic_viscosity_ratio);
 
-          for (unsigned int i=0; i < in.position.size(); ++i)
+          for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
             {
               const double chi = value(in.position[i]);
               out.viscosities[i] = (sqrt_dynamic_viscosity_ratio - 1/sqrt_dynamic_viscosity_ratio)*(1-chi) + 1/sqrt_dynamic_viscosity_ratio;

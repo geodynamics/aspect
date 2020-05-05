@@ -1,0 +1,327 @@
+
+Number of active cells: 256 (on 5 levels)
+Number of degrees of freedom: 6,823 (2,178+289+1,089+1,089+1,089+1,089)
+
+*** Timestep 0:  t=0 seconds
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 50+0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass:         0/1/0.9991 // 0/0/0 // 1/1/2
+     System matrix memory consumption:  1.16 MB
+                                        
+Total system matrix memory consumption: 1.16 MB.
+Total system matrix nnz: 84,676
+system matrix nnz by block: 
+      60,036      12,320           0           0           0           0
+      12,320           0           0           0           0           0
+           0           0           0           0           0           0
+           0           0           0           0           0           0
+           0           0           0           0           0           0
+           0           0           0           0           0           0
+
+Total system preconditioner matrix memory consumption: 0.57 MB.
+Total system preconditioner matrix nnz: 32,671
+system preconditioner matrix nnz by block: 
+      30,270           0           0           0           0           0
+           0       2,401           0           0           0           0
+           0           0           0           0           0           0
+           0           0           0           0           0           0
+           0           0           0           0           0           0
+           0           0           0           0           0           0
+
+
+*** Timestep 1:  t=0.03125 seconds
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass:         0/1/0.9991 // 0/0/0 // 1/1/2
+     System matrix memory consumption:  1.16 MB
+                                        
+Total system matrix memory consumption: 1.16 MB.
+Total system matrix nnz: 84,676
+system matrix nnz by block: 
+      60,036      12,320           0           0           0           0
+      12,320           0           0           0           0           0
+           0           0           0           0           0           0
+           0           0           0           0           0           0
+           0           0           0           0           0           0
+           0           0           0           0           0           0
+
+Total system preconditioner matrix memory consumption: 0.57 MB.
+Total system preconditioner matrix nnz: 32,671
+system preconditioner matrix nnz by block: 
+      30,270           0           0           0           0           0
+           0       2,401           0           0           0           0
+           0           0           0           0           0           0
+           0           0           0           0           0           0
+           0           0           0           0           0           0
+           0           0           0           0           0           0
+
+
+*** Timestep 2:  t=0.0625 seconds
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 47+0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass:         0/1/0.9991 // 0/0/0 // 1/1/2
+     System matrix memory consumption:  1.16 MB
+                                        
+Total system matrix memory consumption: 1.16 MB.
+Total system matrix nnz: 84,676
+system matrix nnz by block: 
+      60,036      12,320           0           0           0           0
+      12,320           0           0           0           0           0
+           0           0           0           0           0           0
+           0           0           0           0           0           0
+           0           0           0           0           0           0
+           0           0           0           0           0           0
+
+Total system preconditioner matrix memory consumption: 0.57 MB.
+Total system preconditioner matrix nnz: 32,671
+system preconditioner matrix nnz by block: 
+      30,270           0           0           0           0           0
+           0       2,401           0           0           0           0
+           0           0           0           0           0           0
+           0           0           0           0           0           0
+           0           0           0           0           0           0
+           0           0           0           0           0           0
+
+
+*** Timestep 3:  t=0.09375 seconds
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 45+0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass:         0/1/0.9991 // 0/0/0 // 1/1/2
+     System matrix memory consumption:  1.16 MB
+                                        
+Total system matrix memory consumption: 1.16 MB.
+Total system matrix nnz: 84,676
+system matrix nnz by block: 
+      60,036      12,320           0           0           0           0
+      12,320           0           0           0           0           0
+           0           0           0           0           0           0
+           0           0           0           0           0           0
+           0           0           0           0           0           0
+           0           0           0           0           0           0
+
+Total system preconditioner matrix memory consumption: 0.57 MB.
+Total system preconditioner matrix nnz: 32,671
+system preconditioner matrix nnz by block: 
+      30,270           0           0           0           0           0
+           0       2,401           0           0           0           0
+           0           0           0           0           0           0
+           0           0           0           0           0           0
+           0           0           0           0           0           0
+           0           0           0           0           0           0
+
+
+*** Timestep 4:  t=0.125 seconds
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 43+0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass:         0/1/0.9991 // 0/0/0 // 1/1/2
+     System matrix memory consumption:  1.16 MB
+                                        
+Total system matrix memory consumption: 1.16 MB.
+Total system matrix nnz: 84,676
+system matrix nnz by block: 
+      60,036      12,320           0           0           0           0
+      12,320           0           0           0           0           0
+           0           0           0           0           0           0
+           0           0           0           0           0           0
+           0           0           0           0           0           0
+           0           0           0           0           0           0
+
+Total system preconditioner matrix memory consumption: 0.57 MB.
+Total system preconditioner matrix nnz: 32,671
+system preconditioner matrix nnz by block: 
+      30,270           0           0           0           0           0
+           0       2,401           0           0           0           0
+           0           0           0           0           0           0
+           0           0           0           0           0           0
+           0           0           0           0           0           0
+           0           0           0           0           0           0
+
+
+*** Timestep 5:  t=0.15625 seconds
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 46+0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass:         0/1/0.9991 // 0/0/0 // 1/1/2
+     System matrix memory consumption:  1.16 MB
+                                        
+Total system matrix memory consumption: 1.16 MB.
+Total system matrix nnz: 84,676
+system matrix nnz by block: 
+      60,036      12,320           0           0           0           0
+      12,320           0           0           0           0           0
+           0           0           0           0           0           0
+           0           0           0           0           0           0
+           0           0           0           0           0           0
+           0           0           0           0           0           0
+
+Total system preconditioner matrix memory consumption: 0.57 MB.
+Total system preconditioner matrix nnz: 32,671
+system preconditioner matrix nnz by block: 
+      30,270           0           0           0           0           0
+           0       2,401           0           0           0           0
+           0           0           0           0           0           0
+           0           0           0           0           0           0
+           0           0           0           0           0           0
+           0           0           0           0           0           0
+
+
+*** Timestep 6:  t=0.1875 seconds
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 42+0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass:         0/1/0.9991 // 0/0/0 // 1/1/2
+     System matrix memory consumption:  1.16 MB
+                                        
+Total system matrix memory consumption: 1.16 MB.
+Total system matrix nnz: 84,676
+system matrix nnz by block: 
+      60,036      12,320           0           0           0           0
+      12,320           0           0           0           0           0
+           0           0           0           0           0           0
+           0           0           0           0           0           0
+           0           0           0           0           0           0
+           0           0           0           0           0           0
+
+Total system preconditioner matrix memory consumption: 0.57 MB.
+Total system preconditioner matrix nnz: 32,671
+system preconditioner matrix nnz by block: 
+      30,270           0           0           0           0           0
+           0       2,401           0           0           0           0
+           0           0           0           0           0           0
+           0           0           0           0           0           0
+           0           0           0           0           0           0
+           0           0           0           0           0           0
+
+
+*** Timestep 7:  t=0.21875 seconds
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 44+0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass:         0/1/0.9991 // 0/0/0 // 1/1/2
+     System matrix memory consumption:  1.16 MB
+                                        
+Total system matrix memory consumption: 1.16 MB.
+Total system matrix nnz: 84,676
+system matrix nnz by block: 
+      60,036      12,320           0           0           0           0
+      12,320           0           0           0           0           0
+           0           0           0           0           0           0
+           0           0           0           0           0           0
+           0           0           0           0           0           0
+           0           0           0           0           0           0
+
+Total system preconditioner matrix memory consumption: 0.57 MB.
+Total system preconditioner matrix nnz: 32,671
+system preconditioner matrix nnz by block: 
+      30,270           0           0           0           0           0
+           0       2,401           0           0           0           0
+           0           0           0           0           0           0
+           0           0           0           0           0           0
+           0           0           0           0           0           0
+           0           0           0           0           0           0
+
+
+*** Timestep 8:  t=0.25 seconds
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 42+0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass:         0/1/0.9991 // 0/0/0 // 1/1/2
+     System matrix memory consumption:  1.16 MB
+                                        
+Total system matrix memory consumption: 1.16 MB.
+Total system matrix nnz: 84,676
+system matrix nnz by block: 
+      60,036      12,320           0           0           0           0
+      12,320           0           0           0           0           0
+           0           0           0           0           0           0
+           0           0           0           0           0           0
+           0           0           0           0           0           0
+           0           0           0           0           0           0
+
+Total system preconditioner matrix memory consumption: 0.57 MB.
+Total system preconditioner matrix nnz: 32,671
+system preconditioner matrix nnz by block: 
+      30,270           0           0           0           0           0
+           0       2,401           0           0           0           0
+           0           0           0           0           0           0
+           0           0           0           0           0           0
+           0           0           0           0           0           0
+           0           0           0           0           0           0
+
+
+*** Timestep 9:  t=0.28125 seconds
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 44+0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass:         0/1/0.9991 // 0/0/0 // 1/1/2
+     System matrix memory consumption:  1.16 MB
+                                        
+Total system matrix memory consumption: 1.16 MB.
+Total system matrix nnz: 84,676
+system matrix nnz by block: 
+      60,036      12,320           0           0           0           0
+      12,320           0           0           0           0           0
+           0           0           0           0           0           0
+           0           0           0           0           0           0
+           0           0           0           0           0           0
+           0           0           0           0           0           0
+
+Total system preconditioner matrix memory consumption: 0.57 MB.
+Total system preconditioner matrix nnz: 32,671
+system preconditioner matrix nnz by block: 
+      30,270           0           0           0           0           0
+           0       2,401           0           0           0           0
+           0           0           0           0           0           0
+           0           0           0           0           0           0
+           0           0           0           0           0           0
+           0           0           0           0           0           0
+
+
+*** Timestep 10:  t=0.3 seconds
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 46+0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass:         0/1/0.9991 // 0/0/0 // 1/1/2
+     System matrix memory consumption:  1.16 MB
+                                        
+Total system matrix memory consumption: 1.16 MB.
+Total system matrix nnz: 84,676
+system matrix nnz by block: 
+      60,036      12,320           0           0           0           0
+      12,320           0           0           0           0           0
+           0           0           0           0           0           0
+           0           0           0           0           0           0
+           0           0           0           0           0           0
+           0           0           0           0           0           0
+
+Total system preconditioner matrix memory consumption: 0.57 MB.
+Total system preconditioner matrix nnz: 32,671
+system preconditioner matrix nnz by block: 
+      30,270           0           0           0           0           0
+           0       2,401           0           0           0           0
+           0           0           0           0           0           0
+           0           0           0           0           0           0
+           0           0           0           0           0           0
+           0           0           0           0           0           0
+
+
+Termination requested by criterion: end time
+
+
+

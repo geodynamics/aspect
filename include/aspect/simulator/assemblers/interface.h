@@ -359,7 +359,8 @@ namespace aspect
 
           StokesPreconditioner (const StokesPreconditioner &data);
 
-          ~StokesPreconditioner () override;
+          ~StokesPreconditioner () override = default;
+          StokesPreconditioner<dim> &operator= (const StokesPreconditioner<dim> &data) = default;
 
           FullMatrix<double> local_matrix;
           std::vector<types::global_dof_index> local_dof_indices;
@@ -386,6 +387,9 @@ namespace aspect
                         const bool                do_pressure_rhs_compatibility_modification);
           StokesSystem (const StokesSystem<dim> &data);
 
+          ~StokesSystem () override = default;
+          StokesSystem<dim> &operator= (const StokesSystem<dim> &data) = default;
+
           Vector<double> local_rhs;
           Vector<double> local_pressure_shape_function_integrals;
         };
@@ -408,11 +412,6 @@ namespace aspect
            */
           AdvectionSystem (const FiniteElement<dim> &finite_element,
                            const bool                field_is_discontinuous);
-
-          /**
-           * Copy constructor.
-           */
-          AdvectionSystem (const AdvectionSystem &data);
 
           /**
            * Local contributions to the global matrix

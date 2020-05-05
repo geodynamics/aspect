@@ -89,7 +89,7 @@ namespace aspect
                        "steps. This does not include the last refinement step before moving to timestep 1. "
                        "When this parameter has a larger value than max nonlinear iterations, the latter is used.");
 
-    prm.declare_entry ("Start time", "0",
+    prm.declare_entry ("Start time", "0.",
                        Patterns::Double (),
                        "The start time of the simulation. Units: Years if the "
                        "'Use years in output instead of seconds' parameter is set; "
@@ -117,7 +117,7 @@ namespace aspect
                        "instead of seconds.");
 
     prm.declare_entry ("CFL number", "1.0",
-                       Patterns::Double (0),
+                       Patterns::Double (0.),
                        "In computations, the time step $k$ is chosen according to "
                        "$k = c \\min_K \\frac {h_K} {\\|u\\|_{\\infty,K} p_T}$ where $h_K$ is the "
                        "diameter of cell $K$, and the denominator is the maximal magnitude "
@@ -134,7 +134,7 @@ namespace aspect
     prm.declare_entry ("Maximum time step",
                        /* boost::lexical_cast<std::string>(std::numeric_limits<double>::max() /
                                                            year_in_seconds) = */ "5.69e+300",
-                       Patterns::Double (0),
+                       Patterns::Double (0.),
                        "Set a maximum time step size for the solver to use. Generally the time step "
                        "based on the CFL number should be sufficient, but for complicated models "
                        "or benchmarking it may be useful to limit the time step to some value. "
@@ -147,7 +147,7 @@ namespace aspect
     prm.declare_entry ("Maximum first time step",
                        /* boost::lexical_cast<std::string>(std::numeric_limits<double>::max() /
                                                            year_in_seconds) = */ "5.69e+300",
-                       Patterns::Double (0),
+                       Patterns::Double (0.),
                        "Set a maximum time step size for only the first timestep. Generally the time step "
                        "based on the CFL number should be sufficient, but for complicated models "
                        "or benchmarking it may be useful to limit the first time step to some value, "
@@ -161,7 +161,7 @@ namespace aspect
                        "in output instead of seconds'' parameter.");
 
     prm.declare_entry ("Maximum relative increase in time step", boost::lexical_cast<std::string>(std::numeric_limits<int>::max()),
-                       Patterns::Double (0),
+                       Patterns::Double (0.),
                        "Set a percentage with which the the time step is limited to increase. Generally the "
                        "time step based on the CFL number should be sufficient, but for complicated models "
                        "which may suddenly drastically change behavior, it may be useful to limit the increase "
@@ -232,7 +232,7 @@ namespace aspect
                        "backwards compatibility. It is the same as `iterated Advection and Newton Stokes'.");
 
     prm.declare_entry ("Nonlinear solver tolerance", "1e-5",
-                       Patterns::Double(0,1),
+                       Patterns::Double(0., 1.),
                        "A relative tolerance up to which the nonlinear solver will iterate. "
                        "This parameter is only relevant if the `Nonlinear solver scheme' does nonlinear "
                        "iterations, in other words, if it is set to something other than "
@@ -256,7 +256,7 @@ namespace aspect
                        "pressure is normalized so that the domain average is zero. If `no' is "
                        "given, the no pressure normalization is performed.");
 
-    prm.declare_entry ("Surface pressure", "0",
+    prm.declare_entry ("Surface pressure", "0.",
                        Patterns::Double(),
                        "The value the pressure is normalized to in each time step when "
                        "`Pressure normalization' is set to `surface' with default value 0. "
@@ -279,7 +279,7 @@ namespace aspect
                        "For more information, see the section in the manual that discusses "
                        "the general mathematical model.");
 
-    prm.declare_entry ("Adiabatic surface temperature", "0",
+    prm.declare_entry ("Adiabatic surface temperature", "0.",
                        Patterns::Double(),
                        "In order to make the problem in the first time step easier to "
                        "solve, we need a reasonable guess for the temperature and pressure. "
@@ -314,13 +314,13 @@ namespace aspect
     prm.enter_subsection ("Solver parameters");
     {
       prm.declare_entry ("Temperature solver tolerance", "1e-12",
-                         Patterns::Double(0,1),
+                         Patterns::Double(0., 1.),
                          "The relative tolerance up to which the linear system for "
                          "the temperature system gets solved. See `Stokes solver "
                          "parameters/Linear solver tolerance' for more details.");
 
       prm.declare_entry ("Composition solver tolerance", "1e-12",
-                         Patterns::Double(0,1),
+                         Patterns::Double(0., 1.),
                          "The relative tolerance up to which the linear system for "
                          "the composition system gets solved. See `Stokes solver "
                          "parameters/Linear solver tolerance' for more details.");
@@ -345,9 +345,10 @@ namespace aspect
         prm.declare_entry ("Stokes solver type", "block AMG",
                            Patterns::Selection(StokesSolverType::pattern()),
                            "This is the type of solver used on the Stokes system. The block geometric "
-                           "multigrid solver currently has a limited implementation and therefore the user "
-                           "may trigger Asserts in the code when using this solver. If this is the case, "
-                           "the user should switch to block AMG.");
+                           "multigrid solver currently has a limited implementation and therefore "
+                           "may trigger Asserts in the code when used. If this is the case, "
+                           "please switch to 'block AMG'. Additionally, the block GMG solver requires "
+                           "using material model averaging.");
 
         prm.declare_entry ("Use direct solver for Stokes system", "false",
                            Patterns::Bool(),
@@ -357,7 +358,7 @@ namespace aspect
                            "for small problems.");
 
         prm.declare_entry ("Linear solver tolerance", "1e-7",
-                           Patterns::Double(0,1),
+                           Patterns::Double(0., 1.),
                            "A relative tolerance up to which the linear Stokes systems in each "
                            "time or nonlinear step should be solved. The absolute tolerance will "
                            "then be $\\| M x_0 - F \\| \\cdot \\text{tol}$, where $x_0 = (0,p_0)$ "
@@ -412,7 +413,7 @@ namespace aspect
                            "expensive.");
 
         prm.declare_entry ("Linear solver A block tolerance", "1e-2",
-                           Patterns::Double(0,1),
+                           Patterns::Double(0., 1.),
                            "A relative tolerance up to which the approximate inverse of the $A$ block "
                            "of the Stokes system is computed. This approximate $A$ is used in the "
                            "preconditioning used in the GMRES solver. The exact definition of this "
@@ -441,7 +442,7 @@ namespace aspect
                            "advantageous.");
 
         prm.declare_entry ("Linear solver S block tolerance", "1e-6",
-                           Patterns::Double(0,1),
+                           Patterns::Double(0., 1.),
                            "A relative tolerance up to which the approximate inverse of the $S$ block "
                            "(i.e., the Schur complement matrix $S = BA^{-1}B^{T}$) of the Stokes "
                            "system is computed. This approximate inverse of the $S$ block is used "
@@ -475,7 +476,7 @@ namespace aspect
                            "see https://github.com/geodynamics/aspect/pull/234.");
 
         prm.declare_entry ("AMG aggregation threshold", "0.001",
-                           Patterns::Double(0,1),
+                           Patterns::Double(0., 1.),
                            "This threshold tells the AMG setup how the coarsening should be performed. "
                            "In the AMG used by ML, all points that strongly couple with the tentative coarse-level "
                            "point form one aggregate. The term strong coupling is controlled by the variable "
@@ -494,7 +495,7 @@ namespace aspect
       prm.enter_subsection ("Operator splitting parameters");
       {
         prm.declare_entry ("Reaction time step", "1000.0",
-                           Patterns::Double (0),
+                           Patterns::Double (0.),
                            "Set a time step size for computing reactions of compositional fields and the "
                            "temperature field in case operator splitting is used. This is only used "
                            "when the nonlinear solver scheme ``operator splitting'' is selected. "
@@ -521,7 +522,7 @@ namespace aspect
       prm.enter_subsection ("Diffusion solver parameters");
       {
         prm.declare_entry ("Diffusion length scale", "1.e4",
-                           Patterns::Double (0),
+                           Patterns::Double (0.),
                            "Set a length scale for the diffusion of compositional fields if the "
                            "``prescribed field with diffusion'' method is selected for a field. "
                            "More precisely, this length scale represents the square root of the "
@@ -584,6 +585,11 @@ namespace aspect
                          Patterns::Bool (),
                          "Whether to include the additional elastic terms on the right-hand side of "
                          "the Stokes equation.");
+      prm.declare_entry ("Enable prescribed dilation", "false",
+                         Patterns::Bool (),
+                         "Whether to include additional terms on the right-hand side of "
+                         "the Stokes equation to set a given compression term specified in the "
+                         "MaterialModel output PrescribedPlasticDilation.");
     }
     prm.leave_subsection();
 
@@ -735,11 +741,11 @@ namespace aspect
                          "adapted again based on computed error indicators. If 0 "
                          "then the mesh will never be changed.");
       prm.declare_entry ("Refinement fraction", "0.3",
-                         Patterns::Double(0,1),
+                         Patterns::Double(0., 1.),
                          "The fraction of cells with the largest error that "
                          "should be flagged for refinement.");
       prm.declare_entry ("Coarsening fraction", "0.05",
-                         Patterns::Double(0,1),
+                         Patterns::Double(0., 1.),
                          "The fraction of cells with the smallest error that "
                          "should be flagged for coarsening.");
       prm.declare_entry ("Adapt by fraction of cells", "false",
@@ -754,7 +760,7 @@ namespace aspect
                          "Should not be higher than the 'Initial global refinement' "
                          "parameter.");
       prm.declare_entry ("Additional refinement times", "",
-                         Patterns::List (Patterns::Double(0)),
+                         Patterns::List (Patterns::Double (0.)),
                          "A list of times so that if the end time of a time step "
                          "is beyond this time, an additional round of mesh refinement "
                          "is triggered. This is mostly useful to make sure we "
@@ -966,7 +972,7 @@ namespace aspect
                            "thermal expansion coefficient, also commonly referred to as $\\alpha$."
                            "Units: None.");
         prm.declare_entry ("cR", "0.11",
-                           Patterns::List(Patterns::Double (0)),
+                           Patterns::List(Patterns::Double (0.)),
                            "The $c_R$ factor in the entropy viscosity "
                            "stabilization. This parameter controls the part of the entropy viscosity "
                            "that depends on the solution field itself and its residual in addition "
@@ -984,7 +990,7 @@ namespace aspect
                            "to the factor $\\alpha_E$ in the formulas following equation (15) of "
                            "the paper.) Units: None.");
         prm.declare_entry ("beta", "0.052",
-                           Patterns::List(Patterns::Double (0)),
+                           Patterns::List(Patterns::Double (0.)),
                            "The $\\beta$ factor in the artificial viscosity "
                            "stabilization. This parameter controls the maximum dissipation of the "
                            "entropy viscosity, which is the part that only scales with the cell diameter "
@@ -1003,7 +1009,7 @@ namespace aspect
                            "to the factor $\\alpha_{\\text{max}}$ in the formulas following equation (15) of "
                            "the paper.) Units: None.");
         prm.declare_entry ("gamma", "0.0",
-                           Patterns::Double (0),
+                           Patterns::Double (0.),
                            "The strain rate scaling factor in the artificial viscosity "
                            "stabilization. This parameter determines how much the strain rate (in addition "
                            "to the velocity) should influence the stabilization. (This parameter does "
@@ -1016,8 +1022,8 @@ namespace aspect
                            "$\\|\\lvert\\mathbf u\\rvert + \\gamma h_K \\lvert\\varepsilon (\\mathbf u)\\rvert\\|_{\\infty,K}$ "
                            "instead of $\\|\\mathbf u\\|_{\\infty,K}$. "
                            "Units: None.");
-        prm.declare_entry ("Discontinuous penalty", "10",
-                           Patterns::Double (0),
+        prm.declare_entry ("Discontinuous penalty", "10.",
+                           Patterns::Double (0.),
                            "The value used to penalize discontinuities in the discontinuous Galerkin "
                            "method. This is used only for the temperature field, and not for the composition "
                            "field, as pure advection does not use the interior penalty method. This "
@@ -1376,9 +1382,7 @@ namespace aspect
       resume_computation = false;
     else if (prm.get ("Resume computation") == "auto")
       {
-        std::fstream check_file((output_directory+"restart.mesh").c_str());
-        resume_computation = check_file.is_open();
-        check_file.close();
+        resume_computation = Utilities::fexists(output_directory+"restart.mesh");
       }
     else
       AssertThrow (false, ExcMessage ("Resume computation parameter must be either `true', `false', or `auto'."));
@@ -1479,6 +1483,7 @@ namespace aspect
 
       enable_additional_stokes_rhs = prm.get_bool ("Enable additional Stokes RHS");
       enable_elasticity = prm.get_bool("Enable elasticity");
+      enable_prescribed_dilation = prm.get_bool("Enable prescribed dilation");
     }
     prm.leave_subsection ();
 

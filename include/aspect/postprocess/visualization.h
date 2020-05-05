@@ -38,6 +38,25 @@ namespace aspect
     namespace VisualizationPostprocessors
     {
       /**
+       * Compute the arithmetic average over q for each m of the variable quantities[q](m).
+       */
+      inline void average_quantities(std::vector<Vector<double> > &quantities)
+      {
+        const unsigned int N = quantities.size();
+        const unsigned int M = quantities[0].size();
+        for (unsigned int m=0; m<M; ++m)
+          {
+            double sum = 0;
+            for (unsigned int q=0; q<N; ++q)
+              sum += quantities[q](m);
+
+            const double average = sum/N;
+            for (unsigned int q=0; q<N; ++q)
+              quantities[q](m) = average;
+          }
+      }
+
+      /**
        * This class declares the public interface of visualization
        * postprocessors. Visualization postprocessors are used to compute
        * derived data, e.g. wave speeds, friction heating terms, etc, to be
@@ -354,7 +373,6 @@ namespace aspect
         template <class Archive>
         void serialize (Archive &ar, const unsigned int version);
 
-
         /**
          * For the current plugin subsystem, write a connection graph of all of the
          * plugins we know about, in the format that the
@@ -367,6 +385,12 @@ namespace aspect
         static
         void
         write_plugin_graph (std::ostream &output_stream);
+
+        /**
+         * Return the value of the parameter @pointwise_stress_and_strain
+         * that is controlled by the parameter "Point-wise stress and strain".
+         */
+        bool output_pointwise_stress_and_strain() const;
 
         /**
          * Exception.
@@ -455,6 +479,13 @@ namespace aspect
         bool filter_output;
 
         /**
+         * If true, return quantities related to stresses and strain with
+         * point-wise values. Otherwise the values will be averaged on each
+         * cell.
+         */
+        bool pointwise_stress_and_strain;
+
+        /**
          * deal.II offers the possibility to write vtu files with higher order
          * representations of the output data. This means each cell will correctly
          * show the higher order representation of the output data instead of the
@@ -468,7 +499,7 @@ namespace aspect
         bool write_higher_order_output;
 
         /**
-         * For mesh deformation computations Aspect uses an Arbitrary-Lagrangian-
+         * For mesh deformation computations ASPECT uses an Arbitrary-Lagrangian-
          * Eulerian formulation to handle deforming the domain, so the mesh
          * has its own velocity field.  This may be written as an output field
          * by setting output_mesh_velocity to true.

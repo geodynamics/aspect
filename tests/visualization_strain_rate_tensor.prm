@@ -97,6 +97,7 @@ subsection Postprocess
   set List of postprocessors = visualization
 
   subsection Visualization
+    set Point-wise stress and strain = true
     set Output format = gnuplot
     set List of output variables = strain rate tensor
   end

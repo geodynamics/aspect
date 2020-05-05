@@ -66,6 +66,11 @@ namespace aspect
               computed_quantities[q](i)
                 = compressible_strain_rate[compressible_strain_rate.unrolled_to_component_indices(i)];
           }
+
+        const auto &viz = this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::Visualization<dim> >();
+        if (!viz.output_pointwise_stress_and_strain())
+          average_quantities(computed_quantities);
+
       }
     }
   }

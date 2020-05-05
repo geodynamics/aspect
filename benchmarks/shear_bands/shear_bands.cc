@@ -120,11 +120,11 @@ namespace aspect
           const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
           const double strain_rate_dependence = (1.0 - dislocation_creep_exponent) / dislocation_creep_exponent;
 
-          for (unsigned int i=0; i<in.position.size(); ++i)
+          for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
             {
               double porosity = std::max(in.composition[i][porosity_idx],1e-4);
               out.viscosities[i] = eta_0 * std::exp(alpha*(porosity - background_porosity));
-              if (in.strain_rate.size())
+              if (in.requests_property(MaterialModel::MaterialProperties::viscosity))
                 {
                   const SymmetricTensor<2,dim> shear_strain_rate = in.strain_rate[i]
                                                                    - 1./dim * trace(in.strain_rate[i]) * unit_symmetric_tensor<dim>();
@@ -148,7 +148,7 @@ namespace aspect
           aspect::MaterialModel::MeltOutputs<dim> *melt_out = out.template get_additional_output<aspect::MaterialModel::MeltOutputs<dim> >();
 
           if (melt_out != NULL)
-            for (unsigned int i=0; i<in.position.size(); ++i)
+            for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
               {
                 double porosity = std::max(in.composition[i][porosity_idx],1e-4);
 

@@ -52,7 +52,7 @@ namespace aspect
       // The Simpler model does not depend on composition
       EquationOfStateOutputs<dim> eos_outputs (1);
 
-      for (unsigned int i=0; i<in.position.size(); ++i)
+      for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
         {
           equation_of_state.evaluate(in, i, eos_outputs);
 
@@ -80,12 +80,12 @@ namespace aspect
         {
           EquationOfState::LinearizedIncompressible<dim>::declare_parameters (prm);
 
-          prm.declare_entry ("Reference temperature", "293",
-                             Patterns::Double (0),
+          prm.declare_entry ("Reference temperature", "293.",
+                             Patterns::Double (0.),
                              "The reference temperature $T_0$. The reference temperature is used "
                              "in the density formula. Units: $\\si{K}$.");
           prm.declare_entry ("Thermal conductivity", "4.7",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The value of the thermal conductivity $k$. "
                              "Units: $W/m/K$.");
           Rheology::ConstantViscosity::declare_parameters(prm,5e24);

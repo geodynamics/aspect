@@ -55,7 +55,7 @@ namespace aspect
          */
         virtual
         void
-        initialize ();
+        initialize () override;
 
         /**
          * Return the initial temperature as a function of position.

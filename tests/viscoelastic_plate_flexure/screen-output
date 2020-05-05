@@ -1,0 +1,41 @@
+
+Number of active cells: 140 (on 1 levels)
+Number of degrees of freedom: 8,118 (1,230+420+168+1,260+1,260+1,260+1,260+1,260)
+
+Number of mesh deformation degrees of freedom: 336
+*** Timestep 0:  t=0 years
+   Solving mesh velocity system... 0 iterations.
+   Solving temperature system... 0 iterations.
+   Skipping stress_xx composition solve because RHS is zero.
+   Skipping stress_yy composition solve because RHS is zero.
+   Skipping stress_xy composition solve because RHS is zero.
+   Solving plate system ... 0 iterations.
+   Solving inclusion system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 32+0 iterations.
+
+   Postprocessing:
+     Average density / Average viscosity / Total mass:  2672 kg/m^3, 1.556e+18 Pa s, 2.338e+12 kg
+     RMS, max velocity:                                 1.88 m/year, 3.91 m/year
+     Topography min/max:                                0 m, 0 m
+
+*** Timestep 1:  t=5 years
+   Solving mesh velocity system... 1 iterations.
+   Solving temperature system... 0 iterations.
+   Solving stress_xx system ... 3 iterations.
+   Solving stress_yy system ... 3 iterations.
+   Solving stress_xy system ... 3 iterations.
+   Solving plate system ... 2 iterations.
+   Solving inclusion system ... 2 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 31+0 iterations.
+
+   Postprocessing:
+     Average density / Average viscosity / Total mass:  2672 kg/m^3, 1.556e+18 Pa s, 2.338e+12 kg
+     RMS, max velocity:                                 1.62 m/year, 3.11 m/year
+     Topography min/max:                                -9.004 m, 17.42 m
+
+Termination requested by criterion: end time
+
+
+

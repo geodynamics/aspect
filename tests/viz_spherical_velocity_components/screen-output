@@ -1,0 +1,21 @@
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+Number of active cells: 768 (on 2 levels)
+Number of degrees of freedom: 28,690 (20,790+970+6,930)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 104+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:        0.858 m/year, 1.45 m/year
+     Writing graphical output: output-viz_spherical_velocity_components/solution/solution-00000
+
+Termination requested by criterion: end time
+
+
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------

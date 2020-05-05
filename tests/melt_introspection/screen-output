@@ -21,7 +21,7 @@ Number of degrees of freedom: 305 (50+21+50+9+25+100+25+25)
    Skipping B composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 4+0 iterations.
-   Solving for u_f in 1 iterations.
+   Solving fluid velocity system... 1 iterations.
 
    Postprocessing:
      Writing graphical output: output-melt_introspection/solution/solution-00000
@@ -29,7 +29,4 @@ Number of degrees of freedom: 305 (50+21+50+9+25+100+25+25)
 Termination requested by criterion: end time
 
 
-+---------------------------------------------+------------+------------+
-+---------------------------------+-----------+------------+------------+
-+---------------------------------+-----------+------------+------------+
 

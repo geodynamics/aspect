@@ -27,11 +27,9 @@ Number of degrees of freedom: 948 (578+81+289)
 Termination requested by criterion: end time
 
 
-+---------------------------------------------+------------+------------+
 | Total wallclock time elapsed since start    |    0.0919s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
-+---------------------------------+-----------+------------+------------+
 | Assemble Stokes system          |         1 |   0.00593s |       6.5% |
 | Assemble temperature system     |         1 |   0.00456s |         5% |
 | Build Stokes preconditioner     |         1 |   0.00708s |       7.7% |
@@ -40,5 +38,4 @@ Termination requested by criterion: end time
 | Postprocessing                  |         1 |   0.00797s |       8.7% |
 | Setup dof systems               |         1 |   0.00258s |       2.8% |
 | Setup initial conditions        |         1 |   0.00325s |       3.5% |
-+---------------------------------+-----------+------------+------------+
 

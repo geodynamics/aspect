@@ -167,9 +167,65 @@ namespace aspect
       identifies_single_variable(const Dependence dependence);
     }
 
+    /**
+    * A namespace whose enum members are used in querying which material
+    * properties should be computed.
+    */
+    namespace MaterialProperties
+    {
+      /**
+       * An enum whose members identify material model output
+       * properties.
+       *
+       * Because the values of the enum are chosen so that they represent
+       * single bits in an integer, the result here is a number that can be
+       * represented in base-2 as 110 (the number 100=4 for the density and
+       * 010=2 for the viscosity).
+       */
+      enum Property
+      {
+        uninitialized                  = 0,
 
-    template <int dim>     class AdditionalMaterialInputs;
+        none                           = 1,
+        viscosity                      = 2,
+        density                        = 4,
+        thermal_expansion_coefficient  = 8,
+        specific_heat                  = 16,
+        thermal_conductivity           = 32,
+        compressibility                = 64,
+        entropy_derivative_pressure    = 128,
+        entropy_derivative_temperature = 256,
+        reaction_terms                 = 512,
 
+        equation_of_state_properties   = density |
+                                         thermal_expansion_coefficient |
+                                         specific_heat |
+                                         compressibility |
+                                         entropy_derivative_pressure |
+                                         entropy_derivative_temperature,
+        all_properties                 = equation_of_state_properties |
+                                         viscosity |
+                                         reaction_terms
+      };
+
+      /**
+       * Provide an operator that or's two Property variables. This allows to
+       * combine more than one property in a single variable.
+       */
+      inline Property operator | (const Property d1,
+                                  const Property d2)
+      {
+        return Property(static_cast<int>(d1) | static_cast<int>(d2));
+      }
+
+      inline Property operator |= (Property &d1,
+                                   const Property d2)
+      {
+        return (d1 | d2);
+      }
+    }
+
+    template <int dim> class AdditionalMaterialInputs;
 
     /**
      * A data structure with all inputs for the
@@ -189,7 +245,7 @@ namespace aspect
        * @param n_comp The number of vector quantities (in the order in which
        * the Introspection class reports them) for which input will be
        * provided.
-       */
+      */
       MaterialModelInputs(const unsigned int n_points,
                           const unsigned int n_comp);
 
@@ -265,6 +321,19 @@ namespace aspect
                   const LinearAlgebra::BlockVector &solution_vector,
                   const bool use_strain_rates = true);
 
+      /**
+       * Function that returns the number of points at which
+       * the material model is to be evaluated.
+       */
+      unsigned int n_evaluation_points() const;
+
+      /**
+       * Function that returns if the caller requests an evaluation
+       * of the handed over @p property. This is optional, because calculating
+       * some properties can be more expensive than the other material
+       * model properties and not all are needed for all applications.
+       */
+      bool requests_property(const MaterialProperties::Property &property) const;
 
       /**
        * Vector with global positions where the material has to be evaluated
@@ -350,6 +419,15 @@ namespace aspect
       typename DoFHandler<dim>::active_cell_iterator current_cell;
 
       /**
+       * A member variable that stores which properties the material model
+       * should compute. You can check specific properties using
+       * the requests_property function and usually do not need to access
+       * this variable directly. For documentation on the internal storage
+       * of this variable see the documentation for MaterialProperties::Property.
+       */
+      MaterialProperties::Property requested_properties;
+
+      /**
        * Vector of shared pointers to additional material model input
        * objects that can be added to MaterialModelInputs. By default,
        * no inputs are added.
@@ -429,6 +507,11 @@ namespace aspect
        */
       MaterialModelOutputs &operator= (MaterialModelOutputs &&) = default;
 
+      /**
+      * Function that returns the number of points at which
+      * the material model is to be evaluated.
+      */
+      unsigned int n_evaluation_points() const;
 
       /**
        * Viscosity $\eta$ values at the given positions.
@@ -596,6 +679,9 @@ namespace aspect
        * - Log average: Set the values of each output quantity at every
        * quadrature point to \f[ \bar x = {10}^{\frac 1Q \sum_{q=1}^Q \log_{10} x_q} \f]
        * where $x_q$ are the values at the $Q$ quadrature points.
+       *
+       * - Harmonic average viscosity only: Like harmonic averaging, but only
+       * applied to the viscosity.
        */
       enum AveragingOperation
       {
@@ -605,7 +691,8 @@ namespace aspect
         geometric_average,
         pick_largest,
         project_to_Q1,
-        log_average
+        log_average,
+        harmonic_average_only_viscosity
       };
 
 
@@ -969,6 +1056,46 @@ namespace aspect
          */
         std::vector<double> rhs_melt_pc;
     };
+
+
+
+    /**
+     * An AdditionalOutput that allows prescribing a dilation applied to the
+     * Stokes solution.
+     *
+     * This is typically used in a MaterialModel to add dilation when plastic
+     * failure occurs as motivated by ChoiPeterson2015. If this output
+     * (denoted by R below) is present and enable_prescribed_dilation==true
+     * the following terms will be assembled:
+     *
+     * 1) $\int - (R,q)$ to the conservation of mass equation, creating
+     *    $-(div u,q) = -(R,q)$.
+     * 2) $\int - 2.0 / 3.0 * eta * (R, div v)$ to the RHS of the momentum
+     *    equation (if the model is incompressible), otherwise this term is
+     *    already present on the left side.
+     */
+    template <int dim>
+    class PrescribedPlasticDilation : public NamedAdditionalMaterialOutputs<dim>
+    {
+      public:
+        /**
+         * Constructor
+         */
+        explicit PrescribedPlasticDilation (const unsigned int n_points);
+
+        /**
+         * Function for NamedAdditionalMaterialOutputs interface
+         */
+        virtual std::vector<double> get_nth_output(const unsigned int idx) const;
+
+        /**
+         * A scalar value per evaluation point that specifies the prescribed dilation
+         * in that point.
+         */
+        std::vector<double> dilation;
+    };
+
+
 
     /**
      * A class for an elastic force term to be added to the RHS of the

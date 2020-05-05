@@ -34,7 +34,7 @@ namespace aspect
     evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
              MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      for (unsigned int i=0; i < in.position.size(); ++i)
+      for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
         {
 
           out.entropy_derivative_pressure[i] = 0;
@@ -247,7 +247,7 @@ namespace aspect
     melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
                     std::vector<double> &melt_fractions) const
     {
-      for (unsigned int q=0; q<in.temperature.size(); ++q)
+      for (unsigned int q=0; q<in.n_evaluation_points(); ++q)
         melt_fractions[q] = melt_fraction(in.temperature[q],
                                           std::max(0.0, in.pressure[q]),
                                           in.composition[q],
@@ -364,42 +364,42 @@ namespace aspect
       {
         prm.enter_subsection("Latent heat melt");
         {
-          prm.declare_entry ("Reference density", "3300",
-                             Patterns::Double (0),
+          prm.declare_entry ("Reference density", "3300.",
+                             Patterns::Double (0.),
                              "Reference density $\\rho_0$. Units: $kg/m^3$.");
-          prm.declare_entry ("Reference temperature", "293",
-                             Patterns::Double (0),
+          prm.declare_entry ("Reference temperature", "293.",
+                             Patterns::Double (0.),
                              "The reference temperature $T_0$. Units: $\\si{K}$.");
           prm.declare_entry ("Viscosity", "5e24",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The value of the constant viscosity. Units: $kg/m/s$.");
           prm.declare_entry ("Composition viscosity prefactor", "1.0",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "A linear dependency of viscosity on composition. Dimensionless prefactor.");
           prm.declare_entry ("Thermal viscosity exponent", "0.0",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The temperature dependence of viscosity. Dimensionless exponent.");
           prm.declare_entry ("Thermal conductivity", "2.38",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The value of the thermal conductivity $k$. "
                              "Units: $W/m/K$.");
-          prm.declare_entry ("Reference specific heat", "1250",
-                             Patterns::Double (0),
+          prm.declare_entry ("Reference specific heat", "1250.",
+                             Patterns::Double (0.),
                              "The value of the specific heat $C_p$. "
                              "Units: $J/kg/K$.");
           prm.declare_entry ("Thermal expansion coefficient", "4e-5",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The value of the thermal expansion coefficient $\\alpha_s$. "
                              "Units: $1/K$.");
           prm.declare_entry ("Thermal expansion coefficient of melt", "6.8e-5",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The value of the thermal expansion coefficient $\\alpha_f$. "
                              "Units: $1/K$.");
           prm.declare_entry ("Compressibility", "5.124e-12",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The value of the compressibility $\\kappa$. "
                              "Units: $1/Pa$.");
-          prm.declare_entry ("Density differential for compositional field 1", "0",
+          prm.declare_entry ("Density differential for compositional field 1", "0.",
                              Patterns::Double(),
                              "If compositional fields are used, then one would frequently want "
                              "to make the density depend on these fields. In this simple material "
@@ -486,7 +486,7 @@ namespace aspect
                              "Exponent of the melting temperature in "
                              "the melt fraction calculation. "
                              "Units: non-dimensional.");
-          prm.declare_entry ("Peridotite melting entropy change", "-300",
+          prm.declare_entry ("Peridotite melting entropy change", "-300.",
                              Patterns::Double (),
                              "The entropy change for the phase transition "
                              "from solid to melt of peridotite. "
@@ -530,7 +530,7 @@ namespace aspect
                              "in the quadratic function that approximates "
                              "the melt fraction of pyroxenite. "
                              "Units: $\\degree C/(Pa^2)$.");
-          prm.declare_entry ("Pyroxenite melting entropy change", "-400",
+          prm.declare_entry ("Pyroxenite melting entropy change", "-400.",
                              Patterns::Double (),
                              "The entropy change for the phase transition "
                              "from solid to melt of pyroxenite. "

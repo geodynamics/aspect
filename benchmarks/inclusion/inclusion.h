@@ -157,7 +157,7 @@ namespace aspect
         virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
                               MaterialModel::MaterialModelOutputs<dim> &out) const
         {
-          for (unsigned int i=0; i < in.position.size(); ++i)
+          for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
             {
               const Point<dim> &pos = in.position[i];
               double r2 = (pos[0]-1.0)*(pos[0]-1.0) + (pos[1]-1.0)*(pos[1]-1.0);
@@ -211,7 +211,7 @@ namespace aspect
             prm.enter_subsection("Inclusion");
             {
               prm.declare_entry ("Viscosity jump", "1e3",
-                                 Patterns::Double (0),
+                                 Patterns::Double (0.),
                                  "Viscosity in the Inclusion.");
             }
             prm.leave_subsection();

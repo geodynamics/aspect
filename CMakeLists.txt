@@ -170,7 +170,7 @@ WRITE_BASIC_PACKAGE_VERSION_FILE(
 
 # Configure a cmake fragment that plugins can use to
 # set up compiler flags, include paths, etc to compile an
-# Aspect plugin.
+# ASPECT plugin.
 # Config for the build dir:
 SET(CONFIG_INCLUDE_DIRS "${CMAKE_SOURCE_DIR}/include")
 SET(CONFIG_DIR "${CMAKE_BINARY_DIR}")
@@ -482,7 +482,7 @@ ELSE()
 ENDIF()
 
 
-# Find the libdap package so that Aspect can connect to the OPeNDAP servers
+# Find the libdap package so that ASPECT can connect to the OPeNDAP servers
 # Author: Kodi Neumiller
 SET(ASPECT_WITH_LIBDAP OFF CACHE BOOL "Check if the user wants to compile ASPECT with the libdap libraries.")
 MESSAGE(STATUS "Using ASPECT_WITH_LIBDAP = '${ASPECT_WITH_LIBDAP}'")

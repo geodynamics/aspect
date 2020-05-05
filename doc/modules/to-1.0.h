@@ -1,7 +1,7 @@
 /**
  * @page changes_between_0.3_and_1.0 Changes between version 0.3 and version 1.0
  *
- * <p> This is the list of changes made after the release of Aspect version
+ * <p> This is the list of changes made after the release of ASPECT version
  * 0.3 and before 1.0. All entries are signed with the names of the author.
  * </p>
  *
@@ -96,7 +96,7 @@
  * <br>
  * (Wolfgang Bangerth, Jacqueline Austermann 2014/03/20)
  *
- * <li>New: Aspect now installs a file <code>AspectConfig.cmake</code> into
+ * <li>New: ASPECT now installs a file <code>AspectConfig.cmake</code> into
  * the same directory as the executable that can be used by plugins to set up
  * compiler flags, include paths, etc, to compile a set of source files into a
  * shared library that can then be loaded at run time from the input file. See
@@ -148,7 +148,7 @@
  *
  * <li>New: Linear algebra can be done using PETSc instead of Trilinos. For
  * this, deal.II needs to be configured with PETSc and the preprocessor define
- * <code>USE_PETSC</code> needs to be set in the Aspect file
+ * <code>USE_PETSC</code> needs to be set in the ASPECT file
  * <code>include/aspect/global.h</code> before compiling. This feature is
  * still experimental.
  * <br>
@@ -170,8 +170,8 @@
  * <li>Fixed: Using the 'density', 'nonadiabatic temperature', 'thermal
  * energy' or 'viscosity' mesh refinement criterion for parallel computations
  * led to meshes that made no sense. This was due to a bug in deal.II, not
- * Aspect, and has been fixed starting with deal.II 8.1. Using this version of
- * deal.II now also fixes the problem in Aspect.
+ * ASPECT, and has been fixed starting with deal.II 8.1. Using this version of
+ * deal.II now also fixes the problem in ASPECT.
  * <br>
  * (Wolfgang Bangerth 2013/12/18)
  *
@@ -300,7 +300,7 @@
  * <br>
  * (Eric Heien 2013/10/14)
  *
- * <li>New: Aspect now not only generates a <code>solution-NNNNN.visit</code>
+ * <li>New: ASPECT now not only generates a <code>solution-NNNNN.visit</code>
  * file for each time step but also a global <code>solution.visit</code> file
  * that Visit can use to visualize the entire time dependent solution. (Both
  * of these work with versions of Visit that support this, including Visit
@@ -326,7 +326,7 @@
  * <br>
  * (Eric Heien, 2013/09/27)
  *
- * <li>New: Aspect now supports periodic domains (a recent development version
+ * <li>New: ASPECT now supports periodic domains (a recent development version
  * of deal.II is required).
  * <br>
  * (Ian Rose, Timo Heister, 2013/09/11)
@@ -378,9 +378,9 @@
  *
  * <li>New: In order to implement extensions, in particular new plugins for
  * material models, geometries, etc, it used to be necessary to put the new
- * files into the Aspect source directories and re-compile all of Aspect. This
+ * files into the ASPECT source directories and re-compile all of ASPECT. This
  * is now no longer necessary: You can just compile your additional plugins
- * into a shared library and tell Aspect via the parameter file to load this
+ * into a shared library and tell ASPECT via the parameter file to load this
  * shared library at start-up. Details on this process are provided in the
  * manual in the section "How to write a plugin".
  * <br>

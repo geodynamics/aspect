@@ -3,7 +3,7 @@
 # velocity and fluid pressure as well as porosity initial conditions 
 # are applied as described by the derived analytical solution,
 # which can be found in the manuscript on compressible melt transport 
-# in Aspect.
+# in ASPECT.
 # We compute these material properties in a new material model, which
 # is implemented in the .cc file, together with a postprocessor to calculate 
 # the error and a new pressure boundary condition.     

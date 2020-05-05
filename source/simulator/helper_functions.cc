@@ -189,43 +189,6 @@ namespace aspect
   }
 
 
-  namespace
-  {
-    /**
-     * A function that writes the statistics object into a file.
-     *
-     * @param stat_file_name The name of the file into which the result
-     * should go
-     * @param copy_of_table A copy of the table that we're to write. Since
-     * this function is called in the background on a separate thread,
-     * the actual table might be modified while we are about to write
-     * it, so we need to work on a copy. This copy is deleted at the end
-     * of this function.
-     */
-    // We need to pass the arguments by value, as this function can be called on a separate thread:
-    void do_output_statistics (const std::string stat_file_name, //NOLINT(performance-unnecessary-value-param)
-                               const TableHandler *copy_of_table)
-    {
-      // write into a temporary file for now so that we don't
-      // interrupt anyone who might want to look at the real
-      // statistics file while the program is still running
-      const std::string tmp_file_name = stat_file_name + " tmp";
-
-      std::ofstream stat_file (tmp_file_name.c_str());
-      copy_of_table->write_text (stat_file,
-                                 TableHandler::table_with_separate_column_description);
-      stat_file.close();
-
-      // now move the temporary file into place
-      std::rename(tmp_file_name.c_str(), stat_file_name.c_str());
-
-      // delete the copy now:
-      delete copy_of_table;
-    }
-  }
-
-
-
   template <int dim>
   void Simulator<dim>::write_plugin_graph (std::ostream &out) const
   {
@@ -293,22 +256,126 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::output_statistics()
   {
-    // only write the statistics file from processor zero
+    // Only write the statistics file from processor zero
     if (Utilities::MPI::this_mpi_process(mpi_communicator)!=0)
       return;
 
-    // formatting the table we're about to output and writing the
+    // Formatting the table we're about to output and writing the
     // actual file may take some time, so do it on a separate
-    // thread. we pass a pointer to a copy of the statistics
-    // object which the called function then has to destroy
+    // thread. We do this using a lambda function that takes
+    // a copy of the statistics object to make sure that whatever
+    // we do to the 'real' statistics object at the time of
+    // writing data doesn't affect what we write.
     //
-    // before we can start working on a new thread, we need to
+    // Before we can start working on a new thread, we need to
     // make sure that the previous thread is done or they'll
-    // stomp on each other's feet
+    // step on each other's feet.
     output_statistics_thread.join();
-    output_statistics_thread = Threads::new_thread (&do_output_statistics,
-                                                    parameters.output_directory+"statistics",
-                                                    new TableHandler(statistics));
+
+    // TODO[C++14]: The following code could be made significantly simpler
+    // if we could just copy the statistics table as part of the capture
+    // list of the lambda function. In C++14, this would then simply be
+    // written as
+    //   [statistics_copy = this->statistics, this] () {...}
+    // (It would also be nice if we could use a std::unique_ptr, but since
+    // these can not be copied and since lambda captures don't allow move
+    // syntax for captured values, this also doesn't work. This can be done
+    // in C++14 by writing
+    //   [statistics_copy_ptr = std::move(statistics_copy_ptr), this] () {...}
+    // but, as mentioned above, if we could use C++14, we wouldn't have to
+    // use a pointer in the first place.)
+    std::shared_ptr<TableHandler> statistics_copy_ptr
+      = std_cxx14::make_unique<TableHandler>(statistics);
+    auto write_statistics
+      = [statistics_copy_ptr,this]()
+    {
+      // First write everything into a string in memory
+      std::ostringstream stream;
+      statistics_copy_ptr->write_text (stream,
+                                       TableHandler::table_with_separate_column_description);
+      stream.flush();
+
+      const std::string statistics_contents = stream.str();
+
+      // Next find out whether we need to write everything into
+      // the statistics file, or whether it is enough to just write
+      // the last few bytes that were added since we wrote to that
+      // file again. The way we do that is by checking whether the
+      // first few bytes of the string we just created match what we
+      // had previously written. One might think that they always should,
+      // but the statistics object automatically sizes the column widths
+      // of its output to match what is being written, and so if a later
+      // entry requires more width, then even the first columns are
+      // changed -- in that case, we will have to write everything,
+      // not just append one line.
+      const bool write_everything
+        = ( // We may have never written anything. More precisely, this
+            // case happens if the statistics_last_write_size is at the
+            // value initialized by the Simulator::Simulator()
+            // constructor, and this can happen in two situations:
+            // (i) At the end of the first time step; and (ii) upon restart
+            // since the variable we query here is not serialized. It is clear
+            // that in both situations, we want to write the
+            // entire contents of the statistics object. For the second
+            // case, this is also appropriate since someone may have
+            // previously restarted from a checkpoint, run a couple of
+            // time steps that have added to the statistics file, but then
+            // aborted the run again; a later restart from the same
+            // checkpoint then requires overwriting the statistics file
+            // on disk with what we have when this function is called for
+            // the first time after the restart. The same situation
+            // happens if the simulation kept running for some time after
+            // a checkpoint, but is resumed from that checkpoint (i.e.,
+            // at an earlier time step than when the statistics file was
+            // written to last). In these situations, we effectively want
+            // to "truncate" the file to the state stored in the checkpoint,
+            // and we do that by just overwriting the entire file.
+            (statistics_last_write_size == 0)
+            ||
+            // Or the size of the statistics file may have
+            // shrunk mysteriously -- this shouldn't happen
+            // but if it did we'd get into trouble with the
+            // .substr() call in the next check.
+            (statistics_last_write_size > statistics_contents.size())
+            ||
+            // Or the hash of what we wrote last time doesn't match
+            // the hash of the first part of what we want to write
+            (statistics_last_hash
+             !=
+             std::hash<std::string>()(statistics_contents.substr(0, statistics_last_write_size))) );
+
+      const std::string stat_file_name = parameters.output_directory + "statistics";
+      if (write_everything)
+        {
+          // Write what we have into a tmp file, then move that into
+          // place
+          const std::string tmp_file_name = stat_file_name + ".tmp";
+          {
+            std::ofstream tmp_file (tmp_file_name);
+            tmp_file << statistics_contents;
+          }
+          std::rename(tmp_file_name.c_str(), stat_file_name.c_str());
+        }
+      else
+        {
+          // If we don't have to write everything, then the first part of what
+          // we want to write matches what's already on disk. In that case,
+          // we just have to append what's new.
+          std::ofstream stat_file (stat_file_name, std::ios::app);
+          stat_file << statistics_contents.substr(statistics_last_write_size, std::string::npos);
+        }
+
+      // Now update the size and hash of what we just wrote so that
+      // we can compare against it next time we get here. Note that we do
+      // not need to guard access to these variables with a mutex because
+      // this is the only function that touches the variables, and
+      // this function runs only once at a time (on a different
+      // thread, but it's not started a second time while the previous
+      // run hasn't finished).
+      statistics_last_write_size = statistics_contents.size();
+      statistics_last_hash       = std::hash<std::string>()(statistics_contents);
+    };
+    output_statistics_thread = Threads::new_thread (write_statistics);
   }
 
 
@@ -463,7 +530,8 @@ namespace aspect
       {
         int global_do_checkpoint = ((std::time(nullptr)-last_checkpoint_time) >=
                                     parameters.checkpoint_time_secs);
-        MPI_Bcast(&global_do_checkpoint, 1, MPI_INT, 0, mpi_communicator);
+        const int ierr = MPI_Bcast(&global_do_checkpoint, 1, MPI_INT, 0, mpi_communicator);
+        AssertThrowMPI(ierr);
 
         if (global_do_checkpoint == 1)
           write_checkpoint = true;
@@ -1108,8 +1176,10 @@ namespace aspect
         // Easy Case. We have an FE_Q in a separate block, so we can use
         // mean_value() and vector.block(p) += correction:
         const double mean = vector.block(introspection.block_indices.pressure).mean_value();
+        Assert(std::isfinite(mean), ExcInternalError());
         const double int_rhs = mean * vector.block(introspection.block_indices.pressure).size();
         const double correction = -int_rhs / global_volume;
+        Assert(global_volume > 0.0, ExcInternalError());
 
         vector.block(introspection.block_indices.pressure).add(correction, pressure_shape_function_integrals.block(introspection.block_indices.pressure));
       }
@@ -1530,11 +1600,43 @@ namespace aspect
 
 
   template <int dim>
+  void Simulator<dim>::update_solution_vectors_with_reaction_results (const unsigned int block_index,
+                                                                      const LinearAlgebra::BlockVector &distributed_vector,
+                                                                      const LinearAlgebra::BlockVector &distributed_reaction_vector)
+  {
+    solution.block(block_index) = distributed_vector.block(block_index);
+
+    // we have to update the old solution with our reaction update too
+    // so that the advection scheme will have the correct time stepping in the next step
+    LinearAlgebra::BlockVector tmp;
+    tmp.reinit(distributed_vector, false);
+
+    // What we really want to do is
+    //     old_solution.block(block_index) += distributed_reaction_vector.block(block_index);
+    // but because 'old_solution' is a ghosted vector, we can't write into it directly. Rather,
+    // we have to go around with a completely distributed vector.
+    tmp.block(block_index) = old_solution.block(block_index);
+    tmp.block(block_index) +=  distributed_reaction_vector.block(block_index);
+    old_solution.block(block_index) = tmp.block(block_index);
+
+    // Same here with going through a distributed vector.
+    tmp.block(block_index) = old_old_solution.block(block_index);
+    tmp.block(block_index) +=  distributed_reaction_vector.block(block_index);
+    old_old_solution.block(block_index) = tmp.block(block_index);
+
+    operator_split_reaction_vector.block(block_index) = distributed_reaction_vector.block(block_index);
+  }
+
+
+
+  template <int dim>
   void Simulator<dim>::compute_reactions ()
   {
     // if the time step has a length of zero, there are no reactions
     if (time_step == 0)
       return;
+
+    TimerOutput::Scope timer (computing_timer, "Solve composition reactions");
 
     // we need some temporary vectors to store our updates to composition and temperature in
     // while we do the time stepping, before we copy them over to the solution vector in the end
@@ -1554,10 +1656,7 @@ namespace aspect
     Assert (reaction_time_step_size > 0,
             ExcMessage("Reaction time step must be greater than 0."));
 
-    pcout << "   Solving composition reactions in "
-          << number_of_reaction_steps
-          << " substep(s)."
-          << std::endl;
+    pcout << "   Solving composition reactions... " << std::flush;
 
     // make one fevalues for the composition, and one for the temperature (they might use different finite elements)
     const Quadrature<dim> quadrature_C(dof_handler.get_fe().base_element(introspection.base_elements.compositional_fields).get_unit_support_points());
@@ -1571,6 +1670,11 @@ namespace aspect
     MaterialModel::MaterialModelInputs<dim> in_C(quadrature_C.size(), introspection.n_compositional_fields);
     MaterialModel::MaterialModelOutputs<dim> out_C(quadrature_C.size(), introspection.n_compositional_fields);
     HeatingModel::HeatingModelOutputs heating_model_outputs_C(quadrature_C.size(), introspection.n_compositional_fields);
+
+    const bool temperature_and_composition_use_same_fe =
+      (parameters.use_discontinuous_composition_discretization == parameters.use_discontinuous_temperature_discretization)
+      &&
+      (parameters.temperature_degree == parameters.composition_degree);
 
     // temperature element
     const Quadrature<dim> quadrature_T(dof_handler.get_fe().base_element(introspection.base_elements.temperature).get_unit_support_points());
@@ -1625,11 +1729,13 @@ namespace aspect
       if (cell->is_locally_owned())
         {
           fe_values_C.reinit (cell);
-          cell->get_dof_indices (local_dof_indices);
           in_C.reinit(fe_values_C, cell, introspection, solution);
 
-          fe_values_T.reinit (cell);
-          in_T.reinit(fe_values_T, cell, introspection, solution);
+          if (temperature_and_composition_use_same_fe == false)
+            {
+              fe_values_T.reinit (cell);
+              in_T.reinit(fe_values_T, cell, introspection, solution);
+            }
 
           std::vector<std::vector<double> > accumulated_reactions_C (quadrature_C.size(),std::vector<double> (introspection.n_compositional_fields));
           std::vector<double> accumulated_reactions_T (quadrature_T.size());
@@ -1659,26 +1765,34 @@ namespace aspect
                     }
                   in_C.temperature[j] = in_C.temperature[j]
                                         + reaction_time_step_size * heating_model_outputs_C.rates_of_temperature_change[j];
+
+                  if (temperature_and_composition_use_same_fe)
+                    accumulated_reactions_T[j] += reaction_time_step_size * heating_model_outputs_C.rates_of_temperature_change[j];
                 }
 
-              // loop over temperature element
-              material_model->fill_additional_material_model_inputs(in_T, solution, fe_values_T, introspection);
-
-              material_model->evaluate(in_T, out_T);
-              heating_model_manager.evaluate(in_T, out_T, heating_model_outputs_T);
-
-              for (unsigned int j=0; j<dof_handler.get_fe().base_element(introspection.base_elements.temperature).dofs_per_cell; ++j)
+              if (!temperature_and_composition_use_same_fe)
                 {
-                  // simple forward euler
-                  in_T.temperature[j] = in_T.temperature[j]
-                                        + reaction_time_step_size * heating_model_outputs_T.rates_of_temperature_change[j];
-                  accumulated_reactions_T[j] += reaction_time_step_size * heating_model_outputs_T.rates_of_temperature_change[j];
+                  // loop over temperature element
+                  material_model->fill_additional_material_model_inputs(in_T, solution, fe_values_T, introspection);
 
-                  for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
-                    in_T.composition[j][c] = in_T.composition[j][c]
-                                             + reaction_time_step_size * reaction_rate_outputs_T->reaction_rates[j][c];
+                  material_model->evaluate(in_T, out_T);
+                  heating_model_manager.evaluate(in_T, out_T, heating_model_outputs_T);
+
+                  for (unsigned int j=0; j<dof_handler.get_fe().base_element(introspection.base_elements.temperature).dofs_per_cell; ++j)
+                    {
+                      // simple forward euler
+                      in_T.temperature[j] = in_T.temperature[j]
+                                            + reaction_time_step_size * heating_model_outputs_T.rates_of_temperature_change[j];
+                      accumulated_reactions_T[j] += reaction_time_step_size * heating_model_outputs_T.rates_of_temperature_change[j];
+
+                      for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
+                        in_T.composition[j][c] = in_T.composition[j][c]
+                                                 + reaction_time_step_size * reaction_rate_outputs_T->reaction_rates[j][c];
+                    }
                 }
             }
+
+          cell->get_dof_indices (local_dof_indices);
 
           // copy reaction rates and new values for the compositional fields
           for (unsigned int j=0; j<dof_handler.get_fe().base_element(introspection.base_elements.compositional_fields).dofs_per_cell; ++j)
@@ -1698,64 +1812,43 @@ namespace aspect
 
           // copy reaction rates and new values for the temperature field
           for (unsigned int j=0; j<dof_handler.get_fe().base_element(introspection.base_elements.temperature).dofs_per_cell; ++j)
-            for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
-              {
-                const unsigned int temperature_idx
-                  = dof_handler.get_fe().component_to_system_index(introspection.component_indices.temperature,
-                                                                   /*dof index within component=*/ j);
+            {
+              const unsigned int temperature_idx
+                = dof_handler.get_fe().component_to_system_index(introspection.component_indices.temperature,
+                                                                 /*dof index within component=*/ j);
 
-                // skip entries that are not locally owned:
-                if (dof_handler.locally_owned_dofs().is_element(local_dof_indices[temperature_idx]))
-                  {
+              // skip entries that are not locally owned:
+              if (dof_handler.locally_owned_dofs().is_element(local_dof_indices[temperature_idx]))
+                {
+                  if (temperature_and_composition_use_same_fe)
+                    distributed_vector(local_dof_indices[temperature_idx]) = in_C.temperature[j];
+                  else
                     distributed_vector(local_dof_indices[temperature_idx]) = in_T.temperature[j];
-                    distributed_reaction_vector(local_dof_indices[temperature_idx]) = accumulated_reactions_T[j];
-                  }
-              }
+
+                  distributed_reaction_vector(local_dof_indices[temperature_idx]) = accumulated_reactions_T[j];
+                }
+            }
         }
+
+    distributed_vector.compress(VectorOperation::insert);
+    distributed_reaction_vector.compress(VectorOperation::insert);
 
     // put the final values into the solution vector
     for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
-      {
-        const unsigned int block_c = introspection.block_indices.compositional_fields[c];
-        distributed_vector.block(block_c).compress(VectorOperation::insert);
-        solution.block(block_c) = distributed_vector.block(block_c);
+      update_solution_vectors_with_reaction_results(introspection.block_indices.compositional_fields[c],
+                                                    distributed_vector,
+                                                    distributed_reaction_vector);
 
-        // we have to update the old solution with our reaction update too
-        // so that the advection scheme will have the correct time stepping in the next step
-        distributed_reaction_vector.block(block_c).compress(VectorOperation::insert);
-
-        // we do not need distributed_vector any more, use it to temporarily store the update
-        distributed_vector.block(block_c) = old_solution.block(block_c);
-        distributed_vector.block(block_c) +=  distributed_reaction_vector.block(block_c);
-        old_solution.block(block_c) = distributed_vector.block(block_c);
-
-        distributed_vector.block(block_c) = old_old_solution.block(block_c);
-        distributed_vector.block(block_c) +=  distributed_reaction_vector.block(block_c);
-        old_old_solution.block(block_c) = distributed_vector.block(block_c);
-
-        operator_split_reaction_vector.block(block_c) = distributed_reaction_vector.block(block_c);
-      }
-
-    const unsigned int block_T = introspection.block_indices.temperature;
-    distributed_vector.block(block_T).compress(VectorOperation::insert);
-    solution.block(block_T) = distributed_vector.block(block_T);
-
-    // we have to update the old solution with our reaction update too
-    // so that the advection scheme will have the correct time stepping in the next step
-    distributed_reaction_vector.block(block_T).compress(VectorOperation::insert);
-
-    // we do not need distributed_vector any more, use it to temporarily store the update
-    distributed_vector.block(block_T) = old_solution.block(block_T);
-    distributed_vector.block(block_T) +=  distributed_reaction_vector.block(block_T);
-    old_solution.block(block_T) = distributed_vector.block(block_T);
-
-    distributed_vector.block(block_T) = old_old_solution.block(block_T);
-    distributed_vector.block(block_T) +=  distributed_reaction_vector.block(block_T);
-    old_old_solution.block(block_T) = distributed_vector.block(block_T);
-
-    operator_split_reaction_vector.block(block_T) = distributed_reaction_vector.block(block_T);
+    update_solution_vectors_with_reaction_results(introspection.block_indices.temperature,
+                                                  distributed_vector,
+                                                  distributed_reaction_vector);
 
     initialize_current_linearization_point();
+
+    pcout << "in "
+          << number_of_reaction_steps
+          << " substep(s)."
+          << std::endl;
   }
 
 

@@ -28,6 +28,7 @@
 #include <deal.II/dofs/dof_tools.h>
 
 #include <deal.II/fe/fe_values.h>
+#include <deal.II/fe/fe_q.h>
 #include <deal.II/fe/mapping_q1_eulerian.h>
 
 #include <deal.II/lac/sparsity_tools.h>
@@ -353,7 +354,8 @@ namespace aspect
            p != sim.boundary_velocity_manager.get_zero_boundary_velocity_indicators().end(); ++p)
         if (mesh_deformation_boundary_indicators_set.find(*p) == mesh_deformation_boundary_indicators_set.end())
           {
-            VectorTools::interpolate_boundary_values (mesh_deformation_dof_handler, *p,
+            VectorTools::interpolate_boundary_values (*sim.mapping,
+                                                      mesh_deformation_dof_handler, *p,
                                                       ZeroFunction<dim>(dim), mesh_velocity_constraints);
           }
 
@@ -366,7 +368,8 @@ namespace aspect
             {
               if (mesh_deformation_boundary_indicators_set.find(p->first) == mesh_deformation_boundary_indicators_set.end())
                 {
-                  VectorTools::interpolate_boundary_values (mesh_deformation_dof_handler, p->first,
+                  VectorTools::interpolate_boundary_values (*sim.mapping,
+                                                            mesh_deformation_dof_handler, p->first,
                                                             ZeroFunction<dim>(dim), mesh_velocity_constraints);
                 }
             }

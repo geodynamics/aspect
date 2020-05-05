@@ -381,7 +381,7 @@ namespace aspect
                           "whether this normalization will happen.");
         prm.declare_entry("Refinement criteria scaling factors",
                           "",
-                          Patterns::List (Patterns::Double(0)),
+                          Patterns::List (Patterns::Double (0.)),
                           "A list of scaling factors by which every individual refinement "
                           "criterion will be multiplied by. If only a single refinement "
                           "criterion is selected (using the ``Strategy'' parameter, then "

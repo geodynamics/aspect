@@ -120,7 +120,7 @@ namespace aspect
       base_model->evaluate(in,out);
       const double time_scale = this->convert_output_to_years() ? year_in_seconds : 1.0;
 
-      for (unsigned int q=0; q < in.position.size(); ++q)
+      for (unsigned int q=0; q < in.n_evaluation_points(); ++q)
         for (unsigned int c=0; c < this->introspection().n_compositional_fields; ++c)
           out.reaction_terms[q][c] = 0.0;
 
@@ -129,7 +129,7 @@ namespace aspect
 
       if (reaction_out != NULL)
         {
-          for (unsigned int q=0; q < in.position.size(); ++q)
+          for (unsigned int q=0; q < in.n_evaluation_points(); ++q)
             {
               // dC/dt = - lambda * C
               const double decay_constant = half_life > 0.0 ? log(2.0) / half_life : 0.0;
@@ -205,7 +205,7 @@ namespace aspect
     {
       if (out.template get_additional_output<ReactionRateOutputs<dim> >() == NULL)
         {
-          const unsigned int n_points = out.viscosities.size();
+          const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
             std_cxx14::make_unique<MaterialModel::ReactionRateOutputs<dim>> (n_points, this->n_compositional_fields()));
         }
@@ -223,7 +223,7 @@ namespace aspect
               const MaterialModel::MaterialModelOutputs<dim> & /*out*/,
               HeatingModel::HeatingModelOutputs &heating_model_outputs) const
     {
-      Assert(heating_model_outputs.heating_source_terms.size() == in.position.size(),
+      Assert(heating_model_outputs.heating_source_terms.size() == in.n_evaluation_points(),
              ExcMessage ("Heating outputs need to have the same number of entries as the material model inputs."));
 
       const double time_scale = this->convert_output_to_years() ? year_in_seconds : 1.0;

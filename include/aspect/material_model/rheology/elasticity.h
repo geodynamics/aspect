@@ -107,16 +107,25 @@ namespace aspect
            * Return the values of the elastic shear moduli for each composition used in the
            * rheology model.
            */
-          std::vector<double>
+          const std::vector<double> &
           get_elastic_shear_moduli () const;
 
           /**
            * Given the (viscous or visco-plastic) viscosity and the shear modulus, compute the viscoelastic
-           * viscosity.
+           * viscosity (eqn 28 in Moresi et al., 2003, J. Comp. Phys.).
            */
           double
           calculate_viscoelastic_viscosity (const double viscosity,
                                             const double shear_modulus) const;
+
+          /**
+           * Calculate the square root of the second moment invariant for the deviatoric
+           * strain rate tensor, including viscoelastic stresses.
+           */
+          double
+          calculate_viscoelastic_strain_rate (const SymmetricTensor<2,dim> &strain_rate,
+                                              const SymmetricTensor<2,dim> &stress,
+                                              const double shear_modulus) const;
 
           /**
            * Compute the elastic time step.

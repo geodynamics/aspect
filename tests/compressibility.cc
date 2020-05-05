@@ -38,7 +38,7 @@ namespace aspect
              MaterialModel::MaterialModelOutputs<dim> &out) const
     {
       Simple<dim>::evaluate(in, out);
-      for (unsigned int i=0; i < in.position.size(); ++i)
+      for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
         {
           const double pressure = in.pressure[i];
           out.densities[i] = 1.0 + pressure;

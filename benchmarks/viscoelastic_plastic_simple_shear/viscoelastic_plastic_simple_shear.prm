@@ -1,60 +1,57 @@
 # This parameter file constructs a simple shear benchmark, which is adapted from Farrington et al. 2014,
 # (Geophysics, Geochemsitry, Geosystems). A uniform material undergoes simple shear at a constant rate
 # up until time=1.  At this point the shearing velocity is reduced to zero, and elastic stresses relax.
-# The material model is viscoelastic plastic, with a cohesion value of 3.5. This value is slightly
+# The rheology is viscoelastic plastic, with a cohesion value of 3.5. This value is slightly
 # higher than the visco-elastic stress at time=1, meaning that yielding does not occur, and the
-# analytic (visco-elastic) solution should be reasonably well approximated.
+# analytic (visco-elastic) solution should be reasonably well approximated. If the cohesion value is reduced
+# to below the shear stress value at time t=1 (~3.1411), the shear stress will reach and remain 
+# at this value until after time t=1 when stresses begin to relax.
 # This setup demonstrates an important difference between viscoelastic plastic, and visco-plastic rheology.
 # In a comparable setup, the visco-plastic rheology will exhibit yielding in the first velocity iteration,
-# as the value pre-yield stress magnitude is 5.
+# as the value pre-yield stress magnitude is 3.5.
 # The analytic solution follows the expression in Farrington et al., and describes the
 # non-viscous portion of the total stress. This is equivalent to the magnitude of the stored stress
 # history tensor. The three independent components of this tensor are tracked with compositional fields
 # (stress_xx, stress_yy, stress_xy). The choice of elastic timestip (Fixed elastic time step) and
 # numerical timestep (Maximum time step) determine the degree of convergence with the analytic
-# solution. The values set in the parameter file allow the model to be executed relatively quickly, but
-# result in some discrepancy with the analytic solution. Reducing the elastic and numerical timesteps by a
-# factor of 0.1, results in very close convergence to the analytic solution (as noted in Farrington et al.)
-# Note that the parameter file does not currently output a direct measure of the stored stress
-# history tensor (magnitude). We used Paraview to construct this metric and output value in plain text format
-# (using the save data method of the Plot Over Line filter).
-
+# solution. The values set in the parameter file (0.1) produce a close fit to the analytical solution.
+# The stress values are tracked through time in the log file using the composition statistics postprocessor,
+# which reports the min, max, and average value of each compositional field after each time step. Given
+# that there is no discrepancy between the numerical and elastic time steps and stress averaging is not invoked,
+# the min, max, and average stress values remain equal over time.
 
 # Global parameters
-set Dimension                              = 2
-set Start time                             = 0
-set End time                               = 8
-set Use years in output instead of seconds = false
-set Resume computation                     = auto
-set CFL number                             = 1.0
-set Maximum time step                      = 0.025
-set Output directory                       = viscoelastic_plastic_simple_shear
-set Pressure normalization                 = surface
-set Surface pressure                       = 0.
-
-
-set Nonlinear solver scheme                = iterated Stokes
-set Max nonlinear iterations               = 30
-set Nonlinear solver tolerance             = 1e-5
-set Max nonlinear iterations in pre-refinement      = 0
+set Dimension                                  = 2
+set Start time                                 = 0
+set End time                                   = 8
+set Use years in output instead of seconds     = false
+set Resume computation                         = auto
+set CFL number                                 = 1.0
+set Maximum time step                          = 0.01
+set Output directory                           = viscoelastic_plastic_simple_shear
+set Pressure normalization                     = surface
+set Surface pressure                           = 0.
+set Nonlinear solver scheme                    = single Advection, iterated Stokes
+set Max nonlinear iterations                   = 30
+set Nonlinear solver tolerance                 = 1e-5
+set Max nonlinear iterations in pre-refinement = 0
 
 
 # Solver settings
 subsection Solver parameters
   subsection Stokes solver parameters
     set Number of cheap Stokes solver steps = 200
-    set Linear solver tolerance                         = 1e-5
+    set Linear solver tolerance             = 1e-9
   end
 end
-
 
 subsection Geometry model
   set Model name = box
   subsection Box
     set X extent  = 1.0
     set Y extent  = 1.0
-    set X repetitions = 32
-    set Y repetitions = 32
+    set X repetitions = 2
+    set Y repetitions = 2
     set X periodic = true
   end
 end
@@ -107,19 +104,33 @@ end
 # Material model
 subsection Material model
 
-  set Model name = viscoelastic plastic
+  set Model name = visco plastic
 
-  subsection Viscoelastic Plastic
+  subsection Visco Plastic
+
+    set Prefactors for dislocation creep          = 0.005
+    set Stress exponents for dislocation creep    = 1.0
+    set Activation energies for dislocation creep = 0.
+    set Activation volumes for dislocation creep  = 0.
+
+    set Viscous flow law = dislocation
+
+    set Include viscoelasticity = true
+
     set Densities                   =  1
-    set Linear viscosities          = 1.e2
+
     set Elastic shear moduli        = 1.e2
     set Fixed elastic time step     = 0.01
-    set Use fixed elastic time step = true
-    set Use stress averaging        = true
+    set Use fixed elastic time step = false
+    set Use stress averaging        = false
     set Viscosity averaging scheme  = maximum composition
+
     set Cohesions                   = 3.5
+    set Angles of internal friction = 0.
+
     set Minimum viscosity           = 1e-3
     set Maximum viscosity           = 1e3
+
     set Reference viscosity         = 10
 
   end
@@ -135,7 +146,7 @@ end
 subsection Initial temperature model
   set Model name = function
   subsection Function
-    set Function expression = 0
+    set Function expression = 293
   end
 end
 
@@ -143,11 +154,5 @@ end
 
 # Post processing
 subsection Postprocess
-  set List of postprocessors = visualization
-  subsection Visualization
-    set Time between graphical output = 0.1
-    set List of output variables = viscosity, strain rate, named additional outputs
-    set Interpolate output = true
-    set Write higher order output = true
-  end
+  set List of postprocessors = composition statistics
 end

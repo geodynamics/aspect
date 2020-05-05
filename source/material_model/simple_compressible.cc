@@ -32,7 +32,7 @@ namespace aspect
     evaluate(const MaterialModelInputs<dim> &in,
              MaterialModelOutputs<dim> &out) const
     {
-      for (unsigned int i=0; i < in.temperature.size(); ++i)
+      for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
         {
           const Point<dim> position = in.position[i];
           const double temperature = in.temperature[i];
@@ -86,23 +86,23 @@ namespace aspect
       {
         prm.enter_subsection("Simple compressible model");
         {
-          prm.declare_entry ("Reference density", "3300",
-                             Patterns::Double (0),
+          prm.declare_entry ("Reference density", "3300.",
+                             Patterns::Double (0.),
                              "Reference density $\\rho_0$. Units: $kg/m^3$.");
           prm.declare_entry ("Thermal conductivity", "4.7",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The value of the thermal conductivity $k$. "
                              "Units: $W/m/K$.");
-          prm.declare_entry ("Reference specific heat", "1250",
-                             Patterns::Double (0),
+          prm.declare_entry ("Reference specific heat", "1250.",
+                             Patterns::Double (0.),
                              "The value of the specific heat $C_p$. "
                              "Units: $J/kg/K$.");
           prm.declare_entry ("Thermal expansion coefficient", "2e-5",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The value of the thermal expansion coefficient $\\alpha$. "
                              "Units: $1/K$.");
           prm.declare_entry ("Reference compressibility", "4e-12",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The value of the reference compressibility. "
                              "Units: $1/Pa$.");
 

@@ -107,7 +107,7 @@ namespace aspect
     evaluate(const typename Interface<dim>::MaterialModelInputs &in,
              typename Interface<dim>::MaterialModelOutputs &out) const
     {
-      for (unsigned int i=0; i<in.position.size(); ++i)
+      for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
         {
           out.viscosities[i] = eta*std::pow(1000,(-in.temperature[i]));
 

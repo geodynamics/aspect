@@ -228,10 +228,11 @@ namespace aspect
               types::particle_index local_start_index = 0.0;
 
 #if DEAL_II_VERSION_GTE(9,1,0)
-              MPI_Scan(&particles_to_add_locally, &local_start_index, 1, DEAL_II_PARTICLE_INDEX_MPI_TYPE, MPI_SUM, this->get_mpi_communicator());
+              const int ierr = MPI_Scan(&particles_to_add_locally, &local_start_index, 1, DEAL_II_PARTICLE_INDEX_MPI_TYPE, MPI_SUM, this->get_mpi_communicator());
 #else
-              MPI_Scan(&particles_to_add_locally, &local_start_index, 1, PARTICLE_INDEX_MPI_TYPE, MPI_SUM, this->get_mpi_communicator());
+              const int ierr = MPI_Scan(&particles_to_add_locally, &local_start_index, 1, PARTICLE_INDEX_MPI_TYPE, MPI_SUM, this->get_mpi_communicator());
 #endif
+              AssertThrowMPI(ierr);
 
               local_start_index -= particles_to_add_locally;
               local_next_particle_index += local_start_index;
@@ -318,7 +319,11 @@ namespace aspect
     World<dim>::cell_weight(const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell,
                             const typename parallel::distributed::Triangulation<dim>::CellStatus status)
     {
+#if DEAL_II_VERSION_GTE(9,2,0)
+      if (cell->is_active() && !cell->is_locally_owned())
+#else
       if (cell->active() && !cell->is_locally_owned())
+#endif
         return 0;
 
       if (status == parallel::distributed::Triangulation<dim>::CELL_PERSIST

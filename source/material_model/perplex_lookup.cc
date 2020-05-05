@@ -83,7 +83,7 @@ namespace aspect
 
       int phaseq_dbg = 0;
 
-      unsigned int n_quad = in.position.size(); // number of quadrature points in cell
+      unsigned int n_quad = in.n_evaluation_points(); // number of quadrature points in cell
       unsigned int n_comp = in.composition[0].size(); // number of components in rock
 
       const double average_temperature = std::min(max_temperature,
@@ -152,26 +152,26 @@ namespace aspect
                              Patterns::Anything (),
                              "The name of the PerpleX input file (should end with .dat).");
           prm.declare_entry ("Viscosity", "5e24",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The value of the viscosity $\\eta$. Units: $kg/m/s$.");
           prm.declare_entry ("Thermal conductivity", "4.7",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The value of the thermal conductivity $k$. "
                              "Units: $W/m/K$.");
           prm.declare_entry ("Minimum material temperature", "0.",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The value of the minimum temperature used to query PerpleX. "
                              "Units: $\\si{K}$.");
           prm.declare_entry ("Maximum material temperature", "6000.",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The value of the maximum temperature used to query PerpleX. "
                              "Units: $\\si{K}$.");
           prm.declare_entry ("Minimum material pressure", "1.e5",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The value of the minimum pressure used to query PerpleX. "
                              "Units: $Pa$.");
           prm.declare_entry ("Maximum material pressure", "1.e12",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The value of the maximum pressure used to query PerpleX. "
                              "Units: $Pa$.");
 

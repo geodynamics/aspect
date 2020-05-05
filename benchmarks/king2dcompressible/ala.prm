@@ -64,7 +64,7 @@ end
 
 # The benchmark is defined in terms of the nondimensional numbers
 # Di (dissipation number) and Ra (Rayleigh number). 
-# As Aspect uses physical properties instead of these dimensionless 
+# As ASPECT uses physical properties instead of these dimensionless 
 # numbers in its equations, we replicate the benchmark formulation 
 # by using a new material model that fixes all of the material 
 # constants to 1, except for the thermal expansivity, which is set 

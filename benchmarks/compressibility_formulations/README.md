@@ -1,9 +1,7 @@
 This directory contains the benchmark cases for different compressibility
 approximations discussed in:
 
-Gassmoeller, R., Dannberg, J., Bangerth, W., Heister, T., Myhill, R. (2019): On
-Formulations of Compressible Mantle Convection. submitted to Geophysical
-Journal International.
+Gassmöller, R., Dannberg, J., Bangerth, W., Heister, T., & Myhill, R. (2020). On formulations of compressible mantle convection. Geophysical Journal International, 221(2), 1264-1280.
 
 All benchmarks require the additional ASPECT plugins that lie in the folder
 'plugins' and need to be compiled into a shared library before running the

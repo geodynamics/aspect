@@ -35,379 +35,435 @@ namespace aspect
 {
   namespace GeometryModel
   {
-    template <int dim>
-    Chunk<dim>::ChunkGeometry::ChunkGeometry()
-      :
-      point1_lon(0.0),
-      inner_radius(3471e3),
-      max_depth(2900e3)
-    {}
-
-
-
-    template <int dim>
-    Chunk<dim>::ChunkGeometry::ChunkGeometry(const ChunkGeometry &other)
-      :
-      ChartManifold<dim,dim>(other),
-      point1_lon(other.point1_lon),
-      inner_radius(other.inner_radius),
-      max_depth(other.max_depth)
+    namespace internal
     {
-      this->initialize(other.topo);
-    }
+      template <int dim>
+      ChunkGeometry<dim>::ChunkGeometry()
+        :
+        point1_lon(0.0),
+        inner_radius(3471e3),
+        max_depth(2900e3)
+      {}
 
 
 
-    template <int dim>
-    void
-    Chunk<dim>::ChunkGeometry::initialize(const InitialTopographyModel::Interface<dim> *topo_pointer)
-    {
-      topo = topo_pointer;
-    }
+      template <int dim>
+      ChunkGeometry<dim>::ChunkGeometry(const ChunkGeometry &other)
+        :
+        ChartManifold<dim,dim>(other),
+        point1_lon(other.point1_lon),
+        inner_radius(other.inner_radius),
+        max_depth(other.max_depth)
+      {
+        this->initialize(other.topo);
+      }
 
 
 
-    template <int dim>
-    DerivativeForm<1,dim,dim>
-    Chunk<dim>::ChunkGeometry::
-    push_forward_gradient(const Point<dim> &chart_point) const
-    {
-      const double R = chart_point[0]; // Radius
-
-      Assert (R > 0.0, ExcMessage("Negative radius for given point."));
-
-      Tensor<2,dim> DX;
-
-      // We only have access to the topography gradients
-      // (dtopo/dphi and dtopo/dtheta) for the AsciiData
-      // initial topography model. We assume 0.0 otherwise;
-      // while this is valid for the ZeroTopography model,
-      // this will result in incorrect gradients for
-      // other initial topography models. Hence only AsciiData
-      // and ZeroTopography are allowed for now in Chunk<dim>::initialize().
-      Tensor<1,dim-1> topo_derivatives;
-      if (const InitialTopographyModel::AsciiData<dim> *itm = dynamic_cast<const InitialTopographyModel::AsciiData<dim> *> (topo))
-        topo_derivatives = itm->vector_gradient(push_forward_sphere(chart_point));
-
-      // Construct surface point in lon(,lat) coordinates
-      Point<dim-1> surface_point;
-      for (unsigned int d=0; d<dim-1; ++d)
-        surface_point[d] = chart_point[d+1];
-
-      // Convert latitude to colatitude
-      if (dim == 3)
-        surface_point[1] = 0.5*numbers::PI - surface_point[1];
-
-      // get the maximum topography at the surface point
-      const double d_topo = topo->value(surface_point);
-
-      // get the spherical point including topography
-      const Point<dim> topo_point = push_forward_topo(chart_point);
-      const double R_topo = topo_point[0];
-      const double phi_topo = topo_point[1];
-
-      // The derivatives of topo_point to chart_point
-      Tensor<2, dim> Dtopo;
-      // The derivatives of the cartesian point to chart_point
-      DerivativeForm<1, dim, dim> Dtotal;
+      template <int dim>
+      void
+      ChunkGeometry<dim>::
+      initialize(const InitialTopographyModel::Interface<dim> *topo_pointer)
+      {
+        topo = topo_pointer;
+      }
 
 
-      switch (dim)
-        {
-          case 2:
+
+      template <int dim>
+      DerivativeForm<1,dim,dim>
+      ChunkGeometry<dim>::
+      push_forward_gradient(const Point<dim> &chart_point) const
+      {
+        const double R = chart_point[0]; // Radius
+
+        Assert (R > 0.0, ExcMessage("Negative radius for given point."));
+
+        Tensor<2,dim> DX;
+
+        // We only have access to the topography gradients
+        // (dtopo/dphi and dtopo/dtheta) for the AsciiData
+        // initial topography model. We assume 0.0 otherwise;
+        // while this is valid for the ZeroTopography model,
+        // this will result in incorrect gradients for
+        // other initial topography models. Hence only AsciiData
+        // and ZeroTopography are allowed for now in Chunk<dim>::initialize().
+        Tensor<1,dim-1> topo_derivatives;
+        if (const InitialTopographyModel::AsciiData<dim> *itm = dynamic_cast<const InitialTopographyModel::AsciiData<dim> *> (topo))
+          topo_derivatives = itm->vector_gradient(push_forward_sphere(chart_point));
+
+        // Construct surface point in lon(,lat) coordinates
+        Point<dim-1> surface_point;
+        for (unsigned int d=0; d<dim-1; ++d)
+          surface_point[d] = chart_point[d+1];
+
+        // Convert latitude to colatitude
+        if (dim == 3)
+          surface_point[1] = 0.5*numbers::PI - surface_point[1];
+
+        // get the maximum topography at the surface point
+        const double d_topo = topo->value(surface_point);
+
+        // get the spherical point including topography
+        const Point<dim> topo_point = push_forward_topo(chart_point);
+        const double R_topo = topo_point[0];
+        const double phi_topo = topo_point[1];
+
+        // The derivatives of topo_point to chart_point
+        Tensor<2, dim> Dtopo;
+        // The derivatives of the cartesian point to chart_point
+        DerivativeForm<1, dim, dim> Dtotal;
+
+
+        switch (dim)
           {
-            // R_topo = R + topo(phi) * ((R-R_0)/(R_1-R_0)) = R + topo(phi) * ((R-R_0)/max_depth)
-            // phi_topo = phi
-            //dR_topo/dR
-            Dtopo[0][0] = (d_topo / max_depth) + 1.;
-            //dR_topo/dphi = dR_topo/dtopo * dtopo/dphi
-            Dtopo[0][1] = (R-inner_radius)/max_depth * topo_derivatives[0];
-            //dphi_topo/dR
-            Dtopo[1][0] = 0.;
-            //dphi_topo/dphi
-            Dtopo[1][1] = 1.;
+            case 2:
+            {
+              // R_topo = R + topo(phi) * ((R-R_0)/(R_1-R_0)) = R + topo(phi) * ((R-R_0)/max_depth)
+              // phi_topo = phi
+              //dR_topo/dR
+              Dtopo[0][0] = (d_topo / max_depth) + 1.;
+              //dR_topo/dphi = dR_topo/dtopo * dtopo/dphi
+              Dtopo[0][1] = (R-inner_radius)/max_depth * topo_derivatives[0];
+              //dphi_topo/dR
+              Dtopo[1][0] = 0.;
+              //dphi_topo/dphi
+              Dtopo[1][1] = 1.;
 
-            //dx/dR_topo
-            DX[0][0] =           std::cos(phi_topo);
-            //dx/dphi_topo
-            DX[0][1] = -R_topo * std::sin(phi_topo);
-            //dy/dR_topo
-            DX[1][0] =           std::sin(phi_topo);
-            //dy/dphi_topo
-            DX[1][1] =  R_topo * std::cos(phi_topo);
+              //dx/dR_topo
+              DX[0][0] =           std::cos(phi_topo);
+              //dx/dphi_topo
+              DX[0][1] = -R_topo * std::sin(phi_topo);
+              //dy/dR_topo
+              DX[1][0] =           std::sin(phi_topo);
+              //dy/dphi_topo
+              DX[1][1] =  R_topo * std::cos(phi_topo);
 
-            break;
+              break;
+            }
+            case 3:
+            {
+              // R_topo = R + topo(phi,theta) * ((R-R_0)/(R_1-R_0))
+              // phi_topo = phi
+              // theta_topo = theta
+              //dR_topo/dR
+              Dtopo[0][0] = (d_topo / max_depth) + 1.;
+              //dR_topo/dphi
+              Dtopo[0][1] = (R - inner_radius) / max_depth * topo_derivatives[0];
+              //dR_topo/dtheta
+              Dtopo[0][2] = (R - inner_radius) / max_depth * topo_derivatives[1];
+              //dphi_topo/dR
+              Dtopo[1][0] = 0.;
+              //dphi_topo/dphi
+              Dtopo[1][1] = 1.;
+              //dphi_topo/dtheta
+              Dtopo[1][2] = 0.;
+              //dtheta_topo/dR
+              Dtopo[2][0] = 0.;
+              //dtheta_topo/dphi
+              Dtopo[2][1] = 0.;
+              //dtheta_topo/dtheta
+              Dtopo[2][2] = 1.;
+
+              const double theta_topo = topo_point[2];
+
+              // The derivatives of the cartesian points to topo_point
+              DX[0][0] =      std::cos(theta_topo) * std::cos(phi_topo);
+              DX[0][1] = -R_topo * std::cos(theta_topo) * std::sin(phi_topo);
+              DX[0][2] = -R_topo * std::sin(theta_topo) * std::cos(phi_topo); //reorder
+              DX[1][0] =      std::cos(theta_topo) * std::sin(phi_topo);
+              DX[1][1] =  R_topo * std::cos(theta_topo) * std::cos(phi_topo);
+              DX[1][2] = -R_topo * std::sin(theta_topo) * std::sin(phi_topo);
+              DX[2][0] =      std::sin(theta_topo);
+              DX[2][1] = 0;
+              DX[2][2] =  R_topo * std::cos(theta_topo);
+
+              break;
+            }
+            default:
+              Assert (false, ExcNotImplemented ());
           }
-          case 3:
+
+        Dtotal = DerivativeForm<1,dim,dim>(DX * Dtopo);
+
+        return Dtotal;
+      }
+
+
+
+      template <int dim>
+      Point<dim>
+      ChunkGeometry<dim>::
+      push_forward(const Point<dim> &r_phi_theta) const
+      {
+        // Only take into account topography when we're not using the ZeroTopography plugin
+        if (dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(topo) != nullptr)
+          return push_forward_sphere(r_phi_theta);
+        else
+          return push_forward_sphere(push_forward_topo(r_phi_theta));
+
+      }
+
+
+
+      template <int dim>
+      Point<dim>
+      ChunkGeometry<dim>::
+      pull_back(const Point<dim> &x_y_z) const
+      {
+        // Only take into account topography when we're not using the ZeroTopography plugin
+        if (dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(topo) != nullptr)
+          return pull_back_sphere(x_y_z);
+        else
+          return pull_back_topo(pull_back_sphere(x_y_z));
+      }
+
+
+
+      template <int dim>
+      Point<dim>
+      ChunkGeometry<dim>::
+      push_forward_sphere(const Point<dim> &input_vertex) const
+      {
+        Point<dim> output_vertex;
+        switch (dim)
           {
-            // R_topo = R + topo(phi,theta) * ((R-R_0)/(R_1-R_0))
-            // phi_topo = phi
-            // theta_topo = theta
-            //dR_topo/dR
-            Dtopo[0][0] = (d_topo / max_depth) + 1.;
-            //dR_topo/dphi
-            Dtopo[0][1] = (R - inner_radius) / max_depth * topo_derivatives[0];
-            //dR_topo/dtheta
-            Dtopo[0][2] = (R - inner_radius) / max_depth * topo_derivatives[1];
-            //dphi_topo/dR
-            Dtopo[1][0] = 0.;
-            //dphi_topo/dphi
-            Dtopo[1][1] = 1.;
-            //dphi_topo/dtheta
-            Dtopo[1][2] = 0.;
-            //dtheta_topo/dR
-            Dtopo[2][0] = 0.;
-            //dtheta_topo/dphi
-            Dtopo[2][1] = 0.;
-            //dtheta_topo/dtheta
-            Dtopo[2][2] = 1.;
-
-            const double theta_topo = topo_point[2];
-
-            // The derivatives of the cartesian points to topo_point
-            DX[0][0] =      std::cos(theta_topo) * std::cos(phi_topo);
-            DX[0][1] = -R_topo * std::cos(theta_topo) * std::sin(phi_topo);
-            DX[0][2] = -R_topo * std::sin(theta_topo) * std::cos(phi_topo); //reorder
-            DX[1][0] =      std::cos(theta_topo) * std::sin(phi_topo);
-            DX[1][1] =  R_topo * std::cos(theta_topo) * std::cos(phi_topo);
-            DX[1][2] = -R_topo * std::sin(theta_topo) * std::sin(phi_topo);
-            DX[2][0] =      std::sin(theta_topo);
-            DX[2][1] = 0;
-            DX[2][2] =  R_topo * std::cos(theta_topo);
-
-            break;
+            case 2:
+            {
+              output_vertex[0] = input_vertex[0]*std::cos(input_vertex[1]); // x=rcosphi
+              output_vertex[1] = input_vertex[0]*std::sin(input_vertex[1]); // z=rsinphi
+              break;
+            }
+            case 3:
+            {
+              output_vertex[0] = input_vertex[0]*std::cos(input_vertex[2])*std::cos(input_vertex[1]); // x=rsinthetacosphi
+              output_vertex[1] = input_vertex[0]*std::cos(input_vertex[2])*std::sin(input_vertex[1]); // y=rsinthetasinphi
+              output_vertex[2] = input_vertex[0]*std::sin(input_vertex[2]); // z=rcostheta
+              break;
+            }
+            default:
+              Assert (false, ExcNotImplemented ());
           }
-          default:
-            Assert (false, ExcNotImplemented ());
-        }
-
-      Dtotal = DerivativeForm<1,dim,dim>(DX * Dtopo);
-
-      return Dtotal;
-    }
+        return output_vertex;
+      }
 
 
 
-    template <int dim>
-    Point<dim>
-    Chunk<dim>::ChunkGeometry::
-    push_forward(const Point<dim> &r_phi_theta) const
-    {
-      // Only take into account topography when we're not using the ZeroTopography plugin
-      if (dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(topo) != nullptr)
-        return push_forward_sphere(r_phi_theta);
-      else
-        return push_forward_sphere(push_forward_topo(r_phi_theta));
-
-    }
-
-
-
-    template <int dim>
-    Point<dim>
-    Chunk<dim>::ChunkGeometry::
-    pull_back(const Point<dim> &x_y_z) const
-    {
-      // Only take into account topography when we're not using the ZeroTopography plugin
-      if (dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(topo) != nullptr)
-        return pull_back_sphere(x_y_z);
-      else
-        return pull_back_topo(pull_back_sphere(x_y_z));
-    }
-
-
-
-    template <int dim>
-    Point<dim>
-    Chunk<dim>::ChunkGeometry::
-    push_forward_sphere(const Point<dim> &input_vertex) const
-    {
-      Point<dim> output_vertex;
-      switch (dim)
-        {
-          case 2:
+      template <int dim>
+      Tensor<1, dim>
+      ChunkGeometry<dim>::
+      normal_vector(const typename Triangulation<dim>::face_iterator &face,
+                    const Point<dim> &p) const
+      {
+        // Let us first test whether we are on a "horizontal" face
+        // (tangential to the sphere).  In this case, the normal vector is
+        // easy to compute since it is proportional to the vector from the
+        // center to the point 'p'.
+        //
+        // We test whether a face is horizontal by checking that the vertices
+        // all have roughly the same distance from the center: If the
+        // maximum deviation for the distances from the vertices to the
+        // center is less than 1.e-5 of the distance between vertices (as
+        // measured by the minimum distance from any of the other vertices
+        // to the first vertex), then we call this a horizontal face.
+        constexpr unsigned int n_vertices = GeometryInfo<dim>::vertices_per_face;
+        std::array<double, n_vertices>     distances_to_center;
+        std::array<double, n_vertices - 1> distances_to_first_vertex;
+        distances_to_center[0] = face->vertex(0).norm_square();
+        for (unsigned int i = 1; i < n_vertices; ++i)
           {
-            output_vertex[0] = input_vertex[0]*std::cos(input_vertex[1]); // x=rcosphi
-            output_vertex[1] = input_vertex[0]*std::sin(input_vertex[1]); // z=rsinphi
-            break;
+            distances_to_center[i] = face->vertex(i).norm_square();
+            distances_to_first_vertex[i - 1] =
+              (face->vertex(i) - face->vertex(0)).norm_square();
           }
-          case 3:
+        const auto minmax_distance =
+          std::minmax_element(distances_to_center.begin(), distances_to_center.end());
+        const auto min_distance_to_first_vertex =
+          std::min_element(distances_to_first_vertex.begin(),
+                           distances_to_first_vertex.end());
+
+        // So, if this is a "horizontal" face, then just compute the normal
+        // vector as the one from the center to the point 'p', adequately
+        // scaled.
+        if (*minmax_distance.second - *minmax_distance.first <
+            1.e-10 * *min_distance_to_first_vertex)
           {
-            output_vertex[0] = input_vertex[0]*std::cos(input_vertex[2])*std::cos(input_vertex[1]); // x=rsinthetacosphi
-            output_vertex[1] = input_vertex[0]*std::cos(input_vertex[2])*std::sin(input_vertex[1]); // y=rsinthetasinphi
-            output_vertex[2] = input_vertex[0]*std::sin(input_vertex[2]); // z=rcostheta
-            break;
+            const Tensor<1, dim> unnormalized_spherical_normal = p;
+            const Tensor<1, dim> normalized_spherical_normal =
+              unnormalized_spherical_normal / unnormalized_spherical_normal.norm();
+            return normalized_spherical_normal;
           }
-          default:
-            Assert (false, ExcNotImplemented ());
-        }
-      return output_vertex;
-    }
+
+        // If it is not a horizontal face, just use the machinery of the
+        // base class.
+        return Manifold<dim>::normal_vector(face, p);
+      }
 
 
 
-    template <int dim>
-    Point<dim>
-    Chunk<dim>::ChunkGeometry::
-    pull_back_sphere(const Point<dim> &v) const
-    {
-      Point<dim> output_vertex;
-      switch (dim)
-        {
-          case 2:
+      template <int dim>
+      Point<dim>
+      ChunkGeometry<dim>::
+      pull_back_sphere(const Point<dim> &v) const
+      {
+        Point<dim> output_vertex;
+        switch (dim)
           {
-            output_vertex[1] = std::atan2(v[1], v[0]);
-            output_vertex[0] = v.norm();
+            case 2:
+            {
+              output_vertex[1] = std::atan2(v[1], v[0]);
+              output_vertex[0] = v.norm();
 
-            // We must guarantee that all returned points have a longitude coordinate
-            // value that is larger than (or equal to) the longitude of point1.
-            // For example:
-            // If the domain runs from longitude -10 to 200 degrees,
-            // atan2 will also return a negative value (-180 to -160) for the points
-            // with longitude 180 to 200. These values must be corrected
-            // so that they are larger than the minimum longitude value of -10,
-            // by adding 360 degrees.
-            // A 100*epsilon ensures we catch all cases.
-            if (output_vertex[1] < 0.0)
-              if (output_vertex[1] < point1_lon - 100 * std::abs(point1_lon)*std::numeric_limits<double>::epsilon())
-                output_vertex[1] += 2.0 * numbers::PI;
-            break;
+              // We must guarantee that all returned points have a longitude coordinate
+              // value that is larger than (or equal to) the longitude of point1.
+              // For example:
+              // If the domain runs from longitude -10 to 200 degrees,
+              // atan2 will also return a negative value (-180 to -160) for the points
+              // with longitude 180 to 200. These values must be corrected
+              // so that they are larger than the minimum longitude value of -10,
+              // by adding 360 degrees.
+              // A 100*epsilon ensures we catch all cases.
+              if (output_vertex[1] < 0.0)
+                if (output_vertex[1] < point1_lon - 100 * std::abs(point1_lon)*std::numeric_limits<double>::epsilon())
+                  output_vertex[1] += 2.0 * numbers::PI;
+              break;
+            }
+            case 3:
+            {
+              const double radius=v.norm();
+              output_vertex[0] = radius;
+              output_vertex[1] = std::atan2(v[1], v[0]);
+              // See 2D case
+              if (output_vertex[1] < 0.0)
+                if (output_vertex[1] < point1_lon - 100 * std::abs(point1_lon)*std::numeric_limits<double>::epsilon())
+                  output_vertex[1] += 2.0 * numbers::PI;
+              output_vertex[2] = std::asin(v[2]/radius);
+              break;
+            }
+            default:
+              Assert (false, ExcNotImplemented ());
           }
-          case 3:
-          {
-            const double radius=v.norm();
-            output_vertex[0] = radius;
-            output_vertex[1] = std::atan2(v[1], v[0]);
-            // See 2D case
-            if (output_vertex[1] < 0.0)
-              if (output_vertex[1] < point1_lon - 100 * std::abs(point1_lon)*std::numeric_limits<double>::epsilon())
-                output_vertex[1] += 2.0 * numbers::PI;
-            output_vertex[2] = std::asin(v[2]/radius);
-            break;
-          }
-          default:
-            Assert (false, ExcNotImplemented ());
-        }
-      return output_vertex;
-    }
+        return output_vertex;
+      }
 
 
 
-    template <int dim>
-    void
-    Chunk<dim>::ChunkGeometry::
-    set_min_longitude(const double p1_lon)
-    {
-      point1_lon = p1_lon;
-    }
+      template <int dim>
+      void
+      ChunkGeometry<dim>::
+      set_min_longitude(const double p1_lon)
+      {
+        point1_lon = p1_lon;
+      }
 
 
 
-    template <int dim>
-    std::unique_ptr<Manifold<dim,dim> >
-    Chunk<dim>::ChunkGeometry::
-    clone() const
-    {
-      return std_cxx14::make_unique<ChunkGeometry>(*this);
-    }
+      template <int dim>
+      std::unique_ptr<Manifold<dim,dim> >
+      ChunkGeometry<dim>::
+      clone() const
+      {
+        return std_cxx14::make_unique<ChunkGeometry>(*this);
+      }
 
 
 
-    template <int dim>
-    Point<dim>
-    Chunk<dim>::ChunkGeometry::
-    push_forward_topo(const Point<dim> &r_phi_theta) const
-    {
-      // the radius of the current point without topography
-      const double radius = r_phi_theta[0];
+      template <int dim>
+      Point<dim>
+      ChunkGeometry<dim>::
+      push_forward_topo(const Point<dim> &r_phi_theta) const
+      {
+        // the radius of the current point without topography
+        const double radius = r_phi_theta[0];
 
-      // Grab lon,lat coordinates
-      Point<dim-1> surface_point;
-      for (unsigned int d=0; d<dim-1; ++d)
-        surface_point[d] = r_phi_theta[d+1];
-      // Convert latitude to colatitude
-      if (dim == 3)
-        surface_point[1] = 0.5*numbers::PI - surface_point[1];
-      const double topography = topo->value(surface_point);
+        // Grab lon,lat coordinates
+        Point<dim-1> surface_point;
+        for (unsigned int d=0; d<dim-1; ++d)
+          surface_point[d] = r_phi_theta[d+1];
+        // Convert latitude to colatitude
+        if (dim == 3)
+          surface_point[1] = 0.5*numbers::PI - surface_point[1];
+        const double topography = topo->value(surface_point);
 
-      // adjust the radius based on the radius of the point
-      // through a linear interpolation between 0 at max depth and
-      // "topography" at the surface
-      const double topo_radius = std::max(inner_radius,radius + (radius-inner_radius)/max_depth*topography);
+        // adjust the radius based on the radius of the point
+        // through a linear interpolation between 0 at max depth and
+        // "topography" at the surface
+        const double topo_radius = std::max(inner_radius,radius + (radius-inner_radius)/max_depth*topography);
 
-      // return the point with adjusted radius
-      Point<dim> topor_phi_theta = r_phi_theta;
-      topor_phi_theta[0] = topo_radius;
+        // return the point with adjusted radius
+        Point<dim> topor_phi_theta = r_phi_theta;
+        topor_phi_theta[0] = topo_radius;
 
-      return topor_phi_theta;
-    }
-
-
-
-    template <int dim>
-    Point<dim>
-    Chunk<dim>::ChunkGeometry::
-    pull_back_topo(const Point<dim> &topor_phi_theta) const
-    {
-      // the radius of the point with topography
-      const double topo_radius = topor_phi_theta[0];
-
-      // Grab lon,lat coordinates
-      Point<dim-1> surface_point;
-      for (unsigned int d=0; d<dim-1; ++d)
-        surface_point[d] = topor_phi_theta[d+1];
-      // Convert latitude to colatitude
-      if (dim == 3)
-        surface_point[1] = 0.5*numbers::PI - surface_point[1];
-      const double topography = topo->value(surface_point);
-
-      // remove the topography (which scales with radius)
-      const double radius = std::max(inner_radius,(topo_radius*max_depth+inner_radius*topography)/(max_depth+topography));
-
-      // return the point without topography
-      Point<dim> r_phi_theta = topor_phi_theta;
-      r_phi_theta[0] = radius;
-      return r_phi_theta;
-    }
+        return topor_phi_theta;
+      }
 
 
 
-    template <int dim>
-    double
-    Chunk<dim>::ChunkGeometry::
-    get_radius(const Point<dim> &x_y_z) const
-    {
-      const Point<dim> r_phi_theta = pull_back(x_y_z);
-      Point<dim-1> surface_point;
-      for (unsigned int d=0; d<dim-1; ++d)
-        surface_point[d] = r_phi_theta[d+1];
-      // Convert latitude to colatitude
-      if (dim == 3)
-        surface_point[1] = 0.5*numbers::PI - surface_point[1];
-      const double topography = topo->value(surface_point);
+      template <int dim>
+      Point<dim>
+      ChunkGeometry<dim>::
+      pull_back_topo(const Point<dim> &topor_phi_theta) const
+      {
+        // the radius of the point with topography
+        const double topo_radius = topor_phi_theta[0];
 
-      // return the outer radius at this phi, theta point including topography
-      return topography + inner_radius + max_depth;
-    }
+        // Grab lon,lat coordinates
+        Point<dim-1> surface_point;
+        for (unsigned int d=0; d<dim-1; ++d)
+          surface_point[d] = topor_phi_theta[d+1];
+        // Convert latitude to colatitude
+        if (dim == 3)
+          surface_point[1] = 0.5*numbers::PI - surface_point[1];
+        const double topography = topo->value(surface_point);
 
+        // remove the topography (which scales with radius)
+        const double radius = std::max(inner_radius,(topo_radius*max_depth+inner_radius*topography)/(max_depth+topography));
 
-
-    template <int dim>
-    void
-    Chunk<dim>::ChunkGeometry::
-    set_min_radius(const double p1_rad)
-    {
-      inner_radius = p1_rad;
-    }
+        // return the point without topography
+        Point<dim> r_phi_theta = topor_phi_theta;
+        r_phi_theta[0] = radius;
+        return r_phi_theta;
+      }
 
 
 
-    template <int dim>
-    void
-    Chunk<dim>::ChunkGeometry::
-    set_max_depth(const double p2_p1_rad)
-    {
-      max_depth = p2_p1_rad;
+      template <int dim>
+      double
+      ChunkGeometry<dim>::
+      get_radius(const Point<dim> &x_y_z) const
+      {
+        const Point<dim> r_phi_theta = pull_back(x_y_z);
+        Point<dim-1> surface_point;
+        for (unsigned int d=0; d<dim-1; ++d)
+          surface_point[d] = r_phi_theta[d+1];
+        // Convert latitude to colatitude
+        if (dim == 3)
+          surface_point[1] = 0.5*numbers::PI - surface_point[1];
+        const double topography = topo->value(surface_point);
+
+        // return the outer radius at this phi, theta point including topography
+        return topography + inner_radius + max_depth;
+      }
+
+
+
+      template <int dim>
+      void
+      ChunkGeometry<dim>::
+      set_min_radius(const double p1_rad)
+      {
+        inner_radius = p1_rad;
+      }
+
+
+
+      template <int dim>
+      void
+      ChunkGeometry<dim>::
+      set_max_depth(const double p2_p1_rad)
+      {
+        max_depth = p2_p1_rad;
+      }
     }
 
 
@@ -771,26 +827,26 @@ namespace aspect
       {
         prm.enter_subsection("Chunk");
         {
-          prm.declare_entry ("Chunk inner radius", "0",
-                             Patterns::Double (0),
+          prm.declare_entry ("Chunk inner radius", "0.",
+                             Patterns::Double (0.),
                              "Radius at the bottom surface of the chunk. Units: $\\si{m}$.");
-          prm.declare_entry ("Chunk outer radius", "1",
-                             Patterns::Double (0),
+          prm.declare_entry ("Chunk outer radius", "1.",
+                             Patterns::Double (0.),
                              "Radius at the top surface of the chunk. Units: $\\si{m}$.");
 
-          prm.declare_entry ("Chunk minimum longitude", "0",
-                             Patterns::Double (-180, 360), // enables crossing of either hemisphere
+          prm.declare_entry ("Chunk minimum longitude", "0.",
+                             Patterns::Double (-180., 360.), // enables crossing of either hemisphere
                              "Minimum longitude of the chunk. Units: degrees.");
-          prm.declare_entry ("Chunk maximum longitude", "1",
-                             Patterns::Double (-180, 360), // enables crossing of either hemisphere
+          prm.declare_entry ("Chunk maximum longitude", "1.",
+                             Patterns::Double (-180., 360.), // enables crossing of either hemisphere
                              "Maximum longitude of the chunk. Units: degrees.");
 
-          prm.declare_entry ("Chunk minimum latitude", "0",
-                             Patterns::Double (-90, 90),
+          prm.declare_entry ("Chunk minimum latitude", "0.",
+                             Patterns::Double (-90., 90.),
                              "Minimum latitude of the chunk. This value is ignored "
                              "if the simulation is in 2d. Units: degrees.");
-          prm.declare_entry ("Chunk maximum latitude", "1",
-                             Patterns::Double (-90, 90),
+          prm.declare_entry ("Chunk maximum latitude", "1.",
+                             Patterns::Double (-90., 90.),
                              "Maximum latitude of the chunk. This value is ignored "
                              "if the simulation is in 2d. Units: degrees.");
 

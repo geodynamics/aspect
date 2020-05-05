@@ -35,7 +35,7 @@ namespace aspect
       {
         const double alpha = -0.2;     // T0 = 100
 
-        for (unsigned int i=0; i<in.position.size(); ++i)
+        for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
           {
             const double x = in.position[i](0);
             const double z = in.position[i](1);

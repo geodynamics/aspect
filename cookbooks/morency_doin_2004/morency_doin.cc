@@ -35,7 +35,7 @@ namespace aspect
     {
       const double R = 8.32; // J mol-1 K-1
       const double g = 9.8; // m s-2
-      for (unsigned int i=0; i < in.temperature.size(); ++i)
+      for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
         {
           const Point<dim> position = in.position[i];
           const double temperature = in.temperature[i];
@@ -43,7 +43,7 @@ namespace aspect
           const std::vector<double> volume_fractions = MaterialUtilities::compute_volume_fractions(composition);
 
           SymmetricTensor<2,dim> strain_rate;
-          if (in.strain_rate.size())
+          if (in.requests_property(MaterialProperties::viscosity))
             strain_rate = in.strain_rate[i];
 
           const double depth = this->get_geometry_model().depth(position); // units: m

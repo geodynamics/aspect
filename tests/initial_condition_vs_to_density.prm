@@ -1,4 +1,4 @@
-# This tests whether Aspect reads in the 
+# This tests whether ASPECT reads in the 
 # vs to density scaling form a file correctly
 set Dimension                              = 3
 set Use years in output instead of seconds = false

@@ -46,8 +46,8 @@ namespace aspect
       prm.enter_subsection("Termination criteria");
       {
         prm.declare_entry ("Wall time",
-                           "24",
-                           Patterns::Double (0),
+                           "24.",
+                           Patterns::Double (0.),
                            "The wall time of the simulation. Unit: hours.");
       }
       prm.leave_subsection ();

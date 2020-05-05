@@ -172,7 +172,7 @@ namespace aspect
           MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>
           *force = out.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >();
 
-          for (unsigned int i=0; i < in.position.size(); ++i)
+          for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
             {
               const Point<dim> &p = in.position[i];
 

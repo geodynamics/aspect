@@ -97,7 +97,7 @@ namespace aspect
   {
     /**
      * A namespace for the definition of classes that have to do with the
-     * plugin architecture of Aspect.
+     * plugin architecture of ASPECT.
      */
     namespace Plugins
     {

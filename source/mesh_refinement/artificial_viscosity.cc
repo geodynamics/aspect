@@ -58,12 +58,12 @@ namespace aspect
         {
           prm.declare_entry("Temperature scaling factor",
                             "0.0",
-                            Patterns::Double(0),
+                            Patterns::Double (0.),
                             "A scaling factor for the artificial viscosity "
                             " of the temperature equation. Use 0.0 to disable.");
           prm.declare_entry("Compositional field scaling factors",
                             "",
-                            Patterns::List (Patterns::Double(0)),
+                            Patterns::List (Patterns::Double (0.)),
                             "A list of scaling factors by which every individual compositional "
                             "field will be multiplied. These "
                             "factors are used to weigh the various indicators relative to "

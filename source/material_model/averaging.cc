@@ -338,7 +338,7 @@ namespace aspect
        * and the normalized weighted distance averaging schemes need the distance between
        * the points and can not handle a distance of zero.
        */
-      if (out.densities.size() > 1)
+      if (out.n_evaluation_points() > 1)
         {
           /* Average the base model values based on the chosen average */
           average (averaging_operation,in.position,out.viscosities);
@@ -370,8 +370,8 @@ namespace aspect
           prm.declare_entry ("Averaging operation", "none",
                              Patterns::Selection ("none|arithmetic average|harmonic average|geometric average|pick largest|log average|nwd arithmetic average|nwd harmonic average|nwd geometric average"),
                              "Choose the averaging operation to use.");
-          prm.declare_entry ("Bell shape limit", "1",
-                             Patterns::Double(0),
+          prm.declare_entry ("Bell shape limit", "1.",
+                             Patterns::Double(0.),
                              "The limit normalized distance between 0 and 1 where the bell shape becomes zero. See the manual for a more information.");
         }
         prm.leave_subsection();

@@ -74,13 +74,13 @@ namespace aspect
         prm.enter_subsection("Adiabatic boundary");
         {
           prm.declare_entry ("Isotherm temperature", "1673.15",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The value of the isothermal boundary temperature. Units: $\\si{K}$.");
           prm.declare_entry ("Surface temperature", "273.15",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The value of the surface temperature. Units: $\\si{K}$.");
           prm.declare_entry ("Adiabatic temperature gradient", "0.0005",
-                             Patterns::Double (0),
+                             Patterns::Double (0.),
                              "The value of the adiabatic temperature gradient. Units: $K m^{-1}$.");
         }
         prm.leave_subsection();
