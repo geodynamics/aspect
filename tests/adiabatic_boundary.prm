@@ -30,9 +30,9 @@ end
 
 subsection Initial temperature model
   set Model name = adiabatic boundary
-#  subsection Ascii data model
-#    set Data file name = adiabatic_boundary.txt
-#  end
+   subsection Ascii data model
+    set Data file name = adiabatic_boundary.txt
+  end
 end
 
 
@@ -41,10 +41,6 @@ subsection Boundary temperature model
   subsection Initial temperature
   end
 end
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
 
 subsection Boundary temperature model
   set Fixed temperature boundary indicators   = inner, outer

@@ -34,7 +34,7 @@ namespace aspect
 
     /**
      * A class that computes an initial temperature field based
-     * on a user-defined adiabatic boundary.It discretizes the model domain into
+     * on a user-defined adiabatic boundary. It discretizes the model domain into
      * two regions separated by an isotherm boundary below which
      * the temperature increases adiabatically. Above the
      * user-defined isotherm boundary the temperature linearly
@@ -46,7 +46,7 @@ namespace aspect
      * This plugin is developed by Tahiry Rajaonarison, Emmanuel Njinju, and D. Sarah Stamps.
      */
     template <int dim>
-    class AdiabaticBoundary : public Interface<dim>,  public Utilities::AsciiDataBoundary<dim>
+    class AdiabaticBoundary : public Interface<dim>, public Utilities::AsciiDataBoundary<dim>
     {
       public:
 
@@ -64,8 +64,7 @@ namespace aspect
         /**
          * Return the initial temperature as a function of position.
          */
-        virtual
-        double initial_temperature (const Point<dim> &position) const;
+        double initial_temperature (const Point<dim> &position) const override;
 
         /**
          * Declare the parameters that this class needs.
@@ -76,8 +75,7 @@ namespace aspect
         /**
          * Read the parameters above from the parameter file.
          */
-        virtual
-        void parse_parameters (ParameterHandler &prm);
+        void parse_parameters (ParameterHandler &prm) override;
 
       private:
 
