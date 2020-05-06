@@ -1,12 +1,9 @@
-New: I added a "Domain of points sampling method" parameter entry in the 
-gravity_point_values postprocessor which allows to select either equiangular 
-or spiral equidistant sampling. 
-This required to rename the sampling scheme "uniform distribution" 
-by "domain of points" simply because the initially so-called 
-uniform distribution was not uniform at all, but already equiangular. 
-The domain of point spiral sampling method is based on the fibonacci suit
-and required a number of points where gravity is calculated 
-("Number points spiral sampling method" in the input file) rather than 
-the number points of longitude and latitude.
+New: I added a Fibonacci spiral sampling scheme which produces a  
+uniformly distributed map. It can only be used for global sampling. 
+This spiral sampling scheme is based on the fibonacci suit and it 
+requires a total number of points where gravity is calculated 
+("Number points spiral sampling scheme" in the input file) 
+rather than the separate number points of longitude and latitude
+used for the default non-uniform map sampling scheme.
 <br>
 (Ludovic Jeanniot, 2020/03/30)
