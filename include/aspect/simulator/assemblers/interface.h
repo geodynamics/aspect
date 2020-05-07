@@ -571,6 +571,46 @@ namespace aspect
     };
 
     /**
+     * A base class for objects that implement assembly
+     * operations for advection-diffusion problems.
+     *
+     * This class implements functions that provide information
+     * for stabilization mechanisms.
+     */
+    template <int dim>
+    class AdvectionStabilizationInterface
+    {
+      public:
+        virtual ~AdvectionStabilizationInterface ();
+
+        /**
+         * This function returns a representative prefactor for the advection
+         * term of the equation for each quadrature point of the current cell.
+         * In the non-dimensional case this is simply 1.0, but for other
+         * quantities like temperature it is computed using physical units
+         * (like density and specific heat capacity).
+         * This information is useful for algorithms that depend on the
+         * magnitude of individual terms, like stabilization methods.
+         */
+        virtual
+        std::vector<double>
+        advection_prefactors(internal::Assembly::Scratch::ScratchBase<dim> &scratch_base) const;
+
+        /**
+         * This function returns a representative conductivity for the
+         * diffusion part of the equation for each quadrature point of the
+         * current cell. For the pure advection case this factor is 0.0, but
+         * for other quantities like temperature it is
+         * computed using physical units (like thermal conductivity).  This
+         * information is useful for algorithms depending on the magnitude of
+         * individual terms, like stabilization methods.
+         */
+        virtual
+        std::vector<double>
+        diffusion_prefactors(internal::Assembly::Scratch::ScratchBase<dim> &scratch_base) const;
+    };
+
+    /**
      * A class that owns member variables representing
      * all assemblers that need to be called when
      * assembling right hand side vectors, matrices, or complete linear
