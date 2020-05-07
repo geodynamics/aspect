@@ -1366,6 +1366,36 @@ namespace aspect
          */
         std::array<double,dim> coordinates;
     };
+
+
+    /**
+     * Compute the cellwise projection of @p function to the finite element space
+     * described by @p dof_handler.
+     *
+     * @param[in] mapping The mapping object to use.
+     * @param[in] dof_handler The DoFHandler the describes the finite element space to
+     * project into and that corresponds to @p vec_result.
+     * @param[in] component_index The component index of the @p dof_handler for which
+     * the projection is being performed. This component should be described by
+     * a DG finite element.
+     * @param[in] function The function to project into the finite element space.
+     * This function should store the value of the function at the points described
+     * by the 2nd argument into the 3rd argument as an std::vector<double>
+     * of size quadrature.size().
+     * @param[out] vec_result The output vector where the projected function will be
+     * stored in.
+     */
+    template <int dim, typename VectorType>
+    void
+    project_cellwise(const Mapping<dim>                                        &mapping,
+                     const DoFHandler<dim>                                     &dof_handler,
+                     const unsigned int                                         component_index,
+                     const Quadrature<dim>                                     &quadrature,
+                     const std::function<void(
+                       const typename DoFHandler<dim>::active_cell_iterator &,
+                       const std::vector<Point<dim> > &,
+                       std::vector<double> &)>                                 &function,
+                     VectorType                                                &vec_result);
   }
 }
 
