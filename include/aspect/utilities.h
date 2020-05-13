@@ -1369,7 +1369,7 @@ namespace aspect
 
 
     /**
-     * Compute the cellwise projection of @p function to the finite element space
+     * Compute the cellwise projection of component @p component_index of @p function to the finite element space
      * described by @p dof_handler.
      *
      * @param[in] mapping The mapping object to use.
