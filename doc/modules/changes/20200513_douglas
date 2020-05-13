@@ -1,0 +1,10 @@
+New: Modified benchmark of elastic stress build-up in a viscoelastic cantilever flexing under its own weight.
+     The boundary conditions are modified to have an open top and bottom, which allows the ambient fluid to be more
+     readily displaced while the cantilever flexes. Four python scripts are included which create various plots that are
+     useful for comparison to an analytic solution from Geodynamics, Turcotte and Schubert. These 4 scripts plot: 
+     1) The stress profile near the attachment point of the beam 
+     2) The maximum/minimum stress with time
+     3) The maximum deflection with time
+     4) The shape of the beam when it is at its maximum flexed state. 
+<br>
+(D. Douglas, J. Naliboff, G. Ito, 2020/05/13)
