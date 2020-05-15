@@ -320,6 +320,69 @@ namespace aspect
        */
       static
       void declare_parameters (ParameterHandler &prm);
+
+      /**
+       * Return a reference to the DoFHandler that is used for velocity in
+       * the block GMG solver.
+       */
+      virtual const DoFHandler<dim> &
+      get_dof_handler_v () const = 0;
+
+      /**
+       * Return a reference to the DoFHandler that is used for pressure in
+       * the block GMG solver.
+       */
+      virtual const DoFHandler<dim> &
+      get_dof_handler_p () const = 0;
+
+      /**
+       * Return a reference to the DoFHandler that is used for the coefficient
+       * projection in the block GMG solver.
+       */
+      virtual const DoFHandler<dim> &
+      get_dof_handler_projection () const = 0;
+
+      /**
+       * Return a pointer to the object that describes the velocity DoF
+       * constraints for the block GMG Stokes solver.
+       */
+      virtual const ConstraintMatrix &
+      get_constraints_v () const = 0;
+
+      /**
+       * Return a pointer to the object that describes the pressure DoF
+       * constraints for the block GMG Stokes solver.
+       */
+      virtual const ConstraintMatrix &
+      get_constraints_p () const = 0;
+
+      /**
+       * Return a pointer to the MGTransfer object used for the A block
+       * of the block GMG Stokes solver.
+       */
+      virtual const MGTransferMatrixFree<dim,double> &
+      get_mg_transfer_A () const = 0;
+
+      /**
+       * Return a pointer to the MGTransfer object used for the Schur
+       * complement block of the block GMG Stokes solver.
+       */
+      virtual const MGTransferMatrixFree<dim,double> &
+      get_mg_transfer_S () const = 0;
+
+      /**
+       * Return a pointer to the Table containing the viscosities on
+       * the active level used in the block GMG Stokes solver.
+       */
+      virtual const Table<1, VectorizedArray<double>> &
+                                                   get_active_viscosity_table() const = 0;
+
+      /**
+       * Return a pointer to the Tables containing the viscosities on
+       * the multigrid levels used in the block GMG Stokes solver.
+       */
+      virtual const MGLevelObject<Table<1, VectorizedArray<double>>> &
+      get_level_viscosity_tables() const = 0;
   };
 
   /**
@@ -391,6 +454,69 @@ namespace aspect
        */
       static
       void declare_parameters (ParameterHandler &prm);
+
+      /**
+       * Return a reference to the DoFHandler that is used for velocity in
+       * the block GMG solver.
+       */
+      const DoFHandler<dim> &
+      get_dof_handler_v () const override;
+
+      /**
+       * Return a reference to the DoFHandler that is used for pressure in
+       * the block GMG solver.
+       */
+      const DoFHandler<dim> &
+      get_dof_handler_p () const override;
+
+      /**
+       * Return a reference to the DoFHandler that is used for the coefficient
+       * projection in the block GMG solver.
+       */
+      const DoFHandler<dim> &
+      get_dof_handler_projection () const override;
+
+      /**
+       * Return a pointer to the object that describes the velocity DoF
+       * constraints for the block GMG Stokes solver.
+       */
+      const ConstraintMatrix &
+      get_constraints_v () const override;
+
+      /**
+       * Return a pointer to the object that describes the pressure DoF
+       * constraints for the block GMG Stokes solver.
+       */
+      const ConstraintMatrix &
+      get_constraints_p () const override;
+
+      /**
+       * Return a pointer to the MGTransfer object used for the A block
+       * of the block GMG Stokes solver.
+       */
+      const MGTransferMatrixFree<dim,double> &
+      get_mg_transfer_A () const override;
+
+      /**
+       * Return a pointer to the MGTransfer object used for the Schur
+       * complement block of the block GMG Stokes solver.
+       */
+      const MGTransferMatrixFree<dim,double> &
+      get_mg_transfer_S () const override;
+
+      /**
+       * Return a pointer to the Table containing the viscosities on
+       * the active level used in the block GMG Stokes solver.
+       */
+      const Table<1, VectorizedArray<double>> &
+                                           get_active_viscosity_table() const override;
+
+      /**
+       * Return a pointer to the Tables containing the viscosities on
+       * the multigrid levels used in the block GMG Stokes solver.
+       */
+      const MGLevelObject<Table<1, VectorizedArray<double>>> &
+      get_level_viscosity_tables() const override;
 
     private:
       /**
