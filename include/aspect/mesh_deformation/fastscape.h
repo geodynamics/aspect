@@ -125,6 +125,7 @@ namespace aspect
         double dx;
         double dy;
         double end_time;
+        double y_extent_2d;
 
         //Boundary conditions
         unsigned int bottom;

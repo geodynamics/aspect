@@ -66,7 +66,7 @@ namespace aspect
       if (dim == 2)
         {
           dy = dx;
-          y_extent = grid_extent[0].second*3+2*dy;
+          y_extent = round(y_extent_2d/dy)*dy+2*dy;             //x_extent; //grid_extent[0].second*3+2*dy;
           ny = 1+y_extent/dy;
         }
 
@@ -621,8 +621,9 @@ namespace aspect
                 while (istep<steps);
 
                 auto t_end = std::chrono::high_resolution_clock::now();
-                keep_time += std::chrono::duration<double>(t_end-t_start).count();
-                this->get_pcout()<<"      Total FastScape runtime... "<<round(keep_time*1000)/1000<<"s"<<std::endl;
+                double r_time = std::chrono::duration<double>(t_end-t_start).count();
+                keep_time += r_time;
+                this->get_pcout()<<"      FastScape runtime... "<<round(r_time*1000)/1000<<"s"<<std::endl;
               }
 
               //If we've reached the end time, destroy fastscape.
@@ -678,17 +679,17 @@ namespace aspect
                 {
                   if (slice)
                     {
-                      int index = i+nx*((ny-1)/2);
+                      int index = i+nx*(round((ny-1)/2));
                       V2[i-1] = V[index];
                     }
                   else
                     {
-                      for (int ys=edge; ys<(ny-edge); ys++)
+                      for (int ys=1; ys<(ny-1); ys++)
                         {
                           int index = i+nx*ys;
                           V2[i-1] += V[index];
                         }
-                      V2[i-1] = V2[i-1]/(ny-edge*2);
+                      V2[i-1] = V2[i-1]/(ny-2);
                     }
                 }
 
@@ -832,6 +833,10 @@ namespace aspect
           prm.declare_entry("Number of horizons", "1",
                             Patterns::Integer(),
                             "Number of horizons to track and visualize in FastScape..");
+          prm.declare_entry("Y extent in 2d", "100000",
+                            Patterns::Double(),
+                            "Y extent when used with 2D");
+
 
           prm.enter_subsection ("Boundary conditions");
           {
@@ -965,6 +970,7 @@ namespace aspect
           use_strat = prm.get_bool("Use stratigraphy");
           nstepp = prm.get_integer("Total steps");
           nreflectorp = prm.get_integer("Number of horizons");
+          y_extent_2d = prm.get_double("Y extent in 2d");
 
           prm.enter_subsection("Boundary conditions");
           {
