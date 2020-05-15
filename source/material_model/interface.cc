@@ -480,7 +480,7 @@ namespace aspect
     {
       std::string get_averaging_operation_names ()
       {
-        return "none|arithmetic average|harmonic average|geometric average|pick largest|project to Q1|log average|harmonic average only viscosity";
+        return "none|arithmetic average|harmonic average|geometric average|pick largest|project to Q1|log average|harmonic average only viscosity|project to Q1 only viscosity";
       }
 
 
@@ -502,6 +502,8 @@ namespace aspect
           return log_average;
         else if (s == "harmonic average only viscosity")
           return harmonic_average_only_viscosity;
+        else if (s == "project to Q1 only viscosity")
+          return project_to_Q1_only_viscosity;
         else
           AssertThrow (false,
                        ExcMessage ("The value <" + s + "> for a material "
@@ -514,7 +516,7 @@ namespace aspect
 
       // Do the requested averaging operation for one array. The
       // projection matrix argument is only used if the operation
-      // chosen is project_to_Q1
+      // chosen is project_to_Q1.
       void average_property (const AveragingOperation  operation,
                              const FullMatrix<double>      &projection_matrix,
                              const FullMatrix<double>      &expansion_matrix,
@@ -782,7 +784,9 @@ namespace aspect
         FullMatrix<double> projection_matrix;
         FullMatrix<double> expansion_matrix;
 
-        if (operation == project_to_Q1)
+        if (operation == project_to_Q1
+            ||
+            operation == project_to_Q1_only_viscosity)
           {
             projection_matrix.reinit (quadrature_formula.size(),
                                       quadrature_formula.size());
@@ -796,6 +800,13 @@ namespace aspect
         if (operation == harmonic_average_only_viscosity)
           {
             average_property (harmonic_average, projection_matrix, expansion_matrix,
+                              values_out.viscosities);
+            return;
+          }
+
+        if (operation == project_to_Q1_only_viscosity)
+          {
+            average_property (project_to_Q1, projection_matrix, expansion_matrix,
                               values_out.viscosities);
             return;
           }
