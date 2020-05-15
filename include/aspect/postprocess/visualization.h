@@ -387,7 +387,7 @@ namespace aspect
         write_plugin_graph (std::ostream &output_stream);
 
         /**
-         * Return the value of the parameter @pointwise_stress_and_strain
+         * Return the value of the parameter @p pointwise_stress_and_strain
          * that is controlled by the parameter "Point-wise stress and strain".
          */
         bool output_pointwise_stress_and_strain() const;

@@ -356,9 +356,6 @@ SimulatorAccess -> N6aspect13MaterialModel12ViscoPlasticILi2EEE [style="dotted",
 N6aspect13MaterialModel12ViscoelasticILi2EEE [label="viscoelastic", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
 N6aspect13MaterialModel12ViscoelasticILi2EEE -> N6aspect13MaterialModel9InterfaceILi2EEE [len=3, weight=50];
 SimulatorAccess -> N6aspect13MaterialModel12ViscoelasticILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
-N6aspect13MaterialModel19ViscoelasticPlasticILi2EEE [label="viscoelastic\nplastic", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
-N6aspect13MaterialModel19ViscoelasticPlasticILi2EEE -> N6aspect13MaterialModel9InterfaceILi2EEE [len=3, weight=50];
-SimulatorAccess -> N6aspect13MaterialModel19ViscoelasticPlasticILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
 N6aspect13MaterialModel9InterfaceILi2EEE -> Simulator [len=15, weight=50];
 
 N6aspect14MeshRefinement9InterfaceILi2EEE [label="Mesh refinement criteria interface", height=.8,width=.8,shape="rect",fillcolor="green"]
