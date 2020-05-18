@@ -512,8 +512,8 @@ namespace aspect
           prm.declare_entry ("Number points fibonacci spiral", "200",
                              Patterns::Integer (0),
                              "Parameter for the fibonacci spiral sampling scheme: "
-                             "This specifies the desired number of satellites per number "
-                             "points radius. The default value is 200. Note that sampling "
+                             "This specifies the desired number of satellites per radius "
+                             "layer. The default value is 200. Note that sampling "
                              "becomes more uniform with increasing number of satellites");
           prm.declare_entry ("Quadrature degree increase", "0",
                              Patterns::Integer (0),
@@ -550,7 +550,6 @@ namespace aspect
                              Patterns::Double (0.0),
                              "Parameter for the map sampling scheme: "
                              "Maximum radius can be defined in or outside the model.");
-<<<<<<< HEAD
           prm.declare_entry ("Minimum longitude", "-180.",
                              Patterns::Double (-180.0, 180.0),
                              "Parameter for the uniform distribution sampling scheme: "
@@ -569,26 +568,6 @@ namespace aspect
           prm.declare_entry ("Maximum latitude", "90",
                              Patterns::Double (-90.0, 90.0),
                              "Parameter for the uniform distribution sampling scheme: "
-=======
-          prm.declare_entry ("Minimum longitude", "-180",
-                             Patterns::Double (-180.0,180.0),
-                             "Parameter for the map sampling scheme: "
-                             "Gravity may be calculated for a sets of points along "
-                             "the longitude between a minimum and maximum longitude.");
-          prm.declare_entry ("Minimum latitude", "-90",
-                             Patterns::Double (-90.0,90.0),
-                             "Parameter for the map sampling scheme: "
-                             "Gravity may be calculated for a sets of points along "
-                             "the latitude between a minimum and maximum latitude.");
-          prm.declare_entry ("Maximum longitude", "180",
-                             Patterns::Double (-180.0,180.0),
-                             "Parameter for the map sampling scheme: "
-                             "Gravity may be calculated for a sets of points along "
-                             "the longitude between a minimum and maximum longitude.");
-          prm.declare_entry ("Maximum latitude", "90",
-                             Patterns::Double (-90.0,90.0),
-                             "Parameter for the map sampling scheme: "
->>>>>>> remove sampling method and rename spiral sampling scheme to fibonacci piral
                              "Gravity may be calculated for a sets of points along "
                              "the latitude between a minimum and maximum latitude.");
           prm.declare_entry ("Reference density", "3300.",
@@ -661,7 +640,7 @@ namespace aspect
           else
             AssertThrow (false, ExcMessage ("Not a valid sampling scheme."));
           quadrature_degree_increase = prm.get_integer ("Quadrature degree increase");
-          n_points_spiral     = prm.get_integer("Number points spiral sampling method");
+          n_points_spiral     = prm.get_integer("Number points fibonacci spiral");
           n_points_radius     = prm.get_integer("Number points radius");
           n_points_longitude  = prm.get_integer("Number points longitude");
           n_points_latitude   = prm.get_integer("Number points latitude");

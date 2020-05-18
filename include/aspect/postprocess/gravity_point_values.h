@@ -162,7 +162,7 @@ namespace aspect
         unsigned int n_points_spiral;
 
         /**
-         * Parameter for the map sampling scheme:
+         * Parameter for the map and fibonacci spiral sampling scheme:
          * Gravity may be calculated for a sets of points along the radius (e.g. depth
          * profile) between a minimum and maximum radius. Number of points along the radius
          * is specified with n_points_radius.
@@ -170,7 +170,7 @@ namespace aspect
         unsigned int n_points_radius;
 
         /**
-         * Parameter for the map and fibonacci spiral sampling scheme:
+         * Parameter for the map sampling scheme:
          * Gravity may be calculated for a sets of points along the longitude (e.g. satellite
          * mapping) between a minimum and maximum longitude. Number of points along the
          * longitude is specified with n_points_longitude.
@@ -236,8 +236,7 @@ namespace aspect
         double reference_density;
 
         /**
-         * Specify the sampling scheme determining if gravity calculation is performed
-         * for a equianfgled map, uniformly distributed map or a list of points..
+         * Specify the sampling scheme determining if gravity calculation is performed.
          */
         enum SamplingScheme
         {

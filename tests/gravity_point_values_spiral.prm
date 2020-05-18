@@ -1,5 +1,5 @@
 # A simple setup for testing the gravity postprocessor using the 
-# sample scheme 'map'.
+# sample scheme 'fibonacci spiral'.
 # See the corresponding section in the manual for more information.
 
 # General parameters
