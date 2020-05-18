@@ -1962,7 +1962,7 @@ namespace aspect
     AsciiDataLookup<dim>::get_gradients(const Point<dim> &position,
                                         const unsigned int component)
     {
-      return data[component]->gradient(position,component);
+      return data[component]->gradient(position,0);
     }
 
 
