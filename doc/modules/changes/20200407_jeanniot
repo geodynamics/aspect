@@ -1,0 +1,8 @@
+New: I added a Fibonacci spiral sampling scheme to the 'gravity point values'
+postprocessor, which produces a uniformly distributed map. It can only be used
+for global sampling. This sampling scheme is based on the Fibonacci suit and
+generates a user defined number of sampling locations per radius rather than
+the longitude-latitude grid used for the default non-uniform map sampling
+scheme.
+<br>
+(Ludovic Jeanniot, 2020/04/07)

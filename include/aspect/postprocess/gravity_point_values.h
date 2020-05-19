@@ -157,7 +157,12 @@ namespace aspect
         unsigned int quadrature_degree_increase;
 
         /**
-         * Parameter for the uniform distribution sampling scheme:
+         * Parameter for the fibonacci spiral sampling scheme:
+         */
+        unsigned int n_points_spiral;
+
+        /**
+         * Parameter for the map and fibonacci spiral sampling scheme:
          * Gravity may be calculated for a sets of points along the radius (e.g. depth
          * profile) between a minimum and maximum radius. Number of points along the radius
          * is specified with n_points_radius.
@@ -165,7 +170,7 @@ namespace aspect
         unsigned int n_points_radius;
 
         /**
-         * Parameter for the uniform distribution sampling scheme:
+         * Parameter for the map sampling scheme:
          * Gravity may be calculated for a sets of points along the longitude (e.g. satellite
          * mapping) between a minimum and maximum longitude. Number of points along the
          * longitude is specified with n_points_longitude.
@@ -173,7 +178,7 @@ namespace aspect
         unsigned int n_points_longitude;
 
         /**
-         * Parameter for the uniform distribution sampling scheme:
+         * Parameter for the map sampling scheme:
          * Gravity may be calculated for a sets of points along the latitude (e.g. satellite
          * mapping) between a minimum and maximum latitude. Number of points along the
          * latitude is specified with n_points_latitude.
@@ -181,14 +186,14 @@ namespace aspect
         unsigned int n_points_latitude;
 
         /**
-         * Parameter for the uniform distribution sampling scheme:
+         * Parameter for the map and fibonacci spiral sampling scheme:
          * Prescribe a minimum radius for a sampling coverage at a specific height.
          * May be set in- or outside the model domain.
          */
         double minimum_radius;
 
         /**
-         * Parameter for the uniform distribution sampling scheme:
+         * Parameter for the map and fibonacci spiral sampling scheme:
          * Maximum radius for the radius range.
          * May be set in- or outside the model domain.
          * No need to specify maximum_radius if n_points_radius is 1.
@@ -196,26 +201,26 @@ namespace aspect
         double maximum_radius;
 
         /**
-         * Parameter for the uniform distribution sampling scheme:
+         * Parameter for the map sampling scheme:
          * Minimum longitude for longitude range.
          */
         double minimum_colongitude;
 
         /**
-         * Parameter for the uniform distribution sampling scheme:
+         * Parameter for the map sampling scheme:
          * Maximum longitude for the longitude range.
          * No need to specify maximum_longitude if n_points_longitude is 1.
          */
         double maximum_colongitude;
 
         /**
-         * Parameter for the uniform distribution sampling scheme:
+         * Parameter for the map sampling scheme:
          * Minimum latitude for the latitude range.
          */
         double minimum_colatitude;
 
         /**
-         * Parameter for the uniform distribution sampling scheme:
+         * Parameter for the map sampling scheme:
          * Maximum latitude for the latitude range.
          * No need to specify maximum_latitude if n_points_latitude is 1.
          */
@@ -231,14 +236,12 @@ namespace aspect
         double reference_density;
 
         /**
-         * Specify the sampling scheme determining if gravity calculation is performed
-         * for a uniform distribution of points or a list of points.
+         * Specify the sampling scheme determining if gravity calculation is performed.
          */
         enum SamplingScheme
         {
           map,
-          list,
-          uniform_distribution,
+          fibonacci_spiral,
           list_of_points
         } sampling_scheme;
 
