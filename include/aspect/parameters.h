@@ -662,6 +662,8 @@ namespace aspect
     double                         global_temperature_min_preset;
     std::vector<double>            global_composition_max_preset;
     std::vector<double>            global_composition_min_preset;
+
+    std::vector<std::string>       disable_boundary_entropy_viscosity_for_compositions;
     /**
      * @}
      */
