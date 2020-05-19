@@ -35,3 +35,22 @@ TEST_CASE("Utilities::weighted_p_norm_average")
     }
 
 }
+
+TEST_CASE("Utilities::AsciiDataLookup")
+{
+  using namespace dealii;
+
+  //TODO: add support for setting data directly instead of relying on a file to load:
+  aspect::Utilities::AsciiDataLookup<1> lookup(2 /*n_components*/, 1.0 /*scaling*/);
+  lookup.load_file(ASPECT_SOURCE_DIR "/data/boundary-velocity/ascii-data/test/box_2d_left.0.txt", MPI_COMM_WORLD);
+
+  INFO(lookup.get_data(Point<1>(330000./2.0),0));
+  INFO(lookup.get_data(Point<1>(330000./2.0),1));
+  INFO(lookup.get_gradients(Point<1>(330000./2.0),0));
+  INFO(lookup.get_gradients(Point<1>(330000./2.0),1));
+
+  REQUIRE(lookup.get_data(Point<1>(330000./2.0),0) == Approx(0.5));
+  REQUIRE(lookup.get_data(Point<1>(330000./2.0),1) == Approx(0.0));
+  REQUIRE(lookup.get_gradients(Point<1>(330000./2.0),0)[0] == Approx(-1.0/330000.));
+  REQUIRE(lookup.get_gradients(Point<1>(330000./2.0),1)[0] == Approx(0.0));
+}
