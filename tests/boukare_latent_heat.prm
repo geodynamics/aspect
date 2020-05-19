@@ -1,4 +1,4 @@
-# This is a test for the latent heat release and compumption
+# This is a test for the latent heat release and consumption
 # in the melt boukare material model. The initial temperature 
 # is set to a value that is out of equilibrium with the initial
 # porosity in the model, specifically, it is set so high that 
