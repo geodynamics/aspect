@@ -337,7 +337,7 @@ namespace aspect
         if (simulator_access->get_parameters().use_operator_splitting)
           melting_rate = (simulator_access->get_timestep() > 0
                           ?
-                          operator_split_reaction * solid_density / simulator_access->get_timestep()
+                          operator_split_reaction * 0.0 / simulator_access->get_timestep()
                           :
                           0.0);
 
