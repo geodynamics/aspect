@@ -532,8 +532,11 @@ namespace aspect
             const double c = -bulk_composition * (1. - 1./p_Mg_mantle);
             double Xls = (-b + std::sqrt(b*b - 4.*a*c))/(2*a);
 
+            const double T_Fe_mantle = dG_Fe_mantle / Fe_mantle_melting_entropy;
+            const double T_Mg_mantle = dG_Mg_mantle / Mg_mantle_melting_entropy;
+
             if (Xls <= bulk_composition
-                && T > std::min(Fe_mantle_melting_temperature, Mg_mantle_melting_temperature)) // above the liquidus
+                && 0 > std::min(T_Fe_mantle, T_Mg_mantle)) // above the liquidus
               {
                 eq_melt_molar_fraction = 1;
                 melt_composition = bulk_composition;
@@ -808,8 +811,11 @@ namespace aspect
                 const double c = -bulk_composition * (1. - 1./p_Mg_mantle);
                 double Xls = (-b + std::sqrt(b*b - 4.*a*c))/(2.*a);
 
+                const double T_Fe_mantle = dG_Fe_mantle / Fe_mantle_melting_entropy;
+                const double T_Mg_mantle = dG_Mg_mantle / Mg_mantle_melting_entropy;
+
                 if (Xls <= bulk_composition
-                    && T > std::min(Fe_mantle_melting_temperature, Mg_mantle_melting_temperature)) // above the liquidus
+                    && 0 > std::min(T_Fe_mantle, T_Mg_mantle)) // above the liquidus
                   {
                     melt_molar_fraction = 1.0;
                     melt_composition = bulk_composition;
