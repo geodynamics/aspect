@@ -918,7 +918,7 @@ namespace aspect
                              Patterns::Double (0),
                              "The value of the constant melt viscosity $\\eta_f$. Units: $Pa \\, s$.");
           prm.declare_entry ("Exponential melt weakening factor", "27",
-                             Patterns::Double (0),
+                             Patterns::Double (),
                              "The porosity dependence of the viscosity. Units: dimensionless.");
           prm.declare_entry ("Thermal viscosity exponent", "0.0",
                              Patterns::Double (0),
