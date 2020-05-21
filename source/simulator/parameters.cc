@@ -357,6 +357,28 @@ namespace aspect
                            "complement solver is used. The direct solver is only efficient "
                            "for small problems.");
 
+        prm.declare_entry ("Krylov method for cheap solver steps", "GMRES",
+                           Patterns::Selection(StokesKrylovType::pattern()),
+                           "This is the Krylov method used to solve the Stokes system. Both options, GMRES "
+                           "and IDR(s), solve non-symmetric, indefinite systems. GMRES "
+                           "guarantees the residual will be reduced in each iteration while IDR(s) has "
+                           "no such property. On the other hand, the vector storage requirement for GMRES is "
+                           "dependent on the restart length and can be quite restrictive (since, for "
+                           "the matrix-free GMG solver, memory is dominated by these vectors) whereas "
+                           "IDR(s) has a short term recurrence. "
+                           "Note that the IDR(s) Krylov method is not available for the AMG solver since "
+                           "it is not a flexible method, i.e., it cannot handle a preconditioner which "
+                           "may change in each iteration (the AMG-based preconditioner contains a CG solve "
+                           "in the pressure space which may have different number of iterations each step).");
+
+        prm.declare_entry ("IDR(s) parameter", "2",
+                           Patterns::Integer(1),
+                           "This is the sole parameter for the IDR(s) Krylov solver and will dictate the "
+                           "number of matrix-vector products and preconditioner applications per iteration (s+1) "
+                           "and the total number of temporary vectors required (5+3*s). For s=1, this method is "
+                           "analogous to BiCGStab. As s is increased this method is expected to converge to "
+                           "GMRES in terms of matrix-vector/preconditioner applications to solution.");
+
         prm.declare_entry ("Linear solver tolerance", "1e-7",
                            Patterns::Double(0., 1.),
                            "A relative tolerance up to which the linear Stokes systems in each "
@@ -451,6 +473,7 @@ namespace aspect
                            "\\cite{KHB12}.");
       }
       prm.leave_subsection ();
+
       prm.enter_subsection ("AMG parameters");
       {
         prm.declare_entry ("AMG smoother type", "Chebyshev",
@@ -1321,6 +1344,8 @@ namespace aspect
         if (prm.get_bool("Use direct solver for Stokes system"))
           stokes_solver_type = StokesSolverType::direct_solver;
         use_direct_stokes_solver        = stokes_solver_type==StokesSolverType::direct_solver;
+        stokes_krylov_type = StokesKrylovType::parse(prm.get("Krylov method for cheap solver steps"));
+        idr_s_parameter    = prm.get_integer("IDR(s) parameter");
 
         linear_stokes_solver_tolerance  = prm.get_double ("Linear solver tolerance");
         n_cheap_stokes_solver_steps     = prm.get_integer ("Number of cheap Stokes solver steps");
@@ -1331,6 +1356,7 @@ namespace aspect
         stokes_gmres_restart_length     = prm.get_integer("GMRES solver restart length");
       }
       prm.leave_subsection ();
+
       prm.enter_subsection ("AMG parameters");
       {
         AMG_smoother_type                      = prm.get ("AMG smoother type");
