@@ -186,6 +186,9 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
 
       for (unsigned int i = 0; i < 5; i++)
         {
+          // components that are not on the diagonal are multiplied by 0.5, because the symmetric tensor
+          // is modified by 0.5 in both symmetric directions (xy/yx) simultaneously and we compute the combined
+          // derivative
           in_dviscositydstrainrate.strain_rate[i] = in_base.strain_rate[i]
                                                     + std::fabs(in_base.strain_rate[i][strain_rate_indices])
                                                     * (component > dim-1 ? 0.5 : 1 )
@@ -264,4 +267,3 @@ void signal_connector (aspect::SimulatorSignals<dim> &signals)
 
 ASPECT_REGISTER_SIGNALS_CONNECTOR(signal_connector<2>,
                                   signal_connector<3>)
-

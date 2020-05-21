@@ -349,6 +349,9 @@ namespace aspect
             {
               const TableIndices<2> strain_rate_indices = SymmetricTensor<2,dim>::unrolled_to_component_indices (component);
 
+               // components that are not on the diagonal are multiplied by 0.5, because the symmetric tensor
+               // is modified by 0.5 in both symmetric directions (xy/yx) simultaneously and we compute the combined
+               // derivative
               const SymmetricTensor<2,dim> strain_rate_difference = in.strain_rate[i]
                                                                     + std::max(std::fabs(in.strain_rate[i][strain_rate_indices]), min_strain_rate)
                                                                     * (component > dim-1 ? 0.5 : 1 )
