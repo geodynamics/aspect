@@ -5,10 +5,11 @@
 #
 # The benchmark examines bending of a viscoelastic beam surrounded by a less dense
 # and viscous (inelastic) fluid. Gravitational forces drive initial bending 
-# (elastic strain) of the beam. The analytic solution is from Geodynamics by 
-# Turcotte and Schubert. Models have been tested for deflections that are no greater 
-# than half the thickness of the beam. More flexure could potentially lead to a breakdown
-# of the fit since the analytic solution assumes small deflection relative to the thickness. 
+# (elastic strain) of the beam. The analytic solution is from Geodynamics 3rd Edition by 
+# Turcotte and Schubert, Chapter 3.10 (eq. 3.85 for flexure and 3.86 for stress). 
+# Models have been tested for deflections that are no greater than half the thickness of 
+# the beam. More flexure could potentially lead to a breakdown of the fit since the analytic
+# solution assumes small deflection relative to the thickness. 
 
 include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_bending_beam/viscoelastic_bending_beam.prm
 
