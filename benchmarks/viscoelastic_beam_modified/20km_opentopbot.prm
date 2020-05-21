@@ -18,16 +18,16 @@ set Start time                             = 0
 set End time                               = 200e3
 set Use years in output instead of seconds = true
 set Maximum time step                      = 1e3
-set Output directory                       = 10kmh_10drho
+set Output directory                       = 20kmh_05drho
 
 # Model geometry (240x160 km, 1 km spacing)
 subsection Geometry model
   set Model name = box
 
   subsection Box
-    set X repetitions = 120
+    set X repetitions = 160
     set Y repetitions = 80
-    set X extent      = 240e3
+    set X extent      = 320e3
     set Y extent      = 160e3
   end
 end
@@ -44,15 +44,14 @@ end
 subsection Boundary traction model
   set Prescribed traction boundary indicators = top: initial lithostatic pressure, bottom: initial lithostatic pressure
 
-  # Set the point for the open top
+  # Set the point for the open top and bottom boundaries
   subsection Initial lithostatic pressure
-    set Representative point = 240e3, 160e3
+    set Representative point = 320e3, 160e3
     set Number of integration points = 10000
   end
 
-  # Set the point for the open bottom and top boundaries
   subsection Initial lithostatic pressure
-    set Representative point = 240e3, 0
+    set Representative point = 320e3, 0
     set Number of integration points = 10000
   end
 end
@@ -64,7 +63,7 @@ subsection Initial composition model
   subsection Function
     set Variable names      = x,y
     set Function constants  = 
-    set Function expression = 0; 0; 0; if ( 90e3>=x && y>=100e3 && y<=110e3, 1, 0)
+    set Function expression = 0; 0; 0; if ( 180e3>=x && y>=100e3 && y<=210e3, 1, 0)
   end
 end
 
@@ -73,7 +72,7 @@ end
 subsection Material model
   set Model name = viscoelastic
   subsection Viscoelastic
-    set Densities            =  2800,  2800,  2800,  2800,  2810
+    set Densities            =  2800,  2800,  2800,  2800,  2805
     set Viscosities          = 1.e18, 1.e18, 1.e18, 1.e18, 1.e24
     set Elastic shear moduli = 1.e11, 1.e11, 1.e11, 1.e11, 1.e10
   end
@@ -90,3 +89,4 @@ end
 subsection Termination criteria
   set Termination criteria = end time
 end
+
