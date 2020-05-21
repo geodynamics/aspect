@@ -303,7 +303,7 @@ namespace aspect
         melt_fraction (const double temperature,
                        const double pressure,
                        const double bulk_composition,
-                       const double molar_volatiles_in_melt,
+                       double &molar_volatiles_in_melt,
                        double &solid_composition,
                        double &melt_composition) const;
 

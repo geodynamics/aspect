@@ -394,69 +394,65 @@ namespace aspect
     melt_fraction (const double temperature,
                    const double pressure,
                    const double molar_composition_of_bulk,
-                   const double molar_volatiles_in_melt,
+                   double &molar_volatiles_in_melt,
                    double &new_molar_composition_of_solid,
                    double &new_molar_composition_of_melt) const
     {
       if (temperature == 0)
         return 0;
 
-      // after Phipps Morgan, Jason. "Thermodynamics of pressure release melting of a veined plum pudding mantle."
-      // Geochemistry, Geophysics, Geosystems 2.4 (2001). Values below taken from table A1.
+      const double molar_volatiles_in_bulk = 1.e-4;
+      {
+        // after Phipps Morgan, Jason. "Thermodynamics of pressure release melting of a veined plum pudding mantle."
+        // Geochemistry, Geophysics, Geosystems 2.4 (2001).
+        const double P = pressure;                   // pressure in Pa
+        const double T = temperature;                // temperature in K
+        const double R = constants::gas_constant;    // Ideal Gas Constant
 
-      const double P = pressure;                   // pressure in Pa
-      const double T = temperature;                // temperature in K
-      const double R = constants::gas_constant;    // Ideal Gas Constant
+        // Free Energy Change Delta_G due to Melting as a function of temperature and pressure
+        const double dG_Fe_mantle = (Fe_mantle_melting_temperature - T) * Fe_mantle_melting_entropy
+                                    + (P - melting_reference_pressure) * Fe_mantle_melting_volume;
+        const double dG_Mg_mantle = (Mg_mantle_melting_temperature - T) * Mg_mantle_melting_entropy
+                                    + (P - melting_reference_pressure) * Mg_mantle_melting_volume;
 
+        const double p_Fe_mantle = std::exp(dG_Fe_mantle/(Fe_number_of_moles*R*T));
+        const double p_Mg_mantle = std::exp(dG_Mg_mantle/(Mg_number_of_moles*R*T));
 
-      // Free Energy Change Delta_G due to Melting as a function of temperature and pressure
-      const double dG_Fe_mantle = (Fe_mantle_melting_temperature - T) * Fe_mantle_melting_entropy
-                                  + (P - melting_reference_pressure) * Fe_mantle_melting_volume;
-      const double dG_Mg_mantle = (Mg_mantle_melting_temperature - T) * Mg_mantle_melting_entropy
-                                  + (P - melting_reference_pressure) * Mg_mantle_melting_volume;
+        // Mole composition of the solid and liquid (corresponds to the molar fraction of X_Fe, the iron-bearing endmember).
+        // In addition to the Phipps Morgan model, we also include volatiles here.
+        const double a = (p_Fe_mantle - p_Mg_mantle) * p_Fe_mantle/p_Mg_mantle;
+        const double b = p_Fe_mantle * (1. - 1./p_Mg_mantle) - molar_composition_of_bulk * (p_Fe_mantle - p_Mg_mantle)/p_Mg_mantle + molar_volatiles_in_bulk * (1. - p_Fe_mantle);
+        const double c = -molar_composition_of_bulk * (1. - 1./p_Mg_mantle);
+        double Xls = (-b + std::sqrt(b*b - 4.*a*c))/(2.*a);
 
+        const double T_Fe_mantle = dG_Fe_mantle / Fe_mantle_melting_entropy;
+        const double T_Mg_mantle = dG_Mg_mantle / Mg_mantle_melting_entropy;
 
-      double melt_fraction;
+        double melt_molar_fraction;
 
-      // If we are so far below the solidus that we can not reasonably compute the compositions,
-      // set their values explicitly. We can freely set the melt composition (as there is no melt)
-      // so we set it in a way that makes it continuous.
-      if (T < 0.5 * std::min(Fe_mantle_melting_temperature, Mg_mantle_melting_temperature))
-        {
-          melt_fraction = 0.0;
-          new_molar_composition_of_solid = molar_composition_of_bulk;
-          new_molar_composition_of_melt = 0.0;
-          return melt_fraction;
-        }
+        if (Xls <= molar_composition_of_bulk
+            && 0 > std::min(T_Fe_mantle, T_Mg_mantle)) // above the liquidus
+          {
+            melt_molar_fraction = 1.0;
+            new_molar_composition_of_melt = molar_composition_of_bulk;
+            new_molar_composition_of_solid = molar_composition_of_bulk;
 
-      // Mole composition of the solid and liquid (corresponds to the molar fraction of X_Fe, the iron-bearing endmember)
-      const double p_Fe_mantle = std::exp(dG_Fe_mantle/(Fe_number_of_moles*R*T));
-      const double p_Mg_mantle = std::exp(dG_Mg_mantle/(Mg_number_of_moles*R*T));
-      const double molar_composition_of_melt  = (1.0 - (1. - molar_volatiles_in_melt) * p_Mg_mantle) / (p_Fe_mantle - p_Mg_mantle);
-      const double molar_composition_of_solid = molar_composition_of_melt * p_Fe_mantle;
+            molar_volatiles_in_melt = molar_volatiles_in_bulk;
+          }
+        else
+          {
+            double Xss = Xls * p_Fe_mantle;
 
+            new_molar_composition_of_solid = std::max(std::min(Xss, molar_composition_of_bulk), 0.0);
+            new_molar_composition_of_melt = std::min(std::max(Xls, molar_composition_of_bulk), 1.0);
+            melt_molar_fraction = std::min(std::max((molar_composition_of_bulk - Xss) / (Xls - Xss), 0.0), 1.0);
 
-      if (molar_composition_of_solid >= molar_composition_of_bulk)     // below the solidus
-        {
-          melt_fraction = 0;
-          new_molar_composition_of_solid = molar_composition_of_bulk;
-          // TODO: make this solidus melt composition
-          new_molar_composition_of_melt = molar_composition_of_bulk / std::exp(dG_Fe_mantle/(Fe_number_of_moles*R*T));
-        }
-      else if (molar_composition_of_melt <= molar_composition_of_bulk) // above the liquidus
-        {
-          melt_fraction = 1;
-          new_molar_composition_of_melt = molar_composition_of_bulk;
-          new_molar_composition_of_solid = molar_composition_of_bulk;
-        }
-      else                                                             // between solidus and liquidis
-        {
-          new_molar_composition_of_solid = molar_composition_of_solid;
-          new_molar_composition_of_melt = molar_composition_of_melt;
-          melt_fraction = (molar_composition_of_bulk - molar_composition_of_solid) / (molar_composition_of_melt - molar_composition_of_solid);
-        }
+            if (molar_volatiles_in_bulk > 0)
+              molar_volatiles_in_melt = molar_volatiles_in_bulk*(Xls - Xss)/(molar_composition_of_bulk - Xss);
+          }
 
-      return melt_fraction;
+        return melt_molar_fraction;
+      }
     }
 
 
@@ -510,55 +506,14 @@ namespace aspect
 
           const double solid_molar_fraction = 1.0 - melt_molar_fraction;
           double bulk_composition = melt_composition * melt_molar_fraction + solid_composition * solid_molar_fraction;
+          double molar_volatiles_in_melt = 0.0;
 
-          double eq_melt_molar_fraction;
-          {
-            const double P = this->get_adiabatic_conditions().pressure(in.position[q]);
-            const double T = in.temperature[q];
-            const double R = constants::gas_constant;
-
-            // Free Energy Change Delta_G due to Melting as a function of temperature and pressure
-            const double dG_Fe_mantle = (Fe_mantle_melting_temperature - T) * Fe_mantle_melting_entropy
-                                        + (P - melting_reference_pressure) * Fe_mantle_melting_volume;
-            const double dG_Mg_mantle = (Mg_mantle_melting_temperature - T) * Mg_mantle_melting_entropy
-                                        + (P - melting_reference_pressure) * Mg_mantle_melting_volume;
-
-            const double molar_volatiles_in_bulk = 1.e-4;
-            const double p_Fe_mantle = std::exp(dG_Fe_mantle/(Fe_number_of_moles*R*T));
-            const double p_Mg_mantle = std::exp(dG_Mg_mantle/(Mg_number_of_moles*R*T));
-
-            const double a = (p_Fe_mantle - p_Mg_mantle) * p_Fe_mantle/p_Mg_mantle;
-            const double b = p_Fe_mantle * (1. - 1./p_Mg_mantle) - bulk_composition * (p_Fe_mantle - p_Mg_mantle)/p_Mg_mantle + molar_volatiles_in_bulk * (1. - p_Fe_mantle);
-            const double c = -bulk_composition * (1. - 1./p_Mg_mantle);
-            double Xls = (-b + std::sqrt(b*b - 4.*a*c))/(2*a);
-
-            const double T_Fe_mantle = dG_Fe_mantle / Fe_mantle_melting_entropy;
-            const double T_Mg_mantle = dG_Mg_mantle / Mg_mantle_melting_entropy;
-
-            if (Xls <= bulk_composition
-                && 0 > std::min(T_Fe_mantle, T_Mg_mantle)) // above the liquidus
-              {
-                eq_melt_molar_fraction = 1;
-                melt_composition = bulk_composition;
-                solid_composition = bulk_composition;
-              }
-            else
-              {
-                double Xss = Xls * p_Fe_mantle;
-
-                solid_composition = Xss;
-                melt_composition = Xls;
-                eq_melt_molar_fraction = (bulk_composition - Xss) / (Xls - Xss);
-              }
-          }
-
-//          double eq_melt_molar_fraction = this->melt_fraction(in.temperature[q],
-//                                                              this->get_adiabatic_conditions().pressure(in.position[q]),
-//                                                              bulk_composition,
-//                                molar_volatiles_in_melt,
-//                                                              solid_composition,
-//                                                              melt_composition);
-
+          double eq_melt_molar_fraction = this->melt_fraction(in.temperature[q],
+                                                              this->get_adiabatic_conditions().pressure(in.position[q]),
+                                                              bulk_composition,
+															  molar_volatiles_in_melt,
+                                                              solid_composition,
+                                                              melt_composition);
 
           /* ------------- We have to compute this again here because the porosity may have changed ----------------- */
           convert_to_fraction_of_endmembers_in_solid(in.temperature[q],
@@ -785,73 +740,23 @@ namespace aspect
               // in this simple model, the bulk composition is just one number, namely
               // the molar fraction of the combined iron endmembers
               const double bulk_composition = old_melt_composition * melt_molar_fraction + old_solid_composition * solid_molar_fraction;
-
-              if (boukare_out != nullptr)
-                boukare_out->bulk_composition[q] = bulk_composition;
-
-              const double molar_volatiles_in_bulk = 1.e-4;
               double molar_volatiles_in_melt = 0.0;
               double solid_composition, melt_composition;
-              {
-                const double P = this->get_adiabatic_conditions().pressure(in.position[q]);
-                const double T = in.temperature[q];
-                const double R = constants::gas_constant;
-
-                // Free Energy Change Delta_G due to Melting as a function of temperature and pressure
-                const double dG_Fe_mantle = (Fe_mantle_melting_temperature - T) * Fe_mantle_melting_entropy
-                                            + (P - melting_reference_pressure) * Fe_mantle_melting_volume;
-                const double dG_Mg_mantle = (Mg_mantle_melting_temperature - T) * Mg_mantle_melting_entropy
-                                            + (P - melting_reference_pressure) * Mg_mantle_melting_volume;
-
-                const double p_Fe_mantle = std::exp(dG_Fe_mantle/(Fe_number_of_moles*R*T));
-                const double p_Mg_mantle = std::exp(dG_Mg_mantle/(Mg_number_of_moles*R*T));
-
-                const double a = (p_Fe_mantle - p_Mg_mantle) * p_Fe_mantle/p_Mg_mantle;
-                const double b = p_Fe_mantle * (1. - 1./p_Mg_mantle) - bulk_composition * (p_Fe_mantle - p_Mg_mantle)/p_Mg_mantle + molar_volatiles_in_bulk * (1. - p_Fe_mantle);
-                const double c = -bulk_composition * (1. - 1./p_Mg_mantle);
-                double Xls = (-b + std::sqrt(b*b - 4.*a*c))/(2.*a);
-
-                const double T_Fe_mantle = dG_Fe_mantle / Fe_mantle_melting_entropy;
-                const double T_Mg_mantle = dG_Mg_mantle / Mg_mantle_melting_entropy;
-
-                if (Xls <= bulk_composition
-                    && 0 > std::min(T_Fe_mantle, T_Mg_mantle)) // above the liquidus
-                  {
-                    melt_molar_fraction = 1.0;
-                    melt_composition = bulk_composition;
-                    solid_composition = bulk_composition;
-
-                    molar_volatiles_in_melt = molar_volatiles_in_bulk;
-                  }
-                else
-                  {
-                    double Xss = Xls * p_Fe_mantle;
-
-                    solid_composition = std::max(std::min(Xss, bulk_composition), 0.0);
-                    melt_composition = std::min(std::max(Xls, bulk_composition), 1.0);
-                    melt_molar_fraction = std::min(std::max((bulk_composition - Xss) / (Xls - Xss), 0.0), 1.0);
-
-                    if (molar_volatiles_in_bulk > 0)
-                      molar_volatiles_in_melt = molar_volatiles_in_bulk*(Xls - Xss)/(bulk_composition - Xss);
-                  }
-
-                if (boukare_out != nullptr)
-                  boukare_out->molar_volatiles_in_melt[q] = molar_volatiles_in_melt;
-
-//                solid_composition = std::max(std::min(Xss, bulk_composition), 0.0);
-//                melt_composition = std::min(std::max(Xls, bulk_composition), 1.0);
-//                melt_molar_fraction = std::min(std::max((bulk_composition - Xss) / (Xls - Xss), 0.0), 1.0);
-              }
 
               // calculate the melting rate as difference between the equilibrium melt fraction
               // and the solution of the previous time step, and also update melt and solid composition
+              melt_molar_fraction = melt_fraction(in.temperature[q],
+                                                  this->get_adiabatic_conditions().pressure(in.position[q]),
+                                                  bulk_composition,
+												  molar_volatiles_in_melt,
+                                                  solid_composition,
+                                                  melt_composition);
 
-//              melt_molar_fraction = melt_fraction(in.temperature[q],
-//                                                  this->get_adiabatic_conditions().pressure(in.position[q]),
-//                                                  bulk_composition,
-//                          molar_volatiles_in_melt,
-//                                                  solid_composition,
-//                                                  melt_composition);
+              if (boukare_out != nullptr)
+              {
+                boukare_out->bulk_composition[q] = bulk_composition;
+                boukare_out->molar_volatiles_in_melt[q] = molar_volatiles_in_melt;
+              }
 
               // We have to compute the update to the melt fraction in such a way that the bulk composition is conserved.
               const double change_of_melt_composition = reaction_fraction * limit_update_to_0_and_1(old_melt_composition, melt_composition - old_melt_composition);
