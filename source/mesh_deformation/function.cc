@@ -130,7 +130,10 @@ namespace aspect
                                            "deformation velocity, i.e. the return value of "
                                            "this plugin is later multiplied by the time step length "
                                            "to compute the displacement increment in this time step. "
-                                           "The format of the "
+                                           "Although the function's time variable is interpreted as "
+                                           "years when Use years in output instead of seconds is set to true, "
+                                           "the boundary deformation velocity should still be given "
+                                           "in m/s. The format of the "
                                            "functions follows the syntax understood by the "
                                            "muparser library, see Section~\\ref{sec:muparser-format}.")
   }
