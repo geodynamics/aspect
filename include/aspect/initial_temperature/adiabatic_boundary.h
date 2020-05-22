@@ -55,8 +55,7 @@ namespace aspect
          */
         AdiabaticBoundary ();
 
-        void
-        initialize ();
+        void initialize () override;
 
         // avoid -Woverloaded-virtual:
         using Utilities::AsciiDataBoundary<dim>::initialize;
