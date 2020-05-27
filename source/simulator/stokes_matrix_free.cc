@@ -2215,7 +2215,9 @@ namespace aspect
             typename DoFHandler<dim>::level_cell_iterator cell = dof_handler_v.begin(level),
                                                           endc = dof_handler_v.end(level);
             for (; cell!=endc; ++cell)
-              if (cell->level_subdomain_id()==sim.triangulation.locally_owned_subdomain())
+              if (cell->level_subdomain_id() != numbers::artificial_subdomain_id
+                  &&
+                  cell->level_subdomain_id() != numbers::invalid_subdomain_id)
                 {
                   cell_matrix = 0;
                   fe_values.reinit (cell);
