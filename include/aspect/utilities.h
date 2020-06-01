@@ -1378,6 +1378,7 @@ namespace aspect
      * @param[in] component_index The component index of the @p dof_handler for which
      * the projection is being performed. This component should be described by
      * a DG finite element.
+     * @param[in] quadrature  The quadrature formula to use to evaluate @p function on each cell.
      * @param[in] function The function to project into the finite element space.
      * This function should store the value of the function at the points described
      * by the 2nd argument into the 3rd argument as an std::vector<double>
