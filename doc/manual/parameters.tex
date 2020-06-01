@@ -5645,8 +5645,7 @@ The following heating models are available:
 `adiabatic heating': Implementation of a standard and a simplified model of adiabatic heating.
 
 `adiabatic heating of melt': Implementation of a standard and a simplified model of adiabatic heating of melt. The full model implements the heating term 
-$\alpha T (-\phi \mathbf u_s \cdot \nabla p) + \alpha T (\phi \mathbf u_f \cdot 
-abla p)$.
+$\alpha T (-\phi \mathbf u_s \cdot \nabla p) + \alpha T (\phi \mathbf u_f \cdot \nabla p)$.
 For full adiabatic heating, this has to be used in combination with the heating model `adiabatic heating' to also include adiabatic heating for the solid part, and the full heating term is then $\alpha T ((1-\phi) \mathbf u_s \cdot \nabla p) + \alpha T (\phi \mathbf u_f \cdot \nabla p)$.
 
 `compositional heating': Implementation of a model in which magnitude of internal heat production is determined from fixed values assigned to each compositional field. These values are interpreted as having units $W/m^3$.
@@ -6321,7 +6320,7 @@ Note the required file format if the vs to density scaling is read in from a fil
 
 `adiabatic': Temperature is prescribed as an adiabatic profile with upper and lower thermal boundary layers, whose ages are given as input parameters.
 
-`adiabatic boundary': An initial temperature condition that allows for discretizing the model domain into two layers separated by a user-defined isothermal boundary using a table look-up approach. The user includes an input ascii data file that is formatted as 3 columns of `latitude', `longitude', and `depth', where `depth' is in kilometers and represents the depth of an initial temperature of 1673.15 K (by default). The temperature is defined from the surface (273.15 K) to the isotherm as a linear gradient. Below the isotherm the temperature increases approximately adiabatically (0.0005 K per meter). This initial temperature condition is designed specifically for the ellipsoidal chunk geometry model.
+`adiabatic boundary': An initial temperature condition that allows for discretizing the model domain into two layers separated by a user-defined isothermal boundary. The user includes an input ascii data file that is formatted as 3 columns of `longitude(radians)', `colatitude(radians)', and `isotherm depth(meters)', where `isotherm depth' represents the depth of an initial temperature of 1673.15 K (by default). The first lines in the data file may contain any number of comments if they begin with `\#', but one of these lines needs to contain the number of grid points in each dimension as for example `\# POINTS: 69 121'. Note that the coordinates need to be sorted in a specific order: the `longitude' coordinate needs to ascend first, followed by the `colatitude' coordinate in order to assign the correct data (isotherm depth) to the prescribed coordinates. The temperature is defined from the surface (273.15 K) to the isotherm depth (1673.15 K) as a linear gradient. Below the isotherm depth the temperature increases approximately adiabatically (0.0005 K per meter). This plugin should work for all geometry models, but is currently only tested for spherical models.
 
 `ascii data': Implementation of a model in which the initial temperature is derived from files containing data in ascii format. Note the required format of the input data: The first lines may contain any number of comments if they begin with `\#', but one of these lines needs to contain the number of grid points in each dimension as for example `\# POINTS: 3 3'. The order of the data columns has to be `x', `y', `Temperature [K]' in a 2d model and  `x', `y', `z', `Temperature [K]' in a 3d model, which means that there has to be a single column containing the temperature. Note that the data in the input files need to be sorted in a specific order: the first coordinate needs to ascend first, followed by the second and the third at last in order to assign the correct data to the prescribed coordinates. If you use a spherical model, then the assumed grid changes. `x' will be replaced by the radial distance of the point to the bottom of the model, `y' by the azimuth angle and `z' by the polar angle measured positive from the north pole. The grid will be assumed to be a latitude-longitude grid. Note that the order of spherical coordinates is `r', `phi', `theta' and not `r', `theta', `phi', since this allows for dimension independent expressions.
 
@@ -6400,7 +6399,7 @@ Note the required file format if the vs to density scaling is read in from a fil
 
 `adiabatic': Temperature is prescribed as an adiabatic profile with upper and lower thermal boundary layers, whose ages are given as input parameters.
 
-`adiabatic boundary': An initial temperature condition that allows for discretizing the model domain into two layers separated by a user-defined isothermal boundary using a table look-up approach. The user includes an input ascii data file that is formatted as 3 columns of `latitude', `longitude', and `depth', where `depth' is in kilometers and represents the depth of an initial temperature of 1673.15 K (by default). The temperature is defined from the surface (273.15 K) to the isotherm as a linear gradient. Below the isotherm the temperature increases approximately adiabatically (0.0005 K per meter). This initial temperature condition is designed specifically for the ellipsoidal chunk geometry model.
+`adiabatic boundary': An initial temperature condition that allows for discretizing the model domain into two layers separated by a user-defined isothermal boundary. The user includes an input ascii data file that is formatted as 3 columns of `longitude(radians)', `colatitude(radians)', and `isotherm depth(meters)', where `isotherm depth' represents the depth of an initial temperature of 1673.15 K (by default). The first lines in the data file may contain any number of comments if they begin with `\#', but one of these lines needs to contain the number of grid points in each dimension as for example `\# POINTS: 69 121'. Note that the coordinates need to be sorted in a specific order: the `longitude' coordinate needs to ascend first, followed by the `colatitude' coordinate in order to assign the correct data (isotherm depth) to the prescribed coordinates. The temperature is defined from the surface (273.15 K) to the isotherm depth (1673.15 K) as a linear gradient. Below the isotherm depth the temperature increases approximately adiabatically (0.0005 K per meter). This plugin should work for all geometry models, but is currently only tested for spherical models.
 
 `ascii data': Implementation of a model in which the initial temperature is derived from files containing data in ascii format. Note the required format of the input data: The first lines may contain any number of comments if they begin with `\#', but one of these lines needs to contain the number of grid points in each dimension as for example `\# POINTS: 3 3'. The order of the data columns has to be `x', `y', `Temperature [K]' in a 2d model and  `x', `y', `z', `Temperature [K]' in a 3d model, which means that there has to be a single column containing the temperature. Note that the data in the input files need to be sorted in a specific order: the first coordinate needs to ascend first, followed by the second and the third at last in order to assign the correct data to the prescribed coordinates. If you use a spherical model, then the assumed grid changes. `x' will be replaced by the radial distance of the point to the bottom of the model, `y' by the azimuth angle and `z' by the polar angle measured positive from the north pole. The grid will be assumed to be a latitude-longitude grid. Note that the order of spherical coordinates is `r', `phi', `theta' and not `r', `theta', `phi', since this allows for dimension independent expressions.
 
@@ -6651,27 +6650,27 @@ If the function you are describing represents a vector-valued function with mult
 {\it Default:} \$ASPECT\_SOURCE\_DIR/data/initial-temperature/adiabatic-boundary/
 
 
-{\it Description:} The path to the isotherm depth data file
+{\it Description:} The name of a directory that contains the model data. This path may either be absolute (if starting with a `/') or relative to the current directory. The path may also include the special text `\$ASPECT\_SOURCE\_DIR' which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the `data/' subdirectory of ASPECT. 
 
 
 {\it Possible values:} A directory name
-\item {\it Parameter name:} {\tt Isotherm depth filename}
-\phantomsection\label{parameters:Initial temperature model/Adiabatic boundary/Isotherm depth filename}
-\label{parameters:Initial_20temperature_20model/Adiabatic_20boundary/Isotherm_20depth_20filename}
+\item {\it Parameter name:} {\tt Data file name}
+\phantomsection\label{parameters:Initial temperature model/Adiabatic boundary/Data file name}
+\label{parameters:Initial_20temperature_20model/Adiabatic_20boundary/Data_20file_20name}
 
 
-\index[prmindex]{Isotherm depth filename}
-\index[prmindexfull]{Initial temperature model!Adiabatic boundary!Isotherm depth filename}
+\index[prmindex]{Data file name}
+\index[prmindexfull]{Initial temperature model!Adiabatic boundary!Data file name}
 {\it Value:} adiabatic\_boundary.txt
 
 
 {\it Default:} adiabatic\_boundary.txt
 
 
-{\it Description:} File from which the isotherm depth data is read.
+{\it Description:} The file name of the model data. Provide file in format: (Velocity file name).\%s\%d where \%s is a string specifying the boundary of the model according to the names of the boundary indicators (of the chosen geometry model).\%d is any sprintf integer qualifier, specifying the format of the current file number. 
 
 
-{\it Possible values:} an input filename
+{\it Possible values:} Any string
 \item {\it Parameter name:} {\tt Isotherm temperature}
 \phantomsection\label{parameters:Initial temperature model/Adiabatic boundary/Isotherm temperature}
 \label{parameters:Initial_20temperature_20model/Adiabatic_20boundary/Isotherm_20temperature}
@@ -6689,6 +6688,23 @@ If the function you are describing represents a vector-valued function with mult
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Scale factor}
+\phantomsection\label{parameters:Initial temperature model/Adiabatic boundary/Scale factor}
+\label{parameters:Initial_20temperature_20model/Adiabatic_20boundary/Scale_20factor}
+
+
+\index[prmindex]{Scale factor}
+\index[prmindexfull]{Initial temperature model!Adiabatic boundary!Scale factor}
+{\it Value:} 1.
+
+
+{\it Default:} 1.
+
+
+{\it Description:} Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model. Another way to use this factor is to convert units of the input files. For instance, if you provide velocities in cm/yr set this factor to 0.01.
+
+
+{\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
 \item {\it Parameter name:} {\tt Surface temperature}
 \phantomsection\label{parameters:Initial temperature model/Adiabatic boundary/Surface temperature}
 \label{parameters:Initial_20temperature_20model/Adiabatic_20boundary/Surface_20temperature}
@@ -8136,14 +8152,14 @@ If the function you are describing represents a vector-valued function with mult
 
 {\it Description:} Whether or not (and in the first case, how) to do any averaging of material model output data when constructing the linear systems for velocity/pressure, temperature, and compositions in each time step, as well as their corresponding preconditioners.
 
-Possible choices: none|arithmetic average|harmonic average|geometric average|pick largest|project to Q1|log average|harmonic average only viscosity
+Possible choices: none|arithmetic average|harmonic average|geometric average|pick largest|project to Q1|log average|harmonic average only viscosity|project to Q1 only viscosity
 
 The process of averaging, and where it may be used, is discussed in more detail in Section~\ref{sec:sinker-with-averaging}.
 
 More averaging schemes are available in the averaging material model. This material model is a ``compositing material model'' which can be used in combination with other material models.
 
 
-{\it Possible values:} Any one of none, arithmetic average, harmonic average, geometric average, pick largest, project to Q1, log average, harmonic average only viscosity
+{\it Possible values:} Any one of none, arithmetic average, harmonic average, geometric average, pick largest, project to Q1, log average, harmonic average only viscosity, project to Q1 only viscosity
 \item {\it Parameter name:} {\tt Model name}
 \phantomsection\label{parameters:Material model/Model name}
 \label{parameters:Material_20model/Model_20name}
@@ -15568,7 +15584,7 @@ The names of the boundaries listed here can either be numbers (in which case the
 
 The names of the boundaries listed here can either be numbers (in which case they correspond to the numerical boundary indicators assigned by the geometry object), or they can correspond to any of the symbolic names the geometry object may have provided for each part of the boundary. You may want to compare this with the documentation of the geometry model you use in your model. 
 
-The format is id1: object1 \& object2, id2: object3 \& object2, where objects are one of `boundary function': A plugin, which prescribes the surface mesh to deform according to an analytically prescribed function. Note that the function prescribes a deformation velocity, i.e. the return value of this plugin is later multiplied by the time step length to compute the displacement increment in this time step. The format of the functions follows the syntax understood by the muparser library, see Section~\ref{sec:muparser-format}.
+The format is id1: object1 \& object2, id2: object3 \& object2, where objects are one of `boundary function': A plugin, which prescribes the surface mesh to deform according to an analytically prescribed function. Note that the function prescribes a deformation velocity, i.e. the return value of this plugin is later multiplied by the time step length to compute the displacement increment in this time step. Although the function's time variable is interpreted as years when Use years in output instead of seconds is set to true, the boundary deformation velocity should still be given in m/s. The format of the functions follows the syntax understood by the muparser library, see Section~\ref{sec:muparser-format}.
 
 `free surface': A plugin that computes the deformation of surface vertices according to the solution of the flow problem. In particular this means if the surface of the domain is left open to flow, this flow will carry the mesh with it. The implementation was described in \cite{rose_freesurface}, with the stabilization of the free surface originally described in \cite{KMM2010}.
 
@@ -17108,7 +17124,7 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 {\it Default:} 0.
 
 
-{\it Description:} Parameter for the uniform distribution sampling scheme: Maximum radius can be defined in or outside the model.
+{\it Description:} Parameter for the map sampling scheme: Maximum radius can be defined in or outside the model.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -17159,10 +17175,27 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 {\it Default:} 0.
 
 
-{\it Description:} Parameter for the uniform distribution sampling scheme: Minimum radius may be defined in or outside the model. Prescribe a minimum radius for a sampling coverage at a specific height.
+{\it Description:} Parameter for the map sampling scheme: Minimum radius may be defined in or outside the model. Prescribe a minimum radius for a sampling coverage at a specific height.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Number points fibonacci spiral}
+\phantomsection\label{parameters:Postprocess/Gravity calculation/Number points fibonacci spiral}
+\label{parameters:Postprocess/Gravity_20calculation/Number_20points_20fibonacci_20spiral}
+
+
+\index[prmindex]{Number points fibonacci spiral}
+\index[prmindexfull]{Postprocess!Gravity calculation!Number points fibonacci spiral}
+{\it Value:} 200
+
+
+{\it Default:} 200
+
+
+{\it Description:} Parameter for the fibonacci spiral sampling scheme: This specifies the desired number of satellites per radius layer. The default value is 200. Note that sampling becomes more uniform with increasing number of satellites
+
+
+{\it Possible values:} An integer $n$ such that $0\leq n \leq 2147483647$
 \item {\it Parameter name:} {\tt Number points latitude}
 \phantomsection\label{parameters:Postprocess/Gravity calculation/Number points latitude}
 \label{parameters:Postprocess/Gravity_20calculation/Number_20points_20latitude}
@@ -17176,7 +17209,7 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 {\it Default:} 1
 
 
-{\it Description:} Parameter for the uniform distribution sampling scheme: This specifies the number of points along the latitude (e.g. gravity map) between a minimum and maximum latitude.
+{\it Description:} Parameter for the map sampling scheme: This specifies the number of points along the latitude (e.g. gravity map) between a minimum and maximum latitude.
 
 
 {\it Possible values:} An integer $n$ such that $0\leq n \leq 2147483647$
@@ -17193,7 +17226,7 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 {\it Default:} 1
 
 
-{\it Description:} Parameter for the uniform distribution sampling scheme: This specifies the number of points along the longitude (e.g. gravity map) between a minimum and maximum longitude.
+{\it Description:} Parameter for the map sampling scheme: This specifies the number of points along the longitude (e.g. gravity map) between a minimum and maximum longitude.
 
 
 {\it Possible values:} An integer $n$ such that $0\leq n \leq 2147483647$
@@ -17210,7 +17243,7 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 {\it Default:} 1
 
 
-{\it Description:} Parameter for the uniform distribution sampling scheme: This specifies the number of points along the radius (e.g. depth profile) between a minimum and maximum radius.
+{\it Description:} Parameter for the map sampling scheme: This specifies the number of points along the radius (e.g. depth profile) between a minimum and maximum radius.
 
 
 {\it Possible values:} An integer $n$ such that $0\leq n \leq 2147483647$
@@ -17272,16 +17305,16 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 
 \index[prmindex]{Sampling scheme}
 \index[prmindexfull]{Postprocess!Gravity calculation!Sampling scheme}
-{\it Value:} uniform distribution
+{\it Value:} map
 
 
-{\it Default:} uniform distribution
+{\it Default:} map
 
 
-{\it Description:} Choose the sampling scheme. A uniform distribution will produce a grid of equally spaced points between a minimum and maximum radius, longitude, and latitude. A list of points contains specific coordinates of the satellites.
+{\it Description:} Choose the sampling scheme. By default, the map produces a grid of equally angled points between a minimum and maximum radius, longitude, and latitude. A list of points contains the specific coordinates of the satellites. The fibonacci spiral sampling scheme produces a uniformly distributed map on the surface of sphere defined by a minimum and/or maximum radius.
 
 
-{\it Possible values:} Any one of uniform distribution, list of points, map, list
+{\it Possible values:} Any one of map, list, list of points, fibonacci spiral
 \item {\it Parameter name:} {\tt Time between gravity output}
 \phantomsection\label{parameters:Postprocess/Gravity calculation/Time between gravity output}
 \label{parameters:Postprocess/Gravity_20calculation/Time_20between_20gravity_20output}
