@@ -27,6 +27,7 @@
 #include <aspect/material_model/rheology/diffusion_creep.h>
 #include <aspect/material_model/rheology/dislocation_creep.h>
 #include <aspect/material_model/rheology/frank_kamenetskii.h>
+#include <aspect/material_model/rheology/peierls_creep.h>
 #include <aspect/material_model/rheology/constant_viscosity_prefactors.h>
 #include <aspect/material_model/rheology/drucker_prager.h>
 #include <aspect/material_model/equation_of_state/multicomponent_incompressible.h>
@@ -379,6 +380,16 @@ namespace aspect
         Rheology::DiffusionCreep<dim> diffusion_creep;
         Rheology::DislocationCreep<dim> dislocation_creep;
         std::unique_ptr<Rheology::FrankKamenetskii<dim> > frank_kamenetskii_rheology;
+
+        /**
+         * Whether to include peierls creep in the constitutive formulation.
+         */
+        bool use_peierls_creep;
+
+        /**
+         * Objects for computing peierls creep viscosities.
+         */
+        Rheology::PeierlsCreep<dim> peierls_creep;
 
         /**
          * Object for computing the viscosity multiplied by a constant prefactor.
