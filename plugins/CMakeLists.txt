@@ -55,3 +55,14 @@ PROJECT(${TARGET})
 ADD_LIBRARY(${TARGET} SHARED reference_profile.h reference_profile.cc)
 ASPECT_SETUP_PLUGIN(${TARGET})
 
+SET(TARGET "velocity_residual")
+PROJECT(${TARGET})
+
+ADD_LIBRARY(${TARGET} SHARED velocity_residual.h velocity_residual.cc)
+ASPECT_SETUP_PLUGIN(${TARGET})
+
+SET(TARGET "strain_residual")
+PROJECT(${TARGET})
+
+ADD_LIBRARY(${TARGET} SHARED strain_residual.h strain_residual.cc)
+ASPECT_SETUP_PLUGIN(${TARGET})

@@ -25,6 +25,7 @@
 #include <aspect/material_model/interface.h>
 #include <aspect/material_model/grain_size.h>
 #include <aspect/simulator_access.h>
+#include <aspect/material_model/rheology/ascii_depth_profile.h>
 #include <array>
 
 namespace aspect
@@ -157,6 +158,7 @@ namespace aspect
         double              minimum_grain_size;
         std::vector<double> reciprocal_required_strain;
         std::vector<double> recrystallized_grain_size;
+        bool                equilibrate_grain_size;
 
         /**
          * Parameters controlling the dynamic grain recrystallization.
@@ -186,6 +188,7 @@ namespace aspect
         std::vector<double> diffusion_activation_volume;
         std::vector<double> diffusion_creep_prefactor;
         std::vector<double> diffusion_creep_grain_size_exponent;
+        std::unique_ptr<Rheology::AsciiDepthProfile<dim> > depth_dependent_rheology;
 
         /**
          * Because of the nonlinear nature of this material model many
@@ -343,6 +346,18 @@ namespace aspect
          */
         bool use_gypsum_density;
 
+        /**
+         * Parameter value that determines whether to read the viscosity with depth
+         * from an ascii data file.
+        */
+        bool use_depth_dependent_viscosity;
+
+        /** 
+         * Approximate lithosphere thickness used to separate the regions of 
+         * temperature derived from seismic tomography and linear temperature
+         * gradient.
+        */
+        double lithosphere_thickness;
 
         /**
          * The format of the provided material files. Currently we support
