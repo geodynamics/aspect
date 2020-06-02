@@ -1,4 +1,4 @@
-set Additional shared libraries            = ../../plugins/libequilibrium_grain_size.so, ../../plugins/libreference_profile.so
+set Additional shared libraries            = ../../plugins/libequilibrium_grain_size.so, ../../plugins/libreference_profile.so #, ../../plugins/libvelocity_residual.so, ../../plugins/libstrain_residual.so
 
 set Dimension                              = 3
 set Use years in output instead of seconds = true
@@ -32,7 +32,7 @@ end
 
 subsection Compositional fields
   set Number of fields = 4
-  set Names of fields = grain_size, gypsum_density, gypsum_vp, gypsum_vs
+  set Names of fields = grain_size, Vp, Vs, vs_anomaly
   set Compositional field methods = prescribed field, static, static, static
 end
 
@@ -42,7 +42,7 @@ subsection Initial composition model
 
   subsection Ascii data model
     set Data directory = ../../input_data/
-    set Data file name = GyPSuM_midrad_lon_lat_density_vp_vs.txt
+    set Data file name = LLNL_velocity_model.txt
   end
 end
 
@@ -100,7 +100,7 @@ subsection Material model
     set Thermal expansion coefficient               = 2.0e-5
     set Use paleowattmeter                          = true
     set Viscosity                                   = 1e25
-    set Use GyPSuM density                          = true
+    set Use GyPSuM density                          = false
   end
 end
 
@@ -116,7 +116,14 @@ end
 
 
 subsection Boundary velocity model
-   set Tangential velocity boundary indicators = top, bottom
+#  set Prescribed velocity boundary indicators = top:gplates
+  set Tangential velocity boundary indicators = bottom, top
+#  subsection GPlates model
+#    set Data directory = $ASPECT_SOURCE_DIR/data/boundary-velocity/gplates/
+#    set Velocity file name = current_day.gpml
+#    set Data file time step = 1000
+#    set Lithosphere thickness = 300000
+#  end
 end
 
 
@@ -135,16 +142,29 @@ subsection Boundary temperature model
 end
 
 
-subsection Initial temperature model
-  set List of model names = adiabatic
+#subsection Initial temperature model
+#  set List of model names = adiabatic
+#
+#  subsection Adiabatic
+#    subsection Function
+#      set Function expression = 0;3300;0;0
+#    end
+#  end
+#end
 
-  subsection Adiabatic
-    subsection Function
-      set Function expression = 0;3300;0;0
-    end
+subsection Initial temperature model
+  set List of model names = adiabatic boundary
+  set List of model operators = add
+
+  subsection Adiabatic boundary
+    set Data directory = $ASPECT_SOURCE_DIR/data/initial-temperature/lithosphere-mask/ 
+    set Data file name = LAB_CAM2016.txt
+    set Adiabatic temperature gradient = 0
+    set Isotherm temperature = 1673
+    set Surface temperature = 273
+
   end
 end
-
 
 subsection Gravity model
   set Model name = ascii data
@@ -152,7 +172,7 @@ end
 
 
 subsection Mesh refinement
-  set Initial global refinement          = 2
+  set Initial global refinement          = 1
   set Initial adaptive refinement        = 0
   set Strategy                           = temperature
   set Time steps between mesh refinement = 0

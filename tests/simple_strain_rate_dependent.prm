@@ -1,6 +1,6 @@
 # This is a simple test for the equilibrium grain size material model. 
 # Most parameters in the viscosity and grain growth laws are set to 1,
-# except for the prefactor and strin-rate dependence of dislocation creep.
+# except for the prefactor and strain-rate dependence of dislocation creep.
 # The strain rate invariant is set to 1 (dux/dy=2, dux/dy=0, 
 # so 1/2*dux/dy+1/2*duy/dx=1).
 # This makes it easy to find the equilibrium grain size:

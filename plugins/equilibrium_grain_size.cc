@@ -23,6 +23,7 @@
 #include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/gravity_model/interface.h>
 #include <aspect/utilities.h>
+#include <aspect/initial_temperature/interface.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
@@ -110,7 +111,7 @@ namespace aspect
 			  double old_grain_size = 0.0;
 
 			  // because the diffusion viscosity depends on the grain size itself, and we need it to compute the dislocation strain rate,
-			  // we have to iterate in the computation of the eqilibrium grain size
+			  // we have to iterate in the computation of the equilibrium grain size
 			  while ((std::abs((grain_size-old_grain_size) / grain_size) > dislocation_viscosity_iteration_threshold)
 					 && (j < dislocation_viscosity_iteration_number))
 				{
@@ -128,7 +129,9 @@ namespace aspect
 				  const double stress_term = 4.0 * effective_viscosity * second_strain_rate_invariant * dislocation_strain_rate_invariant;
 
 				  old_grain_size = grain_size;
-				  grain_size = 0.9 * old_grain_size + 0.1 * pow(prefactor/stress_term * exponential,1./(1+grain_growth_exponent[phase_index]));
+
+				  if(equilibrate_grain_size)
+				    grain_size = 0.9 * old_grain_size + 0.1 * pow(prefactor/stress_term * exponential,1./(1+grain_growth_exponent[phase_index]));
 
 				  ++j;
 				}
@@ -142,6 +145,9 @@ namespace aspect
         		else
         		  grain_size_out->prescribed_field_outputs[i][c] = 0.0;
               }
+
+          if (use_depth_dependent_viscosity)
+            effective_viscosity = depth_dependent_rheology->get_viscosity(this->get_geometry_model().depth(in.position[i]));
 
           out.viscosities[i] = std::min(std::max(min_eta,effective_viscosity),max_eta);
 
@@ -658,11 +664,42 @@ namespace aspect
           if (prescribed_temperature_out != NULL)
               {
                 const double reference_density = this->get_adiabatic_conditions().density(in.position[i]);
-                const double density_anomaly = (out.densities[i] - reference_density) / reference_density;
 
+                const unsigned int vs_index =  this->introspection().compositional_index_for_name("Vs");
+                
+                // const double density_anomaly = (out.densities[i] - reference_density) / reference_density;
                 const double reference_temperature = this->get_adiabatic_conditions().temperature(in.position[i]);
-                const double temperature_anomaly = -density_anomaly / out.thermal_expansion_coefficients[i];
-                const double new_temperature = std::max(std::min(reference_temperature + temperature_anomaly,1600.), 1600.);
+
+                // TODO: this causes very big temperature anomalies
+                // I've multiplied it by 0.2 for now, but we need to fix this
+                // We should also add boundary layers
+
+                double new_temperature = 0;
+
+                const double depth = this->get_geometry_model().depth(in.position[i]);
+
+                if (depth < lithosphere_thickness)
+                {
+                  new_temperature = this->get_initial_temperature_manager().initial_temperature(in.position[i]);
+                  out.densities[i] = density(in.temperature[i], pressure, in.composition[i], in.position[i]);
+                }
+                
+                else
+                {
+                   // vs_index + 1: vs_anomaly in m/sec
+                  const double delta_log_vs = ( std::log (in.composition[i][vs_index + 1] + in.composition[i][vs_index] ) -
+                                         std::log (in.composition[i][vs_index]) );
+
+                  const double density_anomaly = delta_log_vs * 0.15;
+
+//                  const double temperature_anomaly = - 0.2 * density_anomaly / out.thermal_expansion_coefficients[i];
+                // temperature modified by AS using the parameters given in the table by Becker, 2006.
+                  const double temperature_anomaly = delta_log_vs * -4.2 * 1785;
+                  new_temperature = reference_temperature + temperature_anomaly;
+                 
+                  out.densities[i] = reference_density * std::exp (density_anomaly);
+                }
+
                 prescribed_temperature_out->prescribed_temperature_outputs[i] = new_temperature;
               }
         }
@@ -768,9 +805,14 @@ namespace aspect
                              "The grain size $d_{ph}$ to that a phase will be reduced to when crossing a phase transition. "
                              "When set to zero, grain size will not be reduced. "
                              "Units: m.");
+          prm.declare_entry ("Use equilibrium grain size", "true",
+                             Patterns::Bool (),
+                             "A flag indicating whether the computation should use the equilibrium grain size "
+                             "when computing the viscosity (if true), or use a constant grain size instead (if "
+                             "false).");
           prm.declare_entry ("Use paleowattmeter", "true",
                              Patterns::Bool (),
-                             "A flag indicating whether the computation should be use the "
+                             "A flag indicating whether the computation should use the "
                              "paleowattmeter approach of Austin and Evans (2007) for grain size reduction "
                              "in the dislocation creep regime (if true) or the paleopiezometer approach "
                              "from Hall and Parmetier (2003) (if false).");
@@ -940,6 +982,18 @@ namespace aspect
                              Patterns::Bool (),
                              "A flag indicating whether ASPECT computes the density, or we look for "
                              "a compositional field named 'gypsum_density' and use it as density field.");
+          prm.declare_entry ("Lithosphere thickness", "300e3",
+                            Patterns::Double (),
+                            "Enter the thickeness of the lithosphere, above which linear temperature gradient "
+                            "is used and seismic anomalies. Below this depth, temperature "
+                            "anomalies are computed using seismic tomography.");
+          prm.declare_entry ("Use depth dependent viscosity", "false",
+                            Patterns::Bool (),
+                            "This parameter value determines if we want to use the layered depth dependent "
+                            "rheology, which is input as an ascii data file.");
+                            
+          // Depth-dependent viscosity parameters
+          Rheology::AsciiDepthProfile<dim>::declare_parameters(prm);
         }
         prm.leave_subsection();
       }
@@ -968,6 +1022,7 @@ namespace aspect
           reference_specific_heat    = prm.get_double ("Reference specific heat");
           thermal_alpha              = prm.get_double ("Thermal expansion coefficient");
           reference_compressibility  = prm.get_double ("Reference compressibility");
+          lithosphere_thickness      = prm.get_double ("Lithosphere thickness");
 
 
           transition_depths         = Utilities::string_to_double
@@ -1005,6 +1060,7 @@ namespace aspect
           minimum_grain_size                    = prm.get_double("Minimum grain size");
           reciprocal_required_strain            = Utilities::string_to_double
                                                   (Utilities::split_string_list(prm.get ("Reciprocal required strain")));
+          equilibrate_grain_size                = prm.get_bool ("Use equilibrium grain size");
 
           use_paleowattmeter                    = prm.get_bool ("Use paleowattmeter");
           grain_boundary_energy                 = Utilities::string_to_double
@@ -1109,6 +1165,16 @@ namespace aspect
           use_table_properties = prm.get_bool ("Use table properties");
           use_enthalpy = prm.get_bool ("Use enthalpy for material properties");
           use_gypsum_density = prm.get_bool ("Use GyPSuM density");
+          use_depth_dependent_viscosity = prm.get_bool ("Use depth dependent viscosity");
+
+          // Parse depth-dependent viscosity parameters
+          if (use_depth_dependent_viscosity)
+            {
+              depth_dependent_rheology = std_cxx14::make_unique<Rheology::AsciiDepthProfile<dim>>();
+              depth_dependent_rheology->initialize_simulator (this->get_simulator());
+              depth_dependent_rheology->parse_parameters(prm);
+              depth_dependent_rheology->initialize();
+            }
 
           // Make sure the grain size field comes after all potential material
           // data fields. Otherwise our material model calculation uses the
@@ -1203,7 +1269,7 @@ namespace aspect
         }
 
       if (this->get_parameters().temperature_method == Parameters<dim>::AdvectionFieldMethod::prescribed_field &&
-          out.template get_additional_output<PrescribedTemperatureOutputs<dim> >() == NULL)
+          out.template get_additional_output<PrescribedTemperatureOutputs<dim> >() == nullptr)
         {
           const unsigned int n_points = out.viscosities.size();
           out.additional_outputs.push_back(
