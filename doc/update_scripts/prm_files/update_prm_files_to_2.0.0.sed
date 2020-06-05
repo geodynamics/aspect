@@ -16,11 +16,11 @@ s/set Model name = initial profile/set Model name = compute profile/g
 # when we find it, check if 'Magnitude at bottom' is inside, and
 # insert it, if not.
 :jump_before_gravity
-/subsection Radial linear/,/^[[:space:]]*end[[:space:]]*/ {
+/subsection Radial linear/,/[[:space:]]*end[[:space:]]*/ {
 # Print the line 'subsection ...' and read next line
 n
 # If next line was already 'end' jump out of this part
-/^ *end/b jump_before_gravity
+/^[[:space:]]*end/b jump_before_gravity
 
 :jump_in_gravity
 # Add next line to current pattern space until we found 'end'
