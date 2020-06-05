@@ -16,7 +16,7 @@ s/set Model name = initial profile/set Model name = compute profile/g
 # when we find it, check if 'Magnitude at bottom' is inside, and
 # insert it, if not.
 :jump_before_gravity
-/subsection Radial linear/,/\bend\b/ {
+/subsection Radial linear/,/^[[:space:]]*end[[:space:]]*/ {
 # Print the line 'subsection ...' and read next line
 n
 # If next line was already 'end' jump out of this part
@@ -45,15 +45,15 @@ b jump_before_gravity
 # belongs to the opening subsection (i.e. if the parameter is set
 # after a subsection nested inside the 'Boundary temperature model'
 # subsection the following will simply do nothing).
-/subsection Boundary temperature model/,/^ *\bend\b/ {
+/subsection Boundary temperature model/,/^[[:space:]]*end[[:space:]]*/ {
      s/set Model name/set List of model names/g
 }
 
-/subsection Boundary composition model/,/^ *\bend\b/ {
+/subsection Boundary composition model/,/^[[:space:]]*end[[:space:]]*/ {
      s/set Model name/set List of model names/g
 }
 
-/subsection Heating model/,/^ *\bend\b/ {
+/subsection Heating model/,/^[[:space:]]*end[[:space:]]*/ {
      s/set Model name/set List of model names/g
 }
 
