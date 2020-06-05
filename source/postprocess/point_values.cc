@@ -119,56 +119,62 @@ namespace aspect
       // explains the meaning of the various fields
       const std::string filename = (this->get_output_directory() +
                                     "point_values.txt");
-      std::ofstream f (filename.c_str());
-      f << ("# <time> "
-            "<evaluation_point_x> "
-            "<evaluation_point_y> ")
-        << (dim == 3 ? "<evaluation_point_z> " : "")
-        << ("<velocity_x> "
-            "<velocity_y> ")
-        << (dim == 3 ? "<velocity_z> " : "")
-        << "<pressure> <temperature>";
-      for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-        f << " <" << this->introspection().name_for_compositional_index(c) << ">";
-      f << '\n';
 
-      for (std::vector<std::pair<double, std::vector<Vector<double> > > >::iterator
-           time_point = point_values.begin();
-           time_point != point_values.end();
-           ++time_point)
+      if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
         {
-          Assert (time_point->second.size() == evaluation_points_cartesian.size(),
-                  ExcInternalError());
-          for (unsigned int i=0; i<evaluation_points_cartesian.size(); ++i)
+
+          std::ofstream f (filename.c_str());
+          f << ("# <time> "
+                "<evaluation_point_x> "
+                "<evaluation_point_y> ")
+            << (dim == 3 ? "<evaluation_point_z> " : "")
+            << ("<velocity_x> "
+                "<velocity_y> ")
+            << (dim == 3 ? "<velocity_z> " : "")
+            << "<pressure> <temperature>";
+          for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+            f << " <" << this->introspection().name_for_compositional_index(c) << ">";
+          f << '\n';
+
+          for (std::vector<std::pair<double, std::vector<Vector<double> > > >::iterator
+               time_point = point_values.begin();
+               time_point != point_values.end();
+               ++time_point)
             {
-              f << /* time = */ time_point->first / (this->convert_output_to_years() ? year_in_seconds : 1.)
-                << ' '
-                << /* location = */ evaluation_points_cartesian[i] << ' ';
-
-              for (unsigned int c=0; c<time_point->second[i].size(); ++c)
+              Assert (time_point->second.size() == evaluation_points_cartesian.size(),
+                      ExcInternalError());
+              for (unsigned int i=0; i<evaluation_points_cartesian.size(); ++i)
                 {
-                  // output a data element. internally, we store all point
-                  // values in the same format in which they were computed,
-                  // but we convert velocities to meters per year if so
-                  // requested
-                  if ((this->introspection().component_masks.velocities[c] == false)
-                      ||
-                      (this->convert_output_to_years() == false))
-                    f << time_point->second[i][c];
-                  else
-                    f << time_point->second[i][c] * year_in_seconds;
+                  f << /* time = */ time_point->first / (this->convert_output_to_years() ? year_in_seconds : 1.)
+                    << ' '
+                    << /* location = */ evaluation_points_cartesian[i] << ' ';
 
-                  f << (c != time_point->second[i].size()-1 ? ' ' : '\n');
+                  for (unsigned int c=0; c<time_point->second[i].size(); ++c)
+                    {
+                      // output a data element. internally, we store all point
+                      // values in the same format in which they were computed,
+                      // but we convert velocities to meters per year if so
+                      // requested
+                      if ((this->introspection().component_masks.velocities[c] == false)
+                          ||
+                          (this->convert_output_to_years() == false))
+                        f << time_point->second[i][c];
+                      else
+                        f << time_point->second[i][c] * year_in_seconds;
+
+                      f << (c != time_point->second[i].size()-1 ? ' ' : '\n');
+                    }
                 }
+
+              // have an empty line between time steps
+              f << '\n';
             }
 
-          // have an empty line between time steps
-          f << '\n';
+          AssertThrow (f, ExcMessage("Writing data to <" + filename +
+                                     "> did not succeed in the `point values' "
+                                     "postprocessor."));
         }
 
-      AssertThrow (f, ExcMessage("Writing data to <" + filename +
-                                 "> did not succeed in the `point values' "
-                                 "postprocessor."));
 
       // Update time
       set_last_output_time (this->get_time());
