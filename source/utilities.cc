@@ -294,11 +294,17 @@ namespace aspect
 
             if (check_structure)
               {
-                AssertThrow((*n_values_per_key)[field_index] == n_values,
+                AssertThrow(((*n_values_per_key)[field_index] == n_values || n_values == 1),
                             ExcMessage("The key <" + field_names[field_index] + "> in <"+ property_name + "> does not have "
                                        + "the expected number of values. It expects " + std::to_string((*n_values_per_key)[field_index])
-                                       + " values, but we found " + std::to_string(n_values) + " values."));
-
+                                       + "or 1 values, but we found " + std::to_string(n_values) + " values."));
+                if (n_values == 1)
+                  {
+                    const std::string field_name = field_names[field_index];
+                    const double field_value = parsed_map.find(field_name)->second;
+                    for (unsigned int i=1; i<(*n_values_per_key)[field_index]; ++i)
+                      parsed_map.emplace(field_name, field_value);
+                  }
               }
 
             ++field_index;
@@ -316,7 +322,6 @@ namespace aspect
           for (auto entry = entry_range.first; entry != entry_range.second; ++entry)
             return_values.push_back(entry->second);
         }
-
       return return_values;
     }
 

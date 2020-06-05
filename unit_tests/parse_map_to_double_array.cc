@@ -213,6 +213,29 @@ TEST_CASE("Utilities::parse_map_to_double_array")
     {100.0,200.0,300.0,300.0,500.0});
   }
 
+  {
+    INFO("check 18: ");
+    auto n_values_per_key = std::make_shared<std::vector<unsigned int>>(std::vector<unsigned int>({2,2}));
+
+    compare_vectors_approx(aspect::Utilities::parse_map_to_double_array ("C1:300|400, C2:200",
+    {"C1","C2"},
+    false,
+    "TestField",
+    true,
+    n_values_per_key),
+    {300.0,400.0,200.0,200.0});
+
+    INFO("check 19: ");
+
+    // still using the compare_vectors_approx defined before
+    compare_vectors_approx(aspect::Utilities::parse_map_to_double_array ("200",
+    {"C1","C2"},
+    false,
+    "TestField",
+    true,
+    n_values_per_key),
+    {200.0,200.0,200.0,200.0});
+  }
   INFO("check complete");
 
 }

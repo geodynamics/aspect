@@ -1,0 +1,8 @@
+New: Added flexibility to the parse_map_to_double_array input method. The new
+input method will allow a single value for a given key (e.g. density of a
+composition), even if multiple values (e.g. for different phases) are expected.
+The single value will be expanded to be the same for all values associated with
+that key. For examples of applying this in a input file, see the test
+visco_plastic_phases.
+<br>
+(Haoyuan Li, 2020/05/06)
