@@ -37,6 +37,10 @@
 #include <deal.II/lac/solver_gmres.h>
 #include <deal.II/lac/read_write_vector.templates.h>
 
+#if DEAL_II_VERSION_GTE(9,2,0)
+#include <deal.II/lac/solver_idr.h>
+#endif
+
 
 
 namespace aspect
@@ -1751,17 +1755,39 @@ namespace aspect
         // velocity and pressure space, the cheap preonditioner only contains matrix-vector
         // products and GMG v-cycle where the smoothers, transfer operators, and coarse
         // solvers are all defined to be linear operators which do not change from iteration
-        // to iterations. Therefore we can use GMRES, instead of FGMRES, as the Krylov subspace solver.
-        SolverGMRES<dealii::LinearAlgebra::distributed::BlockVector<double> >
-        solver(solver_control_cheap, mem,
-               SolverGMRES<dealii::LinearAlgebra::distributed::BlockVector<double> >::
-               AdditionalData(sim.parameters.stokes_gmres_restart_length+2,
-                              true));
+        // to iteration. Therefore we can use non-flexible Krylov methods like GMRES or IDR(s),
+        // instead of requiring FGMRES, greatly lowing the memory requirement of the solver.
+        if (sim.parameters.stokes_krylov_type == Parameters<dim>::StokesKrylovType::gmres)
+          {
+            SolverGMRES<dealii::LinearAlgebra::distributed::BlockVector<double> >
+            solver(solver_control_cheap, mem,
+                   SolverGMRES<dealii::LinearAlgebra::distributed::BlockVector<double> >::
+                   AdditionalData(sim.parameters.stokes_gmres_restart_length+2,
+                                  true));
 
-        solver.solve (stokes_matrix,
-                      solution_copy,
-                      rhs_copy,
-                      preconditioner_cheap);
+            solver.solve (stokes_matrix,
+                          solution_copy,
+                          rhs_copy,
+                          preconditioner_cheap);
+          }
+        else if (sim.parameters.stokes_krylov_type == Parameters<dim>::StokesKrylovType::idr_s)
+          {
+#if DEAL_II_VERSION_GTE(9,2,0)
+            SolverIDR<dealii::LinearAlgebra::distributed::BlockVector<double> >
+            solver(solver_control_cheap, mem,
+                   SolverIDR<dealii::LinearAlgebra::distributed::BlockVector<double> >::
+                   AdditionalData(sim.parameters.idr_s_parameter));
+
+            solver.solve (stokes_matrix,
+                          solution_copy,
+                          rhs_copy,
+                          preconditioner_cheap);
+#else
+            Assert(false, ExcMessage("The IDR(s) solver requires deal.II 9.2.0 or newer."));
+#endif
+          }
+        else
+          Assert(false,ExcNotImplemented());
 
         final_linear_residual = solver_control_cheap.last_value();
       }

@@ -1,0 +1,6 @@
+New: The IDR(s) Krylov method can now be used for solving the Stokes
+system, only when using the matrix-free GMG solver. The parameter
+s can be chosen by the user. This method has a short term recurrence
+and can greatly reduce the memory requirement as compared to GMRES.
+<br>
+(Thomas C. Clevenger, 2020/05/25)

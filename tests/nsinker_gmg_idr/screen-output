@@ -1,0 +1,29 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+Loading shared library <./libnsinker_gmg_idr.so>
+
+Vectorization over 4 doubles = 256 bits (AVX), VECTORIZATION_LEVEL=2
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+Number of active cells: 64 (on 3 levels)
+Number of degrees of freedom: 3,041 (2,187+125+729)
+
+*** Timestep 0:  t=0 seconds
+   Solving Stokes system... 9+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.999954
+
+
+   Postprocessing:
+     System matrix memory consumption:  0.05 MB
+     Writing graphical output:          output-nsinker_gmg_idr/solution/solution-00000
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
