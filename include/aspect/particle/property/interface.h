@@ -351,7 +351,9 @@ namespace aspect
            * the current particle position.
            *
            * @param [in,out] particle The particle that is updated within
-           * the call of this function.
+           * the call of this function. The particle location can be accessed
+           * using particle->get_location() and its properties using
+           * particle->get_properties().
            */
           virtual
           void
@@ -386,8 +388,7 @@ namespace aspect
            * @param [in,out] particle_properties The properties of the particle
            * that is updated within the call of this function.
            *
-           * @deprecated Use the other overload of update_one_particle_property()
-           * instead.
+           * @deprecated Use update_particle_property() instead.
            */
           DEAL_II_DEPRECATED
           virtual
