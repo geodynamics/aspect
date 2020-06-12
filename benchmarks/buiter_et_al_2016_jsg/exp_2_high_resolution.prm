@@ -202,7 +202,8 @@ subsection Material model
 
     set Angles of internal friction                  = 36, 36, 36, 16, 0, 0, 1e18
     set Cohesions                                    = 30, 30, 30, 30, 1e18, 1e18, 1e18
-    set Use strain weakening                         = true
+
+    set Strain weakening mechanism                   = total strain
     set Start plasticity strain weakening intervals  = 0.5 
     set End plasticity strain weakening intervals    = 1
     set Cohesion strain weakening factors            = 1
