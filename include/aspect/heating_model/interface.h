@@ -109,7 +109,6 @@ namespace aspect
        * outputs to their uninitialized values (NaN for the source and latent
        * heat terms, 0 for the rates of temperature change).
        */
-      virtual
       void
       reset ();
     };
