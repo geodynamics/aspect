@@ -769,10 +769,16 @@ namespace aspect
       Assert(dim == 3,ExcMessage("This geometry model doesn't support 2d."));
       // the chunk manifold works internally with a vector with longitude, latitude, depth.
       // We need to output radius, longitude, latitude to be consistent.
+      // Ignore the topography by calling pull_back_ellipsoid to avoid a loop when calling the
+      // AsciiDataBoundary for topography which uses this function....
+      Point<3> cartesian_point;
+      for (unsigned int d=0; d<dim; ++d)
+        cartesian_point[d] = position_point[d];
 
-      Point<dim> transformed_point = manifold.pull_back(position_point);
+      Point<3> transformed_point = manifold.pull_back_ellipsoid(cartesian_point, semi_major_axis_a, eccentricity);
 
-      const double radius = get_radius(position_point);
+      const double radius =  semi_major_axis_a /
+                             (std::sqrt(1 - eccentricity * eccentricity * std::sin(transformed_point[1]) * std::sin(transformed_point[1])));
       std::array<double,dim> position_array;
       position_array[0] = radius + transformed_point(2);
       position_array[1] = transformed_point(0);
@@ -795,7 +801,9 @@ namespace aspect
     EllipsoidalChunk<3>::natural_to_cartesian_coordinates(const std::array<double,3> &position_tensor) const
     {
       // We receive radius, longitude, latitude and we need to turn it first back into
-      // longitude, latitude, depth for internal use, and push_forward to cartesian coordiantes.
+      // longitude, latitude, depth for internal use, and push_forward to cartesian coordinates.
+      // Ignore the topography by calling push_forward_ellipsoid to avoid a loop when calling the
+      // AsciiDataBoundary for topography which uses this function....
       Point<3> position_point;
       position_point(0) = position_tensor[1];
       position_point(1) = position_tensor[2];
@@ -803,7 +811,7 @@ namespace aspect
       const double radius = semi_major_axis_a / (std::sqrt(1 - eccentricity * eccentricity * std::sin(position_point(1)) * std::sin(position_point(1))));
       position_point(2) = position_tensor[0] - radius;
 
-      Point<3> transformed_point = manifold.push_forward(position_point);
+      Point<3> transformed_point = manifold.push_forward_ellipsoid(position_point, semi_major_axis_a, eccentricity);
       return transformed_point;
     }
 
