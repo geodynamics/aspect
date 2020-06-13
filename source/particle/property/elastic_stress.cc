@@ -19,8 +19,8 @@
  */
 
 #include <aspect/particle/property/elastic_stress.h>
-#include <aspect/material_model/viscoelastic.h>
 #include <aspect/material_model/visco_plastic.h>
+#include <aspect/material_model/viscoelastic.h>
 #include <aspect/initial_composition/interface.h>
 
 namespace aspect
@@ -57,11 +57,15 @@ namespace aspect
 
         data.push_back(this->get_initial_composition_manager().initial_composition(position,this->introspection().compositional_index_for_name("stress_yy")));
 
-        data.push_back(this->get_initial_composition_manager().initial_composition(position,this->introspection().compositional_index_for_name("stress_xy")));
-
-        if (dim == 3)
+        if (dim == 2)
+          {
+            data.push_back(this->get_initial_composition_manager().initial_composition(position,this->introspection().compositional_index_for_name("stress_xy")));
+          }
+        else if (dim == 3)
           {
             data.push_back(this->get_initial_composition_manager().initial_composition(position,this->introspection().compositional_index_for_name("stress_zz")));
+
+            data.push_back(this->get_initial_composition_manager().initial_composition(position,this->introspection().compositional_index_for_name("stress_xy")));
 
             data.push_back(this->get_initial_composition_manager().initial_composition(position,this->introspection().compositional_index_for_name("stress_xz")));
 
@@ -78,6 +82,11 @@ namespace aspect
                                                    typename ParticleHandler<dim>::particle_iterator &particle) const
       {
         MaterialModel::MaterialModelInputs<dim> in(1, this->n_compositional_fields());
+
+        in.position[0] = particle->get_location();
+
+        in.current_cell = typename DoFHandler<dim>::active_cell_iterator(*particle->get_surrounding_cell(this->get_triangulation()),
+                                                                         &(this->get_dof_handler()));
 
         in.temperature[0] = solution[this->introspection().component_indices.temperature];
 
@@ -98,23 +107,21 @@ namespace aspect
         this->get_material_model().evaluate (in,out);
 
         for (unsigned int i = 0; i < SymmetricTensor<2,dim>::n_independent_components ; ++i)
-          {
-            particle->get_properties()[data_position + i] = solution[this->introspection().component_indices.compositional_fields[i]];
-          }
+          particle->get_properties()[data_position + i] += out.reaction_terms[0][i];
       }
 
       template <int dim>
       UpdateTimeFlags
       ElasticStress<dim>::need_update() const
       {
-        return update_output_step;
+        return update_time_step;
       }
 
       template <int dim>
       UpdateFlags
       ElasticStress<dim>::get_needed_update_flags () const
       {
-        return update_values;
+        return update_values | update_gradients;
       }
 
       template <int dim>
@@ -130,13 +137,18 @@ namespace aspect
         if (this->introspection().compositional_name_exists("stress_yy"))
           property_information.emplace_back("stress_yy",1);
 
-        if (this->introspection().compositional_name_exists("stress_xy"))
-          property_information.emplace_back("stress_xy",1);
-
-        if (dim == 3)
+        if (dim == 2)
+          {
+            if (this->introspection().compositional_name_exists("stress_xy"))
+              property_information.emplace_back("stress_xy",1);
+          }
+        else if (dim == 3)
           {
             if (this->introspection().compositional_name_exists("stress_zz"))
               property_information.emplace_back("stress_zz",1);
+
+            if (this->introspection().compositional_name_exists("stress_xy"))
+              property_information.emplace_back("stress_xy",1);
 
             if (this->introspection().compositional_name_exists("stress_xz"))
               property_information.emplace_back("stress_xz",1);

@@ -23,8 +23,6 @@
 
 #include <aspect/particle/property/interface.h>
 #include <aspect/simulator_access.h>
-#include <aspect/material_model/visco_plastic.h>
-#include <aspect/material_model/viscoelastic.h>
 
 namespace aspect
 {
@@ -37,7 +35,7 @@ namespace aspect
        * has accumulated through time.
        * The implementation of this property is equivalent to the implementation
        * for compositional fields that is described in the viscoelastic material
-       * model.
+       * model and elastic stress rheology module.
        *
        * @ingroup ParticleProperties
        */
@@ -53,41 +51,15 @@ namespace aspect
           void initialize () override;
 
           /**
-                 * Initialization function. This function is called once at the
-                 * creation of every particle for every property to initialize its
-                 * value.
-                 *
-                 * @param [in] position The current particle position.
-                 * @param [in,out] particle_properties The properties of the particle
-                 * that is initialized within the call of this function. The purpose
-                 * of this function should be to extend this vector by a number of
-                 * properties.
-                 */
+          * @copydoc aspect::Particle::Property::Interface::initialize_one_particle_property()
+          **/
           void
           initialize_one_particle_property (const Point<dim> &position,
                                             std::vector<double> &particle_properties) const override;
 
           /**
-           * Update function. This function is called every time an update is
-           * request by need_update() for every particle for every property.
-           *
-           * @param [in] data_position An unsigned integer that denotes which
-           * component of the particle property vector is associated with the
-           * current property. For properties that own several components it
-           * denotes the first component of this property, all other components
-           * fill consecutive entries in the @p particle_properties vector.
-           *
-           * @param [in] position The current particle position.
-           *
-           * @param [in] solution The values of the solution variables at the
-           * current particle position.
-           *
-           * @param [in] gradients The gradients of the solution variables at
-           * the current particle position.
-           *
-           * @param [in,out] particle_properties The properties of the particle
-           * that is updated within the call of this function.
-           */
+          * @copydoc aspect::Particle::Property::update_particle_property()
+          **/
           void
           update_particle_property (const unsigned int data_position,
                                     const Vector<double> &solution,
@@ -95,26 +67,20 @@ namespace aspect
                                     typename ParticleHandler<dim>::particle_iterator &particle) const override;
 
           /**
-           * This implementation tells the particle manager that
-           * we need to update particle properties every time step.
-           */
+          * @copydoc aspect::Particle::Property::Interface::need_update()
+          **/
           UpdateTimeFlags
           need_update () const override;
 
           /**
-           * Return which data has to be provided to update the property.
-           * The integrated strains needs the gradients of the velocity.
-           */
+          * @copydoc aspect::Particle::Property::Interface::get_needed_update_flags()
+          **/
           UpdateFlags
           get_needed_update_flags () const override;
 
           /**
-           * Set up the information about the names and number of components
-           * this property requires.
-           *
-           * @return A vector that contains pairs of the property names and the
-           * number of components this property plugin defines.
-           */
+          * @copydoc aspect::Particle::Property::Interface::get_property_information()
+          **/
           std::vector<std::pair<std::string, unsigned int> >
           get_property_information() const override;
       };
