@@ -24,11 +24,12 @@
 #include <aspect/postprocess/geoid.h>
 #include <aspect/postprocess/dynamic_topography.h>
 #include <aspect/postprocess/boundary_densities.h>
+#include <aspect/geometry_model/spherical_shell.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
 
-#include <aspect/geometry_model/spherical_shell.h>
+#include <aspect/citation_info.h>
 
 
 namespace aspect
@@ -958,6 +959,7 @@ namespace aspect
     void
     Geoid<dim>::parse_parameters (ParameterHandler &prm)
     {
+      CitationInfo::add("Geoid");
       prm.enter_subsection("Postprocess");
       {
         prm.enter_subsection("Geoid");
