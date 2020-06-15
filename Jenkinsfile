@@ -102,6 +102,20 @@ pipeline {
       }
     }
 
+    stage('cookbooks') {
+      options {
+        timeout(time: 20, unit: 'MINUTES')
+      }
+      steps {
+        sh '''
+	export BUILDDIR=`pwd`/build-gcc-fast
+	cd cookbooks && make -f check.mk CHECK=--validate BUILD=$BUILDDIR -j8
+	cd ..
+	cd benchmarks && make -f check.mk CHECK=--validate BUILD=$BUILDDIR -j8
+        '''
+      }
+    }
+
     stage('Test') {
       options {
         timeout(time: 150, unit: 'MINUTES')
