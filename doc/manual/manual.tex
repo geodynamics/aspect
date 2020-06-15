@@ -5606,9 +5606,10 @@ The bulk of the parameter file for this cookbook is similar to previous ones in 
 We use initial temperature conditions that set up a hot blob of rock in the center of the 
 domain.
 
-The main addition is the \texttt{Free surface} subsection.
+The main addition is the \texttt{Mesh deformation} subsection.
 In this subsection you need to give \aspect{} a comma
-separated list of the free surface boundary indicators.  In this case, we are
+separated list of the boundary indicators where the `free surface' deformation should be applied.
+In this case, we are
 dealing with the `top' boundary of a box in 2D.
 There is another significant
 parameter that needs to be set here: the value for the stabilization parameter ``theta''.
