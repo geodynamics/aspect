@@ -52,6 +52,15 @@ namespace aspect
           Geoid();
 
           /**
+           * Initialization function. This function is called once at the
+           * beginning of the program after parse_parameters is run and after
+           * the SimulatorAccess (if applicable) is initialized.
+          */
+          virtual
+          void
+          initialize ();
+
+          /**
            * @copydoc DataPostprocessorScalar<dim>::evaluate_vector_field()
            */
           void

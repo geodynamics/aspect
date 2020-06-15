@@ -23,6 +23,7 @@
 #include <aspect/utilities.h>
 #include <aspect/geometry_model/spherical_shell.h>
 #include <aspect/postprocess/visualization/geoid.h>
+#include <aspect/citation_info.h>
 
 
 
@@ -39,6 +40,14 @@ namespace aspect
         DataPostprocessorScalar<dim> ("geoid",
                                       update_quadrature_points)
       {}
+
+      template <int dim>
+      void
+      Geoid<dim>::
+      initialize()
+      {
+        CitationInfo::add("Geoid");
+      }
 
       template <int dim>
       void
