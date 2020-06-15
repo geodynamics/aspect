@@ -24,7 +24,7 @@ set Surface pressure                       = 0
 
 set Use years in output instead of seconds = false  # default: true
 
-set Nonlinear solver scheme                = no Advection, iterated Stokes
+set Nonlinear solver scheme                = first timestep only, single Stokes
 
 subsection Boundary temperature model
   set List of model names = box
