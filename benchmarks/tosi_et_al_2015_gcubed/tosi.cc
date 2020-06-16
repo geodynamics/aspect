@@ -354,7 +354,6 @@ namespace aspect
 
       // Otherwise we compute the linear viscosity and, if needed, the plastic viscosity.
       double viscosity = 0.0;
-      Point<dim> test();
       const double visc_linear = viscolin(eta_T,eta_Z,temperature,0);
 
       if (eta_asterisk == 0.0 && sigma_yield == 0.0)

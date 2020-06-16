@@ -201,8 +201,8 @@ namespace aspect
       double pressure = depth/pressure_gradient;
       // declare other parameters
       double viscosity,viscosity_reduction_factor,peak_amplitude,peak_width,isothermal_volume_change;
-      double compressibility,pressure_dependent_density,integrated_thermal_expansivity,density,anharmonic_Vs;
-      double unrelaxed_compliance,loss_compliance,storage_compliance,attenuation,period,anelastic_Vs;
+      double compressibility,pressure_dependent_density,integrated_thermal_expansivity,density;
+      double unrelaxed_compliance,storage_compliance,period,anelastic_Vs;
       // begin calculation of Vs
       if (homologous_temperature<critical_homologous_temperature)
         {
@@ -226,7 +226,7 @@ namespace aspect
           // Vs is too high to give realistic temperature so viscosity, attenuation and unrelaxed compliance are reset
           viscosity=1e40;
           unrelaxed_compliance=1./(1e9*(mu0+(dmudP*pressure*1e-9)));
-          attenuation=1e-9;
+          // attenuation=1e-9;
         }
       // evaluate Maxwell normalised shear wave period
       double maxwell_relaxation_time=viscosity*unrelaxed_compliance;
@@ -298,15 +298,15 @@ namespace aspect
                                                   /background_slope)+((std::sqrt(2*M_PI)/2)*peak_amplitude*peak_width*(1-
                                                                       std::erf((std::log(peak_period/normalised_period))/(std::sqrt(2)*peak_width)))));
       // determine J2 term (imaginary part of complex compliance)
-      loss_compliance=unrelaxed_compliance*(M_PI/2)*(background_amplitude*(std::pow(normalised_period,background_slope))+\
-                                                     (peak_amplitude*std::exp(-1*(std::pow(std::log(peak_period/normalised_period),2)
-                                                                                  /(2*std::pow(peak_width,2))))))+(unrelaxed_compliance*normalised_period);
+      //double loss_compliance=unrelaxed_compliance*(M_PI/2)*(background_amplitude*(std::pow(normalised_period,background_slope))+
+      // (peak_amplitude*std::exp(-1*(std::pow(std::log(peak_period/normalised_period),2)/
+      // (2*std::pow(peak_width,2))))))+(unrelaxed_compliance*normalised_period);
       // calculate anharmonic Vs
-      anharmonic_Vs=1/(std::sqrt(density*unrelaxed_compliance)*1e3);
+      // anharmonic_Vs=1/(std::sqrt(density*unrelaxed_compliance)*1e3);
       // calculate Vs
       anelastic_Vs=1/(std::sqrt(density*storage_compliance)*1e3);
       // calculate attenuation
-      attenuation=loss_compliance/storage_compliance;
+      // attenuation=loss_compliance/storage_compliance;
       return anelastic_Vs;
     }
 
