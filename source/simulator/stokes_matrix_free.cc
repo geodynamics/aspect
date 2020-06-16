@@ -1445,7 +1445,7 @@ namespace aspect
     for (unsigned int level=0; level<n_levels; ++level)
       {
         // Create multilevel viscosity tables. For DGQ0, this is one value per cell,
-        // for DGQ1 this is n_q_points values per cell.      {
+        // for DGQ1 this is n_q_points values per cell.
         const unsigned int n_cells = mg_matrices_A_block[level].get_matrix_free()->n_macro_cells();
         const unsigned int n_q_points = quadrature_formula.size();
 
