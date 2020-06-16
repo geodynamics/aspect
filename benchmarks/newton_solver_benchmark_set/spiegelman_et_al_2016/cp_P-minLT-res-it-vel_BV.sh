@@ -1,4 +1,4 @@
-!/bin/bash
+#!/bin/bash
 declare -a version="c3"
 #declare -a boundary_type=("velocities") # "tractions")
 #for i_boundary_type in "${boundary_type[@]}"
