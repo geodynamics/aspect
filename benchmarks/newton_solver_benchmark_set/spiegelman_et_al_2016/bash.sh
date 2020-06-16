@@ -1,4 +1,4 @@
-!/bin/bash
+#!/bin/bash
 version="test"
 build_dir="../../../build/"
 declare -a grid=(5) 
