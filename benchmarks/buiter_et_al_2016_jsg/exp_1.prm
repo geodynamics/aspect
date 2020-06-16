@@ -138,7 +138,7 @@ subsection Material model
 #                                                     [bkd, sand,  bound, block, sticky_air, total_strain]
     set Reference strain rate                       = 1.e-5
     set Minimum strain rate                         = 1.e-10
-    set Strain weakening mechanism                  = finite strain tensor
+    set Strain weakening mechanism                  = total strain
 
     set Start plasticity strain weakening intervals = 0,    0.50,  0.5,   0,     0,          1e5
     set End plasticity strain weakening intervals   = 0.1,  1.00,  1,     0.1,   0.1,        1e4
