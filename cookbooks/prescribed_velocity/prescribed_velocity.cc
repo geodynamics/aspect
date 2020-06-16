@@ -177,21 +177,27 @@ namespace aspect
       }
   }
 
+  /**
+   * A set of helper functions that either return the point passed to it (if
+   * the current dimension is the same) or return a dummy value (otherwise).
+   */
   namespace
   {
-    template <int dim>
-    const Point<2> &as_2d(const Point<dim> &p);
+    const Point<2> as_2d(const Point<3> &/*p*/)
+    {
+      return Point<2>();
+    }
 
-    template <>
     const Point<2> &as_2d(const Point<2> &p)
     {
       return p;
     }
 
-    template <int dim>
-    const Point<3> &as_3d(const Point<dim> &p);
+    const Point<3> as_3d(const Point<2> &/*p*/)
+    {
+      return Point<3>();
+    }
 
-    template <>
     const Point<3> &as_3d(const Point<3> &p)
     {
       return p;
