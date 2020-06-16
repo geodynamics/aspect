@@ -56,9 +56,8 @@ namespace aspect
            * beginning of the program after parse_parameters is run and after
            * the SimulatorAccess (if applicable) is initialized.
           */
-          virtual
           void
-          initialize ();
+          initialize () override;
 
           /**
            * @copydoc DataPostprocessorScalar<dim>::evaluate_vector_field()
