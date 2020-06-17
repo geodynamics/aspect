@@ -1,0 +1,6 @@
+New: Project to Q1 viscosity averaging implemented for the matrix-free
+GMG Stokes solver. Using "project to Q1 only viscosity" averaging scheme
+with the GMG solver recovers optimal convergence rates for velocity in 
+all benchmarking problems.  
+<br>
+(Thomas C. Clevenger, 2020/06/16)
