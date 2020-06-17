@@ -9,8 +9,8 @@
     . check that README.md and http://aspect.dealii.org/ReadMe.html are okay
       and the links to the mailinglists are working (also in manual.pdf)
     . run (and be patient):
-      cd benchmarks && ./check.sh BUILDDIR
-      cd cookbooks && ./check.sh BUILDDIR
+      cd benchmarks && make -f check.mk BUILD=$BUILDDIR -j4
+      cd cookbooks && make -f check.mk BUILD=$BUILDDIR -j4
   . determine new version roughly following semantic versioning: http://semver.org/
     - format is X.Y.Z for a release, X.Y.Z-pre for the dev version or X.Y.Z-rcW for release candidates
     - backwards incompatible changes require incrementing X, adding features incrementing Y
