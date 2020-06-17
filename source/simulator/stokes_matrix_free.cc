@@ -1298,11 +1298,6 @@ namespace aspect
                                                                                sim.triangulation.get_communicator());
 
     const QGauss<dim> quadrature_formula (sim.parameters.stokes_velocity_degree+1);
-    FEValues<dim> fe_values_projection (*(sim.mapping),
-                                        fe_projection,
-                                        quadrature_formula,
-                                        update_values);
-    std::vector<double> values_on_quad;
 
     double min_el = std::numeric_limits<double>::max();
     double max_el = -std::numeric_limits<double>::max();
@@ -1368,6 +1363,12 @@ namespace aspect
     // Create active mesh viscosity table. For DGQ0, this is one value per cell,
     // for DGQ1 this is n_q_points values per cell.
     {
+      FEValues<dim> fe_values_projection (*(sim.mapping),
+                                          fe_projection,
+                                          quadrature_formula,
+                                          update_values);
+      std::vector<double> values_on_quad;
+
       const unsigned int n_cells = stokes_matrix.get_matrix_free()->n_macro_cells();
       const unsigned int n_q_points = quadrature_formula.size();
 
