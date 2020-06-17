@@ -90,45 +90,10 @@ namespace aspect
       else if (increase_file_number)
         ++output_file_number;
 
-      // Now write all data to the file of choice. Start with a pre-amble that
-      // explains the meaning of the various fields
-      std::string file_prefix = "gravity-" + Utilities::int_to_string (output_file_number, 5);
+      const std::string file_prefix = "gravity-" + Utilities::int_to_string (output_file_number, 5);
       const std::string filename = (this->get_output_directory()
                                     + "output_gravity/"
                                     + file_prefix);
-      std::ofstream output (filename.c_str());
-      AssertThrow(output,
-                  ExcMessage("Unable to open file for writing: " + filename +"."));
-      output << "# 1: position_satellite_r" << '\n'
-             << "# 2: position_satellite_phi" << '\n'
-             << "# 3: position_satellite_theta" << '\n'
-             << "# 4: position_satellite_x" << '\n'
-             << "# 5: position_satellite_y" << '\n'
-             << "# 6: position_satellite_z" << '\n'
-             << "# 7: gravity_x" << '\n'
-             << "# 8: gravity_y" << '\n'
-             << "# 9: gravity_z" << '\n'
-             << "# 10: gravity_norm" << '\n'
-             << "# 11: gravity_theory" << '\n'
-             << "# 12: gravity_potential" << '\n'
-             << "# 13: gravity_potential_theory" << '\n'
-             << "# 14: gravity_anomaly_x" << '\n'
-             << "# 15: gravity_anomaly_y" << '\n'
-             << "# 16: gravity_anomaly_z" << '\n'
-             << "# 17: gravity_anomaly_norm" << '\n'
-             << "# 18: gravity_gradient_xx" << '\n'
-             << "# 19: gravity_gradient_yy" << '\n'
-             << "# 20: gravity_gradient_zz" << '\n'
-             << "# 21: gravity_gradient_xy" << '\n'
-             << "# 22: gravity_gradient_xz" << '\n'
-             << "# 23: gravity_gradient_yz" << '\n'
-             << "# 24: gravity_gradient_theory_xx" << '\n'
-             << "# 25: gravity_gradient_theory_yy" << '\n'
-             << "# 26: gravity_gradient_theory_zz" << '\n'
-             << "# 27: gravity_gradient_theory_xy" << '\n'
-             << "# 28: gravity_gradient_theory_xz" << '\n'
-             << "# 29: gravity_gradient_theory_yz" << '\n'
-             << '\n';
 
       // Get quadrature formula and increase the degree of quadrature over the velocity
       // element degree.
@@ -283,6 +248,45 @@ namespace aspect
                 satellites_coordinate[p][1] = (longitude_list[p]) * numbers::PI / 180.;
               satellites_coordinate[p][2] = (90 - latitude_list[p]) * numbers::PI / 180. ;
             }
+        }
+
+      // open the file on rank 0 and write the headers
+      std::ofstream output;
+      if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
+        {
+          output.open(filename.c_str());
+          AssertThrow(output,
+                      ExcMessage("Unable to open file for writing: " + filename +"."));
+          output << "# 1: position_satellite_r" << '\n'
+                 << "# 2: position_satellite_phi" << '\n'
+                 << "# 3: position_satellite_theta" << '\n'
+                 << "# 4: position_satellite_x" << '\n'
+                 << "# 5: position_satellite_y" << '\n'
+                 << "# 6: position_satellite_z" << '\n'
+                 << "# 7: gravity_x" << '\n'
+                 << "# 8: gravity_y" << '\n'
+                 << "# 9: gravity_z" << '\n'
+                 << "# 10: gravity_norm" << '\n'
+                 << "# 11: gravity_theory" << '\n'
+                 << "# 12: gravity_potential" << '\n'
+                 << "# 13: gravity_potential_theory" << '\n'
+                 << "# 14: gravity_anomaly_x" << '\n'
+                 << "# 15: gravity_anomaly_y" << '\n'
+                 << "# 16: gravity_anomaly_z" << '\n'
+                 << "# 17: gravity_anomaly_norm" << '\n'
+                 << "# 18: gravity_gradient_xx" << '\n'
+                 << "# 19: gravity_gradient_yy" << '\n'
+                 << "# 20: gravity_gradient_zz" << '\n'
+                 << "# 21: gravity_gradient_xy" << '\n'
+                 << "# 22: gravity_gradient_xz" << '\n'
+                 << "# 23: gravity_gradient_yz" << '\n'
+                 << "# 24: gravity_gradient_theory_xx" << '\n'
+                 << "# 25: gravity_gradient_theory_yy" << '\n'
+                 << "# 26: gravity_gradient_theory_zz" << '\n'
+                 << "# 27: gravity_gradient_theory_xy" << '\n'
+                 << "# 28: gravity_gradient_theory_xz" << '\n'
+                 << "# 29: gravity_gradient_theory_yz" << '\n'
+                 << '\n';
         }
 
       // This is the main loop which computes gravity acceleration, potential and
@@ -487,7 +491,7 @@ namespace aspect
       // up the next time we need output:
       set_last_output_time (this->get_time());
       last_output_timestep = this->get_timestep_number();
-      return std::pair<std::string, std::string> ("gravity computation file:",filename);
+      return std::pair<std::string, std::string> ("gravity computation file:", filename);
     }
 
 
