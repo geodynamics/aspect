@@ -167,7 +167,7 @@ namespace aspect
      * $\smash[t]{\overset{\triangledown}{\tau}}^{t + \Delta t^{e}} \approx
      * \frac{\tau^{t + \Delta t^{e} - \tau^{t}}}{\Delta t^{e}} -
      * W^{t}\tau^{t} + \tau^{t}W^{t}$.
-     * In this material model, the size of the time step above ($\\Delta t^{e}$)
+     * In this material model, the size of the time step above ($\Delta t^{e}$)
      * can be specified as the numerical time step size or an independent fixed time
      * step. If the latter case is selected, the user has an option to apply a
      * stress averaging scheme to account for the differences between the numerical
@@ -178,8 +178,8 @@ namespace aspect
      *
      * The formulation above allows rewriting the total rate of deformation (eqn. 29) as
      * $\tau^{t + \Delta t^{e}} = \eta_{eff} \left (
-     * 2\\hat{D}^{t + \\triangle t^{e}} + \\frac{\\tau^{t}}{\\mu \\Delta t^{e}} +
-     * \\frac{W^{t}\\tau^{t} - \\tau^{t}W^{t}}{\\mu}  \\right )$.
+     * 2\hat{D}^{t + \triangle t^{e}} + \frac{\tau^{t}}{\mu \Delta t^{e}} +
+     * \frac{W^{t}\tau^{t} - \tau^{t}W^{t}}{\mu}  \right )$.
      *
      * The effective viscosity (eqn. 28) is a function of the viscosity ($\eta$),
      * elastic time step size ($\Delta t^{e}$) and shear relaxation time
