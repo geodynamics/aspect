@@ -699,6 +699,45 @@ namespace aspect
       }
 
 
+      double phase_average_value (const std::vector<double> &phase_function_values,
+                                  const std::vector<unsigned int> &n_phases_per_composition,
+                                  const std::vector<double> &parameter_values,
+                                  const unsigned int composition,
+                                  const PhaseUtilities::PhaseAveragingOperation operation)
+      {
+        // Calculate base index and assign base value
+        unsigned int base = 0;
+        for (unsigned int i=0; i<composition; ++i)
+          base += n_phases_per_composition[i] + 1;
+
+        double averaged_parameter = parameter_values[base];
+        if (n_phases_per_composition[composition] > 0)
+          {
+            // Do averaging when there are multiple phases
+            if (operation == PhaseUtilities::logarithmic)
+              averaged_parameter = log(averaged_parameter);
+
+            for (unsigned int i=0; i<n_phases_per_composition[composition]; ++i)
+              {
+                Assert(base+i+1<parameter_values.size(), ExcInternalError());
+                if (operation == PhaseUtilities::logarithmic)
+                  {
+                    // First average by log values and then take the exponential.
+                    // This is used for averaging prefactors in flow laws.
+                    averaged_parameter += phase_function_values[base-composition+i] * log(parameter_values[base+i+1] / parameter_values[base+i]);
+                  }
+                else if (operation == PhaseUtilities::arithmetic)
+                  averaged_parameter += phase_function_values[base-composition+i] * (parameter_values[base+i+1] - parameter_values[base+i]);
+
+                else
+                  AssertThrow(false, ExcInternalError());
+              }
+            if (operation == PhaseUtilities::logarithmic)
+              averaged_parameter = exp(averaged_parameter);
+          }
+        return averaged_parameter;
+      }
+
       template <int dim>
       PhaseFunctionInputs<dim>::PhaseFunctionInputs(const double temperature_,
                                                     const double pressure_,
