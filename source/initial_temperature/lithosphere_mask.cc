@@ -61,9 +61,10 @@ namespace aspect
         if (LAB_depth_source == File)
           {
             //Get spherical coordinates for model
+            Assert (dim == 3, ExcNotImplemented());
             std::array<double,dim> scoord      = Utilities::Coordinates::cartesian_to_spherical_coordinates<dim>(position);
             const double phi = scoord[1];
-            const double theta = scoord[2];
+            const double theta = scoord[2 % dim]; // work-around to compile without warnings for dim==2
             const Point<2> phi_theta (phi, theta);
 
             //Get lab depth for specific phi and theta

@@ -643,7 +643,7 @@ namespace aspect
     double
     EllipsoidalChunk<dim>::depth(const Point<dim> &position) const
     {
-      return std::max(std::min(-manifold.pull_back(position)[2], maximal_depth()), 0.0);
+      return std::max(std::min(-manifold.pull_back(position)[dim-1], maximal_depth()), 0.0);
     }
 
     template <int dim>

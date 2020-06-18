@@ -81,22 +81,31 @@ namespace aspect
 
     template <int dim>
     std::pair<std::vector<double>,std::vector<double> >
-    Geoid<dim>::density_contribution (const double &outer_radius) const
+    Geoid<dim>::density_contribution (const double &/*outer_radius*/) const
+    {
+      Assert(false, ExcNotImplemented());
+      return std::make_pair(std::vector<double>(), std::vector<double>());
+
+    }
+
+    template <>
+    std::pair<std::vector<double>,std::vector<double> >
+    Geoid<3>::density_contribution (const double &outer_radius) const
     {
       const unsigned int quadrature_degree = this->introspection().polynomial_degree.temperature;
       // need to evaluate density contribution of each volume quadrature point
-      const QGauss<dim> quadrature_formula(quadrature_degree);
+      const QGauss<3> quadrature_formula(quadrature_degree);
 
-      FEValues<dim> fe_values (this->get_mapping(),
-                               this->get_fe(),
-                               quadrature_formula,
-                               update_values |
-                               update_quadrature_points |
-                               update_JxW_values |
-                               update_gradients);
+      FEValues<3> fe_values (this->get_mapping(),
+                             this->get_fe(),
+                             quadrature_formula,
+                             update_values |
+                             update_quadrature_points |
+                             update_JxW_values |
+                             update_gradients);
 
-      MaterialModel::MaterialModelInputs<dim> in(fe_values.n_quadrature_points, this->n_compositional_fields());
-      MaterialModel::MaterialModelOutputs<dim> out(fe_values.n_quadrature_points, this->n_compositional_fields());
+      MaterialModel::MaterialModelInputs<3> in(fe_values.n_quadrature_points, this->n_compositional_fields());
+      MaterialModel::MaterialModelOutputs<3> out(fe_values.n_quadrature_points, this->n_compositional_fields());
 
       std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (quadrature_formula.size()));
 
@@ -127,7 +136,7 @@ namespace aspect
                     for (unsigned int q=0; q<quadrature_formula.size(); ++q)
                       {
                         // convert coordinates from [x,y,z] to [r, phi, theta]
-                        const std::array<double,dim> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(in.position[q]);
+                        const std::array<double,3> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(in.position[q]);
 
                         // normalization after Dahlen and Tromp, 1986, Appendix B.6
                         const std::pair<double,double> sph_harm_vals = aspect::Utilities::real_spherical_harmonic(ideg,iord,scoord[2],scoord[1]);
@@ -154,39 +163,49 @@ namespace aspect
 
     template <int dim>
     std::pair<std::pair<double, std::pair<std::vector<double>,std::vector<double> > >, std::pair<double, std::pair<std::vector<double>,std::vector<double> > > >
-    Geoid<dim>::dynamic_topography_contribution(const double &outer_radius,
-                                                const double &inner_radius) const
+    Geoid<dim>::dynamic_topography_contribution(const double &/*outer_radius*/,
+                                                const double &/*inner_radius*/) const
+    {
+      Assert(false, ExcNotImplemented());
+      std::pair<double, std::pair<std::vector<double>,std::vector<double> > > temp;
+      return std::make_pair(temp, temp);
+    }
+
+    template <>
+    std::pair<std::pair<double, std::pair<std::vector<double>,std::vector<double> > >, std::pair<double, std::pair<std::vector<double>,std::vector<double> > > >
+    Geoid<3>::dynamic_topography_contribution(const double &outer_radius,
+                                              const double &inner_radius) const
     {
       // Get a pointer to the dynamic topography postprocessor.
-      const Postprocess::DynamicTopography<dim> &dynamic_topography =
-        this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::DynamicTopography<dim> >();
+      const Postprocess::DynamicTopography<3> &dynamic_topography =
+        this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::DynamicTopography<3> >();
 
       // Get the already-computed dynamic topography solution.
       const LinearAlgebra::BlockVector &topo_vector = dynamic_topography.topography_vector();
 
       // Get a pointer to the boundary densities postprocessor.
-      const Postprocess::BoundaryDensities<dim> &boundary_densities =
-        this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::BoundaryDensities<dim> >();
+      const Postprocess::BoundaryDensities<3> &boundary_densities =
+        this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::BoundaryDensities<3> >();
 
       const double top_layer_average_density = boundary_densities.density_at_top();
       const double bottom_layer_average_density = boundary_densities.density_at_bottom();
 
 
       const unsigned int quadrature_degree = this->introspection().polynomial_degree.temperature;
-      const QGauss<dim-1> quadrature_formula_face(quadrature_degree); // need to grab the infinitesimal area of each quadrature points on every boundary face here
+      const QGauss<2> quadrature_formula_face(quadrature_degree); // need to grab the infinitesimal area of each quadrature points on every boundary face here
 
-      FEFaceValues<dim> fe_face_values (this->get_mapping(),
-                                        this->get_fe(),
-                                        quadrature_formula_face,
-                                        update_values |
-                                        update_quadrature_points |
-                                        update_JxW_values);
+      FEFaceValues<3> fe_face_values (this->get_mapping(),
+                                      this->get_fe(),
+                                      quadrature_formula_face,
+                                      update_values |
+                                      update_quadrature_points |
+                                      update_JxW_values);
 
       std::vector<double> topo_values( quadrature_formula_face.size());
 
       // vectors to store the location, infinitesimal area, and dynamic topography associated with each quadrature point of each surface and bottom cell respectively.
-      std::vector<std::pair<Point<dim>,std::pair<double,double> > > surface_stored_values;
-      std::vector<std::pair<Point<dim>,std::pair<double,double> > > CMB_stored_values;
+      std::vector<std::pair<Point<3>,std::pair<double,double> > > surface_stored_values;
+      std::vector<std::pair<Point<3>,std::pair<double,double> > > CMB_stored_values;
 
       // loop over all of the boundary cells and if one is at
       // surface or CMB, evaluate the dynamic topography vector there.
@@ -197,7 +216,7 @@ namespace aspect
             unsigned int face_idx = numbers::invalid_unsigned_int;
             bool at_upper_surface = false;
             {
-              for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+              for (unsigned int f=0; f<GeometryInfo<3>::faces_per_cell; ++f)
                 {
                   if (cell->at_boundary(f) && this->get_geometry_model().depth (cell->face(f)->center()) < cell->face(f)->minimum_vertex_distance()/3)
                     {
@@ -264,7 +283,7 @@ namespace aspect
       std::vector<std::vector<double> > CMB_topo_spherical_function; // store theta, phi, spherical infinitesimal, and CMB dynamic topography
       for (unsigned int i=0; i<surface_stored_values.size(); ++i)
         {
-          const std::array<double,dim> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(surface_stored_values.at(i).first);
+          const std::array<double,3> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(surface_stored_values.at(i).first);
           const double theta = scoord[2];
           const double phi = scoord[1];
           // calculate spherical infinitesimal sin(theta)*d_theta*d_phi by infinitesimal_area/radius^2
@@ -279,7 +298,7 @@ namespace aspect
         }
       for (unsigned int i=0; i<CMB_stored_values.size(); ++i)
         {
-          const std::array<double,dim> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(CMB_stored_values.at(i).first);
+          const std::array<double,3> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(CMB_stored_values.at(i).first);
           const double theta = scoord[2];
           const double phi = scoord[1];
           // calculate spherical infinitesimal sin(theta)*d_theta*d_phi by infinitesimal_area/radius^2
@@ -880,9 +899,17 @@ namespace aspect
 
     template <int dim>
     double
-    Geoid<dim>::evaluate (const Point<dim> &p) const
+    Geoid<dim>::evaluate (const Point<dim> &/*p*/) const
     {
-      const std::array<double,dim> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(p);
+      Assert(false, ExcNotImplemented());
+      return 0;
+    }
+
+    template <>
+    double
+    Geoid<3>::evaluate (const Point<3> &p) const
+    {
+      const std::array<double,3> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(p);
       const double theta = scoord[2];
       const double phi = scoord[1];
       double value = 0.;
