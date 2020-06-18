@@ -302,14 +302,14 @@ namespace aspect
 #define ASPECT_REGISTER_SIGNALS_CONNECTOR(connector_function_2d,connector_function_3d) \
   namespace ASPECT_REGISTER_SIGNALS_CONNECTOR \
   { \
-    int dummy_do_register () \
-    { \
-      aspect::internals::SimulatorSignals::register_connector_function_2d (connector_function_2d); \
-      aspect::internals::SimulatorSignals::register_connector_function_3d (connector_function_3d); \
-      return /* anything will do = */42; \
-    } \
-    \
-    const int dummy_variable = dummy_do_register (); \
+    struct dummy_do_register \
+    {          \
+      dummy_do_register () \
+      { \
+        aspect::internals::SimulatorSignals::register_connector_function_2d (connector_function_2d); \
+        aspect::internals::SimulatorSignals::register_connector_function_3d (connector_function_3d); \
+      } \
+    } dummy_variable; \
   }
 
 
@@ -324,13 +324,13 @@ namespace aspect
 #define ASPECT_REGISTER_SIGNALS_PARAMETER_CONNECTOR(connector_function) \
   namespace ASPECT_REGISTER_SIGNALS_PARAMETER_CONNECTOR_ ## connector_function \
   { \
-    int dummy_do_register_ ## connector_function () \
+    struct dummy_do_register_ ## connector_function \
     { \
-      connector_function (); \
-      return /* anything will do = */42; \
-    } \
-    \
-    const int dummy_variable_ ## classname = dummy_do_register_ ## connector_function (); \
+      dummy_do_register_ ## connector_function () \
+      {                \
+        connector_function (); \
+      }          \
+    } dummy_variable_ ## classname; \
   }
 
 }
