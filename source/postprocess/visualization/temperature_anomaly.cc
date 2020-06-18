@@ -101,7 +101,6 @@ namespace aspect
             const double slice_depth = (depth*n_slices)/max_depth + 0.5;
             const unsigned int idx = static_cast<unsigned int>(slice_depth);
             const double fractional_slice = slice_depth - static_cast<double>(idx);
-            Assert(idx>=0, ExcInternalError());
             Assert(idx<n_slices+1, ExcInternalError());
             const double depth_average_temperature= (1. - fractional_slice)*padded_temperature_depth_average[idx] + fractional_slice*padded_temperature_depth_average[idx+1];
             computed_quantities[q](0) = temperature - depth_average_temperature;
