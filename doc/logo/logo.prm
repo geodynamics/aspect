@@ -1,0 +1,122 @@
+# A simple setup for convection in a 2d shell.
+# This model was used to generate ASPECT's logo, which can be recreated using
+# the ASPECT version and dependencies specified below, and using the paraview
+# state file and the output file in output/ and ParaView version 5.8.1.
+# Alternatively the docker image gassmoeller/aspect-logo contains this version
+# of ASPECT as a precompiled binary.  The docker image can be rebuild from the
+# Dockerfile in this path.
+#
+# To recreate the output in paraview, load the state, adjust the file paths,
+# and create a screenshot without the mesh with 4x the suggested resolution on
+# a 1080p screen (6160 x 3176 px) and with a transparent background.
+# For the mesh output disable the background, enable the mesh, and create a
+# screenshot with 2x the suggested resolution on a 1080p screen (3080 x 1588
+# px). Then crop the resulting figures to content and use in the .svg.
+#
+#-----------------------------------------------------------------------------
+#-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+#--     . version 2.2.0-pre (master, 148bb56fe)
+#--     . using deal.II 9.0.1
+#--     .       with 32 bit indices and vectorization level 1 (128 bits)
+#--     . using Trilinos 12.10.1
+#--     . using p4est 2.0.0
+#--     . running in OPTIMIZED mode
+#--     . running with 6 MPI processes
+#-----------------------------------------------------------------------------
+
+set Dimension                              = 2
+set Use years in output instead of seconds = true
+set Output directory                       = output-logo
+set Use conduction timestep                = true
+
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Thermal expansion coefficient = 4e-5
+    set Viscosity                     = 2e22
+  end
+end
+
+
+subsection Geometry model
+  set Model name = spherical shell
+
+  subsection Spherical shell
+    set Inner radius  = 3481000
+    set Outer radius  = 6371000
+    set Opening angle = 360
+  end
+end
+
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = bottom, top
+end
+
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = top, bottom
+  set List of model names = constant
+
+  subsection Constant
+    set Boundary indicator to temperature mappings = \
+      top: 273, bottom: 4273
+  end
+end
+
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 1973
+  end
+end
+
+
+subsection Gravity model
+  set Model name = radial constant
+end
+
+
+subsection Nullspace removal
+  set Remove nullspace = net rotation
+end
+
+
+subsection Mesh refinement
+  set Initial global refinement          = 4
+  set Initial adaptive refinement        = 2
+  set Refinement fraction                = 0.6
+  set Strategy                           = temperature
+  set Time steps between mesh refinement = 3
+  set Minimum refinement level = 3
+end
+
+
+# We increase the solver tolerance to speed things up
+subsection Solver parameters
+  subsection Stokes solver parameters
+     set Linear solver tolerance = 1e-3
+  end
+end
+
+
+subsection Postprocess
+  set List of postprocessors = visualization
+
+  subsection Visualization
+    set Output format                 = vtu
+    set Time between graphical output = 6.51092e8
+    set Number of grouped files       = 1
+  end
+end
+
+
+subsection Termination criteria
+  set Checkpoint on termination = true
+  set Termination criteria = end step
+  set End step = 1430
+end
