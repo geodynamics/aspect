@@ -22,6 +22,7 @@
 #include <aspect/global.h>
 #include <aspect/geometry_model/initial_topography_model/ascii_data.h>
 #include <aspect/geometry_model/box.h>
+#include <aspect/geometry_model/two_merged_boxes.h>
 #include <aspect/geometry_model/sphere.h>
 #include <aspect/geometry_model/spherical_shell.h>
 #include <aspect/geometry_model/chunk.h>
@@ -65,7 +66,8 @@ namespace aspect
       // add a coordinate here, and, for spherical geometries,
       // change to cartesian coordinates.
       Point<dim> global_point;
-      if (Plugins::plugin_type_matches<const GeometryModel::Box<dim>> (this->get_geometry_model()))
+      if (Plugins::plugin_type_matches<const GeometryModel::Box<dim>> (this->get_geometry_model()) ||
+          Plugins::plugin_type_matches<const GeometryModel::TwoMergedBoxes<dim>> (this->get_geometry_model()))
         {
           // No need to set the vertical coordinate correctly,
           // because it will be thrown away in get_data_component anyway
