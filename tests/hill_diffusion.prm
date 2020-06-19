@@ -1,9 +1,7 @@
-#set Additional shared libraries            = libanalytical_topography.so
 set Dimension                              = 2
 set Use years in output instead of seconds = false
-set End time                               = 0.1
+set End time                               = 0.001
 set Maximum time step                      = 0.0005
-set Output directory                       = 1_sine_zero_flux/
 set Nonlinear solver scheme = no Advection, no Stokes
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
@@ -107,21 +105,13 @@ subsection Mesh refinement
 end
 
 
-# We output the computed topography and the analytical topography
-# value to file.
 subsection Postprocess
-  set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, visualization, analytical topography
-  subsection Topography
-    set Output to file = true
-    set Analytical solution of example = 1
-    set Diffusivity = 0.25
-    set Initial sinusoidal topography amplitude = 0.075
-  end
-
+  set List of postprocessors = visualization
   subsection Visualization
-    set Time between graphical output = 0.025
+    set Time between graphical output = 0
     set Output mesh velocity = true
     set Interpolate output = false
+    set Output format = gnuplot
   end
 end
 
