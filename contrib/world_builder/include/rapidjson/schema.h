@@ -649,7 +649,7 @@ namespace internal
             hasDependencies_ = true;
             for (ConstMemberIterator itr = dependencies->MemberBegin(); itr != dependencies->MemberEnd(); ++itr)
               {
-                SizeType sourceIndex;
+                SizeType sourceIndex = 0;
                 if (FindPropertyIndex(itr->name, &sourceIndex))
                   {
                     if (itr->value.IsArray())
@@ -658,7 +658,7 @@ namespace internal
                         std::memset(properties_[sourceIndex].dependencies, 0, sizeof(bool)* propertyCount_);
                         for (ConstValueIterator targetItr = itr->value.Begin(); targetItr != itr->value.End(); ++targetItr)
                           {
-                            SizeType targetIndex;
+                            SizeType targetIndex = 0;
                             if (FindPropertyIndex(*targetItr, &targetIndex))
                               properties_[sourceIndex].dependencies[targetIndex] = true;
                           }
