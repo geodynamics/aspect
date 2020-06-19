@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2020 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -131,16 +131,10 @@ namespace aspect
     void
     MeshDeformationHandler<dim>::initialize ()
     {
-      // Get pointer to initial topography model
-      topo_model = const_cast<InitialTopographyModel::Interface<dim>*>(&this->get_initial_topography_model());
       // In case we prescribed initial topography, we should take this into
       // account. However, it is not included in the mesh displacements,
       // so we need to fetch it separately.
-      // TODO check that for refinement/mesh displacement after t0, getting the initial topography
-      // does not differ from the initial topography at the new point too much,
-      // or whether it is better to store and redistribute the initial initial topography
-      // in a similar way as the mesh displacements.
-      if (dynamic_cast<InitialTopographyModel::ZeroTopography<dim>*>(topo_model) == nullptr)
+      if (!Plugins::plugin_type_matches<InitialTopographyModel::ZeroTopography<dim>>(this->get_initial_topography_model()))
         include_initial_topography = true;
     }
 
@@ -853,7 +847,8 @@ namespace aspect
                           surface_point[d] = natural_coord[d];
                       }
                     // Get the topography at this point.
-                    const double topo = topo_model->value(surface_point);
+                    const double topo = this->get_initial_topography_model().value(surface_point);
+
 
                     // TODO adapt to radial topography
                     const unsigned int support_point_index

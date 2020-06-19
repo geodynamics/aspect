@@ -1,4 +1,4 @@
-#set Additional shared libraries            = libanalytical_topography.so
+set Additional shared libraries            = libanalytical_topography.so
 set Dimension                              = 2
 set Use years in output instead of seconds = false
 # You will want to run the model for longer to see 

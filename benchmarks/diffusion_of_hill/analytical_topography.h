@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2020 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -105,7 +105,7 @@ namespace aspect
         /**
          * A switch to vary between different analytical solutions.
          */
-        int analytical_solution_example;
+        unsigned int analytical_solution_example;
 
     };
   }

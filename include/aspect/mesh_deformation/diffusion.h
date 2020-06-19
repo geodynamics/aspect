@@ -65,7 +65,7 @@ namespace aspect
          */
         void
         compute_velocity_constraints_on_boundary(const DoFHandler<dim> &mesh_deformation_dof_handler,
-                                                 ConstraintMatrix &mesh_velocity_constraints,
+                                                 AffineConstraints<double> &mesh_velocity_constraints,
                                                  const std::set<types::boundary_id> &boundary_id) const override;
 
         /**
@@ -97,8 +97,8 @@ namespace aspect
          * surface. The computed time step has to satisfy the CFL
          * number chosen in the input parameter file on each cell of the mesh.
          */
-        void compute_time_step (const DoFHandler<dim> &mesh_deformation_dof_handler,
-                                const std::set<types::boundary_id> boundary_ids) const;
+        void check_diffusion_time_step (const DoFHandler<dim> &mesh_deformation_dof_handler,
+                                        const std::set<types::boundary_id> &boundary_ids) const;
 
         /**
          * The hillslope transport coefficient or diffusivity [m2/s]
@@ -107,44 +107,6 @@ namespace aspect
          */
         double diffusivity;
 
-        /**
-         * The start time of the model run
-         * used to determine whether diffusion should
-         * be applied.
-         */
-        double start_time;
-
-        /**
-         * The current time used to determine whether diffusion should
-         * be applied.
-         */
-        double current_time;
-
-        /**
-         * The last time at which diffusion was supposed
-         * to be applied. Used to check for the next necessary
-         * application of diffusion.
-         */
-        double last_diffusion_time;
-
-        /**
-         * The amount of model time between applying diffusion
-         * to the boundary with the given mesh deformation boundary indicator.
-         */
-        double time_between_diffusion;
-
-        /**
-         * The start timestep of the model run
-         * used to determine whether diffusion should
-         * be applied.
-         */
-        unsigned int start_timestep;
-
-        /**
-         * Last timestep at which diffusion was applied.
-         * Used to check for the next necessary diffusion application.
-         */
-        unsigned int last_diffusion_timestep;
 
         /**
          * Maximum number of steps between the application of diffusion.
@@ -158,25 +120,10 @@ namespace aspect
         bool apply_diffusion;
 
         /**
-         * Boundaries along which the Stokes velocity is set to tangential.
-         */
-        std::set<types::boundary_id> tangential_boundary_velocity_indicators;
-
-        /**
          * Boundaries along which the mesh is allowed to move tangentially
          * despite of the Stokes velocity boundary conditions.
          */
         std::set<types::boundary_id> additional_tangential_mesh_boundary_indicators;
-
-        /**
-         * Boundaries along which the Stokes velocity is set to zero.
-         */
-        std::set<types::boundary_id> zero_boundary_velocity_indicators;
-
-        /**
-         * Boundaries along which the Stokes velocity is prescribed.
-         */
-        std::set<types::boundary_id> prescribed_boundary_velocity_indicators;
     };
   }
 }
