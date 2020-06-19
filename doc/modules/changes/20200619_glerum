@@ -1,0 +1,7 @@
+New: There is now a mesh deformation plugin "diffusion" that can be
+used to diffuse away surface topography in box geometry models. The 
+plugin can be used alone or in combination with the free surface 
+to approximate surface processes and increase numerical stability
+by limiting mesh distortion. 
+<br>
+(Anne Glerum, 2020/06/19)
