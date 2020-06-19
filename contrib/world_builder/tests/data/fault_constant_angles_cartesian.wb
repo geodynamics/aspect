@@ -1,5 +1,5 @@
 {
-"version":"0.2",
+"version":"0.3",
 "cross section": [[100e3,100e3],[400e3,500e3]],
 "coordinate system":{"model":"cartesian"},
 "features":
@@ -12,7 +12,12 @@
            {"coordinate":2, "segments":[{"length":200e3, "thickness":[200e3,100e3], "angle":[30]}, {"length":100e3, "thickness":[100e3], "angle":[30]}, {"length":150e3, "thickness":[100e3,0], "angle":[70]}]}
          ],
          "temperature models":[{"model":"uniform", "temperature":150}],
-         "composition models":[{"model":"uniform", "compositions":[3,4], "fractions":[0.25,0.75]}]},
+         "composition models":[{"model":"uniform", "compositions":[3,4], "fractions":[0.25,0.75]}],
+         "grains models":[
+                          {"model":"uniform", "compositions":[0,1], // olivine and enstatie
+                           "Euler angles z-x-z":[[10,20,30],[40,50,60]],
+                           "grain sizes":[0.3,-1]}
+]},
 
     {"model":"fault", "name":"Second fault", "coordinates":[[0e3,250e3],[500e3,250e3],[1000e3,500e3]], "dip point":[0,-1],
          "segments":[{"length":200e3, "thickness":[100e3,100e3], "angle":[45]}, {"length":200e3, "thickness":[100e3], "angle":[60]}, {"length":150e3, "thickness":[100e3,100e3], "angle":[90]}],
@@ -24,7 +29,18 @@
          "temperature models":[{"model":"linear", "max distance fault center":100e3}],
          "composition models":[{"model":"uniform", "compositions":[0],"max distance fault center":16.5e3},
                                {"model":"uniform", "compositions":[1], "min distance fault center":16.5e3, "max distance fault center":33e3},
-                               {"model":"uniform", "compositions":[2,3], "fractions":[0.25,0.75], "min distance fault center":33e3, "max distance fault center":49.5e3}]},
+                               {"model":"uniform", "compositions":[2,3], "fractions":[0.25,0.75], "min distance fault center":33e3, "max distance fault center":49.5e3}],
+         "grains models":[
+                          {"model":"uniform", "compositions":[0,1],"max distance fault center":16.5e3, 
+                           "Euler angles z-x-z":[[10,20,30],[40,50,60]],
+                           "grain sizes":[0.4,-1]},
+                          {"model":"uniform", "compositions":[0,1],"min distance fault center":16.5e3, "max distance fault center":33e3, 
+                           "Euler angles z-x-z":[[-10,-25,35],[45,-55,65]],
+                           "grain sizes":[0.5,-1]},
+                          {"model":"uniform", "compositions":[0,1],"min distance fault center":33e3, "max distance fault center":49.5e3, 
+                           "Euler angles z-x-z":[[220,320,240],[520,620,270]],
+                           "grain sizes":[0.6,-1]}
+]},
 
     {"model":"fault", "name":"none fault", "coordinates":[[0e3,250e3],[500e3,250e3],[1000e3,500e3]], "dip point":[0,-1],
          "segments":[{"length":200e3, "thickness":[100e3,100e3], "angle":[45]}, {"length":200e3, "thickness":[100e3], "angle":[60]}, {"length":150e3, "thickness":[100e3,100e3], "angle":[90]}],

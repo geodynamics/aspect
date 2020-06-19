@@ -26,14 +26,18 @@ USE, INTRINSIC :: ISO_C_BINDING!, ONLY: C_PTR
   !! This function creates an object of the world builder and returns a pointer
   !! to it. This pointer can then be used to call the temperature and composition
   !!functions. When done call the release world function to destroy the object.
-    SUBROUTINE create_world(cworld, file_name, has_output_dir, output_dir) BIND(C, NAME='create_world')
-      USE, INTRINSIC :: ISO_C_BINDING, ONLY: C_PTR, C_BOOL
+  !! Please not that the basic type for the random number seed is a unsigned long,
+  !! so it is advisable to not use negative numbers if you want to reproduce the 
+  !! same result as other codes.
+   SUBROUTINE create_world(cworld, file_name, has_output_dir, output_dir, random_number_seed) BIND(C, NAME='create_world') 
+      USE, INTRINSIC :: ISO_C_BINDING, ONLY: C_PTR, C_BOOL, C_CHAR, C_LONG
       IMPLICIT NONE
       ! This argument is a pointer passed by reference.
       TYPE(C_PTR), INTENT(OUT) :: cworld
-      character(len=1),  intent(in)  :: file_name
-      logical(1), intent(in) :: has_output_dir
-      character(len=1),  intent(in)  :: output_dir
+      character(KIND=C_CHAR,len=1),  intent(in)  :: file_name
+      logical(KIND=C_BOOL), intent(in) :: has_output_dir
+      character(KIND=C_CHAR,len=1),  intent(in)  :: output_dir
+      INTEGER(C_LONG), intent(in), value ::random_number_seed
     END SUBROUTINE create_world
 
     !> Create an interface with the 2d tempearture C function of the World builder.

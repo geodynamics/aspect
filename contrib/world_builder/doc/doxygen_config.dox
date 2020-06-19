@@ -5,8 +5,8 @@
 #---------------------------------------------------------------------------
 DOXYFILE_ENCODING      = UTF-8
 PROJECT_NAME           = "World Builder"
-PROJECT_NUMBER         = 0.1.0-pre
-PROJECT_BRIEF          = "A geodyanmic initial conditions generator"
+PROJECT_NUMBER         = 0.3.0
+PROJECT_BRIEF          = "A geodynamic initial conditions generator"
 PROJECT_LOGO           = 
 OUTPUT_DIRECTORY       = doc/doxygen/
 CREATE_SUBDIRS         = NO
@@ -112,7 +112,7 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 # Configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  =  README.md source include
+INPUT                  =  README.md source include doc/changelog
 INPUT_ENCODING         = UTF-8
 FILE_PATTERNS          = *.c \
                          *.cc \

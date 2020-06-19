@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -60,22 +60,20 @@ namespace WorldBuilder
         /**
          * declare and read in the world builder file into the parameters class
          */
-        virtual
-        void parse_entries(Parameters &prm);
+        void parse_entries(Parameters &prm) override final;
+
 
         /**
          * Returns what the natural coordinate system for this Coordinate System is.
          */
-        virtual
-        CoordinateSystem natural_coordinate_system() const;
+        CoordinateSystem natural_coordinate_system() const override final;
 
         /**
          * Returns what method should be used to go down with an angle into
          * the domain.
          * \sa DepthMethod
          */
-        virtual
-        DepthMethod depth_method() const;
+        DepthMethod depth_method() const override final;
 
         /**
          * Takes the Cartesian points (x,z or x,y,z) and returns standardized
@@ -84,16 +82,14 @@ namespace WorldBuilder
          * model it  will be (radius, longitude) in 2d and (radius, longitude,
          * latitude) in 3d.
          */
-        virtual
-        std::array<double,3> cartesian_to_natural_coordinates(const std::array<double,3> &position) const;
+        std::array<double,3> cartesian_to_natural_coordinates(const std::array<double,3> &position) const override final;
 
         /**
          * Undoes the action of cartesian_to_natural_coordinates, and turns the
          * coordinate system which is most 'natural' to the geometry model into
          * Cartesian coordinates.
          */
-        virtual
-        std::array<double,3> natural_to_cartesian_coordinates(const std::array<double,3> &position) const;
+        std::array<double,3> natural_to_cartesian_coordinates(const std::array<double,3> &position) const override final;
 
 
         /**
@@ -106,8 +102,7 @@ namespace WorldBuilder
          * special case of the Vincenty formula for an ellipsoid with equal
          * major and minor axes (https://doi.org/10.1179/sre.1975.23.176.88).
          */
-        virtual
-        double distance_between_points_at_same_depth(const Point<3> &point_1, const Point<3> &point_3) const;
+        double distance_between_points_at_same_depth(const Point<3> &point_1, const Point<3> &point_3) const override final;
 
         /**
          * What depth method the spherical coordinates use.

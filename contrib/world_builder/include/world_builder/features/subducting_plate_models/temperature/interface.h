@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -149,14 +149,14 @@ namespace WorldBuilder
          * register it. Because this is a library, we need some extra measures
          * to ensure that the static variable is actually initialized.
          */
-#define WB_REGISTER_FEATURE_CONTINENTAL_TEMPERATURE_MODEL(klass,name) \
+#define WB_REGISTER_FEATURE_SUBDUCTING_PLATE_TEMPERATURE_MODEL(klass,name) \
   class klass##Factory : public ObjectFactory { \
     public: \
       klass##Factory() \
       { \
         Interface::registerType(#name, klass::declare_entries, this); \
       } \
-      virtual std::unique_ptr<Interface> create(World *world) { \
+      std::unique_ptr<Interface> create(World *world) override final { \
         return std::unique_ptr<Interface>(new klass(world)); \
       } \
   }; \

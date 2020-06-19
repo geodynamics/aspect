@@ -402,8 +402,8 @@ RAPIDJSON_NAMESPACE_END
           \ref RAPIDJSON_ERRORS APIs.
 */
 #ifndef RAPIDJSON_ASSERT
-#include <cassert>
-#define RAPIDJSON_ASSERT(x) assert(x)
+#include <world_builder/assert.h>
+#define RAPIDJSON_ASSERT(x) WBAssertThrow(x, "RapidJSON error.")
 #endif // RAPIDJSON_ASSERT
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -614,10 +614,12 @@ RAPIDJSON_NAMESPACE_END
 #if RAPIDJSON_HAS_CXX11_NOEXCEPT
 #define RAPIDJSON_NOEXCEPT_ASSERT(x)
 #else
-#define RAPIDJSON_NOEXCEPT_ASSERT(x) RAPIDJSON_ASSERT(x)
+#include<cassert>
+#define RAPIDJSON_NOEXCEPT_ASSERT(x) assert(x)
 #endif // RAPIDJSON_HAS_CXX11_NOEXCEPT
 #else
-#define RAPIDJSON_NOEXCEPT_ASSERT(x) RAPIDJSON_ASSERT(x)
+#include<cassert>
+#define RAPIDJSON_NOEXCEPT_ASSERT(x) assert(x)
 #endif // RAPIDJSON_ASSERT_THROWS
 
 ///////////////////////////////////////////////////////////////////////////////

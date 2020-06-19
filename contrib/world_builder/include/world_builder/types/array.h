@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -48,28 +48,23 @@ namespace WorldBuilder
               const unsigned int max_items = std::numeric_limits<unsigned int>::max(),
               const bool unique_items = false);
 
+        /**
+         * Constructor for cloning an array.
+         */
+        Array(Array const &other);
+
 
         /**
          * Destructor
          */
         ~Array();
 
-
-        /**
-         * Clone. The caller will be responsible for the liftime of this
-         * object, return a unique pointer. This clone can only be used
-         * when inner_type.size() == 0.
-         */
-        virtual
-        std::unique_ptr<Interface>   clone() const;
-
         /**
          * Todo
          */
-        virtual
         void write_schema(Parameters &prm,
                           const std::string &name,
-                          const std::string &documentation) const;
+                          const std::string &documentation) const override final;
 
         /**
          * An enum of the type which this class points to
@@ -109,7 +104,11 @@ namespace WorldBuilder
          */
         bool unique_items;
 
-
+      protected:
+        Array *clone_impl() const override final
+        {
+          return new Array(*this);
+        };
     };
   }
 }

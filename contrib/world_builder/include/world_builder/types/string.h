@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -64,6 +64,11 @@ namespace WorldBuilder
         String(std::string value, std::string default_value, std::string description);
 
         /**
+         * Copy constructor
+         */
+        String(String const &other);
+
+        /**
          * Destructor
          */
         ~String();
@@ -71,22 +76,22 @@ namespace WorldBuilder
         /**
          * Todo
          */
-        virtual
         void write_schema(Parameters &prm,
                           const std::string &name,
-                          const std::string &documentation) const;
-
-        /**
-         * clone
-         */
-        virtual
-        std::unique_ptr<Interface> clone() const;
+                          const std::string &documentation) const override final;
 
 
         std::string value;
         std::string default_value;
         std::string description;
         std::vector<std::string> restricted_values;
+
+
+      protected:
+        String *clone_impl() const override final
+        {
+          return new String(*this);
+        };
     };
   }
 }

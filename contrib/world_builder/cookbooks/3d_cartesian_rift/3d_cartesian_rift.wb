@@ -1,5 +1,5 @@
 {
-  "version":"0.2",
+  "version":"0.3",
   "features":
   [
     {"model":"oceanic plate", "name":"oceanic plate A", "coordinates":[[-1e3,-1e3],[2001e3,-1e3],[2001e3,1000e3],[-1e3,1000e3]],

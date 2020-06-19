@@ -1,5 +1,5 @@
 {
-"version":"0.2",
+"version":"0.3",
 "cross section": [[100e3,100e3],[400e3,100e3]],
 "coordinate system":{"model":"cartesian"},
 "features":
@@ -18,7 +18,12 @@
                                         {"length":150e3, "thickness":[100e3,0], "angle":[70],"temperature models":[{"model":"uniform", "temperature":7}]}]}
          ],
          "temperature models":[{"model":"uniform", "temperature":8}],
-         "composition models":[{"model":"uniform", "compositions":[3,4], "fractions":[0.25,0.75]}]},
+         "composition models":[{"model":"uniform", "compositions":[3,4], "fractions":[0.25,0.75]}],
+         "grains models":[
+                          {"model":"uniform", "compositions":[0,1], // olivine and enstatie
+                           "Euler angles z-x-z":[[10,20,30],[40,50,60]],
+                           "grain sizes":[0.3,-1]}
+]},
 
     {"model":"subducting plate", "name":"none fault", "coordinates":[[0e3,150e3],[500e3,150e3],[500e3,150e3],[1000e3,200e3]], "dip point":[0,-1],
          "min depth":0, "max depth":1e10,
@@ -27,21 +32,40 @@
           {"coordinate":2, "segments":[{"length":200e3, "thickness":[100e3,200e3], "angle":[45], 
                                         "temperature models":[{"model":"uniform", "max distance slab top":66e3, "temperature":10},
                                                               {"model":"uniform", "min distance slab top":66e3, "max distance slab top":133e3, "temperature":11},
-                                                              {"model":"uniform", "min distance slab top":133e3, "max distance slab top":199e3, "temperature":12}]}, 
+                                                              {"model":"adiabatic", "min distance slab top":133e3, "max distance slab top":166e3},
+                                                              {"model":"uniform", "min distance slab top":166e3, "max distance slab top":199e3, "temperature":12}]}, 
                                        {"length":100e3, "thickness":[100e3], "angle":[30]}, {"length":150e3, "thickness":[100e3], "angle":[30]}]},
           {"coordinate":3, "segments":[{"length":200e3, "thickness":[200e3,200e3], "angle":[30],
                                         "temperature models":[{"model":"uniform", "max distance slab top":66e3, "temperature":10},
                                                               {"model":"uniform", "min distance slab top":66e3, "max distance slab top":133e3, "temperature":11},
-                                                              {"model":"uniform", "min distance slab top":133e3, "max distance slab top":199e3, "temperature":12}]}, 
+                                                              {"model":"adiabatic", "min distance slab top":133e3, "max distance slab top":166e3},
+                                                              {"model":"uniform", "min distance slab top":166e3, "max distance slab top":199e3, "temperature":12}]}, 
                                        {"length":100e3, "thickness":[100e3], "angle":[30]}, {"length":150e3, "thickness":[100e3,0], "angle":[70]}]}
-         ]},
+         ],
+         "grains models":[
+                          {"model":"uniform", "compositions":[0,1],"max distance slab top":66e3, 
+                           "Euler angles z-x-z":[[10,20,30],[40,50,60]],
+                           "grain sizes":[0.4,-1]},
+                          {"model":"uniform", "compositions":[0,1],"min distance slab top":66e3, "max distance slab top":133e3, 
+                           "Euler angles z-x-z":[[-10,-25,35],[45,-55,65]],
+                           "grain sizes":[0.5,-1]},
+                          {"model":"uniform", "compositions":[0,1],"min distance slab top":133e3, "max distance slab top":199e3, 
+                           "Euler angles z-x-z":[[220,320,240],[520,620,270]],
+                           "grain sizes":[0.6,-1]}
+]},
 
      {"model":"subducting plate", "name":"uniform subducting plate", "coordinates":[[0e3,500e3],[500e3,500e3],[1000e3,750e3]], "dip point":[0e3,0e3],
          "segments":[{"length":200e3, "thickness":[100e3,100e3], "angle":[45]}, {"length":200e3, "thickness":[100e3], "angle":[60]}, {"length":150e3, "thickness":[100e3,100e3], "angle":[90]}],
          "temperature models":[{"model":"plate model", "plate velocity":0.01}],
          "composition models":[{"model":"uniform", "max distance slab top":33e3, "compositions":[0]},
                                {"model":"uniform", "min distance slab top":33e3, "max distance slab top":66e3, "compositions":[1]},
-                               {"model":"uniform", "min distance slab top":66e3, "max distance slab top":99e3, "compositions":[2,3], "fractions":[0.25,0.75]}]},
+                               {"model":"uniform", "min distance slab top":66e3, "max distance slab top":99e3, "compositions":[2,3], "fractions":[0.35,0.65]}],
+         "grains models":[
+                          {"model":"random uniform distribution","max distance slab top":33e3, "compositions":[0,1], // olivine and enstatie
+                           "grain sizes":[0.2,-1], "normalize grain sizes":[true,false]},
+                          {"model":"random uniform distribution","min distance slab top":33e3, "max distance slab top":66e3, "compositions":[0], // olivine and enstatie
+                           "grain sizes":[-1], "normalize grain sizes":[true]}
+     ]},
 
     {"model":"subducting plate", "name":"zero thickness", "coordinates":[[0e3,250e3],[500e3,250e3],[1000e3,500e3]], "dip point":[0,1],
          "min depth":0, "max depth":1e10,

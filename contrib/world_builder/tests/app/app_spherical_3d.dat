@@ -3,6 +3,8 @@
 # Now define parameters:
 # dim = 3
 # compositions = 7
+# grain compositions = 2
+# number of grains = 2
 # r long lat d g T c1 c2 c3 c4 c5
 1 2 2 2 10
 2 2 2 2 10

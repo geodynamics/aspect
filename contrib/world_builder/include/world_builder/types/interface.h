@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -69,17 +69,24 @@ namespace WorldBuilder
          * clone
          */
         virtual
-        std::unique_ptr<Interface> clone() const = 0;
+        std::unique_ptr<Interface> clone() const
+        {
+          return std::unique_ptr<Interface>(clone_impl());
+        }
 
         /**
          * read in the world builder file
          */
-        virtual
+
         type get_type() const;
 
 
       protected:
         type type_name;
+
+
+        virtual
+        Interface *clone_impl() const = 0;
     };
   }
 }

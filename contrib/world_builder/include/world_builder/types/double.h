@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -40,26 +40,29 @@ namespace WorldBuilder
         Double(const double default_value);
 
         /**
+         * Copy constructor
+         */
+        Double(Double const &other);
+
+        /**
          * Destructor
          */
         ~Double();
 
         /**
-         * Clone. The caller of clone is responsible for the lifetime of it,
-         * so return a unique pionter.
-         */
-        virtual
-        std::unique_ptr<Interface> clone() const;
-
-        /**
          * Todo
          */
-        virtual
         void write_schema(Parameters &prm,
                           const std::string &name,
-                          const std::string &documentation) const;
+                          const std::string &documentation) const override final;
 
         double default_value;
+
+      protected:
+        Double *clone_impl() const override final
+        {
+          return new Double(*this);
+        };
 
       private:
 

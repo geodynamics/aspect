@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -40,26 +40,30 @@ namespace WorldBuilder
         Bool(const bool default_value);
 
         /**
+         * Copy constructor
+         */
+        Bool(Bool const &other);
+
+        /**
          * Destructor
          */
         ~Bool();
 
-        /**
-         * Clone. The caller of clone is responsible for the lifetime of it,
-         * so return a unique pionter.
-         */
-        virtual
-        std::unique_ptr<Interface> clone() const;
 
         /**
          * Todo
          */
-        virtual
         void write_schema(Parameters &prm,
                           const std::string &name,
-                          const std::string &documentation) const;
+                          const std::string &documentation) const override final;
 
         bool default_value;
+
+      protected:
+        Bool *clone_impl() const override final
+        {
+          return new Bool(*this);
+        };
 
       private:
 

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -71,12 +71,12 @@ namespace WorldBuilder
        * exact arithmetic this algorithm would work (also see polygon
        * in point test).
        */
-      int pointNo = point_list.size();
-      int    wn = 0;    // the  winding number counter
-      int   j=pointNo-1;
+      size_t pointNo = point_list.size();
+      size_t    wn = 0;    // the  winding number counter
+      size_t   j=pointNo-1;
 
       // loop through all edges of the polygon
-      for (int i=0; i<pointNo; i++)
+      for (size_t i=0; i<pointNo; i++)
         {
           // edge from V[i] to  V[i+1]
           if (point_list[j][1] <= point[1])
@@ -92,7 +92,7 @@ namespace WorldBuilder
                       // P left of  edge
                       ++wn;            // have  a valid up intersect
                     }
-                  else if ( is_left == 0)
+                  else if ( std::abs(is_left) < std::numeric_limits<double>::epsilon())
                     {
                       // The point is exactly on the infinite line.
                       // determine if it is on the segment
@@ -123,7 +123,7 @@ namespace WorldBuilder
                       // P right of  edge
                       --wn;            // have  a valid down intersect
                     }
-                  else if ( is_left == 0)
+                  else if (std::abs(is_left) < std::numeric_limits<double>::epsilon())
                     {
                       // This code is to make sure that the boundaries are included in the polygon.
                       // The point is exactly on the infinite line.
@@ -169,7 +169,7 @@ namespace WorldBuilder
        *
        */
 
-      const unsigned int n_poly_points = point_list.size();
+      const size_t n_poly_points = point_list.size();
       WBAssertThrow(n_poly_points >= 3, "Not enough polygon points were specified.");
 
       // Initialize a vector of distances for each point of the polygon with a very large distance
@@ -482,7 +482,7 @@ namespace WorldBuilder
                                             natural_coordinate_system);
 
       // The section which is checked.
-      double section = 0.0;
+      size_t section = 0;
 
       // The 'horizontal' fraction between the points at the surface.
       double section_fraction = 0.0;
@@ -504,13 +504,13 @@ namespace WorldBuilder
 
       // loop over all the planes to find out which one is closest to the point.
 
-      for (unsigned int i_section=0; i_section < point_list.size()-1; ++i_section)
+      for (size_t i_section=0; i_section < point_list.size()-1; ++i_section)
         {
-          const unsigned int current_section = i_section;
-          const unsigned int next_section = i_section+1;
+          const size_t current_section = i_section;
+          const size_t next_section = i_section+1;
           // translate to orignal coordinates current and next section
-          const unsigned int original_current_section = (unsigned int)std::floor(global_x_list[i_section]);
-          const unsigned int original_next_section = original_current_section + 1;
+          const size_t original_current_section = static_cast<size_t>(std::floor(global_x_list[i_section]));
+          const size_t original_next_section = original_current_section + 1;
           // see on what side the line P1P2 reference point is. This is based on the determinant
           const double reference_on_side_of_line = (point_list[next_section][0] - point_list[current_section][0])
                                                    * (reference_point[1] - point_list[current_section][1])
@@ -549,13 +549,13 @@ namespace WorldBuilder
             {
               // now figure out where the point is in relation with the user
               // defined coordinates
-              const double fraction_CPL_P1P2 = global_x_list[i_section] - (int)global_x_list[i_section]
+              const double fraction_CPL_P1P2 = global_x_list[i_section] - static_cast<int>(global_x_list[i_section])
                                                + (global_x_list[i_section+1]-global_x_list[i_section]) * fraction_CPL_P1P2_strict;
 
               const Point<2> unit_normal_to_plane_spherical = P1P2 / P1P2.norm();
               const Point<2> closest_point_on_line_plus_normal_to_plane_spherical = closest_point_on_line_2d + 1e-8 * (closest_point_on_line_2d.norm() > 1.0 ? closest_point_on_line_2d.norm() : 1.0) * unit_normal_to_plane_spherical;
 
-              WBAssert(closest_point_on_line_plus_normal_to_plane_spherical.norm() != 0.0,
+              WBAssert(std::fabs(closest_point_on_line_plus_normal_to_plane_spherical.norm()) > std::numeric_limits<double>::epsilon(),
                        "Internal error: The norm of variable 'closest_point_on_line_plus_normal_to_plane_spherical' "
                        "is  zero, while this may not happen.");
 
@@ -608,8 +608,9 @@ namespace WorldBuilder
               // Todo: Assert that the norm of the axis are not equal to zero.
               Point<3> y_axis = closest_point_on_line_cartesian - closest_point_on_line_bottom_cartesian;
 
-              WBAssert(y_axis.norm() != 0,
-                       "Internal error: The y_axis.norm() is zero. Y_axis is " << y_axis[0] << ":" << y_axis[1] << ":" << y_axis[2]
+              WBAssert(std::abs(y_axis.norm()) > std::numeric_limits<double>::epsilon(),
+                       "World Builder error: Cannot detemine the up direction in the model. This is most likely due to the provided start radius being zero."
+                       << " Techical details: The y_axis.norm() is zero. Y_axis is " << y_axis[0] << ":" << y_axis[1] << ":" << y_axis[2]
                        << ". closest_point_on_line_cartesian = " << closest_point_on_line_cartesian[0] << ":" << closest_point_on_line_cartesian[1] << ":" << closest_point_on_line_cartesian[2]
                        << ", closest_point_on_line_bottom_cartesian = " << closest_point_on_line_bottom_cartesian[0] << ":" << closest_point_on_line_bottom_cartesian[1] << ":" << closest_point_on_line_bottom_cartesian[2]);
 
@@ -750,15 +751,6 @@ namespace WorldBuilder
                            "Error: current_segment = "  << current_segment
                            << ", and current_segment.size() = " << plane_segment_angles[original_next_section].size());
 
-                  /*std::cout << "plane_segment_angles = " << plane_segment_angles[original_current_section][current_segment][1] << std::endl;
-                  std::cout << "fraction_CPL_P1P2 = " << fraction_CPL_P1P2 << std::endl;
-                  std::cout << "original_next_section = " << original_next_section << std::endl;
-                  std::cout << "plane_segment_angles.size() = " << plane_segment_angles.size() << std::endl;
-                  std::cout << "current_segment = " << current_segment << std::endl;
-                  std::cout << "plane_segment_angles[original_next_section].size() = " << plane_segment_angles[original_next_section].size() << std::endl;
-                  std::cout << "add_angle = " << add_angle << std::endl;
-                  */
-
                   const double interpolated_angle_top    = plane_segment_angles[original_current_section][current_segment][0]
                                                            + fraction_CPL_P1P2 * (plane_segment_angles[original_next_section][current_segment][0]
                                                                                   - plane_segment_angles[original_current_section][current_segment][0])
@@ -786,14 +778,14 @@ namespace WorldBuilder
                     {
                       // The angle is constant. It is easy find find the end of
                       // this segment and the distance.
-                      if (interpolated_segment_length != 0)
+                      if (std::fabs(interpolated_segment_length) > std::numeric_limits<double>::epsilon())
                         {
                           end_segment[0] += interpolated_segment_length * std::sin(degree_90_to_rad - interpolated_angle_top);
                           end_segment[1] -= interpolated_segment_length * std::cos(degree_90_to_rad - interpolated_angle_top);
 
                           Point<2> begin_end_segment = end_segment - begin_segment;
                           Point<2> normal_2d_plane(-begin_end_segment[0],begin_end_segment[1], cartesian);
-                          WBAssert(normal_2d_plane.norm() != 0, "Internal Error: normal_2d_plane.norm() is zero, which should not happen. "
+                          WBAssert(std::fabs(normal_2d_plane.norm()) > std::numeric_limits<double>::epsilon(), "Internal Error: normal_2d_plane.norm() is zero, which should not happen. "
                                    << "Extra info: begin_end_segment[0] = " << begin_end_segment[0]
                                    << ", begin_end_segment[1] = " << begin_end_segment[1]
                                    << ", end_segment: [" << end_segment[0] << "," << end_segment[1] << "]"
@@ -941,9 +933,9 @@ namespace WorldBuilder
                       // Furthermore, when the check point is at the same location as
                       // the center of the circle, we count that point as belonging
                       // to the top of the top segment (0 degree).
-                      double check_point_angle = CPCR_norm == 0 ? 2.0 * const_pi : (check_point_2d[0] <= center_circle[0]
-                                                                                    ? std::acos(dot_product/(CPCR_norm * radius_angle_circle))
-                                                                                    : 2.0 * const_pi - std::acos(dot_product/(CPCR_norm * radius_angle_circle)));
+                      double check_point_angle = std::fabs(CPCR_norm) < std::numeric_limits<double>::epsilon() ? 2.0 * const_pi : (check_point_2d[0] <= center_circle[0]
+                                                 ? std::acos(dot_product/(CPCR_norm * radius_angle_circle))
+                                                 : 2.0 * const_pi - std::acos(dot_product/(CPCR_norm * radius_angle_circle)));
                       check_point_angle = difference_in_angle_along_segment >= 0 ? const_pi - check_point_angle : 2.0 * const_pi - check_point_angle;
 
                       // In the case that it is exactly 2 * pi, bring it back to zero
@@ -981,14 +973,14 @@ namespace WorldBuilder
                       segment_fraction = new_along_plane_distance / interpolated_segment_length;
                       total_average_angle = (average_angle * total_length
                                              + 0.5 * (interpolated_angle_top + interpolated_angle_bottom  - 2 * add_angle) * new_along_plane_distance);
-                      total_average_angle = (total_average_angle == 0 ? 0 : total_average_angle /
+                      total_average_angle = (std::fabs(total_average_angle) < std::numeric_limits<double>::epsilon() ? 0 : total_average_angle /
                                              (total_length + new_along_plane_distance));
                     }
 
                   // increase average angle
                   average_angle = (average_angle * total_length +
                                    0.5 * (interpolated_angle_top + interpolated_angle_bottom  - 2 * add_angle) * interpolated_segment_length);
-                  average_angle = (average_angle == 0 ? 0 : average_angle /
+                  average_angle = (std::fabs(average_angle) < std::numeric_limits<double>::epsilon() ? 0 : average_angle /
                                    (total_length + interpolated_segment_length));
                   // increase the total length for the next segment.
                   total_length += interpolated_segment_length;
@@ -1000,7 +992,7 @@ namespace WorldBuilder
       return_values["distanceAlongPlane"] = along_plane_distance;
       return_values["sectionFraction"] = section_fraction;
       return_values["segmentFraction"] = segment_fraction;
-      return_values["section"] = section;
+      return_values["section"] = static_cast<double>(section);
       return_values["segment"] = segment;
       return_values["averageAngle"] = total_average_angle;
       return return_values;
@@ -1013,7 +1005,7 @@ namespace WorldBuilder
       assert(x.size() == y.size());
       m_x = x;
       m_y = y;
-      const unsigned int n = x.size();
+      const size_t n = x.size();
       for (unsigned int i = 0; i < n-1; i++)
         {
           assert(m_x[i] < m_x[i+1]);
@@ -1028,7 +1020,7 @@ namespace WorldBuilder
            * interpolation spline.
            */
           std::vector<double> dys(n-1), dxs(n-1), ms(n-1);
-          for (unsigned int i=0; i < n-1; i++)
+          for (size_t i=0; i < n-1; i++)
             {
               dxs[i] = x[i+1]-x[i];
               dys[i] = y[i+1]-y[i];
@@ -1039,7 +1031,7 @@ namespace WorldBuilder
           m_c.resize(n);
           m_c[0] = 0;
 
-          for (unsigned int i = 0; i < n-2; i++)
+          for (size_t i = 0; i < n-2; i++)
             {
               const double m0 = ms[i];
               const double m1 = ms[i+1];
@@ -1061,7 +1053,7 @@ namespace WorldBuilder
           // Get b and c coefficients
           m_a.resize(n);
           m_b.resize(n);
-          for (unsigned int i = 0; i < m_c.size()-1; i++)
+          for (size_t i = 0; i < m_c.size()-1; i++)
             {
               const double c1 = m_c[i];
               const double m0 = ms[i];
@@ -1077,7 +1069,7 @@ namespace WorldBuilder
           m_a.resize(n);
           m_b.resize(n);
           m_c.resize(n);
-          for (unsigned int i = 0; i<n-1; i++)
+          for (size_t i = 0; i<n-1; i++)
             {
               m_a[i] = 0.0;
               m_b[i] = 0.0;
@@ -1102,7 +1094,7 @@ namespace WorldBuilder
       // find the closest point m_x[idx] < x, idx=0 even if x<m_x[0]
       std::vector<double>::const_iterator it;
       it = std::lower_bound(m_x.begin(),m_x.end(),x);
-      int idx = std::max( int(it-m_x.begin())-1, 0);
+      size_t idx = static_cast<size_t>(std::max( static_cast<int>(it-m_x.begin())-1, 0));
 
       double h = x-m_x[idx];
       double interpol;
@@ -1122,6 +1114,65 @@ namespace WorldBuilder
           interpol = ((m_a[idx]*h + m_b[idx])*h + m_c[idx])*h + m_y[idx];
         }
       return interpol;
+    }
+
+
+    double wrap_angle(const double angle)
+    {
+      return angle - 360.0*std::floor(angle/360.0);
+    }
+
+    std::array<double,3>
+    euler_angles_from_rotation_matrix(const std::array<std::array<double,3>,3> &rotation_matrix)
+    {
+      const double rad_to_degree = 180.0/const_pi;
+      std::array<double,3> euler_angles;
+      //const double s2 = std::sqrt(rotation_matrix[2][1] * rotation_matrix[2][1] + rotation_matrix[2][0] * rotation_matrix[2][0]);
+      std::ostringstream os;
+      for (size_t i = 0; i < 3; i++)
+        for (size_t j = 0; j < 3; j++)
+          WBAssert(std::fabs(rotation_matrix[i][j]) <= 1.0,
+                   "rotation_matrix[" + std::to_string(i) + "][" + std::to_string(j) +
+                   "] is larger than one: " + std::to_string(rotation_matrix[i][j]) + ". rotation_matrix = \n"
+                   + std::to_string(rotation_matrix[0][0]) + " " + std::to_string(rotation_matrix[0][1]) + " " + std::to_string(rotation_matrix[0][2]) + "\n"
+                   + std::to_string(rotation_matrix[1][0]) + " " + std::to_string(rotation_matrix[1][1]) + " " + std::to_string(rotation_matrix[1][2]) + "\n"
+                   + std::to_string(rotation_matrix[2][0]) + " " + std::to_string(rotation_matrix[2][1]) + " " + std::to_string(rotation_matrix[2][2]));
+
+
+      const double theta = std::acos(rotation_matrix[2][2]);
+      const double phi1  = std::atan2(rotation_matrix[2][0]/-sin(theta),rotation_matrix[2][1]/-sin(theta));
+      const double phi2  = std::atan2(rotation_matrix[0][2]/-sin(theta),rotation_matrix[1][2]/sin(theta));
+
+      euler_angles[0] = wrap_angle(phi1 * rad_to_degree);
+      euler_angles[1] = wrap_angle(theta * rad_to_degree);
+      euler_angles[2] = wrap_angle(phi2 * rad_to_degree);
+
+      return euler_angles;
+    }
+
+    std::array<std::array<double,3>,3>
+    euler_angles_to_rotation_matrix(double phi1_d, double theta_d, double phi2_d)
+    {
+
+      const double degree_to_rad = const_pi/180.0;
+      const double phi1 = phi1_d * degree_to_rad;
+      const double theta = theta_d * degree_to_rad;
+      const double phi2 = phi2_d * degree_to_rad;
+      std::array<std::array<double,3>,3> rot_matrix;
+
+
+      rot_matrix[0][0] = cos(phi2)*cos(phi1) - cos(theta)*sin(phi1)*sin(phi2);
+      rot_matrix[0][1] = -cos(phi2)*sin(phi1) - cos(theta)*cos(phi1)*sin(phi2);
+      rot_matrix[0][2] = -sin(phi2)*sin(theta);
+
+      rot_matrix[1][0] = sin(phi2)*cos(phi1) + cos(theta)*sin(phi1)*cos(phi2);
+      rot_matrix[1][1] = -sin(phi2)*sin(phi1) + cos(theta)*cos(phi1)*cos(phi2);
+      rot_matrix[1][2] = cos(phi2)*sin(theta);
+
+      rot_matrix[2][0] = -sin(theta)*sin(phi1);
+      rot_matrix[2][1] = -sin(theta)*cos(phi1);
+      rot_matrix[2][2] = cos(theta);
+      return rot_matrix;
     }
 
     template const std::array<double,2> convert_point_to_array<2>(const Point<2> &point_);

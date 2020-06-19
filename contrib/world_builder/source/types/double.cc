@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -25,22 +25,26 @@ namespace WorldBuilder
 {
   namespace Types
   {
-    Double::Double(const double default_value)
+    Double::Double(const double default_value_)
       :
-      default_value(default_value)
+      default_value(default_value_)
     {
       this->type_name = Types::type::Double;
     }
 
 
+    Double::Double(Double const &other)
+      :
+      default_value(other.default_value)
+    {
+      this->type_name = Types::type::Double;
+    }
+
+
+
     Double::~Double ()
     {}
 
-    std::unique_ptr<Interface>
-    Double::clone() const
-    {
-      return std::unique_ptr<Interface>(new Double(default_value));
-    }
 
     void
     Double::write_schema(Parameters &prm,

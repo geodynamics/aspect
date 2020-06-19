@@ -1,5 +1,5 @@
 {
-"version":"0.2",
+"version":"0.3",
 "cross section": [[100e3,100e3],[400e3,500e3]],
 "coordinate system":{"model":"spherical", "depth method":"starting point"},
 "features":
@@ -9,18 +9,34 @@
      
      {"model":"oceanic plate", "name":"Second oceanic plate", "max depth":250e3, "coordinates":[[10,-10],[1,-10],[1,-1],[10,-1]],
          "temperature models":[{"model":"uniform", "temperature":20}],
-         "composition models":[{"model":"uniform", "compositions":[2]}]},
+         "composition models":[{"model":"uniform", "compositions":[2]}],
+         "grains models":[
+                          {"model":"uniform", "compositions":[0,1], // olivine and enstatie
+                           "rotation matrices":[[[10,20,30],[40,50,60],[70,80,90]],[[100,110,120],[130,140,150],[160,170,180]]],
+                           "grain sizes":[0.3,-1]}
+]},
 
      {"model":"oceanic plate", "name":"Third oceanic plate", "max depth":250e3, "coordinates":[[-10,10],[-1,10],[-1,1],[-10,1]],
          "composition models":[{"model":"uniform", "compositions":[3]}]},
 
      {"model":"oceanic plate", "name":"Fourth oceanic plate", "max depth":250e3, "coordinates":[[10,10],[1,10],[1,1],[10,1]],
          "temperature models":[{"model":"linear", "max depth":250e3}],
-         "composition models":[{"model":"uniform", "compositions":[4]}]},
+         "composition models":[{"model":"uniform", "compositions":[4]}],
+         "grains models":[
+                          {"model":"uniform", "compositions":[0,1], // olivine and enstatie
+                           "rotation matrices":[[[1,2,3],[4,5,6],[7,8,9]],[[10,11,12],[13,14,15],[16,17,18]]],
+                           "grain sizes":[-1,0.2]}
+]},
 
      {"model":"oceanic plate", "name":"Fifth oceanic plate", "max depth":250e3, "coordinates":[[-20,-20],[-11,-20],[-11,-11],[-20,-11]],
          "temperature models":[{"model":"linear", "max depth":250e3, "top temperature":10, "bottom temperature":50}],
-         "composition models":[{"model":"uniform", "compositions":[5,6], "fractions":[0.25,0.75]}]},
+         "composition models":[{"model":"uniform", "compositions":[5,6], "fractions":[0.25,0.75]}],
+         "grains models":[
+                          {"model":"random uniform distribution","max depth":100e3, "compositions":[0,1], // olivine and enstatie
+                           "grain sizes":[0.2,-1], "normalize grain sizes":[true,false]},
+                          {"model":"random uniform distribution","min depth":100e3,"max depth":200e3, "compositions":[0], // olivine and enstatie
+                           "grain sizes":[-1], "normalize grain sizes":[true]}
+     ]},
      
      {"model":"oceanic plate", "name":"First oceanic plate", "max depth":250e3, "coordinates":[[20,-20],[-10,-20],[-10,-11],[20,-11]],
          "temperature models":[{"model":"plate model", "max depth":250e3, "spreading velocity":0.01, "ridge coordinates":[[15,-20],[15,-15],[10,-10]]}],

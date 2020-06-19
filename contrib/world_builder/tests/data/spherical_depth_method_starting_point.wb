@@ -1,5 +1,5 @@
 {
-"version":"0.2",
+"version":"0.3",
 "cross section": [[100e3,100e3],[400e3,500e3]],
 "coordinate system":{"model":"spherical", "depth method":"starting point"},
 "features":

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -37,21 +37,34 @@ namespace WorldBuilder
     }
 
     template <int dim>
-    Point<dim>::Point(const WorldBuilder::Point<dim> &default_value, const std::string &description)
+    Point<dim>::Point(const WorldBuilder::Point<dim> &default_value_,
+                      const std::string &description_)
       :
-      value(default_value),
-      default_value(default_value),
-      description(description)
+      value(default_value_),
+      default_value(default_value_),
+      description(description_)
     {
       this->type_name = dim == 2 ? Types::type::Point2D : Types::type::Point3D;
     }
 
     template <int dim>
-    Point<dim>::Point(const WorldBuilder::Point<dim> &value, const WorldBuilder::Point<dim> &default_value, const std::string &description)
+    Point<dim>::Point(const WorldBuilder::Point<dim> &value_,
+                      const WorldBuilder::Point<dim> &default_value_,
+                      const std::string &description_)
       :
-      value(value),
-      default_value(default_value),
-      description(description)
+      value(value_),
+      default_value(default_value_),
+      description(description_)
+    {
+      this->type_name = dim == 2 ? Types::type::Point2D : Types::type::Point3D;
+    }
+
+    template <int dim>
+    Point<dim>::Point(Point const &other)
+      :
+      value(other.value),
+      default_value(other.default_value),
+      description(other.description)
     {
       this->type_name = dim == 2 ? Types::type::Point2D : Types::type::Point3D;
     }
@@ -59,13 +72,6 @@ namespace WorldBuilder
     template <int dim>
     Point<dim>::~Point ()
     {}
-
-    template <int dim>
-    std::unique_ptr<Interface>
-    Point<dim>::clone() const
-    {
-      return std::unique_ptr<Interface>(new Point(value, default_value, description));
-    }
 
     template<int dim>
     void

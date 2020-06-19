@@ -1,5 +1,5 @@
 {
-"version":"0.2",
+"version":"0.3",
 "coordinate system":{"model":"cartesian"},
 "cross section":[[100e3,100e3],[400e3,500e3]],
 "maximum distance between coordinates": 5,

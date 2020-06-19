@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -42,7 +42,7 @@ namespace WorldBuilder
     {
 
       unsigned int counter = 0;
-      for (auto  it = get_declare_map().begin(); it != get_declare_map().end(); ++it )
+      for (auto it : get_declare_map())
         {
           prm.enter_subsection("oneOf");
           {
@@ -50,12 +50,12 @@ namespace WorldBuilder
             {
               prm.enter_subsection("properties");
               {
-                prm.declare_entry("", Types::Object(required_entries), "Coordinate sysetm object");
+                prm.declare_entry("", Types::Object(required_entries), "Coordinate system object");
 
-                prm.declare_entry("model",Types::String("",it->first),
+                prm.declare_entry("model",Types::String("",it.first),
                                   "The name which the user has given to the feature.");
 
-                it->second(prm, parent_name);
+                it.second(prm, parent_name);
               }
               prm.leave_subsection();
             }

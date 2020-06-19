@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -26,7 +26,7 @@ extern "C" {
    * to it. This pointer can then be used to call the temperature and composition
    * functions. When done call the release world function to destroy the object.
    */
-  void create_world(void **ptr_ptr_world, const char *world_builder_file, bool *has_output_dir = NULL, const char *output_dir = NULL);
+  void create_world(void **ptr_ptr_world, const char *world_builder_file, bool *has_output_dir = NULL, const char *output_dir = NULL, const unsigned long random_number_seed = 1.0);
 
   /**
    * This function return the temperature at a specific location given x, z, depth and

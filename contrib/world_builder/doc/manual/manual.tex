@@ -128,7 +128,7 @@
 \chapter{Introduction}
 The \GWB{} (\url{https://geodynamicworldbuilder.github.io}), or in short \WB{}, is a code library intended to set up initial conditions for computational geodynamic models in both Cartesian and Spherical coordinates. For each point in space, the \WB{} can return the composition and/or temperature. It uses a JSON (\url{https://json.org}) style parameter file to set up a mathematical representation of the world, which can then be sampled. The input for the JSON style parameter file are not mathematical equations or a program language, but a structured nested list describing tectonic features, e.g. a continental, an oceanic or a subducting plate. Each of these tectonic features can be assigned a specific model representing its temperature (e.g. half-cooling space) or composition (e.g. layers). In short, this software has been designed to form a bridge between plate tectonic interpretation and geodynamic modelling.
 \\
-The \WB{} is a C++ standalone library, which no external dependencies besides a C++11 compiler, and has wrappers for both C and Fortran available. Besides this library, the \WB{} repository also contains two utility programs. The first one is the "App" which allows users or an other program to use the \WB{} library directly from the command line. The second program is the \WB{} Visualization program which allows users to visualize their models through \paraview{} (\url{https://paraview.org}) files. The Visualization program code is based on \ghost{} \citep{Thieulot_2018}, which is available at \url{https://github.com/cedrict/GHOST}. The \WB{} has already been successfully used in the C++ FEM \aspect{} \citep{KHB12,heister_aspect_methods2,aspect-doi-v2.0.1,aspectmanual}, the Fortran FEM \elephant{} \citep{Thieulot_2017} and the Fortran FEM \sepran \citep{vasy15} codes.
+The \WB{} is a C++ standalone library, which no external dependencies besides a C++11 compiler, and has wrappers for CPP, C, Python and Fortran available. Besides this library, the \WB{} repository also contains two utility programs. The first one is the "App" which allows users or an other program to use the \WB{} library directly from the command line. The second program is the \WB{} Visualization program which allows users to visualize their models through \paraview{} (\url{https://paraview.org}) files. The Visualization program code is based on \ghost{} \citep{Thieulot_2018}, which is available at \url{https://github.com/cedrict/GHOST}. The \WB{} has already been successfully used in the C++ FEM \aspect{} \citep{KHB12,heister_aspect_methods2,aspect-doi-v2.0.1,aspectmanual}, the Fortran FEM \elephant{} \citep{Thieulot_2017} and the Fortran FEM \sepran \citep{vasy15} codes.
 \section{The idea behind the World Builder}
 \label{section:idea_behind_WB}
 The geodynamic models can be divided in three broad classes. The first one comprises those which involve simplistic geometries for generic modelling and are easy to paramiterize. 
@@ -142,7 +142,7 @@ The \GWB{} relies on the following design principles:
 \\
 \begin{enumerate}
     \item A single text-based {\bf input file centered around plate tectonic terminology}, in which users label the plate tectonic features they wish to model, and prescribe their location. A model (temperature or composition) is attached to each plate tectonic feature. Depending on the model, additional parameters might be required. (e.g. an oceanic plate with a plate model requires a ridge position.) 
-    \item {\bf Code and language independent:} There are many different codes to model geodyamic problems, for which many different languages are used. The \WB{} is designed to easily be integrated in these codes. Although the library itself is written in C++, it has a C and Fortran interface and it is also possible to call the \WB{} from the command line. Note that the C wrapper enables calling the \WB{} from almost any other language like Python and Matlab. 
+    \item {\bf Code and language independent:} There are many different codes to model geodyamic problems, for which many different languages are used. The \WB{} is designed to easily be integrated in these codes. Although the library itself is written in C++ and has a specific CPP interface, it also has C, Python and Fortran interfaces available and it is also possible to call the \WB{} from the command line. Note that the C wrapper enables calling the \WB{} from almost any other language like Java and Matlab. 
     \item An {\bf up-to-date user manual and doxygen based documentation}, available at \\ \url{https://geodynamicworldbuilder.github.io/}. The parameter description section of the manual is generated based on the code.
 
     \item {\bf Version numbering } following Semantic Versioning 2.0.0 (\url{https://semver.org/spec/v2.0.0.html}).
@@ -163,11 +163,11 @@ Throughout the manual we will use this symbol to add remarks, or emphasize point
 \section{Citing the world builder}
 The developers of the Geodynamic World Builder request that you cite the following publication:\\
 
-\noindent Fraters, M., Thieulot, C., van den Berg, A., and Spakman, W.: The Geodynamic World Builder: a solution for complex initial conditions in numerical modelling, Solid Earth Discuss., \url{https://doi.org/10.5194/se-2019-24}, 2019.\\
+\noindent Fraters, M., Thieulot, C., van den Berg, A., and Spakman, W.: The Geodynamic World Builder: a solution for complex initial conditions in numerical modelling, Solid Earth., 10, 1785–1807, \url{https://doi.org/10.5194/se-10-1785-2019}, 2019.\\
 
-\noindent And cite the specific version of the software used. Version 0.2.0 can be cited as:\\
+\noindent And cite the specific version of the software used. Version 0.3.0 can be cited as:\\
 
-\noindent Menno Fraters and others. 2019, October 23. The Geodynamic World Builder v0.2.0. Zenodo. \url{https://doi.org/10.5281/zenodo.3517132}.
+\noindent Menno Fraters and others. 2019, October 23. The Geodynamic World Builder v0.3.0. Zenodo. \url{https://doi.org/10.5281/zenodo.3900603}.
 
 
 \section{Acknowledgments}
@@ -178,7 +178,7 @@ Data visualization is carried out with ParaView software \url{https://paraview.o
 
 \chapter{Installation}
 \label{chapter:installation}
-The world builder is currently official supports Linux, OSX and Windows operating systems. Each change to the library is tested against these platforms. The only requirement are a c++ compiler (tested both with gcc and clang) with at minimum c++11 is installed together with \cmake{} (\url{https://cmake.org/}) and gfortran. 
+The world builder is currently official supports Linux, OSX and Windows operating systems. Each change to the library is tested against these platforms. The only requirement are a c++ compiler (tested both with gcc and clang) with at minimum c++11 is installed together with \cmake{} (\url{https://cmake.org/}). 
 
 Section \ref{section:in_package} will go in depth about what is in the \GWB{} package when it is downloaded and installed completely. If you want to skip this explanation, go directly to section \ref{section:installation_for_different_cases}.
 
@@ -188,7 +188,7 @@ Section \ref{section:in_package} will go in depth about what is in the \GWB{} pa
 The \GWB{} contains more than just a initial conditions builder library. When it is downloaded, the folder contains the main library, two programs and a tester package. Each one is described in more detail in the next few sections.
 
 \subsection{The World Builder library}
-This is the main code of the \GWB{}. In this library all the code related to setting up and querying the \WB{} world. It also contains the wrapper code to interface from C and Fortran programs.
+This is the main code of the \GWB{}. In this library all the code related to setting up and querying the \WB{} world. It also contains the wrapper code to interface with C, Python and Fortran programs.
 
 \subsection{The World Builder App}
 This is a program which can be used to query the \WB{} from the command line, by providing it a world builder file, and then a data file. This data file should contain in the header information on the dimension you want to use and the amount of compositions, and in the main part the required information like for example for a 3d case x,y and z position, depth and gravity. It then outputs a file with these properties, and the temperature and compositional values behind them. For more information on how to use the World Builder app see Section \ref{section:using_the_app}.
@@ -209,7 +209,7 @@ As long as these limits are kept in mind, there is no problem in using this kind
 
 \section{Installation guidelines for different cases}
 \label{section:installation_for_different_cases}
-When installing the \WB{} on a system, make sure \cmake{} and a Fortran compiler (gfortran is the prefered option) are installed. In the following section we will give examples of how to install it on different operating systems.
+When installing the \WB{} on a system, make sure \cmake{} is installed. If you want a Fortran wrapper then also make sure a Fortran compiler (gfortran is the prefered option, but other Fortran compilers should works as well) is installed. In you want a Python interface, make sure you have Python 3 installed. In the following section we will give examples of how to install it on different operating systems.
 \begin{remark}
 See the beginning of this chapter for more details the minimum requirements of the \WB{}.
 \end{remark}
@@ -219,21 +219,47 @@ There are many ways to install the prerequisites of the \WB{} per operating syst
 \subsubsection{Linux (Debian based)}
 \begin{enumerate}
     \item run in a terminal \hl{sudo apt install cmake}
+    \item for a Fortran wrapper also run in a terminal \hl{sudo apt install gfortran}
+    \item for a Python wrapper also run in a terminal \hl{sudo apt install swig python3-setuptools}
 \end{enumerate}
-\subsubsection{OSX}
+\subsubsection{OSX no fortran compiler needed (recomended for normal use)}
+The world builder can create a fortran wrapper to be able to link to fortran programs. If you don't explicitly need a fortran wrapper to be build you can use the following instructions:
+\begin{enumerate}
+    \item if not already installed, install homebrew. Run in a terminal:\\ \hl{/usr/bin/ruby -e "\$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"}
+    \item run in a terminal \hl{brew install cmake} 
+    \item for a Python wrapper also run in a terminal \hl{brew install swig} 
+\end{enumerate}
+Note that if you already had a fortran compiler installed and cmake can find it, the fortran wrapper will still be build.
+\subsubsection{OSX before Xcode 10 with fortran compiler}
 \begin{enumerate}
     \item if not already installed, install homebrew. Run in a terminal:\\ \hl{/usr/bin/ruby -e "\$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"}
     \item run in a terminal \hl{brew install cmake} 
     \item run in a terminal \hl{brew install gcc || true  \&\& brew link --overwrite gcc} 
-    \item run in a terminal \hl{brew install libomp || brew upgrade libomp || true}
     \item run in a terminal \hl{export LDFLAGS="-L/usr/local/opt/llvm/lib"}
     \item run in a terminal \hl{export CPPFLAGS="-I/usr/local/opt/llvm/include"}
     \item run in a terminal \hl{export CC=/usr/local/opt/llvm/bin/clang}
-    \item run in a terminal \hl{export  CXX=/usr/local/opt/llvm/bin/clang++}
+    \item run in a terminal \hl{export CXX=/usr/local/opt/llvm/bin/clang++}
     \item run in a terminal \hl{export FC=gfortran"}
+    \item for a Python wrapper also run in a terminal \hl{brew install swig} 
+\end{enumerate}
+\subsubsection{OSX from Xcode 10 with fortran compiler}
+You will need to check where clang is installed. It should be installed in a folder called /Applications/Xcode.X.X.app/ or something similair, where the X represents a number. For Xcode 10 for example, use the following:
+\begin{enumerate}
+    \item if not already installed, install homebrew. Run in a terminal:\\ \hl{/usr/bin/ruby -e "\$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"}
+    \item run in a terminal \hl{brew install cmake} 
+    \item run in a terminal \hl{brew install gcc || true  \&\& brew link --overwrite gcc} 
+    \item run in a terminal \hl{export LDFLAGS="-L/Applications/Xcode-10.0.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib"}
+    \item run in a terminal \hl{export CPPFLAGS="-I/Applications/Xcode-10.0.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"}
+    \item run in a terminal \hl{export CC=/Applications/Xcode-10.0.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/clang}
+    \item run in a terminal \hl{export CXX=/Applications/Xcode-10.0.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/clang++}
+    \item run in a terminal \hl{export FC=gfortran"}
+    \item for a Python wrapper also run in a terminal \hl{brew install swig} 
 \end{enumerate}
 \subsubsection{Windows}
-There are two main ways to install in on Windows. The recommended way is to use Linux subsystems for windows, see \url{https://docs.microsoft.com/en-us/windows/wsl/install-win10}. In this case, start the linux in windows terminal and follow the Linux installation description. If you want to have a native installation, use the flowing instruction: 
+There are three main ways to install in on Windows. The recommended way is to use Linux subsystems for windows, see \url{https://docs.microsoft.com/en-us/windows/wsl/install-win10}. In this case, start the linux in windows terminal and follow the Linux installation description. If you want to have a native installation, the two main options are using MinGW or Visual Studio. 
+In both cases it might be possible to install both the Fortran wrapper and the Python wrapper, but we have not gotten it to work on our tester setup. Currently we know that with MinGW you can create a sucesssfull Fortran wrapper and with Visual Studio you can create a successfull Python wrapper. The problem with Python in MingWG is not enirerly clear, but it seems that only Visual Studio compilers are supported. So it may or may not be able to find the GWB Python module when it is compiled and installed. 
+The problem with Fortran with Visual Studio is that you need to install a Fortran compiler somehow, so if you know how to do that, please contibute.
+\paragraph{Windows with MinGW}
 \begin{enumerate}
     \item if not already installed, install chocolatey: \url{https://chocolatey.org}. In a PowerShell, you can install it with the following command (in one line): \\ \hl{Set-ExecutionPolicy Bypass -Scope Process -Force; iex \\ ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))}
     \item run in a terminal \hl{choco install msys2}
@@ -241,6 +267,13 @@ There are two main ways to install in on Windows. The recommended way is to use 
     \item run in a mingw64 terminal \hl{pacman --noconfirm -Syu}
     \item run in a mingw64 terimnal \hl{pacman -S mingw-w64-x86\_64-toolchain}
     \item run in a mingw64 terimnal \hl{pacman --noconfirm -S dos2unix}
+\end{enumerate}
+\paragraph{Windows with Visual Studio}
+\begin{enumerate}
+    \item if not already installed, install chocolatey: \url{https://chocolatey.org}. In a PowerShell, you can install it with the following command (in one line): \\ \hl{Set-ExecutionPolicy Bypass -Scope Process -Force; iex \\ ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))}
+    \item run in a terminal \hl{choco install cmake} 
+    \item for a Python wrapper run in a terminal \hl{choco install python} 
+    \item for a Python wrapper run in a terminal \hl{choco install swig} 
 \end{enumerate}
 
 \subsection{Installing it as a stand-alone program}
@@ -251,20 +284,32 @@ There are two main ways to install in on Windows. The recommended way is to use 
     \item clone the git repository from github (e.g. \hl{git clone  \\ \hbox{\url{ git@github.com:GeodynamicWorldBuilder/WorldBuilder.git}}}). It is strongly recommended to make sure you have a working github account first, with correctly setup ssh keys.
     \item enter the new world builder directory (e.g. \hl{cd WorldBuilder}).
     \item make a build directory and enter it.
+\end{enumerate}
+For every configuration except Windows with Visual Studio
+\begin{enumerate}
     \item run cmake by entering: \hl{cmake ..} and make sure cmake finds all the dependencies.
     \item for production runs set build type to release by entering \hl{make release}.
-    \item run make with the amount of thread you want to use (e.g. use 8 processes: \hl{make -j 8}).
+    \item run make with the amount of threads you want to use (e.g. use 8 processes: \hl{make -j 8}).
+    \item if you want the \GWB to be installed on your system run \hl{sudo make install -j 4}
     \item run the tests to make sure everything installed correctly (\hl{ctest}).
+\end{enumerate}
+For Windows with Visual Studio:
+\begin{enumerate}
+    \item run cmake by entering: \hl{cmake MAKE\_FILE\_GENERATOR="Visual Studio 15 2017 Win64"..}, or the version of Visual studio you have installed and make sure cmake finds all the dependencies.
+    \item for production runs set build type to release by entering \hl{-DCMAKE\_BUILD\_TYPE=Release}.
+    \item run make with the amount of threads you want to use (e.g. use 8 processes: \hl{cmake --build . -j 8}).
+    \item if you want the \GWB to be installed on your system run \hl{cmake --build . --target install -j 8}
+    \item run the tests to make sure everything installed correctly (\hl{cmake --build . --target run\_tests -j 8}).
 \end{enumerate}
 Now all the library, tester and the two programs, described in section \ref{section:in_package}, are ready for use.
 
 \subsection{Installing it as part of a cpp program}
-For this case, there are two options. Either compile the library and link it, or directly compile the library source files within your project.
+For this case, there are two options. Either compile the library and link it, or directly compile the library source files within your project. Compiling the \GWB seperately and linking it through the CPP wrapper is the recommended option.
 
 \subsubsection{Compile the library and link it}
 First follow the instructions from section \ref{subsection:install_stand_aline}. The library can be found in the \hl{build/lib/} directory with the name \hl{libWorldBuilder.a}. Link your project with this file. 
 \\
-The only file you need to include in your code is \hl{world\_builder/world.h}. Initialize a variable of type \hl{WorldBuilder::World} with a valid std::string pointing to the world builder file. Then implement in the correct locations the temperature and composition querying functions.
+The only file you need to include in your code is \hl{world\_builder/wrapper\_cpp.h}. Initialize a variable of type \hl{wrapper\_cpp::WorldBuilderWrapper} with a valid std::string pointing to the world builder file. Then implement in the correct locations the temperature and composition querying functions. It is also possible to directly use the World class in the World Builder, by including \hl{world\_builder/world.h}.
 
 \subsubsection{Directly compile the library source files within your project}
 \label{subsubsection:direct_compile_library_source}
@@ -272,7 +317,7 @@ This is the way it is implemented in \aspect{}. Although it is possible to just 
 \\
 The only file you need to include in your code is \hl{world\_builder/world.h}. Initialize a variable of type \hl{WorldBuilder::World} with a valid std::string pointing to the world builder file. Then implement in the correct locations the temperature and composition querying functions.
 \subsection{Installing it as part of a c program}
-First follow the instructions from section \ref{subsection:install_stand_aline}.The library can be found in the \hl{build/lib/} directory with the name \hl{libWorldBuilder.a}. Link your project with this file. 
+First follow the instructions from section \ref{subsection:install_stand_aline}. The library can be found in the \hl{build/lib/} directory with the name \hl{libWorldBuilder.a}. Link your project with this file. 
 \\
 The only file you need to include in your code is \hl{world\_builder/wrapper\_c.h}. Create a void variable which is a pointer to a pointer and set it so NULL (e.g. \hl{void **ptr\_ptr\_world}), and create a pointer to a c-string (e.g. \hl{char *world\_builder\_file}). Pass these variables to the \hl{create\_world} function. This function will create the \WB{} world. Now this pointer can be used to call the temperature and composition quering functions. When done with the \WB{}, call the \hl{release\_world} function. This will clean up the memory used by the world builder.
 \begin{remark}
@@ -325,11 +370,33 @@ END program
 
 A more extensive example for how to link Fortran code with the \WB{} can be found in the example directory. This includes instructions on how to compile the example.
 
+\subsection{Installing it as part of a Python program}
+You only need to include the module called gwb. To be more clear, we show here a python example using the \GWB{}:
+
+\begin{pythoncode}{Example how to interface the \WB{} with Python}
+from gwb import WorldBuilderWrapper
+
+filename = "../../tests/data/continental_plate.wb"
+world_builder = WorldBuilderWrapper(filename);
+
+print("2d temperature:")
+print("Temp. = ", world_builder.temperature_2d(120.0e3,500.0e3,0,10));
+print("3d temperature:")
+print("Temp.  = ", world_builder.temperature_3d(120.0e3,500.0e3,0,0,10));
+print("2d composition:")
+print("Comp. = ", world_builder.composition_2d(120.0e3,500.0e3,0,3));
+print("3d composition:")
+print("Comp. = ", world_builder.composition_3d(120.0e3,500.0e3,.0e3,0e3,3));
+\end{pythoncode}
+
 \subsection{Installing it as part of ASPECT}
-The \GWB{} is currently implemented in \aspect{} as a submodule, with a method similar to what is described in section \ref{subsubsection:direct_compile_library_source}, where ASPECT can be directly compiled with the \WB{} source files. The only thing you have to do, is to make sure that the submodule is actually loaded.
+The \GWB{} is installed by default in aspect starting with the next release (2.2.0). If you want to use a newer version of the \GWB{} in ASPECT you can point aspect to the location of the \WB directory.
+
+\begin{remark}The \GWB{} is in version 2.1.0 implemented in \aspect{} as a submodule, with a method similar to what is described in section \ref{subsubsection:direct_compile_library_source}, where ASPECT can be directly compiled with the \WB{} source files. The only thing you have to do, is to make sure that the submodule is actually loaded.
 \\
  If the \WB{} submodule is initialized, \aspect{}'s \cmake{} configuration will automatically find it and use it. When cloning the \aspect{} repository, add the \hl{--recursive} flag (e.g. \hl{git clone --recursive git@github.com:geodynamics/aspect.git}), to automatically initialize the git submodule. If you already cloned \aspect{}, use the command \hl{git submodule update --init --recursive}. 
- \\
+\end{remark}
+ 
  When \aspect{} as been successfully compiled with the \WB{}, set the \aspect{} global input parameter \hl{World builder file} to the \WB{} file location. 
 
 
@@ -984,9 +1051,39 @@ There are several conversions used when writing code. Because the code is still 
     \item all function names are snake case (function\_name).
     \item all class names are camel case (ClassName).
 \end{enumerate}
-\chapter{Structure of the code}
-Currently the code is changing to rapidly for it to be useful to write this section.
-\chapter*{Bibliography}
+\chapter{Structure and flow of the code}
+From version 0.2.0 to version 0.3.0 the structure has mostly been stabelized. On a high level the structure is very similair to that of \aspect{}, 
+with an extensive modular plugin system. Also the way to declare and parse parameters is very similair to \aspect{} and DEAL.II. Besides being a 
+good and proven strucutre for these kind of codes, these similairities are also on propose to allow for an easy transition for \WB{} and \aspect{}
+developers between the codes. This is also reflected in having similair conventions and the use of exactly the same indenting tool and version 
+astyle (2.04). 
+
+The \GWB{} currently consists of three parts: the core library, the App and the Visualizer. The App and Visualizer are self contained
+with their own main program and use the core library. The core library has a includes/world\_builder folder and a source folder containing
+all the header files and source files respectively. The source folder contains three folders and several files. The files in this folder are a 
+combination of core files glueing the WB together, configuration files and wrapper files the for the interfaces to different programming languages.
+The most important files here are world.cc and parameters.cc. The file world.cc contains the world class which other programs use to interact with 
+the world builder library. The parameters.cc file contains the Parameters class which deals with loading and parsing the world builder file (.wb). 
+The load and parsing process is quite involved, but the high level version of it is that the core files and each plugin declares what parameters are 
+available and what values are allowed for that parameter. These declarations build a JSON schema (Remember that the world builder files use JSON syntax).
+Then this schema is used to see if the provided world builder file is valid according to that schema. If the world builder file passes the schema check 
+phase, the actual parsing phase starts. This means that the core files and plugins will load the information in the world builder file into memory and
+can perform extra checks on those values. After this phase is done, the plugins do not have access anymore to the parameters class. This is also the 
+last pahse of the construction of the world class.
+
+The three folders contain plugin systems. Writing a new plugin for the coordinate system and types is as easy as copying an exsiting plugin (both in the 
+include and source folders!) and modifying it for your own purposes. The plugins in the features plugin system are a bit more complicated since they have 
+their owns plugin systems. If you want tomake a whole new feature you are adviced to make an issue on github so that you can get help with it from the 
+developers and to allow discussion on the best approach. The features folder contains a folder for each features plugin (system). Each of those folders 
+contains a folder for the output provided by the world builder. That is at time of writing temperature, compositions and grains (experimental). Eeach of 
+those folders contains an interface file and at least one plugin. Adding a new plugin is, like with the coordinate and types plugins as easy as copying 
+and modifing one of those plugins (again, you need to do that for both the include and source files. So if you want to for example add a new temperature 
+plugin for the oceanic plate plugin system called "my cool oceanic plate temperature", you could copy the plate\_model.cc to my\_cool\_temperature.cc and 
+uniform.h to my\_cool\_temperature.h in their respective folders. You will need to change plate\_model to my\_cool\_temperature, PlateModel to MyCoolTemperature,
+etc.
+
+In depth question of the structure and flow of the code can always be asked on github as an issue.
+%\chapter*{Bibliography}
 \bibliographystyle{apalike}
 \bibliography{bibliography}
 \addcontentsline{toc}{chapter}{\textcolor{ocre}{Bibliography}}

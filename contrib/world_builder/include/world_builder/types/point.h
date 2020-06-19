@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -56,23 +56,21 @@ namespace WorldBuilder
         Point(const WorldBuilder::Point<dim> &value, const WorldBuilder::Point<dim> &default_value, const std::string &description);
 
         /**
+         * Copy constructor
+         */
+        Point(Point const &other);
+
+        /**
          * Destructor
          */
         ~Point();
 
         /**
-         * clone
-         */
-        virtual
-        std::unique_ptr<Interface> clone() const;
-
-        /**
          * Todo
          */
-        virtual
         void write_schema(Parameters &prm,
                           const std::string &name,
-                          const std::string &documentation) const;
+                          const std::string &documentation) const override final;
 
         /**
          * dot product
@@ -112,6 +110,12 @@ namespace WorldBuilder
         WorldBuilder::Point<dim> value;
         WorldBuilder::Point<dim> default_value;
         std::string description;
+
+      protected:
+        Point *clone_impl() const override final
+        {
+          return new Point(*this);
+        };
 
       private:
 

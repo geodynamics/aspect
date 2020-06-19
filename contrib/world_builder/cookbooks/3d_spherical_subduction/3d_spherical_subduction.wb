@@ -1,5 +1,5 @@
 {
-  "version":"0.2",
+  "version":"0.3",
   "coordinate system":{"model":"spherical", "depth method":"begin segment"},
   "cross section":[[0,0],[10,0]],
   "maximum distance between coordinates":0.01,

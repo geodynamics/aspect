@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -25,23 +25,23 @@ namespace WorldBuilder
 {
   namespace Types
   {
-    PluginSystem::PluginSystem(const std::string &default_value,
-                               void ( *declare_entries)(Parameters &, const std::string &, const std::vector<std::string> &),
-                               const std::vector<std::string> required_entries,
-                               const bool allow_multiple)
+    PluginSystem::PluginSystem(const std::string &default_value_,
+                               void ( *declare_entries_)(Parameters &, const std::string &, const std::vector<std::string> &),
+                               const std::vector<std::string> required_entries_,
+                               const bool allow_multiple_)
       :
-      default_value(default_value),
-      declare_entries(declare_entries),
-      required_entries(required_entries),
-      allow_multiple(allow_multiple)
+      default_value(default_value_),
+      declare_entries(declare_entries_),
+      required_entries(required_entries_),
+      allow_multiple(allow_multiple_)
     {
       this->type_name = Types::type::PluginSystem;
 
-      WBAssert(declare_entries != NULL, "declare entries may not be a null pointer.");
+      WBAssert(declare_entries_ != NULL, "declare entries may not be a null pointer.");
     }
 
 
-    PluginSystem::PluginSystem(PluginSystem &plugin_system)
+    PluginSystem::PluginSystem(PluginSystem const &plugin_system)
       :
       default_value(plugin_system.default_value),
       declare_entries(plugin_system.declare_entries),
@@ -53,12 +53,6 @@ namespace WorldBuilder
 
     PluginSystem::~PluginSystem ()
     {}
-
-    std::unique_ptr<Interface>
-    PluginSystem::clone() const
-    {
-      return std::unique_ptr<Interface>(new PluginSystem(default_value, declare_entries, required_entries, allow_multiple));
-    }
 
     void
     PluginSystem::write_schema(Parameters &prm,

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -39,35 +39,35 @@ namespace WorldBuilder
          */
         UnsignedInt(unsigned int default_value = 0);
 
-
         /**
-         * A constructor for the clone and set_entry function
+         * Copy constructor
          */
-        UnsignedInt(unsigned int value, unsigned int default_value);
+        UnsignedInt(UnsignedInt const &other);
 
         /**
          * Destructor
          */
         ~UnsignedInt();
 
-        /**
-         * Clone. The caller of clone is responsible for the lifetime of it,
-         * so return a unique pionter.
-         */
-        virtual
-        std::unique_ptr<Interface> clone() const;
 
         /**
          * Todo
          */
-        virtual
         void write_schema(Parameters &prm,
                           const std::string &name,
-                          const std::string &documentation) const;
+                          const std::string &documentation) const override final;
 
         unsigned int value;
         unsigned int default_value;
 
+      protected:
+        /**
+         * This implements the actual cloneing for the clone function in the base class.
+         */
+        UnsignedInt *clone_impl() const override final
+        {
+          return new UnsignedInt(*this);
+        };
       private:
 
     };

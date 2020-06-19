@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -104,6 +104,16 @@ namespace WorldBuilder
                            const unsigned int composition_number,
                            double value) const = 0;
 
+        /**
+         * Returns a value for the requested grains based on the
+         * given position and composition number
+         */
+        virtual
+        WorldBuilder::grains grains(const Point<3> &position,
+                                    const double depth,
+                                    const unsigned int composition_number,
+                                    WorldBuilder::grains value) const = 0;
+
 
         /**
          * A function to register a new type. This is part of the automatic
@@ -140,7 +150,7 @@ namespace WorldBuilder
          * number of original coordinates, before adding
          * more automatically.
          */
-        unsigned int original_number_of_coordinates;
+        size_t original_number_of_coordinates;
 
         /**
          * The coordinates at the surface of the feature
@@ -210,7 +220,7 @@ namespace WorldBuilder
       { \
         Interface::registerType(#name, klass::declare_entries, this); \
       } \
-      virtual std::unique_ptr<Interface> create(World *world) { \
+      std::unique_ptr<Interface> create(World *world) override final { \
         return std::unique_ptr<Interface>(new klass(world)); \
       } \
   }; \

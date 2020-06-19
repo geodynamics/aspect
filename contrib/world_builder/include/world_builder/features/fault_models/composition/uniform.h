@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -60,22 +60,20 @@ namespace WorldBuilder
             /**
              * declare and read in the world builder file into the parameters class
              */
-            virtual
-            void parse_entries(Parameters &prm);
+            void parse_entries(Parameters &prm) override final;
 
 
             /**
              * Returns a composition based on the given position, depth in the model,
              * gravity and current composition.
              */
-            virtual
             double get_composition(const Point<3> &position,
                                    const double depth,
                                    const unsigned int composition_number,
                                    double composition,
                                    const double feature_min_depth,
                                    const double feature_max_depth,
-                                   const std::map<std::string,double> &distance_from_planes) const;
+                                   const std::map<std::string,double> &distance_from_planes) const override final;
 
 
           private:

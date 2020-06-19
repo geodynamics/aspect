@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2019 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 

@@ -1,25 +1,47 @@
 language: cpp
-sudo: false
-dist: trusty
+sudo: true
 before_install:
   - echo ${CMAKE_EXTRA_ARGS}
-  - eval "${MATRIX_EVAL}"
   - echo ${MATRIX_EVAL}
+  - echo ${PATH}
+  - echo ${PYTHONPATH}
+  - echo ${PYTHONHOME}
+  - eval "${MATRIX_EVAL}"
   - echo ${CC}
   - echo ${CXX}
   - echo ${FC}
   - gcc --version
   - gcov --version
-  - make --version
+  - if [ "${TRAVIS_OS_NAME}" != "windows" ]; then
+      make --version;
+    fi
 script:
+  - cmake --version
   - gcc --version
   - gcov --version
-  - gfortran --version
   - mkdir build
+  - cd build
   - mkdir install
-  - cmake . -G "${MAKE_FILE_GENERATOR}" ${CMAKE_EXTRA_ARGS} ${MAC_COMPILER_EXTRA}
-  - make -j 2
-  - ctest -VV
+  - cmake .. -G "${MAKE_FILE_GENERATOR}" ${CMAKE_EXTRA_ARGS} ${MAC_COMPILER_EXTRA}
+  - touch CMakeFiles/CMakeError.log && cat CMakeFiles/CMakeError.log
+  - touch lib/gwb.py
+  - if [ "${TRAVIS_OS_NAME}" == "windows" ]; then
+      cmake --build . -j 4;
+    fi
+  - if [ "${TRAVIS_OS_NAME}" == "windows" ]; then
+      cmake --build . --target install -j 4;
+    fi
+  - if [ "${TRAVIS_OS_NAME}" != "windows" ]; then
+      make -j 4;
+      sudo make install -j 4;
+    fi
+  - if [ "${MAKE_FILE_GENERATOR}" == "Visual Studio 15 2017 Win64" ]; then
+      cmake --build . --target run_tests -j 4;
+    fi
+  - if [  "${MAKE_FILE_GENERATOR}" != "Visual Studio 15 2017 Win64" ]; then
+      ctest -VV;
+    fi
+  - cat Testing/Temporary/LastTest.log
   - if [ "${RUN_COVERALLS}" = "TRUE" ]; then
       make indent;
       diff=$(git status | grep 'modified' --count);
@@ -31,7 +53,7 @@ script:
     fi
 after_success:
     - if [ "${RUN_COVERALLS}" = "TRUE" ]; then
-        coveralls -i source -i app --gcov-options '\-lp'; 
+        coveralls --root ${TRAVIS_BUILD_DIR} --build-root ${TRAVIS_BUILD_DIR}/build/ -i source -i app --gcov-options '\-lp'; 
       fi
     - if [ "${RUN_COVERALLS}" = "TRUE" ]; then
         bash <(curl -s https://codecov.io/bash);
@@ -46,16 +68,42 @@ cache:
 
 matrix:
   include:
-    - name: "linux gcc 6 coverage"
-      sudo: true
+
+    - name: "windows debug VS 2017 python"
+      os: windows
+      language: cpp 
+      env:
+         - MATRIX_EVAL="which gcc && choco install python --version=3.8.0 -y && choco install swig --version=4.0.1 -y" 
+         - PYTHONPATH=C:/Python38/Lib 
+         - PYTHONHOME=C:/Python38
+         - PATH=C:/Python38:${PATH}
+         - MAKE_FILE_GENERATOR="Visual Studio 15 2017 Win64"
+         - FC=gfortran
+         - CMAKE_EXTRA_ARGS="${CMAKE_EXTRA_ARGS}  -DCMAKE_BUILD_TYPE=Debug -DCMAKE_VERBOSE_MAKEFILE=ON"
+
+    - name: "windows release VS 2017 python"
+      os: windows
+      language: cpp 
+      env:
+         - MATRIX_EVAL="which gcc && choco install python --version=3.8.0 -y && choco install swig --version=4.0.1 -y" 
+         - PYTHONPATH=C:/Python38/Lib 
+         - PYTHONHOME=C:/Python38 
+         - PATH=C:/Python38:${PATH}
+         - MAKE_FILE_GENERATOR="Visual Studio 15 2017 Win64"
+         - FC=gfortran
+         - CMAKE_EXTRA_ARGS="${CMAKE_EXTRA_ARGS}  -DCMAKE_BUILD_TYPE=Release -DCMAKE_VERBOSE_MAKEFILE=ON"
+
+    - name: "linux trusty gcc 6 coverage fortran python"
       os: linux
+      dist: bionic
+      sudo: true
       compiler: 
         - g++-6
       env: 
          - MAKE_FILE_GENERATOR="Unix Makefiles"
          - CMAKE_EXTRA_ARGS="${CMAKE_EXTRA_ARGS} -DCMAKE_BUILD_TYPE=Coverage"
          - RUN_COVERALLS="TRUE"
-         - MATRIX_EVAL="CC=gcc-6 && CXX=g++-6 && FC=gfortran && sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-6 60 --slave /usr/bin/g++ g++ /usr/bin/g++-6 --slave /usr/bin/gfortran gfortran /usr/bin/gfortran-6 --slave /usr/bin/gcov gcov /usr/bin/gcov-6 && sudo update-alternatives --config gcc && gcc --version && gcov --version && mkdir astyle && cd astyle && wget 'https://sourceforge.net/projects/astyle/files/astyle/astyle 2.04/astyle_2.04_linux.tar.gz' && tar -zxvf astyle_2.04_linux.tar.gz && cd astyle/build/gcc && make && sudo make install && cd ../../../../ && pip install --user cpp-coveralls"
+         - MATRIX_EVAL="sudo apt install python-setuptools && CC=gcc-6 && CXX=g++-6 && FC=gfortran && sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-6 60 --slave /usr/bin/g++ g++ /usr/bin/g++-6 --slave /usr/bin/gfortran gfortran /usr/bin/gfortran-6 --slave /usr/bin/gcov gcov /usr/bin/gcov-6 && sudo update-alternatives --config gcc && gcc --version && gcov --version && gfortran --version && mkdir astyle && cd astyle && wget 'https://sourceforge.net/projects/astyle/files/astyle/astyle 2.04/astyle_2.04_linux.tar.gz' && tar -zxvf astyle_2.04_linux.tar.gz && cd astyle/build/gcc && make && sudo make install && cd ../../../../ && pip install --user cpp-coveralls" # && export PYTHONPATH=$PYTHONPATH:$TRAVIS_BUILD_DIR/build/lib"
       addons:
         apt:
           sources:
@@ -64,15 +112,19 @@ matrix:
             - g++-6
             - gfortran-6
             - cmake
+            - swig
+            - python3-setuptools
 
-    - name: "linux gcc 6 release"
+    - name: "linux trusty gcc 6 release fortran python"
+      os: linux
+      dist: trusty
       sudo: false
       compiler:
         - g++-6
       env:
          - MAKE_FILE_GENERATOR="Unix Makefiles"
          - CMAKE_EXTRA_ARGS="${CMAKE_EXTRA_ARGS} -DCMAKE_BUILD_TYPE=Release"
-         - MATRIX_EVAL="CC=gcc-6 && CXX=g++-6 && FC=gfortran"
+         - MATRIX_EVAL="gfortran --version && CC=gcc-6 && CXX=g++-6 && FC=gfortran"
       addons:
         apt:
           sources:
@@ -81,15 +133,19 @@ matrix:
             - g++-6
             - gfortran
             - cmake
+            - swig
+            - python3-setuptools
 
-    - name: "linux gcc 4.9 debug"
+    - name: "linux trusty gcc 4.9 debug fortran"
+      os: linux
+      dist: trusty
       sudo: false
       compiler:
         - g++-4.9
       env:
          - MAKE_FILE_GENERATOR="Unix Makefiles"
          - CMAKE_EXTRA_ARGS="${CMAKE_EXTRA_ARGS} -DCMAKE_BUILD_TYPE=Debug"
-         - MATRIX_EVAL="CC=gcc-4.9 && CXX=g++-4.9 && FC=gfortran"
+         - MATRIX_EVAL="gfortran --version && CC=gcc-4.9 && CXX=g++-4.9 && FC=gfortran"
       addons:
         apt:
           sources:
@@ -99,15 +155,34 @@ matrix:
             - gfortran
             - cmake
        
+    - name: "linux precise gcc 4.9 debug"
+      os: linux
+      dist: precise
+      sudo: false
+      compiler:
+        - g++-4.9
+      env:
+         - MAKE_FILE_GENERATOR="Unix Makefiles"
+         - CMAKE_EXTRA_ARGS="${CMAKE_EXTRA_ARGS} -DCMAKE_BUILD_TYPE=Debug"
+         - MATRIX_EVAL="CC=gcc-4.9 && CXX=g++-4.9" 
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-4.9
+            - cmake
 
-    - name: "linux clang"
+    - name: "linux trusty clang fortran python"
+      os: linux
+      dist: trusty
       sudo: false
       os: linux
       compiler: 
         - clang-3.6
       env: 
          - MAKE_FILE_GENERATOR="Unix Makefiles"
-         - MATRIX_EVAL="CC=clang-3.6 && CXX=clang++-3.6 && GC=gfortran" 
+         - MATRIX_EVAL="gfortran --version && CC=clang-3.6 && CXX=clang++-3.6 && GC=gfortran" 
          - CMAKE_EXTRA_ARGS="${CMAKE_EXTRA_ARGS} -DCMAKE_BUILD_TYPE=Debug"
       addons:
         apt:
@@ -118,7 +193,10 @@ matrix:
             - clang-3.6
             - gfortran 
             - cmake
-    - name: "osx clang"
+            - swig
+            - python3-setuptools
+
+    - name: "osx clang fortran python"
       sudo: false
       os: osx
       compiler: 
@@ -126,23 +204,72 @@ matrix:
       osx_image: xcode10
       env: 
          - MAKE_FILE_GENERATOR="Unix Makefiles"
-         - MATRIX_EVAL="export PATH=$TRAVIS_ROOT/bin:$PATH && which clang && ls -lh /Applications/Xcode-10.0.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/ && ls -lh /Applications/Xcode-10.0.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ && brew install gcc || true  && brew link --overwrite gcc && brew install libomp || brew upgrade libomp || true  && export LDFLAGS="-L/Applications/Xcode-10.0.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib" && export CPPFLAGS="-I/Applications/Xcode-10.0.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include" && export CC=/Applications/Xcode-10.0.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang && export  CXX=/Applications/Xcode-10.0.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++ && export FC=gfortran" 
-         - CMAKE_EXTRA_ARGS="${CMAKE_EXTRA_ARGS} -DCMAKE_BUILD_TYPE=Debug -DOpenMP_CXX_FLAGS="-Xpreprocessor -fopenmp -I/usr/local/opt/libomp/include -lomp" -DOpenMP_CXX_LIB_NAMES="omp" -DOpenMP_omp_LIBRARY=/usr/local/opt/libomp/lib/libomp.dylib"
+         - MATRIX_EVAL="export PATH=$TRAVIS_ROOT/bin:$PATH && which clang && ls -lh /Applications/Xcode-10.0.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/ && ls -lh /Applications/Xcode-10.0.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ && brew install gcc || true  && brew link --overwrite gcc && brew install swig || true && export FC=gfortran" # && export PYTHONPATH=$PYTHONPATH:$TRAVIS_BUILD_DIR/build/lib"
+         - CMAKE_EXTRA_ARGS="${CMAKE_EXTRA_ARGS} -DCMAKE_BUILD_TYPE=Debug"
 
-    - name: "windows debug"
+    - name: "osx clang fortran python"
+      sudo: false
+      os: osx
+      compiler: 
+        - clang
+      osx_image: xcode10
+      env: 
+         - MAKE_FILE_GENERATOR="Unix Makefiles"
+         - MATRIX_EVAL="export PATH=$TRAVIS_ROOT/bin:$PATH && which clang && brew install swig || true" 
+         - CMAKE_EXTRA_ARGS="${CMAKE_EXTRA_ARGS} -DCMAKE_BUILD_TYPE=Debug"
+
+    - name: "windows debug mingw fortran"
+      os: windows
+      language: cpp 
+      env:
+         - MATRIX_EVAL="which gcc && which mingw32-make.exe && which gfortran && ln -s /c/ProgramData/chocolatey/bin/mingw32-make.exe /c/ProgramData/chocolatey/bin/make.exe && which make"
+         - MAKE_FILE_GENERATOR="MinGW Makefiles"
+         - FC=gfortran
+         - CMAKE_EXTRA_ARGS="${CMAKE_EXTRA_ARGS} -DCMAKE_RUN_APP_TESTS=FALSE -DCMAKE_Fortran_COMPILER=/c/ProgramData/chocolatey/bin/gfortran.exe  -DCMAKE_SH=CMAKE_SH-NOTFOUND -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=../install -DCMAKE_VERBOSE_MAKEFILE=ON"
+
+    - name: "windows release mingw fortran"
       os: windows
       language: cpp 
       env:
          - MATRIX_EVAL="which gcc && which mingw32-make.exe && ln -s /c/ProgramData/chocolatey/bin/mingw32-make.exe /c/ProgramData/chocolatey/bin/make.exe && which make"
          - MAKE_FILE_GENERATOR="MinGW Makefiles"
          - FC=gfortran
-         - CMAKE_EXTRA_ARGS="${CMAKE_EXTRA_ARGS}  -DCMAKE_SH=CMAKE_SH-NOTFOUND -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=../install -DCMAKE_VERBOSE_MAKEFILE=ON"
+         - CMAKE_EXTRA_ARGS="${CMAKE_EXTRA_ARGS} -DCMAKE_RUN_APP_TESTS=FALSE -DCMAKE_Fortran_COMPILER=/c/ProgramData/chocolatey/bin/gfortran.exe  -DCMAKE_SH=CMAKE_SH-NOTFOUND -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../install -DCMAKE_VERBOSE_MAKEFILE=ON"
 
-    - name: "windows release"
-      os: windows
-      language: cpp 
+    - name: "linux xenial gcc release fortran python"
+      os: linux
+      dist: xenial
+      sudo: false
+      compiler:
+        #- g++-6
       env:
-         - MATRIX_EVAL="which gcc && which mingw32-make.exe && ln -s /c/ProgramData/chocolatey/bin/mingw32-make.exe /c/ProgramData/chocolatey/bin/make.exe && which make"
-         - MAKE_FILE_GENERATOR="MinGW Makefiles"
-         - FC=gfortran
-         - CMAKE_EXTRA_ARGS="${CMAKE_EXTRA_ARGS}  -DCMAKE_SH=CMAKE_SH-NOTFOUND -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../install -DCMAKE_VERBOSE_MAKEFILE=ON"
+         - MAKE_FILE_GENERATOR="Unix Makefiles"
+         - CMAKE_EXTRA_ARGS="${CMAKE_EXTRA_ARGS} -DCMAKE_BUILD_TYPE=Release"
+         #- MATRIX_EVAL="gfortran --version && CC=gcc-6 && CXX=g++-6 && FC=gfortran"
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - gfortran
+            - swig
+            - python3-setuptools
+
+    - name: "linux bionic gcc release fortran python"
+      os: linux
+      dist: bionic
+      sudo: false
+      compiler:
+        #- g++-6
+      env:
+         - MAKE_FILE_GENERATOR="Unix Makefiles"
+         - CMAKE_EXTRA_ARGS="${CMAKE_EXTRA_ARGS} -DCMAKE_BUILD_TYPE=Release"
+         #- MATRIX_EVAL="gfortran --version && CC=gcc-6 && CXX=g++-6 && FC=gfortran"
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - gfortran
+            - swig
+            - python3-setuptools
