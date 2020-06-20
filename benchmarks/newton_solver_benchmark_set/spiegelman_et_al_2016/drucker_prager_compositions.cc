@@ -384,7 +384,7 @@ namespace aspect
                               // compute which of the independent index of the strain-rate tensor we are now looking at.
                               const TableIndices<2> strain_rate_indices = SymmetricTensor<2,dim>::unrolled_to_component_indices (component);
 
-                              // add a small difference to one independent component of hte strain-rate tensor
+                              // add a small difference to one independent component of the strain-rate tensor
                               const SymmetricTensor<2,dim> strain_rate_difference_plus = deviator_strain_rate + std::max(edot_ii, min_strain_rate[c]*min_strain_rate[c]) * finite_difference_accuracy
                                                                                          * Utilities::nth_basis_for_symmetric_tensors<dim>(component);
                               const double second_invariant_strain_rate_difference_plus = compute_second_invariant(strain_rate_difference_plus, min_strain_rate[c]);
@@ -515,15 +515,15 @@ namespace aspect
                            Patterns::List (Patterns::Double(0)),
                            "A list of thermal conductivities equal to the number of "
                            "compositional fields.");
-        prm.declare_entry ("List of capacities", "1250",
+        prm.declare_entry ("Heat capacities", "1250",
                            Patterns::List (Patterns::Double(0)),
                            "A list of heat capacities equal to the number of "
                            "compositional fields.");
-        prm.declare_entry ("List of reftemps", "0",
+        prm.declare_entry ("Reference temperatures", "0",
                            Patterns::List (Patterns::Double(0)),
                            "A list of reference temperatures equal to the number of "
                            "compositional fields.");
-        prm.declare_entry ("List of refdens", "2700",
+        prm.declare_entry ("Reference densities", "2700",
                            Patterns::List (Patterns::Double(0)),
                            "A list of reference densities equal to the number of "
                            "compositional fields.");
@@ -532,23 +532,23 @@ namespace aspect
                            "List of thermal expansivities for background mantle and compositional fields, "
                            "for a total of N+1 values, where N is the number of compositional fields. "
                            "If only one values is given, then all use the same value.  Units: $1 / K$");
-        prm.declare_entry ("List of stress exponents", "1",
+        prm.declare_entry ("Stress exponents", "1",
                            Patterns::List (Patterns::Double(0)),
                            "A list of stress exponents equal to the number of "
                            "compositional fields.");
-        prm.declare_entry ("List of cohesions", "1e20",
+        prm.declare_entry ("Cohesions", "1e20",
                            Patterns::List (Patterns::Double(0)),
                            "A list of initial viscosities equal to the number of "
                            "compositional fields.");
-        prm.declare_entry ("List of angles of internal friction", "30",
+        prm.declare_entry ("Angles of internal friction", "30",
                            Patterns::List (Patterns::Double(0)),
                            "A list of initial viscosities equal to the number of "
                            "compositional fields.");
-        prm.declare_entry ("List of initial viscosities", "1e21",
+        prm.declare_entry ("Initial viscosities", "1e21",
                            Patterns::List (Patterns::Double(0)),
                            "A list of initial viscosities equal to the number of "
                            "compositional fields.");
-        prm.declare_entry ("List of prefactors", "1e21",
+        prm.declare_entry ("Viscous prefactors", "1e21",
                            Patterns::List (Patterns::Double(0)),
                            "A list of viscous viscosities equal to the number of "
                            "compositional fields.");
@@ -611,18 +611,18 @@ namespace aspect
       {
         n_fields = prm.get_integer ("Number of fields")+1;
         //AssertThrow(n_fields > 0, ExcMessage("This material model needs at least one compositional field."))
-        reference_T_list = get_vector_double("List of reftemps",n_fields,prm);//
-        ref_visc_list = get_vector_double ("List of initial viscosities",n_fields,prm);//
+        reference_T_list = get_vector_double("Reference temperatures",n_fields,prm);//
+        ref_visc_list = get_vector_double ("Initial viscosities",n_fields,prm);//
         thermal_diffusivity = get_vector_double("List of conductivities",n_fields,prm);
         heat_capacity = get_vector_double("List of capacities",n_fields,prm);
 
         // ---- Compositional parameters
-        densities = get_vector_double("List of refdens",n_fields,prm);
+        densities = get_vector_double("Reference densities",n_fields,prm);
         thermal_expansivities = get_vector_double("Thermal expansivities",n_fields,prm);
 
         // Rheological parameters
-        cohesion = get_vector_double("List of cohesions",n_fields,prm);
-        phi = get_vector_double("List of angles of internal friction",n_fields,prm);
+        cohesion = get_vector_double("Cohesions",n_fields,prm);
+        phi = get_vector_double("Angles of internal friction",n_fields,prm);
 
         sin_phi.resize(n_fields);
         cos_phi.resize(n_fields);
@@ -632,8 +632,8 @@ namespace aspect
             cos_phi[c] = std::cos(phi[c] * numbers::PI/180);
           }
 
-        prefactor = get_vector_double("List of prefactors",n_fields,prm);
-        stress_exponent = get_vector_double("List of stress exponents",n_fields,prm);
+        prefactor = get_vector_double("Viscous prefactors",n_fields,prm);
+        stress_exponent = get_vector_double("Stress exponents",n_fields,prm);
       }
       prm.leave_subsection();
 
