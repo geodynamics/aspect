@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -45,7 +45,7 @@ namespace aspect
      * \frac{6 P \sin(\phi)}{\sqrt(3) (3+\sin(\phi))}$,
      * where $P$ is the pressure.
      * See for example Zienkiewicz, O. C., Humpheson, C. and Lewis, R. W. (1975),
-     * G&eacute;otechnique 25, No. 4, 671-689.
+     * Géotechnique 25, No. 4, 671-689.
      * With this formulation we circumscribe instead of inscribe the Mohr Coulomb
      * yield surface.
      * In 2D the Drucker Prager yield surface is the same
