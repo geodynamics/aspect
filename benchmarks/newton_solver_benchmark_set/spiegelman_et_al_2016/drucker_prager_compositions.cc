@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -18,6 +18,13 @@
   <http://www.gnu.org/licenses/>.
  */
 
+
+/**
+ * This material model is specifically designed for the
+ * Spiegelman benchmark as reproduced in the Fraters (2019)
+ * paper on Newton solvers. It is not meant to be used for
+ * general purpose models. For more details see that paper.
+ */
 
 #ifndef __aspect__model_drucker_prager_compositions_h
 #define __aspect__model_drucker_prager_compositions_h
@@ -67,8 +74,7 @@ namespace aspect
      *
      * To avoid numerically unfavourably large (or even negative) viscosity ranges,
      * we cut off the viscosity with a user-defined minimum and maximum viscosity:
-     * $\eta_eff = \frac{1}{\frac{1}{\eta_min + \eta}+\\
-     * \frac{1}{\eta_max}}$.
+     * $\eta_eff = \max(\min(eta,max_visc),min_visc)$.
      *
      * Note that this model uses the formulation that assumes an incompressible
      * medium despite the fact that the density follows the law
@@ -82,8 +88,6 @@ namespace aspect
     class DruckerPragerCompositions : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
-        std::vector<double> compute_volume_fractions( const std::vector<double> &compositional_fields) const;
-
         double compute_second_invariant(const SymmetricTensor<2,dim> strain_rate, const double min_strain_rate) const;
 
         double compute_viscosity(const double edot_ii,const double pressure,const int comp, const double prefactor,const bool regularize, const double min_visc, const double max_visc) const;
@@ -194,38 +198,6 @@ namespace aspect
 
   namespace MaterialModel
   {
-    template <int dim>
-    std::vector<double>
-    DruckerPragerCompositions<dim>::
-    compute_volume_fractions( const std::vector<double> &compositional_fields) const
-    {
-      std::vector<double> volume_fractions( compositional_fields.size()+1);
-
-      // clip the compositional fields so they are between zero and one
-      std::vector<double> x_comp = compositional_fields;
-      for ( unsigned int i=0; i < x_comp.size(); ++i)
-        x_comp[i] = std::min(std::max(x_comp[i], 0.0), 1.0);
-
-
-      // sum the compositional fields for normalization purposes
-      double sum_composition = 0.0;
-      for ( unsigned int i=0; i < x_comp.size(); ++i)
-        sum_composition += x_comp[i];
-
-      if (sum_composition >= 1.0)
-        {
-          volume_fractions[0] = 0.0;  // background material
-          for ( unsigned int i=1; i <= x_comp.size(); ++i)
-            volume_fractions[i] = x_comp[i-1]/sum_composition;
-        }
-      else
-        {
-          volume_fractions[0] = 1.0 - sum_composition; // background material
-          for ( unsigned int i=1; i <= x_comp.size(); ++i)
-            volume_fractions[i] = x_comp[i-1];
-        }
-      return volume_fractions;
-    }
 
     template <int dim>
     double
@@ -280,7 +252,6 @@ namespace aspect
 
       for (unsigned int i=0; i < in.temperature.size(); ++i)
         {
-          // const Point<dim> position = in.position[i];
           const double temperature = in.temperature[i];
           const double pressure = in.pressure[i];
 
@@ -290,7 +261,7 @@ namespace aspect
           AssertThrow(in.composition[i].size()+1 == n_fields,
                       ExcMessage("Number of compositional fields + 1 not equal to number of fields given in input file."));
 
-          const std::vector<double> volume_fractions = compute_volume_fractions(in.composition[i]);
+          const std::vector<double> volume_fractions = MaterialUtilities::compute_volume_fractions(in.composition[i]);
           double density = 0.0;
           for (unsigned int c=0; c < volume_fractions.size(); ++c)
             {
@@ -333,7 +304,7 @@ namespace aspect
                   // Otherwise, calculate the square-root of the norm of the second invariant of the deviatoric-
                   // strain rate (often simplified as epsilondot_ii)
 
-                  const double edot_ii = compute_second_invariant(deviator_strain_rate, min_strain_rate[c]);// std::max(edot_ii_strict, min_strain_rate[c]*min_strain_rate[c]);
+                  const double edot_ii = compute_second_invariant(deviator_strain_rate, min_strain_rate[c]);
 
                   // Find effective viscosities for each of the individual phases
                   // Viscosities should have same number of entries as compositional fields
@@ -348,7 +319,7 @@ namespace aspect
                       if (use_analytical_derivative)
                         {
                           //analytic
-                          if (c == 0  && composition_viscosities[c] <= max_visc[c] && composition_viscosities[c] >= min_visc[c])// && composition_viscosities[c] < max_visc[c] && composition_viscosities[c] > min_visc[c])
+                          if (c == 0  && composition_viscosities[c] <= max_visc[c] && composition_viscosities[c] >= min_visc[c])
                             {
                               const double drucker_prager_viscosity = compute_viscosity(edot_ii,pressure,c,prefactor[c],false,min_visc[c],max_visc[c]);
                               const double regulaization_adjustment = (ref_visc * ref_visc)
@@ -511,7 +482,7 @@ namespace aspect
                            Patterns::Integer (0),
                            "The number of fields that will be advected along with the flow field, excluding "
                            "velocity, pressure and temperature.");
-        prm.declare_entry ("List of conductivities", "2.25",
+        prm.declare_entry ("Conductivities", "2.25",
                            Patterns::List (Patterns::Double(0)),
                            "A list of thermal conductivities equal to the number of "
                            "compositional fields.");
@@ -611,10 +582,10 @@ namespace aspect
       {
         n_fields = prm.get_integer ("Number of fields")+1;
         //AssertThrow(n_fields > 0, ExcMessage("This material model needs at least one compositional field."))
-        reference_T_list = get_vector_double("Reference temperatures",n_fields,prm);//
-        ref_visc_list = get_vector_double ("Initial viscosities",n_fields,prm);//
-        thermal_diffusivity = get_vector_double("List of conductivities",n_fields,prm);
-        heat_capacity = get_vector_double("List of capacities",n_fields,prm);
+        reference_T_list = get_vector_double("Reference temperatures",n_fields,prm);
+        ref_visc_list = get_vector_double ("Initial viscosities",n_fields,prm);
+        thermal_diffusivity = get_vector_double("Conductivities",n_fields,prm);
+        heat_capacity = get_vector_double("Heat capacities",n_fields,prm);
 
         // ---- Compositional parameters
         densities = get_vector_double("Reference densities",n_fields,prm);

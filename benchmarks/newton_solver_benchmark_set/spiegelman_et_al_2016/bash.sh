@@ -28,7 +28,7 @@ declare -a vel=(25 50 125) # 50 125) #25 50 125)
 declare -a BV=("1e23" "1e24" "5e24") #"1e23" "1e24" "5e24")
 processes=4
 
-CohesionLine="s/set List of cohesions.*/      set List of cohesions                              = 1e8,0/g"
+CohesionLine="s/set Cohesions.*/      set Cohesions                              = 1e8,0/g"
 PhiLine="s/set List of angles of internal friction.*/      set List of angles of internal friction            = $phi,0/g"
 if [ $materialmodelnameShort == "DP" ]; then
  materialmodelname="drucker prager compositions"
@@ -111,29 +111,29 @@ do
                   sed  \
                    -e "$PhiLine" \
                    -e "$CohesionLine" \
-                   -e "s/    set Function expression = if(x<60e3,.*/    set Function expression = if(x<60e3,$U,-$U);0/g" \
-                   -e "s/    set Nonlinear Newton solver switch tolerance.*/     set Nonlinear Newton solver switch tolerance = $i_ST/g" \
-                   -e "s/set Reference viscosity =.*/    set Reference viscosity = $i_BV/g" \
+                   -e "s/set Function expression = if(x<60e3,.*/    set Function expression = if(x<60e3,$U,-$U);0/g" \
+                   -e "s/set Nonlinear Newton solver switch tolerance.*/     set Nonlinear Newton solver switch tolerance = $i_ST/g" \
+                   -e "s/set Reference viscosity .*/    set Reference viscosity = $i_BV/g" \
                    -e "s/set Output directory .*/set Output directory = results\/$dirname_clean/g" \
-                   -e "s/    set Model name = .*/    set Model name = $materialmodelname/g" \
+                   -e "s/set Model name .*/    set Model name = $materialmodelname/g" \
                    -e "s/set Nonlinear solver scheme.*/set Nonlinear solver scheme = $SOLVER/g" \
-                   -e "s/  set Initial global refinement          = .*/  set Initial global refinement          = $i_grid/g" \
-                   -e "s/  set Initial adaptive refinement        = .*/  set Initial adaptive refinement        = $i_agrid/g" \
-                   -e "s/      set List of stress exponents of fields                       = .*/      set List of stress exponents of fields                       = $i_n, 1/g" \
-                   -e "s/    set Viscosity averaging p = .*/    set Viscosity averaging p = $AV/g" \
-                   -e "s/set Max nonlinear iterations = .*/set Max nonlinear iterations = $I /g" \
-                   -e "s/set Linear solver tolerance =.*/set Linear solver tolerance = $i_LT/g" \
+                   -e "s/set Initial global refinement .*/  set Initial global refinement          = $i_grid/g" \
+                   -e "s/set Initial adaptive refinement .*/  set Initial adaptive refinement        = $i_agrid/g" \
+                   -e "s/set Stress exponents of fields .*/      set List of stress exponents of fields                       = $i_n, 1/g" \
+                   -e "s/set Viscosity averaging p .*/    set Viscosity averaging p = $AV/g" \
+                   -e "s/set Max nonlinear iterations .*/set Max nonlinear iterations = $I /g" \
+                   -e "s/set Linear solver tolerance .*/set Linear solver tolerance = $i_LT/g" \
                    -e "s/set Nonlinear solver tolerance.*/set Nonlinear solver tolerance = $i_NLT/g" \
                    -e "s/set Linear solver A block tolerance.*/set Linear solver A block tolerance = $i_ABT/g" \
-                   -e "s/    set Reference compressibility .*/    set Reference compressibility = $COMP/g" \
-                   -e "s/set Max pre-Newton nonlinear iterations = .*/    set Max pre-Newton nonlinear iterations = $i_P/g" \
-                   -e "s/set Use Newton failsafe = .*/set Use Newton failsafe = $i_UFS/g" \
-                   -e "s/set Stabilization preconditioner = .*/set Stabilization preconditioner = $i_NSP/g" \
-                   -e "s/set Stabilization velocity block = .*/set Stabilization velocity block = $i_NSA/g" \
-                   -e "s/set SPD safety factor = .*/set SPD safety factor = $i_SF/g" \
-                   -e "s/set Use deviator of strain-rate = .*/set Use deviator of strain-rate = $i_UDS/g" \
-                   -e "s/set Max Newton line search iterations = .*/    set Max Newton line search iterations = $i_LS/g" \
-                   -e "s/set Maximum linear Stokes solver tolerance =.*/set Maximum linear Stokes solver tolerance = $i_OS/g" \
+                   -e "s/set Reference compressibility .*/    set Reference compressibility = $COMP/g" \
+                   -e "s/set Max pre-Newton nonlinear iterations .*/    set Max pre-Newton nonlinear iterations = $i_P/g" \
+                   -e "s/set Use Newton failsafe .*/set Use Newton failsafe = $i_UFS/g" \
+                   -e "s/set Stabilization preconditioner .*/set Stabilization preconditioner = $i_NSP/g" \
+                   -e "s/set Stabilization velocity block .*/set Stabilization velocity block = $i_NSA/g" \
+                   -e "s/set SPD safety factor .*/set SPD safety factor = $i_SF/g" \
+                   -e "s/set Use deviator of strain-rate .*/set Use deviator of strain-rate = $i_UDS/g" \
+                   -e "s/set Max Newton line search iterations .*/    set Max Newton line search iterations = $i_LS/g" \
+                   -e "s/set Maximum linear Stokes solver tolerance .*/set Maximum linear Stokes solver tolerance = $i_OS/g" \
                    -e "s/set Use Newton residual scaling method .*/    set Use Newton residual scaling method = $i_RSM/g" \
                   input.prm > "$infilename"
                   
