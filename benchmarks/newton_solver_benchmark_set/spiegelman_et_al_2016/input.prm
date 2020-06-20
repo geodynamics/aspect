@@ -1,14 +1,16 @@
+set Additional shared libraries            = ./libdrucker_prager_compositions.so
+
 set Use years in output instead of seconds = false  # default: true
 set Nonlinear solver scheme = Newton Stokes
-set Number of cheap Stokes solver steps = 0
 set Max nonlinear iterations = 150
-#set Max nonlinear iterations in pre-refinement = 0
 set Nonlinear solver tolerance = 1e-14
-set Linear solver tolerance = 1e-5
-#set Linear solver A block tolerance = 1e-2
 set Pressure normalization = no
 
 subsection Solver parameters
+  subsection Stokes solver parameters
+    set Number of cheap Stokes solver steps = 0
+    set Linear solver tolerance = 1e-5
+  end 
   subsection Newton solver parameters
         set Max pre-Newton nonlinear iterations = 5
     set SPD safety factor = 0.9
@@ -103,14 +105,20 @@ subsection Mesh refinement
 end
 
 
-subsection Model settings
+subsection Boundary temperature model
   set Fixed temperature boundary indicators   =
+end
+
+subsection Boundary velocity model
   # Prescribe a horizontal traction on the vertical boundaries
-  set Prescribed traction boundary indicators =
   set Tangential velocity boundary indicators = 2
   set Zero velocity boundary indicators       =
   # Prescribe a zero vertical velocity component on the vertical boundaries
   set Prescribed velocity boundary indicators = 0 x:function,1 x:function
+end
+
+subsection Boundary traction model
+  set Prescribed traction boundary indicators =
 end
 
 
