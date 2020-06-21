@@ -65,6 +65,7 @@ want_groups = {"KHB12": "main",
                "He_2017_DG" : "dg",
                "clevenger_stokes19" : "mf",
                "gassmoller2020formulations" : "pda",
+               "Liu2019" : "geoid"
 }
 
 want = []
@@ -78,6 +79,7 @@ want.append("KHB12")
 bibformated = {
         "He_2017_DG" : "Ying He, Elbridge Gerry Puckett, and Magali I. Billen. 2017. “A Discontinuous Galerkin Method with a Bound Preserving Limiter for the Advection of Non-Diffusive Fields in Solid Earth Geodynamics.” Physics of the Earth and Planetary Interiors 263 (February): 23–37. doi:10.1016/j.pepi.2016.12.001. http://dx.doi.org/10.1016/j.pepi.2016.12.001.",
         "KHB12" : "Martin Kronbichler, Timo Heister, and Wolfgang Bangerth. 2012. “High Accuracy Mantle Convection Simulation through Modern Numerical Methods.” Geophysical Journal International 191 (1) (August 21): 12–29. doi:10.1111/j.1365-246x.2012.05609.x. http://dx.doi.org/10.1111/j.1365-246X.2012.05609.x.",
+        "Liu2019" : "Liu, Shangxin, and Scott D King. 2019. “A Benchmark Study of Incompressible Stokes Flow in a 3-D Spherical Shell Using ASPECT.” Geophysical Journal International 217 (1) (January 17): 650–667. doi:10.1093/gji/ggz036. http://dx.doi.org/10.1093/gji/ggz036.",
         "aspect-doi-v1.5.0" : "Wolfgang Bangerth, Juliane Dannberg, Rene Gassmoeller, Timo Heister, and others. 2017, March 1. ASPECT v1.5.0. Zenodo. https://doi.org/10.5281/zenodo.344623",
         "aspect-doi-v2.0.0" : "Wolfgang Bangerth, Juliane Dannberg, Rene Gassmoeller, and Timo Heister. 2018, May 10. ASPECT v2.0.0. Zenodo. https://doi.org/10.5281/zenodo.1244587",
         "aspect-doi-v2.0.1" : "Wolfgang Bangerth, Juliane Dannberg, Rene Gassmoeller, and Timo Heister. 2018, June 24. ASPECT v2.0.1. Zenodo. https://doi.org/10.5281/zenodo.1297145",

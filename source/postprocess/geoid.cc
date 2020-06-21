@@ -986,7 +986,8 @@ namespace aspect
     void
     Geoid<dim>::parse_parameters (ParameterHandler &prm)
     {
-      CitationInfo::add("Geoid");
+      CitationInfo::add("geoid");
+
       prm.enter_subsection("Postprocess");
       {
         prm.enter_subsection("Geoid");
