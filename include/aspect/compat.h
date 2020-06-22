@@ -62,7 +62,6 @@ namespace aspect
 {
   namespace Functions
   {
-    using namespace dealii;
     using namespace dealii::Functions;
     /**
      * A scalar function that computes its values by (bi-, tri-)linear

@@ -358,7 +358,7 @@ namespace aspect
               {
                 VectorTools::interpolate_boundary_values (*sim.mapping,
                                                           mesh_deformation_dof_handler, *p,
-                                                          ZeroFunction<dim>(dim), mesh_velocity_constraints);
+                                                          Functions::ZeroFunction<dim>(dim), mesh_velocity_constraints);
               }
           }
 
@@ -373,7 +373,7 @@ namespace aspect
                 {
                   VectorTools::interpolate_boundary_values (*sim.mapping,
                                                             mesh_deformation_dof_handler, p->first,
-                                                            ZeroFunction<dim>(dim), mesh_velocity_constraints);
+                                                            Functions::ZeroFunction<dim>(dim), mesh_velocity_constraints);
                 }
             }
         }
