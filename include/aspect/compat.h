@@ -62,8 +62,18 @@ namespace aspect
 {
   namespace Functions
   {
-    using namespace dealii;
     using namespace dealii::Functions;
+
+    // Pull in a couple of symbols from deal.II so that the implementation below
+    // does not need to qualify everything with dealii::. Note, we do not want
+    // to "using namespace dealii" because this will pull in many symbols, including
+    // deprecated ZeroFunction, into this namespace.
+    using dealii::Point;
+    using dealii::Tensor;
+    using dealii::Table;
+    using dealii::TableIndices;
+    using dealii::ExcMessage;
+
     /**
      * A scalar function that computes its values by (bi-, tri-)linear
      * interpolation from a set of point data that are arranged on a uniformly
