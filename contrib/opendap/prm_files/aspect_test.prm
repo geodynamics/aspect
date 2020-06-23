@@ -32,7 +32,7 @@ end
 
 subsection Initial temperature model
    set Model name = adiabatic boundary
- subsection Ascii data model 
+ subsection Adiabatic boundary
     set Data directory    = $ASPECT_SOURCE_DIR/contrib/opendap/input_files/
     set Data file name    = lithospheric_thickness.txt
 end 
