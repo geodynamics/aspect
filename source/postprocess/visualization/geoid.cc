@@ -46,7 +46,7 @@ namespace aspect
       Geoid<dim>::
       initialize()
       {
-        CitationInfo::add("Geoid");
+        CitationInfo::add("geoid");
       }
 
       template <int dim>
