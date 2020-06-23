@@ -29,7 +29,7 @@ subsection Initial temperature model
   set Use Yamauchi and Takei parameterization = true
   set Use original density and frequency model of Yamauchi and Takei = true
   subsection Ascii data model
-    set Data directory       = $ASPECT_SOURCE_DIR_dev/data/initial-temperature/ascii-data/test/
+    set Data directory       = $ASPECT_SOURCE_DIR/data/initial-temperature/ascii-data/test/
     set Data file name       = box_2d_Vs_YT16.txt
   end
 end
