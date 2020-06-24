@@ -141,7 +141,7 @@ subsection Postprocess
     set Particle generator name   = ascii file
     subsection Generator
       subsection Ascii file
-        set Data directory = benchmarks/slab_detachment/
+        set Data directory = $ASPECT_SOURCE_DIR/benchmarks/slab_detachment/
         set Data file name = initial_particle_location.dat
       end
     end
