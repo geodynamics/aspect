@@ -1,21 +1,22 @@
-@Article{fraters_gwb_se-2019-24,
+@Article{se-10-1785-2019,
 AUTHOR = {Fraters, M. and Thieulot, C. and van den Berg, A. and Spakman, W.},
-TITLE = {The Geodynamic World Builder: a solution for complex initial conditions in numerical modelling},
-JOURNAL = {Solid Earth Discussions},
-VOLUME = {2019},
+TITLE = {The Geodynamic World Builder: a solution for complex initial conditions in numerical modeling},
+JOURNAL = {Solid Earth},
+VOLUME = {10},
 YEAR = {2019},
-PAGES = {1--27},
-URL = {https://www.solid-earth-discuss.net/se-2019-24/},
-DOI = {10.5194/se-2019-24}
+NUMBER = {5},
+PAGES = {1785--1807},
+URL = {https://se.copernicus.org/articles/10/1785/2019/},
+DOI = {10.5194/se-10-1785-2019}
 }
 
-@misc{gwb-doi-v0.2.0,
-  title        = {{The Geodynamic World Builder} v2.1.0 [software]},
+@misc{gwb-doi-v0.3.0,
+  title        = {{The Geodynamic World Builder} v0.3.0 [software]},
   author       = {Menno Fraters and
                   others},
-  month        = oct,
-  year         = 2019,
-  DOI          = {10.5281/zenodo.3517132]},
-  URL          = {https://doi.org/10.5281/zenodo.3517132]},
+  month        = jun,
+  year         = 2020,
+  DOI          = {10.5281/zenodo.3900603]},
+  URL          = {https://doi.org/10.5281/zenodo.3900603]},
 }
 

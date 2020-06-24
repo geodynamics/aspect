@@ -20,9 +20,9 @@ Please do not keep it to yourself and let us know. Others will also profit from 
 ## How to cite?
 The developers of the Geodynamic World Builder request that you cite the following publication:
 
-Fraters, M., Thieulot, C., van den Berg, A., and Spakman, W.: The Geodynamic World Builder: a solution for complex initial conditions in numerical modelling, Solid Earth Discuss., [https://doi.org/10.5194/se-2019-24](https://doi.org/10.5194/se-2019-24), 2019.
+Fraters, M., Thieulot, C., van den Berg, A., and Spakman, W.: The Geodynamic World Builder: a solution for complex initial conditions in numerical modelling, Solid Earth, [https://doi.org/10.5194/se-10-1785-2019](https://doi.org/10.5194/se-10-1785-2019), 2019.
 
-And cite the specific version of the software used. Version 0.2.0 can be cited as:
+And cite the specific version of the software used. Version 0.3.0 can be cited as:
 
-Menno Fraters and others. 2019, October 23. The Geodynamic World Builder v0.2.0. Zenodo. [https://doi.org/10.5281/zenodo.3517132](https://doi.org/10.5281/zenodo.3517132).
+Menno Fraters and others. 2019, October 23. The Geodynamic World Builder v0.3.0. Zenodo. [https://doi.org/10.5281/zenodo.3900603](https://doi.org/10.5281/zenodo.3900603).
 

@@ -18,3 +18,8 @@ tests/CTestTestfile.cmake
 tests/cmake_install.cmake
 bin/
 lib/
+Testing/
+doc/doxygen/
+doc/manual/html/
+doc/manual/pdf/
+*.xcf

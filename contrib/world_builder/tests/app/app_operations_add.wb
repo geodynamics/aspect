@@ -1,0 +1,28 @@
+
+{
+"version":"0.3",
+"coordinate system":{"model":"cartesian"},
+"cross section":[[100e3,100e3],[400e3,500e3]],
+"maximum distance between coordinates": 5,
+"features":[
+  {
+    "model":"continental plate", "name":"Carribean", "max depth":300e3,
+    "coordinates":[[-1e3,500e3],[500e3,500e3],[500e3,1000e3],[-1e3,1000e3]],
+    "temperature models":[{"model":"uniform", "min depth":0, "max depth":250e3, "temperature":150, "operation":"add"}]
+  },
+     
+  {
+    "model":"continental plate", "name":"Rest","max depth":300e3, 
+    "coordinates":[[2000e3,2000e3],[1000e3,2000e3],[1000e3,1000e3],[2000e3,1000e3]],
+    "temperature models":[{"model":"uniform", "max depth":250e3, "temperature":20, "operation":"add"}],
+    "composition models":[{"model":"uniform", "max depth":250e3, "compositions":[2]}]
+  },
+
+  {
+    "model":"continental plate", "name":"Carribean2","max depth":300e3,
+    "coordinates":[[-1e3,500e3],[500e3,500e3],[500e3,1000e3],[-1e3,1000e3]],
+    "temperature models":[{"model":"uniform", "min depth":0, "max depth":250e3, "temperature":150, "operation":"add"}],
+    "composition models":[{"model":"uniform", "min depth":0, "max depth":250e3, "compositions":[3]}]
+  }
+]
+}

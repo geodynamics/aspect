@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -43,8 +43,9 @@ namespace WorldBuilder
                 const WorldBuilder::Point<2> default_thickness,
                 const WorldBuilder::Point<2> default_top_truncation,
                 const WorldBuilder::Point<2> default_angle,
-                const Types::Interface &temperature_pugin_system,
-                const Types::Interface &composition_pugin_system);
+                const Types::Interface &temperature_plugin_system,
+                const Types::Interface &composition_plugin_system,
+                const Types::Interface &grains_systems);
 
         /**
          * A constructor for the load_entry function
@@ -55,14 +56,9 @@ namespace WorldBuilder
                 std::string description);
 
         /**
-         * A constructor for the clone and set_entry function
+         * Copy constructor
          */
-        Segment(const double default_length,
-                const WorldBuilder::Point<2> default_thickness,
-                const WorldBuilder::Point<2> default_top_truncation,
-                const WorldBuilder::Point<2> default_angle,
-                const std::unique_ptr<Types::Interface> &temperature_pugin_system_,
-                const std::unique_ptr<Types::Interface> &composition_pugin_system_);
+        Segment(Segment const &other);
 
 
         /**
@@ -71,19 +67,11 @@ namespace WorldBuilder
         ~Segment();
 
         /**
-         * Clone. The caller of clone is responsible for the lifetime of it,
-         * so return a unique pionter.
-         */
-        virtual
-        std::unique_ptr<Interface> clone() const;
-
-        /**
          * Todo
          */
-        virtual
         void write_schema(Parameters &prm,
                           const std::string &name,
-                          const std::string &documentation) const;
+                          const std::string &documentation) const override final;
 
 
         double value_length;
@@ -93,9 +81,15 @@ namespace WorldBuilder
         WorldBuilder::Point<2> default_top_truncation;
         WorldBuilder::Point<2> value_angle;
         WorldBuilder::Point<2> default_angle;
-        std::unique_ptr<Types::Interface> temperature_pugin_system;
-        std::unique_ptr<Types::Interface> composition_pugin_system;
+        std::unique_ptr<Types::Interface> temperature_plugin_system;
+        std::unique_ptr<Types::Interface> composition_plugin_system;
+        std::unique_ptr<Types::Interface> grains_plugin_system;
 
+      protected:
+        Segment *clone_impl() const override final
+        {
+          return new Segment(*this);
+        };
       private:
 
     };
@@ -107,7 +101,7 @@ namespace WorldBuilder
     /**
       * This class represents an actual segment
       */
-    template <class A, class B>
+    template <class A, class B, class C>
     class Segment : public Types::Interface
     {
       public:
@@ -120,7 +114,13 @@ namespace WorldBuilder
                 const WorldBuilder::Point<2> default_top_truncation,
                 const WorldBuilder::Point<2> default_angle,
                 const std::vector<std::shared_ptr<A> > &temperature_systems,
-                const std::vector<std::shared_ptr<B> > &composition_systems);
+                const std::vector<std::shared_ptr<B> > &composition_systems,
+                const std::vector<std::shared_ptr<C> > &grains_systems);
+
+        /**
+         * Copy constructor
+         */
+        Segment(Segment const &other);
 
         /**
          * Destructor
@@ -128,19 +128,11 @@ namespace WorldBuilder
         ~Segment();
 
         /**
-         * Clone. The caller of clone is responsible for the lifetime of it,
-         * so return a unique pionter.
-         */
-        virtual
-        std::unique_ptr<Interface> clone() const;
-
-        /**
          * Todo
          */
-        virtual
         void write_schema(Parameters &prm,
                           const std::string &name,
-                          const std::string &documentation) const;
+                          const std::string &documentation) const override final;
 
 
         double value_length;
@@ -150,7 +142,13 @@ namespace WorldBuilder
         WorldBuilder::Point<2> value_angle;
         std::vector<std::shared_ptr<A> > temperature_systems;
         std::vector<std::shared_ptr<B> > composition_systems;
+        std::vector<std::shared_ptr<C> > grains_systems;
 
+      protected:
+        Segment *clone_impl() const override final
+        {
+          return new Segment(*this);
+        };
       private:
 
     };

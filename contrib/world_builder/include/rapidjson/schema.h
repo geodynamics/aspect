@@ -519,7 +519,6 @@ namespace internal
         exclusiveMaximum_(false),
         defaultValueLength_(0)
       {
-        typedef typename SchemaDocumentType::ValueType ValueType;
         typedef typename ValueType::ConstValueIterator ConstValueIterator;
         typedef typename ValueType::ConstMemberIterator ConstMemberIterator;
 
@@ -650,7 +649,7 @@ namespace internal
             hasDependencies_ = true;
             for (ConstMemberIterator itr = dependencies->MemberBegin(); itr != dependencies->MemberEnd(); ++itr)
               {
-                SizeType sourceIndex;
+                SizeType sourceIndex = 0;
                 if (FindPropertyIndex(itr->name, &sourceIndex))
                   {
                     if (itr->value.IsArray())
@@ -659,7 +658,7 @@ namespace internal
                         std::memset(properties_[sourceIndex].dependencies, 0, sizeof(bool)* propertyCount_);
                         for (ConstValueIterator targetItr = itr->value.Begin(); targetItr != itr->value.End(); ++targetItr)
                           {
-                            SizeType targetIndex;
+                            SizeType targetIndex = 0;
                             if (FindPropertyIndex(*targetItr, &targetIndex))
                               properties_[sourceIndex].dependencies[targetIndex] = true;
                           }
@@ -2140,7 +2139,7 @@ class GenericSchemaValidator :
 
     //! Checks whether the current state is valid.
     // Implementation of ISchemaValidator
-    virtual bool IsValid() const
+    bool IsValid() const override final
     {
       return valid_;
     }
@@ -2180,83 +2179,83 @@ class GenericSchemaValidator :
         }
     }
 
-    void NotMultipleOf(int64_t actual, const SValue &expected)
+    void NotMultipleOf(int64_t actual, const SValue &expected) override final
     {
       AddNumberError(SchemaType::GetMultipleOfString(), ValueType(actual).Move(), expected);
     }
-    void NotMultipleOf(uint64_t actual, const SValue &expected)
+    void NotMultipleOf(uint64_t actual, const SValue &expected) override final
     {
       AddNumberError(SchemaType::GetMultipleOfString(), ValueType(actual).Move(), expected);
     }
-    void NotMultipleOf(double actual, const SValue &expected)
+    void NotMultipleOf(double actual, const SValue &expected) override final
     {
       AddNumberError(SchemaType::GetMultipleOfString(), ValueType(actual).Move(), expected);
     }
-    void AboveMaximum(int64_t actual, const SValue &expected, bool exclusive)
+    void AboveMaximum(int64_t actual, const SValue &expected, bool exclusive) override final
     {
       AddNumberError(SchemaType::GetMaximumString(), ValueType(actual).Move(), expected,
                      exclusive ? &SchemaType::GetExclusiveMaximumString : 0);
     }
-    void AboveMaximum(uint64_t actual, const SValue &expected, bool exclusive)
+    void AboveMaximum(uint64_t actual, const SValue &expected, bool exclusive) override final
     {
       AddNumberError(SchemaType::GetMaximumString(), ValueType(actual).Move(), expected,
                      exclusive ? &SchemaType::GetExclusiveMaximumString : 0);
     }
-    void AboveMaximum(double actual, const SValue &expected, bool exclusive)
+    void AboveMaximum(double actual, const SValue &expected, bool exclusive) override final
     {
       AddNumberError(SchemaType::GetMaximumString(), ValueType(actual).Move(), expected,
                      exclusive ? &SchemaType::GetExclusiveMaximumString : 0);
     }
-    void BelowMinimum(int64_t actual, const SValue &expected, bool exclusive)
+    void BelowMinimum(int64_t actual, const SValue &expected, bool exclusive) override final
     {
       AddNumberError(SchemaType::GetMinimumString(), ValueType(actual).Move(), expected,
                      exclusive ? &SchemaType::GetExclusiveMinimumString : 0);
     }
-    void BelowMinimum(uint64_t actual, const SValue &expected, bool exclusive)
+    void BelowMinimum(uint64_t actual, const SValue &expected, bool exclusive) override final
     {
       AddNumberError(SchemaType::GetMinimumString(), ValueType(actual).Move(), expected,
                      exclusive ? &SchemaType::GetExclusiveMinimumString : 0);
     }
-    void BelowMinimum(double actual, const SValue &expected, bool exclusive)
+    void BelowMinimum(double actual, const SValue &expected, bool exclusive) override final
     {
       AddNumberError(SchemaType::GetMinimumString(), ValueType(actual).Move(), expected,
                      exclusive ? &SchemaType::GetExclusiveMinimumString : 0);
     }
 
-    void TooLong(const Ch *str, SizeType length, SizeType expected)
+    void TooLong(const Ch *str, SizeType length, SizeType expected) override final
     {
       AddNumberError(SchemaType::GetMaxLengthString(),
                      ValueType(str, length, GetStateAllocator()).Move(), SValue(expected).Move());
     }
-    void TooShort(const Ch *str, SizeType length, SizeType expected)
+    void TooShort(const Ch *str, SizeType length, SizeType expected) override final
     {
       AddNumberError(SchemaType::GetMinLengthString(),
                      ValueType(str, length, GetStateAllocator()).Move(), SValue(expected).Move());
     }
-    void DoesNotMatch(const Ch *str, SizeType length)
+    void DoesNotMatch(const Ch *str, SizeType length) override final
     {
       currentError_.SetObject();
       currentError_.AddMember(GetActualString(), ValueType(str, length, GetStateAllocator()).Move(), GetStateAllocator());
       AddCurrentError(SchemaType::GetPatternString());
     }
 
-    void DisallowedItem(SizeType index)
+    void DisallowedItem(SizeType index) override final
     {
       currentError_.SetObject();
       currentError_.AddMember(GetDisallowedString(), ValueType(index).Move(), GetStateAllocator());
       AddCurrentError(SchemaType::GetAdditionalItemsString(), true);
     }
-    void TooFewItems(SizeType actualCount, SizeType expectedCount)
+    void TooFewItems(SizeType actualCount, SizeType expectedCount) override final
     {
       AddNumberError(SchemaType::GetMinItemsString(),
                      ValueType(actualCount).Move(), SValue(expectedCount).Move());
     }
-    void TooManyItems(SizeType actualCount, SizeType expectedCount)
+    void TooManyItems(SizeType actualCount, SizeType expectedCount) override final
     {
       AddNumberError(SchemaType::GetMaxItemsString(),
                      ValueType(actualCount).Move(), SValue(expectedCount).Move());
     }
-    void DuplicateItems(SizeType index1, SizeType index2)
+    void DuplicateItems(SizeType index1, SizeType index2) override final
     {
       ValueType duplicates(kArrayType);
       duplicates.PushBack(index1, GetStateAllocator());
@@ -2266,25 +2265,25 @@ class GenericSchemaValidator :
       AddCurrentError(SchemaType::GetUniqueItemsString(), true);
     }
 
-    void TooManyProperties(SizeType actualCount, SizeType expectedCount)
+    void TooManyProperties(SizeType actualCount, SizeType expectedCount) override final
     {
       AddNumberError(SchemaType::GetMaxPropertiesString(),
                      ValueType(actualCount).Move(), SValue(expectedCount).Move());
     }
-    void TooFewProperties(SizeType actualCount, SizeType expectedCount)
+    void TooFewProperties(SizeType actualCount, SizeType expectedCount) override final
     {
       AddNumberError(SchemaType::GetMinPropertiesString(),
                      ValueType(actualCount).Move(), SValue(expectedCount).Move());
     }
-    void StartMissingProperties()
+    void StartMissingProperties() override final
     {
       currentError_.SetArray();
     }
-    void AddMissingProperty(const SValue &name)
+    void AddMissingProperty(const SValue &name) override final
     {
       currentError_.PushBack(ValueType(name, GetStateAllocator()).Move(), GetStateAllocator());
     }
-    bool EndMissingProperties()
+    bool EndMissingProperties() override final
     {
       if (currentError_.Empty())
         return false;
@@ -2294,42 +2293,42 @@ class GenericSchemaValidator :
       AddCurrentError(SchemaType::GetRequiredString());
       return true;
     }
-    void PropertyViolations(ISchemaValidator **subvalidators, SizeType count)
+    void PropertyViolations(ISchemaValidator **subvalidators, SizeType count) override final
     {
       for (SizeType i = 0; i < count; ++i)
         MergeError(static_cast<GenericSchemaValidator *>(subvalidators[i])->GetError());
     }
-    void DisallowedProperty(const Ch *name, SizeType length)
+    void DisallowedProperty(const Ch *name, SizeType length) override final
     {
       currentError_.SetObject();
       currentError_.AddMember(GetDisallowedString(), ValueType(name, length, GetStateAllocator()).Move(), GetStateAllocator());
       AddCurrentError(SchemaType::GetAdditionalPropertiesString(), true);
     }
 
-    void StartDependencyErrors()
+    void StartDependencyErrors() override final
     {
       currentError_.SetObject();
     }
-    void StartMissingDependentProperties()
+    void StartMissingDependentProperties() override final
     {
       missingDependents_.SetArray();
     }
-    void AddMissingDependentProperty(const SValue &targetName)
+    void AddMissingDependentProperty(const SValue &targetName) override final
     {
       missingDependents_.PushBack(ValueType(targetName, GetStateAllocator()).Move(), GetStateAllocator());
     }
-    void EndMissingDependentProperties(const SValue &sourceName)
+    void EndMissingDependentProperties(const SValue &sourceName) override final
     {
       if (!missingDependents_.Empty())
         currentError_.AddMember(ValueType(sourceName, GetStateAllocator()).Move(),
                                 missingDependents_, GetStateAllocator());
     }
-    void AddDependencySchemaError(const SValue &sourceName, ISchemaValidator *subvalidator)
+    void AddDependencySchemaError(const SValue &sourceName, ISchemaValidator *subvalidator) override final
     {
       currentError_.AddMember(ValueType(sourceName, GetStateAllocator()).Move(),
                               static_cast<GenericSchemaValidator *>(subvalidator)->GetError(), GetStateAllocator());
     }
-    bool EndDependencyErrors()
+    bool EndDependencyErrors() override final
     {
       if (currentError_.ObjectEmpty())
         return false;
@@ -2340,20 +2339,20 @@ class GenericSchemaValidator :
       return true;
     }
 
-    void DisallowedValue()
+    void DisallowedValue() override final
     {
       currentError_.SetObject();
       AddCurrentError(SchemaType::GetEnumString());
     }
-    void StartDisallowedType()
+    void StartDisallowedType() override final
     {
       currentError_.SetArray();
     }
-    void AddExpectedType(const typename SchemaType::ValueType &expectedType)
+    void AddExpectedType(const typename SchemaType::ValueType &expectedType) override final
     {
       currentError_.PushBack(ValueType(expectedType, GetStateAllocator()).Move(), GetStateAllocator());
     }
-    void EndDisallowedType(const typename SchemaType::ValueType &actualType)
+    void EndDisallowedType(const typename SchemaType::ValueType &actualType) override final
     {
       ValueType error(kObjectType);
       error.AddMember(GetExpectedString(), currentError_, GetStateAllocator());
@@ -2361,22 +2360,22 @@ class GenericSchemaValidator :
       currentError_ = error;
       AddCurrentError(SchemaType::GetTypeString());
     }
-    void NotAllOf(ISchemaValidator **subvalidators, SizeType count)
+    void NotAllOf(ISchemaValidator **subvalidators, SizeType count) override final
     {
       for (SizeType i = 0; i < count; ++i)
         {
           MergeError(static_cast<GenericSchemaValidator *>(subvalidators[i])->GetError());
         }
     }
-    void NoneOf(ISchemaValidator **subvalidators, SizeType count)
+    void NoneOf(ISchemaValidator **subvalidators, SizeType count) override final
     {
       AddErrorArray(SchemaType::GetAnyOfString(), subvalidators, count);
     }
-    void NotOneOf(ISchemaValidator **subvalidators, SizeType count)
+    void NotOneOf(ISchemaValidator **subvalidators, SizeType count) override final
     {
       AddErrorArray(SchemaType::GetOneOfString(), subvalidators, count);
     }
-    void Disallowed()
+    void Disallowed() override final
     {
       currentError_.SetObject();
       AddCurrentError(SchemaType::GetNotString());
@@ -2520,7 +2519,7 @@ class GenericSchemaValidator :
 #undef RAPIDJSON_SCHEMA_HANDLE_VALUE_
 
     // Implementation of ISchemaStateFactory<SchemaType>
-    virtual ISchemaValidator *CreateSchemaValidator(const SchemaType &root)
+    ISchemaValidator *CreateSchemaValidator(const SchemaType &root) override final
     {
       return new (GetStateAllocator().Malloc(sizeof(GenericSchemaValidator))) GenericSchemaValidator(*schemaDocument_, root, documentStack_.template Bottom<char>(), documentStack_.GetSize(),
 #if RAPIDJSON_SCHEMA_VERBOSE
@@ -2529,36 +2528,36 @@ class GenericSchemaValidator :
              &GetStateAllocator());
     }
 
-    virtual void DestroySchemaValidator(ISchemaValidator *validator)
+    void DestroySchemaValidator(ISchemaValidator *validator) override final
     {
       GenericSchemaValidator *v = static_cast<GenericSchemaValidator *>(validator);
       v->~GenericSchemaValidator();
       StateAllocator::Free(v);
     }
 
-    virtual void *CreateHasher()
+    void *CreateHasher() override final
     {
       return new (GetStateAllocator().Malloc(sizeof(HasherType))) HasherType(&GetStateAllocator());
     }
 
-    virtual uint64_t GetHashCode(void *hasher)
+    uint64_t GetHashCode(void *hasher) override final
     {
       return static_cast<HasherType *>(hasher)->GetHashCode();
     }
 
-    virtual void DestroryHasher(void *hasher)
+    void DestroryHasher(void *hasher) override final
     {
       HasherType *h = static_cast<HasherType *>(hasher);
       h->~HasherType();
       StateAllocator::Free(h);
     }
 
-    virtual void *MallocState(size_t size)
+    void *MallocState(size_t size) override final
     {
       return GetStateAllocator().Malloc(size);
     }
 
-    virtual void FreeState(void *p)
+    void FreeState(void *p) override final
     {
       StateAllocator::Free(p);
     }

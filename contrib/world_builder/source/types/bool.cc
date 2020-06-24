@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -25,9 +25,17 @@ namespace WorldBuilder
 {
   namespace Types
   {
-    Bool::Bool(const bool default_value)
+    Bool::Bool(const bool default_value_)
       :
-      default_value(default_value)
+      default_value(default_value_)
+    {
+      this->type_name = Types::type::Bool;
+    }
+
+
+    Bool::Bool(Bool const &other)
+      :
+      default_value(other.default_value)
     {
       this->type_name = Types::type::Bool;
     }
@@ -36,11 +44,6 @@ namespace WorldBuilder
     Bool::~Bool ()
     {}
 
-    std::unique_ptr<Interface>
-    Bool::clone() const
-    {
-      return std::unique_ptr<Interface>(new Bool(default_value));
-    }
 
     void
     Bool::write_schema(Parameters &prm,

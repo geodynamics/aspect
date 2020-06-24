@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -68,6 +68,9 @@ namespace WorldBuilder
       prm.declare_entry("composition models",
                         Types::PluginSystem("", Features::OceanicPlateModels::Composition::Interface::declare_entries, {"model"}),
                         "A list of composition models.");
+      prm.declare_entry("grains models",
+                        Types::PluginSystem("", Features::OceanicPlateModels::Grains::Interface::declare_entries, {"model"}),
+                        "A list of grains models.");
     }
 
     void
@@ -108,6 +111,22 @@ namespace WorldBuilder
             prm.enter_subsection(std::to_string(i));
             {
               composition_models[i]->parse_entries(prm);
+            }
+            prm.leave_subsection();
+          }
+      }
+      prm.leave_subsection();
+
+
+      prm.get_unique_pointers<Features::OceanicPlateModels::Grains::Interface>("grains models", grains_models);
+
+      prm.enter_subsection("grains models");
+      {
+        for (unsigned int i = 0; i < grains_models.size(); ++i)
+          {
+            prm.enter_subsection(std::to_string(i));
+            {
+              grains_models[i]->parse_entries(prm);
             }
             prm.leave_subsection();
           }
@@ -180,6 +199,40 @@ namespace WorldBuilder
         }
 
       return composition;
+    }
+
+
+    WorldBuilder::grains
+    OceanicPlate::grains(const Point<3> &position,
+                         const double depth,
+                         const unsigned int composition_number,
+                         WorldBuilder::grains grains) const
+    {
+      WorldBuilder::Utilities::NaturalCoordinate natural_coordinate = WorldBuilder::Utilities::NaturalCoordinate(position,
+                                                                      *(world->parameters.coordinate_system));
+
+      if (depth <= max_depth && depth >= min_depth &&
+          Utilities::polygon_contains_point(coordinates, Point<2>(natural_coordinate.get_surface_coordinates(),
+                                                                  world->parameters.coordinate_system->natural_coordinate_system())))
+        {
+          for (auto &grains_model: grains_models)
+            {
+              grains = grains_model->get_grains(position,
+                                                depth,
+                                                composition_number,
+                                                grains,
+                                                min_depth,
+                                                max_depth);
+
+              /*WBAssert(!std::isnan(composition), "Composition is not a number: " << composition
+                       << ", based on a temperature model with the name " << composition_model->get_name());
+              WBAssert(std::isfinite(composition), "Composition is not a finite: " << composition
+                       << ", based on a temperature model with the name " << composition_model->get_name());*/
+
+            }
+        }
+
+      return grains;
     }
 
     /**

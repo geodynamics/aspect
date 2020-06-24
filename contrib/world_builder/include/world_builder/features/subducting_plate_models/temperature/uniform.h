@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -21,6 +21,7 @@
 #define _world_builder_features_subducting_plate_temperature_uniform_h
 
 #include <world_builder/features/subducting_plate_models/temperature/interface.h>
+#include <world_builder/features/utilities.h>
 #include <world_builder/world.h>
 
 
@@ -60,22 +61,20 @@ namespace WorldBuilder
             /**
              * declare and read in the world builder file into the parameters class
              */
-            virtual
-            void parse_entries(Parameters &prm);
+            void parse_entries(Parameters &prm) override final;
 
 
             /**
              * Returns a temperature based on the given position, depth in the model,
              * gravity and current temperature.
              */
-            virtual
             double get_temperature(const Point<3> &position,
                                    const double depth,
                                    const double gravity,
                                    double temperature,
                                    const double feature_min_depth,
                                    const double feature_max_depth,
-                                   const std::map<std::string,double> &distance_from_planes) const;
+                                   const std::map<std::string,double> &distance_from_planes) const override final;
 
 
           private:
@@ -83,7 +82,7 @@ namespace WorldBuilder
             double min_depth;
             double max_depth;
             double temperature;
-            std::string operation;
+            Utilities::Operations operation;
 
         };
       }

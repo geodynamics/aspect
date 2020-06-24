@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -26,6 +26,7 @@
 
 #include <world_builder/features/subducting_plate_models/temperature/interface.h>
 #include <world_builder/features/subducting_plate_models/composition/interface.h>
+#include <world_builder/features/subducting_plate_models/grains/interface.h>
 
 
 namespace WorldBuilder
@@ -62,19 +63,19 @@ namespace WorldBuilder
         /**
          * declare and read in the world builder file into the parameters class
          */
-        virtual
-        void parse_entries(Parameters &prm);
+        void parse_entries(Parameters &prm) override final;
+
 
 
         /**
          * Returns a temperature based on the given position, depth in the model,
          * gravity and current temperature.
          */
-        virtual
         double temperature(const Point<3> &position,
                            const double depth,
                            const double gravity,
-                           double temperature) const;
+                           double temperature) const override final;
+
 
         /**
          * Returns a value for the requests composition (0 is not present,
@@ -82,29 +83,45 @@ namespace WorldBuilder
          * the composition which is being requested and the current value
          * of that composition at this location and depth.
          */
-        virtual
         double composition(const Point<3> &position,
                            const double depth,
                            const unsigned int composition_number,
-                           double composition_value) const;
+                           double composition_value) const override final;
+
+        /**
+         * Returns a grains (rotation matrix and grain size)
+         * based on the given position, depth in the model,
+         * the composition which is being requested and the current value
+         * of that composition at this location and depth.
+         */
+        virtual
+        WorldBuilder::grains
+        grains(const Point<3> &position,
+               const double depth,
+               const unsigned int composition_number,
+               WorldBuilder::grains value) const override final;
 
 
 
       private:
         std::vector<std::shared_ptr<Features::SubductingPlateModels::Temperature::Interface> > default_temperature_models;
         std::vector<std::shared_ptr<Features::SubductingPlateModels::Composition::Interface>  > default_composition_models;
+        std::vector<std::shared_ptr<Features::SubductingPlateModels::Grains::Interface>  > default_grains_models;
 
         std::vector<Objects::Segment<Features::SubductingPlateModels::Temperature::Interface,
-            Features::SubductingPlateModels::Composition::Interface> > default_segment_vector;
+            Features::SubductingPlateModels::Composition::Interface,
+            Features::SubductingPlateModels::Grains::Interface> > default_segment_vector;
 
         std::vector< std::vector<Objects::Segment<Features::SubductingPlateModels::Temperature::Interface,
-            Features::SubductingPlateModels::Composition::Interface> > > sections_segment_vector;
+            Features::SubductingPlateModels::Composition::Interface,
+            Features::SubductingPlateModels::Grains::Interface> > > sections_segment_vector;
 
         // This vector stores segments to this coordiante/section.
         //First used (raw) pointers to the segment relevant to this coordinate/section,
         // but I do not trust it won't fail when memory is moved. So storing the all the data now.
         std::vector<std::vector<Objects::Segment<Features::SubductingPlateModels::Temperature::Interface,
-            Features::SubductingPlateModels::Composition::Interface> > > segment_vector;
+            Features::SubductingPlateModels::Composition::Interface,
+            Features::SubductingPlateModels::Grains::Interface> > > segment_vector;
 
         // todo: the memory of this can be greatly improved by
         // or using a plugin system for the submodules, or

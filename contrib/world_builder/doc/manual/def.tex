@@ -395,6 +395,11 @@ innerbottommargin=5pt]{codeBox}
     listing options={basicstyle=\ttfamily,language=fortran, commentstyle=\color{mygreen}, numberstyle=\small\emptyaccsupp\bf\color{mygray}, columns=flexible, numbers=left, stepnumber=1, showspaces=false, showstringspaces=false}, before=\vspace{10pt}\noindent, after=\vspace{10pt},
     title=Listing \thetcbcounter: #2, #1}
     
+\newtcblisting[auto counter]{pythoncode}[2][]{sharp corners, 
+    fonttitle=\bfseries, colframe=ocre!60, listing only, top=0pt, bottom=0pt, left=20pt, lefttitle=0pt,
+    listing options={basicstyle=\ttfamily,language=python, commentstyle=\color{mygreen}, numberstyle=\small\emptyaccsupp\bf\color{mygray}, columns=flexible, numbers=left, stepnumber=1, showspaces=false, showstringspaces=false}, before=\vspace{10pt}\noindent, after=\vspace{10pt},
+    title=Listing \thetcbcounter: #2, #1}
+    
 %    \newtcblisting[auto counter]{parameterbox}[4][]{sharp corners, 
 %    fonttitle=\bfseries, colframe=ocre!60, listing only, top=0pt, bottom=0pt, left=0pt, lefttitle=0pt,
 %    listing options={showspaces=false, showstringspaces=false, breaklines=true}, 

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -23,6 +23,7 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
+#include <map>
 #include <memory>
 
 
@@ -77,7 +78,6 @@ namespace WorldBuilder
     public:
       /**
        * Constructor
-       * \param filename A string with the path to the world builder file
        * \param world A reference to the World class
        */
       Parameters(World &world);
@@ -88,56 +88,86 @@ namespace WorldBuilder
       ~Parameters();
 
       /**
-       * Todo
+       * Initializes the parameter file
+       * \param filename A string with the path to the world builder file
+       * \param has_output_dir A bool indicating whether the world builder may write out information.
+       * \param output_dir A string with the path to the directory where it can output information if allowed by has_output_dir
        */
       void initialize(std::string &filename, bool has_output_dir = false, std::string output_dir = "");
 
       /**
-       * Todo
+       * A generic get function to retrieve setting from the parameter file.
+       * Note that this is dependent on the current path/subsection which you are in.
+       * \param name The name of the entry to retrieved
+       * @see path
+       * @see enter_subsection()
+       * @see leave_subsection()
        */
       template<class T>
       T get(const std::string &name);
 
       /**
-       * Todo
+       * A specialized verions of get which can retun vecors/arrays.
+       * \param name The name of the entry to retrieved
        */
       template<class T>
       std::vector<T> get_vector(const std::string &name);
 
       /**
-       * Todo
+       * A specialized verions of get which can retun vecors/arrays.
+       * This version is designed for the plugin system.
+       * \param name The name of the entry to retrieved
        */
-      template<class T, class A, class B>
-      std::vector<T> get_vector(const std::string &name, std::vector<std::shared_ptr<A> > &, std::vector<std::shared_ptr<B> > &);
+      template<class T, class A, class B, class C>
+      std::vector<T> get_vector(const std::string &name, std::vector<std::shared_ptr<A> > &, std::vector<std::shared_ptr<B> > &, std::vector<std::shared_ptr<C> > &);
 
       /**
-       * Todo
+       * A specialized verions of get which can retun unique pointers.
+       * \param name The name of the entry to retrieved
        */
       template<class T>
       std::unique_ptr<T> get_unique_pointer(const std::string &name);
 
       /**
-       * Todo
+       * A specialized verions of get which can retun unique pointers as an argument
+       * and returns a bool to indicate whether it was successfull or not.
+       * Note that this function will erase all information in the vector.
+       * \param name The name of the entry to retrieved
+       * \param vector A vector of unique pointers.
        */
       template<class T>
       bool
-      get_unique_pointers(const std::string &name, std::vector<std::unique_ptr<T> > &);
+      get_unique_pointers(const std::string &name, std::vector<std::unique_ptr<T> > &vector);
 
       /**
-       * Todo
+       * A specialized verions of get which can retun shared pointers as an argument
+       * and returns a bool to indicate whether it was successfull or not.
+       * Note that this function will erase all information in the vector.
+       * \param name The name of the entry to retrieved
+       * \param vector A vector of shared pointers.
        */
       template<class T>
       bool
       get_shared_pointers(const std::string &name, std::vector<std::shared_ptr<T> > &);
 
       /**
-       * Todo
+       * Checks for the existance of an entry in the parameter file.
+       * Return true when an entry is specified and false when it is not.
+       * This is independent of whether an entry has been declared or not.
+       * The main intended usage is to check whether the user has provided
+       * the specified entry in the user supplied parameters file, since
+       * the get functions may use default values.
+       * \param name The name of the entry to be checked.
        */
       bool
       check_entry(const std::string &name) const;
 
       /**
-       * Todo
+       * Declares the existance an entry in the parameters class.
+       * Default values are supplied by the type.
+       * \param name The name of the entry to be declared
+       * \param type The type of entry (e.g. Double, Array, etc.)
+       * \param documentation A string containing information about this parameter.
        */
       void declare_entry(const std::string name,
                          const Types::Interface &type,
@@ -161,6 +191,21 @@ namespace WorldBuilder
        * @see enter_subsection()
        */
       void leave_subsection();
+
+      /**
+       * A utilties function for declaring plugin model entries. This always contains a model declaration entry with the plugin name.
+       * @param model_group_name The name of the model group which is declared.
+       * @param parent_name The name of the parent declaration group.
+       * @param declaration_map A map containing plugin names and plugin declaration functions
+       * @param requried_entries A vector containing what entries should be required from the user. Default value is empty.
+       * @param extra_declarations A vector containing extra declarations common to all plugins in this group. Default value is empty.
+       */
+      void
+      declare_model_entries(const std::string model_group_name,
+                            const std::string &parent_name,
+                            std::map<std::string, void ( *)(Parameters &,const std::string &)> declare_map,
+                            const std::vector<std::string> &required_entries = {},
+                            const std::vector<std::tuple<std::string,const WorldBuilder::Types::Interface &, std::string> > &extra_declarations = {});
 
 
       /**
@@ -208,7 +253,7 @@ namespace WorldBuilder
        * as a string in json pointer format.
        * \return std::string
        */
-      std::string get_full_json_path(unsigned int max_size = std::numeric_limits<unsigned int>::max()) const;
+      std::string get_full_json_path(size_t max_size = std::numeric_limits<size_t>::max()) const;
 
       /**
        * todo: Warning: do not use before declarations is filled.
@@ -240,7 +285,7 @@ namespace WorldBuilder
        * This is used for the get relative path functions. It stores how many
        * top entries of the path should be ignored.
        */
-      unsigned int path_level;
+      size_t path_level;
 
       /**
        * A function which returns the relative path, which is the full path

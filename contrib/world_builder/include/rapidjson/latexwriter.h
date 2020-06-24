@@ -135,14 +135,15 @@ class LatexWriter : public Writer<OutputStream, SourceEncoding, TargetEncoding, 
     {
       RAPIDJSON_ASSERT(str != 0);
       if (small_array == true)
-        if (first_small_array == true)
-          first_small_array = false;
-        else
-          {
-            Base::os_->Put(',');
-            Base::os_->Put(' ');
-          }
-
+        {
+          if (first_small_array == true)
+            first_small_array = false;
+          else
+            {
+              Base::os_->Put(',');
+              Base::os_->Put(' ');
+            }
+        }
       Base::EndValue(Base::WriteString(str, length, false));
 
       if (small_array == false)
@@ -238,7 +239,7 @@ class LatexWriter : public Writer<OutputStream, SourceEncoding, TargetEncoding, 
             level_type.push_back(0);
         }
 
-      Base::WriteString(begin.c_str(), begin.size(), false);
+      Base::WriteString(begin.c_str(), static_cast<rapidjson::SizeType>(begin.size()), false);
       Base::os_->Put('\n');
 
       return true;
@@ -296,7 +297,7 @@ class LatexWriter : public Writer<OutputStream, SourceEncoding, TargetEncoding, 
         }
 
       open_new_itemize = false;
-      Base::WriteString(item.c_str(), item.length(), false);
+      Base::WriteString(item.c_str(), static_cast<rapidjson::SizeType>(item.length()), false);
 
       return true;
     }
@@ -317,8 +318,10 @@ class LatexWriter : public Writer<OutputStream, SourceEncoding, TargetEncoding, 
           itemize_open--;
         }
       itemize_open = 0;
-
-      if (level_type.back() == 0 || level_type.back() == 3)
+      // If this assert fails it could be an indicator that
+      // the world builder library is not fuly linked to the
+      // appllication.
+      if (level_type.size() > 0 && (level_type.back() == 0 || level_type.back() == 3))
         section_level = section_level > 0 ? section_level-1 : 0;
 
 
@@ -331,7 +334,7 @@ class LatexWriter : public Writer<OutputStream, SourceEncoding, TargetEncoding, 
       if (level_type.size() > 0)
         level_type.pop_back();
 
-      Base::WriteString(end.c_str(), end.length(), false);
+      Base::WriteString(end.c_str(), static_cast<rapidjson::SizeType>(end.length()), false);
 
       return true;
     }
@@ -359,7 +362,7 @@ class LatexWriter : public Writer<OutputStream, SourceEncoding, TargetEncoding, 
           first_small_array = true;
         }
 
-      Base::WriteString(begin.c_str(), begin.size(), false);
+      Base::WriteString(begin.c_str(), static_cast<rapidjson::SizeType>(begin.size()), false);
 
       if (small_array == false)
         Base::os_->Put('\n');
@@ -384,7 +387,7 @@ class LatexWriter : public Writer<OutputStream, SourceEncoding, TargetEncoding, 
           small_array = false;
         }
 
-      Base::WriteString(end.c_str(), end.size(), false);
+      Base::WriteString(end.c_str(), static_cast<rapidjson::SizeType>(end.size()), false);
 
       return true;
     }

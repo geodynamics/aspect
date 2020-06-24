@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -26,16 +26,28 @@ namespace WorldBuilder
   namespace Types
   {
     Array::Array(const Interface &type,
-                 const unsigned int min_items,
-                 const unsigned int max_items,
-                 const bool unique_items)
+                 const unsigned int min_items_,
+                 const unsigned int max_items_,
+                 const bool unique_items_)
       :
       inner_type(type.get_type()),
       inner_type_ptr(type.clone()),
       required(false),
-      min_items(min_items),
-      max_items(max_items),
-      unique_items(unique_items)
+      min_items(min_items_),
+      max_items(max_items_),
+      unique_items(unique_items_)
+    {
+      this->type_name = Types::type::Array;
+    }
+
+    Array::Array(Array const &other)
+      :
+      inner_type(other.inner_type),
+      inner_type_ptr(other.inner_type_ptr->clone()),
+      required(other.required),
+      min_items(other.min_items),
+      max_items(other.max_items),
+      unique_items(other.unique_items)
     {
       this->type_name = Types::type::Array;
     }
@@ -43,12 +55,6 @@ namespace WorldBuilder
     Array::~Array ()
     {}
 
-    std::unique_ptr<Interface>
-    Array::clone() const
-    {
-      WBAssertThrow(false,"Error: Cloning Arrays is currently not possible.");
-      return std::unique_ptr<Interface>(new Bool(true));
-    }
 
     void
     Array::write_schema(Parameters &prm,

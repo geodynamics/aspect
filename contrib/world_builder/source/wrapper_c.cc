@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -29,7 +29,7 @@ extern "C" {
    * to it. This pointer can then be used to call the temperature and composition
    * functions. When done call the release world function to destroy the object.
    */
-  void create_world(void **ptr_ptr_world, const char *world_builder_file, bool *has_output_dir_, const char *output_dir_)
+  void create_world(void **ptr_ptr_world, const char *world_builder_file, bool *has_output_dir_, const char *output_dir_, const unsigned long random_number_seed)
   {
     bool has_output_dir = false;
 
@@ -44,7 +44,7 @@ extern "C" {
         output_dir = *output_dir_;
       }
 
-    WorldBuilder::World *a = new WorldBuilder::World(std::string(world_builder_file), has_output_dir, output_dir);
+    WorldBuilder::World *a = new WorldBuilder::World(std::string(world_builder_file), has_output_dir, output_dir,random_number_seed);
 
     *ptr_ptr_world = reinterpret_cast<void *>(a);
   }

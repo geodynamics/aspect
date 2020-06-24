@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -44,7 +44,7 @@ namespace WorldBuilder
           max_depth(NaN::DSNAN),
           top_temperature(NaN::DSNAN),
           bottom_temperature(NaN::DSNAN),
-          operation("")
+          operation(Utilities::Operations::REPLACE)
         {
           this->world = world_;
           this->name = "linear";
@@ -73,9 +73,6 @@ namespace WorldBuilder
                             "The temperature at the top in degree Kelvin of this feature. "
                             "If the value is below zero, an adiabatic temperature is used.");
 
-          prm.declare_entry("operation", Types::String("replace"),
-                            "Whether the value should replace any value previously defined at this location (replace) or "
-                            "add the value to the previously define value (add).");
         }
 
         void
@@ -84,6 +81,7 @@ namespace WorldBuilder
           min_depth = prm.get<double>("min depth");
           max_depth = prm.get<double>("max depth");
           WBAssert(max_depth >= min_depth, "max depth needs to be larger or equal to min depth.");
+          operation = Utilities::string_operations_to_enum(prm.get<std::string>("operation"));
           top_temperature = prm.get<double>("top temperature");
           bottom_temperature = prm.get<double>("bottom temperature");
         }
@@ -93,7 +91,7 @@ namespace WorldBuilder
         Linear::get_temperature(const Point<3> &,
                                 const double depth,
                                 const double gravity_norm,
-                                double temperature,
+                                double temperature_,
                                 const double feature_min_depth,
                                 const double feature_max_depth) const
         {
@@ -118,16 +116,18 @@ namespace WorldBuilder
                                                         this->world->specific_heat) * max_depth_local);
                 }
 
-              return top_temperature +
-                     (depth - min_depth_local) * ((bottom_temperature_local - top_temperature_local) / (max_depth_local - min_depth_local));
+              const double new_temperature = top_temperature +
+                                             (depth - min_depth_local) *
+                                             ((bottom_temperature_local - top_temperature_local) / (max_depth_local - min_depth_local));
 
+              return Utilities::apply_operation(operation,temperature_,new_temperature);
             }
 
 
-          return temperature;
+          return temperature_;
         }
 
-        WB_REGISTER_FEATURE_CONTINENTAL_TEMPERATURE_MODEL(Linear, linear)
+        WB_REGISTER_FEATURE_CONTINENTAL_PLATE_TEMPERATURE_MODEL(Linear, linear)
       }
     }
   }

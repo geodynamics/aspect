@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -27,32 +27,26 @@ namespace WorldBuilder
 {
   namespace Types
   {
-    UnsignedInt::UnsignedInt(unsigned int default_value)
+    UnsignedInt::UnsignedInt(unsigned int default_value_)
       :
       value(0),
-      default_value(default_value)
+      default_value(default_value_)
     {
       this->type_name = Types::type::UnsignedInt;
     }
 
 
-    UnsignedInt::UnsignedInt(unsigned int value, unsigned int default_value)
+    UnsignedInt::UnsignedInt(UnsignedInt const &other)
       :
-      value(value),
-      default_value(default_value)
+      value(other.value),
+      default_value(other.default_value)
     {
       this->type_name = Types::type::UnsignedInt;
     }
-
 
     UnsignedInt::~UnsignedInt ()
     {}
 
-    std::unique_ptr<Interface>
-    UnsignedInt::clone() const
-    {
-      return std::unique_ptr<Interface>(new UnsignedInt(value, default_value));
-    }
 
     void
     UnsignedInt::write_schema(Parameters &prm,

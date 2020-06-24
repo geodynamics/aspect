@@ -11,6 +11,9 @@ endif( NOT TEST_OUTPUT )
 if( NOT TEST_REFERENCE )
   message( FATAL_ERROR "Require TEST_REFERENCE to be defined" )
 endif( NOT TEST_REFERENCE )
+if( NOT TEST_DIFF )
+message( FATAL_ERROR "Require TEST_DIFF to be defined" )
+endif( NOT TEST_DIFF )
 
 # create a directory for the test
 file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/app/${TEST_NAME})
@@ -34,20 +37,6 @@ endif( TEST_RESULT_VAR )
 file(TO_NATIVE_PATH "${TEST_OUTPUT}" TEST_NATIVE_OUTPUT)
 file(TO_NATIVE_PATH "${TEST_REFERENCE}" TEST_NATIVE_REFERENCE)
 
-FIND_PROGRAM(DIFF_EXECUTABLE
-	     NAMES diff FC
-	     HINTS ${DIFF_DIR}
-	     PATH_SUFFIXES bin
-	     )
-
- IF(NOT DIFF_EXECUTABLE MATCHES "-NOTFOUND")
-	 SET(TEST_DIFF ${DIFF_EXECUTABLE})
- ELSE()
-	     MESSAGE(FATAL_ERROR
-		     "Could not find diff or fc. This is required for running the testsuite.\n"
-		     "Please specify TEST_DIFF by hand."
-		     )
-ENDIF()
 
 IF("${TEST_DIFF}" MATCHES ".*exe")
   # windows

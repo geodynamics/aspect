@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -45,7 +45,7 @@ namespace WorldBuilder
           potential_mantle_temperature(NaN::DSNAN),
           thermal_expansion_coefficient(NaN::DSNAN),
           specific_heat(NaN::DSNAN),
-          operation("")
+          operation(Utilities::Operations::REPLACE)
         {
           this->world = world_;
           this->name = "adiabatic";
@@ -80,11 +80,6 @@ namespace WorldBuilder
                             "The specific heat in $J kg^{-1} K^{-1}$. "
                             "If the value is lower then zero, the global value is used.");
 
-          prm.declare_entry("operation", Types::String("replace",std::vector<std::string> {"replace", "add", "substract"}),
-                            "Whether the value should replace any value previously defined at this location (replace), "
-                            "add the value to the previously define value (add) or substract the value to the previously "
-                            "define value (substract).");
-
         }
 
         void
@@ -93,7 +88,7 @@ namespace WorldBuilder
 
           min_depth = prm.get<double>("min depth");
           max_depth = prm.get<double>("max depth");
-          operation = prm.get<std::string>("operation");
+          operation = Utilities::string_operations_to_enum(prm.get<std::string>("operation"));
 
           potential_mantle_temperature = prm.get<double>("potential mantle temperature");
           if (potential_mantle_temperature < 0)
@@ -131,7 +126,7 @@ namespace WorldBuilder
         Adiabatic::get_temperature(const Point<3> &,
                                    const double depth,
                                    const double gravity_norm,
-                                   double temperature,
+                                   double temperature_,
                                    const double ,
                                    const double ) const
         {
@@ -154,19 +149,14 @@ namespace WorldBuilder
               WBAssert(std::isfinite(adabatic_temperature),
                        "adabatic_temperature is not a finite: " << adabatic_temperature << ".");
 
-              if (operation == "replace")
-                return adabatic_temperature;
-              else if ("add")
-                return temperature + adabatic_temperature;
-              else if ("substract")
-                return temperature - adabatic_temperature;
+              return Utilities::apply_operation(operation,temperature_,adabatic_temperature);
             }
 
 
-          return temperature;
+          return temperature_;
         }
 
-        WB_REGISTER_FEATURE_CONTINENTAL_TEMPERATURE_MODEL(Adiabatic, adiabatic)
+        WB_REGISTER_FEATURE_OCEANIC_PLATE_TEMPERATURE_MODEL(Adiabatic, adiabatic)
       }
     }
   }

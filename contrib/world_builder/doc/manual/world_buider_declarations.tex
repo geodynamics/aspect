@@ -59,7 +59,7 @@
 \end{itemize}
 \section{/coordinate system/oneOf/1}
 \begin{itemize}\item {\bf type}: object
-\item {\bf documentation}: Coordinate sysetm object
+\item {\bf documentation}: Coordinate system object
 \item {\bf additionalProperties}: false
 \item {\bf required}: [model]\end{itemize}
 \subsection{/coordinate system/oneOf/1/model}
@@ -127,14 +127,18 @@
 
 \subsubsection{/features/items/oneOf/1/temperature models/items/oneOf/1}
 \begin{itemize}\item {\bf type}: object
-\item {\bf documentation}: Temperature object
+\item {\bf documentation}: temperature object
 \item {\bf additionalProperties}: false
 \item {\bf required}: [model]\end{itemize}
 \subsubsection{/features/items/oneOf/1/temperature models/items/oneOf/1/model}
 \begin{itemize}\item {\bf default value}: 
 \item {\bf type}: string
 \item {\bf documentation}: The name of the temperature model.
-\item {\bf enum}: [adiabatic]\end{itemize}\subsubsection{/features/items/oneOf/1/temperature models/items/oneOf/1/min depth}
+\item {\bf enum}: [adiabatic]\end{itemize}\subsubsection{/features/items/oneOf/1/temperature models/items/oneOf/1/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or subtract the value to the previously define value (subtract).
+\item {\bf enum}: [replace, add, subtract]\end{itemize}\subsubsection{/features/items/oneOf/1/temperature models/items/oneOf/1/min depth}
 \begin{itemize}\item {\bf default value}: 0.0
 \item {\bf type}: number
 \item {\bf documentation}: The depth in meters from which the temperature of this feature is present.
@@ -154,11 +158,7 @@
 \begin{itemize}\item {\bf default value}: -1.0
 \item {\bf type}: number
 \item {\bf documentation}: The specific heat in $J kg^{-1} K^{-1}$. If the value is lower then zero, the global value is used.
-\end{itemize}\subsubsection{/features/items/oneOf/1/temperature models/items/oneOf/1/operation}
-\begin{itemize}\item {\bf default value}: replace
-\item {\bf type}: string
-\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or substract the value to the previously define value (substract).
-\item {\bf enum}: [replace, add, substract]\end{itemize}\subsubsection{/features/items/oneOf/1/temperature models/items/oneOf/2}
+\end{itemize}\subsubsection{/features/items/oneOf/1/temperature models/items/oneOf/2}
 \begin{itemize}\item {\bf type}: object
 \item {\bf documentation}: Temperature model object
 \item {\bf additionalProperties}: false
@@ -167,7 +167,11 @@
 \begin{itemize}\item {\bf default value}: 
 \item {\bf type}: string
 \item {\bf documentation}: The name of the temperature model.
-\item {\bf enum}: [linear]\end{itemize}\subsubsection{/features/items/oneOf/1/temperature models/items/oneOf/2/min depth}
+\item {\bf enum}: [linear]\end{itemize}\subsubsection{/features/items/oneOf/1/temperature models/items/oneOf/2/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or subtract the value to the previously define value (subtract).
+\item {\bf enum}: [replace, add, subtract]\end{itemize}\subsubsection{/features/items/oneOf/1/temperature models/items/oneOf/2/min depth}
 \begin{itemize}\item {\bf default value}: 0.0
 \item {\bf type}: number
 \item {\bf documentation}: The depth in meters from which the temperature of this feature is present.
@@ -183,10 +187,6 @@
 \begin{itemize}\item {\bf default value}: -1.0
 \item {\bf type}: number
 \item {\bf documentation}: The temperature at the top in degree Kelvin of this feature. If the value is below zero, an adiabatic temperature is used.
-\end{itemize}\subsubsection{/features/items/oneOf/1/temperature models/items/oneOf/2/operation}
-\begin{itemize}\item {\bf default value}: replace
-\item {\bf type}: string
-\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value (add).
 \end{itemize}\subsubsection{/features/items/oneOf/1/temperature models/items/oneOf/3}
 \begin{itemize}\item {\bf type}: object
 \item {\bf documentation}: Temperature model object
@@ -196,7 +196,11 @@
 \begin{itemize}\item {\bf default value}: 
 \item {\bf type}: string
 \item {\bf documentation}: The name of the temperature model.
-\item {\bf enum}: [uniform]\end{itemize}\subsubsection{/features/items/oneOf/1/temperature models/items/oneOf/3/min depth}
+\item {\bf enum}: [uniform]\end{itemize}\subsubsection{/features/items/oneOf/1/temperature models/items/oneOf/3/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or subtract the value to the previously define value (subtract).
+\item {\bf enum}: [replace, add, subtract]\end{itemize}\subsubsection{/features/items/oneOf/1/temperature models/items/oneOf/3/min depth}
 \begin{itemize}\item {\bf default value}: 0.0
 \item {\bf type}: number
 \item {\bf documentation}: The depth in meters from which the temperature of this feature is present.
@@ -208,11 +212,7 @@
 \begin{itemize}\item {\bf default value}: 293.15
 \item {\bf type}: number
 \item {\bf documentation}: The temperature in degree Kelvin which this feature should have
-\end{itemize}\subsubsection{/features/items/oneOf/1/temperature models/items/oneOf/3/operation}
-\begin{itemize}\item {\bf default value}: replace
-\item {\bf type}: string
-\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or substract the value to the previously define value (substract).
-\item {\bf enum}: [replace, add, substract]\end{itemize}\subsection{/features/items/oneOf/1/composition models}
+\end{itemize}\subsection{/features/items/oneOf/1/composition models}
 \begin{itemize}\item {\bf documentation}: A list of composition models.
 \item {\bf default value}: 
 \item {\bf type}: array
@@ -259,7 +259,143 @@
 \begin{itemize}\item {\bf default value}: replace
 \item {\bf type}: string
 \item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value (add, not implemented). Replacing implies that all values not explicitly defined are set to zero.
-\item {\bf enum}: [replace]\end{itemize}\subsection{/features/items/oneOf/2}
+\item {\bf enum}: [replace]\end{itemize}\subsection{/features/items/oneOf/1/grains models}
+\begin{itemize}\item {\bf documentation}: A list of grains models.
+\item {\bf default value}: 
+\item {\bf type}: array
+\end{itemize}\subsection{/features/items/oneOf/1/grains models/items}
+
+\subsubsection{/features/items/oneOf/1/grains models/items/oneOf/1}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: random uniform distribution grains model object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model, compositions]\end{itemize}
+\subsubsection{/features/items/oneOf/1/grains models/items/oneOf/1/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the grains model.
+\item {\bf enum}: [random uniform distribution]\end{itemize}\subsubsection{/features/items/oneOf/1/grains models/items/oneOf/1/min depth}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: The depth in meters from which the composition of this feature is present.
+\end{itemize}\subsubsection{/features/items/oneOf/1/grains models/items/oneOf/1/max depth}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: The depth in meters to which the composition of this feature is present.
+\end{itemize}\subsubsection{/features/items/oneOf/1/grains models/items/oneOf/1/compositions}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list with the integer labels of the composition which are present there.
+\end{itemize}\subsubsection{/features/items/oneOf/1/grains models/items/oneOf/1/compositions/items}
+\begin{itemize}\item {\bf default value}: 0
+\item {\bf type}: integer
+\item {\bf documentation}: 
+\end{itemize}\subsubsection{/features/items/oneOf/1/grains models/items/oneOf/1/orientation operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value (add, not implemented). Replacing implies that all values not explicitly defined are set to zero.
+\item {\bf enum}: [replace]\end{itemize}\subsubsection{/features/items/oneOf/1/grains models/items/oneOf/1/grain sizes}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list of the size of all of the grains in each composition. If set to <0, the size will be randomized between 0 and 1.
+\end{itemize}\subsubsection{/features/items/oneOf/1/grains models/items/oneOf/1/grain sizes/items}
+\begin{itemize}\item {\bf default value}: 1.0
+\item {\bf type}: number
+\item {\bf documentation}: 
+\end{itemize}\subsubsection{/features/items/oneOf/1/grains models/items/oneOf/1/normalize grain sizes}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list of whether the sizes of the grains should be normalized or not. If normalized, the total of the grains of a composition will be equal to 1.
+\end{itemize}\subsubsection{/features/items/oneOf/1/grains models/items/oneOf/1/normalize grain sizes/items}
+\begin{itemize}\item {\bf default value}: true
+\item {\bf type}: boolean
+\item {\bf documentation}: 
+\end{itemize}\subsubsection{/features/items/oneOf/1/grains models/items/oneOf/2}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: Uniform grains model object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model, compositions]\end{itemize}
+\subsubsection{/features/items/oneOf/1/grains models/items/oneOf/2/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the grains model.
+\item {\bf enum}: [uniform]\end{itemize}\subsubsection{/features/items/oneOf/1/grains models/items/oneOf/2/min depth}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: The depth in meters from which the composition of this feature is present.
+\end{itemize}\subsubsection{/features/items/oneOf/1/grains models/items/oneOf/2/max depth}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: The depth in meters to which the composition of this feature is present.
+\end{itemize}\subsubsection{/features/items/oneOf/1/grains models/items/oneOf/2/compositions}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list with the integer labels of the composition which are present there.
+\end{itemize}\subsubsection{/features/items/oneOf/1/grains models/items/oneOf/2/compositions/items}
+\begin{itemize}\item {\bf default value}: 0
+\item {\bf type}: integer
+\item {\bf documentation}: 
+\end{itemize}\subsubsection{/features/items/oneOf/1/grains models/items/oneOf/2/rotation matrices}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list with the rotation matrices of the grains which are present there for each compositions.
+\end{itemize}\subsubsection{/features/items/oneOf/1/grains models/items/oneOf/2/rotation matrices/items}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 3
+\item {\bf maxItems}: 3
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/1/grains models/items/oneOf/2/rotation matrices/items/items}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 3
+\item {\bf maxItems}: 3
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/1/grains models/items/oneOf/2/rotation matrices/items/items/items}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: 
+\end{itemize}\subsubsection{/features/items/oneOf/1/grains models/items/oneOf/2/Euler angles z-x-z}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list with the z-x-z Euler angles of the grains which are present there for each compositions.
+\end{itemize}\subsubsection{/features/items/oneOf/1/grains models/items/oneOf/2/Euler angles z-x-z/items}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 3
+\item {\bf maxItems}: 3
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/1/grains models/items/oneOf/2/Euler angles z-x-z/items/items}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: 
+\end{itemize}\subsubsection{/features/items/oneOf/1/grains models/items/oneOf/2/orientation operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value (add, not implemented). Replacing implies that all values not explicitly defined are set to zero.
+\item {\bf enum}: [replace, multiply]\end{itemize}\subsubsection{/features/items/oneOf/1/grains models/items/oneOf/2/grain sizes}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list of the size of all of the grains in each composition. If set to <0, the size will be set so that the total is equal to 1.
+\end{itemize}\subsubsection{/features/items/oneOf/1/grains models/items/oneOf/2/grain sizes/items}
+\begin{itemize}\item {\bf default value}: -1.0
+\item {\bf type}: number
+\item {\bf documentation}: 
+\end{itemize}\subsection{/features/items/oneOf/2}
 \begin{itemize}\item {\bf type}: object
 \item {\bf documentation}: feature object
 \item {\bf additionalProperties}: false
@@ -339,14 +475,18 @@
 
 \subsubsection{/features/items/oneOf/2/segments/items/temperature models/items/oneOf/1}
 \begin{itemize}\item {\bf type}: object
-\item {\bf documentation}: Temperature object
+\item {\bf documentation}: temperature object
 \item {\bf additionalProperties}: false
 \item {\bf required}: [model]\end{itemize}
 \paragraph{/features/items/oneOf/2/segments/items/temperature models/items/oneOf/1/model}
 \begin{itemize}\item {\bf default value}: 
 \item {\bf type}: string
 \item {\bf documentation}: The name of the temperature model.
-\item {\bf enum}: [adiabatic]\end{itemize}\paragraph{/features/items/oneOf/2/segments/items/temperature models/items/oneOf/1/min distance fault center}
+\item {\bf enum}: [adiabatic]\end{itemize}\paragraph{/features/items/oneOf/2/segments/items/temperature models/items/oneOf/1/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or subtract the value to the previously define value (subtract).
+\item {\bf enum}: [replace, add, subtract]\end{itemize}\paragraph{/features/items/oneOf/2/segments/items/temperature models/items/oneOf/1/min distance fault center}
 \begin{itemize}\item {\bf default value}: 0.0
 \item {\bf type}: number
 \item {\bf documentation}: todo The depth in meters from which the composition of this feature is present.
@@ -366,11 +506,7 @@
 \begin{itemize}\item {\bf default value}: -1.0
 \item {\bf type}: number
 \item {\bf documentation}: The specific heat in $J kg^{-1} K^{-1}$. If the value is lower then zero, the global value is used.
-\end{itemize}\paragraph{/features/items/oneOf/2/segments/items/temperature models/items/oneOf/1/operation}
-\begin{itemize}\item {\bf default value}: replace
-\item {\bf type}: string
-\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or substract the value to the previously define value (substract).
-\item {\bf enum}: [replace, add, substract]\end{itemize}\subsubsection{/features/items/oneOf/2/segments/items/temperature models/items/oneOf/2}
+\end{itemize}\subsubsection{/features/items/oneOf/2/segments/items/temperature models/items/oneOf/2}
 \begin{itemize}\item {\bf type}: object
 \item {\bf documentation}: Temperature model object
 \item {\bf additionalProperties}: false
@@ -379,7 +515,11 @@
 \begin{itemize}\item {\bf default value}: 
 \item {\bf type}: string
 \item {\bf documentation}: The name of the temperature model.
-\item {\bf enum}: [linear]\end{itemize}\paragraph{/features/items/oneOf/2/segments/items/temperature models/items/oneOf/2/min distance fault center}
+\item {\bf enum}: [linear]\end{itemize}\paragraph{/features/items/oneOf/2/segments/items/temperature models/items/oneOf/2/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or subtract the value to the previously define value (subtract).
+\item {\bf enum}: [replace, add, subtract]\end{itemize}\paragraph{/features/items/oneOf/2/segments/items/temperature models/items/oneOf/2/min distance fault center}
 \begin{itemize}\item {\bf default value}: 0.0
 \item {\bf type}: number
 \item {\bf documentation}: The minimum distance to the center of the fault. This determines where the linear temperature starts.
@@ -395,10 +535,6 @@
 \begin{itemize}\item {\bf default value}: -1.0
 \item {\bf type}: number
 \item {\bf documentation}: The temperature at the top in degree Kelvin of this feature. If the value is below zero, an adiabatic temperature is used.
-\end{itemize}\paragraph{/features/items/oneOf/2/segments/items/temperature models/items/oneOf/2/operation}
-\begin{itemize}\item {\bf default value}: replace
-\item {\bf type}: string
-\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value (add).
 \end{itemize}\subsubsection{/features/items/oneOf/2/segments/items/temperature models/items/oneOf/3}
 \begin{itemize}\item {\bf type}: object
 \item {\bf documentation}: Temperature model object
@@ -408,7 +544,11 @@
 \begin{itemize}\item {\bf default value}: 
 \item {\bf type}: string
 \item {\bf documentation}: The name of the temperature model.
-\item {\bf enum}: [uniform]\end{itemize}\paragraph{/features/items/oneOf/2/segments/items/temperature models/items/oneOf/3/min distance fault center}
+\item {\bf enum}: [uniform]\end{itemize}\paragraph{/features/items/oneOf/2/segments/items/temperature models/items/oneOf/3/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or subtract the value to the previously define value (subtract).
+\item {\bf enum}: [replace, add, subtract]\end{itemize}\paragraph{/features/items/oneOf/2/segments/items/temperature models/items/oneOf/3/min distance fault center}
 \begin{itemize}\item {\bf default value}: 0.0
 \item {\bf type}: number
 \item {\bf documentation}: todo The depth in meters from which the composition of this feature is present.
@@ -420,11 +560,7 @@
 \begin{itemize}\item {\bf default value}: 293.15
 \item {\bf type}: number
 \item {\bf documentation}: The temperature in degree Kelvin which this feature should have
-\end{itemize}\paragraph{/features/items/oneOf/2/segments/items/temperature models/items/oneOf/3/operation}
-\begin{itemize}\item {\bf default value}: replace
-\item {\bf type}: string
-\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or substract the value to the previously define value (substract).
-\item {\bf enum}: [replace, add, substract]\end{itemize}\subsubsection{/features/items/oneOf/2/segments/items/composition models}
+\end{itemize}\subsubsection{/features/items/oneOf/2/segments/items/composition models}
 \begin{itemize}\item {\bf documentation}: 
 \item {\bf default value}: 
 \item {\bf type}: array
@@ -471,7 +607,143 @@
 \begin{itemize}\item {\bf default value}: replace
 \item {\bf type}: string
 \item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value (add, not implemented). Replacing implies that all values not explicitly defined are set to zero.
-\item {\bf enum}: [replace]\end{itemize}\subsection{/features/items/oneOf/2/temperature models}
+\item {\bf enum}: [replace]\end{itemize}\subsubsection{/features/items/oneOf/2/segments/items/grains models}
+\begin{itemize}\item {\bf documentation}: 
+\item {\bf default value}: 
+\item {\bf type}: array
+\end{itemize}\subsubsection{/features/items/oneOf/2/segments/items/grains models/items}
+
+\subsubsection{/features/items/oneOf/2/segments/items/grains models/items/oneOf/1}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: random uniform distribution grains model object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model, compositions]\end{itemize}
+\paragraph{/features/items/oneOf/2/segments/items/grains models/items/oneOf/1/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the grains model.
+\item {\bf enum}: [random uniform distribution]\end{itemize}\paragraph{/features/items/oneOf/2/segments/items/grains models/items/oneOf/1/min distance fault center}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: The distance from the fault center in meters from which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/2/segments/items/grains models/items/oneOf/1/max distance fault center}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: The distance from the fault in meters to which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/2/segments/items/grains models/items/oneOf/1/compositions}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list with the integer labels of the composition which are present there.
+\end{itemize}\paragraph{/features/items/oneOf/2/segments/items/grains models/items/oneOf/1/compositions/items}
+\begin{itemize}\item {\bf default value}: 0
+\item {\bf type}: integer
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/2/segments/items/grains models/items/oneOf/1/orientation operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value (add, not implemented). Replacing implies that all values not explicitly defined are set to zero.
+\item {\bf enum}: [replace]\end{itemize}\paragraph{/features/items/oneOf/2/segments/items/grains models/items/oneOf/1/grain sizes}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list of the size of all of the grains in each composition. If set to <0, the size will be randomized between 0 and 1.
+\end{itemize}\paragraph{/features/items/oneOf/2/segments/items/grains models/items/oneOf/1/grain sizes/items}
+\begin{itemize}\item {\bf default value}: 1.0
+\item {\bf type}: number
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/2/segments/items/grains models/items/oneOf/1/normalize grain sizes}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list of whether the sizes of the grains should be normalized or not. If normalized, the total of the grains of a composition will be equal to 1.
+\end{itemize}\paragraph{/features/items/oneOf/2/segments/items/grains models/items/oneOf/1/normalize grain sizes/items}
+\begin{itemize}\item {\bf default value}: true
+\item {\bf type}: boolean
+\item {\bf documentation}: 
+\end{itemize}\subsubsection{/features/items/oneOf/2/segments/items/grains models/items/oneOf/2}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: Uniform grains model object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model, compositions]\end{itemize}
+\paragraph{/features/items/oneOf/2/segments/items/grains models/items/oneOf/2/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the grains model.
+\item {\bf enum}: [uniform]\end{itemize}\paragraph{/features/items/oneOf/2/segments/items/grains models/items/oneOf/2/min distance fault center}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: The distance from the fault center in meters from which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/2/segments/items/grains models/items/oneOf/2/max distance fault center}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: The distance from the fault in meters to which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/2/segments/items/grains models/items/oneOf/2/compositions}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list with the integer labels of the composition which are present there.
+\end{itemize}\paragraph{/features/items/oneOf/2/segments/items/grains models/items/oneOf/2/compositions/items}
+\begin{itemize}\item {\bf default value}: 0
+\item {\bf type}: integer
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/2/segments/items/grains models/items/oneOf/2/rotation matrices}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list with the labels of the grains which are present there for each compositions.
+\end{itemize}\paragraph{/features/items/oneOf/2/segments/items/grains models/items/oneOf/2/rotation matrices/items}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 3
+\item {\bf maxItems}: 3
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/2/segments/items/grains models/items/oneOf/2/rotation matrices/items/items}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 3
+\item {\bf maxItems}: 3
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/2/segments/items/grains models/items/oneOf/2/rotation matrices/items/items/items}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/2/segments/items/grains models/items/oneOf/2/Euler angles z-x-z}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list with the z-x-z Euler angles of the grains which are present there for each compositions.
+\end{itemize}\paragraph{/features/items/oneOf/2/segments/items/grains models/items/oneOf/2/Euler angles z-x-z/items}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 3
+\item {\bf maxItems}: 3
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/2/segments/items/grains models/items/oneOf/2/Euler angles z-x-z/items/items}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/2/segments/items/grains models/items/oneOf/2/orientation operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value (add, not implemented). Replacing implies that all values not explicitly defined are set to zero.
+\item {\bf enum}: [replace]\end{itemize}\paragraph{/features/items/oneOf/2/segments/items/grains models/items/oneOf/2/grain sizes}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list of the size of all of the grains in each composition. If set to <0, the size will be set so that the total is equal to 1.
+\end{itemize}\paragraph{/features/items/oneOf/2/segments/items/grains models/items/oneOf/2/grain sizes/items}
+\begin{itemize}\item {\bf default value}: -1.0
+\item {\bf type}: number
+\item {\bf documentation}: 
+\end{itemize}\subsection{/features/items/oneOf/2/temperature models}
 \begin{itemize}\item {\bf documentation}: A list of temperature models.
 \item {\bf default value}: 
 \item {\bf type}: array
@@ -479,14 +751,18 @@
 
 \subsubsection{/features/items/oneOf/2/temperature models/items/oneOf/1}
 \begin{itemize}\item {\bf type}: object
-\item {\bf documentation}: Temperature object
+\item {\bf documentation}: temperature object
 \item {\bf additionalProperties}: false
 \item {\bf required}: [model]\end{itemize}
 \subsubsection{/features/items/oneOf/2/temperature models/items/oneOf/1/model}
 \begin{itemize}\item {\bf default value}: 
 \item {\bf type}: string
 \item {\bf documentation}: The name of the temperature model.
-\item {\bf enum}: [adiabatic]\end{itemize}\subsubsection{/features/items/oneOf/2/temperature models/items/oneOf/1/min distance fault center}
+\item {\bf enum}: [adiabatic]\end{itemize}\subsubsection{/features/items/oneOf/2/temperature models/items/oneOf/1/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or subtract the value to the previously define value (subtract).
+\item {\bf enum}: [replace, add, subtract]\end{itemize}\subsubsection{/features/items/oneOf/2/temperature models/items/oneOf/1/min distance fault center}
 \begin{itemize}\item {\bf default value}: 0.0
 \item {\bf type}: number
 \item {\bf documentation}: todo The depth in meters from which the composition of this feature is present.
@@ -506,11 +782,7 @@
 \begin{itemize}\item {\bf default value}: -1.0
 \item {\bf type}: number
 \item {\bf documentation}: The specific heat in $J kg^{-1} K^{-1}$. If the value is lower then zero, the global value is used.
-\end{itemize}\subsubsection{/features/items/oneOf/2/temperature models/items/oneOf/1/operation}
-\begin{itemize}\item {\bf default value}: replace
-\item {\bf type}: string
-\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or substract the value to the previously define value (substract).
-\item {\bf enum}: [replace, add, substract]\end{itemize}\subsubsection{/features/items/oneOf/2/temperature models/items/oneOf/2}
+\end{itemize}\subsubsection{/features/items/oneOf/2/temperature models/items/oneOf/2}
 \begin{itemize}\item {\bf type}: object
 \item {\bf documentation}: Temperature model object
 \item {\bf additionalProperties}: false
@@ -519,7 +791,11 @@
 \begin{itemize}\item {\bf default value}: 
 \item {\bf type}: string
 \item {\bf documentation}: The name of the temperature model.
-\item {\bf enum}: [linear]\end{itemize}\subsubsection{/features/items/oneOf/2/temperature models/items/oneOf/2/min distance fault center}
+\item {\bf enum}: [linear]\end{itemize}\subsubsection{/features/items/oneOf/2/temperature models/items/oneOf/2/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or subtract the value to the previously define value (subtract).
+\item {\bf enum}: [replace, add, subtract]\end{itemize}\subsubsection{/features/items/oneOf/2/temperature models/items/oneOf/2/min distance fault center}
 \begin{itemize}\item {\bf default value}: 0.0
 \item {\bf type}: number
 \item {\bf documentation}: The minimum distance to the center of the fault. This determines where the linear temperature starts.
@@ -535,10 +811,6 @@
 \begin{itemize}\item {\bf default value}: -1.0
 \item {\bf type}: number
 \item {\bf documentation}: The temperature at the top in degree Kelvin of this feature. If the value is below zero, an adiabatic temperature is used.
-\end{itemize}\subsubsection{/features/items/oneOf/2/temperature models/items/oneOf/2/operation}
-\begin{itemize}\item {\bf default value}: replace
-\item {\bf type}: string
-\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value (add).
 \end{itemize}\subsubsection{/features/items/oneOf/2/temperature models/items/oneOf/3}
 \begin{itemize}\item {\bf type}: object
 \item {\bf documentation}: Temperature model object
@@ -548,7 +820,11 @@
 \begin{itemize}\item {\bf default value}: 
 \item {\bf type}: string
 \item {\bf documentation}: The name of the temperature model.
-\item {\bf enum}: [uniform]\end{itemize}\subsubsection{/features/items/oneOf/2/temperature models/items/oneOf/3/min distance fault center}
+\item {\bf enum}: [uniform]\end{itemize}\subsubsection{/features/items/oneOf/2/temperature models/items/oneOf/3/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or subtract the value to the previously define value (subtract).
+\item {\bf enum}: [replace, add, subtract]\end{itemize}\subsubsection{/features/items/oneOf/2/temperature models/items/oneOf/3/min distance fault center}
 \begin{itemize}\item {\bf default value}: 0.0
 \item {\bf type}: number
 \item {\bf documentation}: todo The depth in meters from which the composition of this feature is present.
@@ -560,11 +836,7 @@
 \begin{itemize}\item {\bf default value}: 293.15
 \item {\bf type}: number
 \item {\bf documentation}: The temperature in degree Kelvin which this feature should have
-\end{itemize}\subsubsection{/features/items/oneOf/2/temperature models/items/oneOf/3/operation}
-\begin{itemize}\item {\bf default value}: replace
-\item {\bf type}: string
-\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or substract the value to the previously define value (substract).
-\item {\bf enum}: [replace, add, substract]\end{itemize}\subsection{/features/items/oneOf/2/composition models}
+\end{itemize}\subsection{/features/items/oneOf/2/composition models}
 \begin{itemize}\item {\bf documentation}: A list of composition models.
 \item {\bf default value}: 
 \item {\bf type}: array
@@ -611,7 +883,143 @@
 \begin{itemize}\item {\bf default value}: replace
 \item {\bf type}: string
 \item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value (add, not implemented). Replacing implies that all values not explicitly defined are set to zero.
-\item {\bf enum}: [replace]\end{itemize}\subsection{/features/items/oneOf/2/sections}
+\item {\bf enum}: [replace]\end{itemize}\subsection{/features/items/oneOf/2/grains models}
+\begin{itemize}\item {\bf documentation}: A list of grains models.
+\item {\bf default value}: 
+\item {\bf type}: array
+\end{itemize}\subsection{/features/items/oneOf/2/grains models/items}
+
+\subsubsection{/features/items/oneOf/2/grains models/items/oneOf/1}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: random uniform distribution grains model object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model, compositions]\end{itemize}
+\subsubsection{/features/items/oneOf/2/grains models/items/oneOf/1/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the grains model.
+\item {\bf enum}: [random uniform distribution]\end{itemize}\subsubsection{/features/items/oneOf/2/grains models/items/oneOf/1/min distance fault center}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: The distance from the fault center in meters from which the composition of this feature is present.
+\end{itemize}\subsubsection{/features/items/oneOf/2/grains models/items/oneOf/1/max distance fault center}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: The distance from the fault in meters to which the composition of this feature is present.
+\end{itemize}\subsubsection{/features/items/oneOf/2/grains models/items/oneOf/1/compositions}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list with the integer labels of the composition which are present there.
+\end{itemize}\subsubsection{/features/items/oneOf/2/grains models/items/oneOf/1/compositions/items}
+\begin{itemize}\item {\bf default value}: 0
+\item {\bf type}: integer
+\item {\bf documentation}: 
+\end{itemize}\subsubsection{/features/items/oneOf/2/grains models/items/oneOf/1/orientation operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value (add, not implemented). Replacing implies that all values not explicitly defined are set to zero.
+\item {\bf enum}: [replace]\end{itemize}\subsubsection{/features/items/oneOf/2/grains models/items/oneOf/1/grain sizes}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list of the size of all of the grains in each composition. If set to <0, the size will be randomized between 0 and 1.
+\end{itemize}\subsubsection{/features/items/oneOf/2/grains models/items/oneOf/1/grain sizes/items}
+\begin{itemize}\item {\bf default value}: 1.0
+\item {\bf type}: number
+\item {\bf documentation}: 
+\end{itemize}\subsubsection{/features/items/oneOf/2/grains models/items/oneOf/1/normalize grain sizes}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list of whether the sizes of the grains should be normalized or not. If normalized, the total of the grains of a composition will be equal to 1.
+\end{itemize}\subsubsection{/features/items/oneOf/2/grains models/items/oneOf/1/normalize grain sizes/items}
+\begin{itemize}\item {\bf default value}: true
+\item {\bf type}: boolean
+\item {\bf documentation}: 
+\end{itemize}\subsubsection{/features/items/oneOf/2/grains models/items/oneOf/2}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: Uniform grains model object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model, compositions]\end{itemize}
+\subsubsection{/features/items/oneOf/2/grains models/items/oneOf/2/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the grains model.
+\item {\bf enum}: [uniform]\end{itemize}\subsubsection{/features/items/oneOf/2/grains models/items/oneOf/2/min distance fault center}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: The distance from the fault center in meters from which the composition of this feature is present.
+\end{itemize}\subsubsection{/features/items/oneOf/2/grains models/items/oneOf/2/max distance fault center}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: The distance from the fault in meters to which the composition of this feature is present.
+\end{itemize}\subsubsection{/features/items/oneOf/2/grains models/items/oneOf/2/compositions}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list with the integer labels of the composition which are present there.
+\end{itemize}\subsubsection{/features/items/oneOf/2/grains models/items/oneOf/2/compositions/items}
+\begin{itemize}\item {\bf default value}: 0
+\item {\bf type}: integer
+\item {\bf documentation}: 
+\end{itemize}\subsubsection{/features/items/oneOf/2/grains models/items/oneOf/2/rotation matrices}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list with the labels of the grains which are present there for each compositions.
+\end{itemize}\subsubsection{/features/items/oneOf/2/grains models/items/oneOf/2/rotation matrices/items}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 3
+\item {\bf maxItems}: 3
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/2/grains models/items/oneOf/2/rotation matrices/items/items}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 3
+\item {\bf maxItems}: 3
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/2/grains models/items/oneOf/2/rotation matrices/items/items/items}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: 
+\end{itemize}\subsubsection{/features/items/oneOf/2/grains models/items/oneOf/2/Euler angles z-x-z}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list with the z-x-z Euler angles of the grains which are present there for each compositions.
+\end{itemize}\subsubsection{/features/items/oneOf/2/grains models/items/oneOf/2/Euler angles z-x-z/items}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 3
+\item {\bf maxItems}: 3
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/2/grains models/items/oneOf/2/Euler angles z-x-z/items/items}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: 
+\end{itemize}\subsubsection{/features/items/oneOf/2/grains models/items/oneOf/2/orientation operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value (add, not implemented). Replacing implies that all values not explicitly defined are set to zero.
+\item {\bf enum}: [replace]\end{itemize}\subsubsection{/features/items/oneOf/2/grains models/items/oneOf/2/grain sizes}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list of the size of all of the grains in each composition. If set to <0, the size will be set so that the total is equal to 1.
+\end{itemize}\subsubsection{/features/items/oneOf/2/grains models/items/oneOf/2/grain sizes/items}
+\begin{itemize}\item {\bf default value}: -1.0
+\item {\bf type}: number
+\item {\bf documentation}: 
+\end{itemize}\subsection{/features/items/oneOf/2/sections}
 \begin{itemize}\item {\bf type}: array
 \item {\bf minItems}: 0
 \item {\bf maxItems}: 4294967295
@@ -676,14 +1084,18 @@
 
 \paragraph{/features/items/oneOf/2/sections/items/segments/items/temperature models/items/oneOf/1}
 \begin{itemize}\item {\bf type}: object
-\item {\bf documentation}: Temperature object
+\item {\bf documentation}: temperature object
 \item {\bf additionalProperties}: false
 \item {\bf required}: [model]\end{itemize}
 \paragraph{/features/items/oneOf/2/sections/items/segments/items/temperature models/items/oneOf/1/model}
 \begin{itemize}\item {\bf default value}: 
 \item {\bf type}: string
 \item {\bf documentation}: The name of the temperature model.
-\item {\bf enum}: [adiabatic]\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/segments/items/temperature models/items/oneOf/1/min distance fault center}
+\item {\bf enum}: [adiabatic]\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/segments/items/temperature models/items/oneOf/1/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or subtract the value to the previously define value (subtract).
+\item {\bf enum}: [replace, add, subtract]\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/segments/items/temperature models/items/oneOf/1/min distance fault center}
 \begin{itemize}\item {\bf default value}: 0.0
 \item {\bf type}: number
 \item {\bf documentation}: todo The depth in meters from which the composition of this feature is present.
@@ -703,11 +1115,7 @@
 \begin{itemize}\item {\bf default value}: -1.0
 \item {\bf type}: number
 \item {\bf documentation}: The specific heat in $J kg^{-1} K^{-1}$. If the value is lower then zero, the global value is used.
-\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/segments/items/temperature models/items/oneOf/1/operation}
-\begin{itemize}\item {\bf default value}: replace
-\item {\bf type}: string
-\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or substract the value to the previously define value (substract).
-\item {\bf enum}: [replace, add, substract]\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/segments/items/temperature models/items/oneOf/2}
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/segments/items/temperature models/items/oneOf/2}
 \begin{itemize}\item {\bf type}: object
 \item {\bf documentation}: Temperature model object
 \item {\bf additionalProperties}: false
@@ -716,7 +1124,11 @@
 \begin{itemize}\item {\bf default value}: 
 \item {\bf type}: string
 \item {\bf documentation}: The name of the temperature model.
-\item {\bf enum}: [linear]\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/segments/items/temperature models/items/oneOf/2/min distance fault center}
+\item {\bf enum}: [linear]\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/segments/items/temperature models/items/oneOf/2/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or subtract the value to the previously define value (subtract).
+\item {\bf enum}: [replace, add, subtract]\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/segments/items/temperature models/items/oneOf/2/min distance fault center}
 \begin{itemize}\item {\bf default value}: 0.0
 \item {\bf type}: number
 \item {\bf documentation}: The minimum distance to the center of the fault. This determines where the linear temperature starts.
@@ -732,10 +1144,6 @@
 \begin{itemize}\item {\bf default value}: -1.0
 \item {\bf type}: number
 \item {\bf documentation}: The temperature at the top in degree Kelvin of this feature. If the value is below zero, an adiabatic temperature is used.
-\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/segments/items/temperature models/items/oneOf/2/operation}
-\begin{itemize}\item {\bf default value}: replace
-\item {\bf type}: string
-\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value (add).
 \end{itemize}\paragraph{/features/items/oneOf/2/sections/items/segments/items/temperature models/items/oneOf/3}
 \begin{itemize}\item {\bf type}: object
 \item {\bf documentation}: Temperature model object
@@ -745,7 +1153,11 @@
 \begin{itemize}\item {\bf default value}: 
 \item {\bf type}: string
 \item {\bf documentation}: The name of the temperature model.
-\item {\bf enum}: [uniform]\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/segments/items/temperature models/items/oneOf/3/min distance fault center}
+\item {\bf enum}: [uniform]\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/segments/items/temperature models/items/oneOf/3/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or subtract the value to the previously define value (subtract).
+\item {\bf enum}: [replace, add, subtract]\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/segments/items/temperature models/items/oneOf/3/min distance fault center}
 \begin{itemize}\item {\bf default value}: 0.0
 \item {\bf type}: number
 \item {\bf documentation}: todo The depth in meters from which the composition of this feature is present.
@@ -757,11 +1169,7 @@
 \begin{itemize}\item {\bf default value}: 293.15
 \item {\bf type}: number
 \item {\bf documentation}: The temperature in degree Kelvin which this feature should have
-\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/segments/items/temperature models/items/oneOf/3/operation}
-\begin{itemize}\item {\bf default value}: replace
-\item {\bf type}: string
-\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or substract the value to the previously define value (substract).
-\item {\bf enum}: [replace, add, substract]\end{itemize}\subsubsection{/features/items/oneOf/2/sections/items/segments/items/composition models}
+\end{itemize}\subsubsection{/features/items/oneOf/2/sections/items/segments/items/composition models}
 \begin{itemize}\item {\bf documentation}: 
 \item {\bf default value}: 
 \item {\bf type}: array
@@ -808,7 +1216,143 @@
 \begin{itemize}\item {\bf default value}: replace
 \item {\bf type}: string
 \item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value (add, not implemented). Replacing implies that all values not explicitly defined are set to zero.
-\item {\bf enum}: [replace]\end{itemize}\subsubsection{/features/items/oneOf/2/sections/items/temperature models}
+\item {\bf enum}: [replace]\end{itemize}\subsubsection{/features/items/oneOf/2/sections/items/segments/items/grains models}
+\begin{itemize}\item {\bf documentation}: 
+\item {\bf default value}: 
+\item {\bf type}: array
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/segments/items/grains models/items}
+
+\paragraph{/features/items/oneOf/2/sections/items/segments/items/grains models/items/oneOf/1}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: random uniform distribution grains model object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model, compositions]\end{itemize}
+\paragraph{/features/items/oneOf/2/sections/items/segments/items/grains models/items/oneOf/1/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the grains model.
+\item {\bf enum}: [random uniform distribution]\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/segments/items/grains models/items/oneOf/1/min distance fault center}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: The distance from the fault center in meters from which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/segments/items/grains models/items/oneOf/1/max distance fault center}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: The distance from the fault in meters to which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/segments/items/grains models/items/oneOf/1/compositions}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list with the integer labels of the composition which are present there.
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/segments/items/grains models/items/oneOf/1/compositions/items}
+\begin{itemize}\item {\bf default value}: 0
+\item {\bf type}: integer
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/segments/items/grains models/items/oneOf/1/orientation operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value (add, not implemented). Replacing implies that all values not explicitly defined are set to zero.
+\item {\bf enum}: [replace]\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/segments/items/grains models/items/oneOf/1/grain sizes}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list of the size of all of the grains in each composition. If set to <0, the size will be randomized between 0 and 1.
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/segments/items/grains models/items/oneOf/1/grain sizes/items}
+\begin{itemize}\item {\bf default value}: 1.0
+\item {\bf type}: number
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/segments/items/grains models/items/oneOf/1/normalize grain sizes}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list of whether the sizes of the grains should be normalized or not. If normalized, the total of the grains of a composition will be equal to 1.
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/segments/items/grains models/items/oneOf/1/normalize grain sizes/items}
+\begin{itemize}\item {\bf default value}: true
+\item {\bf type}: boolean
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/segments/items/grains models/items/oneOf/2}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: Uniform grains model object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model, compositions]\end{itemize}
+\paragraph{/features/items/oneOf/2/sections/items/segments/items/grains models/items/oneOf/2/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the grains model.
+\item {\bf enum}: [uniform]\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/segments/items/grains models/items/oneOf/2/min distance fault center}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: The distance from the fault center in meters from which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/segments/items/grains models/items/oneOf/2/max distance fault center}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: The distance from the fault in meters to which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/segments/items/grains models/items/oneOf/2/compositions}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list with the integer labels of the composition which are present there.
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/segments/items/grains models/items/oneOf/2/compositions/items}
+\begin{itemize}\item {\bf default value}: 0
+\item {\bf type}: integer
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/segments/items/grains models/items/oneOf/2/rotation matrices}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list with the labels of the grains which are present there for each compositions.
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/segments/items/grains models/items/oneOf/2/rotation matrices/items}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 3
+\item {\bf maxItems}: 3
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/segments/items/grains models/items/oneOf/2/rotation matrices/items/items}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 3
+\item {\bf maxItems}: 3
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/segments/items/grains models/items/oneOf/2/rotation matrices/items/items/items}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/segments/items/grains models/items/oneOf/2/Euler angles z-x-z}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list with the z-x-z Euler angles of the grains which are present there for each compositions.
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/segments/items/grains models/items/oneOf/2/Euler angles z-x-z/items}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 3
+\item {\bf maxItems}: 3
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/segments/items/grains models/items/oneOf/2/Euler angles z-x-z/items/items}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/segments/items/grains models/items/oneOf/2/orientation operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value (add, not implemented). Replacing implies that all values not explicitly defined are set to zero.
+\item {\bf enum}: [replace]\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/segments/items/grains models/items/oneOf/2/grain sizes}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list of the size of all of the grains in each composition. If set to <0, the size will be set so that the total is equal to 1.
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/segments/items/grains models/items/oneOf/2/grain sizes/items}
+\begin{itemize}\item {\bf default value}: -1.0
+\item {\bf type}: number
+\item {\bf documentation}: 
+\end{itemize}\subsubsection{/features/items/oneOf/2/sections/items/temperature models}
 \begin{itemize}\item {\bf documentation}: A list of temperature models.
 \item {\bf default value}: 
 \item {\bf type}: array
@@ -816,14 +1360,18 @@
 
 \subsubsection{/features/items/oneOf/2/sections/items/temperature models/items/oneOf/1}
 \begin{itemize}\item {\bf type}: object
-\item {\bf documentation}: Temperature object
+\item {\bf documentation}: temperature object
 \item {\bf additionalProperties}: false
 \item {\bf required}: [model]\end{itemize}
 \paragraph{/features/items/oneOf/2/sections/items/temperature models/items/oneOf/1/model}
 \begin{itemize}\item {\bf default value}: 
 \item {\bf type}: string
 \item {\bf documentation}: The name of the temperature model.
-\item {\bf enum}: [adiabatic]\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/temperature models/items/oneOf/1/min distance fault center}
+\item {\bf enum}: [adiabatic]\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/temperature models/items/oneOf/1/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or subtract the value to the previously define value (subtract).
+\item {\bf enum}: [replace, add, subtract]\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/temperature models/items/oneOf/1/min distance fault center}
 \begin{itemize}\item {\bf default value}: 0.0
 \item {\bf type}: number
 \item {\bf documentation}: todo The depth in meters from which the composition of this feature is present.
@@ -843,11 +1391,7 @@
 \begin{itemize}\item {\bf default value}: -1.0
 \item {\bf type}: number
 \item {\bf documentation}: The specific heat in $J kg^{-1} K^{-1}$. If the value is lower then zero, the global value is used.
-\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/temperature models/items/oneOf/1/operation}
-\begin{itemize}\item {\bf default value}: replace
-\item {\bf type}: string
-\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or substract the value to the previously define value (substract).
-\item {\bf enum}: [replace, add, substract]\end{itemize}\subsubsection{/features/items/oneOf/2/sections/items/temperature models/items/oneOf/2}
+\end{itemize}\subsubsection{/features/items/oneOf/2/sections/items/temperature models/items/oneOf/2}
 \begin{itemize}\item {\bf type}: object
 \item {\bf documentation}: Temperature model object
 \item {\bf additionalProperties}: false
@@ -856,7 +1400,11 @@
 \begin{itemize}\item {\bf default value}: 
 \item {\bf type}: string
 \item {\bf documentation}: The name of the temperature model.
-\item {\bf enum}: [linear]\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/temperature models/items/oneOf/2/min distance fault center}
+\item {\bf enum}: [linear]\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/temperature models/items/oneOf/2/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or subtract the value to the previously define value (subtract).
+\item {\bf enum}: [replace, add, subtract]\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/temperature models/items/oneOf/2/min distance fault center}
 \begin{itemize}\item {\bf default value}: 0.0
 \item {\bf type}: number
 \item {\bf documentation}: The minimum distance to the center of the fault. This determines where the linear temperature starts.
@@ -872,10 +1420,6 @@
 \begin{itemize}\item {\bf default value}: -1.0
 \item {\bf type}: number
 \item {\bf documentation}: The temperature at the top in degree Kelvin of this feature. If the value is below zero, an adiabatic temperature is used.
-\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/temperature models/items/oneOf/2/operation}
-\begin{itemize}\item {\bf default value}: replace
-\item {\bf type}: string
-\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value (add).
 \end{itemize}\subsubsection{/features/items/oneOf/2/sections/items/temperature models/items/oneOf/3}
 \begin{itemize}\item {\bf type}: object
 \item {\bf documentation}: Temperature model object
@@ -885,7 +1429,11 @@
 \begin{itemize}\item {\bf default value}: 
 \item {\bf type}: string
 \item {\bf documentation}: The name of the temperature model.
-\item {\bf enum}: [uniform]\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/temperature models/items/oneOf/3/min distance fault center}
+\item {\bf enum}: [uniform]\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/temperature models/items/oneOf/3/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or subtract the value to the previously define value (subtract).
+\item {\bf enum}: [replace, add, subtract]\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/temperature models/items/oneOf/3/min distance fault center}
 \begin{itemize}\item {\bf default value}: 0.0
 \item {\bf type}: number
 \item {\bf documentation}: todo The depth in meters from which the composition of this feature is present.
@@ -897,11 +1445,7 @@
 \begin{itemize}\item {\bf default value}: 293.15
 \item {\bf type}: number
 \item {\bf documentation}: The temperature in degree Kelvin which this feature should have
-\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/temperature models/items/oneOf/3/operation}
-\begin{itemize}\item {\bf default value}: replace
-\item {\bf type}: string
-\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or substract the value to the previously define value (substract).
-\item {\bf enum}: [replace, add, substract]\end{itemize}\subsubsection{/features/items/oneOf/2/sections/items/composition models}
+\end{itemize}\subsubsection{/features/items/oneOf/2/sections/items/composition models}
 \begin{itemize}\item {\bf documentation}: A list of composition models.
 \item {\bf default value}: 
 \item {\bf type}: array
@@ -948,7 +1492,143 @@
 \begin{itemize}\item {\bf default value}: replace
 \item {\bf type}: string
 \item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value (add, not implemented). Replacing implies that all values not explicitly defined are set to zero.
-\item {\bf enum}: [replace]\end{itemize}\subsubsection{/features/items/oneOf/2/sections/items/coordinate}
+\item {\bf enum}: [replace]\end{itemize}\subsubsection{/features/items/oneOf/2/sections/items/grains models}
+\begin{itemize}\item {\bf documentation}: A list of grains models.
+\item {\bf default value}: 
+\item {\bf type}: array
+\end{itemize}\subsubsection{/features/items/oneOf/2/sections/items/grains models/items}
+
+\subsubsection{/features/items/oneOf/2/sections/items/grains models/items/oneOf/1}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: random uniform distribution grains model object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model, compositions]\end{itemize}
+\paragraph{/features/items/oneOf/2/sections/items/grains models/items/oneOf/1/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the grains model.
+\item {\bf enum}: [random uniform distribution]\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/grains models/items/oneOf/1/min distance fault center}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: The distance from the fault center in meters from which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/grains models/items/oneOf/1/max distance fault center}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: The distance from the fault in meters to which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/grains models/items/oneOf/1/compositions}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list with the integer labels of the composition which are present there.
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/grains models/items/oneOf/1/compositions/items}
+\begin{itemize}\item {\bf default value}: 0
+\item {\bf type}: integer
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/grains models/items/oneOf/1/orientation operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value (add, not implemented). Replacing implies that all values not explicitly defined are set to zero.
+\item {\bf enum}: [replace]\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/grains models/items/oneOf/1/grain sizes}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list of the size of all of the grains in each composition. If set to <0, the size will be randomized between 0 and 1.
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/grains models/items/oneOf/1/grain sizes/items}
+\begin{itemize}\item {\bf default value}: 1.0
+\item {\bf type}: number
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/grains models/items/oneOf/1/normalize grain sizes}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list of whether the sizes of the grains should be normalized or not. If normalized, the total of the grains of a composition will be equal to 1.
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/grains models/items/oneOf/1/normalize grain sizes/items}
+\begin{itemize}\item {\bf default value}: true
+\item {\bf type}: boolean
+\item {\bf documentation}: 
+\end{itemize}\subsubsection{/features/items/oneOf/2/sections/items/grains models/items/oneOf/2}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: Uniform grains model object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model, compositions]\end{itemize}
+\paragraph{/features/items/oneOf/2/sections/items/grains models/items/oneOf/2/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the grains model.
+\item {\bf enum}: [uniform]\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/grains models/items/oneOf/2/min distance fault center}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: The distance from the fault center in meters from which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/grains models/items/oneOf/2/max distance fault center}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: The distance from the fault in meters to which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/grains models/items/oneOf/2/compositions}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list with the integer labels of the composition which are present there.
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/grains models/items/oneOf/2/compositions/items}
+\begin{itemize}\item {\bf default value}: 0
+\item {\bf type}: integer
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/grains models/items/oneOf/2/rotation matrices}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list with the labels of the grains which are present there for each compositions.
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/grains models/items/oneOf/2/rotation matrices/items}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 3
+\item {\bf maxItems}: 3
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/grains models/items/oneOf/2/rotation matrices/items/items}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 3
+\item {\bf maxItems}: 3
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/grains models/items/oneOf/2/rotation matrices/items/items/items}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/grains models/items/oneOf/2/Euler angles z-x-z}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list with the z-x-z Euler angles of the grains which are present there for each compositions.
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/grains models/items/oneOf/2/Euler angles z-x-z/items}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 3
+\item {\bf maxItems}: 3
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/grains models/items/oneOf/2/Euler angles z-x-z/items/items}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/grains models/items/oneOf/2/orientation operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value (add, not implemented). Replacing implies that all values not explicitly defined are set to zero.
+\item {\bf enum}: [replace]\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/grains models/items/oneOf/2/grain sizes}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list of the size of all of the grains in each composition. If set to <0, the size will be set so that the total is equal to 1.
+\end{itemize}\paragraph{/features/items/oneOf/2/sections/items/grains models/items/oneOf/2/grain sizes/items}
+\begin{itemize}\item {\bf default value}: -1.0
+\item {\bf type}: number
+\item {\bf documentation}: 
+\end{itemize}\subsubsection{/features/items/oneOf/2/sections/items/coordinate}
 \begin{itemize}\item {\bf default value}: 0
 \item {\bf type}: integer
 \item {\bf documentation}: The coordinate which should be overwritten
@@ -994,14 +1674,18 @@
 
 \subsubsection{/features/items/oneOf/3/temperature models/items/oneOf/1}
 \begin{itemize}\item {\bf type}: object
-\item {\bf documentation}: Temperature object
+\item {\bf documentation}: temperature object
 \item {\bf additionalProperties}: false
 \item {\bf required}: [model]\end{itemize}
 \subsubsection{/features/items/oneOf/3/temperature models/items/oneOf/1/model}
 \begin{itemize}\item {\bf default value}: 
 \item {\bf type}: string
 \item {\bf documentation}: The name of the temperature model.
-\item {\bf enum}: [adiabatic]\end{itemize}\subsubsection{/features/items/oneOf/3/temperature models/items/oneOf/1/min depth}
+\item {\bf enum}: [adiabatic]\end{itemize}\subsubsection{/features/items/oneOf/3/temperature models/items/oneOf/1/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or subtract the value to the previously define value (subtract).
+\item {\bf enum}: [replace, add, subtract]\end{itemize}\subsubsection{/features/items/oneOf/3/temperature models/items/oneOf/1/min depth}
 \begin{itemize}\item {\bf default value}: 0.0
 \item {\bf type}: number
 \item {\bf documentation}: The depth in meters from which the temperature of this feature is present.
@@ -1021,11 +1705,7 @@
 \begin{itemize}\item {\bf default value}: -1.0
 \item {\bf type}: number
 \item {\bf documentation}: The specific heat in $J kg^{-1} K^{-1}$. If the value is lower then zero, the global value is used.
-\end{itemize}\subsubsection{/features/items/oneOf/3/temperature models/items/oneOf/1/operation}
-\begin{itemize}\item {\bf default value}: replace
-\item {\bf type}: string
-\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or substract the value to the previously define value (substract).
-\item {\bf enum}: [replace, add, substract]\end{itemize}\subsubsection{/features/items/oneOf/3/temperature models/items/oneOf/2}
+\end{itemize}\subsubsection{/features/items/oneOf/3/temperature models/items/oneOf/2}
 \begin{itemize}\item {\bf type}: object
 \item {\bf documentation}: Temperature model object
 \item {\bf additionalProperties}: false
@@ -1034,7 +1714,11 @@
 \begin{itemize}\item {\bf default value}: 
 \item {\bf type}: string
 \item {\bf documentation}: The name of the temperature model.
-\item {\bf enum}: [linear]\end{itemize}\subsubsection{/features/items/oneOf/3/temperature models/items/oneOf/2/min depth}
+\item {\bf enum}: [linear]\end{itemize}\subsubsection{/features/items/oneOf/3/temperature models/items/oneOf/2/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or subtract the value to the previously define value (subtract).
+\item {\bf enum}: [replace, add, subtract]\end{itemize}\subsubsection{/features/items/oneOf/3/temperature models/items/oneOf/2/min depth}
 \begin{itemize}\item {\bf default value}: 0.0
 \item {\bf type}: number
 \item {\bf documentation}: The depth in meters from which the temperature of this feature is present.
@@ -1050,10 +1734,6 @@
 \begin{itemize}\item {\bf default value}: -1.0
 \item {\bf type}: number
 \item {\bf documentation}: The temperature at the top in degree Kelvin of this feature. If the value is below zero, an adiabatic temperature is used.
-\end{itemize}\subsubsection{/features/items/oneOf/3/temperature models/items/oneOf/2/operation}
-\begin{itemize}\item {\bf default value}: replace
-\item {\bf type}: string
-\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value (add).
 \end{itemize}\subsubsection{/features/items/oneOf/3/temperature models/items/oneOf/3}
 \begin{itemize}\item {\bf type}: object
 \item {\bf documentation}: Temperature model object
@@ -1063,7 +1743,11 @@
 \begin{itemize}\item {\bf default value}: 
 \item {\bf type}: string
 \item {\bf documentation}: The name of the temperature model.
-\item {\bf enum}: [uniform]\end{itemize}\subsubsection{/features/items/oneOf/3/temperature models/items/oneOf/3/min depth}
+\item {\bf enum}: [uniform]\end{itemize}\subsubsection{/features/items/oneOf/3/temperature models/items/oneOf/3/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or subtract the value to the previously define value (subtract).
+\item {\bf enum}: [replace, add, subtract]\end{itemize}\subsubsection{/features/items/oneOf/3/temperature models/items/oneOf/3/min depth}
 \begin{itemize}\item {\bf default value}: 0.0
 \item {\bf type}: number
 \item {\bf documentation}: The depth in meters from which the temperature of this feature is present.
@@ -1075,11 +1759,7 @@
 \begin{itemize}\item {\bf default value}: 293.15
 \item {\bf type}: number
 \item {\bf documentation}: The temperature in degree Kelvin which this feature should have
-\end{itemize}\subsubsection{/features/items/oneOf/3/temperature models/items/oneOf/3/operation}
-\begin{itemize}\item {\bf default value}: replace
-\item {\bf type}: string
-\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or substract the value to the previously define value (substract).
-\item {\bf enum}: [replace, add, substract]\end{itemize}\subsection{/features/items/oneOf/3/composition models}
+\end{itemize}\subsection{/features/items/oneOf/3/composition models}
 \begin{itemize}\item {\bf documentation}: A list of composition models.
 \item {\bf default value}: 
 \item {\bf type}: array
@@ -1126,7 +1806,143 @@
 \begin{itemize}\item {\bf default value}: replace
 \item {\bf type}: string
 \item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value (add, not implemented). Replacing implies that all values not explicitly defined are set to zero.
-\item {\bf enum}: [replace]\end{itemize}\subsection{/features/items/oneOf/4}
+\item {\bf enum}: [replace]\end{itemize}\subsection{/features/items/oneOf/3/grains models}
+\begin{itemize}\item {\bf documentation}: A list of grains models.
+\item {\bf default value}: 
+\item {\bf type}: array
+\end{itemize}\subsection{/features/items/oneOf/3/grains models/items}
+
+\subsubsection{/features/items/oneOf/3/grains models/items/oneOf/1}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: random uniform distribution grains model object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model, compositions]\end{itemize}
+\subsubsection{/features/items/oneOf/3/grains models/items/oneOf/1/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the grains model.
+\item {\bf enum}: [random uniform distribution]\end{itemize}\subsubsection{/features/items/oneOf/3/grains models/items/oneOf/1/min depth}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: The depth in meters from which the composition of this feature is present.
+\end{itemize}\subsubsection{/features/items/oneOf/3/grains models/items/oneOf/1/max depth}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: The depth in meters to which the composition of this feature is present.
+\end{itemize}\subsubsection{/features/items/oneOf/3/grains models/items/oneOf/1/compositions}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list with the integer labels of the composition which are present there.
+\end{itemize}\subsubsection{/features/items/oneOf/3/grains models/items/oneOf/1/compositions/items}
+\begin{itemize}\item {\bf default value}: 0
+\item {\bf type}: integer
+\item {\bf documentation}: 
+\end{itemize}\subsubsection{/features/items/oneOf/3/grains models/items/oneOf/1/orientation operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value (add, not implemented). Replacing implies that all values not explicitly defined are set to zero.
+\item {\bf enum}: [replace]\end{itemize}\subsubsection{/features/items/oneOf/3/grains models/items/oneOf/1/grain sizes}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list of the size of all of the grains in each composition. If set to <0, the size will be randomized between 0 and 1.
+\end{itemize}\subsubsection{/features/items/oneOf/3/grains models/items/oneOf/1/grain sizes/items}
+\begin{itemize}\item {\bf default value}: 1.0
+\item {\bf type}: number
+\item {\bf documentation}: 
+\end{itemize}\subsubsection{/features/items/oneOf/3/grains models/items/oneOf/1/normalize grain sizes}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list of whether the sizes of the grains should be normalized or not. If normalized, the total of the grains of a composition will be equal to 1.
+\end{itemize}\subsubsection{/features/items/oneOf/3/grains models/items/oneOf/1/normalize grain sizes/items}
+\begin{itemize}\item {\bf default value}: true
+\item {\bf type}: boolean
+\item {\bf documentation}: 
+\end{itemize}\subsubsection{/features/items/oneOf/3/grains models/items/oneOf/2}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: Uniform grains model object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model, compositions]\end{itemize}
+\subsubsection{/features/items/oneOf/3/grains models/items/oneOf/2/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the grains model.
+\item {\bf enum}: [uniform]\end{itemize}\subsubsection{/features/items/oneOf/3/grains models/items/oneOf/2/min depth}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: The depth in meters from which the composition of this feature is present.
+\end{itemize}\subsubsection{/features/items/oneOf/3/grains models/items/oneOf/2/max depth}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: The depth in meters to which the composition of this feature is present.
+\end{itemize}\subsubsection{/features/items/oneOf/3/grains models/items/oneOf/2/compositions}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list with the integer labels of the composition which are present there.
+\end{itemize}\subsubsection{/features/items/oneOf/3/grains models/items/oneOf/2/compositions/items}
+\begin{itemize}\item {\bf default value}: 0
+\item {\bf type}: integer
+\item {\bf documentation}: 
+\end{itemize}\subsubsection{/features/items/oneOf/3/grains models/items/oneOf/2/rotation matrices}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list with the labels of the grains which are present there for each compositions.
+\end{itemize}\subsubsection{/features/items/oneOf/3/grains models/items/oneOf/2/rotation matrices/items}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 3
+\item {\bf maxItems}: 3
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/3/grains models/items/oneOf/2/rotation matrices/items/items}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 3
+\item {\bf maxItems}: 3
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/3/grains models/items/oneOf/2/rotation matrices/items/items/items}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: 
+\end{itemize}\subsubsection{/features/items/oneOf/3/grains models/items/oneOf/2/Euler angles z-x-z}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list with the z-x-z Euler angles of the grains which are present there for each compositions.
+\end{itemize}\subsubsection{/features/items/oneOf/3/grains models/items/oneOf/2/Euler angles z-x-z/items}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 3
+\item {\bf maxItems}: 3
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/3/grains models/items/oneOf/2/Euler angles z-x-z/items/items}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: 
+\end{itemize}\subsubsection{/features/items/oneOf/3/grains models/items/oneOf/2/orientation operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value (add, not implemented). Replacing implies that all values not explicitly defined are set to zero.
+\item {\bf enum}: [replace]\end{itemize}\subsubsection{/features/items/oneOf/3/grains models/items/oneOf/2/grain sizes}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list of the size of all of the grains in each composition. If set to <0, the size will be set so that the total is equal to 1.
+\end{itemize}\subsubsection{/features/items/oneOf/3/grains models/items/oneOf/2/grain sizes/items}
+\begin{itemize}\item {\bf default value}: -1.0
+\item {\bf type}: number
+\item {\bf documentation}: 
+\end{itemize}\subsection{/features/items/oneOf/4}
 \begin{itemize}\item {\bf type}: object
 \item {\bf documentation}: feature object
 \item {\bf additionalProperties}: false
@@ -1168,14 +1984,18 @@
 
 \subsubsection{/features/items/oneOf/4/temperature models/items/oneOf/1}
 \begin{itemize}\item {\bf type}: object
-\item {\bf documentation}: Temperature object
+\item {\bf documentation}: temperature object
 \item {\bf additionalProperties}: false
 \item {\bf required}: [model]\end{itemize}
 \subsubsection{/features/items/oneOf/4/temperature models/items/oneOf/1/model}
 \begin{itemize}\item {\bf default value}: 
 \item {\bf type}: string
 \item {\bf documentation}: The name of the temperature model.
-\item {\bf enum}: [adiabatic]\end{itemize}\subsubsection{/features/items/oneOf/4/temperature models/items/oneOf/1/min depth}
+\item {\bf enum}: [adiabatic]\end{itemize}\subsubsection{/features/items/oneOf/4/temperature models/items/oneOf/1/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or subtract the value to the previously define value (subtract).
+\item {\bf enum}: [replace, add, subtract]\end{itemize}\subsubsection{/features/items/oneOf/4/temperature models/items/oneOf/1/min depth}
 \begin{itemize}\item {\bf default value}: 0.0
 \item {\bf type}: number
 \item {\bf documentation}: The depth in meters from which the temperature of this feature is present.
@@ -1195,11 +2015,7 @@
 \begin{itemize}\item {\bf default value}: -1.0
 \item {\bf type}: number
 \item {\bf documentation}: The specific heat in $J kg^{-1} K^{-1}$. If the value is lower then zero, the global value is used.
-\end{itemize}\subsubsection{/features/items/oneOf/4/temperature models/items/oneOf/1/operation}
-\begin{itemize}\item {\bf default value}: replace
-\item {\bf type}: string
-\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or substract the value to the previously define value (substract).
-\item {\bf enum}: [replace, add, substract]\end{itemize}\subsubsection{/features/items/oneOf/4/temperature models/items/oneOf/2}
+\end{itemize}\subsubsection{/features/items/oneOf/4/temperature models/items/oneOf/2}
 \begin{itemize}\item {\bf type}: object
 \item {\bf documentation}: Temperature model object
 \item {\bf additionalProperties}: false
@@ -1208,7 +2024,11 @@
 \begin{itemize}\item {\bf default value}: 
 \item {\bf type}: string
 \item {\bf documentation}: The name of the temperature model.
-\item {\bf enum}: [linear]\end{itemize}\subsubsection{/features/items/oneOf/4/temperature models/items/oneOf/2/min depth}
+\item {\bf enum}: [linear]\end{itemize}\subsubsection{/features/items/oneOf/4/temperature models/items/oneOf/2/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or subtract the value to the previously define value (subtract).
+\item {\bf enum}: [replace, add, subtract]\end{itemize}\subsubsection{/features/items/oneOf/4/temperature models/items/oneOf/2/min depth}
 \begin{itemize}\item {\bf default value}: 0.0
 \item {\bf type}: number
 \item {\bf documentation}: The depth in meters from which the temperature of this feature is present.
@@ -1224,10 +2044,6 @@
 \begin{itemize}\item {\bf default value}: -1.0
 \item {\bf type}: number
 \item {\bf documentation}: The temperature at the top in degree Kelvin of this feature. If the value is below zero, an adiabatic temperature is used.
-\end{itemize}\subsubsection{/features/items/oneOf/4/temperature models/items/oneOf/2/operation}
-\begin{itemize}\item {\bf default value}: replace
-\item {\bf type}: string
-\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value (add).
 \end{itemize}\subsubsection{/features/items/oneOf/4/temperature models/items/oneOf/3}
 \begin{itemize}\item {\bf type}: object
 \item {\bf documentation}: Temperature model object
@@ -1237,7 +2053,11 @@
 \begin{itemize}\item {\bf default value}: 
 \item {\bf type}: string
 \item {\bf documentation}: The name of the temperature model.
-\item {\bf enum}: [plate model]\end{itemize}\subsubsection{/features/items/oneOf/4/temperature models/items/oneOf/3/min depth}
+\item {\bf enum}: [plate model]\end{itemize}\subsubsection{/features/items/oneOf/4/temperature models/items/oneOf/3/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or subtract the value to the previously define value (subtract).
+\item {\bf enum}: [replace, add, subtract]\end{itemize}\subsubsection{/features/items/oneOf/4/temperature models/items/oneOf/3/min depth}
 \begin{itemize}\item {\bf default value}: 0.0
 \item {\bf type}: number
 \item {\bf documentation}: The depth in meters from which the temperature of this feature is present.
@@ -1270,11 +2090,7 @@
 \item {\bf documentation}: 
 \end{itemize}\paragraph{/features/items/oneOf/4/temperature models/items/oneOf/3/ridge coordinates/items/items}
 \begin{itemize}\item {\bf type}: number
-\end{itemize}\subsubsection{/features/items/oneOf/4/temperature models/items/oneOf/3/operation}
-\begin{itemize}\item {\bf default value}: replace
-\item {\bf type}: string
-\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or substract the value to the previously define value (substract).
-\item {\bf enum}: [replace, add, substract]\end{itemize}\subsubsection{/features/items/oneOf/4/temperature models/items/oneOf/4}
+\end{itemize}\subsubsection{/features/items/oneOf/4/temperature models/items/oneOf/4}
 \begin{itemize}\item {\bf type}: object
 \item {\bf documentation}: Temperature model object
 \item {\bf additionalProperties}: false
@@ -1283,7 +2099,11 @@
 \begin{itemize}\item {\bf default value}: 
 \item {\bf type}: string
 \item {\bf documentation}: The name of the temperature model.
-\item {\bf enum}: [uniform]\end{itemize}\subsubsection{/features/items/oneOf/4/temperature models/items/oneOf/4/min depth}
+\item {\bf enum}: [uniform]\end{itemize}\subsubsection{/features/items/oneOf/4/temperature models/items/oneOf/4/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or subtract the value to the previously define value (subtract).
+\item {\bf enum}: [replace, add, subtract]\end{itemize}\subsubsection{/features/items/oneOf/4/temperature models/items/oneOf/4/min depth}
 \begin{itemize}\item {\bf default value}: 0.0
 \item {\bf type}: number
 \item {\bf documentation}: The depth in meters from which the temperature of this feature is present.
@@ -1295,11 +2115,7 @@
 \begin{itemize}\item {\bf default value}: 293.15
 \item {\bf type}: number
 \item {\bf documentation}: The temperature in degree Kelvin which this feature should have
-\end{itemize}\subsubsection{/features/items/oneOf/4/temperature models/items/oneOf/4/operation}
-\begin{itemize}\item {\bf default value}: replace
-\item {\bf type}: string
-\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or substract the value to the previously define value (substract).
-\item {\bf enum}: [replace, add, substract]\end{itemize}\subsection{/features/items/oneOf/4/composition models}
+\end{itemize}\subsection{/features/items/oneOf/4/composition models}
 \begin{itemize}\item {\bf documentation}: A list of composition models.
 \item {\bf default value}: 
 \item {\bf type}: array
@@ -1346,7 +2162,143 @@
 \begin{itemize}\item {\bf default value}: replace
 \item {\bf type}: string
 \item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value (add). Replacing implies that all values not explicitly defined are set to zero.
-\item {\bf enum}: [replace]\end{itemize}\subsection{/features/items/oneOf/5}
+\item {\bf enum}: [replace]\end{itemize}\subsection{/features/items/oneOf/4/grains models}
+\begin{itemize}\item {\bf documentation}: A list of grains models.
+\item {\bf default value}: 
+\item {\bf type}: array
+\end{itemize}\subsection{/features/items/oneOf/4/grains models/items}
+
+\subsubsection{/features/items/oneOf/4/grains models/items/oneOf/1}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: random uniform distribution grains model object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model, compositions]\end{itemize}
+\subsubsection{/features/items/oneOf/4/grains models/items/oneOf/1/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the grains model.
+\item {\bf enum}: [random uniform distribution]\end{itemize}\subsubsection{/features/items/oneOf/4/grains models/items/oneOf/1/min depth}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: The depth in meters from which the composition of this feature is present.
+\end{itemize}\subsubsection{/features/items/oneOf/4/grains models/items/oneOf/1/max depth}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: The depth in meters to which the composition of this feature is present.
+\end{itemize}\subsubsection{/features/items/oneOf/4/grains models/items/oneOf/1/compositions}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list with the integer labels of the composition which are present there.
+\end{itemize}\subsubsection{/features/items/oneOf/4/grains models/items/oneOf/1/compositions/items}
+\begin{itemize}\item {\bf default value}: 0
+\item {\bf type}: integer
+\item {\bf documentation}: 
+\end{itemize}\subsubsection{/features/items/oneOf/4/grains models/items/oneOf/1/orientation operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value (add, not implemented). Replacing implies that all values not explicitly defined are set to zero.
+\item {\bf enum}: [replace]\end{itemize}\subsubsection{/features/items/oneOf/4/grains models/items/oneOf/1/grain sizes}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list of the size of all of the grains in each composition. If set to <0, the size will be randomized between 0 and 1.
+\end{itemize}\subsubsection{/features/items/oneOf/4/grains models/items/oneOf/1/grain sizes/items}
+\begin{itemize}\item {\bf default value}: 1.0
+\item {\bf type}: number
+\item {\bf documentation}: 
+\end{itemize}\subsubsection{/features/items/oneOf/4/grains models/items/oneOf/1/normalize grain sizes}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list of whether the sizes of the grains should be normalized or not. If normalized, the total of the grains of a composition will be equal to 1.
+\end{itemize}\subsubsection{/features/items/oneOf/4/grains models/items/oneOf/1/normalize grain sizes/items}
+\begin{itemize}\item {\bf default value}: true
+\item {\bf type}: boolean
+\item {\bf documentation}: 
+\end{itemize}\subsubsection{/features/items/oneOf/4/grains models/items/oneOf/2}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: Uniform grains model object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model, compositions]\end{itemize}
+\subsubsection{/features/items/oneOf/4/grains models/items/oneOf/2/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the grains model.
+\item {\bf enum}: [uniform]\end{itemize}\subsubsection{/features/items/oneOf/4/grains models/items/oneOf/2/min depth}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: The depth in meters from which the composition of this feature is present.
+\end{itemize}\subsubsection{/features/items/oneOf/4/grains models/items/oneOf/2/max depth}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: The depth in meters to which the composition of this feature is present.
+\end{itemize}\subsubsection{/features/items/oneOf/4/grains models/items/oneOf/2/compositions}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list with the integer labels of the composition which are present there.
+\end{itemize}\subsubsection{/features/items/oneOf/4/grains models/items/oneOf/2/compositions/items}
+\begin{itemize}\item {\bf default value}: 0
+\item {\bf type}: integer
+\item {\bf documentation}: 
+\end{itemize}\subsubsection{/features/items/oneOf/4/grains models/items/oneOf/2/rotation matrices}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list with the labels of the grains which are present there for each compositions.
+\end{itemize}\subsubsection{/features/items/oneOf/4/grains models/items/oneOf/2/rotation matrices/items}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 3
+\item {\bf maxItems}: 3
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/4/grains models/items/oneOf/2/rotation matrices/items/items}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 3
+\item {\bf maxItems}: 3
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/4/grains models/items/oneOf/2/rotation matrices/items/items/items}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: 
+\end{itemize}\subsubsection{/features/items/oneOf/4/grains models/items/oneOf/2/Euler angles z-x-z}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list with the z-x-z Euler angles of the grains which are present there for each compositions.
+\end{itemize}\subsubsection{/features/items/oneOf/4/grains models/items/oneOf/2/Euler angles z-x-z/items}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 3
+\item {\bf maxItems}: 3
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/4/grains models/items/oneOf/2/Euler angles z-x-z/items/items}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: 
+\end{itemize}\subsubsection{/features/items/oneOf/4/grains models/items/oneOf/2/orientation operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value (add, not implemented). Replacing implies that all values not explicitly defined are set to zero.
+\item {\bf enum}: [replace]\end{itemize}\subsubsection{/features/items/oneOf/4/grains models/items/oneOf/2/grain sizes}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list of the size of all of the grains in each composition. If set to <0, the size will be set so that the total is equal to 1.
+\end{itemize}\subsubsection{/features/items/oneOf/4/grains models/items/oneOf/2/grain sizes/items}
+\begin{itemize}\item {\bf default value}: -1.0
+\item {\bf type}: number
+\item {\bf documentation}: 
+\end{itemize}\subsection{/features/items/oneOf/5}
 \begin{itemize}\item {\bf type}: object
 \item {\bf documentation}: feature object
 \item {\bf additionalProperties}: false
@@ -1426,14 +2378,18 @@
 
 \subsubsection{/features/items/oneOf/5/segments/items/temperature models/items/oneOf/1}
 \begin{itemize}\item {\bf type}: object
-\item {\bf documentation}: Temperature object
+\item {\bf documentation}: temperature object
 \item {\bf additionalProperties}: false
 \item {\bf required}: [model]\end{itemize}
 \paragraph{/features/items/oneOf/5/segments/items/temperature models/items/oneOf/1/model}
 \begin{itemize}\item {\bf default value}: 
 \item {\bf type}: string
 \item {\bf documentation}: The name of the temperature model.
-\item {\bf enum}: [adiabatic]\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/temperature models/items/oneOf/1/min distance slab top}
+\item {\bf enum}: [adiabatic]\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/temperature models/items/oneOf/1/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or subtract the value to the previously define value (subtract).
+\item {\bf enum}: [replace, add, subtract]\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/temperature models/items/oneOf/1/min distance slab top}
 \begin{itemize}\item {\bf default value}: 0.0
 \item {\bf type}: number
 \item {\bf documentation}: todo The depth in meters from which the composition of this feature is present.
@@ -1453,11 +2409,7 @@
 \begin{itemize}\item {\bf default value}: -1.0
 \item {\bf type}: number
 \item {\bf documentation}: The specific heat in $J kg^{-1} K^{-1}$. If the value is lower then zero, the global value is used.
-\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/temperature models/items/oneOf/1/operation}
-\begin{itemize}\item {\bf default value}: replace
-\item {\bf type}: string
-\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or substract the value to the previously define value (substract).
-\item {\bf enum}: [replace, add, substract]\end{itemize}\subsubsection{/features/items/oneOf/5/segments/items/temperature models/items/oneOf/2}
+\end{itemize}\subsubsection{/features/items/oneOf/5/segments/items/temperature models/items/oneOf/2}
 \begin{itemize}\item {\bf type}: object
 \item {\bf documentation}: Temperature model object
 \item {\bf additionalProperties}: false
@@ -1466,7 +2418,11 @@
 \begin{itemize}\item {\bf default value}: 
 \item {\bf type}: string
 \item {\bf documentation}: The name of the temperature model.
-\item {\bf enum}: [linear]\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/temperature models/items/oneOf/2/min distance slab top}
+\item {\bf enum}: [linear]\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/temperature models/items/oneOf/2/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or subtract the value to the previously define value (subtract).
+\item {\bf enum}: [replace, add, subtract]\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/temperature models/items/oneOf/2/min distance slab top}
 \begin{itemize}\item {\bf default value}: 0.0
 \item {\bf type}: number
 \item {\bf documentation}: todo The depth in meters from which the composition of this feature is present.
@@ -1481,11 +2437,7 @@
 \end{itemize}\paragraph{/features/items/oneOf/5/segments/items/temperature models/items/oneOf/2/bottom temperature}
 \begin{itemize}\item {\bf default value}: -1.0
 \item {\bf type}: number
-\item {\bf documentation}: The temperature at the top in degree Kelvin of this feature. If the value is below zero, an adiabatic temperature is used.
-\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/temperature models/items/oneOf/2/operation}
-\begin{itemize}\item {\bf default value}: replace
-\item {\bf type}: string
-\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value (add).
+\item {\bf documentation}: The temperature at the bottom in degree Kelvin of this feature. If the value is below zero, an adiabatic temperature is used.
 \end{itemize}\subsubsection{/features/items/oneOf/5/segments/items/temperature models/items/oneOf/3}
 \begin{itemize}\item {\bf type}: object
 \item {\bf documentation}: Temperature model object
@@ -1495,7 +2447,11 @@
 \begin{itemize}\item {\bf default value}: 
 \item {\bf type}: string
 \item {\bf documentation}: The name of the temperature model.
-\item {\bf enum}: [plate model]\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/temperature models/items/oneOf/3/min distance slab top}
+\item {\bf enum}: [plate model]\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/temperature models/items/oneOf/3/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or subtract the value to the previously define value (subtract).
+\item {\bf enum}: [replace, add, subtract]\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/temperature models/items/oneOf/3/min distance slab top}
 \begin{itemize}\item {\bf default value}: 0.0
 \item {\bf type}: number
 \item {\bf documentation}: todo The depth in meters from which the composition of this feature is present.
@@ -1516,18 +2472,22 @@
 \item {\bf type}: number
 \item {\bf documentation}: The thermal conductivity of the subducting plate material in $W m^{-1} K^{-1}$.
 \end{itemize}\paragraph{/features/items/oneOf/5/segments/items/temperature models/items/oneOf/3/thermal expansion coefficient}
-\begin{itemize}\item {\bf default value}: 0.000035
+\begin{itemize}\item {\bf default value}: -1.0
 \item {\bf type}: number
-\item {\bf documentation}: The thermal expansivity of the subducting plate material in $K^{-1}$.
+\item {\bf documentation}: The thermal expansivity of the subducting plate material in $K^{-1}$. If smaller than zero, the global value is used.
 \end{itemize}\paragraph{/features/items/oneOf/5/segments/items/temperature models/items/oneOf/3/specific heat}
-\begin{itemize}\item {\bf default value}: 1250.0
+\begin{itemize}\item {\bf default value}: -1.0
 \item {\bf type}: number
-\item {\bf documentation}: The specific heat of the subducting plate material in $J kg^{-1} K^{-1}$.
-\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/temperature models/items/oneOf/3/operation}
-\begin{itemize}\item {\bf default value}: replace
-\item {\bf type}: string
-\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or substract the value to the previously define value (substract).
-\item {\bf enum}: [replace, add, substract]\end{itemize}\subsubsection{/features/items/oneOf/5/segments/items/temperature models/items/oneOf/4}
+\item {\bf documentation}: The specific heat of the subducting plate material in $J kg^{-1} K^{-1}$. If smaller than zero, the global value is used.
+\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/temperature models/items/oneOf/3/adiabatic heating}
+\begin{itemize}\item {\bf default value}: true
+\item {\bf type}: boolean
+\item {\bf documentation}: Wheter adiabatic heating should be used for the slab. Setting the parameter to false leads to equation 26 from McKenzie (1970),which is the result obtained from McKenzie 1969.
+\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/temperature models/items/oneOf/3/potential mantle temperature}
+\begin{itemize}\item {\bf default value}: -1.0
+\item {\bf type}: number
+\item {\bf documentation}: The potential temperature of the mantle at the surface in Kelvin. If smaller than zero, the global value is used.
+\end{itemize}\subsubsection{/features/items/oneOf/5/segments/items/temperature models/items/oneOf/4}
 \begin{itemize}\item {\bf type}: object
 \item {\bf documentation}: Temperature model object
 \item {\bf additionalProperties}: false
@@ -1536,7 +2496,11 @@
 \begin{itemize}\item {\bf default value}: 
 \item {\bf type}: string
 \item {\bf documentation}: The name of the temperature model.
-\item {\bf enum}: [uniform]\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/temperature models/items/oneOf/4/min distance slab top}
+\item {\bf enum}: [uniform]\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/temperature models/items/oneOf/4/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or subtract the value to the previously define value (subtract).
+\item {\bf enum}: [replace, add, subtract]\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/temperature models/items/oneOf/4/min distance slab top}
 \begin{itemize}\item {\bf default value}: 0.0
 \item {\bf type}: number
 \item {\bf documentation}: todo The depth in meters from which the composition of this feature is present.
@@ -1548,11 +2512,7 @@
 \begin{itemize}\item {\bf default value}: 293.15
 \item {\bf type}: number
 \item {\bf documentation}: The temperature in degree Kelvin which this feature should have
-\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/temperature models/items/oneOf/4/operation}
-\begin{itemize}\item {\bf default value}: replace
-\item {\bf type}: string
-\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or substract the value to the previously define value (substract).
-\item {\bf enum}: [replace, add, substract]\end{itemize}\subsubsection{/features/items/oneOf/5/segments/items/composition models}
+\end{itemize}\subsubsection{/features/items/oneOf/5/segments/items/composition models}
 \begin{itemize}\item {\bf documentation}: 
 \item {\bf default value}: 
 \item {\bf type}: array
@@ -1599,7 +2559,143 @@
 \begin{itemize}\item {\bf default value}: replace
 \item {\bf type}: string
 \item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value (add, not implemented). Replacing implies that all values not explicitly defined are set to zero.
-\item {\bf enum}: [replace]\end{itemize}\subsection{/features/items/oneOf/5/temperature models}
+\item {\bf enum}: [replace]\end{itemize}\subsubsection{/features/items/oneOf/5/segments/items/grains models}
+\begin{itemize}\item {\bf documentation}: 
+\item {\bf default value}: 
+\item {\bf type}: array
+\end{itemize}\subsubsection{/features/items/oneOf/5/segments/items/grains models/items}
+
+\subsubsection{/features/items/oneOf/5/segments/items/grains models/items/oneOf/1}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: random uniform distribution grains model object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model, compositions]\end{itemize}
+\paragraph{/features/items/oneOf/5/segments/items/grains models/items/oneOf/1/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the grains model.
+\item {\bf enum}: [random uniform distribution]\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/grains models/items/oneOf/1/min distance slab top}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: The distance from the slab top in meters from which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/grains models/items/oneOf/1/max distance slab top}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: The distance from the slab top in meters to which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/grains models/items/oneOf/1/compositions}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list with the integer labels of the composition which are present there.
+\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/grains models/items/oneOf/1/compositions/items}
+\begin{itemize}\item {\bf default value}: 0
+\item {\bf type}: integer
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/grains models/items/oneOf/1/orientation operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value (add, not implemented). Replacing implies that all values not explicitly defined are set to zero.
+\item {\bf enum}: [replace]\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/grains models/items/oneOf/1/grain sizes}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list of the size of all of the grains in each composition. If set to <0, the size will be randomized between 0 and 1.
+\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/grains models/items/oneOf/1/grain sizes/items}
+\begin{itemize}\item {\bf default value}: 1.0
+\item {\bf type}: number
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/grains models/items/oneOf/1/normalize grain sizes}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list of whether the sizes of the grains should be normalized or not. If normalized, the total of the grains of a composition will be equal to 1.
+\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/grains models/items/oneOf/1/normalize grain sizes/items}
+\begin{itemize}\item {\bf default value}: true
+\item {\bf type}: boolean
+\item {\bf documentation}: 
+\end{itemize}\subsubsection{/features/items/oneOf/5/segments/items/grains models/items/oneOf/2}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: Uniform grains model object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model, compositions]\end{itemize}
+\paragraph{/features/items/oneOf/5/segments/items/grains models/items/oneOf/2/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the grains model.
+\item {\bf enum}: [uniform]\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/grains models/items/oneOf/2/min distance slab top}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: The distance from the slab top in meters from which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/grains models/items/oneOf/2/max distance slab top}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: The distance from the slab top in meters to which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/grains models/items/oneOf/2/compositions}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list with the integer labels of the composition which are present there.
+\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/grains models/items/oneOf/2/compositions/items}
+\begin{itemize}\item {\bf default value}: 0
+\item {\bf type}: integer
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/grains models/items/oneOf/2/rotation matrices}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list with the labels of the grains which are present there for each compositions.
+\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/grains models/items/oneOf/2/rotation matrices/items}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 3
+\item {\bf maxItems}: 3
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/grains models/items/oneOf/2/rotation matrices/items/items}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 3
+\item {\bf maxItems}: 3
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/grains models/items/oneOf/2/rotation matrices/items/items/items}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/grains models/items/oneOf/2/Euler angles z-x-z}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list with the z-x-z Euler angles of the grains which are present there for each compositions.
+\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/grains models/items/oneOf/2/Euler angles z-x-z/items}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 3
+\item {\bf maxItems}: 3
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/grains models/items/oneOf/2/Euler angles z-x-z/items/items}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/grains models/items/oneOf/2/orientation operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value (add, not implemented). Replacing implies that all values not explicitly defined are set to zero.
+\item {\bf enum}: [replace]\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/grains models/items/oneOf/2/grain sizes}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list of the size of all of the grains in each composition. If set to <0, the size will be set so that the total is equal to 1.
+\end{itemize}\paragraph{/features/items/oneOf/5/segments/items/grains models/items/oneOf/2/grain sizes/items}
+\begin{itemize}\item {\bf default value}: -1.0
+\item {\bf type}: number
+\item {\bf documentation}: 
+\end{itemize}\subsection{/features/items/oneOf/5/temperature models}
 \begin{itemize}\item {\bf documentation}: A list of temperature models.
 \item {\bf default value}: 
 \item {\bf type}: array
@@ -1607,14 +2703,18 @@
 
 \subsubsection{/features/items/oneOf/5/temperature models/items/oneOf/1}
 \begin{itemize}\item {\bf type}: object
-\item {\bf documentation}: Temperature object
+\item {\bf documentation}: temperature object
 \item {\bf additionalProperties}: false
 \item {\bf required}: [model]\end{itemize}
 \subsubsection{/features/items/oneOf/5/temperature models/items/oneOf/1/model}
 \begin{itemize}\item {\bf default value}: 
 \item {\bf type}: string
 \item {\bf documentation}: The name of the temperature model.
-\item {\bf enum}: [adiabatic]\end{itemize}\subsubsection{/features/items/oneOf/5/temperature models/items/oneOf/1/min distance slab top}
+\item {\bf enum}: [adiabatic]\end{itemize}\subsubsection{/features/items/oneOf/5/temperature models/items/oneOf/1/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or subtract the value to the previously define value (subtract).
+\item {\bf enum}: [replace, add, subtract]\end{itemize}\subsubsection{/features/items/oneOf/5/temperature models/items/oneOf/1/min distance slab top}
 \begin{itemize}\item {\bf default value}: 0.0
 \item {\bf type}: number
 \item {\bf documentation}: todo The depth in meters from which the composition of this feature is present.
@@ -1634,11 +2734,7 @@
 \begin{itemize}\item {\bf default value}: -1.0
 \item {\bf type}: number
 \item {\bf documentation}: The specific heat in $J kg^{-1} K^{-1}$. If the value is lower then zero, the global value is used.
-\end{itemize}\subsubsection{/features/items/oneOf/5/temperature models/items/oneOf/1/operation}
-\begin{itemize}\item {\bf default value}: replace
-\item {\bf type}: string
-\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or substract the value to the previously define value (substract).
-\item {\bf enum}: [replace, add, substract]\end{itemize}\subsubsection{/features/items/oneOf/5/temperature models/items/oneOf/2}
+\end{itemize}\subsubsection{/features/items/oneOf/5/temperature models/items/oneOf/2}
 \begin{itemize}\item {\bf type}: object
 \item {\bf documentation}: Temperature model object
 \item {\bf additionalProperties}: false
@@ -1647,7 +2743,11 @@
 \begin{itemize}\item {\bf default value}: 
 \item {\bf type}: string
 \item {\bf documentation}: The name of the temperature model.
-\item {\bf enum}: [linear]\end{itemize}\subsubsection{/features/items/oneOf/5/temperature models/items/oneOf/2/min distance slab top}
+\item {\bf enum}: [linear]\end{itemize}\subsubsection{/features/items/oneOf/5/temperature models/items/oneOf/2/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or subtract the value to the previously define value (subtract).
+\item {\bf enum}: [replace, add, subtract]\end{itemize}\subsubsection{/features/items/oneOf/5/temperature models/items/oneOf/2/min distance slab top}
 \begin{itemize}\item {\bf default value}: 0.0
 \item {\bf type}: number
 \item {\bf documentation}: todo The depth in meters from which the composition of this feature is present.
@@ -1662,11 +2762,7 @@
 \end{itemize}\subsubsection{/features/items/oneOf/5/temperature models/items/oneOf/2/bottom temperature}
 \begin{itemize}\item {\bf default value}: -1.0
 \item {\bf type}: number
-\item {\bf documentation}: The temperature at the top in degree Kelvin of this feature. If the value is below zero, an adiabatic temperature is used.
-\end{itemize}\subsubsection{/features/items/oneOf/5/temperature models/items/oneOf/2/operation}
-\begin{itemize}\item {\bf default value}: replace
-\item {\bf type}: string
-\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value (add).
+\item {\bf documentation}: The temperature at the bottom in degree Kelvin of this feature. If the value is below zero, an adiabatic temperature is used.
 \end{itemize}\subsubsection{/features/items/oneOf/5/temperature models/items/oneOf/3}
 \begin{itemize}\item {\bf type}: object
 \item {\bf documentation}: Temperature model object
@@ -1676,7 +2772,11 @@
 \begin{itemize}\item {\bf default value}: 
 \item {\bf type}: string
 \item {\bf documentation}: The name of the temperature model.
-\item {\bf enum}: [plate model]\end{itemize}\subsubsection{/features/items/oneOf/5/temperature models/items/oneOf/3/min distance slab top}
+\item {\bf enum}: [plate model]\end{itemize}\subsubsection{/features/items/oneOf/5/temperature models/items/oneOf/3/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or subtract the value to the previously define value (subtract).
+\item {\bf enum}: [replace, add, subtract]\end{itemize}\subsubsection{/features/items/oneOf/5/temperature models/items/oneOf/3/min distance slab top}
 \begin{itemize}\item {\bf default value}: 0.0
 \item {\bf type}: number
 \item {\bf documentation}: todo The depth in meters from which the composition of this feature is present.
@@ -1697,18 +2797,22 @@
 \item {\bf type}: number
 \item {\bf documentation}: The thermal conductivity of the subducting plate material in $W m^{-1} K^{-1}$.
 \end{itemize}\subsubsection{/features/items/oneOf/5/temperature models/items/oneOf/3/thermal expansion coefficient}
-\begin{itemize}\item {\bf default value}: 0.000035
+\begin{itemize}\item {\bf default value}: -1.0
 \item {\bf type}: number
-\item {\bf documentation}: The thermal expansivity of the subducting plate material in $K^{-1}$.
+\item {\bf documentation}: The thermal expansivity of the subducting plate material in $K^{-1}$. If smaller than zero, the global value is used.
 \end{itemize}\subsubsection{/features/items/oneOf/5/temperature models/items/oneOf/3/specific heat}
-\begin{itemize}\item {\bf default value}: 1250.0
+\begin{itemize}\item {\bf default value}: -1.0
 \item {\bf type}: number
-\item {\bf documentation}: The specific heat of the subducting plate material in $J kg^{-1} K^{-1}$.
-\end{itemize}\subsubsection{/features/items/oneOf/5/temperature models/items/oneOf/3/operation}
-\begin{itemize}\item {\bf default value}: replace
-\item {\bf type}: string
-\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or substract the value to the previously define value (substract).
-\item {\bf enum}: [replace, add, substract]\end{itemize}\subsubsection{/features/items/oneOf/5/temperature models/items/oneOf/4}
+\item {\bf documentation}: The specific heat of the subducting plate material in $J kg^{-1} K^{-1}$. If smaller than zero, the global value is used.
+\end{itemize}\subsubsection{/features/items/oneOf/5/temperature models/items/oneOf/3/adiabatic heating}
+\begin{itemize}\item {\bf default value}: true
+\item {\bf type}: boolean
+\item {\bf documentation}: Wheter adiabatic heating should be used for the slab. Setting the parameter to false leads to equation 26 from McKenzie (1970),which is the result obtained from McKenzie 1969.
+\end{itemize}\subsubsection{/features/items/oneOf/5/temperature models/items/oneOf/3/potential mantle temperature}
+\begin{itemize}\item {\bf default value}: -1.0
+\item {\bf type}: number
+\item {\bf documentation}: The potential temperature of the mantle at the surface in Kelvin. If smaller than zero, the global value is used.
+\end{itemize}\subsubsection{/features/items/oneOf/5/temperature models/items/oneOf/4}
 \begin{itemize}\item {\bf type}: object
 \item {\bf documentation}: Temperature model object
 \item {\bf additionalProperties}: false
@@ -1717,7 +2821,11 @@
 \begin{itemize}\item {\bf default value}: 
 \item {\bf type}: string
 \item {\bf documentation}: The name of the temperature model.
-\item {\bf enum}: [uniform]\end{itemize}\subsubsection{/features/items/oneOf/5/temperature models/items/oneOf/4/min distance slab top}
+\item {\bf enum}: [uniform]\end{itemize}\subsubsection{/features/items/oneOf/5/temperature models/items/oneOf/4/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or subtract the value to the previously define value (subtract).
+\item {\bf enum}: [replace, add, subtract]\end{itemize}\subsubsection{/features/items/oneOf/5/temperature models/items/oneOf/4/min distance slab top}
 \begin{itemize}\item {\bf default value}: 0.0
 \item {\bf type}: number
 \item {\bf documentation}: todo The depth in meters from which the composition of this feature is present.
@@ -1729,11 +2837,7 @@
 \begin{itemize}\item {\bf default value}: 293.15
 \item {\bf type}: number
 \item {\bf documentation}: The temperature in degree Kelvin which this feature should have
-\end{itemize}\subsubsection{/features/items/oneOf/5/temperature models/items/oneOf/4/operation}
-\begin{itemize}\item {\bf default value}: replace
-\item {\bf type}: string
-\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or substract the value to the previously define value (substract).
-\item {\bf enum}: [replace, add, substract]\end{itemize}\subsection{/features/items/oneOf/5/composition models}
+\end{itemize}\subsection{/features/items/oneOf/5/composition models}
 \begin{itemize}\item {\bf documentation}: A list of composition models.
 \item {\bf default value}: 
 \item {\bf type}: array
@@ -1780,7 +2884,143 @@
 \begin{itemize}\item {\bf default value}: replace
 \item {\bf type}: string
 \item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value (add, not implemented). Replacing implies that all values not explicitly defined are set to zero.
-\item {\bf enum}: [replace]\end{itemize}\subsection{/features/items/oneOf/5/sections}
+\item {\bf enum}: [replace]\end{itemize}\subsection{/features/items/oneOf/5/grains models}
+\begin{itemize}\item {\bf documentation}: A list of grains models.
+\item {\bf default value}: 
+\item {\bf type}: array
+\end{itemize}\subsection{/features/items/oneOf/5/grains models/items}
+
+\subsubsection{/features/items/oneOf/5/grains models/items/oneOf/1}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: random uniform distribution grains model object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model, compositions]\end{itemize}
+\subsubsection{/features/items/oneOf/5/grains models/items/oneOf/1/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the grains model.
+\item {\bf enum}: [random uniform distribution]\end{itemize}\subsubsection{/features/items/oneOf/5/grains models/items/oneOf/1/min distance slab top}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: The distance from the slab top in meters from which the composition of this feature is present.
+\end{itemize}\subsubsection{/features/items/oneOf/5/grains models/items/oneOf/1/max distance slab top}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: The distance from the slab top in meters to which the composition of this feature is present.
+\end{itemize}\subsubsection{/features/items/oneOf/5/grains models/items/oneOf/1/compositions}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list with the integer labels of the composition which are present there.
+\end{itemize}\subsubsection{/features/items/oneOf/5/grains models/items/oneOf/1/compositions/items}
+\begin{itemize}\item {\bf default value}: 0
+\item {\bf type}: integer
+\item {\bf documentation}: 
+\end{itemize}\subsubsection{/features/items/oneOf/5/grains models/items/oneOf/1/orientation operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value (add, not implemented). Replacing implies that all values not explicitly defined are set to zero.
+\item {\bf enum}: [replace]\end{itemize}\subsubsection{/features/items/oneOf/5/grains models/items/oneOf/1/grain sizes}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list of the size of all of the grains in each composition. If set to <0, the size will be randomized between 0 and 1.
+\end{itemize}\subsubsection{/features/items/oneOf/5/grains models/items/oneOf/1/grain sizes/items}
+\begin{itemize}\item {\bf default value}: 1.0
+\item {\bf type}: number
+\item {\bf documentation}: 
+\end{itemize}\subsubsection{/features/items/oneOf/5/grains models/items/oneOf/1/normalize grain sizes}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list of whether the sizes of the grains should be normalized or not. If normalized, the total of the grains of a composition will be equal to 1.
+\end{itemize}\subsubsection{/features/items/oneOf/5/grains models/items/oneOf/1/normalize grain sizes/items}
+\begin{itemize}\item {\bf default value}: true
+\item {\bf type}: boolean
+\item {\bf documentation}: 
+\end{itemize}\subsubsection{/features/items/oneOf/5/grains models/items/oneOf/2}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: Uniform grains model object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model, compositions]\end{itemize}
+\subsubsection{/features/items/oneOf/5/grains models/items/oneOf/2/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the grains model.
+\item {\bf enum}: [uniform]\end{itemize}\subsubsection{/features/items/oneOf/5/grains models/items/oneOf/2/min distance slab top}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: The distance from the slab top in meters from which the composition of this feature is present.
+\end{itemize}\subsubsection{/features/items/oneOf/5/grains models/items/oneOf/2/max distance slab top}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: The distance from the slab top in meters to which the composition of this feature is present.
+\end{itemize}\subsubsection{/features/items/oneOf/5/grains models/items/oneOf/2/compositions}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list with the integer labels of the composition which are present there.
+\end{itemize}\subsubsection{/features/items/oneOf/5/grains models/items/oneOf/2/compositions/items}
+\begin{itemize}\item {\bf default value}: 0
+\item {\bf type}: integer
+\item {\bf documentation}: 
+\end{itemize}\subsubsection{/features/items/oneOf/5/grains models/items/oneOf/2/rotation matrices}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list with the labels of the grains which are present there for each compositions.
+\end{itemize}\subsubsection{/features/items/oneOf/5/grains models/items/oneOf/2/rotation matrices/items}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 3
+\item {\bf maxItems}: 3
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/5/grains models/items/oneOf/2/rotation matrices/items/items}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 3
+\item {\bf maxItems}: 3
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/5/grains models/items/oneOf/2/rotation matrices/items/items/items}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: 
+\end{itemize}\subsubsection{/features/items/oneOf/5/grains models/items/oneOf/2/Euler angles z-x-z}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list with the z-x-z Euler angles of the grains which are present there for each compositions.
+\end{itemize}\subsubsection{/features/items/oneOf/5/grains models/items/oneOf/2/Euler angles z-x-z/items}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 3
+\item {\bf maxItems}: 3
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/5/grains models/items/oneOf/2/Euler angles z-x-z/items/items}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: 
+\end{itemize}\subsubsection{/features/items/oneOf/5/grains models/items/oneOf/2/orientation operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value (add, not implemented). Replacing implies that all values not explicitly defined are set to zero.
+\item {\bf enum}: [replace]\end{itemize}\subsubsection{/features/items/oneOf/5/grains models/items/oneOf/2/grain sizes}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list of the size of all of the grains in each composition. If set to <0, the size will be set so that the total is equal to 1.
+\end{itemize}\subsubsection{/features/items/oneOf/5/grains models/items/oneOf/2/grain sizes/items}
+\begin{itemize}\item {\bf default value}: -1.0
+\item {\bf type}: number
+\item {\bf documentation}: 
+\end{itemize}\subsection{/features/items/oneOf/5/sections}
 \begin{itemize}\item {\bf type}: array
 \item {\bf minItems}: 0
 \item {\bf maxItems}: 4294967295
@@ -1845,14 +3085,18 @@
 
 \paragraph{/features/items/oneOf/5/sections/items/segments/items/temperature models/items/oneOf/1}
 \begin{itemize}\item {\bf type}: object
-\item {\bf documentation}: Temperature object
+\item {\bf documentation}: temperature object
 \item {\bf additionalProperties}: false
 \item {\bf required}: [model]\end{itemize}
 \paragraph{/features/items/oneOf/5/sections/items/segments/items/temperature models/items/oneOf/1/model}
 \begin{itemize}\item {\bf default value}: 
 \item {\bf type}: string
 \item {\bf documentation}: The name of the temperature model.
-\item {\bf enum}: [adiabatic]\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/temperature models/items/oneOf/1/min distance slab top}
+\item {\bf enum}: [adiabatic]\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/temperature models/items/oneOf/1/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or subtract the value to the previously define value (subtract).
+\item {\bf enum}: [replace, add, subtract]\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/temperature models/items/oneOf/1/min distance slab top}
 \begin{itemize}\item {\bf default value}: 0.0
 \item {\bf type}: number
 \item {\bf documentation}: todo The depth in meters from which the composition of this feature is present.
@@ -1872,11 +3116,7 @@
 \begin{itemize}\item {\bf default value}: -1.0
 \item {\bf type}: number
 \item {\bf documentation}: The specific heat in $J kg^{-1} K^{-1}$. If the value is lower then zero, the global value is used.
-\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/temperature models/items/oneOf/1/operation}
-\begin{itemize}\item {\bf default value}: replace
-\item {\bf type}: string
-\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or substract the value to the previously define value (substract).
-\item {\bf enum}: [replace, add, substract]\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/temperature models/items/oneOf/2}
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/temperature models/items/oneOf/2}
 \begin{itemize}\item {\bf type}: object
 \item {\bf documentation}: Temperature model object
 \item {\bf additionalProperties}: false
@@ -1885,7 +3125,11 @@
 \begin{itemize}\item {\bf default value}: 
 \item {\bf type}: string
 \item {\bf documentation}: The name of the temperature model.
-\item {\bf enum}: [linear]\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/temperature models/items/oneOf/2/min distance slab top}
+\item {\bf enum}: [linear]\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/temperature models/items/oneOf/2/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or subtract the value to the previously define value (subtract).
+\item {\bf enum}: [replace, add, subtract]\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/temperature models/items/oneOf/2/min distance slab top}
 \begin{itemize}\item {\bf default value}: 0.0
 \item {\bf type}: number
 \item {\bf documentation}: todo The depth in meters from which the composition of this feature is present.
@@ -1900,11 +3144,7 @@
 \end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/temperature models/items/oneOf/2/bottom temperature}
 \begin{itemize}\item {\bf default value}: -1.0
 \item {\bf type}: number
-\item {\bf documentation}: The temperature at the top in degree Kelvin of this feature. If the value is below zero, an adiabatic temperature is used.
-\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/temperature models/items/oneOf/2/operation}
-\begin{itemize}\item {\bf default value}: replace
-\item {\bf type}: string
-\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value (add).
+\item {\bf documentation}: The temperature at the bottom in degree Kelvin of this feature. If the value is below zero, an adiabatic temperature is used.
 \end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/temperature models/items/oneOf/3}
 \begin{itemize}\item {\bf type}: object
 \item {\bf documentation}: Temperature model object
@@ -1914,7 +3154,11 @@
 \begin{itemize}\item {\bf default value}: 
 \item {\bf type}: string
 \item {\bf documentation}: The name of the temperature model.
-\item {\bf enum}: [plate model]\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/temperature models/items/oneOf/3/min distance slab top}
+\item {\bf enum}: [plate model]\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/temperature models/items/oneOf/3/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or subtract the value to the previously define value (subtract).
+\item {\bf enum}: [replace, add, subtract]\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/temperature models/items/oneOf/3/min distance slab top}
 \begin{itemize}\item {\bf default value}: 0.0
 \item {\bf type}: number
 \item {\bf documentation}: todo The depth in meters from which the composition of this feature is present.
@@ -1935,18 +3179,22 @@
 \item {\bf type}: number
 \item {\bf documentation}: The thermal conductivity of the subducting plate material in $W m^{-1} K^{-1}$.
 \end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/temperature models/items/oneOf/3/thermal expansion coefficient}
-\begin{itemize}\item {\bf default value}: 0.000035
+\begin{itemize}\item {\bf default value}: -1.0
 \item {\bf type}: number
-\item {\bf documentation}: The thermal expansivity of the subducting plate material in $K^{-1}$.
+\item {\bf documentation}: The thermal expansivity of the subducting plate material in $K^{-1}$. If smaller than zero, the global value is used.
 \end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/temperature models/items/oneOf/3/specific heat}
-\begin{itemize}\item {\bf default value}: 1250.0
+\begin{itemize}\item {\bf default value}: -1.0
 \item {\bf type}: number
-\item {\bf documentation}: The specific heat of the subducting plate material in $J kg^{-1} K^{-1}$.
-\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/temperature models/items/oneOf/3/operation}
-\begin{itemize}\item {\bf default value}: replace
-\item {\bf type}: string
-\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or substract the value to the previously define value (substract).
-\item {\bf enum}: [replace, add, substract]\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/temperature models/items/oneOf/4}
+\item {\bf documentation}: The specific heat of the subducting plate material in $J kg^{-1} K^{-1}$. If smaller than zero, the global value is used.
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/temperature models/items/oneOf/3/adiabatic heating}
+\begin{itemize}\item {\bf default value}: true
+\item {\bf type}: boolean
+\item {\bf documentation}: Wheter adiabatic heating should be used for the slab. Setting the parameter to false leads to equation 26 from McKenzie (1970),which is the result obtained from McKenzie 1969.
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/temperature models/items/oneOf/3/potential mantle temperature}
+\begin{itemize}\item {\bf default value}: -1.0
+\item {\bf type}: number
+\item {\bf documentation}: The potential temperature of the mantle at the surface in Kelvin. If smaller than zero, the global value is used.
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/temperature models/items/oneOf/4}
 \begin{itemize}\item {\bf type}: object
 \item {\bf documentation}: Temperature model object
 \item {\bf additionalProperties}: false
@@ -1955,7 +3203,11 @@
 \begin{itemize}\item {\bf default value}: 
 \item {\bf type}: string
 \item {\bf documentation}: The name of the temperature model.
-\item {\bf enum}: [uniform]\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/temperature models/items/oneOf/4/min distance slab top}
+\item {\bf enum}: [uniform]\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/temperature models/items/oneOf/4/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or subtract the value to the previously define value (subtract).
+\item {\bf enum}: [replace, add, subtract]\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/temperature models/items/oneOf/4/min distance slab top}
 \begin{itemize}\item {\bf default value}: 0.0
 \item {\bf type}: number
 \item {\bf documentation}: todo The depth in meters from which the composition of this feature is present.
@@ -1967,11 +3219,7 @@
 \begin{itemize}\item {\bf default value}: 293.15
 \item {\bf type}: number
 \item {\bf documentation}: The temperature in degree Kelvin which this feature should have
-\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/temperature models/items/oneOf/4/operation}
-\begin{itemize}\item {\bf default value}: replace
-\item {\bf type}: string
-\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or substract the value to the previously define value (substract).
-\item {\bf enum}: [replace, add, substract]\end{itemize}\subsubsection{/features/items/oneOf/5/sections/items/segments/items/composition models}
+\end{itemize}\subsubsection{/features/items/oneOf/5/sections/items/segments/items/composition models}
 \begin{itemize}\item {\bf documentation}: 
 \item {\bf default value}: 
 \item {\bf type}: array
@@ -2018,7 +3266,143 @@
 \begin{itemize}\item {\bf default value}: replace
 \item {\bf type}: string
 \item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value (add, not implemented). Replacing implies that all values not explicitly defined are set to zero.
-\item {\bf enum}: [replace]\end{itemize}\subsubsection{/features/items/oneOf/5/sections/items/temperature models}
+\item {\bf enum}: [replace]\end{itemize}\subsubsection{/features/items/oneOf/5/sections/items/segments/items/grains models}
+\begin{itemize}\item {\bf documentation}: 
+\item {\bf default value}: 
+\item {\bf type}: array
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/grains models/items}
+
+\paragraph{/features/items/oneOf/5/sections/items/segments/items/grains models/items/oneOf/1}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: random uniform distribution grains model object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model, compositions]\end{itemize}
+\paragraph{/features/items/oneOf/5/sections/items/segments/items/grains models/items/oneOf/1/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the grains model.
+\item {\bf enum}: [random uniform distribution]\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/grains models/items/oneOf/1/min distance slab top}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: The distance from the slab top in meters from which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/grains models/items/oneOf/1/max distance slab top}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: The distance from the slab top in meters to which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/grains models/items/oneOf/1/compositions}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list with the integer labels of the composition which are present there.
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/grains models/items/oneOf/1/compositions/items}
+\begin{itemize}\item {\bf default value}: 0
+\item {\bf type}: integer
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/grains models/items/oneOf/1/orientation operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value (add, not implemented). Replacing implies that all values not explicitly defined are set to zero.
+\item {\bf enum}: [replace]\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/grains models/items/oneOf/1/grain sizes}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list of the size of all of the grains in each composition. If set to <0, the size will be randomized between 0 and 1.
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/grains models/items/oneOf/1/grain sizes/items}
+\begin{itemize}\item {\bf default value}: 1.0
+\item {\bf type}: number
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/grains models/items/oneOf/1/normalize grain sizes}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list of whether the sizes of the grains should be normalized or not. If normalized, the total of the grains of a composition will be equal to 1.
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/grains models/items/oneOf/1/normalize grain sizes/items}
+\begin{itemize}\item {\bf default value}: true
+\item {\bf type}: boolean
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/grains models/items/oneOf/2}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: Uniform grains model object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model, compositions]\end{itemize}
+\paragraph{/features/items/oneOf/5/sections/items/segments/items/grains models/items/oneOf/2/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the grains model.
+\item {\bf enum}: [uniform]\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/grains models/items/oneOf/2/min distance slab top}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: The distance from the slab top in meters from which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/grains models/items/oneOf/2/max distance slab top}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: The distance from the slab top in meters to which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/grains models/items/oneOf/2/compositions}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list with the integer labels of the composition which are present there.
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/grains models/items/oneOf/2/compositions/items}
+\begin{itemize}\item {\bf default value}: 0
+\item {\bf type}: integer
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/grains models/items/oneOf/2/rotation matrices}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list with the labels of the grains which are present there for each compositions.
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/grains models/items/oneOf/2/rotation matrices/items}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 3
+\item {\bf maxItems}: 3
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/grains models/items/oneOf/2/rotation matrices/items/items}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 3
+\item {\bf maxItems}: 3
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/grains models/items/oneOf/2/rotation matrices/items/items/items}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/grains models/items/oneOf/2/Euler angles z-x-z}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list with the z-x-z Euler angles of the grains which are present there for each compositions.
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/grains models/items/oneOf/2/Euler angles z-x-z/items}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 3
+\item {\bf maxItems}: 3
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/grains models/items/oneOf/2/Euler angles z-x-z/items/items}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/grains models/items/oneOf/2/orientation operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value (add, not implemented). Replacing implies that all values not explicitly defined are set to zero.
+\item {\bf enum}: [replace]\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/grains models/items/oneOf/2/grain sizes}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list of the size of all of the grains in each composition. If set to <0, the size will be set so that the total is equal to 1.
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/segments/items/grains models/items/oneOf/2/grain sizes/items}
+\begin{itemize}\item {\bf default value}: -1.0
+\item {\bf type}: number
+\item {\bf documentation}: 
+\end{itemize}\subsubsection{/features/items/oneOf/5/sections/items/temperature models}
 \begin{itemize}\item {\bf documentation}: A list of temperature models.
 \item {\bf default value}: 
 \item {\bf type}: array
@@ -2026,14 +3410,18 @@
 
 \subsubsection{/features/items/oneOf/5/sections/items/temperature models/items/oneOf/1}
 \begin{itemize}\item {\bf type}: object
-\item {\bf documentation}: Temperature object
+\item {\bf documentation}: temperature object
 \item {\bf additionalProperties}: false
 \item {\bf required}: [model]\end{itemize}
 \paragraph{/features/items/oneOf/5/sections/items/temperature models/items/oneOf/1/model}
 \begin{itemize}\item {\bf default value}: 
 \item {\bf type}: string
 \item {\bf documentation}: The name of the temperature model.
-\item {\bf enum}: [adiabatic]\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/temperature models/items/oneOf/1/min distance slab top}
+\item {\bf enum}: [adiabatic]\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/temperature models/items/oneOf/1/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or subtract the value to the previously define value (subtract).
+\item {\bf enum}: [replace, add, subtract]\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/temperature models/items/oneOf/1/min distance slab top}
 \begin{itemize}\item {\bf default value}: 0.0
 \item {\bf type}: number
 \item {\bf documentation}: todo The depth in meters from which the composition of this feature is present.
@@ -2053,11 +3441,7 @@
 \begin{itemize}\item {\bf default value}: -1.0
 \item {\bf type}: number
 \item {\bf documentation}: The specific heat in $J kg^{-1} K^{-1}$. If the value is lower then zero, the global value is used.
-\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/temperature models/items/oneOf/1/operation}
-\begin{itemize}\item {\bf default value}: replace
-\item {\bf type}: string
-\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or substract the value to the previously define value (substract).
-\item {\bf enum}: [replace, add, substract]\end{itemize}\subsubsection{/features/items/oneOf/5/sections/items/temperature models/items/oneOf/2}
+\end{itemize}\subsubsection{/features/items/oneOf/5/sections/items/temperature models/items/oneOf/2}
 \begin{itemize}\item {\bf type}: object
 \item {\bf documentation}: Temperature model object
 \item {\bf additionalProperties}: false
@@ -2066,7 +3450,11 @@
 \begin{itemize}\item {\bf default value}: 
 \item {\bf type}: string
 \item {\bf documentation}: The name of the temperature model.
-\item {\bf enum}: [linear]\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/temperature models/items/oneOf/2/min distance slab top}
+\item {\bf enum}: [linear]\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/temperature models/items/oneOf/2/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or subtract the value to the previously define value (subtract).
+\item {\bf enum}: [replace, add, subtract]\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/temperature models/items/oneOf/2/min distance slab top}
 \begin{itemize}\item {\bf default value}: 0.0
 \item {\bf type}: number
 \item {\bf documentation}: todo The depth in meters from which the composition of this feature is present.
@@ -2081,11 +3469,7 @@
 \end{itemize}\paragraph{/features/items/oneOf/5/sections/items/temperature models/items/oneOf/2/bottom temperature}
 \begin{itemize}\item {\bf default value}: -1.0
 \item {\bf type}: number
-\item {\bf documentation}: The temperature at the top in degree Kelvin of this feature. If the value is below zero, an adiabatic temperature is used.
-\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/temperature models/items/oneOf/2/operation}
-\begin{itemize}\item {\bf default value}: replace
-\item {\bf type}: string
-\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value (add).
+\item {\bf documentation}: The temperature at the bottom in degree Kelvin of this feature. If the value is below zero, an adiabatic temperature is used.
 \end{itemize}\subsubsection{/features/items/oneOf/5/sections/items/temperature models/items/oneOf/3}
 \begin{itemize}\item {\bf type}: object
 \item {\bf documentation}: Temperature model object
@@ -2095,7 +3479,11 @@
 \begin{itemize}\item {\bf default value}: 
 \item {\bf type}: string
 \item {\bf documentation}: The name of the temperature model.
-\item {\bf enum}: [plate model]\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/temperature models/items/oneOf/3/min distance slab top}
+\item {\bf enum}: [plate model]\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/temperature models/items/oneOf/3/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or subtract the value to the previously define value (subtract).
+\item {\bf enum}: [replace, add, subtract]\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/temperature models/items/oneOf/3/min distance slab top}
 \begin{itemize}\item {\bf default value}: 0.0
 \item {\bf type}: number
 \item {\bf documentation}: todo The depth in meters from which the composition of this feature is present.
@@ -2116,18 +3504,22 @@
 \item {\bf type}: number
 \item {\bf documentation}: The thermal conductivity of the subducting plate material in $W m^{-1} K^{-1}$.
 \end{itemize}\paragraph{/features/items/oneOf/5/sections/items/temperature models/items/oneOf/3/thermal expansion coefficient}
-\begin{itemize}\item {\bf default value}: 0.000035
+\begin{itemize}\item {\bf default value}: -1.0
 \item {\bf type}: number
-\item {\bf documentation}: The thermal expansivity of the subducting plate material in $K^{-1}$.
+\item {\bf documentation}: The thermal expansivity of the subducting plate material in $K^{-1}$. If smaller than zero, the global value is used.
 \end{itemize}\paragraph{/features/items/oneOf/5/sections/items/temperature models/items/oneOf/3/specific heat}
-\begin{itemize}\item {\bf default value}: 1250.0
+\begin{itemize}\item {\bf default value}: -1.0
 \item {\bf type}: number
-\item {\bf documentation}: The specific heat of the subducting plate material in $J kg^{-1} K^{-1}$.
-\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/temperature models/items/oneOf/3/operation}
-\begin{itemize}\item {\bf default value}: replace
-\item {\bf type}: string
-\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or substract the value to the previously define value (substract).
-\item {\bf enum}: [replace, add, substract]\end{itemize}\subsubsection{/features/items/oneOf/5/sections/items/temperature models/items/oneOf/4}
+\item {\bf documentation}: The specific heat of the subducting plate material in $J kg^{-1} K^{-1}$. If smaller than zero, the global value is used.
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/temperature models/items/oneOf/3/adiabatic heating}
+\begin{itemize}\item {\bf default value}: true
+\item {\bf type}: boolean
+\item {\bf documentation}: Wheter adiabatic heating should be used for the slab. Setting the parameter to false leads to equation 26 from McKenzie (1970),which is the result obtained from McKenzie 1969.
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/temperature models/items/oneOf/3/potential mantle temperature}
+\begin{itemize}\item {\bf default value}: -1.0
+\item {\bf type}: number
+\item {\bf documentation}: The potential temperature of the mantle at the surface in Kelvin. If smaller than zero, the global value is used.
+\end{itemize}\subsubsection{/features/items/oneOf/5/sections/items/temperature models/items/oneOf/4}
 \begin{itemize}\item {\bf type}: object
 \item {\bf documentation}: Temperature model object
 \item {\bf additionalProperties}: false
@@ -2136,7 +3528,11 @@
 \begin{itemize}\item {\bf default value}: 
 \item {\bf type}: string
 \item {\bf documentation}: The name of the temperature model.
-\item {\bf enum}: [uniform]\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/temperature models/items/oneOf/4/min distance slab top}
+\item {\bf enum}: [uniform]\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/temperature models/items/oneOf/4/operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or subtract the value to the previously define value (subtract).
+\item {\bf enum}: [replace, add, subtract]\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/temperature models/items/oneOf/4/min distance slab top}
 \begin{itemize}\item {\bf default value}: 0.0
 \item {\bf type}: number
 \item {\bf documentation}: todo The depth in meters from which the composition of this feature is present.
@@ -2148,11 +3544,7 @@
 \begin{itemize}\item {\bf default value}: 293.15
 \item {\bf type}: number
 \item {\bf documentation}: The temperature in degree Kelvin which this feature should have
-\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/temperature models/items/oneOf/4/operation}
-\begin{itemize}\item {\bf default value}: replace
-\item {\bf type}: string
-\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or substract the value to the previously define value (substract).
-\item {\bf enum}: [replace, add, substract]\end{itemize}\subsubsection{/features/items/oneOf/5/sections/items/composition models}
+\end{itemize}\subsubsection{/features/items/oneOf/5/sections/items/composition models}
 \begin{itemize}\item {\bf documentation}: A list of composition models.
 \item {\bf default value}: 
 \item {\bf type}: array
@@ -2199,7 +3591,143 @@
 \begin{itemize}\item {\bf default value}: replace
 \item {\bf type}: string
 \item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value (add, not implemented). Replacing implies that all values not explicitly defined are set to zero.
-\item {\bf enum}: [replace]\end{itemize}\subsubsection{/features/items/oneOf/5/sections/items/coordinate}
+\item {\bf enum}: [replace]\end{itemize}\subsubsection{/features/items/oneOf/5/sections/items/grains models}
+\begin{itemize}\item {\bf documentation}: A list of grains models.
+\item {\bf default value}: 
+\item {\bf type}: array
+\end{itemize}\subsubsection{/features/items/oneOf/5/sections/items/grains models/items}
+
+\subsubsection{/features/items/oneOf/5/sections/items/grains models/items/oneOf/1}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: random uniform distribution grains model object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model, compositions]\end{itemize}
+\paragraph{/features/items/oneOf/5/sections/items/grains models/items/oneOf/1/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the grains model.
+\item {\bf enum}: [random uniform distribution]\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/grains models/items/oneOf/1/min distance slab top}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: The distance from the slab top in meters from which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/grains models/items/oneOf/1/max distance slab top}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: The distance from the slab top in meters to which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/grains models/items/oneOf/1/compositions}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list with the integer labels of the composition which are present there.
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/grains models/items/oneOf/1/compositions/items}
+\begin{itemize}\item {\bf default value}: 0
+\item {\bf type}: integer
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/grains models/items/oneOf/1/orientation operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value (add, not implemented). Replacing implies that all values not explicitly defined are set to zero.
+\item {\bf enum}: [replace]\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/grains models/items/oneOf/1/grain sizes}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list of the size of all of the grains in each composition. If set to <0, the size will be randomized between 0 and 1.
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/grains models/items/oneOf/1/grain sizes/items}
+\begin{itemize}\item {\bf default value}: 1.0
+\item {\bf type}: number
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/grains models/items/oneOf/1/normalize grain sizes}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list of whether the sizes of the grains should be normalized or not. If normalized, the total of the grains of a composition will be equal to 1.
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/grains models/items/oneOf/1/normalize grain sizes/items}
+\begin{itemize}\item {\bf default value}: true
+\item {\bf type}: boolean
+\item {\bf documentation}: 
+\end{itemize}\subsubsection{/features/items/oneOf/5/sections/items/grains models/items/oneOf/2}
+\begin{itemize}\item {\bf type}: object
+\item {\bf documentation}: Uniform grains model object
+\item {\bf additionalProperties}: false
+\item {\bf required}: [model, compositions]\end{itemize}
+\paragraph{/features/items/oneOf/5/sections/items/grains models/items/oneOf/2/model}
+\begin{itemize}\item {\bf default value}: 
+\item {\bf type}: string
+\item {\bf documentation}: The name of the grains model.
+\item {\bf enum}: [uniform]\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/grains models/items/oneOf/2/min distance slab top}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: The distance from the slab top in meters from which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/grains models/items/oneOf/2/max distance slab top}
+\begin{itemize}\item {\bf default value}: 1.7976931348623157e308
+\item {\bf type}: number
+\item {\bf documentation}: The distance from the slab top in meters to which the composition of this feature is present.
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/grains models/items/oneOf/2/compositions}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list with the integer labels of the composition which are present there.
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/grains models/items/oneOf/2/compositions/items}
+\begin{itemize}\item {\bf default value}: 0
+\item {\bf type}: integer
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/grains models/items/oneOf/2/rotation matrices}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list with the labels of the grains which are present there for each compositions.
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/grains models/items/oneOf/2/rotation matrices/items}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 3
+\item {\bf maxItems}: 3
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/grains models/items/oneOf/2/rotation matrices/items/items}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 3
+\item {\bf maxItems}: 3
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/grains models/items/oneOf/2/rotation matrices/items/items/items}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/grains models/items/oneOf/2/Euler angles z-x-z}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list with the z-x-z Euler angles of the grains which are present there for each compositions.
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/grains models/items/oneOf/2/Euler angles z-x-z/items}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 3
+\item {\bf maxItems}: 3
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/grains models/items/oneOf/2/Euler angles z-x-z/items/items}
+\begin{itemize}\item {\bf default value}: 0.0
+\item {\bf type}: number
+\item {\bf documentation}: 
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/grains models/items/oneOf/2/orientation operation}
+\begin{itemize}\item {\bf default value}: replace
+\item {\bf type}: string
+\item {\bf documentation}: Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value (add, not implemented). Replacing implies that all values not explicitly defined are set to zero.
+\item {\bf enum}: [replace]\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/grains models/items/oneOf/2/grain sizes}
+\begin{itemize}\item {\bf type}: array
+\item {\bf minItems}: 0
+\item {\bf maxItems}: 4294967295
+\item {\bf uniqueItems}: false
+\item {\bf documentation}: A list of the size of all of the grains in each composition. If set to <0, the size will be set so that the total is equal to 1.
+\end{itemize}\paragraph{/features/items/oneOf/5/sections/items/grains models/items/oneOf/2/grain sizes/items}
+\begin{itemize}\item {\bf default value}: -1.0
+\item {\bf type}: number
+\item {\bf documentation}: 
+\end{itemize}\subsubsection{/features/items/oneOf/5/sections/items/coordinate}
 \begin{itemize}\item {\bf default value}: 0
 \item {\bf type}: integer
 \item {\bf documentation}: The coordinate which should be overwritten

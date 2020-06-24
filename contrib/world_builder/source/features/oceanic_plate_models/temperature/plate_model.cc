@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -47,7 +47,7 @@ namespace WorldBuilder
           top_temperature(NaN::DSNAN),
           bottom_temperature(NaN::DSNAN),
           spreading_velocity(NaN::DSNAN),
-          operation("")
+          operation(Utilities::Operations::REPLACE)
         {
           this->world = world_;
           this->name = "plate model";
@@ -82,11 +82,6 @@ namespace WorldBuilder
           prm.declare_entry("ridge coordinates", Types::Array(Types::Point<2>(),2),
                             "A list of 2d points which define the location of the ridge.");
 
-          prm.declare_entry("operation", Types::String("replace", std::vector<std::string> {"replace", "add", "substract"}),
-                            "Whether the value should replace any value previously defined at this location (replace), "
-                            "add the value to the previously define value (add) or substract the value to the previously "
-                            "define value (substract).");
-
         }
 
         void
@@ -95,7 +90,7 @@ namespace WorldBuilder
 
           min_depth = prm.get<double>("min depth");
           max_depth = prm.get<double>("max depth");
-          operation = prm.get<std::string>("operation");
+          operation = Utilities::string_operations_to_enum(prm.get<std::string>("operation"));
           top_temperature = prm.get<double>("top temperature");
           bottom_temperature = prm.get<double>("bottom temperature");
           spreading_velocity = prm.get<double>("spreading velocity")/31557600;
@@ -117,9 +112,6 @@ namespace WorldBuilder
                                     const double,
                                     const double) const
         {
-
-          double temperature = temperature_;
-
           if (depth <= max_depth && depth >= min_depth)
             {
               WorldBuilder::Utilities::NaturalCoordinate natural_coordinate = WorldBuilder::Utilities::NaturalCoordinate(position,
@@ -179,7 +171,7 @@ namespace WorldBuilder
               //const double spreading_velocity = spreading_velocity;
               const double thermal_diffusivity = this->world->thermal_diffusivity;
               const double age = distance_ridge / spreading_velocity;
-              temperature = top_temperature + (bottom_temperature_local - top_temperature) * (depth / max_depth);
+              double temperature = top_temperature + (bottom_temperature_local - top_temperature) * (depth / max_depth);
 
               for (int i = 1; i<sommation_number+1; ++i)
                 {
@@ -206,18 +198,13 @@ namespace WorldBuilder
                        << ", age = " << age << ".");
 
 
-              if (operation == "replace")
-                return temperature;
-              else if ("add")
-                return temperature_ + temperature;
-              else if ("substract")
-                return temperature_ - temperature;
+              return Utilities::apply_operation(operation,temperature_,temperature);
 
             }
           return temperature_;
         }
 
-        WB_REGISTER_FEATURE_CONTINENTAL_TEMPERATURE_MODEL(PlateModel, plate model)
+        WB_REGISTER_FEATURE_OCEANIC_PLATE_TEMPERATURE_MODEL(PlateModel, plate model)
       }
     }
   }

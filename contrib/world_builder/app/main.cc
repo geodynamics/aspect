@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -26,6 +26,8 @@
 #include <world_builder/utilities.h>
 #include <world_builder/world.h>
 
+#include <app/main.h>
+
 using namespace WorldBuilder::Utilities;
 
 bool find_command_line_option(char **begin, char **end, const std::string &option)
@@ -43,6 +45,8 @@ int main(int argc, char **argv)
 
   unsigned int dim = 3;
   unsigned int compositions = 0;
+  unsigned int grain_compositions = 0;
+  size_t number_of_grains = 0;
 
   if (find_command_line_option(argv, argv+argc, "-h") || find_command_line_option(argv, argv+argc, "--help"))
     {
@@ -101,8 +105,6 @@ int main(int argc, char **argv)
   /**
    * Read the data from the data files
    */
-
-  std::string line;
   std::ifstream data_stream(data_file);
 
   // move the data into a vector of strings
@@ -134,6 +136,12 @@ int main(int argc, char **argv)
       if (data[i].size() > 0 && data[i][0] == "#" && data[i][1] == "compositions" && data[i][2] == "=")
         compositions = string_to_unsigned_int(data[i][3]);
 
+      if (data[i].size() > 0 && data[i][0] == "#" && data[i][1] == "grain" && data[i][2] == "compositions" && data[i][3] == "=")
+        grain_compositions = string_to_unsigned_int(data[i][4]);
+
+      if (data[i].size() > 0 && data[i][0] == "#" && data[i][1] == "number" && data[i][2] == "of" && data[i][3] == "grains" && data[i][4] == "=")
+        number_of_grains = string_to_unsigned_int(data[i][5]);
+
     }
 
   switch (dim)
@@ -144,6 +152,13 @@ int main(int argc, char **argv)
 
         for (unsigned int c = 0; c < compositions; ++c)
           std::cout << "c" << c << " ";
+
+        for (unsigned int gc = 0; gc < grain_compositions; ++gc)
+          for (size_t g = 0; g < number_of_grains; g++)
+            std::cout << "gs" << gc << "-" << g << " " // gs = grain size, gm = grain rotation matrix
+                      << "gm" << gc << "-" << g << "[0:0] " << "gm" << gc << "-" << g << "[0:1] " << "gm" << gc << "-" << g << "[0:2] "
+                      << "gm" << gc << "-" << g << "[1:0] " << "gm" << gc << "-" << g << "[1:1] " << "gm" << gc << "-" << g << "[1:2] "
+                      << "gm" << gc << "-" << g << "[2:0] " << "gm" << gc << "-" << g << "[2:1] " << "gm" << gc << "-" << g << "[2:2] ";
 
         std::cout <<std::endl;
 
@@ -167,6 +182,18 @@ int main(int argc, char **argv)
                 {
                   std::cout << world->composition(coords, string_to_double(data[i][2]), c)  << " ";
                 }
+
+              for (unsigned int gc = 0; gc < grain_compositions; ++gc)
+                {
+                  WorldBuilder::grains grains = world->grains(coords, string_to_double(data[i][2]), gc, number_of_grains);
+                  for (unsigned int g = 0; g < number_of_grains; ++g)
+                    {
+                      std::cout << grains.sizes[g]  << " "
+                                << grains.rotation_matrices[g][0][0] << " " << grains.rotation_matrices[g][0][1] << " " << grains.rotation_matrices[g][0][2] << " "
+                                << grains.rotation_matrices[g][1][0] << " " << grains.rotation_matrices[g][1][1] << " " << grains.rotation_matrices[g][1][2] << " "
+                                << grains.rotation_matrices[g][2][0] << " " << grains.rotation_matrices[g][2][1] << " " << grains.rotation_matrices[g][2][2] << " ";
+                    }
+                }
               std::cout << std::endl;
 
             }
@@ -177,6 +204,13 @@ int main(int argc, char **argv)
 
         for (unsigned int c = 0; c < compositions; ++c)
           std::cout << "c" << c << " ";
+
+        for (unsigned int gc = 0; gc < grain_compositions; ++gc)
+          for (size_t g = 0; g < number_of_grains; g++)
+            std::cout << "gs" << gc << "-" << g << " " // gs = grain size, gm = grain rotation matrix
+                      << "gm" << gc << "-" << g << "[0:0] " << "gm" << gc << "-" << g << "[0:1] " << "gm" << gc << "-" << g << "[0:2] "
+                      << "gm" << gc << "-" << g << "[1:0] " << "gm" << gc << "-" << g << "[1:1] " << "gm" << gc << "-" << g << "[1:2] "
+                      << "gm" << gc << "-" << g << "[2:0] " << "gm" << gc << "-" << g << "[2:1] " << "gm" << gc << "-" << g << "[2:2] ";
 
         std::cout <<std::endl;
 
@@ -200,6 +234,18 @@ int main(int argc, char **argv)
               for (unsigned int c = 0; c < compositions; ++c)
                 {
                   std::cout << world->composition(coords, string_to_double(data[i][3]), c)  << " ";
+                }
+
+              for (unsigned int gc = 0; gc < grain_compositions; ++gc)
+                {
+                  WorldBuilder::grains grains = world->grains(coords, string_to_double(data[i][3]), gc, number_of_grains);
+                  for (unsigned int g = 0; g < number_of_grains; ++g)
+                    {
+                      std::cout << grains.sizes[g]  << " "
+                                << grains.rotation_matrices[g][0][0] << " " << grains.rotation_matrices[g][0][1] << " " << grains.rotation_matrices[g][0][2] << " "
+                                << grains.rotation_matrices[g][1][0] << " " << grains.rotation_matrices[g][1][1] << " " << grains.rotation_matrices[g][1][2] << " "
+                                << grains.rotation_matrices[g][2][0] << " " << grains.rotation_matrices[g][2][1] << " " << grains.rotation_matrices[g][2][2] << " ";
+                    }
                 }
               std::cout << std::endl;
 

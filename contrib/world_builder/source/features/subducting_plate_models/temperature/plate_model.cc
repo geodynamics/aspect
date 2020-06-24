@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -53,7 +53,7 @@ namespace WorldBuilder
           potential_mantle_temperature(NaN::DSNAN),
           surface_temperature(NaN::DSNAN),
           adiabatic_heating(true),
-          operation("")
+          operation(Utilities::Operations::REPLACE)
         {
           this->world = world_;
           this->name = "plate model";
@@ -91,11 +91,6 @@ namespace WorldBuilder
           prm.declare_entry("specific heat", Types::Double(-1),
                             "The specific heat of the subducting plate material in $J kg^{-1} K^{-1}$. If smaller than zero, the global value is used.");
 
-          prm.declare_entry("operation", Types::String("replace", std::vector<std::string> {"replace", "add", "substract"}),
-                            "Whether the value should replace any value previously defined at this location (replace), "
-                            "add the value to the previously define value (add) or substract the value to the previously "
-                            "define value (substract).");
-
           prm.declare_entry("adiabatic heating", Types::Bool(true),
                             "Wheter adiabatic heating should be used for the slab. Setting the parameter to false leads to equation 26 from McKenzie (1970),"
                             "which is the result obtained from McKenzie 1969.");
@@ -110,7 +105,7 @@ namespace WorldBuilder
 
           min_depth = prm.get<double>("min distance slab top");
           max_depth = prm.get<double>("max distance slab top");
-          operation = prm.get<std::string>("operation");
+          operation = Utilities::string_operations_to_enum(prm.get<std::string>("operation"));
           //top_temperature = prm.get<double>("top temperature");
           //bottom_temperature = prm.get<double>("bottom temperature");
           //spreading_velocity = prm.get<double>("spreading velocity")/31557600;
@@ -153,7 +148,6 @@ namespace WorldBuilder
                                     const double,
                                     const std::map<std::string,double> &distance_from_planes) const
         {
-          double temperature = temperature_;
           const double thickness_local = std::min(distance_from_planes.at("thicknessLocal"), max_depth);
           const double distance_from_plane = distance_from_planes.at("distanceFromPlane");
           const double distance_along_plane = distance_from_planes.at("distanceAlongPlane");
@@ -231,26 +225,20 @@ namespace WorldBuilder
                          * (sin(i * const_pi * z_scaled));
                 }
               // todo: investiage wheter this 273.15 should just be the surface temperature.
-              temperature = temp * (potential_mantle_temperature
-                                    + 2.0 * (potential_mantle_temperature - 273.15) * sum);
+              double temperature = temp * (potential_mantle_temperature
+                                           + 2.0 * (potential_mantle_temperature - 273.15) * sum);
 
               WBAssert(!std::isnan(temperature), "Internal error: temperature is not a number: " << temperature << ".");
               WBAssert(std::isfinite(temperature), "Internal error: temperature is not finite: " << temperature << ".");
 
 
-
-              if (operation == "replace")
-                return temperature;
-              else if ("add")
-                return temperature_ + temperature;
-              else if ("substract")
-                return temperature_ - temperature;
+              return Utilities::apply_operation(operation,temperature_,temperature);
             }
 
           return temperature_;
         }
 
-        WB_REGISTER_FEATURE_CONTINENTAL_TEMPERATURE_MODEL(PlateModel, plate model)
+        WB_REGISTER_FEATURE_SUBDUCTING_PLATE_TEMPERATURE_MODEL(PlateModel, plate model)
       }
     }
   }

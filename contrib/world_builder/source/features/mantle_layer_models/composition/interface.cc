@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -46,35 +46,7 @@ namespace WorldBuilder
                                    const std::string &parent_name,
                                    const std::vector<std::string> &required_entries)
         {
-          unsigned int counter = 0;
-          for ( auto it = get_declare_map().begin(); it != get_declare_map().end(); ++it )
-            {
-              // prevent infinite recursion
-              if (it->first != parent_name)
-                {
-                  prm.enter_subsection("oneOf");
-                  {
-                    prm.enter_subsection(std::to_string(counter));
-                    {
-                      prm.enter_subsection("properties");
-                      {
-                        prm.declare_entry("", Types::Object(required_entries), "composition object");
-
-                        prm.declare_entry("model", Types::String("",it->first),
-                                          "The name of the composition model.");
-
-                        it->second(prm, parent_name);
-                      }
-                      prm.leave_subsection();
-                    }
-                    prm.leave_subsection();
-                  }
-                  prm.leave_subsection();
-
-                  counter++;
-
-                }
-            }
+          prm.declare_model_entries("composition",parent_name, get_declare_map(),required_entries);
         }
 
 

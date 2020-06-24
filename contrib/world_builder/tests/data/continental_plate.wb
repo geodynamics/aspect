@@ -1,5 +1,5 @@
 {
-  "version":"0.2",
+  "version":"0.3",
   "cross section": [[100e3,100e3],[400e3,500e3]],
   "coordinate system":{"model":"cartesian"},
   "features":
@@ -11,10 +11,20 @@
      
     {"model":"continental plate", "name":"Second continental plate", "max depth":250e3, "coordinates":[[2000e3,2000e3],[1000e3,2000e3],[1000e3,1000e3],[2000e3,1000e3]],
      "temperature models":[{"model":"adiabatic", "potential mantle temperature":20}],
-     "composition models":[{"model":"uniform", "compositions":[2]}]},
+     "composition models":[{"model":"uniform", "compositions":[2]}],
+     "grains models":[
+                     {"model":"uniform", "compositions":[0,1], // olivine and enstatie
+                      "rotation matrices":[[[10,20,30],[40,50,60],[70,80,90]],[[100,110,120],[130,140,150],[160,170,180]]],
+                      "grain sizes":[0.3,-1]}
+]},
 
     {"model":"continental plate", "name":"Third continental plate", "max depth":250e3, "coordinates":[[-1e3,500e3],[500e3,500e3],[500e3,1000e3],[-1e3,1000e3]],
-     "composition models":[{"model":"uniform", "compositions":[3]}]},
+     "composition models":[{"model":"uniform", "compositions":[3]}],
+     "grains models":[
+                     {"model":"uniform", "compositions":[0,1], // olivine and enstatie
+                      "rotation matrices":[[[1,2,3],[4,5,6],[7,8,9]],[[10,11,12],[13,14,15],[16,17,18]]],
+                      "grain sizes":[-1,0.2]}
+]},
 
     {"model":"continental plate", "name":"Fourth continental plate", "max depth":250e3, "coordinates":[[-1e3,1500e3],[500e3,1500e3],[500e3,2000e3],[-1e3,2000e3]],
      "temperature models":[{"model":"linear", "max depth":250e3}],
@@ -22,7 +32,13 @@
 
     {"model":"continental plate", "name":"Fifth continental plate", "max depth":250e3, "coordinates":[[500e3,-1e3],[500e3,500e3],[1000e3,500e3],[1000e3,-1e3]],
      "temperature models":[{"model":"linear", "max depth":250e3, "top temperature":10, "bottom temperature":50}],
-     "composition models":[{"model":"uniform", "compositions":[5,6], "fractions":[0.25,0.75]}]},
+     "composition models":[{"model":"uniform", "compositions":[5,6], "fractions":[0.25,0.75]}],
+     "grains models":[
+                      {"model":"random uniform distribution","max depth":100e3, "compositions":[0,1], // olivine and enstatie
+                       "grain sizes":[0.2,-1], "normalize grain sizes":[true,false]},
+                       {"model":"random uniform distribution","min depth":100e3,"max depth":200e3, "compositions":[0], // olivine and enstatie
+                       "grain sizes":[-1], "normalize grain sizes":[true]}
+     ]},
 
     {"model":"continental plate", "name":"Sixth continental plate", "max depth":250e3, "coordinates":[[1250e3,-1e3],[1250e3,500e3],[1750e3,500e3],[1750e3,-1e3]],
      "temperature models":[{"model":"linear", "max depth":250e3, "top temperature":10, "bottom temperature":50}],

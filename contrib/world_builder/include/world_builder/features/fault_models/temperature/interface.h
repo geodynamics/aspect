@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -156,7 +156,7 @@ namespace WorldBuilder
       { \
         Interface::registerType(#name, klass::declare_entries, this); \
       } \
-      virtual std::unique_ptr<Interface> create(World *world) { \
+      std::unique_ptr<Interface> create(World *world) override final { \
         return std::unique_ptr<Interface>(new klass(world)); \
       } \
   }; \

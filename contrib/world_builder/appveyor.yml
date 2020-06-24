@@ -1,6 +1,6 @@
-version: '0.1.0.{build}'
+version: '0.3.0.{build}'
 
-image: Visual Studio 2017
+image: Visual Studio 2015
 
 platform:
   - x64
@@ -10,36 +10,48 @@ configuration:
   - Debug
 
 environment:
-  CMAKE_GENERATOR: -G"MinGW Makefiles"
-  VCPKG_ARCH: x64-windows
+  CMAKE_GENERATOR: "Visual Studio 14 2015 Win64" 
+  VS: 2015
+  #VCPKG_ARCH: x64-windows
 
 init:
   - cmd: set PATH=%MINGW_DIR%;%PATH%
-  - cmd: ls C:\msys64\mingw64\bin
-  - cmd: ls C:\msys64\usr\bin
 
 before_build:
 
+install:
+  - if "%VS%"=="2017" call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
+  - if "%VS%"=="2015" call "C:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.cmd" /x64
+  - if "%VS%"=="2015" call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" x86_amd64
+  - cmake --version
+  - set PATH=C:\Python38-x64;%PATH% &
+    python -V &
+    python -m pip install virtualenv wheel
+
 build_script:
-  - set PATH=%PATH%;C:\msys64\mingw64\bin;C:\msys64\usr\bin\
-  - pacman --noconfirm -Syu
-  - pacman --noconfirm -S dos2unix
+  - choco install swig --yes
+  - choco install dos2unix --yes
+  - echo %LD_LIBRARY_PATH%
+  - swig -swiglib
+  - echo %SWIG_LIB%
   - which cmake
-  - which make
   - mkdir install
   - mkdir build
   - cd build
-  - cmake %CMAKE_GENERATOR% -DCMAKE_BUILD_TYPE=%configuration% -DCMAKE_INSTALL_PREFIX=../install -DCMAKE_SH="CMAKE_SH-NOTFOUND" -DCMAKE_VERBOSE_MAKEFILE=ON .. 
-  - cmake --build . --config %configuration%
-  - cd bin
-  - WorldBuilderApp.exe
-  - cd ..  
+  - pwd
+  - cmake -G "%CMAKE_GENERATOR%" -DCMAKE_BUILD_TYPE=%configuration% -DCMAKE_INSTALL_PREFIX=../install -DCMAKE_VERBOSE_MAKEFILE=ON .. 
+  - cmake --build . --config %configuration% --target install
+  - set PYTHONPATH=%PYTHONPATH%;/c/Python38-x64/Lib/;/c/Python38-x64/DLLs/;%APPVEYOR_BUILD_FOLDER%\build\lib\
+  - echo %PythonPath%
+  - echo %PYTHONPATH%
+  - set path=%PATH%;%PYTHONPATH%;
+  - echo _gwblib > lib\gwb.pth
+  - ls %APPVEYOR_BUILD_FOLDER%\build\
+  - ls %APPVEYOR_BUILD_FOLDER%\build\lib\
+  - ls /c/Python38-x64/Lib/
+  - ls /c/Python38-x64/libs/
+  - ls /c/Python38-x64/DLLs/
 
-    # run_simple_fortran_example is excluded from the tester for now, because it doesn't work on appveyor.
-    # It does work on windows on travis, and the error code (8) seems to indicate that there is a lack of 
-    # memory: https://docs.microsoft.com/en-us/windows/desktop/Debug/system-error-codes--0-499-#error_not_enough_memory.
-    # So it is probably an appveyor problem, and since it now works on travis, getting it to work on appveyor
-    # is not critical anymore.
 test_script: 
-  - ctest -VV -E run_simple_fortran_example  
+  - cmake --build . --config %configuration% --target run_tests
 after_test:

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -55,11 +55,9 @@ namespace WorldBuilder
 
     void
     ContinentalPlate::declare_entries(Parameters &prm,
-                                      const std::string &parent_name,
+                                      const std::string &,
                                       const std::vector<std::string> &required_entries)
     {
-      if (parent_name == "items")
-        prm.enter_subsection("properties");
       prm.declare_entry("", Types::Object(required_entries), "continental plate object");
 
       prm.declare_entry("min depth", Types::Double(0),
@@ -72,24 +70,9 @@ namespace WorldBuilder
       prm.declare_entry("composition models",
                         Types::PluginSystem("", Features::ContinentalPlateModels::Composition::Interface::declare_entries, {"model"}),
                         "A list of composition models.");
-
-      /* Todo
-      // prevent infinite recursion
-      if (parent_name != "items")
-        {
-          // This only happens if we are not in sections
-          prm.declare_entry("sections", Types::Array(Types::PluginSystem("",Features::ContinentalPlate::declare_entries, {"coordinate"}, false)),"A list of features.");
-        }
-      else
-        {
-
-          // this only happens in sections
-          prm.declare_entry("coordinate", Types::UnsignedInt(0),
-                            "The coordinate which should be overwritten");
-
-          prm.leave_subsection();
-        }
-        */
+      prm.declare_entry("grains models",
+                        Types::PluginSystem("", Features::ContinentalPlateModels::Grains::Interface::declare_entries, {"model"}),
+                        "A list of grains models.");
     }
 
     void
@@ -135,6 +118,22 @@ namespace WorldBuilder
       }
       prm.leave_subsection();
 
+
+      prm.get_unique_pointers<Features::ContinentalPlateModels::Grains::Interface>("grains models", grains_models);
+
+      prm.enter_subsection("grains models");
+      {
+        for (unsigned int i = 0; i < grains_models.size(); ++i)
+          {
+            prm.enter_subsection(std::to_string(i));
+            {
+              grains_models[i]->parse_entries(prm);
+            }
+            prm.leave_subsection();
+          }
+      }
+      prm.leave_subsection();
+
     }
 
 
@@ -146,7 +145,6 @@ namespace WorldBuilder
     {
       WorldBuilder::Utilities::NaturalCoordinate natural_coordinate = WorldBuilder::Utilities::NaturalCoordinate(position,
                                                                       *(world->parameters.coordinate_system));
-
       if (depth <= max_depth && depth >= min_depth &&
           Utilities::polygon_contains_point(coordinates, Point<2>(natural_coordinate.get_surface_coordinates(),
                                                                   world->parameters.coordinate_system->natural_coordinate_system())))
@@ -202,6 +200,39 @@ namespace WorldBuilder
         }
 
       return composition;
+    }
+
+    WorldBuilder::grains
+    ContinentalPlate::grains(const Point<3> &position,
+                             const double depth,
+                             const unsigned int composition_number,
+                             WorldBuilder::grains grains) const
+    {
+      WorldBuilder::Utilities::NaturalCoordinate natural_coordinate = WorldBuilder::Utilities::NaturalCoordinate(position,
+                                                                      *(world->parameters.coordinate_system));
+
+      if (depth <= max_depth && depth >= min_depth &&
+          Utilities::polygon_contains_point(coordinates, Point<2>(natural_coordinate.get_surface_coordinates(),
+                                                                  world->parameters.coordinate_system->natural_coordinate_system())))
+        {
+          for (auto &grains_model: grains_models)
+            {
+              grains = grains_model->get_grains(position,
+                                                depth,
+                                                composition_number,
+                                                grains,
+                                                min_depth,
+                                                max_depth);
+
+              /*WBAssert(!std::isnan(composition), "Composition is not a number: " << composition
+                       << ", based on a temperature model with the name " << composition_model->get_name());
+              WBAssert(std::isfinite(composition), "Composition is not a finite: " << composition
+                       << ", based on a temperature model with the name " << composition_model->get_name());*/
+
+            }
+        }
+
+      return grains;
     }
 
     WB_REGISTER_FEATURE(ContinentalPlate, continental plate)

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -48,7 +48,7 @@ namespace WorldBuilder
         /**
          * Copy constructor
          */
-        PluginSystem(PluginSystem &feature);
+        PluginSystem(PluginSystem const &feature);
 
         /**
          * Destructor
@@ -56,24 +56,23 @@ namespace WorldBuilder
         ~PluginSystem();
 
         /**
-         * clone
-         */
-        virtual
-        std::unique_ptr<Interface> clone() const;
-
-        /**
          * Todo
          */
-        virtual
         void write_schema(Parameters &prm,
                           const std::string &name,
-                          const std::string &documentation) const;
+                          const std::string &documentation) const override final;
 
 
         std::string default_value;
         void( *declare_entries)(Parameters &, const std::string &, const std::vector<std::string> &);
         std::vector<std::string> required_entries;
         bool allow_multiple;
+
+      protected:
+        PluginSystem *clone_impl() const override final
+        {
+          return new PluginSystem(*this);
+        };
 
       private:
 

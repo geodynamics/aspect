@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -24,23 +24,25 @@ namespace WorldBuilder
 {
   namespace Types
   {
-    Object::Object(const std::vector<std::string> required,
-                   const bool additional_properties)
+    Object::Object(const std::vector<std::string> required_,
+                   const bool additional_properties_)
       :
-      required(required),
-      additional_properties(additional_properties)
+      required(required_),
+      additional_properties(additional_properties_)
+    {
+      this->type_name = Types::type::Object;
+    }
+
+    Object::Object(Object const &other)
+      :
+      required(other.required),
+      additional_properties(other.additional_properties)
     {
       this->type_name = Types::type::Object;
     }
 
     Object::~Object ()
     {}
-
-    std::unique_ptr<Interface>
-    Object::clone() const
-    {
-      return std::unique_ptr<Interface>(new Object(required, additional_properties));
-    }
 
     void
     Object::write_schema(Parameters &prm,

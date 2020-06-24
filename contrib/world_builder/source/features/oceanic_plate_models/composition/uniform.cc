@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -112,7 +112,7 @@ namespace WorldBuilder
             }
           return composition;
         }
-        WB_REGISTER_FEATURE_CONTINENTAL_COMPOSITION_MODEL(Uniform, uniform)
+        WB_REGISTER_FEATURE_OCEANIC_PLATE_COMPOSITION_MODEL(Uniform, uniform)
       }
     }
   }
