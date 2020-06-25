@@ -376,7 +376,7 @@ namespace aspect
   namespace
   {
     void linear_solver_failed(const std::string &solver_name,
-                              const std::string output_filename,
+                              const std::string &output_filename,
                               const std::vector<SolverControl> &solver_controls,
                               const std::exception &exc)
     {

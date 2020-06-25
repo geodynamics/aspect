@@ -148,7 +148,7 @@ namespace aspect
                                const bool expects_background_field,
                                const std::string &property_name,
                                const bool allow_multiple_values_per_key = false,
-                               std::shared_ptr<std::vector<unsigned int> > n_values_per_key = nullptr,
+                               const std::shared_ptr<std::vector<unsigned int> > &n_values_per_key = nullptr,
                                const bool allow_missing_keys = false);
 
     /**

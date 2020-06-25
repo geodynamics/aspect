@@ -92,6 +92,6 @@ TEST_CASE("AdditionalOutputs works")
     const MaterialModelOutputs<dim> &const_out = out;
     REQUIRE(const_out.get_additional_output<AdditionalOutputs1<dim> >() != NULL);
     const AdditionalOutputs1<dim> *a = const_out.get_additional_output<AdditionalOutputs1<dim> >();
-    REQUIRE(a != NULL);
+    REQUIRE(a != nullptr);
   }
 }

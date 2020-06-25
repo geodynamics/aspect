@@ -265,14 +265,14 @@ namespace aspect
             if (face_idx != numbers::invalid_unsigned_int && at_upper_surface)
               {
                 for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)
-                  surface_stored_values.push_back (std::make_pair(fe_face_values.quadrature_point(q), std::make_pair(fe_face_values.JxW(q), topo_values[q])));
+                  surface_stored_values.emplace_back (std::make_pair(fe_face_values.quadrature_point(q), std::make_pair(fe_face_values.JxW(q), topo_values[q])));
               }
 
             // if the cell at bottom boundary, add its contributions dynamic topography storage vector
             if (face_idx != numbers::invalid_unsigned_int && !at_upper_surface)
               {
                 for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)
-                  CMB_stored_values.push_back (std::make_pair(fe_face_values.quadrature_point(q), std::make_pair(fe_face_values.JxW(q), topo_values[q])));
+                  CMB_stored_values.emplace_back (std::make_pair(fe_face_values.quadrature_point(q), std::make_pair(fe_face_values.JxW(q), topo_values[q])));
               }
           }
 

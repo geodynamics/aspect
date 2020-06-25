@@ -47,7 +47,7 @@ namespace aspect
                                             MaterialUtilities::PhaseFunctionInputs<dim> &phase_in,
                                             EquationOfStateOutputs<dim> &eos_outputs)
     {
-      const std::vector<unsigned int> n_phases_per_composition =
+      const std::vector<unsigned int> &n_phases_per_composition =
         phase_function.n_phase_transitions_for_each_composition();
 
       unsigned int j=0;
