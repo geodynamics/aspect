@@ -68,7 +68,7 @@ want_groups = {"KHB12": "main",
                "Liu2019" : "geoid",
                "fraters_menno_2020_3900603" : "GWB",
                "Fraters2019c" : "GWB",
-               "Fraters2019b" : "NewtonSolver",
+               "FBTGS18" : "NewtonSolver",
 }
 
 want = []
@@ -80,7 +80,7 @@ want.remove("KHB12")
 want.append("KHB12")
 
 bibformated = {
-        "Fraters2019b" : "Menno Fraters, Wolfgang Bangerth, Cedric Thieulot, Anne Glerum, and Wim Spakman. 2019. “Efficient and Practical Newton Solvers for Non-Linear Stokes Systems in Geodynamic Problems.” Geophysical Journal International 218 (2) (April 20): 873–894. doi:10.1093/gji/ggz183. http://dx.doi.org/10.1093/gji/ggz183",
+        "FBTGS18" : "Menno Fraters, Wolfgang Bangerth, Cedric Thieulot, Anne Glerum, and Wim Spakman. 2019. “Efficient and Practical Newton Solvers for Non-Linear Stokes Systems in Geodynamic Problems.” Geophysical Journal International 218 (2) (April 20): 873–894. doi:10.1093/gji/ggz183. http://dx.doi.org/10.1093/gji/ggz183",
         "Fraters2019c" : "Menno Fraters, Cedric Thieulot, Arie van den Berg, and Wim Spakman. 2019. “The Geodynamic World Builder: a solution for complex initial conditions in numerical modeling.“ Solid Earth 10.5: 1785-1807. https://doi.org/10.5194/se-10-1785-2019",
         "He_2017_DG" : "Ying He, Elbridge Gerry Puckett, and Magali I. Billen. 2017. “A Discontinuous Galerkin Method with a Bound Preserving Limiter for the Advection of Non-Diffusive Fields in Solid Earth Geodynamics.” Physics of the Earth and Planetary Interiors 263 (February): 23–37. doi:10.1016/j.pepi.2016.12.001. http://dx.doi.org/10.1016/j.pepi.2016.12.001.",
         "KHB12" : "Martin Kronbichler, Timo Heister, and Wolfgang Bangerth. 2012. “High Accuracy Mantle Convection Simulation through Modern Numerical Methods.” Geophysical Journal International 191 (1) (August 21): 12–29. doi:10.1111/j.1365-246x.2012.05609.x. http://dx.doi.org/10.1111/j.1365-246X.2012.05609.x.",
