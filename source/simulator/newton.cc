@@ -215,7 +215,7 @@ namespace aspect
                              Patterns::Selection ("SPD|PD|symmetric|none"),
                              "This parameters allows for the stabilization of the preconditioner. If one derives the Newton "
                              "method without any modifications, the matrix created for the preconditioning is not necessarily "
-                             "Symmetric Positive Definite. This is problematic (see \\cite{FBTGS18}). When `none' is chosen, "
+                             "Symmetric Positive Definite. This is problematic (see \\cite{FBTGS19}). When `none' is chosen, "
                              "the preconditioner is not stabilized. The `symmetric' parameters symmetrizes the matrix, and `PD' makes "
                              "the matrix Positive Definite. `SPD' is the full stabilization, where the matrix is guaranteed Symmetric "
                              "Positive Definite.");
@@ -224,7 +224,7 @@ namespace aspect
                              Patterns::Selection ("SPD|PD|symmetric|none"),
                              "This parameters allows for the stabilization of the velocity block. If one derives the Newton "
                              "method without any modifications, the matrix created for the velocity block is not necessarily "
-                             "Symmetric Positive Definite. This is problematic (see \\cite{FBTGS18}). When `none' is chosen, "
+                             "Symmetric Positive Definite. This is problematic (see \\cite{FBTGS19}). When `none' is chosen, "
                              "the velocity block is not stabilized. The `symmetric' parameters symmetrizes the matrix, and `PD' makes "
                              "the matrix Positive Definite. `SPD' is the full stabilization, where the matrix is guaranteed Symmetric "
                              "Positive Definite.");
