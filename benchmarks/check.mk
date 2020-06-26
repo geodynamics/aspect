@@ -129,10 +129,18 @@ operator_splitting/: dummy
 	+@$(def); make_lib $@/exponential_decay
 	@$(def); run_all_prms $@/exponential_decay
 
+rayleigh_taylor_instability/: dummy
+	+@$(def); make_lib $@
+	@$(def); run_prm $@ rayleigh_taylor_instability.prm
+
 rigid_shear/: dummy
 	+@$(def); make_lib $@/plugin
 	@$(def); run_all_prms $@/instantaneous
 	@$(def); run_all_prms $@/time-dependent
+
+sinking_block/: dummy
+	+@$(def); make_lib $@
+	@$(def); run_prm $@ sinking_block.prm
 
 solcx/: dummy
 	+@$(def); make_lib $@
