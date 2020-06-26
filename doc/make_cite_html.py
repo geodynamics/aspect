@@ -65,7 +65,10 @@ want_groups = {"KHB12": "main",
                "He_2017_DG" : "dg",
                "clevenger_stokes19" : "mf",
                "gassmoller2020formulations" : "pda",
-               "Liu2019" : "geoid"
+               "Liu2019" : "geoid",
+               "fraters_menno_2020_3900603" : "GWB",
+               "Fraters2019c" : "GWB",
+               "FBTGS19" : "NewtonSolver",
 }
 
 want = []
@@ -77,9 +80,11 @@ want.remove("KHB12")
 want.append("KHB12")
 
 bibformated = {
+        "FBTGS19" : "Menno Fraters, Wolfgang Bangerth, Cedric Thieulot, Anne Glerum, and Wim Spakman. 2019. “Efficient and Practical Newton Solvers for Non-Linear Stokes Systems in Geodynamic Problems.” Geophysical Journal International 218 (2) (April 20): 873–894. doi:10.1093/gji/ggz183. http://dx.doi.org/10.1093/gji/ggz183",
+        "Fraters2019c" : "Menno Fraters, Cedric Thieulot, Arie van den Berg, and Wim Spakman. 2019. “The Geodynamic World Builder: a solution for complex initial conditions in numerical modeling.“ Solid Earth 10.5: 1785-1807. https://doi.org/10.5194/se-10-1785-2019",
         "He_2017_DG" : "Ying He, Elbridge Gerry Puckett, and Magali I. Billen. 2017. “A Discontinuous Galerkin Method with a Bound Preserving Limiter for the Advection of Non-Diffusive Fields in Solid Earth Geodynamics.” Physics of the Earth and Planetary Interiors 263 (February): 23–37. doi:10.1016/j.pepi.2016.12.001. http://dx.doi.org/10.1016/j.pepi.2016.12.001.",
         "KHB12" : "Martin Kronbichler, Timo Heister, and Wolfgang Bangerth. 2012. “High Accuracy Mantle Convection Simulation through Modern Numerical Methods.” Geophysical Journal International 191 (1) (August 21): 12–29. doi:10.1111/j.1365-246x.2012.05609.x. http://dx.doi.org/10.1111/j.1365-246X.2012.05609.x.",
-        "Liu2019" : "Liu, Shangxin, and Scott D King. 2019. “A Benchmark Study of Incompressible Stokes Flow in a 3-D Spherical Shell Using ASPECT.” Geophysical Journal International 217 (1) (January 17): 650–667. doi:10.1093/gji/ggz036. http://dx.doi.org/10.1093/gji/ggz036.",
+        "Liu2019" : "Liu, Shangxin, and Scott D King. 2019. “A Benchmark Study of Incompressible Stokes Flow in a 3-D Spherical Shell Using ASPECT.” Geophysical Journal International 217 (1) (January 17): 650–667. doi:10.1093/gji/ggz036. http://dx.doi.org/10.1093/gji/ggz036",
         "aspect-doi-v1.5.0" : "Wolfgang Bangerth, Juliane Dannberg, Rene Gassmoeller, Timo Heister, and others. 2017, March 1. ASPECT v1.5.0. Zenodo. https://doi.org/10.5281/zenodo.344623",
         "aspect-doi-v2.0.0" : "Wolfgang Bangerth, Juliane Dannberg, Rene Gassmoeller, and Timo Heister. 2018, May 10. ASPECT v2.0.0. Zenodo. https://doi.org/10.5281/zenodo.1244587",
         "aspect-doi-v2.0.1" : "Wolfgang Bangerth, Juliane Dannberg, Rene Gassmoeller, and Timo Heister. 2018, June 24. ASPECT v2.0.1. Zenodo. https://doi.org/10.5281/zenodo.1297145",
@@ -87,10 +92,11 @@ bibformated = {
         "aspectmanual" : "Wolfgang Bangerth, Juliane Dannberg, Rene Gassmoeller, Timo Heister, and others. 2019. ASPECT: Advanced Solver for Problems in Earth's ConvecTion, User Manual. <i>Figshare</i>. https://doi.org/10.6084/m9.figshare.4865333",
         "clevenger_stokes19" : "Thomas C. Clevenger, and Timo Heister. 2019. “Comparison Between Algebraic and Matrix-free Geometric Multigrid for a Stokes Problem on Adaptive Meshes with Variable Viscosity.“ arXiv:1907.06696.",
         "dannberg_melt" : "Juliane Dannberg, and Timo Heister. 2016. “Compressible Magma/mantle Dynamics: 3-D, Adaptive Simulations in ASPECT.” Geophysical Journal International 207 (3) (September 4): 1343–1366. doi:10.1093/gji/ggw329. http://dx.doi.org/10.1093/gji/ggw329.",
+        "fraters_menno_2020_3900603" : "Menno Fraters. 2020. <i>The Geodynamic World Builder</i> (version v0.3.0). Zenodo. https://doi.org/10.5281/ZENODO.3900603",
         "gassmoeller_particles" : "Rene Gassmoeller, Eric Heien, Elbridge Gerry Puckett, and Wolfgang Bangerth. 2017. “Flexible and scalable particle-in-cell methods for massively parallel computations.” arXiv:1612.03369",
-        "gassmoller2020formulations" : "Gassmöller, Rene, Juliane Dannberg, Wolfgang Bangerth, Timo Heister, and Robert Myhill. 2020. “On Formulations of Compressible Mantle Convection.” Geophysical Journal International 221 (2) (February 13): 1264–1280. doi:10.1093/gji/ggaa078. http://dx.doi.org/10.1093/gji/ggaa078.",
+        "gassmoller2020formulations" : "Rene Gassmöller, Juliane Dannberg, Wolfgang Bangerth, Timo Heister, and Robert Myhill. 2020. “On Formulations of Compressible Mantle Convection.” Geophysical Journal International 221 (2) (February 13): 1264–1280. doi:10.1093/gji/ggaa078. http://dx.doi.org/10.1093/gji/ggaa078.",
         "heister_aspect_methods2" : "Timo Heister, Juliane Dannberg, Rene Gassmöller, and Wolfgang Bangerth. 2017. “High Accuracy Mantle Convection Simulation through Modern Numerical Methods – II: Realistic Models and Problems.” Geophysical Journal International 210 (2) (May 9): 833–851. doi:10.1093/gji/ggx195. http://dx.doi.org/10.1093/gji/ggx195.",
-        "rose_freesurface" : "Ian Rose, Bruce Buffett, and Timo Heister. 2017. “Stability and Accuracy of Free Surface Time Integration in Viscous Flows.” Physics of the Earth and Planetary Interiors 262 (January): 90–100. doi:10.1016/j.pepi.2016.11.007. http://dx.doi.org/10.1016/j.pepi.2016.11.007."
+        "rose_freesurface" : "Ian Rose, Bruce Buffett, and Timo Heister. 2017. “Stability and Accuracy of Free Surface Time Integration in Viscous Flows.” Physics of the Earth and Planetary Interiors 262 (January): 90–100. doi:10.1016/j.pepi.2016.11.007. http://dx.doi.org/10.1016/j.pepi.2016.11.007.",
 }
 
 
