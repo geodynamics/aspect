@@ -206,8 +206,7 @@ i\
 # safely merged with any existing subsections with the same name.
 
 # remove the empty line at the end of the hold space
-s/\
- *$//
+s/\n *$//
 }
 
 # If the hold space was empty, remove the single newline it would produce
