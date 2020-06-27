@@ -1,0 +1,143 @@
+set Additional shared libraries            = ./libdrucker_prager_compositions.so
+
+set Use years in output instead of seconds = false  # default: true
+set Nonlinear solver scheme                = Newton Stokes
+set Max nonlinear iterations               = 150
+set Nonlinear solver tolerance             = 1e-14
+set Pressure normalization                 = no
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Number of cheap Stokes solver steps = 0
+    set Linear solver tolerance             = 1e-5
+  end 
+  subsection Newton solver parameters
+    set Max pre-Newton nonlinear iterations      = 5
+    set SPD safety factor                        = 0.9
+    set Nonlinear Newton solver switch tolerance = 1e-20 #  
+    set Max Newton line search iterations        = 0
+    set Maximum linear Stokes solver tolerance   = 9e-1
+    set Use Newton residual scaling method       = false
+    set Use Newton failsafe                      = false
+    set Stabilization preconditioner             = SPD
+    set Stabilization velocity block             = SPD
+  end
+end
+
+subsection Boundary temperature model
+  set Model name = box
+end
+
+
+ subsection Initial temperature model
+   set Model name = function
+ end
+
+ subsection Initial composition model
+   set Model name = function
+   subsection Function
+    set Variable names      = x,z
+    set Function constants  = H = 30e3
+    # The function below lays out the composition structure as described in the Spiegelman paper. 
+    # It generates a composition at the bottom wich has a square with round eges sticking out in 
+    # the center.
+    set Function expression = if(z < 0.25 * H,1, \
+if(z < (0.25+(1/12)-0.02)*H & x > (2-(1/12))*H & x < (2+(1/12))*H,1, \
+if(z < (0.25+(1/12))*H & (x > (2-(1/12)+0.02)*H & x < (2+(1/12)-0.02)*H | (x-(2-(1/12)+0.02)*H)^2 + (z-(0.25+(1/12)-0.02)*H)^2 < (0.02*H)^2 | (x-(2+(1/12)-0.02)*H)^2 + (z-(0.25+(1/12)-0.02)*H)^2 < (0.02*H)^2),1, \
+if(z < (0.25+0.02)*H && x > (2-(1/12)-0.02)*H && x < (2+(1/12)+0.02)*H && ((x-(2-(1/12)-0.02)*H)^2 + (z-(0.25+0.02)*H)^2 > (0.02*H)^2 && (x-(2+(1/12)+0.02)*H)^2 + (z-(0.25+0.02)*H)^2 > (0.02*H)^2),1,0))))
+   end
+ end
+
+
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 9.81
+  end
+end
+
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent      = 120e3
+    set Y extent      = 30e3
+    set X repetitions = 4
+  end
+end
+
+
+subsection Compositional fields
+  set Number of fields = 1
+#parameters for all rheologies
+      set Conductivities                         = 2.25,          2.25
+      set Heat capacities                        = 1250,          1250
+      set Reference temperatures                 = 0,             0
+      set Reference densities                    = 2700.0,        2700.0
+      #plastic parameters
+      set Cohesions                              = 1e8,0
+      set Angles of internal friction            = 30,0
+      #Dislocation parameters
+      set Stress exponents                       = 50,            1
+      set Initial viscosities                    = 1e20, 1e21
+      # the first value is ignored by the specific drucker prager compositions material model
+      # in this benchmark folder, so set it to a nonsensical value: 0.
+      set Viscous prefactors                     = 0, 1e21
+end
+
+subsection Material model
+    set Model name = drucker prager compositions
+
+  subsection Drucker prager compositions
+    set Maximum viscosity           = 1e24
+    set Minimum viscosity           = 1e21
+    set Viscosity averaging p       = -1
+    set Use deviator of strain-rate = true
+    set Use analytical derivative   = false
+    set Reference viscosity         = 5e24
+    set Reference compressibility   = 0
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement = 0
+  set Initial global refinement   = 5
+  set Strategy                    = strain rate
+end
+
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   =
+end
+
+subsection Boundary velocity model
+  # Prescribe a horizontal traction on the vertical boundaries
+  set Tangential velocity boundary indicators = 2
+  set Zero velocity boundary indicators       =
+  # Prescribe a zero vertical velocity component on the vertical boundaries
+  set Prescribed velocity boundary indicators = 0 x:function,1 x:function
+end
+
+subsection Boundary traction model
+  set Prescribed traction boundary indicators =
+end
+
+
+subsection Boundary velocity model
+  subsection Function
+    set Variable names = x,z
+    set Function expression = if(x<60e3,7.92219116e-11,-7.92219116e-11);0
+  end
+end
+
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, pressure statistics, mass flux statistics, visualization
+  subsection Visualization
+    set List of output variables = material properties,strain rate, spd factor
+    set Interpolate output       = false
+  end
+end
+
