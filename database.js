@@ -62,7 +62,7 @@ bibtexkey: "dannberg_melt",
 bibtex: '@Article{dannberg_melt,\n  title={Compressible magma/mantle dynamics: {3D}, adaptive simulations in {ASPECT}},\n  author={Dannberg, J. and Heister, T.},\n  journal={Geophysical Journal International},\n  volume={207},\n  number={3},\n  pages={1343--1366},\n  year={2016},\n  publisher={Oxford University Press},\n  doi = {10.1093/gji/ggw329}, \n  url = {https://dx.doi.org/10.1093/gji/ggw329}\n}',
 group: 'melt'},
 entry13:{
-text: "Menno Fraters. 2020. ”The Geodynamic World Builde” (version v0.3.0). Zenodo. https://doi.org/10.5281/ZENODO.3900603",
+text: "Menno Fraters. 2020. ”The Geodynamic World Builder” (version v0.3.0). Zenodo. https://doi.org/10.5281/ZENODO.3900603",
 bibtexkey: "fraters_menno_2020_3900603",
 bibtex: '@software{fraters_menno_2020_3900603,\n  author       = {Fraters, Menno},\n  title        = {The Geodynamic World Builder},\n  month        = jun,\n  year         = 2020,\n  publisher    = {Zenodo},\n  version      = {v0.3.0},\n  doi          = {10.5281/zenodo.3900603},\n  url          = {https://doi.org/10.5281/zenodo.3900603}\n}',
 group: 'GWB'},
