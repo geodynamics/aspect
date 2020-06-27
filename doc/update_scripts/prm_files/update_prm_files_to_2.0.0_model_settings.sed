@@ -9,7 +9,7 @@
 # multiple times, this works just fine.
 
 :jump
-/subsection Model settings/,/^ *\bend\b/ {
+/subsection Model settings/,/^[[:space:]]*end[[:space:]]*/ {
 # Remove empty lines, they would make the rest complicated.
 /^ *$/d
 
@@ -192,15 +192,16 @@ d
 # Now the Model settings subsection should be empty.
 # Remove any remaining lines (e.g. empty lines, comments),
 # except for the last one (to not jump over it).
-/^ *end/ !d
+/^[[:space:]]*end/ !d
 
-/^ *end/ {
+/^[[:space:]]*end/ {
 # At the end of the subsection, add a comment and the content of the hold space
 x
 
 # if the hold space is not empty, print comment
 /..*/ {
-i # The parameters below this comment were created by the update script\
+i\
+# The parameters below this comment were created by the update script\
 # as replacement for the old 'Model settings' subsection. They can be\
 # safely merged with any existing subsections with the same name.
 
