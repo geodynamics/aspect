@@ -40,6 +40,12 @@ subsection Mesh refinement
   set Strategy                           = viscosity
 end
 
+# override boundary conditions:
+subsection Boundary velocity model
+  set Zero velocity boundary indicators       = left
+  set Tangential velocity boundary indicators = right
+end
+
 # Traction Boundary Conditions
 subsection Boundary traction model
   set Prescribed traction boundary indicators = top: initial lithostatic pressure, bottom: initial lithostatic pressure
