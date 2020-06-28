@@ -1,8 +1,0 @@
-New: There is a new material model plug-in that sets viscosity to  
-a specified constant above the lithosphere-asthenosphere boundary,
-which is specified by an ascii file or a maximum lithosphere depth 
-value. Below this the viscosity is taken from any other available
-material model. All other material properties are taken from the
-base model.
-<br>
-(Sophie Coulson, 2019/06/28)

@@ -1,5 +1,0 @@
-Added: The 'depth average' postprocessor now supports writing more than one
-file in different output formats. The default has changed to write a
-human-readable ascii text file in addition to the previous gnuplot file.
-<br>
-(Rene Gassmoeller, 2019/11/08)

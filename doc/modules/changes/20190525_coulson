@@ -1,8 +1,0 @@
-New: There is a new initial temperature plug-in that sets a specified 
-lithosphere temperature above the lithsphere-asthenosphere boundary,
-which is specified by an ascii file or a maximum lithosphere depth 
-value. Below this the initial temperature is set as NaN. This 
-plug-in can be combined with another using the 'replace if valid' 
-operator. 
-<br>
-(Sophie Coulson, 2019/05/25)

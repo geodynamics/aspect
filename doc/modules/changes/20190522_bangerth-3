@@ -1,5 +1,0 @@
-Changed: The
-BoundaryVelocity::Manager::get_prescribed_boundary_velocity() function
-has been removed. It had previously already been removed.
-<br>
-(Wolfgang Bangerth, 2019/05/22)

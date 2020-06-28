@@ -1,7 +1,0 @@
-Changed: The
-BoundaryTemperature::Manager::get_active_boundary_temperature_conditions()
-function used to return a `std::vector` of `std::shared_ptr`
-objects. This has been changed: The function now returns a
-`std::vector` of `std::unique_ptr` objects.
-<br>
-(Wolfgang Bangerth, 2019/05/02)

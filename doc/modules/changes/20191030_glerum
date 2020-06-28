@@ -1,4 +1,0 @@
-Fixed: The ellipsoidal natural coordinate conversion functions now use/output
-radius, lon, lat coordinates instead of radius, lat, lon.
-<br>
-(Anne Glerum, 2019/10/30)

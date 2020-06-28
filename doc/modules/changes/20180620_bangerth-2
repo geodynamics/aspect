@@ -1,8 +1,0 @@
-Incompatibility: When selecting the 'dynamic core' plugin for the
-boundary temperature, the plugin previously used the "Dynamic core"
-spelling with a leading upper-case letter. However, all other plugins
-use leading lower-case letters. Consequently, the plugin was changed
-to follow the usual convention using all lower-case letters, even
-though this is a change that requires changes to users' input files.
-<br>
-(Wolfgang Bangerth, 2018/06/21)

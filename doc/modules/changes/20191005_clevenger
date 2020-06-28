@@ -1,3 +1,0 @@
-New: Geometric Multigrid now supports no normal flux boundaries for 2d and 3d spherical and shell domains.
-<br>
-(Thomas C. Clevenger and Timo Heister, 2019/10/05)

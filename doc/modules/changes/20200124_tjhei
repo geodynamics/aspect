@@ -1,4 +1,0 @@
-Incompatibility: The option to use PETSc for linear algebra has been removed
-until further notice.
-<br>
-(Timo Heister, 2020/01/24)

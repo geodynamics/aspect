@@ -1,5 +1,0 @@
-Changed: The test project will no longer automatically re-configure,
-when cmake is running. To force re-detection of new tests, you need
-to run "make setup_tests" again.
-<br>
-(Timo Heister, 2019/05/26)

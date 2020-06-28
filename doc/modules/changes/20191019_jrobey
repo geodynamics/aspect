@@ -1,6 +1,0 @@
-Fixed: The volume of fluid composition advection algorithm the boundary fluxes
-on inflow boundries with fixed composition incorrectly. This has been fixed by
-correcting the calculation for the amount of composition which is advected into
-the modeled region during the assembly step.
-<br>
-(Jonathan Robey, 2019/10/19)

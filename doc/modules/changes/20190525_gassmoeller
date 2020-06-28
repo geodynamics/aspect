@@ -1,6 +1,0 @@
-New: The material models can now outsource the computation of the viscosity
-into a separate rheology model. This can be used to remove duplicated code
-between material models. As a consequence the default parameter for viscosity
-in the 'Simpler' material model has been changed to 1e21 Pa s.
-<br>
-(Rene Gassmoeller, 2019/05/25)

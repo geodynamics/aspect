@@ -1,3 +1,0 @@
-New: Relocate Lookup namespace and the associated material property readers from grain_size to material model utlilities.
-<br>
-(Paul Bremner, 2019/05/24)

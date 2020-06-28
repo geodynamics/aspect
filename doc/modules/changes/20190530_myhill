@@ -1,8 +1,0 @@
-New: ASPECT now includes a multicomponent compressible model,
-where the parameters of each component and the bulk are computed
-self-consistently. The pressure and temperature dependencies of the
-material parameters are based on the Murnaghan equation of state,
-with a thermal pressure term that is linear with temperature and an
-isochoric heat capacity that is globally constant.
-<br>
-(Bob Myhill, 2019/05/30)

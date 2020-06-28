@@ -1,6 +1,0 @@
-New: There is a new material model that combines viscous, elastic
-and plastic deformation for one or more materials. At present, 
-the model does not take into account diffusion or dislocation creep
-flow laws and strain softening. 
-<br>
-(John Naliboff, 2019/05/24)

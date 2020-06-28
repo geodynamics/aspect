@@ -1,6 +1,0 @@
-New: There is now a solver scheme 'single Advection, iterated Newton Stokes'
-that solves the temperature and composition equations once per timestep
-and uses defect corrector Picard and Newton iterations to iterate out
-the Stokes solution.
-<br>
-(Anne Glerum, 2019/07/10)

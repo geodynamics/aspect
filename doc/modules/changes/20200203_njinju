@@ -1,6 +1,0 @@
-Changed: The reading of the ascii data file in the "adiabatic boundary" plugin (initial temperature model) was initially using the mid-point approach. Now it has been changed to use the existing ascii-data functionality.
-Existing parameter files and data files for the "adiabatic boundary" plugin will have to be checked and converted to the new format.
-<br>
-(Emmanuel Njinju and  Tahiry Rajaonarison,  2020/05/05)
-
-

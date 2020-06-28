@@ -1,3 +1,0 @@
-Fixed: The 'dynamic topography' postprocessor did not respect the manifold when writing the dynamic topography into separate data files. The topography was computed correctly, but for models with curved manifolds the output location would be the arithmetic average of all surface vertices instead of the actual face midpoint on the spherical surface. This is fixed now.
-<br>
-(Rene Gassmoeller, Marie Kajan, 2020/02/14)

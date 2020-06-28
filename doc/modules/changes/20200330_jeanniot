@@ -1,6 +1,0 @@
-Added: the precision of gravity acceleration, potential and gradients written in the output
-and statistics files of the "gravity point values" postprocessor may be changed by the user
-via the parameter file under the name "set Precision in gravity output". 
-The default value is 12.
-<br>
-(Ludovic Jeanniot, 2020/03/30)

@@ -1,4 +1,0 @@
-New: There is a new termination criterion that cancels the model run
-when a steady state average temperature is reached.
-<br>
-(Rene Gassmoeller, Juliane Dannberg, Eva Bredow, 2019/01/09)

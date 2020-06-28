@@ -1,4 +1,0 @@
-New: The 'depth average' postprocessor now additionally computes the laterally
-averaged density of vertical mass flux for each depth slice in the model.
-<br>
-(Rene Gassmoeller, 2019/11/08)

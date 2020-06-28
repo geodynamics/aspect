@@ -1,5 +1,0 @@
-Fixed: The hdf5 visualization output would write incorrect data in parallel if
-output was written after resuming from a checkpoint, but before the next
-adaptive mesh refinement was performed. This is fixed now.
-<br>
-(Max Rudolph, Timo Heister, 2020/02/25)
