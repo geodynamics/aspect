@@ -15988,8 +15988,6 @@ The format of these functions follows the syntax understood by the muparser libr
 
 `particle density': A mesh refinement criterion that computes refinement indicators based on the density of particles. In practice this plugin equilibrates the number of particles per cell, leading to fine cells in high particle density regions and coarse cells in low particle density regions. This plugin is mostly useful for models with inhomogeneous particle density, e.g. when tracking an initial interface with a high particle density, or when the spatial particle density denotes the region of interest. Additionally, this plugin tends to balance the computational load between processes in parallel computations, because the particle and mesh density is more aligned.
 
-`periodic': A mesh refinement criterion that ensures that cells across periodic boundaries have the same refinement level.
-
 `slope': A class that implements a mesh refinement criterion intended for use with deforming mesh boundaries, like the free surface. It calculates a local slope based on the angle between the surface normal and the local gravity vector. Cells with larger angles are marked for refinement.
 
 To use this refinement criterion, you may want to combine it with other refinement criteria, setting the 'Normalize individual refinement criteria' flag and using the `max' setting for 'Refinement criteria merge operation'.
@@ -16019,7 +16017,7 @@ For complex equations such as those we solve here, this observation may not be s
 `volume of fluid interface': A class that implements a mesh refinement criterion, which ensures a minimum level of refinement near the volume of fluid interface boundary.
 
 
-{\it Possible values:} A comma-separated list of any of artificial viscosity, boundary, compaction length, composition, composition approximate gradient, composition gradient, composition threshold, density, maximum refinement function, minimum refinement function, nonadiabatic temperature, particle density, periodic, slope, strain rate, temperature, thermal energy density, topography, velocity, viscosity, volume of fluid interface
+{\it Possible values:} A comma-separated list of any of artificial viscosity, boundary, compaction length, composition, composition approximate gradient, composition gradient, composition threshold, density, maximum refinement function, minimum refinement function, nonadiabatic temperature, particle density, slope, strain rate, temperature, thermal energy density, topography, velocity, viscosity, volume of fluid interface
 \item {\it Parameter name:} {\tt Time steps between mesh refinement}
 \phantomsection\label{parameters:Mesh refinement/Time steps between mesh refinement}
 \label{parameters:Mesh_20refinement/Time_20steps_20between_20mesh_20refinement}
