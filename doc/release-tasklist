@@ -217,6 +217,128 @@ and many other contributors.
 
 
 
+Announcement for 2.2.0 (June 29, 2020)
+-----------------------------------------
+We are pleased to announce the release of ASPECT 2.2.0. ASPECT is the Advanced
+Solver for Problems in Earth's ConvecTion. It uses modern numerical methods such
+as adaptive mesh refinement, multigrid, and a modular software design to
+provide a fast, flexible, and extensible mantle convection solver. ASPECT is
+available from
+
+                   https://aspect.geodynamics.org/
+
+and the release is available from
+
+        https://geodynamics.org/cig/software/aspect/
+
+and
+
+        https://github.com/geodynamics/aspect/releases/tag/v2.2.0
+
+This release includes the following significant changes:
+- New: There is a new matrix-free Stokes solver which uses geometric multigrid for 
+  preconditioning the A-block. This method is significantly faster than
+  the default algebraic multigrid preconditioner and uses less memory. Free
+  surface, and melt transport are not yet implemented.
+  (Conrad Clevenger, Timo Heister)
+
+- New: There is now a new approximation for the compressible convection
+  models that is called 'projected density field'.
+  (Rene Gassmoeller, Juliane Dannberg, Timo Heister, Wolfgang Bangerth)
+
+- Changed: The Geodynamic World Builder has been updated to version 0.3.0
+  (Menno Fraters)
+
+- Changed: ASPECT now requires deal.II version 9.0.0 or newer.
+  (Timo Heister, Rene Gassmoeller)
+
+- New: The IDR(s) Krylov method can now be used for solving the Stokes system,
+  when using the matrix-free GMG solver. It has a short term recurrence and can
+  greatly reduce the memory requirement compared to GMRES.
+  (Thomas C. Clevenger, Timo Heister)
+
+- New: There is a new, alternative stabilization method for the advection equation 
+  called SUPG. This is preliminary work.
+  (Thomas C. Clevenger, Rene Gassmoeller, Timo Heister, Ryan Grove)
+
+- Changed: The entropy viscosity method for stabilizing the advection equations
+  was substantially improved leading to less artificial diffusion in particular
+  close to boundaries.
+  (Rene Gassmoeller)
+
+- New: The 'visco plastic' material model now has an option to simulate 
+  viscoelastic-plastic deformation. The 'viscoelastic plastic' material
+  model has been superseded and removed.
+  (John Naliboff, Dan Sandiford)
+
+- New: The "Free surface" functionality has been generalized and is now part of
+  "Mesh deformation". This change is incompatible to old parameter files that
+  used the free surface. 
+  (Rene Gassmoeller, Anne Glerum, Derek Neuharth, Marine Lasbleis)
+
+- New benchmarks: entropy equation, viscoelastic cantilever, bouyancy-driven
+  viscoelastic plate stress, advection in annulus, slab detachment benchmark,
+  several advection benchmarks, rigid shear, polydiapirs, surface loading.
+  (Wolfgang Bangerth, Fiona Clerc, Juliane Dannberg, Daniel Douglas, Rene
+  Gassmoeller, Timo Heister, Garrett Ito, Harsha Lokavarapu, John Naliboff,
+  Elbridge G. Puckett, Cedric Thieulot)
+
+- Incompatibility: The option to use PETSc for linear algebra has been removed
+  until further notice.
+  (Timo Heister)
+
+- New: If the user has the libdap libraries installed then input data can be
+  pulled from the server instead of a local file.
+  (Kodi Neumiller, Sarah Stamps, Emmanuel Njinju, James Gallagher)
+
+- New: Implement the "no Advection, single Stokes" solver scheme. 
+  (Timo Heister)
+
+- New: The chunk geometry model can now incorporate initial
+  topography from an ascii data file.
+  (Anne Glerum)
+
+- New: The 'depth average' postprocessor now additionally computes the laterally
+  averaged density of vertical mass flux for each depth slice in the model.
+  (Rene Gassmoeller)
+
+- Changed: The gravity point values postprocessor has been significantly extended.
+  (Ludovic Jeanniot, Cedric Thieulot)
+
+- New: There is now a general class
+  `MaterialModel::Utilities::PhaseFunction` that can be used to model
+  phase transitions using a smooth phase function.
+  (Rene Gassmoeller, John Naliboff, Haoyuan Li)
+
+- New: ASPECT now includes a thermodynamically self-consistent compressible
+  material model, that implements the Modified Tait equation of state that is
+  described in Holland and Powell, 2011.
+  (Bob Myhill)
+
+- New: There is a new initial temperature plug-in that sets a specified 
+  lithosphere temperature above the lithsphere-asthenosphere boundary.
+  (Sophie Coulson)
+
+- New: There is a new initial temperature plugin that sets up a steady-state
+  continental geotherm for a 3-layer lithosphere.
+  (Anne Glerum)
+
+- New: There is a new termination criterion that cancels the model run
+  when a steady state average temperature is reached.
+  (Rene Gassmoeller, Juliane Dannberg, Eva Bredow)
+
+- Bug fixes to : parallel hdf5 output, chunk geometry model, initial
+  topography modules, gplates boundary velocity plugin.
+  (many authors)
+
+A complete list of all changes and their contributing authors can be found at
+  https://aspect.geodynamics.org/doc/doxygen/changes_between_2_81_80_and_2_82_80.html
+
+Wolfgang Bangerth, Juliane Dannberg, Rene Gassmoeller, Timo Heister,
+Jacqueline Austermann, Menno Fraters, Anne Glerum, John Naliboff,
+and many other contributors.
+
+
 Announcement for 2.1.0 (April 29, 2019)
 -----------------------------------------
 We are pleased to announce the release of ASPECT 2.1.0. ASPECT is the Advanced
