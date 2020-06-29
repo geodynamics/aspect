@@ -1,6 +1,0 @@
-Removed: Input parameters and functionality related to the old syntax
-for strain softening in the ViscoPlastic material model and the 
-Rheology::StrainDependent namespace. 
-<br>
-(John Naliboff, 2019/09/17)
-

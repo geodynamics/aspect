@@ -1,9 +1,0 @@
-Fixed: We used to output the entire statistics file at the end of each
-time step and overwrite its previous content. But these files can be
-large (in the tens of megabytes) and this could put a significant
-strain on the file system for simulations that did a large number of
-time steps with relatively small meshes (and consequently a short time
-between time steps). The new scheme now implemented only writes
-incremental updates to the statistics file.
-<br>
-(Wolfgang Bangerth, 2020/02/26)

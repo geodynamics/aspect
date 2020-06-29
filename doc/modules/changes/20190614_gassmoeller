@@ -1,6 +1,0 @@
-Changed: The 'isothermal compression' approximation for compressible mantle
-convection has been renamed to 'isentropic compression', which is a more
-appropriate name. The approximation is only correct if one uses the isentropic
-rather than the isothermal compressibility in material models.
-<br>
-(Rene Gassmoeller, 2019/06/14)

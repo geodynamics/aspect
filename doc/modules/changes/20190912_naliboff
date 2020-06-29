@@ -1,5 +1,0 @@
-New: There is a new model in the MaterialModel::Rheology namespace for material behavior
-that depends on finite strain. At present, the functionality in this
-model deals strictly with strain softening behavior, which was 
-transferred from the visco plastic material model. However, in the future 
-other material models can use this functionality without duplicating code.

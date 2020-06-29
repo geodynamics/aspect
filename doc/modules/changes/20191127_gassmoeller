@@ -1,7 +1,0 @@
-Fixed: The 'AsciiDataLookup' class had a bug that caused models to crash
-if they loaded new non-equidistant data files after a previous file was
-already loaded. This could only happen when using the 'ascii data' plugins for
-boundary conditions with time-dependent non-equidistant data files. This is
-fixed now.
-<br>
-(Rene Gassmoeller, Sibiao Liu, 2019/11/27)

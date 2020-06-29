@@ -1,5 +1,0 @@
-New: There are two new modules in the MaterialModel::Rheology namespace for 
-viscous creep material behavior, diffusion creep and dislocation creep. 
-The functionality in these modules was transferred from the visco plastic 
-material model. In the future other material models can use this functionality 
-without duplicating code.

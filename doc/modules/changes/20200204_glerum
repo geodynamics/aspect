@@ -1,5 +1,0 @@
-Fixed: There was a bug in the 'box with lithosphere' geometry model plugin
-that lead to a crash when using periodic boundary conditions on any of the
-additional lithospheric boundaries. This is fixed now.
-<br>
-(Anne Glerum, 2020/02/04)

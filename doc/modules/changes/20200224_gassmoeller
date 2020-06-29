@@ -1,6 +1,0 @@
-Fixed: The 'chunk' geometry model would produce very inaccurate normal vectors
-at horizontal boundaries when a free surface boundary was prescribed. This lead
-to pressure and strain-rate oscillations at tangential velocity boundaries and
-was fixed in the underlying chunk geometry description.
-<br>
-(Rene Gassmoeller, Fiona Clerc, 2020/02/24)

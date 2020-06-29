@@ -1,8 +1,0 @@
-Changed: The viscoelastic plastic material has been reordered so
-that the viscoelastic viscosity is calculated prior to yielding
-and viscoelastic stresses are taken into account when comparing
-the current stress against the plastic yield stress. This approach
-is consistent with the approach outlined in Moresi et al., 2003,
-Journal of Computational Physics, v. 184, p. 476-697.
-<br>
-(John Naliboff, Daniel Sandiford, 2019/10/13)

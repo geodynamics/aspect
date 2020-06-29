@@ -1,6 +1,0 @@
-New: There is a new matrix-free Stokes solver which uses geometric multigrid for 
-preconditioning in the A-block. Currently the new method can handle no slip BCs for velocity 
-on any mesh, and free slip boundary conditions for a box. Free surface, melt transport, and 
-compressible flow are not yet implemented.
-<br>
-(Conrad Clevenger, Timo Heister, 2019/05/27)

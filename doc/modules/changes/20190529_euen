@@ -1,5 +1,0 @@
-New: Advection in annulus benchmark modified from annulus benchmark.
-Used in conjunction with SUPG to show that coarse meshes using EV creates
-much higher diffusion.
-<br>
-(G. Euen, R. Gassmoeller, T. Heister, 2019/05/29)

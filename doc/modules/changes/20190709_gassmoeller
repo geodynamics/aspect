@@ -1,8 +1,0 @@
-New: There is now a new approximation for the compressible convection
-models that is called 'projected density field'. This approximation is
-more accurate (but also more non-linear) than the existing approximation
-ALA, and isentropic compression. The details of the approximation are
-described in an article currently in review in Geophysical Journal
-International (Gassmoeller, et al., 2019).
-<br>
-(Rene Gassmoeller, 2019/07/09)

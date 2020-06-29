@@ -1,6 +1,0 @@
-Changed: The HeatingModels::Manager::get_heating_models() function
-used to return a `std::vector` of `std::shared_ptr` objects to heating
-models enabled for the current run. This has been changed: It now
-returns a `std::vector` of `std::unique_ptr` objects.
-<br>
-(Wolfgang Bangerth, 2019/05/02)

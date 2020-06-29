@@ -1,6 +1,0 @@
-New: There is now a function
-SimulatorAccess::simulator_is_past_initialization() that can be used
-to test whether the simulator has been completely initialized and has
-started the time loop.
-<br>
-(Wolfgang Bangerth, 2019/05/22)

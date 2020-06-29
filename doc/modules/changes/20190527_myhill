@@ -1,6 +1,0 @@
-New: ASPECT now includes a thermodynamically self-consistent
-compressible material model that implements the
-Modified Tait equation of state that is described in
-Holland and Powell, 2011 (doi:10.1111/j.1525-1314.2010.00923.x).
-<br>
-(Bob Myhill, 2019/05/27)

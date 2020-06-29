@@ -1,8 +1,0 @@
-Changed: The lateral averaging functions, e.g. used in the 'depth average'
-postprocessor were optimized for some geometry models (spherical shell, box,
-two merged boxes). Their lateral averaging is now slightly less accurate (the
-difference is typically on the order of 1e-3 at the coarsest resolutions and
-disappears with higher refinement), but they will be around 5 (2D) to 25 (3D)
-times faster.
-<br>
-(Rene Gassmoeller, 2019/05/05)

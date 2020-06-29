@@ -1,6 +1,0 @@
-Fixed: Resuming from a checkpoint of a box model with initial topography 
-was broken, because the grid transformation was not applied
-again after restart. Now the box geometry model connects to the signal after
-resuming the computation such that it applies the initial topography again. 
-<br>
-(Anne Glerum, 2019/11/06)

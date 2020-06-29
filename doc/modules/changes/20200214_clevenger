@@ -1,4 +1,0 @@
-New: The geometric multigrid preconditioner for the Stokes system now supports 
-Picard iterations for the defect correction form of the Stokes equations.
-<br>
-(Thomas C. Clevenger, 2020/02/14)

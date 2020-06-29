@@ -1,8 +1,0 @@
-New: Added a "rigid shear" benchmark that is based on an analytical
-solution of the Stokes equations, and can be used to measure the influence
-of different advection methods (particles, fields) on the Stokes
-solution. The benchmark is described in the submitted manuscript: Gassmoeller,
-Lokavarapu, Bangerth, Puckett. "Evaluating the Accuracy of Hybrid Finite
-Element/Particle-In-Cell Methods for Modeling Incompressible Stokes Flow".
-<br>
-(Rene Gassmoeller, 2019/05/24)

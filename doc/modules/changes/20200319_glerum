@@ -1,5 +1,0 @@
-Changed: The named additional outputs of the visco plastic material model
-now output the current internal angle of friction in degrees instead
-of radians.
-<br>
-(Anne Glerum, 2020/03/19)

@@ -1,4 +1,0 @@
-Changed: The Geodynamic World Builder is not longer a git submodule, but the files are
-now distributed with ASPECT.  
-<br>
-(Menno Fraters, 2019/05/31)

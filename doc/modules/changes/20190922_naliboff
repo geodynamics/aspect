@@ -1,5 +1,0 @@
-New: Added a class MaterialModel::Utilities::PhaseFunction that can handle
-generic phase functions for phase transitions that are approximated by an
-analytic function.
-<br>
-(John Naliboff, Rene Gassmoeller, 2019/08/22)

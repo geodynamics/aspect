@@ -1,7 +1,0 @@
-Remove: The Viscoelastic Plastic material model and test suite 
-has been removed. It has been superseded by the Visco Plastic 
-material model, which now has the option to simulate 
-viscoelastic-plastic deformation. 
-<br>
-(John Naliboff, 2020/03/31)
-

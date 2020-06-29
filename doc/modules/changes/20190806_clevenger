@@ -1,4 +1,0 @@
-New: The matrix-free, block GMG Stokes solver can now be used for compressible
-flow computations (all except those involving implicit reference density). 
-<br>
-(Conrad Clevenger, 2019/08/06)

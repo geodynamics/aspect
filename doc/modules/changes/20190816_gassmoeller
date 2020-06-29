@@ -1,5 +1,0 @@
-New: Added a statistics postprocessor 'load balance statistics' that computes
-statistics about the number of owned cells, and particles if active, across all
-MPI processes.
-<br>
-(Rene Gassmoeller, 2019/08/16)

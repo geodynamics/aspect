@@ -1,6 +1,0 @@
-Fixed: There was an interpolation bug in the 'gplates' boundary velocity plugin
-that lead to constant spherical velocities in a small spherical wedge right
-below the 0 meridian. The missing interpolation lead to a small velocity jump
-right at the 0 meridian. This is fixed now.
-<br>
-(Rene Gassmoeller, 2019/05/08)

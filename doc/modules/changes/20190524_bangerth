@@ -1,6 +1,0 @@
-Remove: The
-SimulatorAccessor::simulator_is_initialized() function has been
-removed. It was not used anywhere before. It has been superseded by
-the SimulatorAccess::simulator_is_past_initialization() function.
-<br>
-(Wolfgang Bangerth, 2019/05/24)
