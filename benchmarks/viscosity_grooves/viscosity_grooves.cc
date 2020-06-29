@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -62,14 +62,14 @@ namespace aspect
         const GeometryModel::Box<2> *geometry
           = dynamic_cast<const GeometryModel::Box<2>*> (&geometry_model);
         const double L=geometry->get_extents()[0];
-        return x*x*y*y+x*y+5 - pow(L,4)/9-pow(L,2)/4-5;
+        return x*x*y*y+x*y+5. - pow(L,4.)/9.-pow(L,2.)/4.-5.;
       }
 
       double
       ViscosityGrooves_pressure (const Point<2> &, const GeometryModel::Interface<3> &)
       {
         Assert (false, ExcNotImplemented());
-        return 0;
+        return 0.;
       }
 
       template <int dim>
@@ -148,12 +148,12 @@ namespace aspect
               const Point<dim> &pos = in.position[i];
               const double x = pos[0];
               const double y = pos[1];
-              out.viscosities[i] = -std::sin(x*x*y*y+x*y+5)+1+epsilon;
-              out.densities[i] = 1;
-              out.compressibilities[i] = 0;
-              out.specific_heat[i] = 0;
-              out.thermal_expansion_coefficients[i] = 0;
-              out.thermal_conductivities[i] = 0.0;
+              out.viscosities[i] = -std::sin(x*x*y*y+x*y+5.)+1.+epsilon;
+              out.densities[i] = 1.;
+              out.compressibilities[i] = 0.;
+              out.specific_heat[i] = 0.;
+              out.thermal_expansion_coefficients[i] = 0.;
+              out.thermal_conductivities[i] = 0.;
             }
         }
         /**
@@ -237,7 +237,7 @@ namespace aspect
       prm.enter_subsection("ViscosityGrooves benchmark");
       {
         prm.declare_entry("Viscosity parameter", "0.1",
-                          Patterns::Double (),
+                          Patterns::Double (0.),
                           "Viscosity parameter epsilon in the ViscosityGrooves benchmark.");
       }
       prm.leave_subsection();
@@ -272,7 +272,7 @@ namespace aspect
     template <int dim>
     ViscosityGroovesBoundary<dim>::ViscosityGroovesBoundary ()
       :
-      epsilon (0)
+      epsilon (0.)
     {}
 
     template <>
@@ -329,30 +329,30 @@ namespace aspect
       const double y=pos[1];
       Tensor<1,dim> g;
 
-      const double eta=-std::sin(x*x*y*y+x*y+5)+1+epsilon;
+      const double eta=-std::sin(x*x*y*y+x*y+5.)+1.+epsilon;
 
-      const double costerm=std::cos(x*x*y*y+x*y+5);
+      const double costerm=std::cos(x*x*y*y+x*y+5.);
 
-      const double deta_dx=-y*(2*x*y+1)*costerm;
-      const double deta_dy=-x*(2*x*y+1)*costerm;
+      const double deta_dx=-y*(2.*x*y+1.)*costerm;
+      const double deta_dy=-x*(2.*x*y+1.)*costerm;
 
-      const double dpdx=2 * x  *y*y +y ;
-      const double dpdy=2 * x*x*y   +x ;
+      const double dpdx=2. * x  *y*y +y ;
+      const double dpdy=2. * x*x*y   +x ;
 
-      const double exx= 3*x*x * y +2*x +y +1;
-      const double eyy=-3*x*x * y -2*x -y -1;
+      const double exx= 3.*x*x * y +2.*x +y +1.;
+      const double eyy=-3.*x*x * y -2.*x -y -1.;
 
-      const double exy=0.5*(x*x*x + x -3*x*y*y -2*y);
-      const double eyx=0.5*(x*x*x + x -3*x*y*y -2*y);
+      const double exy=0.5*(x*x*x + x -3.*x*y*y -2.*y);
+      const double eyx=0.5*(x*x*x + x -3.*x*y*y -2.*y);
 
-      const double dexxdx= 6*x*y+2;
-      const double deyxdy=-3*x*y-1;
+      const double dexxdx= 6.*x*y+2.;
+      const double deyxdy=-3.*x*y-1.;
 
-      const double dexydx= 0.5*(3*x*x +1 -3*y*y);
-      const double deyydy= -3*x*x -1;
+      const double dexydx= 0.5*(3.*x*x +1. -3.*y*y);
+      const double deyydy= -3.*x*x -1.;
 
-      const double gx =-dpdx + 2*eta*dexxdx + 2*deta_dx*exx + 2*eta*deyxdy + 2*deta_dy*eyx;
-      const double gy =-dpdy + 2*eta*dexydx + 2*deta_dx*exy + 2*eta*deyydy + 2*deta_dy*eyy;
+      const double gx =-dpdx + 2.*eta*dexxdx + 2.*deta_dx*exx + 2.*eta*deyxdy + 2.*deta_dy*eyx;
+      const double gy =-dpdy + 2.*eta*dexydx + 2.*deta_dx*exy + 2.*eta*deyydy + 2.*deta_dy*eyy;
 
       g[0]=-gx;
       g[1]=-gy;
@@ -448,10 +448,10 @@ namespace aspect
                                          VectorTools::L2_norm,
                                          &comp_p);
 
-      const double u_l1 =  Utilities::MPI::sum(cellwise_errors_u.l1_norm(),this->get_mpi_communicator());
-      const double p_l1 =  Utilities::MPI::sum(cellwise_errors_p.l1_norm(),this->get_mpi_communicator());
-      const double u_l2 =  std::sqrt(Utilities::MPI::sum(cellwise_errors_ul2.norm_sqr(),this->get_mpi_communicator()));
-      const double p_l2 =  std::sqrt(Utilities::MPI::sum(cellwise_errors_pl2.norm_sqr(),this->get_mpi_communicator()));
+      const double u_l1 =  VectorTools::compute_global_error(this->get_triangulation(), cellwise_errors_u, VectorTools::L1_norm);
+      const double p_l1 =  VectorTools::compute_global_error(this->get_triangulation(), cellwise_errors_p, VectorTools::L1_norm);
+      const double u_l2 =  VectorTools::compute_global_error(this->get_triangulation(), cellwise_errors_ul2, VectorTools::L2_norm);
+      const double p_l2 =  VectorTools::compute_global_error(this->get_triangulation(), cellwise_errors_pl2, VectorTools::L2_norm);
 
       std::ostringstream os;
 

@@ -173,6 +173,3 @@ compressibility_formulations/: dummy
 	@$(def); run_prm $@/lateral_pipe_transient lateral_pipe.prm
 	@$(def); run_prm $@/vertical_pipe vertical_pipe.prm
 
-#https://github.com/geodynamics/aspect/issues/3534
-viscosity_grooves/: dummy
-	echo "TODO"
