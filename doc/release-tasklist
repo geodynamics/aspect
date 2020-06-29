@@ -147,29 +147,24 @@ and
 
 This release includes the following significant changes:
 
-- New: There is a new matrix-free Stokes solver which uses geometric multigrid for 
-  preconditioning the A-block. This method is significantly faster than
-  the default algebraic multigrid preconditioner and uses less memory. Free
-  surface, and melt transport are not yet implemented.
+- New: There is a new matrix-free Stokes solver which uses geometric multigrid.
+  This method is significantly faster than the default algebraic multigrid
+  preconditioner and uses less memory. Free surface and melt transport are not
+  yet implemented.
   (Conrad Clevenger, Timo Heister)
 
 - New: There is now a new approximation for the compressible convection
   models that is called 'projected density field'.
   (Rene Gassmoeller, Juliane Dannberg, Timo Heister, Wolfgang Bangerth)
 
-- Changed: The Geodynamic World Builder has been updated to version 0.3.0
+- Changed: The Geodynamic World Builder has been updated to version 0.3.0.
   (Menno Fraters)
 
 - Changed: ASPECT now requires deal.II version 9.0.0 or newer.
   (Timo Heister, Rene Gassmoeller)
 
-- New: The IDR(s) Krylov method can now be used for solving the Stokes system,
-  when using the matrix-free GMG solver. It has a short term recurrence and can
-  greatly reduce the memory requirement compared to GMRES.
-  (Thomas C. Clevenger, Timo Heister)
-
 - New: There is a new, alternative stabilization method for the advection equation 
-  called SUPG. This is preliminary work.
+  called SUPG.
   (Thomas C. Clevenger, Rene Gassmoeller, Timo Heister, Ryan Grove)
 
 - Changed: The entropy viscosity method for stabilizing the advection equations
