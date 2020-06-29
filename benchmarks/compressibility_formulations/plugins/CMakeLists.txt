@@ -16,20 +16,9 @@
 # along with ASPECT; see the file doc/COPYING.  If not see
 # <http://www.gnu.org/licenses/>.
 
-
-# -----------------------------------------------------------------
-# This file is a sample CMakeLists.txt file that plugins can use to
-# configure and build a shared library that can then be loaded via
-# the input file. For more information, see the manual.
-#
-# For actual use, you may want to use a different name than
-# <my_plugin> for the project, and for the names of the source files
-# below.
-# -----------------------------------------------------------------
-
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8.12)
 
-FIND_PACKAGE(Aspect 2.1.0 QUIET HINTS ${Aspect_DIR} ../ ../../ $ENV{ASPECT_DIR})
+FIND_PACKAGE(Aspect 2.2.0 QUIET HINTS ${Aspect_DIR} ../ ../../ $ENV{ASPECT_DIR})
 
 IF (NOT Aspect_FOUND)
   MESSAGE(FATAL_ERROR "\n"
