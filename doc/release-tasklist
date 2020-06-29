@@ -151,7 +151,7 @@ This release includes the following significant changes:
   This method is significantly faster than the default algebraic multigrid
   preconditioner and uses less memory. Free surface and melt transport are not
   yet implemented.
-  (Conrad Clevenger, Timo Heister)
+  (Thomas C. Clevenger, Timo Heister)
 
 - New: There is now a new approximation for the compressible convection
   models that is called 'projected density field'.
