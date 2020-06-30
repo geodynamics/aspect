@@ -810,7 +810,8 @@ namespace aspect
                   // fill reaction rate outputs
                   if (reaction_rate_out != NULL)
                     {
-                      if (!include_melting_and_freezing)
+                      if (!include_melting_and_freezing
+                    	  || (melt_molar_fraction > 0.95 && change_of_melt_fraction > 0))
                         reaction_rate_out->reaction_rates[q][c] = 0.0;
                       else if (c == Fe_solid_idx && this->get_timestep_number() > 0)
                         reaction_rate_out->reaction_rates[q][c] = change_of_solid_composition / reaction_time_step_size;
