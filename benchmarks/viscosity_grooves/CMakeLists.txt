@@ -1,4 +1,4 @@
-# Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
+# Copyright (C) 2015 - 2020 by the authors of the ASPECT code.
 #
 # This file is part of ASPECT.
 #
@@ -13,7 +13,7 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with ASPECT; see the file doc/COPYING.  If not see
+# along with ASPECT; see the file LICENSE.  If not see
 # <http://www.gnu.org/licenses/>.
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8.12)
@@ -32,8 +32,8 @@ ENDIF ()
 
 DEAL_II_INITIALIZE_CACHED_VARIABLES()
 
-SET(TARGET "advection_reaction")
+SET(TARGET "viscosity_grooves")
 PROJECT(${TARGET})
 
-ADD_LIBRARY(${TARGET} SHARED advection_reaction.cc)
+ADD_LIBRARY(${TARGET} SHARED viscosity_grooves.cc)
 ASPECT_SETUP_PLUGIN(${TARGET})
