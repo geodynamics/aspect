@@ -1,3 +1,21 @@
+# Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+#
+# This file is part of ASPECT.
+#
+# ASPECT is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+#
+# ASPECT is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with ASPECT; see the file LICENSE.  If not see
+# <http://www.gnu.org/licenses/>.
+
 ################### top matter ################
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8.12)
 
@@ -9,7 +27,7 @@ SET(ASPECT_BINARY "${ASPECT_BINARY}" CACHE STRING "" FORCE)
 SET(Aspect_DIR "${Aspect_DIR}" CACHE STRING "" FORCE)
 SET(ASPECT_COMPARE_TEST_RESULTS "${ASPECT_COMPARE_TEST_RESULTS}" CACHE BOOL "" FORCE)
 
-FIND_PACKAGE(Aspect 2.1.0 QUIET HINTS ${Aspect_DIR})
+FIND_PACKAGE(Aspect 2.2.0 QUIET HINTS ${Aspect_DIR})
 DEAL_II_INITIALIZE_CACHED_VARIABLES()
 
 FIND_PACKAGE(Perl)
