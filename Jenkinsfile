@@ -79,9 +79,10 @@ pipeline {
         -G 'Ninja' \
         -D CMAKE_CXX_FLAGS='-Werror' \
         -D ASPECT_TEST_GENERATOR='Ninja' \
+        -D ASPECT_PRECOMPILE_HEADERS=OFF \
+        -D ASPECT_UNITY_BUILD=OFF \
         -D ASPECT_USE_PETSC='OFF' \
         -D ASPECT_RUN_ALL_TESTS='ON' \
-        -D ASPECT_PRECOMPILE_HEADERS='ON' \
         -D ASPECT_UNITY_BUILD='OFF' \
         ..
         '''
@@ -109,10 +110,10 @@ pipeline {
       }
       steps {
         sh '''
-	export BUILDDIR=`pwd`/build-gcc-fast
-	cd cookbooks && make -f check.mk CHECK=--validate BUILD=$BUILDDIR -j8
-	cd ..
-	cd benchmarks && make -f check.mk CHECK=--validate BUILD=$BUILDDIR -j8
+        export BUILDDIR=`pwd`/build-gcc-fast
+        cd cookbooks && make -f check.mk CHECK=--validate BUILD=$BUILDDIR -j8
+        cd ..
+        cd benchmarks && make -f check.mk CHECK=--validate BUILD=$BUILDDIR -j8
         '''
       }
     }
