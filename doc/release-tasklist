@@ -61,7 +61,7 @@
       git commit -m "version $TAG" && \
       git tag -s v$TAG -m "version $TAG"
   . create a tar file:
-      cd doc && make manual.pdf && cp manual.pdf aspect-manual-$TAG.pdf && cd ..
+      cd doc && make manual.pdf && cp manual.pdf ../aspect-manual-$TAG.pdf && cd ..
       export PREFIX=aspect-$TAG && rm -rf $PREFIX.tar.gz && \
       git archive --format=tar.gz --prefix=$PREFIX/ HEAD >temp.tar.gz && \
       rm -fr $PREFIX/ && \
@@ -89,13 +89,13 @@
       git push cig v$TAG
   . sign:
       gpg --detach-sign --armor aspect-$TAG.tar.gz
-      sha1sum aspect-$TAG.tar.gz
       gpg --detach-sign --armor aspect-manual-$TAG.pdf
       sha1sum aspect-$TAG.tar.gz aspect-manual-$TAG.pdf >sha1sum-$TAG.txt
-  . create a release on github, upload tar.gz and manual-$VER.pdf
+  . create a release on github, upload .tar.gz and manual-$VER.pdf
   . update website (www repo):
     - header.include: add link to changes
     - index.html: add news entry
+    - cite.html: change to current version (2x)
   . create zenodo release for source code:
     - https://zenodo.org/deposit?page=1&size=20
     - title: ASPECT v2.0.0
@@ -105,17 +105,20 @@
     - update zenodo badge in README.md to newest version (see badge button on the right of zenodo page)
     - add zenodo badge also to the release on github (on top, see 2.0.1 for an example)
     - readme / release notes: add zenodo DOI button
-  . create figshare DOI for manual
+    - manual/manual.bib: add new zenodo entry
+  . create figshare DOI for manual (just upload a new version as the same entry)
+    - update manual/manual.bib entry
   . update doc/manual/manual.bib with src and manual doi
   . update aspect.geodynamics.org/cite.html and citing.html in www repo:
-    - change link in cite.html
     - add new version in citing.html, search for "<option"
+    - doc/make_cite_html.py:
+      - add new version, update doc/zenodo dois
     - run aspect/doc/ python3 make_cite_html.py add to www
   . update http://geodynamics.org/cig/software/aspect/:
        update current release number
        create entry for the new release
        update the list of contributors
-       ... (to be completed when we go through the 2.0 release process)
+       ...
   . update docker image geodynamics/aspect:
     - modify docker/Dockerfile and docker/build.sh to checkout the release
       cd docker && ./build.sh
