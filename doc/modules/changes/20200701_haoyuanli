@@ -1,8 +1,4 @@
-New: Added function phase_average_value, namespace PhaseUtilities to namespace MaterialModel::MaterialUtilities.
-This new function averages parameters(e.g density, viscosity) across all phases for a composition. It
-takes parameters of phases and values of gamma functions as inputs, applys an arithmetic or 
-logarithmic averaging and return the averaged value. A enum type PhaseUtilities::PhaseAveragingOperation 
-is defined to determine the type of operation(e.g arithmetic, logarithmic) to perform in the phase_average_value
-function.
+New: Added a new function PhaseUtilities::phase_average_value to the namespace MaterialModel::MaterialUtilities.
+This new function averages parameters(e.g density, viscosity) across all phases for a composition.
 <br>
 (Haoyuan Li, 2020/07/01)
