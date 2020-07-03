@@ -75,8 +75,8 @@ namespace aspect
          * Return a point that denotes the repetitions of the box in each dimension
          * of the domain.
          */
-        std::pair<int, int >
-        get_repetitions() const;
+        unsigned int
+        get_repetitions(unsigned int dimension) const;
 
         /**
          * Return a point that denotes the lower left corner of the box

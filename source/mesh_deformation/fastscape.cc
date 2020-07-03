@@ -29,11 +29,17 @@ namespace aspect
     void
     FastScape<dim>::initialize ()
     {
+
+      //if (Plugins::plugin_type_matches<const GeometryModel::Box<dim>>(this->get_geometry_model()) != true )
+          AssertThrow(Plugins::plugin_type_matches<const GeometryModel::Box<dim>>(this->get_geometry_model()),
+                  ExcMessage("Fastscape can only be run with a box model"));
+
       const GeometryModel::Box<dim> *geometry
         = dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model());
 
-      AssertThrow(geometry != nullptr,
-                  ExcMessage("Fastscape can only be run with a box model"));
+     // const types::boundary_id relevant_boundary = this->get_geometry_model().translate_symbolic_boundary_name_to_id ("top");
+     // const bool top_boundary = boundary_ids.find(relevant_boundary) == boundary_ids.begin();
+     // const std::set<types::boundary_id> tmp_free_surface_boundary_indicators = this->get_mesh_deformation_handler().get_fastscape_boundary_indicators();
 
 
       //Initialize parameters for restarting fastscape
@@ -48,9 +54,10 @@ namespace aspect
         }
 
       //TODO: There has to be a better type to use to get this.
-      const std::pair<int, int > repetitions = geometry->get_repetitions();
-      int x_repetitions = repetitions.first;
-      int y_repetitions = repetitions.second;
+      //const unsigned int repetitions[dim] = {geometry->get_repetitions()};
+      const unsigned int x_repetitions = geometry->get_repetitions(0);
+      const unsigned int y_repetitions = geometry->get_repetitions(1);
+      std::cout<<x_repetitions<<"  "<<y_repetitions<<std::endl;
 
       //Set nx and dx, as these will be the same regardless of dimension.
       nx = 3+std::pow(2,surface_resolution+additional_refinement)*x_repetitions;
@@ -79,7 +86,7 @@ namespace aspect
         }
 
       //Determine array size to send to fastscape
-      array_size = nx*ny-1;
+      array_size = nx*ny;
     }
 
 
@@ -198,13 +205,16 @@ namespace aspect
                * These have to be doubles of array_size, which C++ doesn't like,
                * so they're initialized this way.
                */
-              std::unique_ptr<double[]> h (new double[array_size]);
-              std::unique_ptr<double[]> vx (new double[array_size]);
-              std::unique_ptr<double[]> vy (new double[array_size]);
-              std::unique_ptr<double[]> vz (new double[array_size]);
-              std::unique_ptr<double[]> kf (new double[array_size]);
-              std::unique_ptr<double[]> kd (new double[array_size]);
-              std::unique_ptr<double[]> slopep (new double[array_size]);
+              //TODO: by adding the parenthesis these get initialized to zero, except,
+              //for some reason the last element doesn't. This shouldn't be an issue
+              //but noted here in case something goes wrong.
+              std::unique_ptr<double[]> h (new double[array_size]());
+              std::unique_ptr<double[]> vx (new double[array_size]());
+              std::unique_ptr<double[]> vy (new double[array_size]());
+              std::unique_ptr<double[]> vz (new double[array_size]());
+              std::unique_ptr<double[]> kf (new double[array_size]());
+              std::unique_ptr<double[]> kd (new double[array_size]());
+              std::unique_ptr<double[]> slopep (new double[array_size]());
               int istep = 0;
               int steps = nstep;
               std::srand(fs_seed);
@@ -219,14 +229,9 @@ namespace aspect
               const std::string restart_step_filename = filename + "fastscape_steps_restart.txt";
 
               //Initialize all FastScape variables.
-              for (int i=0; i<=array_size; i++)
+              for (int i=0; i<array_size; i++)
                 {
-                  h[i] = 0;
-                  vx[i] = 0;
-                  vz[i] = 0;
-                  vy[i] = 0;
-                  slopep[i] = 0;
-
+            	  //std::cout<<h[i]<<"  "<<vx[i]<<std::endl;
                   kf[i] = kff;
                   kd[i] = kdd;
                 }
@@ -301,7 +306,7 @@ namespace aspect
                         {
                           int line = 0;
 
-                          while (line <= array_size)
+                          while (line < array_size)
                             {
                               in >> h[line];
                               line++;
@@ -362,7 +367,7 @@ namespace aspect
                * In the first timestep, h will be given from other processors.
                * In other timesteps, we copy h directly from fastscape.
                */
-              for (int i=0; i<=array_size; i++)
+              for (int i=0; i<array_size; i++)
                 {
                   //Initialize random topography noise first time fastscape is called.
                   if (current_timestep == 1)
@@ -387,7 +392,7 @@ namespace aspect
 
                   out_step<<(istep+restart_step)<<std::endl;
 
-                  for (int i=0; i<=array_size; i++)
+                  for (int i=0; i<array_size; i++)
                     out_h<<h[i]<<std::endl;
                 }
 
@@ -401,8 +406,8 @@ namespace aspect
               //Now we set the ghost nodes at the left and right boundaries.
               for (int j=0; j<ny; j++)
                 {
-                  double index_left = nx*j+1;
-                  double index_right = nx*(j+1);
+                  int index_left = nx*j+1;
+                  int index_right = nx*(j+1);
                   double slope = 0;
 
                   //Generally, they will always be set to the same values as the
@@ -459,7 +464,7 @@ namespace aspect
                   //nodes on the opposite side.
                   if (left == 0 && right == 0)
                     {
-                      double side = index_left;
+                      int side = index_left;
                       int jj = 0;
 
                       //If they aren't going the same direction, don't set the ghost nodes.
@@ -493,8 +498,8 @@ namespace aspect
               //Now do the same for the top and bottom ghost nodes.
               for (int j=0; j<nx; j++)
                 {
-                  double index_bot = j+1;
-                  double index_top = nx*(ny-1)+j+1;
+                  int index_bot = j+1;
+                  int index_top = nx*(ny-1)+j+1;
                   double slope = 0;
 
                   vz[index_bot-1] = vz[index_bot+nx-1];
@@ -542,7 +547,7 @@ namespace aspect
 
                   if (bottom == 0 && top == 0)
                     {
-                      double side = index_bot;
+                      int side = index_bot;
                       int jj = nx;
 
                       if (vy[index_bot+nx-1] > 0 && vy[index_top-nx-1] >= 0)
@@ -640,12 +645,12 @@ namespace aspect
                 }
 
               //Find out our velocities from the change in height.
-              for (int i=0; i<=array_size; i++)
+              for (int i=0; i<array_size; i++)
                 {
                   V[i] = (h[i] - h_old[i])/a_dt;
                 }
 
-              MPI_Bcast(&V[0], array_size+1, MPI_DOUBLE, 0, this->get_mpi_communicator());
+              MPI_Bcast(&V[0], array_size, MPI_DOUBLE, 0, this->get_mpi_communicator());
             }
           else
             {
@@ -655,7 +660,7 @@ namespace aspect
                 MPI_Ssend(&temporary_variables[i][0], temporary_variables[1].size(), MPI_DOUBLE, 0, 42, this->get_mpi_communicator());
 
 
-              MPI_Bcast(&V[0], array_size+1, MPI_DOUBLE, 0, this->get_mpi_communicator());
+              MPI_Bcast(&V[0], array_size, MPI_DOUBLE, 0, this->get_mpi_communicator());
             }
 
           TableIndices<dim> size_idx;
@@ -670,7 +675,6 @@ namespace aspect
 
           //this variable gives us how many slices near the boundaries to ignore,
           //this helps avoid boundary conditions effecting the topography.
-          int edge = (nx+1)/2;
           if (dim == 2)
             {
               std::vector<double> V2(nx);
