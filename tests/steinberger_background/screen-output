@@ -12,7 +12,7 @@ Number of degrees of freedom: 3,557 (1,666+225+833+833)
      Writing graphical output:           output-steinberger_background/solution/solution-00000
      RMS, max velocity:                  0.581 m/year, 1.11 m/year
      Temperature min/avg/max:            273 K, 2437 K, 4250 K
-     Heat fluxes through boundary parts: 4.808e+05 W, -4.278e+06 W, 0 W, 0 W
+     Heat fluxes through boundary parts: 4.776e+05 W, -4.278e+06 W, 0 W, 0 W
      Writing depth average:              output-steinberger_background/depth_average
 
 *** Timestep 1:  t=100000 years
@@ -25,7 +25,7 @@ Number of degrees of freedom: 3,557 (1,666+225+833+833)
      Writing graphical output:           output-steinberger_background/solution/solution-00001
      RMS, max velocity:                  0.574 m/year, 1.11 m/year
      Temperature min/avg/max:            273 K, 2435 K, 4250 K
-     Heat fluxes through boundary parts: -2.851e+06 W, -1.204e+06 W, 0 W, 0 W
+     Heat fluxes through boundary parts: -2.849e+06 W, -1.204e+06 W, 0 W, 0 W
      Writing depth average:              output-steinberger_background/depth_average
 
 Termination requested by criterion: end time

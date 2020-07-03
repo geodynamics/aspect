@@ -12,7 +12,7 @@ Number of mesh deformation degrees of freedom: 336
    Solving plate system ... 0 iterations.
    Solving inclusion system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 61+0 iterations.
+   Solving Stokes system... 59+0 iterations.
 
    Postprocessing:
      Average density / Average viscosity / Total mass:  2672 kg/m^3, 1.556e+18 Pa s, 2.338e+12 kg

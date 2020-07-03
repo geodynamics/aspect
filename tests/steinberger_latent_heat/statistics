@@ -19,4 +19,4 @@
 # 19: Outward heat flux through boundary with indicator 1 ("top") (W)
 # 20: Outward heat flux through boundary with indicator 2 ("left") (W)
 # 21: Outward heat flux through boundary with indicator 3 ("right") (W)
-0 0.000000000000e+00 0.000000000000e+00 768 7235 3201 0 42 44 43 output-steinberger_latent_heat/solution/solution-00000 4.54469043e-01 8.76592073e-01 2.73000000e+02 2.60648124e+03 4.25000000e+03 5.86744088e-01 -1.26193826e+05 4.61963749e+05 0.00000000e+00 0.00000000e+00 
+0 0.000000000000e+00 0.000000000000e+00 768 7235 3201 0 42 44 43 output-steinberger_latent_heat/solution/solution-00000 4.54450241e-01 8.76554570e-01 2.73000000e+02 2.60648124e+03 4.25000000e+03 5.86744088e-01 -1.27044281e+05 4.61964274e+05 0.00000000e+00 0.00000000e+00 

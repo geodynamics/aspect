@@ -29,7 +29,7 @@ Number of degrees of freedom: 2,104 (578+81+289+289+289+289+289)
 
    Postprocessing:
      Number of advected particles: 1
-     Compositions min/max/mass:    1/1/1 // 0.05/0.05/0.05 // -2.289e-17/2.561e-17/1.839e-31 // 1/1/1
+     Compositions min/max/mass:    1/1/1 // 0.05/0.05/0.05 // -2.907e-17/2.187e-17/4.699e-32 // 1/1/1
 
 Termination requested by criterion: end time
 

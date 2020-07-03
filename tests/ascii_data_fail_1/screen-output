@@ -5,9 +5,8 @@
 TimerOutput objects finalize timed values printed to the
 screen by communicating over MPI in their destructors.
 Since an exception is currently uncaught, this
-synchronization (and subsequent output) will be skipped to
-avoid a possible deadlock.
-ERROR: Uncaught exception in MPI_InitFinalize on proc 0. Skipping MPI_Finalize() to avoid a deadlock.
+synchronization (and subsequent output) will be skipped
+to avoid a possible deadlock.
 
 
 Exception 'ExcMessage ("While reading the data file '" + filename + "' the ascii data " "plugin has encountered an error before the end of the file. " "Please check for malformed data values (e.g. NaN) or superfluous " "lines at the end of the data file.")' on rank 0 on processing: 

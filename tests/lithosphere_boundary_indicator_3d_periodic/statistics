@@ -13,4 +13,4 @@
 # 13: RMS velocity (m/year)
 # 14: Max. velocity (m/year)
 # 15: Visualization file name
-0 0.000000000000e+00 0.000000000000e+00 432 13312 4225 4225 0 0 36 38 113 3.58486723e-03 7.58857342e-03 output-lithosphere_boundary_indicator_3d_periodic/solution/solution-00000 
+0 0.000000000000e+00 0.000000000000e+00 432 13312 4225 4225 0 0 36 38 190 3.58486721e-03 7.58857337e-03 output-lithosphere_boundary_indicator_3d_periodic/solution/solution-00000 

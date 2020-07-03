@@ -27,7 +27,7 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
      Heating rate (average/total):  1.697e-11 W/kg, 576.9 W
 
 *** Timestep 2:  t=6250 years
-   Solving temperature system... 5 iterations.
+   Solving temperature system... 6 iterations.
    Solving grain_size system ... 9 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 1+0 iterations.
@@ -39,8 +39,8 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
      Heating rate (average/total):  1.691e-11 W/kg, 575 W
 
 *** Timestep 3:  t=9375 years
-   Solving temperature system... 5 iterations.
-   Solving grain_size system ... 8 iterations.
+   Solving temperature system... 6 iterations.
+   Solving grain_size system ... 9 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 1+0 iterations.
 
@@ -54,7 +54,7 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
    Solving temperature system... 3 iterations.
    Solving grain_size system ... 6 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system... 2+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass:     0.0009964/0.0009964/9.964e+06

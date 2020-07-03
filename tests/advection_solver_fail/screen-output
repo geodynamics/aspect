@@ -7,9 +7,8 @@ Number of degrees of freedom: 2,724 (1,666+225+833)
 TimerOutput objects finalize timed values printed to the
 screen by communicating over MPI in their destructors.
 Since an exception is currently uncaught, this
-synchronization (and subsequent output) will be skipped to
-avoid a possible deadlock.
-ERROR: Uncaught exception in MPI_InitFinalize on proc 0. Skipping MPI_Finalize() to avoid a deadlock.
+synchronization (and subsequent output) will be skipped
+to avoid a possible deadlock.
 
 
 Exception 'ExcMessage ("The " + solver_name + " did not converge. It reported the following error:\n\n" + exc.what() + "\n The required residual for convergence is: " + std::to_string(solver_controls.front().tolerance()) + ".\n See " + output_filename + " for convergence history.")' on rank 0 on processing: 
@@ -27,7 +26,7 @@ An error occurred in file <solver_gmres.h> in function
 The violated condition was: 
     iteration_state == SolverControl::success
 Additional information: 
-Iterative method reported convergence failure in step 1000. The residual in the last step was 7.4402e-11.
+Iterative method reported convergence failure in step 1000. The residual in the last step was 1.48706e-10.
 
 This error message can indicate that you have simply not allowed a sufficiently large number of iterations for your iterative solver to converge. This often happens when you increase the size of your problem. In such cases, the last residual will likely still be very small, and you can make the error go away by increasing the allowed number of iterations when setting up the SolverControl object that determines the maximal number of iterations you allow.
 

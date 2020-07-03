@@ -9,43 +9,40 @@ Number of mesh deformation degrees of freedom: 5346
 
 *** Timestep 2:  t=9133.17 years
    Solving mesh velocity system... 7 iterations.
-   Solving temperature system... 23 iterations.
+   Solving temperature system... 10 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 44+0 iterations.
+   Solving Stokes system... 43+0 iterations.
 
    Postprocessing:
-     Topography min/max:       -183.4 m, 241.7 m
-     RMS, max velocity:        0.047 m/year, 0.184 m/year
+     Topography min/max:       -206.4 m, 126.7 m
+     RMS, max velocity:        0.0361 m/year, 0.144 m/year
      Writing graphical output: output1.tmp/solution/solution-00002
 
-*** Timestep 3:  t=17626.4 years
+*** Timestep 3:  t=20021.1 years
    Solving mesh velocity system... 7 iterations.
-   Solving temperature system... 22 iterations.
+   Solving temperature system... 10 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 44+0 iterations.
 
    Postprocessing:
-     Topography min/max:       -295.5 m, 205.8 m
-     RMS, max velocity:        0.0353 m/year, 0.138 m/year
+     Topography min/max:       -88.94 m, 87.83 m
+     RMS, max velocity:        0.0384 m/year, 0.156 m/year
      Writing graphical output: output1.tmp/solution/solution-00003
 
 *** Snapshot created!
 
-*** Timestep 4:  t=28970.8 years
+*** Timestep 4:  t=30009.6 years
    Solving mesh velocity system... 7 iterations.
-   Solving temperature system... 11 iterations.
+   Solving temperature system... 10 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 45+0 iterations.
+   Solving Stokes system... 44+0 iterations.
 
    Postprocessing:
-     Topography min/max:       -107.1 m, 85.99 m
-     RMS, max velocity:        0.0374 m/year, 0.153 m/year
+     Topography min/max:       -131.7 m, 78.31 m
+     RMS, max velocity:        0.0385 m/year, 0.156 m/year
      Writing graphical output: output1.tmp/solution/solution-00004
 
 Termination requested by criterion: end step
 
 
-+---------------------------------------------+------------+------------+
-+---------------------------------+-----------+------------+------------+
-+---------------------------------+-----------+------------+------------+
 
