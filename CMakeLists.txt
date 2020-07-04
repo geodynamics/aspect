@@ -151,7 +151,7 @@ WRITE_BASIC_PACKAGE_VERSION_FILE(
 # set up compiler flags, include paths, etc to compile an
 # ASPECT plugin.
 # Config for the build dir:
-SET(CONFIG_INCLUDE_DIRS "${CMAKE_SOURCE_DIR}/include")
+SET(CONFIG_INCLUDE_DIRS "${CMAKE_BINARY_DIR}/include" "${CMAKE_SOURCE_DIR}/include")
 SET(CONFIG_DIR "${CMAKE_BINARY_DIR}")
 CONFIGURE_FILE(
   ${CMAKE_SOURCE_DIR}/cmake/AspectConfig.cmake.in
