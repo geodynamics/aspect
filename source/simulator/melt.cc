@@ -1334,7 +1334,7 @@ namespace aspect
   }
 
 
-  namespace
+  namespace internal
   {
     // This is a scratch object for the setting the compaction pressure constraints
     // in cells without melt (where we do not solve the melt transport equations,
@@ -1510,7 +1510,7 @@ namespace aspect
     }
 
 
-    PcNonZeroDofsAssembler<dim> assembler(is_melt_cell_vector, nonzero_pc_dofs);
+    internal::PcNonZeroDofsAssembler<dim> assembler(is_melt_cell_vector, nonzero_pc_dofs);
     assembler.initialize_simulator(this->get_simulator());
 
     typedef
@@ -1522,13 +1522,13 @@ namespace aspect
                                               + fe.base_element(this->introspection().base_elements.pressure).dofs_per_cell;
 
     auto worker = [&](const typename DoFHandler<dim>::active_cell_iterator &cell,
-                      PcConstraintsAssembleData<dim> &scratch,
-                      PcConstraintsCopyData<dim> &data)
+                      internal::PcConstraintsAssembleData<dim> &scratch,
+                      internal::PcConstraintsCopyData<dim> &data)
     {
       assembler.local_save_nonzero_pc_dofs(cell, scratch, data);
     };
 
-    auto copier = [&](const PcConstraintsCopyData<dim> &data)
+    auto copier = [&](const internal::PcConstraintsCopyData<dim> &data)
     {
       assembler.copy_local_to_global(data);
     };
@@ -1542,12 +1542,14 @@ namespace aspect
                      this->get_dof_handler().end()),
          worker,
          copier,
-         PcConstraintsAssembleData<dim> (fe, quadrature_formula,
-                                         this->get_mapping(),
-                                         cell_update_flags,
-                                         this->introspection().n_compositional_fields,
-                                         stokes_dofs_per_cell),
-         PcConstraintsCopyData<dim> (stokes_dofs_per_cell));
+         internal::PcConstraintsAssembleData<dim> (
+           fe,
+           quadrature_formula,
+           this->get_mapping(),
+           cell_update_flags,
+           this->introspection().n_compositional_fields,
+           stokes_dofs_per_cell),
+         internal::PcConstraintsCopyData<dim> (stokes_dofs_per_cell));
 
     // For the constraints, first pick all relevant p_c dofs:
     IndexSet for_constraints = this->introspection().index_sets.system_relevant_set
