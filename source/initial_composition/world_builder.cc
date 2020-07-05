@@ -18,6 +18,8 @@
   <http://www.gnu.org/licenses/>.
 */
 
+#include <aspect/global.h>
+
 #ifdef ASPECT_WITH_WORLD_BUILDER
 #include <aspect/initial_composition/world_builder.h>
 #include <aspect/geometry_model/interface.h>

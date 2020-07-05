@@ -18,6 +18,8 @@
   <http://www.gnu.org/licenses/>.
 */
 
+#include <aspect/global.h>
+
 #ifdef ASPECT_WITH_WORLD_BUILDER
 #include <aspect/initial_temperature/world_builder.h>
 #include <world_builder/world.h>
