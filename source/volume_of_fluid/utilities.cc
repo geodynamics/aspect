@@ -680,6 +680,8 @@ namespace aspect
                                             const std::vector<double> &weights);
 
       ASPECT_INSTANTIATE(INSTANTIATE)
+
+#undef INSTANTIATE
     }
   }
 }

@@ -307,5 +307,7 @@ namespace aspect
   template class Manager<dim>;
 
     ASPECT_INSTANTIATE(INSTANTIATE)
+
+#undef INSTANTIATE
   }
 }

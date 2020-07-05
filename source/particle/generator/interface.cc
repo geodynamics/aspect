@@ -297,6 +297,8 @@ namespace aspect
   create_particle_generator<dim> (ParameterHandler &prm);
 
       ASPECT_INSTANTIATE(INSTANTIATE)
+
+#undef INSTANTIATE
     }
   }
 }

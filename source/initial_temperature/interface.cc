@@ -274,5 +274,7 @@ namespace aspect
   get_valid_model_names_pattern<dim> ();
 
     ASPECT_INSTANTIATE(INSTANTIATE)
+
+#undef INSTANTIATE
   }
 }

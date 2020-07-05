@@ -546,6 +546,8 @@ namespace aspect
   template LinearAlgebra::BlockVector compute_dirichlet_boundary_heat_flux_solution_vector (const SimulatorAccess<dim> &simulator_access);
 
       ASPECT_INSTANTIATE(INSTANTIATE)
+
+#undef INSTANTIATE
     }
 
     ASPECT_REGISTER_POSTPROCESSOR(HeatFluxMap,

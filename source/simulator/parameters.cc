@@ -2114,4 +2114,6 @@ namespace aspect
   template void Simulator<dim>::declare_parameters (ParameterHandler &prm);
 
   ASPECT_INSTANTIATE(INSTANTIATE)
+
+#undef INSTANTIATE
 }

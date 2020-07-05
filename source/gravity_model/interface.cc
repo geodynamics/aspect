@@ -188,5 +188,7 @@ namespace aspect
   create_gravity_model<dim> (ParameterHandler &prm);
 
     ASPECT_INSTANTIATE(INSTANTIATE)
+
+#undef INSTANTIATE
   }
 }

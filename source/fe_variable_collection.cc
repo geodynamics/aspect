@@ -256,4 +256,6 @@ namespace aspect
   template class FEVariableCollection<dim>; \
    
   ASPECT_INSTANTIATE(INSTANTIATE)
+
+#undef INSTANTIATE
 }

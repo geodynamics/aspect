@@ -1497,5 +1497,7 @@ namespace aspect
   template class DislocationViscosityOutputs<dim>;
 
     ASPECT_INSTANTIATE(INSTANTIATE)
+
+#undef INSTANTIATE
   }
 }

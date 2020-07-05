@@ -193,5 +193,7 @@ namespace aspect
   create_initial_topography_model<dim> (ParameterHandler &prm);
 
     ASPECT_INSTANTIATE(INSTANTIATE)
+
+#undef INSTANTIATE
   }
 }

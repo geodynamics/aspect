@@ -1326,6 +1326,8 @@ namespace aspect
   template class Interface<dim>;
 
       ASPECT_INSTANTIATE(INSTANTIATE)
+
+#undef INSTANTIATE
     }
   }
 

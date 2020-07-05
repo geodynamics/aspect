@@ -245,5 +245,7 @@ namespace aspect
   create_adiabatic_conditions<dim> (ParameterHandler &prm);
 
     ASPECT_INSTANTIATE(INSTANTIATE)
+
+#undef INSTANTIATE
   }
 }

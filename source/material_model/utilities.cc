@@ -979,6 +979,8 @@ namespace aspect
   template class PhaseFunction<dim>;
 
       ASPECT_INSTANTIATE(INSTANTIATE)
+
+#undef INSTANTIATE
     }
   }
 }

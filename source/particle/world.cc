@@ -932,5 +932,7 @@ namespace aspect
   template class World<dim>;
 
     ASPECT_INSTANTIATE(INSTANTIATE)
+
+#undef INSTANTIATE
   }
 }

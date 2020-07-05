@@ -2543,4 +2543,6 @@ namespace aspect
   template class StokesMatrixFreeHandlerImplementation<dim,3>;
 
   ASPECT_INSTANTIATE(INSTANTIATE)
+
+#undef INSTANTIATE
 }

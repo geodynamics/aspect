@@ -971,4 +971,6 @@ namespace aspect
   template std::pair<double,double> Simulator<dim>::solve_stokes ();
 
   ASPECT_INSTANTIATE(INSTANTIATE)
+
+#undef INSTANTIATE
 }

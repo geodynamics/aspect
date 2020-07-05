@@ -3499,6 +3499,8 @@ namespace aspect
 
     ASPECT_INSTANTIATE(INSTANTIATE)
 
+#undef INSTANTIATE
+
 
 
     template class AsciiDataLookup<1>;

@@ -1090,4 +1090,6 @@ namespace aspect
   template void Simulator<dim>::solve_no_advection_no_stokes();
 
   ASPECT_INSTANTIATE(INSTANTIATE)
+
+#undef INSTANTIATE
 }

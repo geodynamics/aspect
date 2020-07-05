@@ -210,5 +210,7 @@ namespace aspect
   create_boundary_traction<dim> (const std::string &);
 
     ASPECT_INSTANTIATE(INSTANTIATE)
+
+#undef INSTANTIATE
   }
 }

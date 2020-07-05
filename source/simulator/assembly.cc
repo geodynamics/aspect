@@ -1294,4 +1294,6 @@ namespace aspect
 
 
   ASPECT_INSTANTIATE(INSTANTIATE)
+
+#undef INSTANTIATE
 }

@@ -705,4 +705,6 @@ namespace aspect
 #define INSTANTIATE(dim) \
   template class LateralAveraging<dim>;
   ASPECT_INSTANTIATE(INSTANTIATE)
+
+#undef INSTANTIATE
 }

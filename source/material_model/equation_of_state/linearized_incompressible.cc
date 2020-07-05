@@ -150,7 +150,10 @@ namespace aspect
     {
 #define INSTANTIATE(dim) \
   template class LinearizedIncompressible<dim>;
+
       ASPECT_INSTANTIATE(INSTANTIATE)
+
+#undef INSTANTIATE
     }
   }
 }

@@ -102,5 +102,7 @@ namespace aspect
                                                               EquationOfStateOutputs<dim> &);
 
     ASPECT_INSTANTIATE(INSTANTIATE)
+
+#undef INSTANTIATE
   }
 }
