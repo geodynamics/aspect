@@ -371,5 +371,7 @@ namespace aspect
   create_geometry_model<dim> (ParameterHandler &prm);
 
     ASPECT_INSTANTIATE(INSTANTIATE)
+
+#undef INSTANTIATE
   }
 }

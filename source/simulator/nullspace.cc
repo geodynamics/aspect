@@ -485,4 +485,6 @@ namespace aspect
   template void Simulator<dim>::setup_nullspace_constraints (ConstraintMatrix &);
 
   ASPECT_INSTANTIATE(INSTANTIATE)
+
+#undef INSTANTIATE
 }

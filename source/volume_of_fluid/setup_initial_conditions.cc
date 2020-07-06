@@ -240,4 +240,6 @@ namespace aspect
   template void VolumeOfFluidHandler<dim>::initialize_from_level_set (const VolumeOfFluidField<dim> &field);
 
   ASPECT_INSTANTIATE(INSTANTIATE)
+
+#undef INSTANTIATE
 }

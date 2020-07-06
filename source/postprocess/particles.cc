@@ -738,6 +738,8 @@ namespace aspect
   template class ParticleOutput<dim>;
 
       ASPECT_INSTANTIATE(INSTANTIATE)
+
+#undef INSTANTIATE
     }
 
     ASPECT_REGISTER_POSTPROCESSOR(Particles,

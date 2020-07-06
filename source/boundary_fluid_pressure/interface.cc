@@ -171,5 +171,7 @@ namespace aspect
   create_boundary_fluid_pressure<dim> (ParameterHandler &prm);
 
     ASPECT_INSTANTIATE(INSTANTIATE)
+
+#undef INSTANTIATE
   }
 }

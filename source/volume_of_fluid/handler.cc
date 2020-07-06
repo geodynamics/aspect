@@ -372,4 +372,6 @@ namespace aspect
   template class VolumeOfFluidHandler<dim>;
 
   ASPECT_INSTANTIATE(INSTANTIATE)
+
+#undef INSTANTIATE
 }

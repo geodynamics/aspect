@@ -786,5 +786,7 @@ namespace aspect
   template class NewtonStokesIsentropicCompressionTerm<dim>;
 
     ASPECT_INSTANTIATE(INSTANTIATE)
+
+#undef INSTANTIATE
   }
 }

@@ -618,4 +618,6 @@ namespace aspect
   template void Simulator<dim>::resume_from_snapshot();
 
   ASPECT_INSTANTIATE(INSTANTIATE)
+
+#undef INSTANTIATE
 }

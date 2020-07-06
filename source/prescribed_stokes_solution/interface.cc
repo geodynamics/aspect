@@ -180,5 +180,7 @@ namespace aspect
   create_prescribed_stokes_solution<dim> (ParameterHandler &prm);
 
     ASPECT_INSTANTIATE(INSTANTIATE)
+
+#undef INSTANTIATE
   }
 }

@@ -277,6 +277,8 @@ namespace aspect
   create_particle_integrator<dim> (ParameterHandler &prm);
 
       ASPECT_INSTANTIATE(INSTANTIATE)
+
+#undef INSTANTIATE
     }
   }
 }

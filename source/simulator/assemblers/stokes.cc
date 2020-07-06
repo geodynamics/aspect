@@ -958,5 +958,7 @@ namespace aspect
   template class StokesBoundaryTraction<dim>;
 
     ASPECT_INSTANTIATE(INSTANTIATE)
+
+#undef INSTANTIATE
   }
 }

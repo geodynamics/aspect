@@ -524,8 +524,6 @@ IF (ASPECT_PRECOMPILE_HEADERS)
   SET_TARGET_PROPERTIES (aspect PROPERTIES
       COTIRE_PREFIX_HEADER_IGNORE_PATH
       "/usr/include/;${CMAKE_SOURCE_DIR};${CMAKE_BINARY_DIR}")
-  SET_SOURCE_FILES_PROPERTIES (${TARGET_SRC} PROPERTIES
-      COTIRE_UNITY_SOURCE_POST_UNDEFS "INSTANTIATE")
 
   # This line activates the cotire module for the aspect target, 
   # and therefore the whole precompilation

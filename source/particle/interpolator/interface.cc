@@ -189,6 +189,8 @@ namespace aspect
   create_particle_interpolator<dim> (ParameterHandler &prm);
 
       ASPECT_INSTANTIATE(INSTANTIATE)
+
+#undef INSTANTIATE
     }
   }
 }

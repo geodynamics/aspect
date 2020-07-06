@@ -176,5 +176,7 @@ namespace aspect
   create_boundary_heat_flux<dim> (ParameterHandler &prm);
 
     ASPECT_INSTANTIATE(INSTANTIATE)
+
+#undef INSTANTIATE
   }
 }

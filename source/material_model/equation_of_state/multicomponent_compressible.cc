@@ -166,7 +166,10 @@ namespace aspect
     {
 #define INSTANTIATE(dim) \
   template class MulticomponentCompressible<dim>;
+
       ASPECT_INSTANTIATE(INSTANTIATE)
+
+#undef INSTANTIATE
     }
   }
 }

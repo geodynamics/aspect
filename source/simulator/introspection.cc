@@ -341,4 +341,6 @@ namespace aspect
   construct_default_variables (const Parameters<dim> &parameters);
 
   ASPECT_INSTANTIATE(INSTANTIATE)
+
+#undef INSTANTIATE
 }

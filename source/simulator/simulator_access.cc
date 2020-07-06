@@ -759,4 +759,6 @@ namespace aspect
   template class SimulatorAccess<dim>;
 
   ASPECT_INSTANTIATE(INSTANTIATE)
+
+#undef INSTANTIATE
 }

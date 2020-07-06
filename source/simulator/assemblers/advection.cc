@@ -1416,5 +1416,7 @@ namespace aspect
   template class AdvectionSystemBoundaryHeatFlux<dim>;
 
     ASPECT_INSTANTIATE(INSTANTIATE)
+
+#undef INSTANTIATE
   }
 }

@@ -2535,4 +2535,6 @@ namespace aspect
                                                                             const double newton_residual_old);
 
   ASPECT_INSTANTIATE(INSTANTIATE)
+
+#undef INSTANTIATE
 }
