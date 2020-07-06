@@ -1,0 +1,4 @@
+New: Added a new function PhaseUtilities::phase_average_value to the namespace MaterialModel::MaterialUtilities.
+This new function averages parameters(e.g density, viscosity) across all phases for a composition.
+<br>
+(Haoyuan Li, 2020/07/01)

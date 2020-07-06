@@ -113,8 +113,8 @@ namespace aspect
     template <int dim>
     void
     phase_average_equation_of_state_outputs(const EquationOfStateOutputs<dim> &eos_outputs_all_phases,
-                                            const MaterialUtilities::PhaseFunction<dim> &phase_function,
-                                            MaterialUtilities::PhaseFunctionInputs<dim> &phase_in,
+                                            const std::vector<double> &phase_function_values,
+                                            const std::vector<unsigned int> &n_phases_per_composition,
                                             EquationOfStateOutputs<dim> &eos_outputs);
   }
 }

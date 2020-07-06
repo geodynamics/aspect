@@ -464,6 +464,10 @@ namespace aspect
 
       std::vector<double> average_elastic_shear_moduli (in.n_evaluation_points());
 
+      // Store value of phase function for each phase and composition
+      // While the number of phases is fixed, the value of the phase function is updated for every point
+      std::vector<double> phase_function_values(phase_function.n_phase_transitions(), 0.0);
+
       // Loop through all requested points
       for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
         {
@@ -485,9 +489,17 @@ namespace aspect
                                                                    gravity_norm*reference_density,
                                                                    numbers::invalid_unsigned_int);
 
+          // Compute value of phase functions
+          for (unsigned int j=0; j < phase_function.n_phase_transitions(); j++)
+            {
+              phase_inputs.phase_index = j;
+              phase_function_values[j] = phase_function.compute_value(phase_inputs);
+            }
+
+          // Average by value of gamma function to get value of compositions
           phase_average_equation_of_state_outputs(eos_outputs_all_phases,
-                                                  phase_function,
-                                                  phase_inputs,
+                                                  phase_function_values,
+                                                  phase_function.n_phase_transitions_for_each_composition(),
                                                   eos_outputs);
 
           const std::vector<double> volume_fractions = MaterialUtilities::compute_volume_fractions(in.composition[i], volumetric_compositions);
