@@ -8,4 +8,9 @@ RUN apt-get update && apt-get install -yq --no-install-recommends texlive-generi
 
 RUN pip install cpp-coveralls
 
+# we need a newer version of cmake to support unity builds:
+
+RUN cd / && wget https://github.com/Kitware/CMake/releases/download/v3.17.3/cmake-3.17.3-Linux-x86_64.tar.gz && tar xf cmake*.tar.gz && rm cmake*.tar.gz
+ENV PATH /cmake-3.17.3-Linux-x86_64/bin:$PATH
+
 USER dealii
