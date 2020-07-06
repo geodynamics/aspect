@@ -28,6 +28,12 @@ SET(TARGET "aspect")
 FILE(GLOB_RECURSE TARGET_SRC
      "source/*.cc" "unit_tests/*.cc" "include/*.h" "contrib/catch/catch.hpp")
 
+# For the unity build we need to compile helper_functions.cc before core.cc
+# ensure this by reordering the files
+FIND_FILE(HELPER_PATH helper_functions.cc HINTS "${CMAKE_SOURCE_DIR}/source/simulator")
+LIST(REMOVE_ITEM TARGET_SRC ${HELPER_PATH})
+LIST(INSERT TARGET_SRC 0 ${HELPER_PATH})
+   
 # Set up include directories. Put the ASPECT header files
 # to the front of the list, whereas the 'catch' headers can
 # be preempted by the system
@@ -420,11 +426,6 @@ ENDIF()
 SET(ASPECT_PRECOMPILE_HEADERS OFF CACHE BOOL "Precompile external header files using cotire to speedup compile time. Currently only supported for cmake versions older than 3.9.")
 IF (ASPECT_PRECOMPILE_HEADERS)
   IF(CMAKE_VERSION VERSION_LESS 3.9)
-    # For the unity build we need to compile helper_functions.cc before core.cc
-    # ensure this by reordering the files
-    FIND_FILE(HELPER_PATH helper_functions.cc HINTS "${CMAKE_SOURCE_DIR}/source/simulator")
-    LIST(REMOVE_ITEM TARGET_SRC ${HELPER_PATH})
-    LIST(INSERT TARGET_SRC 0 ${HELPER_PATH})
   ELSE()
     MESSAGE(FATAL_ERROR "ASPECT_PRECOMPILE_HEADERS is currently only supported for CMake version 3.8 or less.")
   ENDIF()
