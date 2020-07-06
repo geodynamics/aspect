@@ -25,7 +25,6 @@
 #include <aspect/global.h>
 #include <aspect/parameters.h>
 #include <aspect/introspection.h>
-#include <aspect/particle/world.h>
 
 #include <deal.II/base/table_handler.h>
 #include <deal.II/base/timer.h>

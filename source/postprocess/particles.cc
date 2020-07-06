@@ -20,6 +20,7 @@
 
 #include <aspect/global.h>
 #include <aspect/postprocess/particles.h>
+#include <aspect/particle/world.h>
 #include <aspect/utilities.h>
 
 #include <boost/archive/text_oarchive.hpp>

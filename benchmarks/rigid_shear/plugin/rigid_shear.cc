@@ -24,6 +24,7 @@
 #include <aspect/material_model/interface.h>
 #include <aspect/postprocess/particles.h>
 #include <aspect/particle/property/interface.h>
+#include <aspect/particle/world.h>
 #include <aspect/boundary_velocity/interface.h>
 #include <aspect/postprocess/interface.h>
 #include <aspect/simulator_access.h>

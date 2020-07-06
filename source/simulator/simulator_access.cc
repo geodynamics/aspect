@@ -22,6 +22,7 @@
 #include <aspect/simulator.h>
 #include <aspect/mesh_deformation/free_surface.h>
 #include <aspect/mesh_deformation/interface.h>
+#include <aspect/particle/world.h>
 
 namespace aspect
 {
