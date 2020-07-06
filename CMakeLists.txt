@@ -130,9 +130,10 @@ if(ASPECT_WITH_WORLD_BUILDER)
   CONFIGURE_FILE("${WORLD_BUILDER_SOURCE_DIR}/source/config.cc.in" "${CMAKE_BINARY_DIR}/world_builder_config.cc" @ONLY)
   LIST(INSERT TARGET_SRC 0 "${CMAKE_BINARY_DIR}/world_builder_config.cc")
 
-  # set ASPECT_ENABLE_WORLD_BUILDER define for all source files:
+  # exclude the world builder from unity builds (avoids compilation errors):
   FOREACH(_source_file ${wb_files})
-    SET_PROPERTY(SOURCE ${_source_file} PROPERTY COTIRE_EXCLUDED TRUE ) 
+    SET_PROPERTY(SOURCE ${_source_file} PROPERTY COTIRE_EXCLUDED TRUE )
+    SET_PROPERTY(SOURCE ${_source_file} PROPERTY SKIP_UNITY_BUILD_INCLUSION TRUE )
   ENDFOREACH()
 
   SET_PROPERTY(SOURCE "${CMAKE_BINARY_DIR}/world_builder_config.cc" PROPERTY COTIRE_EXCLUDED TRUE )
