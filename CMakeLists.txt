@@ -130,13 +130,17 @@ if(ASPECT_WITH_WORLD_BUILDER)
   CONFIGURE_FILE("${WORLD_BUILDER_SOURCE_DIR}/source/config.cc.in" "${CMAKE_BINARY_DIR}/world_builder_config.cc" @ONLY)
   LIST(INSERT TARGET_SRC 0 "${CMAKE_BINARY_DIR}/world_builder_config.cc")
 
-  # exclude the world builder from unity builds (avoids compilation errors):
   FOREACH(_source_file ${wb_files})
-    SET_PROPERTY(SOURCE ${_source_file} PROPERTY COTIRE_EXCLUDED TRUE )
+    # exclude the world builder files from including precompiled headers, they
+    # do not include ASPECT's dependencies at all.
+    SET_PROPERTY(SOURCE ${_source_file} PROPERTY COTIRE_EXCLUDED TRUE ) 
+    SET_PROPERTY(SOURCE ${_source_file} PROPERTY SKIP_PRECOMPILE_HEADERS TRUE )
+    # exclude the world builder from unity builds (avoids compilation errors):
     SET_PROPERTY(SOURCE ${_source_file} PROPERTY SKIP_UNITY_BUILD_INCLUSION TRUE )
   ENDFOREACH()
 
   SET_PROPERTY(SOURCE "${CMAKE_BINARY_DIR}/world_builder_config.cc" PROPERTY COTIRE_EXCLUDED TRUE )
+  SET_PROPERTY(SOURCE "${CMAKE_BINARY_DIR}/world_builder_config.cc" PROPERTY SKIP_PRECOMPILE_HEADERS TRUE )
 endif()
 
 
@@ -419,20 +423,6 @@ IF (ASPECT_HAVE_LINK_H)
   MESSAGE(STATUS "Enabling checking of compatible deal.II library when loading plugins")
 ENDIF()
 
-# Check if we want to use cotire to precompile header files and prepare a
-# unity build target. This speeds up compile time, but can fail on some
-# machines, therefore it is disabled by default. Also cotire currently
-# has issues with cmake generator expressions used in deal.II for cmake
-# version 3.9 and above. Disable cotire for cmake >= 3.9.
-SET(ASPECT_PRECOMPILE_HEADERS OFF CACHE BOOL "Precompile external header files using cotire to speedup compile time. Currently only supported for cmake versions older than 3.9.")
-IF (ASPECT_PRECOMPILE_HEADERS)
-  IF(CMAKE_VERSION VERSION_LESS 3.9)
-  ELSE()
-    MESSAGE(FATAL_ERROR "ASPECT_PRECOMPILE_HEADERS is currently only supported for CMake version 3.8 or less.")
-  ENDIF()
-ENDIF()
-
-
 ADD_EXECUTABLE(${TARGET} ${TARGET_SRC})
 DEAL_II_SETUP_TARGET(${TARGET})
 
@@ -513,24 +503,55 @@ CONFIGURE_FILE(
   )
 
 
+# Check if we want to precompile header files. This speeds up compile time,
+# but can fail on some machines with old cmake, therefore it is disabled by
+# default. Also cotire currently has issues with cmake generator expressions
+# used in deal.II for cmake version 3.9 and above. Disable cotire for cmake >=
+# 3.9. Starting with cmake 3.15 there is native support inside cmake and we can
+# use that.
+IF(CMAKE_VERSION VERSION_LESS 3.9)
+  SET(ASPECT_PRECOMPILE_HEADERS OFF CACHE BOOL "Precompile external header files using cotire to speedup compile time. Currently only supported for cmake versions older than 3.9 or newer than 3.15.")
+ELSEIF(CMAKE_VERSION VERSION_GREATER 3.15)
+  SET(ASPECT_PRECOMPILE_HEADERS ON CACHE BOOL "Precompile external header files to speedup compile time. Currently only supported for cmake versions older than 3.9 or newer than 3.9.")
+ELSE()
+  SET(ASPECT_PRECOMPILE_HEADERS OFF)
+ENDIF()
 
 IF (ASPECT_PRECOMPILE_HEADERS)
-  MESSAGE(STATUS "Enabling cotire to precompile external header files.")
-  INCLUDE(cmake/cotire)
+  IF (CMAKE_VERSION VERSION_LESS 3.9)
+    MESSAGE(STATUS "Enabling cotire to precompile external header files.")
+    INCLUDE(cmake/cotire)
 
-  # Set some properties that are necessary for the header precompilations 
-  # and unity build to pass. We need to exclude some headers that
-  # frequently cause problems, and undefine some macros between source 
-  # files that would otherwise interfere with each other.
-  SET_TARGET_PROPERTIES (aspect PROPERTIES
-      COTIRE_PREFIX_HEADER_IGNORE_PATH
-      "/usr/include/;${CMAKE_SOURCE_DIR};${CMAKE_BINARY_DIR}")
+    # Set some properties that are necessary for the header precompilations
+    # and unity build to pass. We need to exclude some headers that
+    # frequently cause problems, and undefine some macros between source
+    # files that would otherwise interfere with each other.
+    SET_TARGET_PROPERTIES (aspect PROPERTIES
+        COTIRE_PREFIX_HEADER_IGNORE_PATH
+        "/usr/include/;${CMAKE_SOURCE_DIR};${CMAKE_BINARY_DIR}")
 
-  # This line activates the cotire module for the aspect target, 
-  # and therefore the whole precompilation
-  cotire(aspect)
+    # This line activates the cotire module for the aspect target,
+    # and therefore the whole precompilation
+    cotire(aspect)
+
+  ELSEIF (CMAKE_VERSION VERSION_GREATER 3.15)
+    MESSAGE(STATUS "Precompiling common header files.")
+    # Use the native cmake support to precompile some common headers
+    # from ASPECT and deal.II that are frequently included, but rarely changed.
+    TARGET_PRECOMPILE_HEADERS(aspect PRIVATE
+      <aspect/global.h> <aspect/plugins.h> <aspect/introspection.h> <aspect/parameters.h>)
+    TARGET_PRECOMPILE_HEADERS(aspect PRIVATE
+      <deal.II/base/table_handler.h> <deal.II/base/timer.h>
+      <deal.II/base/conditional_ostream.h> <deal.II/distributed/tria.h>
+      <deal.II/dofs/dof_handler.h> <deal.II/fe/fe.h> <deal.II/fe/mapping_q.h>
+      <deal.II/particles/particle_handler.h>)
+
+  ELSE()
+    MESSAGE(FATAL_ERROR "ASPECT_PRECOMPILE_HEADERS is currently only supported for CMake versions less than 3.9 and greater than 3.15.")
+  ENDIF()
+
 ELSE()
-  MESSAGE(STATUS "Disabling cotire.")
+  MESSAGE(STATUS "Disabling precompiling headers.")
 ENDIF()
 
 # Find the deal.II parameter GUI and install helper script
