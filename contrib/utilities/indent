@@ -46,7 +46,7 @@ fi
 # with up to 10 in parallel
 echo "--- Indenting all ASPECT header and source files"
 
-find tests include source benchmarks cookbooks unit_tests \( -name '*.cc' -o -name '*.h' \) -print | xargs -n 50 -P 10 astyle --options=contrib/utilities/astyle.rc
+find tests include source benchmarks cookbooks unit_tests \( -name '*.cc' -o -name '*.h' -o -name '*.h.in' \) -print | xargs -n 50 -P 10 astyle --options=contrib/utilities/astyle.rc
 
 # remove execute permission on source files:
 find tests include source benchmarks cookbooks unit_tests \( -name '*.cc' -o -name '*.h' -o -name '*.prm' \) -print | xargs -n 50 -P 10 chmod -x
@@ -61,7 +61,7 @@ dos_to_unix()
     rm -f $f.tmp
 }
 export -f dos_to_unix
-find tests include source unit_tests cookbooks benchmarks \( -name '*.cc' -o -name '*.h' -o -name '*.prm' \) -print | xargs -n 1 -P 10 -I {} bash -c 'dos_to_unix "$@"' _ {} 
+find tests include source unit_tests cookbooks benchmarks \( -name '*.cc' -o -name '*.h' -o -name '*.prm' -o -name '*.h.in' \) -print | xargs -n 1 -P 10 -I {} bash -c 'dos_to_unix "$@"' _ {} 
 
 # convert tabs to two spaces:
 tab_to_space()
@@ -74,4 +74,4 @@ tab_to_space()
     rm -f $f.tmp
 }
 export -f tab_to_space
-find tests include source unit_tests cookbooks benchmarks \( -name '*.cc' -o -name '*.h' -o -name '*.prm' -o -name 'CMakeLists.txt' -o -name '*.cmake' \) -print | xargs -n 1 -P 10 -I {} bash -c 'tab_to_space "$@"' _ {} 
+find tests include source unit_tests cookbooks benchmarks \( -name '*.cc' -o -name '*.h' -o -name '*.prm' -o name '*.h.in' -o -name 'CMakeLists.txt' -o -name '*.cmake' \) -print | xargs -n 1 -P 10 -I {} bash -c 'tab_to_space "$@"' _ {} 

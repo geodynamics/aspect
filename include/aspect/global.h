@@ -22,6 +22,8 @@
 #ifndef _aspect_global_h
 #define _aspect_global_h
 
+#include <aspect/config.h>
+
 #include <deal.II/base/mpi.h>
 
 DEAL_II_DISABLE_EXTRA_DIAGNOSTICS

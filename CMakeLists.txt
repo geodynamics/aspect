@@ -99,23 +99,6 @@ ENDIF()
 DEAL_II_INITIALIZE_CACHED_VARIABLES()
 PROJECT(${TARGET} CXX)
 
-IF (ASPECT_USE_PETSC)
-FOREACH(_source_file ${TARGET_SRC})
-  SET_PROPERTY(SOURCE ${_source_file}
-    APPEND PROPERTY COMPILE_DEFINITIONS ASPECT_USE_PETSC="1")
-ENDFOREACH()
-ENDIF()
-
-
-# Pass down the source directory to the sources. This can be used
-# to hard-code the location of data files, such as in
-# $ASPECT_SOURCE_DIR/data/velocity-boundary-conditions/gplates/*
-FOREACH(_source_file ${TARGET_SRC})
-  SET_PROPERTY(SOURCE ${_source_file}
-    APPEND PROPERTY COMPILE_DEFINITIONS ASPECT_SOURCE_DIR="${CMAKE_SOURCE_DIR}")
-ENDFOREACH()
-
-
 SET(ASPECT_WITH_WORLD_BUILDER ON CACHE BOOL "Whether to enable compiling aspect with the Geodynamic World Builder.")
 message(STATUS "ASPECT_WITH_WORLD_BUILDER = '${ASPECT_WITH_WORLD_BUILDER}'")
 if(ASPECT_WITH_WORLD_BUILDER)
@@ -146,10 +129,6 @@ if(ASPECT_WITH_WORLD_BUILDER)
     SET_PROPERTY(SOURCE ${_source_file} PROPERTY COTIRE_EXCLUDED TRUE ) 
   ENDFOREACH()
 
-  FOREACH(_source_file ${TARGET_SRC})
-    SET_PROPERTY(SOURCE ${_source_file} APPEND PROPERTY COMPILE_DEFINITIONS ASPECT_WITH_WORLD_BUILDER=1)
-  ENDFOREACH()
-  
   SET_PROPERTY(SOURCE "${CMAKE_BINARY_DIR}/world_builder_config.cc" PROPERTY COTIRE_EXCLUDED TRUE )
 endif()
 
@@ -172,7 +151,7 @@ WRITE_BASIC_PACKAGE_VERSION_FILE(
 # set up compiler flags, include paths, etc to compile an
 # ASPECT plugin.
 # Config for the build dir:
-SET(CONFIG_INCLUDE_DIRS "${CMAKE_SOURCE_DIR}/include")
+SET(CONFIG_INCLUDE_DIRS "${CMAKE_BINARY_DIR}/include" "${CMAKE_SOURCE_DIR}/include")
 SET(CONFIG_DIR "${CMAKE_BINARY_DIR}")
 CONFIGURE_FILE(
   ${CMAKE_SOURCE_DIR}/cmake/AspectConfig.cmake.in
@@ -417,16 +396,8 @@ ENDIF()
 
 IF (ASPECT_USE_SHARED_LIBS)
   MESSAGE(STATUS "Enabling dynamic loading of plugins from the input file")
-  FOREACH(_source_file ${TARGET_SRC})
-    SET_PROPERTY(SOURCE ${_source_file}
-      APPEND PROPERTY COMPILE_DEFINITIONS ASPECT_USE_SHARED_LIBS=1)
-  ENDFOREACH()
 ELSE()
   MESSAGE(STATUS "Disabling dynamic loading of plugins from the input file")
-  FOREACH(_source_file ${TARGET_SRC})
-    SET_PROPERTY(SOURCE ${_source_file}
-      APPEND PROPERTY COMPILE_DEFINITIONS ASPECT_USE_SHARED_LIBS=0)
-  ENDFOREACH()
 ENDIF()
 
 # See whether we can verify that every plugin we load is compiled against
@@ -439,10 +410,6 @@ IF (NOT _HAVE_LINK_H)
 ENDIF()
 IF (ASPECT_HAVE_LINK_H)
   MESSAGE(STATUS "Enabling checking of compatible deal.II library when loading plugins")
-  FOREACH(_source_file ${TARGET_SRC})
-    SET_PROPERTY(SOURCE ${_source_file}
-      APPEND PROPERTY COMPILE_DEFINITIONS ASPECT_HAVE_LINK_H=1)
-  ENDFOREACH()
 ENDIF()
 
 # Check if we want to use cotire to precompile header files and prepare a
@@ -473,10 +440,6 @@ IF(${PerpleX_FOUND})
   INCLUDE_DIRECTORIES(${PerpleX_INCLUDE_DIR})
   TARGET_LINK_LIBRARIES(${TARGET} ${PerpleX_LIBRARIES})
   SET(ASPECT_WITH_PERPLEX ON)
-  FOREACH(_source_file ${TARGET_SRC})
-    SET_PROPERTY(SOURCE ${_source_file}
-      APPEND PROPERTY COMPILE_DEFINITIONS ASPECT_WITH_PERPLEX="1")
-  ENDFOREACH()
 ELSE()
   SET(ASPECT_WITH_PERPLEX OFF)
 ENDIF()
@@ -492,10 +455,6 @@ IF(ASPECT_WITH_LIBDAP)
   IF(${LIBDAP_FOUND})
     INCLUDE_DIRECTORIES(${LIBDAP_INCLUDE_DIRS})
     TARGET_LINK_LIBRARIES(${TARGET} ${LIBDAP_LIBRARIES})
-    FOREACH(_source_file ${TARGET_SRC})
-      SET_PROPERTY(SOURCE ${_source_file}
-              APPEND PROPERTY COMPILE_DEFINITIONS HAVE_LIBDAP=1)
-    ENDFOREACH()
     MESSAGE(STATUS "LIBDAP found at ${LIBDAP_LIBRARY}\n")
   ELSE()
     MESSAGE(FATAL_ERROR "LIBDAP not found. Disable ASPECT_WITH_LIBDAP or specify a hint to your installation directory with LIBDAP_DIR.")
@@ -529,15 +488,29 @@ IF (ASPECT_USE_FP_EXCEPTIONS)
 
   IF (HAVE_FP_EXCEPTIONS)
     MESSAGE(STATUS "Runtime floating point checks enabled.")
-    FOREACH(_source_file ${TARGET_SRC})
-      SET_PROPERTY(SOURCE ${_source_file}
-        APPEND PROPERTY COMPILE_DEFINITIONS ASPECT_USE_FP_EXCEPTIONS=1)
-    ENDFOREACH()
   ELSE()
     SET(ASPECT_USE_FP_EXCEPTIONS OFF CACHE BOOL "" FORCE)
     MESSAGE(STATUS "No support for feenableexcept(), disabling runtime floating point exception checks.")
   ENDIF()
 ENDIF()
+
+
+#
+# generate config.h
+#
+
+# Define macro with the source directory that will be exported in
+# config.h. This can be used to hard-code the location of data files, such as
+# in $ASPECT_SOURCE_DIR/data/velocity-boundary-conditions/gplates/*
+SET(ASPECT_SOURCE_DIR ${CMAKE_SOURCE_DIR})
+
+# And finally generate the file
+CONFIGURE_FILE(
+  ${CMAKE_SOURCE_DIR}/include/aspect/config.h.in
+  ${CMAKE_BINARY_DIR}/include/aspect/config.h
+  )
+
+
 
 IF (ASPECT_PRECOMPILE_HEADERS)
   MESSAGE(STATUS "Enabling cotire to precompile external header files.")
