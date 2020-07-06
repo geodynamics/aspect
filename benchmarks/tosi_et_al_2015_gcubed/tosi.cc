@@ -548,7 +548,7 @@ namespace aspect
     std::pair<std::string,std::string>
     TosiPostprocessor<dim>::execute (TableHandler &statistics)
     {
-      AssertThrow(Plugins::plugin_type_matches<const GeometryModel::Box<dim> >(this->get_geometry_model()),
+      AssertThrow(this->get_geometry_model().natural_coordinate_system() == aspect::Utilities::Coordinates::CoordinateSystem::cartesian,
                   ExcMessage("The current calculation of rate of work only makes sense in a Cartesian geometry."));
 
       AssertThrow(Plugins::plugin_type_matches<const TosiMaterial<dim>>(this->get_material_model()),

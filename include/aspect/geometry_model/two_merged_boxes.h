@@ -22,8 +22,8 @@
 #ifndef _aspect_geometry_model_two_merged_boxes_h
 #define _aspect_geometry_model_two_merged_boxes_h
 
-#include <aspect/geometry_model/box.h>
-
+#include <aspect/geometry_model/interface.h>
+#include <aspect/simulator_access.h>
 
 namespace aspect
 {
@@ -37,7 +37,7 @@ namespace aspect
      * for the lithospheric part of the vertical boundaries.
      */
     template <int dim>
-    class TwoMergedBoxes : public Box<dim>
+    class TwoMergedBoxes : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
 
@@ -50,13 +50,13 @@ namespace aspect
          * Return a point that denotes the size of the box in each dimension
          * of the domain.
          */
-        Point<dim> get_extents () const override;
+        Point<dim> get_extents () const;
 
         /**
          * Return a point that denotes the lower left corner of the box
          * domain.
          */
-        Point<dim> get_origin () const override;
+        Point<dim> get_origin () const;
 
         /**
          * Return the typical length scale one would expect of features in
@@ -80,6 +80,12 @@ namespace aspect
          * that also matches these definitions.
          */
         double depth(const Point<dim> &position) const override;
+
+        /**
+         * Return the height of the given position relative to
+         * the initial box height.
+         */
+        double height_above_reference_surface(const Point<dim> &position) const override;
 
         /**
          * @copydoc Interface<dim>::representative_point()

@@ -82,9 +82,9 @@ namespace aspect
         }
 
       // Check that the representative point lies in the domain.
-      AssertThrow((Plugins::plugin_type_matches<const GeometryModel::Box<dim>> (this->get_geometry_model())) ?
-                  (this->get_geometry_model().point_is_in_domain(representative_point)) :
-                  (this->get_geometry_model().point_is_in_domain(Utilities::Coordinates::spherical_to_cartesian_coordinates<dim>(spherical_representative_point))),
+      AssertThrow(((this->get_geometry_model().natural_coordinate_system() == Utilities::Coordinates::CoordinateSystem::cartesian) ?
+                   (this->get_geometry_model().point_is_in_domain(representative_point)) :
+                   (this->get_geometry_model().point_is_in_domain(Utilities::Coordinates::spherical_to_cartesian_coordinates<dim>(spherical_representative_point)))),
                   ExcMessage("The reference point does not lie with the domain."));
 
       // Set the radius of the representative point to the surface radius for spherical domains
@@ -111,6 +111,8 @@ namespace aspect
         spherical_representative_point[0] =  Plugins::get_plugin_as_type<const GeometryModel::Sphere<dim>>(this->get_geometry_model()).radius();
       else if (Plugins::plugin_type_matches<const GeometryModel::Box<dim>> (this->get_geometry_model()))
         representative_point[dim-1]=  Plugins::get_plugin_as_type<const GeometryModel::Box<dim>>(this->get_geometry_model()).get_extents()[dim-1];
+      else if (Plugins::plugin_type_matches<const GeometryModel::TwoMergedBoxes<dim>> (this->get_geometry_model()))
+        representative_point[dim-1]=  Plugins::get_plugin_as_type<const GeometryModel::TwoMergedBoxes<dim>>(this->get_geometry_model()).get_extents()[dim-1];
       else
         AssertThrow(false, ExcNotImplemented());
 

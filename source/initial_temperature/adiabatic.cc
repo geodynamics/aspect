@@ -23,6 +23,7 @@
 #include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/boundary_temperature/interface.h>
 #include <aspect/geometry_model/box.h>
+#include <aspect/geometry_model/two_merged_boxes.h>
 #include <aspect/geometry_model/spherical_shell.h>
 #include <aspect/geometry_model/chunk.h>
 
@@ -190,6 +191,18 @@ namespace aspect
               mid_point = box_geometry_model.get_origin();
               for (unsigned int i=0; i<dim-1; ++i)
                 mid_point(i) += 0.5 * box_geometry_model.get_extents()[i];
+            }
+          else if (Plugins::plugin_type_matches<const GeometryModel::TwoMergedBoxes<dim>> (this->get_geometry_model()))
+            {
+              const GeometryModel::TwoMergedBoxes<dim> &two_merged_boxes_geometry_model =
+                Plugins::get_plugin_as_type<const GeometryModel::TwoMergedBoxes<dim>> (this->get_geometry_model());
+
+              // for the box geometry, choose a point at the center of the bottom face.
+              // (note that the loop only runs over the first dim-1 coordinates, leaving
+              // the depth variable at zero)
+              mid_point = two_merged_boxes_geometry_model.get_origin();
+              for (unsigned int i=0; i<dim-1; ++i)
+                mid_point(i) += 0.5 * two_merged_boxes_geometry_model.get_extents()[i];
             }
           else
             AssertThrow (false,

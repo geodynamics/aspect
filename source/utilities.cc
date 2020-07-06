@@ -2077,7 +2077,7 @@ namespace aspect
                    || (Plugins::plugin_type_matches<const GeometryModel::Box<dim>> (this->get_geometry_model()))
                    || (Plugins::plugin_type_matches<const GeometryModel::TwoMergedBoxes<dim>> (this->get_geometry_model())),
                    ExcMessage ("This ascii data plugin can only be used when using "
-                               "a spherical shell, chunk or box geometry."));
+                               "a spherical shell, chunk, box or two merged boxes geometry."));
 
 
       for (const auto &boundary_id : boundary_ids)
@@ -2566,9 +2566,10 @@ namespace aspect
       AssertThrow ((Plugins::plugin_type_matches<GeometryModel::SphericalShell<dim> >(this->get_geometry_model()) ||
                     Plugins::plugin_type_matches<GeometryModel::Chunk<dim> >(this->get_geometry_model()) ||
                     Plugins::plugin_type_matches<GeometryModel::Sphere<dim> >(this->get_geometry_model()) ||
-                    Plugins::plugin_type_matches<GeometryModel::Box<dim> >(this->get_geometry_model())),
+                    Plugins::plugin_type_matches<GeometryModel::Box<dim> >(this->get_geometry_model())) ||
+                   Plugins::plugin_type_matches<GeometryModel::TwoMergedBoxes<dim>> (this->get_geometry_model()),
                    ExcMessage ("This ascii data plugin can only be used when using "
-                               "a spherical shell, chunk, sphere or box geometry."));
+                               "a spherical shell, chunk, sphere, box or two merged boxes geometry."));
 
       // Create the lookups for each file
       number_of_layer_boundaries = data_file_names.size();
@@ -2611,7 +2612,7 @@ namespace aspect
 
       double vertical_position;
       Point<dim-1> horizontal_position;
-      if (Plugins::plugin_type_matches<GeometryModel::Box<dim> >(this->get_geometry_model()))
+      if (this->get_geometry_model().natural_coordinate_system() == Utilities::Coordinates::CoordinateSystem::cartesian)
         {
           // in cartesian coordinates, the vertical component comes last
           vertical_position = internal_position[dim-1];

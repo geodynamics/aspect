@@ -33,7 +33,6 @@ namespace aspect
 {
   namespace GeometryModel
   {
-
     template <int dim>
     void
     TwoMergedBoxes<dim>::
@@ -238,6 +237,15 @@ namespace aspect
       const double d = maximal_depth()-(position(dim-1)-lower_box_origin[dim-1]);
       return std::min (std::max (d, 0.), maximal_depth());
     }
+
+
+    template <int dim>
+    double
+    TwoMergedBoxes<dim>::height_above_reference_surface(const Point<dim> &position) const
+    {
+      return (position(dim-1)-lower_box_origin[dim-1]) - extents[dim-1];
+    }
+
 
 
     template <int dim>

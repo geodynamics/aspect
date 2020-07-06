@@ -22,6 +22,7 @@
 #include <aspect/initial_temperature/harmonic_perturbation.h>
 #include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/geometry_model/box.h>
+#include <aspect/geometry_model/two_merged_boxes.h>
 #include <aspect/geometry_model/spherical_shell.h>
 #include <aspect/geometry_model/chunk.h>
 #include <aspect/utilities.h>
@@ -113,6 +114,26 @@ namespace aspect
           // that is scaled to the extent of the geometry.
           // This way the perturbation is always 0 at the model borders.
           const Point<dim> extent = box_geometry_model.get_extents();
+
+          if (dim==2)
+            {
+              lateral_perturbation = std::sin(lateral_wave_number_1*position(0)*numbers::PI/extent(0));
+            }
+          else if (dim==3)
+            {
+              lateral_perturbation = std::sin(lateral_wave_number_1*position(0)*numbers::PI/extent(0))
+                                     * std::sin(lateral_wave_number_2*position(1)*numbers::PI/extent(1));
+            }
+        }
+      else if (Plugins::plugin_type_matches<const GeometryModel::TwoMergedBoxes<dim>> (this->get_geometry_model()))
+        {
+          const GeometryModel::TwoMergedBoxes<dim> &two_merged_boxes_geometry_model =
+            Plugins::get_plugin_as_type<const GeometryModel::TwoMergedBoxes<dim>> (this->get_geometry_model());
+
+          // In case of Box model use a sine as lateral perturbation
+          // that is scaled to the extent of the geometry.
+          // This way the perturbation is always 0 at the model borders.
+          const Point<dim> extent = two_merged_boxes_geometry_model.get_extents();
 
           if (dim==2)
             {
