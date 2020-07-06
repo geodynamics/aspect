@@ -423,19 +423,6 @@ IF (ASPECT_HAVE_LINK_H)
   MESSAGE(STATUS "Enabling checking of compatible deal.II library when loading plugins")
 ENDIF()
 
-# Check if we want to precompile header files. This speeds up compile time,
-# but can fail on some machines with old cmake, therefore it is disabled by
-# default. Also cotire currently has issues with cmake generator expressions
-# used in deal.II for cmake version 3.9 and above. Disable cotire for cmake >=
-# 3.9. Starting with cmake 3.15 there is native support inside cmake and we can
-# use that.
-IF(CMAKE_VERSION VERSION_LESS 3.9)
-  SET(ASPECT_PRECOMPILE_HEADERS OFF CACHE BOOL "Precompile external header files using cotire to speedup compile time. Currently only supported for cmake versions older than 3.9 or newer than 3.15.")
-ELSEIF(CMAKE_VERSION VERSION_GREATER 3.15)
-  SET(ASPECT_PRECOMPILE_HEADERS ON CACHE BOOL "Precompile external header files to speedup compile time. Currently only supported for cmake versions older than 3.9 or newer than 3.9.")
-ENDIF()
-
-
 ADD_EXECUTABLE(${TARGET} ${TARGET_SRC})
 DEAL_II_SETUP_TARGET(${TARGET})
 
@@ -514,6 +501,19 @@ CONFIGURE_FILE(
   ${CMAKE_SOURCE_DIR}/include/aspect/config.h.in
   ${CMAKE_BINARY_DIR}/include/aspect/config.h
   )
+
+
+# Check if we want to precompile header files. This speeds up compile time,
+# but can fail on some machines with old cmake, therefore it is disabled by
+# default. Also cotire currently has issues with cmake generator expressions
+# used in deal.II for cmake version 3.9 and above. Disable cotire for cmake >=
+# 3.9. Starting with cmake 3.15 there is native support inside cmake and we can
+# use that.
+IF(CMAKE_VERSION VERSION_LESS 3.9)
+  SET(ASPECT_PRECOMPILE_HEADERS OFF CACHE BOOL "Precompile external header files using cotire to speedup compile time. Currently only supported for cmake versions older than 3.9 or newer than 3.15.")
+ELSEIF(CMAKE_VERSION VERSION_GREATER 3.15)
+  SET(ASPECT_PRECOMPILE_HEADERS ON CACHE BOOL "Precompile external header files to speedup compile time. Currently only supported for cmake versions older than 3.9 or newer than 3.9.")
+ENDIF()
 
 IF (ASPECT_PRECOMPILE_HEADERS)
   IF (CMAKE_VERSION VERSION_LESS 3.9)
