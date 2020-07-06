@@ -24,6 +24,7 @@
 #include <aspect/postprocess/interface.h>
 
 #include <aspect/simulator_access.h>
+#include <aspect/particle/property/interface.h>
 
 #include <deal.II/particles/particle_handler.h>
 #include <deal.II/base/data_out_base.h>
