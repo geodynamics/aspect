@@ -33,8 +33,6 @@ namespace aspect
 {
   namespace GeometryModel
   {
-
-
     template <int dim>
     void
     TwoMergedBoxes<dim>::
