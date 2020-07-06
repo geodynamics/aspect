@@ -513,6 +513,8 @@ IF(CMAKE_VERSION VERSION_LESS 3.9)
   SET(ASPECT_PRECOMPILE_HEADERS OFF CACHE BOOL "Precompile external header files using cotire to speedup compile time. Currently only supported for cmake versions older than 3.9 or newer than 3.15.")
 ELSEIF(CMAKE_VERSION VERSION_GREATER 3.15)
   SET(ASPECT_PRECOMPILE_HEADERS ON CACHE BOOL "Precompile external header files to speedup compile time. Currently only supported for cmake versions older than 3.9 or newer than 3.9.")
+ELSE()
+  SET(ASPECT_PRECOMPILE_HEADERS OFF)
 ENDIF()
 
 IF (ASPECT_PRECOMPILE_HEADERS)
