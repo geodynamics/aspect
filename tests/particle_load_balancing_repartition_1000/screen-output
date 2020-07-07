@@ -69,8 +69,8 @@ Number of degrees of freedom: 1,112 (520+72+260+260)
      Particle count per cell min/avg/max: 1, 19, 71
      Cells per process min/max/avg:       4/21/13
 
-Number of active cells: 67 (on 5 levels)
-Number of degrees of freedom: 1,432 (670+92+335+335)
+Number of active cells: 70 (on 5 levels)
+Number of degrees of freedom: 1,500 (702+96+351+351)
 
 Termination requested by criterion: end time
 
