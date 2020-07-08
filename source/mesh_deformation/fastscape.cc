@@ -29,14 +29,13 @@ namespace aspect
     void
     FastScape<dim>::initialize ()
     {
-
       AssertThrow(Plugins::plugin_type_matches<const GeometryModel::Box<dim>>(this->get_geometry_model()),
                   ExcMessage("Fastscape can only be run with a box model"));
 
       const GeometryModel::Box<dim> *geometry
         = dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model());
-
-      //Find the id associated with the top boundary
+ 
+      // Find the id associated with the top boundary
       const types::boundary_id relevant_boundary = this->get_geometry_model().translate_symbolic_boundary_name_to_id ("top");
       const std::set<types::boundary_id> boundary_ids
 	       = this->get_mesh_deformation_handler().get_active_mesh_deformation_boundary_indicators();
@@ -48,18 +47,18 @@ namespace aspect
        * names variable.
        */
       mesh_deformation_boundary_indicators_map
-	 	 = this->get_mesh_deformation_handler().get_active_mesh_deformation_names();
+	 	  = this->get_mesh_deformation_handler().get_active_mesh_deformation_names();
 
       // Loop over each mesh deformation boundary, and make sure FastScape is only called on the surface.
       for (std::set<types::boundary_id>::const_iterator p = boundary_ids.begin();
            p != boundary_ids.end(); ++p)
       {
-       const std::vector<std::string> names = mesh_deformation_boundary_indicators_map[*p];
-       for(unsigned int i = 0; i < names.size(); ++i )
-       {
-           AssertThrow((names[i] == "fastscape") && (*p == relevant_boundary),
+         const std::vector<std::string> names = mesh_deformation_boundary_indicators_map[*p];
+         for(unsigned int i = 0; i < names.size(); ++i )
+         {
+            AssertThrow((names[i] == "fastscape") && (*p == relevant_boundary),
                    ExcMessage("Fastscape can only be called on the surface boundary."));
-       }
+         }
       }
 
       // Initialize parameters for restarting fastscape
@@ -83,8 +82,7 @@ namespace aspect
       dx = (grid_extent[0].second - grid_extent[0].first)/(nx-3);
       x_extent = (grid_extent[0].second - grid_extent[0].first)+2*dx;
 
-
-      // sub intervals are 1 less than points.
+      // Sub intervals are 3 less than points, if including the ghost nodes. Otherwise 1 less.
       table_intervals[0] = nx-3;
       // TODO: it'd be best to not have to use dim-1 intervals at all.
       table_intervals[dim-1] = 1;
@@ -95,8 +93,7 @@ namespace aspect
           y_extent = round(y_extent_2d/dy)*dy+2*dy;
           ny = 1+y_extent/dy;
         }
-
-      if (dim == 3)
+      else
         {
           ny = 3+std::pow(2,surface_resolution+additional_refinement)*y_repetitions;
           dy = (grid_extent[1].second - grid_extent[1].first)/(ny-3);
@@ -133,7 +130,6 @@ namespace aspect
       // We only want to run fastscape if there was a change in time.
       if (a_dt > 0)
         {
-
           /*
            * Initialize a vector of temporary variables to hold: z component, index, Vx, Vy, and Vz.
            */
@@ -204,11 +200,9 @@ namespace aspect
                                 	else
                                        temporary_variables[i+2].push_back(vel[corner][i]);
                                 }
-
                               }
                           }
-
-                        if (dim == 3)
+                        else
                           {
                             double indy = 2+vertex(1)/dy;
                             if (indy - floor(indy) >= precision)
@@ -275,15 +269,12 @@ namespace aspect
 
                   if (dim == 2 )
                     vy[temporary_variables[1][i]]=0;
-
-                  if (dim == 3)
+                  else
                     vy[temporary_variables[1][i]]=temporary_variables[3][i];
-
                 }
 
               for (unsigned int p=1; p<Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()); ++p)
                 {
-
                   // First, find out the size of the array a processor wants to send.
                   MPI_Status status;
                   MPI_Probe(p, 42, this->get_mpi_communicator(), &status);
@@ -299,7 +290,6 @@ namespace aspect
                   for (unsigned int i=0; i<temporary_variables.size(); i++)
                     MPI_Recv(&temporary_variables[i][0], incoming_size, MPI_DOUBLE, p, 42, this->get_mpi_communicator(), &status);
 
-
                   // Now, place the numbers into the correct place based off the index.
                   for (unsigned int i=0; i<temporary_variables[1].size(); i++)
                     {
@@ -309,17 +299,13 @@ namespace aspect
 
                       if (dim == 2 )
                         vy[temporary_variables[1][i]] = 0;
-
-                      if (dim == 3)
+                      else
                         vy[temporary_variables[1][i]] = temporary_variables[3][i];
-
                     }
-
                 }
 
               if (current_timestep == 1 || restart)
                 {
-
                   this->get_pcout() <<"   Initializing FastScape... "<< (1+surface_resolution+additional_refinement)  <<
                                     " levels, cell size: "<<dx<<" m."<<std::endl;
 
@@ -327,7 +313,6 @@ namespace aspect
                   if (restart)
                     {
                       this->get_pcout() <<"      Loading FastScape restart file... "<<std::endl;
-                      restart = false;
 
                       // Load in h values.
                       std::ifstream in;
@@ -362,6 +347,8 @@ namespace aspect
                         }
                       else if (!in_step)
                         AssertThrow(false,ExcMessage("Cannot open file to restart fastscape."));
+                        
+                     restart = false;
                     }
 
                   // Initialize fastscape with grid and extent.
@@ -384,48 +371,12 @@ namespace aspect
 
                   //if (use_strat)
                   //  folder_output_(&length, &restart_step, c);
-
                 }
               else
                 {
                   // If it isn't the first timestep we just want to know current h values in fastscape.
                   fastscape_copy_h_(h.get());
                 }
-
-              /*
-               * Keep initial h values so we can calculate velocity later.
-               * In the first timestep, h will be given from other processors.
-               * In other timesteps, we copy h directly from fastscape.
-               */
-              for (int i=0; i<array_size; i++)
-                {
-                  // Initialize random topography noise first time fastscape is called.
-                  if (current_timestep == 1)
-                    {
-                      double h_seed = (std::rand()%2000)/100;
-                      h[i] = h[i] + h_seed;
-                    }
-                  h_old[i] = h[i];
-                }
-
-              // Get current fastscape timestep.
-              fastscape_get_step_(&istep);
-
-              // Write a file to store h & step in case of restart.
-              // TODO: there's probably a faster way to write these.
-              if ((this->get_parameters().checkpoint_time_secs == 0) &&
-                  (this->get_parameters().checkpoint_steps > 0) &&
-                  (current_timestep % this->get_parameters().checkpoint_steps == 0))
-                {
-                  std::ofstream out_h (restart_filename.c_str());
-                  std::ofstream out_step (restart_step_filename.c_str());
-
-                  out_step<<(istep+restart_step)<<std::endl;
-
-                  for (int i=0; i<array_size; i++)
-                    out_h<<h[i]<<std::endl;
-                }
-
 
               /*
                * Copy the slopes at each point, this will be used to set an H
@@ -460,9 +411,9 @@ namespace aspect
                     }
                   else
                     {
-                      //If we have flux through boundary, we need to update the height to keep the correct slope.
-                      //Because the corner nodes always show a slope of zero, this will update them according to
-                      //the nodes next to them.
+                      // If we have flux through boundary, we need to update the height to keep the correct slope.
+                      // Because the corner nodes always show a slope of zero, this will update them according to
+                      // the nodes next to them.
                       if (j == 0)
                         slope = left_flux/kdd - std::tan(slopep[index_left+nx]*boost::math::double_constants::pi/180);
                       else if (j==(ny-1))
@@ -490,14 +441,14 @@ namespace aspect
                       h[index_right-1] = h[index_right-1] + slope*2*dx;
                     }
 
-                  //If we set the boundaries as periodic, then reset any values to the
-                  //nodes on the opposite side.
+                  // If we set the boundaries as periodic, then reset any values to the
+                  // nodes on the opposite side.
                   if (left == 0 && right == 0)
                     {
                       int side = index_left;
                       int jj = 0;
 
-                      //If they aren't going the same direction, don't set the ghost nodes.
+                      // If they aren't going the same direction, don't set the ghost nodes.
                       if (vx[index_right-2] > 0 && vx[index_left] >= 0)
                         {
                           side = index_right;
@@ -525,7 +476,7 @@ namespace aspect
                     }
                 }
 
-              //Now do the same for the top and bottom ghost nodes.
+              // Now do the same for the top and bottom ghost nodes.
               for (int j=0; j<nx; j++)
                 {
                   int index_bot = j+1;
@@ -606,9 +557,43 @@ namespace aspect
                       h[index_top-1] = h[side+jj-1];
                     }
                 }
+                
+              /*
+               * Keep initial h values so we can calculate velocity later.
+               * In the first timestep, h will be given from other processors.
+               * In other timesteps, we copy h directly from fastscape.
+               */
+              for (int i=0; i<array_size; i++)
+                {
+                  // Initialize random topography noise first time fastscape is called.
+                  if (current_timestep == 1)
+                    {
+                      double h_seed = (std::rand()%2000)/100;
+                      h[i] = h[i] + h_seed;
+                    }
+                    
+                  h_old[i] = h[i];
+                }
 
+              // Get current fastscape timestep.
+              fastscape_get_step_(&istep);
 
-              //Find a fastscape timestep that is below our maximum timestep.
+              // Write a file to store h & step in case of restart.
+              // TODO: there's probably a faster way to write these.
+              if ((this->get_parameters().checkpoint_time_secs == 0) &&
+                  (this->get_parameters().checkpoint_steps > 0) &&
+                  (current_timestep % this->get_parameters().checkpoint_steps == 0))
+                {
+                  std::ofstream out_h (restart_filename.c_str());
+                  std::ofstream out_step (restart_step_filename.c_str());
+
+                  out_step<<(istep+restart_step)<<std::endl;
+
+                  for (int i=0; i<array_size; i++)
+                    out_h<<h[i]<<std::endl;
+                }
+
+              // Find a fastscape timestep that is below our maximum timestep.
               double f_dt = a_dt/steps;
               while (f_dt>max_timestep)
                 {
@@ -616,15 +601,15 @@ namespace aspect
                   f_dt = a_dt/steps;
                 }
 
-              //Set time step
+              // Set time step
               fastscape_set_dt_(&f_dt);
 
-              //Set velocity components and h.
-              //fastscape_set_u_(vz.get());
+              // Set velocity components and h.
+              fastscape_set_u_(vz.get());
               fastscape_set_v_(vx.get(), vy.get());
               fastscape_set_h_(h.get());
 
-              //Initialize first time step, and update steps.
+              // Initialize first time step, and update steps.
               int visualization_step = istep+restart_step;
               steps = istep+steps;
 
@@ -644,13 +629,13 @@ namespace aspect
 
                 do
                   {
-                    //execute step, this increases timestep counter
+                    // Execute step, this increases timestep counter
                     fastscape_execute_step_();
 
-                    //get value of time step counter
+                    // Get value of time step counter
                     fastscape_get_step_(&istep);
 
-                    //outputs new h values
+                    // Outputs new h values
                     fastscape_copy_h_(h.get());
                   }
                 while (istep<steps);
@@ -661,7 +646,7 @@ namespace aspect
                 this->get_pcout()<<"      FastScape runtime... "<<round(r_time*1000)/1000<<"s"<<std::endl;
               }
 
-              //If we've reached the end time, destroy fastscape.
+              // If we've reached the end time, destroy fastscape.
               if (this->get_time()+a_dt >= end_time)
                 {
                   this->get_pcout()<<"   Destroying FastScape..."<<std::endl;
@@ -674,7 +659,7 @@ namespace aspect
                   fastscape_destroy_();
                 }
 
-              //Find out our velocities from the change in height.
+              // Find out our velocities from the change in height.
               for (int i=0; i<array_size; i++)
                 {
                   V[i] = (h[i] - h_old[i])/a_dt;
@@ -703,8 +688,6 @@ namespace aspect
           data_table.TableBase<dim,double>::reinit(size_idx);
           TableIndices<dim> idx;
 
-          //this variable gives us how many slices near the boundaries to ignore,
-          //this helps avoid boundary conditions effecting the topography.
           if (dim == 2)
             {
               std::vector<double> V2(nx);
@@ -735,7 +718,7 @@ namespace aspect
                     {
                       idx[0] = j;
 
-                      //Convert from m/yr to m/s if needed
+                      // Convert from m/yr to m/s if needed
                       if (i == 1)
                         {
                           if (this->convert_output_to_years())
@@ -745,15 +728,12 @@ namespace aspect
                         }
                       else
                         data_table(idx)= 0;
-
                     }
-
                 }
             }
-
-          if (dim == 3)
+          else
             {
-              //Indexes through z, y, and then x.
+              // Indexes through z, y, and then x.
               for (unsigned int k=0; k<data_table.size()[2]; ++k)
                 {
                   idx[2] = k;
@@ -766,7 +746,7 @@ namespace aspect
                         {
                           idx[0] = j;
 
-                          //We only care about the surface
+                          // Tables are initialized with k = 0 as the bottom and 1 as top, we are only interested in the surface so only fill k==1.
                           if (k==1)
                             {
                               if (this->convert_output_to_years())
@@ -776,7 +756,6 @@ namespace aspect
                             }
                           else
                             data_table(idx)= 0;
-
                         }
                     }
                 }
@@ -805,23 +784,10 @@ namespace aspect
         }
     }
 
-    //TODO: Give better explanations of variables and cite the fastscape documentation.
+    // TODO: Give better explanations of variables and cite the fastscape documentation.
     template <int dim>
     void FastScape<dim>::declare_parameters(ParameterHandler &prm)
     {
-
-      prm.declare_entry ("End time",
-                         /* boost::lexical_cast<std::string>(std::numeric_limits<double>::max() /
-                                              year_in_seconds) = */ "5.69e+300",
-                         Patterns::Double (),
-                         "The end time of the simulation. The default value is a number "
-                         "so that when converted from years to seconds it is approximately "
-                         "equal to the largest number representable in floating point "
-                         "arithmetic. For all practical purposes, this equals infinity. "
-                         "Units: Years if the "
-                         "'Use years in output instead of seconds' parameter is set; "
-                         "seconds otherwise.");
-
       prm.enter_subsection ("Mesh deformation");
       {
         prm.enter_subsection ("Fastscape");
@@ -831,22 +797,21 @@ namespace aspect
                             "Number of steps per ASPECT timestep");
           prm.declare_entry("Maximum timestep", "10e3",
                             Patterns::Double(0),
-                            "Maximum timestep for fastscape.");
+                            "Maximum timestep for FastScape.");
           prm.declare_entry("Vertical exaggeration", "3",
                             Patterns::Double(),
-                            "Vertical exaggeration for fastscape's VTK file.");
+                            "Vertical exaggeration for FastScape's VTK file.");
           prm.declare_entry("Additional fastscape refinement", "0",
                             Patterns::Integer(),
-                            "Refinement level expected at surface to determine"
-                            "proper nx and ny values");
+                            "How many levels above ASPECT FastScape should be refined.");
           prm.declare_entry ("Use center slice for 2d", "false",
                              Patterns::Bool (),
                              "If this is set to true, then a 2D model will only consider the "
-                             "center slice fastscape gives. If set to false, then aspect will"
-                             "average the inner third of what fastscape calculates.");
+                             "center slice FastScape gives. If set to false, then aspect will"
+                             "average the inner third of what FastScape calculates.");
           prm.declare_entry("Fastscape seed", "1000",
                             Patterns::Integer(),
-                            "Seed used for adding an initial 0-1 m noise to fastscape topography.");
+                            "Seed used for adding an initial 0-20 m noise to FastScape topography.");
           prm.declare_entry("Surface resolution", "1",
                             Patterns::Integer(),
                             "This should be set to the highest ASPECT resolution level you expect at the surface.");
@@ -854,9 +819,9 @@ namespace aspect
                             Patterns::Integer(),
                             "The difference between the lowest and highest resolution level at surface. So if three resolution "
                             "levels are expected, this would be set to 2.");
-          prm.declare_entry ("Use marine parameters", "false",
+          prm.declare_entry ("Use marine component", "false",
                              Patterns::Bool (),
-                             "Flag to use marine parameters");
+                             "Flag to use the marine component of FastScape.");
           prm.declare_entry ("Use stratigraphy", "false",
                              Patterns::Bool (),
                              "Flag to use stratigraphy");
@@ -865,11 +830,10 @@ namespace aspect
                             "Total number of steps you expect in the FastScape model, only used if stratigraphy is turned on.");
           prm.declare_entry("Number of horizons", "1",
                             Patterns::Integer(),
-                            "Number of horizons to track and visualize in FastScape..");
+                            "Number of horizons to track and visualize in FastScape.");
           prm.declare_entry("Y extent in 2d", "100000",
                             Patterns::Double(),
                             "Y extent when used with 2D");
-
 
           prm.enter_subsection ("Boundary conditions");
           {
@@ -946,13 +910,13 @@ namespace aspect
                               "Porosity of shale. ");
             prm.declare_entry("Sand e-folding depth", "1e3",
                               Patterns::Double(),
-                              "e-folding depth for the exponential of the sand porosity law.");
+                              "E-folding depth for the exponential of the sand porosity law.");
             prm.declare_entry("Shale e-folding depth", "1e3",
                               Patterns::Double(),
-                              "e-folding depth for the exponential of the shale porosity law.");
+                              "E-folding depth for the exponential of the shale porosity law.");
             prm.declare_entry("Sand-shale ratio", "0.5",
                               Patterns::Double(),
-                              "ratio of sand to shale for material leaving continent.");
+                              "Ratio of sand to shale for material leaving continent.");
             prm.declare_entry("Depth averaging thickness", "1e2",
                               Patterns::Double(),
                               "Depth averaging for the sand-shale equation in meters.");
@@ -966,16 +930,6 @@ namespace aspect
           prm.leave_subsection();
         }
         prm.leave_subsection();
-      }
-      prm.leave_subsection ();
-
-      prm.enter_subsection ("Mesh refinement");
-      {
-        prm.declare_entry ("Initial global refinement", "2",
-                           Patterns::Integer (0),
-                           "The number of global refinement steps performed on "
-                           "the initial coarse mesh, before the problem is first "
-                           "solved there.");
       }
       prm.leave_subsection ();
     }
@@ -999,7 +953,7 @@ namespace aspect
           fs_seed = prm.get_integer("Fastscape seed");
           surface_resolution = prm.get_integer("Surface resolution");
           resolution_difference = prm.get_integer("Resolution difference");
-          use_marine = prm.get_bool("Use marine parameters");
+          use_marine = prm.get_bool("Use marine component");
           use_strat = prm.get_bool("Use stratigraphy");
           nstepp = prm.get_integer("Total steps");
           nreflectorp = prm.get_integer("Number of horizons");
@@ -1016,6 +970,7 @@ namespace aspect
             top_flux = prm.get_double("Top mass flux");
             bottom_flux = prm.get_double("Bottom mass flux");
 
+            // Put the boundary condition values into a four digit value to send to FastScape.
             bc = bottom*1000+right*100+top*10+left;
 
             if ((left_flux != 0 && top_flux != 0) || (left_flux != 0 && bottom_flux != 0) ||
@@ -1051,11 +1006,8 @@ namespace aspect
             kds2 = prm.get_double("Shale transport coefficient");
           }
           prm.leave_subsection();
-
-
         }
         prm.leave_subsection();
-
       }
       prm.leave_subsection ();
     }
