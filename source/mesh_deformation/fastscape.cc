@@ -30,63 +30,87 @@ namespace aspect
     FastScape<dim>::initialize ()
     {
 
-      //if (Plugins::plugin_type_matches<const GeometryModel::Box<dim>>(this->get_geometry_model()) != true )
-          AssertThrow(Plugins::plugin_type_matches<const GeometryModel::Box<dim>>(this->get_geometry_model()),
+      AssertThrow(Plugins::plugin_type_matches<const GeometryModel::Box<dim>>(this->get_geometry_model()),
                   ExcMessage("Fastscape can only be run with a box model"));
 
       const GeometryModel::Box<dim> *geometry
         = dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model());
 
-     // const types::boundary_id relevant_boundary = this->get_geometry_model().translate_symbolic_boundary_name_to_id ("top");
-     // const bool top_boundary = boundary_ids.find(relevant_boundary) == boundary_ids.begin();
-     // const std::set<types::boundary_id> tmp_free_surface_boundary_indicators = this->get_mesh_deformation_handler().get_fastscape_boundary_indicators();
+      //Find the id associated with the top boundary
+      const types::boundary_id relevant_boundary = this->get_geometry_model().translate_symbolic_boundary_name_to_id ("top");
+      const std::set<types::boundary_id> boundary_ids
+	       = this->get_mesh_deformation_handler().get_active_mesh_deformation_boundary_indicators();
 
+      // Get then deformation type names called for each boundary.
+      /*
+       * TODO: Why does this only work if I declare it in the header file?
+       * If I declare it here, then I get a no match operand[] error when trying to get the
+       * names variable.
+       */
+      mesh_deformation_boundary_indicators_map
+	 	 = this->get_mesh_deformation_handler().get_active_mesh_deformation_names();
 
-      //Initialize parameters for restarting fastscape
+      // Loop over each mesh deformation boundary, and make sure FastScape is only called on the surface.
+      for (std::set<types::boundary_id>::const_iterator p = boundary_ids.begin();
+           p != boundary_ids.end(); ++p)
+      {
+       const std::vector<std::string> names = mesh_deformation_boundary_indicators_map[*p];
+       for(unsigned int i = 0; i < names.size(); ++i )
+       {
+           AssertThrow((names[i] == "fastscape") && (*p == relevant_boundary),
+                   ExcMessage("Fastscape can only be called on the surface boundary."));
+       }
+      }
+
+      // Initialize parameters for restarting fastscape
       restart = this->get_parameters().resume_computation;
       restart_step = 0;
 
-      //second is for maximum coordiantes, first for minimum.
+      // second is for maximum coordiantes, first for minimum.
       for (unsigned int i=0; i<dim; ++i)
         {
-          grid_extent[i].first = 0;
+          grid_extent[i].first = geometry->get_origin()[i];
           grid_extent[i].second = geometry->get_extents()[i];
         }
 
-      //TODO: There has to be a better type to use to get this.
-      //const unsigned int repetitions[dim] = {geometry->get_repetitions()};
+      // TODO: There has to be a better type to use to get this.
+      // const unsigned int repetitions[dim] = {geometry->get_repetitions()};
       const unsigned int x_repetitions = geometry->get_repetitions(0);
       const unsigned int y_repetitions = geometry->get_repetitions(1);
-      std::cout<<x_repetitions<<"  "<<y_repetitions<<std::endl;
 
-      //Set nx and dx, as these will be the same regardless of dimension.
+      // Set nx and dx, as these will be the same regardless of dimension.
       nx = 3+std::pow(2,surface_resolution+additional_refinement)*x_repetitions;
-      dx = grid_extent[0].second/(nx-3);
-      x_extent = geometry->get_extents()[0]+2*dx;
+      dx = (grid_extent[0].second - grid_extent[0].first)/(nx-3);
+      x_extent = (grid_extent[0].second - grid_extent[0].first)+2*dx;
 
 
-      //sub intervals are 1 less than points.
+      // sub intervals are 1 less than points.
       table_intervals[0] = nx-3;
-      //TODO: it'd be best to not have to use dim-1 intervals at all.
+      // TODO: it'd be best to not have to use dim-1 intervals at all.
       table_intervals[dim-1] = 1;
 
       if (dim == 2)
         {
           dy = dx;
-          y_extent = round(y_extent_2d/dy)*dy+2*dy;             //x_extent; //grid_extent[0].second*3+2*dy;
+          y_extent = round(y_extent_2d/dy)*dy+2*dy;
           ny = 1+y_extent/dy;
         }
 
       if (dim == 3)
         {
           ny = 3+std::pow(2,surface_resolution+additional_refinement)*y_repetitions;
-          dy = grid_extent[1].second/(ny-3);
+          dy = (grid_extent[1].second - grid_extent[1].first)/(ny-3);
           table_intervals[1] = ny-3;
-          y_extent = geometry->get_extents()[1]+2*dy;
+          y_extent = (grid_extent[1].second - grid_extent[1].first)+2*dy;
         }
 
-      //Determine array size to send to fastscape
+      // Determine array size to send to fastscape
       array_size = nx*ny;
+
+      // Create a folder for the FastScape visualization files.
+      Utilities::create_directory (this->get_output_directory() + "VTK/",
+    		                       this->get_mpi_communicator(),
+                                   false);
     }
 
 
@@ -98,7 +122,6 @@ namespace aspect
     {
       TimerOutput::Scope timer_section(this->get_computing_timer(), "Fastscape plugin");
       const types::boundary_id relevant_boundary = this->get_geometry_model().translate_symbolic_boundary_name_to_id ("top");
-      const bool top_boundary = boundary_ids.find(relevant_boundary) == boundary_ids.begin();
       int current_timestep = this->get_timestep_number ();
 
       double a_dt = this->get_timestep();
@@ -107,8 +130,8 @@ namespace aspect
           a_dt = this->get_timestep()/year_in_seconds;
         }
 
-      //We only want to run fastscape if there was a change in time, and if we're at the top boundary.
-      if (a_dt > 0 && top_boundary)
+      // We only want to run fastscape if there was a change in time.
+      if (a_dt > 0)
         {
 
           /*
@@ -147,7 +170,7 @@ namespace aspect
                     for (unsigned int corner = 0; corner < face_corners.size(); ++corner)
                       {
                         const Point<dim> vertex = fe_face_values.quadrature_point(corner);
-                        //This tells us which x point we're at
+                        // This tells us which x point we're at
                         double indx = 2+vertex(0)/dx;
 
                         // If our x or y index isn't close to a whole number, then it's likely an artifact
@@ -175,7 +198,13 @@ namespace aspect
                                 temporary_variables[1].push_back(index-1);
 
                                 for (unsigned int i=0; i<dim; ++i)
-                                  temporary_variables[i+2].push_back(vel[corner][i]*year_in_seconds);
+                                {
+                                	if(this->convert_output_to_years())
+                                       temporary_variables[i+2].push_back(vel[corner][i]*year_in_seconds);
+                                	else
+                                       temporary_variables[i+2].push_back(vel[corner][i]);
+                                }
+
                               }
                           }
 
@@ -187,16 +216,21 @@ namespace aspect
 
                             double index = (indy-1)*nx+indx;
 
-                            temporary_variables[1].push_back(index-1);
                             temporary_variables[0].push_back(vertex(dim-1));   //z component
+                            temporary_variables[1].push_back(index-1);
 
                             for (unsigned int i=0; i<dim; ++i)
-                              temporary_variables[i+2].push_back(vel[corner][i]*year_in_seconds);
+                            {
+                              if(this->convert_output_to_years())
+                                 temporary_variables[i+2].push_back(vel[corner][i]*year_in_seconds);
+                              else
+                                 temporary_variables[i+2].push_back(vel[corner][i]);
+                            }
                           }
                       }
                   }
 
-          //Run fastscape on single processor.
+          // Run fastscape on single processor.
           if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
             {
               TimerOutput::Scope timer_section(this->get_computing_timer(), "Fastscape 1 proc");
@@ -205,9 +239,6 @@ namespace aspect
                * These have to be doubles of array_size, which C++ doesn't like,
                * so they're initialized this way.
                */
-              //TODO: by adding the parenthesis these get initialized to zero, except,
-              //for some reason the last element doesn't. This shouldn't be an issue
-              //but noted here in case something goes wrong.
               std::unique_ptr<double[]> h (new double[array_size]());
               std::unique_ptr<double[]> vx (new double[array_size]());
               std::unique_ptr<double[]> vy (new double[array_size]());
@@ -220,7 +251,7 @@ namespace aspect
               std::srand(fs_seed);
               std::vector<double> h_old(array_size);
 
-              //Create variables for output directory and restart file
+              // Create variables for output directory and restart file
               std::string filename;
               filename = this->get_output_directory();
               const char *c=filename.c_str();
@@ -228,15 +259,14 @@ namespace aspect
               const std::string restart_filename = filename + "fastscape_h_restart.txt";
               const std::string restart_step_filename = filename + "fastscape_steps_restart.txt";
 
-              //Initialize all FastScape variables.
+              // Initialize all FastScape variables.
               for (int i=0; i<array_size; i++)
                 {
-            	  //std::cout<<h[i]<<"  "<<vx[i]<<std::endl;
                   kf[i] = kff;
                   kd[i] = kdd;
                 }
 
-              //Get info from first processor.
+              // Get info from first processor.
               for (unsigned int i=0; i<temporary_variables[1].size(); i++)
                 {
                   h[temporary_variables[1][i]]= temporary_variables[0][i];
@@ -254,13 +284,13 @@ namespace aspect
               for (unsigned int p=1; p<Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()); ++p)
                 {
 
-                  //First, find out the size of the array a processor wants to send.
+                  // First, find out the size of the array a processor wants to send.
                   MPI_Status status;
                   MPI_Probe(p, 42, this->get_mpi_communicator(), &status);
                   int incoming_size = 0;
                   MPI_Get_count(&status, MPI_DOUBLE, &incoming_size);
 
-                  //Resize the array so it fits whatever the processor sends.
+                  // Resize the array so it fits whatever the processor sends.
                   for (unsigned int i=0; i<temporary_variables.size(); ++i)
                     {
                       temporary_variables[i].resize(incoming_size);
@@ -270,7 +300,7 @@ namespace aspect
                     MPI_Recv(&temporary_variables[i][0], incoming_size, MPI_DOUBLE, p, 42, this->get_mpi_communicator(), &status);
 
 
-                  //Now, place the numbers into the correct place based off the index.
+                  // Now, place the numbers into the correct place based off the index.
                   for (unsigned int i=0; i<temporary_variables[1].size(); i++)
                     {
                       h[temporary_variables[1][i]] = temporary_variables[0][i];
@@ -293,13 +323,13 @@ namespace aspect
                   this->get_pcout() <<"   Initializing FastScape... "<< (1+surface_resolution+additional_refinement)  <<
                                     " levels, cell size: "<<dx<<" m."<<std::endl;
 
-                  //If we are restarting from a checkpoint, load h values for fastscape so we don't lose resolution.
+                  // If we are restarting from a checkpoint, load h values for fastscape so we don't lose resolution.
                   if (restart)
                     {
                       this->get_pcout() <<"      Loading FastScape restart file... "<<std::endl;
                       restart = false;
 
-                      //Load in h values.
+                      // Load in h values.
                       std::ifstream in;
                       in.open(restart_filename.c_str());
                       if (in)
@@ -334,19 +364,19 @@ namespace aspect
                         AssertThrow(false,ExcMessage("Cannot open file to restart fastscape."));
                     }
 
-                  //Initialize fastscape with grid and extent.
+                  // Initialize fastscape with grid and extent.
                   fastscape_init_();
                   fastscape_set_nx_ny_(&nx,&ny);
                   fastscape_setup_();
                   fastscape_set_xl_yl_(&x_extent,&y_extent);
 
-                  //set boundary conditions
+                  // Set boundary conditions
                   fastscape_set_bc_(&bc);
 
-                  //Initialize topography
+                  // Initialize topography
                   fastscape_init_h_(h.get());
 
-                  //Set erosional parameters. May have to move this if sed values are updated over time.
+                  // Set erosional parameters. May have to move this if sed values are updated over time.
                   fastscape_set_erosional_parameters_(kf.get(), &kfsed, &m, &n, kd.get(), &kdsed, &g, &g, &p);
 
                   if (use_marine)
@@ -358,7 +388,7 @@ namespace aspect
                 }
               else
                 {
-                  //If it isn't the first timestep we just want to know current h values in fastscape.
+                  // If it isn't the first timestep we just want to know current h values in fastscape.
                   fastscape_copy_h_(h.get());
                 }
 
@@ -369,7 +399,7 @@ namespace aspect
                */
               for (int i=0; i<array_size; i++)
                 {
-                  //Initialize random topography noise first time fastscape is called.
+                  // Initialize random topography noise first time fastscape is called.
                   if (current_timestep == 1)
                     {
                       double h_seed = (std::rand()%2000)/100;
@@ -378,11 +408,11 @@ namespace aspect
                   h_old[i] = h[i];
                 }
 
-              //Get current fastscape timestep.
+              // Get current fastscape timestep.
               fastscape_get_step_(&istep);
 
-              //Write a file to store h & step in case of restart.
-              //TODO: there's probably a faster way to write these.
+              // Write a file to store h & step in case of restart.
+              // TODO: there's probably a faster way to write these.
               if ((this->get_parameters().checkpoint_time_secs == 0) &&
                   (this->get_parameters().checkpoint_steps > 0) &&
                   (current_timestep % this->get_parameters().checkpoint_steps == 0))
@@ -403,15 +433,15 @@ namespace aspect
                */
               fastscape_copy_slope_(slopep.get());
 
-              //Now we set the ghost nodes at the left and right boundaries.
+              // Now we set the ghost nodes at the left and right boundaries.
               for (int j=0; j<ny; j++)
                 {
                   int index_left = nx*j+1;
                   int index_right = nx*(j+1);
                   double slope = 0;
 
-                  //Generally, they will always be set to the same values as the
-                  //inner nodes next to them.
+                  // Generally, they will always be set to the same values as the
+                  // inner nodes next to them.
                   vz[index_right-1] = vz[index_right-2];
                   vz[index_left-1] =  vz[index_left];
 
@@ -423,8 +453,8 @@ namespace aspect
 
                   if (current_timestep == 1 || left_flux == 0)
                     {
-                      //If its the first timestep add in initial slope. If we have no flux,
-                      //set the ghost node to the node next to it.
+                      // If its the first timestep add in initial slope. If we have no flux,
+                      // set the ghost node to the node next to it.
                       slope = left_flux/kdd;
                       h[index_left-1] = h[index_left] + slope*2*dx;
                     }
@@ -590,7 +620,7 @@ namespace aspect
               fastscape_set_dt_(&f_dt);
 
               //Set velocity components and h.
-              fastscape_set_u_(vz.get());
+              //fastscape_set_u_(vz.get());
               fastscape_set_v_(vx.get(), vy.get());
               fastscape_set_h_(h.get());
 
@@ -712,7 +742,6 @@ namespace aspect
                             data_table(idx) = V2[j]/year_in_seconds;
                           else
                             data_table(idx) = V2[j];
-
                         }
                       else
                         data_table(idx)= 0;
@@ -1027,12 +1056,6 @@ namespace aspect
         }
         prm.leave_subsection();
 
-      }
-      prm.leave_subsection ();
-
-      prm.enter_subsection ("Mesh refinement");
-      {
-        initial_global_refinement    = prm.get_integer ("Initial global refinement");
       }
       prm.leave_subsection ();
     }
