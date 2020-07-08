@@ -159,6 +159,9 @@ namespace aspect
         std::array< unsigned int, dim > table_intervals;
         //Used to check whether fastscape is called at the surface.
         std::map<types::boundary_id, std::vector<std::string> > mesh_deformation_boundary_indicators_map;
+        //Whether or not to use the ghost nodes.
+        bool use_ghost;
+
 
         /**
          * Boundary conditions

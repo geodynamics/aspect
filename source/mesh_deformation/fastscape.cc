@@ -78,27 +78,27 @@ namespace aspect
       const unsigned int y_repetitions = geometry->get_repetitions(1);
 
       // Set nx and dx, as these will be the same regardless of dimension.
-      nx = 3+std::pow(2,surface_resolution+additional_refinement)*x_repetitions;
-      dx = (grid_extent[0].second - grid_extent[0].first)/(nx-3);
-      x_extent = (grid_extent[0].second - grid_extent[0].first)+2*dx;
+      nx = 1+(2*use_ghost)+std::pow(2,surface_resolution+additional_refinement)*x_repetitions;
+      dx = (grid_extent[0].second - grid_extent[0].first)/(nx-1-(2*use_ghost));
+      x_extent = (grid_extent[0].second - grid_extent[0].first)+2*dx*use_ghost;
 
       // Sub intervals are 3 less than points, if including the ghost nodes. Otherwise 1 less.
-      table_intervals[0] = nx-3;
+      table_intervals[0] = nx-1-(2*use_ghost);
       // TODO: it'd be best to not have to use dim-1 intervals at all.
       table_intervals[dim-1] = 1;
 
       if (dim == 2)
         {
           dy = dx;
-          y_extent = round(y_extent_2d/dy)*dy+2*dy;
+          y_extent = round(y_extent_2d/dy)*dy+2*dy*use_ghost;
           ny = 1+y_extent/dy;
         }
       else
         {
-          ny = 3+std::pow(2,surface_resolution+additional_refinement)*y_repetitions;
-          dy = (grid_extent[1].second - grid_extent[1].first)/(ny-3);
-          table_intervals[1] = ny-3;
-          y_extent = (grid_extent[1].second - grid_extent[1].first)+2*dy;
+          ny = 1+(2*use_ghost)+std::pow(2,surface_resolution+additional_refinement)*y_repetitions;
+          dy = (grid_extent[1].second - grid_extent[1].first)/(ny-1-(2*use_ghost));
+          table_intervals[1] = ny-1-(2*use_ghost);
+          y_extent = (grid_extent[1].second - grid_extent[1].first)+2*dy*use_ghost;
         }
 
       // Determine array size to send to fastscape
@@ -168,8 +168,8 @@ namespace aspect
                       {
                         const Point<dim> vertex = fe_face_values.quadrature_point(corner);
                         
-                        // Find what x point we're at. Add 2 instead of 1 because the first x point is a ghost node.
-                        const double indx = 2+vertex(0)/dx;
+                        // Find what x point we're at. Add 1 or 2 depending on if ghost nodes are used.
+                        const double indx = 1+use_ghost+vertex(0)/dx;
 
                         // If our x or y index isn't close to a whole number, then it's likely an artifact
                         // from using an over-resolved quadrature rule, in that case ignore it.
@@ -208,7 +208,7 @@ namespace aspect
                         else
                           {
                             //Because indy only gives us the row we're in, we don't need to add 2 for the ghost node.
-                            const double indy = 2+vertex(1)/dy;
+                            const double indy = 1+use_ghost+vertex(1)/dy;
                             if (abs(indy - round(indy)) >= precision)
                               continue;       
                                                   
@@ -227,6 +227,7 @@ namespace aspect
                           }
                       }
                   }
+                  
 
           // Run fastscape on single processor.
           if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
@@ -302,7 +303,7 @@ namespace aspect
                       else
                         vy[temporary_variables[1][i]] = temporary_variables[3][i];
                     }
-                }
+                }               
 
               if (current_timestep == 1 || restart)
                 {
@@ -358,6 +359,14 @@ namespace aspect
 
                   // Set boundary conditions
                   fastscape_set_bc_(&bc);
+                  
+                  // Initialize random noise
+                  std::srand(fs_seed);
+                  for (int i=0; i<array_size; i++)
+                      {
+                         const double h_seed = (std::rand()%2000)/100;
+                         h[i] = h[i] + h_seed;
+                      }
 
                   // Initialize topography
                   fastscape_init_h_(h.get());
@@ -375,24 +384,29 @@ namespace aspect
                 {
                   // If it isn't the first timestep we just want to know current h values in fastscape.
                   fastscape_copy_h_(h.get());
-                }
-
-              /*
-               * Copy the slopes at each point, this will be used to set an H
-               * at the ghost nodes if a boundary mass flux is given.
-               */
-              fastscape_copy_slope_(slopep.get());
+                }              
 
               /* 
                * The ghost nodes are added as a single layer of nodes surrounding the entire model,
                * so that 3x3 amount of nodes representing ASPECT will become 5x5 in FastScape, with the inner
                * 3x3 being returned to ASPECT.
+               */
+               // I redid the indexing here, at some point I should double check that these still work without issue.
+               if(use_ghost)
+               {
+               
+               /*
+               * Copy the slopes at each point, this will be used to set an H
+               * at the ghost nodes if a boundary mass flux is given.
+               */
+               fastscape_copy_slope_(slopep.get());
+              
+              /*
                * Here we set the ghost nodes at the left and right boundaries. In most cases,
                * this involves setting the node to the same values of v and h as the inward node.
                * With the inward node being above or below for the bottom and top rows of ghost nodes,
                * or to the left and right for the right and left columns of ghost nodes.
                */
-               // I redid the indexing here, at some point I should double check that these still work without issue.
               for (int j=0; j<ny; j++)
                 {
                 /*
@@ -594,6 +608,7 @@ namespace aspect
                       h[index_top] = h[side+jj];
                     }
                 }
+                }
                 
               /*
                * Keep initial h values so we can calculate velocity later.
@@ -601,15 +616,7 @@ namespace aspect
                * In other timesteps, we copy h directly from fastscape.
                */
               for (int i=0; i<array_size; i++)
-                {
-                  // Initialize random topography noise first time fastscape is called.
-                  if (current_timestep == 1)
-                    {
-                      std::srand(fs_seed);
-                      const double h_seed = (std::rand()%2000)/100;
-                      h[i] = h[i] + h_seed;
-                    }
-                    
+                {                 
                   h_old[i] = h[i];
                 }
 
@@ -798,9 +805,9 @@ namespace aspect
                             {
                               // Fill table, where nx+1 allows skipping of the first ghost node.
                               if (this->convert_output_to_years())
-                                data_table(idx) = V[(nx+1)+nx*i+j]/year_in_seconds;
+                                data_table(idx) = V[(nx+1)*use_ghost+nx*i+j]/year_in_seconds;
                               else
-                                data_table(idx) = V[(nx+1)+nx*i+j];
+                                data_table(idx) = V[(nx+1)*use_ghost+nx*i+j];
                             }
                           else
                             data_table(idx)= 0;
@@ -882,6 +889,9 @@ namespace aspect
           prm.declare_entry("Y extent in 2d", "100000",
                             Patterns::Double(),
                             "Y extent when used with 2D");
+          prm.declare_entry ("Use ghost nodes", "true",
+                             Patterns::Bool (),
+                             "Flag to use ghost nodes");
 
           prm.enter_subsection ("Boundary conditions");
           {
@@ -1006,6 +1016,7 @@ namespace aspect
           nstepp = prm.get_integer("Total steps");
           nreflectorp = prm.get_integer("Number of horizons");
           y_extent_2d = prm.get_double("Y extent in 2d");
+          use_ghost = prm.get_bool("Use ghost nodes");
 
           prm.enter_subsection("Boundary conditions");
           {
