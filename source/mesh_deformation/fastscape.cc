@@ -65,7 +65,7 @@ namespace aspect
       restart = this->get_parameters().resume_computation;
       restart_step = 0;
 
-      // second is for maximum coordiantes, first for minimum.
+      // second is for maximum coordinates, first for minimum.
       for (unsigned int i=0; i<dim; ++i)
         {
           grid_extent[i].first = geometry->get_origin()[i];
@@ -119,7 +119,7 @@ namespace aspect
     {
       TimerOutput::Scope timer_section(this->get_computing_timer(), "Fastscape plugin");
       const types::boundary_id relevant_boundary = this->get_geometry_model().translate_symbolic_boundary_name_to_id ("top");
-      int current_timestep = this->get_timestep_number ();
+      const int current_timestep = this->get_timestep_number ();
 
       double a_dt = this->get_timestep();
       if (this->convert_output_to_years())
@@ -134,8 +134,9 @@ namespace aspect
            * Initialize a vector of temporary variables to hold: z component, index, Vx, Vy, and Vz.
            */
           std::vector<std::vector<double>> temporary_variables(dim+2, std::vector<double>());
+          //Vector to hold the velocities that represent the change to the surface.
           std::vector<double> V(array_size);
-          double precision = 0.001;
+          const double precision = 0.001;
 
           // Get a quadrature rule that exists only on the corners, and increase the refinement if specified.
           const QIterated<dim-1> face_corners (QTrapez<1>(),
@@ -159,24 +160,24 @@ namespace aspect
                     if ( cell->face(face_no)->boundary_id() != relevant_boundary)
                       continue;
 
-                    std::vector<Tensor<1,dim> > vel( face_corners.size() );
+                    std::vector<Tensor<1,dim> > vel(face_corners.size());
                     fe_face_values.reinit(cell, face_no);
                     fe_face_values[this->introspection().extractors.velocities].get_function_values(this->get_solution(), vel);
 
                     for (unsigned int corner = 0; corner < face_corners.size(); ++corner)
                       {
                         const Point<dim> vertex = fe_face_values.quadrature_point(corner);
-                        // This tells us which x point we're at
-                        double indx = 2+vertex(0)/dx;
+                        
+                        // Find what x point we're at. Add 2 instead of 1 because the first x point is a ghost node.
+                        const double indx = 2+vertex(0)/dx;
 
                         // If our x or y index isn't close to a whole number, then it's likely an artifact
                         // from using an over-resolved quadrature rule, in that case ignore it.
-                        if (indx - floor(indx) >= precision)
+                        if (abs(indx - round(indx)) >= precision)
                           continue;
 
                         /*
                          * If we're in 2D, we want to take the values and apply them to every row of X points.
-                         * TODO: I need to test that 2D still works after changing how we store these variables.
                          */
                         if (dim == 2)
                           {
@@ -187,8 +188,10 @@ namespace aspect
                                  * across the X row. At the end of the row, it jumps back to X = 0
                                  * and up to the next X row in increasing Y direction. We track
                                  * this to correctly place the variables later on.
+                                 * Nx*ys effectively tells us what row we are in
+                                 * and then indx tells us what position in that row.
                                  */
-                                double index = indx+nx*ys;
+                               const double index = indx+nx*ys;
 
                                 temporary_variables[0].push_back(vertex(dim-1));
                                 temporary_variables[1].push_back(index-1);
@@ -204,11 +207,12 @@ namespace aspect
                           }
                         else
                           {
-                            double indy = 2+vertex(1)/dy;
-                            if (indy - floor(indy) >= precision)
-                              continue;
-
-                            double index = (indy-1)*nx+indx;
+                            //Because indy only gives us the row we're in, we don't need to add 2 for the ghost node.
+                            const double indy = 2+vertex(1)/dy;
+                            if (abs(indy - round(indy)) >= precision)
+                              continue;       
+                                                  
+                            const double index = (indy-1)*nx+indx;
 
                             temporary_variables[0].push_back(vertex(dim-1));   //z component
                             temporary_variables[1].push_back(index-1);
@@ -227,7 +231,6 @@ namespace aspect
           // Run fastscape on single processor.
           if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
             {
-              TimerOutput::Scope timer_section(this->get_computing_timer(), "Fastscape 1 proc");
               /*
                * Initialize the variables that will be sent to fastscape.
                * These have to be doubles of array_size, which C++ doesn't like,
@@ -240,18 +243,14 @@ namespace aspect
               std::unique_ptr<double[]> kf (new double[array_size]());
               std::unique_ptr<double[]> kd (new double[array_size]());
               std::unique_ptr<double[]> slopep (new double[array_size]());
-              int istep = 0;
-              int steps = nstep;
-              std::srand(fs_seed);
               std::vector<double> h_old(array_size);
 
               // Create variables for output directory and restart file
-              std::string filename;
-              filename = this->get_output_directory();
-              const char *c=filename.c_str();
-              int length = filename.length();
-              const std::string restart_filename = filename + "fastscape_h_restart.txt";
-              const std::string restart_step_filename = filename + "fastscape_steps_restart.txt";
+              std::string dirname = this->get_output_directory();
+              const char *c=dirname.c_str();
+              int length = dirname.length();
+              const std::string restart_filename = dirname + "fastscape_h_restart.txt";
+              const std::string restart_step_filename = dirname + "fastscape_steps_restart.txt";
 
               // Initialize all FastScape variables.
               for (int i=0; i<array_size; i++)
@@ -297,6 +296,7 @@ namespace aspect
                       vx[temporary_variables[1][i]] = temporary_variables[2][i];
                       vz[temporary_variables[1][i]] = temporary_variables[dim+1][i];
 
+                      //In a 2D case, we don't know any y velocities.
                       if (dim == 2 )
                         vy[temporary_variables[1][i]] = 0;
                       else
@@ -306,13 +306,13 @@ namespace aspect
 
               if (current_timestep == 1 || restart)
                 {
-                  this->get_pcout() <<"   Initializing FastScape... "<< (1+surface_resolution+additional_refinement)  <<
-                                    " levels, cell size: "<<dx<<" m."<<std::endl;
+                  this->get_pcout() << "   Initializing FastScape... " << (1+surface_resolution+additional_refinement) <<
+                                    " levels, cell size: " << dx << " m." << std::endl;
 
                   // If we are restarting from a checkpoint, load h values for fastscape so we don't lose resolution.
                   if (restart)
                     {
-                      this->get_pcout() <<"      Loading FastScape restart file... "<<std::endl;
+                      this->get_pcout() << "      Loading FastScape restart file... " << std::endl;
 
                       // Load in h values.
                       std::ifstream in;
@@ -341,7 +341,6 @@ namespace aspect
                       in_step.open(restart_step_filename.c_str());
                       if (in)
                         {
-
                           in_step >> restart_step;
                           in_step.close();
                         }
@@ -384,15 +383,31 @@ namespace aspect
                */
               fastscape_copy_slope_(slopep.get());
 
-              // Now we set the ghost nodes at the left and right boundaries.
+              /* 
+               * The ghost nodes are added as a single layer of nodes surrounding the entire model,
+               * so that 3x3 amount of nodes representing ASPECT will become 5x5 in FastScape, with the inner
+               * 3x3 being returned to ASPECT.
+               * Here we set the ghost nodes at the left and right boundaries. In most cases,
+               * this involves setting the node to the same values of v and h as the inward node.
+               * With the inward node being above or below for the bottom and top rows of ghost nodes,
+               * or to the left and right for the right and left columns of ghost nodes.
+               */
               for (int j=0; j<ny; j++)
                 {
-                  int index_left = nx*j+1;
-                  int index_right = nx*(j+1);
+                /*
+                * Nx*j will give us the row we're in, and one is added as FastScape starts from 1 not zero.
+                * If we're on the right, the multiple of the row will always represent the last node.
+                * Adding one to this row value then gives us the start of the next row, or the left side node.
+                */
+                  const int index_right = nx*(j+1);
+                  const int index_left = nx*j+1;
                   double slope = 0;
 
-                  // Generally, they will always be set to the same values as the
-                  // inner nodes next to them.
+                  /*
+                  * Here we set the ghost nodes to the ones next to them, where for the left we 
+                  * add one to go to the node to the right, and for the right side
+                  * we subtract one to go to the inner node to the left.
+                  */
                   vz[index_right-1] = vz[index_right-2];
                   vz[index_left-1] =  vz[index_left];
 
@@ -404,22 +419,28 @@ namespace aspect
 
                   if (current_timestep == 1 || left_flux == 0)
                     {
-                      // If its the first timestep add in initial slope. If we have no flux,
-                      // set the ghost node to the node next to it.
+                     /*
+                      * If its the first timestep add in initial slope. If we have no flux,
+                      * set the ghost node to the node next to it.
+                      * FastScape calculates the slope by looking at  all nodes surrounding the point
+                      * so we need to consider the slope over 2 dx.
+                      */
                       slope = left_flux/kdd;
                       h[index_left-1] = h[index_left] + slope*2*dx;
                     }
                   else
                     {
-                      // If we have flux through boundary, we need to update the height to keep the correct slope.
-                      // Because the corner nodes always show a slope of zero, this will update them according to
-                      // the nodes next to them.
+                     /*
+                      * If we have flux through a boundary, we need to update the height to keep the correct slope.
+                      * Because the corner nodes always show a slope of zero, this will update them according to
+                      * the nodes next to them. If we're at a corner node, look instead one row above or below.
+                      */
                       if (j == 0)
-                        slope = left_flux/kdd - std::tan(slopep[index_left+nx]*boost::math::double_constants::pi/180);
+                        slope = left_flux/kdd - std::tan(slopep[index_left+nx]*numbers::PI/180.);
                       else if (j==(ny-1))
-                        slope = left_flux/kdd - std::tan(slopep[index_left-nx]*boost::math::double_constants::pi/180);
+                        slope = left_flux/kdd - std::tan(slopep[index_left-nx]*numbers::PI/180.);
                       else
-                        slope = left_flux/kdd - std::tan(slopep[index_left]*boost::math::double_constants::pi/180);
+                        slope = left_flux/kdd - std::tan(slopep[index_left]*numbers::PI/180.);
 
                       h[index_left-1] = h[index_left-1] + slope*2*dx;
                     }
@@ -432,23 +453,34 @@ namespace aspect
                   else
                     {
                       if (j == 0)
-                        slope = right_flux/kdd - std::tan(slopep[index_right+nx-2]*boost::math::double_constants::pi/180);
+                        slope = right_flux/kdd - std::tan(slopep[index_right+nx-2]*numbers::PI/180.);
                       else if (j==(ny-1))
-                        slope = right_flux/kdd - std::tan(slopep[index_right-nx-2]*boost::math::double_constants::pi/180);
+                        slope = right_flux/kdd - std::tan(slopep[index_right-nx-2]*numbers::PI/180.);
                       else
-                        slope = right_flux/kdd - std::tan(slopep[index_right-2]*boost::math::double_constants::pi/180);
+                        slope = right_flux/kdd - std::tan(slopep[index_right-2]*numbers::PI/180.);
 
                       h[index_right-1] = h[index_right-1] + slope*2*dx;
                     }
 
-                  // If we set the boundaries as periodic, then reset any values to the
-                  // nodes on the opposite side.
+                  /*
+                  * If the boundaries are periodic, then we look at the velocities on both sides of the
+                  * model, and set the ghost node according to the direction of flow. As FastScape will
+                  * will receive all velocities it will have a direction, and we only need to look at the (non-ghost)
+                  * nodes directly to the left and right.
+                  */
                   if (left == 0 && right == 0)
                     {
+                      // First we assume that flow is going to the left, but this may change.
                       int side = index_left;
+                      
+                      // Indexing depending on which side the ghost node is being set to.
                       int jj = 0;
 
-                      // If they aren't going the same direction, don't set the ghost nodes.
+                      /* 
+                      * If nodes on both sides are going the same direction, then set the respective
+                      * ghost nodes to equal these sides. By doing this, the ghost nodes at the opposite
+                      * side of flow will work as a mirror mimicing what is happening at the other boundary.
+                      */
                       if (vx[index_right-2] > 0 && vx[index_left] >= 0)
                         {
                           side = index_right;
@@ -462,14 +494,14 @@ namespace aspect
                       else
                         continue;
 
-                      vz[index_right-1] =   vz[side-jj];
-                      vz[index_left-1] =    vz[side-jj];
+                      vz[index_right-1] = vz[side-jj];
+                      vz[index_left-1] = vz[side-jj];
 
                       vy[index_right-1] = vy[side-jj];
-                      vy[index_left-1] =  vy[side-jj];
+                      vy[index_left-1] = vy[side-jj];
 
                       vx[index_right-1] = vx[side-jj];
-                      vx[index_left-1] =  vx[side-jj];
+                      vx[index_left-1] = vx[side-jj];
 
                       h[index_right-1] = h[side-jj];
                       h[index_left-1] = h[side-jj];
@@ -479,8 +511,12 @@ namespace aspect
               // Now do the same for the top and bottom ghost nodes.
               for (int j=0; j<nx; j++)
                 {
-                  int index_bot = j+1;
-                  int index_top = nx*(ny-1)+j+1;
+                  // The bottom row indexes are 1 to nx.
+                  const int index_bot = j+1;
+                  
+                  // Adding 1 to nx multiplied by (total rows - 1) gives us the start of
+                  // the top row, and j then gives us the position in the row.
+                  const int index_top = nx*(ny-1)+j+1;
                   double slope = 0;
 
                   vz[index_bot-1] = vz[index_bot+nx-1];
@@ -500,11 +536,11 @@ namespace aspect
                   else
                     {
                       if (j == 0)
-                        slope = top_flux/kdd - std::tan(slopep[index_top-nx]*boost::math::double_constants::pi/180);
+                        slope = top_flux/kdd - std::tan(slopep[index_top-nx]*numbers::PI/180.);
                       else if (j==(nx-1))
-                        slope = top_flux/kdd - std::tan(slopep[index_top-nx-2]*boost::math::double_constants::pi/180);
+                        slope = top_flux/kdd - std::tan(slopep[index_top-nx-2]*numbers::PI/180.);
                       else
-                        slope = top_flux/kdd - std::tan(slopep[index_top-nx-1]*boost::math::double_constants::pi/180);
+                        slope = top_flux/kdd - std::tan(slopep[index_top-nx-1]*numbers::PI/180.);
 
                       h[index_top-1] = h[index_top-1] + slope*2*dx;
                     }
@@ -517,11 +553,11 @@ namespace aspect
                   else
                     {
                       if (j == 0)
-                        slope = bottom_flux/kdd - std::tan(slopep[index_bot+nx]*boost::math::double_constants::pi/180);
+                        slope = bottom_flux/kdd - std::tan(slopep[index_bot+nx]*numbers::PI/180.);
                       else if (j==(nx-1))
-                        slope = bottom_flux/kdd - std::tan(slopep[index_bot+nx-2]*boost::math::double_constants::pi/180);
+                        slope = bottom_flux/kdd - std::tan(slopep[index_bot+nx-2]*numbers::PI/180.);
                       else
-                        slope = bottom_flux/kdd - std::tan(slopep[index_bot+nx-1]*boost::math::double_constants::pi/180);
+                        slope = bottom_flux/kdd - std::tan(slopep[index_bot+nx-1]*numbers::PI/180.);
 
                       h[index_bot-1] = h[index_bot-1] + slope*2*dx;
                     }
@@ -568,7 +604,8 @@ namespace aspect
                   // Initialize random topography noise first time fastscape is called.
                   if (current_timestep == 1)
                     {
-                      double h_seed = (std::rand()%2000)/100;
+                      std::srand(fs_seed);
+                      const double h_seed = (std::rand()%2000)/100;
                       h[i] = h[i] + h_seed;
                     }
                     
@@ -576,6 +613,7 @@ namespace aspect
                 }
 
               // Get current fastscape timestep.
+              int istep = 0;
               fastscape_get_step_(&istep);
 
               // Write a file to store h & step in case of restart.
@@ -587,13 +625,14 @@ namespace aspect
                   std::ofstream out_h (restart_filename.c_str());
                   std::ofstream out_step (restart_step_filename.c_str());
 
-                  out_step<<(istep+restart_step)<<std::endl;
+                  out_step << (istep+restart_step) << std::endl;
 
                   for (int i=0; i<array_size; i++)
-                    out_h<<h[i]<<std::endl;
+                    out_h << h[i] << std::endl;
                 }
 
               // Find a fastscape timestep that is below our maximum timestep.
+              int steps = nstep;
               double f_dt = a_dt/steps;
               while (f_dt>max_timestep)
                 {
@@ -613,7 +652,7 @@ namespace aspect
               int visualization_step = istep+restart_step;
               steps = istep+steps;
 
-              this->get_pcout() <<"   Calling FastScape... "<<(steps-istep)<<" timesteps of "<<f_dt<<" years."<<std::endl;
+              this->get_pcout() << "   Calling FastScape... " << (steps-istep) << " timesteps of " << f_dt << " years." << std::endl;
               {
                 auto t_start = std::chrono::high_resolution_clock::now();
 
@@ -643,13 +682,13 @@ namespace aspect
                 auto t_end = std::chrono::high_resolution_clock::now();
                 double r_time = std::chrono::duration<double>(t_end-t_start).count();
                 keep_time += r_time;
-                this->get_pcout()<<"      FastScape runtime... "<<round(r_time*1000)/1000<<"s"<<std::endl;
+                this->get_pcout() << "      FastScape runtime... " << round(r_time*1000)/1000 << "s" << std::endl;
               }
 
               // If we've reached the end time, destroy fastscape.
               if (this->get_time()+a_dt >= end_time)
                 {
-                  this->get_pcout()<<"   Destroying FastScape..."<<std::endl;
+                  this->get_pcout() << "      Destroying FastScape..." << std::endl;
 
                   visualization_step = visualization_step+1;
 
@@ -659,7 +698,10 @@ namespace aspect
                   fastscape_destroy_();
                 }
 
+\
+
               // Find out our velocities from the change in height.
+              // Where V is a vector of array size that exists on all processors.
               for (int i=0; i<array_size; i++)
                 {
                   V[i] = (h[i] - h_old[i])/a_dt;
@@ -669,8 +711,6 @@ namespace aspect
             }
           else
             {
-              TimerOutput::Scope timer_section(this->get_computing_timer(), "Fastscape 1 proc");
-
               for (unsigned int i=0; i<temporary_variables.size(); i++)
                 MPI_Ssend(&temporary_variables[i][0], temporary_variables[1].size(), MPI_DOUBLE, 0, 42, this->get_mpi_communicator());
 
@@ -678,32 +718,38 @@ namespace aspect
               MPI_Bcast(&V[0], array_size, MPI_DOUBLE, 0, this->get_mpi_communicator());
             }
 
+          // Get the sizes needed for the data table.
           TableIndices<dim> size_idx;
           for (unsigned int d=0; d<dim; ++d)
             {
               size_idx[d] = table_intervals[d]+1;
             }
 
+          // Initialize a table to hold all velocity values that will be interpolated back to ASPECT.
           Table<dim,double> data_table;
           data_table.TableBase<dim,double>::reinit(size_idx);
           TableIndices<dim> idx;
 
+          // Loop through the data table and fill out the surface (i or k = 1) to the velocities from FastScape.
           if (dim == 2)
             {
               std::vector<double> V2(nx);
 
               for (int i=1; i<(nx-1); i++)
                 {
+                  // If using the center slice, find velocities from the row closest to the center.
                   if (slice)
                     {
-                      int index = i+nx*(round((ny-1)/2));
+                      const int index = i+nx*(round((ny-1)/2));
                       V2[i-1] = V[index];
                     }
+                  // Here we use average velocities across the y nodes, excluding the ghost nodes (top and bottom row).
+                  // Note: If ghost nodes are turned off, boundary effects may influence this.
                   else
                     {
                       for (int ys=1; ys<(ny-1); ys++)
                         {
-                          int index = i+nx*ys;
+                          const int index = i+nx*ys;
                           V2[i-1] += V[index];
                         }
                       V2[i-1] = V2[i-1]/(ny-2);
@@ -718,7 +764,7 @@ namespace aspect
                     {
                       idx[0] = j;
 
-                      // Convert from m/yr to m/s if needed
+                      // Convert from m/yr to m/s if needed. i == 1 is the surface and i = 0 the bottom.
                       if (i == 1)
                         {
                           if (this->convert_output_to_years())
@@ -749,6 +795,7 @@ namespace aspect
                           // Tables are initialized with k = 0 as the bottom and 1 as top, we are only interested in the surface so only fill k==1.
                           if (k==1)
                             {
+                              // Fill table, where nx+1 allows skipping of the first ghost node.
                               if (this->convert_output_to_years())
                                 data_table(idx) = V[(nx+1)+nx*i+j]/year_in_seconds;
                               else
